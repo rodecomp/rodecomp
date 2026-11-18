@@ -11,6 +11,7 @@
 #include "Contents/World/World.h"
 #include "File/File.h"
 #include "Network/TextEncoding.h"
+#include "Render/Primitives/RenderQueues.h"
 #include "Resource/World/TerrainResource.h"
 #include "Resource/Json/JsonCppLoader.h"
 
@@ -297,11 +298,11 @@ void CEZ2STREffectEx::Open() {
   }
 
   if (info->flags & 2) {
-    particle->flags = 0xD;
+    particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
   }
 
   if (info->flags & 4) {
-    particle->flags = 0x205;
+    particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_NO_DEPTH;
   }
 
   emitter->m_repeatFrame = (info->flags >> 3) & 1;

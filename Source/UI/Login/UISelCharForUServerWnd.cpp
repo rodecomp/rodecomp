@@ -68,7 +68,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->AddChild(this->confirmButton);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   for (int index = 0; index < g_session.characterCount; ++index) {
     this->m_checkBoxes[index] = new UICheckBox();

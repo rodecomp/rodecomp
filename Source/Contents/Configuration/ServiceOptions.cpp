@@ -1,5 +1,6 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -747,10 +748,10 @@ void SendServiceOptionPacket() {
 void NotifyServiceOption(bool enabled, int enabledMessage, int disabledMessage, int color) {
   std::string text;
   if (enabled) {
-    if (enabledMessage != 0x125A) {
+    if (enabledMessage != MSI_EMPTY) {
       text = LookupMessage(enabledMessage);
     }
-  } else if (disabledMessage != 0x125A) {
+  } else if (disabledMessage != MSI_EMPTY) {
     text = LookupMessage(disabledMessage);
   }
 
@@ -856,7 +857,7 @@ void ApplyServiceOption(int id, bool value, bool notify, int enabledMessage, int
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
 void ToggleSitStand() {
-  if (std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 933; }) != g_activeSkillEffects.end()) {
+  if (std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == EFST_SUHIDE; }) != g_activeSkillEffects.end()) {
     return;
   }
 
@@ -1009,7 +1010,7 @@ void ApplyServiceOptionAskOnDisable(int id, bool value, bool notify, int enabled
   }
 
   if (!value &&
-      g_windowMgr.Confirm(LookupMessage(MSI_PETINFO_ALERT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
+      g_windowMgr.Confirm(LookupMessage(MSI_PETINFO_ALERT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_NO) {
     g_serviceOptions.Set(TT_PETINFO_ALERT_ONOFF, 1);
     g_windowMgr.RefreshGameSettingOption(0x128);
     return;

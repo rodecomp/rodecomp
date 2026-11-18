@@ -1,4 +1,5 @@
 #include "Contents/Skills/SkillId.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1131,7 +1132,7 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
   std::string sexName("");
   std::string weaponName("");
 
-  const int spriteJob = g_session.GetSpriteJob(job > 31 ? job + 3950 : job, costume, true);
+  const int spriteJob = g_session.GetSpriteJob(job > JT_MAX_BASIC ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
   sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
 
@@ -1156,7 +1157,7 @@ std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job,
   std::string weaponName("");
   const char* const effects[] = {"_검광", "_발광"};
 
-  const int spriteJob = g_session.GetSpriteJob(job > 31 ? job + 3950 : job, costume, true);
+  const int spriteJob = g_session.GetSpriteJob(job > JT_MAX_BASIC ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
   sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
   weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
@@ -1594,7 +1595,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
     if (id == static_cast<int>(entry.itemId) && value == entry.value && enabled == static_cast<char>(entry.enabled) ||
       !CSkillInfo::UsesLevel(static_cast<int>(entry.itemId)) && id == static_cast<int>(entry.itemId)) {
       entry.enabled = 0;
-      entry.itemId = 0;
+      entry.itemId = ITEMID_NONE;
       entry.value = 0;
       g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, index + 36, 0, 0, 0);
     }
@@ -1607,7 +1608,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
   } else {
     this->SkillHotkey(slot).value = 0;
     this->SkillHotkey(slot).enabled = 0;
-    this->SkillHotkey(slot).itemId = 0;
+    this->SkillHotkey(slot).itemId = ITEMID_NONE;
   }
 
   return g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
@@ -2554,23 +2555,23 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     int effectId = 0;
     if (angle >= 0.0f && angle < 23.0f) {
-      effectId = 0x527;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_06;
     } else if (angle >= 23.0f && angle < 67.0f) {
-      effectId = 0x526;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_05;
     } else if (angle >= 67.0f && angle < 112.0f) {
-      effectId = 0x525;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_03;
     } else if (angle >= 112.0f && angle < 157.0f) {
-      effectId = 0x524;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_01;
     } else if (angle >= 157.0f && angle < 202.0f) {
-      effectId = 0x523;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_00;
     } else if (angle >= 202.0f && angle < 247.0f) {
-      effectId = 0x52A;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_11;
     } else if (angle >= 247.0f && angle < 292.0f) {
-      effectId = 0x529;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_09;
     } else if (angle >= 292.0f && angle < 337.0f) {
-      effectId = 0x528;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_07;
     } else if (angle >= 337.0f && angle <= 360.0f) {
-      effectId = 0x527;
+      effectId = EF_NEW_CROSSRIPPERSLASHER_06;
     }
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effectId += 0xA3;
@@ -2638,13 +2639,13 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     int effectId;
     if (angle > 0.0f && angle < 90.0f) {
-      effectId = 0x66E;
+      effectId = EF_NEW_AIMEDBOLT_05;
     } else if (angle >= 90.0f && angle < 180.0f) {
-      effectId = 0x66D;
+      effectId = EF_NEW_AIMEDBOLT_01;
     } else if (angle >= 180.0f && angle < 270.0f) {
-      effectId = 0x670;
+      effectId = EF_NEW_AIMEDBOLT_11;
     } else {
-      effectId = 0x66F;
+      effectId = EF_NEW_AIMEDBOLT_07;
     }
     g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
@@ -2847,13 +2848,13 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     int effectId;
     if (angle > 0.0f && angle < 90.0f) {
-      effectId = 0x55E;
+      effectId = EF_NEW_BANISHINGPOINT_05;
     } else if (angle >= 90.0f && angle < 180.0f) {
-      effectId = 0x55D;
+      effectId = EF_NEW_BANISHINGPOINT_01;
     } else if (angle >= 180.0f && angle < 270.0f) {
-      effectId = 0x560;
+      effectId = EF_NEW_BANISHINGPOINT_11;
     } else {
-      effectId = 0x55F;
+      effectId = EF_NEW_BANISHINGPOINT_07;
     }
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
@@ -2898,23 +2899,23 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     int effectId = 0;
     if (angle >= 0.0f && angle < 23.0f) {
-      effectId = 0x57C;
+      effectId = EF_NEW_CANNON_SPEAR_06;
     } else if (angle >= 23.0f && angle < 67.0f) {
-      effectId = 0x57B;
+      effectId = EF_NEW_CANNON_SPEAR_05;
     } else if (angle >= 67.0f && angle < 112.0f) {
-      effectId = 0x57A;
+      effectId = EF_NEW_CANNON_SPEAR_03;
     } else if (angle >= 112.0f && angle < 157.0f) {
-      effectId = 0x579;
+      effectId = EF_NEW_CANNON_SPEAR_01;
     } else if (angle >= 157.0f && angle < 202.0f) {
-      effectId = 0x578;
+      effectId = EF_NEW_CANNON_SPEAR_12;
     } else if (angle >= 202.0f && angle < 247.0f) {
-      effectId = 0x57F;
+      effectId = EF_NEW_CANNON_SPEAR_11;
     } else if (angle >= 247.0f && angle < 292.0f) {
-      effectId = 0x57E;
+      effectId = EF_NEW_CANNON_SPEAR_09;
     } else if (angle >= 292.0f && angle < 337.0f) {
-      effectId = 0x57D;
+      effectId = EF_NEW_CANNON_SPEAR_07;
     } else if (angle >= 337.0f && angle <= 360.0f) {
-      effectId = 0x57C;
+      effectId = EF_NEW_CANNON_SPEAR_06;
     }
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (!g_effectMgr->Find(source->render.accountId, EF_MINEFFECT_CANNON_SPEAR_BOTTOM)) {
@@ -3082,13 +3083,13 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     int effectId;
     if (angle > 0.0f && angle < 90.0f) {
-      effectId = 0x6A5;
+      effectId = EF_NEW_POWERSWING_11;
     } else if (angle >= 90.0f && angle < 180.0f) {
-      effectId = 0x6A4;
+      effectId = EF_NEW_POWERSWING_07;
     } else if (angle >= 180.0f && angle < 270.0f) {
-      effectId = 0x6A3;
+      effectId = EF_NEW_POWERSWING_05;
     } else {
-      effectId = 0x6A2;
+      effectId = EF_NEW_POWERSWING_01;
     }
     g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_POWERSWING_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

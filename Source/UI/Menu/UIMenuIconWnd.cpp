@@ -250,7 +250,7 @@ void UIMenuIconWnd::OnLBtnUp(int x, int y) {}
 // FUNCTION: fn_10620
 void UIMenuIcon::OnMouseMove(int x, int y) {
   int behaviorId = 10041;
-  int message = 4698;
+  int message = MSI_EMPTY;
   bool known = true;
   switch (this->geometry.id) {
   case ID_STATUS:

@@ -111,12 +111,12 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   switch (type) {
   case 4:
     this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 185);
-    this->m_message0 = 185;
+    this->m_message0 = ID_CANCEL;
     break;
 
   case 0:
     this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 46, height - 24, 184);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
     break;
 
   case 2:

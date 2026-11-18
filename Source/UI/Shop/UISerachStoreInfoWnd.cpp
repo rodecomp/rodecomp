@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Shop/UISerachStoreInfoWnd.h"
 #include "UI/Window/UIEnums.h"
@@ -214,7 +215,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       g_session.storeSearchX = -1;
       g_session.storeSearchY = -1;
-      g_session.storeSearchOwnerAid = 0xFFFFFFFF;
+      g_session.storeSearchOwnerAid = INVALID_AID;
       g_session.storeSearchResults.clear();
       g_windowMgr.CloseWindow(WID_SEARCH_STORE_INFO);
       break;
@@ -351,7 +352,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
         g_session.storeSearchX = -1;
         g_session.storeSearchY = -1;
-        g_session.storeSearchOwnerAid = 0xFFFFFFFF;
+        g_session.storeSearchOwnerAid = INVALID_AID;
         g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -431,7 +432,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   }
 
   if (g_session.m_storeSearchPage != 0 &&
-      g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+      g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "Message", 0x118, 0x78, 0) != ID_YES) {
     return;
   }
 
@@ -439,7 +440,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
 
   g_session.storeSearchX = -1;
   g_session.storeSearchY = -1;
-  g_session.storeSearchOwnerAid = 0xFFFFFFFF;
+  g_session.storeSearchOwnerAid = INVALID_AID;
 
   SearchStoreClickPacket packet;
   packet.packetType = ID_CZ_SSILIST_ITEM_CLICK;

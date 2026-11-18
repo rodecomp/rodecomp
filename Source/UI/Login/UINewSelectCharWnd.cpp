@@ -447,7 +447,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   }
 
   this->UpdateCharacterInfo();
-  this->m_message0 = 0xB8;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x007D7330

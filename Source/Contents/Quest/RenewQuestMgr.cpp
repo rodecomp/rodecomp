@@ -339,7 +339,7 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
   std::string text;
   const short minLevel = this->m_huntMinLevel[index];
   const short maxLevel = this->m_huntMaxLevel[index];
-  if (this->m_huntMobId[index] == 31999) {
+  if (this->m_huntMobId[index] == QUEST_HUNT_CONDITIONAL_MONSTER) {
     text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntConditionFlags[index], minLevel, maxLevel));
   } else {
     const char* name = this->m_huntName[index];

@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Skills/SkillId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
 #include "Client/Session/Session.h"
@@ -535,7 +536,7 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
     }
     this->description->AddLine(LookupMessage(MSI_SKILL_DELAY_FLAG_NOREDUCT));
   }
-  if (skillId == 2461) {
+  if (skillId == SO_EL_ACTION) {
     if (const char* message = LookupMessage(MSI_SKILL_DELAY_INFO_SO_EL_ACTION)) {
       this->description->AddLine(message);
     }

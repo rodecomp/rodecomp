@@ -76,7 +76,7 @@ void CMeteorEffect::Open() {
         particle->frameDelay = 4.0f;
         particle->depthOffset = 0.00015f;
         particle->loopMode = 1;
-        if (this->id == 1099) {
+        if (this->id == EF_UNK_1099) {
           particle->alpha = 100;
         }
 
@@ -104,7 +104,7 @@ void CMeteorEffect::Open() {
       particle->frameDelay = 4.0f;
       particle->depthOffset = 0.00015f;
       particle->loopMode = 1;
-      if (this->id == 1106) {
+      if (this->id == EF_UNK_1106) {
         particle->alpha = 100;
       }
 

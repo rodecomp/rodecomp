@@ -432,9 +432,9 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
 
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   if (this->equipmentPage == 2) {
-    g_modeMgr.GetGameMode()->BeginDragItem(18, item, item.quantity, std::get<0>(slots));
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_SWAP_EQUIP_COSTUME, item, item.quantity, std::get<0>(slots));
   } else {
-    g_modeMgr.GetGameMode()->BeginDragItem(17, item, item.quantity, std::get<0>(slots));
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_SWAP_EQUIP, item, item.quantity, std::get<0>(slots));
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -494,7 +494,7 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   this->hoverTertiarySlot = -1;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  if (mode->drag.source == 1) {
+  if (mode->drag.source == DRAG_ITEM_INVENTORY) {
     const int id = mode->drag.id;
     if (!((x >= 6 && x < 30) || (x >= 251 && x < 275))) {
       return;

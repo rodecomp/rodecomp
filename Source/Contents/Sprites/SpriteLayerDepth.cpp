@@ -1,5 +1,6 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/AccessoryId.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
@@ -48,7 +49,7 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float botto
 void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
   case 1:
-    if (this->upperHeadgear != 1095) {
+    if (this->upperHeadgear != ACCESSORY_RABBIT_HEAD_DRESS) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = bottomDepth + 0.000025f;
         quad.topRhw = topDepth + 0.000025f;

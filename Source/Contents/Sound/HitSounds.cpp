@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 
 #include <algorithm>
@@ -9,7 +10,7 @@
 // OFFSET: 0x00DDE3D0
 // FUNCTION: fn_23395
 const char* CSession::GetHitWaveName(int job) {
-  if (!((job >= 31 && job < 1000) || job < 0 || (job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978)) {
+  if (!((job >= JT_MAX_BASIC && job < JT_MON_BEGIN) || job < JT_NOVICE || (job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978)) {
     const std::vector<std::string>& jobWaves = this->m_jobHitWaves;
     if (job > 3950) {
       return jobWaves.begin()[job - 3950].c_str();
@@ -44,7 +45,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
   }
 
   const std::string* firstWave = weaponWaves.data();
-  if (this->GetDisplayJob() == 4046 || this->GetDisplayJob() == 4225) {
+  if (this->GetDisplayJob() == JT_TAEKWON || this->GetDisplayJob() == JT_TAEKWON_B) {
     return firstWave[realWeapon].c_str();
   }
 

@@ -805,7 +805,7 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first == true) {
     if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-      mode->BeginDragBarterItem(4, found.second, found.second.value, -1);
+      mode->BeginDragBarterItem(DRAG_ITEM_PURCHASE_CART, found.second, found.second.value, -1);
     }
   }
 }
@@ -851,7 +851,7 @@ void UIBartermarketWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
     if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-      mode->BeginDragBarterItem(31, found.second, 1, -1);
+      mode->BeginDragBarterItem(DRAG_BARTER_MARKET, found.second, 1, -1);
     }
   }
 }
@@ -918,7 +918,7 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
   if (found.first == true) {
     if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-      mode->BeginDragBarterEntry(32, found.second, found.second.value, -1);
+      mode->BeginDragBarterEntry(DRAG_EXPANDED_BARTER, found.second, found.second.value, -1);
     }
   }
 }
@@ -962,7 +962,7 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
     } else if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-      mode->BeginDragBarterEntry(31, found.second, 1, -1);
+      mode->BeginDragBarterEntry(DRAG_BARTER_MARKET, found.second, 1, -1);
     }
   }
 }

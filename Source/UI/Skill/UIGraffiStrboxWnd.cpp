@@ -2,6 +2,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <string>
@@ -33,7 +34,7 @@ void UIGraffiStrboxWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008C7C50

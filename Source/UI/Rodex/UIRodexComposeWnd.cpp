@@ -212,7 +212,7 @@ void UIRodexComposeWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (item.identity[1] > 0) {
-    g_modeMgr.GetGameMode()->BeginDragItem(15, item, item.quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_RODEX_COMPOSE, item, item.quantity, -1);
   }
 }
 

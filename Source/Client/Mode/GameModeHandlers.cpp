@@ -2023,7 +2023,7 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
   g_runeSystemMgr->SetRequestPending(false);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
     window->SendMsg(window, UM_REFRESH, 0, 0, 0, 0);
-    window->SendMsg(nullptr, 0x69, 1000, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SET_PRESSED, 1000, 0, 0, 0);
   }
 }
 
@@ -2190,9 +2190,9 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
         g_windowMgr.rodexInboxWnd->RemoveInboxMail(mailId);
       }
     }
-    message = 3865;
+    message = MSI_RODEX_SPAMOPTION_RETURN_SUCCESS;
   } else {
-    message = 3866;
+    message = MSI_RODEX_SPAMOPTION_RETURN_FAIL;
   }
 
   g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, false);
@@ -2230,7 +2230,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
   g_runeSystemMgr->SetRequestPending(false);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
     window->SendMsg(window, UM_REFRESH, type, 0, 0, 0);
-    window->SendMsg(nullptr, 0x69, 1000, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SET_PRESSED, 1000, 0, 0, 0);
   }
 }
 

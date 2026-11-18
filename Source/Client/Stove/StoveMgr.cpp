@@ -624,7 +624,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     const auto& verbSource = verbSourceText.data;
     const char* verb = OBFUSCATE_DECRYPT(0x9B17C9EFDBB39F2FULL, verbSource);
     ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
-    if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
+    if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == ID_YES) {
       IAP_ConfirmPurchase(this->m_purchaseId, OnStovePurchaseConfirmed);
       g_stoveWaitingCallback = true;
       do {

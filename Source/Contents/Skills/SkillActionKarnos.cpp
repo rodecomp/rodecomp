@@ -473,7 +473,7 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 0x989, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -496,7 +496,7 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 0x989, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -565,10 +565,10 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectRemove(CRenderObject* object
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 0x9A8)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_UNK_2472)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 0x9A9)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_UNK_2473)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
 }
@@ -860,7 +860,7 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
   while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_KR_CHOP_CHOP)) {
     g_effectMgr->Retire(effect, 1);
   }
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x98C)) {
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2444)) {
     g_effectMgr->Retire(effect, 1);
   }
   for (;;) {
@@ -996,7 +996,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     effect->SetAngle(static_cast<float>(std::ranges::max(rand() % 360, 0)));
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(0x98C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_UNK_2444, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     static_cast<CWhirlwindEffect*>(effect)->SetLifetime(1000);
     static_cast<CWhirlwindEffect*>(effect)->SetDuration(500);
   }

@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
@@ -405,7 +406,7 @@ void UIChooseWarpWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008DE0E0
@@ -418,7 +419,7 @@ void UIChooseWnd::OnCreate(int width, int height) {
   this->m_list->backgroundBlue = 240;
   this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   this->m_okButton = new UIBitmapButton();
   this->m_okButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
@@ -450,7 +451,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   button->Move(234, 96);
   button->SetId(ID_OK);
   this->AddChild(button);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
@@ -489,7 +490,7 @@ void UIEmailAddressWnd::OnCreate(int, int) {
     button->SetId(ID_OK);
     this->AddChild(button);
   }
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008E9360
@@ -4121,7 +4122,7 @@ void UIItemIdentifyWnd::OnCreate(int, int) {
     button->SetId(okIds[i]);
     this->AddChild(button);
   }
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   const std::string cancelPrefix("유저인터페이스\\");
   const char* cancelNames[1][3] = {{"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
@@ -4267,7 +4268,7 @@ void UISkillNameChangeWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
   this->m_skillId = -1;
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008EA780
@@ -5819,7 +5820,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
       button->SetId(ids[index]);
       this->AddChild(button);
     }
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
   }
 
   {
@@ -7077,7 +7078,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
   this->m_highlight[2] = -1;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  if (mode->drag.source == 1 && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+  if (mode->drag.source == DRAG_ITEM_INVENTORY && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
     ITEM_INFO dragged = g_session.LookupClientItemByIdentity(mode->drag.id);
     if (dragged.identity[1] > 0 && dragged.identity[2] != 0) {
       const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.identity[2]));
@@ -7328,10 +7329,10 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (this->m_selected < 0) {
       this->m_selected = ~this->m_selected;
-      mode->BeginDragItem(4, item, 1, -1);
+      mode->BeginDragItem(DRAG_ITEM_PURCHASE_CART, item, 1, -1);
     } else {
       this->m_selectedIndex = item.bindOnEquip;
-      mode->BeginDragItem(6, item, 1, -1);
+      mode->BeginDragItem(DRAG_ITEM_STORAGE, item, 1, -1);
     }
   }
 }
@@ -7652,7 +7653,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   }
   this->AddChild(this->m_itemDistributeButton);
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   {
     const std::string prefix("유저인터페이스\\");
@@ -7833,7 +7834,7 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
@@ -7912,7 +7913,7 @@ void UINpcEditDialogWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
   this->npcId = -1;
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008E54B0
@@ -7943,7 +7944,7 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
   this->npcId = -1;
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 // OFFSET: 0x008E7660
 // FUNCTION: fn_12195
@@ -8548,7 +8549,7 @@ void UIPasswordWnd::OnCreate(int, int) {
     button->SetId(ID_OK);
     this->AddChild(button);
   }
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
   this->geometry.state = 0;
   this->roomId = 0;
 }
@@ -9454,7 +9455,7 @@ void UINotifyItemObtainWnd::Paint() {
 // OFFSET: 0x008EB010
 // FUNCTION: fn_12207
 void UIWhisperWnd::OnCreate(int, int) {
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
@@ -9803,7 +9804,7 @@ void UIAutoMessageWnd::OnCreate(int, int) {
     button->SetId(ID_OK);
     this->AddChild(button);
   }
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008EC840
@@ -10176,9 +10177,9 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
     if (this->m_page == 1) {
-      mode->BeginDragItem(24, item, item.quantity, std::get<0>(slots));
+      mode->BeginDragItem(DRAG_ITEM_EQUIP_COSTUME, item, item.quantity, std::get<0>(slots));
     } else {
-      mode->BeginDragItem(2, item, item.quantity, std::get<0>(slots));
+      mode->BeginDragItem(DRAG_ITEM_EQUIP, item, item.quantity, std::get<0>(slots));
     }
   }
 
@@ -12880,12 +12881,12 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     const ItemMoveInfo& moveInfo = FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str()));
     const int moveHeight = this->m_moveInfo->geometry.height + 3;
     if (lineCount > 4) {
-      if (moveInfo.itemId != 0 && this->geometry.height != 120) {
+      if (moveInfo.itemId != ITEMID_NONE && this->geometry.height != 120) {
         this->SetHeight((lineCount * 9 - 36) * 2 - moveHeight + this->geometry.height);
       } else {
         this->SetHeight(this->geometry.height + (lineCount - 4) * 18);
       }
-    } else if (moveInfo.itemId != 0) {
+    } else if (moveInfo.itemId != ITEMID_NONE) {
       if (this->geometry.height == 120) {
         this->Resize(this->geometry.width, moveHeight + 120);
         this->m_moveInfo->m_moveIndex = std::atoi(this->m_item.itemId.c_str());

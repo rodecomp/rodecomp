@@ -1099,7 +1099,7 @@ void CNpc::Render(int argument) {
     default:
       if (this->GetEffectiveJob(-1) < JT_MER_ARCHER01 || this->GetEffectiveJob(-1) > JT_MER_SWORDMAN10) {
         for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-          if (effect.id == 184) {
+          if (effect.id == EFST_CLAIRVOYANCE) {
             if (this->objectType == NPC_MOB_TYPE && (!this->render.visible || !this->render.enabled)) {
               this->SetColor(-1, 0, 0, 0);
               const bool monster = g_session.IsMonsterClass(this->GetEffectiveJob(-1));

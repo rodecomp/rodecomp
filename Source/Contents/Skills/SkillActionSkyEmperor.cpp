@@ -652,7 +652,7 @@ void CSkillAction_SKE_TWINKLING_GALAXY::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08865
 void CSkillObjectAction_SKE_TWINKLING_GALAXY::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 0x92D, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_UNK_2349, object->render.position, 0, argument, 0, 0);
   }
 }
 

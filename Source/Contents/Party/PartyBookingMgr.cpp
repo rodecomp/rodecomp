@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Jobs/JobId.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Party/PartyBookingMgr.h"
 
@@ -138,7 +139,7 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
     if (static_cast<unsigned short>(job) <= 4) {
       std::strcat(buffer, LookupMessage(job + 0x6AF));
       std::strcat(buffer, ",");
-    } else if (job >= 0) {
+    } else if (job >= JT_NOVICE) {
       std::strcat(buffer, LookupMessage(job + 0x658));
       std::strcat(buffer, ",");
     }
@@ -263,7 +264,7 @@ void PartyBookingMgr::SetJobs(int index, const short* jobs) {
     if (static_cast<unsigned short>(job) <= 4) {
       std::strcat(buffer, LookupMessage(job + 0x6AF));
       std::strcat(buffer, ",");
-    } else if (job >= 0) {
+    } else if (job >= JT_NOVICE) {
       std::strcat(buffer, LookupMessage(job + 0x658));
       std::strcat(buffer, ",");
     }

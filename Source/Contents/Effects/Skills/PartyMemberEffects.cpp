@@ -110,7 +110,7 @@ bool CRollingCutterRagEffect::OnProcess() {
 CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rotation) {
   CRagEffect* effect;
 
-  if (effectId == 127) {
+  if (effectId == EF_POISONREACT2) {
     this->effectLaunched = 1;
   } else if (effectId < 0) {
     return nullptr;
@@ -148,7 +148,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   deltaPos.x = x;
   deltaPos.z = z;
 
-  if (effectId == 166 && this->render.isCharacter == 0) {
+  if (effectId == EF_MAKEBLUR && this->render.isCharacter == 0) {
     return nullptr;
   }
 

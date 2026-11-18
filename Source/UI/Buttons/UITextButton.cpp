@@ -926,7 +926,7 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     this->callerWindowId = argument1;
     return 0;
 
-  case 105:
+  case UM_SET_PRESSED:
     this->pressedItems[argument1 - 1] = argument2 != 0;
     return 0;
 
@@ -3345,7 +3345,7 @@ void UIString::OnLBtnUp(int, int) {
 void UITabControl::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->parent) {
-    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CHILD_CHANGED, 0, 0, 0, 0);
   }
 
   for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {

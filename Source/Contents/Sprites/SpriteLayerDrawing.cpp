@@ -1,4 +1,5 @@
 #include "Contents/Sprites/SpriteLayerDrawing.h"
+#include "Contents/Actors/AccessoryId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
@@ -661,7 +662,7 @@ int SpriteLayerRenderer::GetLayerBlend(int layer, std::uint32_t color) const {
     case 8:
       return 1;
     case 4:
-      if (this->pc->accessory3 == 0xB9) {
+      if (this->pc->accessory3 == ACCESSORY_BATTLEONLINE) {
         return 0x11;
       }
       return 1;

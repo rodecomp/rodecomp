@@ -1,4 +1,5 @@
 #include "Client/Application/Launcher.h"
+#include "Contents/Jobs/JobId.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
@@ -88,7 +89,7 @@ std::uint32_t CGameMode::ActorNameColor(int job, std::uint32_t aid) {
     return 0xF7B895;
   }
 
-  if ((job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978) {
+  if ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978) {
     return 0xC3C3FF;
   }
 

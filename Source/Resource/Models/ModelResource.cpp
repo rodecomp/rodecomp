@@ -1,5 +1,6 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Session/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -839,7 +840,7 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
     if (!animation) {
       g_modelPath[0] = '\0';
 
-      if (job > 9 || action > 4) {
+      if (job > JT_WIZARD || action > 4) {
         return nullptr;
       }
 
@@ -853,7 +854,7 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
         return nullptr;
       }
 
-      if (job != 1) {
+      if (job != JT_SWORDMAN) {
         library->Load(g_modelPath, job, action);
       }
 

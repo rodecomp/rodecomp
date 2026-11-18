@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
@@ -1235,7 +1236,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
       }
 
       item = g_session.LookupClientItemByIdentity(item.identity[1]);
-      mode->BeginDragItem(1, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_ITEM_INVENTORY, item, item.quantity, -1);
       if (mode->ConfirmDraggedItemUse()) {
         return;
       }
@@ -1300,7 +1301,7 @@ void UIMerchantItemPurchaseWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemShopWnd) {
         item = g_session.GetMerchantHopeToSellItemInfoByItemId(item.itemId.c_str());
-        mode->BeginDragItem(13, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_VENDING_ITEM_PURCHASE, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantItemShopWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -1326,7 +1327,7 @@ void UIMerchantItemShopWnd::OnRBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemPurchaseWnd) {
-        mode->BeginDragItem(12, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_VENDING_ITEM_SHOP, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -1376,11 +1377,11 @@ void UIMerchantMirrorItemWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
-        mode->BeginDragItem(11, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_VENDING_SHOP_LIST, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       } else if (g_windowMgr.buyingShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
-        mode->BeginDragItem(20, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_BUYINGSTORE_SHOP_LIST, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.buyingShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -2229,18 +2230,18 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
-      if (mode->drag.source == 6) {
+      if (mode->drag.source == DRAG_ITEM_STORAGE) {
         if (g_session.GetCartItemNum(mode->drag.id) != 0) {
           owned = g_session.FindCartItem(mode->drag.id).quantity;
         }
-      } else if (mode->drag.source == 9) {
+      } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
         if (g_windowMgr.merchantShopMakeWnd) {
           break;
         }
         if (g_session.GetMerchantShopItemNum(mode->drag.id) != 0) {
           owned = g_session.FindMerchantShopItem(mode->drag.id).quantity;
         }
-      } else if (mode->drag.source == 15) {
+      } else if (mode->drag.source == DRAG_RODEX_COMPOSE) {
         owned = mode->drag.quantity;
       }
       if (owned != 0) {
@@ -2254,13 +2255,13 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 7: {
       int owned = 0;
-      if (mode->drag.source == 9) {
+      if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
         const ITEM_INFO item = g_session.FindMerchantShopItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       } else {
-        if (mode->drag.source != 1 || !g_session.HasInventoryItem(mode->drag.id)) {
+        if (mode->drag.source != DRAG_ITEM_INVENTORY || !g_session.HasInventoryItem(mode->drag.id)) {
           break;
         }
         owned = g_session.LookupClientItemByIdentity(mode->drag.id).quantity;
@@ -2311,7 +2312,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 9: {
       int owned = 0;
-      if (mode->drag.source == 11) {
+      if (mode->drag.source == DRAG_VENDING_SHOP_LIST) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
@@ -2332,7 +2333,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 10: {
       int owned = 0;
-      if (mode->drag.source == 10) {
+      if (mode->drag.source == DRAG_VENDING_PURCHASE_LIST) {
         const ITEM_INFO item = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
@@ -2352,7 +2353,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       break;
     }
     case 11: {
-      if (mode->drag.source != 13) {
+      if (mode->drag.source != DRAG_VENDING_ITEM_PURCHASE) {
         break;
       }
       const int owned = g_session.GetMerchantHopeToSellItemNumByItemId(mode->drag.name.c_str());
@@ -2399,7 +2400,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 17: {
       int owned = 0;
-      if (mode->drag.source == 22) {
+      if (mode->drag.source == DRAG_BUYINGSTORE_SHOP_LIST2) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
@@ -2420,7 +2421,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 18: {
       int owned = 0;
-      if (mode->drag.source == 21) {
+      if (mode->drag.source == DRAG_BUYINGSTORE_ITEM_PURCHASE) {
         const ITEM_INFO item = g_session.FindMerchantHopeToSellItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
@@ -2545,7 +2546,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
     }
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
   if (Replay::Instance().state != 6) {
     g_session.ClearMerchantPurchaseSavedItems();
   }
@@ -2584,12 +2585,12 @@ void UIMerchantShopMakeWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
-        gameMode->BeginDragItem(10, item, item.quantity, -1);
+        gameMode->BeginDragItem(DRAG_VENDING_PURCHASE_LIST, item, item.quantity, -1);
         g_windowMgr.merchantMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         g_windowMgr.SetFocus(nullptr);
       } else if (g_windowMgr.buyingShopMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
-        gameMode->BeginDragItem(19, item, item.quantity, -1);
+        gameMode->BeginDragItem(DRAG_BUYINGSTORE_PURCHASE_LIST, item, item.quantity, -1);
         g_windowMgr.buyingShopMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -3048,7 +3049,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
   case TYPE_HEAL:
   case TYPE_SCHANGE:
   case TYPE_SPECIAL:
-    if (item.GetItemId() == 12802 &&
+    if (item.GetItemId() == ITEMID_TIME_GUARDIAN_BOX &&
         g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "Message", 280, 120, 0) == ID_NO) {
       break;
     }
@@ -5050,11 +5051,11 @@ void UIMerchantMirrorItemWnd::OnCreate(int width, int height) {
   title->SetSize(150, 15);
   int messageId;
   if (this->mode == 1) {
-    messageId = 1733;
+    messageId = MSI_BUYINGSTORE_MIRRORBUYITEMLIST;
   } else if (this->mode == 2) {
-    messageId = 1738;
+    messageId = MSI_BUYINGSTORE_MIRRORSELLWND_TITLE;
   } else {
-    messageId = 232;
+    messageId = MSI_MERCHANTMIRRORITEM;
   }
   const char* text = LookupMessage(messageId);
   title->SetText(text, 0);
@@ -5544,7 +5545,7 @@ void UISkillListWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (mode) {
-      mode->BeginDragSkill(8, skill.id, skill.name, g_session.SkillLevel(skill.id), -1);
+      mode->BeginDragSkill(DRAG_SKILL, skill.id, skill.name, g_session.SkillLevel(skill.id), -1);
     }
   }
 }
@@ -5584,7 +5585,7 @@ void UIMerchantItemShopWnd::OnLBtnDown(int x, int y) {
     ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
-      g_modeMgr.GetGameMode()->BeginDragItem(12, item, 1, -1);
+      g_modeMgr.GetGameMode()->BeginDragItem(DRAG_VENDING_ITEM_SHOP, item, 1, -1);
     }
   }
 }
@@ -7207,7 +7208,7 @@ void UIItemPurchaseWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.GetPurchaseItemInfoByItemId(item.itemId.c_str());
-    mode->BeginDragItem(4, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_PURCHASE_CART, item, item.quantity, -1);
   }
 }
 
@@ -7242,7 +7243,7 @@ void UIItemSellWnd2::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindStorageItem(item.identity[1]);
-    mode->BeginDragItem(5, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_SELL, item, item.quantity, -1);
   }
 }
 
@@ -7277,7 +7278,7 @@ void UIItemSellWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindStorageItem(item.identity[1]);
-    mode->BeginDragItem(5, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_SELL, item, item.quantity, -1);
   }
 }
 
@@ -7312,7 +7313,7 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = g_session.LookupClientItemByIdentity(item.identity[1]);
-    mode->BeginDragItem(3, item, owned.identity[1] > 0 ? item.quantity : 1, -1);
+    mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, owned.identity[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
@@ -7340,9 +7341,9 @@ void UIItemShopWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = g_session.LookupClientItemByIdentity(item.identity[1]);
     if (owned.identity[1] > 0) {
-      mode->BeginDragItem(3, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, item.quantity, -1);
     } else {
-      mode->BeginDragItem(3, item, 1, -1);
+      mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, 1, -1);
     }
   }
 }
@@ -7359,7 +7360,7 @@ void UIItemStoreFindWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
-    mode->BeginDragItem(6, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
   }
 }
 
@@ -7375,7 +7376,7 @@ void UIItemStoreSubWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
-    mode->BeginDragItem(6, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
   }
 }
 
@@ -7395,7 +7396,7 @@ void UIItemStoreWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
-    mode->BeginDragItem(6, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
   }
 }
 
@@ -7423,9 +7424,9 @@ void UIMerchantItemPurchaseWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.GetMerchantHopeToSellItemInfoByItemId(item.itemId.c_str());
     if (this->buyingStore != 0) {
-      mode->BeginDragItem(21, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_BUYINGSTORE_ITEM_PURCHASE, item, item.quantity, -1);
     } else {
-      mode->BeginDragItem(13, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_VENDING_ITEM_PURCHASE, item, item.quantity, -1);
     }
   }
 }
@@ -7447,11 +7448,11 @@ void UIMerchantMirrorItemWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantMyShopItem(item.identity[1]);
     if (this->mode == 1) {
-      mode->BeginDragItem(20, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_BUYINGSTORE_SHOP_LIST, item, item.quantity, -1);
     } else if (this->mode == 2) {
-      mode->BeginDragItem(22, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_BUYINGSTORE_SHOP_LIST2, item, item.quantity, -1);
     } else {
-      mode->BeginDragItem(11, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_VENDING_SHOP_LIST, item, item.quantity, -1);
     }
   }
 }
@@ -7474,9 +7475,9 @@ void UIMerchantShopMakeWnd::OnLBtnDown(int x, int y) {
     CGameMode* gameMode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
     if (this->mode != 0) {
-      gameMode->BeginDragItem(19, item, item.quantity, -1);
+      gameMode->BeginDragItem(DRAG_BUYINGSTORE_PURCHASE_LIST, item, item.quantity, -1);
     } else {
-      gameMode->BeginDragItem(10, item, item.quantity, -1);
+      gameMode->BeginDragItem(DRAG_VENDING_PURCHASE_LIST, item, item.quantity, -1);
     }
   }
 }
@@ -8683,9 +8684,9 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == 1) {
+    if (mode->drag.source == DRAG_ITEM_INVENTORY) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 9) {
+    } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
     }
 
@@ -8986,9 +8987,9 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == 1) {
+    if (mode->drag.source == DRAG_ITEM_INVENTORY) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 9) {
+    } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
     }
 
@@ -9697,9 +9698,9 @@ void UIItemShopWnd::Paint() {
   if (this->showFooter != 0) {
     int message;
     if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
-      message = 1290;
+      message = MSI_POINT_SHOP_NHN;
     } else {
-      message = 1210;
+      message = MSI_POINT_SHOP;
     }
 
     char text[352];
@@ -10908,7 +10909,7 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (item.flags[2] == 0) {
       item = g_session.LookupClientItemByIdentity(item.identity[1]);
-      mode->BeginDragItem(1, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_ITEM_INVENTORY, item, item.quantity, -1);
 
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -10945,7 +10946,7 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && !g_windowMgr.merchantShopMakeWnd && item.flags[2] == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantShopItem(item.identity[1]);
-    mode->BeginDragItem(9, item, item.quantity, -1);
+    mode->BeginDragItem(DRAG_ITEM_MERCHANT_INVENTORY, item, item.quantity, -1);
 
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
@@ -11494,7 +11495,7 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   button->Move(x, y);
   button->SetId(ID_OK);
   this->AddChild(button);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
   this->geometry.state = 0;
 }
 
@@ -12027,7 +12028,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       BOOL freeItem = FALSE;
       BOOL highPrice = FALSE;
       if (this->mode != 0 && this->items.empty()) {
-        error = 1724;
+        error = MSI_BUYINGSTORE_MAKEWND_ADDITEM;
         goto showError;
       }
       auto current = this->items.begin();
@@ -12035,13 +12036,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         char text[24];
         std::sprintf(text, "%s ", this->priceEdits[i]->Text());
         if (!g_session.IsNumberWithCommas(text)) {
-          error = 602;
+          error = MSI_CAN_INPUT_NUMBER_ONLY;
           goto showError;
         }
         const std::int64_t price = std::max(std::min(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), static_cast<std::int64_t>(0));
         if (this->mode == 0) {
           if (this->items.empty()) {
-            error = 2494;
+            error = MSI_BUYINGSTORE_MAKEWND_ADD_GOODS;
             goto showError;
           }
           ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(i);
@@ -12050,7 +12051,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
               return 0;
             }
             if (item.identified == 0) {
-              error = 603;
+              error = MSI_CANT_SELL_UNIDENTIFIED_ITEM;
               goto showError;
             }
             if (price == 0) {
@@ -12094,7 +12095,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           char text[24];
           std::sprintf(text, "%s ", this->quantityEdits[i]->Text());
           if (!g_session.IsNumberWithCommas(text)) {
-            error = 602;
+            error = MSI_CAN_INPUT_NUMBER_ONLY;
             goto showError;
           }
           if (static_cast<unsigned>(i) >= this->items.size()) {
@@ -12126,7 +12127,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       if (this->titleEdit->Length() == 0) {
-        error = 225;
+        error = MSI_ENTER_SHOP_TITLE;
         goto showError;
       }
       if (!g_forbiddenWords.Allows(this->titleEdit->Text())) {
@@ -12142,7 +12143,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           price = std::atoi(text);
         }
         if (g_serviceType == 2 && this->priceEdits[i]->Length() == 0 && this->priceEdits[i]->Text() != nullptr) {
-          error = 602;
+          error = MSI_CAN_INPUT_NUMBER_ONLY;
           goto showError;
         }
         g_session.SetMerchantPurchaseSavedPrice(i, price);
@@ -12157,7 +12158,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             quantity = std::atoi(text);
           }
           if (g_serviceType == 2 && this->quantityEdits[i]->Length() == 0 && this->quantityEdits[i]->Text() != nullptr) {
-            error = 602;
+            error = MSI_CAN_INPUT_NUMBER_ONLY;
             goto showError;
           }
           g_session.SetItem1768Quantity(i, quantity);
@@ -12177,7 +12178,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           total += price * quantity;
         }
         if (total > 0x7FFFFFFF) {
-          error = 3826;
+          error = MSI_MERCHANTSHOP_TOTA_LOVER_ZENY_ERR;
           goto showError;
         }
         if (this->itemsSet == 1) {

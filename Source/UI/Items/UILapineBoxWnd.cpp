@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeDragState.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Items/UILapineScrollBar.h"
 #include "UI/Window/UIEnums.h"
@@ -71,7 +72,7 @@ void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_04162
 void UIIngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->insufficient != 1 && this->item.identity[1] > 0) {
-    g_modeMgr.GetGameMode()->BeginDragItem(27, this->item, this->quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_LAPINE_INGREDIENT, this->item, this->quantity, -1);
   }
 }
 
@@ -123,7 +124,7 @@ void UILapineBoxWnd::OnLBtnDown(int x, int y) {
   const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (item.identity[1] > 0) {
-    g_modeMgr.GetGameMode()->BeginDragItem(0x1A, item, item.quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_LAPINE_BOX, item, item.quantity, -1);
   }
 }
 

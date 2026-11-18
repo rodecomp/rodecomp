@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
@@ -31,7 +32,7 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  if (this->m_slots[index]->itemId == 0) {
+  if (this->m_slots[index]->itemId == ITEMID_NONE) {
     return;
   }
 

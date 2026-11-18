@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Network/Packets/PacketId.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -349,7 +350,7 @@ void UIChangeMaterialWnd::SendChangeMaterial() {
     return;
   }
 
-  packet->type = 0x7E4;
+  packet->type = ID_CZ_ITEMLISTWIN_RES;
   packet->length = static_cast<std::int16_t>(length);
   packet->action = 0;
   packet->source = 1;

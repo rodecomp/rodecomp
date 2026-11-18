@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Input/Mouse.h"
 #include "UI/Window/UIEnums.h"
@@ -284,7 +285,7 @@ void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, st
   static_assert(sizeof(Response) == 26);
   char buffer[sizeof(Response)];
   Response& packet = *reinterpret_cast<Response*>(buffer);
-  packet.marker = 0x038408AEu;
+  packet.marker = ReplayUiRecordHeader(REPLAY_UI_RESPONSE);
   packet.bytes = sizeof(Response);
   packet.windowId = this->geometry.id;
   packet.response = response;
@@ -307,7 +308,7 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
 
   DropRecord packet;
   std::memset(&packet, 0, sizeof(packet));
-  packet.marker = 0x038508AEu;
+  packet.marker = ReplayUiRecordHeader(REPLAY_UI_DROP);
   packet.bytes = sizeof(packet);
   packet.windowId = target == -1 ? this->geometry.id : target;
   packet.x = x;
@@ -344,7 +345,7 @@ void UIWindow::RecordValues(int value, int argument1, int argument2, int argumen
 
   char buffer[sizeof(ValuesRecord)];
   ValuesRecord& packet = *reinterpret_cast<ValuesRecord*>(buffer);
-  packet.marker = 0x039108AEu;
+  packet.marker = ReplayUiRecordHeader(REPLAY_UI_WINDOW_VALUES);
   packet.bytes = sizeof(packet);
   packet.windowId = this->geometry.id;
   packet.value = value;
@@ -382,7 +383,7 @@ void UIWindow::RecordText(int event, const char* text) {
 
   TextRecord packet;
   std::memset(packet.text, 0, sizeof(packet.text));
-  packet.marker = 0x038B08AEu;
+  packet.marker = ReplayUiRecordHeader(REPLAY_UI_STORE_TITLE);
   packet.bytes = sizeof(packet);
   packet.windowId = this->geometry.id;
   packet.event = event;
@@ -2498,7 +2499,7 @@ int UIWindow::RecordEditTexts() {
 
   const std::uint16_t bytes = static_cast<std::uint16_t>(offset);
   record.bytes = bytes;
-  record.marker = 0x038608AEu;
+  record.marker = ReplayUiRecordHeader(REPLAY_UI_EDIT_TEXTS);
   record.windowId = this->geometry.id;
   Replay::Instance().Record(bytes, &record, 41, 0);
   return offset;
@@ -3098,7 +3099,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     case ID_CLOSE:
       if (g_navigationManager.viewMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
           g_navigationManager.SetViewMode(1);
           g_navigationManager.displayMode = 0;
           g_navigationManager.ClearSavedTarget();
@@ -3158,7 +3159,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         }
 
         g_windowMgr.privateAirplaneWnd = window;
-        if (g_windowMgr.RunModal(window) == 0xBC) {
+        if (g_windowMgr.RunModal(window) == ID_NO) {
           g_windowMgr.privateAirplaneWnd = nullptr;
         }
       }
@@ -3876,7 +3877,7 @@ int UIPrivateAirplaneWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case UM_RESOLVE_PLAYER_TAGS:
+  case UM_PUSH_TEXT:
     this->m_text = reinterpret_cast<const char*>(argument1);
     this->Invalidate();
     break;
@@ -3892,7 +3893,7 @@ int UIPrivateAirplaneWnd::SendMsg(
     switch (argument1) {
     case ID_CLOSE:
       if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
-        g_windowMgr.modalResponse = 0xBC;
+        g_windowMgr.modalResponse = ID_NO;
       }
       break;
     case AIRPLANE_BUTTON_DESTINATION: {

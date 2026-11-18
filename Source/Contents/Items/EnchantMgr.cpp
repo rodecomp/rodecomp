@@ -1,4 +1,5 @@
 #include "Contents/Items/EnchantMgr.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Network/Packets/PacketId.h"
@@ -105,7 +106,7 @@ void CEnchantMgr::OpenEnchant(uint64_t group) {
 // OFFSET: 0x006841D0
 // FUNCTION: fn_05551
 void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
-  if (messageId == 0xF11) {
+  if (messageId == MSI_ENCHANT_SUCCESS) {
     auto enchant = this->m_enchants.find(this->m_request.group);
     if (enchant == this->m_enchants.end()) {
       return;
@@ -151,7 +152,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       break;
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
-  } else if (messageId == 0xF12) {
+  } else if (messageId == MSI_ENCHANT_FAILED) {
     int effect;
     const vector3d position = {0.0f, 0.0f, 0.0f};
     switch (this->m_request.packetType) {
@@ -354,7 +355,7 @@ int L_AddTargetItem(lua_State* L) {
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
   std::string itemName(lua_tostring(L, -1));
   int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-  if (itemId != 0) {
+  if (itemId != ITEMID_NONE) {
     mgr->m_enchants[id].targetItems.push_back(itemId);
   }
   return 2;
@@ -386,7 +387,7 @@ int L_ApproveRandomOption(lua_State* L) {
 int L_GetSlotCount(lua_State* L) {
   if (lua_tostring(L, -1) != nullptr) {
     int itemId = ItemDbToIdMgr()->GetItemID(lua_tostring(L, -1));
-    if (itemId != 0) {
+    if (itemId != ITEMID_NONE) {
       ITEM_INFO item;
       item.SetItemId(itemId);
       lua_pushnumber(L, item.SlotCount());
@@ -550,7 +551,7 @@ void EnchantMgrNullSub() {
 void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
                                     const std::map<std::string, int>& materials) {
   int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-  if (itemId != 0) {
+  if (itemId != ITEMID_NONE) {
     m_enchants[group].options[optionKey].perfectEnchants[itemId].cost = cost;
     m_enchants[group].options[optionKey].perfectEnchants[itemId].materials = ConvertMaterials(materials);
   }
@@ -563,7 +564,7 @@ void CEnchantMgr::AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, c
   int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
   if (baseItemId != 0) {
     int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-    if (itemId != 0) {
+    if (itemId != ITEMID_NONE) {
       m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
       m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
     }
@@ -621,7 +622,7 @@ std::map<int, int> CEnchantMgr::ConvertMaterials(std::map<std::string, int> mate
   std::map<int, int> result;
   for (auto it = materials.begin(); it != materials.end(); ++it) {
     int itemId = ItemDbToIdMgr()->GetItemID(it->first);
-    if (itemId != 0) {
+    if (itemId != ITEMID_NONE) {
       result[itemId] = it->second;
     }
   }
@@ -671,7 +672,7 @@ void CEnchantMgr::SetEnchant(uint64_t group, uint32_t optionKey, uint32_t slot, 
   std::map<int, uint64_t> items;
   for (auto it = enchants.begin(); it != enchants.end(); ++it) {
     int itemId = ItemDbToIdMgr()->GetItemID(it->first);
-    if (itemId != 0) {
+    if (itemId != ITEMID_NONE) {
       items[itemId] = it->second;
     }
   }
@@ -930,7 +931,7 @@ int L_SetRandomUpgradeRequire(lua_State* L) {
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
   int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-  if (itemId != 0) {
+  if (itemId != ITEMID_NONE) {
     mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].cost = cost;
     mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].materials = mgr->ConvertMaterials(materials);
   }

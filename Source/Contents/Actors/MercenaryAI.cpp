@@ -55,12 +55,12 @@ static_assert(sizeof(ActionRequestPacket) == 11);
 
 // INLINED
 bool IsHomunAid(std::uint32_t aid) {
-  return aid != 0xFFFFFFFF && aid == g_session.m_homunAid;
+  return aid != INVALID_AID && aid == g_session.m_homunAid;
 }
 
 // INLINED
 bool IsMercenaryAid(std::uint32_t aid) {
-  return aid != 0xFFFFFFFF && aid == g_session.m_mercenaryAid;
+  return aid != INVALID_AID && aid == g_session.m_mercenaryAid;
 }
 
 // INLINED
@@ -974,7 +974,7 @@ int AiIsMonster(lua_State* state) {
   if (actor) {
     int job = actor->GetEffectiveJob(-1);
     bool checkState = false;
-    if (((job > 1000 && job < 3999) || static_cast<unsigned>(job - 20021) <= 11978) && actor->objectType != 7) {
+    if (((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned>(job - 20021) <= 11978) && actor->objectType != 7) {
       switch (actor->objectType) {
       case NPC_MERSOL_TYPE:
       case NPC_ELEMENTAL_TYPE:

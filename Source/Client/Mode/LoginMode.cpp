@@ -360,12 +360,12 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 1:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 2:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
       return;
     }
     if (window) {
@@ -373,12 +373,12 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 3:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 4:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
       return;
     }
     if (window) {
@@ -386,17 +386,17 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 5:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 6:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
   case 7:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_OVER_LENGTH), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_OVER_LENGTH), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
       return;
     }
     if (window) {
@@ -404,7 +404,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 8:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_PREVENTNAM), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_PREVENTNAM), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
       return;
     }
     if (window) {
@@ -412,7 +412,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 9:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_FORBIDDEN), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_FORBIDDEN), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
       return;
     }
     if (window) {
@@ -420,7 +420,7 @@ void CLoginMode::SubD8D500(const char* packet) {
     }
     return;
   case 10:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8 && g_windowMgr.changeNameWnd) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
@@ -657,37 +657,37 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
     }
     break;
   case 1:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
   case 2:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
   case 3:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     break;
   case 4:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     break;
   case 5:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
   case 6:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
   case 10:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
@@ -1014,7 +1014,7 @@ void CLoginMode::SubD97780(int value) {
   case 5:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1024,7 +1024,7 @@ void CLoginMode::SubD97780(int value) {
   case 12:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
@@ -1034,7 +1034,7 @@ void CLoginMode::SubD97780(int value) {
   case 6:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_modeMgr.Quit();
       }
     }
@@ -1046,7 +1046,7 @@ void CLoginMode::SubD97780(int value) {
         if (this->loginResponseReceived == true && this->otpPending == true) {
           this->otpTimedOut = true;
           if (g_windowMgr.HasModalWindow() != true) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_INPUT_TIME_EXCEEDED_SIGN_IN_AGAIN), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_INPUT_TIME_EXCEEDED_SIGN_IN_AGAIN), 0, true, false, 0, "Message", 280, 120, 0) == ID_OK) {
               this->otpPending = false;
               this->otpTimedOut = false;
               this->loginResponseReceived = false;
@@ -1060,7 +1060,7 @@ void CLoginMode::SubD97780(int value) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
         GetRagConnection().Close();
         if (this->loginResponseReceived == false) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC), 0, true, false, 0, "Message", 280, 120, 0) == ID_OK) {
             this->loginResponseReceived = false;
             this->otpStarted = timeGetTime();
             this->pendingCursorType = 3;
@@ -1860,7 +1860,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case REFUSE_INVALID_PASSWD:
     if (g_serviceType == ServiceKorea && ++g_loginFailCount >= 3) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
-      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK) {
         if (g_session.m_channelCopId == 1) {
           constexpr std::array<char, 23> urlSource = OBFUSCATE_SOURCE("http://www.hangame.com", 0xED796785D1DF137FULL);
           const char* file = OBFUSCATE_DECRYPT(0xED796785D1DF137FULL, urlSource);
@@ -1943,7 +1943,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     if (g_serviceType == ServiceKorea) {
       constexpr std::array<char, 48> textSource = OBFUSCATE_SOURCE("비밀 번호 변경 후, 다시 접속 해주시기 바랍니다.", 0xF14F79170939C7F1ULL);
       message = std::string(OBFUSCATE_DECRYPT(0xF14F79170939C7F1ULL, textSource));
-      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK) {
         constexpr std::array<char, 65> urlSource = OBFUSCATE_SOURCE("http://www.ragnarok.co.kr/setNewPW/password_change_agreement.asp", 0x7F2DFFC1ABE91F2BULL);
         const char* file = OBFUSCATE_DECRYPT(0x7F2DFFC1ABE91F2BULL, urlSource);
         constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xFD69A9B3F311818DULL);
@@ -1961,7 +1961,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   case 17: {
     message = FormatOwnedString(LookupMessage(MSI_RE17), argument);
-    if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
+    if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == ID_YES) {
       g_modeMgr.Quit();
     }
     message.clear();
@@ -2071,7 +2071,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_REFUSE_LOGIN_ACCESSTICKET);
     break;
   case 110:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_CHANGE_PASSWD_FORCE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_CHANGE_PASSWD_FORCE), 0, true, true, 0, "Message", 280, 120, 0) == ID_OK) {
       const char* file = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x9B0F234DEFDF7593ULL);
       ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0x9B0F234DEFDF7593ULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
@@ -2464,7 +2464,7 @@ void CLoginMode::PollNetworkStatus() {
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
     case ID_AC_ASK_PNGAMEROOM:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_ASK_PNGAMEROOM), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_ASK_PNGAMEROOM), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         GameRoomReplyPacket reply;
         reply.id = ID_CA_REPLY_PNGAMEROOM;
         reply.permission = 1;
@@ -2508,14 +2508,14 @@ void CLoginMode::PollNetworkStatus() {
       if (packet->result != 0) {
         char text[300];
         sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), g_session.m_renameName);
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
           ChangeCharacterNamePacket request;
           request.id = ID_CH_REQ_CHANGE_CHARNAME;
           request.gid = g_session.m_renameGid;
           GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
           break;
         }
-      } else if (g_windowMgr.Confirm(LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS), 0, true, true, 0, "Message", 280, 120, 0) != ID_OK) {
         break;
       }
 
@@ -2728,7 +2728,7 @@ void CLoginMode::PollNetworkStatus() {
       break;
     case ID_HC_CHARLIST_NOTIFY:
       for (int i = 1; i <= reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value; ++i) {
-        std::int16_t request = 0x9A1;
+        std::int16_t request = ID_CH_CHARLIST_REQ;
         GetRagConnection().Send(sizeof(request), &request);
       }
       break;
@@ -2868,7 +2868,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   switch (event) {
   case MM_SOCKETERROR:
     GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
     }
@@ -2887,7 +2887,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     );
     if (buffer) {
       CharacterAuthCodePacket* packet = reinterpret_cast<CharacterAuthCodePacket*>(buffer);
-      packet->id = 0x9A3;
+      packet->id = ID_CA_ACK_MOBILE_OTP;
       packet->authChallengeId = this->authChallengeId;
       StringFormat(packet->code, 10, static_cast<std::size_t>(-1), this->m_authCode);
       packet->length = 14;
@@ -3133,7 +3133,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_DISCONNECT_ACSVR:
     GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
       this->otpStarted = timeGetTime();
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
@@ -3391,7 +3391,7 @@ void CLoginMode::OnChangeState(int value) {
     this->connectionReady = GetRagConnection().Connect(endpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->pendingCursorType = 3;
       }
       break;
@@ -3582,7 +3582,7 @@ void CLoginMode::OnChangeState(int value) {
     this->connectionReady = GetRagConnection().Connect(endpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }
@@ -3663,7 +3663,7 @@ void CLoginMode::OnChangeState(int value) {
     this->connectionReady = GetRagConnection().Connect(g_charServerEndpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }
@@ -3748,7 +3748,7 @@ void CLoginMode::OnChangeState(int value) {
     this->connectionReady = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
       }

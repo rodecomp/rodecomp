@@ -1,5 +1,6 @@
 #include "Network/Packets/NoticeEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
@@ -335,7 +336,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
-  if (itemId == 0) {
+  if (itemId == ITEMID_NONE) {
     g_session.SetOtherExchangeMoney(slot);
     return;
   }
@@ -1154,7 +1155,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
 
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode != nullptr) {
-      auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 0x2B7; });
+      auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == EFST_CLIENT_ONLY_EQUIP_ARROW; });
       if (it != g_activeSkillEffects.end()) {
         g_activeSkillEffects.erase(it);
       }

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Primitives/RenderQueues.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
@@ -416,7 +417,7 @@ __declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, f
   this->m_screen.y = screen.y + y;
   this->m_screen.z = screen.z + z;
 
-  if (this->flags == 0x205 || this->flags == 0x225) {
+  if (this->flags == (RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_NO_DEPTH) || this->flags == (RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_SECONDARY | RSF_NO_DEPTH)) {
     this->m_screen.x = static_cast<float>(g_renderer->viewport.centerX) + this->m_windowOffset.x;
     this->m_screen.y =
       (static_cast<float>(g_renderer->viewport.centerY) - static_cast<float>(g_renderer->viewport.centerY) * 0.2f) + this->m_windowOffset.y;
@@ -508,7 +509,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   primitive->sourceBlend = transform->srcalpha;
   primitive->destinationBlend = transform->destalpha;
   primitive->textureMode = transform->mtpreset;
-  this->flags |= 0x20;
+  this->flags |= RSF_SECONDARY;
   this->submit(primitive, this->flags);
 }
 
@@ -621,7 +622,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   primitive->sourceBlend = transform->srcalpha;
   primitive->destinationBlend = transform->destalpha;
   primitive->textureMode = transform->mtpreset;
-  this->flags |= 0x20;
+  this->flags |= RSF_SECONDARY;
   this->submit(primitive, this->flags);
 }
 
@@ -679,7 +680,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   primitive->sourceBlend = transform->srcalpha;
   primitive->destinationBlend = transform->destalpha;
   primitive->textureMode = transform->mtpreset;
-  this->flags |= 0x20;
+  this->flags |= RSF_SECONDARY;
   this->submit(primitive, this->flags);
 }
 

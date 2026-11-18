@@ -1,5 +1,6 @@
 #include "UI/Items/UIMakeTargetListWnd.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -185,7 +186,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           break;
 
         case 22052:
-          itemId = 0;
+          itemId = ITEMID_NONE;
           std::memcpy(&itemId, bytes + offset, tag.bytes);
           offset += tag.bytes;
           this->SendMsg(nullptr, UM_ADDITEM, itemId, 0, 0, 0);

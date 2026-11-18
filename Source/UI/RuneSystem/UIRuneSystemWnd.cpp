@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Map/MapSkyMgr.h"
@@ -39,7 +40,7 @@ void UIRune_Decom::Reset() {
   this->m_itemName.clear();
   this->m_itemImagePath.clear();
   this->m_ownedCount = 0;
-  this->m_itemId = 0;
+  this->m_itemId = ITEMID_NONE;
   this->m_decomList = nullptr;
   auto* const decomButton = this->m_decomButton;
   decomButton->SetDisabled(1);
@@ -201,7 +202,7 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
 // OFFSET: 0x0081BE90
 // FUNCTION: fn_10195
 void UIEquipRuneSetWnd::OnLBtnDblClk(int, int) {
-  this->parent->SendMsg(this, 0xAB, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
+  this->parent->SendMsg(this, UM_SELECT_ITEM, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
 }
 
 // OFFSET: 0x0081BEC0
@@ -233,7 +234,7 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
 // OFFSET: 0x0081BFD0
 // FUNCTION: fn_10197
 void UIEquipRuneSetWnd::OnLBtnDown(int, int) {
-  this->parent->SendMsg(this, 0xAB, 0xC2, -1, 0, 0);
+  this->parent->SendMsg(this, UM_SELECT_ITEM, 0xC2, -1, 0, 0);
 }
 
 // OFFSET: 0x0081C000
@@ -245,7 +246,7 @@ void UIRuneSetList::OnLBtnDown(int x, int y) {
 
   if (this->geometry.width - 7 > x && this->visible * this->m_itemHeight > y) {
     this->m_selected = y / this->m_itemHeight + this->position;
-    this->parent->SendMsg(this, 0xAB, 0xC2, this->m_selected, 0, 0);
+    this->parent->SendMsg(this, UM_SELECT_ITEM, 0xC2, this->m_selected, 0, 0);
     this->Invalidate();
     return;
   }
@@ -519,7 +520,7 @@ int UIRuneSetList::SendMsg(UIWindow*, int message, std::intptr_t argument1, std:
     }
     this->Invalidate();
     break;
-  case 0xAB:
+  case UM_SELECT_ITEM:
     this->m_selected = argument1;
     this->Invalidate();
     break;
@@ -902,7 +903,7 @@ void UIRuneSystemWnd::SelectTab() {
 int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == RUNE_BUTTON_ACTIVATE && (!this->parent || this->parent->SendMsg(this, 0x6A, 3000, 0, 0, 0) != 0) && this->m_rune) {
+    if (argument1 == RUNE_BUTTON_ACTIVATE && (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 3000, 0, 0, 0) != 0) && this->m_rune) {
       CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_ACTIVATE, this->m_rune, -1);
     }
     [[fallthrough]];
@@ -1566,7 +1567,7 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
 UIRune_Decom::UIRune_Decom() : UIWindow(0), m_itemName(""), m_itemImagePath("") {
   this->m_ownedCount = 0;
   this->m_decomList = nullptr;
-  this->m_itemId = 0;
+  this->m_itemId = ITEMID_NONE;
   this->m_decomType = 0;
 }
 
@@ -1594,13 +1595,13 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_COMMAND:
     switch (argument1) {
     case ID_EQUIP:
-      if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0)) {
-        this->parent->SendMsg(this, 0xAB, ID_EQUIP, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
+      if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 1500, 0, 0, 0) != 0)) {
+        this->parent->SendMsg(this, UM_SELECT_ITEM, ID_EQUIP, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
       }
       break;
     case RUNE_BUTTON_UNEQUIP:
-      if (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0) {
-        this->parent->SendMsg(this, 0xAB, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
+      if (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 1500, 0, 0, 0) != 0) {
+        this->parent->SendMsg(this, UM_SELECT_ITEM, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
       }
       break;
     case RUNE_BUTTON_REWARD_1:
@@ -1619,14 +1620,14 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case RUNE_BUTTON_ACTIVATE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+      } else if (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_ACTIVATE, this->m_runeSet, -1);
       }
       break;
     case RUNE_BUTTON_GRADE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+      } else if (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_UPGRADE, this->m_runeSet, -1);
       }
       break;
@@ -1731,7 +1732,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       break;
     case RUNE_BUTTON_DECOMPOSE:
       g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
-      if (!CRuneSystemMgr::GetInstance()->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
+      if (!CRuneSystemMgr::GetInstance()->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems() + 8 >=
               g_session.extraInventorySlots + 100) {
@@ -2210,10 +2211,10 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
     }
     break;
-  case 0x69:
+  case UM_SET_PRESSED:
     this->m_nextTick = timeGetTime() + static_cast<std::int64_t>(argument1);
     break;
-  case 0x6A: {
+  case UM_SET_DISABLE: {
     const DWORD now = timeGetTime();
     if (this->m_nextTick < static_cast<std::int64_t>(now)) {
       this->m_nextTick = static_cast<std::int64_t>(argument1) + now;
@@ -2232,7 +2233,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case 0:
       if (CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2)) {
         this->m_lists[0]->Select(argument2);
-        this->SendMsg(this, 0xAB, 0xC2, argument2, 0, 0);
+        this->SendMsg(this, UM_SELECT_ITEM, 0xC2, argument2, 0, 0);
       }
       this->Invalidate();
       break;
@@ -2240,14 +2241,14 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       unsigned int index = 0;
       if (CRuneSystemMgr::GetInstance()->FindRune(-1, 1, argument2, &index)) {
         this->m_lists[1]->Select(index);
-        this->SendMsg(this, 0xAB, 0xC2, index, 0, 0);
+        this->SendMsg(this, UM_SELECT_ITEM, 0xC2, index, 0, 0);
       }
       this->Invalidate();
       break;
     }
     }
     break;
-  case 0xAB:
+  case UM_SELECT_ITEM:
     switch (argument1) {
     case 0xC2:
       switch (this->m_tab->geometry.state) {
@@ -2325,7 +2326,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
       if (!runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
         RuneSetEquipPacket packet;
         packet.id = ID_CZ_RUNESET_REQ_EQUIP;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());

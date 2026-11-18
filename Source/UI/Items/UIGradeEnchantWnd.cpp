@@ -303,7 +303,7 @@ void UIGradeEnchantWnd::Paint() {
           const int itemY = 46 + i * 16;
           this->DrawBitmap(152, itemY, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
           const int msgId = this->messageIds[i];
-          if (msgId == 3711 || msgId == 3822) {
+          if (msgId == MSI_GRADE_ENCHANT_ITEM_PROTECT || msgId == MSI_GRADE_ENCHANT_ITEM_UNBREAKABLE) {
             this->DrawAlignedText(166, itemY, LookupMessage(msgId), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
           } else {
             this->DrawAlignedText(166, itemY, LookupMessage(msgId), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
@@ -374,7 +374,7 @@ void UIGradeEnchantWnd::OnLBtnDown(int x, int y) {
   }
 
   if (this->state == 1 && this->item.identity[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
-    g_modeMgr.GetGameMode()->BeginDragItem(33, this->item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_GRADE_ENCHANT, this->item, 1, -1);
   }
 }
 

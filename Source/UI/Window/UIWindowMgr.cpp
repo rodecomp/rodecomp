@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
@@ -928,7 +929,7 @@ __declspec(noinline) CMiniPartyWndAreaMgr::CMiniPartyWndAreaMgr() {
 // FUNCTION: fn_17233
 void UIWindowMgr::Shutdown() {
   if (!this->modalWindows.empty() && this->modalWindows.back()) {
-    this->activeWindowId = 185;
+    this->activeWindowId = ID_CANCEL;
   }
 
   if (this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible) {
@@ -982,7 +983,7 @@ bool ContainsValue(const std::deque<UIWindow*>& values, UIWindow* const& value);
 // FUNCTION: fn_17234
 void UIWindowMgr::ClearMapWindows() {
   if (!this->modalWindows.empty() && this->modalWindows.back()) {
-    this->activeWindowId = 185;
+    this->activeWindowId = ID_CANCEL;
   }
 
   this->SaveVisibleWindowIds();
@@ -2500,7 +2501,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->HasModalWindow()) {
-      this->modalResponse = 188;
+      this->modalResponse = ID_NO;
       return false;
     }
 
@@ -2542,7 +2543,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (id == -1) {
       if (g_navigationManager.viewMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
           g_navigationManager.displayMode = 0;
           g_navigationManager.expandedMap = false;
           g_navigationManager.Reset(true);
@@ -2580,13 +2581,13 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->LookupWindow(WID_NEWSELECTCHARWND) && g_session.m_loginModeFlag == 1) {
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
       }
       return false;
     }
 
-    if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
       GetRagConnection().Close();
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
@@ -2741,7 +2742,7 @@ bool UIWindowMgr::CloseWindow(int id) {
         };
 #pragma pack(pop)
         static_assert(sizeof(WindowClosePacket) == 10);
-        WindowClosePacket packet{0x039208AEu, 10, id};
+        WindowClosePacket packet{ReplayUiRecordHeader(REPLAY_UI_CLOSE_WINDOW), 10, id};
 
         Replay::Instance().Record(packet.bytes, &packet, 42, 0);
         break;
@@ -5014,7 +5015,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         message = tab + 0x5B9;
         break;
       case WID_ITEMSTORESUBWND_TAB_4:
-        message = 0xC4F;
+        message = MSI_STORE_TABNAME_7;
         break;
       case WID_ITEMSTORESUBWND_TAB_5:
       case WID_ITEMSTORESUBWND_TAB_6:

@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -659,11 +660,11 @@ void UIMessageBox::Configure(
   this->viewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000u);
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
-  this->m_message0 = type != 2 ? 185 : 188;
+  this->m_message0 = type != 2 ? ID_CANCEL : ID_NO;
 
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[3] = {184, 187, 188};
+  int ids[3] = {ID_OK, ID_YES, ID_NO};
   int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
 
   switch (type) {
@@ -709,7 +710,7 @@ void UIMessageBox::Configure(
       x += 45;
     }
 
-    this->m_message0 = defaultAccept ? 187 : 188;
+    this->m_message0 = defaultAccept ? ID_YES : ID_NO;
     this->m_message1 = 188;
     break;
   }
@@ -748,7 +749,7 @@ void UIMessageBox::OnProcess() {
   }
 
   if (timeGetTime() > this->deadline) {
-    g_windowMgr.modalResponse = 187;
+    g_windowMgr.modalResponse = ID_YES;
     this->counting = 0;
     return;
   }
@@ -793,7 +794,7 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     break;
   case UM_TEXT_LBTN_UP:
-    if (a == 426) {
+    if (a == ID_RESTART_WEB_LINK) {
       ShellExecuteA(hWnd, "open", LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART), nullptr, nullptr, SW_SHOWNORMAL);
     }
     break;
@@ -2068,7 +2069,7 @@ void UIMessageBoxAutoreturn::OnProcess() {
   }
 
   if (timeGetTime() > this->deadline) {
-    g_windowMgr.modalResponse = 187;
+    g_windowMgr.modalResponse = ID_YES;
     this->counting = 0;
     return;
   }
@@ -3087,7 +3088,7 @@ void UIPetInfoWnd::Paint() {
 
   const int job = g_session.petJob;
 
-  if (job != -1 && ((job > 1000 && job < 3999) || (job >= 20021 && job <= 31999))) {
+  if (job != -1 && ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || (job >= JT_EXTENDED_JOB_NAME_START && job <= 31999))) {
     char illust[260];
     std::memset(illust, 0, sizeof(illust));
     g_session.GetPetIllustName(job, g_session.petAccessory, illust);
@@ -3115,19 +3116,19 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
   int low;
   int high;
   if (g_session.m_petFriendly >= 0 && g_session.m_petFriendly <= 100) {
-    if (g_session.GetDisplayJob() >= 4050 && g_session.GetDisplayJob() <= 4052) {
+    if (g_session.GetDisplayJob() >= JT_GANGSI && g_session.GetDisplayJob() <= JT_COLLECTOR) {
       int message;
       if (g_session.m_petFriendly <= 20) {
         low = 0;
-        message = 1022;
+        message = MSI_VERYHATE;
         high = 100;
       } else if (g_session.m_petFriendly <= 40) {
         low = 20;
-        message = 1021;
+        message = MSI_HATE;
         high = 40;
       } else {
         low = 40;
-        message = 672;
+        message = MSI_VERY_AWKWARD;
         high = 100;
       }
       this->friendlyText = LookupMessage(message);

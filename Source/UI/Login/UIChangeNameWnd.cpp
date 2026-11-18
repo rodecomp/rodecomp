@@ -78,7 +78,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
   this->m_edit->SetId(ID_OK);
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x00911190

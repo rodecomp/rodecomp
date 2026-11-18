@@ -1,6 +1,8 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/CombatTypes.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Skills/SkillId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session/Session.h"
 #include "Client/Input/InputCharset.h"
@@ -139,7 +141,7 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
   }
   lua_settop(L, -2);
 
-  if (skillId == 2461) {
+  if (skillId == SO_EL_ACTION) {
     if (delays.empty()) {
       delays.resize(1);
     }
@@ -200,7 +202,7 @@ bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
   order[0] = std::get<0>(slots);
   order[1] = std::get<1>(slots);
   order[2] = std::get<2>(slots);
-  if (item.identity[3] == 0x8000) {
+  if (item.identity[3] == EQP_AMMO) {
     g_session.SetSwapArrowIndex(item.identity[1]);
   }
 
@@ -313,7 +315,7 @@ void CSession::SetSwapArrowIndex(std::uint32_t value) {
     return;
   }
 
-  const auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 0x2B7; });
+  const auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == EFST_CLIENT_ONLY_EQUIP_ARROW; });
   if (it == g_activeSkillEffects.end()) {
     if (value) {
       ActiveSkillEffect effect;

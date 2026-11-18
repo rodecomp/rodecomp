@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/Items/ItemId.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -98,7 +99,7 @@ void UIShortCutWnd::Paint() {
       const int y = ((row * 33) + 4);
 
       const unsigned itemId = this->m_slots[index]->itemId;
-      if (itemId == 0) {
+      if (itemId == ITEMID_NONE) {
         continue;
       }
 
@@ -149,7 +150,7 @@ void UIShortCutWnd::Paint() {
   if (g_session.ItemSlotActive()) {
     for (int column = 0; column < 9; ++column) {
       const unsigned itemId = this->m_itemSlots[column]->itemId;
-      if (itemId == 0) {
+      if (itemId == ITEMID_NONE) {
         continue;
       }
 

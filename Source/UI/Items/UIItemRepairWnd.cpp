@@ -129,7 +129,7 @@ void UIItemRepairWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x009A1590
@@ -161,7 +161,7 @@ void UIMakeTargetListWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x009A2020
@@ -183,7 +183,7 @@ void UIMakeTargetProcessWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x009A29B0
@@ -202,7 +202,7 @@ void UIMakeTargetResultWnd::OnCreate(int width, int height) {
   button->SetId(ID_OK);
   this->AddChild(button);
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x009A2DD0
@@ -234,7 +234,7 @@ void UIWeaponRefineWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x009A3DE0

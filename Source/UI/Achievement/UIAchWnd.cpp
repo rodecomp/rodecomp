@@ -544,7 +544,7 @@ void UIAchTab::Paint() {
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_tab.bmp"), false);
 
   if (this->parent) {
-    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CHILD_CHANGED, 0, 0, 0, 0);
   }
 
   for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {

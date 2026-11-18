@@ -116,7 +116,7 @@ int UIVideoWnd::SendMsg(
     }
     break;
   case UM_CLOSE:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_STOP_VIDEO), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_STOP_VIDEO), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
       g_windowMgr.CloseWindow(WID_VIDEOWND);
     }
     break;

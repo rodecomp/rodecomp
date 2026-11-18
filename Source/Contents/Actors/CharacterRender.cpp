@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/AccessoryId.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
@@ -13,6 +14,7 @@
 #include "Contents/Sprites/SpriteRidingPolicy.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
@@ -93,7 +95,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   if (this->drawShadow == 1) {
     if (RenderPrimitive* shadow = this->DrawShadow(view, 1.0f)) {
       CharacterRenderDrawItem item;
-      item.flags = 0x101;
+      item.flags = RSF_ALPHA | RSF_DEPTH_SORTED;
       item.command = shadow;
       commands.push_back(item);
     }
@@ -354,10 +356,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         blend = 1;
         break;
       case 4:
-        blend = this->middleHeadgear != 0xB9;
+        blend = this->middleHeadgear != ACCESSORY_BATTLEONLINE;
         break;
       default:
-        blend = 0x101;
+        blend = RSF_ALPHA | RSF_DEPTH_SORTED;
         break;
     }
 

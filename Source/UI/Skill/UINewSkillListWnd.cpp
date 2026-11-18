@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -1044,7 +1045,7 @@ void UINewSkillListWnd::OnLBtnDown(int x, int y) {
         if (level == 0) {
           level = skill.level;
         }
-        gameMode->BeginDragSkill(8, skill.id, skill.name, level, -1);
+        gameMode->BeginDragSkill(DRAG_SKILL, skill.id, skill.name, level, -1);
       }
     }
   }

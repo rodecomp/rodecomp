@@ -11,6 +11,13 @@
 #include <utility>
 #include <vector>
 
+enum QuestHuntTarget : int {
+  QUEST_HUNT_DEATH = 4249,
+  QUEST_HUNT_PVP = 4250,
+  QUEST_HUNT_MAP_VISIT = 10363,
+  QUEST_HUNT_CONDITIONAL_MONSTER = 31999,
+};
+
 struct lua_State;
 
 struct RenewQuestInfo {
@@ -61,7 +68,7 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
     this->m_descriptions.clear();
     this->m_rewards.clear();
     for (unsigned int index = 0; index < 3; ++index) {
-      this->m_huntMobId[index] = 31999;
+      this->m_huntMobId[index] = QUEST_HUNT_CONDITIONAL_MONSTER;
       this->m_huntMinLevel[index] = -1;
       this->m_huntMaxLevel[index] = -1;
     }

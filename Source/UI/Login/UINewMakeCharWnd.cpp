@@ -529,7 +529,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   }
 
   g_windowMgr.SetFocus(this->m_nameEdit);
-  this->m_message0 = 0xB8;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x007DB630

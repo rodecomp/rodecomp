@@ -667,7 +667,7 @@ void CCylinderEffect::Open() {
     particle->groupIndex = 1;
     particle->InitParticleQuad(particle->vertices);
     particle->angle = 0;
-    if (this->id == 2077) {
+    if (this->id == EF_UNK_2077) {
       particle->SetTexture("effect\\nipelheim\\nipelheim_cast\\nip_cast.tga");
       particle->scale = 4.5f;
       particle->phaseParameter = 70;
@@ -4620,7 +4620,7 @@ void CGravityControlEffect::Close() {
   actor->positionDelta.y = 0.0f;
   actor->positionDelta.z = 0.0f;
 
-  if (this->id == 0x4B1) {
+  if (this->id == EF_UNK_1201) {
     CRenderObject* player = g_modeMgr.GetGameMode()->scene->player;
     const vector3d playerPosition = player->render.position;
     g_soundMgr->PlayWave("effect\\t_공격력.wav", this->position[0] - playerPosition.x, 0.0f, this->position[2] - playerPosition.z, 250, 40, 1.0f, 0);

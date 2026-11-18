@@ -1102,7 +1102,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       const int previousWidth = this->geometry.width;
       this->RecalculateWidths();
       if (this->parent) {
-        this->parent->SendMsg(this, 116, reinterpret_cast<std::intptr_t>(text.c_str()), this->activeTabIndex, previousWidth > this->geometry.width ? previousWidth : 0, 0);
+        this->parent->SendMsg(this, UM_CHILD_CHANGED, reinterpret_cast<std::intptr_t>(text.c_str()), this->activeTabIndex, previousWidth > this->geometry.width ? previousWidth : 0, 0);
       }
     }
   }
@@ -1397,7 +1397,7 @@ void UIChatHisBox::PlaceItemTags(int line) {
 void UIChatHisBox::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->parent && this->geometry.x >= 0 && this->geometry.y >= 0) {
-    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+    this->parent->SendMsg(this, UM_CHILD_CHANGED, 0, 0, 0, 0);
   }
 
   const unsigned int lineCount = static_cast<unsigned int>(this->lines.size());

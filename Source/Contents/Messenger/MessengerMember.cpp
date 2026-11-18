@@ -1,4 +1,5 @@
 #include "Contents/Messenger/MessengerMember.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -1146,7 +1147,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
   gameMode->TargetActorByAid(member.accountId);
   MessengerMember selectedMember = this->MemberAtIndex(this->selected);
   if (this->mode == 1 && g_session.m_lockMouse != true && g_windowMgr.HasMiniPartyMember(selectedMember.accountId) != true) {
-    gameMode->SetDragIds(29, this->selected);
+    gameMode->SetDragIds(DRAG_MESSENGER_MEMBER, this->selected);
     if (!g_windowMgr.transientWnd) {
       UIDragMiniPartyWnd* window = new (std::nothrow) UIDragMiniPartyWnd(selectedMember);
       {
@@ -1626,7 +1627,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid && !target.offline) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_GROUP_CHANGE_MASTER, target.accountId, 0, 0, 0);
           }
         } else {
@@ -1728,11 +1729,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.currentMode->SendMsg(MM_DELETE_FRIEND, member.accountId, member.characterId, 0, 0);
             }
           } else if (!(member.name == g_session.DecodePlayerName())) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.currentMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
             }
           }
@@ -1746,7 +1747,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           }
         }
@@ -1770,11 +1771,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       int secondTip;
       int firstTip;
       if (this->mode == 0) {
-        secondTip = 0x15F;
-        firstTip = 0x163;
+        secondTip = MSI_DELETE;
+        firstTip = MSI_FRIEND_SETTING;
       } else {
-        secondTip = 0x61;
-        firstTip = 0x65;
+        secondTip = MSI_EXPEL;
+        firstTip = MSI_PARTY_SETTING;
       }
       this->buttons[3]->SetTooltip(LookupMessage(firstTip));
       this->buttons[4]->SetTooltip(LookupMessage(secondTip));
@@ -1861,7 +1862,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_LEAVE_PARTY:
       if (!g_session.m_lockMouse) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           if (g_windowMgr.partyInvitationToWnd) {
             g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);

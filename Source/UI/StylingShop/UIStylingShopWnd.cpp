@@ -1442,7 +1442,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
           }
           if (it->first->geometry.id == STYLINGSHOP_LAYOUT_2ND_COSTUME) {
             UI2ndCostumeWnd* costume = static_cast<UI2ndCostumeWnd*>(it->second);
-            costume->m_hideCheckBox->SetChecked(costume->m_display->job == 0);
+            costume->m_hideCheckBox->SetChecked(costume->m_display->job == JT_NOVICE);
             costume->m_showCheckBox->SetChecked(costume->m_hideCheckBox->geometry.state == 0);
           }
           it->second->Show(1);
@@ -2376,7 +2376,7 @@ void UI2ndCostumeWnd::OnCreate(int, int) {
   this->m_showInfo->m_display = this->m_display;
   this->AddChild(this->m_showInfo);
 
-  this->m_hideCheckBox->SetChecked(this->m_display->job == 0);
+  this->m_hideCheckBox->SetChecked(this->m_display->job == JT_NOVICE);
   this->m_showCheckBox->SetChecked(this->m_hideCheckBox->geometry.state == 0);
 }
 

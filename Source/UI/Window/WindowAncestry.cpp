@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Replay/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
@@ -82,7 +83,7 @@ void UIWindowMgr::RecordWindowPacket(int argument) {
     } packet;
 #pragma pack(pop)
     static_assert(sizeof(packet) == 10);
-    packet.header = 0x038D08AE;
+    packet.header = ReplayUiRecordHeader(REPLAY_UI_OPEN_WINDOW);
     packet.length = 10;
     packet.value = static_cast<std::uint32_t>(argument);
     Replay::Instance().Record(packet.length, &packet, 42, 0);

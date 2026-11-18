@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Jobs/JobId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -651,7 +652,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   UIWindow* menu;
   char text[256];
   const int job = pick->job;
-  if ((job >= 45 && job < 1000) || g_session.IsMonsterClass(job) || g_session.IsCompanionJob(job) ||
+  if ((job >= JT_WARPNPC && job < JT_MON_BEGIN) || g_session.IsMonsterClass(job) || g_session.IsCompanionJob(job) ||
       pick->kind == 4) {
     CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
     if (actor != nullptr) {
@@ -1050,13 +1051,13 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     animation = 0;
     type = 3;
     break;
-  case 35:
+  case MAKETYPE_WARG_EFFECT:
     names[0] = "몬스터\\워그.spr";
     names[1] = "몬스터\\워그.act";
     animation = 0;
     type = 27;
     break;
-  case 42:
+  case MAKETYPE_BABY_WARG_EFFECT:
     names[0] = "몬스터\\워그.spr";
     names[1] = "몬스터\\베이비워그.act";
     animation = 0;
@@ -1250,13 +1251,13 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     animation = 97;
     type = 36;
     break;
-  case 43:
+  case MAKETYPE_SHIELD_EFFECT:
     names[0] = "이팩트\\shield.spr";
     names[1] = "이팩트\\shield.act";
     animation = 0;
     type = 32;
     break;
-  case 44:
+  case MAKETYPE_COSTUME_BODY_EFFECT:
     names[0] = "이팩트\\costumebody.spr";
     names[1] = "이팩트\\costumebody.act";
     animation = 0;
@@ -1310,79 +1311,79 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     animation = 0;
     type = 3;
     break;
-  case 53:
+  case MAKETYPE_OWL_EFFECT:
     names[0] = "이팩트\\OWL.spr";
     names[1] = "이팩트\\OWL.act";
     animation = 0;
     type = 18;
     break;
-  case 54:
+  case MAKETYPE_GIFT_BOX_CART_EFFECT:
     names[0] = "이팩트\\선물상자카트.spr";
     names[1] = "이팩트\\선물상자카트.act";
     animation = 0;
     type = 3;
     break;
-  case 55:
+  case MAKETYPE_GIFT_BOX_CART_MINI_EFFECT:
     names[0] = "이팩트\\선물상자카트_미니.spr";
     names[1] = "이팩트\\선물상자카트_미니.act";
     animation = 0;
     type = 3;
     break;
-  case 56:
+  case MAKETYPE_PORING_LOADED_CART_EFFECT:
     names[0] = "이팩트\\포링싣은카트.spr";
     names[1] = "이팩트\\포링싣은카트.act";
     animation = 0;
     type = 3;
     break;
-  case 57:
+  case MAKETYPE_PORING_LOADED_CART_MINI_EFFECT:
     names[0] = "이팩트\\포링싣은카트_미니.spr";
     names[1] = "이팩트\\포링싣은카트_미니.act";
     animation = 0;
     type = 3;
     break;
-  case 58:
+  case MAKETYPE_PORING_CART_EFFECT:
     names[0] = "이팩트\\포링카트.spr";
     names[1] = "이팩트\\포링카트.act";
     animation = 0;
     type = 3;
     break;
-  case 59:
+  case MAKETYPE_PORING_CART_MINI_EFFECT:
     names[0] = "이팩트\\포링카트_미니.spr";
     names[1] = "이팩트\\포링카트_미니.act";
     animation = 0;
     type = 3;
     break;
-  case 65:
+  case MAKETYPE_MADO_CART_EFFECT:
     names[0] = "이팩트\\마도카트.spr";
     names[1] = "이팩트\\마도카트.act";
     animation = 0;
     type = 3;
     break;
-  case 66:
+  case MAKETYPE_MADO_CART_MINI_EFFECT:
     names[0] = "이팩트\\마도카트_미니.spr";
     names[1] = "이팩트\\마도카트_미니.act";
     animation = 0;
     type = 3;
     break;
-  case 67:
+  case MAKETYPE_LASSITUDE_EFFECT:
     names[0] = "이팩트\\emotion.spr";
     names[1] = "이팩트\\emotion.act";
     animation = 5;
     type = 37;
     break;
-  case 68:
+  case MAKETYPE_MISFORTUNE_EFFECT:
     names[0] = "이팩트\\emotion.spr";
     names[1] = "이팩트\\emotion.act";
     animation = 28;
     type = 38;
     break;
-  case 69:
+  case MAKETYPE_WINDHAWK_HAWK_EFFECT:
     names[0] = "이팩트\\WINDHAWK_HAWK.spr";
     names[1] = "이팩트\\WINDHAWK_HAWK.act";
     animation = 0;
     type = 18;
     break;
-  case 70:
+  case MAKETYPE_WINDHAWK_WOLF_EFFECT:
     names[0] = "이팩트\\WINDHAWK_WOLF.spr";
     names[1] = "이팩트\\WINDHAWK_WOLF.act";
     animation = 0;

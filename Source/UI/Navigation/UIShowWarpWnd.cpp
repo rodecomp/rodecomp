@@ -45,7 +45,7 @@ void UIShowWarpWnd::OnCreate(int width, int height) {
   close->Move(closeX, closeY);
   close->SetId(ID_CLOSE);
   this->AddChild(close);
-  this->m_message0 = 0xb8;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x0094ECE0

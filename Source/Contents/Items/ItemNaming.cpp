@@ -1,4 +1,5 @@
 #include "Client/Replay/Replay.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/Items/ItemType.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Items/ItemInfo.h"
@@ -71,7 +72,7 @@ namespace {
   // INLINED
   ItemMoveInfo MakeEmptyItemMoveInfo() {
     ItemMoveInfo info;
-    info.itemId = 0;
+    info.itemId = ITEMID_NONE;
     info.drop = false;
     info.trade = false;
     info.storage = false;

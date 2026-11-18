@@ -73,7 +73,7 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;

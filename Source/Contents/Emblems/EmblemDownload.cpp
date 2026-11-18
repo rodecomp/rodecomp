@@ -1,5 +1,6 @@
 #include "Contents/Emblems/EmblemDownload.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
 #include <algorithm>
@@ -37,7 +38,7 @@ void CEmblemDataMgr::CompleteDownload(AsyncDiagnostic diagnostic, int responseCo
     return;
   }
 
-  packet->id = 0x0B36;
+  packet->id = ID_CR_NEW_EMBLEM_DOWNLOAD;
   packet->bytes = 14;
   packet->state = 2;
   packet->guildId = guildId;
@@ -47,7 +48,7 @@ void CEmblemDataMgr::CompleteDownload(AsyncDiagnostic diagnostic, int responseCo
   int remaining = static_cast<int>(response.size());
   while (remaining > 0) {
     const int bytes = std::min(1010, remaining);
-    packet->id = 0x0B36;
+    packet->id = ID_CR_NEW_EMBLEM_DOWNLOAD;
     packet->state = 1;
     packet->bytes = static_cast<std::int16_t>(bytes + 14);
     packet->guildId = guildId;
@@ -57,7 +58,7 @@ void CEmblemDataMgr::CompleteDownload(AsyncDiagnostic diagnostic, int responseCo
     remaining -= bytes;
   }
 
-  packet->id = 0x0B36;
+  packet->id = ID_CR_NEW_EMBLEM_DOWNLOAD;
   packet->bytes = 14;
   packet->state = 0;
   packet->guildId = guildId;

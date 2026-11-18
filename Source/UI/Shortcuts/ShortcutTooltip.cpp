@@ -1,5 +1,6 @@
 #include "Client/Session/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
@@ -32,7 +33,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     }
 
     const NormalItemSlot& slot = *this->m_itemSlots[grid.hovered];
-    if (slot.itemId == 0) {
+    if (slot.itemId == ITEMID_NONE) {
       return;
     }
 
@@ -71,7 +72,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
   window.ToScreen(tooltipX, tooltipY);
 
   std::string text = "";
-  if (this->m_slots[index]->itemId != 0) {
+  if (this->m_slots[index]->itemId != ITEMID_NONE) {
     if (this->m_slots[index]->enabled != 0) {
       CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
       if (!this->MatchesShortcut(skill, this->m_slots[index])) {

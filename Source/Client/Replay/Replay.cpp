@@ -975,7 +975,7 @@ void Replay::RestartClock() {
 std::vector<unsigned char> CSession::BuildStatusReplayPacket() {
   std::vector<unsigned char> packet(29, 0);
   auto* data = reinterpret_cast<ReplayStatusPacket*>(packet.data());
-  data->id = 0x983;
+  data->id = ID_ZC_MSG_STATE_CHANGE3;
   data->status = 0x2A1;
   data->remaining = 9999;
   data->accountId = this->m_aid;

@@ -1232,12 +1232,12 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   }
   case SU_CN_METEOR: {
     vector3d position{x, height, z};
-    g_effectMgr->Spawn(0, 0x452, position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_UNK_1106, position, 0, -1, 0, 0);
     break;
   }
   case SU_CN_METEOR2: {
     vector3d position{x, height, z};
-    g_effectMgr->Spawn(0, 0x458, position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_UNK_1112, position, 0, -1, 0, 0);
     break;
   }
   case AG_VIOLENT_QUAKE_ATK: {
@@ -1252,7 +1252,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case AG_ALL_BLOOM_ATK: {
     vector3d position{x, height, z};
-    g_effectMgr->Spawn(0, 0x706, position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_UNK_1798, position, 0, -1, 0, 0);
     break;
   }
   case WH_DEEPBLINDTRAP:
@@ -1409,7 +1409,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
   case ST_ATTACK:
   case ST_ATTACK2:
-    if (this->shapeShift == 1) {
+    if (this->shapeShift == SHAPESHIFT_WEREWOLF) {
       this->SetAction(action, 3, 2);
     } else {
       this->SetAction(action, 3, 1);
@@ -1428,7 +1428,7 @@ void CGameActor::SetState(int state, int resetPosition) {
         }
       }
     }
-    if (this->GetEffectiveJob(-1) == 0x505) {
+    if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN) {
       this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
     }
     this->attackMotion = static_cast<float>(this->GetAttackMotion());
@@ -1553,8 +1553,8 @@ void CGameActor::SetState(int state, int resetPosition) {
     int frame0;
     int frame3;
     int frame4;
-    if (this->GetEffectiveJob(-1) == 0xfd1 || this->GetEffectiveJob(-1) == 0x1083 || this->GetEffectiveJob(-1) == 0x1090 ||
-        this->GetEffectiveJob(-1) == 0x1092) {
+    if (this->GetEffectiveJob(-1) == JT_LINKER || this->GetEffectiveJob(-1) == JT_LINKER_B || this->GetEffectiveJob(-1) == JT_SOUL_REAPER ||
+        this->GetEffectiveJob(-1) == JT_SOUL_REAPER_B) {
       frame0 = 4;
       frame3 = 7;
       frame4 = 2;
@@ -1662,7 +1662,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
     break;
   case ST_GUNSKILL2:
-  case 0x30:
+  case ST_SU_HIDE:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
     break;
@@ -1981,7 +1981,7 @@ void CRenderObject::DrawSpriteEffects(
   const std::uint32_t* palette, const SpriteRleImage* image, int* blend, std::uint32_t color
 ) {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-    if (effect.id == 0xB8) {
+    if (effect.id == EFST_CLAIRVOYANCE) {
       if (!this->render.visible || !this->render.enabled) {
         return;
       }
@@ -2264,7 +2264,7 @@ AiMessage* CGameActor::GetResMsg2AI(int index) {
 // OFFSET: 0x00CADB70
 // FUNCTION: fn_21061
 bool CGameActor::HasShapeShift() {
-  return this->shapeShift != 0;
+  return this->shapeShift != SHAPESHIFT_NONE;
 }
 
 // OFFSET: 0x00CAE500
@@ -2858,7 +2858,7 @@ void CGameActor::SetTransformJob(int value, int slot) {
   }
 
   int job;
-  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == SHAPESHIFT_NONE) {
     job = this->GetEffectiveJob(-1);
   } else {
     job = this->GetShapeShiftJob();
@@ -2878,7 +2878,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       return;
     }
 
-    for (int id = 0x4EE; id <= 0x4F1; ++id) {
+    for (int id = EF_TETRA_VORTEX_BALL_1; id <= EF_TETRA_VORTEX_BALL_4; ++id) {
       ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
       if (ball != nullptr) {
         break;
@@ -2932,7 +2932,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
     return;
   }
 
-  for (int id = 0x4EE; id <= 0x4F1; ++id) {
+  for (int id = EF_TETRA_VORTEX_BALL_1; id <= EF_TETRA_VORTEX_BALL_4; ++id) {
     ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
     if (ball != nullptr) {
       if (ball->ActiveCount() > 1) {
@@ -3147,7 +3147,7 @@ bool CGameActor::IsShapeShifted() {
   if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true) {
     return false;
   }
-  return this->shapeShift != 0;
+  return this->shapeShift != SHAPESHIFT_NONE;
 }
 
 // OFFSET: 0x00CAA870
@@ -3412,8 +3412,8 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case ST_GUNSKILL2:
   case ST_GUNREADY:
   case ST_AB_SPECIAL:
-  case 47:
-  case 48:
+  case ST_SU_STOOP:
+  case ST_SU_HIDE:
   case 55:
   case 56:
   case 57:
@@ -3424,7 +3424,7 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case 67:
   case 68:
   case 80:
-  case 81:
+  case ST_NATURE_PROTECTION:
     base = 96;
     break;
   case 74:
@@ -3781,11 +3781,11 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
         case JT_SKY_EMPEROR:
         case JT_SOUL_ASCETIC:
         case JT_SKY_EMPEROR2:
-          effectId = 0x1B2;
+          effectId = EF_HITLINE7;
           break;
         case JT_VIOLEN:
         case JT_CP_VIOLEN:
-          effectId = 0x974;
+          effectId = EF_VIOLEN_HIT;
           break;
       }
 
@@ -3821,7 +3821,7 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
       }
 
       const int job = this->GetEffectiveJob(-1);
-      if (extraDamage != 0 && (g_session.IsNpcJob(job) || job > 4000 || job == JT_ASSASSIN)) {
+      if (extraDamage != 0 && (g_session.IsNpcJob(job) || job > JT_2004_JOB_BEGIN || job == JT_ASSASSIN)) {
         int total = damage;
         if (hitCount > 1) {
           for (int hit = hitCount - 1; hit != 0; --hit) {
@@ -4075,7 +4075,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
-  if (this->render.accountId == 0xFFFFFFFF) {
+  if (this->render.accountId == INVALID_AID) {
     return;
   }
 
@@ -4210,7 +4210,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
-  if (this->render.accountId == 0xFFFFFFFF) {
+  if (this->render.accountId == INVALID_AID) {
     return;
   }
 
@@ -4537,7 +4537,7 @@ void CGameActor::SetActorJob(int job) {
   }
 
   int slotJob;
-  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == 0) {
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->shapeShift == SHAPESHIFT_NONE) {
     slotJob = this->GetEffectiveJob(-1);
   } else {
     switch (this->shapeShift) {
@@ -4616,15 +4616,15 @@ void C3dGrannyGameActor::MakeCorpse() {
 // OFFSET: 0x00CC40D0
 // FUNCTION: fn_21158
 void CGameActor::ApplyNatureProtection() {
-  if (this->shapeShift == 3) {
+  if (this->shapeShift == SHAPESHIFT_NATURE_PROTECTION) {
     return;
   }
 
   this->savedShapeShift = this->shapeShift;
-  this->SetState(0x51, 1);
+  this->SetState(ST_NATURE_PROTECTION, 1);
   this->render.isMotionFreezed = true;
   this->render.specialMotionLocked = 1;
-  this->shapeShift = 3;
+  this->shapeShift = SHAPESHIFT_NATURE_PROTECTION;
   this->SetSprJob(this->job);
   const int costume = this->GetMadogearType();
   const int costumeJob = this->GetBodyCostume();
@@ -4836,14 +4836,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (IsHidingChanged(this->stateFlags, previousFlags)) {
     this->ResetJobEffects();
-    if (this->GetEffectiveJob(-1) == 45) {
+    if (this->GetEffectiveJob(-1) == JT_WARPNPC) {
       this->SendMsg(this, AM_DELETE_EFFECT, EF_WARPZONE2, 0, 0, 0, 0, 0);
     }
 
     if (IsHiding(this->stateFlags)) {
       if (notify) {
         this->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0);
-        if (this->GetEffectiveJob(-1) != 25 && this->GetEffectiveJob(-1) != 4222) {
+        if (this->GetEffectiveJob(-1) != JT_NINJA && this->GetEffectiveJob(-1) != JT_NINJA_B) {
           this->LaunchEffect(EF_BASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         }
       }
@@ -4893,7 +4893,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->hasLevelAura != 0) {
         this->UpdateMaxLevelAura();
       }
-      if (this->GetEffectiveJob(-1) == 45) {
+      if (this->GetEffectiveJob(-1) == JT_WARPNPC) {
         this->LaunchEffect(EF_WARPZONE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
@@ -5502,7 +5502,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   }
 
   unsigned delay = static_cast<unsigned>(this->attackMotion * this->render.speed * 24.0f);
-  if (this->GetEffectiveJob(-1) == 0x3F8 || this->GetEffectiveJob(-1) == 0x58C) {
+  if (this->GetEffectiveJob(-1) == JT_ARCHER_SKELETON || this->GetEffectiveJob(-1) == JT_G_ARCHER_SKELETON) {
     delay += 0xC0;
   }
 
@@ -5512,19 +5512,19 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
   const int hitEffect = g_session.FindSkillEffectId(skillId);
   int followEffect = g_session.FindSkillFollowEffect(skillId);
-  if (followEffect == 186) {
+  if (followEffect == EF_COMBOATTACK1) {
     switch (level) {
     case 2:
-      followEffect = 187;
+      followEffect = EF_COMBOATTACK2;
       break;
     case 3:
-      followEffect = 188;
+      followEffect = EF_COMBOATTACK3;
       break;
     case 4:
-      followEffect = 189;
+      followEffect = EF_COMBOATTACK4;
       break;
     case 5:
-      followEffect = 190;
+      followEffect = EF_COMBOATTACK5;
       break;
     }
   }
@@ -5541,18 +5541,18 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case MG_FIREBALL:
   case MG_FIREBOLT:
   case MS_MAGNUM:
-    effect = 0x31;
+    effect = EF_FIREHIT;
     break;
   case MG_COLDBOLT:
   case MG_FROSTDIVER:
-    effect = 0x33;
+    effect = EF_COLDHIT;
     break;
   case MG_LIGHTNINGBOLT:
-    effect = 0x34;
+    effect = EF_WINDHIT;
     break;
   case ALL_RESURRECTION:
     if (damage != 0) {
-      effect = 0x98;
+      effect = EF_HOLYHIT;
       followEffect = -1;
     }
     break;
@@ -5622,13 +5622,13 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     followEffect = 0x830;
     break;
   case CD_ARBITRIUM_ATK:
-    effect = 0x722;
+    effect = EF_ARBITRIUM_HIT;
     break;
   case ABC_DEFT_STAB:
-    effect = 0x854;
+    effect = EF_DEFT_STAB;
     break;
   case ABC_FRENZY_SHOT:
-    effect = 0x843;
+    effect = EF_FRENZY_SHOT_HIT;
     break;
   }
 
@@ -5870,13 +5870,13 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     message.damage = damage;
     if (skillId == GC_CROSSIMPACT) {
     } else if (skillId == MO_CHAINCOMBO) {
-      message.effectId = 122;
+      message.effectId = EF_SONICBLOWHIT;
     } else if (skillId == CH_CHAINCRUSH) {
       message.action = 0x6C;
       this->SendMsg(this, AM_WILL_BE_ATTACKED, address, 0, 0, 0, 0, 0);
     } else if (skillId == CG_ARROWVULCAN) {
     } else if (skillId == WL_CRIMSONROCK) {
-      message.effectId = 0x512;
+      message.effectId = EF_NEW_CRIMSONROCK_SUB;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         message.effectId = -1;
       }
@@ -5884,14 +5884,14 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
       if (previous & 1) {
         message.hitEffect = -1;
       } else if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        message.hitEffect = 0x601;
-        message.effectId = 0x602;
+        message.hitEffect = EF_MINEFFECT_COMET_SUB_EXP;
+        message.effectId = EF_MINEFFECT_COMET_SUB_EXP_BOTTOM;
       } else {
-        message.hitEffect = 0x588;
-        message.effectId = 0x589;
+        message.hitEffect = EF_NEW_COMET_SUB_EXP;
+        message.effectId = EF_NEW_COMET_SUB_EXP_BOTTOM;
       }
     } else if (skillId == LG_RAYOFGENESIS || skillId == NPC_RAYOFGENESIS) {
-      message.effectId = 0x593;
+      message.effectId = EF_NEW_RAYOFGENESIS_HIT;
     }
 
     switch (skillId) {

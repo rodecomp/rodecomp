@@ -46,7 +46,7 @@ void UpdateWorldProximityNotification(
 
   if (nearby()) {
     unsigned char packet[9];
-    const std::uint16_t id = 0x0BB0;
+    const std::uint16_t id = ID_CZ_APPROXIMATE_ACTOR;
     const std::uint16_t enabled = 1;
     std::memcpy(packet, &id, sizeof(id));
     std::memcpy(packet + 2, &accountId, sizeof(accountId));

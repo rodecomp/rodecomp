@@ -303,7 +303,7 @@ void UICreateGuildWnd::OnCreate(int, int) {
   }
 
   g_windowMgr.SetFocus(this->m_nameEdit);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x00958990
@@ -388,7 +388,7 @@ void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
     }
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x0095CCD0

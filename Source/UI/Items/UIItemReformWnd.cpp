@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Items/UIItemReformWnd.h"
 #include "UI/Window/UIEnums.h"
@@ -469,7 +470,7 @@ int UIItemReformWnd::SendMsg(
   case UM_COMMAND:
     switch (argument1) {
     case ID_OK:
-      if (this->selectedItem && this->reformItem.GetItemId() != 0) {
+      if (this->selectedItem && this->reformItem.GetItemId() != ITEMID_NONE) {
         PACKET_CZ_ITEM_REFORM packet;
         packet.packetType = ID_CZ_ITEM_REFORM;
         packet.itemId = this->reformItem.GetItemId();

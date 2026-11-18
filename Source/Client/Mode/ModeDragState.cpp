@@ -20,7 +20,7 @@ void CGameMode::ClearDrag() {
   this->drag.name = "";
   this->drag.itemValue = 0;
   this->drag.resource = "";
-  this->drag.source = 0;
+  this->drag.source = DRAG_NONE;
   this->drag.quantity = 0;
   this->drag.slot = -1;
   this->drag.skillLevel = 0;

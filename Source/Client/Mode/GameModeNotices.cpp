@@ -1,6 +1,7 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "Contents/Actors/Skill.h"
 #include "Contents/CombatTypes.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -760,23 +761,23 @@ void CGameMode::NotifyPrivateAirplaneResult(int result) {
   switch (result) {
   case PRIVATEAIRSHIP_OK:
     if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
-      g_windowMgr.modalResponse = 188;
+      g_windowMgr.modalResponse = ID_NO;
     }
     break;
   case PRIVATEAIRSHIP_RETRY:
-    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_UNKNOWN)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_PUSH_TEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_UNKNOWN)), 0, 0, 0);
     break;
   case PRIVATEAIRSHIP_ITEM_NOT_ENOUGH:
-    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_NOT_ENOUGH_ITEM)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_PUSH_TEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_NOT_ENOUGH_ITEM)), 0, 0, 0);
     break;
   case PRIVATEAIRSHIP_DESTINATION_MAP_INVALID:
-    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_PUSH_TEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP)), 0, 0, 0);
     break;
   case PRIVATEAIRSHIP_SOURCE_MAP_INVALID:
-    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_STARTABLE_MAP)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_PUSH_TEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_STARTABLE_MAP)), 0, 0, 0);
     break;
   case PRIVATEAIRSHIP_ITEM_UNAVAILABLE:
-    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_USE_ITEM)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_PUSH_TEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_USE_ITEM)), 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUSY)), 0xFF, 0, 0, 0);
     break;
   }
@@ -2155,7 +2156,7 @@ void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
-  if (packet->itemId == 0) {
+  if (packet->itemId == ITEMID_NONE) {
     g_session.SetOtherExchangeMoney(packet->slot);
     return;
   }
@@ -2188,7 +2189,7 @@ void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
-  if (packet->itemId == 0) {
+  if (packet->itemId == ITEMID_NONE) {
     g_session.SetOtherExchangeMoney(packet->slot);
     return;
   }
@@ -3715,13 +3716,13 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     switch (*reinterpret_cast<const int*>(packet + 6)) {
     case EF_LORD:
-      effectId = 0x48A;
+      effectId = EF_LORD_OF_VERMILLION_VISUAL;
       break;
     case EF_METEORSTORM:
-      effectId = 0x48B;
+      effectId = EF_METEOR_STORM_VISUAL;
       break;
     case EF_QUAGMIRE:
-      effectId = 0x489;
+      effectId = EF_QUAGMIRE_VISUAL;
       break;
     }
   }
@@ -4148,23 +4149,23 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       int effectId = 0;
       if (angle >= 0.0f && angle < 23.0f) {
-        effectId = 0x692;
+        effectId = EF_NEW_OVERBRAND_06;
       } else if (angle >= 23.0f && angle < 67.0f) {
-        effectId = 0x691;
+        effectId = EF_NEW_OVERBRAND_05;
       } else if (angle >= 67.0f && angle < 112.0f) {
-        effectId = 0x690;
+        effectId = EF_NEW_OVERBRAND_03;
       } else if (angle >= 112.0f && angle < 157.0f) {
-        effectId = 0x68F;
+        effectId = EF_NEW_OVERBRAND_01;
       } else if (angle >= 157.0f && angle < 202.0f) {
-        effectId = 0x696;
+        effectId = EF_NEW_OVERBRAND_12;
       } else if (angle >= 202.0f && angle < 247.0f) {
-        effectId = 0x695;
+        effectId = EF_NEW_OVERBRAND_11;
       } else if (angle >= 247.0f && angle < 292.0f) {
-        effectId = 0x694;
+        effectId = EF_NEW_OVERBRAND_09;
       } else if (angle >= 292.0f && angle < 337.0f) {
-        effectId = 0x693;
+        effectId = EF_NEW_OVERBRAND_07;
       } else if (angle >= 337.0f && angle <= 360.0f) {
-        effectId = 0x692;
+        effectId = EF_NEW_OVERBRAND_06;
       }
       g_effectMgr->Spawn(actor->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\LG_OVERBRAND.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -4874,10 +4875,10 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
     this->scene->isBattleFieldMode = 1;
   }
 
-  if (GetBaseJob(g_session.GetDisplayJob()) == 0xFCF && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
+  if (GetBaseJob(g_session.GetDisplayJob()) == JT_STAR && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BLOCK_SUNMOONSTAR_MIRACLE)), 0xFFFF64, 0, 0, 0);
   }
-  if (GetBaseJob(g_session.GetDisplayJob()) == 0x1082 && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
+  if (GetBaseJob(g_session.GetDisplayJob()) == JT_STAR_B && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BLOCK_SUNMOONSTAR_MIRACLE)), 0xFFFF64, 0, 0, 0);
   }
   if ((g_session.GetDisplayJob() == JT_STAR_EMPEROR || g_session.GetDisplayJob() == JT_STAR_EMPEROR_B || g_session.GetDisplayJob() == JT_SKY_EMPEROR) &&
@@ -5030,13 +5031,13 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
       info.m_huntMinLevel[i] = hunt->minLevel;
       info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
-      if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
+      if ((mobId > JT_MON_BEGIN && mobId < JT_MONSTER_LAST) || static_cast<unsigned int>(mobId - JT_EXTENDED_JOB_NAME_START) <= QUEST_HUNT_CONDITIONAL_MONSTER - JT_EXTENDED_JOB_NAME_START) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
-      } else if (mobId == 0x1099) {
+      } else if (mobId == QUEST_HUNT_DEATH) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_DEAD));
-      } else if (mobId == 0x109A) {
+      } else if (mobId == QUEST_HUNT_PVP) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_PVP));
-      } else if (mobId == 0x287B) {
+      } else if (mobId == QUEST_HUNT_MAP_VISIT) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunt->name).c_str()));
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
@@ -5084,13 +5085,13 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
       info.m_huntMinLevel[i] = hunt->minLevel;
       info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
-      if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
+      if ((mobId > JT_MON_BEGIN && mobId < JT_MONSTER_LAST) || static_cast<unsigned int>(mobId - JT_EXTENDED_JOB_NAME_START) <= QUEST_HUNT_CONDITIONAL_MONSTER - JT_EXTENDED_JOB_NAME_START) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
-      } else if (mobId == 0x1099) {
+      } else if (mobId == QUEST_HUNT_DEATH) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_DEAD));
-      } else if (mobId == 0x109A) {
+      } else if (mobId == QUEST_HUNT_PVP) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_PVP));
-      } else if (mobId == 0x287B) {
+      } else if (mobId == QUEST_HUNT_MAP_VISIT) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunt->name).c_str()));
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
@@ -5557,7 +5558,7 @@ void CGameMode::ReceiveQuestHuntUpdate(const unsigned char* data) {
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
-      if (info.m_huntMobId[index] == 0x7CFF) {
+      if (info.m_huntMobId[index] == QUEST_HUNT_CONDITIONAL_MONSTER) {
         name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
@@ -5602,7 +5603,7 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
       notices.push_back(this->HuntTargetText(info, index));
 
       std::string name;
-      if (info.m_huntMobId[index] == 0x7CFF) {
+      if (info.m_huntMobId[index] == QUEST_HUNT_CONDITIONAL_MONSTER) {
         name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
       } else {
         name.assign(info.m_huntName[index]);
@@ -6173,14 +6174,14 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_SUHIDE:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SetState(48, 1);
+        this->scene->player->SetState(ST_SU_HIDE, 1);
         this->scene->player->render.isMotionFreezed = true;
       }
       break;
     case EFST_SU_STOOP:
       if (packet->aid == g_session.m_aid) {
         this->scene->GetGameActorByAID(packet->aid);
-        this->scene->player->SetState(47, 1);
+        this->scene->player->SetState(ST_SU_STOOP, 1);
       }
       break;
     case EFST_ALL_STAT_DOWN:
@@ -6286,7 +6287,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case EFST_TRICKDEAD:
       std::sprintf(message, "");
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SetState(0, 1);
+        this->scene->player->SetState(ST_STAND, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
@@ -6830,13 +6831,13 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_SUHIDE:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SetState(0, 1);
+        this->scene->player->SetState(ST_STAND, 1);
         this->scene->player->render.isMotionFreezed = false;
       }
       break;
     case EFST_SU_STOOP:
       if (packet->aid == g_session.m_aid && !this->scene->player->render.specialMotionLocked) {
-        this->scene->player->SetState(0, 1);
+        this->scene->player->SetState(ST_STAND, 1);
       }
       break;
     case EFST_ALL_STAT_DOWN:

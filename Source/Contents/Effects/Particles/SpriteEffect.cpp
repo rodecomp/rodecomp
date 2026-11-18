@@ -1,5 +1,6 @@
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/SpriteEffect.h"
+#include "Render/Primitives/RenderQueues.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
@@ -76,7 +77,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->SetAction("이팩트\\bakuretsu_hadou\\bakuretsu_hadou.act");
     particle->renderOptions |= 0x200;
     particle->depthOffset = 0.0003f;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;
     break;
@@ -161,7 +162,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 8.0f;
     particle->loopMode = 0;
     particle->depthOffset = 0.0003f;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     if (this->id == EF_SUBJECT_AURA_1212) {
       particle->animation = 0;
     } else if (this->id == EF_SUBJECT_AURA_1213) {
@@ -175,28 +176,28 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->SetAction("이팩트\\book_of_dimension\\book_of_dimension.act");
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_BOOK_OF_CREATINGSTAR:
     particle->SetSprite("이팩트\\book_of_creatingstar\\book_of_creatingstar.spr");
     particle->SetAction("이팩트\\book_of_creatingstar\\book_of_creatingstar.act");
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_CURSE_EXPLOSION:
     particle->SetSprite("이팩트\\curse_explosion\\curse_explosion.spr");
     particle->SetAction("이팩트\\curse_explosion\\curse_explosion.act");
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_SOUL_REAPER:
     particle->SetSprite("이팩트\\soul_reaper\\soul_reaper.spr");
     particle->SetAction("이팩트\\soul_reaper\\soul_reaper.act");
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_SOUL_SHADOW:
     particle->SetSprite("이팩트\\soul_shadow\\soul_shadow.spr");
@@ -204,7 +205,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0003f;
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_SOUL_FAIRY:
     particle->SetSprite("이팩트\\soul_fairy\\soul_fairy.spr");
@@ -212,7 +213,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0003f;
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_SOUL_FALCON:
     particle->SetSprite("이팩트\\soul_falcon\\soul_falcon.spr");
@@ -220,7 +221,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0003f;
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_SOUL_EXPLOSION:
     particle->SetSprite("이팩트\\soul_explosion\\soul_explosion.spr");
@@ -228,7 +229,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0003f;
     particle->frameDelay = 4.0f;
     particle->loopMode = 1;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_VALKYRIE_WING:
     particle->SetSprite("이팩트\\valkyrie_wing\\valkyrie_wing.spr");
@@ -236,7 +237,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 6.0f;
-    particle->flags = 0x101;
+    particle->flags = RSF_ALPHA | RSF_DEPTH_SORTED;
     break;
   case EF_C_AMDARAIS_EFFECT:
     particle->SetSprite("이팩트\\c_amdarais_effect.spr");
@@ -244,7 +245,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0001f;
     particle->frameDelay = 6.0f;
     particle->loopMode = 0;
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     break;
   case EF_BLACKBUBBLE_SMALL:
     particle->SetSprite("이팩트\\black_bubble\\small\\blackbubble_small.spr");
@@ -252,7 +253,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0001f;
     particle->frameDelay = 6.0f;
     particle->loopMode = 0;
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     break;
   case EF_BLACKBUBBLE_MIDIUM:
     particle->SetSprite("이팩트\\black_bubble\\midium\\blackbubble_midium.spr");
@@ -260,7 +261,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0001f;
     particle->frameDelay = 6.0f;
     particle->loopMode = 0;
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     break;
   case EF_BLACKBUBBLE_LARGE:
     particle->SetSprite("이팩트\\black_bubble\\large\\blackbubble_large.spr");
@@ -268,7 +269,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.0001f;
     particle->frameDelay = 6.0f;
     particle->loopMode = 0;
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     break;
   case EF_SERPENT_SHADOW:
     particle->SetSprite("이팩트\\Serpent_Shadow\\Serpent_Shadow.spr");
@@ -276,7 +277,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
-    particle->flags = 0xD;
+    particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
   case EF_VIOLEN_HIT:
     particle->SetSprite("몬스터\\violen_hit.spr");
@@ -312,7 +313,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
-    particle->flags = 0xD;
+    particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
   case EF_PERM_FROST_OBLIVION:
     particle->SetSprite("이팩트\\Perm_Frost_Oblivion\\Perm_Frost_Oblivion.spr");
@@ -320,12 +321,12 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->depthOffset = 0.001f;
     particle->frameDelay = 4.0f;
     particle->loopMode = 0;
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     break;
   case EF_S_BEELZEBUB_WING:
     particle->SetSprite("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.spr");
     particle->SetAction("이팩트\\S_Beelzebub_Wing\\S_Beelzebub_Wing.act");
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     particle->depthOffset = 0.0015f;
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;
@@ -334,7 +335,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->SetSprite(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL));
 
     particle->SetAction(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL));
-    particle->flags = 1;
+    particle->flags = RSF_ALPHA;
     particle->depthOffset = 0.0015f;
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;

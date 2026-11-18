@@ -1,4 +1,6 @@
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
+#include "Contents/Actors/AccessoryId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -350,8 +352,8 @@ void CGrannyPc::SetSprAct2(int first, int second, int third, int fourth, int fif
 // OFFSET: 0x00DB1960
 // FUNCTION: fn_22636
 void CPc::RefreshAccessory3() {
-  if (this->accessory3 == 185) {
-    this->SetSprAccessory3(185);
+  if (this->accessory3 == ACCESSORY_BATTLEONLINE) {
+    this->SetSprAccessory3(ACCESSORY_BATTLEONLINE);
   }
 }
 
@@ -429,19 +431,19 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     if (current == ST_SIT) {
       return;
     }
-    if (this->GetEffectiveJob(-1) == 0x13 || this->GetEffectiveJob(-1) == 0x14 || this->GetEffectiveJob(-1) == 0xE ||
-        this->GetEffectiveJob(-1) == 0xFB4 || this->GetEffectiveJob(-1) == 0xFB5 || this->GetEffectiveJob(-1) == 0xFAF ||
-        this->GetEffectiveJob(-1) == 0xFCA || this->GetEffectiveJob(-1) == 0xFCB || this->GetEffectiveJob(-1) == 0xFC5 ||
-        this->GetEffectiveJob(-1) == 0xFE4 || this->GetEffectiveJob(-1) == 0xFEB || this->GetEffectiveJob(-1) == 0xFE5 ||
-        this->GetEffectiveJob(-1) == 0xFEC || this->GetEffectiveJob(-1) == 0xFE9 || this->GetEffectiveJob(-1) == 0xFE2) {
+    if (this->GetEffectiveJob(-1) == JT_BARD || this->GetEffectiveJob(-1) == JT_DANCER || this->GetEffectiveJob(-1) == JT_CRUSADER ||
+        this->GetEffectiveJob(-1) == JT_BARD_H || this->GetEffectiveJob(-1) == JT_DANCER_H || this->GetEffectiveJob(-1) == JT_CRUSADER_H ||
+        this->GetEffectiveJob(-1) == JT_BARD_B || this->GetEffectiveJob(-1) == JT_DANCER_B || this->GetEffectiveJob(-1) == JT_CRUSADER_B ||
+        this->GetEffectiveJob(-1) == JT_MINSTREL || this->GetEffectiveJob(-1) == JT_MINSTREL_H || this->GetEffectiveJob(-1) == JT_WANDERER ||
+        this->GetEffectiveJob(-1) == JT_WANDERER_H || this->GetEffectiveJob(-1) == JT_ROYAL_GUARD_H || this->GetEffectiveJob(-1) == JT_ROYAL_GUARD) {
       this->SetAction(0x20, 6, 1);
-    } else if (this->GetEffectiveJob(-1) == 0xF || this->GetEffectiveJob(-1) == 0xFB0 || this->GetEffectiveJob(-1) == 0xFC6 ||
-               this->GetEffectiveJob(-1) == 0xFE6 || this->GetEffectiveJob(-1) == 0xFED || this->GetEffectiveJob(-1) == 0x100A ||
-               this->GetEffectiveJob(-1) == 0x10A6) {
+    } else if (this->GetEffectiveJob(-1) == JT_MONK || this->GetEffectiveJob(-1) == JT_MONK_H || this->GetEffectiveJob(-1) == JT_MONK_B ||
+               this->GetEffectiveJob(-1) == JT_SURA || this->GetEffectiveJob(-1) == JT_SURA_H || this->GetEffectiveJob(-1) == JT_SURA_B ||
+               this->GetEffectiveJob(-1) == JT_INQUISITOR) {
       this->SetAction(0x60, 6, 1);
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
-    } else if (this->GetEffectiveJob(-1) == 0x10A7 || this->GetEffectiveJob(-1) == 0x10A8) {
+    } else if (this->GetEffectiveJob(-1) == JT_TROUBADOUR || this->GetEffectiveJob(-1) == JT_TROUVERE) {
       this->SetAction(0x20, 6, 1);
     } else {
       this->SetAction(0x60, 6, 1);
@@ -588,7 +590,7 @@ void CGrannyPc::SetImfFileName() {
 void CPc::SetImfFileName() {
   int job = this->GetEffectiveJob(-1);
 
-  if (job >= 0x10CE && job <= 0x10E9 && this->isRiding != 0) {
+  if (job >= JT_SKY_EMPEROR && job <= 0x10E9 && this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
   }
 
@@ -1046,7 +1048,7 @@ void CPc::ApplyLayerEffects(
   float screenX, float screenY, const std::uint32_t* palette, const SpriteRleImage* image, int* blend, int offsetX, int offsetY
 ) {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-    if (effect.id == 184) {
+    if (effect.id == EFST_CLAIRVOYANCE) {
       if ((!this->render.visible || !this->render.enabled) && !IsInvisible(this->stateFlags)) {
         return;
       }
@@ -1889,7 +1891,7 @@ bool CPc::HasAppearanceOverride() {
 // OFFSET: 0x00DACF90
 // FUNCTION: fn_22597
 void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model) {
-  if (!this->render.visible || this->render.accountId == 0xFFFFFFFF) {
+  if (!this->render.visible || this->render.accountId == INVALID_AID) {
     return;
   }
 
@@ -2268,7 +2270,7 @@ bool CPc::OnProcess() {
   if (!IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags) && !IsHiding(this->stateFlags)) {
     if (show) {
       if (!this->msgEffect) {
-        CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+        CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(MAKETYPE_COSTUME_BODY_EFFECT, &this->render.position, this->render.accountId, true);
         this->AddMsgEffect(effect);
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
@@ -2297,7 +2299,7 @@ void CPc::Render(int argument) {
   }
 
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-    if (effect.id == 0xB8) {
+    if (effect.id == EFST_CLAIRVOYANCE) {
       hasEffect = true;
       break;
     }
@@ -2601,7 +2603,7 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
 
   if (show) {
     if (!this->msgEffect) {
-      CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+      CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(MAKETYPE_COSTUME_BODY_EFFECT, &this->render.position, this->render.accountId, true);
       this->AddMsgEffect(effect);
       effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
       this->msgEffect = effect;
@@ -2906,13 +2908,13 @@ void CPlayer::UpdatePendingAction() {
     int column;
     int row;
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
-    if (this->GetEffectiveJob(-1) == 16 || this->GetEffectiveJob(-1) == 4017 || this->GetEffectiveJob(-1) == 4039) {
+    if (this->GetEffectiveJob(-1) == JT_SAGE || this->GetEffectiveJob(-1) == JT_SAGE_H || this->GetEffectiveJob(-1) == JT_SAGE_B) {
       const int state = static_cast<int>(this->render.state);
       if (state != ST_MOVE && state != ST_STAND && state != ST_DAMAGE && state != ST_SKILL && state != ST_BEGIN_SKILL) {
         return;
       }
-    } else if ((this->GetEffectiveJob(-1) >= 4046 && this->GetEffectiveJob(-1) < 4361) || this->GetEffectiveJob(-1) == 24 ||
-               this->GetEffectiveJob(-1) == 25) {
+    } else if ((this->GetEffectiveJob(-1) >= JT_TAEKWON && this->GetEffectiveJob(-1) < JT_2004_JOB_LAST) || this->GetEffectiveJob(-1) == JT_GUNSLINGER ||
+               this->GetEffectiveJob(-1) == JT_NINJA) {
       const int state = static_cast<int>(this->render.state);
       if (state != ST_MOVE && state != ST_STAND && state != ST_DAMAGE && state != ST_SKILL && state != ST_BEGIN_SKILL && state < 16) {
         return;
@@ -3182,7 +3184,7 @@ void CPlayer::ReapplySkillEffects() {
   this->UpdateMaxLevelAura();
 
   CTetraBallEffect* tetraBall;
-  for (int id = 0x4EE; id <= 0x4F1; ++id) {
+  for (int id = EF_TETRA_VORTEX_BALL_1; id <= EF_TETRA_VORTEX_BALL_4; ++id) {
     tetraBall = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
     if (tetraBall) {
       break;
@@ -3380,7 +3382,7 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_SUMMON5:
       if (!tetraBall) {
         CTetraBallEffect* ball;
-        for (int id = 0x4EE; id <= 0x4F1; ++id) {
+        for (int id = EF_TETRA_VORTEX_BALL_1; id <= EF_TETRA_VORTEX_BALL_4; ++id) {
           ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
           if (ball) {
             break;
@@ -3559,7 +3561,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case EFST_SUHIDE:
-      this->SetState(0x30, 1);
+      this->SetState(ST_SU_HIDE, 1);
       this->render.isMotionFreezed = true;
       break;
     case EFST_TUNAPARTY:
@@ -3596,44 +3598,44 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, type + 0x87, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_GRAVITYCONTROL:
-      if (g_effectMgr->Has(this->render.accountId, 0x4B1) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_UNK_1201) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4B1);
       }
-      g_effectMgr->Spawn(this->render.accountId, 0x4B1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1201, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\t_캐스팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case EFST_SUNSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, 0x4BE) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_SUN_STANCE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BE);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_SUN_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_LUNARSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, 0x4BF) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_LUNAR_STANCE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4BF);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_LUNAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_STARSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, 0x4C0) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_STAR_STANCE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C0);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_STAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_UNIVERSESTANCE:
-      if (g_effectMgr->Has(this->render.accountId, 0x4C1) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_UNIVERSE_STANCE) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C1);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_UNIVERSE_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_FLASHKICK:
-      if (g_effectMgr->Has(this->render.accountId, 0x4C5) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_FLASH_KICK) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C5);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_FLASH_KICK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_SOULUNITY:
-      if (g_effectMgr->Has(this->render.accountId, 0x4C6) == true) {
+      if (g_effectMgr->Has(this->render.accountId, EF_SOUL_UNITY) == true) {
         g_effectMgr->Retire(this->render.accountId, 0x4C6);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_SOUL_UNITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3651,7 +3653,7 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, EF_NEW_SOUNDOFDESTRUCTION_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_DEADLY_DEFEASANCE:
-      if (!g_effectMgr->Has(this->render.accountId, 0x6CD)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_DEADLY_PROJECTION)) {
         g_effectMgr->Spawn(this->render.accountId, EF_DEADLY_PROJECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
@@ -3706,17 +3708,17 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, EF_DRAGONIC_AURA_BUFF_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_CLIMAX:
-      if (!g_effectMgr->Has(this->render.accountId, 0x708)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_CLIMAX)) {
         g_effectMgr->Spawn(this->render.accountId, EF_CLIMAX, this->render.position, 0, value, 0, 0);
       }
       break;
     case EFST_MEDIALE:
-      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) && !g_effectMgr->Has(this->render.accountId, 0x712)) {
+      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) && !g_effectMgr->Has(this->render.accountId, EF_MEDIALE_VOTUM_LOOP)) {
         g_effectMgr->Spawn(this->render.accountId, EF_MEDIALE_VOTUM_LOOP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
     case EFST_ABYSS_SLAYER:
-      if (!g_effectMgr->Has(this->render.accountId, 0x84E)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_ABYSS_SLAYER)) {
         g_effectMgr->Spawn(this->render.accountId, EF_ABYSS_SLAYER, this->render.position, 0, value, 0, 0);
       }
       break;
@@ -3732,7 +3734,7 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, EF_THIRD_EXOR_FLAME_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_D_MACHINE:
-      if (!g_effectMgr->Has(this->render.accountId, 0x719)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_NEW_D_MACHINE)) {
         g_effectMgr->Spawn(this->render.accountId, EF_NEW_D_MACHINE, this->render.position, 0, value, 0, 0);
       }
       break;
@@ -3740,20 +3742,20 @@ void CPlayer::ReapplySkillEffects() {
       g_effectMgr->Spawn(this->render.accountId, EF_A_MACHINE, this->render.position, 0, value, 0, 0);
       break;
     case EFST_COMPETENTIA:
-      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) && !g_effectMgr->Has(this->render.accountId, 0x73C)) {
+      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) && !g_effectMgr->Has(this->render.accountId, EF_COMPETENTIA_LOOP)) {
         g_effectMgr->Spawn(this->render.accountId, EF_COMPETENTIA_LOOP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
-      if (!g_effectMgr->Has(this->render.accountId, 0x73D)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_COMPETENTIA_LOOP_BOTTOM)) {
         g_effectMgr->Spawn(this->render.accountId, EF_COMPETENTIA_LOOP_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
     case EFST_WINDSIGN:
-      if (!g_effectMgr->Has(this->render.accountId, 0x76C)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_WIND_SIGN_LOOP)) {
         g_effectMgr->Spawn(this->render.accountId, EF_WIND_SIGN_LOOP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
     case EFST_E_SLASH_COUNT:
-      if (!g_effectMgr->Has(this->render.accountId, 0x779)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_ETERNAL_SLASH_COUNT)) {
         g_effectMgr->Spawn(this->render.accountId, EF_ETERNAL_SLASH_COUNT, this->render.position, 0, value, 0, 0);
       }
       break;
@@ -3763,13 +3765,13 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     case EFST_SOUNDBLEND:
-      if (!g_effectMgr->Has(this->render.accountId, 0x80C)) {
+      if (!g_effectMgr->Has(this->render.accountId, EF_SOUND_BLEND)) {
         g_effectMgr->Spawn(this->render.accountId, EF_SOUND_BLEND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       break;
     case EFST_ABYSSFORCEWEAPON:
-      if (!g_effectMgr->Has(this->render.accountId, 0x83D)) {
-        CEffect* abyss = g_effectMgr->Spawn(this->render.accountId, 0x83D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (!g_effectMgr->Has(this->render.accountId, EF_UNK_2109)) {
+        CEffect* abyss = g_effectMgr->Spawn(this->render.accountId, EF_UNK_2109, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         if (abyss) {
           static_cast<CFromTheAbyssEffect*>(abyss)->SetLevel(value);
         }
@@ -3777,12 +3779,12 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_CLOUD_POISON:
       if (!this->HasId(0x8E5)) {
-        this->LaunchEffect(0x8E5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(EF_UNK_2277, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case EFST_SPORE_EXPLOSION_DEBUFF:
       if (!this->HasId(0x8E6)) {
-        this->LaunchEffect(0x8E6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(EF_UNK_2278, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case EFST_BLOCK:
@@ -3851,11 +3853,11 @@ void CPlayer::SendMsg(
     request.x = this->gSkillDx;
     request.y = this->gSkillDy;
     request.level = this->skillUseLevel;
-    if (request.skill == 0x7D) {
+    if (request.skill == HT_TALKIEBOX) {
       g_windowMgr.EnsureWindow(WID_TALKBOXTRAPINPUTWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-    } else if (request.skill == 0xDC) {
+    } else if (request.skill == RG_GRAFFITI) {
       g_windowMgr.EnsureWindow(WID_GRAFFISTRBOXWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-    } else if (request.skill == 0x108 || request.skill == 0xA04) {
+    } else if (request.skill == MO_BODYRELOCATION || request.skill == RL_FALLEN_ANGEL) {
       int metadata = 0;
       int column = 0;
       int row = 0;
@@ -4127,7 +4129,7 @@ void CGrannyPc::RenderModel(
   CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
 
-  if (this->render.accountId == 0xFFFFFFFF) {
+  if (this->render.accountId == INVALID_AID) {
     return;
   }
 
@@ -4354,7 +4356,7 @@ void CPc::SetState(int state, int resetPosition) {
     return;
   }
 
-  if (current == 0x51 && state != ST_DEAD) {
+  if (current == ST_NATURE_PROTECTION && state != ST_DEAD) {
     return;
   }
 
@@ -5103,32 +5105,32 @@ void CPc::SendMsg(
     int effectId;
     switch (this->bodyStyle) {
     case JT_HUNTER_H:
-      effectId = 0x17;
+      effectId = MAKETYPE_BIRD_EFFECT2;
       break;
     case JT_HUNTER_B:
-      effectId = 0x18;
+      effectId = MAKETYPE_BIRD_EFFECT3;
       break;
     case JT_GANGSI:
-      effectId = 0x20;
+      effectId = MAKETYPE_BIRD_EFFECT4;
       break;
     case JT_DEATHKNIGHT:
-      effectId = 0x21;
+      effectId = MAKETYPE_BIRD_EFFECT5;
       break;
     case JT_COLLECTOR:
-      effectId = 0x22;
+      effectId = MAKETYPE_BIRD_EFFECT6;
       break;
     case JT_RANGER:
     case JT_RANGER_H:
     case JT_RANGER_B:
     case JT_RANGER_2ND:
-      effectId = 0x35;
+      effectId = MAKETYPE_OWL_EFFECT;
       break;
     case JT_WINDHAWK:
     case JT_WOLF_WINDHAWK:
-      effectId = 0x45;
+      effectId = MAKETYPE_WINDHAWK_HAWK_EFFECT;
       break;
     default:
-      effectId = 0xE;
+      effectId = MAKETYPE_BIRD_EFFECT;
       break;
     }
     CMsgEffect* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
@@ -5149,15 +5151,15 @@ void CPc::SendMsg(
     case JT_RANGER_H:
     case JT_WOLF_RANGER:
     case JT_WOLF_RANGER_H:
-      effectId = 0x23;
+      effectId = MAKETYPE_WARG_EFFECT;
       break;
     case JT_RANGER_B:
     case JT_WOLF_RANGER_B:
-      effectId = 0x2A;
+      effectId = MAKETYPE_BABY_WARG_EFFECT;
       break;
     case JT_WINDHAWK:
     case JT_WOLF_WINDHAWK:
-      effectId = 0x46;
+      effectId = MAKETYPE_WINDHAWK_WOLF_EFFECT;
       break;
     case JT_RANGER_2ND:
       effectId = g_session.IsBabyJob(this->GetEffectiveJob(-1)) == true ? 0x2A : 0x23;

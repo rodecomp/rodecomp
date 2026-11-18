@@ -18,7 +18,7 @@
 void UIEscOptionWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   const char* names[7] = {"esc_01", "esc_001", "esc_08", "esc_09", "esc_02", "esc_05", "esc_10"};
-  int ids[7] = {371, 458, 370, 251, 185, 353, 372};
+  int ids[7] = {ID_RETURN_TO_CHARACTER_SELECT, ID_OPEN_GAME_SETTINGS, ID_OPEN_HOTKEY, ID_QUIT, ID_CANCEL, ID_REBIRTH, ID_RETURN_TO_LOGIN};
 
   for (int i = 0; i < 7; ++i) {
     this->m_buttons[i] = new UIBitmapButton();
@@ -119,9 +119,9 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       g_windowMgr.EnsureWindow(WID_GAMESETTINGSUI);
     }
     break;
-  case 0x1C9:
-    if (!g_windowMgr.CloseWindow(0xEC)) {
-      g_windowMgr.EnsureWindow(0xEC);
+  case ID_ESCOPTION_UNUSED_457:
+    if (!g_windowMgr.CloseWindow(WID_ESCOPTION_UNUSED_236)) {
+      g_windowMgr.EnsureWindow(WID_ESCOPTION_UNUSED_236);
     }
     break;
   case ID_RETURN_TO_LOGIN:

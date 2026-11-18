@@ -173,7 +173,7 @@ static const std::string SexNameOf(int sex) {
 // OFFSET: 0x00BAB110
 // FUNCTION: fn_19751
 std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* head) {
-  if (job < 0 || (job > 30 && job < 1000) || (job > 1000 && job < 3999) || (job >= 20021 && job < 32000)) {
+  if (job < JT_NOVICE || (job > JT_SUMMER2 && job < JT_MON_BEGIN) || (job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || (job >= JT_EXTENDED_JOB_NAME_START && job < JT_EXTENDED_JOB_NAME_END)) {
     job = 0;
   }
 

@@ -1,4 +1,6 @@
 #include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/CombatTypes.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/Items/ItemType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -393,7 +395,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
 
     const NormalItemSlot* slot = this->m_slots[a + 9 * b];
-    if (slot->itemId == 0) {
+    if (slot->itemId == ITEMID_NONE) {
       return 0;
     }
 
@@ -422,7 +424,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case TYPE_HEAL:
     case TYPE_SCHANGE:
     case TYPE_SPECIAL:
-      if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+      if (item.GetItemId() != ITEMID_TIME_GUARDIAN_BOX || g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
         mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
       }
 
@@ -443,7 +445,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case TYPE_AMMO:
     case TYPE_THROWWEAPON:
     case TYPE_CANNONBALL:
-      if (item.identity[3] == 0x8000) {
+      if (item.identity[3] == EQP_AMMO) {
         mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
       }
 
@@ -471,7 +473,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         slot = &g_session.m_secondaryShortcutSlots[source];
       }
 
-      if (slot->itemId == 0 || slot->enabled == 0) {
+      if (slot->itemId == ITEMID_NONE || slot->enabled == 0) {
         continue;
       }
 
@@ -1084,7 +1086,7 @@ void UIMemorialDunWnd::ArrangeButtons() {
     }
   } else if (g_session.memorialDungeonState == 3) {
     this->m_actionButton->Move((this->geometry.width - this->m_actionButton->geometry.width) / 2, this->geometry.height - 30);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
   }
 
   this->Invalidate();
@@ -1283,7 +1285,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
     return 0;
-  case 0x74:
+  case UM_CHILD_CHANGED:
     if (sender == this->m_chatBox && this->geometry.height > this->m_inputHeight) {
       RECT rectangle;
       rectangle.left = this->m_chatBox->geometry.x;
@@ -1520,7 +1522,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->m_whisperEdit->maximum = 24;
   this->m_whisperEdit->Background(240, 240, 240);
   this->AddChild(this->m_whisperEdit);
-  this->m_message0 = 0xB8;
+  this->m_message0 = ID_OK;
 
   this->m_inputResizer = new UIResizer();
   this->m_inputResizer->SetBitmapName("유저인터페이스\\basic_interface\\dialog_mid.bmp");

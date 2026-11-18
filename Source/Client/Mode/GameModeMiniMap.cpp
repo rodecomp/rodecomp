@@ -362,7 +362,7 @@ void CGameMode::DrawMiniMapTriangle(float x, float y, float size, std::uint32_t 
   vertices[3].v = 1.0f;
   vertices[3].diffuse = color;
 
-  g_renderer->Submit(primitive, 0x201);
+  g_renderer->Submit(primitive, RSF_ALPHA | RSF_NO_DEPTH);
 }
 
 // OFFSET: 0x00CD2BE0

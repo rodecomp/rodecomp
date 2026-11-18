@@ -180,6 +180,6 @@ void CMode::DrawCursor() {
     quad[3].v = record.v1;
     quad[3].diffuse = 0xFAFFFFFF;
 
-    g_renderer->Submit(primitive, 517);
+    g_renderer->Submit(primitive, RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_NO_DEPTH);
   }
 }

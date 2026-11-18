@@ -1,5 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Actors/AccessoryId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Login/UINewSelectCharWnd.h"
@@ -706,7 +707,7 @@ void UISelCharForUServerWnd::Paint() {
 
         offsetX += g_charViewOffsetX;
         offsetY += g_charViewOffsetY;
-        if (layer == 3 && (this->accessory2[index] == 0xB5 || this->accessory2[index] == 0xC5)) {
+        if (layer == 3 && (this->accessory2[index] == ACCESSORY_TIGER_MASK || this->accessory2[index] == ACCESSORY_BANANA_HAT)) {
           offsetY -= 7;
         }
       }

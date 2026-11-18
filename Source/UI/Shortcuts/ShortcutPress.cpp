@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay/Replay.h"
+#include "Contents/Items/ItemId.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -32,7 +33,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
       return;
     }
 
-    if (this->m_itemSlots[column]->itemId == 0) {
+    if (this->m_itemSlots[column]->itemId == ITEMID_NONE) {
       return;
     }
 
@@ -40,11 +41,11 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
     if (item.identity[1] > 0) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (mode) {
-        mode->BeginDragItem(7, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_SHORTCUT, item, item.quantity, -1);
       }
     }
   } else {
-    if (this->m_slots[index]->itemId == 0) {
+    if (this->m_slots[index]->itemId == ITEMID_NONE) {
       return;
     }
 
@@ -53,14 +54,14 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
       if (this->MatchesShortcut(skill, this->m_slots[index])) {
         CGameMode* mode = g_modeMgr.GetGameMode();
         if (mode) {
-          mode->BeginDragSkill(7, skill.id, skill.name, this->m_slots[index]->value, index);
+          mode->BeginDragSkill(DRAG_SHORTCUT, skill.id, skill.name, this->m_slots[index]->value, index);
         }
       }
     } else {
       ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
       if (item.identity[1] > 0) {
         CGameMode* mode = g_modeMgr.GetGameMode();
-        mode->BeginDragItem(7, item, item.quantity, -1);
+        mode->BeginDragItem(DRAG_SHORTCUT, item, item.quantity, -1);
       }
     }
   }

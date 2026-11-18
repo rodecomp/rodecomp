@@ -7,6 +7,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
@@ -129,7 +130,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     break;
   case BAN_NOT_SETTLED:
     strcpy(text, LookupMessage(MSI_NOT_SETTLED));
-    if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == 187) {
+    if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == ID_YES) {
       g_modeMgr.Quit();
       this->OpenAccountRegistration();
     }

@@ -1,5 +1,7 @@
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/CombatTypes.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -55,14 +57,14 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.available && skill.level) {
       if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-        mode->BeginDragSkill(16, skill.id, skill.name, entry.count, index);
+        mode->BeginDragSkill(DRAG_QUICKSLOT, skill.id, skill.name, entry.count, index);
       }
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry.id), 1);
     if (item.identity[1] > 0) {
       CGameMode* mode = g_modeMgr.GetGameMode();
-      mode->BeginDragItem(16, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_QUICKSLOT, item, item.quantity, -1);
     }
   }
 }
@@ -200,7 +202,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         case UM_OPENCHATWND:
         case UM_LOADINGPERCENT:
         case UM_DOWNPUSH:
-          if (item.identity[3] == 0x8000) {
+          if (item.identity[3] == EQP_AMMO) {
             mode->SendMsg(MM_TAKE_OFF_EQUIP, 0xF, 0, 0, 0);
             mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
           }
@@ -232,7 +234,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       entry.id = 0;
       entry.skill = 0;
       entry.count = 0;
-      if (itemId == 0) {
+      if (itemId == ITEMID_NONE) {
         continue;
       }
 

@@ -2805,7 +2805,7 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
 // FUNCTION: fn_08507
 void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, 0x4E8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_UNK_1256, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2936,7 +2936,7 @@ void CEfstAction_BLOCK_SEAL::OnEfstBegin(int efstId, int value, int argument3, i
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, 0x960, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2400, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

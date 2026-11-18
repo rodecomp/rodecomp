@@ -802,7 +802,7 @@ bool CSkill::OnProcess() {
       EffectLists* effects = g_effectMgr;
       if (effects->Spawn(this->skillAid, EF_CLOUD_KILL, this->render.position, 0, -1, 0, 0)) {
         this->m_hasEffect = true;
-        this->m_effectId = 0x438;
+        this->m_effectId = EF_CLOUD_KILL;
       }
     }
     break;
@@ -1286,7 +1286,7 @@ bool CSkill::OnProcess() {
     if (!this->m_hasEffect) {
       this->m_hasEffect = true;
       this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->m_effectId = 0x520;
+      this->m_effectId = EF_NEW_FEINTBOMB;
     }
     break;
   default:

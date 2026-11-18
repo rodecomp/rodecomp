@@ -199,7 +199,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->ApplyHeaderLayout();
     return 0;
   }
-  case 0x74:
+  case UM_CHILD_CHANGED:
     if (this->geometry.height <= this->m_inputOffsetY + this->m_inputAreaHeight) {
       return 0;
     }

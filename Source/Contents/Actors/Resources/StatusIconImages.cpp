@@ -1,15 +1,16 @@
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Session/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "Script/LuaScript.h"
 
 #include <cstring>
 
 // INLINED
 static __forceinline bool IsTaekwonDisplayJob() {
-  return (g_session.GetDisplayJob() >= 4046 && g_session.GetDisplayJob() <= 4049) || g_session.GetDisplayJob() == 4225 ||
-         g_session.GetDisplayJob() == 4226 || g_session.GetDisplayJob() == 4238 || g_session.GetDisplayJob() == 4227 ||
-         (g_session.GetDisplayJob() >= 4239 && g_session.GetDisplayJob() <= 4244) || g_session.GetDisplayJob() == 4302 ||
-         g_session.GetDisplayJob() == 4303 || g_session.GetDisplayJob() == 4316;
+  return (g_session.GetDisplayJob() >= JT_TAEKWON && g_session.GetDisplayJob() <= JT_LINKER) || g_session.GetDisplayJob() == JT_TAEKWON_B ||
+         g_session.GetDisplayJob() == JT_STAR_B || g_session.GetDisplayJob() == JT_STAR2_B || g_session.GetDisplayJob() == JT_LINKER_B ||
+         (g_session.GetDisplayJob() >= JT_STAR_EMPEROR && g_session.GetDisplayJob() <= JT_STAR2_EMPEROR_B) || g_session.GetDisplayJob() == JT_SKY_EMPEROR ||
+         g_session.GetDisplayJob() == JT_SOUL_ASCETIC || g_session.GetDisplayJob() == JT_SKY_EMPEROR2;
 }
 
 // OFFSET: 0x00E166E0

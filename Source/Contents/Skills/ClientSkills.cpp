@@ -1,5 +1,6 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -466,10 +467,10 @@ void CSession::ResetAlternateCostumeItems() {
 // FUNCTION: fn_23756
 void CSession::ClearQuickSlots() {
   this->quickSlot.enabled = 0;
-  this->quickSlot.itemId = 0;
+  this->quickSlot.itemId = ITEMID_NONE;
   this->quickSlot.value = 0;
   this->alternateQuickSlot.enabled = 0;
-  this->alternateQuickSlot.itemId = 0;
+  this->alternateQuickSlot.itemId = ITEMID_NONE;
   this->alternateQuickSlot.value = 0;
 }
 
@@ -478,7 +479,7 @@ void CSession::ClearQuickSlots() {
 void CSession::ClearShortcutSlots() {
   for (int index = 0; index < 36; ++index) {
     this->m_shortcutSlots[index].enabled = 0;
-    this->m_shortcutSlots[index].itemId = 0;
+    this->m_shortcutSlots[index].itemId = ITEMID_NONE;
     this->m_shortcutSlots[index].value = 0;
   }
 }

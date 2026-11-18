@@ -1,4 +1,6 @@
 #include "Contents/Navigation/NavigationManager.h"
+#include "Client/Mode/GameModeEnums.h"
+#include "Contents/Items/ItemId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 
@@ -255,13 +257,13 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
     return;
   }
 
-  if (itemId == 0x1AFD) {
+  if (itemId == ITEMID_NYANGVINE_FRUIT) {
     UIPayConfirmWnd* window = new UIPayConfirmWnd();
-    window->Configure(LookupMessage(MSI_PAY_CONFIRM_BY_NYANGVINE_FRUIT), 0x1AFD);
+    window->Configure(LookupMessage(MSI_PAY_CONFIRM_BY_NYANGVINE_FRUIT), ITEMID_NYANGVINE_FRUIT);
     window->SendMsg(nullptr, UM_SET_MODAL, 1, 0, 0, 0);
     window->SetId(ID_PAY_CONFIRM_WND);
     g_windowMgr.AddRendered(window);
-    if (g_windowMgr.RunModal(window) != 187) {
+    if (g_windowMgr.RunModal(window) != ID_YES) {
       return;
     }
   }
@@ -675,7 +677,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     if (Replay::Instance().state == 2) {
       char packet[400] = {};
       NavigationRouteRecord record = {};
-      record.header = 0x038E08AE;
+      record.header = ReplayUiRecordHeader(REPLAY_UI_START_NAVIGATION);
       record.length = sizeof(record);
       std::memcpy(record.mapName, recordName.c_str(), recordName.size());
       record.type = type;
@@ -1285,7 +1287,7 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
     if (Replay::Instance().state == 2) {
       char packet[100] = {};
       NavigationDestinationRecord record = {};
-      record.header = 0x039008AE;
+      record.header = ReplayUiRecordHeader(REPLAY_UI_NAVIGATION_DESTINATION);
       record.length = sizeof(record);
       std::memcpy(record.mapName, name.c_str(), name.size());
       record.x = x;
@@ -1529,21 +1531,21 @@ bool CNavigationManager::BuildTargetRouteLines() {
 
     int message;
     if (element == 1) {
-      message = 2263;
+      message = MSI_NAVIGATION_PROPERTY1;
     } else if (element == 2) {
-      message = 2264;
+      message = MSI_NAVIGATION_PROPERTY2;
     } else if (element == 3) {
-      message = 2265;
+      message = MSI_NAVIGATION_PROPERTY3;
     } else if (element == 4) {
-      message = 2266;
+      message = MSI_NAVIGATION_PROPERTY4;
     } else if (element == 5) {
-      message = 2267;
+      message = MSI_NAVIGATION_PROPERTY5;
     } else if (element == 6) {
-      message = 2268;
+      message = MSI_NAVIGATION_PROPERTY6;
     } else if (element == 7) {
-      message = 2269;
+      message = MSI_NAVIGATION_PROPERTY7;
     } else if (element == 8) {
-      message = 2270;
+      message = MSI_NAVIGATION_PROPERTY8;
     } else {
       message = element == 9 ? 2271 : 2272;
     }
@@ -1551,21 +1553,21 @@ bool CNavigationManager::BuildTargetRouteLines() {
     this->routeLines.push_back(NaviRouteLine(2, 142, 93, text, 0xDCDCDC, 0xCB6B54));
 
     if (size == 1) {
-      message = 2276;
+      message = MSI_NAVIGATION_RACE1;
     } else if (size == 2) {
-      message = 2277;
+      message = MSI_NAVIGATION_RACE2;
     } else if (size == 3) {
-      message = 2278;
+      message = MSI_NAVIGATION_RACE3;
     } else if (size == 4) {
-      message = 2279;
+      message = MSI_NAVIGATION_RACE4;
     } else if (size == 5) {
-      message = 2280;
+      message = MSI_NAVIGATION_RACE5;
     } else if (size == 6) {
-      message = 2281;
+      message = MSI_NAVIGATION_RACE6;
     } else if (size == 7) {
-      message = 2282;
+      message = MSI_NAVIGATION_RACE7;
     } else if (size == 8) {
-      message = 2283;
+      message = MSI_NAVIGATION_RACE8;
     } else {
       message = size == 9 ? 2284 : 2285;
     }
@@ -1573,7 +1575,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
     this->routeLines.push_back(NaviRouteLine(2, 142, 109, text, 0xDCDCDC, 0xCB6B54));
 
     if ((attributes & 0xFF00) == 0x100) {
-      message = 2273;
+      message = MSI_NAVIGATION_SCALE1;
     } else {
       message = (attributes & 0xFF00) == 0x200 ? 2274 : 2275;
     }

@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Contents/Configuration/ServiceEnums.h"
@@ -1329,7 +1330,7 @@ void CGameMode::RecordChatRoomSettings() {
   const std::uint16_t length = static_cast<std::uint16_t>(this->chatRoom.title.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoom.password.size());
   const int titleLength = static_cast<int>(this->chatRoom.title.size());
   const int passwordLength = static_cast<int>(this->chatRoom.password.size());
-  record.header = 0x038808AE;
+  record.header = ReplayUiRecordHeader(REPLAY_UI_CHATROOM_SETTINGS);
   record.length = length;
   record.firstLength = titleLength;
   record.secondLength = passwordLength;
@@ -1870,7 +1871,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_BEGIN_DRAG_FROM_METALPROCESSWND: {
       const char* itemId = reinterpret_cast<const char*>(argument1);
       this->drag.Clear();
-      this->drag.source = 0xE;
+      this->drag.source = DRAG_METAL_PROCESS;
       this->drag.name = itemId;
       this->drag.resource = g_session.ItemDragResource(itemId, 1);
       return 0;
@@ -2381,7 +2382,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_CANCEL_DRAG:
       if (g_replayAnimationScaling == 0 || this->isDragAllowed == 0) {
-        this->drag.source = 0;
+        this->drag.source = DRAG_NONE;
         this->drag.id = 0;
         this->drag.quantity = 0;
         g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 0);
@@ -3029,25 +3030,25 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_DROP: {
-      if (this->drag.source == 0) {
+      if (this->drag.source == DRAG_NONE) {
         return 0;
       }
-      if (this->drag.source == 1) {
+      if (this->drag.source == DRAG_ITEM_INVENTORY) {
         if (!g_session.HasInventoryItem(this->drag.id) ||
             this->waitingWearEquipAck + 2000U > timeGetTime()) {
-          this->drag.source = 0;
+          this->drag.source = DRAG_NONE;
           return 0;
         }
-      } else if (this->drag.source == 2 && !g_session.IsSlotItemIdentity(this->drag.id)) {
-        this->drag.source = 0;
+      } else if (this->drag.source == DRAG_ITEM_EQUIP && !g_session.IsSlotItemIdentity(this->drag.id)) {
+        this->drag.source = DRAG_NONE;
         return 0;
       }
       if (g_windowMgr.DropAt(argument1, argument2, &this->drag)) {
         return 0;
       }
-      if (this->drag.source == 0x10 || this->drag.source == 7) {
+      if (this->drag.source == DRAG_QUICKSLOT || this->drag.source == DRAG_SHORTCUT) {
         if (this->drag.skill) {
-          UIWindow* window = g_windowMgr.LookupWindow(this->drag.source == 0x10 ? WID_QUIKSLOTWND : WID_SHORTCUTWND);
+          UIWindow* window = g_windowMgr.LookupWindow(this->drag.source == DRAG_QUICKSLOT ? WID_QUIKSLOTWND : WID_SHORTCUTWND);
           if (window) {
             window->RecordDrop(argument1, argument2, this->drag, -1);
             window->DragAndDrop(argument1, argument2, reinterpret_cast<std::intptr_t>(&this->drag));
@@ -3062,25 +3063,25 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
       }
-      if (this->drag.source == 1) {
+      if (this->drag.source == DRAG_ITEM_INVENTORY) {
         if (g_windowMgr.itemWnd == nullptr) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OPEN_ITEMWND_TO_THROW)), 0xFF, 0, 0, 0);
           this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
           return 0;
         }
         if (g_session.m_lockItemDrop) {
-          this->drag.source = 0;
+          this->drag.source = DRAG_NONE;
           return 0;
         }
       }
-      if (this->drag.source == 0x1C) {
+      if (this->drag.source == DRAG_REFINING) {
         UIWindow* window = g_windowMgr.LookupWindow(WID_REFININGWND);
         if (window) {
           static_cast<UIRefiningWnd*>(window)->Reset();
         }
         this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
-      if (this->drag.source == 0x21) {
+      if (this->drag.source == DRAG_GRADE_ENCHANT) {
         UIWindow* window = g_windowMgr.LookupWindow(WID_GRADEENCHANTWND);
         if (window) {
           static_cast<UIGradeEnchantWnd*>(window)->ResetItem();
@@ -3092,7 +3093,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           !g_windowMgr.LookupWindow(WID_LAPINEBOXWND) && !g_windowMgr.LookupWindow(WID_LAPINEUPGRADEBOXWND) &&
           !g_windowMgr.LookupWindow(WID_REFININGWND) && !g_windowMgr.LookupWindow(WID_SWAPEQUIPMENTWND) &&
           !g_windowMgr.LookupWindow(WID_BARTERMARKETWND) && !g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
-        if (this->drag.source != 1) {
+        if (this->drag.source != DRAG_ITEM_INVENTORY) {
           this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
           g_windowMgr.RetireTransientWindow();
           return 0;
@@ -3281,7 +3282,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
               g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARTY_NOT_LEAVE_PARTY_UNTIL_YIELD_PARTYMASTER)), 0xFF, 0, 0, 0);
               return 0;
             }
-            if (g_windowMgr.Confirm(LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
               return 0;
             }
           }
@@ -4107,12 +4108,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         }
         for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-          if (effect.id == 0x26D) {
+          if (effect.id == EFST_MONSTER_TRANSFORM) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_MONSTER_TRANSFORM)), 0xFF, 0, 0, 0);
             return 0;
           }
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CONFIRM), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CONFIRM), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CANCEL)), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -4572,15 +4573,15 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_TAKE_OFF_SWAP_EQUIP: {
       int message = 0;
       if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-        message = 0xBB9;
+        message = MSI_SWAP_EQUIPITEM_FAIL_DEAL;
       } else if (this->isPlayerDead) {
-        message = 0xBB7;
+        message = MSI_SWAP_EQUIPITEM_FAIL_DEAD;
       } else if (g_windowMgr.merchantItemMyShopWnd || g_windowMgr.merchantItemPurchaseWnd || g_windowMgr.merchantShopMakeWnd) {
-        message = 0xBBA;
+        message = MSI_SWAP_EQUIPITEM_FAIL_MERCHANTSHOP;
       } else if (g_modeMgr.GetGameMode()->scene->player->actorWindows[3]) {
-        message = 0xBB8;
+        message = MSI_SWAP_EQUIPITEM_FAIL_CASTING;
       } else if (g_windowMgr.sayDialogWnd || g_windowMgr.choose3Wnd) {
-        message = 0xBBB;
+        message = MSI_SWAP_EQUIPITEM_FAIL_USE_NPC;
       }
       if (message) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
@@ -4610,13 +4611,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_USE_PACKAGEITEM: {
       int message = 0;
       if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-        message = 0x6A3;
+        message = MSI_CANT_USE_WHEN_OPENED_EXCHANGEWND;
       } else if (this->IsMenuWindowOpen() || this->waitingUseItemAck || this->waitingItemThrowAck) {
-        message = 0xF84;
+        message = MSI_PACKAGEITEM_USEFAIL;
       } else if (this->isPlayerDead) {
-        message = 0xBB7;
+        message = MSI_SWAP_EQUIPITEM_FAIL_DEAD;
       } else if (IsHiding(this->scene->player->GetStateFlags())) {
-        message = 0xF83;
+        message = MSI_PACKAGEITEM_BURROWFAIL;
       }
       if (message) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
@@ -5079,7 +5080,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->noMove = 1;
       this->noMoveStartTick = timeGetTime();
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
       }
       return 0;
@@ -5614,7 +5615,7 @@ void __stdcall RecordWhisper(const void* info, const unsigned char* data) {
   }
 
   GameModeReplayPacket packet;
-  packet.header = 0x038A08AE;
+  packet.header = ReplayUiRecordHeader(REPLAY_UI_WHISPER);
   packet.length = 0xFE;
   std::memcpy(&packet.info, info, sizeof(packet.info));
   std::memcpy(packet.data, data, sizeof(packet.data));
@@ -5659,7 +5660,7 @@ bool CGameMode::RecordReplayMessage(int message, int value, int first, int secon
   }
 
   GameModeMessageRecord record;
-  record.header = 0x038908AE;
+  record.header = ReplayUiRecordHeader(REPLAY_UI_MODE_MESSAGE);
   record.length = sizeof(GameModeMessageRecord);
   record.message = 0x45;
   record.value = 10000;
@@ -6636,7 +6637,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
     if (room != nullptr) {
       scratch.resize(sizeof(ChatRoomEntryPacket), 0);
       auto* packet = reinterpret_cast<ChatRoomEntryPacket*>(scratch.data());
-      packet->type = 0xD7;
+      packet->type = ID_ZC_ROOM_NEWENTRY;
       packet->packetLength = static_cast<std::uint16_t>(room->info.title.size() + sizeof(ChatRoomEntryPacket));
       packet->aid = (*it)->render.accountId;
       packet->roomId = room->info.id;
@@ -6826,11 +6827,11 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
   GameModeUiMessage* values = reinterpret_cast<GameModeUiMessage*>(message);
 
   switch (values->type) {
-  case 900: {
-    if (values->values[1] == 0xB8) {
-      if (values->values[0] == 0x29) {
-        values->values[1] = 0xB9;
-      } else if (values->values[0] == 0xAE) {
+  case REPLAY_UI_RESPONSE: {
+    if (values->values[1] == ID_OK) {
+      if (values->values[0] == WID_MERCHANTSHOPMAKEWND) {
+        values->values[1] = ID_CANCEL;
+      } else if (values->values[0] == WID_MERCHANTSHOPMAKEWND_MODE_1) {
         break;
       }
     }
@@ -6840,20 +6841,20 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     }
     break;
   }
-  case 901:
+  case REPLAY_UI_DROP:
     this->ReceiveUiDragMessage(message);
     break;
-  case 902: {
+  case REPLAY_UI_EDIT_TEXTS: {
     UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(values->values[0]));
     if (window != nullptr) {
       window->RestoreEditTexts(reinterpret_cast<const unsigned char*>(&values->values[1]));
     }
     break;
   }
-  case 903:
+  case REPLAY_UI_EXCHANGE_ITEM_COUNT:
     this->exchangeItemCnt = values->values[0];
     break;
-  case 904: {
+  case REPLAY_UI_CHATROOM_SETTINGS: {
     char buffer[200];
     std::memset(buffer, 0, sizeof(buffer));
     std::memcpy(buffer, values->text, values->values[0]);
@@ -6867,41 +6868,41 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     this->chatRoom.id = values->values[5];
     break;
   }
-  case 905:
+  case REPLAY_UI_MODE_MESSAGE:
     this->SendMsg(values->values[0], values->values[1], values->values[2], values->values[3], 0);
     this->SendMsg(MM_CANCEL_USE_SKILL, 0, 0, 0, 0);
     break;
-  case 906: {
+  case REPLAY_UI_WHISPER: {
     const GameModeUiWhisperMessage* whisper = reinterpret_cast<const GameModeUiWhisperMessage*>(message);
     this->lastWhisperName = whisper->target;
     this->lastWhisper = whisper->text;
     break;
   }
-  case 907: {
+  case REPLAY_UI_STORE_TITLE: {
     const GameModeUiKindTextMessage* text = reinterpret_cast<const GameModeUiKindTextMessage*>(message);
-    if (text->kind == 0x29) {
+    if (text->kind == WID_MERCHANTSHOPMAKEWND) {
       g_session.storeTitle = text->text;
-    } else if (text->kind == 0xAE) {
+    } else if (text->kind == WID_MERCHANTSHOPMAKEWND_MODE_1) {
       g_session.storeTitle = text->text;
     }
     break;
   }
-  case 908:
-    if (values->values[0] == 0xCB && g_windowMgr.navigationWnd != nullptr) {
+  case REPLAY_UI_NAVIGATION_MESSAGE:
+    if (values->values[0] == WID_NAVIGATIONV4WND && g_windowMgr.navigationWnd != nullptr) {
       g_windowMgr.navigationWnd->SendMsg(nullptr, values->values[1], values->values[2], reinterpret_cast<std::intptr_t>(&values->values[3]), 0, 0);
     }
     break;
-  case 909:
+  case REPLAY_UI_OPEN_WINDOW:
     g_windowMgr.EnsureWindow(values->values[0]);
     break;
-  case 910: {
+  case REPLAY_UI_START_NAVIGATION: {
     const GameModeUiNavigationMessage* navigation = reinterpret_cast<const GameModeUiNavigationMessage*>(message);
     g_navigationManager.StartNavigation(
       std::string(navigation->name), navigation->kind, navigation->mode, navigation->flag != 0, navigation->x, navigation->y, navigation->id
     );
     break;
   }
-  case 911: {
+  case REPLAY_UI_NAVIGATION_STATES: {
     std::vector<char> states(values->length - 6, 0);
     std::memcpy(&states[0], values->values, states.size());
     g_windowMgr.CloseWindow(WID_COMBOBOXWND);
@@ -6911,16 +6912,16 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     }
     break;
   }
-  case 912: {
+  case REPLAY_UI_NAVIGATION_DESTINATION: {
     const GameModeUiDestinationMessage* destination = reinterpret_cast<const GameModeUiDestinationMessage*>(message);
     g_navigationManager.SetDestinationMap(std::string(destination->mapName), destination->x, destination->y);
     break;
   }
-  case 913: {
-    if (values->values[1] == 0xB8) {
-      if (values->values[0] == 0x29) {
-        values->values[1] = 0xB9;
-      } else if (values->values[0] == 0xAE) {
+  case REPLAY_UI_WINDOW_VALUES: {
+    if (values->values[1] == ID_OK) {
+      if (values->values[0] == WID_MERCHANTSHOPMAKEWND) {
+        values->values[1] = ID_CANCEL;
+      } else if (values->values[0] == WID_MERCHANTSHOPMAKEWND_MODE_1) {
         break;
       }
     }
@@ -6930,7 +6931,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     }
     break;
   }
-  case 914:
+  case REPLAY_UI_CLOSE_WINDOW:
     g_windowMgr.CloseWindowExcept251(values->values[0]);
     break;
   }
@@ -7208,7 +7209,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
       GetRagConnection().SetBlock(1);
     } else {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
       }
       return;
@@ -7216,7 +7217,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   }
 
   static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
-  g_windowMgr.modalResponse = 185;
+  g_windowMgr.modalResponse = ID_CANCEL;
 }
 
 // OFFSET: 0x00CE1FA0
@@ -7430,7 +7431,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
       return;
     }
 
-    if (itemId == 0x3113) {
+    if (itemId == ITEMID_BM75) {
       const int job = player->GetEffectiveJob(-1);
       char text[0x100];
       if (job >= JT_RUNE_KNIGHT && job <= JT_MADOGEAR_B) {
@@ -7807,17 +7808,17 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     break;
   }
 
-  if ((itemId >= 0x2F09 && itemId <= 0x2F0D) || (itemId >= 0x2F27 && itemId <= 0x2F2B) || itemId == 0x2FAA) {
+  if ((itemId >= ITEMID_STR_DISH01 && itemId <= ITEMID_STR_DISH05) || (itemId >= ITEMID_STR_DISH06 && itemId <= ITEMID_STR_DISH10) || itemId == ITEMID_STR_DISH10_) {
     effectId = EF_FOOD01;
-  } else if ((itemId >= 0x2F0E && itemId <= 0x2F12) || (itemId >= 0x2F2C && itemId <= 0x2F30) || itemId == 0x2FAC) {
+  } else if ((itemId >= ITEMID_INT_DISH01 && itemId <= ITEMID_INT_DISH05) || (itemId >= ITEMID_INT_DISH06 && itemId <= ITEMID_INT_DISH10) || itemId == ITEMID_INT_DISH10_) {
     effectId = EF_FOOD02;
-  } else if ((itemId >= 0x2F13 && itemId <= 0x2F17) || (itemId >= 0x2F31 && itemId <= 0x2F35) || itemId == 0x2FAF) {
+  } else if ((itemId >= ITEMID_VIT_DISH01 && itemId <= ITEMID_VIT_DISH05) || (itemId >= ITEMID_VIT_DISH06 && itemId <= ITEMID_VIT_DISH10) || itemId == ITEMID_VIT_DISH10_) {
     effectId = EF_FOOD03;
-  } else if ((itemId >= 0x2F18 && itemId <= 0x2F1C) || (itemId >= 0x2F36 && itemId <= 0x2F3A) || itemId == 0x2FAB) {
+  } else if ((itemId >= ITEMID_AGI_DISH01 && itemId <= ITEMID_AGI_DISH05) || (itemId >= ITEMID_AGI_DISH06 && itemId <= ITEMID_AGI_DISH10) || itemId == ITEMID_AGI_DISH10_) {
     effectId = EF_FOOD04;
-  } else if ((itemId >= 0x2F1D && itemId <= 0x2F21) || (itemId >= 0x2F3B && itemId <= 0x2F3F) || itemId == 0x2FAD) {
+  } else if ((itemId >= ITEMID_DEX_DISH01 && itemId <= ITEMID_DEX_DISH05) || (itemId >= ITEMID_DEX_DISH06 && itemId <= ITEMID_DEX_DISH10) || itemId == ITEMID_DEX_DISH10_) {
     effectId = EF_FOOD05;
-  } else if ((itemId >= 0x2F22 && itemId <= 0x2F26) || (itemId >= 0x2F40 && itemId <= 0x2F44) || itemId == 0x2FAE) {
+  } else if ((itemId >= ITEMID_LUK_DISH01 && itemId <= ITEMID_LUK_DISH05) || (itemId >= ITEMID_LUK_DISH06 && itemId <= ITEMID_LUK_DISH10) || itemId == ITEMID_LUK_DISH10_) {
     effectId = EF_FOOD06;
   }
 
@@ -8090,10 +8091,10 @@ void CGameMode::InitializeState() {
     g_weatherEffect.Fireworks();
   }
 
-  g_session.m_homunAid = -1;
+  g_session.m_homunAid = INVALID_AID;
   g_session.homunAlive = 0;
   g_session.ClearHomunStatus();
-  g_session.m_mercenaryAid = -1;
+  g_session.m_mercenaryAid = INVALID_AID;
   g_session.mercenaryAlive = 0;
   g_session.ResetMercenaryStats();
   g_windowMgr.FocusWindow01C8Edit();
@@ -9115,7 +9116,7 @@ int CGameMode::ProcessGroundClick(int result) {
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
         shop->SetSelection(static_cast<short>(column), static_cast<short>(row));
-        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "Message", 280, 120, 0) == 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
           shop->SendShopRequest();
           return -1;
         }
@@ -9273,7 +9274,7 @@ int CGameMode::ProcessGroundClick(int result) {
   if (result != 0 && result != 2) {
     return result;
   }
-  if (this->drag.source != 0) {
+  if (this->drag.source != DRAG_NONE) {
     return result;
   }
 
@@ -9516,8 +9517,8 @@ void CGameMode::Update() {
       this->DrawTimeAttackCountdown(g_session.m_timeAttackCountdown, g_session.m_timeAttackMode);
     }
 
-    if (this->drag.source != 0 && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
-      if (this->drag.source == 0x1D) {
+    if (this->drag.source != DRAG_NONE && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
+      if (this->drag.source == DRAG_MESSENGER_MEMBER) {
         if (g_windowMgr.Window4F250Ready() == 1) {
           g_windowMgr.MoveTransient(g_mouse.x, g_mouse.y);
         }
@@ -11640,7 +11641,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     case UNT_SWIFTTRAP:
     case UNT_FLAMETRAP: {
       const int skill = this->skillId;
-      if (skill == 0xD7 || skill == 0xD8 || skill == 0xD9 || skill == 0xDA) {
+      if (skill == RG_STRIPWEAPON || skill == RG_STRIPSHIELD || skill == RG_STRIPARMOR || skill == RG_STRIPHELM) {
         return result;
       }
 

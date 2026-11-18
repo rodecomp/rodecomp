@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMessage.h"
@@ -1610,7 +1611,7 @@ void UIGuildSkillWnd::OnLBtnDown(int x, int y) {
         if (level == 0) {
           level = skill.level;
         }
-        gameMode->BeginDragSkill(8, skill.id, skill.name, level, -1);
+        gameMode->BeginDragSkill(DRAG_SKILL, skill.id, skill.name, level, -1);
       }
     }
 
@@ -1764,7 +1765,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     }
     this->m_button->SetId(ID_OK);
     this->AddChild(this->m_button);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
   }
 
   this->m_onlineCheck = new UICheckBox();
@@ -2985,7 +2986,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
     }
     this->m_button->SetId(ID_OK);
     this->AddChild(this->m_button);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
   }
 
   this->UpdateScroll();

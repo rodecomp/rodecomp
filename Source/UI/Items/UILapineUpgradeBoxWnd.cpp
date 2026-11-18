@@ -221,7 +221,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
     UIFrameWnd::OnLBtnDown(x, y);
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.identity[1] > 0) {
-    g_modeMgr.GetGameMode()->BeginDragItem(26, this->item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_LAPINE_BOX, this->item, 1, -1);
   }
 }
 
@@ -229,7 +229,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_04206
 void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->item.identity[1] > 0) {
-    g_modeMgr.GetGameMode()->BeginDragItem(27, this->item, this->quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(DRAG_LAPINE_INGREDIENT, this->item, this->quantity, -1);
   }
 }
 

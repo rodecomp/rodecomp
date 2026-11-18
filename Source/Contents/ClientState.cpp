@@ -1,4 +1,6 @@
 #include "Contents/ClientState.h"
+#include "Contents/Jobs/JobId.h"
+#include "Resource/MSGSTRINGID.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -958,7 +960,7 @@ void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
   if (style >= 2 || this->IsSecondJob(renderJob)) {
     this->m_bodyStyle = style;
   } else if (static_cast<unsigned>(job - 4001) <= 21) {
-    this->m_bodyStyle = job <= 4007;
+    this->m_bodyStyle = job <= JT_THIEF_H;
   } else {
     this->m_bodyStyle = static_cast<unsigned>(g_session.GetBodyStyleJob(job) - 4001) <= 6;
   }
@@ -970,10 +972,10 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
   int message;
   if (enabled == true) {
     this->m_homunculusAutoFeed = true;
-    message = 3282;
+    message = MSI_HOMUN_SELF_FEEDING_ON;
   } else {
     g_session.m_homunculusAutoFeed = false;
-    message = 3283;
+    message = MSI_HOMUN_SELF_FEEDING_OFF;
   }
 
   const char* text = LookupMessage(message);
@@ -986,10 +988,10 @@ void CSession::SetPetAutoFeed(bool enabled) {
   int message;
   if (enabled == true) {
     g_session.m_petAutoFeed = true;
-    message = 2579;
+    message = MSI_PET_AUTO_FEEDING_ON;
   } else {
     g_session.m_petAutoFeed = false;
-    message = 2580;
+    message = MSI_PET_AUTO_FEEDING_OFF;
   }
 
   const char* text = LookupMessage(message);

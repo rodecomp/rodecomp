@@ -152,7 +152,7 @@ int UIWindowMgr::Confirm(
 ) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing == 1) {
-    return 185;
+    return ID_CANCEL;
   }
 
   if (UIWindow* active = this->modalWindows.empty() ? nullptr : this->modalWindows.back()) {
@@ -160,7 +160,7 @@ int UIWindowMgr::Confirm(
       active->SendMsg(nullptr, UM_CHANGEMSG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
 
-    return 185;
+    return ID_CANCEL;
   }
 
   auto* box = new UIMessageBox();
@@ -187,11 +187,11 @@ int UIWindowMgr::Confirm(
 
   int response;
   if (box == nullptr) {
-    response = 185;
+    response = ID_CANCEL;
   } else {
     this->modalResponse = 0;
     this->modalWindows.push_back(box);
-    response = 184;
+    response = ID_OK;
 
     if (g_modalImmediate == 0) {
       CMode* pump = g_modeMgr.currentMode;
@@ -284,7 +284,7 @@ void UIWindowMgr::AddMessageBox(
 // FUNCTION: fn_17212
 int UIWindowMgr::RunModal(UIWindow* window) {
   if (!window) {
-    return 185;
+    return ID_CANCEL;
   }
 
   if (this->inputWindow) {
@@ -300,7 +300,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   this->hoverWindow = nullptr;
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
-  int response = 184;
+  int response = ID_OK;
 
   if (g_modalImmediate == 0) {
     CMode* pump = g_modeMgr.currentMode;

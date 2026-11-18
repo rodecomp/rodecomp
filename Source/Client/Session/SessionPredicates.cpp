@@ -1,4 +1,6 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/ActorEnums.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/SkillId.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
@@ -58,11 +60,11 @@ int CSession::IsMonsterActor(CGameActor* actor) const {
   }
 
   const int job = actor->GetEffectiveJob(-1);
-  if ((job > 1000 && job < 3999) || (job >= 20021 && job <= 31999)) {
+  if ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || (job >= JT_EXTENDED_JOB_NAME_START && job <= 31999)) {
     return 1;
   }
 
-  if (actor->GetEffectiveJob(-1) >= 2114) {
+  if (actor->GetEffectiveJob(-1) >= JT_EL_AGNI_S) {
     actor->GetEffectiveJob(-1);
   }
   return 0;
@@ -85,7 +87,7 @@ int CSession::IsLocalPlayerAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DDF0
 // FUNCTION: fn_23881
 int CSession::IsHomunAid(std::uint32_t aid) const {
-  if (aid == 0xFFFFFFFF) {
+  if (aid == INVALID_AID) {
     return false;
   }
   return aid == this->m_homunAid;
@@ -94,7 +96,7 @@ int CSession::IsHomunAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DE10
 // FUNCTION: fn_23882
 int CSession::IsMercenaryAid(std::uint32_t aid) const {
-  if (aid == 0xFFFFFFFF) {
+  if (aid == INVALID_AID) {
     return false;
   }
   return aid == this->m_mercenaryAid;
@@ -103,7 +105,7 @@ int CSession::IsMercenaryAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DE30
 // FUNCTION: fn_23883
 int CSession::IsCompanionAid(std::uint32_t aid) const {
-  if (aid == 0xFFFFFFFF) {
+  if (aid == INVALID_AID) {
     return 0;
   }
   if (aid == this->m_homunAid ||
@@ -121,7 +123,7 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
 // OFFSET: 0x00E1DF00
 // FUNCTION: fn_23885
 int CSession::IsPetAid(std::uint32_t aid) const {
-  if (aid == 0xFFFFFFFF) {
+  if (aid == INVALID_AID) {
     return false;
   }
   return aid == this->petGid;

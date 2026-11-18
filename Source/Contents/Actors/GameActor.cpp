@@ -345,7 +345,7 @@ bool CGameActor::ProcessState() {
     if (this->render.isMotionFinished && this->willBeAttackedList.size() == 0) {
       mode->SendMsg(MM_DELETEREGISTERPOS, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
-      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->objectType == NPC_MERSOL_TYPE ||
+      if ((job > JT_MAX_BASIC && job < JT_MON_BEGIN) || g_session.IsMonsterClass(job) || this->objectType == NPC_MERSOL_TYPE ||
           g_session.IsCompanionJob(job)) {
         this->MakeCorpse();
         return false;
@@ -461,7 +461,7 @@ void CGameActor::ResetState() {
   this->accel.y = 0.0f;
   this->accel.z = 0.0f;
   this->dist = 0;
-  this->render.accountId = 0xFFFFFFFF;
+  this->render.accountId = INVALID_AID;
   this->lastServerTime = g_session.GetServerTime();
   this->lastProcessStateTime = timeGetTime();
   this->render.screenX = 0;
@@ -1125,7 +1125,7 @@ void CGameActor::ResetTransformJobs() {
 // OFFSET: 0x00CADC90
 // FUNCTION: fn_21065
 __declspec(noinline) bool CSession::IsMonsterClass(int job) {
-  if ((job > 1000 && job < 3999) || static_cast<unsigned int>(job - 20021) <= 11978) {
+  if ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978) {
     return true;
   }
   return false;
