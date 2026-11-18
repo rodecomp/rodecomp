@@ -14,6 +14,14 @@ UIBasicSkillCtrl::UIBasicSkillCtrl()
     : UIWindow(0), m_skillId(-1), m_level(0) {
 }
 
+// OFFSET: 0x008701A0
+// FUNCTION: fn_45652
+UIBasicItemCtrl::~UIBasicItemCtrl() = default;
+
+// OFFSET: 0x00870230
+// FUNCTION: fn_45653
+UIBasicSkillCtrl::~UIBasicSkillCtrl() = default;
+
 // OFFSET: 0x0089BE60
 // FUNCTION: fn_45638
 void UIBasicItemCtrl::SetItemById(int id, unsigned char identified) {

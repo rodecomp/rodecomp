@@ -12,6 +12,7 @@
 class UIBasicItemCtrl : public UIWindow {
 public:
   UIBasicItemCtrl();
+  __declspec(noinline) ~UIBasicItemCtrl() override;
   void SetItemById(int id, unsigned char identified);
   void SetItemByIdentity(std::uint32_t identity, unsigned char identified);
   void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
@@ -33,6 +34,7 @@ protected:
 class UIBasicSkillCtrl : public UIWindow {
 public:
   UIBasicSkillCtrl();
+  __declspec(noinline) ~UIBasicSkillCtrl() override;
   void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void OnLBtnDblClk(int x, int y) override;
