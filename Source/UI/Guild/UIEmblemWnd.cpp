@@ -14,6 +14,10 @@
 
 #include <string>
 
+// OFFSET: 0x00851910
+// FUNCTION: fn_45641
+UIEmblemWnd::~UIEmblemWnd() = default;
+
 // OFFSET: 0x0085ACD0
 // FUNCTION: fn_10787
 void UIEmblemWnd::OnCreate(int, int) {

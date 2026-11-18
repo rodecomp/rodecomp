@@ -8,6 +8,7 @@
 class UIEmblemWnd : public UIWindow {
 public:
   UIEmblemWnd();
+  __declspec(noinline) ~UIEmblemWnd() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;
   void Paint() override;
