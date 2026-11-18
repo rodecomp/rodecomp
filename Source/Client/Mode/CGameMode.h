@@ -378,6 +378,7 @@ public:
   void ReceiveBookOpen(const unsigned char* packet);
   void ReceiveActorNameCard(const unsigned char* packet);
   void ReceiveServiceRequest(unsigned char type, int value);
+  void SetActiveSkillEffect184(unsigned char enable);
   void ReceiveAchievementUpdate(
     int score, short achievementLevel, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
     __time32_t completedAt, unsigned char rewarded

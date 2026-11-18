@@ -12933,7 +12933,7 @@ void CGameMode::NotifySkillCasting(
 
 // OFFSET: 0x00D79FD0
 // FUNCTION: fn_22185
-__declspec(noinline) void SetActiveSkillEffect184(unsigned char enable) {
+__declspec(noinline) void CGameMode::SetActiveSkillEffect184(unsigned char enable) {
   if (enable == 1) {
     ActiveSkillEffect effect;
     effect.id = 184;
