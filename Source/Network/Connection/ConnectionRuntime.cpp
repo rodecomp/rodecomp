@@ -42,11 +42,27 @@ bool CRagConnection::CheckConnectionRuntime() {
 // OFFSET: 0x00C7D020
 // FUNCTION: fn_20408
 bool InitializeConnections() {
-  WSAStartup(MAKEWORD(1, 1), &wsaData);
-  ws2Module = LoadLibraryA("ws2_32.dll");
-  g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(ws2Module, "send"));
-  g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(ws2Module, "recv"));
-  GetRagConnection().CheckConnectionRuntime();
+  __try {
+    WSAStartup(MAKEWORD(1, 1), &wsaData);
+    ws2Module = LoadLibraryA("ws2_32.dll");
+    g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(ws2Module, "send"));
+    g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(ws2Module, "recv"));
+
+    const char* names[] = {"connect", "closesocket", "send", "select"};
+    HMODULE library = LoadLibraryA("ws2_32.dll");
+    if (library) {
+      for (unsigned index = 0; index < 4; ++index) {
+        FARPROC loadedFunction = GetProcAddress(library, names[index]);
+        FARPROC originalFunction = GetProcAddress(ws2Module, names[index]);
+        if (loadedFunction != originalFunction) {
+          break;
+        }
+      }
+
+      FreeLibrary(library);
+    }
+  } __except (EXCEPTION_EXECUTE_HANDLER) {
+  }
 
   return true;
 }
