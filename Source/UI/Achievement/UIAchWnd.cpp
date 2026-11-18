@@ -555,8 +555,6 @@ void UIAchTab::Paint() {
 // OFFSET: 0x007B7010
 // FUNCTION: fn_09222
 void UIAchUpperWnd::Paint() {
-  int visible;
-
   if (this->title.compare(LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL)) == 0) {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->achievementPoints, this->nextLevelPoints).c_str(), 0, 0, 11, 0, 0);
@@ -566,7 +564,7 @@ void UIAchUpperWnd::Paint() {
       this->buttons[index]->Show(0);
     }
 
-    visible = 0;
+    this->completionGauge->Show(0);
   } else {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawBitmap(575, 3, AchievementBitmap("유저인터페이스\\achievement_re\\upper_trophy.bmp"), true);
@@ -581,10 +579,8 @@ void UIAchUpperWnd::Paint() {
       this->buttons[index]->Show(1);
     }
 
-    visible = 1;
+    this->completionGauge->Show(1);
   }
-
-  this->completionGauge->Show(visible);
 }
 
 // OFFSET: 0x007B7420
