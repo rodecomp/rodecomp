@@ -13,6 +13,7 @@ class UITagButton : public UITextButton {
 
 public:
   UITagButton();
+  ~UITagButton() override;
 
   /* 00F8 */ ITEM_INFO item;
   /* 01F0 */ std::vector<std::string> m_strings;
