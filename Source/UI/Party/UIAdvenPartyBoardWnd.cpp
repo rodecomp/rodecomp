@@ -57,7 +57,9 @@ UIRegisterPartyWnd::UIRegisterPartyWnd()
     : UIFrameWnd(0), selectedType(0) {
 }
 
-UIRegisterPartyWnd::~UIRegisterPartyWnd() = default;
+// OFFSET: 0x007BB420
+// FUNCTION: fn_45802
+__declspec(noinline) UIRegisterPartyWnd::~UIRegisterPartyWnd() = default;
 
 // OFFSET: 0x007C2440
 // FUNCTION: fn_09326
@@ -269,6 +271,22 @@ void UIRegisterPartyWnd::Paint() {
   this->DrawTitleBar(true, LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY), 0);
 }
 
+// OFFSET: 0x007C0250
+// FUNCTION: fn_45798
+__forceinline void UIRegisterPartyWnd::RequestRegistration() {
+  CAdvenPartyInfo info;
+  info.tanker = this->jobs[0]->selected;
+  info.healer = this->jobs[1]->selected;
+  info.dealer = this->jobs[2]->selected;
+  info.assist = this->jobs[3]->selected;
+  info.minimumLevel = std::atoi(this->minimum->Text());
+  info.maximumLevel = std::atoi(this->maximum->Text());
+  info.type = this->selectedType;
+  info.memo = this->memo->Text();
+  info.characterName = g_session.DecodePlayerName();
+  g_adventurerAgencyMgr->RequestRegistration(info);
+}
+
 // OFFSET: 0x007C1410
 // FUNCTION: fn_09314
 int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -313,17 +331,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
           return 0;
         }
 
-        CAdvenPartyInfo info;
-        info.tanker = this->jobs[0]->selected;
-        info.healer = this->jobs[1]->selected;
-        info.dealer = this->jobs[2]->selected;
-        info.assist = this->jobs[3]->selected;
-        info.minimumLevel = std::atoi(this->minimum->Text());
-        info.maximumLevel = std::atoi(this->maximum->Text());
-        info.type = this->selectedType;
-        info.memo = this->memo->Text();
-        info.characterName = g_session.DecodePlayerName();
-        g_adventurerAgencyMgr->RequestRegistration(info);
+        this->RequestRegistration();
       }
       break;
     default:
@@ -343,7 +351,9 @@ UIApplyForPartyWnd::UIApplyForPartyWnd()
     : UIFrameWnd(0) {
 }
 
-UIApplyForPartyWnd::~UIApplyForPartyWnd() = default;
+// OFFSET: 0x007BB280
+// FUNCTION: fn_45801
+__declspec(noinline) UIApplyForPartyWnd::~UIApplyForPartyWnd() = default;
 
 // OFFSET: 0x007C2400
 // FUNCTION: fn_09325
@@ -527,7 +537,9 @@ UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd()
     : UIFrameWnd(0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0) {
 }
 
-UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;
+// OFFSET: 0x007BB220
+// FUNCTION: fn_45800
+__declspec(noinline) UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;
 
 // OFFSET: 0x007C23C0
 // FUNCTION: fn_09324
@@ -725,13 +737,34 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->AddBigCloseButton("", 0);
 }
 
+// OFFSET: 0x007C0050
+// FUNCTION: fn_45797
+__forceinline void UIAdvenPartyBoardWnd::SetPageButtonEnabled(PageButton button, int enabled) {
+  switch (button) {
+  case PageButton::Previous:
+    if (enabled == 1) {
+      DisableButton(this->previous, 0);
+    } else {
+      DisableButton(this->previous, 1);
+    }
+    this->previous->Invalidate();
+    break;
+  case PageButton::Next:
+    if (enabled == 1) {
+      DisableButton(this->next, 0);
+    } else {
+      DisableButton(this->next, 1);
+    }
+    this->next->Invalidate();
+    break;
+  }
+}
+
 // OFFSET: 0x007BC070
 // FUNCTION: fn_09296
 void UIAdvenPartyBoardWnd::LoadPage(int pageValue) {
-  DisableButton(this->previous, 1);
-  this->previous->Invalidate();
-  DisableButton(this->next, 1);
-  this->next->Invalidate();
+  this->SetPageButtonEnabled(PageButton::Previous, 0);
+  this->SetPageButtonEnabled(PageButton::Next, 0);
   DisableButton(this->refresh, 1);
   this->refresh->Invalidate();
   g_adventurerAgencyMgr->RequestList(pageValue);
@@ -801,7 +834,8 @@ void UIAdvenPartyBoardWnd::SetOwnParty(CAdvenPartyInfo value) {
   this->Registration(true);
 }
 
-// INLINED
+// OFFSET: 0x007C03A0
+// FUNCTION: fn_45799
 __forceinline void UIPartyInfoWnd::Reset() {
   this->m_drawLabel = 0;
   this->memo = "";
@@ -855,17 +889,14 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
   if (this->page > this->totalPages) {
     this->page = this->totalPages;
   } else if (this->page != this->totalPages) {
-    DisableButton(this->next, 0);
-    this->next->Invalidate();
+    this->SetPageButtonEnabled(PageButton::Next, 1);
   }
 
   if (this->page == 1) {
-    DisableButton(this->previous, 1);
+    this->SetPageButtonEnabled(PageButton::Previous, 0);
   } else {
-    DisableButton(this->previous, 0);
+    this->SetPageButtonEnabled(PageButton::Previous, 1);
   }
-
-  this->previous->Invalidate();
   this->Invalidate();
 
   if (g_session.partyLeader == 0) {
@@ -934,10 +965,8 @@ __forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
   filter.memo = this->memo->Text();
   filter.characterName = g_session.DecodePlayerName();
 
-  DisableButton(this->previous, 1);
-  this->previous->Invalidate();
-  DisableButton(this->next, 1);
-  this->next->Invalidate();
+  this->SetPageButtonEnabled(PageButton::Previous, 0);
+  this->SetPageButtonEnabled(PageButton::Next, 0);
   DisableButton(this->refresh, 1);
   this->refresh->Invalidate();
 
@@ -986,10 +1015,8 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       break;
     case ID_NEXT:
       this->page = (this->page + 1);
-      DisableButton(this->previous, 1);
-      this->previous->Invalidate();
-      DisableButton(this->next, 1);
-      this->next->Invalidate();
+      this->SetPageButtonEnabled(PageButton::Previous, 0);
+      this->SetPageButtonEnabled(PageButton::Next, 0);
 
       if (this->searching == 1) {
         this->SendMsg(nullptr, UM_COMMAND, ID_FIND, this->page, 218, 0);

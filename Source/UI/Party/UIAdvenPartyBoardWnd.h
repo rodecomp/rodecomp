@@ -69,6 +69,9 @@ public:
   /* 0150 */ unsigned char searching;
 
 private:
+  enum class PageButton { Previous, Next };
+
+  void SetPageButtonEnabled(PageButton button, int enabled);
   void RefreshRows();
   void UpdatePagination();
   void ResetSearch();

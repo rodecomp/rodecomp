@@ -34,6 +34,7 @@ public:
 
 private:
   void NormalizeLevels();
+  void RequestRegistration();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
