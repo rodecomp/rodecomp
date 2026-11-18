@@ -911,6 +911,7 @@ void UIMonsterDisplayWnd::Paint() {
   }
 
   const ActionFrame& frame = action->Frame(0, 0);
+  const auto* palette = sprite->palette;
   SpriteAtlasRecord record{};
   int left = 0;
   int top = 0;
@@ -944,15 +945,15 @@ void UIMonsterDisplayWnd::Paint() {
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     CTexture* texture;
     if (cell.imageType == 0) {
-      texture = g_renderer->atlas.Find(image, sprite->palette, record);
+      texture = g_renderer->atlas.Find(image, palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
+        texture = g_renderer->atlas.Insert(image, palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
-    int x = cell.x + offsetX + left;
+    int x = cell.x + left + offsetX;
     if (x < 0) {
       x = 0;
     }
@@ -960,11 +961,10 @@ void UIMonsterDisplayWnd::Paint() {
     if (y < 0) {
       y = 0;
     }
-    const int width = x + image->width > 75 ? 75 - x : image->width;
-    const int height = y + image->height > 125 ? 125 - y : image->height;
     this->geometry.surface->DrawSurface(
-      x, y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), width, height, cell.mirrored, image->doubleWidth + 1,
-      image->doubleHeight + 1, 0
+      x, y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
+      x + image->width > 75 ? 75 - x : image->width, y + image->height > 125 ? 125 - y : image->height,
+      cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
 }
