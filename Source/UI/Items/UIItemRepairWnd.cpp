@@ -387,6 +387,11 @@ UIMakeTargetProcessWnd::UIMakeTargetProcessWnd()
     : UIFrameWnd(0), materials() {
 }
 
+// OFFSET: 0x0099FC80
+// FUNCTION: fn_45742
+UIMakeTargetProcessWnd::~UIMakeTargetProcessWnd() {
+}
+
 // OFFSET: 0x0099F950
 // FUNCTION: fn_13590
 UIMakeTargetResultWnd::UIMakeTargetResultWnd()
@@ -395,10 +400,20 @@ UIMakeTargetResultWnd::UIMakeTargetResultWnd()
   this->makeType = 0;
 }
 
+// OFFSET: 0x0099FCF0
+// FUNCTION: fn_45743
+UIMakeTargetResultWnd::~UIMakeTargetResultWnd() {
+}
+
 // OFFSET: 0x0099F9C0
 // FUNCTION: fn_13591
 UIWeaponRefineWnd::UIWeaponRefineWnd()
     : UIFrameWnd(0), itemIds(), indices() {
+}
+
+// OFFSET: 0x0099FD40
+// FUNCTION: fn_45744
+UIWeaponRefineWnd::~UIWeaponRefineWnd() {
 }
 
 // OFFSET: 0x0099FB70

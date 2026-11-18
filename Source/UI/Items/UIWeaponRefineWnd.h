@@ -10,6 +10,7 @@ class UIListBox;
 class UIWeaponRefineWnd : public UIFrameWnd {
 public:
   UIWeaponRefineWnd();
+  __declspec(noinline) ~UIWeaponRefineWnd() override;
   std::vector<unsigned char> GetReplayData() override;
   void OnCreate(int width, int height) override;
   void Paint() override;

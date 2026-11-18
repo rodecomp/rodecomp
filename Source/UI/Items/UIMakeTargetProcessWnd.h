@@ -9,6 +9,7 @@
 class UIMakeTargetProcessWnd : public UIFrameWnd {
 public:
   UIMakeTargetProcessWnd();
+  __declspec(noinline) ~UIMakeTargetProcessWnd() override;
   void Paint() override;
   void DragAndDrop(int x, int y, std::intptr_t value) override;
   void OnCreate(int width, int height) override;
