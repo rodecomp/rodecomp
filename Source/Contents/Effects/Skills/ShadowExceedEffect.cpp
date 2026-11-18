@@ -24,12 +24,10 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 }
 
 // INLINED
-__forceinline vector3d TransformPoint(const matrix& transform, const vector3d& point) {
-  vector3d result;
-  result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
-  result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
-  result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
-  return result;
+__forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
 }
 }
 
@@ -119,9 +117,9 @@ void CShadowExceed::OnProcess() {
     if (IsParticleActive(*it) == true) {
       if (emitter) {
         const vector3d position = this->positionVector;
-        const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
-        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+        const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
         vector3d viewPos = TransformPoint(view, position);
+        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
         viewPos.x += emitter->offsetX;
         viewPos.y += emitter->offsetY;
         viewPos.z += emitter->offsetZ;
