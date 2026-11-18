@@ -3683,8 +3683,9 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
   const float scale = static_cast<float>(kind);
+  int index;
 
-  for (int index = 0; index < 2; ++index) {
+  for (index = 0; index < 2; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
 
@@ -3702,7 +3703,12 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
       this->state.lastPrim->state.slots[index].alphaT = 2170;
     } else {
       this->state.lastPrim->state.slots[index].alphaB = 32;
-      this->state.lastPrim->state.slots[index].alphaT = kind == 21 ? 2140 : 2385;
+
+      if (kind == 21) {
+        this->state.lastPrim->state.slots[index].alphaT = 2140;
+      } else {
+        this->state.lastPrim->state.slots[index].alphaT = 2385;
+      }
     }
 
     if (kind >= 10 && kind < 20) {
@@ -3723,7 +3729,7 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     this->state.lastPrim->state.slots[index].height[4] = scale;
   }
 
-  for (int index = 2; index < 4; ++index) {
+  for (index = 2; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
 
@@ -7854,12 +7860,10 @@ void CRagEffect::FrostSplash(int, int) {
     this->state.lastPrim->state.slots[i].vecBPre.z = scale * this->state.lastPrim->state.slots[i].vecBPre.z;
     this->state.lastPrim->state.slots[i].vecBPre.y = scale * this->state.lastPrim->state.slots[i].vecBPre.y;
     {
-      const float cosValue = g_cosTable[angle];
-      const float sinValue = g_sinTable[angle];
       const float x = this->state.lastPrim->state.slots[i].vecBPre.x;
       const float z = this->state.lastPrim->state.slots[i].vecBPre.z;
-      this->state.lastPrim->state.slots[i].vecBPre.x = cosValue * x - sinValue * z;
-      this->state.lastPrim->state.slots[i].vecBPre.z = sinValue * x + cosValue * z;
+      this->state.lastPrim->state.slots[i].vecBPre.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
+      this->state.lastPrim->state.slots[i].vecBPre.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
     this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
@@ -7873,12 +7877,10 @@ void CRagEffect::FrostSplash(int, int) {
     this->state.lastPrim->state.slots[i].vecBNow.z = scale * this->state.lastPrim->state.slots[i].vecBNow.z;
     this->state.lastPrim->state.slots[i].vecBNow.y = scale * this->state.lastPrim->state.slots[i].vecBNow.y;
     {
-      const float cosValue = g_cosTable[angle];
-      const float sinValue = g_sinTable[angle];
       const float x = this->state.lastPrim->state.slots[i].vecBNow.x;
       const float z = this->state.lastPrim->state.slots[i].vecBNow.z;
-      this->state.lastPrim->state.slots[i].vecBNow.x = cosValue * x - sinValue * z;
-      this->state.lastPrim->state.slots[i].vecBNow.z = sinValue * x + cosValue * z;
+      this->state.lastPrim->state.slots[i].vecBNow.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
+      this->state.lastPrim->state.slots[i].vecBNow.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
     this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
@@ -7894,8 +7896,8 @@ void CRagEffect::FrostSplash(int, int) {
     {
       const float cosValue = g_cosTable[angle];
       const float sinValue = g_sinTable[angle];
-      const float x = this->state.lastPrim->state.slots[i].vecTPre.x;
       const float z = this->state.lastPrim->state.slots[i].vecTPre.z;
+      const float x = this->state.lastPrim->state.slots[i].vecTPre.x;
       this->state.lastPrim->state.slots[i].vecTPre.x = x * cosValue - z * sinValue;
       this->state.lastPrim->state.slots[i].vecTPre.z = x * sinValue + z * cosValue;
     }
@@ -7913,8 +7915,8 @@ void CRagEffect::FrostSplash(int, int) {
     {
       const float cosValue = g_cosTable[angle];
       const float sinValue = g_sinTable[angle];
-      const float x = this->state.lastPrim->state.slots[i].vecTNow.x;
       const float z = this->state.lastPrim->state.slots[i].vecTNow.z;
+      const float x = this->state.lastPrim->state.slots[i].vecTNow.x;
       this->state.lastPrim->state.slots[i].vecTNow.x = x * cosValue - z * sinValue;
       this->state.lastPrim->state.slots[i].vecTNow.z = x * sinValue + z * cosValue;
     }
@@ -13455,7 +13457,7 @@ void CRagEffect::ElementalOrbit(char kind) {
       this->state.lastPrim->state.slots[0].flag1[0] = 0;
     } else if (kind == 3 || kind == 4) {
       this->state.lastPrim->state.slots[0].height[6] =
-        this->state.deltaPos.x > 5.0f ? static_cast<float>(angle) : static_cast<float>(phase) / this->state.deltaPos.x;
+        this->state.deltaPos.x <= 5.0f ? static_cast<float>(phase) / this->state.deltaPos.x : static_cast<float>(angle);
       this->state.lastPrim->state.slots[0].height[7] = -15.0f;
       this->state.lastPrim->state.slots[0].distance = 1.0f;
 
@@ -13488,16 +13490,16 @@ void CRagEffect::ElementalOrbit(char kind) {
           this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(20);
         }
       }
-    }
 
-    if (kind > 9) {
-      this->state.lastPrim->state.slots[0].height[6] += static_cast<float>(ClampedRandom(360));
-      if (this->state.lastPrim->state.slots[0].height[6] >= 360.0f) {
-        this->state.lastPrim->state.slots[0].height[6] -= 360.0f;
+      if (kind >= 10) {
+        this->state.lastPrim->state.slots[0].height[6] += static_cast<float>(rand() % 360);
+        if (this->state.lastPrim->state.slots[0].height[6] >= 360.0f) {
+          this->state.lastPrim->state.slots[0].height[6] -= 360.0f;
+        }
+        this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(kind);
+        this->state.lastPrim->state.slots[0].distance = 6.0f;
+        this->state.lastPrim->state.totalTexture = 1;
       }
-      this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(kind);
-      this->state.lastPrim->state.slots[0].distance = 6.0f;
-      this->state.lastPrim->state.totalTexture = 1;
     }
 
     this->state.lastPrim->state.slots[0].height[8] = static_cast<float>(ClampedRandom(360));
@@ -13505,30 +13507,27 @@ void CRagEffect::ElementalOrbit(char kind) {
     this->state.lastPrim->state.slots[0].process = 0;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
-    const char* texture;
-
     switch (kind) {
     case 4:
-      texture = "effect\\RL_richs_coin_B\\rcoin1.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\RL_richs_coin_B\\rcoin1.bmp", 0, false, true, false);
       break;
     case 10:
-      texture = "effect\\fire-1.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\fire-1.bmp", 0, false, true, false);
       break;
     case 11:
-      texture = "effect\\lightning-1.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lightning-1.bmp", 0, false, true, false);
       break;
     case 12:
-      texture = "effect\\water-1.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\water-1.bmp", 0, false, true, false);
       break;
     case 13:
-      texture = "effect\\stone-1.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone-1.bmp", 0, false, true, false);
       break;
     default:
-      texture = "effect\\thunder_center.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
       break;
     }
 
-    this->state.lastPrim->state.textures[0] = g_texMgr.Load(texture, 0, false, true, false);
     phase += 360;
     angle += 72;
   }
@@ -14673,8 +14672,17 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
 
   for (int i = 0; i < 4; ++i) {
     vertices[i].diffuse = color;
+  }
+
+  for (int i = 0; i < 4; ++i) {
     vertices[i].specular = 0xFFFFFFFF;
+  }
+
+  for (int i = 0; i < 4; ++i) {
     vertices[i].z = 3.102122e-05f;
+  }
+
+  for (int i = 0; i < 4; ++i) {
     vertices[i].rhw = rhw;
   }
 
