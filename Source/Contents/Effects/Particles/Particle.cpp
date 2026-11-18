@@ -580,12 +580,13 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
       rotation.AppendYRotation(ToRadians(this->m_yaw));
     }
 
-    const float* values = rotation.values;
     for (int i = 0; i < 4; ++i) {
-      const float x = vertices[i].x - screenX;
-      const float y = vertices[i].y - screenY;
-      vertices[i].x = values[0] * x + values[3] * y + values[6] * 0.0f + values[9] + screenX;
-      vertices[i].y = values[1] * x + values[4] * y + values[7] * 0.0f + values[10] + screenY;
+      vector3d point;
+      point.x = vertices[i].x - screenX;
+      point.y = vertices[i].y - screenY;
+      point.z = 0.0f;
+      vertices[i].x = point.x * rotation.values[0] + point.y * rotation.values[3] + point.z * rotation.values[6] + rotation.values[9] + screenX;
+      vertices[i].y = point.x * rotation.values[1] + point.y * rotation.values[4] + point.z * rotation.values[7] + rotation.values[10] + screenY;
     }
   }
 
@@ -610,9 +611,9 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   for (int i = 0; i < 4; ++i) {
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
+    vertices[i].diffuse = ClipColor(*transform, this->m_alpha);
     vertices[i].specular = 0xFFFFFFFF;
     vertices[i].z = 3.102122e-05f;
-    vertices[i].diffuse = ClipColor(*transform, this->m_alpha);
     vertices[i].rhw = rhw - depth;
   }
 
