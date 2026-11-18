@@ -3195,7 +3195,11 @@ void CGameActor::SetHatEffect(int effectId, bool on) {
 
   CPc* pc;
   if (hatEffect == 254 && g_session.IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
-    pc->appearanceFlags = on ? pc->appearanceFlags | 0x10 : pc->appearanceFlags ^ 0x10;
+    if (on) {
+      pc->appearanceFlags = pc->appearanceFlags | 0x10;
+    } else {
+      pc->appearanceFlags = pc->appearanceFlags ^ 0x10;
+    }
     if ((pc->virtue & 0x10) == 0 && (pc->appearanceFlags & 0x10) == 0) {
       return;
     }

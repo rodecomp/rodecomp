@@ -4242,7 +4242,11 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
   this->state.lastPrim->state.totalTexture = 1;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = large == 1 ? 10.0f : 4.0f;
+  if (large == 1) {
+    this->state.lastPrim->state.size = 10.0f;
+  } else {
+    this->state.lastPrim->state.size = 4.0f;
+  }
 
   int index;
   for (index = 0; index < 4; ++index) {

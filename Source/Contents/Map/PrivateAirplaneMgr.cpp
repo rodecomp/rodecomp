@@ -69,13 +69,19 @@ int CPrivateAirplaneMgr::GetNeedItem(int index) {
 // OFFSET: 0x006D0860
 // FUNCTION: fn_06507
 bool CPrivateAirplaneMgr::IsEndableMap(std::string map) {
-  return this->m_endableMaps.find(map) != this->m_endableMaps.end();
+  if (this->m_endableMaps.find(map) != this->m_endableMaps.end()) {
+    return 1;
+  }
+  return 0;
 }
 
 // OFFSET: 0x006D0950
 // FUNCTION: fn_06508
 bool CPrivateAirplaneMgr::IsStartableMap(std::string map) {
-  return this->m_startableMaps.find(map) != this->m_startableMaps.end();
+  if (this->m_startableMaps.find(map) != this->m_startableMaps.end()) {
+    return 1;
+  }
+  return 0;
 }
 
 // OFFSET: 0x006D0A00
