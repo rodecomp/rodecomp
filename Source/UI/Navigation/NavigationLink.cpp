@@ -1856,9 +1856,12 @@ void OpenTextButtonNavigation(UITextButton* button) {
       code -= 100;
     }
 
-    const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
+    unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
     const int remainder = code < 10 ? code : code - 10;
-    g_navigationManager.StartNavigation(name, mode, remainder < 1 ? group : static_cast<unsigned char>(group + 4), flag == 0, x, y, id);
+    if (remainder >= 1) {
+      group = static_cast<unsigned char>(group + 4);
+    }
+    g_navigationManager.StartNavigation(name, mode, group, flag == 0, x, y, id);
   } else {
     g_navigationManager.StartNavigation(name, 2, 5, false, x, y, 1002);
   }
