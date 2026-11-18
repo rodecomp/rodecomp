@@ -33,6 +33,7 @@ public:
   bool SortReversed();
   bool UpdateItemNames();
   bool FilterByName(std::string query);
+  bool FilterItem(ITEM_INFO& item);
 
   /* 00F0 */ UIBitmapEditCtrl* searchEdit;
   /* 00F4 */ UIItemStoreComboBoxWnd* sortCombo;

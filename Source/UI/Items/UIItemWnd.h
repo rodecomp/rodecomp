@@ -38,6 +38,7 @@ public:
   void RefreshOptionBox();
   void RefreshSortButton();
   void RefreshItems();
+  bool FilterItem(ITEM_INFO& item);
 
   /* 00F0 */ ItemWndInfo* saved;
   /* 00F4 */ UIBitmapButton* baseButton;

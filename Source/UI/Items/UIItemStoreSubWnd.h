@@ -30,6 +30,7 @@ public:
   bool SortReversed2();
   bool UpdateItemNames2();
   bool FilterByName2(std::string query);
+  bool FilterItem(ITEM_INFO& item);
   void OnCreate(int width, int height) override;
 
   /* 00F0 */ unsigned char padding_00F0[0x20];
