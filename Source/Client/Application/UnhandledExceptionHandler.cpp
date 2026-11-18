@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <dbghelp.h>
 #include <psapi.h>
+#include <chrono>
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
@@ -34,13 +35,8 @@ char g_moduleBaseName[260] = {};
 // GLOBAL: gl_24360
 char g_crashString[8096] = {};
 
-extern "C" long long __cdecl _Xtime_get_ticks();
-
 // OFFSET: 0x00635A70
 // FUNCTION: fn_04701
-CUnhandledExceptionHandler::CUnhandledExceptionHandler() {
-}
-
 CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 
 // INLINED
@@ -282,11 +278,17 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     sprintf(&g_crashString[strlen(g_crashString)], "\r\nJob : %s\r\n", g_session.GetJobName(g_session.GetDisplayJob(), -1));
 
     CGameMode* gameMode = g_modeMgr.GetGameMode();
-    gameMode != nullptr && sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", std::string(gameMode->mapName).c_str(), g_session.m_playerX, g_session.m_playerY);
+    if (gameMode != nullptr) {
+      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", gameMode->MapName().c_str(), g_session.m_playerX, g_session.m_playerY);
+    }
 
-    sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_session.m_startTimeTicks / 10000000LL, g_session.m_loginTimeTicks / 10000000LL);
+    sprintf(
+      &g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d",
+      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_startTimeTicks)).count(),
+      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_loginTimeTicks)).count()
+    );
 
-    int64_t reportTime = _Xtime_get_ticks() / 10000000LL;
+    int64_t reportTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     PROCESS_MEMORY_COUNTERS_EX memCounters;
     double workingSet = 0.0;
     double privateUsage = 0.0;

@@ -8,7 +8,6 @@
 // VTABLE: vt_00282
 class CUnhandledExceptionHandler {
 public:
-  CUnhandledExceptionHandler();
   explicit CUnhandledExceptionHandler(int (*callback)());
 
   virtual ~CUnhandledExceptionHandler();
