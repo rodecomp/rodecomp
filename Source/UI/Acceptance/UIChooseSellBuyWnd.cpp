@@ -7187,6 +7187,7 @@ __declspec(noinline) ITEM_INFO UIItemIdentifyWnd::GetItem(int index, int* found)
 }
 
 // OFFSET: 0x008D7EA0
+// FUNCTION: fn_45673
 int UIItemIdentifyWnd::ItemAt(int x, int y) {
   if (x > this->geometry.width - 14 || x < 4 || y < 34 || y >= this->m_rows * 32 + 34) {
     return -1;
