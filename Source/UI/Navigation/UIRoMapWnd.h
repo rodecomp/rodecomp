@@ -84,6 +84,7 @@ public:
   __declspec(noinline) void DrawRecordFaces(int unused);
   void DrawRecordAreas();
   void DrawSelectedMapPreview();
+  void DrawPreviewTexture();
   void DrawKafraIcon(float x, float y);
   void DrawArrow(
     float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,

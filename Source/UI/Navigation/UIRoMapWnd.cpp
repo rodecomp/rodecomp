@@ -998,15 +998,22 @@ void UIRoMapWnd::DrawWorldSelection() {
   }
 }
 
+// OFFSET: 0x00919250
+// FUNCTION: fn_45766
+void UIRoMapWnd::DrawPreviewTexture() {
+  if (this->previewTexture != nullptr) {
+    DrawAlphaRectangle(this->previewArea->left, this->previewArea->top, 130, 130, 0x88000000);
+    this->previewTexture->Stretch(this->previewArea->left, this->previewArea->top, 130, 130);
+  }
+}
+
 // OFFSET: 0x0091B750
+// FUNCTION: fn_45667
 void UIRoMapWnd::DrawPreviewOverlay() {
   const WorldViewRecord* selected = this->selectedRecord;
   if (selected != nullptr && this->previewArea != nullptr) {
     DrawAlphaRectangle(selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top, g_worldViewMgr.selectBoxColor);
-    if (this->previewTexture != nullptr) {
-      DrawAlphaRectangle(this->previewArea->left, this->previewArea->top, 130, 130, 0x88000000);
-      this->previewTexture->Stretch(this->previewArea->left, this->previewArea->top, 130, 130);
-    }
+    this->DrawPreviewTexture();
   }
 
   const RoMapTooltipBox* tooltip = this->hoverTooltip;
