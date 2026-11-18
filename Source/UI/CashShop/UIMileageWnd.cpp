@@ -37,7 +37,8 @@ void UIMileageWnd::Paint() {
 
   std::string text("");
   text = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\basic_interface\\mileage_bg%d.bmp", this->m_bonus));
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text.c_str()))), true);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text.c_str())));
+  this->DrawBitmap(0, 0, bitmap, true);
 
   if (this->m_point >= 300) {
     text = std::string("-- : --");
@@ -46,11 +47,13 @@ void UIMileageWnd::Paint() {
   }
 
   int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-  this->DrawOutlinedText((this->geometry.width - textWidth) >> 1, 15, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
+  const int centerX = (this->geometry.width - textWidth) >> 1;
+  this->DrawOutlinedText(centerX, 15, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
 
   text = FormatOwnedString("%d", this->m_point).c_str();
   textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-  this->DrawOutlinedText(this->geometry.width - textWidth - 9, this->geometry.height - 16, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
+  const int pointX = this->geometry.width - textWidth - 9;
+  this->DrawOutlinedText(pointX, this->geometry.height - 16, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
 }
 
 // OFFSET: 0x0094EE70
