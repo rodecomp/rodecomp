@@ -1189,6 +1189,10 @@ void CUITabButton::LoadSkin(bool resolveSkin) {
   this->CUIImageTextButton::LoadSkin(resolveSkin);
 }
 
+// OFFSET: 0x009ED4B0
+// FUNCTION: fn_45741
+CUIEditCtrl::~CUIEditCtrl() = default;
+
 // OFFSET: 0x009ED6D0
 // FUNCTION: fn_14582
 void CUIEditCtrl::Paint() {
