@@ -13,18 +13,21 @@ void UITab::Paint() {
 
   if (this->style == 0) {
     std::sprintf(name, "유저인터페이스\\basic_interface\\tab_itm_%02d.bmp", this->geometry.state + 1);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    this->DrawBitmap(0, 0, bitmap, false);
   } else if (this->style == 1) {
     std::sprintf(name, "유저인터페이스\\basic_interface\\tab_cmd_%02d.bmp", this->geometry.state + 1);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    this->DrawBitmap(0, 0, bitmap, false);
   } else if (this->style == 2) {
     std::sprintf(name, "유저인터페이스\\basic_interface\\tab_que_%02d.bmp", this->geometry.state + 1);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    this->DrawBitmap(0, 0, bitmap, false);
   } else if (this->style == 3) {
     std::sprintf(name, "유저인터페이스\\basic_interface\\tab_item_%02d.bmp", this->geometry.state + 1);
-  } else {
-    return;
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    this->DrawBitmap(0, 0, bitmap, false);
   }
-
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-  this->DrawBitmap(0, 0, bitmap, false);
 }
 
 // OFFSET: 0x0085EE70
