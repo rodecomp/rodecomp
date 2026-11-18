@@ -10,6 +10,7 @@
 
 class UIBitmapButton;
 class UICharInfoBalloonText;
+struct CharacterInfo;
 
 
 class UISelCharForUServerWnd : public UIFrameWnd {
@@ -19,6 +20,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void OnMouseMove(int x, int y) override;
   void Paint() override;
+  CharacterInfo* GetCharacterInfoAt(int x, int y);
   void UpdateCharInfoBalloon(int x, int y, std::uint32_t color);
 
 protected:

@@ -190,6 +190,19 @@ void UISelCharForUServerWnd::OnMouseMove(int x, int y) {
   UIFrameWnd::OnMouseMove(x, y);
 }
 
+// OFFSET: 0x0091B930
+// FUNCTION: fn_45672
+CharacterInfo* UISelCharForUServerWnd::GetCharacterInfoAt(int x, int y) {
+  if (x > 26 && x < this->geometry.width - 26) {
+    if (y >= 95 && y <= 364 && (y >= 250 || y <= 210)) {
+      const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
+      return reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+    }
+  }
+
+  return nullptr;
+}
+
 // OFFSET: 0x0093F1F0
 // FUNCTION: fn_12777
 void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
