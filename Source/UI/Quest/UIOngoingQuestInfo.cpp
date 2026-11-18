@@ -25,11 +25,6 @@
 #include <format>
 #include <string>
 
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestOngoingInfo>, void*>*>
-std::map<unsigned int, RenewQuestOngoingInfo>::_Mybase::_Find_lower_bound<unsigned int>(const unsigned int&) const;
-
 // OFFSET: 0x00A4F580
 // FUNCTION: fn_16213
 bool UnusedTrueA4F580() {

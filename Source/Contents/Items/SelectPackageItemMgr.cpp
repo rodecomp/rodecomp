@@ -78,8 +78,6 @@ bool CSelectPackageItemMgr::LoadScript() {
   return false;
 }
 
-template CSelectPackageItemMgr* Singleton<CSelectPackageItemMgr>::GetInstance();
-
 // GLOBAL: gl_24907
 short g_itemOptionPlaceholderId = 9999;
 

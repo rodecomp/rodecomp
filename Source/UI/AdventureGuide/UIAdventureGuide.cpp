@@ -32,17 +32,6 @@
 #include <regex>
 #include <utility>
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<unsigned int, void*>*>
-StatusRequestTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
-
-template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
-template __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
-template __declspec(noinline) void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-
-template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
-template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
-template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 template <> __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item);
 template <> AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem();
 template <> AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem();
@@ -73,9 +62,6 @@ template <class T> void CUIListBox<T>::OnCreate(int width, int height) {
   this->AddChild(this->scrollBar);
 }
 
-template void CUIListBox<AdventureGuide::CUISubTab>::OnCreate(int, int);
-template void CUIListBox<AdventureGuide::CUITab>::OnCreate(int, int);
-
 // OFFSET: 0x009C2A50
 // FUNCTION: fn_13995
 // OFFSET: 0x009C2B20
@@ -90,11 +76,6 @@ template <class T, class D> void CUIListBoxEx<T, D>::OnCreate(int width, int hei
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
-
-template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnCreate(int, int);
-template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnCreate(int, int);
-template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnCreate(int, int);
-template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnCreate(int, int);
 
 // OFFSET: 0x009C12B0
 // FUNCTION: fn_13987

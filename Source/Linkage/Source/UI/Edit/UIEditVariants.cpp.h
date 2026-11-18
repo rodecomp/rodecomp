@@ -25,6 +25,10 @@
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
+#include "UI/Edit/UIItemTagCtrl.h"
 
 extern template void std::vector<unsigned int>::_Tidy() noexcept;
 extern template std::size_t std::_Traits_find<std::char_traits<char>>(const char* const, const std::size_t, const std::size_t, const char* const, const std::size_t) noexcept;
+template __declspec(noinline) std::vector<bool>::iterator std::vector<bool>::erase(std::vector<bool>::const_iterator) noexcept;
+template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(
+    const char* const, std::size_t, std::size_t, const char* const, std::size_t) noexcept;

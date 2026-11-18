@@ -865,6 +865,14 @@ void UIMemorialDunWnd::Paint() {
   this->FillRegion(this->geometry.width - 2, this->geometry.height - 2, 1, 1, 0x8E8E8E);
 }
 
+// OFFSET: 0x00914950
+// FUNCTION: fn_45681
+UISubChatMiniWnd::~UISubChatMiniWnd() = default;
+
+// OFFSET: 0x009149A0
+// FUNCTION: fn_45682
+UIWindowCallBtnWnd::~UIWindowCallBtnWnd() = default;
+
 // OFFSET: 0x0092AFE0
 // FUNCTION: fn_12656
 void UISubChatMiniWnd::OnCreate(int, int) {
@@ -1182,18 +1190,6 @@ void UISubChatHisWnd::Resize(int width, int height) {
 #include "UI/Edit/UIEditCtrl.h"
 
 #include <mbstring.h>
-
-template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
-template __declspec(noinline) std::map<int, SubChatWndInfo>::iterator std::map<int, SubChatWndInfo>::_Mybase::find(const int&);
-template __declspec(noinline) std::map<int, SubChatWndInfo>::iterator std::map<int, SubChatWndInfo>::_Mybase::erase(std::map<int, SubChatWndInfo>::iterator) noexcept;
-template __declspec(noinline) std::map<int, SubChatWndInfo>::map(const std::map<int, SubChatWndInfo>&);
-template __declspec(noinline) void std::map<int, SubChatWndInfo>::_Mybase::clear() noexcept;
-template __declspec(noinline) std::map<int, SubChatWndInfo>::_Mybase::~_Tree() noexcept;
-template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](const int&);
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>::operator++() noexcept;
-template __declspec(noinline) std::map<int, UIWindow*>::map(const std::map<int, UIWindow*>&);
-template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() noexcept;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>::operator++() noexcept;
 
 // OFFSET: 0x0093C210
 // FUNCTION: fn_12761

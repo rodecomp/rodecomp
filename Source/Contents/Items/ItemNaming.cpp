@@ -23,9 +23,6 @@ struct ReplayTaggedRecordHeader {
 
 static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, ItemCardName>::_Mybase::_Nodeptr> std::map<int, ItemCardName>::_Mybase::_Find_lower_bound<int>(const int&) const;
-template __declspec(noinline) void std::vector<unsigned char>::_Tidy() noexcept;
-
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
 

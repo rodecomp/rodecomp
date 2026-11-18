@@ -10,8 +10,6 @@
 
 #include <cstring>
 
-template __declspec(noinline) std::list<WorldSpatialTree*>::~list() noexcept;
-
 // OFFSET: 0x00CD5AD0
 // FUNCTION: fn_21286
 __declspec(safebuffers) void CGameMode::MarkWorldOcclusion() {

@@ -10,8 +10,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) void std::vector<unsigned char>::_Buy_raw(size_type);
-
 namespace {
 #pragma pack(push, 1)
   struct RecordHeader {

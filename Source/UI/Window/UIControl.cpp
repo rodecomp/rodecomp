@@ -40,13 +40,6 @@
 #include <format>
 #include <windows.h>
 
-template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
-
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-
-template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char* const, std::size_t, const char* const, std::size_t) noexcept;
-template __declspec(noinline) std::map<int, CResPtr<CBitmapRes>>::const_iterator std::map<int, CResPtr<CBitmapRes>>::_Mybase::find(const int&) const;
-
 // GLOBAL: gl_25174
 const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
 
@@ -2131,17 +2124,6 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Resize(int
   this->rebind = 1;
 }
 
-template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
-template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);
-template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnScroll(int);
-template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnScroll(int);
-template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnScroll(int);
-template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnScroll(int);
-template void CUIListBox<AdventureGuide::CUISubTab>::Paint();
-template void CUIListBox<AdventureGuide::CUITab>::Paint();
-template void CUIListBox<AdventureGuide::CUISubTab>::OnWheel(int);
-template void CUIListBox<AdventureGuide::CUITab>::OnWheel(int);
-
 // OFFSET: 0x009F1D40
 // FUNCTION: fn_14703
 void CUIVScrollBar::PageUp() {
@@ -3350,8 +3332,6 @@ void CUIEditCtrl::DrawBlinkingCaret(const std::uint32_t& color) {
     this->UIEditCtrl3::DrawBlinkingCaret(color);
   }
 }
-
-template CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance();
 
 namespace {
 // INLINED

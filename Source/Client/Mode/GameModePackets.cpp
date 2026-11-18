@@ -170,8 +170,6 @@
 #include "UI/Status/UIPetTamingDeceiveWnd.h"
 #include <new>
 
-template __declspec(noinline) decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, const int&>(std::string&, const int&);
-
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
 __declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
@@ -1018,8 +1016,6 @@ __declspec(noinline) void CGameMode::ReceiveFormatStringMessage(const unsigned c
 // FUNCTION: fn_21707
 void CGameMode::IgnorePacket(const unsigned char*) {
 }
-
-template __declspec(noinline) void std::list<CSkillInfo>::clear() noexcept;
 
 namespace {
   // INLINED

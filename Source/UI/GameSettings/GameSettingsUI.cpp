@@ -48,10 +48,6 @@
 #include <string>
 #include <vector>
 
-template __declspec(noinline) std::list<RenderAdapter>::~list() noexcept;
-template __declspec(noinline) std::list<DisplayMode>::~list() noexcept;
-template __declspec(noinline) std::list<RenderBackend>::~list() noexcept;
-
 namespace {
   struct RodexSpamOptionPacket {
     /* 0000 */ int id;
@@ -118,11 +114,6 @@ template <class T, class D> void CUIComboBox<T, D>::Paint() {
   this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, 0xC6C6C6);
 }
 
-template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Paint();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Paint();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Paint();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint();
-
 // OFFSET: 0x00A40040
 // FUNCTION: fn_15962
 // OFFSET: 0x00A40050
@@ -134,11 +125,6 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint();
 template <class T, class D> unsigned int CUIComboBox<T, D>::Selected() const {
   return this->listBox->selected;
 }
-
-template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Selected() const;
-template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Selected() const;
-template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Selected() const;
-template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Selected() const;
 
 // OFFSET: 0x00A41FE0
 // FUNCTION: fn_16009
@@ -156,11 +142,6 @@ template <class T, class D> void CUIComboBox<T, D>::UpdateListHeight() {
   this->listBox->UpdateScrollBar();
 }
 
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::UpdateListHeight();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::UpdateListHeight();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::UpdateListHeight();
-template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::UpdateListHeight();
-
 // OFFSET: 0x00A3EA80
 // FUNCTION: fn_15933
 template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool refresh) {
@@ -170,8 +151,6 @@ template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool 
   }
   return index;
 }
-
-template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(const std::string& value, bool refresh);
 
 // OFFSET: 0x00A1C1B0
 // FUNCTION: fn_15379
@@ -235,10 +214,6 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
 
   this->listBox->AddNewItem();
 }
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Create(int width, int itemHeight, int visibleItems);
-template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Create(int width, int itemHeight, int visibleItems);
-template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Create(int width, int itemHeight, int visibleItems);
-template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Create(int width, int itemHeight, int visibleItems);
 
 // INLINED
 template <class T, class D>

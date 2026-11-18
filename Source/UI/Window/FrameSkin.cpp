@@ -8,13 +8,6 @@
 #include <new>
 #include <utility>
 
-template __forceinline
-std::_Tree_find_result<std::map<int, POINT>::_Mybase::_Nodeptr>
-std::map<int, POINT>::_Mybase::_Find_lower_bound<int>(const int&) const;
-template __forceinline
-std::_Tree_find_result<std::map<int, SIZE>::_Mybase::_Nodeptr>
-std::map<int, SIZE>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // GLOBAL: gl_25106
 template <>
 CUIRegisterMgr* Singleton<CUIRegisterMgr>::s_instance = nullptr;

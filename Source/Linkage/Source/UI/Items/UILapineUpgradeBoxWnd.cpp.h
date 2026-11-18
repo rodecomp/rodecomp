@@ -1,0 +1,39 @@
+#pragma once
+
+#include "UI/Window/WindowId.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "UI/Items/UILapineUpgradeBoxWnd.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/ModeEvents.h"
+#include "Client/Session/Session.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "Script/LuaScript.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Items/UILapineScrollBar.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+#include "Resource/MSGSTRINGID.h"
+#include "Network/Packets/PacketId.h"
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+#include <windows.h>
+#include <timeapi.h>
+
+template __declspec(noinline) std::vector<int>::~vector() noexcept;

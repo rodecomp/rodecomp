@@ -140,13 +140,6 @@ namespace {
   static_assert(sizeof(TextRecord) == 0x72);
 }
 
-template std::_Tree_find_result<std::_Tree_node<UIWindow*, void*>*>
-std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIWindow*>, false>>::_Find_lower_bound<UIWindow*>(
-  UIWindow* const&
-) const;
-template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
-template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-
 // INLINED
 inline WindowGeometry::WindowGeometry()
     : width(0), height(0), x(0), y(0), surface(nullptr), visible(1), id(600), state(0), animationFrame(0), targetAlpha(255), alphaStart(timeGetTime()),

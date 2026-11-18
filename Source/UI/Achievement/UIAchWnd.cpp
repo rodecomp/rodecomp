@@ -26,9 +26,6 @@
 #include <cstring>
 #include <new>
 
-template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
-
 // GLOBAL: gl_25003
 std::vector<AchTracingEntry> g_achievementTracking;
 

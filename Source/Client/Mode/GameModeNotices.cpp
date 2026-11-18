@@ -107,8 +107,6 @@ static const std::string g_whisperItemLinkTag = "<ITEML>";
 #include "UI/Rodex/UIRodexInboxWnd.h"
 #include "Network/Packets/PacketId.h"
 
-template __declspec(noinline) std::pair<std::int64_t, RodexMail> std::make_pair<const std::int64_t&, RodexMail&>(const std::int64_t&, RodexMail&);
-
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
   /* 0000 */ std::int16_t id;

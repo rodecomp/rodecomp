@@ -39,6 +39,17 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
+#include "UI/Items/UIItemStoreWnd.h"
+#include "UI/Items/UIItemParamChangeDisplayWnd.h"
+#include "UI/Items/UIItemWnd.h"
+#include "UI/Shop/UIBartermarketWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 
 extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
 extern template void std::_List_node<MessengerMember, void*>::_Free_non_head(std::allocator<std::_List_node<MessengerMember, void*>>&, std::_List_node<MessengerMember, void*>*) noexcept;
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;

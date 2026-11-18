@@ -31,9 +31,6 @@ extern "C" {
 #include <new>
 #include <utility>
 
-template __declspec(noinline) bool std::string_view::_Equal(const std::string_view) const noexcept;
-template __declspec(noinline) std::list<std::string>::const_iterator std::find<std::list<std::string>::const_iterator, std::string_view>(std::list<std::string>::const_iterator, const std::list<std::string>::const_iterator, const std::string_view&);
-
 #pragma pack(push, 1)
 struct RenewQuestReplayHeader {
   /* 0000 */ unsigned int count;

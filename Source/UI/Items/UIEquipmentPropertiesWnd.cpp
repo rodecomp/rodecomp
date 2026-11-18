@@ -29,9 +29,6 @@
 #include <string>
 #include <windows.h>
 
-template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-
 namespace EquipmentProperties {
 // INLINED
 inline CEquipmentPropertiesMgr* EquipmentPropertiesMgr() {
@@ -41,10 +38,6 @@ inline CEquipmentPropertiesMgr* EquipmentPropertiesMgr() {
   return g_equipmentPropertiesMgr;
 }
 }
-
-template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
-template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::OnWheel(int);
-template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::ClearItems();
 
 // OFFSET: 0x00A0EBF0
 // FUNCTION: fn_15152

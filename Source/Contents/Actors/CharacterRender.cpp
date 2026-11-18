@@ -43,14 +43,6 @@ struct CharacterRenderDrawItem {
   RenderCommand* command;
 };
 
-template __declspec(noinline) std::vector<CActRes*>::vector(const size_type, CActRes* const&, const std::allocator<CActRes*>&);
-template __declspec(noinline) std::vector<CSprRes*>::vector(const size_type, CSprRes* const&, const std::allocator<CSprRes*>&);
-template __declspec(noinline) std::vector<CActRes*>::~vector() noexcept;
-template __declspec(noinline) std::vector<CSprRes*>::~vector() noexcept;
-template __declspec(noinline) void std::list<CharacterRenderDrawItem>::push_back(const CharacterRenderDrawItem&);
-template __declspec(noinline) std::pair<std::map<int, SpriteLayerQuad>::iterator, bool> std::map<int, SpriteLayerQuad>::_Mybase::emplace<std::pair<int, SpriteLayerQuad>>(std::pair<int, SpriteLayerQuad>&&);
-template __declspec(noinline) std::map<int, SpriteLayerQuad>::_Mybase::~_Tree() noexcept;
-
 // OFFSET: 0x0080D2A0
 // FUNCTION: fn_10099
 CCharacterRender::CCharacterRender(int width, int renderHeight)

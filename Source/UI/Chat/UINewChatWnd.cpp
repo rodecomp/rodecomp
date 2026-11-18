@@ -37,13 +37,6 @@
 #include <string>
 #include <vector>
 
-template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-template __declspec(noinline) std::string std::string::substr(std::string::size_type, std::string::size_type) const;
-template __declspec(noinline) std::string* std::_Move_unchecked<std::string*, std::string*>(std::string*, std::string*, std::string*);
-template __declspec(noinline) std::map<int, UIWindow*>::map(const std::map<int, UIWindow*>&);
-template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() noexcept;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>& std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>::operator++() noexcept;
-
 // GLOBAL: gl_25380
 const std::string s_chatItemLinkOpening = "<ITEML>";
 

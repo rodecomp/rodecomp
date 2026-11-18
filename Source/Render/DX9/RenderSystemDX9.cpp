@@ -4,9 +4,6 @@
 
 #include <new>
 
-template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=(std::shared_ptr<CSurface>&&) noexcept;
-template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=<CSurfaceDX9>(std::shared_ptr<CSurfaceDX9>&&) noexcept;
-
 // OFFSET: 0x0056CF60
 // FUNCTION: fn_02353
 CRenderSystemDX9::CRenderSystemDX9() {

@@ -106,10 +106,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-template __declspec(noinline) std::string::size_type std::string::find(const char* const, const std::string::size_type) const noexcept;
-template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>::operator++() noexcept;
-
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 

@@ -14,9 +14,6 @@
 #include <memory>
 #include <string>
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::int64_t>, void*>*>
-InstantValueTree::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x00C7C970
 // FUNCTION: fn_20391
 int CRagConnection::GetPacketSize(int id) {

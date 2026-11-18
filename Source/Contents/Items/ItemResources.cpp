@@ -6,8 +6,6 @@
 #include <cstdlib>
 #include <string>
 
-template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-
 // INLINED
 static const char* ItemResourceName(const char* id, int identified) {
   const ITEM_DESC& value = FindItemDescription(std::atoi(id));

@@ -28,8 +28,6 @@
 template <>
 CReputeMgr* Singleton<CReputeMgr>::s_instance = nullptr;
 
-template CReputeMgr* Singleton<CReputeMgr>::GetInstance();
-
 // OFFSET: 0x0060EF80
 // FUNCTION: fn_04309
 UIReputeWnd::UIReputeWnd()

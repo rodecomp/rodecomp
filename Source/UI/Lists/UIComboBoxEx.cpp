@@ -14,8 +14,6 @@
 
 #include <algorithm>
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, ExtendedListLine>::_Mybase::_Nodeptr> std::map<int, ExtendedListLine>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x00872C00
 // FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;

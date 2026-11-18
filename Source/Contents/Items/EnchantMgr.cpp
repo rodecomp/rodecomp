@@ -77,9 +77,6 @@ __forceinline CItemDBToIDMgr* ItemDbToIdMgr() {
 CEnchantMgr::~CEnchantMgr() {
 }
 
-template CEnchantMgr* Singleton<CEnchantMgr>::GetInstance();
-
-
 // OFFSET: 0x00682960
 // FUNCTION: fn_05540
 void CEnchantMgr::SendCloseEnchant() {

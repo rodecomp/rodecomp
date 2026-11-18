@@ -1,0 +1,62 @@
+#pragma once
+
+#include "Client/Mode/ModeMessage.h"
+#include "UI/Window/WindowId.h"
+#include "Network/TextEncoding.h"
+#include "UI/Window/UIEnums.h"
+#include "Render/Text/FontCache.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Contents/Skin/SkinMgr.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIScrollBarVariants.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Window/UIBasicCtrl.h"
+#include "Utility/Text/FormatString.h"
+#include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIImgMenu.h"
+#include "UI/Lists/UIListBoxEx.h"
+#include "UI/Lists/UITabControl.h"
+#include "UI/Lists/UITreeView.h"
+#include "UI/Buttons/UITVTextButton.h"
+#include "UI/Buttons/UITVBitmapButton.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIEditCtrl_Currency.h"
+#include "Render/Text/TextContext.h"
+#include "UI/Buttons/UIBitmapButton2.h"
+#include "UI/Buttons/UINaviLinkButton.h"
+#include "UI/Buttons/UIItemTagButton.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/Tables/TipOfTheDay.h"
+#include "Contents/Tables/MessageTable.h"
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include "UI/Gauges/UIPcGage.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Session/Session.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Language.h"
+#include "Contents/Map/MapSkyMgr.h"
+#include <cstdlib>
+#include <windows.h>
+#include <timeapi.h>
+#include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "Resource/MSGSTRINGID.h"
+
+template __declspec(noinline) std::string std::operator+(const char* const, const std::string&);
+template __declspec(noinline) std::_List_node<UITreeNode*, void*>* std::list<UITreeNode*>::_Emplace<UITreeNode* const&>(std::_List_node<UITreeNode*, void*>* const, UITreeNode* const&);
+template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(
+    const char* const, std::size_t, std::size_t, const char* const, std::size_t) noexcept;

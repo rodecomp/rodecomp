@@ -1,0 +1,25 @@
+#pragma once
+
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Items/UISecondCostumeWnd.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
+#include "UI/Login/FuncDrawWNDChar.h"
+#include "Contents/Tables/MessageTable.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Navigation/UIListBoxNavi.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Bitmap/TextureNames.h"
+#include "UI/Lists/UIListBox.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "Client/Session/Session.h"
+#include "Script/LuaScript.h"
+#include "Resource/MSGSTRINGID.h"
+
+template __declspec(noinline) std::string::basic_string(const std::string&);

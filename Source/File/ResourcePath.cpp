@@ -5,8 +5,6 @@
 #include <shlwapi.h>
 #include <string>
 
-template __declspec(noinline) std::string& std::string::replace(const size_type, const size_type, const char* const, const size_type);
-
 // STRING: st_14242
 static char g_dataDirectory[] = "data\\";
 

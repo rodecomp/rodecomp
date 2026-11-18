@@ -113,6 +113,3 @@ void CRegisterPartyAsyncWork::Complete() {
   CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
   manager->CompleteRegistration(this->m_diagnostic, this->m_response);
 }
-
-template void std::deque<CRegisterPartyAsyncWork*>::push_back(CRegisterPartyAsyncWork*&&);
-template __declspec(noinline) AsyncDiagnostic& AsyncDiagnostic::operator=<AsyncDiagnostic, bool, 0>(AsyncDiagnostic&&) noexcept;

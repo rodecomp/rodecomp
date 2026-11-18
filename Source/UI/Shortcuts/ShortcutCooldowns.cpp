@@ -64,9 +64,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
-template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x00E1DCA0
 // FUNCTION: fn_23875
 int CSession::IsHomunculusSkill(unsigned id) const {

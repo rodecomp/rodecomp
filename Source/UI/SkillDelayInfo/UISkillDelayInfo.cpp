@@ -29,11 +29,6 @@ namespace {
 
 }
 
-template __declspec(noinline) void std::_List_node<SkillDelayInfo::CDelayItemData, void*>::_Free_non_head(
-  std::allocator<std::_List_node<SkillDelayInfo::CDelayItemData, void*>>&, std::_List_node<SkillDelayInfo::CDelayItemData, void*>*) noexcept;
-template __declspec(noinline) std::list<SkillDelayInfo::CDelayItemData>::~list() noexcept;
-template __declspec(noinline) std::vector<std::string>::~vector() noexcept;
-
 struct SkillDelayInfoFreezeCallback {
   virtual ~SkillDelayInfoFreezeCallback() = default;
 

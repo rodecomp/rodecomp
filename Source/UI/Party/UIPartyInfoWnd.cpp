@@ -12,8 +12,6 @@
 
 #include "Resource/MSGSTRINGID.h"
 
-template __declspec(noinline) std::string::basic_string(const std::string&);
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
 UIPartyInfoWnd::UIPartyInfoWnd()

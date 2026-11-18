@@ -68,8 +68,6 @@
 #include <utility>
 #include <vector>
 
-template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-
 extern "C" {
 #include <lualib.h>
 }
@@ -79,21 +77,6 @@ namespace EquipmentProperties {
 }
 
 using EquipmentProperty = EquipmentProperties::CEquipmentProperties;
-
-template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
-template __declspec(noinline) std::unordered_map<int, int>::unordered_map();
-template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
-template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
-  std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
-) noexcept;
-template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_tree<std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>>(
-  std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&, std::_Tree_node<std::pair<const int, int>, void*>*
-) noexcept;
-template __declspec(noinline) std::string fmt::format<const char*&, int&>(fmt::format_string<const char*&, int&>, const char*&, int&);
-template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::format_string<unsigned int&, int&>, unsigned int&, int&);
-template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
-template __declspec(noinline) std::string fmt::format<double, int&>(fmt::format_string<double, int&>, double&&, int&);
-template __declspec(noinline) std::wstring fmt::format<std::wstring, std::wstring>(fmt::wformat_string<std::wstring, std::wstring>, std::wstring&&, std::wstring&&);
 
 namespace EquipmentProperties {
   class CEquipmentProperties {
@@ -364,7 +347,6 @@ namespace EquipmentProperties {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x44);
-template __declspec(noinline) std::unordered_map<int, int, EquipmentProperties::CEquipmentValueHash>::~unordered_map();
 static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_pretend) == 0x34);
 static_assert(sizeof(EquipmentProperties::CEquipment) == 0x38);

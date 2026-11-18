@@ -66,8 +66,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::string& std::string::erase(std::size_t, std::size_t);
-
 // OFFSET: 0x008A3700
 // FUNCTION: fn_11657
 UIFrameWnd::UIFrameWnd(unsigned char cached)

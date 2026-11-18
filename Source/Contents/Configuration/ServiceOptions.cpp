@@ -1198,8 +1198,6 @@ void ApplyServiceOptionWindow27() {
 template <>
 CGameSettingsMgr* Singleton<CGameSettingsMgr>::s_instance = nullptr;
 
-template CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance();
-
 // OFFSET: 0x006C45F0
 // FUNCTION: fn_06356
 void ApplyServiceOptionJitterScale(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {

@@ -31,8 +31,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-
 // OFFSET: 0x00918380
 // FUNCTION: fn_12594
 void UIRoMapWnd::DrawDashedArrow(

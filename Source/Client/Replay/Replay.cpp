@@ -21,9 +21,6 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Messenger/MessengerMember.h"
 
-template __declspec(noinline) void std::vector<unsigned char>::assign<const unsigned char*, 0>(const unsigned char*, const unsigned char*);
-template __declspec(noinline) void std::list<ITEM_INFO>::_Construct_range_unchecked<ITEM_INFO*>(ITEM_INFO*, ITEM_INFO*);
-
 // GLOBAL: gl_24549
 int g_replayAnimationScaling = 0;
 

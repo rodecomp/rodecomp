@@ -36,8 +36,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::vector<int>::~vector() noexcept;
-
 namespace {
 #pragma pack(push, 1)
   struct LapineUpgradeClosePacket {

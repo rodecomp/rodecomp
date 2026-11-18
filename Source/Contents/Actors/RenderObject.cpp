@@ -79,8 +79,6 @@
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 
-template __declspec(noinline) std::string::basic_string(const std::string&);
-
 // GLOBAL: gl_25173
 int g_playerPoisoned;
 

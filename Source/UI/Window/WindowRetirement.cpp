@@ -17,8 +17,6 @@
 
 #include <algorithm>
 
-template __declspec(noinline) std::_Tree_find_result<std::map<UIWindow*, SnapRectangle>::_Mybase::_Nodeptr> std::map<UIWindow*, SnapRectangle>::_Mybase::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
-
 // OFFSET: 0x00AA2C90
 // FUNCTION: fn_17219
 __declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {
