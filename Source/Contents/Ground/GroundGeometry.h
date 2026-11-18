@@ -104,6 +104,7 @@ public:
   bool IsNewVer() override;
   void InitializeLighting() override;
   int Lighting(int column, int row, float& red, float& green, float& blue) const override;
+  void SetLighting(int column, int row, float& red, float& green, float& blue);
   void ImportWater(const CGndRes& resource) override;
   void DrawGrid(const float* matrix, int column, int row, std::uint32_t color) const override;
   void DrawCellDecal(const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv) const override;

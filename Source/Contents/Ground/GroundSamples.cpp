@@ -49,6 +49,17 @@ int GroundGeometry::Lighting(int column, int row, float& red, float& green, floa
   return 1;
 }
 
+// OFFSET: 0x00AC3090
+// FUNCTION: fn_45872
+void GroundGeometry::SetLighting(int column, int row, float& red, float& green, float& blue) {
+  if (!this->lighting.empty()) {
+    const unsigned index = static_cast<unsigned>(column) + 2u * static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
+    this->lighting[index][0] = red;
+    this->lighting[index][1] = green;
+    this->lighting[index][2] = blue;
+  }
+}
+
 // OFFSET: 0x00AC11C0
 // FUNCTION: fn_17578
 int GroundBase::Lighting(int, int, float&, float&, float&) const {
