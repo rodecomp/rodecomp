@@ -73,16 +73,18 @@ void CTriangleShotArrow::Open() {
   const float dy = target.y - pos.y;
   const float dz = target.z - pos.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
-  pos.x = inverse * dx * 4.0f + pos.x;
-  pos.y = inverse * dy * 4.0f + pos.y;
-  pos.z = inverse * dz * 4.0f + pos.z;
-  this->origin = this->current;
-  this->position[0] = pos.x;
-  this->position[1] = pos.y;
-  this->position[2] = pos.z;
+  const float x = inverse * dx * 4.0f + pos.x;
+  const float y = inverse * dy * 4.0f + pos.y;
+  const float z = inverse * dz * 4.0f + pos.z;
+  this->origin.x = pos.x = x;
+  this->origin.y = pos.y = y;
+  this->origin.z = pos.z = z;
+  this->position[0] = x;
+  this->position[1] = y;
+  this->position[2] = z;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - pos.z), static_cast<double>(target.x - pos.x)));
+  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->current.z), static_cast<double>(target.x - pos.x)));
   float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
