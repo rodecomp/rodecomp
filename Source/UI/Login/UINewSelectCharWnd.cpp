@@ -1174,8 +1174,9 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
     }
   }
 
+  const bool disabled = this->m_slotStatus[current] == 1;
   auto* button = this->m_windowFC;
-  if (this->m_slotStatus[current] == 1) {
+  if (disabled) {
     button->SetDisabled(1);
     button->Invalidate();
   } else {
