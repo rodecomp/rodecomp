@@ -60,11 +60,9 @@ void CLevel99Orb2Effect::Open() {
       particle->scale = 0.55f;
       particle->alpha = 0;
 
-      const float height = static_cast<float>(Random(100));
-      EffectPoint& offset = this->offsets[row * 4 + column];
-      offset.x = 0.0f;
-      offset.y = height;
-      offset.z = 0.0f;
+      EffectPoint offset;
+      offset.y = static_cast<float>(Random(100));
+      this->offsets[row * 4 + column] = offset;
 
       float* angle = &particle->animationParameter;
       for (int i = 0; i < 4; ++i) {
