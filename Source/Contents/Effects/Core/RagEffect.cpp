@@ -14236,9 +14236,10 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].distance = 4.5f;
   this->state.lastPrim->state.slots[0].riseAngle = 70;
 
+  int slot0 = 0;
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[0].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot0].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot0].flag1[height] = 0;
   }
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -14256,34 +14257,36 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
     this->state.lastPrim->state.slots[1].flag1[height] = 0;
   }
 
-  this->state.lastPrim->state.slots[2].life = 1;
-  this->state.lastPrim->state.slots[2].process = 0;
-  this->state.lastPrim->state.slots[2].riseAngle = 45;
-  this->state.lastPrim->state.slots[2].distance = 5.5f;
-  this->state.lastPrim->state.slots[2].fullDisplayAngle = 315;
-  this->state.lastPrim->state.slots[2].maxHeight = 19.0f;
-  this->state.lastPrim->state.slots[2].rotStart = 180;
-  this->state.lastPrim->state.slots[2].alphaB = 180;
-  this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
+  int slot2 = 2;
+  this->state.lastPrim->state.slots[slot2].life = 1;
+  this->state.lastPrim->state.slots[slot2].process = 0;
+  this->state.lastPrim->state.slots[slot2].riseAngle = 45;
+  this->state.lastPrim->state.slots[slot2].distance = 5.5f;
+  this->state.lastPrim->state.slots[slot2].fullDisplayAngle = 315;
+  this->state.lastPrim->state.slots[slot2].maxHeight = 19.0f;
+  this->state.lastPrim->state.slots[slot2].rotStart = 180;
+  this->state.lastPrim->state.slots[slot2].alphaB = 180;
+  this->state.lastPrim->state.slots[slot2].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[2].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[2].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot2].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot2].flag1[height] = 0;
   }
 
-  this->state.lastPrim->state.slots[3].life = 1;
-  this->state.lastPrim->state.slots[3].process = 0;
-  this->state.lastPrim->state.slots[3].distance = 4.0f;
-  this->state.lastPrim->state.slots[3].riseAngle = 89;
-  this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
-  this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[3].maxHeight = 250.0f;
-  this->state.lastPrim->state.slots[3].rotStart = 0;
-  this->state.lastPrim->state.slots[3].alphaB = 70;
+  int slot3 = 3;
+  this->state.lastPrim->state.slots[slot3].life = 1;
+  this->state.lastPrim->state.slots[slot3].process = 0;
+  this->state.lastPrim->state.slots[slot3].distance = 4.0f;
+  this->state.lastPrim->state.slots[slot3].riseAngle = 89;
+  this->state.lastPrim->state.slots[slot3].vecBNow.y = 0.0f;
+  this->state.lastPrim->state.slots[slot3].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot3].maxHeight = 250.0f;
+  this->state.lastPrim->state.slots[slot3].rotStart = 0;
+  this->state.lastPrim->state.slots[slot3].alphaB = 70;
 
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[3].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[3].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot3].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot3].flag1[height] = 0;
   }
 }
 
