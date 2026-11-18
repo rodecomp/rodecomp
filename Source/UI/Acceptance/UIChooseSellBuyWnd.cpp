@@ -9989,15 +9989,17 @@ void UIEquipWnd::DrawEquipSlots() {
 
     if (item.grade > 0) {
       if (slot < 8) {
-        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-          Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str())
-        ));
-        this->DrawBitmap(iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26, grade, true);
+        this->DrawBitmap(
+          iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26,
+          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+          true
+        );
       } else {
-        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-          Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str())
-        ));
-        this->DrawBitmap(iconX[slot & 3], this->m_contentTop + 30, grade, true);
+        this->DrawBitmap(
+          iconX[slot & 3], this->m_contentTop + 30,
+          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+          true
+        );
       }
     }
 
