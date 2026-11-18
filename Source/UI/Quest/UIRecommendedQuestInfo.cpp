@@ -279,6 +279,21 @@ void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
 
 namespace RecommendedQuestInfo {
 
+// INLINED
+static void SetQuestNpc(CUIScrollWindow* window, const std::string& sprite, const std::string& map, int x, int y) {
+  if (sprite.size() == 0) {
+    window->npcSprite->Show(0);
+    return;
+  }
+
+  window->npcSprite->SetSprite(75, 145, sprite);
+  if (map.size() != 0) {
+    window->npcSprite->SetDestination(map, x, y);
+  }
+  window->npcSprite->Move(window->geometry.width - window->npcSprite->geometry.width - 40, window->geometry.height - window->npcSprite->geometry.height - 10);
+  window->npcSprite->Show(1);
+}
+
 // OFFSET: 0x00A58E80
 // FUNCTION: fn_16352
 void CUIScrollWindow::SetQuest(unsigned int questId) {
@@ -293,22 +308,12 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
     this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.backgroundImage);
 
     for (std::size_t i = 0; i < std::min<std::size_t>(this->questInfos.size(), 3); ++i) {
-      for (auto lineIt = quest.m_descriptions[i].begin(); lineIt != quest.m_descriptions[i].end(); ++lineIt) {
-        std::string line = *lineIt;
+      for (std::string line : quest.m_descriptions[i]) {
         this->questInfos[i]->textViewer->AddLine(line);
       }
     }
 
-    if (quest.npcSprite.size() == 0) {
-      this->npcSprite->Show(0);
-    } else {
-      this->npcSprite->SetSprite(75, 145, quest.npcSprite);
-      if (quest.destinationMap.size() != 0) {
-        this->npcSprite->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
-      }
-      this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 40, this->geometry.height - this->npcSprite->geometry.height - 10);
-      this->npcSprite->Show(1);
-    }
+    SetQuestNpc(this, quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
   } else {
     std::string text = std::format("Not found Quest Info = %lu", questId);
     g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
