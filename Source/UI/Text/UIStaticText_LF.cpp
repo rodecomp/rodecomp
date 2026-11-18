@@ -3,6 +3,12 @@
 #include <cstdint>
 #include <string>
 
+// OFFSET: 0x00947120
+// FUNCTION: fn_45704
+UIStaticText_LF::UIStaticText_LF()
+    : UIWindow(0), m_text(), m_lineSpacing(0), m_align(0), m_fontFamily(0), m_fontHeight(12), m_textColor(0), m_bold(0) {
+}
+
 // OFFSET: 0x0094ECF0
 // FUNCTION: fn_12915
 void UIStaticText_LF::Paint() {

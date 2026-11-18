@@ -7,6 +7,8 @@
 
 class UIStaticText_LF : public UIWindow {
 public:
+  UIStaticText_LF();
+
   // INLINED
   UIStaticText_LF(unsigned char cached)
       : UIWindow(cached), m_lineSpacing(0), m_align(0), m_fontFamily(0), m_fontHeight(12), m_textColor(0), m_bold(0) {}
