@@ -41,6 +41,7 @@ class UIHeadsprButton : public UISpriteButton {
 public:
   using UISpriteButton::UISpriteButton;
   UIHeadsprButton();
+  __declspec(noinline) ~UIHeadsprButton() override;
   void Paint() override;
 };
 

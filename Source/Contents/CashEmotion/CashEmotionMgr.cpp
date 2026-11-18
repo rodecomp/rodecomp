@@ -4032,6 +4032,10 @@ void UIHeadsprButton::Paint() {
   );
 }
 
+// OFFSET: 0x00851960
+// FUNCTION: fn_45643
+UIHeadsprButton::~UIHeadsprButton() = default;
+
 // OFFSET: 0x0085D6C0
 // FUNCTION: fn_10816
 void UISpriteButton::Paint() {
