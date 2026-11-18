@@ -196,7 +196,8 @@ bool C3dAnimModelRes::Load(const char* name) {
     file.Read(&node->vertexCount, 4);
 
     for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
-      node->frames[frameIndex].vertices = new std::array<float, 3>[node->vertexCount]{};
+      AnimatedModelFrame& frame = node->frames[frameIndex];
+      frame.vertices = new std::array<float, 3>[node->vertexCount]{};
       file.Read(node->frames[frameIndex].vertices, node->vertexCount * 12);
     }
 
@@ -204,11 +205,13 @@ bool C3dAnimModelRes::Load(const char* name) {
     file.Read(&node->sharedTextureVertices, 4);
 
     if (node->sharedTextureVertices) {
-      node->frames[0].textureVertices = new ModelTextureVertex[node->textureVertexCount];
+      AnimatedModelFrame& frame = node->frames[0];
+      frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
       file.Read(node->frames[0].textureVertices, node->textureVertexCount * 12);
     } else {
       for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
-        node->frames[frameIndex].textureVertices = new ModelTextureVertex[node->textureVertexCount];
+        AnimatedModelFrame& frame = node->frames[frameIndex];
+        frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
         file.Read(node->frames[frameIndex].textureVertices, node->textureVertexCount * 12);
       }
     }
