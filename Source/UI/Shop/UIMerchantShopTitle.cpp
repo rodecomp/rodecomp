@@ -17,6 +17,10 @@
 #include "UI/Text/UIStaticText.h"
 template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 
+// OFFSET: 0x008519B0
+// FUNCTION: fn_45642
+UIMerchantShopTitle::~UIMerchantShopTitle() = default;
+
 // OFFSET: 0x0085ACE0
 // FUNCTION: fn_10788
 void UIMerchantShopTitle::OnCreate(int, int) {

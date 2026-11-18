@@ -10,6 +10,7 @@ class UIStaticText;
 class UIMerchantShopTitle : public UIWindow {
 public:
   explicit UIMerchantShopTitle(int buyingShop);
+  __declspec(noinline) ~UIMerchantShopTitle() override;
   void OnCreate(int width, int height) override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
