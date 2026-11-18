@@ -251,14 +251,10 @@ void UIWindowMgr::CancelActiveDialog() {
 // FUNCTION: fn_17193
 bool UIWindowMgr::HasMiniPartyMember(std::uint32_t accountId) {
   for (auto it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
-    bool matches;
-    {
-      const MessengerMember member = static_cast<UIMiniPartyWnd*>(*it)->m_member;
-      matches = member.accountId == accountId;
+    if (accountId != static_cast<UIMiniPartyWnd*>(*it)->GetMember().accountId) {
+      continue;
     }
-    if (matches) {
-      return true;
-    }
+    return true;
   }
   return false;
 }
