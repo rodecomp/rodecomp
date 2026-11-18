@@ -19,6 +19,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Pet/PetEvolutionMgr.h"
 #include "Contents/World/World.h"
@@ -210,30 +211,7 @@ public:
   bool UpdateActive();
   std::vector<CEquipmentAttachable>& GetAttachables();
 };
-
-class CEquipmentPropertiesMgr {
-public:
-  virtual ~CEquipmentPropertiesMgr();
-  unsigned char padding_0004[0x9];
-  bool m_dirty;
-  unsigned char padding_000E[0x12];
-  UIWindow* m_window;
-  /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
-  /* 0044 */ unsigned char padding_0044[0x1B8];
-
-  CEquipmentPropertiesMgr();
-  CEquipmentWearable* FindProperty1(const int& key);
-  void AddExpansion(const int& kind, const int& itemId, bool notify);
-  void EquipItem(const int& itemId, bool notify);
-  __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
-  void UnequipItem(const int& itemId, bool notify);
-  void UnequipWearable(const int& location);
-};
 }
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
-#endif
 
 // OFFSET: 0x00AA6440
 // FUNCTION: fn_17229

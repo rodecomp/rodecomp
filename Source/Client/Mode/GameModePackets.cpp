@@ -47,6 +47,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Actors/PlayerNameDictionary.h"
 #include "Contents/Rodex/RodexMailStore.h"
 #include "Contents/Events/RouletteMgr.h"
@@ -5166,24 +5167,6 @@ namespace {
 #pragma pack(pop)
 
   static_assert(sizeof(StatusBonusPacket) == 0xE);
-}
-
-namespace EquipmentProperties {
-class CEquipmentWearable;
-
-class CEquipmentPropertiesMgr {
-public:
-  CEquipmentPropertiesMgr();
-  virtual ~CEquipmentPropertiesMgr();
-  static CEquipmentPropertiesMgr* GetInstance();
-  void RefreshPretend();
-  void RemoveExpansion(const int& kind, const int& itemId);
-  void AddExpansion(const int& kind, const int& itemId, bool notify);
-  void RefreshExpansion(const int& kind, const int& itemId);
-  CEquipmentWearable* FindProperty1(const int& key);
-  void UnequipWearable(const int& location);
-  unsigned char padding_0004[0x1F8];
-};
 }
 
 // OFFSET: 0x00D4CAD0

@@ -6206,6 +6206,7 @@ void CGameMode::InitializeCamera() {
 #include "UI/Text/UINameBalloonText.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Actors/ActorPickNode.h"
 #include "Client/Application/Registry.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
@@ -8399,22 +8400,6 @@ struct ContactNpcPacket {
   /* 0006 */ unsigned char type;
 };
 #pragma pack(pop)
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  virtual ~CEquipmentPropertiesMgr();
-  /* 0004 */ unsigned char padding_0004[0x1F8];
-
-  CEquipmentPropertiesMgr();
-  void RefreshPretend();
-  void RefreshShop();
-};
-}
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
-#endif
 
 // OFFSET: 0x00CDDA50
 // FUNCTION: fn_21320

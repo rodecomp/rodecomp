@@ -31,6 +31,7 @@
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/RuneSystem/RuneSystem.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Rodex/RodexMailStore.h"
@@ -552,14 +553,6 @@ static_assert(sizeof(ItemRewardPacket) == 0x3F);
 static_assert(sizeof(ItemRewardPacket2) == 0x40);
 static_assert(sizeof(ActorSkillResultPacket) == 0x1D);
 #endif
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  static CEquipmentPropertiesMgr* GetInstance();
-  void RefreshExpansion(const int& kind, const int& itemId);
-};
-}
 
 static_assert(sizeof(PACKET_ZC_GROUP_LIST3) == 0x52);
 static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_ACK_DELETE) == 4);

@@ -24,6 +24,7 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -117,14 +118,6 @@ public:
 
 // GLOBAL: gl_25445
 int g_sessionTableLoadCount;
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  static CEquipmentPropertiesMgr* GetInstance();
-  void RefreshWearable(const std::uint32_t& key);
-};
-}
 
 // OFFSET: 0x00DDE860
 // FUNCTION: fn_23401

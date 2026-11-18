@@ -2,6 +2,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
@@ -23,15 +24,6 @@ extern "C" {
 #include <windows.h>
 
 template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  static CEquipmentPropertiesMgr* GetInstance();
-  void RemoveExpansion(const int& kind, const int& itemId);
-  void AddExpansion(const int& kind, const int& itemId, bool notify);
-};
-}
 
 // GLOBAL: gl_24845
 CRuneSystemMgr* g_runeSystemMgr;

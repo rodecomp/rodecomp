@@ -27,6 +27,7 @@
 #include "Contents/Map/MapPropertyMgr.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Actors/PlayerNameDictionary.h"
@@ -816,16 +817,6 @@ bool ReplaceClientExecutable(char* executable, const char* update) {
 
   StartClientProcess(executable);
   return true;
-}
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  virtual ~CEquipmentPropertiesMgr();
-
-  static CEquipmentPropertiesMgr* GetInstance();
-  bool InitializeLua();
-};
 }
 
 // OFFSET: 0x00E58100

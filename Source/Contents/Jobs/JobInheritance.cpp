@@ -13,6 +13,7 @@
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Messenger/EquipmentPropertyStore.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session/Session.h"
@@ -1802,22 +1803,6 @@ public:
   /* 0040 */ int equippedItemIndex;
   /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
   /* 0050 */ std::list<CEquipmentProperties*> m_children;
-};
-
-class CEquipmentPropertiesMgr {
-public:
-  virtual ~CEquipmentPropertiesMgr();
-  /* 0004 */ unsigned char padding_0004[0x9];
-  /* 000D */ bool m_dirty;
-  /* 000E */ unsigned char padding_000E[0x12];
-  /* 0020 */ UIWindow* observerWindow;
-  /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
-  /* 0044 */ unsigned char padding_0044[0x1B8];
-
-  CEquipmentPropertiesMgr();
-  CEquipmentWearable* FindProperty1(const int& key);
-  void UnequipItem(const int& itemId, bool notify);
-  void UnequipWearable(const int& location);
 };
 }
 

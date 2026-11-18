@@ -8,6 +8,7 @@
 
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/SkinPalette.h"
@@ -32,15 +33,6 @@ template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(co
 template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
 
 namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  CEquipmentPropertiesMgr();
-  void SetWindow(UIWindow* window);
-  void GetDescriptions(const int& group, std::list<std::string>& lines);
-
-  /* 0000 */ unsigned char padding_0000[0x1FC];
-};
-
 // INLINED
 inline CEquipmentPropertiesMgr* EquipmentPropertiesMgr() {
   if (g_equipmentPropertiesMgr == nullptr) {

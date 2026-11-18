@@ -22,6 +22,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/Tokenizer.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Skill/UINewSkillListWnd.h"
@@ -953,17 +954,6 @@ void CSession::ReturnStackedItem(int index, int count) {
   if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-}
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  virtual ~CEquipmentPropertiesMgr();
-  unsigned char padding_0004[0x1F8];
-
-  CEquipmentPropertiesMgr();
-  __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
-};
 }
 
 // OFFSET: 0x00E07150

@@ -5,6 +5,7 @@
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "Contents/Pet/PetEvolutionMgr.h"
 #include "UI/Items/UIItemStoreWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -13,18 +14,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
-
-namespace EquipmentProperties {
-class CEquipmentPropertiesMgr {
-public:
-  CEquipmentPropertiesMgr();
-  void AddExpansion(const int& kind, const int& itemId, bool notify);
-
-  unsigned char padding_0000[0x1FC];
-};
-}
-
-
 
 namespace {
 #pragma pack(push, 1)
