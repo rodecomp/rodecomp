@@ -270,8 +270,8 @@ int AiHomunAttack(lua_State* state) {
     return 0;
   }
 
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
-  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
+  std::uint32_t target = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
   if (!g_session.IsHomunAid(aid)) {
     return 0;
   }
@@ -865,7 +865,7 @@ static_assert(sizeof(MoveNpcPacket) == 9);
 // OFFSET: 0x00D9EEF0
 // FUNCTION: fn_22338
 int AiGetMsg(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   int index;
   if (g_session.IsHomunAid(aid)) {
     index = 0;
@@ -916,7 +916,7 @@ int AiGetMsg(lua_State* state) {
 // OFFSET: 0x00D9F0B0
 // FUNCTION: fn_22339
 int AiGetResMsg(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   int index;
   if (g_session.IsHomunAid(aid)) {
     index = 0;
@@ -967,7 +967,7 @@ int AiGetResMsg(lua_State* state) {
 // OFFSET: 0x00D9FF50
 // FUNCTION: fn_22343
 int AiIsMonster(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   double result = 0.0;
@@ -1017,9 +1017,9 @@ int AiIsMonster(lua_State* state) {
 // OFFSET: 0x00DA00D0
 // FUNCTION: fn_22344
 int AiMove(lua_State* state) {
-  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
-  int x = static_cast<int>(lua_tonumber(state, 2));
-  int y = static_cast<int>(lua_tonumber(state, 3));
+  std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
+  int x = static_cast<int>(luaL_checknumber(state, 2));
+  int y = static_cast<int>(luaL_checknumber(state, 3));
 
   if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
     return 0;
