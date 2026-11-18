@@ -443,9 +443,9 @@ void UIRoMapWnd::DrawRecordFaces(int) {
   }
 }
 
-// INLINED
-static bool AddRelatedName(std::string map, std::string name, std::list<WorldViewRecord>& records) {
-  for (WorldViewRecord& record : records) {
+// OFFSET: 0x0091E670
+bool UIRoMapWnd::AddRelatedName(std::string map, std::string name) {
+  for (WorldViewRecord& record : this->m_records) {
     if (record.name == map) {
       record.relatedNames.push_back(name);
       return true;
@@ -466,7 +466,7 @@ void UIRoMapWnd::RefreshPartyRecords() {
         continue;
       }
 
-      if (!AddRelatedName(member.map, member.name, this->m_records)) {
+      if (!this->AddRelatedName(member.map, member.name)) {
         WorldViewRecord record;
         record.name = member.map;
         record.relatedNames.push_back(member.name);
@@ -569,6 +569,12 @@ void CKafraMoveMapServiceInfo::Build(std::string mapName) {
   }
 }
 
+// OFFSET: 0x0091E080
+// FUNCTION: fn_45668
+void CKafraMoveMapServiceInfo::SetCurrentMarker(const WorldViewRecord& record) {
+  SetRoMapMarker(record.name, record.area, this->current);
+}
+
 // OFFSET: 0x00932C80
 // FUNCTION: fn_12716
 void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
@@ -577,7 +583,7 @@ void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
     if (this->mapName != record->name) {
       this->mapName = record->name;
       this->Build(record->name);
-      SetRoMapMarker(record->name, record->area, this->current);
+      this->SetCurrentMarker(*record);
       this->blend = 0.0f;
     }
 
@@ -932,10 +938,8 @@ __forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) 
   this->Draw(wnd);
 }
 
-// OFFSET: 0x009196E0
-// FUNCTION: fn_12597
-void UIRoMapWnd::DrawWorld() {
-  g_worldViewMgr.Draw(this->m_showLabels, 0, 17, this->geometry.width, this->geometry.height - 17);
+// OFFSET: 0x0091B0A0
+void UIRoMapWnd::DrawLevelAreas() {
   const int count = g_worldViewMgr.LevelCount();
   for (int index = 0; index < count; ++index) {
     int kind = 0;
@@ -951,15 +955,18 @@ void UIRoMapWnd::DrawWorld() {
     DrawAlphaRectangle(x, y, width, height, g_worldViewMgr.searchColors[kind]);
     DrawTexturedRectangle(x, y, width, height, 0xFFFFFFFF, g_texMgr.Load(g_worldViewMgr.searchImages[kind].c_str(), 0, false, true, false));
   }
+}
 
-  this->DrawMarks();
+// OFFSET: 0x0091B010
+void UIRoMapWnd::DrawWorldSelection() {
   if (!g_worldViewMgr.selection.name.empty() && g_worldViewMgr.currentWorld == g_worldViewMgr.selection.worldIndex) {
     const WorldViewArea area = g_worldViewMgr.selection.area;
     DrawTexturedRectangle(area.left, area.top, area.right - area.left, area.bottom - area.top, 0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false));
   }
+}
 
-  this->DrawRecordFaces(1);
-  this->DrawDungeonLinks();
+// OFFSET: 0x0091B750
+void UIRoMapWnd::DrawPreviewOverlay() {
   const WorldViewRecord* selected = this->selectedRecord;
   if (selected != nullptr && this->previewArea != nullptr) {
     DrawAlphaRectangle(selected->left, selected->top, selected->right - selected->left, selected->bottom - selected->top, g_worldViewMgr.selectBoxColor);
@@ -973,6 +980,18 @@ void UIRoMapWnd::DrawWorld() {
   if (tooltip != nullptr) {
     DrawAlphaRectangle(tooltip->x, tooltip->y, tooltip->width, tooltip->height, 0x66000000);
   }
+}
+
+// OFFSET: 0x009196E0
+// FUNCTION: fn_12597
+void UIRoMapWnd::DrawWorld() {
+  g_worldViewMgr.Draw(this->m_showLabels, 0, 17, this->geometry.width, this->geometry.height - 17);
+  this->DrawLevelAreas();
+  this->DrawMarks();
+  this->DrawWorldSelection();
+  this->DrawRecordFaces(1);
+  this->DrawDungeonLinks();
+  this->DrawPreviewOverlay();
 
   if (this->m_resetTime == 1) {
     this->m_lastTime = timeGetTime();

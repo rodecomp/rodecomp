@@ -45,6 +45,7 @@ struct CKafraMoveMapServiceInfo {
   virtual ~CKafraMoveMapServiceInfo() {}
 
   void Build(std::string mapName);
+  void SetCurrentMarker(const WorldViewRecord& record);
   __declspec(noinline) void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<RoMapMarker> markers;
@@ -76,6 +77,9 @@ public:
   void DrawRecordBorders();
   __declspec(noinline) void DrawDungeonLinks();
   __declspec(noinline) void DrawMarks();
+  void DrawWorldSelection();
+  void DrawLevelAreas();
+  void DrawPreviewOverlay();
   __declspec(noinline) void DrawRecordFaces(int unused);
   void DrawRecordAreas();
   void DrawSelectedMapPreview();
@@ -95,6 +99,7 @@ public:
   void RefreshWorldMapLevels();
   void DrawWorld();
   __declspec(noinline) void RefreshPartyRecords();
+  bool AddRelatedName(std::string map, std::string name);
   __declspec(noinline) bool LocateRecord(WorldViewRecord& record);
 
 private:
