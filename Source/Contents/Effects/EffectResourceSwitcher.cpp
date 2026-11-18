@@ -355,13 +355,13 @@ void CEZ2STREffectEx::OnProcess() {
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
 
     const vector3d position = this->positionVector;
-    const float viewX = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] + emitter->offsetX;
-    const float viewY = position.y * view.values[4] + position.x * view.values[1] + position.z * view.values[7] + view.values[10] - emitter->offsetY;
-    const float viewZ = position.y * view.values[5] + position.x * view.values[2] + position.z * view.values[8] + view.values[11];
+    const float viewZ = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11];
+    const float viewX = position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] + emitter->offsetX;
+    const float viewY = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] - emitter->offsetY;
 
-    const vector3d world = {viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9],
-                            viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10],
-                            viewY * inverse.values[5] + viewX * inverse.values[2] + viewZ * inverse.values[8] + inverse.values[11]};
+    const vector3d world = {viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9],
+                            viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10],
+                            viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11]};
     emitter->position = world;
     static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
