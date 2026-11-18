@@ -43,6 +43,8 @@ public:
   std::list<CSkillInfo>& SkillList(int tab, bool live);
   bool IsExtraTab(int tab);
   CSkillInfo SkillAt(int index, bool live);
+  CSkillInfo FindSkillById(int id, bool live);
+  bool CanUseSkill(const CSkillInfo& skill) const;
   std::optional<CSkillInfo*> SkillPtr(int index, bool live);
   void InitTabs();
   void ResetLists();

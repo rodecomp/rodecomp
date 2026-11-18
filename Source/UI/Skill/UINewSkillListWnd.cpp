@@ -158,6 +158,12 @@ int g_skillListHeadOffsetX;
 // GLOBAL: gl_25139
 int g_skillListHeadOffsetY;
 
+// OFFSET: 0x009AE900
+// FUNCTION: fn_45694
+bool UINewSkillListWnd::CanUseSkill(const CSkillInfo& skill) const {
+  return skill.available != 0 && skill.level != 0 && skill.type != 0;
+}
+
 // OFFSET: 0x009AE930
 // FUNCTION: fn_13801
 void UINewSkillListWnd::DrawCharacter() {
@@ -429,6 +435,8 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
   }
   return result;
 }
+
+// OFFSET: 0x009B0510
 
 // OFFSET: 0x009B0680
 // FUNCTION: fn_13807
@@ -986,7 +994,7 @@ void UINewSkillListWnd::OnLBtnDown(int x, int y) {
 
   if (this->IsSkillArea(x, y) && !this->m_locked && this->m_selectedSkill != -1 && g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
-    if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
+    if (this->CanUseSkill(skill)) {
       CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);
