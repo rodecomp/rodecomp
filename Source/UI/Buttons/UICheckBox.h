@@ -21,10 +21,12 @@ public:
   void OnMouseHover(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void SetChecked(int value);
+  void SetCheckedSilently(int value);
   void SetImages(const char* checked, const char* unchecked, const char* text);
   void SetBitmaps(const char* checked, const char* unchecked);
   void FitToText();
   void SetTooltip(const char* text);
+  void SetUncheckedTooltip(const char* text);
   void SetHidden(bool hidden);
 
 protected:
@@ -41,6 +43,7 @@ protected:
   /* 00F4 */ std::string m_uncheckedTooltip;
 
 private:
+  void InvalidateCheckState();
   void Notify();
 };
 
