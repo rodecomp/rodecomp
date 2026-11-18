@@ -281,6 +281,14 @@ UIEquipWnd::UIEquipWnd() : UIFrameWnd(0) {
   this->m_damageSkinIcons.reserve(g_session.damageSkinCount);
 }
 
+// OFFSET: 0x008C7B20
+// FUNCTION: fn_45661
+UIExchangeWnd::UIExchangeWnd()
+    : UIFrameWnd(0), m_myItems(), m_otherItems(), partnerName(), m_rowHeight(30), takeScreenshot(0), m_moneyText() {
+  this->m_moneyLength = 0;
+  this->m_moneyText = "";
+}
+
 // OFFSET: 0x008CAC40
 // FUNCTION: fn_11997
 UIItemCollectionWnd::~UIItemCollectionWnd() {

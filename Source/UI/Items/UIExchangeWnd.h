@@ -13,6 +13,7 @@ class UICheckBox;
 
 class UIExchangeWnd : public UIFrameWnd {
 public:
+  UIExchangeWnd();
   /* 00B4 */ UIBitmapButton* m_buttons[3];
   /* 00C0 */ UIEditCtrl* zenyEdit;
   /* 00C4 */ UIWindow* m_scrollBar;
