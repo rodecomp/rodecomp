@@ -11,6 +11,7 @@ class UITransBalloonText;
 class UIBalloonOpenBtn : public UIFrameWnd {
 public:
   UIBalloonOpenBtn();
+  __declspec(noinline) ~UIBalloonOpenBtn() override;
   void Paint() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;

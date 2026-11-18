@@ -36,6 +36,15 @@ UIBalloonOpenBtn::UIBalloonOpenBtn()
   this->m_openDelay = 4000;
 }
 
+// OFFSET: 0x00947630
+// FUNCTION: fn_45789
+UIBalloonOpenBtn::~UIBalloonOpenBtn() {
+  if (this->m_balloon) {
+    g_windowMgr.Schedule(this->m_balloon);
+    this->m_balloon = nullptr;
+  }
+}
+
 // OFFSET: 0x00950200
 // FUNCTION: fn_12939
 int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
