@@ -37,6 +37,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   int LoadBookmark(const char* name);
+  void SaveBookmark(const char* name, std::uint32_t page);
   char* StripColorCodes(const char* text);
 };
 

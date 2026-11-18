@@ -2654,6 +2654,25 @@ int UIBookWnd::LoadBookmark(const char* name) {
   return 1;
 }
 
+// OFFSET: 0x0090AF00
+// FUNCTION: fn_45712
+void UIBookWnd::SaveBookmark(const char* name, std::uint32_t page) {
+  char path[512];
+  std::strcpy(path, g_subKey);
+  std::strcat(path, g_bookmarkKeySuffix);
+  std::strcat(path, "\\");
+  std::strcat(path, g_session.m_serverName.c_str());
+  std::strcat(path, "\\");
+  std::strcat(path, g_session.DecodePlayerName());
+
+  HKEY key;
+  DWORD disposition = 0;
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, path, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+    RegSetValueExA(key, name, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&page), sizeof(page));
+    RegCloseKey(key);
+  }
+}
+
 // OFFSET: 0x008F6640
 // FUNCTION: fn_12319
 void UIExchangeWnd::CancelInput() {
