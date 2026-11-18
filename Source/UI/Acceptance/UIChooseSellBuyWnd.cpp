@@ -9749,7 +9749,7 @@ void UInCash_CallWnd::OnCreate(int, int) {
 // OFFSET: 0x008D7790
 // FUNCTION: fn_12123
 std::string CartTypeName(int type) {
-  std::string names[] = {
+  const std::string names[] = {
       "NOTHING_CART",
       "손수레",
       "손수레1",
@@ -9765,7 +9765,7 @@ std::string CartTypeName(int type) {
       "포링카트",
       "마도카트",
   };
-  return std::move(names[type]);
+  return names[type];
 }
 
 // OFFSET: 0x008D7460
