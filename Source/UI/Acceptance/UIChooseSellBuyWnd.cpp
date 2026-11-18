@@ -7717,24 +7717,25 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
-    if (0x5528 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
-        std::memcpy(&header, bytes + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x5529:
-          return 0;
-        case 0x552A: {
-          char name[260] = {};
-          std::memcpy(name, bytes + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_JOIN_GUILD_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x5528 != header.type) {
+      break;
+    }
+    while (static_cast<unsigned>(b) > offset) {
+      std::memcpy(&header, bytes + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x5529:
+        return 0;
+      case 0x552A: {
+        char name[260] = {};
+        std::memcpy(name, bytes + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_JOIN_GUILD_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
     break;
@@ -8134,25 +8135,26 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x5460 == header.type) {
-      while (offset < static_cast<unsigned>(b)) {
-        std::memcpy(&header, packet + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x5461:
-          return 0;
-        case 0x5462: {
-          char name[260];
-          std::memset(name, 0, sizeof(name));
-          std::memcpy(name, packet + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, 0, 0, reinterpret_cast<std::intptr_t>(name), 0);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x5460 != header.type) {
+      break;
+    }
+    while (offset < static_cast<unsigned>(b)) {
+      std::memcpy(&header, packet + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x5461:
+        return 0;
+      case 0x5462: {
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        std::memcpy(name, packet + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, 0, 0, reinterpret_cast<std::intptr_t>(name), 0);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
     break;
