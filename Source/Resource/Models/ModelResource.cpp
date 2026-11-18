@@ -3,9 +3,11 @@
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Models/AnimatedModelResource.h"
 #include "Resource/Models/GrannyModelResource.h"
@@ -891,11 +893,11 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
   const float deltaX = eye[0] - x;
   const float deltaZ = eye[2] - z;
   const float distance = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
-  const float slope = std::min(std::fabs(1.0f / distance * deltaY), 1.0f);
+  const float slope = std::min(std::fabs(1.0f / distance * deltaY), g_projectionDepthNumerator);
   const float height = this->topHeight - (this->topHeight - this->baseHeight) * slope;
-  const float halfWidth = SquareRoot(this->baseHeight * this->baseHeight * 0.5f);
-  const float halfHeight = SquareRoot(height * height * 0.5f);
-  const float inverseDepth = 1.0f / depth;
+  const float halfWidth = SquareRoot(this->baseHeight * this->baseHeight * g_depthAverageHalf);
+  const float halfHeight = SquareRoot(height * height * g_depthAverageHalf);
+  const float inverseDepth = g_projectionDepthNumerator / depth;
 
   rect[4] = inverseDepth;
   rect[0] = (screenX - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
