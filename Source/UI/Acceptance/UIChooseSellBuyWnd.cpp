@@ -10429,11 +10429,9 @@ void UITipboxWnd::Paint() {
         this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((manager->m_currentEntry.bitmapName + ".bmp").c_str()))), false);
       } else {
         CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
-        const int sourceHeight = texture->Height();
-        const int sourceWidth = texture->Width();
         this->geometry.surface->DrawScaledSurface(
           static_cast<int>(manager->m_image.x), static_cast<int>(manager->m_image.y), static_cast<int>(manager->m_image.width),
-          static_cast<int>(manager->m_image.height), texture, sourceWidth, sourceHeight, manager->m_image.scale, manager->m_image.scale, 0xFFFFFFFF,
+          static_cast<int>(manager->m_image.height), texture, texture->Width(), texture->Height(), manager->m_image.scale, manager->m_image.scale, 0xFFFFFFFF,
           false, 0, 0, manager->m_image.clipX, manager->m_image.clipY
         );
       }
