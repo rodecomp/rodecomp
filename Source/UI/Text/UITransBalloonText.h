@@ -61,6 +61,7 @@ class UIAchBalloonText : public UITransBalloonText {
 public:
   UIAchBalloonText();
   void Paint() override;
+  void SetFontFamily(int mode);
 
 protected:
   /* 00CC */ int m_fontFamily;

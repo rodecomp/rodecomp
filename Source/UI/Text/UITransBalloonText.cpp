@@ -44,6 +44,40 @@ UITransBalloonText::UITransBalloonText() : UIBalloonText(), m_borderColor(605295
 UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(0) {
 }
 
+// OFFSET: 0x00865D10
+// FUNCTION: fn_45627
+void UIAchBalloonText::SetFontFamily(int mode) {
+  switch (mode) {
+  case 1:
+    this->m_fontFamily = 21;
+    return;
+  case 2:
+    this->m_fontFamily = 20;
+    return;
+  case 3:
+    this->m_fontFamily = 22;
+    return;
+  case 4:
+    this->m_fontFamily = 23;
+    return;
+  case 5:
+    this->m_fontFamily = 24;
+    return;
+  case 6:
+    this->m_fontFamily = 25;
+    return;
+  case 7:
+    this->m_fontFamily = 26;
+    return;
+  case 8:
+    this->m_fontFamily = 27;
+    return;
+  case 9:
+    this->m_fontFamily = 28;
+    return;
+  }
+}
+
 // OFFSET: 0x00851F40
 // FUNCTION: fn_10700
 UITransBalloonText::~UITransBalloonText() = default;
