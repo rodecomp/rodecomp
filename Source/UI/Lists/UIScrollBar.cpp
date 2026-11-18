@@ -1543,7 +1543,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       g_modeMgr.currentMode->SetCursorAction(2);
       UITreeNode* node = this->dragNode;
       UITVTextButton* label = node->labelButton;
-      this->RemoveChildNode(node->parent, node->id, true);
+      this->RemoveNode(node, true);
       UITreeNode* previousParent = this->dragNode->parent;
       this->dragNode->parent = this->dropNode;
       UITreeNode* target = this->dropNode ? this->dropNode : this->root;
@@ -1714,6 +1714,30 @@ bool UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
 
   return false;
 }
+
+// OFFSET: 0x0089E840
+// FUNCTION: fn_45584
+bool UITreeView::RemoveNode(UITreeNode* node, bool keepButtons) {
+  return this->RemoveChildNode(node->parent, node->id, keepButtons);
+}
+
+// OFFSET: 0x0089E860
+// FUNCTION: fn_45585
+UITreeNode* UITreeView::FindChildNode(UITreeNode* parent, int id, int secondaryId) const {
+  if (!parent) {
+    parent = this->root;
+  }
+  if (static_cast<int>(parent->children.size()) > 0) {
+    for (auto child = parent->children.begin(); child != parent->children.end(); ++child) {
+      if ((*child)->id == id && (*child)->secondaryId == secondaryId) {
+        return *child;
+      }
+    }
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x0089E8C0
 
 // OFFSET: 0x0089E470
 // FUNCTION: fn_11600

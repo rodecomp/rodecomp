@@ -20,7 +20,7 @@ struct UITreeNode {
   /* 010C */ unsigned char padding_010C[0x5E];
   /* 016A */ unsigned char draggable;
   /* 016B */ unsigned char container;
-  /* 016C */ unsigned char padding_016C[0x4];
+  /* 016C */ int secondaryId;
   /* 0170 */ UITreeNode* parent;
   /* 0174 */ UITVBitmapButton* expandButton;
   /* 0178 */ UITVBitmapButton* collapseButton;
@@ -49,6 +49,9 @@ public:
   void HideNodes(std::list<UITreeNode*>& nodes);
   bool DeleteChildNodes(UITreeNode* node);
   bool RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
+  bool RemoveNode(UITreeNode* node, bool keepButtons);
+  UITreeNode* FindChildNode(UITreeNode* parent, int id, int secondaryId) const;
+  UITreeNode* AddNode(UITreeNode* node, int atFront);
   void AddNodeButtons(UITreeNode* node, int id);
   void AddNodeLabel(UITreeNode* node, int id);
   int LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y);
