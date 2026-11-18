@@ -22,6 +22,7 @@
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 #include "Render/Drawing/SpriteGeometry.h"
@@ -764,8 +765,8 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   const float z = this->render.position.z;
   CGameMode* mode = g_modeMgr.GetGameMode();
   vector3d position;
-  position.x = this->render.position.x;
   position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  position.x = this->render.position.x;
   position.z = z;
   const float depth = position.y * matrix[5] + position.x * matrix[2] + z * matrix[8] + matrix[11];
 
@@ -801,8 +802,8 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   quad.left = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + left;
   quad.right = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + quad.right;
   quad.color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
-  quad.bottomRhw = 1.0f / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
-  quad.topRhw = 1.0f / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
+  quad.bottomRhw = g_projectionDepthNumerator / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
+  quad.topRhw = g_projectionDepthNumerator / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
   quad.angle = static_cast<float>(cell.rotation);
   quad.image = image;
 
