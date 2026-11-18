@@ -845,6 +845,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
 }
 
 // OFFSET: 0x007596D0
+// FUNCTION: fn_45854
 granny_animation* GrannyAnimationLibrary::GetAnimation(unsigned job, unsigned action) {
   granny_animation* const& animation = this->animations[job][action];
   if (animation) {
