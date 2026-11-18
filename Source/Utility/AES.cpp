@@ -17,7 +17,8 @@ AES::~AES() {
 
 // OFFSET: 0x0061AF30
 // FUNCTION: fn_04418
-ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSize, UCHAR flags) {
+ULONG AES::Decrypt(std::span<UCHAR> input, std::span<UCHAR> output, UCHAR flags) {
+  const ULONG decryptFlags = flags;
   PUCHAR iv;
   ULONG ivSize;
   if (m_mode == ECB) {
@@ -30,7 +31,7 @@ ULONG AES::Decrypt(PUCHAR input, ULONG inputSize, PUCHAR output, ULONG outputSiz
 
   ULONG result = 0;
   UCHAR scratch[16]{};
-  const NTSTATUS status = BCryptDecrypt(m_key, input, inputSize, nullptr, iv, ivSize, outputSize != 0 ? output : scratch, outputSize, &result, flags);
+  const NTSTATUS status = BCryptDecrypt(m_key, input.data(), input.size(), nullptr, iv, ivSize, output.empty() ? scratch : output.data(), output.size(), &result, decryptFlags);
   return status < 0 ? static_cast<ULONG>(-1) : result;
 }
 
