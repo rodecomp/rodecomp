@@ -5499,9 +5499,9 @@ void UINotifyItemObtainWnd::OnCreate(int, int) {
 void UIPetTamingDeceiveWnd::OnCreate(int, int) {
 }
 
-// OFFSET: 0x008D3230
-// FUNCTION: fn_12100
-void UITipboxWnd::UpdateAnimations() {
+// OFFSET: 0x0090AE30
+// FUNCTION: fn_45763
+__forceinline void UITipboxWnd::UpdateBlinkingAnimations() {
   for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
     if (this->m_animations[i].blink != 0 && this->m_frameTime - this->m_animations[i].blinkStart >= 500) {
       this->m_animations[i].visible = true;
@@ -5511,7 +5511,11 @@ void UITipboxWnd::UpdateAnimations() {
       }
     }
   }
+}
 
+// OFFSET: 0x008DB040
+// FUNCTION: fn_45764
+__forceinline void UITipboxWnd::UpdateMovingAnimations() {
   for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
     if (this->m_animations[i].fromX != this->m_animations[i].toX || this->m_animations[i].fromY != this->m_animations[i].toY) {
       const std::uint32_t frameTime = this->m_frameTime;
@@ -5529,6 +5533,13 @@ void UITipboxWnd::UpdateAnimations() {
       }
     }
   }
+}
+
+// OFFSET: 0x008D3230
+// FUNCTION: fn_12100
+void UITipboxWnd::UpdateAnimations() {
+  this->UpdateBlinkingAnimations();
+  this->UpdateMovingAnimations();
 }
 
 // OFFSET: 0x008D3430

@@ -40,6 +40,8 @@ public:
   void ShowTip(int id);
   __declspec(noinline) void TrimAt(std::string& text, const char* marker);
   void UpdateAnimations();
+  void UpdateBlinkingAnimations();
+  void UpdateMovingAnimations();
   void UpdatePageText();
   bool BuildAnimations();
   void PaintAnimations();
