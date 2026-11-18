@@ -712,12 +712,12 @@ void UITextViewEX::SetText(std::string text) {
   const auto last = this->extraLinks.end();
   for (; link != last; ++link) {
     UIString* label = *link;
-    const std::string caption = label->text;
+    const std::string caption = label->GetText();
     x += label->geometry.width + 5;
     if (x + 15 > this->geometry.width || caption == "\n") {
       this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
       first = link;
-      x = label->text == "\n" ? 0 : label->geometry.width + 5;
+      x = label->GetText() == "\n" ? 0 : label->geometry.width + 5;
     }
   }
 
