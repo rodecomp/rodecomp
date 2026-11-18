@@ -9468,7 +9468,7 @@ void CGameMode::Update() {
     g_nProtectGameGuardMgr->Stop();
     g_ggHashMgr->VerifyPendingFiles();
     if (g_session.m_launchPassCommandLine) {
-      Base_RunCallback();
+      g_stoveMgr->RunCallback();
     }
 
     if (g_updateTick > 0) {
