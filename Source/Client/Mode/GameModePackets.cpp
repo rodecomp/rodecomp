@@ -8556,7 +8556,7 @@ __declspec(noinline) void CGameMode::ReceiveEquipCardChange(const unsigned char*
   const auto* p = reinterpret_cast<const PACKET_ZC_UPDATE_CARDSLOT*>(packet);
   const EquipSlots slots = g_session.GetEquipSlots(p->wearState);
   ITEM_INFO item = g_session.GetEquippedItemAt(std::get<0>(slots));
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     std::uint32_t* cards = item.cards;
     switch (p->equipFlag) {
     case 1:
