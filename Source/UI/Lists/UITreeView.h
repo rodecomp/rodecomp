@@ -31,11 +31,13 @@ struct UITreeNode {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UITreeNode, children) == 0x180);
+static_assert(sizeof(UITreeNode) == 0x194);
 #endif
 
 class UITreeView : public UIWindow {
 public:
   UITreeView();
+  __declspec(noinline) ~UITreeView() override;
   void Resize(int width, int height) override;
   void OnCreate(int width, int height) override;
   void Paint() override;

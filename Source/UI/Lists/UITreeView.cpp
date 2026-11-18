@@ -18,6 +18,13 @@ UITreeView::UITreeView() : UIWindow(0) {
   this->highlightColor = 0;
 }
 
+// OFFSET: 0x00871F00
+// FUNCTION: fn_45813
+UITreeView::~UITreeView() {
+  this->DeleteChildNodes(this->root);
+  delete this->root;
+}
+
 // OFFSET: 0x00879D90
 // FUNCTION: fn_45604
 void UITreeView::ResetTree() {
