@@ -1,6 +1,7 @@
 #include "UI/Cooldowns/CooldownOwner.h"
 
-// INLINED
+// OFFSET: 0x00CA5C90
+// FUNCTION: fn_45873
 CooldownOwner::CooldownOwner() {
   this->m_initialized = false;
   this->m_normal.clear();
@@ -9,7 +10,8 @@ CooldownOwner::CooldownOwner() {
   this->m_initialized = true;
 }
 
-// INLINED
+// OFFSET: 0x00CA5FB0
+// FUNCTION: fn_45874
 CooldownOwner::~CooldownOwner() {
   this->m_normal.clear();
   this->m_reverse.clear();
