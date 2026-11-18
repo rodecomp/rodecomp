@@ -12294,6 +12294,17 @@ __forceinline void UITipboxWnd::SetPageButtonEnabled(PageButton pageButton, int 
   }
 }
 
+// OFFSET: 0x0090B3E0
+// FUNCTION: fn_45760
+__forceinline void UITipboxWnd::SaveStartupPreference() const {
+  HKEY key;
+  DWORD disposition = 0;
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+    RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->showAtStartup), sizeof(this->showAtStartup));
+    RegCloseKey(key);
+  }
+}
+
 // OFFSET: 0x00907050
 // FUNCTION: fn_12386
 int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -12303,14 +12314,9 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
   switch (a) {
   case ID_CHECK: {
-    DWORD disposition = 0;
     this->showAtStartup = static_cast<int>(b);
     g_window315Enabled = static_cast<int>(b);
-    HKEY key;
-    if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
-      RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->showAtStartup), 4);
-      RegCloseKey(key);
-    }
+    this->SaveStartupPreference();
     break;
   }
   case ID_NEXT: {
