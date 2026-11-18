@@ -31,14 +31,22 @@ NAsyncWorkPtr NAsyncWorkRequestQueue::Pop() {
     return NAsyncWorkPtr(nullptr, "");
   }
 
-  unsigned examined = 1;
+  int examined = 1;
   for (auto work = this->m_pending.begin(); work != this->m_pending.end(); ++work) {
     if (examined > 40) {
       break;
     }
 
     auto key = work->Get()->GroupKey();
-    if (std::find(this->m_active.begin(), this->m_active.end(), key) == this->m_active.end()) {
+    bool active = false;
+    for (const auto& entry : this->m_active) {
+      if (entry == key) {
+        active = true;
+        break;
+      }
+    }
+
+    if (!active) {
       this->m_active.push_back(key);
       NAsyncWorkPtr result(*work);
       this->m_pending.erase(work);
