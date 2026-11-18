@@ -4053,6 +4053,21 @@ __declspec(noinline) std::string CSession::GetBodyJobName(int job) {
   return this->m_bodyJobNames[job];
 }
 
+// INLINED
+static std::string SexNameOf(int sex) {
+  return g_session.GetSexName(sex);
+}
+
+// INLINED
+static std::string ImfNameOf(int job) {
+  return g_session.GetImfName(job);
+}
+
+// INLINED
+static std::string BodyJobNameOf(int job) {
+  return g_session.GetBodyJobName(job);
+}
+
 // OFFSET: 0x00BAB5D0
 // FUNCTION: fn_19752
 std::string EquipmentResourceMgr::GetBodyImfName(int job, int sex, int, int costumeJob) {
@@ -4062,11 +4077,11 @@ std::string EquipmentResourceMgr::GetBodyImfName(int job, int sex, int, int cost
   std::string result("");
 
   {
-    const std::string& name = g_session.GetSexName(sex);
+    const std::string& name = SexNameOf(sex);
     sexName = name;
   }
   {
-    const std::string& name = g_session.GetImfName(spriteJob);
+    const std::string& name = ImfNameOf(spriteJob);
     jobName = name;
   }
   result = static_cast<const std::string&>(FormatOwnedString("%s_%s.imf", jobName.c_str(), sexName.c_str()));
@@ -4084,11 +4099,11 @@ std::string EquipmentResourceMgr::GetBodyResourceName(int type, int job, int sex
   const bool secondJob = g_session.IsSecondJob(costumeJob);
   const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
   {
-    const std::string& name = g_session.GetSexName(sex);
+    const std::string& name = SexNameOf(sex);
     sexName = name;
   }
   {
-    const std::string& name = g_session.GetBodyJobName(spriteJob);
+    const std::string& name = BodyJobNameOf(spriteJob);
     jobName = name;
   }
 
