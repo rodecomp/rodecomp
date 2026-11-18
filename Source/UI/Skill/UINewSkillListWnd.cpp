@@ -437,6 +437,18 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
 }
 
 // OFFSET: 0x009B0510
+// FUNCTION: fn_45695
+CSkillInfo UINewSkillListWnd::FindSkillById(int id, bool live) {
+  CSkillInfo result(0);
+  for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
+    for (const CSkillInfo& skill : this->SkillList(tab, live)) {
+      if (skill.id == id) {
+        return result = skill;
+      }
+    }
+  }
+  return result;
+}
 
 // OFFSET: 0x009B0680
 // FUNCTION: fn_13807
