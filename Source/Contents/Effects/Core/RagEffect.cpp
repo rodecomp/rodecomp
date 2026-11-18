@@ -3303,7 +3303,7 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
       this->state.lastPrim->state.slots[0].distance = radius;
     }
     const float start = this->state.param[1];
-    this->state.lastPrim->state.slots[0].rotStart = (start < 0.0f || start >= 360.0f) ? 45 : static_cast<std::int16_t>(start);
+    this->state.lastPrim->state.slots[0].rotStart = (start < 0.0f || start >= 360.0f) ? 45 : static_cast<int>(start);
     this->state.lastPrim->state.slots[0].alphaB = 200;
     this->state.lastPrim->state.slots[0].height[2] = 1.0f;
   } else {
