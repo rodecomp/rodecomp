@@ -269,16 +269,9 @@ void CUIEditCtrlEx::Synchronize() {
     int end = std::max(anchor, cursor) + candidateLength + static_cast<int>(prefix.size());
     if (candidateLength != 0) {
       this->column += candidateLength;
-      int cursorX = 0;
-      if (this->column > 0) {
-        cursorX = this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
-      }
-
-      int readingOffset = end - currentOffset;
-      int readingX = 0;
-      if (readingOffset > 0) {
-        readingX = this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0);
-      }
+      const int cursorX = this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
+      const int readingOffset = end - currentOffset;
+      const int readingX = readingOffset > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0) : 0;
       int delta = std::max(cursorX - readingX, 2);
       this->MoveCandidateWindow(cursorX + 2 + delta);
       this->MoveReadingWindow(readingX);
