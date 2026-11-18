@@ -249,6 +249,7 @@ void UIMenuIconWnd::OnLBtnUp(int x, int y) {}
 // OFFSET: 0x0084BD40
 // FUNCTION: fn_10620
 void UIMenuIcon::OnMouseMove(int x, int y) {
+  const auto assignTooltip = [this](const std::string& text) { this->m_tooltip = text; };
   int behaviorId = 10041;
   int message = MSI_EMPTY;
   bool known = true;
@@ -351,8 +352,7 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     const char* behavior = nullptr;
     g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", behaviorId, &behavior);
     if (std::strlen(behavior) != 0) {
-      const std::string text = FormatOwnedString("%s (%s)", LookupMessage(message), behavior);
-      this->m_tooltip = text;
+      assignTooltip(FormatOwnedString("%s (%s)", LookupMessage(message), behavior));
     } else {
       this->m_tooltip = LookupMessage(message);
     }
