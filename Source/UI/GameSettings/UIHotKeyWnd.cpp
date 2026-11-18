@@ -571,6 +571,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
         info.key1 = 0;
         info.key2 = 0;
         info.text = "";
+        this->SetHotkey(this->m_tab, entry.index, info);
       } else {
         info.key1 = g_windowMgr.keyCode;
         info.key2 = g_windowMgr.modifierKey;
@@ -578,9 +579,9 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
         if (g_session.m_hotkeyScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
           info.text = text;
         }
+        this->SetHotkey(this->m_tab, entry.index, info);
       }
 
-      this->SetHotkey(this->m_tab, entry.index, info);
       this->Invalidate();
       return true;
     }
