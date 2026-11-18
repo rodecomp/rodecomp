@@ -516,8 +516,8 @@ namespace {
   // INLINED
   __forceinline void AddStorageEquipItem(
     unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
-    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemRandomOptions options, std::uint32_t expireTime,
-    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, ItemRandomOptions options, std::int16_t grade
   ) {
     if (location == EQP_AMMO) {
       return;
@@ -528,12 +528,12 @@ namespace {
     item.identity[2] = location;
     item.identity[1] = index;
     item.identity[3] = wearState;
+    item.quantity = 1;
     std::uint32_t* cards = item.cards;
     cards[0] = card1;
     cards[1] = card2;
     cards[2] = card3;
     cards[3] = card4;
-    item.quantity = 1;
     item.SetItemId(itemId);
     item.identified = identified;
     item.damaged = damaged;
@@ -553,20 +553,20 @@ namespace {
   // INLINED
   __forceinline void AddInventoryEquipItem(
     unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
-    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemRandomOptions options, std::uint32_t expireTime,
-    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, ItemRandomOptions options, std::int16_t grade
   ) {
     ITEM_INFO item;
     item.identity[0] = type;
     item.identity[2] = location;
     item.identity[1] = index;
     item.identity[3] = wearState;
+    item.quantity = 1;
     std::uint32_t* cards = item.cards;
     cards[0] = card1;
     cards[1] = card2;
     cards[2] = card3;
     cards[3] = card4;
-    item.quantity = 1;
     item.SetItemId(itemId);
     item.identified = identified;
     item.damaged = damaged;
@@ -586,10 +586,11 @@ namespace {
     }
 
     if (item.identity[3] != 0) {
-      char equipped = 1;
       if (g_session.IsCostumeLocation(item.identity[3])) {
+        char equipped = 1;
         g_session.EquipCostumeItem(item, &equipped);
       } else {
+        char equipped = 1;
         g_session.EquipInventoryItem(item, &equipped);
       }
     } else {
@@ -618,20 +619,20 @@ namespace {
   // INLINED
   __forceinline void AddCartEquipItem(
     unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
-    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemRandomOptions options, std::uint32_t expireTime,
-    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, ItemRandomOptions options, std::int16_t grade
   ) {
     ITEM_INFO item;
     item.identity[0] = type;
     item.identity[2] = location;
     item.identity[1] = index;
     item.identity[3] = wearState;
+    item.quantity = 1;
     std::uint32_t* cards = item.cards;
     cards[0] = card1;
     cards[1] = card2;
     cards[2] = card3;
     cards[3] = card4;
-    item.quantity = 1;
     item.SetItemId(itemId);
     item.identified = identified;
     item.damaged = damaged;
@@ -653,7 +654,7 @@ namespace {
 // FUNCTION: fn_21832
 void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
   const EquipItemListHeader* header = reinterpret_cast<const EquipItemListHeader*>(packet);
-  const std::size_t count = (header->length - sizeof(EquipItemListHeader)) / sizeof(EquipItemListRecord);
+  const std::int64_t count = (header->length - sizeof(EquipItemListHeader)) / sizeof(EquipItemListRecord);
   const EquipItemListRecord* records = reinterpret_cast<const EquipItemListRecord*>(packet + sizeof(EquipItemListHeader));
   switch (header->listType) {
   case INVTYPE_STORAGE:
@@ -662,7 +663,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       const EquipItemListRecord& record = records[i];
       AddStorageEquipItem(
         record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
-        record.identified, record.damaged, record.refine, record.options, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.grade
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.options, record.grade
       );
     }
     break;
@@ -671,7 +672,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       const EquipItemListRecord& record = records[i];
       AddInventoryEquipItem(
         record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
-        record.identified, record.damaged, record.refine, record.options, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.grade
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.options, record.grade
       );
     }
     break;
@@ -680,7 +681,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       const EquipItemListRecord& record = records[i];
       AddCartEquipItem(
         record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
-        record.identified, record.damaged, record.refine, record.options, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.grade
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.placeEtcTab, record.options, record.grade
       );
     }
     break;
