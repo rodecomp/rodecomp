@@ -12,6 +12,7 @@ public:
   /* 0128 */ std::function<void(bool)> onCheck;
 
   CUICheckBox();
+  __declspec(noinline) ~CUICheckBox() override;
 
   void SetOnCheck(std::function<void(bool)> callback);
   void Paint() override;
@@ -24,6 +25,7 @@ public:
   /* 0150 */ std::function<void(CUIRadioButton*)> onSelect;
 
   CUIRadioButton();
+  __declspec(noinline) ~CUIRadioButton() override;
   void SetOnSelect(std::function<void(CUIRadioButton*)> callback);
   void OnLBtnDown(int x, int y) override;
 };

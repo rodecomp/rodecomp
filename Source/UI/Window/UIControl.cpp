@@ -2783,6 +2783,14 @@ CUIButton::~CUIButton() {
 // FUNCTION: fn_13964
 CUIImageButton::~CUIImageButton() = default;
 
+// OFFSET: 0x009E86F0
+// FUNCTION: fn_45735
+CUICheckBox::~CUICheckBox() = default;
+
+// OFFSET: 0x009E8770
+// FUNCTION: fn_45736
+CUIRadioButton::~CUIRadioButton() = default;
+
 // OFFSET: 0x009E1840
 // FUNCTION: fn_14396
 CUITextButton::~CUITextButton() = default;
