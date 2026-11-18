@@ -1118,12 +1118,10 @@ bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
       offsetY += node->geometry.y;
     }
 
-    x -= offsetX;
-    y -= offsetY;
-    window->RecordDrop(x, y, *drag, -1);
+    window->RecordDrop(x - offsetX, y - offsetY, *drag, -1);
     drag->sourceWindow = window;
     if (this->itemDropCntWnd != window->Root()) {
-      window->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(drag));
+      window->DragAndDrop(x - offsetX, y - offsetY, reinterpret_cast<std::intptr_t>(drag));
     }
 
     return true;
