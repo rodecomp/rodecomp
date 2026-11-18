@@ -4394,6 +4394,7 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
       blue = 20;
     }
 
+    const float rx = scale * slot.distance;
     const int angle0 = static_cast<int>(slot.height[3]);
     slot.vecBPre.x = g_cosTable[angle0] * 4.0f;
     slot.vecBPre.z = g_sinTable[angle0] * 4.0f;
@@ -4407,7 +4408,6 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
     slot.vecTNow.x = g_cosTable[angle3] * 4.0f;
     slot.vecTNow.z = g_sinTable[angle3] * 4.0f;
 
-    const float rx = scale * slot.distance;
     vec1.Set(rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]);
     vec2.Set(rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]);
     vec3.Set(rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]);
