@@ -30,11 +30,14 @@ void GroundGeometry::DrawWaterCell(
   float first;
   float last;
 
-  if (surface.parameters.height != 0.0f) {
+  if (0.0f != surface.parameters.height) {
     const int sum = column + row;
-    middle = level + ClientSine(static_cast<int>(static_cast<float>(sum) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
-    first = level + ClientSine(static_cast<int>(static_cast<float>(sum - 1) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
-    last = level + ClientSine(static_cast<int>(static_cast<float>(sum + 1) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
+    float wave = ClientSine(static_cast<int>(static_cast<float>(sum) * surface.parameters.pitch + surface.phase));
+    middle = level + wave * surface.parameters.height;
+    wave = ClientSine(static_cast<int>(static_cast<float>(sum - 1) * surface.parameters.pitch + surface.phase));
+    first = level + wave * surface.parameters.height;
+    wave = ClientSine(static_cast<int>(static_cast<float>(sum + 1) * surface.parameters.pitch + surface.phase));
+    last = level + wave * surface.parameters.height;
   } else {
     middle = level;
     first = level;
@@ -47,16 +50,8 @@ void GroundGeometry::DrawWaterCell(
     vertices[corner] = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000u, 0.0f, 0.0f};
   }
 
-  bool above = false;
-
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    if (cell.top->vertices[corner].position[1] > middle) {
-      above = true;
-      break;
-    }
-  }
-
-  if (!above) {
+  if (!(cell.top->vertices[0].position[1] > middle || cell.top->vertices[1].position[1] > middle ||
+        cell.top->vertices[2].position[1] > middle || cell.top->vertices[3].position[1] > middle)) {
     return;
   }
 
