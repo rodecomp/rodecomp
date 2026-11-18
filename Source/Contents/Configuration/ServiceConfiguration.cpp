@@ -449,11 +449,9 @@ void InitializeServiceConfiguration() {
     g_serviceFlag07 = 29;
     if (std::strstr(g_launchServerName, "QmSakray")) {
       g_serviceOverrideKey = OBFUSCATE_TEXT("kro-qm-2a.ragnarok.co.kr:6900", 0x45E3F103CBB5F157ULL);
-
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2F2701A7E56D3D89ULL), OBFUSCATE_TEXT("kro-qm-1a.ragnarok.co.kr:6951", 0x2D33791F67AD47DFULL));
     } else {
       g_serviceOverrideKey = OBFUSCATE_TEXT("kro-acc3.ragnarok.co.kr:6900", 0x6B3301E1A3079125ULL);
-
       StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2F2701A7E56D3D89ULL), OBFUSCATE_TEXT("kro-agency-s.ragnarok.co.kr:6954", 0xC39FB559A17D3963ULL));
     }
     g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
