@@ -4,6 +4,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 
+#include <cstdint>
 #include <string>
 
 #include "UI/Window/WindowManagerWindows.h"
@@ -11,6 +12,8 @@
 class UIBasicItemCtrl : public UIWindow {
 public:
   UIBasicItemCtrl();
+  void SetItemById(int id, unsigned char identified);
+  void SetItemByIdentity(std::uint32_t identity, unsigned char identified);
   void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void OnLBtnDblClk(int x, int y) override;
