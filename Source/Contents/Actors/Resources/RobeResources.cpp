@@ -35,11 +35,11 @@ std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex
   std::string robeName = "";
 
   {
-    const std::string& name = g_session.GetBodyJobName(spriteJob);
+    const std::string& name = BodyJobNameOf(spriteJob);
     jobName = name;
   }
   {
-    const std::string& name = g_session.GetSexName(sex);
+    const std::string& name = SexNameOf(sex);
     sexName = name;
   }
   robeName = static_cast<const std::string&>(this->GetRobeSprName(robe, 0));
