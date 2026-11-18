@@ -4363,41 +4363,46 @@ struct RodexMailListEntry {
 // OFFSET: 0x00D68730
 // FUNCTION: fn_22043
 void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
-  for (int offset = 5; offset < *reinterpret_cast<const std::int16_t*>(packet + 2);) {
-    const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
-    RodexMailMap* mails = nullptr;
-    switch (entry->openType) {
-    case MAIL_INBOX_NORMAL:
-      mails = &g_rodexMailStore->m_mails0;
-      break;
-    case MAIL_INBOX_ACCOUNT:
-      mails = &g_rodexMailStore->m_mails1;
-      break;
-    case MAIL_INBOX_RETURNED:
-      mails = &g_rodexMailStore->m_mails2;
-      break;
-    }
-
-    if (mails) {
-      RodexMail mail;
-      mail.isRead = entry->isRead;
-      mail.type = entry->type;
-      mail.title.assign(entry->title, entry->titleLength);
-      mail.sender.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
-      mail.expiresAt = _time32(nullptr) + entry->expireTime;
-      if (entry->openType == MAIL_INBOX_NORMAL && !(mail.type & 8) && !g_session.HasCharacterName(mail.sender)) {
-        mail.isKnownSender = g_session.IsKnownName(mail.sender);
-      } else {
-        mail.isKnownSender = 1;
+  const std::int16_t packetLength = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  if (5 < packetLength) {
+    int offset = 5;
+    do {
+      const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
+      RodexMailMap* mails = nullptr;
+      switch (entry->openType) {
+      case MAIL_INBOX_NORMAL:
+        mails = &g_rodexMailStore->m_mails0;
+        break;
+      case MAIL_INBOX_ACCOUNT:
+        mails = &g_rodexMailStore->m_mails1;
+        break;
+      case MAIL_INBOX_RETURNED:
+        mails = &g_rodexMailStore->m_mails2;
+        break;
       }
 
-      if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
-        ++g_rodexMailStore->unreadCount;
-      }
-      mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
-    }
+      if (mails) {
+        RodexMail mail;
+        mail.isRead = entry->isRead;
+        mail.type = entry->type;
+        mail.title.assign(entry->title, entry->titleLength);
+        mail.sender.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
+        const __time32_t now = _time32(nullptr);
+        mail.expiresAt = entry->expireTime + now;
+        if (entry->openType == MAIL_INBOX_NORMAL && !(mail.type & 8) && !g_session.HasCharacterName(mail.sender)) {
+          mail.isKnownSender = g_session.IsKnownName(mail.sender);
+        } else {
+          mail.isKnownSender = 1;
+        }
 
-    offset += entry->titleLength + 0x29;
+        if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
+          ++g_rodexMailStore->unreadCount;
+        }
+        mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+      }
+
+      offset += entry->titleLength + 0x29;
+    } while (offset < packetLength);
   }
 
   if (packet[4] == 1) {
@@ -7833,3 +7838,4 @@ void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
 
   g_windowMgr.CloseWaitDBSaveWindow();
 }
+
