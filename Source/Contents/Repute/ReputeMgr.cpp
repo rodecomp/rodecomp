@@ -80,7 +80,7 @@ bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
 
     this->GetStringValue(node, "Invisible", &record.invisible);
 
-    if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
+    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
       this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
       return false;
     }
