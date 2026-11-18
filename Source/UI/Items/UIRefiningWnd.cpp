@@ -530,15 +530,25 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
 
     const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
     UIRefining_Notice* notice = this->notice;
-    if (this->catalystCount > owned) {
-      notice->SetNotice(LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 3000, 1);
-    } else if (this->catalystEnabled == 1) {
-      this->catalystEnabled = 0;
-      notice->SetNotice("", 0, 0);
+    const char* text;
+    int duration;
+    unsigned char highlight;
+    if (this->catalystCount <= owned) {
+      if (this->catalystEnabled == 1) {
+        this->catalystEnabled = 0;
+        text = "";
+      } else {
+        this->catalystEnabled = 1;
+        text = LookupMessage(MSI_USING_BLACKSMITH_BLESSING);
+      }
+      duration = 0;
+      highlight = 0;
     } else {
-      this->catalystEnabled = 1;
-      notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
+      text = LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING);
+      duration = 3000;
+      highlight = 1;
     }
+    notice->SetNotice(text, duration, highlight);
   }
 
   this->Invalidate();
