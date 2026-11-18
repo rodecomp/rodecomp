@@ -115,8 +115,16 @@ void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, st
   };
 #pragma pack(pop)
   static_assert(sizeof(Response) == 26);
-  const Response packet{0x038408AEu, 26, this->geometry.id, response, {static_cast<std::uint32_t>(b), static_cast<std::uint32_t>(c), static_cast<std::uint32_t>(d)}};
-  Replay::Instance().Record(sizeof(packet), &packet, 42, 0);
+  char buffer[sizeof(Response)];
+  Response& packet = *reinterpret_cast<Response*>(buffer);
+  packet.marker = 0x038408AEu;
+  packet.bytes = sizeof(Response);
+  packet.windowId = this->geometry.id;
+  packet.response = response;
+  packet.arguments[0] = static_cast<std::uint32_t>(b);
+  packet.arguments[1] = static_cast<std::uint32_t>(c);
+  packet.arguments[2] = static_cast<std::uint32_t>(d);
+  Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
 
 // OFFSET: 0x00B86AB0
@@ -344,7 +352,8 @@ void UIWindow::RecordValues(int value, int argument1, int argument2, int argumen
     return;
   }
 
-  ValuesRecord packet;
+  char buffer[sizeof(ValuesRecord)];
+  ValuesRecord& packet = *reinterpret_cast<ValuesRecord*>(buffer);
   packet.marker = 0x039108AEu;
   packet.bytes = sizeof(packet);
   packet.windowId = this->geometry.id;
