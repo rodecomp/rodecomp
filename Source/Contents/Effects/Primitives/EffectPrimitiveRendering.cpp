@@ -937,7 +937,6 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   int blend = 2;
-  int alpha = alphaB;
   unsigned char red = 255;
   unsigned char green = 255;
   unsigned char blue = 255;
@@ -959,7 +958,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     blend = 6;
     break;
   case 3:
-    alpha = 80;
+    alphaB = 80;
     blend = 6;
     break;
   case 4:
@@ -1179,7 +1178,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   const unsigned char finalGreen = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : green;
   const unsigned char finalBlue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : blue;
   const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
-  const std::uint32_t color = static_cast<std::uint32_t>(((((alpha << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
+  const std::uint32_t color = static_cast<std::uint32_t>(((((alphaB << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
 
   float left;
   float right;
