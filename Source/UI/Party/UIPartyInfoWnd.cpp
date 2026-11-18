@@ -23,6 +23,23 @@ UIPartyInfoWnd::UIPartyInfoWnd()
 // FUNCTION: fn_45804
 UIPartyInfoWnd::~UIPartyInfoWnd() = default;
 
+// OFFSET: 0x007BBE70
+// FUNCTION: fn_45812
+const char* PartyRoleBitmap(PartyRole role, unsigned char selected) {
+  switch (role) {
+  case PartyRole::Tanker:
+    return selected == 1 ? "유저인터페이스\\UIadventurerAgency\\btn_job_def_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_def_off.bmp";
+  case PartyRole::Dealer:
+    return selected == 1 ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp";
+  case PartyRole::Healer:
+    return selected == 1 ? "유저인터페이스\\UIadventurerAgency\\btn_job_heal_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_heal_off.bmp";
+  case PartyRole::Assist:
+    return selected == 1 ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp";
+  default:
+    return nullptr;
+  }
+}
+
 // OFFSET: 0x007BBEF0
 // FUNCTION: fn_09293
 CAdvenPartyInfo* UIPartyInfoWnd::Info() {

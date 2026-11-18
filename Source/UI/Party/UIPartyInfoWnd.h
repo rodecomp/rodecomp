@@ -4,6 +4,15 @@
 #include "Contents/Party/AdvenPartyInfo.h"
 #include "UI/Buttons/UIBitmapButton.h"
 
+enum class PartyRole {
+  Tanker,
+  Dealer,
+  Healer,
+  Assist
+};
+
+const char* PartyRoleBitmap(PartyRole role, unsigned char selected);
+
 class UIPartyInfoWnd : public UIBitmapButton {
 public:
   UIPartyInfoWnd();
