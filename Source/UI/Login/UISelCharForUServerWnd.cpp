@@ -193,10 +193,10 @@ void UISelCharForUServerWnd::OnMouseMove(int x, int y) {
 // OFFSET: 0x0091B930
 // FUNCTION: fn_45672
 CharacterInfo* UISelCharForUServerWnd::GetCharacterInfoAt(int x, int y) {
-  if (x > 26 && x < this->geometry.width - 26) {
+  if (x >= 27 && x < this->geometry.width - 26) {
     if (y >= 95 && y <= 364 && (y >= 250 || y <= 210)) {
-      const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
-      return reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+      const std::int64_t index = static_cast<std::int64_t>((y - 95) / 135) * this->m_columns + (x - 27) / 81;
+      return reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<int>(index), 0, 0, 0));
     }
   }
 
