@@ -4068,7 +4068,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       ITEM_INFO item = g_session.LookupClientItemByIdentity(argument1);
       const std::uint32_t state = this->scene->player->GetStateFlags();
       const int bodyState = this->scene->player->bodyState;
-      if (IsHiding(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != 0x31B5)) {
+      if (IsHiding(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != ITEMID_RUNSTONE_NOSIEGE)) {
         return 0;
       }
       if (this->scene->player->render.state == 6 &&
