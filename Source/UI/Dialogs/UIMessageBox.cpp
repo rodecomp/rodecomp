@@ -4168,7 +4168,13 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           valid = FALSE;
         }
 
-        const BOOL badName = g_session.HasControlCharacter(this->m_nameEdit->Text()) || !allowed;
+        BOOL badName = FALSE;
+        if (g_session.HasControlCharacter(this->m_nameEdit->Text())) {
+          badName = TRUE;
+        } else if (!allowed) {
+          badName = TRUE;
+        }
+
         const BOOL blank = g_session.IsBlankString(this->m_nameEdit->Text());
         if (badName || !valid || blank) {
           if (badName) {
