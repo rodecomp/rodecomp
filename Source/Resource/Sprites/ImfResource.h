@@ -21,6 +21,11 @@ public:
   bool Load(const char* name) override;
 
   void Reset();
+  int LayerCount() const;
+  int ActionCount(int layer) const;
+  int MotionCount(int layer, int action) const;
+  int MaximumMotionCount(int layer) const;
+  int LayerPriority(int layer, int action, int motion) const;
   int GetLayer(int priority, int action, int motion);
   POINT GetLongPoint(int layer, int action, int motion);
 
