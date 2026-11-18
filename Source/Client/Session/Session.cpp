@@ -1765,20 +1765,20 @@ bool CSession::IsGuildMemberCharacter(int characterId, char* name) const {
 
 // OFFSET: 0x00DF9D90
 // FUNCTION: fn_23567
-bool CSession::IsGuildMemberName(const char* name) const {
+int CSession::IsGuildMemberName(const char* name) const {
   std::list<GuildInfo::Member> members;
   members = g_guildInfo.m_members;
   for (const GuildInfo::Member& member : members) {
     if (member.name == name) {
-      return true;
+      return 1;
     }
   }
 
   if (std::strcmp(g_guildInfo.masterName.c_str(), name) == 0) {
-    return true;
+    return 1;
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00DFA160

@@ -1016,7 +1016,7 @@ public:
   int IsGuildMemberAccount(std::uint32_t accountId) const;
   int IsGuildMemberCharacter(std::uint32_t characterId) const;
   bool IsGuildMemberCharacter(int characterId, char* name) const;
-  bool IsGuildMemberName(const char* name) const;
+  int IsGuildMemberName(const char* name) const;
   bool IsIndoorMapName(const char* name) const;
   bool IsKnownName(std::string name) const;
   long long GetMerchantHopeToSellItemTotalPrice() const;
