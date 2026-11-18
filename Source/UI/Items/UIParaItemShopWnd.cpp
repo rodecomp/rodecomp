@@ -51,6 +51,14 @@ namespace {
 struct ItemListChunkHeader {
   /* 0000 */ std::int16_t type;
   /* 0002 */ std::uint32_t size;
+
+  ItemListChunkHeader() : type(0), size(0) {
+  }
+
+  ~ItemListChunkHeader() {
+    this->size = 0;
+    this->type = 0;
+  }
 };
 #pragma pack(pop)
 
@@ -312,7 +320,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
     int existing = 0;
     for (const ITEM_INFO& value : this->items) {
-      if (value.itemId == item.itemId) {
+      if (item.itemId == value.itemId) {
         existing = value.quantity;
         break;
       }
@@ -406,10 +414,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
         this->Resize(newWidth, newHeight);
         this->columns = 1;
-        this->visibleRows = (this->geometry.height - 38) / 32;
+        const int listHeight = this->geometry.height - 38;
+        this->visibleRows = listHeight / 32;
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
         this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, listHeight);
         this->UpdateScrollBar();
       }
 
@@ -429,7 +438,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         sum += item.quantity * item.prices[1];
         this->items.push_back(item);
       }
@@ -447,9 +456,10 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
-    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    ItemListChunkHeader header;
+    header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 20700) {
+    if (20700 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
