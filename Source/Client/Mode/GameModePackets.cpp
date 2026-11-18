@@ -12886,8 +12886,8 @@ void CGameMode::NotifySkillCasting(
     }
   }
 
-  if (skillId != MO_EXTREMITYFIST) {
-    if (skillId == PR_KYRIE) {
+  if (MO_EXTREMITYFIST != skillId) {
+    if (PR_KYRIE == skillId) {
       if (target && source != target) {
         source->Face(target->render.position.x, target->render.position.z);
       }
