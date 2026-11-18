@@ -67,6 +67,13 @@ bool CClimaxEffect::IsAlive() {
   return this->ActorExists();
 }
 
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
 // OFFSET: 0x00706F10
 // FUNCTION: fn_07052
 void CClimaxEffect::OnProcess() {
@@ -86,13 +93,12 @@ void CClimaxEffect::OnProcess() {
         const vector3d position = climax->position;
         const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
         const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-        const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
-        const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9] + 0.0f;
-        const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10] - 10.0f;
-
-        const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
-                                viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10],
-                                viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11]};
+        vector3d viewPosition;
+        MatrixMult(viewPosition, position, view);
+        viewPosition.x += 0.0f;
+        viewPosition.y -= 10.0f;
+        vector3d world;
+        MatrixMult(world, viewPosition, inverse);
         climax->position = world;
       }
 
