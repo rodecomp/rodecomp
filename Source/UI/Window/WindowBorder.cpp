@@ -122,7 +122,10 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
   if (middle) {
     width = width - rightWidth - leftWidth;
     const int middleWidth = middle->image.width;
-    const int count = width / middleWidth + (width % middleWidth != 0);
+    int count = width / middleWidth;
+    if (width % middleWidth != 0) {
+      ++count;
+    }
 
     for (int row = 1; row <= rows; ++row) {
       for (int column = 0; column < count; ++column) {
