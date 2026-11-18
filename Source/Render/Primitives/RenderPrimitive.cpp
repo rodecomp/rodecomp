@@ -65,7 +65,7 @@ RenderPrimitive::RenderPrimitive() : RenderCommand() {
 // OFFSET: 0x00569120
 // FUNCTION: fn_02249
 RenderPrimitive::RenderPrimitive(const RenderPrimitive& other) : RenderPrimitive() {
-  std::memcpy(this->quad, other.quad, sizeof(this->quad));
+  *this = other;
 }
 
 // OFFSET: 0x005692F0
@@ -89,14 +89,7 @@ RenderPrimitive& RenderPrimitive::operator=(const RenderPrimitive& other) {
 void RenderCommand::AllocateTriangles(std::uint32_t triangleCount) {
   struct Vertex : RenderVertex {
     Vertex() {
-      this->x = 0.0f;
-      this->y = 0.0f;
-      this->z = 0.0f;
-      this->rhw = 0.0f;
-      this->diffuse = 0;
-      this->specular = 0xFF000000u;
-      this->u = 0.0f;
-      this->v = 0.0f;
+      this->Reset();
     }
   };
   this->vertices = new Vertex[triangleCount * 3];
