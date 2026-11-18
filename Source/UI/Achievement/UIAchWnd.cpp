@@ -482,11 +482,12 @@ void UIAchTV::Paint() {
     this->ClearSurface(this->backgroundColor);
   }
 
-  const int rows = this->lineHeight - this->bottomMargin == 0 ? this->geometry.height : this->geometry.height / this->lineHeight - this->bottomMargin;
-  const unsigned end = std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(rows + this->topLine));
+  const int first = this->topLine;
+  const int rows = this->lineHeight == this->bottomMargin ? this->geometry.height : this->geometry.height / this->lineHeight - this->bottomMargin;
+  const int end = static_cast<int>(std::min(this->lines.size(), static_cast<unsigned>(rows + first)));
 
-  int row = 0;
-  for (int index = this->topLine; index < static_cast<int>(end); ++index, ++row) {
+  for (int index = first; index < end; ++index) {
+    const int row = index - first;
     const std::string& line = this->lines[index];
     if (this->outlineColor == 0) {
       this->DrawTextAt(3, this->lineHeight * row + 4, line.c_str(), line.size(), 0, 12, this->textColor, 0, 0);
