@@ -91,8 +91,7 @@ namespace myGPack {
   CReadPakFile::CReadPakFile() : m_handle(INVALID_HANDLE_VALUE), m_size(0) {
   }
 
-  // OFFSET: 0x005EF690
-  // FUNCTION: fn_04010
+  // INLINED
   CReadPakFile::~CReadPakFile() {
     this->Close();
   }
