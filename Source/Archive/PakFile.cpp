@@ -77,12 +77,25 @@ namespace {
   }
 }
 
+struct PakFileDeleter {
+  CPakFile* Destroy(unsigned int flags);
+};
+
+// OFFSET: 0x005EF660
+// FUNCTION: fn_04009
+CPakFile* PakFileDeleter::Destroy(unsigned int flags) {
+  CPakFile* self = reinterpret_cast<CPakFile*>(this);
+  self->CPakFile::~CPakFile();
+  if (flags & 1) {
+    operator delete(self, sizeof(CPakFile));
+  }
+  return self;
+}
+
 template __declspec(noinline) std::pair<std::set<PakUsedBlock>::iterator, bool> std::set<PakUsedBlock>::_Mybase::insert<false, 0>(PakUsedBlock&&);
 
 // OFFSET: 0x005EF3F0
 // FUNCTION: fn_04004
-// OFFSET: 0x005EF660
-// FUNCTION: fn_04009
 CPakFile::~CPakFile() = default;
 
 namespace myGPack {
