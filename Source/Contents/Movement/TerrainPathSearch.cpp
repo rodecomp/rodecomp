@@ -42,77 +42,27 @@ bool CPathFinder::FindPath(
     open.pop_back();
 
     if (current->x == destX && current->y == destY) {
-      float x = static_cast<float>(currentFractionX) * 0.0625f;
-      if (startX > 0) {
-        x = static_cast<float>(static_cast<double>(startX) - 0.5 + x);
-      }
-      route.startX = x;
-
-      float y = static_cast<float>(currentFractionY) * 0.0625f;
-      if (startY > 0) {
-        y = static_cast<float>(static_cast<double>(startY) - 0.5 + y);
-      }
-      route.startY = y;
+      const auto startCoordinate = [](int cell, int fraction) {
+        const float offset = static_cast<float>(fraction) * 0.0625f;
+        return cell > 0 ? static_cast<float>(static_cast<double>(cell) - 0.5 + offset) : offset;
+      };
+      route.startX = startCoordinate(startX, currentFractionX);
+      route.startY = startCoordinate(startY, currentFractionY);
 
       this->BuildMovementRoute(startTick, current, speed, route);
       return true;
     }
 
-    {
-      const int nextX = current->x + 1;
-      const int nextY = current->y - 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 5)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x + 1;
-      const int nextY = current->y;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 6)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x + 1;
-      const int nextY = current->y + 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 7)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x;
-      const int nextY = current->y + 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 0)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x - 1;
-      const int nextY = current->y + 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 1)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x - 1;
-      const int nextY = current->y;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 2)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x - 1;
-      const int nextY = current->y - 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 14, nextX, nextY, 3)) {
-        return false;
-      }
-    }
-    {
-      const int nextX = current->x;
-      const int nextY = current->y - 1;
-      if (this->CanMove(current->x, current->y, nextX, nextY, flag) && !this->AddNeighbor(current, 10, nextX, nextY, 4)) {
-        return false;
-      }
+    const auto tryNeighbor = [this, current, flag](int dx, int dy, int direction) {
+      const int nextX = current->x + dx;
+      const int nextY = current->y + dy;
+      const int cost = dx != 0 && dy != 0 ? 14 : 10;
+      return !this->CanMove(current->x, current->y, nextX, nextY, flag) || this->AddNeighbor(current, cost, nextX, nextY, direction);
+    };
+
+    if (!tryNeighbor(1, -1, 5) || !tryNeighbor(1, 0, 6) || !tryNeighbor(1, 1, 7) || !tryNeighbor(0, 1, 0) ||
+        !tryNeighbor(-1, 1, 1) || !tryNeighbor(-1, 0, 2) || !tryNeighbor(-1, -1, 3) || !tryNeighbor(0, -1, 4)) {
+      return false;
     }
 
     current->state = 2;
