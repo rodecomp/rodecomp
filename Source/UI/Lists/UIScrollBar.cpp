@@ -1738,6 +1738,35 @@ UITreeNode* UITreeView::FindChildNode(UITreeNode* parent, int id, int secondaryI
 }
 
 // OFFSET: 0x0089E8C0
+// FUNCTION: fn_45586
+UITreeNode* UITreeView::AddNode(UITreeNode* node, int atFront) {
+  node->collapseButton = nullptr;
+  node->expandButton = nullptr;
+  UITreeNode* parent = node->parent;
+  if (parent) {
+    if (this->FindChildNode(parent, node->id, node->secondaryId)) {
+      return node;
+    }
+    if (!parent->expandButton && !parent->collapseButton) {
+      this->AddNodeButtons(parent, parent->id);
+    }
+  } else {
+    node->parent = this->root;
+    if (this->FindChildNode(this->root, node->id, node->secondaryId)) {
+      return node;
+    }
+    this->AddNodeButtons(node, node->id);
+  }
+  this->AddNodeLabel(node, node->id);
+
+  auto& children = (parent ? parent : this->root)->children;
+  if (atFront) {
+    children.push_front(node);
+  } else {
+    children.push_back(node);
+  }
+  return node;
+}
 
 // OFFSET: 0x0089E470
 // FUNCTION: fn_11600
