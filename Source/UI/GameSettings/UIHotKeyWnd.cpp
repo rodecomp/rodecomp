@@ -311,7 +311,8 @@ void UIHotKeyWnd::OnMouseHover(int x, int y) {
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
   if (entry.info.description.size() > 0) {
-    g_modeMgr.currentMode->ShowTooltip(entry.info.description.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(entry.info.description.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
