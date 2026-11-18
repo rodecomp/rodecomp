@@ -606,23 +606,8 @@ void UINavigationWnd::Paint() {
       if (g_navigationManager.displayMode == 1) {
         drawCrosshair = false;
       }
-      const float scale = static_cast<float>(size) * g_navigationPointScale;
-      const auto pointEnd = g_navigationManager.cells.end();
-      for (auto pointIt = g_navigationManager.cells.begin(); pointIt != pointEnd; ++pointIt) {
-        const NaviCell& point = *pointIt;
-        this->FillRegion(static_cast<int>(point.x * scale + mapX), static_cast<int>(point.y * scale + mapY), 2, 2, 0x00F0F00A);
-      }
-
-      int playerCellX = 0;
-      int playerCellY = 0;
-      if (g_navigationManager.PlayerCell(&playerCellX, &playerCellY)) {
-        NaviCell playerView;
-        g_navigationManager.MapCellToView(
-          &playerView, g_session.m_navigationPlayerMap, playerCellX, playerCellY, static_cast<float>(size)
-        );
-        this->FillRegion(playerView.x + mapX - 1, playerView.y + mapY - 1, 3, 3, 0xFF);
-        this->FillRegion(playerView.x + mapX, playerView.y + mapY, 1, 1, 0xFFFF);
-      }
+      this->DrawRoutePoints(mapX, mapY, static_cast<float>(size));
+      this->DrawPlayerMarker(mapX, mapY, static_cast<float>(size));
     }
   }
 
