@@ -84,8 +84,8 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 
     this->m_row = row;
     const int count = 9 - row;
-    int right = row * 36 + 185;
-    for (int column = 0; column < count; ++column, right += 36) {
+    for (int column = 0; column < count; ++column) {
+      const int right = (row + column) * 36 + 185;
       if (right - 27 > x || right < x) {
         continue;
       }
@@ -381,13 +381,14 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           }
           break;
       }
-      return 0;
+      break;
     case UM_REFRESH:
       this->Invalidate();
-      return 0;
+      break;
     default:
       return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+  return 0;
 }
 
 // OFFSET: 0x0080CCE0
