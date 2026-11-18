@@ -34,6 +34,7 @@ bool CPathFinder::Walkable(int column, int row) const {
 }
 
 // OFFSET: 0x00ADA4F0
+// FUNCTION: fn_45894
 CActorPickNode::CActorPickNode() {
   for (int index = 0; index < 4; ++index) {
     this->children[index] = nullptr;
@@ -147,6 +148,7 @@ int CActorPickNode::QuadrantAt(int x, int y) const {
 }
 
 // OFFSET: 0x00ADAA20
+// FUNCTION: fn_45896
 bool ActorPickInfo::Contains(float x, float y) const {
   return x > this->left && x < this->right && y > this->top && y < this->bottom;
 }
