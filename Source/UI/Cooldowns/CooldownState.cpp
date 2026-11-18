@@ -57,21 +57,17 @@ void CooldownState::AddEdge(unsigned key, float origin, int radius, unsigned cha
   this->edges.insert(std::make_pair(key, CooldownEdge{origin, origin, radius, increasing}));
 }
 
-// OFFSET: 0x00CA5180
-// FUNCTION: fn_20948
-float CooldownState::Update() {
-  std::uint32_t progress = CooldownNow() + this->elapsed - this->start;
-  if (this->duration - progress <= 60000 && this->finalMinute == 0 && this->reverse == 1) {
-    const std::uint32_t previous = this->duration;
-    this->finalMinute = 1;
-    this->duration = 60000;
-    this->elapsed = progress - previous + 60000;
-    this->start = CooldownNow();
-    this->angle = 0;
-    this->color = 0xAAFF6633u;
-    progress = this->elapsed;
-  }
+// OFFSET: 0x00CA5480
+// FUNCTION: fn_45875
+float CooldownState::EdgePosition(float origin, int radius, unsigned char increasing) const {
+  const float radians = this->angle * 0.017453292f;
+  const float tangent = static_cast<float>(std::tan(static_cast<double>(radians)));
+  const float distance = static_cast<float>(radius) / tangent;
+  return increasing != 0 ? distance + origin : origin - distance;
+}
 
+// OFFSET: 0x00CA5600
+void CooldownState::UpdateSegment(std::uint32_t progress) {
   if (this->duration != 0) {
     this->angle = progress == 0 ? 0.0f : static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0);
     int forwardCount = 0;
@@ -113,20 +109,29 @@ float CooldownState::Update() {
     this->vertexCount = this->reverse != 0 ? forwardCount : backwardCount;
     this->angle = 90.0f - (this->angle - static_cast<float>(this->segment) * 45.0f);
   }
+}
+
+// OFFSET: 0x00CA5180
+// FUNCTION: fn_20948
+float CooldownState::Update() {
+  std::uint32_t progress = CooldownNow() + this->elapsed - this->start;
+  if (this->duration - progress <= 60000 && this->finalMinute == 0 && this->reverse == 1) {
+    const std::uint32_t previous = this->duration;
+    this->finalMinute = 1;
+    this->duration = 60000;
+    this->elapsed = progress - previous + 60000;
+    this->start = CooldownNow();
+    this->angle = 0;
+    this->color = 0xAAFF6633u;
+    progress = this->elapsed;
+  }
+
+  this->UpdateSegment(progress);
 
   if (this->duration > progress) {
     CooldownEdge& edge = this->edges.find(this->segment)->second;
-    float position = edge.origin;
-    const float radians = this->angle * 0.017453292f;
-    const float tangent = static_cast<float>(std::tan(static_cast<double>(radians)));
-    if (edge.increasing != 0) {
-      position += static_cast<float>(edge.radius) / tangent;
-    } else {
-      position -= static_cast<float>(edge.radius) / tangent;
-    }
-
-    edge.current = position;
-    return position;
+    edge.current = this->EdgePosition(edge.origin, edge.radius, edge.increasing);
+    return edge.current;
   }
 
   return this->edges.find(this->segment)->second.origin;
