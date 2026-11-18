@@ -30,6 +30,7 @@ struct GroundLightmap {
 
 class GroundLightmapSet {
 public:
+  GroundLightmapSet();
   ~GroundLightmapSet();
   void Build(CGndRes& resource);
   void Clear();
@@ -39,6 +40,11 @@ public:
   /* 0018 */ int lightmapCount;
   /* 001C */ int atlasCount;
 };
+
+// OFFSET: 0x00ABD930
+// FUNCTION: fn_45877
+inline GroundLightmapSet::GroundLightmapSet() {
+}
 
 class GroundBase {
 public:
