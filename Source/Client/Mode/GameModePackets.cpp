@@ -26498,7 +26498,7 @@ void CGameMode::ProcessIncomingPackets() {
             }
           }
         } else {
-          if (packet->itemId != Change_Gender_Card) {
+          if (packet->itemId != ITEMID_CHANGE_GENDER_CARD) {
             break;
           }
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USE_ITEM_FAILED)), 0xFF, 0, 0, 0);

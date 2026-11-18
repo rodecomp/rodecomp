@@ -486,36 +486,36 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
 
     if (this->materials[slot].successRate < 100 && this->catalystEnabled == 0) {
       switch (this->materials[slot].itemId) {
-      case Carnium:
-      case Bradium:
+      case ITEMID_CARNIUM:
+      case ITEMID_BRADIUM:
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR_OR_ITEM_DOWNGRADE), 0, 0);
         break;
-      case HD_Carnium:
-      case HD_Bradium:
-      case HD_Oridecon:
-      case HD_Elunium:
-      case LI_HD_Bradium:
-      case LI_HD_Carnium:
-      case LI_HD_Oridecon:
-      case LI_HD_Elunium:
-      case Ethernium:
-      case Etherdeocon:
-      case Enriched_Ethernium:
-      case Enriched_Etherdeocon:
+      case ITEMID_HD_CARNIUM:
+      case ITEMID_HD_BRADIUM:
+      case ITEMID_HD_ORIDECON:
+      case ITEMID_HD_ELUNIUM:
+      case ITEMID_LI_HD_BRADIUM:
+      case ITEMID_LI_HD_CARNIUM:
+      case ITEMID_LI_HD_ORIDECON:
+      case ITEMID_LI_HD_ELUNIUM:
+      case ITEMID_ETHERNIUM:
+      case ITEMID_ETHERDEOCON:
+      case ITEMID_ENRICHED_ETHERNIUM:
+      case ITEMID_ENRICHED_ETHERDEOCON:
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DOWMGRADE), 0, 0);
         break;
       case ITEMID_ORIDECON:
-      case Elunium:
+      case ITEMID_ELUNIUM:
       case ITEMID_PHRACON:
       case ITEMID_EMVERETARCON:
-      case Enriched_Elunium:
-      case Enriched_Oridecon:
-      case HD_Ethernium:
-      case HD_Etherdeocon:
-      case Etel_Bradium:
-      case HD_Etel_Bradium:
-      case Etel_Carnium:
-      case HD_Etel_Carnium:
+      case ITEMID_ENRICHED_ELUNIUM:
+      case ITEMID_ENRICHED_ORIDECON:
+      case ITEMID_HD_ETHERNIUM:
+      case ITEMID_HD_ETHERDEOCON:
+      case ITEMID_ETEL_BRADIUM:
+      case ITEMID_HD_ETEL_BRADIUM:
+      case ITEMID_ETEL_CARNIUM:
+      case ITEMID_HD_ETEL_CARNIUM:
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR), 0, 0);
         break;
       default:

@@ -4072,15 +4072,15 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       if (this->scene->player->render.state == 6 &&
-          (item.GetItemId() == Wing_Of_Fly || item.GetItemId() == Wing_Of_Butterfly || item.GetItemId() == Spectacles ||
-           item.GetItemId() == Anodyne || item.GetItemId() == Aloebera || item.GetItemId() == Anodyne_B)) {
+          (item.GetItemId() == ITEMID_WING_OF_FLY || item.GetItemId() == ITEMID_WING_OF_BUTTERFLY || item.GetItemId() == ITEMID_MAGNIFIER ||
+           item.GetItemId() == ITEMID_ANODYNE || item.GetItemId() == ITEMID_ALOEBERA || item.GetItemId() == ITEMID_ANODYNE_B)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_SITDOWN)), 0xFF, 0, 0, 0);
         return 0;
       }
       if (Singleton<CSelectPackageItemMgr>::GetInstance()->OpenItem(argument1)) {
         return 0;
       }
-      if (item.GetItemId() == Change_Gender_Card) {
+      if (item.GetItemId() == ITEMID_CHANGE_GENDER_CARD) {
         if (g_session.IsPlayerPerformerJob(g_session.m_job)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_JOB)), 0xFF, 0, 0, 0);
           return 0;
@@ -4625,7 +4625,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (this->scene->player->render.state == 6) {
         const int itemId = item.GetItemId();
-        if (itemId == Wing_Of_Fly || itemId == Wing_Of_Butterfly || itemId == Spectacles || itemId == Anodyne || itemId == Aloebera || itemId == Anodyne_B) {
+        if (itemId == ITEMID_WING_OF_FLY || itemId == ITEMID_WING_OF_BUTTERFLY || itemId == ITEMID_MAGNIFIER || itemId == ITEMID_ANODYNE || itemId == ITEMID_ALOEBERA || itemId == ITEMID_ANODYNE_B) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_SITDOWN)), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -7447,354 +7447,354 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   int secondEffectId = -1;
   switch (itemId) {
   case ITEMID_RED_POTION:
-  case Red_Herb:
+  case ITEMID_RED_HERB:
   case ITEMID_RED_SLIM_POTION:
-  case Novice_Potion:
-  case Strawberry:
-  case Light_Red_Pot:
-  case Novice_Potion_B:
-  case Red_Slim_Potion_B:
-  case Red_Potion_B:
-  case Tyr:
+  case ITEMID_NOVICE_POTION:
+  case ITEMID_STRAWBERRY:
+  case ITEMID_LIGHT_RED_POT:
+  case ITEMID_NOVICE_POTION_B:
+  case ITEMID_RED_SLIM_POTION_B:
+  case ITEMID_RED_POTION_B:
+  case ITEMID_TYR_S_BLESSING:
     effectId = EF_POTION1;
     break;
-  case Orange_Potion:
-  case Delicious_Fish:
-  case Light_Orange_Pot:
-  case Orange_Potion_B:
-  case Mora_Berry:
+  case ITEMID_ORANGE_POTION:
+  case ITEMID_DELICIOUS_FISH:
+  case ITEMID_LIGHT_ORANGE_POT:
+  case ITEMID_ORANGE_POTION_B:
+  case ITEMID_MORA_BERRY:
     effectId = EF_POTION2;
     break;
   case ITEMID_YELLOW_POTION:
-  case Yellow_Herb:
+  case ITEMID_YELLOW_HERB:
   case ITEMID_YELLOW_SLIM_POTION:
-  case Light_Yellow_Pot:
-  case Yellow_Potion_B:
-  case Yellow_Slim_Potion_B:
+  case ITEMID_LIGHT_YELLOW_POT:
+  case ITEMID_YELLOW_POTION_B:
+  case ITEMID_YELLOW_SLIM_POTION_B:
     effectId = EF_POTION3;
     break;
   case ITEMID_WHITE_POTION:
-  case White_Herb:
+  case ITEMID_WHITE_HERB:
   case ITEMID_WHITE_SLIM_POTION:
-  case Rice_Cake:
-  case Long_Rice_Cake:
-  case Hash_Rice_Cake:
-  case Light_White_Pot:
-  case Siege_White_Potion:
-  case Woe_White_Potion:
-  case TE_White_Potion:
-  case TE_White_Slim_Potion:
-  case White_Potion_B:
-  case White_Slim_Potion_B:
+  case ITEMID_RICE_CAKE:
+  case ITEMID_LONG_RICE_CAKE:
+  case ITEMID_HASH_RICE_CAKE:
+  case ITEMID_LIGHT_WHITE_POT:
+  case ITEMID_SIEGE_WHITE_POTION:
+  case ITEMID_WOE_WHITE_POTION:
+  case ITEMID_TE_WHITE_POTION:
+  case ITEMID_TE_WHITE_SLIM_POTION:
+  case ITEMID_WHITE_POTION_B:
+  case ITEMID_WHITE_SLIM_POTION_B:
     effectId = EF_POTION4;
     break;
   case ITEMID_BLUE_POTION:
-  case Blue_Herb:
-  case Light_Blue_Pot:
-  case Siege_Blue_Potion:
-  case Woe_Blue_Potion:
-  case Blue_Potion_B:
+  case ITEMID_BLUE_HERB:
+  case ITEMID_LIGHT_BLUE_POT:
+  case ITEMID_SIEGE_BLUE_POTION:
+  case ITEMID_WOE_BLUE_POTION:
+  case ITEMID_BLUE_POTION_B:
     effectId = EF_POTION5;
     break;
-  case Green_Potion:
-  case Green_Herb:
-  case Green_Potion_B:
+  case ITEMID_GREEN_POTION:
+  case ITEMID_GREEN_HERB:
+  case ITEMID_GREEN_POTION_B:
     effectId = EF_POTION6;
     break;
   case ITEMID_APPLE:
-  case Banana:
-  case Carrot:
-  case Sweet_Potato:
-  case Apple_Juice:
-  case Banana_Juice:
-  case Carrot_Juice:
+  case ITEMID_BANANA:
+  case ITEMID_CARROT:
+  case ITEMID_SWEET_POTATO:
+  case ITEMID_APPLE_JUICE:
+  case ITEMID_BANANA_JUICE:
+  case ITEMID_CARROT_JUICE:
   case ITEMID_PUMPKIN:
-  case Cheese:
-  case Nice_Sweet_Potato:
-  case Popped_Rice:
-  case Orange:
-  case Realgar_Wine:
+  case ITEMID_CHEESE:
+  case ITEMID_NICE_SWEET_POTATO:
+  case ITEMID_POPPED_RICE:
+  case ITEMID_ORANGE:
+  case ITEMID_REALGAR_WINE:
     effectId = EF_POTION7;
     break;
-  case Grape:
-  case Grape_Juice:
-  case Lemon:
-  case Yggdrasilberry:
-  case Magical_Carnation:
-  case Exorcize_Herb:
+  case ITEMID_GRAPE:
+  case ITEMID_GRAPE_JUICE:
+  case ITEMID_LEMON:
+  case ITEMID_YGGDRASILBERRY:
+  case ITEMID_MAGICAL_CARNATION:
+  case ITEMID_EXORCIZE_HERB:
   case ITEMID_ANCILLA:
-  case Manuks_Courage:
-  case Luciola:
-  case Tiny_Waterbottle:
+  case ITEMID_MANUK_S_COURAGE:
+  case ITEMID_LUCIOLA_S_HONEY_JAM:
+  case ITEMID_TINY_WATERBOTTLE:
     effectId = EF_POTION8;
     break;
-  case Meat:
-  case Honey:
-  case Milk:
-  case Leaflet_Of_Hinal:
-  case Leaflet_Of_Aloe:
-  case Royal_Jelly:
-  case Monster:
-  case Candy:
-  case Candy_Striper:
-  case Ice_Cream:
+  case ITEMID_MEAT:
+  case ITEMID_HONEY:
+  case ITEMID_MILK:
+  case ITEMID_LEAFLET_OF_HINAL:
+  case ITEMID_LEAFLET_OF_ALOE:
+  case ITEMID_ROYAL_JELLY:
+  case ITEMID_MONSTER_S_FEED:
+  case ITEMID_CANDY:
+  case ITEMID_CANDY_STRIPER:
+  case ITEMID_ICE_CREAM:
   case ITEMID_PET_FOOD:
-  case Well_Baked_Cookie:
-  case Piece_Of_Cake:
-  case Falcon:
-  case Pecopeco:
-  case Festive_Cookie:
-  case Festive_Rainbow_Cake:
-  case Fish_Slice:
-  case Shusi:
-  case KETUPAT:
-  case Bun:
-  case Pizza:
-  case Pizza_01:
-  case Rice_Ball:
-  case Vita500_Bottle:
-  case Tomyumkung:
-  case Prawn:
-  case Lucky_Candy:
-  case Lucky_Candy_Cane:
-  case Lucky_Cookie:
-  case Piece_Of_Cake_:
-  case Prickly_Fruit:
-  case Grain:
-  case Bread:
-  case Mushroom:
-  case KETUPAT_:
-  case Fish_Ball_Soup:
-  case Wurst:
-  case Mother:
-  case Korea_Rice_Cake:
-  case Woe_Violet_Potion:
-  case Lucky_Cookie_B:
-  case Lucky_Candy_Cane_B:
-  case Rice_Ball_B:
-  case Candy_Striper_B:
-  case Lucky_Candy_B:
-  case Candy_B:
-  case Piece_Of_Cake_B:
-  case Well_Baked_Cookie_B:
+  case ITEMID_WELL_BAKED_COOKIE:
+  case ITEMID_PIECE_OF_CAKE:
+  case ITEMID_FALCON_S_FEED:
+  case ITEMID_PECOPECO_S_FEED:
+  case ITEMID_FESTIVE_COOKIE:
+  case ITEMID_FESTIVE_RAINBOW_CAKE:
+  case ITEMID_FISH_SLICE:
+  case ITEMID_SHUSI:
+  case ITEMID_KETUPAT:
+  case ITEMID_BUN:
+  case ITEMID_PIZZA:
+  case ITEMID_PIZZA_01:
+  case ITEMID_RICE_BALL:
+  case ITEMID_VITA500_BOTTLE:
+  case ITEMID_TOMYUMKUNG:
+  case ITEMID_PRAWN:
+  case ITEMID_LUCKY_CANDY:
+  case ITEMID_LUCKY_CANDY_CANE:
+  case ITEMID_LUCKY_COOKIE:
+  case ITEMID_PIECE_OF_CAKE_:
+  case ITEMID_PRICKLY_FRUIT:
+  case ITEMID_GRAIN:
+  case ITEMID_BREAD:
+  case ITEMID_MUSHROOM:
+  case ITEMID_KETUPAT_:
+  case ITEMID_FISH_BALL_SOUP:
+  case ITEMID_WURST:
+  case ITEMID_MOTHER_S_CAKE:
+  case ITEMID_KOREA_RICE_CAKE:
+  case ITEMID_WOE_VIOLET_POTION:
+  case ITEMID_LUCKY_COOKIE_B:
+  case ITEMID_LUCKY_CANDY_CANE_B:
+  case ITEMID_RICE_BALL_B:
+  case ITEMID_CANDY_STRIPER_B:
+  case ITEMID_LUCKY_CANDY_B:
+  case ITEMID_CANDY_B:
+  case ITEMID_PIECE_OF_CAKE_B:
+  case ITEMID_WELL_BAKED_COOKIE_B:
     effectId = EF_EXIT;
     break;
-  case Chocolate:
-  case White_Chocolate:
-  case White_Chocolate_B:
-  case Chocolate_B:
-  case Choco_Lump:
+  case ITEMID_CHOCOLATE:
+  case ITEMID_WHITE_CHOCOLATE:
+  case ITEMID_WHITE_CHOCOLATE_B:
+  case ITEMID_CHOCOLATE_B:
+  case ITEMID_CHOCO_LUMP:
     effectId = EF_VALLENTINE2;
     break;
-  case HandMade_Chocolate:
-  case HandMade_Chocolate_:
-  case HandMade_Chocolate_B:
-  case HandMade_Chocolate_B_:
-  case Girl_Bunch_Of_Flower:
+  case ITEMID_HANDMADE_CHOCOLATE:
+  case ITEMID_HANDMADE_CHOCOLATE_:
+  case ITEMID_HANDMADE_CHOCOLATE_B:
+  case ITEMID_HANDMADE_CHOCOLATE_B_:
+  case ITEMID_GIRL_BUNCH_OF_FLOWER:
     effectId = EF_VALLENTINE;
     break;
-  case Center_Potion:
-  case Light_Center_Pot:
-  case Center_Potion_B:
+  case ITEMID_CENTER_POTION:
+  case ITEMID_LIGHT_CENTER_POT:
+  case ITEMID_CENTER_POTION_B:
     effectId = EF_POTION_CON;
     break;
-  case Awakening_Potion:
-  case Light_Awakening_Pot:
-  case Awakening_Potion_B:
+  case ITEMID_AWAKENING_POTION:
+  case ITEMID_LIGHT_AWAKENING_POT:
+  case ITEMID_AWAKENING_POTION_B:
     effectId = EF_POTION_;
     break;
-  case Berserk_Potion:
-  case Light_Berserk_Pot:
-  case Berserk_Potion_B:
+  case ITEMID_BERSERK_POTION:
+  case ITEMID_LIGHT_BERSERK_POT:
+  case ITEMID_BERSERK_POTION_B:
     effectId = EF_POTION_BERSERK;
     break;
-  case Mojji:
-  case Sesame_Pastry:
-  case Honey_Pastry:
-  case Rainbow_Cake:
-  case Plain_Rice_Cake:
-  case Hearty_Rice_Cake:
-  case Salty_Rice_Cake:
-  case Lucky_Rice_Cake:
-  case New_Year_Rice_Cake_1:
-  case New_Year_Rice_Cake_2:
-  case Sesame_Pastry_B:
-  case Honey_Pastry_B:
-  case Rainbow_Cake_B:
+  case ITEMID_MOJJI:
+  case ITEMID_SESAME_PASTRY:
+  case ITEMID_HONEY_PASTRY:
+  case ITEMID_RAINBOW_CAKE:
+  case ITEMID_PLAIN_RICE_CAKE:
+  case ITEMID_HEARTY_RICE_CAKE:
+  case ITEMID_SALTY_RICE_CAKE:
+  case ITEMID_LUCKY_RICE_CAKE:
+  case ITEMID_NEW_YEAR_RICE_CAKE_1:
+  case ITEMID_NEW_YEAR_RICE_CAKE_2:
+  case ITEMID_SESAME_PASTRY_B:
+  case ITEMID_HONEY_PASTRY_B:
+  case ITEMID_RAINBOW_CAKE_B:
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_MOCHI;
     break;
-  case Inspector_Certificate:
-  case Inspector_Certificate_:
+  case ITEMID_INSPECTOR_CERTIFICATE:
+  case ITEMID_INSPECTOR_CERTIFICATE_:
     g_soundMgr->PlayWave("effect\\mapae.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_MAPAE;
     break;
-  case Durian:
+  case ITEMID_DURIAN:
     effectId = EF_POTION_BERSERK;
     static_cast<EffectActor*>(actor)->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case RAMADAN:
+  case ITEMID_RAMADAN:
     effectId = EF_LAMADAN;
     break;
-  case Fruit_Of_Mastela:
+  case ITEMID_FRUIT_OF_MASTELA:
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case ITEMID_HOLY_WATER:
     g_soundMgr->PlayWave("effect\\EF_Blessing.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case Speed_Up_Potion:
-  case Speed_Up_Potion_B:
+  case ITEMID_SPEED_UP_POTION:
+  case ITEMID_SPEED_UP_POTION_B:
     g_soundMgr->PlayWave("effect\\fast.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_ITEMFAST;
     break;
-  case Slow_Down_Potion:
-  case Slow_Down_Potion_B:
+  case ITEMID_SLOW_DOWN_POTION:
+  case ITEMID_SLOW_DOWN_POTION_B:
     effectId = EF_DECAGILITY;
     break;
-  case Fire_Cracker:
+  case ITEMID_FIRE_CRACKER:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_ITEMPOKJUK;
     break;
-  case Chocolate_Drink:
-  case Cute_Strawberry_Choco:
-  case Lovely_Choco_Tart:
-  case Chocolate_Drink_B:
-  case Cacao99:
+  case ITEMID_CHOCOLATE_DRINK:
+  case ITEMID_CUTE_STRAWBERRY_CHOCO:
+  case ITEMID_LOVELY_CHOCO_TART:
+  case ITEMID_CHOCOLATE_DRINK_B:
+  case ITEMID_CACAO99:
     effectId = EF_05VAL;
     break;
-  case Giftbox_China:
+  case ITEMID_GIFTBOX_CHINA:
     g_soundMgr->PlayWave("effect\\ro2effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_RO2YEAR;
     break;
-  case Giggling_Box:
-  case HALLOWEEN_G_BOX:
+  case ITEMID_GIGGLING_BOX:
+  case ITEMID_HALLOWEEN_G_BOX:
     g_soundMgr->PlayWave("wraith_die.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case Box_Of_Thunder:
+  case ITEMID_BOX_OF_THUNDER:
     effectId = EF_ITEM_THUNDER;
     break;
-  case Gloomy_Box:
+  case ITEMID_GLOOMY_BOX:
     effectId = EF_ITEM_CLOUD;
     break;
-  case Box_Of_Grudge:
+  case ITEMID_BOX_OF_GRUDGE:
     effectId = EF_ITEM_CURSE;
     break;
-  case Sleepy_Box:
+  case ITEMID_SLEEPY_BOX:
     effectId = EF_ITEM_ZZZ;
     break;
-  case Box_Of_Storm:
+  case ITEMID_BOX_OF_STORM:
     effectId = EF_ITEM_RAIN;
     break;
-  case Painting_Box:
+  case ITEMID_PAINTING_BOX:
     g_soundMgr->PlayWave("ork_warrior_breath.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case Box_Of_Sunlight:
+  case ITEMID_BOX_OF_SUNLIGHT:
     effectId = EF_ITEM_LIGHT;
     break;
-  case Resist_Fire:
+  case ITEMID_RESIST_FIRE:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_FIREHIT2;
     break;
-  case Resist_Water:
+  case ITEMID_RESIST_WATER:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_COLDHIT;
     break;
-  case Resist_Earth:
+  case ITEMID_RESIST_EARTH:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_EARTHHIT;
     break;
-  case Resist_Wind:
+  case ITEMID_RESIST_WIND:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_WINDHIT;
     break;
-  case Lucky_Potion:
+  case ITEMID_LUCKY_POTION:
     effectId = EF_HAPGYEOK;
     break;
-  case Str_Dish10_M:
+  case ITEMID_STR_DISH10_M:
     effectId = EF_FOOD01;
     break;
-  case Agi_Dish10_M:
+  case ITEMID_AGI_DISH10_M:
     effectId = EF_FOOD04;
     break;
-  case Int_Dish10_M:
+  case ITEMID_INT_DISH10_M:
     effectId = EF_FOOD02;
     break;
-  case Dex_Dish10_M:
+  case ITEMID_DEX_DISH10_M:
     effectId = EF_FOOD05;
     break;
-  case Luk_Dish10_M:
+  case ITEMID_LUK_DISH10_M:
     effectId = EF_FOOD06;
     break;
-  case Vit_Dish10_M:
+  case ITEMID_VIT_DISH10_M:
     effectId = EF_FOOD03;
     break;
-  case Assumptio_5_Scroll:
+  case ITEMID_ASSUMPTIO_5_SCROLL:
     static_cast<EffectActor*>(actor)->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     static_cast<EffectActor*>(actor)->LaunchEffect(EF_ASSUMPTIO2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case Spray_Of_Flowers:
-  case Large_Spray_Of_Flowers:
+  case ITEMID_SPRAY_OF_FLOWERS:
+  case ITEMID_LARGE_SPRAY_OF_FLOWERS:
     effectId = EF_FLOWERLEAF;
     break;
-  case Goddess_Bless:
+  case ITEMID_GODDESS_BLESS:
     effectId = EF_ANGEL2;
     break;
-  case Angel_Bless:
+  case ITEMID_ANGEL_BLESS:
     effectId = EF_ITEM316;
     break;
-  case Powder_Snow:
+  case ITEMID_POWDER_SNOW:
     g_soundMgr->PlayWave("effect\\storm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_ITEM317;
     break;
-  case Little_Heart:
+  case ITEMID_LITTLE_HEART:
     effectId = EF_ITEM318;
     break;
-  case J_Firecracker:
+  case ITEMID_J_FIRECRACKER:
     g_soundMgr->PlayWave("effect\\pokjuk_jap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_POK_JAP;
     break;
-  case Egg:
-  case Manuk:
-  case Pinguicula:
+  case ITEMID_EGG:
+  case ITEMID_MANUK_S_OPPORTUNITY:
+  case ITEMID_PINGUICULA_S_FRUIT_JAM:
     effectId = EF_POTION7;
     break;
-  case J_Aspersio_5_Scroll:
+  case ITEMID_J_ASPERSIO_5_SCROLL:
     effectId = EF_ASPERSIO;
     break;
-  case RWC_Cele_Fire:
+  case ITEMID_RWC_CELE_FIRE:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_2011RWC;
     break;
-  case RWC_Cele_Fire2:
+  case ITEMID_RWC_CELE_FIRE2:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_2011RWC2;
     break;
-  case No100_Firecracker:
+  case ITEMID_NO100_FIRECRACKER:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     effectId = EF_NO100_FIRECRACKER;
     break;
-  case Fire_Cracker_Love:
+  case ITEMID_FIRE_CRACKER_LOVE:
     effectId = EF_POK_LOVE;
     break;
-  case Fire_Cracker_Wday:
+  case ITEMID_FIRE_CRACKER_WDAY:
     effectId = EF_POK_WHITE;
     break;
-  case Fire_Cracker_Vday:
+  case ITEMID_FIRE_CRACKER_VDAY:
     effectId = EF_POK_VALEN;
     break;
-  case Fire_Cracker_Bday:
+  case ITEMID_FIRE_CRACKER_BDAY:
     effectId = EF_POK_BIRTH;
     break;
-  case Fire_Cracker_Xmas:
+  case ITEMID_FIRE_CRACKER_XMAS:
     effectId = EF_POK_CHRISTMAS;
     break;
-  case Bath_Foam_A:
-  case Bath_Foam_B:
-  case Bath_Foam_C:
+  case ITEMID_BATH_FOAM_A:
+  case ITEMID_BATH_FOAM_B:
+  case ITEMID_BATH_FOAM_C:
     effectId = EF_NEW_BATHFOAM;
     secondEffectId = EF_NEW_BATHFOAM_BOTTOM;
     break;
-  case Aroma_Oil:
+  case ITEMID_AROMA_OIL:
     effectId = EF_NEW_AROMAOIL;
     secondEffectId = EF_NEW_AROMAOIL_BOTTOM;
     break;
