@@ -50,6 +50,11 @@ std::optional<std::vector<ITEM_INFO>*> CSelectPackageItemMgr::FindItems(int pack
   return std::nullopt;
 }
 
+// INLINED
+inline std::vector<ITEM_INFO>& CSelectPackageItemMgr::GetItems(int packageId, int tabIndex) {
+  return this->m_packages[packageId][tabIndex].items;
+}
+
 // OFFSET: 0x0061EFF0
 // FUNCTION: fn_04447
 bool CSelectPackageItemMgr::LoadScript() {
@@ -143,7 +148,7 @@ int CSelectPackageItemMgr::LuaAddItem(lua_State* L) {
   const double refine = lua_tonumber(L, -2);
   const double kind = lua_tonumber(L, -1);
 
-  std::vector<ITEM_INFO>& items = CSelectPackageItemMgr::GetInstance()->m_packages[packageId][tabIndex].items;
+  std::vector<ITEM_INFO>& items = CSelectPackageItemMgr::GetInstance()->GetItems(packageId, tabIndex);
   const int slot = static_cast<int>(index);
   if (slot >= 0 && static_cast<std::size_t>(slot) < items.size()) {
     ITEM_INFO& item = items[slot];
