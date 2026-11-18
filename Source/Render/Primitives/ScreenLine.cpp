@@ -339,14 +339,20 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   if (this->selectedRecord->mapIndex < 100) {
     const WorldViewRecord* record = this->selectedRecord;
-    this->DrawRoundedOutline(record->screenLeft, record->screenTop, record->screenRight - record->screenLeft, record->screenBottom - record->screenTop,
-      g_worldMapNameColor
-    );
+    const int left = record->screenLeft;
+    const int top = record->screenTop;
+    const int right = record->screenRight;
+    const int bottom = record->screenBottom;
+    this->DrawRoundedOutline(left, top, right - left, bottom - top, g_worldMapNameColor);
   }
 
   {
     const WorldViewRecord* record = this->selectedRecord;
-    this->DrawRoundedOutline(record->left, record->top, record->right - record->left, record->bottom - record->top, g_worldMapNameColor);
+    const int left = record->left;
+    const int top = record->top;
+    const int right = record->right;
+    const int bottom = record->bottom;
+    this->DrawRoundedOutline(left, top, right - left, bottom - top, g_worldMapNameColor);
   }
 
   WorldViewRecord* record = this->selectedRecord;
