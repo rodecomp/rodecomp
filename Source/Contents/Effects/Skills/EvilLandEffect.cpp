@@ -49,25 +49,30 @@ void CEvilLandEffect::Open() {
       particle->texture1 = texture;
       particle->texture2 = alpha;
 
-      particle->uv1[0][0] = static_cast<float>(column) * textureStepU;
-      particle->uv1[0][1] = static_cast<float>(row) * textureStepV;
-      particle->uv2[0][0] = static_cast<float>(column) * alphaStepU;
-      particle->uv2[0][1] = static_cast<float>(row) * alphaStepV;
+      const float left = static_cast<float>(column);
+      const float top = static_cast<float>(row);
+      const float right = static_cast<float>(column + 1);
+      const float bottom = static_cast<float>(row + 1);
 
-      particle->uv1[1][0] = static_cast<float>(column + 1) * textureStepU;
-      particle->uv1[1][1] = static_cast<float>(row) * textureStepV;
-      particle->uv2[1][0] = static_cast<float>(column + 1) * alphaStepU;
-      particle->uv2[1][1] = static_cast<float>(row) * alphaStepV;
+      particle->uv1[0][0] = left * textureStepU;
+      particle->uv1[0][1] = top * textureStepV;
+      particle->uv2[0][0] = left * alphaStepU;
+      particle->uv2[0][1] = top * alphaStepV;
 
-      particle->uv1[2][0] = static_cast<float>(column) * textureStepU;
-      particle->uv1[2][1] = static_cast<float>(row + 1) * textureStepV;
-      particle->uv2[2][0] = static_cast<float>(column) * alphaStepU;
-      particle->uv2[2][1] = static_cast<float>(row + 1) * alphaStepV;
+      particle->uv1[1][0] = right * textureStepU;
+      particle->uv1[1][1] = top * textureStepV;
+      particle->uv2[1][0] = right * alphaStepU;
+      particle->uv2[1][1] = top * alphaStepV;
 
-      particle->uv1[3][0] = static_cast<float>(column + 1) * textureStepU;
-      particle->uv1[3][1] = static_cast<float>(row + 1) * textureStepV;
-      particle->uv2[3][0] = static_cast<float>(column + 1) * alphaStepU;
-      particle->uv2[3][1] = static_cast<float>(row + 1) * alphaStepV;
+      particle->uv1[2][0] = left * textureStepU;
+      particle->uv1[2][1] = bottom * textureStepV;
+      particle->uv2[2][0] = left * alphaStepU;
+      particle->uv2[2][1] = bottom * alphaStepV;
+
+      particle->uv1[3][0] = right * textureStepU;
+      particle->uv1[3][1] = bottom * textureStepV;
+      particle->uv2[3][0] = right * alphaStepU;
+      particle->uv2[3][1] = bottom * alphaStepV;
 
       particle->AllocateVertices(4);
       this->particles.push_back(created);
