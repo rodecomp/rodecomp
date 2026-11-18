@@ -32,6 +32,10 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnMouseHover(int x, int y) override;
 
+protected:
+  int LineAt(int x, int y);
+
+public:
   /* 00D4 */ int m_agitIndex;
 };
 

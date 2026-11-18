@@ -125,22 +125,28 @@ void UIListBoxAgitMenu::OnLBtnDown(int x, int y) {
   }
 }
 
+// OFFSET: 0x00957A50
+// FUNCTION: fn_45716
+int UIListBoxAgitMenu::LineAt(int x, int y) {
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    return -1;
+  }
+
+  int line = y / this->lineHeight;
+  if (line < 0) {
+    line = 0;
+  }
+  if (line > 1) {
+    line = 1;
+  }
+  return line;
+}
+
 // OFFSET: 0x00960160
 // FUNCTION: fn_13096
 void UIListBoxAgitMenu::OnMouseHover(int x, int y) {
   const int previous = this->selected;
-  int line;
-  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    line = -1;
-  } else {
-    line = y / this->lineHeight;
-
-    if (line < 0) {
-      line = 0;
-    }
-
-    line = std::min(line, 1);
-  }
+  const int line = this->LineAt(x, y);
 
   this->selected = line;
   if (previous != line) {
