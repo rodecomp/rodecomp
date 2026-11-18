@@ -27,6 +27,10 @@ UIHotkeyGuideWnd::UIHotkeyGuideWnd()
   this->m_current = 4698;
 }
 
+// OFFSET: 0x00966920
+// FUNCTION: fn_45757
+__declspec(noinline) UIHotkeyGuideWnd::~UIHotkeyGuideWnd() = default;
+
 // OFFSET: 0x009664F0
 // FUNCTION: fn_13156
 HotkeyGuideLabel::HotkeyGuideLabel(std::string text, HotkeyGuideKey key, HotkeyGuideKey altKey) {

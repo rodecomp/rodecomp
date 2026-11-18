@@ -57,6 +57,7 @@ struct HotkeyGuideLabel {
 class UIHotkeyGuideWnd : public UIFrameWnd {
 public:
   UIHotkeyGuideWnd();
+  ~UIHotkeyGuideWnd() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;
   void Paint() override;
