@@ -135,12 +135,12 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
+    SpriteAtlasRecord record{};
     if (option == true) {
       if (cell.image == -1) {
         continue;
       }
 
-      SpriteAtlasRecord record{};
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       if (cell.imageType == 0 && !g_renderer->atlas.Find(image, palette, record)) {
         g_renderer->atlas.Insert(image, palette, record);
@@ -159,7 +159,6 @@ void FuncDrawWNDChar::Draw(bool option) {
         continue;
       }
 
-      SpriteAtlasRecord record{};
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       CTexture* texture;
       if (cell.imageType == 0) {
