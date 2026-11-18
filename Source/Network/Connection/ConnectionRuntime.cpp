@@ -51,13 +51,16 @@ bool InitializeConnections() {
     const char* names[] = {"connect", "closesocket", "send", "select"};
     HMODULE library = LoadLibraryA("ws2_32.dll");
     if (library) {
-      for (unsigned index = 0; index < 4; ++index) {
+      unsigned index = 0;
+      do {
         FARPROC loadedFunction = GetProcAddress(library, names[index]);
         FARPROC originalFunction = GetProcAddress(ws2Module, names[index]);
         if (loadedFunction != originalFunction) {
           break;
         }
-      }
+
+        ++index;
+      } while (index < 4);
 
       FreeLibrary(library);
     }
