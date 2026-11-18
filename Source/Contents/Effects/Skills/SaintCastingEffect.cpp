@@ -204,26 +204,29 @@ void CSaintCastingEffect::OnProcess() {
       particle->alpha = alpha;
 
       const int ring = particle->rowIndex;
-      const int wave = ring < 2 ? ring * 90 + particle->elapsedFrames : (ring * 45 + particle->elapsedFrames) * 2;
+      const int wave =
+        ring < 2 ? (ring * 90 + particle->elapsedFrames) % 360 : (ring * 45 + particle->elapsedFrames) * 2 % 360;
       const int segment = particle->columnIndex;
       const float radius =
-        particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave % 360] + particle->speedParameter;
-      const float height = radius * g_sinTable[tilt];
+        particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave] + particle->speedParameter;
       const float spread = radius * g_cosTable[tilt];
+      const float height = radius * g_sinTable[tilt];
       const int angle =
         static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
                          particle->angle) %
         360;
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
+      const float outerX = spread * cosine;
+      const float outerZ = spread * sine;
 
       EffectPoint points[2];
       points[0].x = cosine * particle->scale;
       points[0].y = 0.0f;
       points[0].z = sine * particle->scale;
-      points[1].x = points[0].x + spread * cosine;
+      points[1].x = points[0].x + outerX;
       points[1].y = points[0].y - height;
-      points[1].z = points[0].z + spread * sine;
+      points[1].z = points[0].z + outerZ;
 
       particle->vertices[3].x = points[0].x;
       particle->vertices[3].y = points[0].y;
