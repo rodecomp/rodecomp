@@ -3,6 +3,8 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBmpTextButton2.h"
 
+#include <cstddef>
+
 // OFFSET: 0x0084ECB0
 // FUNCTION: fn_10651
 UIBmpTextButton2::UIBmpTextButton2() : UIBitmapButton() {
@@ -39,4 +41,22 @@ void UIBmpTextButton2::Paint() {
   }
 
   this->DrawLabels();
+}
+
+// INLINED
+inline bool UIBmpTextButton2::HasLabel(int index) const {
+  return index >= 0 && static_cast<std::size_t>(index) < this->labels.size();
+}
+
+// OFFSET: 0x00858DE0
+
+// OFFSET: 0x00869390
+
+// OFFSET: 0x0086A670
+// FUNCTION: fn_45629
+void UIBmpTextButton2::SetLabelText(std::string text, int index) {
+  if (this->HasLabel(index)) {
+    this->labels[index].text = text;
+  }
+  this->Invalidate();
 }

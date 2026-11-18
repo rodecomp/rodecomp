@@ -9,7 +9,7 @@
 
 struct BmpTextButtonLabel {
   /* 0000 */ std::string text;
-  /* 0018 */ int padding_0018;
+  /* 0018 */ unsigned char padding_0018[4];
   /* 001C */ int x;
   /* 0020 */ int y;
   /* 0024 */ int height;
@@ -23,8 +23,17 @@ public:
   UIBmpTextButton2();
   void Paint() override;
   void DrawLabels();
+  using UIButton::SetLabel;
+  void SetLabel(std::string text, int index, int height, std::uint32_t color,
+                unsigned char bold, unsigned char shadow, int x, int y);
+  std::string GetLabel(int index, int* height, std::uint32_t* color, unsigned char* bold,
+                       unsigned char* shadow, int* x, int* y) const;
+  void SetLabelText(std::string text, int index);
 
   /* 0120 */ std::vector<BmpTextButtonLabel> labels;
+
+private:
+  bool HasLabel(int index) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
