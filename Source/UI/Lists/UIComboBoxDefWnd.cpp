@@ -338,6 +338,27 @@ void UIComboBoxDef2Wnd::Paint() {
   }
 }
 
+// OFFSET: 0x00897B30
+// FUNCTION: fn_45660
+void UINewComboBoxCtrl::Select(int index) {
+  this->dropped = false;
+  if (index < 0) {
+    return;
+  }
+
+  if (static_cast<unsigned int>(index) <= this->items.size()) {
+    this->label->SetText(this->items[index].c_str(), 0);
+  }
+
+  this->selected = index;
+  this->parent->SendMsg(this, UM_COMBOBOX_SELECTED, index, 0, 0, 0);
+  this->Invalidate();
+  this->parent->Invalidate();
+  if (this->Root()) {
+    this->Root()->Invalidate();
+  }
+}
+
 // OFFSET: 0x00886C30
 // FUNCTION: fn_11329
 void UINewComboBoxCtrl::OnCreate(int, int) {
