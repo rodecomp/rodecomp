@@ -11714,6 +11714,45 @@ void UIItemDropCntWnd::Show(int visible) {
   }
 }
 
+// OFFSET: 0x0098A650
+// FUNCTION: fn_45772
+void UIMerchantShopMakeWnd::UpdateScrollBar() {
+  UIScrollBar* bar = this->scrollBar;
+  if (!bar) {
+    return;
+  }
+
+  const int visible = this->maxVisibleRows;
+  const int count = static_cast<int>(this->items.size());
+  int maximum = count - visible;
+  if (maximum < 0) {
+    maximum = 0;
+  }
+
+  this->scrollable = maximum != 0;
+  if (maximum != 0) {
+    bar->SetRange(maximum, visible, count);
+    int position = this->scroll;
+    if (position < 0) {
+      this->scroll = 0;
+      position = 0;
+    }
+
+    const int last = count - this->maxVisibleRows;
+    if (position > last) {
+      this->scroll = last;
+      position = last;
+    }
+
+    this->scrollBar->SetPosition(position);
+  } else {
+    this->scroll = 0;
+    bar->SetRange(0, visible, count);
+  }
+
+  this->scrollBar->Invalidate();
+}
+
 // OFFSET: 0x00992130
 // FUNCTION: fn_13433
 int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

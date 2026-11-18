@@ -30,6 +30,7 @@ public:
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void UpdateLayout();
+  void UpdateScrollBar();
   void SetSelection(short row, short column);
   bool HasSelection() const;
   void SendShopRequest();
