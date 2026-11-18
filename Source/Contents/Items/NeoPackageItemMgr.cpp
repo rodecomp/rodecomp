@@ -141,11 +141,12 @@ int CNeoPackageItemMgr::LuaInsertPackage(lua_State* state) {
   }
 
   const int packageId = static_cast<int>(lua_tonumber(state, 1));
-  const int groupId = static_cast<int>(lua_tonumber(state, 2));
-  const int itemId = static_cast<int>(lua_tonumber(state, 3));
+  const double groupId = lua_tonumber(state, 2);
+  const double itemId = lua_tonumber(state, 3);
   const std::string name = lua_tostring(state, 4);
-  const int probability = static_cast<int>(lua_tonumber(state, 5));
-  CNeoPackageItemMgr::GetInstance()->InsertPackage(packageId, groupId, itemId, name, probability);
+  const double probability = lua_tonumber(state, 5);
+  CNeoPackageItemMgr* packageItemMgr = CNeoPackageItemMgr::GetInstance();
+  packageItemMgr->InsertPackage(packageId, static_cast<int>(groupId), static_cast<int>(itemId), name, static_cast<int>(probability));
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
