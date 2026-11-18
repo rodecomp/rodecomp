@@ -76,31 +76,32 @@ void UIShortCutWnd::Paint() {
   }
 
   if (grid.row != -1 && grid.hovered != -1) {
+    const int y = 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage);
+    const int x = ((grid.hovered * 29) + 16);
     const SkinPaletteCell cell{2, 2};
-    window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage), 24, 24,
-                      g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
+    window.FillRegion(x, y, 24, 24, g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
   }
 
   g_session.m_mainCooldownIcons.clear();
 
   for (int row = 0; row < grid.rows; ++row) {
-    const int y = ((row * 33) + 4);
-
     for (int column = 0; column < 9; ++column) {
       const int index = ((row * 9) + column);
       if (index >= 36) {
         continue;
       }
 
-      const NormalItemSlot& slot = *this->m_slots[index];
-      if (slot.itemId == 0) {
+      const int y = ((row * 33) + 4);
+
+      const unsigned itemId = this->m_slots[index]->itemId;
+      if (itemId == 0) {
         continue;
       }
 
       const int x = 16 + 29 * column;
-      if (slot.enabled != 0) {
-        CSkillInfo skill = g_session.LookupSkill(slot.itemId);
-        if (!this->MatchesShortcut(skill, &slot)) {
+      if (this->m_slots[index]->enabled != 0) {
+        CSkillInfo skill = g_session.LookupSkill(itemId);
+        if (!this->MatchesShortcut(skill, this->m_slots[index])) {
           continue;
         }
 
@@ -114,57 +115,57 @@ void UIShortCutWnd::Paint() {
 
         g_session.m_mainCooldownIcons.push_back({skill.id, index, x, y});
         window.DrawBitmap(x, y, image, true);
-        int level = slot.value;
+        int level = this->m_slots[index]->value;
 
         if (IsIndexedSkill(skill.id) && skill.level < level) {
           level = skill.level;
         }
 
-        Count(window, x + 27, (y + 17), level);
+        std::sprintf(path, "%d", level);
+        window.DrawRightOutlinedText(x + 27, y + 17, path, 0, 0, 0xFFFFFF, 0, 11, 0);
       } else {
-        ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
-        if (item.identity[1] == 0) {
-          continue;
-        }
+        ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(itemId), 1);
+        if (item.identity[1] > 0) {
+          window.DrawItemIcon(x, y, item, item.identified);
+          if (item.quantity != 0) {
+            Count(window, x + 27, (y + 17), item.quantity);
+          }
 
-        window.DrawItemIcon(x, y, item, item.identified);
-        if (item.quantity != 0) {
-          Count(window, x + 27, (y + 17), item.quantity);
-        }
-
-        if (0 < item.grade) {
-          window.DrawBitmap(x, (y + 12), Load(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()), true);
+          if (0 < item.grade) {
+            window.DrawBitmap(
+              x, (y + 12),
+              static_cast<CBitmapRes*>(
+                ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
+              ),
+              true
+            );
+          }
         }
       }
     }
   }
 
   if (g_session.ItemSlotActive()) {
-    const int y = ((grid.rows * 33) + 4);
-
     for (int column = 0; column < 9; ++column) {
-      const NormalItemSlot& slot = *this->m_itemSlots[column];
-      if (slot.itemId == 0) {
+      const unsigned itemId = this->m_itemSlots[column]->itemId;
+      if (itemId == 0) {
         continue;
       }
 
-      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
-      if (item.identity[1] == 0) {
-        continue;
-      }
-
-      const int x = 16 + 29 * column;
-      window.DrawItemIcon(x, y, item, item.identified);
-      if (item.quantity != 0) {
-        Count(window, x + 27, (y + 17), item.quantity);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(itemId), 1);
+      if (item.identity[1] > 0) {
+        const int x = 16 + 29 * column;
+        const int y = ((grid.rows * 33) + 4);
+        window.DrawItemIcon(x, y, item, item.identified);
+        if (item.quantity != 0) {
+          Count(window, x + 27, (y + 17), item.quantity);
+        }
       }
     }
   }
 
   for (int row = 0; row < grid.rows; ++row) {
-    char text[24];
-    std::sprintf(text, "%d", (row + 1));
-    window.DrawTextAt(6, ((row * 33) + 13), text, 0, 0, 11, 0x2F4A4A, 0, 0);
+    window.DrawTextAt(6, ((row * 33) + 13), FormatOwnedString("%d", row + 1).c_str(), 0, 0, 11, 0x2F4A4A, 0, 0);
   }
 
   PaintMainCooldowns(g_session.m_requestTimers, g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, *g_cooldownOwner);
