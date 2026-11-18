@@ -483,3 +483,52 @@ void UIVerticalNameBalloonText::AddNameLine(const char* text) {
   this->Resize(g_nameBalloonFontHeight + 8, this->textHeight);
   this->Invalidate();
 }
+
+// OFFSET: 0x00867000
+// FUNCTION: fn_45651
+void UIVerticalNameBalloonText::SetNameLines(const CActorNameCard& info, bool stripHash) {
+  this->m_lines.clear();
+
+  std::string name = info.name;
+  if (stripHash) {
+    const std::size_t hash = name.find('#');
+    if (hash != std::string::npos) {
+      name.resize(hash);
+    }
+  }
+
+  char line[256];
+  if (g_serviceFlag05) {
+    if (info.clanName[0] != '\0') {
+      this->m_lines.push_back(info.clanName.c_str());
+      const std::string& clan = this->m_lines.back();
+      const int height = this->VerticalTextHeight(clan.c_str(), clan.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
+      this->textHeight = std::max(height + 8, 32);
+    } else {
+      this->textHeight = 0;
+    }
+    this->m_lines.push_back(name.c_str());
+    const int nameHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
+    this->textHeight = std::max(nameHeight + 8, this->textHeight);
+  } else {
+    if (info.partyName[0] == '\0') {
+      this->m_lines.push_back(name.c_str());
+    } else {
+      std::sprintf(line, "%s (%s)", name.c_str(), info.partyName.c_str());
+      this->m_lines.push_back(line);
+    }
+    const std::string& first = this->m_lines.back();
+    const int firstHeight = this->VerticalTextHeight(first.c_str(), first.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
+    this->textHeight = std::max(firstHeight + 8, 32);
+
+    if (info.guildName[0] != '\0') {
+      std::sprintf(line, "%s [%s]", info.guildName.c_str(), info.clanName.c_str());
+      this->m_lines.push_back(line);
+      const int guildHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
+      this->textHeight = std::max(guildHeight + 8, this->textHeight);
+    }
+  }
+
+  this->Resize(this->textHeight, static_cast<int>(this->m_lines.size()) * (g_nameBalloonFontHeight + 2) + 6);
+  this->Invalidate();
+}

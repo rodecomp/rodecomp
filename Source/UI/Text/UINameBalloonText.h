@@ -30,6 +30,7 @@ public:
   void SetIcon(const char* name);
   void Paint() override;
   void AddNameLine(const char* text) override;
+  void SetNameLines(const CActorNameCard& info, bool stripHash);
 
   /* 00C0 */ int textHeight;
 };
