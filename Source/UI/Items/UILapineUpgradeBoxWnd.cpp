@@ -575,8 +575,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     return false;
   }
 
-  UILapineUpgradeBox_IngredientInfoWnd* entry = *entryIt;
-  const ITEM_INFO& item = entry->item;
+  const ITEM_INFO& item = (*entryIt)->item;
 
   const auto material = std::find_if(this->materials.begin(), this->materials.end(), [&item](ITEM_INFO required) {
     return std::atoi(item.itemId.c_str()) == std::atoi(required.itemId.c_str());
@@ -608,7 +607,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     return false;
   }
 
-  entry->Show(0);
+  (*entryIt)->Show(0);
   this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
   return true;
 }
