@@ -43,7 +43,7 @@ namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
+    if (this->m_commands.end() == this->m_current) {
       this->m_commands.emplace_back();
       this->m_current = this->m_commands.end();
       return &this->m_commands.back();
@@ -171,7 +171,11 @@ void CSpriteParticle::Draw(char mode) {
       record.v1 = static_cast<float>(heightTexture->ImageHeight()) / static_cast<float>(heightTexture->TextureHeight());
     }
 
-    this->SetQuad(this->vertices, record.v1, record.v0, (cell.mirrored & 1) == 0 ? record.u0 : record.u1, (cell.mirrored & 1) == 0 ? record.u1 : record.u0);
+    if ((cell.mirrored & 1) != 0) {
+      this->SetQuad(this->vertices, record.v1, record.v0, record.u1, record.u0);
+    } else {
+      this->SetQuad(this->vertices, record.v1, record.v0, record.u0, record.u1);
+    }
 
     RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
     std::memcpy(primitive->vertices, this->vertices, sizeof(this->vertices));
@@ -275,7 +279,7 @@ void CSpriteParticle::Draw(char mode) {
     }
 
     const float depthOffset = static_cast<float>(i) * spriteShadowDepthEpsilon + this->depthOffset;
-    if (depthOffset != 0.0f) {
+    if (0.0f != depthOffset) {
       for (int v = 0; v < 4; ++v) {
         primitive->vertices[v].rhw += depthOffset;
         primitive->vertices[v].z = RhwToDepth(primitive->vertices[v].rhw);
