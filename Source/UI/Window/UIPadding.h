@@ -13,6 +13,8 @@ public:
 
   bool CanHitTest() override;
   void Paint() override;
+  void SetColor(std::uint32_t value);
+  void SetPadding(int left, int top, int right, int bottom);
 
   /* 0080 */ std::uint32_t color;
   /* 0084 */ int left;

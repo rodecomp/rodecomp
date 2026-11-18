@@ -1425,6 +1425,12 @@ void CUIEditBox::SetEditBounds(int left, int top, int right, int bottom) {
   this->Resize(this->geometry.width, this->geometry.height);
 }
 
+// OFFSET: 0x009ED8C0
+// FUNCTION: fn_45740
+void CUIEditBox::SetMask(char value) {
+  this->edit->mask = value;
+}
+
 // OFFSET: 0x009ED8E0
 // FUNCTION: fn_14591
 void CUIEditBox::SetText(const std::string& text) {
@@ -2362,14 +2368,19 @@ void CUITextViewer::SetTextOffset(int x, int y) {
   this->textY = y;
 }
 
+// OFFSET: 0x009EA7C0
+// FUNCTION: fn_45738
+void CUIPadding::SetColor(std::uint32_t value) {
+  this->color = value;
+  this->Invalidate();
+}
+
 // OFFSET: 0x009EA7E0
 // FUNCTION: fn_14522
 void CUITextViewer::SetBackgroundColor(std::uint32_t value) {
   this->backgroundColor = value;
 
-  CUIPadding* padding = this->padding;
-  padding->color = value;
-  padding->Invalidate();
+  this->padding->SetColor(value);
 }
 
 // OFFSET: 0x009EA810
@@ -2407,6 +2418,16 @@ void CUITextViewer::SetLineSpacing(int value) {
 void CUITextViewer::SetOutline(bool enabled, std::uint32_t value) {
   this->outline = enabled;
   this->outlineColor = value;
+}
+
+// OFFSET: 0x009EA890
+// FUNCTION: fn_45739
+void CUIPadding::SetPadding(int left, int top, int right, int bottom) {
+  this->left = left;
+  this->top = top;
+  this->right = right;
+  this->bottom = bottom;
+  this->Invalidate();
 }
 
 // OFFSET: 0x009EA8D0
@@ -3691,11 +3712,7 @@ void CUITextViewer::AddLine(const std::string& text) {
     this->scrollBar->SetVisible(visibleHeight);
     this->scrollBar->SetPosition(this->scrollBar->position);
     const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
-    this->padding->left = this->paddingLeft;
-    this->padding->top = this->paddingTop;
-    this->padding->right = this->paddingRight + newScrollWidth;
-    this->padding->bottom = this->paddingBottom;
-    this->padding->Invalidate();
+    this->padding->SetPadding(this->paddingLeft, this->paddingTop, this->paddingRight + newScrollWidth, this->paddingBottom);
   }
 }
 

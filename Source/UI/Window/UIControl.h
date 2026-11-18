@@ -342,6 +342,7 @@ public:
   void SetBorderWidth(int width);
   void SetMaximum(int value);
   void SetEditBounds(int left, int top, int right, int bottom);
+  void SetMask(char value);
   void SetText(const std::string& text);
   void SetTextColor(std::uint32_t color);
 
