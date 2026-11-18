@@ -9653,16 +9653,17 @@ void UIItemCollectionWnd::Paint() {
         for (std::list<std::string>::iterator line = card->second.begin();;) {
           if (*line == LookupMessage(MSI_NEW_RANDOM_OPTION)) {
             this->DrawCenteredText(0, bottom + offset, line->c_str(), this->geometry.width, 0, 12, 0xFF, 0);
+            offset += 11;
             break;
           }
           this->DrawTextAt(12, bottom + offset, line->c_str(), 0, 0, 12, 0, 0, 0);
-          ++line;
-          if (line == card->second.end()) {
+          offset += 11;
+          if (++line == card->second.end()) {
             break;
           }
-          offset += 15;
+          offset += 4;
         }
-        offset += 21;
+        offset += 10;
       }
     }
 
