@@ -61,6 +61,8 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
     close = remaining.find(g_itemLinkTagEnd);
 
     if (begin != std::string::npos) {
+      const auto beginTagSize = g_itemLinkTagBegin.size();
+
       do {
         position += static_cast<unsigned>(begin);
         remaining = remaining.substr(begin + g_itemLinkTagBegin.size());
@@ -68,7 +70,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
         close = remaining.find(g_itemLinkTagEnd);
 
         if (begin != std::string::npos) {
-          position += static_cast<unsigned>(g_itemLinkTagBegin.size());
+          position += static_cast<unsigned>(beginTagSize);
         }
       } while (begin != std::string::npos);
 
