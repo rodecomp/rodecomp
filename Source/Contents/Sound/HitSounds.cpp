@@ -45,8 +45,9 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
     return nullptr;
   }
 
+  const std::string* firstWave = weaponWaves.data();
   if (this->GetDisplayJob() == 4046 || this->GetDisplayJob() == 4225) {
-    return weaponWaves[realWeapon].c_str();
+    return firstWave[realWeapon].c_str();
   }
 
   if (realWeapon == 0) {
