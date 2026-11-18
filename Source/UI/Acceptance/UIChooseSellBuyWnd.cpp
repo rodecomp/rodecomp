@@ -265,14 +265,14 @@ UIEquipWnd::UIEquipWnd() : UIFrameWnd(0) {
   this->contentOffset = 0;
   this->m_page = 0;
   this->m_contentTop = 20;
-  for (int& value : this->appearance) {
-    value = 0;
+  for (int index = 0; index < 8; ++index) {
+    this->appearance[index] = 0;
   }
   this->costumeJob = 0;
   this->swapButton = 0;
   this->m_scrollBar = nullptr;
-  for (UIWindow*& value : this->damageSkinButtons) {
-    value = nullptr;
+  for (int index = 0; index < 6; ++index) {
+    this->damageSkinButtons[index] = nullptr;
   }
   this->m_firstSlot = 0;
   this->damageSkinMode = g_session.m_damageSkinMode;
@@ -2508,16 +2508,15 @@ void UINotifyItemObtainWnd::OnProcess() {
 // FUNCTION: fn_12298
 void UIPetTamingDeceiveWnd::OnProcess() {
   this->Invalidate();
-  const int frame = this->m_tick / this->m_delay;
 
   if (this->m_finishTime == 0xFFFFFFFF) {
-    if (this->m_frame == frame && this->m_delay <= this->m_maxDelay) {
+    if (this->m_frame == this->m_tick / this->m_delay && this->m_delay <= this->m_maxDelay) {
       this->m_finishTime = timeGetTime();
     }
     return;
   }
 
-  if (this->m_frame != frame || this->m_delay > this->m_maxDelay) {
+  if (this->m_frame != this->m_tick / this->m_delay || this->m_delay > this->m_maxDelay) {
     return;
   }
 
@@ -4491,7 +4490,7 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
     int segment = this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
     total += segment;
     if (total >= width) {
-      it->second = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
+      it->second = static_cast<const std::string&>(this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0));
       last.erase(it + 1, last.end());
       break;
     }
