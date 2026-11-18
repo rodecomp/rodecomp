@@ -744,7 +744,9 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 }
 
 // OFFSET: 0x009DE640
+// FUNCTION: fn_45710
 // OFFSET: 0x009DE600
+// FUNCTION: fn_45709
 template <class T> __forceinline bool CUIListBox<T>::SelectFirstItem() {
   if (!this->items.empty()) {
     T* first = this->items.front();
@@ -858,6 +860,7 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 }
 
 // OFFSET: 0x009DE680
+// FUNCTION: fn_45711
 void AdventureGuide::CUIQuest::MarkQuest(int questId) {
   const auto& entries = this->questList->items;
   std::vector<CUIQuestInfo*> items(entries.begin(), entries.end());
