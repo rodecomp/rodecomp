@@ -3717,7 +3717,8 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     }
 
     if (kind >= 10 && kind < 20) {
-      this->state.lastPrim->state.slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+      std::int16_t& fadeAlpha = this->state.lastPrim->state.slots[index].alphaT;
+      fadeAlpha = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
     }
 
     if (kind == 10 || kind == 20) {
@@ -3738,11 +3739,7 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
 
-    if (kind == 0 || kind == 10 || kind == 20) {
-      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 30.0f;
-    } else {
-      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 20.0f;
-    }
+    this->state.lastPrim->state.slots[index].maxHeight = kind == 0 || kind == 10 || kind == 20 ? static_cast<float>(index) + 30.0f : static_cast<float>(index) + 20.0f;
 
     if (kind == 10 || kind == 20) {
       this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 30.2f;
@@ -3771,10 +3768,15 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
       this->state.lastPrim->state.slots[index].height[3] = 26.6f;
     }
     this->state.lastPrim->state.slots[index].alphaB = 15;
-    this->state.lastPrim->state.slots[index].alphaT = kind < 20 ? 2415 : 2170;
+    if (kind >= 20) {
+      this->state.lastPrim->state.slots[index].alphaT = 2170;
+    } else {
+      this->state.lastPrim->state.slots[index].alphaT = 2415;
+    }
 
     if (kind >= 10 && kind < 20) {
-      this->state.lastPrim->state.slots[index].alphaT = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
+      std::int16_t& lateAlpha = this->state.lastPrim->state.slots[index].alphaT;
+      lateAlpha = static_cast<std::int16_t>(this->state.duration > 30000 ? 30000 : this->state.duration - 90);
     }
 
     this->state.lastPrim->state.slots[index].height[4] = scale;
