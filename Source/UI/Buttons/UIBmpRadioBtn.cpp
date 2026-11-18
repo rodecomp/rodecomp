@@ -10,6 +10,10 @@ UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0), m_names{std::string(), std::string
   this->m_disabled = false;
 }
 
+// OFFSET: 0x007C6F80
+// FUNCTION: fn_45815
+UIBmpRadioBtn2::~UIBmpRadioBtn2() = default;
+
 // OFFSET: 0x0086C720
 // FUNCTION: fn_11029
 UICaptchaImage::UICaptchaImage() : UIWindow(0) {

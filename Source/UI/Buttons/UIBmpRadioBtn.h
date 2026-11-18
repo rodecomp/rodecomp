@@ -28,12 +28,12 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  // INLINED
+  // FOLDED: fn_09408
   void OnMouseEnter() override {
     this->m_hovered = true;
     this->Invalidate();
   }
-  // INLINED
+  // FOLDED: fn_09409
   void OnMouseLeave() override {
     this->m_hovered = false;
     this->Invalidate();
@@ -63,6 +63,7 @@ public:
   // INLINED
   UIBmpRadioBtn2() : UIBmpRadioBtn() {
   }
+  __declspec(noinline) ~UIBmpRadioBtn2() override;
   void Invalidate() override;
   void OnMouseEnter() override;
   void OnMouseLeave() override;
