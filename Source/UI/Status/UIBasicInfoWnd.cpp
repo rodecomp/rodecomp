@@ -76,6 +76,16 @@ UIBasicInfoWnd::UIBasicInfoWnd() : UIFrameWnd(0) {
   }
 }
 
+// OFFSET: 0x00997350
+// FUNCTION: fn_45770
+UIBarGraphPlayerAP::~UIBarGraphPlayerAP() {
+}
+
+// OFFSET: 0x009973A0
+// FUNCTION: fn_45771
+UIBasicInfoWnd::~UIBasicInfoWnd() {
+}
+
 // OFFSET: 0x00998190
 // FUNCTION: fn_13489
 bool UIBasicInfoWnd::NeedsFrameRefresh() {

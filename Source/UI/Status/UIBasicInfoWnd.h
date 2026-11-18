@@ -19,6 +19,7 @@ enum BasicInfoButtonId : int {
 class UIBasicInfoWnd : public UIFrameWnd {
 public:
   UIBasicInfoWnd();
+  __declspec(noinline) ~UIBasicInfoWnd() override;
   bool NeedsFrameRefresh() override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;

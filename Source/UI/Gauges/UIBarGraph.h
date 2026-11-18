@@ -113,6 +113,7 @@ class UIBarGraphPlayerAP : public UIBarGraphPlayer {
 public:
   explicit UIBarGraphPlayerAP() : UIBarGraphPlayer() {
   }
+  __declspec(noinline) ~UIBarGraphPlayerAP() override;
 
   void Paint() override;
 };
