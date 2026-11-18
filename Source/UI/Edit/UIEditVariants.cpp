@@ -880,6 +880,8 @@ void UIEditCtrl4::SetPlaceholderColor(std::uint32_t color) {
 UIEditCtrl5::UIEditCtrl5() : UIEditCtrl4() {
 }
 
+// OFFSET: 0x00851770
+// FUNCTION: fn_45647
 UIEditCtrl5::~UIEditCtrl5() = default;
 
 // OFFSET: 0x00864140
