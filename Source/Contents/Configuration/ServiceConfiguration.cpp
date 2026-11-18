@@ -572,13 +572,14 @@ void ReadClientInfo(XmlNode* clientInfo) {
 
   XmlNode* loading = clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("loading", 0x1D6D75EDE7CD311FULL));
   if (loading) {
-    for (XmlNode* image = loading->FindChild(OBFUSCATE_BYTES_TEXT("image", 0x3375B1C7DBB5FD55ULL)); image;
-         image = image->FindSibling(OBFUSCATE_BYTES_TEXT("image", 0xD98F03A52D35636DULL))) {
+    XmlNode* image = loading->FindChild(OBFUSCATE_BYTES_TEXT("image", 0x3375B1C7DBB5FD55ULL));
+    while (image) {
       char path[256];
       std::sprintf(path,
                    OBFUSCATE_TEXT("유저인터페이스\\%s", 0x0F0F8B6B8F9D19D1ULL),
                    image->Text().c_str());
       g_loadingScreens.push_back(std::string(path));
+      image = image->FindSibling(OBFUSCATE_BYTES_TEXT("image", 0xD98F03A52D35636DULL));
     }
   }
 
