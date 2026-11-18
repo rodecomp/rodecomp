@@ -32,6 +32,18 @@ AnimatedModelFrame::~AnimatedModelFrame() {
   }
 }
 
+// OFFSET: 0x00759270
+// FUNCTION: fn_45852
+void AnimatedModelFrame::AllocateVertices(int count) {
+  this->vertices = new AnimatedModelVertex[count];
+}
+
+// OFFSET: 0x00759200
+// FUNCTION: fn_45851
+void AnimatedModelFrame::AllocateTextureVertices(int count) {
+  this->textureVertices = new ModelTextureVertex[count];
+}
+
 // INLINED
 AnimatedModelNode::AnimatedModelNode() {
   this->textures = nullptr;
@@ -200,7 +212,7 @@ bool C3dAnimModelRes::Load(const char* name) {
 
     for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
       AnimatedModelFrame& frame = node->frames[frameIndex];
-      frame.vertices = new std::array<float, 3>[node->vertexCount]{};
+      frame.AllocateVertices(node->vertexCount);
       file.Read(node->frames[frameIndex].vertices, node->vertexCount * 12);
     }
 
@@ -209,12 +221,12 @@ bool C3dAnimModelRes::Load(const char* name) {
 
     if (node->sharedTextureVertices) {
       AnimatedModelFrame& frame = node->frames[0];
-      frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
+      frame.AllocateTextureVertices(node->textureVertexCount);
       file.Read(node->frames[0].textureVertices, node->textureVertexCount * 12);
     } else {
       for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
         AnimatedModelFrame& frame = node->frames[frameIndex];
-        frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
+        frame.AllocateTextureVertices(node->textureVertexCount);
         file.Read(node->frames[frameIndex].textureVertices, node->textureVertexCount * 12);
       }
     }
@@ -283,6 +295,17 @@ void C3dGrannyModelRes::Unload() {
   this->Release();
 }
 
+// OFFSET: 0x00759230
+// FUNCTION: fn_45853
+void C3dGrannyModelRes::InitializeTexture(GrannyTextureEntry& entry, const granny_texture* texture) {
+  entry.name = texture->fromFileName;
+  if (texture->textureType == 0 && texture->imageCount == 1) {
+    entry.texture = this->CreateTexture(texture, 0);
+  } else {
+    ShowErrorDialog("This sample only works with single-image : ColorMapTextureType textures", 0);
+  }
+}
+
 // OFFSET: 0x00753620
 // FUNCTION: fn_07963
 bool C3dGrannyModelRes::Load(const char* name) {
@@ -339,15 +362,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
 
       for (int index = 0; index < this->textureCount; ++index) {
         this->textures[index].texture = nullptr;
-        const granny_texture* texture = info->textures[index];
-        GrannyTextureEntry& entry = this->textures[index];
-        entry.name = texture->fromFileName;
-
-        if (texture->textureType == 0 && texture->imageCount == 1) {
-          entry.texture = this->CreateTexture(texture, 0);
-        } else {
-          ShowErrorDialog("This sample only works with single-image : ColorMapTextureType textures", 0);
-        }
+        this->InitializeTexture(this->textures[index], info->textures[index]);
       }
 
       this->modelCount = info->modelCount;

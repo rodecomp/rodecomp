@@ -241,6 +241,7 @@ public:
   GrannyTextureEntry* FindMaterialTexture(const granny_material* material) const;
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);
   CTexture* CreateTexture(const granny_texture* texture, int option);
+  void InitializeTexture(GrannyTextureEntry& entry, const granny_texture* texture);
   void FreeControl(granny_control* control);
   granny_control* PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount);
   bool ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const;

@@ -947,10 +947,10 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   case 1: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
-      const std::array<float, 3>* vertices = this->frames[frame].vertices;
-      const std::array<float, 3>& v0 = vertices[face.vertices[0]];
-      const std::array<float, 3>& v1 = vertices[face.vertices[1]];
-      const std::array<float, 3>& v2 = vertices[face.vertices[2]];
+      const AnimatedModelVertex* vertices = this->frames[frame].vertices;
+      const std::array<float, 3>& v0 = vertices[face.vertices[0]].position;
+      const std::array<float, 3>& v1 = vertices[face.vertices[1]].position;
+      const std::array<float, 3>& v2 = vertices[face.vertices[2]].position;
       const float x2 = v2[0] * matrix[0] + v2[1] * matrix[3] + v2[2] * matrix[6] + matrix[9];
       const float y2 = v2[0] * matrix[1] + v2[1] * matrix[4] + v2[2] * matrix[7] + matrix[10];
       const float z2 = v2[0] * matrix[2] + v2[1] * matrix[5] + v2[2] * matrix[8] + matrix[11];
@@ -984,10 +984,10 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   case 2: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
-      const std::array<float, 3>* vertices = this->frames[frame].vertices;
-      const std::array<float, 3>& v0 = vertices[face.vertices[0]];
-      const std::array<float, 3>& v1 = vertices[face.vertices[1]];
-      const std::array<float, 3>& v2 = vertices[face.vertices[2]];
+      const AnimatedModelVertex* vertices = this->frames[frame].vertices;
+      const std::array<float, 3>& v0 = vertices[face.vertices[0]].position;
+      const std::array<float, 3>& v1 = vertices[face.vertices[1]].position;
+      const std::array<float, 3>& v2 = vertices[face.vertices[2]].position;
       const float x2 = v2[0] * matrix[0] + v2[1] * matrix[3] + v2[2] * matrix[6] + matrix[9];
       const float y2 = v2[0] * matrix[1] + v2[1] * matrix[4] + v2[2] * matrix[7] + matrix[10];
       const float z2 = v2[0] * matrix[2] + v2[1] * matrix[5] + v2[2] * matrix[8] + matrix[11];

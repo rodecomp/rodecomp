@@ -11,13 +11,23 @@ struct AnimatedModelFace {
   /* 0014 */ int smoothGroup;
 };
 
+struct AnimatedModelVertex {
+  // INLINED
+  AnimatedModelVertex() : position{0.0f, 0.0f, 0.0f} {
+  }
+
+  /* 0000 */ std::array<float, 3> position;
+};
+
 struct AnimatedModelFrame {
   AnimatedModelFrame();
   ~AnimatedModelFrame();
+  void AllocateVertices(int count);
+  void AllocateTextureVertices(int count);
   AnimatedModelFrame(const AnimatedModelFrame&) = delete;
   AnimatedModelFrame& operator=(const AnimatedModelFrame&) = delete;
 
-  /* 0000 */ std::array<float, 3>* vertices;
+  /* 0000 */ AnimatedModelVertex* vertices;
   /* 0004 */ ModelTextureVertex* textureVertices;
 };
 
@@ -86,6 +96,7 @@ public:
 };
 
 static_assert(sizeof(AnimatedModelFace) == 24);
+static_assert(sizeof(AnimatedModelVertex) == 12);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(AnimatedModelFrame) == 8);
