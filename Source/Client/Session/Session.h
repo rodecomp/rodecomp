@@ -828,6 +828,7 @@ public:
   void SetPartyLeader(std::uint32_t accountId, int leader);
   int RotateShortcut(int index, int bank) const;
   void AssignShortcut(unsigned char type, std::uint32_t id, int level, int slot, int bank);
+  int FindNormalItemSlot(std::uint32_t id) const;
   void AssignItemShortcut(std::uint32_t id, int slot);
   void ClearAdditionalShortcutSkills();
   bool IsPetAccessory(int itemId);
@@ -1235,6 +1236,7 @@ public:
   float GetNpcLocationRadius(int job, bool riding);
   void ClearStoreSearchResults();
   int GetRidingJob(int job);
+  int GetJobMountType(int job);
   void InitNpcLocationRadius();
   int GetSpriteJob(int job, int costumeJob, bool spriteIndex);
   int HasRequiredItems() const;

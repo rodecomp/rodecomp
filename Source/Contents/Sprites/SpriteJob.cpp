@@ -2,6 +2,38 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobNames.h"
 
+// OFFSET: 0x00E2F770
+// FUNCTION: fn_45609
+int CSession::GetJobMountType(int job) {
+  if (this->GetRidingJob(this->BaseJob(job)) == job) {
+    return 1;
+  }
+
+  switch (job) {
+  case JT_CHICKEN:
+  case JT_CHICKEN2:
+  case JT_CHICKEN_H:
+  case JT_CHICKEN2_H:
+  case JT_CHICKEN_B:
+  case JT_CHICKEN2_B:
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_RUNE_CHICKEN_B:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_WOLF_RANGER_B:
+  case JT_WOLF_WINDHAWK:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    return 2;
+  default:
+    return 0;
+  }
+}
+
 // OFFSET: 0x00E2EE70
 // FUNCTION: fn_24152
 int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
@@ -15,36 +47,7 @@ int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
     return job;
   }
 
-  int mount;
-  if (g_session.GetRidingJob(g_session.BaseJob(job)) == job) {
-    mount = 1;
-  } else {
-    switch (job) {
-    case JT_CHICKEN:
-    case JT_CHICKEN2:
-    case JT_CHICKEN_H:
-    case JT_CHICKEN2_H:
-    case JT_CHICKEN_B:
-    case JT_CHICKEN2_B:
-    case JT_RUNE_CHICKEN:
-    case JT_RUNE_CHICKEN_H:
-    case JT_RUNE_CHICKEN_B:
-    case JT_ROYAL_CHICKEN:
-    case JT_ROYAL_CHICKEN_H:
-    case JT_ROYAL_CHICKEN_B:
-    case JT_WOLF_RANGER:
-    case JT_WOLF_RANGER_H:
-    case JT_WOLF_RANGER_B:
-    case JT_WOLF_WINDHAWK:
-    case JT_DRAGON_KNIGHT_CHICKEN:
-    case JT_IMPERIAL_GUARD_CHICKEN:
-      mount = 2;
-      break;
-    default:
-      mount = 0;
-      break;
-    }
-  }
+  const int mount = g_session.GetJobMountType(job);
 
   switch (costumeJob) {
   case JT_RUNE_KNIGHT_2ND:

@@ -107,6 +107,17 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
   modeEvents->SendMsg(MM_SHORTCUT_KEY_CHANGE, destination, bank, 0, 0);
 }
 
+// OFFSET: 0x00E2F6E0
+// FUNCTION: fn_45608
+int CSession::FindNormalItemSlot(std::uint32_t id) const {
+  for (int slot = 0; slot < 9; ++slot) {
+    if (id == this->m_normalItemSlots[slot].itemId) {
+      return slot;
+    }
+  }
+  return -1;
+}
+
 // OFFSET: 0x00E492D0
 // FUNCTION: fn_24233
 void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
@@ -115,13 +126,7 @@ void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
     return;
   }
 
-  int found = -1;
-  for (int index = 0; index < 9; ++index) {
-    if (id == this->m_normalItemSlots[index].itemId) {
-      found = index;
-      break;
-    }
-  }
+  const int found = this->FindNormalItemSlot(id);
 
   if (found >= 0) {
     this->m_normalItemSlots[found] = {};
