@@ -73,6 +73,13 @@ void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int 
     const std::uint8_t red = input[index * 4];
     const std::uint8_t green = input[index * 4 + 1];
     const std::uint8_t blue = input[index * 4 + 2];
-    output[index] = red >= 254 && green < 4 && blue >= 254 ? 1057u : ((blue | 0x40000u) >> 3) | (4 * ((green & 0xF8u) | (32 * (red & 0xF8u))));
+    const std::uint32_t g = green;
+    const std::uint32_t r = red;
+    const std::uint32_t b = blue;
+    if (red >= 254 && green < 4 && blue >= 254) {
+      output[index] = 1057;
+    } else {
+      output[index] = ((b | 0x40000u) >> 3) | (4 * ((g & 0xF8u) | (32 * (r & 0xF8u))));
+    }
   }
 }
