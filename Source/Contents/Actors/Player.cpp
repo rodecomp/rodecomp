@@ -4776,7 +4776,7 @@ void CPc::SendMsg(
       this->gaugeWindow = nullptr;
     }
     break;
-  case AM_UPDATEGAGE:
+  case AM_UPDATEGAGE: {
     if (!this->gaugeWindow) {
       this->gaugeWindow = new UIPcGage();
       this->gaugeWindow->SetSize(60, 5);
@@ -4784,8 +4784,10 @@ void CPc::SendMsg(
     }
     this->gaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
     this->gaugeWindow->SetLimits(0, 0);
-    this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    const int y = ScaleByScreenHeight(12) + this->render.screenY;
+    this->gaugeWindow->Move(this->render.screenX - 30, y);
     break;
+  }
   case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
@@ -5198,7 +5200,7 @@ void CGrannyPc::SendMsg(
       this->gaugeWindow = nullptr;
     }
     break;
-  case AM_UPDATEGAGE:
+  case AM_UPDATEGAGE: {
     if (!this->gaugeWindow) {
       this->gaugeWindow = new UIPcGage();
       this->gaugeWindow->SetSize(60, 5);
@@ -5206,8 +5208,10 @@ void CGrannyPc::SendMsg(
     }
     this->gaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
     this->gaugeWindow->SetLimits(0, 0);
-    this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
+    const int y = ScaleByScreenHeight(12) + this->render.screenY;
+    this->gaugeWindow->Move(this->render.screenX - 30, y);
     break;
+  }
   case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);

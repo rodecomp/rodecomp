@@ -764,7 +764,7 @@ bool CGameActor::UpdateFadeOut() {
 
 // OFFSET: 0x00CACFE0
 // FUNCTION: fn_21050
-int __stdcall MountedJob(int job, std::uint32_t flags) {
+int CGameActor::MountedJob(int job, std::uint32_t flags) {
   if (job == JT_RUNE_KNIGHT) {
     if (IsRidingGreenDragon(flags)) {
       return JT_RUNE_CHICKEN;
