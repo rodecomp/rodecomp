@@ -111,6 +111,22 @@ void UIRoMapWnd::OnRBtnUp(int, int) {
   this->selectedMapIndex = 0;
 }
 
+// OFFSET: 0x00916DD0
+// FUNCTION: fn_45684
+bool UIRoMapWnd::PopulateFieldNames(int x, int y) {
+  this->fieldNames.clear();
+
+  unsigned int mapIndex = 0;
+  if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, x, y)) {
+    this->selectedMapIndex = mapIndex;
+    for (CWorldViewField* field : map->fields) {
+      this->fieldNames.push_back(field->fieldName);
+    }
+  }
+
+  return !this->fieldNames.empty();
+}
+
 // OFFSET: 0x00919B50
 // FUNCTION: fn_12598
 void UIRoMapWnd::DrawHoverTooltip() {
@@ -907,12 +923,9 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
   return false;
 }
 
-// INLINED
-__forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) {
-  if (!this->UpdateRoute(wnd->selectedRecord)) {
-    return;
-  }
-
+// OFFSET: 0x00932BA0
+// FUNCTION: fn_45685
+__forceinline void CFlyingShipRouteInfo::UpdateAnimation(UIRoMapWnd* wnd, float elapsed) {
   const int last = static_cast<int>(this->entries.size()) - 1;
   if (last > 0) {
     int index = this->segmentIndex;
@@ -936,8 +949,24 @@ __forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) 
     this->travelledDistance = elapsed * 200.0f + this->travelledDistance;
     this->segmentProgress = this->travelledDistance / this->segmentLength;
   }
+}
 
+// INLINED
+__forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) {
+  if (!this->UpdateRoute(wnd->selectedRecord)) {
+    return;
+  }
+
+  this->UpdateAnimation(wnd, elapsed);
   this->Draw(wnd);
+}
+
+// OFFSET: 0x00940400
+// FUNCTION: fn_45686
+void UIRoMapWnd::UpdateFlyingShipRoute(CFlyingShipRouteInfo* route, float elapsed) {
+  if (this != nullptr) {
+    route->Update(this, elapsed);
+  }
 }
 
 // OFFSET: 0x0091B0A0
@@ -961,6 +990,7 @@ void UIRoMapWnd::DrawLevelAreas() {
 }
 
 // OFFSET: 0x0091B010
+// FUNCTION: fn_45665
 void UIRoMapWnd::DrawWorldSelection() {
   if (!g_worldViewMgr.selection.name.empty() && g_worldViewMgr.currentWorld == g_worldViewMgr.selection.worldIndex) {
     const WorldViewArea area = g_worldViewMgr.selection.area;

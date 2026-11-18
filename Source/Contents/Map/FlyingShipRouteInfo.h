@@ -34,6 +34,7 @@ public:
   void Draw(UIRoMapWnd* wnd);
   void BuildRoute(const std::vector<std::string>& mapNames);
   __declspec(noinline) bool UpdateRoute(WorldViewRecord* record);
+  void UpdateAnimation(UIRoMapWnd* wnd, float elapsed);
   void Update(UIRoMapWnd* wnd, float elapsed);
 
   /* 0004 */ std::vector<RoMapMarker> entries;
