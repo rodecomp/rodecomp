@@ -6824,7 +6824,11 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       if (this->buyingShop) {
         width = b <= 426 ? b : 426;
       } else {
-        width = b <= 320 ? b : 320;
+        if (b > 320) {
+          width = 320;
+        } else {
+          width = b;
+        }
       }
       int height = c <= 336 ? c : 336;
       if (width < 232) {
