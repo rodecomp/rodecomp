@@ -145,19 +145,20 @@ HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
     return 0x8000000e;
   }
 
-  if (backend == 0) {
+  int type = backend;
+  if (type == 0) {
     switch (g_session.DefaultRenderBackend()) {
     case 1:
-      backend = 1;
+      type = 1;
       break;
     default:
-      backend = 2;
+      type = 2;
       break;
     }
   }
 
   CRenderSystemBase* renderSystem;
-  switch (backend) {
+  switch (type) {
   case 1:
     renderSystem = new CRenderSystemDX7();
     break;
