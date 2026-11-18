@@ -658,7 +658,8 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
   this->DrawOutlinedText(marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
 
-// INLINED
+// OFFSET: 0x009106B0
+// FUNCTION: fn_45720
 inline CKafraMoveMapServiceInfo::CKafraMoveMapServiceInfo() : blend(0.0f) {
   g_session.m_hotkeyScript->Call("ReadKafraMoveMapServiceInfo", "");
   g_session.m_hotkeyScript->Call("ReadKafraMiniMapPosInfo", "");
