@@ -544,7 +544,7 @@ void UIRodexComposeWnd::Paint() {
     int diff = tagCtrl->linkedText.size() - tagCtrl->taggedText.size();
     this->m_contents->tagTextLength = std::max(0, diff);
     if (tagCtrl->previousTagCount == 0) {
-      delete this->m_tagCtrl;
+      delete tagCtrl;
       this->m_tagCtrl = nullptr;
     }
   }
