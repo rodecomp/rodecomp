@@ -281,22 +281,20 @@ void FetchProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackResu
       item.GetIdDisplayName(name, capacity, 0);
       item.SetName(name);
       item.identified = 1;
-      if (product.GetPurchaseLimitCount() != 0 && product.GetSaleBeginDate() != 0 && product.GetSaleEndDate() != 0) {
-        item.bindOnEquip = 8;
-        const int guidQuantity = product.GetGuidQuantity();
-        item.saleData.purchaseCount = product.GetPurchaseLimitCount() - guidQuantity;
-        item.quantity = product.GetPurchaseLimitCount();
-        item.saleData.startTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
-        item.saleData.endTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
-        g_session.AddInventoryCategoryItem(item, 9);
+      if (product.GetPurchaseLimitCount() == 0 || 0 == product.GetSaleBeginDate() || 0 == product.GetSaleEndDate()) {
+        continue;
       }
+      item.bindOnEquip = 8;
+      const int guidQuantity = product.GetGuidQuantity();
+      item.saleData.purchaseCount = product.GetPurchaseLimitCount() - guidQuantity;
+      item.quantity = product.GetPurchaseLimitCount();
+      item.saleData.startTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+      item.saleData.endTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
+      g_session.AddInventoryCategoryItem(item, 9);
     }
   } else {
-    constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0x8B3FEB5B8BD5C3C3ULL);
-    const auto& captionSource = captionSourceText.data;
-    const char* caption = OBFUSCATE_DECRYPT(0x8B3FEB5B8BD5C3C3ULL, captionSource);
-    constexpr std::array<char, 56> messageSource = OBFUSCATE_SOURCE("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF7530137154D8FE5ULL);
-    const char* message = OBFUSCATE_DECRYPT(0xF7530137154D8FE5ULL, messageSource);
+    const char* caption = OBFUSCATE_TEXT("메시지", 0x8B3FEB5B8BD5C3C3ULL);
+    const char* message = OBFUSCATE_ARRAY_TEXT("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF7530137154D8FE5ULL, char);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
