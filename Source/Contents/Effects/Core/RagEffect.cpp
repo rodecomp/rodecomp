@@ -17694,7 +17694,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].flag1[2] = 0;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
-  } else if (kind == 10 || kind == 11) {
+  } else if (kind >= 10 && kind <= 11) {
     this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 70.0f : this->state.param[0] * 0.7f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 10;
@@ -17724,7 +17724,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].flag1[2] = 15;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
-  } else if (kind == 16 || kind == 17) {
+  } else if (kind >= 16 && kind <= 17) {
     this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 9.5f : this->state.param[0] * 0.9f;
     if (kind == 17) {
       this->state.lastPrim->state.slots[0].distance *= 0.85f;
