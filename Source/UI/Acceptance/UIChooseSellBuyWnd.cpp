@@ -4495,7 +4495,7 @@ void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const F
 // OFFSET: 0x008D8EE0
 // FUNCTION: fn_12132
 void UIFrameWnd::SplitHighlightText(
-  const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
+  const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<const char*>& breaks,
   std::vector<std::pair<int, std::string>>& segments
 ) {
   if (!highlight) {
@@ -4503,7 +4503,7 @@ void UIFrameWnd::SplitHighlightText(
     return;
   }
 
-  std::vector<char*> points = breaks;
+  std::vector<const char*> points = breaks;
   points.erase(std::unique(points.begin(), points.end()), points.end());
   auto it = std::find(points.begin(), points.end(), highlight);
   if (it == points.end()) {
@@ -4538,7 +4538,7 @@ void UIFrameWnd::SplitHighlightText(
 // OFFSET: 0x0090AB10
 // FUNCTION: fn_12416
 int UIWindow::DrawItemNameSegments(
-  int x, int y, int width, const std::vector<char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
+  int x, int y, int width, const std::vector<const char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
   std::uint32_t color, int, int lineHeight
 ) {
   auto it = breaks.begin();
@@ -9381,7 +9381,7 @@ void UINotifyItemObtainWnd::Paint() {
   char text[256];
   char* highlight = nullptr;
   char* cursor = text;
-  std::vector<char*> breaks;
+  std::vector<const char*> breaks;
   int remaining = sizeof(text);
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
@@ -11753,7 +11753,7 @@ static __forceinline void AppendItemNameText(char*& cursor, int& remaining, cons
 // OFFSET: 0x008DA690
 // FUNCTION: fn_12148
 int UIFrameWnd::BuildItemName(
-  const ITEM_INFO* item, int* creatorColor, std::vector<char*>* breaks, char** cursor, int* remaining, char** creator,
+  const ITEM_INFO* item, int* creatorColor, std::vector<const char*>* breaks, char** cursor, int* remaining, char** creator,
   char splitCreator, char withSlots
 ) {
   if (breaks->capacity() < 5) {
@@ -12321,7 +12321,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12415
 void UIFrameWnd::DrawItemNameText(
   const void* info, const char* text, const char* highlight, std::uint32_t color, std::uint32_t highlightColor, int width,
-  const std::vector<char*>* breaks
+  const std::vector<const char*>* breaks
 ) {
   struct ItemNameTextInfo {
     int x;

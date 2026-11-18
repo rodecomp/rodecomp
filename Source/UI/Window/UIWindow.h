@@ -194,7 +194,7 @@ public:
   void WrapLinkText(int* kind, std::vector<std::string>* lines, const std::string& text);
   void WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<bool>* breaks, int width);
   int DrawItemNameSegments(
-    int x, int y, int width, const std::vector<char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
+    int x, int y, int width, const std::vector<const char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
     std::uint32_t color, int unused, int lineHeight
   );
   void DrawBitmapScaled(int x, int y, int width, int height, const CBitmapRes* bitmap, int option);

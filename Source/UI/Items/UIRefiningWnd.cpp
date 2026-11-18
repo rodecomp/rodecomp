@@ -903,7 +903,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
 
     this->item = found;
     int highlightColor;
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     char* highlight = nullptr;
@@ -961,7 +961,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
 
     this->nextItem = found;
     int highlightColor;
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     char* cursor = nullptr;

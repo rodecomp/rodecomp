@@ -287,7 +287,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   this->ingredientId = id;
 
   {
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     char name[0x104];
     std::memset(name, 0, sizeof(name));
     char* highlight = nullptr;
@@ -547,7 +547,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
 __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uint32_t identity) {
   this->item = g_session.LookupClientItemByIdentity(identity);
 
-  std::vector<char*> breaks;
+  std::vector<const char*> breaks;
   char name[0x104];
   std::memset(name, 0, sizeof(name));
   char* highlight = nullptr;
@@ -653,7 +653,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       ITEM_INFO owned = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
       if (owned.identity[1] > 0) {
         {
-          std::vector<char*> breaks;
+          std::vector<const char*> breaks;
           char name[260];
           std::memset(name, 0, sizeof(name));
           int highlightColor;

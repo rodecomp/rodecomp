@@ -554,7 +554,7 @@ void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
   this->item = g_session.LookupClientItemByIdentity(id);
 
   {
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     char name[260];
     std::memset(name, 0, sizeof(name));
     char* highlight = nullptr;

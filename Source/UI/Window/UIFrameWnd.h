@@ -41,16 +41,16 @@ public:
   int DrawItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int height);
   int DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int lineHeight);
   int BuildItemName(
-    const ITEM_INFO* item, int* highlightColor, std::vector<char*>* breaks, char** cursor, int* remaining, char** highlight, char withSlots,
+    const ITEM_INFO* item, int* highlightColor, std::vector<const char*>* breaks, char** cursor, int* remaining, char** highlight, char withSlots,
     char withOptions
   );
   void DrawItemNameText(
     const void* info, const char* text, const char* highlight, std::uint32_t color, std::uint32_t highlightColor, int width,
-    const std::vector<char*>* breaks
+    const std::vector<const char*>* breaks
   );
   int DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uint32_t color, int unused, int unused2, char option);
   void SplitHighlightText(
-    const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
+    const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<const char*>& breaks,
     std::vector<std::pair<int, std::string>>& segments
   );
 

@@ -96,7 +96,7 @@ void UIEquipWnd::DrawDamageSkinPage() {
 // OFFSET: 0x008D13E0
 // FUNCTION: fn_12093
 int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uint32_t color, int, int, char option) {
-  std::vector<char*> breaks;
+  std::vector<const char*> breaks;
   char buffer[256];
   std::memset(buffer, 0, sizeof(buffer));
   char* highlight = nullptr;
@@ -105,12 +105,12 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 0, option);
 
-  char* text = buffer;
+  const char* text = buffer;
   int offset = 0;
   for (auto it = breaks.begin(); it != breaks.end(); ++it) {
     std::string fitted = this->FitTextToWidth(std::string(text), this->geometry.width - x - 10);
     bool truncated;
-    char* end;
+    const char* end;
     if (std::strcmp(fitted.c_str(), text) != 0) {
       truncated = true;
       strcpy_s(buffer, sizeof(buffer), fitted.c_str());
@@ -161,7 +161,7 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   char buffer[256] = {};
   char* highlight = nullptr;
   char* cursor = buffer;
-  std::vector<char*> breaks;
+  std::vector<const char*> breaks;
   int remaining = sizeof(buffer);
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
@@ -183,7 +183,7 @@ int UIFrameWnd::DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* it
   char buffer[256] = {};
   char* highlight = nullptr;
   char* cursor = buffer;
-  std::vector<char*> breaks;
+  std::vector<const char*> breaks;
   int remaining = sizeof(buffer);
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);

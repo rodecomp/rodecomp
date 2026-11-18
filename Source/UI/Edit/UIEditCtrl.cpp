@@ -10324,7 +10324,7 @@ bool UIItemStoreFindWnd::UpdateItemNames() {
     char text[256];
     char* highlight = nullptr;
     char* cursor = text;
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     ITEM_INFO item = *it;
     int remaining = 0x100;
     int highlightColor;
@@ -10345,7 +10345,7 @@ bool UIItemStoreSubWnd::UpdateItemNames2() {
     char text[256];
     char* highlight = nullptr;
     char* cursor = text;
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     ITEM_INFO item = *it;
     int remaining = 0x100;
     int highlightColor;
@@ -10366,7 +10366,7 @@ bool UIItemStoreWnd::UpdateItemNames() {
     char text[256];
     char* highlight = nullptr;
     char* cursor = text;
-    std::vector<char*> breaks;
+    std::vector<const char*> breaks;
     ITEM_INFO item = *it;
     int remaining = 0x100;
     int highlightColor;

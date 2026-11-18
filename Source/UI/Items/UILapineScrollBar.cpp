@@ -284,7 +284,7 @@ bool UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
     ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
     item.quantity = quantity;
     {
-      std::vector<char*> breaks;
+      std::vector<const char*> breaks;
       char name[260];
       std::memset(name, 0, sizeof(name));
       char* highlight = nullptr;
