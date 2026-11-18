@@ -126,14 +126,16 @@ void CRotateLineEffect::OnProcess() {
       const float sine = g_sinTable[index];
       const int tilt = particle->phaseParameter;
       const float tiltCosine = g_cosTable[tilt];
+      const float offsetX = tiltCosine * cosine;
+      const float offsetZ = tiltCosine * sine;
       EffectPoint points[2];
       const float height = particle->animationParameters[0];
       points[0].x = cosine * particle->scale;
       points[0].y = -particle->animationParameter;
       points[0].z = sine * particle->scale;
-      points[1].x = points[0].x + tiltCosine * cosine;
+      points[1].x = points[0].x + offsetX;
       points[1].y = height - g_sinTable[tilt] + points[0].y;
-      points[1].z = points[0].z + tiltCosine * sine;
+      points[1].z = points[0].z + offsetZ;
 
       particle->vertices[3].x = points[0].x;
       particle->vertices[3].y = points[0].y;
