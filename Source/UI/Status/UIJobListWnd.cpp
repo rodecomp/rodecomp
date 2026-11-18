@@ -157,28 +157,29 @@ void UIJobListWnd::RefreshJobs() {
 
   int index = 0;
   for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
-    this->m_jobChecks[index] = new UICheckBox();
-    this->m_jobChecks[index]->SetSize(120, 15);
+    UICheckBox*& checkbox = this->m_jobChecks[index];
+    checkbox = new UICheckBox();
+    checkbox->SetSize(120, 15);
     const int job = it->first;
     if (job == -1) {
       continue;
     }
 
     if (job - 1 < 4) {
-      this->m_jobChecks[index]->SetImages(
+      checkbox->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
         LookupMessage(job + 0x6AF)
       );
     } else {
-      this->m_jobChecks[index]->SetImages(
+      checkbox->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
         LookupMessage(job + 0x658)
       );
     }
 
-    this->m_jobChecks[index]->Move(10, (index + 1) * 25);
-    this->m_jobChecks[index]->SetChecked(it->second);
-    this->AddChild(this->m_jobChecks[index]);
+    checkbox->Move(10, (index + 1) * 25);
+    checkbox->SetChecked(it->second);
+    this->AddChild(checkbox);
   }
 }
 
