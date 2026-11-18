@@ -21,6 +21,9 @@ struct SnapRectangle {
   void Set(int x, int y, int width, int height);
   void ReverseEdges();
   void Snap(const SnapRectangle& other, int& dx, int& dy) const;
+
+private:
+  bool Overlaps(int firstBegin, int firstEnd, int secondBegin, int secondEnd) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

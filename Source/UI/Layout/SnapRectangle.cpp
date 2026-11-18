@@ -8,11 +8,6 @@
 
 namespace {
   // INLINED
-  bool Overlaps(int a, int b, int c, int d) {
-    return (c >= a && c <= b) || (d >= a && d <= b) || (a >= c && a <= d) || (b >= c && b <= d);
-  }
-
-  // INLINED
   bool SnapEdge(int edge, int value, int& offset) {
     if (value < edge - 10 || value > edge + 10) {
       return false;
@@ -20,6 +15,13 @@ namespace {
     offset = edge - value;
     return true;
   }
+}
+
+// OFFSET: 0x009B50C0
+// FUNCTION: fn_45773
+__forceinline bool SnapRectangle::Overlaps(int firstBegin, int firstEnd, int secondBegin, int secondEnd) const {
+  return (secondBegin >= firstBegin && secondBegin <= firstEnd) || (secondEnd >= firstBegin && secondEnd <= firstEnd) ||
+         (firstBegin >= secondBegin && firstBegin <= secondEnd) || (firstEnd >= secondBegin && firstEnd <= secondEnd);
 }
 
 // OFFSET: 0x009B5250
@@ -55,7 +57,7 @@ void SnapRectangle::ReverseEdges() {
 void SnapRectangle::Snap(const SnapRectangle& other, int& dx, int& dy) const {
   dx = 0;
   dy = 0;
-  if (Overlaps(this->left.begin, this->left.end, other.right.begin, other.right.end)) {
+  if (this->Overlaps(this->left.begin, this->left.end, other.right.begin, other.right.end)) {
     if (SnapEdge(this->left.position, other.right.position, dx) || SnapEdge(this->right.position, other.left.position, dx)) {
       if (!SnapEdge(this->top.position, other.top.position, dy)) {
         SnapEdge(this->bottom.position, other.bottom.position, dy);
@@ -63,7 +65,7 @@ void SnapRectangle::Snap(const SnapRectangle& other, int& dx, int& dy) const {
     }
   }
 
-  if (Overlaps(this->top.begin, this->top.end, other.bottom.begin, other.bottom.end)) {
+  if (this->Overlaps(this->top.begin, this->top.end, other.bottom.begin, other.bottom.end)) {
     if (SnapEdge(this->top.position, other.bottom.position, dy) || SnapEdge(this->bottom.position, other.top.position, dy)) {
       if (!SnapEdge(this->left.position, other.left.position, dx)) {
         SnapEdge(this->right.position, other.right.position, dx);
