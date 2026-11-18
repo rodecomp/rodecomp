@@ -4359,7 +4359,8 @@ int GetCategoryJob(lua_State* state) {
     job = GetFirstJob(g_session.m_job);
     break;
   case 2:
-    switch (g_session.m_job) {
+    job = g_session.m_job;
+    switch (job) {
     case JT_NOVICE:
     case JT_NOVICE_H:
     case JT_NOVICE_B:
@@ -4565,9 +4566,6 @@ int GetCategoryJob(lua_State* state) {
     case JT_KARNOS_B:
     case JT_ALITEA:
       job = JT_DRUID;
-      break;
-    default:
-      job = g_session.m_job;
       break;
     }
     break;
@@ -4795,12 +4793,12 @@ int GetWeaponClass(lua_State* state) {
 
   EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
   EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
-  int value = 0;
+  int value;
   if (wearable != nullptr) {
     const int result = wearable->GetValue(1);
-    if (result != -1) {
-      value = result;
-    }
+    value = result != -1 ? result : 0;
+  } else {
+    value = 0;
   }
   lua_pushnumber(state, value);
   return 1;
@@ -5848,7 +5846,8 @@ int GetEquipGrade(lua_State* state) {
   int grade = 0;
   if (args[0] != 0) {
     const int mask = GetEquipLocationMask(args[0]);
-    const int slot = std::get<0>(g_session.GetEquipSlots(mask));
+    const EquipSlots slots = g_session.GetEquipSlots(mask);
+    const int slot = std::get<0>(slots);
     const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slot) : g_session.GetEquippedItemAt(slot);
     if (item.identity[1] > 0) {
       grade = item.grade;
@@ -5876,7 +5875,8 @@ int GetEquipItemId(lua_State* state) {
 
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(std::get<0>(slots)) : g_session.GetEquippedItemAt(std::get<0>(slots));
+  const int slot = std::get<0>(slots);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slot) : g_session.GetEquippedItemAt(slot);
   const int itemId = item.identity[1] > 0 ? std::atoi(item.itemId.c_str()) : 0;
 
   lua_pushnumber(state, itemId);
@@ -5898,10 +5898,11 @@ int GetEquipRefine(lua_State* state) {
     ++number;
   }
 
+  int refine = 0;
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(std::get<0>(slots)) : g_session.GetEquippedItemAt(std::get<0>(slots));
-  int refine = 0;
+  const int slot = std::get<0>(slots);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slot) : g_session.GetEquippedItemAt(slot);
   if (item.identity[1] > 0) {
     refine = item.refiningLevel;
   }
@@ -5981,7 +5982,7 @@ int GetEquipTempValue(lua_State* state) {
 
   std::unordered_map<int, EquipmentValueC> values = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDisplayValues();
   auto found = values.find(args[0]);
-  lua_pushnumber(state, found != values.end() ? found->second.value : 0);
+  lua_pushnumber(state, values.end() != found ? found->second.value : 0);
   return 1;
 }
 
