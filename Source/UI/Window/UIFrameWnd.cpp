@@ -590,7 +590,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     const long long amount = this->TransactionAmount(1);
-    if (amount == 0) {
+    if (0 == amount) {
       return 0;
     }
     if (g_session.m_zeny < amount) {
@@ -615,7 +615,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     const long long amount = this->TransactionAmount(0);
-    if (amount == 0) {
+    if (0 == amount) {
       return 0;
     }
     if (g_session.m_bankBalance < amount) {
