@@ -56,7 +56,7 @@ inline CPlayerNameDictionary::Entry::Entry(std::string value) : name(value), tic
 // FUNCTION: fn_04258
 void CPlayerNameDictionary::Set(std::uint32_t id, std::string name) {
   this->m_names[id] = Entry(name);
-  const auto request = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& value) { return value.id == id; });
+  const auto request = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& value) { return id == value.id; });
   if (request != this->m_requests.end()) {
     this->m_requests.erase(request);
   }
