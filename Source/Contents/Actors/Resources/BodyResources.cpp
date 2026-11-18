@@ -4057,9 +4057,9 @@ __declspec(noinline) std::string CSession::GetBodyJobName(int job) {
 // FUNCTION: fn_19752
 std::string EquipmentResourceMgr::GetBodyImfName(int job, int sex, int, int costumeJob) {
   const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
-  std::string sexName;
-  std::string jobName;
-  std::string result;
+  std::string sexName("");
+  std::string jobName("");
+  std::string result("");
 
   {
     const std::string& name = g_session.GetSexName(sex);
