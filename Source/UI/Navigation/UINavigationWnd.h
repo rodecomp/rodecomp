@@ -25,6 +25,7 @@ struct NavigationWindowInfo;
 
 class UINavigationWnd : public UIFrameWnd {
 public:
+  UINavigationWnd();
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
   void Paint() override;

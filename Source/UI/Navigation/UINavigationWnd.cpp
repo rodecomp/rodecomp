@@ -39,6 +39,12 @@ float g_navigationPointScale = 0.0078125f;
 // GLOBAL: gl_25084
 float g_navigationMarkerScale = 0.453125f;
 
+// OFFSET: 0x00911620
+// FUNCTION: fn_45713
+UINavigationWnd::UINavigationWnd() : UIFrameWnd(0) {
+  g_navigationManager.hideWindow = false;
+}
+
 // OFFSET: 0x00921A70
 // FUNCTION: fn_12643
 void UINavigationWnd::OnCreate(int width, int height) {
