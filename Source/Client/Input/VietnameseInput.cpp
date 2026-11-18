@@ -278,12 +278,9 @@ int VNIInputMode::Convert(char key, char vowel, int value) {
     break;
   case '6':
     if (vowel == 'A' || vowel == 'a' || vowel == 'E' || vowel == 'e' || vowel == 'O' || vowel == 'o') {
+      index = (this->m_markKey > 0 ? index - this->m_markKey : index) + 6;
       this->m_lastKey = key;
-      if (this->m_markKey > 0) {
-        index -= this->m_markKey;
-      }
       this->m_markKey = 6;
-      index += 6;
     } else {
       index = -1;
       this->Reset();
@@ -292,11 +289,8 @@ int VNIInputMode::Convert(char key, char vowel, int value) {
   case '7':
     if (vowel == 'O' || vowel == 'o') {
       this->m_lastKey = key;
-      if (this->m_markKey > 6) {
-        index -= this->m_markKey;
-      }
+      index = (this->m_markKey > 6 ? index - this->m_markKey : index) + 12;
       this->m_markKey = 12;
-      index += 12;
     } else if (vowel == 'U' || vowel == 'u') {
       this->m_lastKey = key;
       this->m_markKey = 6;
@@ -308,12 +302,9 @@ int VNIInputMode::Convert(char key, char vowel, int value) {
     break;
   case '8':
     if (vowel == 'A' || vowel == 'a') {
+      index = (this->m_markKey > 0 ? index - this->m_markKey : index) + 12;
       this->m_lastKey = key;
-      if (this->m_markKey > 0) {
-        index -= this->m_markKey;
-      }
       this->m_markKey = 12;
-      index += 12;
     } else {
       index = -1;
       this->Reset();
