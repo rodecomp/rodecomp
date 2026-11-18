@@ -174,7 +174,7 @@ void CAccountLinkedUserDataMgr::CompleteSave() {
 void EmotionHotkeys::Export(Json::Value& data) const {
   Json::Value values;
 
-  for (unsigned index = 0; index < 10; ++index) {
+  for (int index = 0; index < 10; ++index) {
     values.append(ToUtf8(this->current[index], g_textCodePage));
   }
 
@@ -205,12 +205,11 @@ void CAccountLinkedUserDataMgr::Save() {
     this->ExportUserHotkey(data);
   }
 
-  if (!data.isNull()) {
+  if (data.isNull() != true) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    CAsyncWorkMgr* asyncWorkMgr = g_asyncWorkMgr;
-    asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, 16), response);
+    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, 16), response);
     ++this->m_pendingLoads;
   }
 }
