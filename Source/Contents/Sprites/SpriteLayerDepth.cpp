@@ -186,11 +186,11 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
   double farOffset = 0.0;
   g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->lowerHeadgear, &enabled, &nearOffset, &farOffset);
 
-  if (layer == 2 && enabled) {
-    if (nearOffset == 0.0) {
+  if (layer == 2 && enabled == true) {
+    if (0.0 == nearOffset) {
       nearOffset = 0.00025;
     }
-    if (farOffset == 0.0) {
+    if (0.0 == farOffset) {
       farOffset = 0.0001;
     }
 
