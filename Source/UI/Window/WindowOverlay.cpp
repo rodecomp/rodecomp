@@ -36,6 +36,14 @@ void UIWhisperWnd::DrawTransBox() {
   DrawAlphaRectangle(x + 1, y + 1, this->geometry.width - 2, 17, 0x449EB6E4);
 }
 
+// INLINED
+template <typename... Args>
+void DrawFormattedBitmap(UIWindow* window, int x, int y, bool flag, const char* format, Args... args) {
+  window->DrawBitmap(
+    x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString(format, args...).c_str()))), flag
+  );
+}
+
 // OFFSET: 0x008D0F30
 // FUNCTION: fn_12092
 void UIEquipWnd::DrawDamageSkinPage() {
@@ -51,29 +59,11 @@ void UIEquipWnd::DrawDamageSkinPage() {
       break;
     }
     if (g_session.m_damageSkinIndex == index) {
-      this->DrawBitmap(
-        x, 0x3A,
-        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-          Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage_pick.bmp").c_str())
-        )),
-        true
-      );
+      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_pick.bmp");
     } else if (this->m_hoverSlot == index) {
-      this->DrawBitmap(
-        x, 0x3A,
-        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-          Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage_press.bmp").c_str())
-        )),
-        true
-      );
+      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_press.bmp");
     } else {
-      this->DrawBitmap(
-        x, 0x3A,
-        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-          Resolve(FormatOwnedString("유저인터페이스\\showdamage\\btn_damage.bmp").c_str())
-        )),
-        true
-      );
+      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage.bmp");
     }
     if (g_session.m_damageSkinIndex == index) {
       this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0xBABABA, 1);
@@ -82,13 +72,7 @@ void UIEquipWnd::DrawDamageSkinPage() {
       this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0xBABABA, 0);
       this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0x323232, 0);
     }
-    this->DrawBitmap(
-      x + 14, 0x5A,
-      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-        Resolve(FormatOwnedString("%s.bmp", this->m_damageSkinIcons[index].c_str()).c_str())
-      )),
-      true
-    );
+    DrawFormattedBitmap(this, x + 14, 0x5A, true, "%s.bmp", this->m_damageSkinIcons[index].c_str());
     ++slot;
   }
 }
