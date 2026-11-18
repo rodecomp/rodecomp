@@ -8585,8 +8585,10 @@ static __forceinline void WriteShowTipsAtStartup(const int& enabled) {
 }
 
 // OFFSET: 0x0090B370
-
-// OFFSET: 0x0090B3E0
+// FUNCTION: fn_45759
+__forceinline void UITipOfTheDayWnd::SaveStartupPreference() const {
+  WriteShowTipsAtStartup(this->m_showTipsAtStartup);
+}
 
 // OFFSET: 0x00906DE0
 // FUNCTION: fn_12385
@@ -8597,12 +8599,7 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     case ID_CHECK: {
       this->m_showTipsAtStartup = static_cast<int>(b);
       g_window315Enabled = static_cast<int>(b);
-      HKEY key;
-      DWORD disposition = 0;
-      if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
-        RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_showTipsAtStartup), sizeof(this->m_showTipsAtStartup));
-        RegCloseKey(key);
-      }
+      this->SaveStartupPreference();
       break;
     }
     case ID_PREV: {
