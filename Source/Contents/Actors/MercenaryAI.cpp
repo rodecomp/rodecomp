@@ -1037,29 +1037,21 @@ int AiMove(lua_State* state) {
     }
   }
 
-  int actorX = 0, actorY = 0;
+  int actorX, actorY;
+  MoveNpcPacket packet;
   mode->WorldCell(actor->render.position.x, actor->render.position.z, actorX, actorY);
 
-  if (std::abs(x - actorX) + std::abs(y - actorY) <= 24) {
-#pragma pack(push, 1)
-    struct MoveNpcPacket {
-      /* 0000 */ std::int16_t opcode;
-      /* 0002 */ std::uint32_t aid;
-      /* 0006 */ unsigned char dest[3];
-    };
-#pragma pack(pop)
-    static_assert(sizeof(MoveNpcPacket) == 9);
-
-    MoveNpcPacket packet;
-    packet.opcode = ID_CZ_REQUEST_MOVENPC;
-    packet.aid = aid;
-    packet.dest[0] = static_cast<unsigned char>(x >> 2);
-    packet.dest[1] = static_cast<unsigned char>(((y >> 4) & 0x3F) | (x << 6));
-    packet.dest[2] = static_cast<unsigned char>(y << 4);
-
-    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
+  if (std::abs(x - actorX) + std::abs(y - actorY) > 24) {
+    return 0;
   }
 
+  packet.opcode = ID_CZ_REQUEST_MOVENPC;
+  packet.aid = aid;
+  packet.dest[0] = static_cast<unsigned char>(x >> 2);
+  packet.dest[1] = static_cast<unsigned char>(((y >> 4) & 0x3F) | (x << 6));
+  packet.dest[2] = static_cast<unsigned char>(y << 4);
+
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
   return 0;
 }
 
