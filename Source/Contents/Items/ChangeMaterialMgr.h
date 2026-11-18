@@ -57,6 +57,9 @@ struct ChangeMaterialResult {
 
 struct MaterialKey {
   explicit __declspec(noinline) MaterialKey(const std::vector<ChangeMaterialEntry>& materials);
+  // INLINED
+  __forceinline MaterialKey(const MaterialKey& other) : itemIds(other.itemIds) {
+  }
 
   /* 0000 */ std::vector<int> itemIds;
 };
