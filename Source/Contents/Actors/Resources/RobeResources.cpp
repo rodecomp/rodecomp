@@ -14,10 +14,10 @@ std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex
   }
 
   const int spriteJob = g_session.GetSpriteJob(riding == true ? g_session.GetRidingJob(job) : job, costumeJob, true);
-  std::string path;
-  std::string jobName;
-  std::string sexName;
-  std::string robeName;
+  std::string path = "";
+  std::string jobName = "";
+  std::string sexName = "";
+  std::string robeName = "";
 
   {
     const std::string& name = g_session.GetBodyJobName(spriteJob);
@@ -34,18 +34,22 @@ std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex
 
   const char* extension = g_equipmentResourceExtensions[type];
   if (type == 1) {
-    path = FormatOwnedString("sprite\\로브\\%s\\%s.%s", robeName.c_str(), robeName.c_str(), extension);
+    path = static_cast<const std::string&>(FormatOwnedString("sprite\\로브\\%s\\%s.%s", robeName.c_str(), robeName.c_str(), extension));
     if (g_session.IsDoramJob(job)) {
-      path = FormatOwnedString("sprite\\로브\\%s\\%s_Doram.%s", robeName.c_str(), robeName.c_str(), g_equipmentResourceExtensions[1]);
+      path = static_cast<const std::string&>(FormatOwnedString(
+        "sprite\\로브\\%s\\%s_Doram.%s", robeName.c_str(), robeName.c_str(), g_equipmentResourceExtensions[1]
+      ));
     }
 
     if (!ResourceMgr::Instance().Exists(path.c_str())) {
-      path = FormatOwnedString(
+      path = static_cast<const std::string&>(FormatOwnedString(
         "sprite\\로브\\%s\\%s\\%s_%s.%s", robeName.c_str(), sexName.c_str(), jobName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[1]
-      );
+      ));
     }
   } else {
-    path = FormatOwnedString("sprite\\로브\\%s\\%s\\%s_%s.%s", robeName.c_str(), sexName.c_str(), jobName.c_str(), sexName.c_str(), extension);
+    path = static_cast<const std::string&>(FormatOwnedString(
+      "sprite\\로브\\%s\\%s\\%s_%s.%s", robeName.c_str(), sexName.c_str(), jobName.c_str(), sexName.c_str(), extension
+    ));
   }
 
   return path;
