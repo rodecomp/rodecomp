@@ -1315,7 +1315,8 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       return 0;
     }
 
-    if (g_barterMarketItemMgr->HasItemByName(mode->drag.name) == true) {
+    CBarterMarketItemMgr* itemMgr = g_barterMarketItemMgr;
+    if (itemMgr->HasItemByName(mode->drag.name) == true) {
       int notice = 0;
       if (g_session.IsEquipItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1332,7 +1333,8 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
     }
 
-    if (mode->drag.quantity + g_barterMarketItemMgr->GetAllItemValueByName(mode->drag.name) > 30000) {
+    itemMgr = g_barterMarketItemMgr;
+    if (mode->drag.quantity + itemMgr->GetAllItemValueByName(mode->drag.name) > 30000) {
       char buffer[200] = {};
       StringFormat(buffer, 200, static_cast<std::size_t>(-1), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
