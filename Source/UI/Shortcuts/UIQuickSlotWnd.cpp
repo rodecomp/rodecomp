@@ -117,16 +117,8 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  if (static_cast<unsigned int>(y) > 23) {
-    return;
-  }
-
-  if (x > 58 && x < this->geometry.width) {
-    return;
-  }
-
-  const int index = (x - 4) / 29;
-  if (x > index * 29 + 30 || index == -1) {
+  const int index = this->SlotAt(x, y);
+  if (index == -1) {
     return;
   }
 
