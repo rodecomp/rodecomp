@@ -860,7 +860,8 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
 
   std::string mapName = g_modeMgr.GetGameMode()->MapName();
-  TownInfo town = g_townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
+  CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+  TownInfo town = townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
   if (!town.image.empty()) {
     const std::size_t extension = mapName.find_first_of(".");
     if (extension != std::string::npos) {
