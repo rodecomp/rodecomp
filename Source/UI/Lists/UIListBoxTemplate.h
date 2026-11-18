@@ -311,6 +311,7 @@ template <class T, class D> class CUIListBoxEx : public CUIControl {
 public:
   CUIListBoxEx();
   ~CUIListBoxEx() override;
+  void SetListSize(int width, int height, int itemWidth, int rowHeight);
   void OnCreate(int width, int height) override;
   // OFFSET: 0x00A01E70
   // FUNCTION: fn_14832

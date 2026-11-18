@@ -101,6 +101,15 @@ void CUISkillDelayInfo::Initialize() {
   this->SetSkinColors(0, 0, 0, 0);
 }
 
+// OFFSET: 0x00A719B0
+// FUNCTION: fn_45783
+template <>
+__forceinline void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::SetListSize(int width, int height, int itemWidth, int rowHeight) {
+  this->itemWidth = itemWidth;
+  this->rowHeight = rowHeight;
+  this->SetSize(width, height);
+}
+
 // OFFSET: 0x00A71B50
 // FUNCTION: fn_16808
 template <>
@@ -112,6 +121,16 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 }
 
 namespace SkillDelayInfo {
+
+// OFFSET: 0x00A71A40
+// FUNCTION: fn_45782
+__forceinline CUITime* CUIDelayItem::AddTime() {
+  CUITime* time = new CUITime();
+  time->SetSize(70, 21);
+  this->AddChild(time);
+  this->times.push_back(time);
+  return time;
+}
 
 // OFFSET: 0x00A71D60
 // FUNCTION: fn_16809
@@ -132,10 +151,7 @@ void CUIDelayItem::OnCreate(int width, int height) {
   this->AddChild(this->level);
 
   for (int index = 0; index < 4; ++index) {
-    CUITime* time = new CUITime();
-    time->SetSize(70, 21);
-    this->AddChild(time);
-    this->times.push_back(time);
+    this->AddTime();
   }
 
   this->times[0]->Move(44, 0);
@@ -791,9 +807,7 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
 
   CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* listBox = new CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>();
   this->delayList = listBox;
-  listBox->itemWidth = 325;
-  listBox->rowHeight = 22;
-  listBox->SetSize(325, 220);
+  listBox->SetListSize(325, 220, 325, 22);
   this->delayList->Move(10, 104);
   this->delayList->SetOnSelect([this](SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) { this->OnSelectItem(item, data); });
   this->delayList->SetBinder([this](SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) { this->OnUpdateItem(item, data); });

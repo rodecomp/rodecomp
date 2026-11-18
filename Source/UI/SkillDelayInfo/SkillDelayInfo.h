@@ -25,6 +25,7 @@ public:
 class CUIDelayItem : public CUIListItem {
 public:
   __declspec(noinline) CUIDelayItem();
+  CUITime* AddTime();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
