@@ -661,7 +661,10 @@ int SpriteLayerRenderer::GetLayerBlend(int layer, std::uint32_t color) const {
     case 8:
       return 1;
     case 4:
-      return this->pc->accessory3 == 0xB9 ? 0x11 : 1;
+      if (this->pc->accessory3 == 0xB9) {
+        return 0x11;
+      }
+      return 1;
   }
   if (color >= 0xFF000000 && this->blendMode == 1) {
     switch (this->blendVariant) {
@@ -729,13 +732,13 @@ bool SpriteLayerRenderer::ShouldDrawLayer(int layer) const {
 void SpriteLayerRenderer::DrawQueuedLayers() {
   int depth = 0;
   for (std::map<int, SpriteLayerQuad>::iterator it = this->quads.begin(); it != this->quads.end(); ++it, ++depth) {
-    SpriteQuad& quad = it->second.quad;
-    quad.bottomRhw = quad.bottom * this->depthScale + this->depthBias;
-    quad.topRhw = this->depthScale * quad.top + this->depthBias;
+    SpriteLayerQuad& entry = it->second;
+    entry.quad.bottomRhw = entry.quad.bottom * this->depthScale + this->depthBias;
+    entry.quad.topRhw = this->depthScale * entry.quad.top + this->depthBias;
     if (g_session.IsScreenShakeActive() == true) {
-      this->pc->DrawFlippedQuad(quad, it->second.palette, it->second.blend, this->x, this->y, depth);
+      this->pc->DrawFlippedQuad(entry.quad, entry.palette, entry.blend, this->x, this->y, depth);
     } else {
-      this->pc->DrawQuad(quad, it->second.palette, it->second.blend, 0.0f, 0.0f, depth);
+      this->pc->DrawQuad(entry.quad, entry.palette, entry.blend, 0.0f, 0.0f, depth);
     }
   }
 }
