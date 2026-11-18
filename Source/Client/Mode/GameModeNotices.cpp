@@ -4361,7 +4361,7 @@ struct RodexMailListEntry {
 // FUNCTION: fn_22043
 void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
   const std::int16_t packetLength = *reinterpret_cast<const std::int16_t*>(packet + 2);
-  if (5 < packetLength) {
+  if (packetLength > 5) {
     int offset = 5;
     do {
       const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
