@@ -1,18 +1,18 @@
 #include "Resource/Models/ModelMesh.h"
 #include "Utility/Math/AffineMatrix.h"
 
-#include <cmath>
+#include <algorithm>
 #include <map>
 
 namespace {
   // INLINED
-  void Normalize(float* vector) {
-    const float squared = (vector[0] * vector[0] + vector[1] * vector[1]) + vector[2] * vector[2];
+  void Normalize(ShadeVector& vector) {
+    const float squared = (vector.x * vector.x + vector.y * vector.y) + vector.z * vector.z;
     const float inverse = 1.0f / SquareRoot(squared);
 
-    vector[0] = inverse * vector[0];
-    vector[1] = inverse * vector[1];
-    vector[2] = inverse * vector[2];
+    vector.x = inverse * vector.x;
+    vector.y = inverse * vector.y;
+    vector.z = inverse * vector.z;
   }
 }
 
@@ -82,7 +82,7 @@ void ModelMesh::CalculateNormals() {
     normal.x = y2 * z1 - z2 * y1;
     normal.y = z2 * x1 - x2 * z1;
     normal.z = x2 * y1 - y2 * x1;
-    Normalize(&this->faceNormals[index].x);
+    Normalize(this->faceNormals[index]);
   }
 
   std::map<int, std::vector<int>> adjacent;
@@ -102,22 +102,20 @@ void ModelMesh::CalculateNormals() {
 
     for (int corner = 0; corner < 3; ++corner) {
       for (int neighbor : adjacent[face.vertices[corner]]) {
+        if (face.smoothing.empty()) {
+          continue;
+        }
+
         const ModelFace& other = this->faces[neighbor];
-
+        const auto begin = other.smoothing.begin();
+        const auto end = other.smoothing.end();
         for (std::uint32_t group : face.smoothing) {
-          bool matches = false;
-
-          for (std::uint32_t candidate : other.smoothing) {
-            if (candidate == group) {
-              matches = true;
-              break;
-            }
-          }
-
-          if (matches) {
-            this->vertexNormals[index * 3 + corner].x = this->vertexNormals[index * 3 + corner].x + this->faceNormals[neighbor].x;
-            this->vertexNormals[index * 3 + corner].y = this->faceNormals[neighbor].y + this->vertexNormals[index * 3 + corner].y;
-            this->vertexNormals[index * 3 + corner].z = this->faceNormals[neighbor].z + this->vertexNormals[index * 3 + corner].z;
+          if (std::find(begin, end, group) != end) {
+            ShadeVector& normal = this->vertexNormals[index * 3 + corner];
+            const ShadeVector& faceNormal = this->faceNormals[neighbor];
+            normal.x = normal.x + faceNormal.x;
+            normal.y = faceNormal.y + normal.y;
+            normal.z = faceNormal.z + normal.z;
           }
         }
       }
@@ -125,6 +123,6 @@ void ModelMesh::CalculateNormals() {
   }
 
   for (int index = 0; index < this->faceCount * 3; ++index) {
-    Normalize(&this->vertexNormals[index].x);
+    Normalize(this->vertexNormals[index]);
   }
 }
