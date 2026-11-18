@@ -2884,15 +2884,15 @@ void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& n
 
   const int left = owner->edit->geometry.x;
   const int top = owner->edit->geometry.y;
-  const int position = x;
+  int position = x;
   unsigned bytes = 0;
   const int width = owner->MeasureText(name.c_str(), bytes);
-  button->Move(
-    this->textWidth + width > g_windowMgr.npcTextEditDialogWnd->edit->geometry.width ? 1000
-    : position != 0                                                                                                     ? position
-                                                                                                                        : left + 2 + width,
-    top + 1
-  );
+  if (this->textWidth + width > g_windowMgr.npcTextEditDialogWnd->edit->geometry.width) {
+    position = 1000;
+  } else if (position == 0) {
+    position = left + 2 + width;
+  }
+  button->Move(position, top + 1);
 }
 
 // OFFSET: 0x0088AC80
