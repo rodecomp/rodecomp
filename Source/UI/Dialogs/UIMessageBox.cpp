@@ -3247,24 +3247,6 @@ EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
 // FUNCTION: fn_11805
 int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_COMBOBOX_SELECTED:
-    if (sender == this->loginTypeCombo) {
-      switch (a) {
-      case 0: {
-        this->loginExtra = OBFUSCATE_TEXT("G000", 0x9FED7DA189490D5DULL);
-        break;
-      }
-      case 1: {
-        this->loginExtra = OBFUSCATE_TEXT("G007", 0xFBD599E117C547C1ULL);
-        break;
-      }
-      default: {
-        g_windowMgr.Confirm(OBFUSCATE_TEXT("unknown account class found!", 0x176F138D5DD7F365ULL), 0, false, false, 0, "Message", 280, 120, 0);
-        goto quit;
-      }
-      }
-    }
-    return 0;
   case UM_COMMAND:
     switch (a) {
     case ID_MAKEACCOUNT:
@@ -3283,12 +3265,15 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->OpenWebPage();
       break;
     case ID_LOGIN: {
-      g_soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      CSoundMgr* const soundMgr = g_soundMgr;
+      soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
         g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
-        g_modeMgr.currentMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
-        g_modeMgr.currentMode->SendMsg(LMM_ID, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
+        CMode* passwordMode = g_modeMgr.currentMode;
+        passwordMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
+        CMode* idMode = g_modeMgr.currentMode;
+        idMode->SendMsg(LMM_ID, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
         g_modeMgr.currentMode->SendMsg(LMM_SET_LOGIN_EXTRA, reinterpret_cast<int>(this->loginExtra), 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINWND);
         this->SaveLogin();
@@ -3346,6 +3331,24 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       g_session.m_channelCopId = 2;
       this->Invalidate();
       break;
+    }
+    return 0;
+  case UM_COMBOBOX_SELECTED:
+    if (sender == this->loginTypeCombo) {
+      switch (a) {
+      case 0: {
+        this->loginExtra = OBFUSCATE_TEXT("G000", 0x9FED7DA189490D5DULL);
+        break;
+      }
+      case 1: {
+        this->loginExtra = OBFUSCATE_TEXT("G007", 0xFBD599E117C547C1ULL);
+        break;
+      }
+      default: {
+        g_windowMgr.Confirm(OBFUSCATE_TEXT("unknown account class found!", 0x176F138D5DD7F365ULL), 0, false, false, 0, "Message", 280, 120, 0);
+        goto quit;
+      }
+      }
     }
     return 0;
   case UM_ENABLE_CANCEL:
