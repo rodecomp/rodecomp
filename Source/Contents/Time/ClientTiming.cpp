@@ -157,15 +157,15 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   std::memset(message, 0, sizeof(message));
   this->data.ClearAll();
 
-  int type;
-  int index = 1;
   int cellX = 0;
   int cellY = 0;
   int linkedX = 0;
   int linkedY = 0;
   int targetId = -1;
   int cost = 0;
+  int index = 1;
   for (; index < 9999; ++index) {
+    int type;
     const char* name = nullptr;
     const char* title = nullptr;
     if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &name, &title, &type, &cellX, &cellY)) {
@@ -182,7 +182,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  for (int index = 1; index < 99999; ++index) {
+  for (index = 1; index < 99999; ++index) {
     int objectType = 100;
     const char* title = nullptr;
     const char* name = nullptr;
@@ -190,7 +190,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     int objectX = 0;
     int objectY = 0;
     int objectIndex = 0;
-    int id;
+    int id = 0;
     if (!script->Call("queryNavi_NpcInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY)) {
       std::sprintf(message, "Npc 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
@@ -207,7 +207,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  for (int index = 1; index < 99999; ++index) {
+  for (index = 1; index < 99999; ++index) {
     int objectType = 100;
     const char* title = nullptr;
     const char* name = nullptr;
@@ -215,7 +215,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     int objectX = 0;
     int objectY = 0;
     int objectIndex = 0;
-    int id;
+    int id = 0;
     if (!script->Call("queryNavi_MobInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY)) {
       std::sprintf(message, "몬스터 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
@@ -232,7 +232,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  for (int index = 1; index < 99999; ++index) {
+  for (index = 1; index < 99999; ++index) {
     int objectType = 100;
     const char* linkedMap = nullptr;
     const char* title = nullptr;
@@ -243,7 +243,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     int objectX = 0;
     int objectY = 0;
     int objectIndex = 0;
-    int id;
+    int id = 0;
     if (!script->Call(
           "queryNavi_LinkInfo", "d>sdddssddsdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY, &linkedMap, &linkedX,
           &linkedY
@@ -273,7 +273,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int accessory1 = 0;
   int accessory2 = 0;
   int robe = 0;
-  for (int index = 1; index < 9999; ++index) {
+  for (index = 1; index < 9999; ++index) {
     const char* mapName = nullptr;
     int pickX = 0;
     int pickY = 0;
@@ -397,7 +397,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  for (int index = 1; index < 200; ++index) {
+  for (index = 1; index < 200; ++index) {
     const char* name = nullptr;
     const char* mapName = nullptr;
     int id = 0;
