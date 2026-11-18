@@ -509,6 +509,10 @@ void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
   }
 }
 
+// OFFSET: 0x00759430
+
+// OFFSET: 0x00758B30
+
 // OFFSET: 0x00758E40
 // FUNCTION: fn_08009
 void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const granny_model* model) {
@@ -704,6 +708,53 @@ bool C3dModelRes::Load(const char*) {
   return false;
 }
 
+// OFFSET: 0x00758A60
+// FUNCTION: fn_45843
+__forceinline void GrannyAnimationLibrary::InitializeMesh(GrannyMeshEntry& entry, granny_mesh* mesh, granny_model_instance* instance) {
+  entry.mesh = mesh;
+  granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance);
+  entry.binding = GrannyNewMeshBinding(mesh, skeleton, skeleton);
+
+  const unsigned int indexCount = GrannyGetMeshIndexCount(mesh);
+  entry.indices = new std::uint16_t[indexCount];
+  if (indexCount != 0) {
+    GrannyCopyMeshIndices(mesh, 2, entry.indices);
+  }
+
+  const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
+  if (GrannyMeshIsRigid(mesh)) {
+    entry.deformer = nullptr;
+  } else {
+    if (this->deformBufferSize < vertexBytes) {
+      this->deformBufferSize = vertexBytes;
+    }
+
+    entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
+    if (!entry.deformer) {
+      ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+    }
+  }
+}
+
+// OFFSET: 0x00758CE0
+// FUNCTION: fn_45845
+__forceinline void GrannyAnimationLibrary::InstantiateModel(GrannyModelInstance* target, const granny_model* model) {
+  const int boneCount = model->skeleton->boneCount;
+
+  if (this->maxBoneCount < boneCount) {
+    this->maxBoneCount = boneCount;
+  }
+
+  target->instance = GrannyInstantiateModel(model);
+  target->worldPose = GrannyNewWorldPose(boneCount);
+  target->meshCount = model->meshBindingCount;
+  target->meshes = new GrannyMeshEntry[target->meshCount];
+
+  for (int index = 0; index < target->meshCount; ++index) {
+    this->InitializeMesh(target->meshes[index], model->meshBindings[index].mesh, target->instance);
+  }
+}
+
 // OFFSET: 0x00757390
 // FUNCTION: fn_08005
 bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
@@ -744,45 +795,7 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
 
     GrannyModelInstance* instance = new GrannyModelInstance;
     this->instance = instance;
-    granny_model* model = info->models[0];
-    const int boneCount = model->skeleton->boneCount;
-
-    if (this->maxBoneCount < boneCount) {
-      this->maxBoneCount = boneCount;
-    }
-
-    instance->instance = GrannyInstantiateModel(model);
-    instance->worldPose = GrannyNewWorldPose(boneCount);
-    instance->meshCount = model->meshBindingCount;
-    instance->meshes = new GrannyMeshEntry[instance->meshCount];
-
-    for (int index = 0; index < instance->meshCount; ++index) {
-      GrannyMeshEntry& entry = instance->meshes[index];
-      granny_mesh* mesh = model->meshBindings[index].mesh;
-      entry.mesh = mesh;
-      granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance->instance);
-      entry.binding = GrannyNewMeshBinding(mesh, skeleton, skeleton);
-
-      const unsigned int indexCount = GrannyGetMeshIndexCount(mesh);
-      entry.indices = new std::uint16_t[indexCount];
-      if (indexCount != 0) {
-        GrannyCopyMeshIndices(mesh, 2, entry.indices);
-      }
-
-      const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
-      if (GrannyMeshIsRigid(mesh)) {
-        entry.deformer = nullptr;
-      } else {
-        if (this->deformBufferSize < vertexBytes) {
-          this->deformBufferSize = vertexBytes;
-        }
-
-        entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
-        if (!entry.deformer) {
-          ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
-        }
-      }
-    }
+    this->InstantiateModel(instance, info->models[0]);
 
     if (info->animationCount != 0) {
       granny_animation* animation = nullptr;
