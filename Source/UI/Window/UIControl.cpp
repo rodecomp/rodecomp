@@ -1293,6 +1293,15 @@ void CUITitleBar::SetImages(const std::string& left, const std::string& middle, 
   this->Invalidate();
 }
 
+// OFFSET: 0x009F1CD0
+// FUNCTION: fn_45745
+void CUITitleBar::SetImage(const std::string& name) {
+  this->resizable = 0;
+  this->middleName = name;
+  this->LoadSkin(false);
+  this->Invalidate();
+}
+
 // OFFSET: 0x009F1BF0
 // FUNCTION: fn_14700
 void CUITitleBar::Resize(int width, int height) {
