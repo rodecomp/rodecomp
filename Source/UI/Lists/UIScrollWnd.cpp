@@ -513,3 +513,25 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   }
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x009ADA90
+// FUNCTION: fn_45748
+void UIScrollWnd::ShowHorizontalScrollBar(int visible, bool redraw) {
+  if (this->horizontalBar && this->horizontalBar->geometry.visible != visible) {
+    this->horizontalBar->Show(visible);
+    if (redraw) {
+      this->Invalidate();
+    }
+  }
+}
+
+// OFFSET: 0x009ADAD0
+// FUNCTION: fn_45749
+void UIScrollWnd::ShowVerticalScrollBar(int visible, bool redraw) {
+  if (this->scrollBar && this->scrollBar->geometry.visible != visible) {
+    this->scrollBar->Show(visible);
+    if (redraw) {
+      this->Invalidate();
+    }
+  }
+}
