@@ -63,11 +63,11 @@ void ResourceMgr::LoadAliases(int) {
   contents[bytes] = '\0';
   file.Close();
 
+  const char* token = contents;
   std::string name;
   std::string replacement;
   name.clear();
   replacement.clear();
-  const char* token = contents;
   for (int index = 0; index < static_cast<int>(bytes); ++index) {
     if (contents[index] == '\n' || contents[index] == '\r') {
       contents[index] = '\0';
@@ -78,7 +78,7 @@ void ResourceMgr::LoadAliases(int) {
         name = token;
       } else {
         replacement = token;
-        this->m_aliases.insert(std::pair<std::string, std::string>(name, replacement));
+        this->m_aliases.insert({name, replacement});
         name.clear();
         replacement.clear();
       }
