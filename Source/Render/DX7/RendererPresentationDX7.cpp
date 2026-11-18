@@ -65,8 +65,8 @@ void CRendererDX7::CleanupTextures() {
 
   char text[128];
   std::sprintf(text, "%.01f fps", static_cast<double>(measured));
-  const int x = this->viewport.width - 40;
   const int y = this->viewport.height - 14;
+  const int x = this->viewport.width - 40;
   CDCSurface drawing(GetRenderSystemHolder()->BackBufferSurface());
   TextContext context(drawing);
   context.SetFont(0, 12, 0, 0);
