@@ -39,10 +39,10 @@ namespace {
   };
 
   void RecordLaunch(int effectId) {
-    std::uint32_t recent[8];
+    std::uint32_t recent[32];
     recent[0] = effectId;
-    std::memcpy(recent + 1, g_launchInfo, sizeof(recent) - sizeof(recent[0]));
-    std::memcpy(g_launchInfo, recent, sizeof(recent));
+    std::memcpy(recent + 1, g_launchInfo, 7 * sizeof(recent[0]));
+    std::memcpy(g_launchInfo, recent, 8 * sizeof(recent[0]));
   }
 }
 
@@ -112,7 +112,9 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
 
   if (effectId == 127) {
     this->effectLaunched = 1;
-  } else if (effectId < 0 || effectId > 60000) {
+  } else if (effectId < 0) {
+    return nullptr;
+  } else if (effectId > 60000) {
     return nullptr;
   }
 
