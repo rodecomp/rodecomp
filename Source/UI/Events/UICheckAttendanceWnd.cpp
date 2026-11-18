@@ -44,6 +44,12 @@ struct CheckAttendanceRequestPacket {
   /* 0000 */ std::int16_t id;
 };
 
+// OFFSET: 0x007DCF20
+// FUNCTION: fn_45756
+bool UICheckAttendanceWnd_Banner::HasEntries() const {
+  return this->m_entries.size() != 0;
+}
+
 // OFFSET: 0x007DC6B0
 // FUNCTION: fn_09631
 UICheckAttendanceWnd::UICheckAttendanceWnd()
@@ -52,8 +58,9 @@ UICheckAttendanceWnd::UICheckAttendanceWnd()
   this->m_rewardCount = static_cast<int>(g_checkAttendanceMgr->m_rewards.size());
 }
 
-// INLINED
-UICheckAttendanceWnd::~UICheckAttendanceWnd() {
+// OFFSET: 0x007DC9B0
+// FUNCTION: fn_45754
+__declspec(noinline) UICheckAttendanceWnd::~UICheckAttendanceWnd() {
 }
 
 // OFFSET: 0x007DCBD0
@@ -101,13 +108,15 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
   return (localY / 64) % 4 * 5 + (localX / 62) % 5;
 }
 
-// INLINED
+// OFFSET: 0x007DC750
+// FUNCTION: fn_45753
 UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner()
     : UIWindow(0), m_current(0), m_lastSwitch(timeGetTime()) {
 }
 
-// INLINED
-UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
+// OFFSET: 0x007DCA00
+// FUNCTION: fn_45755
+__declspec(noinline) UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
 }
 
 namespace {
@@ -157,7 +166,7 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
 // FUNCTION: fn_09640
 void UICheckAttendanceWnd::Paint() {
 
-  const char* backgroundName = this->m_banner->m_entries.size() != 0 ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
+  const char* backgroundName = this->m_banner->HasEntries() ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName))), false);
 
@@ -233,7 +242,7 @@ void UICheckAttendanceWnd::Paint() {
 // OFFSET: 0x007DDA90
 // FUNCTION: fn_09641
 void UICheckAttendanceWnd_Banner::Paint() {
-  if (this->m_entries.size() != 0) {
+  if (this->HasEntries()) {
     this->DrawBitmap(
       0, 0,
       static_cast<CBitmapRes*>(
@@ -383,7 +392,7 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (g_session.m_hotkeyScript->Call("set_checkAttendance_banner", "") == true) {
       this->m_banner->CreateButtons();
     }
-    if (this->m_banner->m_entries.size() != 0) {
+    if (this->m_banner->HasEntries()) {
       this->m_banner->Show(1);
       this->Resize(488, 455);
       this->m_notice->Move(170, 418);

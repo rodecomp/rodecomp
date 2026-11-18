@@ -27,6 +27,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void AddBanner(std::string image, std::string url, int action, int argument);
   void CreateButtons();
+  bool HasEntries() const;
 
   /* 007C */ std::vector<AttendanceBanner> m_entries;
   /* 0088 */ std::vector<UIWindow*> m_buttons;
@@ -51,7 +52,7 @@ public:
 
   // INLINED
   int BannerHeight() const {
-    return this->m_banner->m_entries.size() != 0 ? 42 : 0;
+    return this->m_banner->HasEntries() ? 42 : 0;
   }
 
   /* 00B4 */ int m_rewardCount;
