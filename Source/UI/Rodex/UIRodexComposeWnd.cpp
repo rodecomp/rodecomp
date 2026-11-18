@@ -58,6 +58,10 @@ struct RodexCheckRecipientPacket {
 #pragma pack(pop)
 
 struct RodexSendMailRequest {
+  // OFFSET: 0x007FF080
+  // FUNCTION: fn_45809
+  ~RodexSendMailRequest() = default;
+
   /* 0000 */ int recipientId;
   /* 0004 */ std::string recipient;
   /* 001C */ std::string title;
@@ -263,8 +267,9 @@ UIRodexComposeWnd::UIRodexComposeWnd()
   this->m_items.clear();
 }
 
-// INLINED
-UIRodexComposeWnd::~UIRodexComposeWnd() {
+// OFFSET: 0x007FEFE0
+// FUNCTION: fn_45808
+__declspec(noinline) UIRodexComposeWnd::~UIRodexComposeWnd() {
   if (this->m_tagCtrl) {
     this->m_tagCtrl->ClearTags();
     delete this->m_tagCtrl;
