@@ -9130,9 +9130,9 @@ void UICardItemIllustWnd::Paint() {
 void UISelectCartWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
-  const int levels[] = {0, 40, 65, 80, 90, 100, 110, 120, 130};
   const int level = g_session.m_level;
   this->cartTypes.clear();
+  const int levels[] = {0, 40, 65, 80, 90, 100, 110, 120, 130};
   for (int i = 0; i < 9; ++i) {
     if (level <= levels[i]) {
       break;
