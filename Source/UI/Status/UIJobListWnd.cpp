@@ -188,3 +188,7 @@ void UIJobListWnd::RefreshJobs() {
 UIJobListWnd::UIJobListWnd()
     : UIFrameWnd(0), m_title(nullptr), m_okButton(nullptr), m_selectionState(0) {
 }
+
+// OFFSET: 0x00914170
+// FUNCTION: fn_45807
+UIJobListWnd::~UIJobListWnd() = default;
