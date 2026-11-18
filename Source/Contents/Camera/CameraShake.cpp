@@ -9,8 +9,10 @@
 namespace {
   // INLINED
   float Jitter(float divisor) {
-    const int remainder = std::rand() % 5;
-    const int selected = remainder >= 0 ? remainder : 0;
+    int selected = std::rand() % 5;
+    if (selected < 0) {
+      selected = 0;
+    }
     return static_cast<float>(selected - 2) / divisor;
   }
 }
