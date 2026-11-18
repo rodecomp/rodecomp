@@ -311,16 +311,18 @@ void CRenderObject::ProcessMotion() {
       }
     }
     if (this->render.sequenceFrame > this->render.sequenceLast) {
-      if (this->render.sequenceLoop == 0) {
+      if (this->render.sequenceLoop != 0) {
+        if (this->render.sequenceFinishAnimation == 0) {
+          this->render.sequenceFinishFrame = 1;
+          ++this->render.sequenceTick;
+          this->render.sequenceFrame = this->render.sequenceIndex + 1;
+          return;
+        } else {
+          this->render.sequenceFrame = this->render.sequenceIndex;
+        }
+      } else {
         this->render.sequenceFinished = 1;
         this->render.sequenceFrame = this->render.sequenceLast;
-      } else if (this->render.sequenceFinishAnimation == 0) {
-        this->render.sequenceFinishFrame = 1;
-        ++this->render.sequenceTick;
-        this->render.sequenceFrame = this->render.sequenceIndex + 1;
-        return;
-      } else {
-        this->render.sequenceFrame = this->render.sequenceIndex;
       }
     }
     ++this->render.sequenceTick;
