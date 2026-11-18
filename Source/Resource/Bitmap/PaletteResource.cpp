@@ -5,6 +5,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Resource/ResourceMgr.h"
 
+#include <cstring>
 #include <string>
 
 // OFFSET: 0x0075DB60
@@ -39,6 +40,17 @@ bool CPaletteRes::Load(const char* name) {
 // OFFSET: 0x0075DAF0
 // FUNCTION: fn_08041
 void CPaletteRes::Unload() {
+}
+
+// OFFSET: 0x0075DBD0
+// FUNCTION: fn_45834
+void CPaletteRes::Save(std::uint32_t* output) {
+  const auto* source = this->sourcePalette;
+  volatile auto* header = output;
+  header[0] = 0x204C4150;
+  header[1] = 0x61746164;
+  header[0] = 0x01000300;
+  std::memcpy(output, source, sizeof(this->sourcePalette));
 }
 
 // INLINED

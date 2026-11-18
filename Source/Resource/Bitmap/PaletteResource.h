@@ -13,6 +13,7 @@ public:
   CPaletteRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  void Save(std::uint32_t* output);
 
   /* 0110 */ std::uint8_t sourcePalette[1024];
   /* 0510 */ std::uint32_t palette[256];
