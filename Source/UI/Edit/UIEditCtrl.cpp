@@ -8101,7 +8101,7 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
   this->sortCombo->AddOption(LookupMessage(MSI_ASCENDING_ORDER), 0);
   this->sortCombo->AddOption(LookupMessage(MSI_DESENDING_ORDER), 0);
 
-  const bool sortModes[3] = {g_session.m_itemDefaultSort, g_session.m_itemAscendingOrder, g_session.m_itemDescendingOrder};
+  const bool* sortModes = &g_session.m_itemDefaultSort;
   for (int index = 0; index < 3; ++index) {
     if (sortModes[index] == true) {
       this->sortCombo->Select(index);
