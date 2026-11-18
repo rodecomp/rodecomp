@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_RENDER_TEXT_EMBEDFONT_H
 
 #include <windows.h>
+#include <t2embapi.h>
 
 // VTABLE: vt_01611
 class CEmbedFont {
@@ -9,24 +10,13 @@ public:
   CEmbedFont();
   virtual ~CEmbedFont();
 
-  // INLINED
-  void LoadModule() {
-    if (this->m_module == nullptr) {
-      HMODULE module = LoadLibraryA("t2embed.dll");
-      if (reinterpret_cast<UINT_PTR>(module) > 32) {
-        this->m_module = module;
-      }
-    }
-  }
-
-  // INLINED
-  void UnloadModule() {
-    if (this->m_module != nullptr) {
-      FreeLibrary(this->m_module);
-      this->m_module = nullptr;
-    }
-  }
-
+  void Reset();
+  int LoadModule();
+  int UnloadModule();
+  int DeleteEmbeddedFont(HANDLE fontReference, ULONG flags, ULONG* status);
+  void Unload(HANDLE fontReference);
+  int LoadEmbeddedFont(HANDLE* fontReference, ULONG flags, ULONG* privStatus, ULONG privileges, ULONG* status,
+                       READEMBEDPROC readStream, LPVOID stream, LPWSTR windowsFamily, LPSTR macFamily, TTLOADINFO* info);
   int Load(HANDLE* fontReference, const char* familyName, const char* path);
 
   /* 0004 */ HMODULE m_module;
@@ -37,6 +27,7 @@ public:
 
 extern CEmbedFont* g_embedFont;
 
+void UnloadEmbedFont(HANDLE fontReference);
 void FreeEmbedFont();
 void InitEmbedFont();
 int LoadEmbedFont(HANDLE* fontReference, const char* fileName, int option);
