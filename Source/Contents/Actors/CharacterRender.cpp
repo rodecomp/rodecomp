@@ -67,12 +67,11 @@ CCharacterRender::~CCharacterRender() = default;
 // FUNCTION: fn_10108
 std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char trackBounds, char* boundsUpdated) {
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const float* origin = &this->position.x;
   const float* view = mode->camera->frame.view.values;
   vector3d position;
-  position.x = origin[0] * view[0] + origin[1] * view[3] + origin[2] * view[6] + view[9];
-  position.y = origin[0] * view[1] + origin[1] * view[4] + origin[2] * view[7] + view[10];
-  position.z = origin[0] * view[2] + origin[1] * view[5] + origin[2] * view[8] + view[11];
+  position.x = this->position.x * view[0] + this->position.y * view[3] + this->position.z * view[6] + view[9];
+  position.y = this->position.x * view[1] + this->position.y * view[4] + this->position.z * view[7] + view[10];
+  position.z = this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11];
   float depthBias = 0.0f;
 
   float& screenX = this->screenX;
@@ -80,7 +79,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   screenX = 0.0f;
   screenY = 0.0f;
   float rhw = 0.0f;
-  g_renderer->ProjectViewport(origin, view, &screenX, &screenY, &rhw);
+  g_renderer->ProjectViewport(&this->position.x, view, &screenX, &screenY, &rhw);
   float distanceScale = g_renderer->ScaleDistance(rhw);
   distanceScale *= g_session.GetSkillFactor(this->job);
 
