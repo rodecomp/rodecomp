@@ -8,8 +8,7 @@
 
 class UIBarGraph : public UIWindow {
 public:
-  explicit UIBarGraph() : UIWindow(0), m_value(0) {
-  }
+  explicit UIBarGraph();
 
   void Paint() override;
 
