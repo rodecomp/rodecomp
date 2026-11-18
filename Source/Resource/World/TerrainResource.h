@@ -14,6 +14,8 @@ public:
   C3dAttr* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  void Resize(int columns, int rows);
+  void CellToWorld(float column, float row, float* position) const;
   float Height(float x, float z) const;
   float PlaneHeight(float x, float z) const;
   const TerrainHeightCell* CellAt(int column, int row) const;

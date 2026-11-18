@@ -23,6 +23,8 @@ C3dAttr* C3dAttr::Create() {
   return new C3dAttr;
 }
 
+// OFFSET: 0x00748BC0
+
 // OFFSET: 0x007484E0
 // FUNCTION: fn_07829
 bool C3dAttr::Load(const char* name) {

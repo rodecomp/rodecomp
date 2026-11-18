@@ -5,6 +5,13 @@
 
 #include <cmath>
 
+// OFFSET: 0x00748FD0
+// FUNCTION: fn_45837
+void C3dAttr::CellToWorld(float column, float row, float* position) const {
+  position[0] = (column - static_cast<float>(this->width / 2)) * static_cast<float>(this->cellSize);
+  position[1] = (row - static_cast<float>(this->height / 2)) * static_cast<float>(this->cellSize);
+}
+
 // OFFSET: 0x00AC8150
 // FUNCTION: fn_17666
 void CWorld::CellOrigin(int column, int row, float& x, float& z) const {
