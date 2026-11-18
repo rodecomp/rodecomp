@@ -554,7 +554,7 @@ void UIComboBoxID::AddLine(const char* text, int id, int data) {
   this->Refresh();
 
   if (data != 0) {
-    this->lineData.try_emplace(index, data);
+    this->lineData.insert(std::pair<const int, int>(index, data));
   }
 }
 
