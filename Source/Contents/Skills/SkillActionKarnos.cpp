@@ -653,6 +653,14 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillEffect(int level, CGameActor* source, 
   const int shotEffect = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("sharpen_hail_shot", 0x7FCD77F9C7CBD14DULL));
   const int bottomEffect = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("sharpen_hail_shot_bottom", 0xD1538513DF975701ULL));
 
+  const auto aroundTarget = [&](int offsetX, int offsetY) {
+    return vector3d{
+      target->render.position.x + static_cast<float>(offsetX * 4),
+      target->render.position.y + static_cast<float>(offsetY * 4),
+      target->render.position.z + 0.0f,
+    };
+  };
+
   for (int delay = 0; delay < 1000; delay += 200) {
     int count = rand() % 8;
     if (count < 5) {
@@ -681,11 +689,7 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillEffect(int level, CGameActor* source, 
         offsetY = -offsetY;
       }
 
-      const vector3d position{
-        target->render.position.x + static_cast<float>(offsetX * 4),
-        target->render.position.y + static_cast<float>(offsetY * 4),
-        target->render.position.z + 0.0f,
-      };
+      const vector3d position = aroundTarget(offsetX, offsetY);
 
       CEffect* shot = g_effectMgr->Spawn(0, shotEffect, position, 0, -1, 0, 0);
       if (shot) {
