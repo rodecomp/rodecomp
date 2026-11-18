@@ -43,6 +43,42 @@ const char* g_miniMapMemoPath = "%s\\Memo\\$$%s.txt";
 // GLOBAL: gl_25072
 const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
+struct MiniMapTownNode {
+  /* 0000 */ MiniMapTownNode* left;
+  /* 0004 */ MiniMapTownNode* parent;
+  /* 0008 */ MiniMapTownNode* right;
+  /* 000C */ unsigned char color;
+  /* 000D */ unsigned char isNil;
+  /* 000E */ unsigned char padding_000E[2];
+  /* 0010 */ int key;
+  /* 0014 */ UIBitmapButton* value;
+};
+
+struct MiniMapTownMap {
+  /* 0000 */ MiniMapTownNode* head;
+};
+
+struct MiniMapQuestNode {
+  /* 0000 */ MiniMapQuestNode* left;
+  /* 0004 */ MiniMapQuestNode* parent;
+  /* 0008 */ MiniMapQuestNode* right;
+  /* 000C */ unsigned char color;
+  /* 000D */ unsigned char isNil;
+  /* 000E */ unsigned char padding_000E[2];
+  /* 0010 */ int key;
+  /* 0014 */ UIButton* value;
+};
+
+struct MiniMapQuestMap {
+  /* 0000 */ MiniMapQuestNode* head;
+};
+
+class MiniMapWindowHelper : public UIMiniMapWnd {
+public:
+  void UpdateTownButtons();
+  void UpdateQuestButtons();
+};
+
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
 UIEditctrlWnd::UIEditctrlWnd()
@@ -552,4 +588,54 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x0099D920
+// FUNCTION: fn_45726
+void MiniMapWindowHelper::UpdateTownButtons() {
+  const bool enabled = this->townCheckBox->geometry.state != 0;
+  MiniMapTownMap* buttons = reinterpret_cast<MiniMapTownMap*>(&this->townButtons);
+  MiniMapTownNode* it = buttons->head->left;
+  while (it != buttons->head) {
+    it->value->Enable(enabled);
+    if (it->right->isNil) {
+      MiniMapTownNode* node = it->parent;
+      while (!node->isNil && it == node->right) {
+        it = node;
+        node = node->parent;
+      }
+      it = node;
+    } else {
+      it = it->right;
+      while (!it->left->isNil) {
+        it = it->left;
+      }
+    }
+  }
+  this->Invalidate();
+}
+
+// OFFSET: 0x0099D9B0
+// FUNCTION: fn_45724
+void MiniMapWindowHelper::UpdateQuestButtons() {
+  const bool enabled = this->questCheckBox->geometry.state != 0;
+  MiniMapQuestMap* buttons = reinterpret_cast<MiniMapQuestMap*>(&this->questButtons);
+  MiniMapQuestNode* it = buttons->head->left;
+  while (it != buttons->head) {
+    it->value->Enable(enabled);
+    if (it->right->isNil) {
+      MiniMapQuestNode* node = it->parent;
+      while (!node->isNil && it == node->right) {
+        it = node;
+        node = node->parent;
+      }
+      it = node;
+    } else {
+      it = it->right;
+      while (!it->left->isNil) {
+        it = it->left;
+      }
+    }
+  }
+  this->Invalidate();
 }
