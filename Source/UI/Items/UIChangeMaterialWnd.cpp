@@ -308,17 +308,19 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
 
       entry.materials.resize(recipe.materials.size());
       auto material = entry.materials.begin();
-      for (auto source = recipe.materials.begin(); source != recipe.materials.end(); ++source, ++material) {
-        material->id = source->itemId;
-        material->quantity = source->count;
+      for (const ChangeMaterialEntry& source : recipe.materials) {
+        material->id = source.itemId;
+        material->quantity = source.count;
+        ++material;
       }
 
       entry.results.resize(recipe.products.size());
       auto result = entry.results.begin();
-      for (auto source = recipe.products.begin(); source != recipe.products.end(); ++source, ++result) {
-        result->id = source->itemId;
-        result->quantity = source->count;
-        result->amount = source->rate;
+      for (const ChangeMaterialProduct& source : recipe.products) {
+        result->id = source.itemId;
+        result->quantity = source.count;
+        result->amount = source.rate;
+        ++result;
       }
 
       bool available = true;
