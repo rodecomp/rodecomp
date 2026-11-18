@@ -5,6 +5,8 @@
 UIJobSlotButton::UIJobSlotButton() : UIBitmapButton(), selected(0) {
 }
 
+// OFFSET: 0x007BB300
+// FUNCTION: fn_45803
 UIJobSlotButton::~UIJobSlotButton() = default;
 
 // OFFSET: 0x007BFC70
