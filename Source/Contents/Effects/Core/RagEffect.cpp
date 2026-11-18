@@ -14902,8 +14902,9 @@ __declspec(safebuffers) void CRagEffect::AlphaCenterRise() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
+    const vector3d origin{0.0f, 0.0f, 0.0f};
     for (int i = 20; i != 0; --i) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(3, origin);
       this->state.lastPrim->state.duration = 40;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
