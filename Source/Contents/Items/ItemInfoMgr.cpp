@@ -88,7 +88,7 @@ bool CItemInfoMgr::Load() {
   lua_register(lua.GetState(), "AddItemEffectInfo", CItemInfoMgr::LuaAddItemEffectInfo);
   lua_register(lua.GetState(), "AddItemIsCostume", CItemInfoMgr::LuaAddItemIsCostume);
   lua_register(lua.GetState(), "AddItemPackageID", CItemInfoMgr::LuaAddItemPackageID);
-  if (luaL_loadfile(lua.GetState(), "SystemEN\\iteminfo.lua") != 0) {
+  if (luaL_loadfile(lua.GetState(), "System\\iteminfo_true.lub") != 0) {
     MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CItemInfoMgr", 0);
     return false;
   }

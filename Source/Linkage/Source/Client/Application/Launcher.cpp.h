@@ -60,7 +60,6 @@
 #include "Archive/GPakUpdate.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Application/ClientInfo.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
 #include "Client/Input/InputCharset.h"

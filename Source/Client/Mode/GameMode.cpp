@@ -1558,6 +1558,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_NUM_USER: {
+      if (g_serviceType == ServiceChina || g_serviceType == ServiceMalaysia || g_serviceType == ServiceSingapore) {
+        return 0;
+      }
       const std::uint16_t packet = ID_CZ_REQ_USER_COUNT;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
@@ -7295,7 +7298,7 @@ void CGameMode::UpdateBalloons() {
         text.assign(OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL));
       } else if (shownSkill == 40000) {
         text.assign(OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL));
-      } else if (g_session.IsState291To303(shownSkill)) {
+      } else if (g_session.IsAbracadabraSpecialSkill(shownSkill)) {
         text.assign(OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL));
       } else {
         text = CSkillInfo::DisplayName(shownSkill);
@@ -7921,7 +7924,6 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
   }
 
-  g_windowMgr.EnsureWindow(WID_OPENROULLETTEWND);
   if (g_session.showCameraInfo) {
     g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
   }
@@ -8031,6 +8033,10 @@ void CGameMode::InitializeState() {
   if (g_isStopByLogin) {
     g_isStopByLogin = 0;
     g_guildInfo.Init();
+    if (g_serviceType == ServiceKorea) {
+      g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_EX_HELP, 0, 0, 0);
+      this->SendMsg(MM_BILLING_INFO, 0, 0, 0, 0);
+    }
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIST_COMMAND)), 0xFFE6E6, 0, 0, 0);
     inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.m_lastLoginIp));
@@ -8196,7 +8202,7 @@ void CGameMode::ProcessRightButtonDrag() {
     }
 
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      const float range = this->canRotateView ? 42.0f : 10.0f;
+      const float range = this->canRotateView ? 20.0f : 10.0f;
       g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_mouse.y - this->oldMouseY) / 2);
       float limit;
       if (this->hasViewParameters) {
@@ -10539,7 +10545,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SHOW_BUILD_INFO: {
     char text[1024];
     std::memset(text, 0, sizeof(text));
-    sprintf_s(text, sizeof(text), "", "", "");
+    sprintf_s(text, sizeof(text), "build : %s - %s", "Feb 11 2026", "10:21:26");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     sprintf_s(text, sizeof(text), "ver : %d.%d.%d", 14, 2, 3);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);

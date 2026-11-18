@@ -988,7 +988,7 @@ void CGameMode::ReceiveToggle128(int enabled) {
 
 // OFFSET: 0x00D6E950
 // FUNCTION: fn_22108
-void CGameMode::ReceiveActorEffect347(const unsigned char* data) {
+void CGameMode::ReceiveCongratulation(const unsigned char* data) {
   if (g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     const auto* packet = reinterpret_cast<const ActorPacket*>(data);
     CRenderObject* actor = packet->aid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(packet->aid);
@@ -1135,7 +1135,7 @@ struct PartyItemPickupPacket {
   /* 0020 */ unsigned char grade;
 };
 
-struct ActorEffect228Packet {
+struct MillenniumShieldPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ std::int16_t value;
@@ -1211,12 +1211,12 @@ void CGameMode::NotifyMacroCheckRemovalResult(unsigned char result) {
 
 // OFFSET: 0x00D718D0
 // FUNCTION: fn_22138
-void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
+void CGameMode::ReceiveMillenniumShield(const unsigned char* data) {
   if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 
-  const auto* packet = reinterpret_cast<const ActorEffect228Packet*>(data);
+  const auto* packet = reinterpret_cast<const MillenniumShieldPacket*>(data);
   CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid);
   if (g_session.m_aid == packet->aid) {
     actor = this->scene->player;
@@ -3744,8 +3744,6 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 struct TypedItemEntry {
   /* 0000 */ int itemId;
   /* 0004 */ std::uint32_t price;
-  /* 0008 */ std::uint16_t viewId;
-  /* 000A */ std::uint32_t equipLocation;
 };
 
 struct TypedItemListPacket {
@@ -3781,8 +3779,6 @@ void CGameMode::ReceiveTypedItemList(const unsigned char* data) {
     if (type == 8) {
       type = 0xFFFF;
     }
-    item.sprite = entry.viewId;
-    item.identity[2] = entry.equipLocation;
     item.bindOnEquip = type;
     item.SetItemId(itemId);
     int capacity = sizeof(name);
@@ -4027,7 +4023,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         return;
       }
       vector3d* source = &actor->render.position;
-      mode->SpawnArrowEffect64(source, source, 18.0f);
+      mode->SpawnArrowEffectToPosition(source, source, 18.0f);
       const int offsets[8][2] = {{1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
       const int cellX = *reinterpret_cast<const std::int16_t*>(packet + 0xA);
       const int cellY = *reinterpret_cast<const std::int16_t*>(packet + 0xC);
@@ -4037,7 +4033,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         mode->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
         const float y = mode->scene->terrain->Height(x, z);
         vector3d target = {x, y, z};
-        mode->SpawnArrowEffect64(source, &target, 18.0f);
+        mode->SpawnArrowEffectToPosition(source, &target, 18.0f);
       }
       break;
     }

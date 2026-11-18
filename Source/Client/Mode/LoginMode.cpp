@@ -11,7 +11,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Application/ClientInfo.h"
 #include "Client/Application/Launcher.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Input/Mouse.h"
@@ -3267,6 +3266,30 @@ struct AccountLoginPacket {
   /* 0036 */ unsigned char clientType;
 };
 
+struct SsoLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t version;
+  /* 0008 */ unsigned char clientType;
+  /* 0009 */ char name[51];
+  /* 003C */ char mac[17];
+  /* 004D */ char ip[15];
+  /* 005C */ char token[500];
+};
+
+constexpr std::int16_t kStoveLoginPacketId = 0xC0E;
+
+struct StoveLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t version;
+  /* 0006 */ unsigned char clientType;
+  /* 0007 */ char ip[16];
+  /* 0017 */ char mac[18];
+  /* 0029 */ char memberNumber[24];
+  /* 0041 */ char gameUserId[24];
+  /* 0059 */ char accessToken[600];
+};
+
 struct CharServerEnterPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t aid;
@@ -3332,196 +3355,6 @@ static_assert(sizeof(ZoneEnterPacket) == 0x17);
 std::string nullsub_481(int, unsigned int) {
   return {};
 }
-void __stdcall LoadCustomServerList(CLoginMode* mode);
-
-// GLOBAL: gl_25523
-unsigned char g_customServerListLoaded;
-
-// GLOBAL: gl_25475
-unsigned char g_loginCancelRequested;
-
-// GLOBAL: gl_25527
-std::uint32_t g_patchedClientVersion = 0x80000000;
-
-// INLINED
-static char (&CustomServerBalloons())[8][128] {
-  static char balloons[8][128];
-  return balloons;
-}
-
-// OFFSET: 0x03DE91E0
-// FUNCTION: fn_45403
-__declspec(noinline) static const char* XmlText(const std::string& text, std::size_t& length) {
-  length = text.size();
-  return text.c_str();
-}
-
-// OFFSET: 0x03DE91EC
-// FUNCTION: fn_45404
-__declspec(noinline) static void CopyXmlText(const std::string* text, char* output, std::size_t capacity) {
-  if (text == nullptr) {
-    *output = '\0';
-    return;
-  }
-  std::size_t length;
-  const char* source = XmlText(*text, length);
-  if (source == nullptr || capacity == 0) {
-    *output = '\0';
-    return;
-  }
-  if (length > capacity - 1) {
-    length = capacity - 1;
-  }
-  std::memcpy(output, source, length);
-  output[length] = '\0';
-}
-
-// OFFSET: 0x03DE9224
-// FUNCTION: fn_45405
-__declspec(noinline) static void CopyXmlTextWithoutColors(const std::string* text, char* output, std::size_t capacity) {
-  if (text == nullptr) {
-    *output = '\0';
-    return;
-  }
-  std::size_t length;
-  const char* source = XmlText(*text, length);
-  if (source == nullptr || capacity == 0) {
-    *output = '\0';
-    return;
-  }
-  std::size_t remaining = capacity - 1;
-  while (length != 0 && remaining > 0) {
-    const char c = *source++;
-    --length;
-    if (c == '^' && length >= 6) {
-      source += 6;
-      length -= 6;
-      continue;
-    }
-    *output++ = c;
-    --remaining;
-  }
-  *output = '\0';
-}
-
-// OFFSET: 0x03DE927C
-// FUNCTION: fn_45406
-__declspec(noinline) static unsigned int ParseXmlNumber(const std::string* text) {
-  if (text == nullptr) {
-    return 0;
-  }
-  std::size_t length;
-  const char* source = XmlText(*text, length);
-  unsigned int value = 0;
-  while (length != 0) {
-    const unsigned int digit = static_cast<unsigned char>(*source++) - '0';
-    --length;
-    if (digit > 9) {
-      break;
-    }
-    value = value * 10 + digit;
-  }
-  return value;
-}
-
-// OFFSET: 0x03DE92AD
-// FUNCTION: fn_45407
-__declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* text) {
-  if (text == nullptr) {
-    return 0;
-  }
-  std::size_t length;
-  const char* source = XmlText(*text, length);
-  if (source == nullptr || length == 0) {
-    return 0;
-  }
-  std::uint32_t address = 0;
-  unsigned int octet = 0;
-  unsigned int dots = 0;
-  while (length != 0) {
-    const unsigned int c = static_cast<unsigned char>(*source++);
-    --length;
-    if (c == '.') {
-      if (dots >= 3) {
-        return 0;
-      }
-      address = (address << 8) | octet;
-      octet = 0;
-      ++dots;
-      continue;
-    }
-    if (c - '0' > 9) {
-      return 0;
-    }
-    octet = octet * 10 + (c - '0');
-    if (octet > 0xFF) {
-      return 0;
-    }
-  }
-  if (dots != 3) {
-    return 0;
-  }
-  return (address << 8) | octet;
-}
-
-// OFFSET: 0x03DE9318
-// FUNCTION: fn_45408
-void __stdcall LoadCustomServerList(CLoginMode* mode) {
-  ServerAddress2* servers = mode->serverList;
-  mode->serverCount = 0;
-  mode->selectedServer = -1;
-
-  XmlNode* connection = g_clientInfoRoot->FindChild("connection");
-  int count = 0;
-  while (connection != nullptr && count < 8) {
-    ServerAddress2& server = servers[count];
-    std::memset(&server, 0, sizeof(server));
-    std::memset(CustomServerBalloons()[count], 0, sizeof(CustomServerBalloons()[count]));
-
-    const std::string* address = nullptr;
-    const std::string* port = nullptr;
-    const std::string* display = nullptr;
-    const std::string* balloon = nullptr;
-
-    if (XmlNode* node = connection->FindChild("address")) {
-      address = &node->Text();
-      if (address != nullptr) {
-        server.address.ip = _byteswap_ulong(ParseXmlAddress(address));
-      }
-    }
-    if (XmlNode* node = connection->FindChild("port")) {
-      port = &node->Text();
-      if (port != nullptr) {
-        server.address.port = static_cast<std::int16_t>(ParseXmlNumber(port));
-      }
-    }
-    if (XmlNode* node = connection->FindChild("display")) {
-      display = &node->Text();
-    }
-
-    server.address.userCount = 4;
-    server.address.state = 0;
-    server.address.property = 0;
-    CopyXmlTextWithoutColors(display != nullptr ? display : address, server.address.name, sizeof(server.address.name));
-    CopyXmlText(display != nullptr ? display : address, server.domain, 0x78);
-
-    if (XmlNode* node = connection->FindChild("balloon")) {
-      balloon = &node->Text();
-      if (balloon != nullptr) {
-        CopyXmlText(balloon, CustomServerBalloons()[count], sizeof(CustomServerBalloons()[count]));
-      }
-    }
-
-    ++count;
-    connection = connection->FindSibling("connection");
-  }
-
-  mode->serverCount = count;
-  if (count != 0) {
-    mode->selectedServer = 0;
-  }
-}
-
 // OFFSET: 0x00D93B20
 // FUNCTION: fn_22297
 void CLoginMode::OnChangeState(int value) {
@@ -3622,17 +3455,6 @@ void CLoginMode::OnChangeState(int value) {
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
     window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMSERVER", 0x6FE153231D879777ULL)), 0, 0);
 
-    if (g_loginCancelRequested == 1) {
-      g_loginCancelRequested = 0;
-      LoadCustomServerList(this);
-    } else if (this->serverCount < 1 || this->serverCount > 8) {
-      LoadCustomServerList(this);
-    }
-    if (this->serverCount != 0) {
-      g_customServerListLoaded = 1;
-    }
-
-    char(*displayNames)[128] = CustomServerBalloons();
     for (int i = 0; i < this->serverCount; ++i) {
       const ServerAddress2& server = servers[i];
       char text[64];
@@ -3640,8 +3462,7 @@ void CLoginMode::OnChangeState(int value) {
       if (server.address.property == 1) {
         std::sprintf(text, LookupMessage(MSI_SERVER_PROPERTY_NEW));
       }
-      const bool custom = server.address.userCount == 4 && server.address.state == 0;
-      std::sprintf(text + std::strlen(text), custom ? server.domain : server.address.name);
+      std::sprintf(text + std::strlen(text), server.address.name);
 
       std::string status;
       std::string green = "^00B509";
@@ -3679,18 +3500,6 @@ void CLoginMode::OnChangeState(int value) {
         strcpy_s(text, sizeof(text), status.c_str());
       }
       window->m_serverList->AddLine(text);
-
-      if (custom && static_cast<unsigned int>(i) < 8 && displayNames[i][0] != '\0') {
-        std::string balloon;
-        balloon.assign(displayNames[i], std::strlen(displayNames[i]));
-        UIServerListBox* list = static_cast<UIServerListBox*>(window->m_serverList);
-        if (list->balloonTexts.size() != list->balloonTexts.capacity()) {
-          list->balloonTexts.push_back(balloon);
-        } else if (list->balloonTexts.capacity() == 0) {
-          list->balloonTexts.reserve(8);
-          list->balloonTexts.push_back(balloon);
-        }
-      }
     }
 
     window->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
@@ -3761,29 +3570,13 @@ void CLoginMode::OnChangeState(int value) {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    if (!std::strstr(g_session.m_launchServerName, "Dev")) {
-      OBFUSCATE_BYTES_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL);
-      OBFUSCATE_BYTES_TEXT("%s", 0x33133B977BCD03CDULL);
-    } else {
-      OBFUSCATE_BYTES_TEXT("kro-qm-1a.ragnarok.co.kr:6900", 0xA12DAB392545D72FULL);
-      OBFUSCATE_BYTES_TEXT("%s", 0x6BA1C1132F033B75ULL);
-    }
-
     ConnectionEndpoint endpoint;
     endpoint.address[0] = '\0';
     endpoint.port = 0;
-    endpoint.overrideAddress[0] = '\0';
-    const char* address = g_clientInfoAddress;
-    const char* port = g_clientInfoPort;
-    const char* domain = g_clientInfoDomain;
-    if (address) {
-      std::strcpy(endpoint.address, address);
-    }
-    if (domain || address) {
-      std::strcpy(endpoint.overrideAddress, domain ? domain : address);
-    }
-    if (port) {
-      endpoint.port = atoi(port);
+    if (!std::strstr(g_session.m_launchServerName, "Dev")) {
+      StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x33133B977BCD03CDULL), OBFUSCATE_BYTES_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL));
+    } else {
+      StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x6BA1C1132F033B75ULL), OBFUSCATE_BYTES_TEXT("kro-qm-1a.ragnarok.co.kr:6900", 0xA12DAB392545D72FULL));
     }
 
     this->connectionReady = GetRagConnection().Connect(endpoint);
@@ -3798,21 +3591,64 @@ void CLoginMode::OnChangeState(int value) {
 
     g_packetReassembler->Notify(2);
     SendExecutableDigest();
-    AccountLoginPacket packet;
-    packet.id = ID_CA_LOGIN;
-    packet.version = g_patchedClientVersion;
-    std::memcpy(packet.name, this->m_accountId, sizeof(packet.name));
-    if (g_serviceType == ServicePhilippine) {
-      char password[24];
-      DecryptAES(this->m_password, password, sizeof(password));
-      std::memcpy(packet.password, password, sizeof(packet.password));
-    } else if (g_serviceType == ServiceTaiwan) {
-      DecryptRijndael192(this->m_password, packet.password);
+    if (g_serviceType != ServiceKorea && g_serviceType != ServiceFrance && g_serviceType != ServiceBrazil) {
+      AccountLoginPacket packet;
+      packet.id = ID_CA_LOGIN;
+      packet.version = g_serviceFlag07;
+      std::memcpy(packet.name, this->m_accountId, sizeof(packet.name));
+      if (g_serviceType == ServicePhilippine) {
+        char password[24];
+        DecryptAES(this->m_password, password, sizeof(password));
+        std::memcpy(packet.password, password, sizeof(packet.password));
+      } else if (g_serviceType == ServiceTaiwan) {
+        DecryptRijndael192(this->m_password, packet.password);
+      } else {
+        std::memcpy(packet.password, this->m_password, sizeof(packet.password));
+      }
+      packet.clientType = static_cast<unsigned char>(GetClientType());
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+    } else if (g_session.m_launchPassCommandLine) {
+      StoveLoginPacket packet;
+      std::memset(packet.ip, 0, sizeof(packet) - offsetof(StoveLoginPacket, ip));
+      packet.id = kStoveLoginPacketId;
+      packet.version = g_serviceFlag07;
+      packet.clientType = static_cast<unsigned char>(GetClientType());
+      char hostName[100];
+      gethostname(hostName, sizeof(hostName));
+      const char* ip;
+      if (hostent* resolved = gethostbyname(hostName)) {
+        ip = inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0]));
+      } else {
+        ip = OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x4F637DC51307B759ULL);
+      }
+      StringFormat(packet.ip, sizeof(packet.ip), static_cast<std::size_t>(-1), ip);
+      StringFormat(packet.mac, sizeof(packet.mac), static_cast<std::size_t>(-1), GetMacAddress().c_str());
+      StringFormat(packet.memberNumber, sizeof(packet.memberNumber), static_cast<std::size_t>(-1), g_stoveMgr->m_memberNumber);
+      StringFormat(packet.gameUserId, sizeof(packet.gameUserId), static_cast<std::size_t>(-1), g_stoveMgr->m_gameUserId);
+      StringFormat(packet.accessToken, sizeof(packet.accessToken), static_cast<std::size_t>(-1), g_stoveMgr->GetAccessToken());
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     } else {
-      std::memcpy(packet.password, this->m_password, sizeof(packet.password));
+      SsoLoginPacket packet;
+      packet.id = ID_CA_SSO_LOGIN_REQ;
+      packet.version = g_serviceFlag07;
+      packet.clientType = static_cast<unsigned char>(GetClientType());
+      std::strncpy(packet.mac, GetMacAddress().c_str(), sizeof(packet.mac));
+      std::strncpy(packet.name, g_launchAccountPassword, std::strlen(g_launchAccountPassword));
+      packet.name[std::strlen(g_launchAccountPassword)] = '\0';
+      char hostName[100];
+      gethostname(hostName, sizeof(hostName));
+      if (hostent* resolved = gethostbyname(hostName)) {
+        std::strcpy(packet.ip, inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0])));
+      } else {
+        std::strcpy(packet.ip, OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x2DCB7567394DC1ABULL));
+      }
+      const std::size_t tokenLength = std::strlen(g_session.m_loginErrorText);
+      packet.length = static_cast<std::int16_t>(tokenLength + offsetof(SsoLoginPacket, token));
+      SsoLoginPacket buffer;
+      std::memcpy(&buffer, &packet, offsetof(SsoLoginPacket, token));
+      std::memcpy(buffer.token, g_session.m_loginErrorText, tokenLength);
+      GetRagConnection().Send(packet.length, &buffer);
     }
-    packet.clientType = static_cast<unsigned char>(GetClientType());
-    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }

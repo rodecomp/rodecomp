@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00E1D6B0
 // FUNCTION: fn_23850
-int CSession::IsState291To303(int state) const {
+int CSession::IsAbracadabraSpecialSkill(int state) const {
   switch (state) {
   case SA_MONOCELL:
   case SA_CLASSCHANGE:

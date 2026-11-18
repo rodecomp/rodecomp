@@ -1827,7 +1827,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     if (mode && mode->canRotateView == 1) {
       this->EnsureWindow(WID_MINIMAPZOOMWND);
     }
-    g_modeMgr.GetGameMode()->scene->player->RefreshEffect164();
+    g_modeMgr.GetGameMode()->scene->player->RelaunchStatusStateEffect();
     this->windowVisibilityState = 1;
   }
 }
@@ -2510,9 +2510,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       return false;
     }
 
-    if (g_windowMgr.CloseWindow(WID_ILLUSTWND)) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 1, 0);
-    } else if (UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
       switch (id) {
       case WID_ITEMSHOPWND:
       case WID_ITEMPURCHASEWND:
@@ -2730,19 +2728,25 @@ bool UIWindowMgr::CloseWindow(int id) {
   }
 
   if (Replay::Instance().state == 2 && Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
-      Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) && Replay::Instance().header.options.Get(ReplayRecordOption::Status) &&
-      (id == WID_TIPBOXWND || id == WID_RENEWQUESTWND || id == WID_RENEWDETAILQUESTINFOWND)) {
+      Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) && Replay::Instance().header.options.Get(ReplayRecordOption::Status)) {
+    switch (id) {
+    case WID_TIPBOXWND:
+    case WID_RENEWQUESTWND:
+    case WID_RENEWDETAILQUESTINFOWND: {
 #pragma pack(push, 1)
-    struct WindowClosePacket {
-      std::uint32_t marker;
-      std::uint16_t bytes;
-      std::int32_t windowId;
-    };
+        struct WindowClosePacket {
+          std::uint32_t marker;
+          std::uint16_t bytes;
+          std::int32_t windowId;
+        };
 #pragma pack(pop)
-    static_assert(sizeof(WindowClosePacket) == 10);
-    WindowClosePacket packet{0x039208AEu, 10, id};
+        static_assert(sizeof(WindowClosePacket) == 10);
+        WindowClosePacket packet{0x039208AEu, 10, id};
 
-    Replay::Instance().Record(packet.bytes, &packet, 42, 0);
+        Replay::Instance().Record(packet.bytes, &packet, 42, 0);
+        break;
+      }
+    }
   }
 
   switch (id) {
@@ -2803,9 +2807,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_STATUSWND:
     if (this->statusWnd) {
-      if (reinterpret_cast<std::uintptr_t>(this->statusWnd) > 8) {
-        this->Schedule(this->statusWnd);
-      }
+      this->Schedule(this->statusWnd);
       this->statusWnd = nullptr;
       closed = true;
       this->statusWndInfo.visible = 0;
@@ -3166,7 +3168,13 @@ bool UIWindowMgr::CloseWindow(int id) {
     if (this->messengerGroupWnd) {
       this->messengerGroupWnd->StoreInfo();
     }
-    closed = this->CloseWindow(WID_MESSENGERGROUPWND);
+    {
+      int groupClosed = 0;
+      if (this->CloseWindow(WID_MESSENGERGROUPWND)) {
+        groupClosed = 1;
+      }
+      closed = groupClosed;
+    }
     g_windowMgr.DismissTransient();
     break;
   case WID_MESSENGERGROUPWND:

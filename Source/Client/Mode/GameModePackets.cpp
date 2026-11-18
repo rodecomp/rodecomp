@@ -12930,7 +12930,7 @@ void CGameMode::NotifySkillCasting(
 
 // OFFSET: 0x00D79FD0
 // FUNCTION: fn_22185
-__declspec(noinline) void CGameMode::SetActiveSkillEffect184(unsigned char enable) {
+__declspec(noinline) void CGameMode::SetClairvoyance(unsigned char enable) {
   if (enable == 1) {
     ActiveSkillEffect effect;
     effect.id = 184;
@@ -23869,7 +23869,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveCoupleName(g_gameModePacketBuffer);
       break;
     case ID_ZC_CONGRATULATION:
-      this->ReceiveActorEffect347(g_gameModePacketBuffer);
+      this->ReceiveCongratulation(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_EFFECT2:
       this->ReceiveNotifyEffect(g_gameModePacketBuffer);
@@ -24040,7 +24040,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveStatusChangeExtended(g_gameModePacketBuffer);
       break;
     case ID_ZC_MILLENNIUMSHIELD:
-      this->ReceiveActorEffect228(g_gameModePacketBuffer);
+      this->ReceiveMillenniumShield(g_gameModePacketBuffer);
       break;
     case ID_ZC_QUEST_NOTIFY_EFFECT:
       this->ReceiveMinimapMarker(g_gameModePacketBuffer);
@@ -27964,7 +27964,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_SET_CLAIRVOYANCE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SET_CLAIRVOYANCE*>(g_gameModePacketBuffer);
-      SetActiveSkillEffect184(packet->flag);
+      SetClairvoyance(packet->flag);
       break;
     }
     case ID_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER:

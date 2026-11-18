@@ -58,19 +58,4 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
 
   const Json::Value& active = root["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
-
-  UIWindow* window = g_windowMgr.LookupWindow(WID_SHORTCUTWND);
-
-  if (!window) {
-    return;
-  }
-
-  window->geometry.x = saved.x;
-  window->geometry.y = saved.y;
-  window->geometry.width = saved.width;
-  window->geometry.height = saved.height;
-
-  g_windowMgr.ShowWindowById(WID_SHORTCUTWND, saved.show);
-  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&saved), 0, 0, 0);
-  window->SendMsg(nullptr, UM_COMMAND, itemSlotActive ? 588 : 589, 0, 0, 0);
 }

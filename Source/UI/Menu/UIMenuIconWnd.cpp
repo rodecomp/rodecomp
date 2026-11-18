@@ -125,7 +125,10 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
       names[index] = "status_doram";
     }
 
-    if (ids[index] == ID_SELECT_PARTY_LISTING || ids[index] == 600) {
+    switch (ids[index]) {
+    case MENUICON_BATTLE:
+    case ID_SELECT_PARTY_LISTING:
+    case 600:
       continue;
     }
 

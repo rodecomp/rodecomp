@@ -123,7 +123,7 @@ bool CSession::IsNpcJob(int job) const {
 bool CSession::ValidateCharacterName(const char* name) {
   const int length = static_cast<int>(std::strlen(name));
   for (int index = 0; index < length; ++index) {
-    if (name[index] == 0) {
+    if (name[index] < 0) {
       return false;
     }
   }
@@ -2091,7 +2091,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case AC_SHOWER: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     vector3d* sourcePosition = &source->render.position;
-    mode->SpawnArrowEffect64(sourcePosition, &target->render.position, 18.0f);
+    mode->SpawnArrowEffectToPosition(sourcePosition, &target->render.position, 18.0f);
     int column;
     int row;
     mode->WorldCell(target->render.position.x, target->render.position.z, column, row);
@@ -2104,7 +2104,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       position.x = x;
       position.y = mode->scene->terrain->Height(x, z);
       position.z = z;
-      mode->SpawnArrowEffect64(sourcePosition, &position, 18.0f);
+      mode->SpawnArrowEffectToPosition(sourcePosition, &position, 18.0f);
     }
     break;
   }

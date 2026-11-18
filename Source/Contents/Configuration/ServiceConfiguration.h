@@ -30,7 +30,7 @@ extern std::vector<std::string> g_loadingScreens;
 const char* GetLicenceText();
 struct XmlNode;
 
-void InitializeServiceStrings();
+void InitializeServiceStrings(char* protection);
 void ReadClientInfo(XmlNode* clientInfo);
 
 #endif

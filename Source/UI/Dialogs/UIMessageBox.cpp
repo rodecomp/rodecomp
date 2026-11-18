@@ -3299,7 +3299,6 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     }
     case ID_CANCEL:
-      g_loginCancelRequested = 1;
       g_modeMgr.currentMode->SendMsg(LMM_GOTOSELECTACCOUNT, 0, 0, 0, 0);
       break;
     case ID_EXIT:

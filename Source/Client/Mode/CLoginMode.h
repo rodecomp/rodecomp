@@ -252,6 +252,4 @@ static_assert(offsetof(CLoginMode, mapStates) == 0x6F68);
 static_assert(sizeof(CLoginMode) == 0x6F7C);
 #endif
 
-extern unsigned char g_loginCancelRequested;
-
 #endif

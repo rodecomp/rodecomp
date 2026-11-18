@@ -5,11 +5,6 @@
 
 extern HWND hWnd;
 
-HWND __stdcall CreateApplicationWindow(
-  DWORD extendedStyle, const char* className, const char* ignoredTitle, DWORD style, int x, int y, int width, int height, HWND parent, HMENU menu,
-  HINSTANCE instance, void* parameter
-);
-
 BOOL ClipApplicationCursor();
 BOOL ReleaseApplicationCursor();
 LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);

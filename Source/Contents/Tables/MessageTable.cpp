@@ -5038,7 +5038,7 @@ int FindMessageId(const char* name) {
 // OFFSET: 0x00B00890
 // FUNCTION: fn_18371
 char* DecodeMessageRot(char* str) {
-  if (g_serviceType == ServiceKorea) {
+  if (g_serviceType != ServiceKorea) {
     return str;
   }
 

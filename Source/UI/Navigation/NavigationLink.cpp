@@ -22,7 +22,6 @@ __declspec(noinline) bool IsValidIdentChar(char value) {
 #include <vector>
 #include <windows.h>
 #include <shellapi.h>
-#include <shlwapi.h>
 #include <timeapi.h>
 
 #include "Client/Application/ApplicationWindow.h"
@@ -1768,7 +1767,7 @@ void UIItemImage::OnRBtnDown(int, int) {
 // OFFSET: 0x00832000
 // FUNCTION: fn_10406
 bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
-  if (!StrStrIA(text.c_str(), g_itemLinkTag.c_str())) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>(g_itemLinkTag.c_str()))) {
     return false;
   }
 

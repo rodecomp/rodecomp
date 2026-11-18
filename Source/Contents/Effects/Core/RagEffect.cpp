@@ -17058,7 +17058,7 @@ void CPc::UpdateFootprints(int kind) {
 
 // OFFSET: 0x00C74B60
 // FUNCTION: fn_20334
-void CPlayer::RefreshEffect164() {
+void CPlayer::RelaunchStatusStateEffect() {
   this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STATUS_STATE, 0, 0, 0, 0, 0);
   this->skillEffect = this->LaunchEffect(EF_STATUS_STATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }

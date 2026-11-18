@@ -16,6 +16,7 @@ __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 #include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Navigation/NavigationManager.h"
@@ -1077,31 +1078,71 @@ void UIWindowMgr::SendFlagEffect(int hotkey) {
 
   switch (hotkey) {
   case HK_FLAG_1 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceIndonesia) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceBrazil) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
+    } else if (g_serviceType == ServiceIndia) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_2 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceIndonesia) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_3 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServicePhilippine) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_4 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceMalaysia) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_5 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceMalaysia) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_6 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_7 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceTaiwan) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_8 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
+    }
     break;
   case HK_FLAG_9 + 200:
-    mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
+    if (g_serviceType == ServiceKorea) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
+    } else if (g_serviceType == ServiceRussia || g_serviceType == ServiceEu) {
+      mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
+    }
     break;
   }
 }
@@ -1171,7 +1212,7 @@ void UIWindowMgr::RestoreHiddenWindows() {
     this->EnsureWindow(WID_MINIMAPZOOMWND);
   }
 
-  g_modeMgr.GetGameMode()->scene->player->RefreshEffect164();
+  g_modeMgr.GetGameMode()->scene->player->RelaunchStatusStateEffect();
   this->windowVisibilityState = 1;
 
   for (std::map<int, UIWindow*>::iterator it = this->overlays.begin(); it != this->overlays.end(); ++it) {

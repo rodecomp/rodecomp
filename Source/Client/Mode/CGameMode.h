@@ -378,7 +378,7 @@ public:
   void ReceiveBookOpen(const unsigned char* packet);
   void ReceiveActorNameCard(const unsigned char* packet);
   void ReceiveServiceRequest(unsigned char type, int value);
-  void SetActiveSkillEffect184(unsigned char enable);
+  void SetClairvoyance(unsigned char enable);
   void ReceiveAchievementUpdate(
     int score, short achievementLevel, int completed, int total, int id, unsigned char achieved, const std::uint32_t* objectives,
     __time32_t completedAt, unsigned char rewarded
@@ -454,7 +454,7 @@ public:
   void ReceiveZoneItemRetrievalFailure(const unsigned char* packet);
   void ReceiveActorPairFreeze(const unsigned char* packet);
   void ReceiveEffectRemove(const unsigned char* packet);
-  void ReceiveActorEffect347(const unsigned char* packet);
+  void ReceiveCongratulation(const unsigned char* packet);
   void ReceiveCoupleName(const unsigned char* packet);
   void ReceiveToggle128(int enabled);
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
@@ -584,7 +584,7 @@ public:
   void ReceiveStatusChangeNotice(const unsigned char* packet);
   void ReceiveItemEffectResult(const unsigned char* packet);
   void NotifyMacroCheckRemovalResult(unsigned char result);
-  void ReceiveActorEffect228(const unsigned char* packet);
+  void ReceiveMillenniumShield(const unsigned char* packet);
   void ResendMinimapMarkers();
   void ReceiveJobTitle(unsigned char result, int job);
   void ReceiveQuestStates(int count, const unsigned char* entries);
@@ -646,7 +646,7 @@ public:
   void ReceiveGameOptionResult(int command, int result, int enabled);
   void ReceiveCharViewResult(const unsigned char* packet);
   void SpawnArrowEffect(const vector3d* source, std::uint32_t target, float speed, int job);
-  void SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed);
+  void SpawnArrowEffectToPosition(const vector3d* source, const vector3d* target, float speed);
   void UnusedArrowStub(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
   bool UpdateReplayPause(bool resume);
   void SendSyncRequest(bool force);

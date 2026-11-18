@@ -3131,9 +3131,6 @@ struct Item1718PendingRecord {
   /* 0004 */ std::uint32_t realPrice;
   /* 0008 */ unsigned char type;
   /* 0009 */ std::int32_t itemId;
-  /* 000D */ std::uint16_t sprite;
-  /* 000F */ std::uint32_t location;
-  /* 0013 */ unsigned char padding_0013[6];
 };
 
 struct PACKET_ZC_PC_CASH_POINT_ITEMLIST {
@@ -3145,28 +3142,8 @@ struct PACKET_ZC_PC_CASH_POINT_ITEMLIST {
 };
 #pragma pack(pop)
 
-static_assert(sizeof(Item1718PendingRecord) == 0x19);
-static_assert(sizeof(PACKET_ZC_PC_CASH_POINT_ITEMLIST) == 0x25);
-
-struct Unknown015D4818Values {
-  /* 0000 */ std::uint32_t padding_0000[2];
-  /* 0008 */ std::uint32_t location;
-  /* 000C */ std::uint32_t padding_000C[25];
-  /* 0070 */ std::uint32_t sprite;
-};
-
-struct Unknown015D4818Entry {
-  /* 0000 */ std::uint32_t padding_0000[2];
-  /* 0008 */ Unknown015D4818Values values;
-};
-
-struct Unknown015D4818 {
-  /* 0000 */ std::uint32_t padding_0000;
-  /* 0004 */ Unknown015D4818Entry* entry;
-};
-
-// GLOBAL: gl_25368
-Unknown015D4818* g_pendingCashItemList;
+static_assert(sizeof(Item1718PendingRecord) == 0x0D);
+static_assert(sizeof(PACKET_ZC_PC_CASH_POINT_ITEMLIST) == 0x19);
 
 // OFFSET: 0x00D3BD40
 // FUNCTION: fn_21790
@@ -3195,11 +3172,6 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.id = -1;
     item.identified = 1;
     g_session.AddShopItem(item, 0);
-    if (g_pendingCashItemList && g_pendingCashItemList->entry) {
-      Unknown015D4818Values& values = g_pendingCashItemList->entry->values;
-      values.sprite = entry.sprite;
-      values.location = entry.location;
-    }
     ++record;
   }
 

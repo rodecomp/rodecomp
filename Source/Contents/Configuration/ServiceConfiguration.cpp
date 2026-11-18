@@ -142,10 +142,11 @@ const char* GetLicenceText() {
 
 void LoadEtcInfo();
 void InitializeLanguage();
+void InitializeServiceConfiguration();
 
 // OFFSET: 0x00ACFF90
 // FUNCTION: fn_17808
-void InitializeServiceStrings() {
+void InitializeServiceStrings(char* protection) {
   LoadEtcInfo();
 
   switch (g_serviceType) {
@@ -169,6 +170,7 @@ void InitializeServiceStrings() {
   case ServiceFrance:
   case ServiceUae:
   case ServiceEu:
+    InitializeServiceConfiguration();
     break;
   default: {
     ShowErrorDialog(OBFUSCATE_TEXT("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL), 0);
@@ -421,10 +423,6 @@ void InitializeLanguage() {
 //   strstr(g_launchServerName, "QmSakray"), then one of two key/address pairs and
 //   StringFormat into g_serviceAddress, then the shared admin/monster-job tail at 0x00AD299D.
 //   That surviving path is what is ported below. Whatever ran in the lost bytes before it is unknown.
-// - At runtime this function is never called. A live WinDbg run of the full client
-//   (servertype=primary) never hit 0x00AD1C90 or 0x00AD1E58. The protector's own loader in section
-//   .data6 (sub_3DE8027, called from WinMain at 0x00E5F078) reads clientinfo.xml itself and sets
-//   g_serviceFlag07, g_adminAccountIds, g_monsterJobs and the connection strings instead.
 // - Cases 2 and 3 and the code before the switch are fully intact and ported as they are.
 // OFFSET: 0x00AD1C90
 // FUNCTION: fn_17817

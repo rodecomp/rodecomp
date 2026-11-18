@@ -907,7 +907,7 @@ public:
   void PlaySkillEffect(int skillId, int level, CGameActor* source, CGameActor* target);
   bool PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target);
   bool PlaySkillGroundEffect(int skillId, vector3d position);
-  int IsState291To303(int state) const;
+  int IsAbracadabraSpecialSkill(int state) const;
   int IsType0Or4(int type) const;
   int IsMonsterActor(CGameActor* actor) const;
   int IsLocalPlayerAid(std::uint32_t aid) const;

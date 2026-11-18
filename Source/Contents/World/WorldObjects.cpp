@@ -294,7 +294,7 @@ void CGameMode::SpawnArrowEffect(const vector3d* source, std::uint32_t target, f
 
 // OFFSET: 0x00CD80C0
 // FUNCTION: fn_21299
-void CGameMode::SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed) {
+void CGameMode::SpawnArrowEffectToPosition(const vector3d* source, const vector3d* target, float speed) {
   CArrowEffect* effect = new CArrowEffect;
 
   if (effect) {

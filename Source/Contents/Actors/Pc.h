@@ -224,7 +224,7 @@ public:
   void ReapplySkillEffects();
   void RegisterPos() override;
   void UnRegisterPos() override;
-  void RefreshEffect164();
+  void RelaunchStatusStateEffect();
   void UpdateMsgEffect(bool show);
   void ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column);
   float AdjustFollowDistance(CGameActor* target, float distance);
