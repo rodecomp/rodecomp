@@ -186,9 +186,8 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(CGameActor* source, CGameActor* t
   if (source && target) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-      effect->SetAngle(
-        ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values) + 180.0f
-      );
+      const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
+      effect->SetAngle(angle + 180.0f);
       effect->SetDelay(static_cast<int>(source->attackMotion * source->render.speed * 16.0f));
     }
   }

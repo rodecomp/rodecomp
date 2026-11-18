@@ -1155,13 +1155,15 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
   const int stormB = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("furios_storm_b", 0x3F557BE333F95F6DULL));
   const int stormBBottom = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("furios_storm_b_bottom", 0x0753A7E1EFA9E139ULL));
 
+  const vector3d stormPosition = {0.0f, 0.0f, 0.0f};
+  const vector3d bottomPosition = {0.0f, 0.0f, 0.0f};
   for (int delay = 0; delay < 1000; delay += 250) {
     const int roll = std::rand() % 2;
     const int variant = roll >= 0 ? roll : 0;
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormA : stormB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormA : stormB, stormPosition, 0, -1, 0, 0)) {
       effect->SetDelay(delay);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, bottomPosition, 0, -1, 0, 0)) {
       effect->SetDelay(delay);
     }
   }
