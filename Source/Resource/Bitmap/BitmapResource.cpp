@@ -12,9 +12,6 @@
 #include <string>
 #include <timeapi.h>
 
-// INLINED
-CBitmapRes::~CBitmapRes() = default;
-
 // OFFSET: 0x00749580
 // FUNCTION: fn_07847
 CBitmapRes* CBitmapRes::Create() {

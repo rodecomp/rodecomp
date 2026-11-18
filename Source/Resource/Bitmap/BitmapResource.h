@@ -21,7 +21,7 @@ class CBitmapRes : public CRes {
 public:
   CBitmapRes();
   CBitmapRes(const char* extension, const char* prefix);
-  ~CBitmapRes() override;
+  ~CBitmapRes() override = default;
   CBitmapRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
