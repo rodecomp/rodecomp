@@ -687,8 +687,8 @@ void CPc::LoadEquipAction(int slot, const char* name) {
 
   const ActionFrame* actionFrame = &action->Frame(0, 0);
   if (actionFrame && !actionFrame->anchors.empty() && !baseFrame->anchors.empty()) {
-    this->extentLeft = static_cast<float>(actionFrame->anchors[0].x - baseFrame->anchors[0].x + cell->x);
-    this->extentTop = static_cast<float>(actionFrame->anchors[0].y - baseFrame->anchors[0].y + cell->y);
+    this->extentLeft = static_cast<float>(actionFrame->anchors.front().x - baseFrame->anchors.front().x + cell->x);
+    this->extentTop = static_cast<float>(actionFrame->anchors.front().y - baseFrame->anchors.front().y + cell->y);
   }
 }
 
