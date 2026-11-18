@@ -15,6 +15,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarVariants.h"
 #include "Network/TextEncoding.h"
@@ -984,6 +985,12 @@ UIChatEditCtrl::UIChatEditCtrl() : UIEditCtrl(), historyLimit(30) {
   this->historyIndex = 0;
   this->history.reserve(this->historyLimit);
   this->itemTags = 0;
+}
+
+// OFFSET: 0x008513B0
+// FUNCTION: fn_45603
+UIChatEditCtrl::~UIChatEditCtrl() {
+  delete this->itemTags;
 }
 
 // OFFSET: 0x0085EB50

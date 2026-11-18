@@ -211,6 +211,7 @@ public:
 class UIChatEditCtrl : public UIEditCtrl {
 public:
   UIChatEditCtrl();
+  __declspec(noinline) ~UIChatEditCtrl() override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
