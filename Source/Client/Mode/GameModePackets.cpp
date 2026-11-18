@@ -16321,12 +16321,14 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     }
 
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (created) {
+    if (!created) {
+      if (guildId != 0 && !actor->GetGdid()) {
+        actor->SetGuildInfo(guildId, packet->guildVersion);
+      }
+    } else {
       if (guildId != 0) {
         actor->SetGuildInfo(guildId, packet->guildVersion);
       }
-    } else if (guildId != 0 && !actor->GetGdid()) {
-      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
 

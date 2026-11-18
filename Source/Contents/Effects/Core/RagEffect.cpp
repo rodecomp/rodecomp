@@ -6763,7 +6763,7 @@ void CRagEffect::TexturedSpread(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  if (kind < 2) {
+  if (kind <= 1) {
     this->state.lastPrim->state.size = 4.0f;
   } else if (kind == 2) {
     this->state.lastPrim->state.size = 7.0f;
