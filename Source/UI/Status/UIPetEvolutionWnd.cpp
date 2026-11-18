@@ -30,10 +30,11 @@ UIPetEvolutionWnd::UIPetEvolutionWnd() : UIFrameWnd(0) {
   this->m_evolvedEggId = -1;
 }
 
+// OFFSET: 0x009AB070
+// FUNCTION: fn_45698
 // OFFSET: 0x009AB0E0
 // FUNCTION: fn_13762
-UIPetEvolutionWnd::~UIPetEvolutionWnd() {
-}
+UIPetEvolutionWnd::~UIPetEvolutionWnd() = default;
 
 // OFFSET: 0x009AB170
 // FUNCTION: fn_13763
