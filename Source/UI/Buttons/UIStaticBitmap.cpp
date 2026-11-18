@@ -15,6 +15,8 @@ UIStaticBitmap::UIStaticBitmap() : UIWindow(0) {
   this->tooltipY = -20;
 }
 
+// OFFSET: 0x00851D20
+// FUNCTION: fn_45645
 UIStaticBitmap::~UIStaticBitmap() = default;
 
 // OFFSET: 0x00865740
@@ -32,6 +34,13 @@ void UIStaticBitmap::SetTooltip(const char* text) {
   if (text) {
     this->tooltip = text;
   }
+}
+
+// OFFSET: 0x008697C0
+// FUNCTION: fn_45646
+void UIStaticBitmap::SetTooltipOffset(int x, int y) {
+  this->tooltipX = x;
+  this->tooltipY = y;
 }
 
 // OFFSET: 0x0085DA90

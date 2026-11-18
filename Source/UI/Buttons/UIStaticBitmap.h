@@ -8,7 +8,7 @@
 class UIStaticBitmap : public UIWindow {
 public:
   UIStaticBitmap();
-  ~UIStaticBitmap() override;
+  __declspec(noinline) ~UIStaticBitmap() override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
   void OnLBtnDblClk(int x, int y) override;
@@ -21,6 +21,7 @@ public:
   void OnWheel(int value) override;
   void SetBitmap(const char* name);
   void SetTooltip(const char* text);
+  void SetTooltipOffset(int x, int y);
 
   /* 007C */ std::string bitmap;
   /* 0094 */ std::string tooltip;
