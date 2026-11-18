@@ -9,6 +9,7 @@
 class UIBarGraph : public UIWindow {
 public:
   explicit UIBarGraph();
+  ~UIBarGraph() override;
 
   void Paint() override;
 
@@ -20,6 +21,7 @@ public:
 class UIBarGraph2 : public UIBarGraph {
 public:
   UIBarGraph2();
+  ~UIBarGraph2() override;
 
   void Paint() override;
 
@@ -46,6 +48,7 @@ class UIBarGraph4 : public UIBarGraph3 {
 public:
   explicit UIBarGraph4() : UIBarGraph3() {
   }
+  ~UIBarGraph4() override;
 
   void Paint() override;
   void OnMouseHover(int x, int y) override;
@@ -85,6 +88,7 @@ public:
 class UIBarGraphHomun : public UIWindow {
 public:
   UIBarGraphHomun();
+  ~UIBarGraphHomun() override;
 
   void Paint() override;
 

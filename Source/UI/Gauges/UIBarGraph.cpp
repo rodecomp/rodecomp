@@ -42,9 +42,23 @@ UIBarGraphHomun::UIBarGraphHomun() : UIWindow(0) {
 UIBarGraphPlayer::UIBarGraphPlayer() : UIWindow(0) {
 }
 
+// OFFSET: 0x0086FFF0
+// FUNCTION: fn_45786
+__declspec(noinline) UIBarGraph::~UIBarGraph() = default;
+
+// OFFSET: 0x0086FF40
+
 // OFFSET: 0x0086FFA0
 // FUNCTION: fn_11097
 __declspec(noinline) UIBarGraph3::~UIBarGraph3() = default;
+
+// OFFSET: 0x008A4CC0
+// FUNCTION: fn_45788
+__declspec(noinline) UIBarGraph4::~UIBarGraph4() = default;
+
+// OFFSET: 0x00870040
+// FUNCTION: fn_45787
+__declspec(noinline) UIBarGraphHomun::~UIBarGraphHomun() = default;
 
 // OFFSET: 0x008700F0
 // FUNCTION: fn_11098
