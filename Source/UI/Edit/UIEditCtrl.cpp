@@ -4414,18 +4414,18 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
   }
 
   std::string remaining = source;
-  std::string result;
+  std::string result("");
   int position = 0;
   int previous = 0;
   for (;;) {
-    std::string link;
+    std::string link("");
     if (!this->ExtractItemLink(remaining, link, position, source.c_str())) {
       break;
     }
 
     result += source.substr(previous, position - previous);
 
-    std::string name;
+    std::string name("");
     if (this->LinkDisplayName(link, name)) {
       name = static_cast<const std::string&>(this->BracketFittedText(name));
       result += name;
