@@ -14,8 +14,10 @@ public:
   UIRPData();
   virtual ~UIRPData();
   void Draw(int x, int y, CTexture* texture, std::uint32_t color, int width, int height, bool stretched);
+  void DrawCroppedTexture(int x, int y, CTexture* texture, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, std::uint32_t color);
   void DrawStretched(int x, int y, CTexture* texture, std::uint32_t color, int width, int height);
   void DrawNamed(int x, int y, std::string name, std::uint32_t color, int width, int height);
+  void DrawNamedScaledRegion(float x, float y, std::string name, std::uint32_t color, int width, int height, float scalePercent, int sourceX, int sourceY);
   void SetSolid(int width, int height, std::uint32_t color);
 
 protected:

@@ -3,6 +3,52 @@
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 
+// INLINED
+static void SetTextureRegion(RenderPrimitive* primitive, float left, float top, float right, float bottom, float u0, float v0, float u1, float v1,
+                            std::uint32_t color) {
+  primitive->quad[0].x = left;
+  primitive->quad[0].y = top;
+  primitive->quad[0].u = u0;
+  primitive->quad[0].v = v0;
+  primitive->quad[1].x = right;
+  primitive->quad[1].y = top;
+  primitive->quad[1].u = u1;
+  primitive->quad[1].v = v0;
+  primitive->quad[2].x = left;
+  primitive->quad[2].y = bottom;
+  primitive->quad[2].u = u0;
+  primitive->quad[2].v = v1;
+  primitive->quad[3].x = right;
+  primitive->quad[3].y = bottom;
+  primitive->quad[3].u = u1;
+  primitive->quad[3].v = v1;
+  for (RenderVertex& vertex : primitive->quad) {
+    vertex.z = 0.000001f;
+    vertex.rhw = 0.999999f;
+    vertex.diffuse = color;
+  }
+}
+
+// OFFSET: 0x00812ED0
+// FUNCTION: fn_45595
+void UIRPData::DrawCroppedTexture(int x, int y, CTexture* texture, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, std::uint32_t color) {
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  primitive->texture = texture ? texture : g_texMgr.Default();
+  texture->Width();
+  texture->Height();
+
+  const float textureWidth = static_cast<float>(texture->TextureWidth());
+  const float textureHeight = static_cast<float>(texture->TextureHeight());
+  const float u0 = (static_cast<float>(sourceLeft) + g_textureOffsetX) / textureWidth;
+  const float v0 = (static_cast<float>(sourceTop) + g_textureOffsetY) / textureHeight;
+  const float u1 = (static_cast<float>(sourceRight) + g_textureOffsetX) / textureWidth;
+  const float v1 = (static_cast<float>(sourceBottom) + g_textureOffsetY) / textureHeight;
+  const float right = static_cast<float>(x + (sourceRight - sourceLeft));
+  const float bottom = static_cast<float>(y + (sourceBottom - sourceTop));
+  SetTextureRegion(primitive, static_cast<float>(x), static_cast<float>(y), right, bottom, u0, v0, u1, v1, color);
+  this->m_primitives.push_back(primitive);
+}
+
 // OFFSET: 0x008130A0
 // FUNCTION: fn_10121
 void UIRPData::DrawStretched(int x, int y, CTexture* texture, std::uint32_t color, int width, int height) {
@@ -109,6 +155,39 @@ void UIRPData::DrawNamed(int x, int y, std::string name, std::uint32_t color, in
     primitive->quad[i].rhw = 0.999999f;
   }
 
+  this->m_primitives.push_back(primitive);
+}
+
+// OFFSET: 0x00813740
+// FUNCTION: fn_45596
+void UIRPData::DrawNamedScaledRegion(float x, float y, std::string name, std::uint32_t color, int width, int height, float scalePercent, int sourceX,
+                                    int sourceY) {
+  CTexture* texture = g_texMgr.Load(name.c_str(), 0, true, true, false);
+  if (!texture) {
+    return;
+  }
+
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  primitive->texture = texture;
+  const int imageWidth = texture->Width();
+  const int imageHeight = texture->Height();
+  if (!width) {
+    width = texture->Width();
+  }
+  if (!height) {
+    height = texture->Height();
+  }
+
+  const float textureWidth = static_cast<float>(texture->TextureWidth());
+  const float textureHeight = static_cast<float>(texture->TextureHeight());
+  const float scale = 100.0f / scalePercent;
+  const int sourceRight = sourceX + (width > imageWidth ? imageWidth : width);
+  const int sourceBottom = sourceY + (height > imageHeight ? imageHeight : height);
+  const float u0 = static_cast<float>(sourceX) / textureWidth * scale;
+  const float v0 = static_cast<float>(sourceY) / textureHeight * scale;
+  const float u1 = static_cast<float>(sourceRight) / textureWidth * scale;
+  const float v1 = static_cast<float>(sourceBottom) / textureHeight * scale;
+  SetTextureRegion(primitive, x, y, static_cast<float>(width) + x, static_cast<float>(height) + y, u0, v0, u1, v1, color);
   this->m_primitives.push_back(primitive);
 }
 
