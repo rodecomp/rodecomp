@@ -12231,6 +12231,27 @@ void UITipboxWnd::RefreshTip() {
   }
 }
 
+// OFFSET: 0x0090A240
+// FUNCTION: fn_45715
+__forceinline void UITipboxWnd::SetPageButtonEnabled(PageButton pageButton, int enabled) {
+  switch (pageButton) {
+  case PageButton::Previous: {
+    UIButton* button = this->previousButton;
+    button->SetDisabled(enabled != 1);
+    button->Invalidate();
+    this->previousButton->Invalidate();
+    break;
+  }
+  case PageButton::Next: {
+    UIButton* button = this->nextButton;
+    button->SetDisabled(enabled != 1);
+    button->Invalidate();
+    this->nextButton->Invalidate();
+    break;
+  }
+  }
+}
+
 // OFFSET: 0x00907050
 // FUNCTION: fn_12386
 int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -12254,19 +12275,9 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
     g_itemTagOwner->paragraphIndex = page + 1;
     if (g_itemTagOwner->IsLastTip() == true) {
-      {
-        UIButton* button = this->nextButton;
-        button->SetDisabled(1);
-        button->Invalidate();
-      }
-      this->nextButton->Invalidate();
+      this->SetPageButtonEnabled(PageButton::Next, 0);
     }
-    {
-      UIButton* button = this->previousButton;
-      button->SetDisabled(0);
-      button->Invalidate();
-    }
-    this->previousButton->Invalidate();
+    this->SetPageButtonEnabled(PageButton::Previous, 1);
     this->RefreshTip();
     break;
   }
@@ -12274,18 +12285,8 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->previousButton->Enable(1);
     this->nextButton->Enable(1);
     g_itemTagOwner->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
-    {
-      UIButton* button = this->nextButton;
-      button->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
-      button->Invalidate();
-    }
-    this->nextButton->Invalidate();
-    {
-      UIButton* button = this->previousButton;
-      button->SetDisabled(1);
-      button->Invalidate();
-    }
-    this->previousButton->Invalidate();
+    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
     break;
@@ -12295,19 +12296,9 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case ID_PREV: {
     const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
     g_itemTagOwner->paragraphIndex = page - 1;
-    {
-      UIButton* button = this->nextButton;
-      button->SetDisabled(0);
-      button->Invalidate();
-    }
-    this->nextButton->Invalidate();
+    this->SetPageButtonEnabled(PageButton::Next, 1);
     if (page == 1) {
-      {
-        UIButton* button = this->previousButton;
-        button->SetDisabled(1);
-        button->Invalidate();
-      }
-      this->previousButton->Invalidate();
+      this->SetPageButtonEnabled(PageButton::Previous, 0);
     }
     this->RefreshTip();
     break;
@@ -12355,18 +12346,8 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case ID_REFRESH_TIP:
-    {
-      UIButton* button = this->nextButton;
-      button->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
-      button->Invalidate();
-    }
-    this->nextButton->Invalidate();
-    {
-      UIButton* button = this->previousButton;
-      button->SetDisabled(1);
-      button->Invalidate();
-    }
-    this->previousButton->Invalidate();
+    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
     break;

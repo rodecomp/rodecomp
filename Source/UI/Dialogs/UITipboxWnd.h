@@ -65,6 +65,10 @@ public:
   /* 00F8 */ std::uint32_t m_frameTime;
   /* 00FC */ bool refreshPending;
   /* 0100 */ int showAtStartup;
+
+private:
+  enum class PageButton { Previous, Next };
+  void SetPageButtonEnabled(PageButton pageButton, int enabled);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
