@@ -16,6 +16,7 @@ public:
   void OnLBtnDblClk(int x, int y) override;
   void OnMouseHover(int x, int y) override;
   void OnRBtnDown(int x, int y) override;
+  void DrawItemBackground(int x, int y);
   void DrawItemIcon(int x, int y, int unused, bool compact);
 
 protected:

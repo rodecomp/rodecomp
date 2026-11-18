@@ -2284,14 +2284,21 @@ void UIMemberListBox::Paint() {
   }
 }
 
+// OFFSET: 0x0087EEC0
+// FUNCTION: fn_45583
+void UIBasicItemCtrl::DrawItemBackground(int x, int y) {
+  const char* name = std::atoi(this->m_item.itemId.c_str()) <= 0 || this->m_item.identity[1] > 0
+    ? "유저인터페이스\\basic_interface\\itemwin_mid.bmp"
+    : "유저인터페이스\\ExMacro\\no_item.bmp";
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  this->DrawBitmap(x, y, bitmap, false);
+}
+
 // OFFSET: 0x00888C10
 // FUNCTION: fn_11343
 void UIBasicItemCtrl::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  const char* name = std::atoi(this->m_item.itemId.c_str()) <= 0 || this->m_item.identity[1] > 0 ? "유저인터페이스\\basic_interface\\itemwin_mid.bmp"
-                                                                                                : "유저인터페이스\\ExMacro\\no_item.bmp";
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-  this->DrawBitmap(0, 0, bitmap, false);
+  this->DrawItemBackground(0, 0);
   this->DrawItemIcon(4, 0, 0, false);
 }
 
