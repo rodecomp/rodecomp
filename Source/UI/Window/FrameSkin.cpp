@@ -71,11 +71,9 @@ void CUIFrameWnd::Paint() {
 // OFFSET: 0x009E6D60
 // FUNCTION: fn_14472
 void CUIFrameWnd::SetSkinColors(int backgroundColumn, int backgroundRow, int borderColumn, int borderRow) {
-  this->m_backgroundCell.column = backgroundColumn;
-  this->m_backgroundCell.row = backgroundRow;
-  this->m_borderCell.column = borderColumn;
-  this->m_borderCell.row = borderRow;
   this->m_hasSkinColors = true;
+  this->m_backgroundCell = SkinPaletteCell{backgroundColumn, backgroundRow};
+  this->m_borderCell = SkinPaletteCell{borderColumn, borderRow};
 
   this->m_backgroundColor = g_skinInfo.PaletteColor(this->m_backgroundCell, this->m_resolveSkin);
   this->m_borderColor = g_skinInfo.PaletteColor(this->m_borderCell, this->m_resolveSkin);
