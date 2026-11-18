@@ -580,7 +580,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
 
 // OFFSET: 0x00CD8950
 // FUNCTION: fn_21303
-CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration) {
+CMsgEffect* CGameMode::SpawnCashEmotion(const vector3d* position, int packId, int emotionId, std::uint32_t duration) {
   CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(packId, emotionId);
   if (!data) {
     return nullptr;
@@ -600,7 +600,7 @@ CMsgEffect* CGameMode::SpawnCashEmotion(int aid, int packId, int emotionId, std:
     }
 
     effect->SendMsg(nullptr, AM_SETMASTERGID, duration, 1, 0, 0, 0, 0);
-    effect->SendMsg(nullptr, AM_SETPOS, aid, reinterpret_cast<int>(&names), data->actionIndex, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<int>(position), reinterpret_cast<int>(&names), data->actionIndex, 0, 0, 0);
   }
 
   return effect;

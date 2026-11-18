@@ -403,7 +403,7 @@ public:
   void DrawMiniMapNumber();
   void DrawTimeAttackTimer();
   void DrawTimeAttackCountdown(std::uint32_t value, int mode);
-  CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
+  CMsgEffect* SpawnCashEmotion(const vector3d* position, int packId, int emotionId, std::uint32_t duration);
   CMsgEffect* SpawnDamageMsgEffect(const vector3d* position, std::uint32_t color, std::uint32_t accountId);
   CMsgEffect* SpawnMsgEffect(int effectId, const vector3d* position, std::uint32_t accountId, bool visible);
   void ApplyMapFog(int enabled);

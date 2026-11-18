@@ -12605,10 +12605,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
   }
 
   if (1 == result) {
-    GuildStorageLogEntry pivot;
-    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
-      return std::strcmp(left.timestamp, right.timestamp) > 0;
-    });
+    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), GuildStorageLogEntry());
     for (std::vector<GuildStorageLogEntry>::iterator it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
       if (it->operation != 1) {
         g_session.guildStorageLogs[2].push_back(*it);

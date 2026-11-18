@@ -3243,12 +3243,7 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
     for (int i = 0; i < packet->count; ++i) {
       AddGuildStorageLog(packet->entries[i]);
     }
-    {
-      GuildStorageLogEntry pivot;
-      std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
-        return std::strcmp(left.timestamp, right.timestamp) > 0;
-      });
-    }
+    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), GuildStorageLogEntry());
     for (auto it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
       if (it->operation == 1) {
         g_session.guildStorageLogs[1].push_back(*it);

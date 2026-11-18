@@ -1316,7 +1316,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       break;
     }
     if (!g_cashEmotionMgr->IsChatProhibitEmotion(static_cast<int>(c))) {
-      CGameObject* effect = mode->SpawnCashEmotion(reinterpret_cast<int>(&this->render.position), static_cast<int>(b), static_cast<int>(c), this->render.accountId);
+      CGameObject* effect = mode->SpawnCashEmotion(&this->render.position, static_cast<int>(b), static_cast<int>(c), this->render.accountId);
       if (effect != nullptr) {
         this->msgEffectList.push_back(effect);
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
@@ -1327,7 +1327,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         break;
       }
       CGameObject** slot = &this->statusEffects[10];
-      *slot = mode->SpawnCashEmotion(reinterpret_cast<int>(&this->render.position), static_cast<int>(b), static_cast<int>(c), this->render.accountId);
+      *slot = mode->SpawnCashEmotion(&this->render.position, static_cast<int>(b), static_cast<int>(c), this->render.accountId);
       if (*slot != nullptr) {
         this->msgEffectList.push_back(*slot);
         (*slot)->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
@@ -3310,25 +3310,10 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_MONSTER_TRANSFORM:
     case EFST_KYOUGAKU:
     case EFST_ACTIVE_MONSTER_TRANSFORM: {
-      int slot;
-      switch (b) {
-      case EFST_MONSTER_TRANSFORM:
-        slot = 0;
-        break;
-      case EFST_KYOUGAKU:
-        slot = 1;
-        break;
-      case EFST_ACTIVE_MONSTER_TRANSFORM:
-        slot = 2;
-        break;
-      default:
-        slot = 0;
-        break;
-      }
       if (c != 0) {
-        this->SetTransformJob(static_cast<int>(d), slot);
+        this->SetTransformJob(static_cast<int>(d), TransformSlot(static_cast<int>(b)));
       } else {
-        this->SetTransformJob(-1, slot);
+        this->SetTransformJob(-1, TransformSlot(static_cast<int>(b)));
         if (this->render.state == ST_DEAD) {
           this->SetAction(this->WeaponActionBase(3), 4, 1);
         }
@@ -3405,19 +3390,39 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->hasHp = c != 0;
       break;
     case EFST_HAT_EFFECT:
-      this->SetStackedEffect(0x3F4, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x3F4, true);
+      } else {
+        this->SetStackedEffect(0x3F4, false);
+      }
       break;
     case EFST_MOONSTAR:
-      this->SetStackedEffect(0x40A, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x40A, true);
+      } else {
+        this->SetStackedEffect(0x40A, false);
+      }
       break;
     case EFST_DECORATION_OF_MUSIC:
-      this->SetStackedEffect(0x437, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x437, true);
+      } else {
+        this->SetStackedEffect(0x437, false);
+      }
       break;
     case EFST_STRANGELIGHTS:
-      this->SetStackedEffect(0x40B, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x40B, true);
+      } else {
+        this->SetStackedEffect(0x40B, false);
+      }
       break;
     case EFST_SUPER_STAR:
-      this->SetStackedEffect(0x40C, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x40C, true);
+      } else {
+        this->SetStackedEffect(0x40C, false);
+      }
       break;
     case EFST_ON_PUSH_CART:
       if (c != 0) {
@@ -3560,7 +3565,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       }
       break;
     case EFST_FLOWERSMOKE:
-      this->SetStackedEffect(0x43B, c > 0);
+      if (c > 0) {
+        this->SetStackedEffect(0x43B, true);
+      } else {
+        this->SetStackedEffect(0x43B, false);
+      }
       break;
     case EFST_HALLUCINATIONWALK:
     case EFST_NPC_HALLUCINATIONWALK: {
@@ -4351,13 +4360,15 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         g_windowMgr.CloseWindow(WID_DEBUFFREMOVEWND);
       }
       break;
-    default:
+    default: {
+      CSkillActionMgr* const skillActionMgr = CSkillActionMgr::GetInstance();
       if (on == true) {
-        CSkillActionMgr::GetInstance()->OnEfstBegin(static_cast<int>(b), static_cast<int>(d), static_cast<int>(e), static_cast<int>(g), this, f != 0);
+        skillActionMgr->OnEfstBegin(static_cast<int>(b), static_cast<int>(d), static_cast<int>(e), static_cast<int>(g), this, f != 0);
       } else {
-        CSkillActionMgr::GetInstance()->OnEfstEnd(static_cast<int>(b), static_cast<int>(d), static_cast<int>(e), static_cast<int>(g), this);
+        skillActionMgr->OnEfstEnd(static_cast<int>(b), static_cast<int>(d), static_cast<int>(e), static_cast<int>(g), this);
       }
       break;
+    }
     }
     break;
   }
@@ -4409,7 +4420,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   }
   case AM_FASTMOVE:
-    if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
+    if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
       if (CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_FASTMOVE, 0, 100, 0);
       }
@@ -4420,7 +4431,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         static_cast<CFallenAngelEffect*>(fallenAngel)->SetPosition(position);
       }
     }
-    this->SendMsg(nullptr, AM_STOPMOVE, b, c, 15, 0, 0, 0);
+    this->SendMsg(nullptr, AM_STOPMOVE, static_cast<int>(b), static_cast<int>(c), 15, 0, 0, 0);
     this->SetAction(this->render.animation, 6, 1);
     this->render.curMotion = 7;
     this->render.isMotionFreezed = true;

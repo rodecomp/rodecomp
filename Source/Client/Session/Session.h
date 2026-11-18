@@ -56,6 +56,11 @@ struct GuildStorageLogEntry {
     SecureZeroMemory(this->cards, sizeof(this->cards));
   }
 
+  // INLINED
+  bool operator()(const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) const {
+    return std::strcmp(left.timestamp, right.timestamp) > 0;
+  }
+
   /* 0000 */ int logId;
   /* 0004 */ int quantity;
   /* 0008 */ unsigned char operation;
