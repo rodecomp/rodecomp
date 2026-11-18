@@ -79,19 +79,19 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
   std::vector<std::pair<int, int>> materials;
   const auto found = this->m_recipes.find(petEgg);
   if (found == this->m_recipes.end()) {
-    return std::make_pair(false, std::vector<std::pair<int, int>>());
+    return {};
   }
 
   for (auto recipe = found->second.begin(); recipe != found->second.end(); ++recipe) {
     if (recipe->target == target) {
-      for (auto material = recipe->materials.begin(); material != recipe->materials.end(); ++material) {
-        materials.push_back(*material);
+      for (const auto material : recipe->materials) {
+        materials.push_back(material);
       }
       return std::make_pair(true, materials);
     }
   }
 
-  return std::make_pair(false, std::vector<std::pair<int, int>>());
+  return {};
 }
 
 // OFFSET: 0x00673260
