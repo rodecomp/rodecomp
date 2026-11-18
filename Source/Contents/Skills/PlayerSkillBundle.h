@@ -13,13 +13,14 @@
 #include "UI/Window/WindowManagerWindows.h"
 
 struct SkillIdHash {
-  std::size_t operator()(int id) const;
+  std::size_t operator()(const int& id) const;
 };
 
 class CPlayerSkillBundle {
 public:
   struct lcEXCInfo {
     lcEXCInfo();
+    lcEXCInfo(std::int32_t previous, std::int32_t target);
     virtual ~lcEXCInfo();
     /* 0004 */ std::int32_t previous;
     /* 0008 */ std::int32_t target;

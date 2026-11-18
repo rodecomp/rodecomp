@@ -11,12 +11,17 @@
 bool IsIndexedSkill(int id);
 
 // INLINED
-std::size_t SkillIdHash::operator()(int id) const {
+std::size_t SkillIdHash::operator()(const int& id) const {
   return std::hash<int>()(id);
 }
 
 // INLINED
 CPlayerSkillBundle::lcEXCInfo::lcEXCInfo() {
+}
+
+// INLINED
+CPlayerSkillBundle::lcEXCInfo::lcEXCInfo(std::int32_t previous, std::int32_t target)
+    : previous(previous), target(target) {
 }
 
 // OFFSET: 0x00770A30
@@ -296,10 +301,7 @@ void CPlayerSkillBundle::RecordLevelChange(const CSkillInfo& value) {
     return;
   }
 
-  lcEXCInfo change;
-  change.previous = previous->level;
-  change.target = value.level;
-  this->levelChanges[previous->id] = change;
+  this->levelChanges[previous->id] = lcEXCInfo(previous->level, value.level);
   this->changed[previous->id] = true;
 }
 
@@ -415,7 +417,8 @@ void CPlayerSkillBundle::RevertLevelChange(const CSkillInfo& current, CSkillInfo
 // OFFSET: 0x00771A50
 // FUNCTION: fn_45559
 void CPlayerSkillBundle::TakePreviousLevel(int& level, int id, int key) {
-  if (this->levelChanges.find(key) == this->levelChanges.end()) {
+  const auto entry = this->levelChanges.find(key);
+  if (entry == this->levelChanges.end()) {
     return;
   }
 
