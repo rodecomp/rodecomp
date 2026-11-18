@@ -23,7 +23,7 @@ jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::j
 
 // OFFSET: 0x004F3820
 // FUNCTION: fn_00484
-jsoncons::json_type JsonCppLoader::GetValueType(const jsoncons::json& value) {
+__declspec(noinline) jsoncons::json_type JsonCppLoader::GetValueType(const jsoncons::json& value) {
   const jsoncons::json_type type = value.type();
   if (type == jsoncons::json_type::uint64_value) {
     return jsoncons::json_type::int64_value;

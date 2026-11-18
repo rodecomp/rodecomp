@@ -16,10 +16,10 @@ struct PathNode {
 };
 
 struct PathCell {
-  /* 0000 */ std::int32_t x;
-  /* 0004 */ std::int32_t y;
-  /* 0008 */ int metadata;
-  /* 000C */ std::uint32_t tick;
+  /* 0000 */ std::int32_t x = 0;
+  /* 0004 */ std::int32_t y = 0;
+  /* 0008 */ int metadata = 0;
+  /* 000C */ std::uint32_t tick = 0;
 };
 
 struct MovementRouteInterpolation {

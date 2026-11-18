@@ -3164,7 +3164,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_charServerEndpoint = endpoint;
     g_charServerIp = servers[this->selectedServer].address.ip;
     g_session.m_serverName = servers[this->selectedServer].address.name;
-    g_checkAttendanceMgr->LoadLocal(g_session.m_serverName);
+    CCheckAttendanceMgr* attendanceMgr = g_checkAttendanceMgr;
+    attendanceMgr->LoadLocal(g_session.m_serverName);
     this->pendingCursorType = 5;
     return 0;
   }
@@ -3844,7 +3845,8 @@ void CLoginMode::OnChangeState(int value) {
     packet.sex = static_cast<unsigned char>(g_session.m_sex);
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
-    g_accountLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_accountName);
+    CAccountLinkedUserDataMgr* userDataMgr = g_accountLinkedUserDataMgr;
+    userDataMgr->Load(g_session.m_aid, g_session.m_accountName);
     break;
   }
   case 10: {

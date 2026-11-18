@@ -5,7 +5,3 @@
 CAdvenPartyInfo::CAdvenPartyInfo()
     : tanker(false), healer(false), dealer(false), assist(false), minimumLevel(0), maximumLevel(999), type(0), accountId(0), characterId(0) {
 }
-
-// OFFSET: 0x005CA5B0
-// FUNCTION: fn_03646
-CAdvenPartyInfo::CAdvenPartyInfo(const CAdvenPartyInfo& other) = default;

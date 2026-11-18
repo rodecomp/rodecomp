@@ -282,7 +282,8 @@ int CChangeMaterialMgr::LuaInsertRecipe(lua_State* L) {
   }
   lua_pop(L, 1);
 
-  g_changeMaterialMgr->InsertRecipe(materials, products, static_cast<int>(type));
+  CChangeMaterialMgr* manager = g_changeMaterialMgr;
+  manager->InsertRecipe(materials, products, static_cast<int>(type));
 
   lua_pushboolean(L, 1);
   lua_pushstring(L, ChangeMaterialFormat("good").c_str());

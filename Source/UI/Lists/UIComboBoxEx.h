@@ -27,7 +27,10 @@ protected:
 
 class UIComboBoxEx2 : public UIComboBoxEx {
 public:
-  UIComboBoxEx2();
+  // OFFSET: 0x0086CCE0
+  // FUNCTION: fn_11036
+  UIComboBoxEx2() : UIComboBoxEx(), alignment(0) {
+  }
   ~UIComboBoxEx2() override;
   void Resize(int width, int height) override;
   void OnCreate(int width, int height) override;

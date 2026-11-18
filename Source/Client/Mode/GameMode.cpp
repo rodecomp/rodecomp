@@ -9446,7 +9446,8 @@ void CGameMode::Update() {
       if (g_soundMgr->IsStopped()) {
         g_soundMgr->Pause(0);
       } else {
-        g_soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
+        CSoundMgr* soundMgr = g_soundMgr;
+        soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
       }
     }
 

@@ -2454,8 +2454,8 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_RATE), 50, 0).c_str()), 0xFF, 0, 0, 0);
             if (position.tax < 0) {
               position.tax = 0;
-            } else if (position.tax > 50) {
-              position.tax = 50;
+            } else {
+              position.tax = position.tax > 50 ? 50 : position.tax;
             }
           }
           this->m_positionMap[position.positionId] = position;

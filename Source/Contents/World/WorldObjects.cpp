@@ -843,7 +843,8 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_RODEX)), 0, 0, 0);
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
-    if (g_whisperBlockMgr->Contains(name)) {
+    CWhisperBlockMgr* whisperBlockMgr = g_whisperBlockMgr;
+    if (whisperBlockMgr->Contains(name)) {
       this->actorMenuIds.push_back(0xD);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UNBLOCK_CHAT)), 0, 0, 0);
     } else {

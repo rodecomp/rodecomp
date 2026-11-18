@@ -293,7 +293,8 @@ void CGameMode::DrawMiniMap() {
 
   if (g_windowMgr.minimapMarkersVisible) {
     for (int index = 0;; ++index) {
-      const TownInfo info = g_townInfoMgr->GetTownInfo(std::string(this->mapName), index);
+      CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+      const TownInfo info = townInfoMgr->GetTownInfo(std::string(this->mapName), index);
       if (info.image.size() == 0 || info.type == 8 || info.type == 9) {
         break;
       }

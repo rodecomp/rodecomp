@@ -381,11 +381,15 @@ void UIRoMapWnd::DrawMarks() {
     if (index != 0) {
       const int* previous = g_worldViewMgr.MarkAreaAt(index - 1, true);
       if (previous != nullptr) {
-        const float startX = static_cast<float>(previous[2] - previous[0]) * g_depthAverageHalf + static_cast<float>(previous[0]);
-        const float startY = static_cast<float>(previous[3] - previous[1]) * g_depthAverageHalf + static_cast<float>(previous[1]);
-        const float endX = static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]);
-        const float endY = static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1]);
-        DrawScreenLine(ScreenPoint{startX, startY}, ScreenPoint{endX, endY}, 5, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF);
+        const ScreenPoint start{
+          static_cast<float>(previous[2] - previous[0]) * g_depthAverageHalf + static_cast<float>(previous[0]),
+          static_cast<float>(previous[3] - previous[1]) * g_depthAverageHalf + static_cast<float>(previous[1])
+        };
+        const ScreenPoint end{
+          static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]),
+          static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1])
+        };
+        DrawScreenLine(start, end, 5, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF);
       }
     }
 

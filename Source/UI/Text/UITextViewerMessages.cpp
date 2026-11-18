@@ -332,9 +332,12 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         ShellExecuteA(hWnd, "open", button->GetLine(0).c_str(), nullptr, nullptr, SW_SHOWNORMAL);
       }
       break;
-    case LINE_SEGMENT_NAVI:
-      if (button && button->GetLinesCount() != 0) {
-        const int count = button->GetLinesCount();
+    case LINE_SEGMENT_NAVI: {
+      if (!button) {
+        break;
+      }
+      const int count = button->GetLinesCount();
+      if (count != 0) {
         const std::string& map = button->GetLine(0);
         const int x = std::atoi(button->GetLine(1).c_str());
         const int y = std::atoi(button->GetLine(2).c_str());
@@ -362,6 +365,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         }
       }
       break;
+    }
     case LINE_SEGMENT_ITEM:
       if (button && button->GetLinesCount() != 0) {
         int idValue = 0;

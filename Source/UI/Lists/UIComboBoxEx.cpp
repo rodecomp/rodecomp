@@ -282,11 +282,6 @@ void UIComboBoxEx::Paint() {
   this->parent->Invalidate();
 }
 
-// OFFSET: 0x0086CCE0
-// FUNCTION: fn_11036
-UIComboBoxEx2::UIComboBoxEx2() : UIComboBoxEx(), alignment(0) {
-}
-
 // OFFSET: 0x008706D0
 // FUNCTION: fn_11102
 UIComboBoxEx2::~UIComboBoxEx2() = default;

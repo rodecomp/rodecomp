@@ -69,7 +69,8 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
     }
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
+    NavigationLinkParser* parser = g_navigationLinkParser;
+    const std::string name = parser->FormatNavigationLink(button->Link(), false);
     const std::string fitted = this->FitTextToWidth(name, this->geometry.width / 2);
     std::string display = "<";
     display += fitted;
