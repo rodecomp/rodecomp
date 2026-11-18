@@ -45,6 +45,10 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
   return button;
 }
 
+// OFFSET: 0x00A8A0C0
+// FUNCTION: fn_45790
+__declspec(noinline) UIEmotionWnd::~UIEmotionWnd() = default;
+
 // OFFSET: 0x008A2980
 // FUNCTION: fn_11644
 void UIEmotionWnd::OnCreate(int, int) {

@@ -18,6 +18,7 @@ public:
   // INLINED
   UIEmotionWnd() : UIFrameWnd(0), m_labels(), m_edits(), m_saved(nullptr), viewButton(nullptr) {
   }
+  ~UIEmotionWnd() override;
 
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
