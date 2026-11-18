@@ -4,7 +4,11 @@
 // OFFSET: 0x00540EA0
 // FUNCTION: fn_01727
 void ModelTextureChannels::Sample(float frame, ModelTextureTransform& output) {
-  float* targets[5] = {&output.values[0], &output.values[1], &output.values[2], &output.values[3], &output.values[4]};
+  float* targets[5];
+  targets[0] = &output.values[0];
+  for (int i = 0; i < 4; ++i) {
+    targets[i + 1] = &output.values[i + 1];
+  }
 
   for (int channel = 0; channel < 5; ++channel) {
     if (this->find(channel) == this->end()) {
