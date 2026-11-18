@@ -53,6 +53,7 @@ public:
   void UpdateScrollBar();
   void LayoutButtons();
   int SkillIndexAt(int x, int y);
+  int AddedSkillLevel(int id);
   bool IncreaseSkillLevel(int skillId);
   void DrawCharacter();
   void DrawSkillList();
