@@ -64,3 +64,5 @@ extern template std::_Tree_find_result<std::_Tree_node<UIWindow*, void*>*>
 PersistentWindowTree::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
 extern template void std::vector<std::string>::push_back(std::string&&);
 extern template std::string std::operator+(const std::string&, const char* const);
+extern template std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr>
+std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
