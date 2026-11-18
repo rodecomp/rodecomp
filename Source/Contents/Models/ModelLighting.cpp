@@ -52,11 +52,11 @@ namespace {
   }
 
   // INLINED
-  ModelColor LitColor(std::uint32_t source, float alpha, bool shaded, const float* light) {
-    const float factor = shaded ? 0.5f : 1.0f;
+  ModelColor LitColor(std::uint32_t source, float alpha, std::uint32_t shaded, const float* light) {
     ModelColor color;
     color.value = source;
     color.a = static_cast<unsigned char>(alpha * 255.0f);
+    const float factor = shaded > 0u ? 0.5f : 1.0f;
     color.r = Scale(factor, light[0], color.r);
     color.g = Scale(factor, light[1], color.g);
     color.b = Scale(factor, light[2], color.b);
@@ -151,8 +151,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
       for (unsigned corner = 0; corner < 3; ++corner) {
         float light[3];
         Light(&normals[index * 3 + corner].x, rotation.values, direction, diffuse, ambient, light);
-        const bool shaded = textureVertices[faces[index].textureVertices[corner]].shaded > 0u;
-        *color++ = LitColor(this->model->color, this->alpha, shaded, light);
+        *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
       }
     }
     break;
@@ -168,8 +167,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
       Light(&normals[index].x, rotation.values, direction, diffuse, ambient, light);
 
       for (unsigned corner = 0; corner < 3; ++corner) {
-        const bool shaded = textureVertices[faces[index].textureVertices[corner]].shaded > 0u;
-        *color++ = LitColor(this->model->color, this->alpha, shaded, light);
+        *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
       }
     }
     break;
