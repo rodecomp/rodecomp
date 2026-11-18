@@ -8563,6 +8563,10 @@ UIStatusWnd::UIStatusWnd()
   this->m_offsetX = 16;
 }
 
+// OFFSET: 0x008CBB70
+// FUNCTION: fn_45814
+UIStatusWnd::~UIStatusWnd() = default;
+
 // OFFSET: 0x00906DE0
 // FUNCTION: fn_12385
 int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
