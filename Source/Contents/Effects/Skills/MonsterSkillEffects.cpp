@@ -1080,8 +1080,8 @@ bool CFootprintEffect::IsVisible() {
 // OFFSET: 0x00712410
 // FUNCTION: fn_07239
 void CFootprintEffect::Open() {
-  char* leftFile = nullptr;
   char* rightFile = nullptr;
+  char* leftFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintPngFile", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!leftFile || std::strlen(leftFile) == 0 || !rightFile || std::strlen(rightFile) == 0) {
     return;
