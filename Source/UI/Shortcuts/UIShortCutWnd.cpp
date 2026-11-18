@@ -865,6 +865,14 @@ void UIMemorialDunWnd::Paint() {
   this->FillRegion(this->geometry.width - 2, this->geometry.height - 2, 1, 1, 0x8E8E8E);
 }
 
+// OFFSET: 0x00914950
+// FUNCTION: fn_45681
+UISubChatMiniWnd::~UISubChatMiniWnd() = default;
+
+// OFFSET: 0x009149A0
+// FUNCTION: fn_45682
+UIWindowCallBtnWnd::~UIWindowCallBtnWnd() = default;
+
 // OFFSET: 0x0092AFE0
 // FUNCTION: fn_12656
 void UISubChatMiniWnd::OnCreate(int, int) {

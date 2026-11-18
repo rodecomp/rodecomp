@@ -6,6 +6,7 @@
 class UISubChatMiniWnd : public UIFrameWnd {
 public:
   UISubChatMiniWnd();
+  __declspec(noinline) ~UISubChatMiniWnd() override;
   void OnCreate(int width, int height) override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
