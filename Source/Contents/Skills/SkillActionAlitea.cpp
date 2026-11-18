@@ -1176,12 +1176,17 @@ void CSkillAction_AT_FURIOS_STORM::PlayThunderEffect(CGameActor* source) {
 // FUNCTION: fn_03239
 void CEfstAction_FURIOS_STORM::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_cast", 0x7FC1015DFFCF6D19ULL, std::uint8_t)));
+    EffectLists* effects = g_effectMgr;
+    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_cast", 0x7FC1015DFFCF6D19ULL)));
     for (int index = 0; index < 4; ++index) {
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_a", 0xCB3FBD4183DB8323ULL, std::uint8_t)));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_a_bottom", 0x7FCD77F9C7CBD14DULL, std::uint8_t)));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_b", 0xD1538513DF975701ULL, std::uint8_t)));
-      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_b_bottom", 0x91E147EBBD47C39FULL, std::uint8_t)));
+      effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_a", 0xCB3FBD4183DB8323ULL, std::uint8_t)));
+      effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("furios_storm_a_bottom", 0x7FCD77F9C7CBD14DULL)));
+      effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("furios_storm_b", 0xD1538513DF975701ULL, std::uint8_t)));
+      effects = g_effectMgr;
+      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("furios_storm_b_bottom", 0x91E147EBBD47C39FULL)));
     }
   }
 }
