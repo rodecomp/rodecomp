@@ -35,18 +35,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
   std::memcpy(this->matrix, matrix, sizeof(this->matrix));
   this->blendMode = blendMode;
   this->blendVariant = blendVariant;
-  this->layerShift = 0;
-  this->swingX = 0;
-  this->swingY = 0;
-  this->hideHeadLayer = false;
-  this->hideAccessories = false;
-  this->alternateLayerRendering = false;
-
-  this->layerViews[2] = this->pc->accessory;
-  this->layerViews[3] = this->pc->accessory2;
-  this->layerViews[4] = this->pc->accessory3;
-  this->layerViews[8] = this->pc->robe;
-  this->LoadLayers();
+  this->PrepareLayers();
 
   const vector3d& origin = this->pc->render.position;
   this->position.x = origin.x * matrix[0] + origin.y * matrix[3] + origin.z * matrix[6] + matrix[9];
@@ -97,26 +86,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
       continue;
     }
 
-    if (layer == 5 || layer == 6 || layer == 7) {
-      if (this->pc->IsCostumeOutfit() == true || !IsReadyOrAttackAction(this->pc->render.previousAnimation)) {
-        continue;
-      }
-
-      if (layer == 7) {
-        const int job = this->pc->GetEffectiveJob(-1);
-        if (job == JT_MADOGEAR || job == JT_MADOGEAR_H || job == JT_MADOGEAR_B) {
-          continue;
-        }
-      } else if (this->pc->isRiding == 1) {
-        continue;
-      }
-    }
-
-    if ((layer == 2 || layer == 3 || layer == 4) && this->hideAccessories == true) {
-      continue;
-    }
-
-    if (layer == 8 && this->pc->isHelmRobe == false) {
+    if (!this->ShouldDrawLayer(layer)) {
       continue;
     }
 
@@ -147,37 +117,11 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
       StringFormat(buffer, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? buffer : name.c_str());
     }
 
-    bool hasSynced = false;
-    const ActionFrame* synced = nullptr;
-    switch (layer) {
-      case 2:
-      case 3:
-      case 4:
-      case 8: {
-        const int bodyCount = static_cast<CActRes*>(this->pc->GetEquipAction(1))->FrameCount(this->pc->render.previousAnimation);
-        const int layerCount = static_cast<CActRes*>(this->pc->GetEquipAction(layer))->FrameCount(this->pc->render.previousAnimation);
-        if (bodyCount > 0 && layerCount > 0 && layerCount > bodyCount && layerCount % bodyCount == 0) {
-          synced = &action->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion * (layerCount / bodyCount));
-          hasSynced = true;
-        }
-        break;
-      }
-    }
-
-    this->DrawLayer(index, layer, hasSynced == true ? synced : &frame, found.second.sprite, action, stanceAnimation, frameIndex, replaced);
+    const auto synced = this->FindSyncedFrame(layer, action);
+    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second.sprite, action, stanceAnimation, frameIndex, replaced);
   }
 
-  int depth = 0;
-  for (std::map<int, SpriteLayerQuad>::iterator it = this->quads.begin(); it != this->quads.end(); ++it, ++depth) {
-    SpriteQuad& quad = it->second.quad;
-    quad.bottomRhw = quad.bottom * this->depthScale + this->depthBias;
-    quad.topRhw = this->depthScale * quad.top + this->depthBias;
-    if (g_session.IsScreenShakeActive() == true) {
-      this->pc->DrawFlippedQuad(quad, it->second.palette, it->second.blend, this->x, this->y, depth);
-    } else {
-      this->pc->DrawQuad(quad, it->second.palette, it->second.blend, 0.0f, 0.0f, depth);
-    }
-  }
+  this->DrawQueuedLayers();
 
   if (this->alternateLayerRendering == true) {
     this->pc->SetRenderInfo(&this->bounds.left, this->x, this->y);
@@ -629,38 +573,9 @@ void SpriteLayerRenderer::DrawLayer(
     int effect = 0xA6;
     this->pc->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
 
-    int blend;
-    switch (layer) {
-      case 2:
-      case 3:
-      case 8:
-        blend = 1;
-        break;
-      case 4:
-        blend = this->pc->accessory3 == 0xB9 ? 0x11 : 1;
-        break;
-      default:
-        blend = 0x101;
-        if (quad.color >= 0xFF000000 && this->blendMode == 1) {
-          switch (this->blendVariant) {
-            case 1:
-              if (layer == 5) {
-                blend = layer;
-              }
-              break;
-            case 2:
-              if (layer == 0 || layer == 1) {
-                blend = 0x11;
-              }
-              break;
-          }
-        }
-        break;
-    }
+    int blend = this->GetLayerBlend(layer, quad.color);
 
-    if ((layer == 0 || layer == 1) && this->pc->render.trackBounds == 1) {
-      this->bounds.Include(&quad.top);
-    }
+    this->IncludeLayerBounds(layer, &quad.top);
 
     this->alternateLayerRendering = true;
     this->pc->ApplyLayerEffects(
@@ -738,6 +653,32 @@ std::pair<bool, const ActionFrame*> SpriteLayerRenderer::FindSyncedFrame(int lay
 }
 
 // OFFSET: 0x00641390
+// FUNCTION: fn_45588
+int SpriteLayerRenderer::GetLayerBlend(int layer, std::uint32_t color) const {
+  switch (layer) {
+    case 2:
+    case 3:
+    case 8:
+      return 1;
+    case 4:
+      return this->pc->accessory3 == 0xB9 ? 0x11 : 1;
+  }
+  if (color >= 0xFF000000 && this->blendMode == 1) {
+    switch (this->blendVariant) {
+      case 1:
+        if (layer == 5) {
+          return 5;
+        }
+        break;
+      case 2:
+        if (layer == 0 || layer == 1) {
+          return 0x11;
+        }
+        break;
+    }
+  }
+  return 0x101;
+}
 
 // OFFSET: 0x00641490
 // FUNCTION: fn_45589
@@ -784,6 +725,20 @@ bool SpriteLayerRenderer::ShouldDrawLayer(int layer) const {
 }
 
 // OFFSET: 0x00641CD0
+// FUNCTION: fn_45591
+void SpriteLayerRenderer::DrawQueuedLayers() {
+  int depth = 0;
+  for (std::map<int, SpriteLayerQuad>::iterator it = this->quads.begin(); it != this->quads.end(); ++it, ++depth) {
+    SpriteQuad& quad = it->second.quad;
+    quad.bottomRhw = quad.bottom * this->depthScale + this->depthBias;
+    quad.topRhw = this->depthScale * quad.top + this->depthBias;
+    if (g_session.IsScreenShakeActive() == true) {
+      this->pc->DrawFlippedQuad(quad, it->second.palette, it->second.blend, this->x, this->y, depth);
+    } else {
+      this->pc->DrawQuad(quad, it->second.palette, it->second.blend, 0.0f, 0.0f, depth);
+    }
+  }
+}
 
 // OFFSET: 0x00641DE0
 // FUNCTION: fn_45592
