@@ -1848,8 +1848,8 @@ bool CSession::UnequipCostumeItem(int location) {
 // OFFSET: 0x00E1E250
 // FUNCTION: fn_45483
 bool LaunchLuaSkillEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
-  const vector3d& position = source != nullptr ? source->render.position : vector3d{0.0f, 0.0f, 0.0f};
   const std::uint32_t sourceId = source != nullptr ? source->render.accountId : 0;
+  const vector3d& position = source != nullptr ? source->render.position : vector3d{0.0f, 0.0f, 0.0f};
   const std::uint32_t targetId = target != nullptr ? target->render.accountId : 0;
 
   bool hasInfo = false;
