@@ -121,7 +121,7 @@ bool CFlowerCastingEffect::IsAlive() {
 void CFlowerCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    vector3d& particlePosition = (*it)->position;
+    vector3d& particlePosition = particle->position;
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
@@ -151,10 +151,10 @@ void CFlowerCastingEffect::OnProcess() {
       const float baseAngle = particle->angle;
       const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * segment + baseAngle) % 360;
       const int tilt = particle->phaseParameter;
-      const float spread = radius * g_cosTable[tilt];
-      const float height = radius * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
+      const float spread = radius * g_cosTable[tilt];
+      const float height = radius * g_sinTable[tilt];
       const float offsetX = spread * cosine;
       const float offsetZ = spread * sine;
 
@@ -190,7 +190,7 @@ void CFlowerCastingEffect::OnProcess() {
       this->lastOuter.z = outerZ;
     }
 
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 
