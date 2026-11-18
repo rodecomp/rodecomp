@@ -44,9 +44,11 @@ UIBarGraphPlayer::UIBarGraphPlayer() : UIWindow(0) {
 
 // OFFSET: 0x0086FFF0
 // FUNCTION: fn_45786
-__declspec(noinline) UIBarGraph::~UIBarGraph() = default;
+UIBarGraph::~UIBarGraph() = default;
 
 // OFFSET: 0x0086FF40
+// FUNCTION: fn_45785
+__declspec(noinline) UIBarGraph2::~UIBarGraph2() = default;
 
 // OFFSET: 0x0086FFA0
 // FUNCTION: fn_11097
