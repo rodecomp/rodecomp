@@ -33,6 +33,7 @@ struct SeekPartyMapEntry {
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
   UISeekPartyListWnd();
+  ~UISeekPartyListWnd() override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
   void Paint() override;

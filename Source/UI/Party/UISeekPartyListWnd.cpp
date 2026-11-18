@@ -701,3 +701,8 @@ UISeekPartyListWnd::UISeekPartyListWnd()
   this->unknown_01C1 = 1;
   this->m_refreshButton = nullptr;
 }
+
+// OFFSET: 0x00914620
+// FUNCTION: fn_45683
+__declspec(noinline) UISeekPartyListWnd::~UISeekPartyListWnd() {
+}

@@ -29,6 +29,11 @@ UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(0) {
   this->m_elapsed = GetTickCount() - g_session.m_partyBooking.registeredTick;
 }
 
+// OFFSET: 0x00914770
+// FUNCTION: fn_45687
+__declspec(noinline) UISeekPartyWnd::~UISeekPartyWnd() {
+}
+
 // OFFSET: 0x009281A0
 // FUNCTION: fn_12651
 void UISeekPartyWnd::OnCreate(int, int) {

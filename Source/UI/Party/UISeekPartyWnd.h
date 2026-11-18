@@ -13,6 +13,7 @@ struct SeekPartyWndInfo;
 class UISeekPartyWnd : public UIFrameWnd {
 public:
   UISeekPartyWnd();
+  ~UISeekPartyWnd() override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;
