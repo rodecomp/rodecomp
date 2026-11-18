@@ -90,29 +90,29 @@ void CAxeBoomerang::OnProcess() {
       matrix rotation;
       rotation.MakeYRotation(angle);
 
-      const float dy = this->launchPosition.y - actor->render.position.y;
-      const float dx = this->launchPosition.x - actor->render.position.x;
-      const float dz = this->launchPosition.z - actor->render.position.z;
-      const float length = SquareRoot(dy * dy + dx * dx + dz * dz);
-      const float invDist = 1.0f / length;
+      vector3d delta;
+      delta.y = this->launchPosition.y - actor->render.position.y;
+      delta.x = this->launchPosition.x - actor->render.position.x;
+      delta.z = this->launchPosition.z - actor->render.position.z;
+      const float invDist = 1.0f / SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
       const vector3d target = actor->render.position;
       const vector3d launch = this->launchPosition;
 
-      const float offsetX = invDist * dx * scale;
-      const float offsetY = invDist * dy * scale;
-      const float offsetZ = invDist * dz * scale;
+      vector3d offset;
+      offset.x = invDist * delta.x * scale;
+      offset.y = invDist * delta.y * scale;
+      offset.z = invDist * delta.z * scale;
 
-      const float t = this->trajectoryTime;
-      const float oneMinusT = 1.0f - t;
+      const float oneMinusT = 1.0f - this->trajectoryTime;
       const float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
-      const float term1 = (t + t) * oneMinusT;
-      const float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+      const float term2 = static_cast<float>(std::pow(static_cast<double>(this->trajectoryTime), 2.0));
+      const float term1 = (this->trajectoryTime + this->trajectoryTime) * oneMinusT;
 
-      const bool finished = 1.0f <= t;
+      const bool finished = 1.0f <= this->trajectoryTime;
 
-      this->particlePosition.x = (offsetY * rotation.values[3] + offsetX * rotation.values[0] + offsetZ * rotation.values[6] + rotation.values[9] + launch.x) * term1 + term2 * target.x + term0 * launch.x;
-      this->particlePosition.y = (offsetY * rotation.values[4] + offsetX * rotation.values[1] + offsetZ * rotation.values[7] + rotation.values[10] + launch.y) * term1 + term2 * target.y + term0 * launch.y;
-      this->particlePosition.z = (offsetY * rotation.values[5] + offsetX * rotation.values[2] + offsetZ * rotation.values[8] + rotation.values[11] + launch.z) * term1 + term2 * target.z + term0 * launch.z;
+      this->particlePosition.x = (offset.y * rotation.values[3] + offset.x * rotation.values[0] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x) * term1 + term2 * target.x + term0 * launch.x;
+      this->particlePosition.y = (offset.y * rotation.values[4] + offset.x * rotation.values[1] + offset.z * rotation.values[7] + rotation.values[10] + this->launchPosition.y) * term1 + term2 * target.y + term0 * launch.y;
+      this->particlePosition.z = (offset.y * rotation.values[5] + offset.x * rotation.values[2] + offset.z * rotation.values[8] + rotation.values[11] + this->launchPosition.z) * term1 + term2 * target.z + term0 * launch.z;
 
       if (finished) {
         this->alive = 0;
