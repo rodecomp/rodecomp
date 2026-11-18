@@ -301,25 +301,15 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
 
   int columns = width - this->m_marginRight - this->m_gridLeft;
   columns -= columns % this->m_cellSize;
-  int clamped = minWidth;
-  if (this->m_gridLeft + minWidth <= this->m_gridLeft + columns) {
-    clamped = columns;
-  }
-  int gridWidth = maxWidth;
-  if (this->m_gridLeft + clamped <= this->m_gridLeft + maxWidth) {
-    gridWidth = clamped;
-  }
+  const int clamped = this->m_gridLeft + columns >= this->m_gridLeft + minWidth ? columns : minWidth;
+  const int gridWidth = this->m_gridLeft + clamped <= this->m_gridLeft + maxWidth ? clamped : maxWidth;
+  const int right = this->m_gridLeft + gridWidth;
 
   int gridHeight = height - this->m_marginBottom - this->m_gridTop;
   gridHeight = gridHeight - gridHeight % this->m_cellSize + this->m_gridTop;
-  if (gridHeight < minHeight) {
-    gridHeight = minHeight;
-  }
-  if (gridHeight > maxHeight) {
-    gridHeight = maxHeight;
-  }
+  gridHeight = gridHeight < minHeight ? minHeight : gridHeight;
+  gridHeight = gridHeight > maxHeight ? maxHeight : gridHeight;
 
-  const int right = gridWidth + this->m_gridLeft;
   if (right != this->geometry.width || gridHeight != this->geometry.height) {
     this->Resize(this->m_marginRight + right, this->m_marginBottom + gridHeight);
     const int visibleColumns = (this->geometry.width - this->m_marginRight - this->m_gridLeft) / this->m_cellSize;
