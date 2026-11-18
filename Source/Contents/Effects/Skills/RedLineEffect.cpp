@@ -108,6 +108,8 @@ void CRedLineEffect::OnProcess() {
         particle->speedParameter = std::max(particle->speedParameter - 5.0f, 0.0f);
       }
 
+      const int segment = particle->columnIndex;
+
       if (age < 100) {
         width = 0.0f;
       } else if (age <= 115) {
@@ -118,25 +120,28 @@ void CRedLineEffect::OnProcess() {
 
       width = std::max(width, 0.0f);
 
-      const int segment = particle->columnIndex;
       const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
       const int angle = static_cast<int>(static_cast<float>(step * segment) + spin) % 360;
+      const float cosAngle = g_cosTable[angle];
+      const float sinAngle = g_sinTable[angle];
       const float flat = width * g_cosTable[particle->phaseParameter];
       const float rise = width * g_sinTable[particle->phaseParameter];
+      float outerX = flat * cosAngle;
+      float outerZ = flat * sinAngle;
 
       EffectPoint points[2];
-      float innerX = particle->scale * g_cosTable[angle];
+      float innerX = particle->scale * cosAngle;
       float innerY = 0.0f;
-      float innerZ = particle->scale * g_sinTable[angle];
+      float innerZ = particle->scale * sinAngle;
 
-      if (particle->animationParameter == 1.0f) {
+      if (1.0f == particle->animationParameter) {
         innerX *= 1.5f;
         innerZ *= 1.5f;
       }
 
-      float outerX = flat * g_cosTable[angle] + innerX;
+      outerX += innerX;
       float outerY = innerY - rise;
-      float outerZ = flat * g_sinTable[angle] + innerZ;
+      outerZ += innerZ;
 
       innerX += particle->offsetX;
       innerY += particle->offsetY;
