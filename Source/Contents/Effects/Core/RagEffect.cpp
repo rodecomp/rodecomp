@@ -1351,8 +1351,9 @@ void CRagEffect::EnergyDrain2() {
     return;
   }
 
+  const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
     this->state.lastPrim->state.duration = 60;
     const float deltaZ = this->state.deltaPos.z - this->render.position.z;
     EffectPrimitiveState& launched = this->state.lastPrim->state;
