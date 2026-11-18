@@ -889,8 +889,8 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
   const float screenX = y * m[3] + x * m[0] + z * m[6] + m[9];
   const float screenY = x * m[1] + y * m[4] + z * m[7] + m[10];
   const float depth = y * m[5] + x * m[2] + z * m[8] + m[11];
-  const float deltaY = eye[1] - y;
   const float deltaX = eye[0] - x;
+  const float deltaY = eye[1] - y;
   const float deltaZ = eye[2] - z;
   const float distance = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const float slope = std::min(std::fabs(1.0f / distance * deltaY), g_projectionDepthNumerator);
@@ -1084,7 +1084,11 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
   const std::int32_t vertexCount = GrannyGetMeshVertexCount(meshes[mesh].mesh);
   const granny_tri_material_group* groups = GrannyGetMeshTriangleGroups(meshes[mesh].mesh);
   GrannyTextureEntry* entry = meshes[mesh].textures[groups->materialIndex];
-  *texture = entry != nullptr && meshes[mesh].materialCount > groups->materialIndex ? entry->texture : nullptr;
+  if (entry != nullptr && meshes[mesh].materialCount > groups->materialIndex) {
+    *texture = entry->texture;
+  } else {
+    *texture = nullptr;
+  }
 
   if (GrannyMeshIsRigid(meshes[mesh].mesh)) {
     const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
