@@ -950,7 +950,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
       const float nz = bx * ay - by * ax;
       const float inverse = 1.0f / SquareRoot(ny * ny + nx * nx + nz * nz);
       const float dot = nx * inverse * light[0] + ny * inverse * light[1] + nz * inverse * light[2];
-      const float intensity = 0.0f > dot ? 0.0f : dot;
+      const float intensity = dot >= 0.0f ? dot : 0.0f;
       const float redLevel = intensity * diffuse[0] + ambient[0];
       const float red = 1.0f < redLevel ? 1.0f : redLevel;
       const float greenLevel = intensity * diffuse[1] + ambient[1];
@@ -1028,7 +1028,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
           const ShadeVector& normal = vertexNormals[face.vertices[corner]];
           const int source = this->sharedTextureVertices == 0 ? frame : 0;
           const float dot = normal.y * light[1] + light[0] * normal.x + normal.z * light[2];
-          const float intensity = 0.0f > dot ? 0.0f : dot;
+          const float intensity = dot >= 0.0f ? dot : 0.0f;
           const float redLevel = intensity * diffuse[0] + ambient[0];
           const float red = 1.0f < redLevel ? 1.0f : redLevel;
           const float greenLevel = intensity * diffuse[1] + ambient[1];
