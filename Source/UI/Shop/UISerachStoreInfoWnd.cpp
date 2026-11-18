@@ -45,6 +45,10 @@ struct SearchStoreQueryPacket {
 
 static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 
+// OFFSET: 0x00914840
+// FUNCTION: fn_45693
+UISerachStoreInfoWnd::~UISerachStoreInfoWnd() = default;
+
 // OFFSET: 0x009121F0
 // FUNCTION: fn_12527
 UISerachStoreInfoWnd::UISerachStoreInfoWnd()

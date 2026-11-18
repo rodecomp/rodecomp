@@ -13,6 +13,7 @@ class UITextButton;
 class UISerachStoreInfoWnd : public UIFrameWnd {
 public:
   UISerachStoreInfoWnd();
+  __declspec(noinline) ~UISerachStoreInfoWnd() override;
   void OnCreate(int width, int height) override;
   void Paint() override;
   void OnLBtnDblClk(int x, int y) override;
