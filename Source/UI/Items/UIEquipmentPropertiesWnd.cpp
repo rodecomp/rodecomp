@@ -394,11 +394,7 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   this->tabs = new CUITab();
   this->tabs->SetSize(18, 265);
   this->tabs->Move(3, 18);
-  {
-    CUITab* tabs = this->tabs;
-    const std::function<void(CUITabButton*)> handler = [this](CUITabButton* button) { this->OnChangeTab(button); };
-    tabs->onChange = handler;
-  }
+  this->tabs->SetOnChange([this](CUITabButton* button) { this->OnChangeTab(button); });
   this->AddChild(this->tabs);
 
   CUITabButton* allButton = new CUITabButton();
