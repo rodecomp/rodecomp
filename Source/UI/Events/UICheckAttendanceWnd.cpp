@@ -89,7 +89,7 @@ void UICheckAttendanceWnd::VisitChildren() {
 // FUNCTION: fn_09638
 int UICheckAttendanceWnd::SlotAt(int x, int y) {
   const int top = this->BannerHeight() + 95;
-  if (x < 26 || x > 332 || y < top || y > top + 252) {
+  if (x < 26 || x > 332 || y < top || top + 252 < y) {
     return -1;
   }
 
@@ -165,8 +165,12 @@ void UICheckAttendanceWnd::Paint() {
 
   const int start = g_checkAttendanceMgr->m_config0;
   const int end = g_checkAttendanceMgr->m_config1;
+  const int startMonth = start % 10000 / 100;
+  const int startDay = start % 100;
+  const int endMonth = end % 10000 / 100;
+  const int endDay = end % 100;
   this->DrawCenteredText(
-    0, 70, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_INFO), start % 10000 / 100, start % 100, end % 10000 / 100, end % 100).c_str(), this->geometry.width, 0, 12,
+    0, 70, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_INFO), startMonth, startDay, endMonth, endDay).c_str(), this->geometry.width, 0, 12,
     0x3950A4, 1
   );
 
@@ -212,14 +216,15 @@ void UICheckAttendanceWnd::Paint() {
     this->DrawBitmap(this->m_checkedDays % 5 * 62 + 26, this->m_checkedDays / 5 * 64 + 95 + bannerHeight, slot, true);
   }
 
-  for (int day = 1; day <= this->m_rewardCount; ++day) {
+  for (int index = 0; index < this->m_rewardCount; ++index) {
+    const int day = index + 1;
     ITEM_INFO item;
     item.SetItemId(g_checkAttendanceMgr->GetReward(day).first);
     item.quantity = g_checkAttendanceMgr->GetReward(day).second;
     g_checkAttendanceMgr->GetReward(day);
 
-    const int x = (day - 1) % 5 * 62;
-    const int y = (day - 1) / 5 * 64;
+    const int x = index % 5 * 62;
+    const int y = index / 5 * 64;
     this->DrawItemAndQuantity(x + 43, y + 109 + bannerHeight, item, 1, 0);
     this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_COUNT), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
