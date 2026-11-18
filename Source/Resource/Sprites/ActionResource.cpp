@@ -56,6 +56,22 @@ CActRes* CActRes::Create() {
   return new CActRes;
 }
 
+// OFFSET: 0x007474A0
+// FUNCTION: fn_45820
+__forceinline void CActRes::AdjustCellPosition(SpriteFrameCell* cell, int width, int height, int doubleWidth,
+                                               int doubleHeight) {
+  if (!cell) {
+    this->Unload();
+    ShowErrorDialog("Error While Load Act", 0);
+    return;
+  }
+
+  const int imageWidth = doubleWidth ? width * 2 : width;
+  const int imageHeight = doubleHeight ? height * 2 : height;
+  cell->x = RelativeCoordinate(cell->x, imageWidth, cell->scaleX);
+  cell->y = RelativeCoordinate(cell->y, imageHeight, cell->scaleY);
+}
+
 // OFFSET: 0x007437B0
 // FUNCTION: fn_07750
 bool CActRes::Load(const char* name) {
@@ -184,8 +200,7 @@ bool CActRes::Load(const char* name) {
           }
         }
 
-        cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
-        cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
+        this->AdjustCellPosition(&cell, width, height, 0, 0);
       }
 
       if (header.version >= 0x0200) {

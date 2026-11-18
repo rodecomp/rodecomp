@@ -38,6 +38,7 @@ public:
   CActRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  void AdjustCellPosition(SpriteFrameCell* cell, int width, int height, int doubleWidth, int doubleHeight);
   const std::vector<ActionFrame>& Animation(unsigned index) const;
   const ActionFrame& Frame(unsigned animation, unsigned frame) const;
   unsigned FrameCount(unsigned animation) const;
