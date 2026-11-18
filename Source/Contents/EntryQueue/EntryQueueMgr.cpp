@@ -229,7 +229,7 @@ void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
   }
 
   if (!this->current) {
-    for (auto it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
+    for (auto it = g_entryQueueList.begin(), end = g_entryQueueList.end(); it != end; ++it) {
       const std::string name(it->second->name);
       const std::string queueName(packet->queueName);
       if (name == queueName) {
