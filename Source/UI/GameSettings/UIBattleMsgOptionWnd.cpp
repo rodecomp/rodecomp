@@ -256,7 +256,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_COMMAND:
     switch (a) {
     case ID_OPTION: {
-      if (this->chatWindowIndex == b && this->useMainChatOptions == (c != 0)) {
+      if (this->chatWindowIndex == b && this->useMainChatOptions == static_cast<unsigned char>(c != 0)) {
         if (d != 2) {
           g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
           return 0;
@@ -269,7 +269,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->useMainChatOptions = c != 0;
       SubChatWndInfo info;
       info = (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex];
-      if (!info.name.empty()) {
+      if (info.name.size() > 0) {
         this->allChecked = 1;
         for (int i = 0; i < 25; ++i) {
           this->optionStates[i] = info.options[i];
@@ -295,9 +295,11 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case ID_CHECK:
       this->allChecked = b;
       for (int i = 0; i < 25; ++i) {
-        const bool checked = this->allChecked != 0;
-        this->optionStates[i] = checked;
-        (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex].options[i] = checked;
+        if (this->useMainChatOptions) {
+          g_session.m_noSubChatWnds[this->chatWindowIndex].options[i] = this->optionStates[i] = this->allChecked != 0;
+        } else {
+          g_session.m_subChatWnds[this->chatWindowIndex].options[i] = this->optionStates[i] = this->allChecked != 0;
+        }
       }
       this->Invalidate();
       return 0;
