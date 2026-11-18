@@ -34,7 +34,7 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
   value.upgradable = bytes[10];
   value.range = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 8));
-  value.apCost = value.UseApAmount(value.level);
+  value.apCost = value.UseApAmount(Read<std::int16_t>(bytes + 4));
   g_session.m_skillBundle.ApplyLevelChange(value);
 
   if (Read<std::uint16_t>(bytes) == ID_ZC_SKILLINFO_UPDATE) {
