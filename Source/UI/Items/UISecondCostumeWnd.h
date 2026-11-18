@@ -36,6 +36,8 @@ public:
   void DrawCharacterPreview(int x, int y);
   void LoadLists();
   void SelectSavedEntries();
+  int SelectedEntryValue(int tab) const;
+  int FindEntryIndex(int tab, int value) const;
 
 protected:
   /* 00B4 */ UIComboBoxDefWnd* m_typeCombo;

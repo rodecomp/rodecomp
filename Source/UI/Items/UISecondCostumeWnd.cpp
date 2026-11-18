@@ -20,8 +20,11 @@
 #include "Script/LuaScript.h"
 #include "Resource/MSGSTRINGID.h"
 
-// INLINED
-static int SelectedEntryValue(const std::vector<SecondCostumeEntry>& entries, const int& selected) {
+// OFFSET: 0x0094F320
+// FUNCTION: fn_45701
+int UISecondCostumeWnd::SelectedEntryValue(int tab) const {
+  const std::vector<SecondCostumeEntry>& entries = this->m_entries[tab];
+  const int& selected = this->m_selected[tab];
   if (entries.empty()) {
     return 0;
   }
@@ -31,8 +34,10 @@ static int SelectedEntryValue(const std::vector<SecondCostumeEntry>& entries, co
   return entries[selected].value;
 }
 
-// INLINED
-static int FindEntryIndex(const std::vector<SecondCostumeEntry>& entries, const int& value) {
+// OFFSET: 0x0094F3B0
+// FUNCTION: fn_45702
+int UISecondCostumeWnd::FindEntryIndex(int tab, int value) const {
+  const std::vector<SecondCostumeEntry>& entries = this->m_entries[tab];
   for (unsigned int index = 0; index < entries.size(); ++index) {
     if (entries[index].value == value) {
       return index;
@@ -49,18 +54,18 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
   const std::uint32_t time = this->m_previewStartTime;
   const int action = this->m_page;
 
-  const int headPalette = SelectedEntryValue(this->m_entries[0], this->m_selected[0]);
+  const int headPalette = this->SelectedEntryValue(0);
 
-  const int bodyStyle = SelectedEntryValue(this->m_entries[2], this->m_selected[2]);
+  const int bodyStyle = this->SelectedEntryValue(2);
 
   const int robe = g_session.m_robe;
   const unsigned short midAccessory = static_cast<unsigned short>(g_session.m_accessory3);
   const unsigned short topAccessory = static_cast<unsigned short>(g_session.m_accessory2);
   const unsigned short bottomAccessory = static_cast<unsigned short>(g_session.m_accessory);
 
-  const unsigned short head = static_cast<unsigned short>(SelectedEntryValue(this->m_entries[1], this->m_selected[1]));
+  const unsigned short head = static_cast<unsigned short>(this->SelectedEntryValue(1));
 
-  const int body = SelectedEntryValue(this->m_entries[3], this->m_selected[3]);
+  const int body = this->SelectedEntryValue(3);
 
   FuncDrawWNDChar(
     this, x, y, static_cast<unsigned char>(g_session.GetCurrentSex()), static_cast<short>(g_session.GetDisplayJob()), g_session.GetDisplayJob(),
@@ -129,10 +134,10 @@ void UISecondCostumeWnd::LoadLists() {
 // OFFSET: 0x0094A2D0
 // FUNCTION: fn_12886
 void UISecondCostumeWnd::SelectSavedEntries() {
-  this->m_selected[0] = FindEntryIndex(this->m_entries[0], g_session.m_headPalette);
-  this->m_selected[1] = FindEntryIndex(this->m_entries[1], g_session.m_head);
-  this->m_selected[2] = FindEntryIndex(this->m_entries[2], g_session.m_bodyStyle);
-  this->m_selected[3] = FindEntryIndex(this->m_entries[3], g_session.m_bodyCostume);
+  this->m_selected[0] = this->FindEntryIndex(0, g_session.m_headPalette);
+  this->m_selected[1] = this->FindEntryIndex(1, g_session.m_head);
+  this->m_selected[2] = this->FindEntryIndex(2, g_session.m_bodyStyle);
+  this->m_selected[3] = this->FindEntryIndex(3, g_session.m_bodyCostume);
 }
 
 // OFFSET: 0x0094C5B0
