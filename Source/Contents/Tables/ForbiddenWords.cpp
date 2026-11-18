@@ -25,8 +25,8 @@ ForbiddenWords::~ForbiddenWords() {
 
 namespace {
   // INLINED
-  char* LowercaseWithCodePage(char* text, unsigned short codePage) {
-    for (char* current = text; current < text + std::strlen(text); current = CharNextExA(codePage, current, 0)) {
+  char* LowercaseMatchedWord(char* text) {
+    for (char* current = text; current < text + std::strlen(text); current = CharNextExA(static_cast<unsigned short>(g_textCodePage), current, 0)) {
       if (*current > 0 && std::isupper(*current)) {
         *current += 32;
       }
@@ -168,25 +168,26 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
     int advance = 1;
 
-    const auto found = std::find_if(this->words.begin(), this->words.end(), [current](const char* word) { return std::strncmp(word, current, std::strlen(word)) == 0; });
-    if (found != this->words.end()) {
-      const char* word = *found;
-      std::strcpy(matchedWord, word);
-      LowercaseWithCodePage(matchedWord, static_cast<unsigned short>(g_textCodePage));
-      advance = 0;
-      const char* end = matchedWord + std::strlen(matchedWord);
+    for (auto it = this->words.begin(); it != this->words.end(); ++it) {
+      if (std::strncmp(*it, current, std::strlen(*it)) == 0) {
+        std::strcpy(matchedWord, *it);
+        LowercaseMatchedWord(matchedWord);
+        advance = 0;
+        const char* end = matchedWord + std::strlen(matchedWord);
 
-      for (const char* character = matchedWord; character < end; character = CharNextExA(static_cast<WORD>(g_textCodePage), character, 0)) {
-        ++advance;
-      }
+        for (const char* character = matchedWord; character < end; character = CharNextExA(static_cast<WORD>(g_textCodePage), character, 0)) {
+          ++advance;
+        }
 
-      std::wstring wide(ATL::CA2WEX<128>(lowercase.c_str(), CP_THREAD_ACP));
-      const std::wstring wordWide(ATL::CA2WEX<128>(word, CP_THREAD_ACP));
-      const std::size_t position = wide.find(wordWide, wide.size() - std::wstring(ATL::CA2WEX<128>(current, CP_THREAD_ACP)).size());
+        std::wstring wide(ATL::CA2WEX<128>(lowercase.c_str(), CP_THREAD_ACP));
+        const std::wstring wordWide(ATL::CA2WEX<128>(*it, CP_THREAD_ACP));
+        const std::size_t position = wide.find(wordWide, wide.size() - std::wstring(ATL::CA2WEX<128>(current, CP_THREAD_ACP)).size());
 
-      if (position == std::wstring::npos) {
-        advance = 1;
-      } else {
+        if (position == std::wstring::npos) {
+          advance = 1;
+          break;
+        }
+
         wide = std::wstring(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
         const std::wstring prefix = wide.substr(0, position);
         const std::wstring suffix = wide.substr(position + std::wcslen(wordWide.c_str()));
@@ -197,6 +198,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
         wide += suffix;
         const std::string converted(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP));
         strcpy_s(text, std::strlen(text) + 1, converted.c_str());
+        break;
       }
     }
 
