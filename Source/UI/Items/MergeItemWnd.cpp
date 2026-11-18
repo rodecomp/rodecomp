@@ -60,7 +60,7 @@ void CMergeItemWnd::SelectSameItems(int id) {
   const int itemId = this->ItemIdOf(id);
   int checked = 0;
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
-    if (itemId == std::atoi(g_session.LookupClientItemByIdentity((*it)->m_message).itemId.c_str())) {
+    if (itemId == this->ItemIdOf((*it)->m_message)) {
       const std::uint32_t state = (*it)->geometry.state;
       if ((*it)->m_message == id) {
         if (state == 0) {
@@ -75,7 +75,7 @@ void CMergeItemWnd::SelectSameItems(int id) {
   }
 
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
-    const int value = std::atoi(g_session.LookupClientItemByIdentity((*it)->m_message).itemId.c_str());
+    const int value = this->ItemIdOf((*it)->m_message);
     (*it)->SetChecked(itemId == value ? checked : 0);
   }
 }
