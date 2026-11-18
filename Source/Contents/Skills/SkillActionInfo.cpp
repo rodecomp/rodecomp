@@ -78,6 +78,11 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   }
 
   switch (skillId) {
+  case RA_CLUSTERBOMB:
+  case RA_FIRINGTRAP:
+  case RA_ICEBOUNDTRAP:
+    motion = 5;
+    break;
   case KN_AUTOCOUNTER:
   case TF_THROWSTONE:
     effectId = EF_NONE;
@@ -514,9 +519,6 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case HT_REMOVETRAP:
   case HT_TALKIEBOX:
   case GM_SANDMAN:
-  case RA_CLUSTERBOMB:
-  case RA_FIRINGTRAP:
-  case RA_ICEBOUNDTRAP:
     motion = 5;
     break;
   case SR_DRAGONCOMBO:
