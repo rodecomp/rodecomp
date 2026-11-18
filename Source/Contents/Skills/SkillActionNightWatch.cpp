@@ -515,7 +515,7 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d positi
   for (int index = 0; index < 3; ++index) {
     EffectLists* effectMgr = g_effectMgr;
     CEffect* effect = effectMgr->Spawn(
-      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position, 0, -1, 0, 0
+      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
     );
     if (effect) {
       effect->SetDelay(index * 288);
@@ -523,7 +523,7 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d positi
 
     effectMgr = g_effectMgr;
     effect = effectMgr->Spawn(
-      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position, 0, -1, 0, 0
+      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
     );
     if (effect) {
       effect->SetDelay(index * 288);
