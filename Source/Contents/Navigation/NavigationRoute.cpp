@@ -140,10 +140,10 @@ CNavi_Link* CNaviData::FindLink(unsigned int key, bool byId) {
     }
     return nullptr;
   }
-  if (this->objects.empty() || key >= this->objects.size()) {
+  if (this->objects.empty()) {
     return nullptr;
   }
-  return this->objects[key];
+  return key < this->objects.size() ? this->objects[key] : nullptr;
 }
 
 // OFFSET: 0x00B88910
