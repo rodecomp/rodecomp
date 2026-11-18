@@ -49,6 +49,7 @@ public:
   /* 00D0 */ CBitmapRes* m_thumbBottom;
 
   void Paint() override;
+  void SetTrackBitmaps(std::string top, std::string middle, std::string bottom);
   void SetArrowBitmaps(std::string up, std::string down);
   void SetThumbBitmaps(std::string top, std::string middle, std::string bottom);
 };

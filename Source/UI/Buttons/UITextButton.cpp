@@ -771,6 +771,8 @@ void UIChatHisBox3::Resize(int width, int height) {
   this->Refresh();
 }
 
+// OFFSET: 0x00897120
+
 // OFFSET: 0x008978A0
 // FUNCTION: fn_11536
 void UITVTextButton::ResizeToText() {
@@ -2795,6 +2797,15 @@ void UIImgMenu::Paint() {
       this->DrawBitmap(1, this->itemHeight * this->hovered + 1 + offset, bitmap, false);
     }
   }
+}
+
+// OFFSET: 0x0089B820
+// FUNCTION: fn_45600
+void UIScrollBar_Custom::SetTrackBitmaps(std::string top, std::string middle, std::string bottom) {
+  this->m_trackTop = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(top.c_str())));
+  this->m_trackMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(middle.c_str())));
+  this->m_trackBottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bottom.c_str())));
+  this->Invalidate();
 }
 
 // OFFSET: 0x0089B760

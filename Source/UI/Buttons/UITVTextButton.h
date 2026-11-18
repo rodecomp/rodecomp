@@ -20,6 +20,7 @@ public:
   void OnRBtnDown(int x, int y) override;
   void OnRBtnUp(int x, int y) override;
   void ResizeToText();
+  void ResizeToTextClipped(int width, int height);
   void SetLabel(std::string text);
 
 protected:
