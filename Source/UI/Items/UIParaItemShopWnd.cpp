@@ -87,6 +87,20 @@ UIParaResultWnd::UIParaResultWnd() : UIItemBaseWnd() {
   this->headerHeight = 0;
 }
 
+// OFFSET: 0x009A7E90
+// FUNCTION: fn_45717
+UIParaItemPurchaseWnd::~UIParaItemPurchaseWnd() = default;
+
+// OFFSET: 0x009A7EE0
+// FUNCTION: fn_45718
+UIParaItemShopWnd::~UIParaItemShopWnd() = default;
+
+// OFFSET: 0x009A7F30
+// FUNCTION: fn_45719
+UIParaResultWnd::~UIParaResultWnd() {
+  g_session.ClearTradeItems();
+}
+
 // OFFSET: 0x009A80F0
 // FUNCTION: fn_13745
 void UIParaResultWnd::AddItem(const RawItemBasic& item, int quantity) {
