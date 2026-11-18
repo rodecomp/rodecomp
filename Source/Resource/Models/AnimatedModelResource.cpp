@@ -13,6 +13,9 @@
 #include <cstring>
 #include <string>
 
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) void std::list<std::string>::push_back(std::string&&);
+
 // GLOBAL: gl_24742
 GrannyAnimationLibrary g_grannyAnimationLibrary;
 
