@@ -444,6 +444,7 @@ void UIRoMapWnd::DrawRecordFaces(int) {
 }
 
 // OFFSET: 0x0091E670
+// FUNCTION: fn_45669
 bool UIRoMapWnd::AddRelatedName(std::string map, std::string name) {
   for (WorldViewRecord& record : this->m_records) {
     if (record.name == map) {
@@ -940,6 +941,7 @@ __forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) 
 }
 
 // OFFSET: 0x0091B0A0
+// FUNCTION: fn_45666
 void UIRoMapWnd::DrawLevelAreas() {
   const int count = g_worldViewMgr.LevelCount();
   for (int index = 0; index < count; ++index) {
