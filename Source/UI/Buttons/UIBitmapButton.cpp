@@ -19,6 +19,33 @@ UIBitmapButton::UIBitmapButton()
 }
 
 // OFFSET: 0x008695B0
+// FUNCTION: fn_45624
+bool UITextureButton::SetTexture(const char* name, int state) {
+  if (g_serviceType != ServiceKorea) {
+    return false;
+  }
+
+  CTexture* texture = g_texMgr.Load(name, 0, false, true, false);
+  if (!texture) {
+    return false;
+  }
+
+  if (texture->Width() > this->textureWidth) {
+    this->textureWidth = texture->Width();
+  }
+  if (texture->Height() > this->textureHeight) {
+    this->textureHeight = texture->Height();
+  }
+
+  switch (state) {
+  case 0: this->normalTexture = name; break;
+  case 1: this->hoverTexture = name; break;
+  case 2: this->pressedTexture = name; break;
+  case 3: this->disabledTexture = name; break;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x008657A0
 // FUNCTION: fn_10931
