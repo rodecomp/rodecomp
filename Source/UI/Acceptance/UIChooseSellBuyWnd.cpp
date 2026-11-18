@@ -11324,28 +11324,28 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             std::memcpy(packet.password, this->confirmPassword, sizeof(packet.password));
             GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
             this->DisableButtons();
-            break;
+          } else {
+            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
+            this->passwordStage = 2;
+            this->activeInputY = this->newPasswordY;
+            this->inputDigitCount = 0;
+            this->maskTextX = 0;
+            std::memset(this->newPassword, 0, sizeof(this->newPassword));
+            std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+            this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
+            this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
+            this->actionButtons[0]->Enable(0);
+            this->actionButtons[3]->Enable(1);
           }
-          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
+        } else {
+          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+          this->passwordStage = 3;
+          this->activeInputY = this->confirmPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
           std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
-          this->FillRegion(414, 166, 100, 16, 0xFAE6C8);
-          this->actionButtons[0]->Enable(0);
-          this->actionButtons[3]->Enable(1);
-          break;
+          this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
-        this->passwordStage = 3;
-        this->activeInputY = this->confirmPasswordY;
-        this->inputDigitCount = 0;
-        this->maskTextX = 0;
-        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-        this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
         break;
       }
       break;
