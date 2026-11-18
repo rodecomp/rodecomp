@@ -70,6 +70,13 @@ LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) : 
   std::memcpy(this->quad, other.quad, sizeof(this->quad));
 }
 
+// OFFSET: 0x00569340
+// FUNCTION: fn_45594
+LightmappedPrimitive& LightmappedPrimitive::operator=(const LightmappedPrimitive& other) {
+  std::memcpy(this->quad, other.quad, sizeof(this->quad));
+  return *this;
+}
+
 // OFFSET: 0x00569480
 // FUNCTION: fn_02258
 void LightmappedPrimitive::DrawLightmapped(int unused) {

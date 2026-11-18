@@ -50,6 +50,7 @@ struct ModelRenderCommand : RenderCommand {
 struct LightmappedPrimitive : LightmappedCommand {
   LightmappedPrimitive();
   LightmappedPrimitive(const LightmappedPrimitive& other);
+  LightmappedPrimitive& operator=(const LightmappedPrimitive& other);
   void DrawLightmapped(int unused);
   void ApplyDepthAlpha();
 
