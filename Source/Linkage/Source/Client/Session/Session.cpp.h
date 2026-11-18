@@ -76,6 +76,22 @@
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
+#include "UI/GameSettings/TalkType.h"
+#include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Actors/Resources/BodyResources.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
+#include "Utility/Math/AffineMatrix.h"
+#include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Messenger/MessengerWindows.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIItemStoreWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Skill/UINewSkillListWnd.h"
+#include "UI/Status/UIHomunInfoWnd.h"
+#include "UI/Status/UIMerInfoWnd.h"
 
 extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 using SessionShopTree = std::_Tree<std::_Tmap_traits<
@@ -101,3 +117,5 @@ using PendingActorNameTree = std::_Tree<std::_Tset_traits<
   std::uint32_t, std::less<std::uint32_t>, std::allocator<std::uint32_t>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
 PendingActorNameTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
+template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
+template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);

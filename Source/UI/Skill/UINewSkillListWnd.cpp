@@ -59,8 +59,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // INLINED
 static int SkillTabOf(int skillId) {
   if (skillId >= NV_BASIC && skillId <= ALL_RESURRECTION) {

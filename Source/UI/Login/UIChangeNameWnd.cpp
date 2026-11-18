@@ -27,8 +27,6 @@
 #include <cstring>
 #include <string>
 
-template __declspec(noinline) std::string::size_type std::string::find(const char, const std::string::size_type) const noexcept;
-
 #pragma pack(push, 1)
 struct CharacterRenamePacket {
   /* 0000 */ short id;

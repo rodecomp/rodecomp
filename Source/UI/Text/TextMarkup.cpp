@@ -6,9 +6,6 @@
 #include <windows.h>
 #include <utility>
 
-template __declspec(noinline) std::string::size_type
-std::string::find(const std::string&, std::string::size_type) const noexcept;
-
 namespace {
   // INLINED
   bool Hex(unsigned char value) {

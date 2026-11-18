@@ -39,11 +39,6 @@
 #include <malloc.h>
 #include <string>
 
-template __declspec(noinline) std::vector<ChangeMaterialEntry>::vector(const std::vector<ChangeMaterialEntry>&);
-template __declspec(noinline) std::vector<ChangeMaterialProduct>::vector(const std::vector<ChangeMaterialProduct>&);
-template __declspec(noinline) std::vector<MaterialReq>::vector(const std::vector<MaterialReq>&);
-template __declspec(noinline) std::vector<MaterialResult>::vector(const std::vector<MaterialResult>&);
-
 #pragma pack(push, 1)
 struct ChangeMaterialPacket {
   /* 0000 */ std::uint16_t type;

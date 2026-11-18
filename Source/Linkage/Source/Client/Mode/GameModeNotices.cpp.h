@@ -93,5 +93,17 @@
 #include <vector>
 #include <xtimec.h>
 #include "Resource/MSGSTRINGID.h"
+#include "Contents/Actors/Skill.h"
+#include "UI/GameSettings/TalkType.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Quest/UIQuestDisplay.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Rodex/UIRodexInboxWnd.h"
+#include "Network/Packets/PacketId.h"
 
 extern template void std::list<CGameObject*>::push_back(CGameObject*&&);
+template __declspec(noinline) std::pair<std::int64_t, RodexMail> std::make_pair<const std::int64_t&, RodexMail&>(const std::int64_t&, RodexMail&);

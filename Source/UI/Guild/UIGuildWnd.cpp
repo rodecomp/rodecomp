@@ -39,8 +39,6 @@
 #include "Contents/Guild/GuildInfo.h"
 
 #include "Resource/MSGSTRINGID.h"
-template __declspec(noinline) std::string& std::string::operator=(const char* const);
-template __declspec(noinline) std::vector<MiniPartyInfoEntry>::iterator std::vector<MiniPartyInfoEntry>::erase(const_iterator, const_iterator) noexcept;
 // GLOBAL: gl_24999
 int g_guildMemberColumnWidths[6] = {98, 65, 53, 39, 39, 76};
 

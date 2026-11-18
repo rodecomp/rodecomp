@@ -9,8 +9,6 @@
 #include <cstdlib>
 #include <windows.h>
 
-template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
-
 // OFFSET: 0x009E4310
 // FUNCTION: fn_14429
 bool CUIEditBoxEx::IsEditable() {

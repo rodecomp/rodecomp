@@ -15,16 +15,11 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::string::basic_string(const char* const);
-
 // GLOBAL: gl_24639
 int g_textureReduction = 1;
 
 // GLOBAL: gl_24638
 TextureCache g_texMgr;
-
-using TextureMap = std::map<const char*, CTexture*, TextureNameLess>;
-template __declspec(noinline) TextureMap::iterator TextureMap::_Mybase::find(const char* const&);
 
 // INLINED
 bool TextureNameLess::operator()(const char* left, const char* right) const {

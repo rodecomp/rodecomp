@@ -76,9 +76,14 @@
 #include "Contents/Guild/GuildInfo.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "UI/GameSettings/TalkType.h"
+#include "Network/Packets/NoticeEnums.h"
+#include "Contents/Actors/Skill.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 using InstantValueTree = std::_Tree<std::_Tmap_traits<
   int, std::int64_t, std::less<int>, std::allocator<std::pair<const int, std::int64_t>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::int64_t>, void*>*>
 InstantValueTree::_Find_lower_bound<int>(const int&) const;
 extern template void std::list<CGameObject*>::push_back(CGameObject*&&);
+template __declspec(noinline) std::string::basic_string(const std::string&);

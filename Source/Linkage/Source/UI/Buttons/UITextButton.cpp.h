@@ -65,6 +65,7 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 #include <format>
+#include "Contents/Skin/SkinMgr.h"
 
 extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
 using IntIntTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
@@ -79,3 +80,9 @@ ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;
 extern template UITextButton** std::allocator<UITextButton*>::allocate(const std::size_t);
 extern template std::string std::format<const std::string&>(const std::_Fmt_string<const std::string&>, const std::string&);
 extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
+IntIntTree::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, IdListLine>, void*>*>
+IdListLineTree::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, ExtendedListLine>, void*>*>
+ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;

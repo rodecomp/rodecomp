@@ -64,13 +64,6 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
-IntIntTree::_Find_lower_bound<int>(const int&) const;
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, IdListLine>, void*>*>
-IdListLineTree::_Find_lower_bound<int>(const int&) const;
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, ExtendedListLine>, void*>*>
-ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x0086D400
 // FUNCTION: fn_45618
 UIImgMenu::UIImgMenu()

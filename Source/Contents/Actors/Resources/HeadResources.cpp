@@ -6,8 +6,6 @@
 
 #include <string>
 
-template __declspec(noinline) std::string std::operator+(const std::string&, const std::string&);
-
 // GLOBAL: gl_24703
 EquipmentResourceMgr* g_equipmentResourceMgr;
 // GLOBAL: gl_24539

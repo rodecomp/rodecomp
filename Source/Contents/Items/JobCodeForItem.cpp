@@ -43,16 +43,6 @@ void CJobCodeForItem::AddJobCodeFromGroups(unsigned long code, Groups... groups)
   }
 }
 
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int, int, int, int, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int, int, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int, int);
-template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int);
-
 // OFFSET: 0x006C8A50
 // FUNCTION: fn_06430
 // OFFSET: 0x006C8B10
@@ -80,14 +70,6 @@ void CJobCodeForItem::AddJobCode(unsigned long code, Jobs... jobs) {
     it->second.merge(jobSet);
   }
 }
-
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId, JobId);
-template void CJobCodeForItem::AddJobCode(unsigned long, JobId);
 
 // OFFSET: 0x006C9270
 // FUNCTION: fn_06437
@@ -119,21 +101,9 @@ void CJobCodeForItem::AddJobGroup(unsigned int group, Jobs... jobs) {
   }
 }
 
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId,
-                                            JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId);
-template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId);
-
 // GLOBAL: gl_24704
 template <>
 CJobCodeForItem* Singleton<CJobCodeForItem>::s_instance = nullptr;
-
-template CJobCodeForItem* Singleton<CJobCodeForItem>::GetInstance();
 
 // OFFSET: 0x006CB0A0
 // FUNCTION: fn_06464

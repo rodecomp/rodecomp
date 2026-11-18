@@ -26,8 +26,6 @@
 #include <string>
 #include <string_view>
 
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-
 // GLOBAL: gl_25157
 static const std::string g_probabilityHighlightBegin = "^FF0000<B>";
 // GLOBAL: gl_25158

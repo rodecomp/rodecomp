@@ -15,7 +15,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Text/UIStaticText.h"
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 
 // OFFSET: 0x008519B0
 // FUNCTION: fn_45642

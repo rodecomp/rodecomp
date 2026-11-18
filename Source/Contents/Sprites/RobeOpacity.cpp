@@ -4,8 +4,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, RobeAlpha>::_Mybase::_Nodeptr> std::map<int, RobeAlpha>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x00DE3C10
 // FUNCTION: fn_23486
 int CSession::GetRobeAlpha(int robeId) {

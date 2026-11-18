@@ -82,10 +82,6 @@
 #include "UI/Rodex/UIRodexContentsWnd.h"
 #include "UI/Skill/UISkillListWnd.h"
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const std::int64_t, RodexMail>, void*>*>
-RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
-template __declspec(noinline) void std::list<ShortcutCooldownRecord>::push_back(const ShortcutCooldownRecord&);
-
 #pragma pack(push, 1)
 struct ClanInfoPacket {
   /* 0000 */ std::int16_t id;

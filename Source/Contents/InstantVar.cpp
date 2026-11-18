@@ -2,8 +2,6 @@
 
 #include "Contents/Actors/RenderObject.h"
 
-template __declspec(noinline) std::_Tree<std::_Tmap_traits<int, std::int64_t, std::less<int>, std::allocator<std::pair<const int, std::int64_t>>, false>>::~_Tree() noexcept;
-
 // OFFSET: 0x00CA8EE0
 // FUNCTION: fn_20997
 CInstantVar::~CInstantVar() = default;

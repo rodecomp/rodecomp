@@ -882,8 +882,6 @@ void CUIRenewQuestUI::OnTabButton(CUITabButton* button) {
 void CUIRenewQuestUI::OnPanelButton() {
 }
 
-template void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearData();
-
 // OFFSET: 0x00A661F0
 // FUNCTION: fn_16612
 void UIWindow::RecordWindowFlag(bool value) {

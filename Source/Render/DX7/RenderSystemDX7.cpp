@@ -10,9 +10,6 @@
 
 #include <new>
 
-template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=(std::shared_ptr<CSurface>&&) noexcept;
-template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=<CSurfaceDX7>(std::shared_ptr<CSurfaceDX7>&&) noexcept;
-
 // GLOBAL: gl_24503
 DeviceOwnerDX7* g_deviceOwnerDX7;
 

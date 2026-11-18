@@ -255,18 +255,6 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstdlib>
 
-using BrowserTree = std::_Tree<std::_Tmap_traits<HWND, CWebBrowser*, std::less<HWND>, std::allocator<std::pair<HWND const, CWebBrowser*>>, false>>;
-template std::_Tree_find_result<std::_Tree_node<std::pair<HWND const, CWebBrowser*>, void*>*>
-BrowserTree::_Find_lower_bound<HWND>(HWND const&) const;
-template std::pair<std::map<HWND, CWebBrowser*>::iterator, bool> std::map<HWND, CWebBrowser*>::insert<std::pair<HWND, CWebBrowser*>>(std::pair<HWND, CWebBrowser*>&&);
-template __declspec(noinline) std::_Tree_find_result<std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Nodeptr>
-std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Find_lower_bound<int>(const int&) const;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>&
-std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>::operator++() noexcept;
-template __declspec(noinline) void std::map<UIWindow*, SnapRectangle>::_Mybase::clear() noexcept;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SavedWindowRectangle*>>>, std::_Iterator_base0>&
-std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SavedWindowRectangle*>>>, std::_Iterator_base0>::operator++() noexcept;
-
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {

@@ -61,6 +61,16 @@
 extern "C" {
 #include <lualib.h>
 }
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Gauges/UIPcGage.h"
+#include "Contents/Configuration/ServiceEnums.h"
+#include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Messenger/MessengerWindows.h"
+#include "Contents/Messenger/EquipmentPropertyStore.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
+#include <fmt/format.h>
+#include <fmt/xchar.h>
 
 extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 using SessionShopTree = std::_Tree<std::_Tmap_traits<
@@ -72,3 +82,19 @@ using NameToIdTree = std::_Tree<std::_Tmap_traits<
   std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
 NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
+template __declspec(noinline) std::unordered_map<int, int>::unordered_map();
+template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
+template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
+  std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
+) noexcept;
+template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_tree<std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>>(
+  std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&, std::_Tree_node<std::pair<const int, int>, void*>*
+) noexcept;
+template __declspec(noinline) std::string fmt::format<const char*&, int&>(fmt::format_string<const char*&, int&>, const char*&, int&);
+template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::format_string<unsigned int&, int&>, unsigned int&, int&);
+template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
+template __declspec(noinline) std::string fmt::format<double, int&>(fmt::format_string<double, int&>, double&&, int&);
+template __declspec(noinline) std::wstring fmt::format<std::wstring, std::wstring>(fmt::wformat_string<std::wstring, std::wstring>, std::wstring&&, std::wstring&&);
+template __declspec(noinline) std::unordered_map<int, int, EquipmentProperties::CEquipmentValueHash>::~unordered_map();

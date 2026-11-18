@@ -73,6 +73,16 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
 #include "UI/Text/UIBroadcastBalloon.h"
+#include "UI/GameSettings/TalkType.h"
+#include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Messenger/EquipmentPropertiesMgr.h"
+#include "UI/Party/UISeekPartyMBWnd.h"
+#include "UI/Items/UIItemShopWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Rodex/UIRodexContentsWnd.h"
+#include "UI/Skill/UISkillListWnd.h"
 
 extern template std::uint32_t& std::map<std::uint32_t, std::uint32_t>::operator[](const std::uint32_t&);
 using RodexMailTree = std::_Tree<std::_Tmap_traits<
@@ -81,3 +91,6 @@ extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::int6
 RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
 extern template decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, std::uint32_t&>(std::string&, std::uint32_t&);
 extern template std::list<BroadcastBalloonLine>::~list();
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const std::int64_t, RodexMail>, void*>*>
+RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
+template __declspec(noinline) void std::list<ShortcutCooldownRecord>::push_back(const ShortcutCooldownRecord&);

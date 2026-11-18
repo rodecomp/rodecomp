@@ -1,7 +1,5 @@
 #include "Contents/Navigation/NavigationManager.h"
 
-template __declspec(noinline) void std::vector<NaviLink>::_Tidy() noexcept;
-
 // OFFSET: 0x00B8CF70
 // FUNCTION: fn_19432
 bool CNavi_Object::HasId(const unsigned int& id) const {

@@ -90,9 +90,6 @@
 #include "UI/Status/UIHomunInfoWnd.h"
 #include "UI/Status/UIMerInfoWnd.h"
 
-template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
-template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
-
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
 CSession g_session;

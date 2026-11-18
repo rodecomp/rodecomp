@@ -18,8 +18,6 @@ int g_snapDirection = 1;
 // GLOBAL: gl_24655
 CSnapMgr g_snapMgr;
 
-template __declspec(noinline) void std::list<SnapObject*>::push_back(SnapObject* const&);
-
 namespace {
 // INLINED
 __forceinline void RemoveLink(SnapObject& self, SnapObject* object) {

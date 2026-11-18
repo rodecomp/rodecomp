@@ -41,13 +41,6 @@
 #include <string>
 #include <windows.h>
 
-template __declspec(noinline) std::list<ExchangeUI::CItemData>::~list() noexcept;
-template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
-template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetOnSelect(std::function<void(ExchangeUI::CUIItem*, const ExchangeUI::CItemData&)>);
-template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetBinder(std::function<void(ExchangeUI::CUIItem*, const ExchangeUI::CItemData&)>);
-template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetImages(const std::string&, const std::string&, const std::string&,
-                                                                                    const std::string&);
-
 // OFFSET: 0x00A0F840
 // FUNCTION: fn_15180
 template <>

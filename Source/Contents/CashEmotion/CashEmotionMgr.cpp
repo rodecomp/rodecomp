@@ -80,18 +80,6 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 
 extern "C" long long _Xtime_get_ticks();
 
-template __declspec(noinline) std::unordered_map<std::string, CashEmotionCommand*>::iterator
-std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::find<void>(const std::string&);
-
-template __declspec(noinline) std::pair<std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Nodeptr, bool>
-std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Try_emplace<const std::string&, CashEmotionCommand*&>(
-  const std::string&, CashEmotionCommand*&
-);
-
-template __declspec(noinline) std::string fmt::format<int&, int&, int&, int&, int&>(
-  fmt::format_string<int&, int&, int&, int&, int&>, int&, int&, int&, int&, int&
-);
-
 class ICashEmotionAction {
 public:
   virtual ~ICashEmotionAction();

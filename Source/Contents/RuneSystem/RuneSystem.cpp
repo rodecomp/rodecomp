@@ -23,8 +23,6 @@ extern "C" {
 #include <string>
 #include <windows.h>
 
-template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
-
 // GLOBAL: gl_24845
 CRuneSystemMgr* g_runeSystemMgr;
 

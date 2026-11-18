@@ -7,8 +7,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::_Tree<std::_Tmap_traits<unsigned, CooldownEdge, std::less<unsigned>, std::allocator<std::pair<const unsigned, CooldownEdge>>, false>>::~_Tree() noexcept;
-
 // OFFSET: 0x00CA4F30
 // FUNCTION: fn_20946
 CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_t durationValue, std::uint32_t startValue, std::uint32_t elapsedValue,

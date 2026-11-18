@@ -140,9 +140,6 @@ struct GameModeReplayPacket {
 };
 #pragma pack(pop)
 
-template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
-
 namespace {
 struct RodexSendMailRequest {
   /* 0000 */ int recipientId;

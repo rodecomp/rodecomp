@@ -32,6 +32,7 @@
 #include <list>
 #include <regex>
 #include <utility>
+#include "Utility/Cipher/Obfuscate.h"
 
 using StatusRequestTree = std::_Tree<std::_Tset_traits<unsigned int, std::less<unsigned int>, std::allocator<unsigned int>, false>>;
 extern template std::_Tree_find_result<std::_Tree_node<unsigned int, void*>*>
@@ -41,3 +42,18 @@ extern template void std::_List_node<AdventureGuide::CItemData, void*>::_Free_no
   std::allocator<std::_List_node<AdventureGuide::CItemData, void*>>&, std::_List_node<AdventureGuide::CItemData, void*>*) noexcept;
 extern template void std::_List_node<AdventureGuide::CQuestInfo, void*>::_Free_non_head(
   std::allocator<std::_List_node<AdventureGuide::CQuestInfo, void*>>&, std::_List_node<AdventureGuide::CQuestInfo, void*>*) noexcept;
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<unsigned int, void*>*>
+StatusRequestTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
+template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
+template __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
+template __declspec(noinline) void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
+template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
+template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
+template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
+template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
+template void CUIListBox<AdventureGuide::CUISubTab>::OnCreate(int, int);
+template void CUIListBox<AdventureGuide::CUITab>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnCreate(int, int);
+template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnCreate(int, int);

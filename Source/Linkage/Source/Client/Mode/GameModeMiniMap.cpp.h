@@ -1,0 +1,41 @@
+#pragma once
+
+#include <new>
+#include "UI/Window/WindowId.h"
+#include "UI/Window/UIEnums.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Input/Mouse.h"
+#include "Client/Session/Session.h"
+#include "Contents/Map/TownInfoMgr.h"
+#include "File/File.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include "Contents/World/World.h"
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
+#include "Render/Primitives/TextureQuad.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/World/TerrainResource.h"
+#include "UI/Buttons/UITextButton.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Math/AffineMatrix.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
+#include "UI/Items/UIIllustWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Navigation/UIMinimapZoomWnd.h"
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <timeapi.h>
+#include <windows.h>
+
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;

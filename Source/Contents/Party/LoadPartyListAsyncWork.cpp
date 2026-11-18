@@ -13,8 +13,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
-
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadPartyLIstAsyncWork.cpp";
 }
@@ -130,6 +128,3 @@ void CLoadPartyListAsyncWork::Complete() {
   CAdventurerAgencyMgr* manager = g_adventurerAgencyMgr;
   manager->CompleteList(this->m_diagnostic, this->m_response);
 }
-
-template void std::deque<CLoadPartyListAsyncWork*>::push_back(CLoadPartyListAsyncWork*&&);
-template __declspec(noinline) AsyncDiagnostic& AsyncDiagnostic::operator=<AsyncDiagnostic, bool, 0>(AsyncDiagnostic&&) noexcept;

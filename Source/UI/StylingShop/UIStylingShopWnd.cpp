@@ -23,9 +23,6 @@
 #include <mbstring.h>
 #include "Resource/MSGSTRINGID.h"
 
-template __declspec(noinline) std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
-
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
 void UIStylingshopTabParentWnd::OnCreate(int, int) {

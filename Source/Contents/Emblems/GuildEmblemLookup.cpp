@@ -3,9 +3,6 @@
 #include "Contents/Guild/GuildMgr.h"
 #include "Resource/ResourceMgr.h"
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, CGuild>, void*>*>
-std::map<unsigned int, CGuild>::_Mybase::_Find_lower_bound<unsigned int>(const unsigned int&) const;
-
 // OFFSET: 0x0065E450
 // FUNCTION: fn_05174
 std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {

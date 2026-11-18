@@ -36,9 +36,6 @@ extern "C" {
 #include <string>
 #include <vector>
 
-template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
-PendingActorNameTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
-
 struct SkillDelayField {
   int type;
   const char* name;

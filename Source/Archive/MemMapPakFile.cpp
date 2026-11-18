@@ -1,7 +1,5 @@
 #include "Archive/MemMapPakFile.h"
 
-template __declspec(noinline) std::vector<std::uint8_t>::~vector() noexcept;
-
 // OFFSET: 0x00AECAA0
 // FUNCTION: fn_18140
 void CMemMapPakFile::Initialize() {

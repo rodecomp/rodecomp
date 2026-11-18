@@ -102,5 +102,21 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Network/Packets/NoticeEnums.h"
+#include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
+#include "Network/Packets/ActorNamePacket.h"
+#include "Contents/Items/ItemType.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/MercenaryAI.h"
+#include "Utility/Cipher/Obfuscate.h"
+#include "UI/Chat/UIChatRoomWnd.h"
+#include "UI/Dialogs/UIChooseWnd.h"
+#include "UI/Login/UIPasswordWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Replay/UIReplayControlWnd.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
 
 extern template int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
+template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
