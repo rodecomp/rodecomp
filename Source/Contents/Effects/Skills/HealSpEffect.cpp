@@ -150,19 +150,20 @@ void CHealSp::OnProcess() {
       const float delay = params[4];
       float fade = params[5];
       const float alpha = static_cast<float>(sprite->alpha);
-      const vector3d origin = this->positionVector;
       vector3d velocity = sprite->velocity;
+      const vector3d origin = this->positionVector;
       const float lift = params[3] + params[2];
       velocity.y += lift;
       rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
       const float* values = rotation.values;
-      const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * radius + values[9] + (origin.x + velocity.x);
-      const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (origin.y + velocity.y);
-      const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (origin.z + velocity.z);
+      const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * radius + values[9] + (velocity.x + origin.x);
+      const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (velocity.y + origin.y);
+      const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (velocity.z + origin.z);
+      const int elapsed = sprite->elapsedFrames;
       float level;
       if (this->frame < this->holdFrame) {
-        if (sprite->elapsedFrames == static_cast<int>(delay)) {
-          fade = -(alpha / static_cast<float>(30 - sprite->elapsedFrames));
+        if (elapsed == static_cast<int>(delay)) {
+          fade = -(alpha / static_cast<float>(30 - elapsed));
         }
 
         level = alpha + fade;
@@ -183,11 +184,11 @@ void CHealSp::OnProcess() {
       sprite->position.x = x;
       sprite->position.y = y;
       sprite->position.z = z;
-      ++sprite->elapsedFrames;
+      sprite->elapsedFrames = elapsed + 1;
       ++it;
     } else {
       FreeParticle(sprite);
-      it = this->sprites.erase(it);
+      this->sprites.erase(it++);
     }
   }
 }
