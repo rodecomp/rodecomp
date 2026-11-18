@@ -13,9 +13,7 @@ public:
   // VTABLE: vt_01196
   class lcData {
   public:
-    // INLINED
-    virtual ~lcData() {
-    }
+    virtual ~lcData();
 
     /* 0004 */ std::string name;
     /* 001C */ std::string itemName;
