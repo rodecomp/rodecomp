@@ -44,7 +44,8 @@ void AnimatedModelFrame::AllocateTextureVertices(int count) {
   this->textureVertices = new ModelTextureVertex[count];
 }
 
-// INLINED
+// OFFSET: 0x00755230
+// FUNCTION: fn_45861
 AnimatedModelNode::AnimatedModelNode() {
   this->textures = nullptr;
   this->parent = nullptr;
