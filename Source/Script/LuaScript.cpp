@@ -686,14 +686,14 @@ int SetWindEffectInfo(lua_State* state) {
     effect->ringCount = static_cast<unsigned short>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_COLOR: {
-    const double alpha = luaL_checknumber(state, 3);
-    const double red = luaL_checknumber(state, 4);
-    const double green = luaL_checknumber(state, 5);
-    const double blue = luaL_checknumber(state, 6);
-    effect->green = static_cast<unsigned char>(static_cast<int>(green));
-    effect->maxAlpha = static_cast<unsigned char>(static_cast<int>(alpha));
-    effect->blue = static_cast<unsigned char>(static_cast<int>(blue));
-    effect->red = static_cast<unsigned char>(static_cast<int>(red));
+    const int alpha = static_cast<int>(luaL_checknumber(state, 3));
+    const int red = static_cast<int>(luaL_checknumber(state, 4));
+    const int green = static_cast<int>(luaL_checknumber(state, 5));
+    const int blue = static_cast<int>(luaL_checknumber(state, 6));
+    effect->green = static_cast<unsigned char>(green);
+    effect->maxAlpha = static_cast<unsigned char>(alpha);
+    effect->blue = static_cast<unsigned char>(blue);
+    effect->red = static_cast<unsigned char>(red);
     break;
   }
   case MSG_SET_SIZE:
