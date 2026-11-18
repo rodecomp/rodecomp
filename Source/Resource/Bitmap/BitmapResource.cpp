@@ -224,7 +224,8 @@ void CGifRes::Unload() {
   this->image.auxiliary = nullptr;
 }
 
-// INLINED
+// OFFSET: 0x0074A4B0
+// FUNCTION: fn_45838
 bool CGifRes::AdvanceFrame() {
   const std::size_t count = this->frames.size();
   if (count <= 1) {
@@ -256,6 +257,18 @@ void CGifRes::OnProcess() {
 // FUNCTION: fn_07857
 bool CGifRes::IsTransient() {
   return this->animated;
+}
+
+// OFFSET: 0x0074A550
+// FUNCTION: fn_45839
+void CBitmapRes::CreateBlank(int width, int height) {
+  this->Unload();
+  this->image.width = width;
+  this->image.height = height;
+  this->image.alpha = 0;
+  const std::uint32_t count = static_cast<std::uint32_t>(width) * static_cast<std::uint32_t>(height);
+  this->image.pixels = new std::uint32_t[count];
+  std::memset(this->image.pixels, 0xFF, count * sizeof(std::uint32_t));
 }
 
 // OFFSET: 0x0074A5C0

@@ -27,6 +27,7 @@ public:
   void Unload() override;
   virtual bool Decode(const char* name, const void* data, int bytes, bool iconOnly);
   bool CreateAuxiliary(int mode);
+  void CreateBlank(int width, int height);
   std::uint32_t Pixel(int x, int y) const;
   void ClearAuxiliary();
   bool DecodeBitmap(const void* data, int bytes, bool iconOnly);
