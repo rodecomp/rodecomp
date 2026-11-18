@@ -979,7 +979,12 @@ void CCashEmotionMgr::Search(
 // OFFSET: 0x0059A7C0
 // FUNCTION: fn_02961
 void CCashEmotionMgr::AddSearchResult(std::vector<std::pair<int, int>>& results, const std::pair<int, int>& entry) {
-  auto found = std::find(results.begin(), results.end(), entry);
+  auto found = results.begin();
+  for (; found != results.end(); ++found) {
+    if (*found == entry) {
+      break;
+    }
+  }
   if (results.end() == found) {
     results.push_back(entry);
   }
@@ -1288,8 +1293,8 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 // OFFSET: 0x0059C5A0
 // FUNCTION: fn_02977
 bool CCashEmotionMgr::RemoveExpiredPacks() {
-  auto* listWnd = g_windowMgr.cashEmotionListWnd;
   bool expired = false;
+  auto* listWnd = g_windowMgr.cashEmotionListWnd;
   const __time32_t now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
 
   for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
