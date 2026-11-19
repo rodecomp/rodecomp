@@ -40,7 +40,7 @@ NAsyncWorkPtr NAsyncWorkRequestQueue::Pop() {
     auto key = work->Get()->GroupKey();
     bool active = false;
     for (const auto& entry : this->m_active) {
-      if (entry == key) {
+      if (key.second == entry.second && key.first == entry.first) {
         active = true;
         break;
       }
