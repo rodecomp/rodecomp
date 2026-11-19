@@ -17,6 +17,8 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
+  void UpdateParticle(CParticle* particle);
+  static void __stdcall RenderParticle(CParticle* particle);
 
   /* 00CC */ std::list<CParticle*> particles;
 };
