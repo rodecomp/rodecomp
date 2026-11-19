@@ -162,20 +162,18 @@ void UIJobListWnd::RefreshJobs() {
     checkbox = new UICheckBox();
     checkbox->SetSize(120, 15);
     const int job = it->first;
-    if (job == -1) {
-      continue;
-    }
-
-    if (job - 1 < 4) {
-      checkbox->SetImages(
-        (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job + 0x6AF)
-      );
-    } else {
-      checkbox->SetImages(
-        (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job + 0x658)
-      );
+    if (job != -1) {
+      if (job - 1 < 4) {
+        checkbox->SetImages(
+          (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
+          LookupMessage(job + 0x6AF)
+        );
+      } else {
+        checkbox->SetImages(
+          (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
+          LookupMessage(job + 0x658)
+        );
+      }
     }
 
     checkbox->Move(10, (index + 1) * 25);
