@@ -348,11 +348,14 @@ int CBarterMarketItemMgr::GetAllItemValueById(int id)
 int CBarterMarketItemMgr::GetAllItemValueByName(std::string name)
 {
   int total = 0;
-  std::for_each(this->allItems.begin(), this->allItems.end(), [&total, &name](const BarterMarketItem& item) {
+  const auto addValue = [&total, &name](const BarterMarketItem& item) {
     if (item.name == name) {
       total += item.value;
     }
-  });
+  };
+  for (const BarterMarketItem& item : this->allItems) {
+    addValue(item);
+  }
   return total;
 }
 
