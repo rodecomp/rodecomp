@@ -669,11 +669,9 @@ int CSession::FindShopId(std::string name) {
 // FUNCTION: fn_05621
 bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
   SessionShop* shop = g_session.FindShop(g_session.FindShopId(""));
-  bool active;
+  bool active = true;
   if (shop != nullptr && shop->items.size() >= 1) {
-    active = shop->items[0].find(this->m_id) != shop->items[0].end();
-  } else {
-    active = true;
+    active = shop->items[0].end() != shop->items[0].find(this->m_id);
   }
   const bool changed = this->m_active != active;
   this->m_active = active;
@@ -3868,13 +3866,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, 
   this->activeItems.insert(itemId);
 
   auto combinations = this->m_itemCombinations.find(itemId);
-  if (combinations == this->m_itemCombinations.end()) {
+  if (this->m_itemCombinations.end() == combinations) {
     return;
   }
 
   for (const unsigned int& combinationId : combinations->second) {
     auto items = this->m_combinationItems.find(combinationId);
-    if (items == this->m_combinationItems.end()) {
+    if (this->m_combinationItems.end() == items) {
       continue;
     }
 
@@ -3902,13 +3900,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipItem(const int& itemId
   this->activeItems.extract(itemId);
 
   auto combinations = this->m_itemCombinations.find(itemId);
-  if (combinations == this->m_itemCombinations.end()) {
+  if (this->m_itemCombinations.end() == combinations) {
     return;
   }
 
   for (const unsigned int& combinationId : combinations->second) {
     auto items = this->m_combinationItems.find(combinationId);
-    if (items == this->m_combinationItems.end()) {
+    if (this->m_combinationItems.end() == items) {
       continue;
     }
 
@@ -4053,15 +4051,15 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
   }
 
   auto found = this->properties2.find(key);
-  if (found == this->properties2.end()) {
+  if (this->properties2.end() == found) {
     return;
   }
 
   this->m_dirty |= found->second->IsPretend();
   auto combinations = this->m_itemCombinations.find(found->second->GetId());
-  if (combinations != this->m_itemCombinations.end()) {
+  if (this->m_itemCombinations.end() != combinations) {
     for (const unsigned int& combinationId : combinations->second) {
-      if (this->properties3.find(combinationId) != this->properties3.end()) {
+      if (this->properties3.end() != this->properties3.find(combinationId)) {
         this->properties3[combinationId]->IsPretend();
       }
     }
@@ -6183,7 +6181,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
   this->m_dirty = true;
   const int key = GetEquipLocationIndex(mask);
   auto found = this->properties1.find(key);
-  if (found != this->properties1.end()) {
+  if (this->properties1.end() != found) {
     for (CEquipmentAttachable& attachable : found->second->GetAttachables()) {
       this->UnequipItem(attachable.GetId(), true);
     }
