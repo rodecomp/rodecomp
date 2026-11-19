@@ -175,8 +175,8 @@ UIHotKeyWnd::UIHotKeyWnd()
 // OFFSET: 0x009140A0
 // FUNCTION: fn_45805
 UIHotKeyWnd::~UIHotKeyWnd() {
-  for (std::map<int, HotkeyInfo>& table : this->hotkeys) {
-    table.clear();
+  for (int tab = 0; tab < 4; ++tab) {
+    this->hotkeys[tab].clear();
   }
   g_windowMgr.Schedule(this->m_balloon);
 }
@@ -191,7 +191,7 @@ void UIHotKeyWnd::SetHotkey(int tab, int index, HotkeyInfo info) {
 // FUNCTION: fn_12740
 void UIHotKeyWnd::SaveHotkeys() {
   unsigned int tab = 0;
-  std::map<int, HotkeyInfo>* tables = this->hotkeys;
+  std::map<int, HotkeyInfo>* tables = this->hotkeys.data();
   for (; tab < 4; ++tab) {
     for (const auto& entry : tables[tab]) {
       g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
