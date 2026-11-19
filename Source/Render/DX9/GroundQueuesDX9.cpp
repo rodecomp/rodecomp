@@ -36,7 +36,7 @@ void CRendererDX9::DrawGroundQueues() {
   if (g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) != 0) {
     if (g_multitexture == 1) {
       ScopedDeviceStateDX9 restoreDual = this->device->SaveState();
-      this->device->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);
+      this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);
       auto& queue = this->lightmappedFirst;
       std::sort(queue.begin(), queue.end(), [](const LightmappedPrimitive* left, const LightmappedPrimitive* right) {
         const auto first = reinterpret_cast<std::uintptr_t>(left->texture);
@@ -57,12 +57,12 @@ void CRendererDX9::DrawGroundQueues() {
         }
       }
 
-      this->device->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+      this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
     } else {
       this->DrawBaseQueue();
       ScopedDeviceStateDX9 restoreLightmap = this->device->SaveState();
-      this->device->state.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-      this->device->state.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+      this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+      this->device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       this->device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
       this->device->SetRenderState(D3DRS_ALPHAREF, 1);
       this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
