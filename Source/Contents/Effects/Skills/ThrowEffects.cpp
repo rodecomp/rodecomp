@@ -545,8 +545,9 @@ void CThrowItemEffect::OnProcess() {
 
         matrix translate;
         std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-        const vector3d offset = target->offset;
-        translate.MakeTranslate(offset.x, offset.y - height, offset.z);
+        vector3d offset = target->offset;
+        offset.y -= height;
+        translate.MakeTranslate(offset.x, offset.y, offset.z);
 
         matrix rotationMatrix;
         rotationMatrix.Compose(scale, view);
