@@ -500,8 +500,7 @@ void UIVerticalNameBalloonText::SetNameLines(const CActorNameCard& info, bool st
       this->textHeight = 0;
     } else {
       this->m_lines.push_back(info.clanName.c_str());
-      const std::string& clan = this->m_lines.back();
-      const int height = this->VerticalTextHeight(clan.c_str(), clan.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
+      const int height = this->VerticalTextHeight(this->m_lines.back().c_str(), this->m_lines.back().size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
       this->textHeight = std::max(height + 8, 32);
     }
     this->m_lines.push_back(name.c_str());
@@ -514,8 +513,7 @@ void UIVerticalNameBalloonText::SetNameLines(const CActorNameCard& info, bool st
       std::sprintf(line, "%s (%s)", name.c_str(), info.partyName.c_str());
       this->m_lines.push_back(line);
     }
-    const std::string& first = this->m_lines.back();
-    const int firstHeight = this->VerticalTextHeight(first.c_str(), first.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
+    const int firstHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), this->m_lines.back().size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
     this->textHeight = std::max(firstHeight + 8, 32);
 
     if (info.guildName[0] != '\0') {
