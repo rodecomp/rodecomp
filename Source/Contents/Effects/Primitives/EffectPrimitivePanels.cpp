@@ -285,7 +285,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.z = slot.vecBPre.z + z4;
     int alpha = 50;
     if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
     }
     if (vec1.y > -0.5f) {
       alpha = static_cast<int>(vec1.y * -100.0f);
@@ -308,7 +308,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.z = slot.vecBNow.z + z4;
     alpha = 50;
     if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
     }
     if (vec1.y > -0.5f) {
       alpha = static_cast<int>(vec1.y * -100.0f);
@@ -331,7 +331,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.z = slot.vecTPre.z + z4;
     alpha = 50;
     if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
     }
     if (vec1.y > -0.5f) {
       alpha = static_cast<int>(vec1.y * -100.0f);
@@ -354,7 +354,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.z = slot.vecTNow.z + z4;
     alpha = 50;
     if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
     }
     if (vec1.y > -0.5f) {
       alpha = static_cast<int>(vec1.y * -100.0f);
