@@ -95,10 +95,33 @@ void RenderSystemHolder::PrepareErrorDialog() {
   }
 }
 
+// OFFSET: 0x0056A640
+// FUNCTION: fn_46359
+const char* RenderSystemHolder::BackendNameFor(std::int32_t backend) {
+  switch (backend) {
+  case -1:
+    return "NotInitialized";
+  case 0:
+    return "Default";
+  case 1:
+    return "DirectX 7";
+  case 2:
+    return "DirectX 9";
+  default:
+    return "";
+  }
+}
+
 // OFFSET: 0x0056A230
 // FUNCTION: fn_02285
 std::int32_t RenderSystemHolder::Backend() const {
   return this->system ? this->system->Backend() : -1;
+}
+
+// OFFSET: 0x0056A0A0
+// FUNCTION: fn_46360
+const char* RenderSystemHolder::BackendName() const {
+  return BackendNameFor(this->Backend());
 }
 
 // OFFSET: 0x0056A240
@@ -147,14 +170,7 @@ HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
 
   int type = backend;
   if (type == 0) {
-    switch (g_session.DefaultRenderBackend()) {
-    case 1:
-      type = 1;
-      break;
-    default:
-      type = 2;
-      break;
-    }
+    type = PreferredBackend();
   }
 
   CRenderSystemBase* renderSystem;

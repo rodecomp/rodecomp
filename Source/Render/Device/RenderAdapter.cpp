@@ -2,7 +2,7 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RenderSystemDX9.h"
 #include "Render/Device/RenderAdapter.h"
-#include "Client/Session/Session.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Device/DeviceSelection.h"
 #include "Render/DX7/RenderSystemDX7.h"
 #include "UI/GameSettings/GameSettingsUI.h"
@@ -49,19 +49,7 @@ RenderAdapter SelectedRenderAdapter() {
   selected.backend = g_configuredRenderBackend;
 
   if (selected.backend == 0) {
-    int backend;
-    switch (g_session.DefaultRenderBackend()) {
-    case 1:
-      backend = 1;
-      break;
-    case 2:
-      backend = 2;
-      break;
-    default:
-      backend = 2;
-      break;
-    }
-    selected.backend = backend;
+    selected.backend = RenderSystemHolder::PreferredBackend();
   }
 
   switch (selected.backend) {

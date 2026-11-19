@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_RENDER_DEVICECONTEXT_DCSURFACE_H
 #define RAGNAROK_SOURCE_RENDER_DEVICECONTEXT_DCSURFACE_H
 
+#include "Client/Session/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/RenderSystemBase.h"
 
@@ -30,6 +31,22 @@ struct RenderSystemHolder {
   void RestoreDisplayMode();
   void PrepareErrorDialog();
   std::int32_t Backend() const;
+  const char* BackendName() const;
+  static const char* BackendNameFor(std::int32_t backend);
+
+  // OFFSET: 0x0056A260
+  // FUNCTION: fn_46361
+  static int PreferredBackend() {
+    switch (g_session.DefaultRenderBackend()) {
+    case 1:
+      return 1;
+    case 2:
+      return 2;
+    default:
+      return 2;
+    }
+  }
+
   CTexture* BackBufferTexture() const;
   std::uint32_t Width() const;
   std::uint32_t Height() const;
