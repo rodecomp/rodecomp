@@ -182,6 +182,13 @@ void CMagnumBreak::Render() {
   }
 }
 
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
 // OFFSET: 0x00B4A590
 // FUNCTION: fn_18944
 void CMagnumBreak::UpdateWave(CParticle* particle) {
@@ -207,16 +214,25 @@ void CMagnumBreak::UpdateWave(CParticle* particle) {
   fourth.MakeXRotation(pitch1);
   fourth.AppendYRotation(yaw1);
 
-  particle->vertices[0].x = first.values[3] * 0.0f + first.values[0] * 0.0f + first.values[6] * scale + first.values[9];
-  particle->vertices[0].y = first.values[4] * 0.0f + first.values[1] * 0.0f + first.values[7] * scale + first.values[10];
-  particle->vertices[0].z = first.values[5] * 0.0f + first.values[2] * 0.0f + first.values[8] * scale + first.values[11];
-  particle->vertices[2].x = second.values[3] * 0.0f + second.values[0] * 0.0f + second.values[6] * scale + second.values[9];
-  particle->vertices[2].y = second.values[4] * 0.0f + second.values[1] * 0.0f + second.values[7] * scale + second.values[10];
-  particle->vertices[2].z = second.values[5] * 0.0f + second.values[2] * 0.0f + second.values[8] * scale + second.values[11];
-  particle->vertices[1].x = third.values[3] * 0.0f + third.values[0] * 0.0f + third.values[6] * scale + third.values[9];
-  particle->vertices[1].y = third.values[4] * 0.0f + third.values[1] * 0.0f + third.values[7] * scale + third.values[10];
-  particle->vertices[1].z = third.values[5] * 0.0f + third.values[2] * 0.0f + third.values[8] * scale + third.values[11];
-  particle->vertices[3].x = fourth.values[3] * 0.0f + fourth.values[0] * 0.0f + fourth.values[6] * scale + fourth.values[9];
-  particle->vertices[3].y = fourth.values[4] * 0.0f + fourth.values[1] * 0.0f + fourth.values[7] * scale + fourth.values[10];
-  particle->vertices[3].z = fourth.values[5] * 0.0f + fourth.values[2] * 0.0f + fourth.values[8] * scale + fourth.values[11];
+  const vector3d offset{0.0f, 0.0f, scale};
+  vector3d corner0;
+  vector3d corner2;
+  vector3d corner1;
+  vector3d corner3;
+  MatrixMult(corner0, offset, first.values);
+  MatrixMult(corner2, offset, second.values);
+  MatrixMult(corner1, offset, third.values);
+  MatrixMult(corner3, offset, fourth.values);
+  particle->vertices[0].x = corner0.x;
+  particle->vertices[0].y = corner0.y;
+  particle->vertices[0].z = corner0.z;
+  particle->vertices[2].x = corner2.x;
+  particle->vertices[2].y = corner2.y;
+  particle->vertices[2].z = corner2.z;
+  particle->vertices[1].x = corner1.x;
+  particle->vertices[1].y = corner1.y;
+  particle->vertices[1].z = corner1.z;
+  particle->vertices[3].x = corner3.x;
+  particle->vertices[3].y = corner3.y;
+  particle->vertices[3].z = corner3.z;
 }
