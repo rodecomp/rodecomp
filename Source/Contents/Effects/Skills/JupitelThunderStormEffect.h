@@ -13,6 +13,7 @@ class CEZ2STRParticle;
 class CJupitelThunderStormEffect : public CEffect {
 public:
   CJupitelThunderStormEffect();
+  ~CJupitelThunderStormEffect() override;
 
   void Open() override;
   void OnProcess() override;

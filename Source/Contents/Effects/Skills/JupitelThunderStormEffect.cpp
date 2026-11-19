@@ -32,6 +32,11 @@ void LoadFormatted(CEZ2STRParticle* particle, const char* format, Args... args) 
 CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
 }
 
+// OFFSET: 0x00706030
+// FUNCTION: fn_46250
+__declspec(noinline) CJupitelThunderStormEffect::~CJupitelThunderStormEffect() {
+}
+
 // OFFSET: 0x00706110
 // FUNCTION: fn_07042
 void CJupitelThunderStormEffect::Close() {
