@@ -38,7 +38,8 @@ CShowEffect::CShowEffect() : CEffect(0x947), effects() {
 // FUNCTION: fn_07446
 void CShowEffect::Add(int tag, int effectId) {
   const std::uint32_t actorId = this->actor;
-  if (HasEffect(this->effects, tag) || g_effectMgr->Find(actorId, effectId)) {
+  const auto found = this->effects.find(tag);
+  if (found != this->effects.end() || g_effectMgr->Find(actorId, effectId)) {
     return;
   }
 
