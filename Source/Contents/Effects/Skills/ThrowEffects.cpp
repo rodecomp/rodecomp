@@ -49,9 +49,10 @@ void CThrowItemEffect::InitEmptyBottleParticle(CParticle* particle) {
   particle->angle = 0;
   particle->speedParameter = particle->animationParameter / 25.0f;
   particle->alpha = 255;
-  particle->offsetX = this->position[0];
-  particle->offsetY = this->position[1] - 8.0f;
-  particle->offsetZ = this->position[2];
+  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
   particle->destinationBlend = 6;
 }
 
@@ -63,9 +64,10 @@ void CThrowItemEffect::InitOrbParticle(CParticle* particle) {
   particle->angle = 330.0f;
   particle->speedParameter = 1.5f;
   particle->alpha = 255;
-  particle->offsetX = this->position[0];
-  particle->offsetY = this->position[1] - 15.0f;
-  particle->offsetZ = this->position[2];
+  const vector3d offset = {this->position[0], this->position[1] - 15.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
 }
 
 // OFFSET: 0x00B7D600
@@ -79,9 +81,10 @@ void CThrowItemEffect::InitStoneParticle(CParticle* particle) {
   particle->angle = 0;
   particle->speedParameter = 2.0f;
   particle->alpha = 255;
-  particle->offsetX = this->position[0];
-  particle->offsetY = this->position[1] - 8.0f;
-  particle->offsetZ = this->position[2];
+  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+  particle->offsetX = offset.x;
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
   particle->destinationBlend = 6;
 }
 
