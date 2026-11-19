@@ -202,9 +202,9 @@ const std::string UIWindow::RemoveTextLinkInfo(const std::string& source) {
 // FUNCTION: fn_16950
 void UIWindow::ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
   std::string text = source;
-  auto position = text.find(begin);
+  int position = static_cast<int>(text.find(begin));
 
-  if (position == std::string::npos) {
+  if (position == -1) {
     return;
   }
 
@@ -217,45 +217,44 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
   }
 
   do {
-    const auto content = position + begin.size();
+    const int content = position + static_cast<int>(begin.size());
     std::string tail(text, content);
-    const auto close = tail.find(end.data(), 0, end.size());
+    const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
 
-    if (close == std::string::npos) {
+    if (close == -1) {
       position = content;
-      continue;
-    }
+    } else {
+      std::string display = tail.substr(0, close);
+      std::string metadata;
+      const int info = static_cast<int>(display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size()));
 
-    std::string display = tail.substr(0, close);
-    std::string metadata;
-    const auto info = display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size());
+      if (info != -1) {
+        display = tail.substr(0, info);
+        metadata = tail.substr(info + g_infoTagBegin.size());
+        const int infoEnd = static_cast<int>(metadata.find(g_infoTagEnd));
 
-    if (info != std::string::npos) {
-      display = tail.substr(0, info);
-      metadata = tail.substr(info + g_infoTagBegin.size());
-      const auto infoEnd = metadata.find(g_infoTagEnd);
+        if (infoEnd != -1) {
+          metadata = metadata.substr(0, infoEnd);
+        }
+      }
 
-      if (infoEnd != std::string::npos) {
-        metadata = metadata.substr(0, infoEnd);
+      TextLink link;
+      link.position = offset;
+      link.display = display;
+      link.metadata = metadata;
+      links.push_back(link);
+      offset += static_cast<std::uint32_t>(display.size());
+
+      text = tail.substr(close + end.size());
+      position = static_cast<int>(text.find(begin));
+
+      if (position != -1) {
+        std::string prefix = text.substr(0, position);
+        prefix = RemoveTextLinkInfo(prefix);
+        offset += static_cast<std::uint32_t>(prefix.size());
       }
     }
-
-    TextLink link;
-    link.position = offset;
-    link.display = display;
-    link.metadata = metadata;
-    links.push_back(link);
-    offset += static_cast<std::uint32_t>(display.size());
-
-    text = tail.substr(close + end.size());
-    position = text.find(begin);
-
-    if (position != std::string::npos) {
-      std::string prefix = text.substr(0, position);
-      prefix = RemoveTextLinkInfo(prefix);
-      offset += static_cast<std::uint32_t>(prefix.size());
-    }
-  } while (position != std::string::npos);
+  } while (position != -1);
 }
 
 // OFFSET: 0x00877650
