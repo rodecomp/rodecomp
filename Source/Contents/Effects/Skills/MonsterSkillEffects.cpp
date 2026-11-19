@@ -4359,7 +4359,14 @@ void CNewCloudKillEffect::Render() {
     }
 
     const int frame = particle->frameIndex;
-    const ParticleQuad quad = {false, 0.5f, 0.75f, static_cast<float>(frame + 1) * 0.25f, static_cast<float>(frame + 2) * 0.25f, false, true};
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.5f;
+    quad.bottom = 0.75f;
+    quad.left = static_cast<float>(frame + 1) * 0.25f;
+    quad.right = static_cast<float>(frame + 2) * 0.25f;
     particle->Render(quad);
   }
 
@@ -4370,7 +4377,14 @@ void CNewCloudKillEffect::Render() {
     }
 
     const int frame = particle->frameIndex;
-    const ParticleQuad quad = {false, 0.0f, 0.25f, static_cast<float>(frame) * 0.25f, static_cast<float>(frame + 1) * 0.25f, false, true};
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 0.25f;
+    quad.left = static_cast<float>(frame) * 0.25f;
+    quad.right = static_cast<float>(frame + 1) * 0.25f;
     particle->Render(quad);
   }
 
@@ -4381,15 +4395,16 @@ void CNewCloudKillEffect::Render() {
     }
 
     const int frame = particle->frameIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
     const int column = frame % 2;
     const int row = frame / 2;
-    const ParticleQuad quad = {false,
-                               static_cast<float>(row) * 0.5f,
-                               static_cast<float>(row + 1) * 0.5f,
-                               static_cast<float>(column) * 0.5f,
-                               static_cast<float>(column + 1) * 0.5f,
-                               false,
-                               true};
+    quad.left = static_cast<float>(column) * 0.5f;
+    quad.top = static_cast<float>(row) * 0.5f;
+    quad.right = static_cast<float>(column + 1) * 0.5f;
+    quad.bottom = static_cast<float>(row + 1) * 0.5f;
     particle->Render(quad);
   }
 
@@ -4399,7 +4414,14 @@ void CNewCloudKillEffect::Render() {
       continue;
     }
 
-    const ParticleQuad quad = {false, 0.5f, 0.75f, 0.0f, 0.25f, false, true};
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.left = 0.0f;
+    quad.top = 0.5f;
+    quad.right = 0.25f;
+    quad.bottom = 0.75f;
     particle->Render(quad);
   }
 }
