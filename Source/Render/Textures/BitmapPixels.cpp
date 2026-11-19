@@ -243,6 +243,18 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
   }
 }
 
+// INLINED
+static int BrightenChannel(int value, int amount) {
+  int bright = value + amount;
+  if (bright < 0) {
+    bright = 0;
+  }
+  if (bright > 255) {
+    bright = 255;
+  }
+  return bright;
+}
+
 // OFFSET: 0x005489F0
 // FUNCTION: fn_01857
 void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount) {
@@ -251,19 +263,16 @@ void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount
   }
 
   this->m_bitmap.dirty = true;
-  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->m_bitmap.width);
+  const int right = std::min(this->m_bitmap.width, static_cast<std::uint32_t>(x + copyWidth));
   const int bottom = std::min(this->m_bitmap.height, static_cast<std::uint32_t>(y + copyHeight));
 
   for (int row = y; row < bottom; ++row) {
     for (int column = x; column < right; ++column) {
       std::uint32_t& pixel = this->m_bitmap.pixels[column + row * this->m_bitmap.width];
       if (pixel != 0xFFFF00FF) {
-        const int brightRed = static_cast<int>((pixel >> 16) & 0xFF) + amount;
-        const int red = std::min(brightRed >= 0 ? brightRed : 0, 255);
-        const int brightGreen = static_cast<int>((pixel >> 8) & 0xFF) + amount;
-        const int green = std::min(brightGreen >= 0 ? brightGreen : 0, 255);
-        const int brightBlue = static_cast<int>(pixel & 0xFF) + amount;
-        const int blue = std::min(brightBlue >= 0 ? brightBlue : 0, 255);
+        const int red = BrightenChannel(static_cast<BYTE>(pixel >> 16), amount);
+        const int green = BrightenChannel(static_cast<BYTE>(pixel >> 8), amount);
+        const int blue = BrightenChannel(static_cast<BYTE>(pixel), amount);
         pixel = 0xFF000000 | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
       }
     }
@@ -277,7 +286,7 @@ void CDCBitmap::Dim(int x, int y, int copyWidth, int copyHeight, int percent) {
     return;
   }
 
-  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->m_bitmap.width);
+  const int right = std::min(this->m_bitmap.width, static_cast<std::uint32_t>(x + copyWidth));
   const int bottom = std::min(this->m_bitmap.height, static_cast<std::uint32_t>(y + copyHeight));
   const float factor = static_cast<float>(100 - percent) * 0.01f;
 
