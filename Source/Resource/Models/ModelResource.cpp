@@ -123,6 +123,8 @@ ModelNode::~ModelNode() {
 __forceinline ModelNodeV1::ModelNodeV1() = default;
 
 // OFFSET: 0x00756A20
+// FUNCTION: fn_45858
+__declspec(noinline) ModelNodeV1::~ModelNodeV1() = default;
 
 // OFFSET: 0x00756AA0
 // FUNCTION: fn_45859
