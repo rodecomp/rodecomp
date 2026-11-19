@@ -40,7 +40,7 @@ bool CSession::HasTrackedAchievement(int id) const {
   const auto it = std::find_if(this->trackedAchievements.begin(), this->trackedAchievements.end(), [id](SessionRecord6178 record) {
     return id == record.id;
   });
-  return it != this->trackedAchievements.end();
+  return this->trackedAchievements.end() != it;
 }
 
 // OFFSET: 0x00E1D850
