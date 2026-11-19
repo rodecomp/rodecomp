@@ -158,35 +158,34 @@ static std::wstring ToWideString(const std::string& text) {
 int CEmbedFont::Load(HANDLE* fontReference, const char* familyName, const char* path) {
   int result = -2;
   *fontReference = nullptr;
-  if (this->m_module == nullptr) {
-    return result;
-  }
-  const char* rootUrl = this->m_rootUrl;
-  if (rootUrl != nullptr &&
-      (std::strcmp(rootUrl, "http://222.122.45.46") == 0 || std::strcmp(rootUrl, "http://fontrix.co.kr") == 0 ||
-       std::strcmp(rootUrl, "http://www.puccaracing.co.kr") == 0 || std::strcmp(rootUrl, "http://www.ragnarok.co.kr") == 0)) {
-    const std::string familyNameText = familyName;
-    std::string pathText = path == nullptr ? familyNameText : path;
-    std::wstring wideFamilyName = ToWideString(familyNameText);
-    std::wstring widePath = ToWideString(pathText);
-    std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
-    TTLOADINFO loadInfo;
-    loadInfo.usStructSize = sizeof(TTLOADINFO);
-    loadInfo.pusRefStr = reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(wideRootUrl.c_str()));
-    loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
-    FILE* file = _wfopen(widePath.c_str(), L"rb");
-    if (file == nullptr) {
-      return -2;
+  if (this->m_module != nullptr) {
+    const char* rootUrl = this->m_rootUrl;
+    if (rootUrl != nullptr &&
+        (std::strcmp(rootUrl, "http://222.122.45.46") == 0 || std::strcmp(rootUrl, "http://fontrix.co.kr") == 0 ||
+         std::strcmp(rootUrl, "http://www.puccaracing.co.kr") == 0 || std::strcmp(rootUrl, "http://www.ragnarok.co.kr") == 0)) {
+      const std::string familyNameText = familyName;
+      std::string pathText = path == nullptr ? familyNameText : path;
+      std::wstring wideFamilyName = ToWideString(familyNameText);
+      std::wstring widePath = ToWideString(pathText);
+      std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
+      TTLOADINFO loadInfo;
+      loadInfo.usStructSize = sizeof(TTLOADINFO);
+      loadInfo.pusRefStr = reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(wideRootUrl.c_str()));
+      loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
+      FILE* file = _wfopen(widePath.c_str(), L"rb");
+      if (file == nullptr) {
+        return -2;
+      }
+      LPWSTR windowsFamily = const_cast<wchar_t*>(wideFamilyName.c_str());
+      ULONG privStatus = 2;
+      LPSTR macFamily = const_cast<char*>(familyNameText.c_str());
+      ULONG status = 1;
+      result = this->LoadEmbeddedFont(fontReference, TTLOAD_PRIVATE, &privStatus, LICENSE_EDITABLE, &status,
+                                      ReadEmbedFontStream, file, windowsFamily, macFamily, &loadInfo);
+      fclose(file);
+    } else {
+      return -3;
     }
-    LPWSTR windowsFamily = const_cast<wchar_t*>(wideFamilyName.c_str());
-    ULONG privStatus = 2;
-    LPSTR macFamily = const_cast<char*>(familyNameText.c_str());
-    ULONG status = 1;
-    result = this->LoadEmbeddedFont(fontReference, TTLOAD_PRIVATE, &privStatus, LICENSE_EDITABLE, &status,
-                                    ReadEmbedFontStream, file, windowsFamily, macFamily, &loadInfo);
-    fclose(file);
-  } else {
-    return -3;
   }
   return result;
 }
