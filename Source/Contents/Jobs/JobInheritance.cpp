@@ -1124,6 +1124,11 @@ const char* CSession::GetWeaponClassName(int item) {
   return "";
 }
 
+// INLINED
+static const std::string SexNameOf(int sex) {
+  return g_session.GetSexName(sex);
+}
+
 // OFFSET: 0x00BAD420
 // FUNCTION: fn_19759
 std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int sex, int weapon, int weaponItem, int costume) {
@@ -1134,7 +1139,7 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
 
   const int spriteJob = g_session.GetSpriteJob(job > JT_MAX_BASIC ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  sexName = SexNameOf(sex);
 
   if (weaponItem == -1) {
     weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
@@ -1159,7 +1164,7 @@ std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job,
 
   const int spriteJob = g_session.GetSpriteJob(job > JT_MAX_BASIC ? job + 3950 : job, costume, true);
   jobName = g_session.m_jobSpriteNames[spriteJob];
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  sexName = SexNameOf(sex);
   weaponName = static_cast<const std::string&>(g_session.GetWeaponName(weapon));
 
   const char* const suffix = effects[effect];
