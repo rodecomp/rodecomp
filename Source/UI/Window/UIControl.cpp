@@ -242,7 +242,7 @@ __forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tool
 
 // OFFSET: 0x009BDF40
 // FUNCTION: fn_13944
-__forceinline CUIImageButton::CUIImageButton() : CUIButton(), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
+CUIImageButton::CUIImageButton() : CUIButton(), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
 // OFFSET: 0x009D5490
@@ -3582,16 +3582,16 @@ void CUIRegisterMgr::Load() {
 }
 
 // INLINED
-CUIThumb::CUIThumb()
+__forceinline CUIThumb::CUIThumb()
     : CUIControl(), top(), middle(), bottom(), dragOrigin(0), transparent(0), resizable(1), tooltip(), topName(), middleName(), bottomName(), onDrag() {
 }
 
 // INLINED
-CUIVThumb::CUIVThumb() : CUIThumb() {
+__forceinline CUIVThumb::CUIVThumb() : CUIThumb() {
 }
 
 // INLINED
-CUIHThumb::CUIHThumb() : CUIVThumb() {
+__forceinline CUIHThumb::CUIHThumb() : CUIVThumb() {
 }
 
 // OFFSET: 0x009EDBE0
