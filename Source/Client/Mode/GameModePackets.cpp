@@ -8579,8 +8579,9 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
 
   const int length = p->length;
   const int count = static_cast<unsigned>(length - 45) / 38u;
-  const auto* entry = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
-  for (int index = 0; index < count; ++index, ++entry) {
+  const auto* entries = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
+  for (int index = 0; index < count; ++index) {
+    const auto* entry = &entries[index];
     ITEM_INFO item;
     item.identity[0] = entry->type;
     item.identity[2] = entry->location;
