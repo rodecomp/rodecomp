@@ -469,16 +469,16 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
   }
 
   case UM_SETPOS: {
-    int y = 7;
+    int row = 0;
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end();) {
       UIIngredientInfoWnd* entry = *it;
       if (entry->geometry.visible == 0) {
         entry->Invalidate();
         it = this->items.erase(it);
       } else {
-        this->MoveScrollChild(entry, 0, y);
+        this->MoveScrollChild(entry, 0, row * 0x1E + 7);
         (*it)->Invalidate();
-        y += 0x1E;
+        ++row;
         ++it;
       }
     }
