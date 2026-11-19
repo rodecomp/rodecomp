@@ -180,6 +180,25 @@ __declspec(noinline) bool CWorldViewWorld::LoadTexture() {
 }
 
 // OFFSET: 0x00613D20
+// FUNCTION: fn_46318
+CWorldViewMap* CWorldViewWorld::FindMapAt(unsigned int& mapIndex, int x, int y) const {
+  const unsigned int count = this->maps.size();
+  for (unsigned int index = 0; index < count; ++index) {
+    const CWorldViewMap* map = this->maps[index];
+    bool hit;
+    if (map->id < 100 && !map->fields.empty()) {
+      const CWorldViewField* first = map->fields.front();
+      hit = AreaContains(first->left, first->top, first->right, first->bottom, x, y);
+    } else {
+      hit = map->Contains(x, y);
+    }
+    if (hit) {
+      mapIndex = index;
+      return this->maps[index];
+    }
+  }
+  return nullptr;
+}
 
 // OFFSET: 0x00613AB0
 // FUNCTION: fn_04352
