@@ -51,6 +51,11 @@ static const std::array<std::string, 4> s_talismanLoopEffects = {
 CTalismanMarkEffect::CTalismanMarkEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x0072DEF0
+// FUNCTION: fn_46033
+__declspec(noinline) CTalismanMarkEffect::~CTalismanMarkEffect() {
+}
+
 // OFFSET: 0x0072DFD0
 // FUNCTION: fn_07501
 void CTalismanMarkEffect::Close() {

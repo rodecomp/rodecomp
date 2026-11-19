@@ -13,6 +13,7 @@ public:
   /* 00CC */ std::vector<CEZ2STRParticle*> particles;
 
   CTalismanMarkEffect();
+  ~CTalismanMarkEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
