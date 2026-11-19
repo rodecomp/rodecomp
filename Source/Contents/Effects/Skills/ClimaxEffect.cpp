@@ -80,6 +80,7 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
 }
 
 // OFFSET: 0x00706970
+// FUNCTION: fn_46252
 __forceinline void CClimaxEffect::PositionEmitter(CEZ2STRParticle* emitter) {
   if (FindRenderObject(this->actor)) {
     const vector3d position = emitter->position;
