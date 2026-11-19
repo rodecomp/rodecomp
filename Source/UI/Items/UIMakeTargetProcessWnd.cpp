@@ -47,8 +47,8 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 1) {
-    bool hasElementalStone = false;
     int emptySlot = 3;
+    bool hasElementalStone = false;
     for (int index = 0; index < 3; ++index) {
       if (this->materials[index].identity[1] > 0) {
         hasElementalStone |= this->materials[index].IsElementalStone();
