@@ -1277,11 +1277,11 @@ void UIMessengerGroupWnd::UpdateScroll() {
     return;
   }
 
-  const int rows = this->members.size() / this->columns + (this->members.size() % this->columns != 0);
   const int visible = this->visibleRows;
-  int range = 0;
-  if (rows - visible >= 0) {
-    range = rows - visible;
+  const int rows = this->members.size() / this->columns + (this->members.size() % this->columns != 0);
+  int range = rows - visible;
+  if (range < 0) {
+    range = 0;
   }
   this->scrollable = range != 0;
   if (range) {
