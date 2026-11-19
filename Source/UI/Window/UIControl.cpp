@@ -1577,8 +1577,9 @@ void CUIRadioItem::OnCreate(int width, int height) {
       this->onSelect(this);
     }
   });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  CUIRadioButton* button = this->radioButton;
+  button->disabled = 0;
+  button->Invalidate();
   {
     // GLOBAL: gl_25961
     // GLOBAL: gl_25962
