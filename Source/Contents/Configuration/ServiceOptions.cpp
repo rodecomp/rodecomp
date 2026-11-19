@@ -1401,6 +1401,7 @@ void CSession::LoadOptionInfo() {
   g_outdoorCameraDistance = this->GetOptionFloat("Outdoor_ViewDistance", 300.0f);
   g_indoorCameraPitch = this->GetOptionFloat("Indoor_ViewLatitude", -45.0f);
   g_indoorCameraDistance = this->GetOptionFloat("Indoor_ViewDistance", 300.0f);
+  const float maxIndoorDistance = g_cameraBaseDistance;
 
   if (g_indoorCameraPitch < -55.0f) {
     g_indoorCameraPitch = -55.0f;
@@ -1412,8 +1413,8 @@ void CSession::LoadOptionInfo() {
     g_indoorCameraDistance = g_cameraMinDistance;
   }
 
-  if (g_indoorCameraDistance > g_cameraBaseDistance) {
-    g_indoorCameraDistance = g_cameraBaseDistance;
+  if (g_indoorCameraDistance > maxIndoorDistance) {
+    g_indoorCameraDistance = maxIndoorDistance;
   }
 
   Singleton<CGameSettingsMgr>::GetInstance();
@@ -1483,7 +1484,8 @@ void CSession::LoadOptionInfo() {
   switch (g_effectDetailLevel) {
   case 0:
     g_spriteHalfWidth = 1;
-    [[fallthrough]];
+    g_spriteHalfHeight = 1;
+    break;
   case 1:
     g_spriteHalfHeight = 1;
     break;
