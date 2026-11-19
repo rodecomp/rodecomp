@@ -499,8 +499,9 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
 
     mode->CellCenter(unit->x, unit->y, this->render.position.x, this->render.position.z);
-    this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+    const float height = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->m_effectId = -1;
+    this->render.position.y = height;
 
     const vector3d& position = this->render.position;
     switch (this->GetEffectiveJob(-1)) {
