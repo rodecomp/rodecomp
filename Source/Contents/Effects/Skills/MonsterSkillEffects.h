@@ -140,6 +140,7 @@ public:
   void Render() override;
   bool IsAlive() override;
   void Close() override;
+  void RenderParticle(CParticle* particle);
 
   /* 00CC */ unsigned int startTime;
   /* 00D0 */ std::vector<CParticle*> emitters;

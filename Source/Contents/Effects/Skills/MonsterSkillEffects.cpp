@@ -806,6 +806,25 @@ void CCylinderEffect::Render() {
   }
 }
 
+// OFFSET: 0x00710050
+// FUNCTION: fn_46303
+void CCylinderEffect::RenderParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int texPart = particle->columnIndex;
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.unused = false;
+  quad.depth = true;
+  quad.top = 0.0f;
+  quad.bottom = 1.0f;
+  quad.left = static_cast<float>(texPart / 21.0);
+  quad.right = static_cast<float>((texPart + 1) / 21.0);
+  particle->Render(quad);
+}
+
 // OFFSET: 0x007100D0
 // FUNCTION: fn_07197
 CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(EF_DANCING_KNIFE) {
