@@ -2070,16 +2070,16 @@ void CRagEffect::GrimToothAtk() {
     ClientSine(index * 120);
     ClientCosine(index * 120);
 
-    if (index != 0) {
-      if (index != 1) {
-        if (index == 2) {
-          this->state.lastPrim->state.deltaPos2 = {-12.0f, 40.0f, 6.0f};
-        }
-      } else {
-        this->state.lastPrim->state.deltaPos2 = {12.0f, 40.0f, 6.0f};
-      }
-    } else {
+    switch (index) {
+    case 0:
       this->state.lastPrim->state.deltaPos2 = {0.0f, 40.0f, -12.0f};
+      break;
+    case 1:
+      this->state.lastPrim->state.deltaPos2 = {12.0f, 40.0f, 6.0f};
+      break;
+    case 2:
+      this->state.lastPrim->state.deltaPos2 = {-12.0f, 40.0f, 6.0f};
+      break;
     }
 
     this->state.lastPrim->state.size = 0.9f;
@@ -6322,9 +6322,12 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
     this->state.lastPrim->state.slots[index].flag1[2] = flag;
     EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
     const float radius = g_cosTable[slot.riseAngle] * 70.0f;
-    slot.vecBNow.z = g_sinTable[slot.riseAngle] * 70.0f;
-    slot.vecBNow.x = radius * g_cosTable[slot.rotStart];
-    slot.vecBNow.y = radius * g_sinTable[slot.rotStart] + slot.height[0];
+    const float z = g_sinTable[slot.riseAngle] * 70.0f;
+    const float x = radius * g_cosTable[slot.rotStart];
+    const float y = radius * g_sinTable[slot.rotStart] + slot.height[0];
+    slot.vecBNow.z = z;
+    slot.vecBNow.x = x;
+    slot.vecBNow.y = y;
   }
 }
 
@@ -16479,9 +16482,8 @@ __declspec(safebuffers) void CRagEffect::IncAgilityCenter(char kind) {
   this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-  const float distance = static_cast<float>(ClampedRandom(7) + 2);
-  const vector3d forward{0.0f, 0.0f, distance};
-  MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
+  EffectPrimitiveState& launched = this->state.lastPrim->state;
+  MatrixMult(launched.deltaPos2, {0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)}, launched.transform.values);
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
 
   if (kind >= 2) {
