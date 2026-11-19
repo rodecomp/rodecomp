@@ -81,28 +81,29 @@ void CSession::FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, 
   int length = 0;
   char* cursor = output;
   while (feminine) {
-    char* found = nullptr;
+    bool replaced = false;
     for (int index = 0; index < monsterSpeechReplacementCount; ++index) {
-      found = std::strstr(cursor, monsterSpeechReplacements[index]);
-      if (found) {
+      cursor = std::strstr(cursor, monsterSpeechReplacements[index]);
+      if (cursor) {
         const char* replacement = monsterSpeechReplacements[monsterSpeechReplacementCount + index];
         length = static_cast<int>(std::strlen(replacement));
-        std::strcpy(found, replacement);
-        offset = static_cast<int>(found - output);
-        std::strcat(found, source + offset + length);
-        cursor = found + length;
+        std::strcpy(cursor, replacement);
+        offset = static_cast<int>(cursor - output);
+        std::strcat(cursor, source + offset + length);
+        cursor += length;
+        replaced = true;
         break;
       }
       cursor = output + offset + length;
     }
-    if (!found) {
+    if (!replaced) {
       break;
     }
   }
 
   const std::string name = g_modeMgr.GetGameMode()->ActorName(aid);
   const char* speaker;
-  if (!name.empty()) {
+  if (name.size() > 0) {
     speaker = name.c_str();
   } else if (aid == g_session.petGid) {
     speaker = g_session.petName;
