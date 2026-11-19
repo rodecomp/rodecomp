@@ -29,6 +29,7 @@ CLevel99Orb2Effect::CLevel99Orb2Effect() : CEffect(977) {
 }
 
 // OFFSET: 0x00B6BEA0
+// FUNCTION: fn_46246
 // OFFSET: 0x00B6BF00
 // FUNCTION: fn_19097
 __forceinline CLevel99Orb2Effect::~CLevel99Orb2Effect() {
