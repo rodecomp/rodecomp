@@ -35,6 +35,22 @@ const CActorNameCard& CActorNameCardHolder::Lookup(std::uint32_t id) {
   return empty;
 }
 
+// OFFSET: 0x005BF810
+// FUNCTION: fn_45909
+void CActorNameCardHolder::ExpireRequests() {
+  while (!this->requests.empty()) {
+    const Request request = this->requests.front();
+    if (timeGetTime() < request.tick + 10000) {
+      break;
+    }
+    this->requests.pop_front();
+  }
+}
+
+// OFFSET: 0x005BFF60
+
+// OFFSET: 0x005C0090
+
 // OFFSET: 0x005C01D0
 // FUNCTION: fn_03504
 void CActorNameCardHolder::ProcessRequests() {

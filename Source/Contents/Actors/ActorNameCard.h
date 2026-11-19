@@ -66,6 +66,9 @@ public:
   bool Contains(std::uint32_t id) const;
   void Clear();
   void ProcessRequests();
+  void ExpireRequests();
+  std::uint32_t PopNextRequest();
+  void QueueRequest(std::uint32_t id);
 
   struct Request {
     /* 0000 */ std::uint32_t id;
