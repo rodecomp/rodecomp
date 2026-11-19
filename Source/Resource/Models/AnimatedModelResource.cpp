@@ -86,7 +86,8 @@ void AnimatedModelNode::ReleaseGeometry() {
   }
 }
 
-// INLINED
+// OFFSET: 0x00756540
+// FUNCTION: fn_45847
 AnimatedModelNode::~AnimatedModelNode() {
   this->ReleaseGeometry();
 }
