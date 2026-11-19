@@ -17,6 +17,10 @@ public:
   /* 0080 */ UIWindow* owner;
 };
 
+// INLINED
+inline CUIDropDownBox::CUIDropDownBox() : CUIControl(), owner(nullptr) {
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CUIDropDownBox) == 0x84);
 #endif

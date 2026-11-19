@@ -4180,6 +4180,32 @@ bool UIWindowMgr::CloseWindow(int id) {
   return closed;
 }
 
+// OFFSET: 0x00AA27B0
+// FUNCTION: fn_17217
+void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
+  CUIDropDownBox*& popup = this->dropDownBoxWnd;
+  if (popup && popup->geometry.visible != 0) {
+    popup->Detach();
+    popup->Show(0);
+  }
+
+  if (!popup) {
+    popup = new CUIDropDownBox();
+  }
+
+  popup->Attach(owner, child);
+  popup->Move(x, y);
+
+  auto& rendered = this->rendered;
+  if (rendered.end() != std::find(rendered.begin(), rendered.end(), popup)) {
+    PromoteWindow(this, popup);
+  } else {
+    rendered.push_back(popup);
+  }
+
+  popup->Show(1);
+}
+
 // OFFSET: 0x00AA2A00
 // FUNCTION: fn_17218
 void UIWindowMgr::ShowWaitDBSaveWindow() {
