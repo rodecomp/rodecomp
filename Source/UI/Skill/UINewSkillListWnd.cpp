@@ -1733,6 +1733,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
+    const int textY = y + 70;
     const bool raised = skill.level > this->SkillAt(static_cast<int>(skill.treePosition), true).level;
     int red = shade;
     int green = shade;
@@ -1743,7 +1744,6 @@ void UINewSkillListWnd::DrawSkillTree() {
       blue = 255;
     }
 
-    const int textY = y + 70;
     const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
     if (level != 0) {
       if (usesLevel) {
