@@ -20,7 +20,8 @@ void CRendererDX9::DrawBaseQueue() {
   });
 
   for (RenderCommand*& command : this->queue_0168) {
-    this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+    IDirect3DBaseTexture9* texture = command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr;
+    this->device->SetTexture(0, texture);
     this->DrawPrimitive(command);
   }
 }
