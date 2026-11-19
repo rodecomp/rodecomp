@@ -99,16 +99,18 @@ void CBezierArcThrowEffect::OnProcess() {
 
   vector3d rotated = TransformPoint(rotation, norm);
 
-  float t = this->m_progress;
   const vector3d start = this->m_target;
+  float t = this->m_progress;
   float u = 1.0f - t;
   float u2 = static_cast<float>(std::pow(static_cast<double>(u), 2.0));
   float t2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
   float mid = (t + t) * u;
 
-  this->m_particle->position.x = (rotated.x + this->m_target.x) * mid + ctrlPt.x * t2 + start.x * u2;
-  this->m_particle->position.y = (rotated.y + this->m_target.y) * mid + ctrlPt.y * t2 + start.y * u2;
-  this->m_particle->position.z = (rotated.z + this->m_target.z) * mid + ctrlPt.z * t2 + start.z * u2;
+  const vector3d end{rotated.x + this->m_target.x, rotated.y + this->m_target.y, rotated.z + this->m_target.z};
+  CEZ2STRParticle* particle = this->m_particle;
+  particle->position.x = end.x * mid + ctrlPt.x * t2 + start.x * u2;
+  particle->position.y = end.y * mid + ctrlPt.y * t2 + start.y * u2;
+  particle->position.z = end.z * mid + ctrlPt.z * t2 + start.z * u2;
 
   this->m_particle->Process(0.0f, 0.0f, 0.0f);
   if (0.0f >= this->m_progress) {
