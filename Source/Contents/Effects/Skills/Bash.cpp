@@ -195,10 +195,10 @@ void CBash::OnProcess() {
 __forceinline void CBash::RenderRay(CParticle* particle) {
   const int angle = static_cast<int>(particle->angle);
   const float scale = particle->scale;
-  const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
-  const float nextCosine = g_cosTable[angle + 36];
+  const float cosine = g_cosTable[angle];
   const float nextSine = g_sinTable[angle + 36];
+  const float nextCosine = g_cosTable[angle + 36];
   const float left = static_cast<float>(particle->columnIndex % 4) * 0.25f;
   const std::uint32_t color = ((static_cast<std::uint32_t>(particle->alpha) << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
   const float inner = 0.0f;
