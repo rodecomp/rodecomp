@@ -132,9 +132,9 @@ void GroundGeometry::DrawWaterCell(
 // FUNCTION: fn_46292
 void GroundGeometry::DrawLegacyWaterCell(int row, int column, GroundCell& cell, const float* matrix, const float* ambient) {
   const float level = this->WaterLevel(column, row);
-  float middle = level;
-  float first = level;
-  float last = level;
+  float middle;
+  float first;
+  float last;
   if (this->waterHeight != 0.0f) {
     const auto waveHeight = [this, level](int diagonal) {
       const float angle = static_cast<float>(diagonal * this->waterPitch + this->waterWavePhase);
@@ -144,6 +144,10 @@ void GroundGeometry::DrawLegacyWaterCell(int row, int column, GroundCell& cell, 
     middle = waveHeight(diagonal);
     first = waveHeight(diagonal - 1);
     last = waveHeight(diagonal + 1);
+  } else {
+    middle = level;
+    first = level;
+    last = level;
   }
 
   RenderPrimitive* primitive = BuildWaterPrimitive(*this, cell, matrix, ambient, middle, first, last);
