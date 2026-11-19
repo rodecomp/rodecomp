@@ -86,7 +86,7 @@ __forceinline void CHitLineEffect::UpdateParticle(CParticle* particle) {
     if (particle->elapsedFrames > 35) {
       level -= 5;
     }
-    brightness = std::max<short>(0, level);
+    brightness = 0 <= level ? level : static_cast<short>(0);
 
     float* turns = &particle->animationParameter;
     signed char* halfTurns = &particle->animationState;
