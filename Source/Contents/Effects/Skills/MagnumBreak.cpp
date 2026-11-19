@@ -261,9 +261,9 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
 // OFFSET: 0x00B4A590
 // FUNCTION: fn_18944
 void CMagnumBreak::UpdateWave(CParticle* particle) {
-  const int spin = static_cast<int>(particle->animationParameters[1]);
   const int yaw = particle->columnIndex;
   const int pitch = particle->rowIndex;
+  const int spin = static_cast<int>(particle->animationParameters[1]);
   const float yaw0 = GetRadian(spin + yaw);
   const float pitch0 = GetRadian(pitch);
   const float yaw1 = GetRadian(static_cast<int>(static_cast<float>(yaw + 36) + 0.25f + static_cast<float>(spin)));

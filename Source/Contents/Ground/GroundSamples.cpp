@@ -77,7 +77,7 @@ static __forceinline void ReadLightmapSample(const GroundCell& cell, unsigned sa
 // OFFSET: 0x00AC11D0
 // FUNCTION: fn_17579
 void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const {
-  if (column < 0 || (column >> 1) >= this->width || row < 0 || (row >> 1) >= this->height || this->cells.empty()) {
+  if (column < 0 || (column >> 1) >= this->width || row <= -1 || (row >> 1) >= this->height || this->cells.empty()) {
     alpha = red = green = blue = 255;
     return;
   }

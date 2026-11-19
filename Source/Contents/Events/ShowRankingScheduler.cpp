@@ -36,7 +36,7 @@ CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, con
 // OFFSET: 0x00637C60
 // FUNCTION: fn_04739
 void CShowRankingScheduler::Process(const std::uint64_t& now) {
-  if (0 != this->rankingData.packetType) {
+  if (this->rankingData.packetType != 0) {
     const std::int64_t count = this->delay;
     if (0 != count && count > 0) {
       const std::int64_t due = static_cast<std::int64_t>(this->timestamp) + count * 10000;

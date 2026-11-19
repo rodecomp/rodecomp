@@ -65,8 +65,8 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
     return false;
   }
 
-  const std::uint32_t& before = this->flags[previous];
   const std::uint32_t& after = this->flags[current];
+  const std::uint32_t& before = this->flags[previous];
   if ((options & 2) != 0) {
     return ((after & 0x470) != 0) == ((before & 0x470) != 0) &&
            ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||

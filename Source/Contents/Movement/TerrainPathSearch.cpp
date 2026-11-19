@@ -54,8 +54,8 @@ bool CPathFinder::FindPath(
     }
 
     const auto tryNeighbor = [this, current, flag](int dx, int dy, int direction) {
-      const int nextX = current->x + dx;
       const int nextY = current->y + dy;
+      const int nextX = current->x + dx;
       const int cost = dx != 0 && dy != 0 ? 14 : 10;
       return !this->CanMove(current->x, current->y, nextX, nextY, flag) || this->AddNeighbor(current, cost, nextX, nextY, direction);
     };

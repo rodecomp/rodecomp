@@ -30,9 +30,9 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
     const float right = width * 0.5f;
     const float bottom = height * 0.5f;
     const float centerX = static_cast<float>(rect.left) + right;
-    const float centerY = static_cast<float>(rect.top) + bottom;
     const float left = -width * 0.5f;
     const float top = -height * 0.5f;
+    const float centerY = static_cast<float>(rect.top) + bottom;
 
     vertices[0].x = left * cosine - top * sine + centerX;
     vertices[0].y = top * cosine + left * sine + centerY;

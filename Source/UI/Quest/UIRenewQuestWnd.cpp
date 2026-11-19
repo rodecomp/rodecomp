@@ -217,7 +217,7 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
         text = static_cast<const std::string&>(FormatOwnedString("%s", name));
       } else if (minLevel == 0) {
         text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-      } else if (maxLevel == 0) {
+      } else if (0 == maxLevel) {
         text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
       } else {
         text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));

@@ -9,8 +9,8 @@
 void CRenderer::Ray(int x, int y, const float* origin, const float* matrix, float* output) const {
   float transform[12];
   std::memcpy(transform, matrix, sizeof(transform));
-  const float horizontal = static_cast<float>(x) / static_cast<float>(this->viewport.centerX);
   const float vertical = static_cast<float>(y) / static_cast<float>(this->viewport.centerY);
+  const float horizontal = static_cast<float>(x) / static_cast<float>(this->viewport.centerX);
   output[0] = origin[0];
   output[1] = origin[1];
   output[2] = origin[2];
