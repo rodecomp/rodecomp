@@ -72,22 +72,21 @@ void GroundGeometry::UpdateWater() {
   char name[32]{};
 
   for (auto it = this->waterSurfaces.begin(); it != this->waterSurfaces.end(); ++it) {
-    GroundWater& surface = *it;
-    ++surface.frame;
-    const int end = surface.parameters.animation * 32;
+    ++it->frame;
+    const int end = it->parameters.animation * 32;
 
-    if (end <= surface.frame) {
-      surface.frame = 0;
+    if (end <= it->frame) {
+      it->frame = 0;
     }
 
-    const int image = (surface.frame / surface.parameters.animation) % 32;
-    StringFormat(name, sizeof(name), _TRUNCATE, format, surface.parameters.type, image);
-    surface.texture = g_texMgr.Load(name, 0, false, true, false);
-    const float phase = surface.parameters.speed + surface.phase;
-    surface.phase = phase;
+    const int image = (it->frame / it->parameters.animation) % 32;
+    StringFormat(name, sizeof(name), _TRUNCATE, format, it->parameters.type, image);
+    it->texture = g_texMgr.Load(name, 0, false, true, false);
+    const float phase = it->parameters.speed + it->phase;
+    it->phase = phase;
 
     if (phase > 180.0f) {
-      surface.phase = phase - 360.0f;
+      it->phase = phase - 360.0f;
     }
   }
 }
