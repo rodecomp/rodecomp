@@ -21,6 +21,8 @@ public:
   void AddBolt(int tilt);
   static void __stdcall SetHeadingFromVector(float x, float z, short* heading);
   void UpdateParticle(CParticle* particle);
+  __declspec(noinline) void UpdateParticleState(CParticle* particle);
+  __declspec(noinline) void RenderParticle(CParticle* particle);
   void UpdateTick();
 
   /* 00CC */ short angle;

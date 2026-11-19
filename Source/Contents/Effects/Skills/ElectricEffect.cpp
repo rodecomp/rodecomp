@@ -298,6 +298,94 @@ void CElectricEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B4F4B0
+// FUNCTION: fn_46285
+__declspec(noinline) void CElectricEffect::UpdateParticleState(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const float scale = particle->scale + 0.4f;
+  int alpha = scale > 15.0f ? particle->alpha - 2 : particle->alpha;
+  if (particle->elapsedFrames <= 25) {
+    const int flicker = rand() % 4;
+    alpha += 5 + (flicker >= 0 ? flicker : 0);
+  }
+  particle->scale = scale;
+  particle->alpha = alpha >= 0 ? alpha : 0;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  particle->transform = rotation;
+
+  const int segment = particle->columnIndex;
+  const int strand = particle->groupIndex;
+  if (strand == 0) {
+    const float* arc = &particle->animationParameter;
+    for (int index = 0; index < 2; ++index) {
+      const float bend = arc[segment + index];
+      const float radius = bend / 90.0f * particle->scale;
+      this->path[index].x = radius * g_cosTable[particle->phaseParameter];
+      this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * particle->angle;
+      this->path[index].z = radius * g_sinTable[particle->phaseParameter];
+
+      const int jitterZ = rand() % 7;
+      const int jitterY = rand() % 7;
+      const int jitterX = rand() % 7;
+      this->path[index].x += static_cast<float>(jitterX >= 0 ? jitterX : 0) * 0.1f - 2.3f;
+      this->path[index].y += static_cast<float>(jitterY >= 0 ? jitterY : 0) * 0.1f - 0.3f;
+      this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
+    }
+
+    const float dx = this->path[0].x - this->path[1].x;
+    const float dz = this->path[0].z - this->path[1].z;
+    const float length = SquareRoot(dx * dx + dz * dz);
+    const float nx = dx / length;
+    const float nz = dz / length;
+
+    short heading = 180;
+    for (short step = 0; step <= 180; ++step) {
+      if (nx >= g_cosTable[step]) {
+        heading = nz < 0.0f ? static_cast<short>(360 - step) : step;
+        break;
+      }
+    }
+
+    this->angle = static_cast<short>((heading + 90) % 360);
+  }
+
+  if (segment >= 1 && segment <= 18) {
+    const float radius = particle->speedParameter;
+    const float horizontal = radius * g_cosTable[strand * 120];
+    const float vertical = radius * g_sinTable[strand * 120];
+    const float offsetX = horizontal * g_cosTable[this->angle];
+    const float offsetZ = horizontal * g_sinTable[this->angle];
+
+    const vector3d first = {offsetX + this->path[0].x, vertical + this->path[0].y, offsetZ + this->path[0].z};
+    const vector3d second = {offsetX + this->path[1].x, vertical + this->path[1].y, offsetZ + this->path[1].z};
+
+    particle->vertices[1].x = first.x;
+    particle->vertices[1].y = first.y;
+    particle->vertices[1].z = first.z;
+    particle->vertices[3].x = second.x;
+    particle->vertices[3].y = second.y;
+    particle->vertices[3].z = second.z;
+
+    if (strand != 0) {
+      particle->vertices[0].x = this->lastEdge[0].x;
+      particle->vertices[0].y = this->lastEdge[0].y;
+      particle->vertices[0].z = this->lastEdge[0].z;
+      particle->vertices[2].x = this->lastEdge[1].x;
+      particle->vertices[2].y = this->lastEdge[1].y;
+      particle->vertices[2].z = this->lastEdge[1].z;
+    }
+
+    this->lastEdge[0] = first;
+    this->lastEdge[1] = second;
+  }
+}
+
 // OFFSET: 0x00B4F930
 // FUNCTION: fn_19007
 void CElectricEffect::Render() {
@@ -320,5 +408,27 @@ void CElectricEffect::Render() {
       bolt->Render(quad);
       bolt->alpha = alpha;
     }
+  }
+}
+
+// OFFSET: 0x00B4FA20
+// FUNCTION: fn_46286
+__declspec(noinline) void CElectricEffect::RenderParticle(CParticle* particle) {
+  if (particle && static_cast<unsigned>(particle->columnIndex - 1) <= 17 && particle->groupIndex > 0) {
+    const int frame = particle->columnIndex;
+    const int alpha = particle->alpha;
+    const int faded = alpha - frame * 5;
+    particle->alpha = faded >= 0 ? faded : 0;
+    particle->SetColor(static_cast<short>(frame * 6), static_cast<short>(frame * 6), 255);
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.left = 0.0f;
+    quad.right = 1.0f;
+    quad.top = static_cast<float>(particle->columnIndex - 1) / 21.0f;
+    quad.bottom = static_cast<float>(particle->columnIndex) / 21.0f;
+    particle->Render(quad);
+    particle->alpha = alpha;
   }
 }
