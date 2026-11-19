@@ -30,6 +30,20 @@ struct PrimitivePoolAccess : RenderPrimitivePool {
     return command;
   }
 };
+
+struct SkyVertex : RenderVertex {
+  // INLINED
+  SkyVertex() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+    this->rhw = 0.0f;
+    this->diffuse = 0;
+    this->specular = 0xFF000000u;
+    this->u = 0.0f;
+    this->v = 0.0f;
+  }
+};
 }
 
 // GLOBAL: gl_25991
@@ -169,28 +183,8 @@ void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotat
   this->m_actor->Update();
   this->m_actor->Draw(camera.values, true);
 
-  RenderVertex points[2];
-  RenderVertex projected[2];
-  for (int i = 0; i < 2; ++i) {
-    points[i].x = 0.0f;
-    points[i].y = 0.0f;
-    points[i].z = 0.0f;
-    points[i].rhw = 0.0f;
-    points[i].diffuse = 0;
-    points[i].specular = 0xFF000000;
-    points[i].u = 0.0f;
-    points[i].v = 0.0f;
-  }
-  for (int i = 0; i < 2; ++i) {
-    projected[i].x = 0.0f;
-    projected[i].y = 0.0f;
-    projected[i].z = 0.0f;
-    projected[i].rhw = 0.0f;
-    projected[i].diffuse = 0;
-    projected[i].specular = 0xFF000000;
-    projected[i].u = 0.0f;
-    projected[i].v = 0.0f;
-  }
+  SkyVertex points[2];
+  SkyVertex projected[2];
 
   matrix transform;
   transform.Identity();
@@ -207,8 +201,12 @@ void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotat
   points[1].y = 100.0f;
   points[1].z = 1250.0f;
 
+  vector3d point;
   for (int i = 0; i < 2; ++i) {
-    g_renderer->Project(&points[i].x, combined.values, projected[i]);
+    point.x = points[i].x;
+    point.y = points[i].y;
+    point.z = points[i].z;
+    g_renderer->Project(&point.x, combined.values, projected[i]);
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
