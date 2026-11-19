@@ -58,7 +58,7 @@ namespace {
 TipBoxEntry::TipBoxEntry() {
 }
 
-// INLINED
+// OFFSET: 0x007ABD90
 CTipBoxMgr::CTipBoxMgr()
     : m_width(240),
       m_height(320),
@@ -75,8 +75,8 @@ CTipBoxMgr::CTipBoxMgr()
   this->m_missing.title = "";
 }
 
-// INLINED
-CTipBoxMgr::~CTipBoxMgr() = default;
+// OFFSET: 0x007AC220
+__declspec(noinline) CTipBoxMgr::~CTipBoxMgr() = default;
 
 // OFFSET: 0x007AC710
 // FUNCTION: fn_09122
@@ -433,7 +433,7 @@ int AddIsTag(lua_State* state) {
 
   const int id = static_cast<int>(lua_tonumber(state, -2));
   const int searchable = static_cast<int>(lua_tonumber(state, -1));
-  g_itemTagOwner->SetSearchable(id, searchable != 0);
+  g_itemTagOwner->SetSearchable(id, searchable);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
@@ -527,15 +527,8 @@ int AddPageEx(lua_State* state) {
   const double clipX = lua_tonumber(state, -2);
   const float scale = static_cast<float>(lua_tonumber(state, -1));
   if (kind != -1 && id > 0) {
-    TipBoxImage image;
-    image.kind = kind;
-    image.blink = static_cast<int>(x);
-    image.fromX = static_cast<int>(y);
-    image.fromY = static_cast<int>(width);
-    image.toX = static_cast<int>(height);
-    image.toY = static_cast<int>(clipX);
-    image.duration = scale;
-    g_itemTagOwner->AddImage(id, image);
+    g_itemTagOwner->AddImage(id, kind, static_cast<int>(x), static_cast<int>(y), static_cast<int>(width),
+                             static_cast<int>(height), static_cast<int>(clipX), scale);
   }
 
   lua_pushboolean(state, 1);

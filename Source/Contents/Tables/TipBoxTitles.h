@@ -59,17 +59,21 @@ public:
   static bool Create();
   static void Destroy();
   void AddTip(int id, std::string title, double flag, std::string text);
-  // INLINED
+  // OFFSET: 0x007AC6C0
+  // FUNCTION: fn_46458
   void SetImageCoord(int id, int x, int y) {
     this->m_entries[id].imageCell = x;
     this->m_entries[id].imageScalePercent = y;
   }
-  // INLINED
-  void SetSearchable(int id, bool searchable) {
-    this->m_entries[id].searchable = searchable;
+  // OFFSET: 0x007AC6F0
+  // FUNCTION: fn_46459
+  void SetSearchable(int id, int searchable) {
+    this->m_entries[id].searchable = searchable != 0;
   }
-  // INLINED
-  void AddImage(int id, const TipBoxImage& image) {
+  // OFFSET: 0x007AC620
+  // FUNCTION: fn_46457
+  void AddImage(int id, int kind, int blink, int fromX, int fromY, int toX, int toY, float duration) {
+    const TipBoxImage image{kind, blink, fromX, fromY, toX, toY, duration};
     this->m_entries[id].images.push_back(image);
   }
 
