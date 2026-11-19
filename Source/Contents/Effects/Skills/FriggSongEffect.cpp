@@ -72,6 +72,24 @@ void CFriggSongEffect::UpdateSegmentVertices(CParticle* particle) {
 }
 
 // OFFSET: 0x007021C0
+// FUNCTION: fn_46108
+void CFriggSongEffect::SetupParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  particle->alpha = 50;
+  particle->SetColor(50, 200, 50);
+  const int row = particle->rowIndex;
+  particle->angleParameter = 360;
+  particle->speedParameter = 120.0f;
+  particle->phaseParameter = 90;
+  particle->angle = static_cast<float>(row * 10);
+  particle->scale = static_cast<float>(row) * 0.5f + 2.5f;
+  (&particle->animationParameter)[row] = 0.0f;
+  particle->elapsedFrames = particle->rowIndex;
+  this->UpdateSegmentVertices(particle);
+}
 
 // OFFSET: 0x00701EE0
 // FUNCTION: fn_07001
