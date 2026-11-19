@@ -209,6 +209,7 @@ void CPokJukEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B70200
+// FUNCTION: fn_46078
 __forceinline void CPokJukEffect::RenderParticle(CParticle* particle) {
   if (particle && particle->alpha > 0) {
     const int index = particle->rowIndex * 160 + particle->columnIndex;
