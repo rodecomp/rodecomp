@@ -21,6 +21,13 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   }
   return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
+
+// INLINED
+__forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
 }
 
 // OFFSET: 0x0072F4E0
@@ -118,16 +125,15 @@ bool CViolentQuakeEffect::IsAlive() {
 __forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter) {
   if (emitter) {
     const vector3d origin = this->positionVector;
-    const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+    vector3d viewPos{view.values[0] * origin.x + view.values[3] * origin.y + view.values[6] * origin.z + view.values[9],
+                     view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10],
+                     view.values[2] * origin.x + view.values[5] * origin.y + view.values[8] * origin.z + view.values[11]};
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-
-    const float viewX = view.values[0] * origin.x + view.values[3] * origin.y + view.values[6] * origin.z + view.values[9] + emitter->offsetX;
-    const float viewY = view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10] + emitter->offsetY;
-    const float viewZ = view.values[2] * origin.x + view.values[5] * origin.y + view.values[8] * origin.z + view.values[11] + emitter->offsetZ;
-
-    emitter->position.x = viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9];
-    emitter->position.y = viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10];
-    emitter->position.z = viewY * inverse.values[5] + viewX * inverse.values[2] + viewZ * inverse.values[8] + inverse.values[11];
+    viewPos.x += emitter->offsetX;
+    viewPos.y += emitter->offsetY;
+    viewPos.z += emitter->offsetZ;
+    emitter->position = TransformPoint(inverse, viewPos);
     emitter->Process(0.0f, 0.0f, 0.0f);
   }
 }
