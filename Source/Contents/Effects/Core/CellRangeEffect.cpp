@@ -21,6 +21,11 @@
 CCellRangeEffect::CCellRangeEffect() : CEffect(-1), cellSize(5.0f) {
 }
 
+// OFFSET: 0x00B430D0
+// FUNCTION: fn_45946
+__declspec(noinline) CCellRangeEffect::~CCellRangeEffect() {
+}
+
 // OFFSET: 0x00B431B0
 // FUNCTION: fn_18876
 void CCellRangeEffect::SetCellTexture(CParticle* particle) {

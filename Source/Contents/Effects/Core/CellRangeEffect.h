@@ -11,6 +11,7 @@ class CParticle;
 class CCellRangeEffect : public CEffect {
 public:
   CCellRangeEffect();
+  ~CCellRangeEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
