@@ -58,12 +58,7 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
     top = window->geometry.height;
   }
 
-  RECT bounds;
-  bounds.left = 0;
-  bounds.top = top;
-  bounds.right = this->screenWidth;
-  bounds.bottom = height - g_miniPartyCellHeight * 3;
-  CMiniPartyWndSortArea area(bounds);
+  CMiniPartyWndSortArea area(RECT{0, top, this->screenWidth, height - g_miniPartyCellHeight * 3});
   const std::list<int> cells = area.GetCells();
 
   auto cell = cells.begin();
