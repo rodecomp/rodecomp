@@ -56,6 +56,7 @@ PacketLengths::PacketLengths() {
 // OFFSET: 0x00B01F40
 // FUNCTION: fn_18384
 PacketLengths::~PacketLengths() {
+  this->m_values.clear();
 }
 
 // OFFSET: 0x00B02100
