@@ -914,10 +914,24 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
     return false;
   }
 
+  const auto screenPosition = [](const UIWindow* window, int bounds[4]) {
+    int x = window->geometry.x;
+    int y = window->geometry.y;
+    for (const UIWindow* parent = window->parent; parent; parent = parent->parent) {
+      x += parent->geometry.x;
+      y += parent->geometry.y;
+    }
+    bounds[0] = x;
+    bounds[1] = y;
+  };
   int windowBounds[4];
   int anchorBounds[4];
-  WindowScreenBounds(this, windowBounds[0], windowBounds[1], windowBounds[2], windowBounds[3]);
-  WindowScreenBounds(anchor, anchorBounds[0], anchorBounds[1], anchorBounds[2], anchorBounds[3]);
+  screenPosition(this, windowBounds);
+  screenPosition(anchor, anchorBounds);
+  windowBounds[2] = static_cast<unsigned>(windowBounds[0]) + this->geometry.width;
+  windowBounds[3] = static_cast<unsigned>(windowBounds[1]) + this->geometry.height;
+  anchorBounds[2] = static_cast<unsigned>(anchorBounds[0]) + anchor->geometry.width;
+  anchorBounds[3] = static_cast<unsigned>(anchorBounds[1]) + anchor->geometry.height;
   if (!WindowBoundsOverlap(windowBounds, anchorBounds)) {
     return false;
   }
