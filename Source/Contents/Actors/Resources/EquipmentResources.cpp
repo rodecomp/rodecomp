@@ -125,11 +125,12 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
   sexName = SexNameOf(sex);
 
   if (g_session.IsDoramJob(job) == true) {
+    const int raceJob = job;
     if (secondJob == true) {
-      result = static_cast<const std::string&>(FormatOwnedString("%s\\body\\costume_%d\\%s_%s_%d_%d.pal", this->GetBodyRacePrefix(job).c_str(), 1, g_session.m_palJobNames[spriteJob],
+      result = static_cast<const std::string&>(FormatOwnedString("%s\\body\\costume_%d\\%s_%s_%d_%d.pal", this->GetBodyRacePrefix(raceJob).c_str(), 1, g_session.m_palJobNames[spriteJob],
                                  sexName.c_str(), style, 1));
     } else {
-      result = static_cast<const std::string&>(FormatOwnedString("%s\\body\\%s_%s_%d.pal", this->GetBodyRacePrefix(job).c_str(), g_session.m_palJobNames[spriteJob], sexName.c_str(), style));
+      result = static_cast<const std::string&>(FormatOwnedString("%s\\body\\%s_%s_%d.pal", this->GetBodyRacePrefix(raceJob).c_str(), g_session.m_palJobNames[spriteJob], sexName.c_str(), style));
     }
   } else {
     if (secondJob == true) {
