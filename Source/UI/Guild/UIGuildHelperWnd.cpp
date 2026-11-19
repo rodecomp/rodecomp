@@ -369,16 +369,13 @@ void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
 
     for (int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
-      name.assign(prefix);
-      name += names[i][0];
+      name.assign(prefix + names[i][0]);
       name += ".bmp";
       button->SetBitmap(name.c_str(), 0, 0);
-      name.assign(prefix);
-      name += names[i][1];
+      name.assign(prefix + names[i][1]);
       name += ".bmp";
       button->SetBitmap(name.c_str(), 1, 0);
-      name.assign(prefix);
-      name += names[i][2];
+      name.assign(prefix + names[i][2]);
       name += ".bmp";
       button->SetBitmap(name.c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
