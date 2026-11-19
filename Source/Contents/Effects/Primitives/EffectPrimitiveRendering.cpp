@@ -2556,8 +2556,8 @@ void CEffectPrim::RenderRotatedRing(matrix& wtm) {
       continue;
     }
 
-    const float dist = slot.distance;
     const float cs = g_cosTable[slot.rotStart];
+    const float dist = slot.distance;
     const float sn = g_sinTable[slot.rotStart];
     const vector3d& center = slot.vecBNow;
     int angle = slot.riseAngle;
