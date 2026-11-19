@@ -333,13 +333,13 @@ void UIRoMapWnd::DrawDungeonLinks() {
       continue;
     }
 
-    const WorldViewRecord* selected = this->selectedRecord;
     bool isSelected;
     int x;
     int y;
     int width;
     int height;
     if (!map->fields.empty()) {
+      const WorldViewRecord* selected = this->selectedRecord;
       const CWorldViewField* field = map->fields.front();
       isSelected = selected != nullptr && field->left == selected->left && field->right == selected->right && field->top == selected->top &&
                    field->bottom == selected->bottom;
@@ -347,17 +347,19 @@ void UIRoMapWnd::DrawDungeonLinks() {
       height = field->bottom - field->top;
       const int mapWidth = map->right - map->left;
       const int mapHeight = map->bottom - map->top;
-      const float startX = static_cast<float>(width) * 0.5f + static_cast<float>(field->left);
-      const float startY = static_cast<float>(height) * 0.5f + static_cast<float>(field->top);
-      const float endX = static_cast<float>(mapWidth) * 0.5f + static_cast<float>(map->left);
-      const float endY = static_cast<float>(mapHeight) * 0.5f + static_cast<float>(map->top) + 1.0f;
+      const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
+      const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
+      const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
+      const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
+      const alignas(8) ScreenPoint start{startX, startY};
+      const alignas(8) ScreenPoint end{endX, endY};
       CTexture* const lineTexture = g_texMgr.Default();
       std::uint32_t color;
       if (isSelected) {
-        DrawScreenLine(ScreenPoint{startX, startY}, ScreenPoint{endX, endY}, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
+        DrawScreenLine(start, end, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
         color = 0xFFFFFFFF;
       } else {
-        DrawScreenLine(ScreenPoint{startX, startY}, ScreenPoint{endX, endY}, 1, lineTexture, lineColor);
+        DrawScreenLine(start, end, 1, lineTexture, lineColor);
         color = rectColor;
       }
 
@@ -365,6 +367,7 @@ void UIRoMapWnd::DrawDungeonLinks() {
       x = field->left;
       y = field->top;
     } else {
+      const WorldViewRecord* selected = this->selectedRecord;
       isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
                    map->bottom == selected->bottom;
       x = map->left;
