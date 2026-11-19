@@ -195,6 +195,7 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
 
   std::map<int, int> order;
   for (int layer = 0; layer < 8; ++layer) {
+    int priority;
     switch (layer) {
       case 0:
         if (this->m_robe <= 0 || this->m_drawOnTop == true) {
@@ -216,7 +217,7 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
       case 4:
       case 5:
         if (this->m_layers[layer] > 0) {
-          int priority = -1;
+          priority = -1;
           g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", 0, defaultPriorities[layer], this->m_layers[layer], &priority);
           order[priority] = layer;
         }
