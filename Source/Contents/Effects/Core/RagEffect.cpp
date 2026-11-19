@@ -14537,7 +14537,11 @@ void CRagEffect::Gravitation() {
         this->state.lastPrim->state.changeAccel = 0.0f;
         this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
         this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-        this->state.lastPrim->state.textures[0] = g_texMgr.Load(i < 2 ? "effect\\stone.bmp" : "effect\\ice.tga", 0, false, true, false);
+        if (i < 2) {
+          this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
+        } else {
+          this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
+        }
       }
     }
   }
