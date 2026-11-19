@@ -11,6 +11,8 @@
 void CSession::InitJobNameTable() {
   this->m_jobNameTable.resize(32003, "Poring");
 
+  const char* name;
+
   std::list<int> jobs;
   for (int id = JT_NOVICE; id < JT_MAX_BASIC; ++id) {
     jobs.push_back(id);
@@ -25,18 +27,19 @@ void CSession::InitJobNameTable() {
     jobs.push_back(id);
   }
 
-  const char* name = nullptr;
+  name = nullptr;
   for (std::list<int>::iterator job = jobs.begin(); job != jobs.end(); ++job) {
-    const int id = *job;
-    if (this->m_hotkeyScript->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
+    int id = *job;
+    LuaScript* script = this->m_hotkeyScript;
+    if (script->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTable[id] = name;
     }
 
-    if (this->m_hotkeyScript->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (script->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTableMan[id] = name;
     }
 
-    if (this->m_hotkeyScript->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (script->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTableWoman[id] = name;
     }
   }
