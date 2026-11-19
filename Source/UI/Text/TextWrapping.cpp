@@ -168,16 +168,16 @@ void WrapRichText(
       const char* split = newline ? ++current : breakAt;
       breakAt = split;
 
-      if (split <= begin) {
-        const std::string line(begin, current);
-        lines.push_back(line);
-        begin = current;
-        limit = current + width;
-      } else {
+      if (split > begin) {
         const std::string line(begin, split);
         lines.push_back(line);
         begin = split;
         limit = split + width;
+      } else {
+        const std::string line(begin, current);
+        lines.push_back(line);
+        begin = current;
+        limit = current + width;
       }
     }
   }
