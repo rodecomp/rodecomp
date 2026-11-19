@@ -107,6 +107,13 @@ bool CMsgEffect::UsesMsgEffect(int type) {
 }
 
 // INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
+// INLINED
 static float MsgEffectElapsedFrames(CMsgEffect* effect) {
   return effect->GetElapsedFrames();
 }
@@ -155,12 +162,11 @@ __forceinline static float MsgEffectDriftDirection(CMsgEffect* effect) {
 
       matrix rotation;
       rotation.MakeYRotation(yaw / 180.0f * 3.141592f);
-      const float y = effect->m_drift.y;
-      const float x = effect->m_drift.x;
-      const float z = effect->m_drift.z;
-      dirX = rotation.values[0] * x + rotation.values[3] * y + rotation.values[6] * z + rotation.values[9];
+      vector3d rotated;
+      MatrixMult(rotated, effect->m_drift, rotation.values);
+      dirX = rotated.x;
       effect->m_drift.x = dirX;
-      effect->m_drift.z = rotation.values[2] * x + rotation.values[5] * y + rotation.values[8] * z + rotation.values[11];
+      effect->m_drift.z = rotated.z;
     }
   }
   return dirX;
