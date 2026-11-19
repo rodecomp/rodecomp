@@ -3676,7 +3676,8 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 
   int effectId = *reinterpret_cast<const int*>(packet + 6);
   if (effectId == EF_DUSTSTORM) {
-    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(0, EF_EMITTER, actor->render.position, 0, -1, 0, 0));
+    EffectLists* effects = g_effectMgr;
+    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(effects->Spawn(0, EF_EMITTER, actor->render.position, 0, -1, 0, 0));
     emitter->velocityMin.x = -2.0f;
     emitter->velocityMin.y = 2.0f;
     emitter->velocityMin.z = -2.0f;
@@ -3723,7 +3724,8 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   }
 
   CGameActor* gameActor = static_cast<CGameActor*>(actor);
-  if (!g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (!effects->Spawn(actor->render.accountId, effectId, actor->render.position, 0, -1, 0, 0)) {
     gameActor->LaunchEffect(*reinterpret_cast<const int*>(packet + 6), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 
@@ -4750,8 +4752,8 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       actor->RefreshAccessory3();
       break;
     case LOOK_WEAPON: {
-      const int shield = packet->valueHigh;
       const int weapon = packet->valueLow;
+      const int shield = packet->valueHigh;
       const int view = g_session.GetWeaponViewValue(shield);
       switch (actor->GetEffectiveJob(-1)) {
       case JT_ASSASSIN:
