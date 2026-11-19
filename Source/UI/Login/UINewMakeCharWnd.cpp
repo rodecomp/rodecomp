@@ -74,10 +74,10 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_character.level = 1;
   this->m_character.skillPoint = 1;
   this->m_character.jobPoint = 0;
-  this->m_character.hp = 100;
   this->m_character.maxHp = 100;
-  this->m_character.sp = 100;
+  this->m_character.hp = 100;
   this->m_character.maxSp = 100;
+  this->m_character.sp = 100;
   this->m_character.exp = 0;
   this->m_character.slot = g_selectedSlotIndex;
   this->m_character.headPalette = 0;
@@ -93,28 +93,28 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_action = 0;
   this->m_frame = 0;
 
-  this->m_preview.actions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, 0, 0)));
-  this->m_preview.sprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, 0, 0)));
+  this->m_preview.actions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, 0, 0));
+  this->m_preview.sprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, 0, 0));
 
   if (!g_session.IsDoramJob(this->m_character.job) && this->m_character.sex == 1 && 13 == this->m_character.head) {
     this->m_character.head = 14;
   }
 
   int head = this->m_character.head;
-  this->m_preview.actions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head)));
-  this->m_preview.sprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head)));
+  this->m_preview.actions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
+  this->m_preview.sprites[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
 
   const int bodyPalette = this->m_character.bodyStyle;
   this->m_character.head = static_cast<short>(head);
   this->m_preview.paletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_preview.bodyPalette.assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0)));
+    this->m_preview.bodyPalette = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0));
   }
 
   const int headPalette = this->m_character.headPalette;
   this->m_preview.paletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_preview.headPalette.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette)));
+    this->m_preview.headPalette = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
   }
 
   this->m_preview.offsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
@@ -123,14 +123,8 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_startTime = timeGetTime();
   this->previewCounter = 0;
   this->previewPhase = 0;
-  this->hairStyleButtonStorage[0] = 0;
-  this->hairStyleButtonStorage[1] = 0;
-  this->hairStyleButtonStorage[2] = 0;
-  this->hairStyleButtonStorage[3] = 0;
-  this->hairStyleButtonStorage[4] = 0;
-  this->hairStyleButtonStorage[5] = 0;
-  this->hairColorButtonStorage[0] = 0;
-  this->hairColorButtonStorage[1] = 0;
+  std::memset(this->hairStyleButtonStorage, 0, sizeof this->hairStyleButtonStorage);
+  std::memset(this->hairColorButtonStorage, 0, sizeof this->hairColorButtonStorage);
   this->hairColorButtonByte = 0;
   this->genderButtonStorage = 0;
 }
