@@ -22,6 +22,8 @@ public:
   void AddRing(const char* texture, int alpha);
   static void __stdcall SetRingColor(CParticle* particle, int effectId);
   static void __stdcall InitializeRing(CParticle* particle, int effectId);
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;

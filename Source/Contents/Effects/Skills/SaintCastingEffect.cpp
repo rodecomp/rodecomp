@@ -188,6 +188,88 @@ bool CSaintCastingEffect::IsAlive() {
   return !this->IsFinished();
 }
 
+// OFFSET: 0x00B75960
+__forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
+  if (!particle || particle->elapsedFrames <= 0) {
+    return;
+  }
+
+  int tilt = particle->phaseParameter - 1;
+  float scale = particle->scale + 0.07f;
+  int alpha = particle->alpha;
+  if (tilt < 10) {
+    tilt = 10;
+    alpha = 0;
+  }
+
+  if (scale >= 4.0f) {
+    alpha -= 3;
+    if (alpha <= 0) {
+      alpha = 0;
+      if (this->effectLifetime - 30 > particle->elapsedFrames) {
+        tilt = this->id == EF_AURABLADE ? 64 : 74;
+        scale = 3.37f;
+      }
+    }
+  } else if (this->id == EF_AURABLADE) {
+    alpha += 5;
+  } else {
+    alpha += 10;
+  }
+
+  particle->scale = scale;
+  particle->phaseParameter = tilt;
+  particle->alpha = alpha;
+
+  const int ring = particle->rowIndex;
+  const int wave =
+    ring < 2 ? (ring * 90 + particle->elapsedFrames) % 360 : (ring * 45 + particle->elapsedFrames) * 2 % 360;
+  const int segment = particle->columnIndex;
+  const float radius =
+    particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave] + particle->speedParameter;
+  const float spread = radius * g_cosTable[tilt];
+  const float height = radius * g_sinTable[tilt];
+  const int angle =
+    static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
+                     particle->angle) %
+    360;
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+  const float outerX = spread * cosine;
+  const float outerZ = spread * sine;
+
+  EffectPoint points[2];
+  points[0].x = cosine * particle->scale;
+  points[0].y = 0.0f;
+  points[0].z = sine * particle->scale;
+  points[1].x = points[0].x + outerX;
+  points[1].y = points[0].y - height;
+  points[1].z = points[0].z + outerZ;
+
+  particle->vertices[3].x = points[0].x;
+  particle->vertices[3].y = points[0].y;
+  particle->vertices[3].z = points[0].z;
+  particle->vertices[1].x = points[1].x;
+  particle->vertices[1].y = points[1].y;
+  particle->vertices[1].z = points[1].z;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->lastOuter.x;
+    particle->vertices[0].y = this->lastOuter.y;
+    particle->vertices[0].z = this->lastOuter.z;
+    particle->vertices[2].x = this->lastInner.x;
+    particle->vertices[2].y = this->lastInner.y;
+    particle->vertices[2].z = this->lastInner.z;
+  }
+
+  this->lastInner.x = points[0].x;
+  this->lastInner.y = points[0].y;
+  this->lastInner.z = points[0].z;
+  this->lastOuter.x = points[1].x;
+  this->lastOuter.y = points[1].y;
+  this->lastOuter.z = points[1].z;
+}
+
 // OFFSET: 0x00B756B0
 // FUNCTION: fn_19165
 void CSaintCastingEffect::OnProcess() {
@@ -197,109 +279,39 @@ void CSaintCastingEffect::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle && particle->elapsedFrames > 0) {
-      int tilt = particle->phaseParameter - 1;
-      float scale = particle->scale + 0.07f;
-      int alpha = particle->alpha;
-      if (tilt < 10) {
-        tilt = 10;
-        alpha = 0;
-      }
-
-      if (scale >= 4.0f) {
-        alpha -= 3;
-        if (alpha <= 0) {
-          alpha = 0;
-          if (this->effectLifetime - 30 > particle->elapsedFrames) {
-            tilt = this->id == EF_AURABLADE ? 64 : 74;
-            scale = 3.37f;
-          }
-        }
-      } else if (this->id == EF_AURABLADE) {
-        alpha += 5;
-      } else {
-        alpha += 10;
-      }
-
-      particle->scale = scale;
-      particle->phaseParameter = tilt;
-      particle->alpha = alpha;
-
-      const int ring = particle->rowIndex;
-      const int wave =
-        ring < 2 ? (ring * 90 + particle->elapsedFrames) % 360 : (ring * 45 + particle->elapsedFrames) * 2 % 360;
-      const int segment = particle->columnIndex;
-      const float radius =
-        particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave] + particle->speedParameter;
-      const float spread = radius * g_cosTable[tilt];
-      const float height = radius * g_sinTable[tilt];
-      const int angle =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
-                         particle->angle) %
-        360;
-      const float cosine = g_cosTable[angle];
-      const float sine = g_sinTable[angle];
-      const float outerX = spread * cosine;
-      const float outerZ = spread * sine;
-
-      EffectPoint points[2];
-      points[0].x = cosine * particle->scale;
-      points[0].y = 0.0f;
-      points[0].z = sine * particle->scale;
-      points[1].x = points[0].x + outerX;
-      points[1].y = points[0].y - height;
-      points[1].z = points[0].z + outerZ;
-
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
-
-      if (segment != 0) {
-        particle->vertices[0].x = this->lastOuter.x;
-        particle->vertices[0].y = this->lastOuter.y;
-        particle->vertices[0].z = this->lastOuter.z;
-        particle->vertices[2].x = this->lastInner.x;
-        particle->vertices[2].y = this->lastInner.y;
-        particle->vertices[2].z = this->lastInner.z;
-      }
-
-      this->lastInner.x = points[0].x;
-      this->lastInner.y = points[0].y;
-      this->lastInner.z = points[0].z;
-      this->lastOuter.x = points[1].x;
-      this->lastOuter.y = points[1].y;
-      this->lastOuter.z = points[1].z;
-    }
+    this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
   }
+}
+
+// OFFSET: 0x00B75C70
+// FUNCTION: fn_46269
+__forceinline void CSaintCastingEffect::RenderParticle(CParticle* particle) {
+  if (!particle || particle->columnIndex <= 0) {
+    return;
+  }
+
+  if (this->id == 454 || this->id == 826) {
+    particle->destinationBlend = 6;
+  }
+
+  const int segment = particle->columnIndex;
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.unused = false;
+  quad.depth = true;
+  quad.top = 0.0f;
+  quad.bottom = 1.0f;
+  quad.left = static_cast<float>(segment - 1) / 21.0f;
+  quad.right = static_cast<float>(segment) / 21.0f;
+  particle->Render(quad);
 }
 
 // OFFSET: 0x00B75BB0
 // FUNCTION: fn_19166
 void CSaintCastingEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (!particle || particle->columnIndex <= 0) {
-      continue;
-    }
-
-    if (this->id == 454 || this->id == 826) {
-      particle->destinationBlend = 6;
-    }
-
-    const int segment = particle->columnIndex;
-    ParticleQuad quad;
-    quad.billboard = false;
-    quad.unused = false;
-    quad.depth = true;
-    quad.top = 0.0f;
-    quad.bottom = 1.0f;
-    quad.left = static_cast<float>(segment - 1) / 21.0f;
-    quad.right = static_cast<float>(segment) / 21.0f;
-    particle->Render(quad);
+    this->RenderParticle(*it);
   }
 }
