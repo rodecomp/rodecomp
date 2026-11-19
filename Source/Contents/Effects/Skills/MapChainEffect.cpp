@@ -73,6 +73,57 @@ void CMapChainEffect::CreateChainParticles(int param) {
 }
 
 // OFFSET: 0x00B4ADA0
+// FUNCTION: fn_46232
+void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * particle->columnIndex) + particle->angle) % 360;
+  MapChainPoint points[4];
+
+  const int tilt = particle->phaseParameter;
+  const float sinIndex = g_sinTable[index];
+  const float cosIndex = g_cosTable[index];
+  const float sinTilt = g_sinTable[tilt];
+  const float cosTilt = g_cosTable[tilt];
+
+  const float centerX = (sinTilt * particle->scale) * cosIndex;
+  const float centerY = particle->scale * sinIndex;
+  const float centerZ = (particle->scale * cosTilt) * cosIndex;
+  const float sideX = particle->speedParameter * cosTilt;
+  const float sideZ = -sinTilt * particle->speedParameter;
+
+  const float v1x = (centerX - sideX) + 0.0f;
+  const float v1y = (centerY - 0.0f) + particle->animationParameter;
+  const float v1z = (centerZ - sideZ) + 0.0f;
+  const float v3x = (sideX + centerX) + 0.0f;
+  const float v3y = (centerY + 0.0f) + particle->animationParameter;
+  const float v3z = (sideZ + centerZ) + 0.0f;
+
+  particle->vertices[1].x = v1x;
+  particle->vertices[1].y = v1y;
+  particle->vertices[1].z = v1z;
+  particle->vertices[3].x = v3x;
+  particle->vertices[3].y = v3y;
+  particle->vertices[3].z = v3z;
+
+  if (particle->columnIndex != 0) {
+    particle->vertices[0].x = this->corners[1].x;
+    particle->vertices[0].y = this->corners[1].y;
+    particle->vertices[0].z = this->corners[1].z;
+    particle->vertices[2].x = this->corners[0].x;
+    particle->vertices[2].y = this->corners[0].y;
+    particle->vertices[2].z = this->corners[0].z;
+  }
+
+  this->corners[1].x = v1x;
+  this->corners[1].y = v1y;
+  this->corners[1].z = v1z;
+  this->corners[0].x = v3x;
+  this->corners[0].y = v3y;
+  this->corners[0].z = v3z;
+}
 
 // OFFSET: 0x00B4AFA0
 // FUNCTION: fn_18948
