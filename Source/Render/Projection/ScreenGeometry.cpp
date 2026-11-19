@@ -66,11 +66,14 @@ void DrawDashedScreenLine(
   float currentY = startY;
   float nextX = dashX + currentX;
   float nextY = dashY + currentY;
+  float distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
+  if (!(length > distance)) {
+    return;
+  }
+
   const float halfDashX = dashX * g_depthAverageHalf;
   const float halfDashY = dashY * g_depthAverageHalf;
-
-  float distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
-  while (length > distance) {
+  do {
     DrawScreenQuad(currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, texture, color);
 
     currentX = halfDashX + nextX;
@@ -78,7 +81,7 @@ void DrawDashedScreenLine(
     nextX = dashX + currentX;
     nextY = dashY + currentY;
     distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
-  }
+  } while (length > distance);
 }
 
 // OFFSET: 0x0054DB40
