@@ -136,6 +136,28 @@ static __forceinline void AdvanceSpriteVelocity(CSpriteParticle* particle) {
 }
 
 // OFFSET: 0x006FD440
+// FUNCTION: fn_46273
+void CCloudKillEffect::UpdateSprite(CSpriteParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const vector3d center = this->positionVector;
+  AdvanceSpriteVelocity(particle);
+  particle->position.y = center.y + particle->originY + particle->velocity.y;
+  particle->position.x = center.x + particle->originX + particle->velocity.x;
+  particle->position.z = center.z + particle->originZ + particle->velocity.z;
+  particle->angle = particle->spin + particle->angle;
+  const int age = particle->elapsedFrames;
+  float fade = particle->animationParameter;
+  if (age == static_cast<int>(particle->animationParameters[0])) {
+    fade = -(static_cast<float>(particle->alpha) / static_cast<float>(this->spriteLifetimeFrames - age));
+  }
+  particle->animationParameter = fade;
+  const float level = static_cast<float>(particle->alpha) + fade;
+  const float positive = level < 0.0f ? 0.0f : level;
+  particle->alpha = static_cast<int>(positive > 254.0f ? 254.0f : positive);
+}
 
 // OFFSET: 0x006FCCD0
 // FUNCTION: fn_46120
