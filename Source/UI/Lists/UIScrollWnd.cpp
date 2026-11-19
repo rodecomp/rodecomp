@@ -132,9 +132,11 @@ bool UIScrollWnd::UpdateUncached(int redraw) {
   bool changed = false;
   for (UIWindow* child : this->m_children) {
     if (this->horizontalBar != child && this->scrollBar != child) {
-      const int bottom = child->geometry.y + child->geometry.height;
-      if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && bottom > 0 &&
-          child->geometry.y < this->geometry.height && child->geometry.visible == 1) {
+      const RECT bounds = {
+        child->geometry.x, child->geometry.y, child->geometry.x + child->geometry.width, child->geometry.y + child->geometry.height
+      };
+      if (bounds.right > 0 && bounds.left < this->geometry.width && bounds.bottom > 0 && bounds.top < this->geometry.height &&
+          child->geometry.visible == 1) {
         changed |= this->UpdateChild(child, redraw);
       }
     } else if (child->geometry.visible == 1) {
