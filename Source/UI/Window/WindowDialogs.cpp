@@ -326,12 +326,10 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   this->hoverWindow = nullptr;
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
-  int response = ID_OK;
-
   if (g_modalImmediate == 0) {
     CMode* pump = g_modeMgr.currentMode;
 
-    for (;;) {
+    do {
       if (this->activeWindowId != 0) {
         if (UIWindow* active = this->Top()) {
           active->Show(0);
@@ -339,13 +337,14 @@ int UIWindowMgr::RunModal(UIWindow* window) {
           this->modalWindows.pop_back();
         }
 
-        response = this->activeWindowId;
+        const int response = this->activeWindowId;
 
         if (this->modalWindows.empty()) {
           this->activeWindowId = 0;
         }
 
-        break;
+        this->RestoreInput();
+        return response;
       }
 
       if (this->modalResponse != 0) {
@@ -355,9 +354,10 @@ int UIWindowMgr::RunModal(UIWindow* window) {
           this->modalWindows.pop_back();
         }
 
-        response = this->modalResponse;
+        const int response = this->modalResponse;
         this->modalResponse = 0;
-        break;
+        this->RestoreInput();
+        return response;
       }
 
       if (pump) {
@@ -365,7 +365,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
         pump = g_modeMgr.currentMode;
       }
 
-      if (g_session.GetOption(20) > 0) {
+      if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
         this->activeWindowId = 0;
         this->modalResponse = 0;
 
@@ -376,13 +376,9 @@ int UIWindowMgr::RunModal(UIWindow* window) {
 
         break;
       }
-
-      if (g_modalImmediate != 0) {
-        break;
-      }
-    }
+    } while (g_modalImmediate == 0);
   }
 
   this->RestoreInput();
-  return response;
+  return ID_OK;
 }
