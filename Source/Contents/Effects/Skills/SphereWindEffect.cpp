@@ -184,22 +184,22 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
   const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + rotation) % 360;
   const int tilt = particle->phaseParameter;
   const float scale = particle->scale;
-  const float radius = particle->speedParameter;
 
   EffectPoint points[4];
   points[0].x = g_cosTable[tilt] * scale * g_cosTable[angle];
   points[0].y = g_sinTable[tilt] * scale * g_cosTable[angle];
   points[0].z = scale * g_sinTable[angle];
+  const float radius = particle->speedParameter;
   points[1].x = -g_sinTable[tilt] * radius;
   points[1].y = g_cosTable[tilt] * radius;
   points[1].z = 0.0f;
   const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
-  points[2].x = points[0].x - points[1].x + offset.x;
-  points[2].y = points[0].y - points[1].y + offset.y;
-  points[2].z = points[0].z - points[1].z + offset.z;
   points[3].x = points[0].x + points[1].x + offset.x;
   points[3].y = points[0].y + points[1].y + offset.y;
   points[3].z = points[0].z + points[1].z + offset.z;
+  points[2].x = points[0].x - points[1].x + offset.x;
+  points[2].y = points[0].y - points[1].y + offset.y;
+  points[2].z = points[0].z - points[1].z + offset.z;
 
   StoreSegment(*this, particle, segment, points);
 }
