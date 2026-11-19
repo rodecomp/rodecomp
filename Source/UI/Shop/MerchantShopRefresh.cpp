@@ -33,18 +33,14 @@ void UIMerchantShopMakeWnd::Refresh() {
   for (int index = 0; index < this->slotCount; ++index) {
     this->priceEdits[index]->SetText("");
 
-    int background;
-
     if (this->mode != 0) {
-      background = 232;
+      this->priceEdits[index]->Background(232, 232, 232);
     } else {
       UIEditCtrl* edit = this->priceEdits[index];
       edit->disabled = 1;
       edit->Invalidate();
-      background = 182;
+      this->priceEdits[index]->Background(182, 182, 182);
     }
-
-    this->priceEdits[index]->Background(background, background, background);
   }
 
   const int count = g_session.GetNumMerchantPurchaseSavedItems();
