@@ -662,7 +662,7 @@ void UITextViewEX::SetText(std::string text) {
   for (;;) {
     const std::size_t tag = text.find_first_of("<", position);
     std::string segment = text.substr(position, tag - position);
-    int attached = segment.find_first_not_of(" \t") == 0;
+    int attached = segment.find_first_not_of(" \t") <= 0;
     TrimLeading(segment, " \t");
     TrimTrailing(segment, " \t");
 
