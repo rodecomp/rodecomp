@@ -5274,9 +5274,13 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
     grade = "SS";
   }
 
+  int message = MSI_BROADCASTING_GRADE_ENCHANT_FAIL;
+  if (packet->success == 1) {
+    message = MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS;
+  }
+
   std::string text;
-  text = FormatOwnedString(
-    LookupMessage(packet->success == 1 ? MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS : MSI_BROADCASTING_GRADE_ENCHANT_FAIL), name.c_str(), grade.c_str(), itemName.c_str());
+  text = FormatOwnedString(LookupMessage(message), name.c_str(), grade.c_str(), itemName.c_str());
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
