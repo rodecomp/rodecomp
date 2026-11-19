@@ -102,6 +102,27 @@ namespace {
     }
   }
 
+// OFFSET: 0x00543FC0
+// FUNCTION: fn_45883
+bool MatchesTextureFormatDX7(const DDPIXELFORMAT& format, TextureFormat requested) {
+  switch (requested) {
+  case TextureFormat::A1R5G5B5:
+    return format.dwRGBAlphaBitMask == 0x8000 && format.dwRBitMask == 0x7C00 &&
+           format.dwGBitMask == 0x03E0 && format.dwBBitMask == 0x001F;
+  case TextureFormat::A4R4G4B4:
+    return format.dwRGBAlphaBitMask == 0xF000 && format.dwRBitMask == 0x0F00 &&
+           format.dwGBitMask == 0x00F0 && format.dwBBitMask == 0x000F;
+  case TextureFormat::R5G6B5:
+    return format.dwRGBAlphaBitMask == 0 && format.dwRBitMask == 0xF800 &&
+           format.dwGBitMask == 0x07E0 && format.dwBBitMask == 0x001F;
+  case TextureFormat::A8R8G8B8:
+    return format.dwRGBAlphaBitMask == 0xFF000000 && format.dwRBitMask == 0x00FF0000 &&
+           format.dwGBitMask == 0x0000FF00 && format.dwBBitMask == 0x000000FF;
+  default:
+    return false;
+  }
+}
+
 // OFFSET: 0x00543B00
 // FUNCTION: fn_01807
 CTextureDX7::CTextureDX7(DeviceOwnerDX7& owner) : m_owner(&owner), m_surface(nullptr) {

@@ -38,5 +38,6 @@ protected:
 };
 
 std::unique_ptr<CTextureDX7> CreateTextureDX7(DeviceOwnerDX7*& owner);
+bool MatchesTextureFormatDX7(const DDPIXELFORMAT& format, TextureFormat requested);
 
 #endif
