@@ -2386,8 +2386,9 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     switch (a1) {
     case ID_OK:
       if (this->m_positionMap.size() != 0) {
+        CMode* gameMode = g_modeMgr.currentMode;
         g_guildInfo.pendingPositionChanges = this->m_positionMap;
-        g_modeMgr.currentMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
+        gameMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
         this->m_positionMap.clear();
         this->m_button->Move(-200, -200);
         this->m_button->SetDisabled(1);
@@ -2481,10 +2482,14 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       return 0;
     }
 
-    if (g_guildInfo.isMaster && this->m_positionMap.size()) {
-      this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
-    } else {
-      this->m_button->Move(-200, -200);
+    {
+      const int buttonX = this->geometry.width - 61;
+      const int buttonY = this->geometry.height - 23;
+      if (g_guildInfo.isMaster && this->m_positionMap.size()) {
+        this->m_button->Move(buttonX, buttonY);
+      } else {
+        this->m_button->Move(-200, -200);
+      }
     }
     this->InvalidateChildren();
     return 0;
