@@ -1471,7 +1471,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertMonsterReward(std::string_view na
 
   AdventureGuideEpisode& episode = m_episodes.back();
   if (name != episode.name) {
-    return AdventureGuideResult(false, FormatOwnedString("[%s] cannot be find", name));
+    return FailedResult(FormatOwnedString("[%s] cannot be find", name));
   }
 
   episode.info.values.emplace_back(text.data());
