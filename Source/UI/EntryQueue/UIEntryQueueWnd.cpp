@@ -502,21 +502,23 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       break;
     case 2: {
       GuildInfo* guild = &g_guildInfo;
-      if (g_session.GetMapProperty13() == 1) {
-        error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
-      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
-        error = MSI_BATTLEFIELD_MSG_WAIT_1MM;
-      } else if (guild->m_guildId < 1) {
-        error = MSI_BATTLEFIELD_MSG_PLZ_GUILDJOIN;
-      } else if (guild->isMaster == 0) {
-        error = MSI_BATTLEFIELD_MSG_NOT_GUILDBOSS;
-      } else if (static_cast<unsigned>(g_entryQueueMgr->current->minLevel) < static_cast<unsigned>(guild->onlineMemberCount)) {
-        error = MSI_BATTLEFIELD_MSG_OVER_GUILDMEMBER;
-      } else {
-        if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_DOYOU_GUILD))) {
-          g_entryQueueMgr->SendApply(4, info->name);
+      if (g_session.GetMapProperty13() != 1) {
+        if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
+          error = MSI_BATTLEFIELD_MSG_WAIT_1MM;
+        } else if (guild->m_guildId < 1) {
+          error = MSI_BATTLEFIELD_MSG_PLZ_GUILDJOIN;
+        } else if (guild->isMaster == 0) {
+          error = MSI_BATTLEFIELD_MSG_NOT_GUILDBOSS;
+        } else if (static_cast<unsigned>(g_entryQueueMgr->current->minLevel) < static_cast<unsigned>(guild->onlineMemberCount)) {
+          error = MSI_BATTLEFIELD_MSG_OVER_GUILDMEMBER;
+        } else {
+          if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_DOYOU_GUILD))) {
+            g_entryQueueMgr->SendApply(4, info->name);
+          }
+          return 0;
         }
-        return 0;
+      } else {
+        error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
       }
       break;
     }
