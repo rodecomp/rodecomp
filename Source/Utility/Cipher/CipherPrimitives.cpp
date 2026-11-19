@@ -769,8 +769,8 @@ void BuildKeyedBoxes(unsigned char* boxes, const unsigned char* key, int keyLeng
   }
 
   int j = keyLength;
-  int keyIndex = 0;
   int base = 0;
+  int keyIndex = 0;
   for (int box = 0; box < count; ++box) {
     int offset = 0;
     for (int pass = 0; pass < 8; ++pass) {
