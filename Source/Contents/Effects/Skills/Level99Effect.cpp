@@ -11,6 +11,11 @@
 CLevel99Effect::CLevel99Effect() : CEffect(200) {
 }
 
+// OFFSET: 0x00B6A150
+// FUNCTION: fn_46121
+__declspec(noinline) CLevel99Effect::~CLevel99Effect() {
+}
+
 // OFFSET: 0x00B6A250
 // FUNCTION: fn_19081
 void CLevel99Effect::SetColor(int red, int green, int blue) {
@@ -113,6 +118,29 @@ void CLevel99Effect::AddRings() {
   } while (tilt > 40);
 }
 
+// OFFSET: 0x00B6A7E0
+// FUNCTION: fn_46122
+__forceinline void CLevel99Effect::AddSparkles() {
+  for (int index = 0; index < 2; ++index) {
+    CParticle* particle = CreateParticle(&this->positionVector, 13);
+    if (particle) {
+      particle->SetTexture("effect\\pikapika2.bmp");
+      particle->effectId = this->id;
+      particle->columnIndex = index;
+      particle->rowIndex = 0;
+      particle->groupIndex = 1;
+      particle->alpha = 200;
+      particle->angle = static_cast<float>(index * 22);
+      particle->phaseParameter = index * 180;
+      particle->scale = 9.0f;
+      particle->InitParticleQuad(particle->vertices);
+      this->sparkles.push_back(particle);
+    }
+  }
+}
+
+// OFFSET: 0x00B6A8C0
+
 // OFFSET: 0x00B6AA60
 // FUNCTION: fn_19084
 void CLevel99Effect::Close() {
@@ -130,23 +158,7 @@ void CLevel99Effect::Close() {
 // OFFSET: 0x00B6AAD0
 // FUNCTION: fn_19085
 void CLevel99Effect::Open() {
-  for (int index = 0; index < 2; ++index) {
-    CParticle* particle = CreateParticle(&this->positionVector, 13);
-    if (particle) {
-      particle->SetTexture("effect\\pikapika2.bmp");
-      particle->effectId = this->id;
-      particle->columnIndex = index;
-      particle->rowIndex = 0;
-      particle->groupIndex = 1;
-      particle->alpha = 200;
-      particle->angle = static_cast<float>(index * 22);
-      particle->phaseParameter = index * 180;
-      particle->scale = 9.0f;
-      particle->InitParticleQuad(particle->vertices);
-      this->sparkles.push_back(particle);
-    }
-  }
-
+  this->AddSparkles();
   this->AddRings();
 }
 
@@ -154,6 +166,21 @@ void CLevel99Effect::Open() {
 // FUNCTION: fn_19086
 bool CLevel99Effect::IsAlive() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00B6ABD0
+// FUNCTION: fn_46124
+__forceinline void CLevel99Effect::UpdateRing(CParticle* particle) {
+  if (particle) {
+    float& baseAngle = particle->angle;
+    const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->rowIndex) + baseAngle + 3.0f));
+    baseAngle = degrees;
+
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeYRotation(degrees / 180.0f * 3.141592f);
+    particle->transform = rotation;
+  }
 }
 
 // OFFSET: 0x00B6AC90
@@ -166,27 +193,7 @@ void CLevel99Effect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
 
-    if (particle) {
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeZRotation(particle->angle / 180.0f * 3.141592f);
-      rotation.AppendXRotation(1.570796f);
-
-      int phase = particle->phaseParameter + 3;
-      if (phase >= 360) {
-        phase -= 360;
-      }
-      particle->phaseParameter = phase;
-
-      matrix scale;
-      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-      const float size = (g_sinTable[phase] + 1.0f) * (particle->scale * 0.1f) + particle->scale;
-      scale.SetScale(size, size, 1.0f);
-
-      matrix result;
-      result.Compose(scale, rotation);
-      particle->transform = result;
-    }
+    this->UpdateSparkle(particle);
     ++particle->elapsedFrames;
   }
 
@@ -197,17 +204,51 @@ void CLevel99Effect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
 
-    if (particle) {
-      float& baseAngle = particle->angle;
-      const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->rowIndex) + baseAngle + 3.0f));
-      baseAngle = degrees;
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeYRotation(degrees / 180.0f * 3.141592f);
-      particle->transform = rotation;
-    }
+    this->UpdateRing(particle);
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00B6AF10
+// FUNCTION: fn_46125
+__forceinline void CLevel99Effect::UpdateSparkle(CParticle* particle) {
+  if (particle) {
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeZRotation(particle->angle / 180.0f * 3.141592f);
+    rotation.AppendXRotation(1.570796f);
+
+    int phase = particle->phaseParameter + 3;
+    if (phase >= 360) {
+      phase -= 360;
+    }
+    particle->phaseParameter = phase;
+
+    matrix scale;
+    std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+    const float size = (g_sinTable[phase] + 1.0f) * (particle->scale * 0.1f) + particle->scale;
+    scale.SetScale(size, size, 1.0f);
+
+    matrix result;
+    result.Compose(scale, rotation);
+    particle->transform = result;
+  }
+}
+
+// OFFSET: 0x00B6B060
+// FUNCTION: fn_46126
+__forceinline void CLevel99Effect::RenderRing(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    const int frame = particle->columnIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(frame - 1) / 21.0f;
+    quad.right = static_cast<float>(frame) / 21.0f;
+    particle->Render(quad);
   }
 }
 
@@ -215,25 +256,18 @@ void CLevel99Effect::OnProcess() {
 // FUNCTION: fn_19088
 void CLevel99Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
-    CParticle* sparkle = *it;
-    if (sparkle) {
-      sparkle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderSparkle(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-    CParticle* sprite = *it;
-    if (sprite && sprite->columnIndex > 0) {
-      const int frame = sprite->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(frame - 1) / 21.0f;
-      quad.right = static_cast<float>(frame) / 21.0f;
-      sprite->Render(quad);
-    }
+    this->RenderRing(*it);
+  }
+}
+
+// OFFSET: 0x00B6B1D0
+// FUNCTION: fn_46127
+__forceinline void CLevel99Effect::RenderSparkle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
