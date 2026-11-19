@@ -1025,32 +1025,24 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
 // OFFSET: 0x006996F0
 // FUNCTION: fn_05781
 std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detailed, bool negative) {
-  std::string text;
+  std::string text = "";
   if (this->m_definition == nullptr) {
     return text;
   }
 
   bool failed = false;
-  for (auto entry = this->m_values.rbegin(); entry != this->m_values.rend(); ++entry) {
+  for (auto entry = this->m_values.rbegin(); this->m_values.rend() != entry; ++entry) {
     std::string argument;
-    unsigned int hash = 5381;
-    for (const char* character = this->m_definition->separator.c_str(); *character != '\0'; ++character) {
-      hash = hash * 33 + *character;
-    }
-    switch (hash) {
-    case 0xA2AF91ED: {
-      CEquipmentPropertiesMgr* manager = CEquipmentPropertiesMgr::GetInstance();
-      const int key = entry->first;
-      const int skillId = manager->GetConstantValue(key);
-      if (skillId == 0) {
-        continue;
-      }
-      argument = CSkillInfo::DisplayName(skillId);
+    switch (HashName(this->m_definition->separator.c_str())) {
+    case 0x16716DCE:
+      argument = fmt::format("{0}", entry->first);
+      break;
+    case 0x78BA6385:
+      argument = CSkillInfo::DisplayName(entry->first);
       if (argument.size() == 0) {
         continue;
       }
       break;
-    }
     case 0x8F918611:
       if (entry->first != 0) {
         std::list<unsigned int>* skills = CEquipmentPropertiesMgr::GetInstance()->FindSkillGroup(entry->first);
@@ -1069,15 +1061,19 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
         }
       }
       break;
-    case 0x78BA6385:
-      argument = CSkillInfo::DisplayName(entry->first);
+    case 0xA2AF91ED: {
+      CEquipmentPropertiesMgr* manager = CEquipmentPropertiesMgr::GetInstance();
+      const int key = entry->first;
+      const int skillId = manager->GetConstantValue(key);
+      if (skillId == 0) {
+        continue;
+      }
+      argument = CSkillInfo::DisplayName(skillId);
       if (argument.size() == 0) {
         continue;
       }
       break;
-    case 0x16716DCE:
-      argument = fmt::format("{0}", entry->first);
-      break;
+    }
     default:
       failed = true;
       break;
@@ -1086,49 +1082,48 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
     int value = entry->second;
     if (detailed == false) {
       auto minimum = this->m_definition->formatOptions.find(0);
-      if (minimum != this->m_definition->formatOptions.end()) {
+      if (this->m_definition->formatOptions.end() != minimum) {
         value = std::max(value, minimum->second);
       }
       auto maximum = this->m_definition->formatOptions.find(1);
-      if (maximum != this->m_definition->formatOptions.end()) {
+      if (this->m_definition->formatOptions.end() != maximum) {
         value = std::min(value, maximum->second);
       }
     }
 
     double result = value;
     auto divisor = this->m_definition->formatOptions.find(2);
-    if (divisor != this->m_definition->formatOptions.end()) {
+    if (this->m_definition->formatOptions.end() != divisor) {
       result /= divisor->second;
     }
     int precision = 0;
     auto digits = this->m_definition->formatOptions.find(3);
-    if (digits != this->m_definition->formatOptions.end()) {
+    if (this->m_definition->formatOptions.end() != digits) {
       precision = digits->second;
     }
 
     const double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
     const double scale = std::pow(10.0, precision);
     const double rounded = std::floor(result * scale) / scale;
-    std::string number = std::format("{:.{}f}", sign * rounded, precision);
-    if (rounded != 0.0) {
+    std::string number = fmt::format("{:.{}f}", sign * rounded, precision);
+    if (0.0 != rounded) {
       if (text.size() != 0) {
         text += "\n";
       }
-      const int nonPositive = rounded <= 0.0;
+      const int nonPositive = !(rounded > 0.0);
       switch (this->m_definition->signLabels.size()) {
       case 0:
-        text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->formatText),
-                                                        std::make_wformat_args(DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument))));
+        text += EncodeText(g_textCodePage, fmt::format(DecodeText(g_textCodePage, this->m_definition->formatText),
+                                                      DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument)));
         break;
       case 2: {
         const int index = negative != true ? nonPositive : nonPositive ^ 1;
         if (index == 1) {
           text += "{~}";
         }
-        text += EncodeText(g_textCodePage,
-                           std::vformat(DecodeText(g_textCodePage, this->m_definition->formatText),
-                                        std::make_wformat_args(DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument),
-                                                               DecodeText(g_textCodePage, this->m_definition->signLabels[index]))));
+        text += EncodeText(g_textCodePage, fmt::format(DecodeText(g_textCodePage, this->m_definition->formatText),
+                                                      DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument),
+                                                      DecodeText(g_textCodePage, this->m_definition->signLabels[index])));
         break;
       }
       }
