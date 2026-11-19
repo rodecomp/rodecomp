@@ -174,7 +174,7 @@ inline CSelectPackageItemMgr* SelectPackageItemMgr() {
 // OFFSET: 0x006D2E30
 // FUNCTION: fn_06536
 void CPaidPackageItemMgr::AddItem(int itemId) {
-  if (this->m_items.find(itemId) != this->m_items.end()) {
+  if (this->m_items.end() != this->m_items.find(itemId)) {
     return;
   }
 

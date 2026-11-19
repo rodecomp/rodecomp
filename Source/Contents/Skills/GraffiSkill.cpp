@@ -118,8 +118,8 @@ void CGraffiSkill::Render(int argument) {
     for (int column = 0; column < 18; ++column) {
       const float row0 = static_cast<float>(row) - 9.0f;
       const float row1 = static_cast<float>(row + 1) - 9.0f;
-      const float column0 = static_cast<float>(column) - 9.0f;
       const float column1 = static_cast<float>(column + 1) - 9.0f;
+      const float column0 = static_cast<float>(column) - 9.0f;
       float uv[8];
       uv[0] = 1.0f - (row0 * sine + column0 * cosine + 9.0f) / 18.0f;
       uv[1] = (row0 * cosine - column0 * sine + 9.0f) / 18.0f;

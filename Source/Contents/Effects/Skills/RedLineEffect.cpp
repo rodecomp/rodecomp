@@ -275,7 +275,11 @@ void CRedLineEffect::OnProcess() {
 
       if (age >= 125) {
         const int alpha = particle->alpha - 15;
-        particle->alpha = alpha >= 0 ? alpha : 0;
+        if (alpha < 0) {
+          particle->alpha = 0;
+        } else {
+          particle->alpha = alpha;
+        }
         particle->speedParameter = std::max(particle->speedParameter - 5.0f, 0.0f);
       }
 

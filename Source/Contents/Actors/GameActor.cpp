@@ -934,7 +934,7 @@ CGameObject* CGameActor::GetEffectCounter(int effectId) {
 // FUNCTION: fn_21053
 float CGameActor::GetNameOffset() {
   float scale = 1.0f;
-  if ((this->render.flags & 0x10) != 0) {
+  if (0 != (this->render.flags & 0x10)) {
     const unsigned int angle = this->render.shrinkPhase * 4 + 90;
     if (angle > 270) {
       scale = 0.5f;
