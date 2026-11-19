@@ -181,9 +181,10 @@ void CSnapMgr::UpdateLinks(SnapObject* object) {
 
     if (side != -1) {
       object->edges[side].push_back(existing);
+      SnapObject* linked = object;
       const int opposite = g_snapOppositeSide[side];
       if (opposite != -1) {
-        existing->edges[opposite].push_back(object);
+        existing->edges[opposite].push_back(linked);
       }
     }
   }
