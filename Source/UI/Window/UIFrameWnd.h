@@ -37,6 +37,7 @@ public:
   UICheckBox* AddCheckBox(int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip);
   void DrawBorder(int x, int y, int width, int height);
   void DrawSkinBox(const char* name, int x, int y, int width, int height, bool tiled);
+  void WrapTextSegments(int width, int maxLines, const std::vector<std::pair<int, std::string>>& segments, FrameTextLines& lines);
   void FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines);
   void DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines);
   int DrawItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int height);

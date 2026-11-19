@@ -12405,6 +12405,52 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   return 0;
 }
 
+// OFFSET: 0x008D7FF0
+// FUNCTION: fn_45767
+void UIFrameWnd::WrapTextSegments(
+  int width, int maxLines, const std::vector<std::pair<int, std::string>>& segments, FrameTextLines& lines
+) {
+  auto* line = &lines[0];
+  int lineCount = 1;
+  int lineWidth = 0;
+  for (const auto& segment : segments) {
+    const char* begin = segment.second.c_str();
+    const char* end = begin + segment.second.size();
+    const char* lineStart = begin;
+    const char* next = begin;
+    std::size_t offset = 0;
+    int length;
+    int measured;
+    do {
+      next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
+      length = static_cast<int>(next - lineStart);
+      measured = this->TextWidth(begin, length, 0, 12, 0, 0);
+      if (measured + lineWidth > width) {
+        std::pair<int, std::string> piece;
+        piece.second = segment.second.substr(offset, length);
+        piece.first = segment.first;
+        line->push_back(piece);
+        ++line;
+        ++lineCount;
+        lineStart = next;
+        offset = length;
+        lineWidth = 0;
+      }
+    } while (next < end && lineCount < maxLines + 1);
+
+    lineWidth += measured;
+    if (lineCount > maxLines) {
+      break;
+    }
+    if (next >= end) {
+      std::pair<int, std::string> piece;
+      piece.second = segment.second.substr(offset, length);
+      piece.first = segment.first;
+      line->push_back(piece);
+    }
+  }
+}
+
 // OFFSET: 0x0090A2E0
 // FUNCTION: fn_12415
 void UIFrameWnd::DrawItemNameText(
