@@ -30,7 +30,7 @@ bool CNavigationManager::LoadStates(std::vector<char> packet) {
     offset += sizeof(nameLength);
 
     if (nameLength > 0) {
-      target.name.resize(nameLength, '\0');
+      target.name.append(nameLength, '\0');
       std::memcpy(&target.name[0], packet.data() + offset, nameLength);
       offset += nameLength;
     }
