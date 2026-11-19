@@ -12,6 +12,33 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Contents/Actors/GameActor.h"
 
+// GLOBAL: gl_25993
+float g_fireflyGroundOffset = 20.0f;
+
+// GLOBAL: gl_26005
+float g_fireflyArcStep33 = 33.0f;
+
+// GLOBAL: gl_26006
+float g_fireflyArcStep46 = 46.0f;
+
+// GLOBAL: gl_26007
+float g_fireflyArcStep59 = 59.0f;
+
+// GLOBAL: gl_26008
+float g_fireflyArcStep71 = 71.0f;
+
+// GLOBAL: gl_26009
+float g_fireflyArcStep84 = 84.0f;
+
+// GLOBAL: gl_26010
+float g_fireflyArcLength = 100.0f;
+
+// GLOBAL: gl_25998
+float g_fireflyModeThirteen = 13.0f;
+
+// GLOBAL: gl_25997
+float g_fireflyModeTwelve = 12.0f;
+
 // INLINED
 static __forceinline void ZeroVector(vector3d& v) {
   v.x = 0.0f;
@@ -880,60 +907,60 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
       vector3d bend0{};
-      if (dist > 20.0f) {
-        remain = dist - 20.0f;
-        bend0.x = g_cosTable[dir] * 20.0f;
-        bend0.z = g_sinTable[dir] * 20.0f;
+      if (dist > g_fireflyGroundOffset) {
+        remain = dist - g_fireflyGroundOffset;
+        bend0.x = g_cosTable[dir] * g_fireflyGroundOffset;
+        bend0.z = g_sinTable[dir] * g_fireflyGroundOffset;
       }
       vector3d bend1{};
-      if (dist > 33.0f) {
+      if (dist > g_fireflyArcStep33) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 33.0f;
-        bend1.x = g_cosTable[dir] * 13.0f;
-        bend1.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep33;
+        bend1.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend1.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend2{};
-      if (dist > 46.0f) {
+      if (dist > g_fireflyArcStep46) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 46.0f;
-        bend2.x = g_cosTable[dir] * 13.0f;
-        bend2.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep46;
+        bend2.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend2.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend3{};
-      if (dist > 59.0f) {
+      if (dist > g_fireflyArcStep59) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 59.0f;
-        bend3.x = g_cosTable[dir] * 13.0f;
-        bend3.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep59;
+        bend3.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend3.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend4{};
-      if (dist > 71.0f) {
+      if (dist > g_fireflyArcStep71) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 71.0f;
-        bend4.x = g_cosTable[dir] * 12.0f;
-        bend4.z = g_sinTable[dir] * 12.0f;
+        remain = dist - g_fireflyArcStep71;
+        bend4.x = g_cosTable[dir] * g_fireflyModeTwelve;
+        bend4.z = g_sinTable[dir] * g_fireflyModeTwelve;
       }
       vector3d bend5{};
-      if (dist > 84.0f) {
+      if (dist > g_fireflyArcStep84) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 84.0f;
-        bend5.x = g_cosTable[dir] * 13.0f;
-        bend5.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep84;
+        bend5.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend5.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       if (dist > 20.0f) {
         dir += 5;
@@ -959,7 +986,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       vec4.y = backLeft.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
       vec4.z = backLeft.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
 
-      if (dist > 100.0f) {
+      if (dist > g_fireflyArcLength) {
         break;
       }
 
@@ -1032,60 +1059,60 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
       vector3d bend0{};
-      if (dist > 20.0f) {
-        remain = dist - 20.0f;
-        bend0.x = g_cosTable[dir] * 20.0f;
-        bend0.z = g_sinTable[dir] * 20.0f;
+      if (dist > g_fireflyGroundOffset) {
+        remain = dist - g_fireflyGroundOffset;
+        bend0.x = g_cosTable[dir] * g_fireflyGroundOffset;
+        bend0.z = g_sinTable[dir] * g_fireflyGroundOffset;
       }
       vector3d bend1{};
-      if (dist > 33.0f) {
+      if (dist > g_fireflyArcStep33) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 33.0f;
-        bend1.x = g_cosTable[dir] * 13.0f;
-        bend1.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep33;
+        bend1.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend1.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend2{};
-      if (dist > 46.0f) {
+      if (dist > g_fireflyArcStep46) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 46.0f;
-        bend2.x = g_cosTable[dir] * 13.0f;
-        bend2.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep46;
+        bend2.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend2.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend3{};
-      if (dist > 59.0f) {
+      if (dist > g_fireflyArcStep59) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 59.0f;
-        bend3.x = g_cosTable[dir] * 13.0f;
-        bend3.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep59;
+        bend3.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend3.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend4{};
-      if (dist > 71.0f) {
+      if (dist > g_fireflyArcStep71) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 71.0f;
-        bend4.x = g_cosTable[dir] * 12.0f;
-        bend4.z = g_sinTable[dir] * 12.0f;
+        remain = dist - g_fireflyArcStep71;
+        bend4.x = g_cosTable[dir] * g_fireflyModeTwelve;
+        bend4.z = g_sinTable[dir] * g_fireflyModeTwelve;
       }
       vector3d bend5{};
-      if (dist > 84.0f) {
+      if (dist > g_fireflyArcStep84) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
         }
-        remain = dist - 84.0f;
-        bend5.x = g_cosTable[dir] * 13.0f;
-        bend5.z = g_sinTable[dir] * 13.0f;
+        remain = dist - g_fireflyArcStep84;
+        bend5.x = g_cosTable[dir] * g_fireflyModeThirteen;
+        bend5.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       if (dist > 20.0f) {
         dir += 5;
@@ -1111,7 +1138,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       vec4.y = backLeft.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
       vec4.z = backLeft.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
 
-      if (dist > 100.0f) {
+      if (dist > g_fireflyArcLength) {
         break;
       }
 
