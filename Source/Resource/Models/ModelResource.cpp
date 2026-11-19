@@ -510,6 +510,7 @@ void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
 }
 
 // OFFSET: 0x00759430
+// FUNCTION: fn_45846
 __forceinline GrannyTextureEntry* C3dGrannyModelRes::FindMaterialTexture(const granny_material* material) const {
   const granny_texture* texture = GrannyGetMaterialTextureByType(material, 2);
   if (texture) {
@@ -525,6 +526,7 @@ __forceinline GrannyTextureEntry* C3dGrannyModelRes::FindMaterialTexture(const g
 }
 
 // OFFSET: 0x00758B30
+// FUNCTION: fn_45844
 __forceinline void C3dGrannyModelRes::InitializeMesh(GrannyMeshEntry& entry, granny_mesh* mesh, granny_model_instance* instance) {
   entry.mesh = mesh;
   granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance);
