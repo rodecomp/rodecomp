@@ -1181,15 +1181,14 @@ bool CFootprintEffect::IsVisible() {
 // OFFSET: 0x00712410
 // FUNCTION: fn_07239
 void CFootprintEffect::Open() {
-  char* rightFile = nullptr;
   char* leftFile = nullptr;
+  char* rightFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintPngFile", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!leftFile || std::strlen(leftFile) == 0 || !rightFile || std::strlen(rightFile) == 0) {
     return;
   }
 
-  this->textures.first = leftFile;
-  this->textures.second = rightFile;
+  this->textures = std::make_pair(leftFile, rightFile);
 
   double scale = 5.0;
   g_session.m_hotkeyScript->Call("GetFootprintPngScale", "d>l", this->instanceId, &scale);
@@ -1343,14 +1342,12 @@ void CFootprintStrEffect::Open() {
   char* rightFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintStrFileBottom", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
-    this->bottomFiles.first = leftFile;
-    this->bottomFiles.second = rightFile;
+    this->bottomFiles = std::make_pair(leftFile, rightFile);
   }
 
   g_session.m_hotkeyScript->Call("GetFootprintStrFileTop", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
-    this->topFiles.second = rightFile;
-    this->topFiles.first = leftFile;
+    this->topFiles = std::make_pair(leftFile, rightFile);
   }
 
   if (this->bottomFiles.first.size() == 0 && this->bottomFiles.second.size() == 0 && this->topFiles.first.size() == 0 &&
