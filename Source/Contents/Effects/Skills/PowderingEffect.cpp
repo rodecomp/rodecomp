@@ -262,8 +262,8 @@ void CPowderingEffect::OnProcess() {
       }
     }
 
-    vector3d velocity = particle->velocity;
     particle->alpha = alpha;
+    vector3d velocity = particle->velocity;
     velocity.y += static_cast<float>(RandomSpan(10)) * 0.01f;
     particle->velocity = velocity;
     particle->position = {velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};
