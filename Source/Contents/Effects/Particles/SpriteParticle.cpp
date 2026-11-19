@@ -221,10 +221,11 @@ void CSpriteParticle::Draw(char mode) {
     cellMatrix.Compose(temp, cellTranslate);
 
     vector3d cellVertices[4];
+    volatile float* cellZero = reinterpret_cast<volatile float*>(cellVertices);
     for (int v = 0; v < 4; ++v) {
-      cellVertices[v].x = 0.0f;
-      cellVertices[v].y = 0.0f;
-      cellVertices[v].z = 0.0f;
+      cellZero[v * 3] = 0.0f;
+      cellZero[v * 3 + 1] = 0.0f;
+      cellZero[v * 3 + 2] = 0.0f;
     }
     for (int v = 0; v < 4; ++v) {
       const float vx = primitive->vertices[v].x;
@@ -251,10 +252,11 @@ void CSpriteParticle::Draw(char mode) {
     finalTransform.Compose(world, this->transform);
 
     vector3d worldVertices[4];
+    volatile float* worldZero = reinterpret_cast<volatile float*>(worldVertices);
     for (int v = 0; v < 4; ++v) {
-      worldVertices[v].x = 0.0f;
-      worldVertices[v].y = 0.0f;
-      worldVertices[v].z = 0.0f;
+      worldZero[v * 3] = 0.0f;
+      worldZero[v * 3 + 1] = 0.0f;
+      worldZero[v * 3 + 2] = 0.0f;
     }
     for (int v = 0; v < 4; ++v) {
       const float vx = cellVertices[v].x;
