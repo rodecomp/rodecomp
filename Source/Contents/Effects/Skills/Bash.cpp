@@ -58,10 +58,9 @@ __forceinline void CBash::CreateRays() {
     particle->angle = static_cast<float>(angle);
     particle->scale = 100.0f;
     particle->speedParameter = 28.333334f;
-    float* values = particle->animationValues;
-    values[0] = 28.333334f;
-    values[1] = static_cast<float>(fadeFrame);
-    values[2] = 170.0f;
+    particle->animationValues[0] = 28.333334f;
+    particle->animationValues[1] = static_cast<float>(fadeFrame);
+    particle->animationValues[2] = 170.0f;
     particle->alpha = 0;
     particle->SetTexture("effect\\alpha_down.tga");
     this->rays.push_back(particle);
@@ -86,16 +85,15 @@ __forceinline void CBash::CreateSparks() {
     const int radius = rand() % 40;
     const int growth = rand() % 30;
     const int lifetime = this->effectLifetime;
-    float* values = particle->animationValues;
-    values[0] = static_cast<float>(angle >= 0 ? angle : 0);
-    values[1] = speed;
-    values[2] = acceleration;
-    values[3] = static_cast<float>((width >= 0 ? width : 0) + 5) / 10.0f;
-    values[4] = static_cast<float>((radius >= 0 ? radius : 0) + 20);
-    values[5] = static_cast<float>((growth >= 0 ? growth : 0) + 20) / 10.0f;
-    values[6] = 200.0f;
-    values[7] = 20.0f;
-    values[8] = static_cast<float>(lifetime - lifetime / 3);
+    particle->animationValues[0] = static_cast<float>(angle >= 0 ? angle : 0);
+    particle->animationValues[1] = speed;
+    particle->animationValues[2] = acceleration;
+    particle->animationValues[3] = static_cast<float>((width >= 0 ? width : 0) + 5) / 10.0f;
+    particle->animationValues[4] = static_cast<float>((radius >= 0 ? radius : 0) + 20);
+    particle->animationValues[5] = static_cast<float>((growth >= 0 ? growth : 0) + 20) / 10.0f;
+    particle->animationValues[6] = 200.0f;
+    particle->animationValues[7] = 20.0f;
+    particle->animationValues[8] = static_cast<float>(lifetime - lifetime / 3);
     particle->alpha = 0;
     particle->SetTexture("EFFECT\\alpha_center.tga");
     this->sparks.push_back(particle);
@@ -243,10 +241,9 @@ __forceinline void CBash::RenderRay(CParticle* particle) {
 // OFFSET: 0x00B42A60
 // FUNCTION: fn_45939
 __forceinline void CBash::RenderSpark(CParticle* particle) {
-  const float* values = particle->animationValues;
-  const float angle = values[0];
-  const float width = values[3];
-  const float radius = values[4];
+  const float angle = particle->animationValues[0];
+  const float width = particle->animationValues[3];
+  const float radius = particle->animationValues[4];
   const int first = static_cast<int>(angle - width);
   const float firstCosine = ClientCosine(first);
   const float firstSine = ClientSine(first);
