@@ -117,7 +117,8 @@ static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const jsoncons::
     return false;
   }
 
-  *out = reinterpret_cast<const jsoncons::json&>(value.value).as_double();
+  const double number = reinterpret_cast<const jsoncons::json&>(value.value).as_double();
+  *out = number;
   return true;
 }
 
