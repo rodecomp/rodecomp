@@ -147,16 +147,14 @@ float DirectionAngle(float x, float z) {
 double ScreenAngle(vector3d from, vector3d to) {
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;
-  float fromX;
-  float fromY;
-  float toX;
-  float toY;
-  g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
-  const float dx = toX - fromX;
-  const float dy = toY - fromY;
+  float fromScreen[2];
+  float toScreen[2];
+  g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromScreen[0], &fromScreen[1], &fromReciprocalDepth);
+  g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toScreen[0], &toScreen[1], &toReciprocalDepth);
+  const float dx = toScreen[0] - fromScreen[0];
+  const float dy = toScreen[1] - fromScreen[1];
   double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
-  if (fromY > toY) {
+  if (fromScreen[1] > toScreen[1]) {
     angle = 360.0 - angle;
   }
 
