@@ -25,6 +25,11 @@ CCartCannon::CCartCannon() : CEffect(-1) {
   this->rotationParameter = 0;
 }
 
+// OFFSET: 0x006FA9C0
+// FUNCTION: fn_46164
+__declspec(noinline) CCartCannon::~CCartCannon() {
+}
+
 // OFFSET: 0x006FAA80
 // FUNCTION: fn_06896
 void CCartCannon::Close() {
@@ -140,6 +145,8 @@ void CCartCannon::OnProcess() {
   ++this->currentStep;
 }
 
+// OFFSET: 0x006FAFC0
+
 // OFFSET: 0x006FB080
 // FUNCTION: fn_06900
 void CCartCannon::Render() {
@@ -148,6 +155,17 @@ void CCartCannon::Render() {
     CGameMode* mode = g_modeMgr.GetGameMode();
     particle->DrawScreen(mode->camera->frame.view);
   }
+}
+
+// OFFSET: 0x006FB0B0
+// FUNCTION: fn_46166
+void CCartCannon::RenderParticle(CEZ2STRParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  particle->DrawScreen(mode->camera->frame.view);
 }
 
 // OFFSET: 0x006FB0E0

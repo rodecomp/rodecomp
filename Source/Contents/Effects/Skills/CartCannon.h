@@ -10,6 +10,7 @@
 class CCartCannon : public CEffect {
 public:
   CCartCannon();
+  ~CCartCannon();
 
   void Open() override;
   void OnProcess() override;
@@ -18,6 +19,9 @@ public:
   bool IsAlive() override;
 
   void SetDelay(int delay) override;
+
+  void UpdateParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
 
   /* 00CC */ CEZ2STRParticle* particle;
   /* 00D0 */ int currentStep;
