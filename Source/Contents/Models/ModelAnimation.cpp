@@ -1,4 +1,6 @@
 #include "Contents/Models/ModelAnimation.h"
+#include "Contents/Map/MapSkyMgr.h"
+#include "Render/Projection/RenderProjection.h"
 
 #include <cmath>
 #include <cstring>
@@ -276,7 +278,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
 
     if (dot > -0.95f) {
       if (dot > 0.95f) {
-        firstWeight = 1.0f - amount;
+        firstWeight = g_projectionDepthNumerator - amount;
         secondWeight = amount;
       } else {
         const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
@@ -289,7 +291,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       by = ax;
       bz = -aw;
       bw = az;
-      firstWeight = ClientSin((0.5f - amount) * 3.141592f);
+      firstWeight = ClientSin((g_depthAverageHalf - amount) * 3.141592f);
       secondWeight = ClientSin(amount * 3.141592f);
     }
 
