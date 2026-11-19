@@ -18,11 +18,14 @@ void CRenderer::Ray(int x, int y, const float* origin, const float* matrix, floa
   const float depth = g_projectionDepthNumerator;
   const float dy = (static_cast<float>(this->viewport.centerY) * -(depth - vertical)) / this->viewport.scaleY;
   const float dx = (static_cast<float>(this->viewport.centerX) * (horizontal - depth)) / this->viewport.scaleX;
-  const float directionX = ((dy * transform[3] + dx * transform[0]) + transform[6]) + 0.0f;
+  transform[9] = 0.0f;
+  transform[10] = 0.0f;
+  transform[11] = 0.0f;
+  const float directionX = ((dy * transform[3] + dx * transform[0]) + transform[6]) + transform[9];
   output[3] = directionX;
-  const float directionY = ((dx * transform[1] + dy * transform[4]) + transform[7]) + 0.0f;
+  const float directionY = ((dx * transform[1] + dy * transform[4]) + transform[7]) + transform[10];
   output[4] = directionY;
-  const float directionZ = ((transform[5] * dy + dx * transform[2]) + transform[8]) + 0.0f;
+  const float directionZ = ((transform[5] * dy + dx * transform[2]) + transform[8]) + transform[11];
   output[5] = directionZ;
 
   const float inverseLength = 1.0f / SquareRoot((directionY * directionY + directionX * directionX) + directionZ * directionZ);
