@@ -766,8 +766,7 @@ void CRenderObject::DrawShadow(int argument, float scale) {
 
   const float* matrix = reinterpret_cast<const float*>(argument);
   const float z = this->render.position.z;
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  const float height = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z);
   vector3d position{this->render.position.x, height, z};
   const float depth = height * matrix[5] + position.x * matrix[2] + z * matrix[8] + matrix[11];
 
