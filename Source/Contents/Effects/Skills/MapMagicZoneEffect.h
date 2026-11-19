@@ -18,6 +18,10 @@ public:
   bool IsAlive() override;
   void AddSpinner(int kind);
   __declspec(noinline) void UpdateSpinner(CParticle* particle);
+  void UpdateRibbon(CParticle* particle);
+  void RenderSpinner(CParticle* particle);
+  void RenderPetal(CParticle* particle);
+  void RenderRibbon(CParticle* particle);
 
   /* 00CC */ vector3d previousInner;
   /* 00D8 */ vector3d previousOuter;

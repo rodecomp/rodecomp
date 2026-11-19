@@ -277,38 +277,55 @@ void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
   }
 }
 
+// OFFSET: 0x00B6EDC0
+
 // OFFSET: 0x00B6F010
 // FUNCTION: fn_19118
 void CMapMagicZoneEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->spinners.begin(); it != this->spinners.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      particle->destinationBlend = 6;
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderSpinner(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderPetal(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->columnIndex > 0) {
-      const int segment = particle->columnIndex;
-      particle->destinationBlend = 6;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(segment - 1) / 21.0f;
-      quad.right = static_cast<float>(segment) / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderRibbon(*it);
+  }
+}
+
+// OFFSET: 0x00B6F160
+// FUNCTION: fn_46083
+void CMapMagicZoneEffect::RenderSpinner(CParticle* particle) {
+  if (particle) {
+    particle->destinationBlend = 6;
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
+// OFFSET: 0x00B6F1B0
+// FUNCTION: fn_46084
+void CMapMagicZoneEffect::RenderPetal(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
+// OFFSET: 0x00B6F1F0
+// FUNCTION: fn_46085
+void CMapMagicZoneEffect::RenderRibbon(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    const int segment = particle->columnIndex;
+    particle->destinationBlend = 6;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(segment - 1) / 21.0f;
+    quad.right = static_cast<float>(segment) / 21.0f;
+    particle->Render(quad);
   }
 }
