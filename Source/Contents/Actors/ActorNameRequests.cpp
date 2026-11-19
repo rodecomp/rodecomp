@@ -26,9 +26,7 @@ const CActorNameCard& CActorNameCardHolder::Lookup(std::uint32_t id) {
     return found->second;
   }
 
-  if (std::find(this->pending.begin(), this->pending.end(), id) == this->pending.end()) {
-    this->pending.push_back(id);
-  }
+  this->QueueRequest(id);
 
   // GLOBAL: gl_24526
   static CActorNameCard empty;
@@ -48,20 +46,8 @@ void CActorNameCardHolder::ExpireRequests() {
 }
 
 // OFFSET: 0x005BFF60
-
-// OFFSET: 0x005C0090
-
-// OFFSET: 0x005C01D0
-// FUNCTION: fn_03504
-void CActorNameCardHolder::ProcessRequests() {
-  while (!this->requests.empty()) {
-    const Request request = this->requests.front();
-    if (timeGetTime() < request.tick + 10000) {
-      break;
-    }
-    this->requests.pop_front();
-  }
-
+// FUNCTION: fn_45910
+std::uint32_t CActorNameCardHolder::PopNextRequest() {
   while (!this->pending.empty()) {
     const std::uint32_t id = this->pending.front();
     const auto found = this->cards.find(id);
@@ -69,17 +55,34 @@ void CActorNameCardHolder::ProcessRequests() {
       const auto requested = std::find_if(this->requests.begin(), this->requests.end(), [id](const Request& request) { return request.id == id; });
       if (requested == this->requests.end()) {
         this->pending.pop_front();
-        if (id != 0) {
-          PACKET_CZ_REQNAME2 packet;
-          packet.packetType = ID_CZ_REQNAME2;
-          packet.gid = id;
-          GetRagConnection().Send(sizeof(packet), &packet);
-          this->requests.push_back({ id, timeGetTime() });
-        }
-        return;
+        return id;
       }
     }
 
     this->pending.pop_front();
+  }
+  return 0;
+}
+
+// OFFSET: 0x005C0090
+// FUNCTION: fn_45911
+void CActorNameCardHolder::QueueRequest(std::uint32_t id) {
+  const auto end = this->pending.end();
+  if (std::find(this->pending.begin(), end, id) == end) {
+    this->pending.push_back(id);
+  }
+}
+
+// OFFSET: 0x005C01D0
+// FUNCTION: fn_03504
+void CActorNameCardHolder::ProcessRequests() {
+  this->ExpireRequests();
+  const std::uint32_t id = this->PopNextRequest();
+  if (id != 0) {
+    PACKET_CZ_REQNAME2 packet;
+    packet.packetType = ID_CZ_REQNAME2;
+    packet.gid = id;
+    GetRagConnection().Send(sizeof(packet), &packet);
+    this->requests.push_back({ id, timeGetTime() });
   }
 }
