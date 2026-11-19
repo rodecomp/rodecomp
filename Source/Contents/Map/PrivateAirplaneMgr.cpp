@@ -71,6 +71,10 @@ int CPrivateAirplaneMgr::GetNeedItem(int index) {
 }
 
 // OFFSET: 0x006D0720
+// FUNCTION: fn_46434
+void CPrivateAirplaneMgr::InsertNeedItem(int item) {
+  this->m_needItems.insert(item);
+}
 
 // OFFSET: 0x006D0910
 // FUNCTION: fn_46436
@@ -151,7 +155,7 @@ int CPrivateAirplaneMgr::L_InsertNeedItem(lua_State* state) {
   } else {
     const std::string name = lua_tostring(state, -1);
     const int item = static_cast<int>(lua_tonumber(state, -2));
-    g_privateAirplaneItems->m_needItems.insert(item);
+    g_privateAirplaneItems->InsertNeedItem(item);
     lua_pushboolean(state, 1);
     lua_pushstring(state, "good");
   }
