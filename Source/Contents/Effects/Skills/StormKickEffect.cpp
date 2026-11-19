@@ -30,6 +30,38 @@ CStormKickEffect::CStormKickEffect() : CEffect(-1) {
 __declspec(noinline) CStormKickEffect::~CStormKickEffect() {
 }
 
+// OFFSET: 0x00B7BE30
+// FUNCTION: fn_46019
+__forceinline void CStormKickEffect::SetStormColor(CParticle* particle, int effectId) {
+  switch (effectId) {
+  case EF_STORMKICK:
+    particle->SetColor(50, 50, 255);
+    break;
+  case EF_STORMKICK1:
+    particle->SetColor(164, 136, 55);
+    break;
+  case EF_STORMKICK2:
+    particle->SetColor(255, 255, 255);
+    break;
+  case EF_STORMKICK3:
+    particle->SetColor(130, 130, 255);
+    break;
+  case EF_STORMKICK6:
+    if (0.0f == particle->animationParameters[1]) {
+      particle->SetColor(255, 255, 255);
+    } else if (1.0f == particle->animationParameters[1]) {
+      particle->SetColor(255, 55, 55);
+    }
+    break;
+  case EF_STORMKICK7:
+    particle->SetColor(155, 255, 155);
+    break;
+  case EF_STORMKICK8:
+    particle->SetColor(255, 255, 50);
+    break;
+  }
+}
+
 // OFFSET: 0x00B7B4F0
 // FUNCTION: fn_19218
 void CStormKickEffect::CreateStorms(int layer) {
@@ -53,33 +85,7 @@ void CStormKickEffect::CreateStorms(int layer) {
     motion[0] = 5.0f;
     motion[1] = static_cast<float>(layer);
 
-    switch (this->id) {
-    case EF_STORMKICK:
-      particle->SetColor(50, 50, 255);
-      break;
-    case EF_STORMKICK1:
-      particle->SetColor(164, 136, 55);
-      break;
-    case EF_STORMKICK2:
-      particle->SetColor(255, 255, 255);
-      break;
-    case EF_STORMKICK3:
-      particle->SetColor(130, 130, 255);
-      break;
-    case EF_STORMKICK6:
-      if (0.0f == motion[1]) {
-        particle->SetColor(255, 255, 255);
-      } else if (1.0f == motion[1]) {
-        particle->SetColor(255, 55, 55);
-      }
-      break;
-    case EF_STORMKICK7:
-      particle->SetColor(155, 255, 155);
-      break;
-    case EF_STORMKICK8:
-      particle->SetColor(255, 255, 50);
-      break;
-    }
+    this->SetStormColor(particle, this->id);
 
     particle->InitParticleQuad(particle->vertices);
     this->storms.push_back(particle);
@@ -201,6 +207,26 @@ void CStormKickEffect::Close() {
   this->clouds.clear();
 }
 
+// OFFSET: 0x00B7BD70
+// FUNCTION: fn_46018
+__forceinline void CStormKickEffect::SetEffectLifetime() {
+  switch (this->id) {
+  case EF_STORMKICK:
+  case EF_STORMKICK1:
+  case EF_STORMKICK2:
+  case EF_STORMKICK3:
+  case EF_STORMKICK6:
+    this->effectLifetime = 100;
+    break;
+  case EF_STORMKICK7:
+    this->effectLifetime = 1000;
+    break;
+  case EF_STORMKICK8:
+    this->effectLifetime = 60;
+    break;
+  }
+}
+
 // OFFSET: 0x00B7BC90
 // FUNCTION: fn_19222
 void CStormKickEffect::Open() {
@@ -228,21 +254,7 @@ void CStormKickEffect::Open() {
     break;
   }
 
-  switch (this->id) {
-  case EF_STORMKICK:
-  case EF_STORMKICK1:
-  case EF_STORMKICK2:
-  case EF_STORMKICK3:
-  case EF_STORMKICK6:
-    this->effectLifetime = 100;
-    break;
-  case EF_STORMKICK7:
-    this->effectLifetime = 1000;
-    break;
-  case EF_STORMKICK8:
-    this->effectLifetime = 60;
-    break;
-  }
+  this->SetEffectLifetime();
 }
 
 // OFFSET: 0x00B7BDD0

@@ -27,6 +27,10 @@ public:
   /* 00CC */ EffectPoint lastPoints[2];
   /* 00E4 */ std::vector<CParticle*> storms;
   /* 00F0 */ std::vector<CParticle*> clouds;
+
+private:
+  void SetEffectLifetime();
+  void SetStormColor(CParticle* particle, int effectId);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
