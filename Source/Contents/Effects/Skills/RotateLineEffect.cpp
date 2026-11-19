@@ -140,11 +140,9 @@ __forceinline void CRotateLineEffect::UpdateVertices(CParticle* particle) {
 // FUNCTION: fn_46214
 __forceinline void CRotateLineEffect::UpdateParticle(CParticle* particle) {
   if (particle) {
-    float& particleAngle = particle->angle;
-    int& particleSpread = particle->angleParameter;
     if (particle->columnIndex == 0) {
-      this->angle = static_cast<int>(particleAngle);
-      this->spread = particleSpread;
+      this->angle = static_cast<int>(particle->angle);
+      this->spread = particle->angleParameter;
       this->alpha = particle->alpha;
       this->scale = particle->scale;
       this->started = true;
@@ -153,12 +151,12 @@ __forceinline void CRotateLineEffect::UpdateParticle(CParticle* particle) {
     }
 
     this->angle += 5;
-    particleAngle = static_cast<float>(this->angle % 360);
+    particle->angle = static_cast<float>(this->angle % 360);
     this->spread += 3;
     if (this->spread > 180) {
       this->spread = 180;
     }
-    particleSpread = this->spread;
+    particle->angleParameter = this->spread;
 
     if (particle->elapsedFrames <= 12) {
       particle->alpha = ++this->alpha;
