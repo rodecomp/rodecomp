@@ -2695,8 +2695,9 @@ void UITreeView::AddNodeLabel(UITreeNode* node, int id) {
   button->m_value = reinterpret_cast<int>(node);
   this->AddChild(button);
 
-  if (this->itemHeight < this->itemPadding + button->geometry.height) {
-    this->itemHeight = this->itemPadding + button->geometry.height;
+  const int height = this->itemPadding + button->geometry.height;
+  if (this->itemHeight < height) {
+    this->itemHeight = height;
   }
 
   node->labelButton = button;
