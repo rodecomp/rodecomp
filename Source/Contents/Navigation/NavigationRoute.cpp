@@ -862,7 +862,7 @@ std::vector<unsigned char> CNavigationManager::WriteReplayState() {
   std::vector<char> target;
   for (std::size_t i = 0; i < this->states.size(); ++i) {
     target = this->WriteTarget(this->states[i]);
-    if (target.size() != 0) {
+    if (!target.empty()) {
       append(MakeReplayTaggedRecord(8006, target.data(), static_cast<std::uint32_t>(target.size())));
     }
   }
