@@ -15,7 +15,7 @@
 
 // OFFSET: 0x00B4CBE0
 // FUNCTION: fn_45992
-CSteal::CSteal() : CEffect(18), particles(), offsets{} {
+CSteal::CSteal() : CEffect(18), particles() {
   this->effectLifetime = 50;
 }
 
@@ -54,7 +54,7 @@ void CSteal::SpawnParticles() {
     const int distanceRoll = rand() % 4;
     const float distance = static_cast<float>((distanceRoll >= 0 ? distanceRoll : 0) + 4);
 
-    vector3d& offset = this->offsets[i];
+    EffectPoint& offset = this->offsets[i];
     offset.x = 0.0f;
     offset.y = 0.0f;
     offset.z = 0.0f;
