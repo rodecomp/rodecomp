@@ -507,9 +507,10 @@ void UIRodexComposeWnd::Paint() {
   std::int64_t inputZeny = _atoi64(inputBuf);
   if (this->m_zeny->Text() != nullptr) {
     this->m_tax = tax + (inputZeny * 2) / 100;
-    tax = this->m_tax;
+    FormatGroupedInteger(this->m_tax, taxBuf, sizeof(taxBuf));
+  } else {
+    FormatGroupedInteger(tax, taxBuf, sizeof(taxBuf));
   }
-  FormatGroupedInteger(tax, taxBuf, sizeof(taxBuf));
   std::uint32_t taxColor = (inputZeny + this->m_tax > g_session.m_zeny) ? 0x4E71CF : 0;
   this->DrawRightAlignedText(104, 382, taxBuf, 0, 0, 11, taxColor, 0);
 
