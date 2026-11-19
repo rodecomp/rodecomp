@@ -13,6 +13,12 @@
 #include <algorithm>
 #include <cstdlib>
 
+// OFFSET: 0x00B4CBE0
+// FUNCTION: fn_45992
+CSteal::CSteal() : CEffect(18), particles(), offsets{} {
+  this->effectLifetime = 50;
+}
+
 // OFFSET: 0x00B4CCA0
 // FUNCTION: fn_18967
 __declspec(noinline) CSteal::~CSteal() {

@@ -11,6 +11,7 @@ class CSpriteParticle;
 
 class CSteal : public CEffect {
 public:
+  CSteal();
   ~CSteal() override;
   void Open() override;
   void OnProcess() override;
