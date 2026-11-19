@@ -983,7 +983,7 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
 
 // OFFSET: 0x007B8C20
 // FUNCTION: fn_09251
-void UIToolTipBitmapWnd::Set(const char* name, const char* text, int item) {
+__declspec(noinline) void UIToolTipBitmapWnd::Set(const char* name, const char* text, int item) {
   if (text) {
     this->tooltip = std::string(text);
   }
@@ -1417,7 +1417,7 @@ void UIAchViewWnd::UpdateInfo() {
     const SessionRecord6144 record = g_session.FindAchievementRecord(this->achievementId);
     this->description->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->description.c_str()), 50, 0, 0);
 
-    if (HasReward(*this->info) && record.rewarded == 0) {
+    if (HasReward(*this->info) == true && record.rewarded == 0) {
       this->receiveButton->Enable(1);
       UIBitmapButton* button = this->receiveButton;
       button->SetDisabled(1);
