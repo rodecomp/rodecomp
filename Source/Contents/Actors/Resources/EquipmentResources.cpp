@@ -161,10 +161,7 @@ std::string EquipmentResourceMgr::GetRaceBodyResourceName(int type, int raceJob,
   std::string sexName = "";
   std::string jobName = "";
 
-  {
-    const std::string& name = g_session.GetSexName(sex);
-    sexName = name;
-  }
+  sexName = SexNameOf(sex);
   const bool secondJob = g_session.IsSecondJob(costumeJob);
   {
     const std::string& name = g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true));
