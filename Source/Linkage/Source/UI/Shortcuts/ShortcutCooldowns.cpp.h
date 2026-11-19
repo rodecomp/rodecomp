@@ -67,3 +67,5 @@
 
 template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
 template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, PartyBookingEntry>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, PartyBookingEntry>>>, std::_Iterator_base0>::operator++() noexcept;
