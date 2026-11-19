@@ -44,8 +44,8 @@ __forceinline void CScatterEffect::InitializeParticle(CSpriteParticle* particle)
     const int angleRoll = rand() % 360;
     const int angle = angleRoll >= 0 ? angleRoll : 0;
     particle->velocity = vector3d{0.0f, 0.0f, 0.0f};
-    particle->alpha = 250;
     particle->phaseParameter = angle;
+    particle->alpha = 250;
     particle->destinationBlend = 6;
   }
 }
