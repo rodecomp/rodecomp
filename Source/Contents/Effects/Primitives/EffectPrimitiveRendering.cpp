@@ -5091,13 +5091,12 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const float rx = slot.distance;
+    const float rx = this->state.slots[ec].distance;
     vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
     vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
     vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
@@ -5105,27 +5104,27 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
     const std::int16_t rot0 = this->state.slots[0].alphaT;
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, rot0, this->state.slots[1].alphaT);
 
-    const float length = slot.vecBPre.x;
-    const vector3d vecA{length * g_cosTable[rot0], slot.vecBPre.y, length * g_sinTable[rot0]};
+    const float length = this->state.slots[ec].vecBPre.x;
+    const vector3d vecA{length * g_cosTable[rot0], this->state.slots[ec].vecBPre.y, length * g_sinTable[rot0]};
     vec1 = {vec1.x + vecA.x, vec1.y + vecA.y, vec1.z + vecA.z};
     vec2 = {vec2.x + vecA.x, vec2.y + vecA.y, vec2.z + vecA.z};
     vec3 = {vec3.x + vecA.x, vec3.y + vecA.y, vec3.z + vecA.z};
     vec4 = {vec4.x + vecA.x, vec4.y + vecA.y, vec4.z + vecA.z};
-    const int alpha = static_cast<int>(slot.height[13]);
+    const int alpha = static_cast<int>(this->state.slots[ec].height[13]);
 
     if (vec1.y > 0.0f) {
       continue;
     }
 
-    if (slot.process < 180) {
-      if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
+    if (this->state.slots[ec].process < 180) {
+      if (static_cast<float>(g_session.m_aid) == this->state.slots[ec].height[10]) {
         CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
         if (effect) {
           vector3d position = vecA;
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
-      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
+      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.slots[ec].height[10]))) {
         CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
         if (effect) {
