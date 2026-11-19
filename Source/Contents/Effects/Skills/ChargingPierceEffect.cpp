@@ -77,22 +77,16 @@ void CChargingPierceNewEffect::SetCount(int count) {
 
 // OFFSET: 0x007036B0
 // FUNCTION: fn_46209
-__declspec(noinline) void CChargingPierceEffect::SetCount(unsigned int count, int mode) {
-  if (mode != 0 || count > 10) {
+__declspec(noinline) void CChargingPierceEffect::SetCount(std::uint64_t count) {
+  if (count > 10) {
     return;
   }
 
-  int active = this->ActiveCount();
-  if (active < 0 || static_cast<unsigned int>(active) > count) {
+  if (this->ActiveCount() > count) {
     this->Close();
   }
 
-  active = this->ActiveCount();
-  if (active < 0 || static_cast<unsigned int>(active) >= count) {
-    return;
-  }
-
-  for (unsigned int index = static_cast<unsigned int>(active); index < count; ++index) {
+  for (int index = this->ActiveCount(); index < count; ++index) {
     if (this->sparks[index] || this->emitters[index]) {
       continue;
     }
@@ -107,17 +101,16 @@ __declspec(noinline) void CChargingPierceEffect::SetCount(unsigned int count, in
 // FUNCTION: fn_46210
 __declspec(noinline) CEZ2STRParticle* CChargingPierceNewEffect::CreateParticle(const vector3d* position) {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(position, 5));
-  if (!particle) {
-    return nullptr;
+  if (particle) {
+    particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
+    particle->offsetX = position->x;
+    particle->offsetY = position->y;
+    particle->offsetZ = position->z;
+    particle->m_hold = true;
+    particle->m_scale = 0.75f;
+    return particle;
   }
-
-  particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
-  particle->offsetX = position->x;
-  particle->offsetY = position->y;
-  particle->offsetZ = position->z;
-  particle->m_hold = true;
-  particle->m_scale = 0.75f;
-  return particle;
+  return nullptr;
 }
 
 // OFFSET: 0x007038B0
