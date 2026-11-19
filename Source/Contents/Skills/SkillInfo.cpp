@@ -2037,7 +2037,8 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
   const int end = start + 90;
   int angle = 0;
   if (end != 0) {
-    angle = std::max(std::rand() % end, start);
+    const int random = std::rand() % end;
+    angle = random >= start ? random : start;
   }
   const float offsetX = ClientSin((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
 
@@ -2048,7 +2049,8 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
 
   angle = 0;
   if (end != 0) {
-    angle = std::max(std::rand() % end, start);
+    const int random = std::rand() % end;
+    angle = random >= start ? random : start;
   }
   const float offsetZ = ClientCos((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
 
