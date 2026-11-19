@@ -12,6 +12,15 @@
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
+// OFFSET: 0x00B74DD0
+CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1), lastInner{}, lastOuter{}, particles() {
+}
+
+// OFFSET: 0x00B74E70
+// FUNCTION: fn_46160
+__declspec(noinline) CSaintCastingEffect::~CSaintCastingEffect() {
+}
+
 // OFFSET: 0x00B74F50
 // FUNCTION: fn_19161
 void CSaintCastingEffect::AddRing(const char* texture, int alpha) {

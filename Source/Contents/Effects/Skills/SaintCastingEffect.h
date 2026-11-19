@@ -11,6 +11,9 @@ class CParticle;
 
 class CSaintCastingEffect : public CEffect {
 public:
+  CSaintCastingEffect();
+  ~CSaintCastingEffect() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;
