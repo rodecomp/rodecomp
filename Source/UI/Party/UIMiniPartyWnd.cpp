@@ -495,7 +495,7 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         this->m_infoWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
     }
-    return 0;
+    break;
   }
   case UM_MENU_SELECTED:
     this->m_infoWnd->SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -505,10 +505,10 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->m_infoWnd->SendMsg(sender, message, 34, argument2, argument3, argument4);
       this->InvalidateChildren();
     }
-    return 0;
+    break;
   case UM_RESIZE: {
     if (argument1 != 7) {
-      return 0;
+      break;
     }
     const int previous = this->m_sizeMode;
     const int wideWidth = this->m_widths[0];
@@ -520,10 +520,10 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     } else if (argument2 <= wideWidth) {
       this->m_sizeMode = 0;
     } else {
-      return 0;
+      break;
     }
     if (previous == this->m_sizeMode) {
-      return 0;
+      break;
     }
 
     const int count = g_session.PartyCount();
