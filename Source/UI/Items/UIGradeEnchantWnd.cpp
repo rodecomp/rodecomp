@@ -273,8 +273,9 @@ void UIGradeEnchantWnd::Paint() {
     std::memset(description, 0, sizeof(description));
     int capacity = sizeof(description);
 
-    int y = 118;
-    for (auto material = this->materials.begin(); material != this->materials.end(); ++material, y += 40) {
+    int row = 0;
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++material, ++row) {
+      const int y = row * 40 + 118;
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(material->itemId);
       itemInfo.GetIdDisplayName(description, capacity, 0);
