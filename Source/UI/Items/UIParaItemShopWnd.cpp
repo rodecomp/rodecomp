@@ -619,8 +619,8 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     return 0;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
+      CMode* mode = g_modeMgr.currentMode;
       mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
