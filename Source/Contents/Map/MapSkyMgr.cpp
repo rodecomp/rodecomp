@@ -147,8 +147,14 @@ void CWeatherEffect::Fireworks() {
 // OFFSET: 0x00C7BAA0
 // FUNCTION: fn_45581
 void CWeatherEffect::Sakura() {
-  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
-    return;
+  if (this->effect) {
+    using DurationFn = int (__thiscall *)(CRagEffect*);
+    DurationFn duration = reinterpret_cast<DurationFn>(
+      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
+    );
+    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+      return;
+    }
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
