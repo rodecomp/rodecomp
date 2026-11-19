@@ -81,7 +81,10 @@ void CUIProbabilityTable::SetItem(int itemId) {
     for (const NEO_PACKAGEITEM::PackageEntry& entry : entries) {
       long long value = static_cast<long long>(std::pow(10.0, 6.0));
       if (group.first != 0) {
-        value = (static_cast<long long>(std::pow(10.0, 7.0) * entry.probability / group.second.totalProbability) + 5) / 10;
+        const double scale = std::pow(10.0, 7.0);
+        const double probability = entry.probability;
+        const double total = group.second.totalProbability;
+        value = (static_cast<long long>(scale * probability / total) + 5) / 10;
       }
 
       ProbabilityTable::CItemData data;
