@@ -2052,11 +2052,10 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
   }
   const float offsetZ = ClientCos((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
 
-  const float x = offsetX + position.x;
-  const float y = position.y + 0.0f;
-  const float z = offsetZ + position.z;
+  const auto at = [&](float dx, float dz) { return vector3d{dx + position.x, position.y + 0.0f, dz + position.z}; };
+  const vector3d spawnPosition = at(offsetX, offsetZ);
   EffectLists* effects = g_effectMgr;
-  return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), vector3d{x, y, z}, 0, -1, 0, 0);
+  return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), spawnPosition, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x0077DED0
