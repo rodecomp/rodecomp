@@ -2204,28 +2204,26 @@ void CRagEffect::Snow() {
 // OFFSET: 0x00C12B90
 // FUNCTION: fn_20042
 void CRagEffect::Entry() {
-  if (this->state.stateCnt != 0) {
-    return;
+  if (this->state.stateCnt == 0) {
+    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.duration = 55;
+    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
+    this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+    this->state.lastPrim->state.accel = -0.00007f;
+    this->state.lastPrim->state.longSpeed = -10.0f;
+    this->state.lastPrim->state.outerSize = 6.0f;
+    this->state.lastPrim->state.outerSpeed = 0.08f;
+    this->state.lastPrim->state.innerSize = 5.0f;
+    this->state.lastPrim->state.heightSize = 6.5f;
+    this->state.lastPrim->state.heightSpeed = -0.1f;
+    this->state.lastPrim->state.alpha = 5.0f;
+    this->state.lastPrim->state.maxAlpha = 245.0f;
+    this->state.lastPrim->state.alphaSpeed = 10.0f;
+    int duration = this->state.lastPrim->state.duration;
+    this->state.lastPrim->state.fadeOutCnt = duration - duration / 5;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
-
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
-  this->state.lastPrim->state.duration = 55;
-  this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
-  this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-  this->state.lastPrim->state.accel = -0.00007f;
-  this->state.lastPrim->state.longSpeed = -10.0f;
-  this->state.lastPrim->state.outerSize = 6.0f;
-  this->state.lastPrim->state.outerSpeed = 0.08f;
-  this->state.lastPrim->state.innerSize = 5.0f;
-  this->state.lastPrim->state.heightSize = 6.5f;
-  this->state.lastPrim->state.heightSpeed = -0.1f;
-  this->state.lastPrim->state.alpha = 5.0f;
-  this->state.lastPrim->state.maxAlpha = 245.0f;
-  this->state.lastPrim->state.alphaSpeed = 10.0f;
-  int duration = this->state.lastPrim->state.duration;
-  this->state.lastPrim->state.fadeOutCnt = duration - duration / 5;
-  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (this->state.stateCnt == 0) {
     this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
@@ -2239,7 +2237,7 @@ void CRagEffect::Entry() {
     const float accel = -(shrink.heightSpeed / static_cast<float>(shrink.duration));
     shrink.heightAccel = accel + accel;
     this->state.lastPrim->state.alpha = 160.0f;
-    duration = this->state.lastPrim->state.duration;
+    int duration = this->state.lastPrim->state.duration;
     this->state.lastPrim->state.fadeOutCnt = duration - duration / 3;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
@@ -11215,18 +11213,20 @@ void CRagEffect::EarthSpike(char type) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName, 0, false, true, false);
 
+  const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int step = 60; step < 420; step += 60) {
     const int offset = step == 0 ? 0 : ClampedRandom(step);
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
     this->state.lastPrim->state.duration = 240;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
     rand();
     const float sine = ClientSine(angle);
     const float cosine = ClientCosine(angle);
-    this->state.lastPrim->state.deltaPos2.y = 20.0f;
-    this->state.lastPrim->state.deltaPos2.x = sine * 3.5f;
-    this->state.lastPrim->state.deltaPos2.z = cosine * -3.5f;
+    vector3d& velocity = this->state.lastPrim->state.deltaPos2;
+    velocity.y = 20.0f;
+    velocity.x = sine * 3.5f;
+    velocity.z = cosine * -3.5f;
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(100) + 400) / 100.0f;
     this->state.lastPrim->state.heightSize = 20.0f;
     this->state.lastPrim->state.longitude = std::min(static_cast<float>(offset + step - 60), 360.0f);
@@ -12131,11 +12131,13 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
 void CRagEffect::ThrowItem(const char* name, char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  int targetFrame = 0;
+  int targetFrame;
   if (kind == 10) {
     targetFrame = 5;
   } else if (kind == 11) {
     targetFrame = 10;
+  } else {
+    targetFrame = 0;
   }
 
   if (this->state.stateCnt != targetFrame) {
@@ -12174,13 +12176,8 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 8.0f;
   this->state.lastPrim->state.slots[0].rotStart = 0;
 
-  float step = 2.0f;
-  if (kind == 3) {
-    step = 3.0f;
-  } else if (kind != 2) {
-    step = this->state.lastPrim->state.slots[0].maxHeight / 25.0f;
-  }
-  this->state.lastPrim->state.slots[0].height[1] = step;
+  EffectPrimitiveSlot& trail = this->state.lastPrim->state.slots[0];
+  trail.height[1] = kind == 2 ? 2.0f : (kind == 3 ? 3.0f : trail.maxHeight / 25.0f);
   this->state.lastPrim->state.slots[0].height[2] =
     (this->state.lastPrim->state.slots[0].height[1] / this->state.lastPrim->state.slots[0].maxHeight) *
     (this->state.deltaPos.y - this->render.position.y);
@@ -12200,11 +12197,11 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
     } else if (kind == 1) {
       this->state.lastPrim->state.slots[0].flag1[2] = 9;
       this->state.lastPrim->state.slots[0].flag1[3] = static_cast<char>(this->state.count);
-    } else if (kind == 2) {
-      this->state.lastPrim->state.slots[0].flag1[2] = 0;
     } else if (kind >= 10) {
       this->state.lastPrim->state.slots[0].flag1[2] = 9;
       this->state.lastPrim->state.slots[0].flag1[3] = 4;
+    } else if (kind == 2) {
+      this->state.lastPrim->state.slots[0].flag1[2] = 0;
     }
   }
 
@@ -12826,24 +12823,24 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("EFFECT\\alpha_center.tga", 0, false, true, false);
     }
+  }
 
-    if (this->state.stateCnt == 0) {
-      for (int index = 0; index < 4; ++index) {
-        this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
-        this->state.lastPrim->state.duration = 100;
-        this->state.lastPrim->state.radius = 7.0f;
-        this->state.lastPrim->state.gravSpeed = -0.1f;
-        this->state.lastPrim->state.gravAccel = -0.002f;
-        this->state.lastPrim->state.longitude = static_cast<float>(index * 90);
-        this->state.lastPrim->state.longAccel = 0.2f;
-        this->state.lastPrim->state.longSpeed = static_cast<float>(this->state.stateCnt) * this->state.lastPrim->state.longAccel + 0.3f;
-        this->state.lastPrim->state.size = 1.2f;
-        this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-        this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 10;
-        this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
-        this->state.lastPrim->SetActionName("이팩트\\particle1.act");
-        this->state.lastPrim->InitSegment();
-      }
+  if (this->state.stateCnt == 0) {
+    for (int index = 0; index < 4; ++index) {
+      this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 100;
+      this->state.lastPrim->state.radius = 7.0f;
+      this->state.lastPrim->state.gravSpeed = -0.1f;
+      this->state.lastPrim->state.gravAccel = -0.002f;
+      this->state.lastPrim->state.longitude = static_cast<float>(index * 90);
+      this->state.lastPrim->state.longAccel = 0.2f;
+      this->state.lastPrim->state.longSpeed = static_cast<float>(this->state.stateCnt) * this->state.lastPrim->state.longAccel + 0.3f;
+      this->state.lastPrim->state.size = 1.2f;
+      this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+      this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 10;
+      this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+      this->state.lastPrim->SetActionName("이팩트\\particle1.act");
+      this->state.lastPrim->InitSegment();
     }
   }
 }
