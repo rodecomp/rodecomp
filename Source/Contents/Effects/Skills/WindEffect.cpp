@@ -22,6 +22,11 @@ static EffectPoint TransformPoint(const matrix& transform, const EffectPoint& po
 CWindEffect::CWindEffect() : CEffect(2343) {
 }
 
+// OFFSET: 0x00730410
+// FUNCTION: fn_46086
+__declspec(noinline) CWindEffect::~CWindEffect() {
+}
+
 // OFFSET: 0x00730510
 // FUNCTION: fn_07539
 void CWindEffect::Init() {
@@ -174,24 +179,33 @@ void CWindEffect::OnProcess() {
 // FUNCTION: fn_07545
 void CWindEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (!particle) {
-      continue;
-    }
-
-    const int texPart = particle->columnIndex;
-    if (texPart <= 0) {
-      continue;
-    }
-
-    ParticleQuad quad;
-    quad.unused = false;
-    quad.depth = true;
-    quad.top = 0.0f;
-    quad.bottom = 1.0f;
-    quad.billboard = true;
-    quad.left = static_cast<float>(texPart - 1) / 21.0f;
-    quad.right = static_cast<float>(texPart) / 21.0f;
-    particle->Render(quad);
+    this->RenderParticle(*it);
   }
 }
+
+// OFFSET: 0x00730C70
+
+// OFFSET: 0x007310E0
+// FUNCTION: fn_46088
+__forceinline void CWindEffect::RenderParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int texPart = particle->columnIndex;
+  if (texPart <= 0) {
+    return;
+  }
+
+  ParticleQuad quad;
+  quad.unused = false;
+  quad.depth = true;
+  quad.top = 0.0f;
+  quad.bottom = 1.0f;
+  quad.billboard = true;
+  quad.left = static_cast<float>(texPart - 1) / 21.0f;
+  quad.right = static_cast<float>(texPart) / 21.0f;
+  particle->Render(quad);
+}
+
+// OFFSET: 0x00731160
