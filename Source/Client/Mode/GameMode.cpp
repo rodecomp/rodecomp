@@ -8172,8 +8172,8 @@ void CGameMode::ProcessRightButtonDrag() {
     }
 
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
-    if (shortcuts->m_slots[4]->enabled && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[4]->itemId))) {
-      g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[4]->itemId), 1);
+    if (shortcuts->m_slots[8]->enabled && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[8]->itemId))) {
+      g_session.SetOption(automatic->CancelOption(static_cast<std::uint16_t>(shortcuts->m_slots[8]->itemId)), 1);
     } else {
       automatic->DisableAll();
     }
@@ -8214,7 +8214,10 @@ void CGameMode::ProcessRightButtonDrag() {
     }
 
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      const float range = this->canRotateView ? 20.0f : 10.0f;
+      float range = 10.0f;
+      if (this->canRotateView) {
+        range = 20.0f;
+      }
       g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_mouse.y - this->oldMouseY) / 2);
       float limit;
       if (this->hasViewParameters) {
@@ -8241,7 +8244,10 @@ void CGameMode::ProcessRightButtonDrag() {
 
     if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
       g_cameraDistance = this->camera->camera.desiredDistance - static_cast<float>((g_mouse.y - this->oldMouseY) / 2);
-      float maxDistance = this->canRotateView ? g_serviceOptionJitterScale : g_cameraBaseDistance;
+      float maxDistance = g_cameraBaseDistance;
+      if (this->canRotateView) {
+        maxDistance = g_serviceOptionJitterScale;
+      }
       if (this->hasViewParameters) {
         if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
           g_cameraDistance = static_cast<float>(this->viewParameters[0]);
