@@ -266,20 +266,20 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const std::uint32_t brightGlow = (alpha << 24) + 0x0AFF0A;
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecBPre, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
-          sprite->palette, 5, 2.0f
+          sprite->palette, 5, g_effectIconOuterRadius
         );
 
         const std::uint32_t halfColor = (((((alpha / 2 << 8) + red) << 8) + green) << 8) + blue;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, angle, halfColor, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
-          sprite->palette, 5, 2.0f
+          sprite->palette, 5, g_effectIconOuterRadius
         );
 
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecTPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecTPre, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
-          sprite->palette, 5, 2.0f
+          sprite->palette, 5, g_effectIconOuterRadius
         );
       }
     }
