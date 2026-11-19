@@ -85,6 +85,7 @@ void CAxeBoomerang::OnProcess() {
 }
 
 // OFFSET: 0x006F6060
+// FUNCTION: fn_46151
 __forceinline void CAxeBoomerang::UpdateParticle(CEZ2STRParticle* emitter) {
   if (!emitter) {
     return;
