@@ -496,13 +496,13 @@ void UIVerticalNameBalloonText::SetNameLines(const CActorNameCard& info, bool st
 
   char line[256];
   if (g_serviceFlag05) {
-    if (info.clanName[0] != '\0') {
+    if (info.clanName[0] == '\0') {
+      this->textHeight = 0;
+    } else {
       this->m_lines.push_back(info.clanName.c_str());
       const std::string& clan = this->m_lines.back();
       const int height = this->VerticalTextHeight(clan.c_str(), clan.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06);
       this->textHeight = std::max(height + 8, 32);
-    } else {
-      this->textHeight = 0;
     }
     this->m_lines.push_back(name.c_str());
     const int nameHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
