@@ -2046,8 +2046,7 @@ void CEffectPrim::PrimTanji2() {
   this->state.slots[0].vecBNow.z += this->state.slots[0].height[1] * g_sinTable[this->state.slots[0].rotStart];
 
   if (this->state.slots[0].process % 4 == 0) {
-    CGameMode* gameMode = g_modeMgr.GetGameMode();
-    CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_AIRTEXTURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_AIRTEXTURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (effect) {
       vector3d position = this->state.slots[0].vecBNow;
