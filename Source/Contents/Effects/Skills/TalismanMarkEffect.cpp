@@ -20,6 +20,13 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   }
   return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
+
+// INLINED
+__forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
 }
 
 // GLOBAL: gl_24871
@@ -199,12 +206,10 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   }
 
   const vector3d center = this->positionVector;
-  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-  const float viewX = center.x * view[0] + center.y * view[3] + center.z * view[6] + view[9];
-  const float viewY = center.x * view[1] + center.y * view[4] + center.z * view[7] + view[10];
-  const float viewZ = center.x * view[2] + center.y * view[5] + center.z * view[8] + view[11];
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const vector3d viewPos = TransformPoint(view, center);
 
-  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   int angle = particle->phaseParameter;
   if (particle->animationState == 1) {
     angle = (angle + 1) % 360;
@@ -214,13 +219,8 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;
   const float offsetY = ClientSin(radians) * 8.5f - 20.0f;
   const float offsetX = ClientCos(radians) * 8.5f;
-  const float x = offsetX + viewX;
-  const float y = offsetY + viewY;
-  const float z = viewZ + 0.0f;
-  const vector3d world = {y * inverse[3] + x * inverse[0] + z * inverse[6] + inverse[9],
-                          y * inverse[4] + x * inverse[1] + z * inverse[7] + inverse[10],
-                          y * inverse[5] + x * inverse[2] + z * inverse[8] + inverse[11]};
-  particle->position = world;
+  const vector3d local = {offsetX + viewPos.x, offsetY + viewPos.y, viewPos.z + 0.0f};
+  particle->position = TransformPoint(inverse, local);
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
