@@ -25,6 +25,7 @@ public:
   void UpdateSegmentVertices(CParticle* particle);
   void SetupParticle(CParticle* particle);
   void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 
   /* 00CC */ EffectPoint lastInner[2];
   /* 00E4 */ std::vector<CParticle*> particles;

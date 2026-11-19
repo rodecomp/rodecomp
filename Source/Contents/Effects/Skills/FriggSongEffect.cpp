@@ -155,15 +155,10 @@ void CFriggSongEffect::OnProcess() {
   }
 }
 
-// OFFSET: 0x007027A0
-// FUNCTION: fn_07006
-void CFriggSongEffect::Render() {
-  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (!particle) {
-      continue;
-    }
-
+// OFFSET: 0x00702840
+// FUNCTION: fn_46259
+__forceinline void CFriggSongEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
     const int texPart = particle->columnIndex;
     ParticleQuad quad;
     quad.billboard = false;
@@ -174,5 +169,13 @@ void CFriggSongEffect::Render() {
     quad.left = static_cast<float>(texPart - 1) / 21.0f;
     quad.right = static_cast<float>(texPart) / 21.0f;
     particle->Render(quad);
+  }
+}
+
+// OFFSET: 0x007027A0
+// FUNCTION: fn_07006
+void CFriggSongEffect::Render() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    this->RenderParticle(*it);
   }
 }
