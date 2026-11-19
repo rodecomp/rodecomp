@@ -68,6 +68,7 @@ inline RenderSystemHolder* GetRenderSystemHolder() {
 
 class CDCSurface : public CDC {
 public:
+  CDCSurface(std::uint32_t width, std::uint32_t height);
   explicit CDCSurface(std::shared_ptr<CSurface> surface);
   ~CDCSurface() override;
   void Reset();

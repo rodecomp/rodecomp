@@ -207,6 +207,12 @@ HRESULT RenderSystemHolder::Present(bool option) const {
   return this->system ? this->system->Present(option) : E_ILLEGAL_METHOD_CALL;
 }
 
+// OFFSET: 0x00548E20
+// FUNCTION: fn_46357
+CDCSurface::CDCSurface(std::uint32_t width, std::uint32_t height) {
+  this->m_surface.reset(GetRenderSystemHolder()->CreateSurface(width, height));
+}
+
 // OFFSET: 0x00548FE0
 // FUNCTION: fn_01864
 CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(surface) {
