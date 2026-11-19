@@ -26,7 +26,11 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
     if (type == 205 && !allowWarps) {
       continue;
     }
-    if (type == 202 || type == 203) {
+    if (type != 202 && type != 203) {
+      if (link->GetLinkedInfo()->IsVisited()) {
+        continue;
+      }
+    } else {
       if (allowGates != true) {
         continue;
       }
@@ -41,8 +45,6 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
       } else {
         continue;
       }
-    } else if (link->GetLinkedInfo()->IsVisited()) {
-      continue;
     }
     it->link->SetDepth(0);
     NaviDataEntry entry = {-1, it->link, it->cost};
