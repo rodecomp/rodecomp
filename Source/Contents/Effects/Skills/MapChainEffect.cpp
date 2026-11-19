@@ -97,12 +97,12 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
   const float sideX = particle->speedParameter * cosTilt;
   const float sideZ = -sinTilt * particle->speedParameter;
 
-  const float v1x = (centerX - sideX) + 0.0f;
-  const float v1y = (centerY - 0.0f) + particle->animationParameter;
-  const float v1z = (centerZ - sideZ) + 0.0f;
   const float v3x = (sideX + centerX) + 0.0f;
   const float v3y = (centerY + 0.0f) + particle->animationParameter;
   const float v3z = (sideZ + centerZ) + 0.0f;
+  const float v1x = (centerX - sideX) + 0.0f;
+  const float v1y = (centerY - 0.0f) + particle->animationParameter;
+  const float v1z = (centerZ - sideZ) + 0.0f;
 
   particle->vertices[1].x = v1x;
   particle->vertices[1].y = v1y;
@@ -120,12 +120,12 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
     particle->vertices[2].z = this->corners[0].z;
   }
 
-  this->corners[1].x = v1x;
-  this->corners[1].y = v1y;
-  this->corners[1].z = v1z;
   this->corners[0].x = v3x;
   this->corners[0].y = v3y;
   this->corners[0].z = v3z;
+  this->corners[1].x = v1x;
+  this->corners[1].y = v1y;
+  this->corners[1].z = v1z;
 }
 
 // OFFSET: 0x00B4AFA0
