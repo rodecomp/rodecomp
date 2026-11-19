@@ -37,6 +37,54 @@ void CThrowItemEffect::Close() {
   this->particles.clear();
 }
 
+// OFFSET: 0x00B7D300
+// FUNCTION: fn_46337
+void CThrowItemEffect::InitEmptyBottleParticle(CParticle* particle) {
+  this->effectLifetime = 300;
+  this->arcHeight = 30.0f;
+  this->InitTrajectory(particle);
+  particle->SetTexture("유저인터페이스\\item\\빈병.bmp");
+  particle->scale = 1.5f;
+  particle->SetColor(135, 255, 135);
+  particle->angle = 0;
+  particle->speedParameter = particle->animationParameter / 25.0f;
+  particle->alpha = 255;
+  particle->offsetX = this->position[0];
+  particle->offsetY = this->position[1] - 8.0f;
+  particle->offsetZ = this->position[2];
+  particle->destinationBlend = 6;
+}
+
+// OFFSET: 0x00B7D460
+// FUNCTION: fn_46338
+void CThrowItemEffect::InitOrbParticle(CParticle* particle) {
+  this->effectLifetime = 200;
+  particle->scale = 2.0f;
+  particle->angle = 330.0f;
+  particle->speedParameter = 1.5f;
+  particle->alpha = 255;
+  particle->offsetX = this->position[0];
+  particle->offsetY = this->position[1] - 15.0f;
+  particle->offsetZ = this->position[2];
+}
+
+// OFFSET: 0x00B7D600
+// FUNCTION: fn_46339
+void CThrowItemEffect::InitStoneParticle(CParticle* particle) {
+  this->effectLifetime = 300;
+  this->arcHeight = 10.0f;
+  particle->SetTexture("유저인터페이스\\item\\돌.bmp");
+  particle->scale = 1.0f;
+  particle->SetColor(255, 255, 255);
+  particle->angle = 0;
+  particle->speedParameter = 2.0f;
+  particle->alpha = 255;
+  particle->offsetX = this->position[0];
+  particle->offsetY = this->position[1] - 8.0f;
+  particle->offsetZ = this->position[2];
+  particle->destinationBlend = 6;
+}
+
 // OFFSET: 0x00B7CD00
 // FUNCTION: fn_46333
 short CThrowItemEffect::CalculateTrajectoryOffset(CParticle* particle) {

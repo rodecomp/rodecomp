@@ -20,8 +20,11 @@ public:
   bool IsAlive() override;
   void InitEvents() override;
   void InitFlameParticle(CParticle* particle);
+  void InitEmptyBottleParticle(CParticle* particle);
+  void InitOrbParticle(CParticle* particle);
   void InitializeParticle(CParticle* particle);
   void InitPotionParticle(CParticle* particle, int kind);
+  void InitStoneParticle(CParticle* particle);
   void InitSpinParticle(CParticle* particle);
   void InitTrajectory(CParticle* particle);
   short CalculateTrajectoryOffset(CParticle* particle);
