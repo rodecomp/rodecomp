@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_POKJUKEFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -11,6 +12,9 @@ class CParticle;
 
 class CPokJukEffect : public CEffect {
 public:
+  CPokJukEffect();
+  ~CPokJukEffect() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -19,11 +23,15 @@ public:
   void SpawnParticles();
   __declspec(noinline) void FaceCamera(vector3d* corners);
 
-  /* 00CC */ vector3d trails[640][4];
+  /* 00CC */ EffectPoint trails[640][4];
   /* 78CC */ int states[640];
   /* 82CC */ int beats[640];
   /* 8CCC */ int delays[640];
   /* 96CC */ std::vector<CParticle*> particles;
+
+private:
+  void SetRandomColor(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
