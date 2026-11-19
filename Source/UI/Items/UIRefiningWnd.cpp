@@ -1171,7 +1171,7 @@ void UIRefiningWnd::Paint() {
     }
 
     int index = 0;
-    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++index, ++material) {
       const int x = index * 49 + 10;
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
@@ -1182,7 +1182,6 @@ void UIRefiningWnd::Paint() {
       if (index == this->selectedMaterial && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame == 0))) {
         this->DrawItemIcon(81, 150, icon, 0);
       }
-      ++index;
     }
 
     if (this->catalystItemId > 0 && this->catalystCount > 0) {
@@ -1236,8 +1235,9 @@ void UIRefiningWnd::Paint() {
     const int percentWidth = this->TextWidth(percent.c_str(), 0, 0, 12, 1, 0);
 
     const int x = static_cast<int>((this->geometry.width - labelWidth) * 0.5);
+    const int percentX = x - percentWidth + labelWidth;
     this->DrawTextAt(x, 31, LookupMessage(MSI_SUCCESS), 0, 0, 12, 0x422B1F, 1, 0);
-    this->DrawTextAt(x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
+    this->DrawTextAt(percentX, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
     break;
   }
   case REFINING_STATE_SUCCESS: {
