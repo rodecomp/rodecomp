@@ -3173,18 +3173,16 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         if (x < 1) {
           x = 1;
         }
-        int maxX = g_renderer->viewport.width - menu->geometry.width;
-        if (x <= maxX) {
-          maxX = x;
+        if (x > g_renderer->viewport.width - menu->geometry.width) {
+          x = g_renderer->viewport.width - menu->geometry.width;
         }
         if (y < 1) {
           y = 1;
         }
-        int maxY = g_renderer->viewport.height - menu->geometry.height;
-        if (y <= maxY) {
-          maxY = y;
+        if (y > g_renderer->viewport.height - menu->geometry.height) {
+          y = g_renderer->viewport.height - menu->geometry.height;
         }
-        menu->Move(maxX, maxY);
+        menu->Move(x, y);
       } else {
         this->UpdateCharacterView(0);
       }
@@ -4733,18 +4731,16 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     if (x < 1) {
       x = 1;
     }
-    int maxX = g_renderer->viewport.width - menu->geometry.width;
-    if (x <= maxX) {
-      maxX = x;
+    if (x > g_renderer->viewport.width - menu->geometry.width) {
+      x = g_renderer->viewport.width - menu->geometry.width;
     }
     if (y < 1) {
       y = 1;
     }
-    int maxY = g_renderer->viewport.height - menu->geometry.height;
-    if (y <= maxY) {
-      maxY = y;
+    if (y > g_renderer->viewport.height - menu->geometry.height) {
+      y = g_renderer->viewport.height - menu->geometry.height;
     }
-    menu->Move(maxX, maxY);
+    menu->Move(x, y);
     return 0;
   }
   case UM_ADDCHAT: {
