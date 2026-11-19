@@ -3720,12 +3720,12 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       break;
     case ID_PREVIEW:
       if (this->m_autoRead == 0) {
-        this->SendMsg(this, UM_READBOOK, this->m_page == 1 ? 1 : this->m_page - 1, 0, 0, 0);
+        this->SendMsg(this, UM_READBOOK, this->m_page != 1 ? this->m_page - 1 : this->m_page, 0, 0, 0);
       }
       break;
     case ID_NEXTVIEW:
       if (this->m_autoRead == 0) {
-        this->SendMsg(this, UM_READBOOK, this->m_page == this->m_pageCount ? this->m_page : this->m_page + 1, 0, 0, 0);
+        this->SendMsg(this, UM_READBOOK, this->m_page != this->m_pageCount ? this->m_page + 1 : this->m_page, 0, 0, 0);
       }
       break;
     case ID_BOOKMARK: {
