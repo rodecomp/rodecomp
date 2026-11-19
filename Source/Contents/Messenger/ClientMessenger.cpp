@@ -2215,10 +2215,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
     while (lua_next(state, -2) != 0) {
       ++index;
       std::vector<std::string> functions;
-      int result = this->script.GetFieldStringArray(functions, "func");
-      this->loadValid &= result == 0;
-      if (result != 0) {
-        ShowErrorDialog(fmt::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, result), 0);
+      int fieldResult = this->script.GetFieldStringArray(functions, "func");
+      this->loadValid &= fieldResult == 0;
+      if (fieldResult != 0) {
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, fieldResult), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2243,11 +2243,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       }
 
       std::map<unsigned int, unsigned int> conditions;
-      result = this->script.GetFieldUIntMap(conditions, "cond");
-      const bool valid = result == 0 || result == 1;
+      int condResult = this->script.GetFieldUIntMap(conditions, "cond");
+      const bool valid = condResult == 0 || condResult == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, result), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, condResult), 0);
       }
       if (!this->loadValid) {
         break;
