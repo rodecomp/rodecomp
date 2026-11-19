@@ -1038,9 +1038,8 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
 
   const auto length = static_cast<std::uint32_t>(static_cast<int>(ReadAdditionalSkill<std::int16_t>(bytes + 2)) - 6);
   const int count = static_cast<int>(length / 37);
-  const unsigned char* record = bytes + 6;
-
-  for (int index = 0; index < count; ++index, record += 37) {
+  for (int index = 0; index < count; ++index) {
+    const unsigned char* record = bytes + 6 + index * 37;
     CSkillInfo value;
     value.level = ReadAdditionalSkill<std::int16_t>(record + 6);
     value.id = ReadAdditionalSkill<std::uint16_t>(record);
