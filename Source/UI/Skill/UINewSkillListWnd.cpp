@@ -1220,8 +1220,8 @@ void UINewSkillListWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Move(this->geometry.width - 15, 20);
 
-  const int visibleRows = this->m_visibleRows;
   const std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
+  const int visibleRows = this->m_visibleRows;
   int total = 0;
   if (g_session.m_simplifiedSkillList != 0) {
     total = list.size() / this->m_columns + (list.size() % this->m_columns != 0);
@@ -1341,10 +1341,11 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     if (gate != 0) {
       this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
+      return 0;
     } else {
       this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
+      return 0;
     }
-    return 0;
   case UM_RESIZE:
     if (a == 3) {
       if (gate != 0) {
@@ -1394,10 +1395,11 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       gate = gate == 0;
       if (gate != 0) {
         this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
+        return 0;
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
+        return 0;
       }
-      return 0;
     case ID_CHECK: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
