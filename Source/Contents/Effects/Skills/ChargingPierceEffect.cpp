@@ -104,6 +104,21 @@ __declspec(noinline) void CChargingPierceEffect::SetCount(unsigned int count, in
 }
 
 // OFFSET: 0x00703C70
+// FUNCTION: fn_46210
+__declspec(noinline) CEZ2STRParticle* CChargingPierceNewEffect::CreateParticle(const vector3d* position) {
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(position, 5));
+  if (!particle) {
+    return nullptr;
+  }
+
+  particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
+  particle->offsetX = position->x;
+  particle->offsetY = position->y;
+  particle->offsetZ = position->z;
+  particle->m_hold = true;
+  particle->m_scale = 0.75f;
+  return particle;
+}
 
 // OFFSET: 0x007038B0
 // FUNCTION: fn_07023
@@ -262,6 +277,36 @@ void CChargingPierceEffect::OnProcess() {
 }
 
 // OFFSET: 0x00704580
+// FUNCTION: fn_46211
+__declspec(noinline) void CChargingPierceEffect::UpdateParticle(CEZ2STRParticle* particle, int index) {
+  if (!particle) {
+    return;
+  }
+
+  if (!g_modeMgr.GetGameMode()) {
+    return;
+  }
+
+  float height = -13.0f;
+  if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+    height = -13.0f - static_cast<float>(actor->MountType() ? 3 : 0);
+  }
+
+  const vector3d origin = this->positionVector;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+  vector3d viewPos;
+  MatrixMult(viewPos, origin, view);
+  viewPos.x += this->offsets[index].x;
+  viewPos.y += height + this->offsets[index].y;
+  vector3d worldPos;
+  MatrixMult(worldPos, viewPos, inverse);
+  particle->position.x = worldPos.x;
+  particle->position.y = worldPos.y;
+  particle->position.z = worldPos.z;
+  particle->Process(0.0f, 0.0f, 0.0f);
+  ++particle->elapsedFrames;
+}
 
 // OFFSET: 0x00704360
 // FUNCTION: fn_07031
