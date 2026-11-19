@@ -3890,7 +3890,7 @@ void UIItemWnd::ReleaseSelection(unsigned char keep) {
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it) {
     g_session.ClearItemSelection();
-    it->flags[1] = 0;
+    it->selected = 0;
   }
 
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
@@ -4023,7 +4023,7 @@ bool UIItemStoreWnd::FilterItem(ITEM_INFO& item) {
 // OFFSET: 0x00995050
 // FUNCTION: fn_45729
 bool UIItemWnd::FilterItem(ITEM_INFO& item) {
-  if (item.flags[0] != 0) {
+  if (item.placeEtcTab != 0) {
     if (this->categoryFilter == 3) {
       return true;
     }
@@ -7464,7 +7464,7 @@ void UIItemStoreFindWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] > 0 && item.flags[2] == 0) {
+  if (item.identity[1] > 0 && item.flagged == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
@@ -7480,7 +7480,7 @@ void UIItemStoreSubWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] > 0 && item.flags[2] == 0) {
+  if (item.identity[1] > 0 && item.flagged == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
@@ -7500,7 +7500,7 @@ void UIItemStoreWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] > 0 && item.flags[2] == 0) {
+  if (item.identity[1] > 0 && item.flagged == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(DRAG_ITEM_STORAGE, item, item.quantity, -1);
@@ -10394,7 +10394,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
       const unsigned type = item.identity[0];
       bool include = false;
-      if (item.flags[0] != 0) {
+      if (item.placeEtcTab != 0) {
         include = this->categoryFilter == 3;
       } else if (this->categoryFilter == 0) {
         if (type <= TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
@@ -10518,7 +10518,7 @@ void UIItemWnd::RefreshItems() {
   this->items.clear();
   for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
-    if (item.flags[0] == 1) {
+    if (item.placeEtcTab == 1) {
       this->items.push_back(item);
     }
   }
@@ -11056,7 +11056,7 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
 
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (item.flags[2] == 0) {
+    if (item.flagged == 0) {
       item = g_session.LookupClientItemByIdentity(item.identity[1]);
       mode->BeginDragItem(DRAG_ITEM_INVENTORY, item, item.quantity, -1);
 
@@ -11092,7 +11092,7 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] > 0 && !g_windowMgr.merchantShopMakeWnd && item.flags[2] == 0) {
+  if (item.identity[1] > 0 && !g_windowMgr.merchantShopMakeWnd && item.flagged == 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantShopItem(item.identity[1]);
     mode->BeginDragItem(DRAG_ITEM_MERCHANT_INVENTORY, item, item.quantity, -1);
@@ -11540,7 +11540,7 @@ void UIItemWnd::Paint() {
 
     const int y = visible / this->columns * 32 + 17;
     const int x = visible % this->columns * 32 + 40;
-    if (it->flags[1]) {
+    if (it->selected) {
       if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
         this->DrawBitmap(x, y, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")))), false);
       } else {

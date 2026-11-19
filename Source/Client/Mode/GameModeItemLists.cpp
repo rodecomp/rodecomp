@@ -89,7 +89,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountEquipListOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -122,7 +122,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountEquipListOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -188,7 +188,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountEquipListOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {

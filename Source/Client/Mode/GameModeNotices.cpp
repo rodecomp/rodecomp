@@ -2915,7 +2915,8 @@ struct StorageNormalRecord {
   /* 0009 */ std::uint16_t wearState;
   /* 000B */ std::uint32_t cards[4];
   /* 001B */ int expireTime;
-  /* 001F */ unsigned char flags;
+  /* 001F */ unsigned char identified : 1;
+  /* 001F */ unsigned char placeEtcTab : 1;
 };
 
 struct StorageNormalRecord2 {
@@ -2926,7 +2927,8 @@ struct StorageNormalRecord2 {
   /* 0009 */ int wearState;
   /* 000D */ std::uint32_t cards[4];
   /* 001D */ int expireTime;
-  /* 0021 */ unsigned char flags;
+  /* 0021 */ unsigned char identified : 1;
+  /* 0021 */ unsigned char placeEtcTab : 1;
 };
 
 struct ItemCardSlots {
@@ -3352,7 +3354,7 @@ void CGameMode::ReceiveStorageEquipList3(const unsigned char* data) {
     item.expireTime = record->expireTime;
     item.bindOnEquip = record->bindOnEquip;
     item.sprite = record->sprite;
-    item.flags[0] = record->etcTab;
+    item.placeEtcTab = record->etcTab;
     g_session.AddCartItem(item, 0);
   }
 
@@ -3387,7 +3389,7 @@ static __forceinline void AddStorageEquipItem(
   item.expireTime = expireTime;
   item.bindOnEquip = bindOnEquip;
   item.sprite = sprite;
-  item.flags[0] = etcTab;
+  item.placeEtcTab = etcTab;
   item.optionCount = CountItemSlotOptions(options.options);
   item.grade = 0;
   for (int i = 0; i < item.optionCount; ++i) {
@@ -3468,8 +3470,8 @@ void CGameMode::ReceiveStorageNormalList(const unsigned char* data) {
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
-    item.identified = record->flags & 1;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.identified = record->identified;
+    item.placeEtcTab = record->placeEtcTab;
     item.expireTime = record->expireTime;
     item.refiningLevel = 0;
     g_session.AddCartItem(item, 0);
@@ -3501,8 +3503,8 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
-    item.identified = record->flags & 1;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.identified = record->identified;
+    item.placeEtcTab = record->placeEtcTab;
     item.expireTime = record->expireTime;
     item.refiningLevel = 0;
     g_session.AddCartItem(item, 0);

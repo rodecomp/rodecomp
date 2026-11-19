@@ -987,7 +987,7 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
   for (int i = 0; i < count; ++i) {
     const Item1718IndexRecord record = records[i];
     ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
-    if (owned.identity[1] > 0 && (owned.flags[0] == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
+    if (owned.identity[1] > 0 && (owned.placeEtcTab == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
       RawItemBasic item = {};
       item.id = record.index;
       strcpy_s(item.itemId, sizeof(item.itemId), owned.itemId.c_str());
@@ -2538,7 +2538,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     for (std::int64_t index = 0; index < item.optionCount; ++index) {
       item.options[index] = packet->options[index];
     }
-    item.flags[0] = packet->bound;
+    item.placeEtcTab = packet->bound;
     item.grade = packet->grade;
   }
 
@@ -2567,7 +2567,7 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     for (int index = 0; index < item.optionCount; ++index) {
       item.options[index] = packet->options[index];
     }
-    item.flags[0] = packet->bound;
+    item.placeEtcTab = packet->bound;
     g_session.AddStackedItem(item);
     g_session.RemoveInventoryItem(packet->index, packet->quantity);
     g_session.achievementResult = packet->value;

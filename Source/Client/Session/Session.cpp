@@ -155,8 +155,8 @@ int CSession::IsExchangeItemListFull() {
 // FUNCTION: fn_23633
 void CSession::ClearItemSelection() {
   for (auto it = this->m_inventoryItems.begin(); it != this->m_inventoryItems.end(); ++it) {
-    if (it->flags[1] == 1) {
-      it->flags[1] = 0;
+    if (it->selected == 1) {
+      it->selected = 0;
     }
   }
 }
@@ -2509,7 +2509,7 @@ bool CSession::IsKnownName(std::string name) const {
 void CSession::FlagInventoryItem(std::uint32_t id) {
   for (ITEM_INFO& item : this->m_inventoryItems) {
     if (item.identity[1] == id) {
-      item.flags[2] = 1;
+      item.flagged = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }
@@ -2521,7 +2521,7 @@ void CSession::FlagInventoryItem(std::uint32_t id) {
 void CSession::FlagMerchantShopItem(std::uint32_t id) {
   for (ITEM_INFO& item : this->m_merchantShopItems) {
     if (item.identity[1] == id) {
-      item.flags[2] = 1;
+      item.flagged = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }
@@ -2533,7 +2533,7 @@ void CSession::FlagMerchantShopItem(std::uint32_t id) {
 void CSession::FlagCartItem(std::uint32_t id) {
   for (ITEM_INFO& item : this->m_cartItems) {
     if (item.identity[1] == id) {
-      item.flags[2] = 1;
+      item.flagged = 1;
       RefreshItemWindows(&g_windowMgr);
       return;
     }

@@ -59,7 +59,7 @@ void CGameMode::BeginDragItem(int sourceValue, const ITEM_INFO& item, int quanti
     }
 
     this->drag.grade = static_cast<std::uint16_t>(item.grade);
-    this->drag.uniqueItem = item.flags[3];
+    this->drag.uniqueItem = item.uniqueItem;
     this->drag.equipmentLocation = item.identity[2];
     this->drag.viewId = item.sprite;
   }

@@ -727,7 +727,7 @@ int CSession::GetPlayerSkillMode() const {
 void CSession::UnflagInventoryItem(int id) {
   for (ITEM_INFO& entry : this->m_inventoryItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
-      entry.flags[2] = 0;
+      entry.flagged = 0;
       break;
     }
   }
@@ -738,7 +738,7 @@ void CSession::UnflagInventoryItem(int id) {
 void CSession::UnflagMerchantShopItem(int id) {
   for (ITEM_INFO& entry : this->m_merchantShopItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
-      entry.flags[2] = 0;
+      entry.flagged = 0;
       break;
     }
   }
@@ -749,7 +749,7 @@ void CSession::UnflagMerchantShopItem(int id) {
 void CSession::UnflagCartItem(int id) {
   for (ITEM_INFO& entry : this->m_cartItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
-      entry.flags[2] = 0;
+      entry.flagged = 0;
       break;
     }
   }

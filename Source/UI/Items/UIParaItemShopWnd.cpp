@@ -350,7 +350,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
     }
 
-    const int available = item.flags[3] == 1 ? g_session.GetShopItemNumOf(item) : g_session.GetShopItemNumByItemId(item);
+    const int available = item.uniqueItem == 1 ? g_session.GetShopItemNumOf(item) : g_session.GetShopItemNumByItemId(item);
     if (available != -1 && available < a) {
       item.quantity = available;
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -359,7 +359,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
     if (item.quantity > 0) {
       std::uint16_t weight;
-      if (item.flags[3] == 1) {
+      if (item.uniqueItem == 1) {
         const std::uint16_t added = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
         weight = added + g_session.SumPurchasePriceFactor();
       } else {
@@ -374,7 +374,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_WEIGHT)), 255, 0, 0, 0);
       } else {
-        if (item.flags[3] == 1) {
+        if (item.uniqueItem == 1) {
           g_session.RemoveShopItem(item);
           g_session.MergePurchaseItem(item);
         } else {
@@ -396,7 +396,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     switch (a) {
     case ID_OK: {
       ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(0);
-      if (item.flags[3] == 1) {
+      if (item.uniqueItem == 1) {
         mode->SendMsg(MM_NPC_MARKET_PURCHASE_V2, 0, 0, 0, 0);
       } else {
         mode->SendMsg(MM_NPC_MARKET_PURCHASE, 0, 0, 0, 0);
@@ -534,7 +534,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ITEM_INFO item;
       item.Assign(drag);
       CSession* lists = &g_session;
-      if (item.flags[3] == 1) {
+      if (item.uniqueItem == 1) {
         lists->RemovePurchaseItem(item);
         lists->MergeShopItem(item);
       } else {

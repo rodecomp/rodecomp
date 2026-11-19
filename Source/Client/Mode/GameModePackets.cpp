@@ -321,7 +321,8 @@ namespace {
     /* 0009 */ std::uint32_t location;
     /* 000D */ std::uint32_t cards[4];
     /* 001D */ std::uint32_t expireTime;
-    /* 0021 */ unsigned char flags;
+    /* 0021 */ unsigned char identified : 1;
+    /* 0021 */ unsigned char placeEtcTab : 1;
   };
 
   struct HomunculusProperty64Packet {
@@ -1099,7 +1100,7 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
     item.expireTime = entry.expireTime;
     item.bindOnEquip = entry.bindOnEquip;
     item.sprite = entry.sprite;
-    item.flags[0] = entry.placeEtcTab;
+    item.placeEtcTab = entry.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
       item.options[index] = options[index];
@@ -1145,7 +1146,7 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
     item.expireTime = entry.expireTime;
     item.bindOnEquip = entry.bindOnEquip;
     item.sprite = entry.sprite;
-    item.flags[0] = entry.placeEtcTab;
+    item.placeEtcTab = entry.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
       item.options[index] = options[index];
@@ -1178,11 +1179,11 @@ void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
     item.quantity = record->amount;
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
+    item.identified = record->identified;
     item.damaged = 0;
     item.refiningLevel = 0;
     item.expireTime = record->expireTime;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.placeEtcTab = record->placeEtcTab;
     g_session.AddCartItem(item, 0);
   }
 
@@ -2208,7 +2209,7 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
     item.expireTime = entry.expireTime;
     item.bindOnEquip = entry.bindOnEquip;
     item.sprite = entry.sprite;
-    item.flags[0] = entry.placeEtcTab;
+    item.placeEtcTab = entry.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -2249,7 +2250,7 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
     item.expireTime = entry.expireTime;
     item.bindOnEquip = entry.bindOnEquip;
     item.sprite = entry.sprite;
-    item.flags[0] = entry.placeEtcTab;
+    item.placeEtcTab = entry.placeEtcTab;
     item.grade = 0;
     item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
@@ -2680,11 +2681,11 @@ __declspec(noinline) void CGameMode::ReceiveItemInventoryList(const unsigned cha
     item.quantity = record->amount;
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
-    item.identified = record->flags & 1;
+    item.identified = record->identified;
     item.damaged = 0;
     item.refiningLevel = 0;
     item.expireTime = record->expireTime;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.placeEtcTab = record->placeEtcTab;
     g_session.UpdateInventoryItem(item, 0);
   }
 
@@ -3641,7 +3642,7 @@ __declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned c
   const auto* p = reinterpret_cast<const PACKET_ZC_ACK_ITEMIDENTIFY*>(packet);
   ITEM_INFO item = g_session.LookupClientItemByIdentity(p->index);
   if (item.identity[1] > 0) {
-    item.flags[0] = p->result == 0;
+    item.placeEtcTab = p->result == 0;
     g_session.UpdateInventoryItem(item, 1);
   }
 }
@@ -4426,10 +4427,10 @@ __declspec(noinline) void CGameMode::ReceiveItem1740List(const unsigned char* pa
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
-    item.identified = record->flags & 1;
+    item.identified = record->identified;
     item.refiningLevel = 0;
     item.expireTime = record->expireTime;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.placeEtcTab = record->placeEtcTab;
     g_session.AddMerchantShopItem(item);
   }
 
@@ -4737,7 +4738,7 @@ void CGameMode::ReceiveTradeItems(int count, const TradeItemRecord* records) {
     std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.identity[1] = record.index;
     item.identified = 1;
-    item.flags[3] = 1;
+    item.uniqueItem = 1;
     if (item.quantity > 0) {
       g_session.AppendShopItem(item);
     }
@@ -9305,7 +9306,7 @@ namespace {
     item.expireTime = record.expireTime;
     item.bindOnEquip = record.bindOnEquip;
     item.sprite = record.sprite;
-    item.flags[0] = record.placeEtcTab;
+    item.placeEtcTab = record.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -9328,7 +9329,7 @@ namespace {
     item.expireTime = record.expireTime;
     item.bindOnEquip = record.bindOnEquip;
     item.sprite = record.sprite;
-    item.flags[0] = record.placeEtcTab;
+    item.placeEtcTab = record.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     item.grade = record.grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -9826,7 +9827,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.refiningLevel = packet->refine;
     item.expireTime = packet->expireTime;
     item.bindOnEquip = packet->bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     if (std::atoi(item.itemId.c_str()) == 607) {
       this->lastPickItemTime = 0;
     }
@@ -10041,7 +10042,7 @@ void CGameMode::ReceiveItemPickupAck5(
       item.refiningLevel = refine;
       item.expireTime = expireTime;
       item.bindOnEquip = bindOnEquip;
-      item.flags[1] = 1;
+      item.selected = 1;
       item.optionCount = CountStoreItemOptions(options);
       for (int option = 0; option < item.optionCount; ++option) {
         item.options[option] = options[option];
@@ -10084,7 +10085,7 @@ void CGameMode::ReceiveItemPickupAck5(
     item.refiningLevel = refine;
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     item.optionCount = CountStoreItemOptions(options);
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options[option];
@@ -10160,7 +10161,7 @@ namespace {
     item.refiningLevel = refine;
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
@@ -10206,7 +10207,7 @@ namespace {
     item.refiningLevel = refine;
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
@@ -11279,12 +11280,12 @@ namespace {
     item.refiningLevel = refine;
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
     }
-    item.flags[0] = favorite;
+    item.placeEtcTab = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
@@ -11329,12 +11330,12 @@ namespace {
     item.refiningLevel = refine;
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
-    item.flags[1] = 1;
+    item.selected = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
     }
-    item.flags[0] = favorite;
+    item.placeEtcTab = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
@@ -13125,7 +13126,7 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
     const unsigned char flags = record->flags;
     item.identified = flags & 1;
     item.damaged = (flags >> 1) & 1;
-    item.flags[0] = (flags >> 2) & 1;
+    item.placeEtcTab = (flags >> 2) & 1;
     item.refiningLevel = record->refine;
     item.expireTime = record->expireTime;
     item.bindOnEquip = record->bindOnEquip;
@@ -28726,7 +28727,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identified = record->flags & 1;
         item.refiningLevel = 0;
         item.expireTime = record->expireTime;
-        item.flags[0] = (record->flags >> 1) & 1;
+        item.placeEtcTab = (record->flags >> 1) & 1;
         g_session.UpdateInventoryItem(item, 0);
       }
       RefreshItemWindows(&g_windowMgr);
@@ -28751,7 +28752,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identified = record->flags & 1;
         item.refiningLevel = 0;
         item.expireTime = record->expireTime;
-        item.flags[0] = (record->flags >> 1) & 1;
+        item.placeEtcTab = (record->flags >> 1) & 1;
         g_session.AddMerchantShopItem(item);
       }
       g_session.RefreshItem1740Window();
@@ -28777,7 +28778,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identified = record->flags & 1;
         item.refiningLevel = 0;
         item.expireTime = record->expireTime;
-        item.flags[0] = (record->flags >> 1) & 1;
+        item.placeEtcTab = (record->flags >> 1) & 1;
         g_session.AddCartItem(item, 0);
       }
       g_session.RefreshItem1738Window();
@@ -28804,7 +28805,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.expireTime = record->expireTime;
         item.bindOnEquip = record->bindOnEquip;
         item.sprite = record->look;
-        item.flags[0] = (record->flags >> 2) & 1;
+        item.placeEtcTab = (record->flags >> 2) & 1;
         g_session.AddMerchantShopItem(item);
       }
       g_session.RefreshItem1740Window();
@@ -28832,7 +28833,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.expireTime = record->expireTime;
         item.bindOnEquip = record->bindOnEquip;
         item.sprite = record->look;
-        item.flags[0] = (record->flags >> 2) & 1;
+        item.placeEtcTab = (record->flags >> 2) & 1;
         g_session.AddCartItem(item, 0);
       }
       g_session.RefreshItem1738Window();

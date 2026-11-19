@@ -53,7 +53,7 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
     item.expireTime = record->expireTime;
     item.bindOnEquip = record->bindOnEquip;
     item.sprite = record->sprite;
-    item.flags[0] = record->etcTab;
+    item.placeEtcTab = record->etcTab;
 
     if (item.identity[3] != 0) {
       if (g_session.IsCostumeLocation(item.identity[3])) {

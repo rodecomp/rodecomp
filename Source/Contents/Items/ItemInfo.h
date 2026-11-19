@@ -107,7 +107,10 @@ struct ITEM_INFO {
   /* 0068 */ __time32_t expireTime;
   /* 006C */ std::uint16_t priceFactor;
   /* 0070 */ std::int32_t sprite;
-  /* 0074 */ unsigned char flags[4];
+  /* 0074 */ unsigned char placeEtcTab;
+  /* 0075 */ unsigned char selected;
+  /* 0076 */ unsigned char flagged;
+  /* 0077 */ unsigned char uniqueItem;
   /* 0078 */ ItemSaleData saleData;
   /* 0088 */ std::int16_t grade;
   /* 0090 */ std::uint64_t productId;

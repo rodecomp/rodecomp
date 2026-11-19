@@ -95,12 +95,12 @@ __declspec(noinline) ITEM_INFO& ITEM_INFO::operator=(const ITEM_INFO& other) {
   this->expireTime = other.expireTime;
   this->priceFactor = other.priceFactor;
   this->sprite = other.sprite;
-  this->flags[0] = other.flags[0];
-  this->flags[1] = other.flags[1];
-  this->flags[2] = other.flags[2];
+  this->placeEtcTab = other.placeEtcTab;
+  this->selected = other.selected;
+  this->flagged = other.flagged;
   this->optionCount = other.optionCount;
   memcpy_s(this->options, sizeof(this->options), other.options, sizeof(other.options));
-  this->flags[3] = other.flags[3];
+  this->uniqueItem = other.uniqueItem;
   this->saleData.costume = other.saleData.costume;
   this->saleData.purchaseCount = other.saleData.purchaseCount;
   this->saleData.startTime = other.saleData.startTime;
@@ -135,7 +135,7 @@ std::uint32_t ITEM_INFO::Assign(const ModeDragState& item) {
   }
 
   this->grade = item.grade;
-  this->flags[3] = item.uniqueItem;
+  this->uniqueItem = item.uniqueItem;
   this->identity[2] = item.equipmentLocation;
   this->sprite = static_cast<std::uint32_t>(item.viewId);
 
@@ -161,13 +161,13 @@ void ITEM_INFO::Reset() {
   this->expireTime = 0;
   this->priceFactor = 0;
   this->sprite = 0;
-  for (int index = 0; index < 3; ++index) {
-    this->flags[index] = 0;
-  }
+  this->placeEtcTab = 0;
+  this->selected = 0;
+  this->flagged = 0;
   this->optionCount = 0;
   SecureZeroMemory(this->options, sizeof(this->options));
   this->refiningLevel = 0;
-  this->flags[3] = 0;
+  this->uniqueItem = 0;
   this->saleData.costume = 0;
   this->saleData.startTime = 0;
   this->saleData.endTime = 0;
@@ -222,7 +222,7 @@ ITEM_INFO& ITEM_INFO::AssignBasic(const RawItemBasic& item) {
   this->itemId = item.itemId;
   this->sprite = item.sprite;
   this->identity[2] = item.location;
-  this->flags[3] = item.id != -1;
+  this->uniqueItem = item.id != -1;
   return *this;
 }
 
@@ -716,7 +716,7 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
 void CSession::RemovePurchaseItem(const ITEM_INFO& item) {
   for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     bool same = it->identity[1] == item.identity[1];
-    if (item.flags[3] == 0) {
+    if (item.uniqueItem == 0) {
       same = it->itemId == item.itemId;
     }
     if (same == true) {

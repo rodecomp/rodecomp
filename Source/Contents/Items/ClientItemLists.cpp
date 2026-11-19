@@ -139,7 +139,8 @@ namespace {
     /* 0009 */ int location;
     /* 000D */ std::uint32_t cards[4];
     /* 001D */ int expireTime;
-    /* 0021 */ unsigned char flags;
+    /* 0021 */ unsigned char identified : 1;
+    /* 0021 */ unsigned char placeEtcTab : 1;
   };
 #pragma pack(pop)
 
@@ -540,7 +541,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountItemOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -573,7 +574,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountItemOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -639,7 +640,7 @@ namespace {
     item.expireTime = expireTime;
     item.bindOnEquip = bindOnEquip;
     item.sprite = sprite;
-    item.flags[0] = placeEtcTab;
+    item.placeEtcTab = placeEtcTab;
     item.optionCount = CountItemOptions(options.values);
     item.grade = grade;
     for (int index = 0; index < item.optionCount; ++index) {
@@ -701,10 +702,10 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.damaged = 0;
-    item.identified = record->flags & 1;
+    item.identified = record->identified;
     item.expireTime = record->expireTime;
     item.refiningLevel = 0;
-    item.flags[0] = (record->flags >> 1) & 1;
+    item.placeEtcTab = record->placeEtcTab;
     switch (listType) {
     case INVTYPE_STORAGE:
     case INVTYPE_GUILD_STORAGE:
@@ -774,8 +775,8 @@ __declspec(noinline) bool CSession::AddInventoryItem(const ITEM_INFO& item, unsi
   for (ITEM_INFO& value : this->m_inventoryItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
-      value.flags[1] = item.flags[1];
-      value.flags[0] = item.flags[0];
+      value.selected = item.selected;
+      value.placeEtcTab = item.placeEtcTab;
       if (refresh) {
         RefreshItemWindows(&g_windowMgr);
       }
@@ -983,7 +984,7 @@ void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
 void CSession::MergePurchaseItem(const ITEM_INFO& item) {
   for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     bool same = it->identity[1] == item.identity[1];
-    if (!item.flags[3]) {
+    if (!item.uniqueItem) {
       same = it->itemId == item.itemId;
     }
     if (same == true) {
@@ -1179,8 +1180,8 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
         for (ITEM_INFO& value : this->m_inventoryItems) {
           if (value.identity[1] == item.identity[1]) {
             value.quantity += item.quantity;
-            value.flags[1] = item.flags[1];
-            value.flags[0] = item.flags[0];
+            value.selected = item.selected;
+            value.placeEtcTab = item.placeEtcTab;
             merged = true;
             break;
           }
@@ -1539,7 +1540,7 @@ void CSession::RemoveInventoryItem(std::uint32_t id, int quantity) {
       }
       for (auto it2 = this->m_inventoryItems.begin(); it2 != this->m_inventoryItems.end(); ++it2) {
         if (it2->identity[1] == id) {
-          it2->flags[2] = 0;
+          it2->flagged = 0;
           break;
         }
       }
@@ -1594,7 +1595,7 @@ bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
       const std::uint32_t index = item.identity[1];
       for (auto it2 = this->m_merchantShopItems.begin(); it2 != this->m_merchantShopItems.end(); ++it2) {
         if (it2->identity[1] == index) {
-          it2->flags[2] = 0;
+          it2->flagged = 0;
           break;
         }
       }
@@ -1726,7 +1727,7 @@ bool CSession::RemoveCartItem(const ITEM_INFO& item) {
       const std::uint32_t index = item.identity[1];
       for (auto it2 = this->m_cartItems.begin(); it2 != this->m_cartItems.end(); ++it2) {
         if (it2->identity[1] == index) {
-          it2->flags[2] = 0;
+          it2->flagged = 0;
           break;
         }
       }
