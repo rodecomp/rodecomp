@@ -41,7 +41,7 @@ void DrawDashedScreenLine(
   float startX, float startY, float endX, float endY, int dashLength, int thickness, CTexture* texture, std::uint32_t color
 ) {
   const float length = SquareRoot((endY - startY) * (endY - startY) + (endX - startX) * (endX - startX));
-  if (length == 0.0f) {
+  if (0.0f == length) {
     return;
   }
 
@@ -51,28 +51,30 @@ void DrawDashedScreenLine(
   const float directionX = inverseLength * deltaX;
   const float directionY = inverseLength * deltaY;
   float angle = static_cast<float>(std::acos(static_cast<double>(directionX)));
-  if (directionY < 0.0f) {
+  if (0.0f > directionY) {
     angle = 6.283184f - angle;
   }
 
   angle += 1.570796f;
-  const float sine = ClientSin(angle);
-  const float cosine = ClientCos(angle);
-  const float dashX = static_cast<float>(dashLength) * directionX;
-  const float dashY = static_cast<float>(dashLength) * directionY;
-  const float sideX = cosine * static_cast<float>(thickness);
-  const float sideY = sine * static_cast<float>(thickness);
+  const float width = static_cast<float>(thickness);
+  const float sideY = ClientSin(angle) * width;
+  const float sideX = ClientCos(angle) * width;
+  const float dash = static_cast<float>(dashLength);
+  const float dashY = dash * directionY;
+  const float dashX = dash * directionX;
   float currentX = startX;
   float currentY = startY;
   float nextX = dashX + currentX;
   float nextY = dashY + currentY;
+  const float halfDashX = dashX * g_depthAverageHalf;
+  const float halfDashY = dashY * g_depthAverageHalf;
 
   float distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
-  while (distance < length) {
+  while (length > distance) {
     DrawScreenQuad(currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, texture, color);
 
-    currentX = dashX * g_depthAverageHalf + nextX;
-    currentY = dashY * g_depthAverageHalf + nextY;
+    currentX = halfDashX + nextX;
+    currentY = halfDashY + nextY;
     nextX = dashX + currentX;
     nextY = dashY + currentY;
     distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
