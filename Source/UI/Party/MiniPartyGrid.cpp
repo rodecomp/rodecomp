@@ -58,12 +58,11 @@ void CMiniPartyWndAreaMgr::BuildAvailableCells() {
   this->rows = (this->area.bottom - this->area.top) / g_miniPartyCellHeight;
 
   for (int index = 0; index < this->columns * this->rows; ++index) {
-    const int x = this->area.left + g_miniPartyCellWidth * (index / this->rows);
-    const int y = this->area.top + g_miniPartyCellHeight * (index % this->rows);
+    const MiniPartyGridPoint position = this->GetCellPosition(index);
     bool excluded = false;
 
     for (const RECT& rectangle : this->excluded) {
-      if (x < rectangle.right && x + g_miniPartyCellWidth > rectangle.left && y < rectangle.bottom && y + g_miniPartyCellHeight > rectangle.top) {
+      if (position.x < rectangle.right && position.x + g_miniPartyCellWidth > rectangle.left && position.y < rectangle.bottom && position.y + g_miniPartyCellHeight > rectangle.top) {
         excluded = true;
         break;
       }
