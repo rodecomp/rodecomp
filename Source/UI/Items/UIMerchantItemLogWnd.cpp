@@ -45,7 +45,7 @@ UIMerchantItemLogWnd::lcData::~lcData() = default;
 // OFFSET: 0x0099E260
 // FUNCTION: fn_45768
 __declspec(noinline) UIMerchantItemLogWnd::~UIMerchantItemLogWnd() {
-  this->items.clear();
+  this->items.erase(this->items.begin(), this->items.end());
 }
 
 // OFFSET: 0x0099E510
