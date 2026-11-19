@@ -200,6 +200,81 @@ void CMapChainEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B4B460
+// FUNCTION: fn_45981
+void CMapChainEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  float angle = *static_cast<const float*>(particle->animationParameters) + particle->angle;
+  if (angle >= 360.0f) {
+    angle -= 360.0f;
+  }
+  particle->angle = angle;
+
+  if (particle->rowIndex > 5) {
+    const int delta = particle->elapsedFrames % 600 <= 250 ? 3 : -3;
+    int alpha = particle->alpha + delta;
+    if (alpha >= 255) {
+      alpha = 255;
+    }
+    particle->alpha = alpha > 0 ? alpha : 0;
+  }
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  particle->transform = rotation;
+
+  const int segment = particle->columnIndex;
+  const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + particle->angle) % 360;
+
+  MapChainPoint points[4];
+
+  const int tilt = particle->phaseParameter;
+  const float sinIndex = g_sinTable[index];
+  const float cosIndex = g_cosTable[index];
+  const float sinTilt = g_sinTable[tilt];
+  const float cosTilt = g_cosTable[tilt];
+
+  const float centerX = (sinTilt * particle->scale) * cosIndex;
+  const float centerY = particle->scale * sinIndex;
+  const float centerZ = (particle->scale * cosTilt) * cosIndex;
+  const float sideX = particle->speedParameter * cosTilt;
+  const float sideZ = -sinTilt * particle->speedParameter;
+
+  const float v1x = (centerX - sideX) + 0.0f;
+  const float v1y = (centerY - 0.0f) + particle->animationParameter;
+  const float v1z = (centerZ - sideZ) + 0.0f;
+  const float v3x = (sideX + centerX) + 0.0f;
+  const float v3y = (centerY + 0.0f) + particle->animationParameter;
+  const float v3z = (sideZ + centerZ) + 0.0f;
+
+  particle->vertices[1].x = v1x;
+  particle->vertices[1].y = v1y;
+  particle->vertices[1].z = v1z;
+  particle->vertices[3].x = v3x;
+  particle->vertices[3].y = v3y;
+  particle->vertices[3].z = v3z;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->corners[1].x;
+    particle->vertices[0].y = this->corners[1].y;
+    particle->vertices[0].z = this->corners[1].z;
+    particle->vertices[2].x = this->corners[0].x;
+    particle->vertices[2].y = this->corners[0].y;
+    particle->vertices[2].z = this->corners[0].z;
+  }
+
+  this->corners[1].x = v1x;
+  this->corners[1].y = v1y;
+  this->corners[1].z = v1z;
+  this->corners[0].x = v3x;
+  this->corners[0].y = v3y;
+  this->corners[0].z = v3z;
+}
+
 // OFFSET: 0x00B4B800
 // FUNCTION: fn_45982
 void CMapChainEffect::RenderParticle(CParticle* particle) {

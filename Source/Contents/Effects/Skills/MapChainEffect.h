@@ -29,6 +29,7 @@ public:
   void ResetParticles() override;
 
   void CreateChainParticles(int param);
+  void UpdateParticle(CParticle* particle);
   static void RenderParticle(CParticle* particle);
 
   /* 00CC */ MapChainPoint corners[2];
