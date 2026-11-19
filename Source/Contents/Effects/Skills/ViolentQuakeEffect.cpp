@@ -28,6 +28,10 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x0072F560
+__declspec(noinline) CViolentQuakeEffect::~CViolentQuakeEffect() {
+}
+
 // OFFSET: 0x0072F640
 // FUNCTION: fn_07531
 void CViolentQuakeEffect::InitAllBloom() {
@@ -70,21 +74,25 @@ void CViolentQuakeEffect::Close() {
   this->emitters.clear();
 }
 
+// OFFSET: 0x0072FAA0
+__forceinline void CViolentQuakeEffect::InitViolentQuake() {
+  CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+  const int roll = rand() % 3;
+  emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", (roll >= 0 ? roll : 0) + 1));
+  emitter->offsetX = 0.0f;
+  emitter->offsetY = -8.0f;
+  emitter->offsetZ = 0.0f;
+  this->emitters.push_back(emitter);
+  this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
+}
+
 // OFFSET: 0x0072FBE0
 // FUNCTION: fn_07533
 void CViolentQuakeEffect::Open() {
   switch (this->id) {
-  case EF_VIOLENTQUAKE: {
-    CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
-    const int roll = rand() % 3;
-    emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", (roll >= 0 ? roll : 0) + 1));
-    emitter->offsetX = 0.0f;
-    emitter->offsetY = -8.0f;
-    emitter->offsetZ = 0.0f;
-    this->emitters.push_back(emitter);
-    this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
+  case EF_VIOLENTQUAKE:
+    this->InitViolentQuake();
     break;
-  }
   case EF_UNK_1798:
     this->InitAllBloom();
     break;
@@ -103,15 +111,9 @@ bool CViolentQuakeEffect::IsAlive() {
   return false;
 }
 
-// OFFSET: 0x0072FD60
-// FUNCTION: fn_07535
-void CViolentQuakeEffect::OnProcess() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CEZ2STRParticle* emitter = *it;
-    if (!emitter) {
-      continue;
-    }
-
+// OFFSET: 0x0072FF90
+__forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
     const vector3d origin = this->positionVector;
     const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
@@ -127,12 +129,26 @@ void CViolentQuakeEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x0072FD60
+// FUNCTION: fn_07535
+void CViolentQuakeEffect::OnProcess() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    this->ProcessEmitter(*it);
+  }
+}
+
+// OFFSET: 0x007301E0
+// FUNCTION: fn_46237
+__forceinline void CViolentQuakeEffect::RenderEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x00730190
 // FUNCTION: fn_07536
 void CViolentQuakeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    if (*it) {
-      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderEmitter(*it);
   }
 }

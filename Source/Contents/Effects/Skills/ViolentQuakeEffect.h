@@ -11,6 +11,7 @@ class CEZ2STRParticle;
 class CViolentQuakeEffect : public CEffect {
 public:
   CViolentQuakeEffect();
+  ~CViolentQuakeEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -21,6 +22,11 @@ public:
   void InitAllBloom();
 
   /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
+
+private:
+  void InitViolentQuake();
+  void ProcessEmitter(CEZ2STRParticle* emitter);
+  void RenderEmitter(CEZ2STRParticle* emitter);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
