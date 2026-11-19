@@ -44,14 +44,14 @@ bool CSession::LoadMapPosTable() {
   }
 
   const char* cursor = static_cast<const char*>(file.GetData());
+  const char* start = cursor;
   const char* end = cursor + file.GetSize();
   int currentId = 0;
+  MapPosRect bounds = {};
   std::string name;
+  int boundsValid = 0;
   std::vector<std::string> fields;
   std::string token;
-  int boundsValid = 0;
-  MapPosRect bounds = {};
-  const char* start = cursor;
   for (; cursor < end; ++cursor) {
     switch (*cursor) {
     case '@':
