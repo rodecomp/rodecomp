@@ -9,20 +9,23 @@
 #include <cstring>
 
 namespace {
+  struct GroundVertex : RenderVertex {
+    // INLINED
+    GroundVertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+      this->rhw = 0.0f;
+      this->diffuse = 0;
+      this->specular = 0xFF000000u;
+      this->u = 0.0f;
+      this->v = 0.0f;
+    }
+  };
+
   // INLINED
   __forceinline void SubmitGroundQuad(const float* matrix, const GroundQuad& quad, bool clip) {
-    RenderVertex vertices[4];
-
-    for (auto& vertex : vertices) {
-      vertex.x = 0.0f;
-      vertex.y = 0.0f;
-      vertex.z = 0.0f;
-      vertex.rhw = 0.0f;
-      vertex.diffuse = 0;
-      vertex.specular = 0xFF000000u;
-      vertex.u = 0.0f;
-      vertex.v = 0.0f;
-    }
+    GroundVertex vertices[4];
 
     for (unsigned corner = 0; corner < 4; ++corner) {
       g_renderer->Project(quad.vertices[corner].position, matrix, vertices[corner]);
