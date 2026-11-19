@@ -28,6 +28,11 @@ public:
   /* 00DC */ unsigned char openToggle;
   /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ std::int64_t startTime;
+
+private:
+  void CreateLoopParticles();
+  void UpdateParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
