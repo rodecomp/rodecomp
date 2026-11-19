@@ -683,7 +683,7 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
   this->image->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\selectpackage\\item_list.bmp", 0xD97D5DBDBB2F2709ULL)));
   this->AddChild(this->image);
 
-  this->gameItem = new CUIGameItem();
+  this->gameItem = new CUIGameItemWithNum;
   this->gameItem->SetMode(0);
   this->gameItem->SetScale(100);
   this->gameItem->Move(6, 5);
