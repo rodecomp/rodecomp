@@ -89,14 +89,87 @@ bool CHealSp::IsAlive() {
 }
 
 // OFFSET: 0x00B457C0
+// FUNCTION: fn_45976
+__forceinline void CHealSp::UpdateRing(CParticle* particle) {
+  float* params = particle->animationValues;
+  float fade = params[2];
+  const float spin = particle->speedParameter;
+  const float endFrame = params[3];
+  const float maxAlpha = params[4];
+  const float alpha = params[6];
+  const float angle = spin + params[5];
+  matrix rotation;
+  rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
+  if (this->frame == static_cast<int>(endFrame)) {
+    fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
+  }
+
+  float level = alpha + fade;
+  if (level < 0.0f) {
+    level = 0.0f;
+  }
+  const float limit = static_cast<float>(static_cast<int>(maxAlpha));
+  if (level > limit) {
+    level = limit;
+  }
+  this->alphaLevel = static_cast<int>(level);
+  params[2] = fade;
+  params[5] = spin + angle;
+  params[6] = level;
+  particle->transform = rotation;
+  particle->alpha = this->alphaLevel;
+}
 
 // OFFSET: 0x00B45ED0
+// FUNCTION: fn_45977
+__forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
+  float* params = sprite->animationValues;
+  const float radius = params[0];
+  const float delay = params[4];
+  float fade = params[5];
+  const float alpha = static_cast<float>(sprite->alpha);
+  vector3d velocity = sprite->velocity;
+  const vector3d origin = this->positionVector;
+  const float lift = params[3] + params[2];
+  velocity.y += lift;
+  matrix rotation;
+  rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
+  const float* values = rotation.values;
+  const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * radius + values[9] + (velocity.x + origin.x);
+  const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (velocity.y + origin.y);
+  const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (velocity.z + origin.z);
+  const int elapsed = sprite->elapsedFrames;
+  float level;
+  if (this->frame < this->holdFrame) {
+    if (elapsed == static_cast<int>(delay)) {
+      fade = -(alpha / static_cast<float>(30 - elapsed));
+    }
+
+    level = alpha + fade;
+    if (level < 0.0f) {
+      level = 0.0f;
+    }
+    if (level > 255.0f) {
+      level = 255.0f;
+    }
+  } else {
+    level = static_cast<float>(this->alphaLevel);
+  }
+
+  params[2] = lift;
+  sprite->velocity = velocity;
+  sprite->alpha = static_cast<int>(level);
+  params[5] = fade;
+  sprite->position.x = x;
+  sprite->position.y = y;
+  sprite->position.z = z;
+}
 
 // OFFSET: 0x00B458E0
 // FUNCTION: fn_18903
 void CHealSp::OnProcess() {
-  matrix rotation;
   if (this->frame % 2 == 0) {
+    matrix rotation;
     const int roll = rand() % 360;
     const float angle = static_cast<float>(roll >= 0 ? roll : 0);
     rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
@@ -125,78 +198,15 @@ void CHealSp::OnProcess() {
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    float* params = &particle->animationParameter;
-    float fade = params[2];
-    const float spin = particle->speedParameter;
-    const float endFrame = params[3];
-    const float maxAlpha = params[4];
-    const float alpha = params[6];
-    const float angle = spin + params[5];
-    rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
-    if (this->frame == static_cast<int>(endFrame)) {
-      fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
-    }
-
-    float level = alpha + fade;
-    if (level < 0.0f) {
-      level = 0.0f;
-    }
-    const float limit = static_cast<float>(static_cast<int>(maxAlpha));
-    if (level > limit) {
-      level = limit;
-    }
-    this->alphaLevel = static_cast<int>(level);
-    params[2] = fade;
-    params[5] = spin + angle;
-    params[6] = level;
+    this->UpdateRing(particle);
     ++particle->elapsedFrames;
-    particle->transform = rotation;
-    particle->alpha = this->alphaLevel;
   }
 
   for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end();) {
     CSpriteParticle* sprite = *it;
     if (IsParticleActive(sprite) == true) {
-      float* params = &sprite->animationParameter;
-      const float radius = params[0];
-      const float delay = params[4];
-      float fade = params[5];
-      const float alpha = static_cast<float>(sprite->alpha);
-      vector3d velocity = sprite->velocity;
-      const vector3d origin = this->positionVector;
-      const float lift = params[3] + params[2];
-      velocity.y += lift;
-      rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
-      const float* values = rotation.values;
-      const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * radius + values[9] + (velocity.x + origin.x);
-      const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (velocity.y + origin.y);
-      const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (velocity.z + origin.z);
-      const int elapsed = sprite->elapsedFrames;
-      float level;
-      if (this->frame < this->holdFrame) {
-        if (elapsed == static_cast<int>(delay)) {
-          fade = -(alpha / static_cast<float>(30 - elapsed));
-        }
-
-        level = alpha + fade;
-        if (level < 0.0f) {
-          level = 0.0f;
-        }
-        if (level > 255.0f) {
-          level = 255.0f;
-        }
-      } else {
-        level = static_cast<float>(this->alphaLevel);
-      }
-
-      params[2] = lift;
-      sprite->velocity = velocity;
-      sprite->alpha = static_cast<int>(level);
-      params[5] = fade;
-      sprite->position.x = x;
-      sprite->position.y = y;
-      sprite->position.z = z;
-      sprite->elapsedFrames = elapsed + 1;
+      this->UpdateSprite(sprite);
+      ++sprite->elapsedFrames;
       ++it;
     } else {
       FreeParticle(sprite);
