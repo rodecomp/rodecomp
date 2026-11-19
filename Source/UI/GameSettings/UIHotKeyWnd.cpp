@@ -518,16 +518,15 @@ void UIHotKeyWnd::ReloadHotkeys() {
 int UIHotKeyWnd::ValidateSpecialHotkeyMode(int mode) {
   if (this->m_tab == 1 && g_session.HotkeyIndex(1, this->m_selectedRow) + 100 == 131) {
     const int key = g_windowMgr.keyCode;
-    const int modifier = g_windowMgr.modifierKey;
-    if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
+    if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
       return 3;
     }
 
     if (key == 0x20 || key == 0x90) {
-      return modifier != 0 ? 4 : 2;
+      return g_windowMgr.modifierKey != 0 ? 4 : 2;
     }
 
-    if (mode == 4 && (key == 0x14 || (modifier == 0 && !g_windowMgr.IsSharedWindowId(key)))) {
+    if (mode == 4 && (key == 0x14 || (g_windowMgr.modifierKey == 0 && !g_windowMgr.IsSharedWindowId(key)))) {
       return 3;
     }
   }
