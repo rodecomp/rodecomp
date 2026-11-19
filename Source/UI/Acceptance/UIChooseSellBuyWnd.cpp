@@ -13041,7 +13041,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     for (unsigned index = 0; index < descriptions.size(); ++index) {
       lines.push_back(std::string(descriptions[index]));
     }
-    this->m_viewButton->Move(6, IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
+    const int viewY = IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
+    this->m_viewButton->Move(6, viewY);
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
       const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
