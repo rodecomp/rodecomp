@@ -172,6 +172,15 @@ UIHotKeyWnd::UIHotKeyWnd()
       m_rowHeight(20), m_keyColumnWidth(80), m_descriptionColumnWidth(135), m_balloon(nullptr), m_tab(0), m_page(1), m_pageCount(0), m_paged(0) {
 }
 
+// OFFSET: 0x009140A0
+// FUNCTION: fn_45805
+UIHotKeyWnd::~UIHotKeyWnd() {
+  for (std::map<int, HotkeyInfo>& table : this->hotkeys) {
+    table.clear();
+  }
+  g_windowMgr.Schedule(this->m_balloon);
+}
+
 // OFFSET: 0x00916760
 // FUNCTION: fn_12585
 void UIHotKeyWnd::SetHotkey(int tab, int index, HotkeyInfo info) {

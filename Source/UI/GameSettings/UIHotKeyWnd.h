@@ -22,6 +22,7 @@ public:
   };
 
   UIHotKeyWnd();
+  __declspec(noinline) ~UIHotKeyWnd() override;
   void OnCreate(int width, int height) override;
   void OnLBtnDown(int x, int y) override;
   void OnRBtnDown(int x, int y) override;
