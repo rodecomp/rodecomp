@@ -522,7 +522,8 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
   int skillFlag = 0;
   std::vector<std::map<int, int>> delays;
   g_session.LoadSkillDelayList(skillId, delays, skillFlag);
-  for (; index < delays.size(); ++index) {
+  const std::size_t delayCount = delays.size();
+  for (; index < delayCount; ++index) {
     this->delayList->data.push_back(SkillDelayInfo::CDelayItemData{static_cast<int>(index), delays[index]});
   }
   this->delayList->UpdateScrollBar();
