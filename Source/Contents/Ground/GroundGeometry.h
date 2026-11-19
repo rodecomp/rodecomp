@@ -33,7 +33,7 @@ public:
   GroundLightmapSet();
   ~GroundLightmapSet();
   void Build(CGndRes& resource);
-  void Clear();
+  __declspec(noinline) void Clear();
 
   /* 0000 */ std::vector<GroundLightmap> lightmaps;
   /* 000C */ std::vector<CTexture*> lightmapTextures;
@@ -44,6 +44,12 @@ public:
 // OFFSET: 0x00ABD930
 // FUNCTION: fn_45877
 inline GroundLightmapSet::GroundLightmapSet() {
+}
+
+// OFFSET: 0x00ABDD20
+// FUNCTION: fn_45864
+inline GroundLightmapSet::~GroundLightmapSet() {
+  this->Clear();
 }
 
 class GroundBase {

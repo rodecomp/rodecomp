@@ -6,12 +6,6 @@
 #include <algorithm>
 #include <array>
 
-// OFFSET: 0x00ABDD20
-// FUNCTION: fn_45864
-GroundLightmapSet::~GroundLightmapSet() {
-  this->Clear();
-}
-
 // OFFSET: 0x00AC3040
 // FUNCTION: fn_17597
 void GroundLightmapSet::Clear() {
