@@ -601,15 +601,16 @@ void UIEditCtrl3::PaintText() {
   }
 
   if (g_windowMgr.GetHoverWindow() == this) {
+    const std::vector<std::string>& lines = this->wrappedLines;
     int caretLine = this->textY;
-    if (this->caretLineLength != static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()))) {
+    if (this->caretLineLength != static_cast<int>(std::strlen(lines[caretLine].c_str()))) {
       this->manualScroll = 0;
-      this->caretLineLength = static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()));
+      this->caretLineLength = static_cast<int>(std::strlen(lines[caretLine].c_str()));
     }
 
     int before = 0;
     for (int index = 0; index < caretLine; ++index) {
-      before += static_cast<int>(std::strlen(this->wrappedLines[index].c_str()));
+      before += static_cast<int>(std::strlen(lines[index].c_str()));
     }
 
     int wrapped = 0;
@@ -617,13 +618,13 @@ void UIEditCtrl3::PaintText() {
       column -= before;
     }
 
-    if (static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) == column && this->lineBreaks[caretLine]) {
+    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == column && this->lineBreaks[caretLine]) {
       wrapped = 1;
       column = 0;
     }
 
-    if (this->nextLineLength != static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) - column) {
-      this->nextLineLength = static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) - column;
+    if (this->nextLineLength != static_cast<int>(std::strlen(lines[caretLine].c_str())) - column) {
+      this->nextLineLength = static_cast<int>(std::strlen(lines[caretLine].c_str())) - column;
     }
 
     if (this->previousLineLength != column) {
@@ -632,7 +633,7 @@ void UIEditCtrl3::PaintText() {
 
     int caretX = 0;
     if (column != 0) {
-      caretX = this->TextWidth(this->wrappedLines[caretLine].c_str(), column, 0, 12, 0, 0);
+      caretX = this->TextWidth(lines[caretLine].c_str(), column, 0, 12, 0, 0);
       caretLine = this->textY;
     }
 
@@ -641,11 +642,11 @@ void UIEditCtrl3::PaintText() {
     }
 
     int readingLength = reading;
-    if (static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str())) == reading && this->lineBreaks[caretLine]) {
+    if (static_cast<int>(std::strlen(lines[caretLine].c_str())) == reading && this->lineBreaks[caretLine]) {
       readingLength = reading - 2;
     }
 
-    const int readingX = readingLength != 0 ? this->TextWidth(this->wrappedLines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
+    const int readingX = readingLength != 0 ? this->TextWidth(lines[caretLine].c_str(), readingLength, 0, 12, 0, 0) : 0;
 
     if (g_serverLanguage->candidate.size() != 0) {
       int gap = readingX - caretX;
