@@ -60,9 +60,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       ++matched;
       entry = node + 1;
       ++text;
-      if ((*entry & 0x80) != 0) {
-        accepted = matched;
-      }
+      accepted = (static_cast<signed char>(*entry) >= 0) ? accepted : matched;
     }
   }
 
