@@ -13,6 +13,11 @@
 CSmokeEffect::CSmokeEffect() : CEffect(44), visibleCount(1) {
 }
 
+// OFFSET: 0x00B76460
+// FUNCTION: fn_46093
+__declspec(noinline) CSmokeEffect::~CSmokeEffect() {
+}
+
 // OFFSET: 0x00B76540
 // FUNCTION: fn_19176
 void CSmokeEffect::Close() {

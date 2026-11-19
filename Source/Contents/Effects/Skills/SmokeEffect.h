@@ -11,6 +11,7 @@ class CSpriteParticle;
 class CSmokeEffect : public CEffect {
 public:
   CSmokeEffect();
+  ~CSmokeEffect() override;
 
   void Open() override;
   void OnProcess() override;
