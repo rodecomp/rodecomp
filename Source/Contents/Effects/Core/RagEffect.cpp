@@ -6970,9 +6970,10 @@ void CRagEffect::WhiteRingRippleSized(char size) {
   this->state.lastPrim->state.slots[1].alphaT = 100;
   this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
 
+  int slot1 = 1;
   for (int step = 0; step < 21; ++step) {
-    this->state.lastPrim->state.slots[1].height[step] = 0.0f;
-    this->state.lastPrim->state.slots[1].flag1[step] = 1;
+    this->state.lastPrim->state.slots[slot1].height[step] = 0.0f;
+    this->state.lastPrim->state.slots[slot1].flag1[step] = 1;
   }
 
   this->state.lastPrim->state.slots[2].life = 1;
