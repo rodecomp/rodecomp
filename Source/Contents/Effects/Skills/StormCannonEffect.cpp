@@ -7,6 +7,7 @@
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <string>
 
 // OFFSET: 0x0072CDC0
@@ -83,8 +84,7 @@ void CStormCannonEffect::OnProcess() {
   const float dz = this->position[2] - this->origin.z;
   const float travelled = SquareRoot(dy * dy + dx * dx + dz * dz);
   if (travelled > this->distance) {
-    const int alpha = this->Alpha() - 10;
-    this->Alpha() = alpha < 0 ? 0 : alpha;
+    this->Alpha() = std::max(this->Alpha() - 10, 0);
   }
 
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
