@@ -82,23 +82,19 @@ void UITagListBox::Paint() {
     }
   }
 
-  if (first < end) {
-    if ((this->plainTextMode & 255) == 0) {
-      for (int index = first; index < end; ++index) {
-        const std::string& line = this->lines[index];
-        const int y = (index - first) * this->lineHeight + 4;
-        this->DrawColoredText(
-          3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
-        );
-      }
-    } else {
-      for (int index = first; index < end; ++index) {
-        const int y = (index - first) * this->lineHeight + 4;
-        const std::string& line = this->lines[index];
-        this->DrawOutlinedText(
-          3, y, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
-        );
-      }
+  if (static_cast<std::uint8_t>(this->plainTextMode) == 0) {
+    for (int index = first; index < end; ++index) {
+      const std::string& line = this->lines[index];
+      this->DrawColoredText(
+        3, (index - first) * this->lineHeight + 4, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
+      );
+    }
+  } else {
+    for (int index = first; index < end; ++index) {
+      const std::string& line = this->lines[index];
+      this->DrawOutlinedText(
+        3, (index - first) * this->lineHeight + 4, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
+      );
     }
   }
 }
