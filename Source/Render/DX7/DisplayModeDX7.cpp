@@ -12,7 +12,7 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
     return {};
   }
 
-  if (deviceIndex >= DirectDrawEnumeration::DeviceCount()) {
+  if (DirectDrawEnumeration::DeviceCount() <= deviceIndex) {
     return {};
   }
 
