@@ -93,6 +93,11 @@ bool CEvilsPawEffect::IsAlive() {
   return true;
 }
 
+// INLINED
+static __forceinline vector3d Sum(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
 // OFFSET: 0x006FF070
 // FUNCTION: fn_06960
 void CEvilsPawEffect::OnProcess() {
@@ -102,26 +107,7 @@ void CEvilsPawEffect::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle) {
-      particle->SetTexture(this->textures[this->textureIndex].c_str());
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeZRotation(3.141592f);
-      const CView* view = g_modeMgr.GetGameMode()->camera;
-      rotation.AppendXRotation(view->camera.pitch / 180.0f * 3.141592f);
-
-      const float size = particle->scale;
-      matrix scale;
-      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-      scale.SetScale(size, size, 1.0f);
-
-      matrix result;
-      result.Compose(scale, rotation);
-      particle->transform = result;
-
-      particle->position = vector3d{this->position[0] + this->offset.x, this->position[1] + this->offset.y, this->position[2] + this->offset.z};
-    }
+    this->UpdateParticle(particle);
     ++particle->elapsedFrames;
   }
 
@@ -157,7 +143,7 @@ void CEvilsPawEffect::UpdateParticle(CParticle* particle) {
   matrix result;
   result.Compose(scale, rotation);
   particle->transform = result;
-  particle->position = vector3d{this->position[0] + this->offset.x, this->position[1] + this->offset.y, this->position[2] + this->offset.z};
+  particle->position = Sum(this->positionVector, this->offset);
 }
 
 // OFFSET: 0x006FF3E0
