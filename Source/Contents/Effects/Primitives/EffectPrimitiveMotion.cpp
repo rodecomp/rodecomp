@@ -5810,7 +5810,8 @@ bool CEffectPrim::PrimFieldFireflies() {
       continue;
     }
 
-    if (slot.height[7] < 99.0f) {
+    const float mode = slot.height[7];
+    if (mode < 99.0f) {
       ++slot.process;
       if (slot.flag1[2] == 23 && slot.process % 14 == 0) {
         ++slot.flag1[0];
@@ -5819,23 +5820,23 @@ bool CEffectPrim::PrimFieldFireflies() {
         }
       }
 
-      if (slot.height[7] == 0.0f) {
+      if (mode == 0.0f) {
         if (slot.process < 80 && this->render.position.y < slot.height[6]) {
           slot.alphaB += 2;
         }
-      } else if (slot.height[7] == 2.0f) {
+      } else if (mode == 2.0f) {
         if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (slot.height[7] == 3.0f) {
+      } else if (mode == 3.0f) {
         if (slot.process < 170) {
           ++slot.alphaB;
         }
-      } else if (slot.height[7] == 5.0f) {
+      } else if (mode == 5.0f) {
         if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (slot.height[7] == 11.0f || slot.height[7] == 12.0f || slot.height[7] == 13.0f || slot.height[7] == 14.0f) {
+      } else if (mode == 11.0f || mode == 12.0f || mode == 13.0f || mode == 14.0f) {
         if (slot.process < 70) {
           ++slot.alphaB;
         }
