@@ -66,7 +66,7 @@ namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
+    if (this->m_commands.end() == this->m_current) {
       this->m_commands.emplace_back();
       this->m_current = this->m_commands.end();
       return &this->m_commands.back();
@@ -336,11 +336,12 @@ void CGameMode::DrawMiniMapTriangle(float x, float y, float size, std::uint32_t 
   vertices[0].x = x;
   vertices[0].y = y - (size + size);
   vertices[1].x = x - SquareRoot(3.0f) * size;
-  vertices[1].y = y + size;
+  y += size;
+  vertices[1].y = y;
   vertices[2].x = SquareRoot(3.0f) * size + x;
-  vertices[2].y = y + size;
+  vertices[2].y = y;
   vertices[3].x = x - SquareRoot(3.0f) * size;
-  vertices[3].y = y + size;
+  vertices[3].y = y;
 
   vertices[0].z = topZ;
   vertices[0].rhw = 0.0999f;

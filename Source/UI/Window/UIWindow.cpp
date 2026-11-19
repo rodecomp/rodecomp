@@ -56,6 +56,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Layout/WindowCoordinates.h"
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Text/UITextViewer.h"
@@ -895,6 +896,16 @@ void UIWindow::PlaceBeside(UIWindow* anchor) {
   }
   this->Move(x - parentX, y - parentY);
 }
+
+// INLINED
+static __forceinline void MoveWindowToScreenPosition(UIWindow* window, int x, int y) {
+  int parentX;
+  int parentY;
+  WindowScreenPosition(window->parent, parentX, parentY);
+  window->Move(static_cast<unsigned>(x) - parentX, static_cast<unsigned>(y) - parentY);
+}
+
+// OFFSET: 0x00A7AB50
 
 // OFFSET: 0x00A81A30
 // FUNCTION: fn_16979
