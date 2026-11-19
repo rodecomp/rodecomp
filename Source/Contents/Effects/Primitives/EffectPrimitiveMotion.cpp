@@ -616,7 +616,8 @@ unsigned char CEffectPrim::AnimMotion() {
 
   if (this->state.repeatAnim == 0) {
     if ((this->state.pattern & 0x800u) != 0) {
-      if (this->render.curMotion == action->FrameCount(animation)) {
+      const unsigned frameCount = action->FrameCount(animation);
+      if (this->render.curMotion == frameCount) {
         --this->render.curMotion;
       }
     } else if (this->render.curMotion == action->FrameCount(animation)) {
