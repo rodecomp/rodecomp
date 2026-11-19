@@ -42,7 +42,8 @@ FontCache::FontCache() {
   Gdiplus::GdiplusStartup(&this->m_gdiplus, &this->m_startup, nullptr);
 }
 
-// INLINED
+// OFFSET: 0x0054D890
+// FUNCTION: fn_46418
 FontCache::~FontCache() {
   for (auto entry = this->m_fonts.begin(); entry != this->m_fonts.end(); ++entry) {
     DeleteObject(entry->font);
