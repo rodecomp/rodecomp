@@ -2135,7 +2135,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
     remaining = wrapped[line];
     unsigned int offset = 0;
     std::size_t position;
-    for (position = remaining.find(close); position != std::string::npos; position = remaining.find(close)) {
+    for (position = remaining.find('>'); position != std::string::npos; position = remaining.find('>')) {
       ++position;
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
@@ -2157,7 +2157,8 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
       if (line + 1 < wrapped.size() && wrapped[line + 1].find(close) != std::string::npos) {
         remaining.append(wrapped[line + 1]);
         wrapped[line + 1].swap(remaining);
-        wrapped[line] = wrapped[line].substr(0, offset);
+        std::string truncated = wrapped[line].substr(0, offset);
+        wrapped[line] = truncated;
       }
     }
   }
