@@ -2593,12 +2593,11 @@ void CPneumaticusProcellaEffect::OnProcess() {
     }
 
     CEZ2STRParticle* particle = emitter;
-    const float x = this->position[0] + emitter->offset.x;
-    const float y = this->position[1] + emitter->offset.y;
-    const float z = this->position[2] + emitter->offset.z;
-    particle->position.x = x;
-    particle->position.y = y;
-    particle->position.z = z;
+    vector3d position = {this->position[0], this->position[1], this->position[2]};
+    position += emitter->offset;
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     (*it)->Process(0.0f, -80.0f, 0.0f);
   }
 }
@@ -3231,9 +3230,7 @@ static __forceinline void OrbitServantEmitter(const CServantWeaponNewEffect* eff
   const float radians = emitter->angle / 180.0f * 3.141592f;
   const float sine = ClientSin(radians) * 13.0f;
   const float cosine = ClientCos(radians) * 13.0f;
-  emitter->position.z = sine + effect->position[2];
-  emitter->position.y = effect->position[1] - 10.0f;
-  emitter->position.x = cosine + effect->position[0];
+  emitter->position = vector3d{cosine + effect->position[0], effect->position[1] - 10.0f, sine + effect->position[2]};
 }
 
 // OFFSET: 0x00724900
@@ -3939,19 +3936,15 @@ __declspec(noinline) void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (emitter) {
     emitter->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
-    emitter->offset.x = 0.2f;
-    emitter->offset.y = -13.5f;
-    emitter->offset.z = 0.0f;
-    this->emitters.emplace_back(emitter);
+    emitter->offset = vector3d{0.2f, -13.5f, 0.0f};
+    this->emitters.push_back(std::move(emitter));
   }
 
   emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(FormatOwnedString("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy%02d.str", index));
-    emitter->offset.x = 0.2f;
-    emitter->offset.y = -13.5f;
-    emitter->offset.z = 0.0f;
-    this->emitters.emplace_back(emitter);
+    emitter->offset = vector3d{0.2f, -13.5f, 0.0f};
+    this->emitters.push_back(std::move(emitter));
   }
 
   this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
