@@ -9,7 +9,8 @@
 // FUNCTION: fn_05150
 CGuildEmblemReqBundle::CGuildEmblemReqBundle() = default;
 
-// INLINED
+// OFFSET: 0x0065C860
+// FUNCTION: fn_46444
 CGuildEmblemReqBundle::~CGuildEmblemReqBundle() = default;
 
 // OFFSET: 0x0065CA90
