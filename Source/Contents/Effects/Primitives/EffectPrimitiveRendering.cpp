@@ -4207,7 +4207,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
 }
 
 // INLINED
-static __forceinline void SetSphereCageCorner(vector3d& corner, float lateral, float depth, int tilt, int side, const vector3d& offset) {
+static __forceinline void SetSphereCageCorner(vector3d& corner, int lateral, float depth, int tilt, int side, const vector3d& offset) {
   const float along = depth * g_cosTable[tilt];
   corner = {
     lateral * g_cosTable[side] - along * g_sinTable[side] + offset.x, depth * g_sinTable[tilt] + offset.y,
