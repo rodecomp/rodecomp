@@ -34,20 +34,18 @@ void CCresciveBolt::Close() {
 void CCresciveBolt::Open() {
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;
-  float fromX;
-  float fromY;
-  float toX;
-  float toY;
-  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  float fromScreen[2];
+  float toScreen[2];
+  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromScreen[0], &fromScreen[1], &fromReciprocalDepth);
   const float* const toMatrix = g_modeMgr.GetGameMode()->camera->frame.view.values;
   const float* const toPosition = this->sourcePosition;
-  g_renderer->ProjectViewport(toPosition, toMatrix, &toX, &toY, &toReciprocalDepth);
+  g_renderer->ProjectViewport(toPosition, toMatrix, &toScreen[0], &toScreen[1], &toReciprocalDepth);
 
-  const float dx = toX - fromX;
-  const float dy = toY - fromY;
+  const float dx = toScreen[0] - fromScreen[0];
+  const float dy = toScreen[1] - fromScreen[1];
   const float length = SquareRoot(dy * dy + dx * dx);
   double angle = static_cast<float>(std::acos(static_cast<double>(-dx / length))) / 3.141592f * 180.0f;
-  if (toY > fromY) {
+  if (toScreen[1] > fromScreen[1]) {
     angle = 360.0 - angle;
   }
 
