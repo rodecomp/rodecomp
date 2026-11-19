@@ -13116,11 +13116,11 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item;
     item.identity[0] = record->type;
-    std::memcpy(item.cards, record->cards, sizeof(item.cards));
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
+    std::memcpy(item.cards, record->cards, sizeof(item.cards));
     item.SetItemId(record->itemId);
     const unsigned char flags = record->flags;
     item.identified = flags & 1;
