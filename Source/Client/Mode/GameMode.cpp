@@ -5770,7 +5770,7 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
 
       switch (header.type) {
       case 0xCF: {
-        std::vector<unsigned char> record(0x13);
+        std::vector<unsigned char> record(0x13, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveItemFallEntry(record.data());
