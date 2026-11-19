@@ -7924,6 +7924,7 @@ void CGameMode::InitializeState() {
   if (g_session.m_searchStoreInfoCreated) {
     g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
   }
+  g_windowMgr.EnsureWindow(WID_OPENROULLETTEWND);
 
   if (g_session.showCameraInfo) {
     g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
@@ -8105,6 +8106,7 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(WID_REPLAYCONTROLWND);
     if (replayState == 8) {
       g_windowMgr.replayControlWnd->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
+      Replay::Instance().SetState(7);
     }
   }
 
@@ -8113,7 +8115,7 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(WID_REPLAYRECCONTROLWND);
     g_windowMgr.replayRecordControlWnd->Move(Replay::Instance().recordingState, Replay::Instance().playbackState);
     g_windowMgr.replayRecordControlWnd->SendMsg(nullptr, UM_REPLAY_FRAMED_DATA, 0, 0, 0, 0);
-  } else if (replayState == 8) {
+  } else if (replayState == 8 && !g_replayAnimationScaling) {
     Replay::Instance().SetState(7);
   }
 
