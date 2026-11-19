@@ -1,4 +1,5 @@
 #include "Render/Primitives/DepthAlpha.h"
+#include "Render/Primitives/LightmappedBuffer.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Renderer.h"
 
@@ -29,21 +30,10 @@ ModelRenderCommand::ModelRenderCommand() : RenderCommand(0) {
   this->primitiveType = D3DPT_TRIANGLELIST;
 }
 
-struct LightmappedBuffer {
-  /* 0000 */ void* vertices;
-  /* 0004 */ int count;
-  /* 0008 */ void* indices;
-  void Clear();
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(LightmappedBuffer, indices) == 0x8);
-#endif
-
 // INLINED
 template <class T>
 inline void ReleaseArray(T*& buffer) {
-  delete[] static_cast<char*>(buffer);
+  delete[] buffer;
   buffer = nullptr;
 }
 

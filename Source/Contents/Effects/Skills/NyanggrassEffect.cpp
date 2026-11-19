@@ -10,24 +10,15 @@
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 
-#include <cstdlib>
-
 // OFFSET: 0x00707D70
 // FUNCTION: fn_07062
 CMultiTexParticle::CMultiTexParticle(vector3d position, int flags) : CParticle(position, flags) {
   this->Reset();
 }
 
-// INLINED
-CMultiTexParticle::~CMultiTexParticle() {
-  if (this->command.vertices) {
-    std::free(this->command.vertices);
-    this->command.vertices = nullptr;
-  }
-  if (this->command.indices) {
-    std::free(this->command.indices);
-    this->command.indices = nullptr;
-  }
+// OFFSET: 0x00707E80
+// FUNCTION: fn_46098
+__declspec(noinline) CMultiTexParticle::~CMultiTexParticle() {
 }
 
 // OFFSET: 0x00707F60
@@ -131,6 +122,39 @@ void CMultiTexParticle::Render(int column, int row) {
 CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), gridSize(0) {
 }
 
+// OFFSET: 0x007082F0
+// FUNCTION: fn_46099
+__declspec(noinline) CNyanggrassEffect::~CNyanggrassEffect() {
+}
+
+// OFFSET: 0x007083D0
+// FUNCTION: fn_46100
+__forceinline void CNyanggrassEffect::Init() {
+  for (int row = 0; row < this->gridSize; ++row) {
+    for (int column = 0; column < this->gridSize; ++column) {
+      CParticle* particle = CreateEZ2STRParticle(&this->positionVector, 1);
+      if (particle) {
+        CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
+        effect->effectId = this->id;
+        effect->columnIndex = 0;
+        effect->rowIndex = 0;
+        effect->groupIndex = 1;
+        effect->m_loop = true;
+        const vector3d origin = this->positionVector;
+        const int half = this->gridSize / 2;
+        const float x = static_cast<float>((column - half) * 5) + origin.x;
+        const float z = static_cast<float>((row - half) * 5) + origin.z;
+        effect->position.x = x;
+        effect->position.y = origin.y;
+        effect->position.z = z;
+        effect->InitParticleQuad(effect->vertices);
+        effect->Open("su_nyanggrass\\su_nyanggrass.str");
+        this->particles.push_back(particle);
+      }
+    }
+  }
+}
+
 // OFFSET: 0x007085B0
 // FUNCTION: fn_07072
 void CNyanggrassEffect::Close() {
@@ -158,29 +182,7 @@ void CNyanggrassEffect::Open() {
     break;
   }
 
-  for (int row = 0; row < this->gridSize; ++row) {
-    for (int column = 0; column < this->gridSize; ++column) {
-      CParticle* particle = CreateEZ2STRParticle(&this->positionVector, 1);
-      if (particle) {
-        CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
-        effect->effectId = this->id;
-        effect->columnIndex = 0;
-        effect->rowIndex = 0;
-        effect->groupIndex = 1;
-        effect->m_loop = true;
-        const vector3d origin = this->positionVector;
-        const int half = this->gridSize / 2;
-        const float x = static_cast<float>((column - half) * 5) + origin.x;
-        const float z = static_cast<float>((row - half) * 5) + origin.z;
-        effect->position.x = x;
-        effect->position.y = origin.y;
-        effect->position.z = z;
-        effect->InitParticleQuad(effect->vertices);
-        effect->Open("su_nyanggrass\\su_nyanggrass.str");
-        this->particles.push_back(particle);
-      }
-    }
-  }
+  this->Init();
 }
 
 // OFFSET: 0x00708820
@@ -194,10 +196,16 @@ bool CNyanggrassEffect::IsAlive() {
 void CNyanggrassEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (particle) {
-      static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
-    }
+    this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00708880
+// FUNCTION: fn_46101
+__forceinline void CNyanggrassEffect::UpdateParticle(CParticle* particle) {
+  if (particle) {
+    static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
   }
 }

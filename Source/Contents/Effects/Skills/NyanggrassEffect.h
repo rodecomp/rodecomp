@@ -3,7 +3,7 @@
 
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Particles/Particle.h"
-#include "Render/Primitives/LightmappedPrimitive.h"
+#include "Render/Primitives/LightmappedBuffer.h"
 
 #include <cstddef>
 #include <vector>
@@ -18,7 +18,7 @@ public:
   void AllocateVertices(int count);
   void Render(int column, int row);
 
-  /* 02BC */ LightmappedCommand command;
+  /* 02BC */ LightmappedBuffer command;
   /* 02D8 */ CTexture* texture1;
   /* 02DC */ CTexture* texture2;
   /* 02E0 */ float uv1[4][2];
@@ -30,6 +30,7 @@ public:
 class CNyanggrassEffect : public CEffect {
 public:
   CNyanggrassEffect();
+  ~CNyanggrassEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -39,6 +40,10 @@ public:
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int gridSize;
+
+private:
+  void Init();
+  void UpdateParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
