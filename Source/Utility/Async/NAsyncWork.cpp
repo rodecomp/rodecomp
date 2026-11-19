@@ -2,10 +2,12 @@
 
 #include <utility>
 
-// INLINED
-inline NRecycleObject::~NRecycleObject() = default;
+// OFFSET: 0x005BA3C0
+// FUNCTION: fn_46401
+NRecycleObject::~NRecycleObject() = default;
 
-// INLINED
+// OFFSET: 0x005BA360
+// FUNCTION: fn_46400
 NAsyncWork::~NAsyncWork() = default;
 
 // OFFSET: 0x005BAEE0
