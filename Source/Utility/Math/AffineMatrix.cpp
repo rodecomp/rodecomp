@@ -1,5 +1,8 @@
 #include "Utility/Math/AffineMatrix.h"
 
+#include "Contents/Map/MapSkyMgr.h"
+#include "Render/Projection/RenderProjection.h"
+
 #include <cmath>
 #include <cstring>
 
@@ -193,7 +196,7 @@ int matrix::IsIdentity() const {
 // OFFSET: 0x00554E10
 // FUNCTION: fn_45850
 void matrix::MakeTransform(const float* position, const float* rotaxis, float rotangle) {
-  const float omega = rotangle / 2.0f;
+  const float omega = rotangle * g_depthAverageHalf;
   const float s = static_cast<float>(sin(static_cast<double>(omega)));
   const float qx = rotaxis[0] * s;
   const float qy = rotaxis[1] * s;
@@ -213,15 +216,15 @@ void matrix::MakeTransform(const float* position, const float* rotaxis, float ro
   const float yz = qy * z2;
   const float zz = qz * z2;
 
-  this->values[0] = 1.0f - (yy + zz);
+  this->values[0] = g_projectionDepthNumerator - (yy + zz);
   this->values[1] = xy + wz;
   this->values[2] = xz - wy;
   this->values[3] = xy - wz;
-  this->values[4] = 1.0f - (xx + zz);
+  this->values[4] = g_projectionDepthNumerator - (xx + zz);
   this->values[5] = yz + wx;
   this->values[6] = xz + wy;
   this->values[7] = yz - wx;
-  this->values[8] = 1.0f - (xx + yy);
+  this->values[8] = g_projectionDepthNumerator - (xx + yy);
   this->values[9] = position[0];
   this->values[10] = position[1];
   this->values[11] = position[2];
