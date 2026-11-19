@@ -121,6 +121,41 @@ void CMagnumBreak::AdvanceWave(CParticle* wave) {
 }
 
 // OFFSET: 0x00B4A380
+// FUNCTION: fn_45972
+void CMagnumBreak::RenderRing(CParticle* ring) {
+  const int angle = static_cast<int>(ring->angle);
+  const float outer = ring->animationParameters[1];
+  const float inner = outer - ring->scale;
+  const float cos0 = g_cosTable[angle];
+  const float sin0 = g_sinTable[angle];
+  const float cos1 = g_cosTable[angle + 36];
+  const float sin1 = g_sinTable[angle + 36];
+  const vector3d innerStart = {cos0 * inner, sin0 * inner, 0.0f};
+  ring->vertices[0].x = innerStart.x;
+  ring->vertices[0].y = innerStart.y;
+  ring->vertices[0].z = innerStart.z;
+  const vector3d innerEnd = {cos1 * inner, sin1 * inner, 0.0f};
+  ring->vertices[1].x = innerEnd.x;
+  ring->vertices[1].y = innerEnd.y;
+  ring->vertices[1].z = innerEnd.z;
+  const vector3d outerStart = {cos0 * outer, sin0 * outer, 0.0f};
+  ring->vertices[2].x = outerStart.x;
+  ring->vertices[2].y = outerStart.y;
+  ring->vertices[2].z = outerStart.z;
+  const vector3d outerEnd = {cos1 * outer, sin1 * outer, 0.0f};
+  ring->vertices[3].x = outerEnd.x;
+  ring->vertices[3].y = outerEnd.y;
+  ring->vertices[3].z = outerEnd.z;
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.unused = false;
+  quad.depth = true;
+  quad.top = 1.0f;
+  quad.bottom = 0.0f;
+  quad.left = static_cast<float>(ring->columnIndex % 4) * 0.25f;
+  quad.right = quad.left + 0.25f;
+  ring->Render(quad);
+}
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
