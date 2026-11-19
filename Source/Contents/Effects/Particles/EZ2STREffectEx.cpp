@@ -32,20 +32,18 @@ void CEZ2STREffectEx::EnableTimeLimit() {
 float ScreenAngle(const float* from, const float* to, const float* matrix) {
   float fromDepth = 0.0f;
   float toDepth = 0.0f;
-  float fromY;
-  float fromX;
-  float toY;
-  float toX;
-  g_renderer->ProjectViewport(from, matrix, &fromX, &fromY, &fromDepth);
-  g_renderer->ProjectViewport(to, matrix, &toX, &toY, &toDepth);
+  float fromScreen[2];
+  float toScreen[2];
+  g_renderer->ProjectViewport(from, matrix, &fromScreen[0], &fromScreen[1], &fromDepth);
+  g_renderer->ProjectViewport(to, matrix, &toScreen[0], &toScreen[1], &toDepth);
 
-  const float dx = toX - fromX;
-  const float dy = toY - fromY;
+  const float dx = toScreen[0] - fromScreen[0];
+  const float dy = toScreen[1] - fromScreen[1];
   const float length = SquareRoot(dy * dy + dx * dx);
   if (0.0f == length) {
     return 0.0f;
   }
 
   const float angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
-  return fromY > toY ? 360.0f - angle : angle;
+  return fromScreen[1] > toScreen[1] ? 360.0f - angle : angle;
 }
