@@ -267,6 +267,7 @@ public:
   void UpdateLoopSounds();
   void AddSceneObject(CGameObject* object);
   void SendMousePointerPosition(float x, float y, int value);
+  void InitializeChatLog();
   void WriteChatLog(const char* text);
   bool IsEffectId990Group(int id);
   bool IsEffectId994Group(int id);

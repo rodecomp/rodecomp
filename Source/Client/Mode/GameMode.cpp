@@ -8946,8 +8946,13 @@ CGameActor* CGameMode::NewActor(int job) {
 // GLOBAL: gl_25393
 int g_hoverActorGid;
 
-// INLINED
+// OFFSET: 0x00CD8170
+// FUNCTION: fn_46324
 __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
+  if (!actor) {
+    return;
+  }
+
   UINameBalloonText*& itemBalloon = this->itemNameBalloon;
   this->EnsureNameBalloon(itemBalloon);
   CActorNameCard card = this->nameCard.Lookup(actor->render.accountId);
@@ -9813,6 +9818,31 @@ static_assert(sizeof(TalkWhisperSettingPacket) == 0x1B);
 static_assert(sizeof(TalkCameraPacket) == 0xF);
 static_assert(sizeof(TalkSelectPacket) == 8);
 
+// INLINED
+static __forceinline void PrepareChatLog(CGameMode* mode, char* directory) {
+  mode->chatLogLines = 0;
+  std::sprintf(directory, "%s\\Chat", g_applicationDirectory);
+  int index = 0;
+  if (_access(directory, 0) == 0 || _mkdir(directory) == 0) {
+    std::sprintf(g_chatLogPath, "%s\\Chat\\Chat.txt", g_applicationDirectory);
+    if (_access(g_chatLogPath, 0) == 0) {
+      do {
+        ++index;
+        std::sprintf(g_chatLogPath, "%s\\Chat\\Chat%03d.txt", g_applicationDirectory, index);
+      } while (_access(g_chatLogPath, 0) == 0);
+    }
+  }
+}
+
+// OFFSET: 0x00CD8650
+// FUNCTION: fn_46325
+void CGameMode::InitializeChatLog() {
+  if (g_session.IsAdminSubMode(7) != 0) {
+    char directory[2048];
+    PrepareChatLog(this, directory);
+  }
+}
+
 // OFFSET: 0x00CE4B90
 // FUNCTION: fn_21338
 void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
@@ -9868,18 +9898,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.IsAdminSubMode(7) != 0) {
         char directory[3000];
-        mode->chatLogLines = 0;
-        std::sprintf(directory, "%s\\Chat", g_applicationDirectory);
-        int index = 0;
-        if (_access(directory, 0) == 0 || _mkdir(directory) == 0) {
-          std::sprintf(g_chatLogPath, "%s\\Chat\\Chat.txt", g_applicationDirectory);
-          if (_access(g_chatLogPath, 0) == 0) {
-            do {
-              ++index;
-              std::sprintf(g_chatLogPath, "%s\\Chat\\Chat%03d.txt", g_applicationDirectory, index);
-            } while (_access(g_chatLogPath, 0) == 0);
-          }
-        }
+        PrepareChatLog(mode, directory);
       }
       std::sprintf(text, "Chatting Auto Save Start..");
     } else {
