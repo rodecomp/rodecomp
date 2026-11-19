@@ -38,13 +38,13 @@ void matrix::MakeRotation(const ModelRotationKey& key) {
 // OFFSET: 0x00541B30
 // FUNCTION: fn_01736
 void ModelRotationKey::Interpolate(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins) {
-  const float dot = ((second.rotation[1] * first.rotation[1] + second.rotation[0] * first.rotation[0]) + first.rotation[2] * second.rotation[2]) +
+  float magnitude = ((second.rotation[1] * first.rotation[1] + second.rotation[0] * first.rotation[0]) + first.rotation[2] * second.rotation[2]) +
                     first.rotation[3] * second.rotation[3];
-  float magnitude = dot;
+  bool flip = false;
   if (magnitude < 0.0f) {
     magnitude = -magnitude;
+    flip = true;
   }
-  const bool flip = dot < 0.0f;
   constexpr double epsilon = 0.000001;
   float firstWeight;
   float secondWeight;
