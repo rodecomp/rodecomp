@@ -27,7 +27,9 @@ bool CGameMode::PickScreenTerrain(int& column, int& row) {
   WorldRayQuery query;
   TerrainPickRay pick;
   float* ray = &pick.originX;
-  g_renderer->Ray(g_mouse.x, g_mouse.y, &this->camera->frame.eye.x, this->camera->frame.inverse.values, ray);
+  const float* inverse = this->camera->frame.inverse.values;
+  const float* origin = &this->camera->frame.eye.x;
+  g_renderer->Ray(g_mouse.x, g_mouse.y, origin, inverse, ray);
   query.Collect(ray, &this->scene->spatial);
   float nearest = 999999.0f;
 
