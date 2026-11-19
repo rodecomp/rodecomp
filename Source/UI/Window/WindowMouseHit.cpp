@@ -28,6 +28,9 @@
 
 #include <algorithm>
 
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>::operator++() noexcept;
+
 // INLINED
 static MessengerMember PartyMember(UIMiniPartyWnd* window) {
   return window->m_member;
