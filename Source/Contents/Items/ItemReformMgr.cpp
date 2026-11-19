@@ -24,7 +24,9 @@ static const char kItemReformSystemPath[] = "LuaFiles514\\Lua Files\\ItemReform\
 CItemReformMgr::CItemReformMgr() : m_maxMaterials(6) {
 }
 
-CItemReformMgr::~CItemReformMgr() {
+// OFFSET: 0x005F9A80
+// FUNCTION: fn_46473
+__declspec(noinline) CItemReformMgr::~CItemReformMgr() {
 }
 
 // OFFSET: 0x005F9350
