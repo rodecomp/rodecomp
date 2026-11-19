@@ -2472,10 +2472,11 @@ EfstActionMessage CEfstAction_CHARGINGPIERCE::GetEfstEndMessage() {
 // FUNCTION: fn_08490
 void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (argument3) {
-    this->OnEfstEnd(efstId, value, argument3, 0, actor);
-    if (CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAidIncludeMe(argument3)) {
+    const int targetId = argument3;
+    this->OnEfstEnd(efstId, value, targetId, 0, actor);
+    if (CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAidIncludeMe(targetId)) {
       EffectLists* effects = g_effectMgr;
-      effects->Spawn(argument3, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effects->Spawn(targetId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       const CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave(
         "effect\\DK_CHARGINGPIERCE3.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f,
@@ -2483,7 +2484,8 @@ void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int ar
       );
     }
   } else if (actor) {
-    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, EF_DK_CHARGINGPIERCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(actor->render.accountId, EF_DK_CHARGINGPIERCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       static_cast<CChargingPierceNewEffect*>(effect)->SetCount(value);
     }
   }
