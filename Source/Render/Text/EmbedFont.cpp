@@ -156,60 +156,32 @@ int CEmbedFont::Load(HANDLE* fontReference, const char* familyName, const char* 
     return result;
   }
   const char* rootUrl = this->m_rootUrl;
-  if (rootUrl == nullptr) {
-    return -3;
-  }
-  if (std::strcmp(rootUrl, "http://222.122.45.46") != 0 && std::strcmp(rootUrl, "http://fontrix.co.kr") != 0 &&
-      std::strcmp(rootUrl, "http://www.puccaracing.co.kr") != 0 && std::strcmp(rootUrl, "http://www.ragnarok.co.kr") != 0) {
-    return -3;
-  }
-  const std::string familyNameText = familyName;
-  std::string pathText = path == nullptr ? familyNameText : path;
-  std::wstring wideFamilyName = ToWideString(familyNameText);
-  std::wstring widePath = ToWideString(pathText);
-  std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
-  TTLOADINFO loadInfo;
-  loadInfo.usStructSize = sizeof(TTLOADINFO);
-  loadInfo.pusRefStr = reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(wideRootUrl.c_str()));
-  loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
-  FILE* file = _wfopen(widePath.c_str(), L"rb");
-  if (file == nullptr) {
-    return -2;
-  }
-  ULONG privStatus = 2;
-  ULONG status = 1;
-  typedef LONG(WINAPI * TTLoadEmbeddedFontProc)(HANDLE*, ULONG, ULONG*, ULONG, ULONG*, READEMBEDPROC, LPVOID, LPWSTR,
-                                                 LPSTR, TTLOADINFO*);
-  TTLoadEmbeddedFontProc loadEmbeddedFont;
-  if (this->m_module == nullptr ||
-      (loadEmbeddedFont = reinterpret_cast<TTLoadEmbeddedFontProc>(GetProcAddress(this->m_module, "TTLoadEmbeddedFont"))) ==
-          nullptr) {
-    result = 0;
-  } else {
-    LONG error = loadEmbeddedFont(fontReference, TTLOAD_PRIVATE, &privStatus, LICENSE_EDITABLE, &status,
-                                  ReadEmbedFontStream, file, const_cast<wchar_t*>(wideFamilyName.c_str()),
-                                  const_cast<char*>(familyNameText.c_str()), &loadInfo);
-    if (error < 0) {
-      result = -2;
-    } else if (error == 0) {
-      result = 1;
-    } else if (error == 0x10f) {
-      result = 2;
-    } else if (error == 0x10e) {
-      result = 2;
-    } else if (error == 0x100) {
-      result = -5;
-    } else if (error == 0x102) {
-      result = -4;
-    } else if (error == 0x11c) {
-      result = -3;
-    } else if (error == 0x11a) {
-      result = -3;
-    } else {
-      result = -1;
+  if (rootUrl != nullptr &&
+      (std::strcmp(rootUrl, "http://222.122.45.46") == 0 || std::strcmp(rootUrl, "http://fontrix.co.kr") == 0 ||
+       std::strcmp(rootUrl, "http://www.puccaracing.co.kr") == 0 || std::strcmp(rootUrl, "http://www.ragnarok.co.kr") == 0)) {
+    const std::string familyNameText = familyName;
+    std::string pathText = path == nullptr ? familyNameText : path;
+    std::wstring wideFamilyName = ToWideString(familyNameText);
+    std::wstring widePath = ToWideString(pathText);
+    std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
+    TTLOADINFO loadInfo;
+    loadInfo.usStructSize = sizeof(TTLOADINFO);
+    loadInfo.pusRefStr = reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(wideRootUrl.c_str()));
+    loadInfo.usRefStrSize = static_cast<unsigned short>(wideRootUrl.size());
+    FILE* file = _wfopen(widePath.c_str(), L"rb");
+    if (file == nullptr) {
+      return -2;
     }
+    LPWSTR windowsFamily = const_cast<wchar_t*>(wideFamilyName.c_str());
+    ULONG privStatus = 2;
+    LPSTR macFamily = const_cast<char*>(familyNameText.c_str());
+    ULONG status = 1;
+    result = this->LoadEmbeddedFont(fontReference, TTLOAD_PRIVATE, &privStatus, LICENSE_EDITABLE, &status,
+                                    ReadEmbedFontStream, file, windowsFamily, macFamily, &loadInfo);
+    fclose(file);
+  } else {
+    return -3;
   }
-  fclose(file);
   return result;
 }
 
