@@ -13,7 +13,7 @@
 // FUNCTION: fn_12503
 CFlyingShipRouteInfo::CFlyingShipRouteInfo()
     : unknown_0010(0), unknown_0014(0), segmentIndex(0), segmentProgress(0), segmentLength(0), travelledDistance(0), routeReset(1), routeType(0), lineColor(0),
-      routeState(0) {
+      m_moving(0), m_routeBuilt(0) {
 }
 
 // OFFSET: 0x00910A70
