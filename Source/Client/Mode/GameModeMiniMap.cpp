@@ -5,6 +5,7 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Session/Session.h"
 #include "Contents/Map/TownInfoMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "File/File.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"
@@ -383,23 +384,24 @@ void CGameMode::DrawMiniMapMarker(
   const int height = this->scene->terrain->height;
   const int longest = width >= height ? width : height;
   const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
-  const double mapWidth = static_cast<float>(width) * 128.0f / static_cast<float>(longest);
-  const double mapHeight = static_cast<float>(height) * 128.0f / static_cast<float>(longest);
-  const float markerX = static_cast<float>(x);
-  const float markerY = static_cast<float>(y);
-  if (markerX < 0.0f || markerY < 0.0f) {
+  const float widthF = static_cast<float>(width);
+  const float longestF = static_cast<float>(longest);
+  const double mapWidth = widthF * 128.0f / longestF;
+  const float heightF = static_cast<float>(height);
+  const double mapHeight = heightF * 128.0f / longestF;
+  if (static_cast<float>(x) < 0.0f || static_cast<float>(y) < 0.0f) {
     return;
   }
 
-  const float marginX = (128.0f - static_cast<float>(mapWidth)) * 0.5f;
+  const float marginX = (128.0f - static_cast<float>(mapWidth)) * g_depthAverageHalf;
   const float viewWidth = view.right - view.left;
   const float viewLeft = view.left * 128.0f / viewWidth;
-  const float marginY = (128.0f - static_cast<float>(mapHeight)) * 0.5f;
-  const double offsetX = (static_cast<double>(static_cast<float>(x) * static_cast<float>(mapWidth) / static_cast<float>(width)) + marginX) / viewWidth;
+  const float marginY = (128.0f - static_cast<float>(mapHeight)) * g_depthAverageHalf;
+  const double offsetX = (static_cast<double>(static_cast<float>(x) * static_cast<float>(mapWidth) / widthF) + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
   const float viewTop = view.top * 128.0f / viewHeight;
   const double offsetY =
-    (mapHeight - static_cast<double>(static_cast<float>(y) * static_cast<float>(mapHeight) / static_cast<float>(height)) + marginY) / viewHeight;
+    (mapHeight - static_cast<double>(static_cast<float>(y) * static_cast<float>(mapHeight) / heightF) + marginY) / viewHeight;
   const double left = originX - 64.0;
   double drawX = (left - viewLeft) + offsetX;
   double drawY = (16.0 - viewTop) + offsetY;
