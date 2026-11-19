@@ -255,11 +255,7 @@ UIBookWnd::UIBookWnd()
 
 // OFFSET: 0x008C7860
 // FUNCTION: fn_11940
-UIEquipWnd::UIEquipWnd() : UIFrameWnd(0) {
-  this->swapWindow = nullptr;
-  this->swapState = 0;
-  this->swapButton = 0;
-  this->unequipButton = 0;
+UIEquipWnd::UIEquipWnd() : UIFrameWnd(0), swapWindow(nullptr), swapState(0), swapButton(0), unequipButton(0) {
   this->abilityButton = 0;
   this->m_placement = nullptr;
   this->m_updateTick = timeGetTime();
