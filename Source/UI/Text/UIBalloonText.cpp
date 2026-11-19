@@ -295,8 +295,6 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
     this->iconName = path;
     if (!framed) {
       this->Resize(this->nameWidth + 25, std::max(this->geometry.height, 24));
-      this->Invalidate();
-      return;
     }
   }
 
