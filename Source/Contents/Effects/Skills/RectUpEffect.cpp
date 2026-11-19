@@ -23,6 +23,11 @@ __forceinline int ClampedRandom(int range) {
 CRectUpEffect::CRectUpEffect() : CEffect(1088) {
 }
 
+// OFFSET: 0x00709FF0
+// FUNCTION: fn_46073
+__declspec(noinline) CRectUpEffect::~CRectUpEffect() {
+}
+
 // OFFSET: 0x0070A410
 // FUNCTION: fn_07100
 void CRectUpEffect::InitEvents() {

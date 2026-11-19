@@ -13,6 +13,7 @@ class CParticle;
 class CRectUpEffect : public CEffect {
 public:
   CRectUpEffect();
+  ~CRectUpEffect() override;
 
   void Open() override;
   void OnProcess() override;
