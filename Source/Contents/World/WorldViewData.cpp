@@ -351,6 +351,7 @@ CWorldViewMgr::CWorldViewMgr() {
 }
 
 // OFFSET: 0x006152E0
+// FUNCTION: fn_46320
 CWorldViewMgr::~CWorldViewMgr() {
   this->ClearMarks();
   this->ClearLevels();
@@ -497,6 +498,7 @@ void CWorldViewMgr::Draw(int unused, int x, int y, int width, int height) {
 }
 
 // OFFSET: 0x00617090
+// FUNCTION: fn_46321
 __forceinline WorldViewRecord* CWorldViewMgr::FindMark(const char* name) {
   return FindRecord(this->marks, name);
 }
@@ -581,6 +583,7 @@ int CWorldViewMgr::SelectCurrentWorld() {
 }
 
 // OFFSET: 0x006175F0
+// FUNCTION: fn_46322
 __forceinline WorldViewRecord* CWorldViewMgr::FindLevel(const char* name) {
   return FindRecord(this->levels, name);
 }
