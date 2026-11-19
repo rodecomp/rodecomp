@@ -235,9 +235,7 @@ bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) c
     const vector3d& playerPos = mode->scene->player->render.position;
     const vector3d& position = this->render.position;
     const vector3d delta = {playerPos.x - position.x, playerPos.y - position.y, playerPos.z - position.z};
-    targetPos.x = position.x - delta.x;
-    targetPos.y = position.y - delta.y;
-    targetPos.z = position.z - delta.z;
+    targetPos = vector3d{position.x - delta.x, position.y - delta.y, position.z - delta.z};
   }
 
   return found;
