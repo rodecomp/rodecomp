@@ -71,9 +71,9 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
 // FUNCTION: fn_19723
 void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
-  const __time32_t currentTime = static_cast<__time32_t>(static_cast<std::int64_t>(now) / 10000000);
-  const int seconds = static_cast<int>(_difftime32(this->endTime->seconds, currentTime));
-  this->seconds = seconds;
+  const std::int64_t currentTime = static_cast<std::int64_t>(now) / 10000000;
+  this->seconds = static_cast<unsigned int>(_difftime32(this->endTime->seconds, static_cast<__time32_t>(currentTime)));
+  const int seconds = this->seconds;
 
   if (seconds >= 3600) {
     char text[256];
