@@ -340,14 +340,13 @@ void CCaneOfEvilEyeEffect::ProcessParticle(CEZ2STRParticle* particle) {
     const float z = this->position[2] + particle->offsetZ;
 
     const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-    const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
-    const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10];
-    const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
+    const vector3d viewPos = {y * view[3] + x * view[0] + z * view[6] + view[9], y * view[4] + x * view[1] + z * view[7] + view[10],
+                              y * view[5] + x * view[2] + z * view[8] + view[11]};
 
     const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-    const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
-                            viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10],
-                            viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11]};
+    const vector3d world = {viewPos.y * inverse[3] + viewPos.x * inverse[0] + viewPos.z * inverse[6] + inverse[9],
+                            viewPos.y * inverse[4] + viewPos.x * inverse[1] + viewPos.z * inverse[7] + inverse[10],
+                            viewPos.y * inverse[5] + viewPos.x * inverse[2] + viewPos.z * inverse[8] + inverse[11]};
     particle->position = world;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
