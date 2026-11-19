@@ -11,6 +11,8 @@ class CSprRes;
 class CSpriteParticle : public CParticle {
 public:
   CSpriteParticle(vector3d position, int flags);
+  ~CSpriteParticle() override;
+  void ScaleByActorFadePulse(float& scale) const;
   void Reset();
   void UpdateFrame();
   void SetAction(const char* name);

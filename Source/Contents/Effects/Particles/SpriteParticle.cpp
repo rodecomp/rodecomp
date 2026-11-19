@@ -65,6 +65,19 @@ CSpriteParticle::CSpriteParticle(vector3d position, int flags)
   this->Reset();
 }
 
+// OFFSET: 0x00B40CA0
+// FUNCTION: fn_45983
+__declspec(noinline) CSpriteParticle::~CSpriteParticle() {
+}
+
+// OFFSET: 0x00B40D60
+// FUNCTION: fn_45984
+__forceinline void CSpriteParticle::ScaleByActorFadePulse(float& scale) const {
+  if (CRenderObject* actor = FindRenderObject(this->actorId)) {
+    actor->ScaleByFadePulse(scale);
+  }
+}
+
 // OFFSET: 0x00B40D90
 // FUNCTION: fn_18863
 void CSpriteParticle::Reset() {
@@ -143,9 +156,7 @@ void CSpriteParticle::Draw(char mode) {
   float distance;
   g_renderer->ProjectViewport(&this->position.x, view, &screenX, &screenY, &distance);
   float scaleDistance = g_renderer->ScaleDistance(distance);
-  if (CRenderObject* renderObject = FindRenderObject(this->actorId)) {
-    renderObject->ScaleByFadePulse(scaleDistance);
-  }
+  this->ScaleByActorFadePulse(scaleDistance);
 
   const ActionFrame& frame = action->Frame(this->animation, this->frame);
   for (int i = 0; i < frame.cellCount; ++i) {
