@@ -1,4 +1,5 @@
 #include "Render/Projection/ScreenGeometry.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -61,8 +62,6 @@ void DrawDashedScreenLine(
   const float dashY = static_cast<float>(dashLength) * directionY;
   const float sideX = cosine * static_cast<float>(thickness);
   const float sideY = sine * static_cast<float>(thickness);
-  const float halfDashX = dashX * 0.5f;
-  const float halfDashY = dashY * 0.5f;
   float currentX = startX;
   float currentY = startY;
   float nextX = dashX + currentX;
@@ -72,8 +71,8 @@ void DrawDashedScreenLine(
   while (distance < length) {
     DrawScreenQuad(currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, texture, color);
 
-    currentX = halfDashX + nextX;
-    currentY = halfDashY + nextY;
+    currentX = dashX * g_depthAverageHalf + nextX;
+    currentY = dashY * g_depthAverageHalf + nextY;
     nextX = dashX + currentX;
     nextY = dashY + currentY;
     distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
