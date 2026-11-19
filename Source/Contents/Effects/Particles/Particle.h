@@ -128,6 +128,8 @@ public:
 
   void Clear();
   std::string ResolvePath(const std::string& name);
+  matrix& GetScreenRotation(matrix& result);
+  bool HasScreenRotation();
   void Open(std::string name);
   void Restart();
   void Load(const std::string& name);

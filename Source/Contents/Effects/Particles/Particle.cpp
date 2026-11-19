@@ -162,6 +162,22 @@ std::string CEZ2STRParticle::ResolvePath(const std::string& name) {
   return name;
 }
 
+// OFFSET: 0x00B3D470
+// FUNCTION: fn_45986
+matrix& CEZ2STRParticle::GetScreenRotation(matrix& result) {
+  result.Identity();
+  if (this->m_angle > 0.0f) {
+    result.AppendZRotation(ToRadians(this->m_angle));
+  }
+  if (this->m_pitch > 0.0f) {
+    result.AppendXRotation(ToRadians(this->m_pitch));
+  }
+  if (this->m_yaw > 0.0f) {
+    result.AppendYRotation(ToRadians(this->m_yaw));
+  }
+  return result;
+}
+
 // OFFSET: 0x00B3D540
 // FUNCTION: fn_18817
 void CEZ2STRParticle::Clear() {
@@ -222,6 +238,12 @@ void CEZ2STRParticle::Restart() {
   }
 
   SecureZeroMemory(this->m_transforms, sizeof(this->m_transforms));
+}
+
+// OFFSET: 0x00B3D770
+// FUNCTION: fn_45987
+bool CEZ2STRParticle::HasScreenRotation() {
+  return this->m_angle > 0.0f || this->m_pitch > 0.0f || this->m_yaw > 0.0f;
 }
 
 // OFFSET: 0x00B3D7A0
