@@ -558,7 +558,8 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     balloon->m_textColor = 0xFFFFFF;
     balloon->m_outlineColor = 0;
   }
-  this->m_balloon->Move((this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX, screenY + balloonY);
+  const int balloonX = (this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX;
+  this->m_balloon->Move(balloonX, screenY + balloonY);
   this->Invalidate();
 
   if (this->m_selectedRow < 0) {
@@ -571,11 +572,10 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     }
   } else {
     const int key = g_windowMgr.keyCode;
-    const int modifier = g_windowMgr.modifierKey;
-    if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
+    if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
       mode = 3;
     } else if (key == 0x20 || key == 0x90) {
-      if (modifier != 0) {
+      if (g_windowMgr.modifierKey != 0) {
         mode = this->CheckHotkeyConflict();
       } else {
         mode = 2;
@@ -583,7 +583,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     } else if (mode == 4) {
       if (key == 0x14) {
         mode = 3;
-      } else if (modifier != 0 || g_windowMgr.IsSharedWindowId(key)) {
+      } else if (g_windowMgr.modifierKey != 0 || g_windowMgr.IsSharedWindowId(key)) {
         mode = this->CheckHotkeyConflict();
       } else {
         mode = 3;
