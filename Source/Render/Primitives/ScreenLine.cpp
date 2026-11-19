@@ -339,44 +339,46 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   if (this->selectedRecord->mapIndex < 100) {
     const WorldViewRecord* record = this->selectedRecord;
+    const int right = record->screenRight;
     const int left = record->screenLeft;
     const int top = record->screenTop;
-    const int right = record->screenRight;
     const int bottom = record->screenBottom;
     this->DrawRoundedOutline(left, top, right - left, bottom - top, g_worldMapNameColor);
   }
 
   {
     const WorldViewRecord* record = this->selectedRecord;
+    const int right = record->right;
     const int left = record->left;
     const int top = record->top;
-    const int right = record->right;
     const int bottom = record->bottom;
     this->DrawRoundedOutline(left, top, right - left, bottom - top, g_worldMapNameColor);
   }
 
-  WorldViewRecord* record = this->selectedRecord;
-  const WorldViewArea savedArea = record->area;
-
-  bool hasKafraService;
   {
-    const std::string mapName = record->name;
-    hasKafraService = g_kafraServiceMapList.find(mapName) != g_kafraServiceMapList.end();
-  }
-  if (hasKafraService) {
-    WorldViewRecord* current = this->selectedRecord;
-    if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
-      const MiniMapPosition offset = g_exceptionMiniMapPosList[current->name];
-      current->left = static_cast<int>(static_cast<float>(current->left) + offset.x);
-      current->top = static_cast<int>(static_cast<float>(current->top) + offset.y);
-      current->right = static_cast<int>(static_cast<float>(current->right) + offset.x);
-      current->bottom = static_cast<int>(static_cast<float>(current->bottom) + offset.y);
+    WorldViewRecord* record = this->selectedRecord;
+    const WorldViewArea savedArea = record->area;
+
+    bool hasKafraService;
+    {
+      const std::string mapName = record->name;
+      hasKafraService = g_kafraServiceMapList.find(mapName) != g_kafraServiceMapList.end();
     }
+    if (hasKafraService) {
+      WorldViewRecord* current = this->selectedRecord;
+      if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
+        const MiniMapPosition offset = g_exceptionMiniMapPosList[current->name];
+        current->left = static_cast<int>(static_cast<float>(current->left) + offset.x);
+        current->top = static_cast<int>(static_cast<float>(current->top) + offset.y);
+        current->right = static_cast<int>(static_cast<float>(current->right) + offset.x);
+        current->bottom = static_cast<int>(static_cast<float>(current->bottom) + offset.y);
+      }
+    }
+
+    this->selectedRecord->area = savedArea;
   }
 
-  this->selectedRecord->area = savedArea;
-
-  record = this->selectedRecord;
+  WorldViewRecord* record = this->selectedRecord;
   int x = record->right + 10;
   int y = record->top + 10;
   if (x + 130 > g_renderer->viewport.width) {
@@ -392,23 +394,25 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     delete previous;
   }
 
-  tagRECT area = {x, y, x + 130, y + 130};
-  this->FillSurface(0xFFFF00FF, &area);
-
-  std::string name = this->selectedRecord->name;
-  if (name.size() > 4) {
-    name.resize(name.size() - 4);
-  }
-
-  this->DrawOutlinedText(x + 3, y + 115, name.c_str(), 0, 0xFFFFFF, 0x5C5C5C, 0, 12, 1, 0);
-
   {
-    std::string path = "유저인터페이스\\map\\";
-    path += name;
-    path += ".bmp";
-    this->previewTexture = g_texMgr.Load(path.c_str(), 0, true, true, false);
-  }
+    tagRECT area = {x, y, x + 130, y + 130};
+    this->FillSurface(0xFFFF00FF, &area);
 
-  name = g_session.GetMapDisplayName(this->selectedRecord->name.c_str());
-  this->DrawOutlinedText(x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
+    std::string name = this->selectedRecord->name;
+    if (name.size() > 4) {
+      name.resize(name.size() - 4);
+    }
+
+    this->DrawOutlinedText(x + 3, y + 115, name.c_str(), 0, 0xFFFFFF, 0x5C5C5C, 0, 12, 1, 0);
+
+    {
+      std::string path = "유저인터페이스\\map\\";
+      path += name;
+      path += ".bmp";
+      this->previewTexture = g_texMgr.Load(path.c_str(), 0, true, true, false);
+    }
+
+    name = g_session.GetMapDisplayName(this->selectedRecord->name.c_str());
+    this->DrawOutlinedText(x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
+  }
 }
