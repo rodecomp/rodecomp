@@ -389,14 +389,16 @@ float CBarterMarketItemMgr::GetTotalAmount()
 // GLOBAL: gl_24815
 CExpandedBarterMarketItemMgr* g_expandedBarterMarketItemMgr;
 
-// INLINED
+// OFFSET: 0x005D8EB0
+// FUNCTION: fn_46453
 CExpandedBarterMarketItemMgr::CExpandedBarterMarketItemMgr() : total(0)
 {
   this->initialized = true;
 }
 
-// INLINED
-CExpandedBarterMarketItemMgr::~CExpandedBarterMarketItemMgr()
+// OFFSET: 0x005D9590
+// FUNCTION: fn_46454
+__declspec(noinline) CExpandedBarterMarketItemMgr::~CExpandedBarterMarketItemMgr()
 {
 }
 
