@@ -355,6 +355,24 @@ static float SurfacePixelAlpha(int value) {
   return alpha > 0.97f ? 1.0f : alpha;
 }
 
+// OFFSET: 0x005476F0
+// FUNCTION: fn_45919
+void CDCBitmap::FilterPixel1555(int filter, int pixel, unsigned int* red, unsigned int* green, unsigned int* blue) {
+  *red = (pixel >> 7) & 0xF8;
+  *green = (pixel >> 2) & 0xF8;
+  *blue = (pixel & 0x1F) << 3;
+  this->ApplyPixelFilter(filter, red, green, blue);
+}
+
+// OFFSET: 0x00547740
+// FUNCTION: fn_45920
+void CDCBitmap::FilterPixel4444(int filter, int pixel, unsigned int* red, unsigned int* green, unsigned int* blue) {
+  *red = (pixel >> 4) & 0xF0;
+  *green = pixel & 0xF0;
+  *blue = (pixel & 0xF) << 4;
+  this->ApplyPixelFilter(filter, red, green, blue);
+}
+
 // OFFSET: 0x005460B0
 // FUNCTION: fn_01839
 void CDCBitmap::DrawSurface(
@@ -387,10 +405,7 @@ void CDCBitmap::DrawSurface(
           }
 
           const float alpha = SurfacePixelAlpha(value);
-          red = (value >> 4) & 0xF0;
-          green = value & 0xF0;
-          blue = (value & 0xF) << 4;
-          this->ApplyPixelFilter(filter, &red, &green, &blue);
+          this->FilterPixel4444(filter, value, &red, &green, &blue);
 
           for (int dy = 0; dy < scaleY; ++dy) {
             for (int dx = 0; dx < scaleX; ++dx) {
@@ -421,10 +436,7 @@ void CDCBitmap::DrawSurface(
           }
 
           const float alpha = SurfacePixelAlpha(value);
-          red = (value >> 4) & 0xF0;
-          green = value & 0xF0;
-          blue = (value & 0xF) << 4;
-          this->ApplyPixelFilter(filter, &red, &green, &blue);
+          this->FilterPixel4444(filter, value, &red, &green, &blue);
 
           if (!&pixels[(y + (row + 1) * scaleY - 1) * width + x + column * scaleX + scaleX - 1]) {
             continue;
@@ -460,10 +472,7 @@ void CDCBitmap::DrawSurface(
             continue;
           }
 
-          red = (value >> 7) & 0xF8;
-          green = (value >> 2) & 0xF8;
-          blue = (value & 0x1F) << 3;
-          this->ApplyPixelFilter(filter, &red, &green, &blue);
+          this->FilterPixel1555(filter, value, &red, &green, &blue);
 
           for (int dy = 0; dy < scaleY; ++dy) {
             for (int dx = 0; dx < scaleX; ++dx) {
@@ -485,10 +494,7 @@ void CDCBitmap::DrawSurface(
             continue;
           }
 
-          red = (value >> 7) & 0xF8;
-          green = (value >> 2) & 0xF8;
-          blue = (value & 0x1F) << 3;
-          this->ApplyPixelFilter(filter, &red, &green, &blue);
+          this->FilterPixel1555(filter, value, &red, &green, &blue);
 
           if (!&pixels[(y + (row + 1) * scaleY - 1) * width + x + column * scaleX + scaleX - 1]) {
             continue;

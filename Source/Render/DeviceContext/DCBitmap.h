@@ -44,6 +44,8 @@ public:
   void UpdateCache();
   HGDIOBJ Create(int width, int height);
   void ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue);
+  void FilterPixel1555(int filter, int pixel, unsigned int* red, unsigned int* green, unsigned int* blue);
+  void FilterPixel4444(int filter, int pixel, unsigned int* red, unsigned int* green, unsigned int* blue);
   void SetAlpha(unsigned char maxLuminance);
   // INLINED
   void SetAlpha(bool alpha) {
