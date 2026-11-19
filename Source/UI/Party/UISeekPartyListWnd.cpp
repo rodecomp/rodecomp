@@ -657,17 +657,19 @@ void UISeekPartyListWnd::SelectRegion(int region) {
   this->m_mapCombo->Clear();
 
   auto it = this->m_regionMaps.find(region);
-  if (it != this->m_regionMaps.end()) {
-    std::vector<SeekPartyMapEntry> maps = it->second;
-    for (auto entryIt = maps.begin(), entryEnd = maps.end(); entryIt != entryEnd; ++entryIt) {
-      SeekPartyMapEntry entry = *entryIt;
-      this->m_mapCombo->AddOption(entry.name.c_str(), entry.color);
-    }
-
-    this->m_mapCombo->Select(0);
-    this->m_mapIndex = 0;
-    this->Invalidate();
+  if (it == this->m_regionMaps.end()) {
+    return;
   }
+
+  std::vector<SeekPartyMapEntry> maps = it->second;
+  for (auto entryIt = maps.begin(), entryEnd = maps.end(); entryIt != entryEnd; ++entryIt) {
+    SeekPartyMapEntry entry = *entryIt;
+    this->m_mapCombo->AddOption(entry.name.c_str(), entry.color);
+  }
+
+  this->m_mapCombo->Select(0);
+  this->m_mapIndex = 0;
+  this->Invalidate();
 }
 
 // OFFSET: 0x00945FB0
