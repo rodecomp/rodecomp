@@ -757,6 +757,7 @@ __forceinline void GrannyAnimationLibrary::InstantiateModel(GrannyModelInstance*
 }
 
 // OFFSET: 0x00759840
+// FUNCTION: fn_45855
 __forceinline granny_animation* GrannyAnimationLibrary::LoadAnimation(const GrannyModelInstance* instance, char* name, const char* suffix) {
   granny_animation* animation = nullptr;
   if (char* extension = std::strchr(name, '.')) {
