@@ -123,7 +123,8 @@ __forceinline void __stdcall CSoulUnityEffect::RenderParticle(CParticle* particl
   }
 
   const float left = g_textureOffsetX / particle->texture->TextureWidth();
-  const float right = (particle->texture->Width() + g_textureOffsetX) / particle->texture->TextureWidth();
+  const float width = static_cast<float>(particle->texture->Width());
+  const float right = (width + g_textureOffsetX) / particle->texture->TextureWidth();
   const float top = g_textureOffsetY / particle->texture->TextureHeight();
   const float bottom = (particle->texture->Height() + g_textureOffsetY) / particle->texture->TextureHeight();
   particle->Render(true, bottom, top, left, right, false, true);
