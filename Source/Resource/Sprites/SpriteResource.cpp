@@ -74,13 +74,13 @@ bool CSprRes::Load(const char* name) {
   }
 
   std::uint16_t trueColorCount;
+  std::uint16_t dimensions[2];
 
   if (header.version >= 0x0200) {
     file.Read(&trueColorCount, sizeof(trueColorCount));
   }
 
   for (int index = 0; index < this->indexedCount; ++index) {
-    std::uint16_t dimensions[2];
     file.Read(dimensions, sizeof(dimensions));
     auto* image = new SpriteRleImage{};
     image->surface = nullptr;
@@ -172,7 +172,6 @@ bool CSprRes::Load(const char* name) {
 
   if (header.version >= 0x0200) {
     for (unsigned index = 0; index < trueColorCount; ++index) {
-      std::uint16_t dimensions[2];
       file.Read(dimensions, sizeof(dimensions));
       auto* image = new SpriteRleImage{};
       image->width = static_cast<std::int16_t>(dimensions[0]);
