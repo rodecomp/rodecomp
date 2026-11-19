@@ -592,8 +592,9 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_confirmedRecipientEdit->labelBold = 1;
   this->m_confirmedRecipientEdit->labelOffsetX = 1;
   this->m_confirmedRecipientEdit->labelOffsetY = 1;
-  this->m_confirmedRecipientEdit->disabled = 1;
-  this->m_confirmedRecipientEdit->Invalidate();
+  UIEditCtrl_Custom* recipientEdit = this->m_confirmedRecipientEdit;
+  recipientEdit->disabled = 1;
+  recipientEdit->Invalidate();
   this->m_confirmedRecipientEdit->Show(0);
   this->AddChild(this->m_confirmedRecipientEdit);
 
@@ -609,12 +610,13 @@ void UIRodexComposeWnd::OnCreate(int, int) {
       static_cast<float>(this->m_confirmRecipientButton->geometry.width - textWidth) *
       g_depthAverageHalf
     );
-    UIBmpTextButton* button = this->m_confirmRecipientButton;
     const int textY = static_cast<int>(
-      static_cast<float>(button->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0)) *
+      static_cast<float>(
+        this->m_confirmRecipientButton->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0)
+      ) *
       g_depthAverageHalf
     );
-    button->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);
+    this->m_confirmRecipientButton->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);
     this->m_confirmRecipientButton->AddTextStyle(1, 12, 0x313131, 0, 0, textX, textY);
     this->m_confirmRecipientButton->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
     this->m_confirmRecipientButton->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
