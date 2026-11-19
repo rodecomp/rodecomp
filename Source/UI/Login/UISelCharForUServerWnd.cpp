@@ -5,6 +5,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Client/Session/Session.h"
@@ -227,30 +228,55 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
       int width = this->TextWidth(name, 0, 0, 12, 0, 0) + 60;
 
       char text[100];
-      this->characterInfoLines.push_back("Name");
-      this->characterInfoLines.push_back(name);
-      this->characterInfoLines.push_back("Job");
-      this->characterInfoLines.push_back(g_session.GetJobName(info->job, -1));
-      this->characterInfoLines.push_back("Lv. ");
-      this->characterInfoLines.push_back(_itoa(info->level, text, 10));
-      this->characterInfoLines.push_back("EXP");
-      this->characterInfoLines.push_back(_itoa(static_cast<int>(info->exp), text, 10));
-      this->characterInfoLines.push_back("HP");
-      this->characterInfoLines.push_back(_i64toa(info->hp, text, 10));
-      this->characterInfoLines.push_back("SP");
-      this->characterInfoLines.push_back(_i64toa(info->sp, text, 10));
-      this->characterInfoLines.push_back("STR");
-      this->characterInfoLines.push_back(_itoa(info->stats[0], text, 10));
-      this->characterInfoLines.push_back("AGI");
-      this->characterInfoLines.push_back(_itoa(info->stats[1], text, 10));
-      this->characterInfoLines.push_back("VIT");
-      this->characterInfoLines.push_back(_itoa(info->stats[2], text, 10));
-      this->characterInfoLines.push_back("INT");
-      this->characterInfoLines.push_back(_itoa(info->stats[3], text, 10));
-      this->characterInfoLines.push_back("DEX");
-      this->characterInfoLines.push_back(_itoa(info->stats[4], text, 10));
-      this->characterInfoLines.push_back("LUK");
-      this->characterInfoLines.push_back(_itoa(info->stats[5], text, 10));
+      std::string line;
+      line = "Name";
+      this->characterInfoLines.push_back(std::move(line));
+      line = name;
+      this->characterInfoLines.push_back(std::move(line));
+      line = "Job";
+      this->characterInfoLines.push_back(std::move(line));
+      line = g_session.GetJobName(info->job, -1);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "Lv. ";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->level, text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "EXP";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(static_cast<int>(info->exp), text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "HP";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _i64toa(info->hp, text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "SP";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _i64toa(info->sp, text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "STR";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[0], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "AGI";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[1], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "VIT";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[2], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "INT";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[3], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "DEX";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[4], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
+      line = "LUK";
+      this->characterInfoLines.push_back(std::move(line));
+      line = _itoa(info->stats[5], text, 10);
+      this->characterInfoLines.push_back(std::move(line));
 
       if (width < 140) {
         width = 140;
