@@ -156,10 +156,9 @@ void UIQuestDisplay::Paint() {
 // OFFSET: 0x00949AB0
 // FUNCTION: fn_45700
 __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
-  int selected = -1;
-  int single = 0;
   int none = 0;
   int multiple = 0;
+  int single = 0;
   int index = 0;
   const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
   for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); end != it; ++it, ++index) {
@@ -171,8 +170,8 @@ __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
     const RenewQuestOngoingInfo& info = it->second;
     if (info.m_active && info.m_simpleView) {
       if (y >= top && y <= top + 10) {
-        selected = index;
-        break;
+        this->m_selectedIndex = index;
+        return;
       }
 
       if (info.m_huntCount == 0) {
@@ -185,7 +184,7 @@ __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
     }
   }
 
-  this->m_selectedIndex = selected;
+  this->m_selectedIndex = -1;
 }
 
 // OFFSET: 0x0094F1D0
