@@ -27,8 +27,8 @@ public:
   int GetDelay(int action);
   std::string* GetModel(int action);
   int GetStartFrame(int action);
-  bool HasFrame(int action, int frame);
-  bool IsValidAction(int action);
+  int HasFrame(int action, int frame);
+  int IsValidAction(int action);
 
   /* 0110 */ std::vector<RmaAction> actions;
   /* 011C */ std::vector<std::string> models;

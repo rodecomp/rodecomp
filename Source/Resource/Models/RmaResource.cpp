@@ -135,11 +135,11 @@ int CRmaRes::EndFrame(int action) {
 // FUNCTION: fn_45822
 int CRmaRes::GetFirstFrame(int action) {
   const auto& frames = this->actions[action].frames;
-  if (frames.empty()) {
-    return -1;
+  if (static_cast<int>(frames.size()) > 0) {
+    return frames.front();
   }
 
-  return frames.front();
+  return -1;
 }
 
 // OFFSET: 0x007473A0
@@ -162,26 +162,26 @@ int CRmaRes::GetStartFrame(int action) {
 
 // OFFSET: 0x00747400
 // FUNCTION: fn_45826
-bool CRmaRes::HasFrame(int action, int frame) {
+int CRmaRes::HasFrame(int action, int frame) {
   const auto& frames = this->actions[action].frames;
   const int count = static_cast<int>(frames.size());
   for (int index = 0; index < count; ++index) {
     if (frame == frames[index]) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00747450
 // FUNCTION: fn_45827
-bool CRmaRes::IsValidAction(int action) {
+int CRmaRes::IsValidAction(int action) {
   if (action < this->actions.size() && action >= 0 && this->actions[action].startFrame != -1) {
-    return true;
+    return 1;
   }
 
-  return false;
+  return 0;
 }
 
 // INLINED
