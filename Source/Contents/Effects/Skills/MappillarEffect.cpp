@@ -22,7 +22,7 @@ __declspec(noinline) CMappillarEffect::~CMappillarEffect() {
 
 // OFFSET: 0x00B4BA10
 // FUNCTION: fn_45990
-void CMappillarEffect::UpdateParticle(CParticle* particle) {
+__forceinline void CMappillarEffect::UpdateParticle(CParticle* particle) {
   if (!particle) {
     return;
   }
@@ -34,10 +34,10 @@ void CMappillarEffect::UpdateParticle(CParticle* particle) {
   }
 
   const int tilt = particle->phaseParameter;
-  const float spread = speed * g_cosTable[tilt];
-  const float height = speed * g_sinTable[tilt];
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
+  const float spread = speed * g_cosTable[tilt];
+  const float height = speed * g_sinTable[tilt];
   const float spreadX = spread * cosine;
   const float spreadZ = spread * sine;
 
@@ -122,47 +122,7 @@ __forceinline void CMappillarEffect::InitializeParticle(CParticle* particle) {
   particle->animationValues[row] = 0.0f;
   particle->elapsedFrames = particle->rowIndex * 30;
 
-  const float baseAngle = particle->angle;
-  int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
-  if (particle->columnIndex == 20) {
-    angle = static_cast<int>(baseAngle);
-  }
-
-  const int tilt = particle->phaseParameter;
-  const float spread = particle->speedParameter * g_cosTable[tilt];
-  const float height = particle->speedParameter * g_sinTable[tilt];
-  const float cosine = g_cosTable[angle];
-  const float sine = g_sinTable[angle];
-
-  EffectPoint points[2];
-  const float innerX = particle->scale * cosine;
-  const float innerY = 0.0f;
-  const float innerZ = particle->scale * sine;
-  const float outerX = innerX + spread * cosine;
-  const float outerY = 0.0f - height;
-  const float outerZ = innerZ + spread * sine;
-
-  if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
-    particle->vertices[1].x = outerX;
-    particle->vertices[1].y = outerY;
-    particle->vertices[1].z = outerZ;
-    particle->vertices[3].x = innerX;
-    particle->vertices[3].y = innerY;
-    particle->vertices[3].z = innerZ;
-    particle->vertices[0].x = this->lastPoints[1].x;
-    particle->vertices[0].y = this->lastPoints[1].y;
-    particle->vertices[0].z = this->lastPoints[1].z;
-    particle->vertices[2].x = this->lastPoints[0].x;
-    particle->vertices[2].y = this->lastPoints[0].y;
-    particle->vertices[2].z = this->lastPoints[0].z;
-  }
-
-  this->lastPoints[0].x = innerX;
-  this->lastPoints[0].y = innerY;
-  this->lastPoints[0].z = innerZ;
-  this->lastPoints[1].x = outerX;
-  this->lastPoints[1].y = outerY;
-  this->lastPoints[1].z = outerZ;
+  this->UpdateParticle(particle);
 }
 
 // OFFSET: 0x00B4C0B0
