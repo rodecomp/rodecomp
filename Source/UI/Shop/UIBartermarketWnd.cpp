@@ -1902,7 +1902,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     }
 
     int chunkIndex = 0;
-    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
+    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk, ++chunkIndex) {
       ITEM_INFO chunkItem;
       chunkItem.quantity = chunk->amount * it->value;
       char itemId[33];
@@ -1917,17 +1917,17 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
         std::uint32_t color = 0xFFFFFF;
         this->DrawOutlinedColoredText(chunkX, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
-      ++chunkIndex;
     }
 
     char amount[23] = {};
     StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d z", it->field_8 * it->value);
     this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount, 0, 0, 12, 0, 0);
 
-    if (++visible == this->rowCount) {
+    if (visible + 1 == this->rowCount) {
       ++index;
       break;
     }
+    ++visible;
   }
 
   for (int row = index; row < this->rowCount; ++row) {
