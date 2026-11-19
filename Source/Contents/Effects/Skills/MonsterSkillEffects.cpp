@@ -3163,24 +3163,27 @@ static __forceinline bool IsServantEmitterAlive(CEZ2STRParticle* emitter) {
 }
 
 // INLINED
+static __forceinline vector3d TransformServantPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
+
+// INLINED
 static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, CEZ2STRParticle* emitter, unsigned int column) {
   if (column >= 5) {
     return;
   }
 
   const vector3d position = *&effect->positionVector;
-  const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  vector3d viewPos = TransformServantPoint(view, position);
   const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   const vector3d& offset = effect->offsets[column];
-  const float viewX =
-      position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] + offset.x;
-  const float viewY =
-      position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] + offset.y;
-  const float viewZ =
-      position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] + offset.z;
-  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
-  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
-  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+  viewPos.x += offset.x;
+  viewPos.y += offset.y;
+  viewPos.z += offset.z;
+  emitter->position = TransformServantPoint(inverse, viewPos);
   emitter->Process(0.0f, 0.0f, 0.0f);
   ++emitter->elapsedFrames;
 }
