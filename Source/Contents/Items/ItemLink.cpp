@@ -101,19 +101,18 @@ void UIChatHisBox::DecodeOptions(std::vector<std::int32_t>& options, const char*
 std::string UIItemTagCtrl::ItemLinkNumberText(int value) {
   char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   int base = 62;
+  int number = value;
   std::vector<char> reversed;
 
   do {
-    reversed.push_back(digits[value % base]);
-    value /= base;
-  } while (value >= base);
+    reversed.push_back(digits[number % base]);
+    number /= base;
+  } while (number >= base);
 
-  reversed.push_back(digits[value]);
+  reversed.push_back(digits[number]);
   std::string text = "";
-  const std::size_t count = reversed.size();
-
-  for (std::size_t index = 0; index < count; ++index) {
-    text += reversed[count - 1 - index];
+  for (std::size_t index = 0; index < reversed.size(); ++index) {
+    text += reversed[reversed.size() - 1 - index];
   }
 
   return text;
