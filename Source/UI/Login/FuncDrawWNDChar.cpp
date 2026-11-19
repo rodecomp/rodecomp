@@ -310,7 +310,8 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
         } else {
           offset.x = static_cast<int>(static_cast<float>(baseAnchor->x) / base.Cell(0).scaleX - static_cast<float>(frameAnchor->x) + static_cast<float>(offset.x));
           float baseY = static_cast<float>(base.anchors.data()->y);
-          offset.y = static_cast<int>(baseY / base.Cell(0).scaleY - static_cast<float>(frame->anchors.data()->y) + static_cast<float>(offset.y));
+          const ActionAnchor* currentAnchor = frame->anchors.data();
+          offset.y = static_cast<int>(baseY / base.Cell(0).scaleY - static_cast<float>(currentAnchor->y) + static_cast<float>(offset.y));
           this->offsetY = offset.y;
           this->offsetX = offset.x;
         }
