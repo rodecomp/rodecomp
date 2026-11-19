@@ -152,7 +152,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
       this->AddLine(wrapped[index].c_str());
     }
 
-    this->plainTextMode = (this->plainTextMode & ~255) | 1;
+    this->plainTextMode = 1;
     return;
   }
 
@@ -217,7 +217,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     }
   }
 
-  this->plainTextMode &= ~255;
+  this->plainTextMode = 0;
 }
 
 // OFFSET: 0x00899E90

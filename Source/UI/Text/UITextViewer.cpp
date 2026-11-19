@@ -210,14 +210,13 @@ void UITextViewer::Paint() {
     }
   }
 
-  const bool plain = (this->plainTextMode & 255) != 0;
 
   for (int index = first; index < end; ++index) {
     const auto& line = this->lines[index];
     const int y = (index - first) * this->lineHeight + 4;
     const auto bytes = static_cast<unsigned>(line.size());
 
-    if (!plain) {
+    if (this->plainTextMode == 0) {
       if (this->outline != 0) {
         this->DrawOutlinedColoredText(3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
       } else {
