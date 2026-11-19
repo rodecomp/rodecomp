@@ -279,6 +279,7 @@ bool CPowderingEffect::IsAlive() {
 }
 
 // OFFSET: 0x00709C80
+// FUNCTION: fn_46270
 __forceinline void CPowderingEffect::UpdateSmokeParticle(CParticle* particle) {
   if (!particle || particle->animationState == 2) {
     return;
