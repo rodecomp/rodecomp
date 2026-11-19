@@ -74,9 +74,8 @@ void UITagListBox::Paint() {
   std::uint32_t color = 0;
 
   for (int index = 0; index < first; ++index) {
-    const std::string& line = this->lines[index];
-    const char* text = line.c_str();
-    const char* endText = text + line.size();
+    const char* text = this->lines[index].c_str();
+    const char* endText = text + this->lines[index].size();
 
     while (text < endText) {
       text = ParseColorCode(SegmentEnd(text, endText), color);
@@ -94,8 +93,8 @@ void UITagListBox::Paint() {
       }
     } else {
       for (int index = first; index < end; ++index) {
-        const std::string& line = this->lines[index];
         const int y = (index - first) * this->lineHeight + 4;
+        const std::string& line = this->lines[index];
         this->DrawOutlinedText(
           3, y, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
         );
