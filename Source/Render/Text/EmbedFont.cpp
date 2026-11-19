@@ -138,6 +138,12 @@ static unsigned long ReadEmbedFontStream(void* stream, void* buffer, const unsig
   return static_cast<unsigned long>(std::fread(buffer, 1, size, static_cast<FILE*>(stream)));
 }
 
+// OFFSET: 0x00ADD760
+// FUNCTION: fn_45929
+unsigned long WINAPIV WriteEmbedFontStream(void* stream, const void* buffer, const unsigned long size) {
+  return static_cast<unsigned long>(std::fwrite(buffer, 1, size, static_cast<FILE*>(stream)));
+}
+
 // OFFSET: 0x00ADD810
 // FUNCTION: fn_17945
 static std::wstring ToWideString(const std::string& text) {
