@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Core/EffectPoint.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -12,6 +13,10 @@
 CStarEmperorEffect::CStarEmperorEffect() : CEffect(-1), sphere(), rings() {
 }
 
+// OFFSET: 0x0072BC80
+__declspec(noinline) CStarEmperorEffect::~CStarEmperorEffect() {
+}
+
 // INLINED
 static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   vector3d result;
@@ -19,6 +24,20 @@ static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   result.y = point.x * transform.values[1] + point.y * transform.values[4] + point.z * transform.values[7] + transform.values[10];
   result.z = point.x * transform.values[2] + point.y * transform.values[5] + point.z * transform.values[8] + transform.values[11];
   return result;
+}
+
+// OFFSET: 0x0072BD80
+__forceinline void CStarEmperorEffect::BuildRings() {
+  for (int i = 0; i < 10; ++i) {
+    CParticle* particle = CreateParticle(&this->positionVector, 0x201);
+    particle->effectId = this->id;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
+    particle->SetTexture("effect\\star_emperor\\ring_white.tga");
+    particle->phaseParameter = 36;
+    this->rings.push_back(particle);
+  }
 }
 
 // OFFSET: 0x0072BE20
@@ -91,25 +110,16 @@ void CStarEmperorEffect::Close() {
 // OFFSET: 0x0072C490
 // FUNCTION: fn_07478
 void CStarEmperorEffect::Open() {
-  this->effectLifetime = this->id != 1203 ? 30 : 60;
+  this->effectLifetime = this->id != EF_STAR_EMPEROR ? 30 : 60;
   this->BuildSphere();
 
-  for (int i = 0; i < 10; ++i) {
-    CParticle* particle = CreateParticle(&this->positionVector, 0x201);
-    particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
-    particle->SetTexture("effect\\star_emperor\\ring_white.tga");
-    particle->phaseParameter = 36;
-    this->rings.push_back(particle);
-  }
+  this->BuildRings();
 }
 
 // OFFSET: 0x0072C540
 // FUNCTION: fn_07479
 void CStarEmperorEffect::InitEvents() {
-  if (this->id == 1203) {
+  if (this->id == EF_STAR_EMPEROR) {
     this->AddEvent(0, "effect\\wizard_fire_pillar_a.wav", 1, 0);
     this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 31, 0);
   }
@@ -132,7 +142,7 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
   const int startAngle = particle->phaseParameter * column;
   const int endAngle = (column + 1) * particle->phaseParameter;
   int step = particle->elapsedFrames + 1;
-  if (this->id == 1203) {
+  if (this->id == EF_STAR_EMPEROR) {
     const int half = this->effectLifetime / 2;
     step = half > particle->elapsedFrames ? half - particle->elapsedFrames : particle->elapsedFrames - half;
   }
@@ -184,7 +194,7 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
   rotation.MakeXRotation(1.570796f);
   particle->transform = rotation;
 
-  if (this->id == 1203) {
+  if (this->id == EF_STAR_EMPEROR) {
     const int quarter = this->effectLifetime / 4;
     if (quarter > step) {
       particle->alpha = step * (255 / quarter);
@@ -209,41 +219,7 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
 // FUNCTION: fn_07482
 void CStarEmperorEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->sphere.begin(); it != this->sphere.end(); ++it) {
-    if (CParticle* particle = *it) {
-      const int frame = particle->elapsedFrames;
-      int step = frame + 1;
-      if (this->id == 1203) {
-        const int half = this->effectLifetime / 2;
-        step = half > frame ? half - frame : frame - half;
-      }
-
-      const float acceleration = -(1.15f / static_cast<float>(this->effectLifetime));
-      const float size = acceleration * 0.5f * static_cast<float>((step + 1) * step / 2) + static_cast<float>(step) * 1.15f;
-      matrix scale;
-      scale.SetScale(size, size, size);
-      matrix rotation;
-      rotation.MakeYRotation(static_cast<float>(step) * 3.0f / 180.0f * 3.141592f);
-      matrix result;
-      result.Compose(scale, rotation);
-      particle->transform = result;
-
-      if (this->id == 1203) {
-        const int quarter = this->effectLifetime / 4;
-        particle->alpha = (quarter > step ? step : this->effectLifetime - step) * (255 / quarter);
-      } else {
-        const int half = this->effectLifetime / 2;
-        const int fade = 255 / half;
-        if (half > particle->elapsedFrames) {
-          particle->alpha = step * fade;
-        } else {
-          particle->alpha = (this->effectLifetime - step) * fade;
-        }
-      }
-
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1];
-      particle->position.z = this->position[2];
-    }
+    this->UpdateSphereParticle(*it);
 
     ++(*it)->elapsedFrames;
   }
@@ -254,20 +230,68 @@ void CStarEmperorEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x0072CAA0
+__forceinline void CStarEmperorEffect::UpdateSphereParticle(CParticle* particle) {
+  if (particle) {
+    const int frame = particle->elapsedFrames;
+    int step = frame + 1;
+    if (this->id == EF_STAR_EMPEROR) {
+      const int half = this->effectLifetime / 2;
+      step = half > frame ? half - frame : frame - half;
+    }
+
+    const float acceleration = -(1.15f / static_cast<float>(this->effectLifetime));
+    const float size = acceleration * 0.5f * static_cast<float>((step + 1) * step / 2) + static_cast<float>(step) * 1.15f;
+    matrix scale;
+    scale.SetScale(size, size, size);
+    matrix rotation;
+    rotation.MakeYRotation(static_cast<float>(step) * 3.0f / 180.0f * 3.141592f);
+    matrix result;
+    result.Compose(scale, rotation);
+    particle->transform = result;
+
+    if (this->id == EF_STAR_EMPEROR) {
+      const int quarter = this->effectLifetime / 4;
+      particle->alpha = (quarter > step ? step : this->effectLifetime - step) * (255 / quarter);
+    } else {
+      const int half = this->effectLifetime / 2;
+      const int fade = 255 / half;
+      if (half > particle->elapsedFrames) {
+        particle->alpha = step * fade;
+      } else {
+        particle->alpha = (this->effectLifetime - step) * fade;
+      }
+    }
+
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+  }
+}
+
+// OFFSET: 0x0072CC60
+__forceinline void CStarEmperorEffect::RenderRing(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 0.25f, false, true);
+  }
+}
+
 // OFFSET: 0x0072CCA0
 // FUNCTION: fn_07483
 void CStarEmperorEffect::Render() {
   for (auto it = this->sphere.begin(); it != this->sphere.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      particle->Render(false, particle->vertices[0].v, particle->vertices[3].v, particle->vertices[0].u, particle->vertices[3].u, false, true);
-    }
+    this->RenderSphereParticle(*it);
   }
 
   for (auto it = this->rings.begin(); it != this->rings.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 0.25f, false, true);
-    }
+    this->RenderRing(*it);
+  }
+}
+
+// OFFSET: 0x0072CD60
+// FUNCTION: fn_46132
+__forceinline void CStarEmperorEffect::RenderSphereParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, particle->vertices[0].v, particle->vertices[3].v, particle->vertices[0].u, particle->vertices[3].u, false, true);
   }
 }

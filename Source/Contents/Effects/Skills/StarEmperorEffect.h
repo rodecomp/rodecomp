@@ -11,6 +11,7 @@ class CParticle;
 class CStarEmperorEffect : public CEffect {
 public:
   CStarEmperorEffect();
+  ~CStarEmperorEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -24,6 +25,12 @@ public:
 
   /* 00CC */ std::vector<CParticle*> sphere;
   /* 00D8 */ std::vector<CParticle*> rings;
+
+private:
+  void BuildRings();
+  void UpdateSphereParticle(CParticle* particle);
+  void RenderRing(CParticle* particle);
+  void RenderSphereParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
