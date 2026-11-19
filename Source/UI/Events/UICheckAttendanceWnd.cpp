@@ -173,8 +173,8 @@ void UICheckAttendanceWnd::Paint() {
   this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
 
   const int start = g_checkAttendanceMgr->m_config0;
-  const int end = g_checkAttendanceMgr->m_config1;
   const int startMonth = start % 10000 / 100;
+  const int end = g_checkAttendanceMgr->m_config1;
   const int startDay = start % 100;
   const int endMonth = end % 10000 / 100;
   const int endDay = end % 100;
@@ -232,8 +232,8 @@ void UICheckAttendanceWnd::Paint() {
     item.quantity = g_checkAttendanceMgr->GetReward(day).second;
     g_checkAttendanceMgr->GetReward(day);
 
-    const int x = index % 5 * 62;
     const int y = index / 5 * 64;
+    const int x = index % 5 * 62;
     this->DrawItemAndQuantity(x + 43, y + 109 + bannerHeight, item, 1, 0);
     this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_COUNT), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
   }
