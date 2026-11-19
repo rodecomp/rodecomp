@@ -1062,6 +1062,12 @@ __declspec(noinline) bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vect
   return out->size() != 0;
 }
 
+// OFFSET: 0x00B89970
+// FUNCTION: fn_19388
+int CNaviData::DestinationCount() const {
+  return static_cast<int>(this->destinations.size());
+}
+
 // OFFSET: 0x00B89980
 // FUNCTION: fn_19389
 int CNaviData::ObjectCount() const {

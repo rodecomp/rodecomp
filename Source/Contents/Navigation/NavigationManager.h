@@ -358,6 +358,7 @@ public:
   bool Search(std::string query, int type, std::vector<NavigationTarget>& out);
   int ParseSearchKind(std::vector<std::string>& tokens);
   CNavi_Object* FindMobByTitle(std::string title);
+  int DestinationCount() const;
   int ObjectCount() const;
 
   /* 0000 */ std::vector<CNaviInfo*> destinations;
