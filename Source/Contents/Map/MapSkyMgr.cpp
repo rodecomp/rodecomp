@@ -175,6 +175,18 @@ void CWeatherEffect::Fireworks() {
   }
 }
 
+// OFFSET: 0x00C7B960
+// FUNCTION: fn_45933
+void CWeatherEffect::Maple() {
+  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
+    return;
+  }
+
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  this->actor = mode->scene->player;
+  static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_MAPLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+}
+
 // OFFSET: 0x00C7BAA0
 // FUNCTION: fn_45581
 void CWeatherEffect::Sakura() {
