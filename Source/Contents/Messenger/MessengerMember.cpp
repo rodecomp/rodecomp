@@ -1479,10 +1479,10 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           dead = 1;
         }
         std::string prefix = "유저인터페이스\\renewalparty\\";
-        if (dead) {
-          sprintf(path, "%sicon_jobs_%d_die.bmp", prefix.c_str(), it->job);
-        } else {
+        if (!dead) {
           sprintf(path, "%sicon_jobs_%d.bmp", prefix.c_str(), it->job);
+        } else {
+          sprintf(path, "%sicon_jobs_%d_die.bmp", prefix.c_str(), it->job);
         }
         this->jobIcons[index]->SetBitmap(path, 0, 0);
         this->jobIcons[index]->SetBitmap(path, 1, 0);
