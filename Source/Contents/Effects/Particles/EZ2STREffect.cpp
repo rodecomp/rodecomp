@@ -109,15 +109,16 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     ignored = true;
   }
 
-  int offset = 0;
+  int height = 0;
   if (actor) {
     if (ignored == true) {
-      offset = 18;
+      height = 18;
     } else {
-      offset = static_cast<int>(actor->GetNameHeight());
+      height = static_cast<int>(actor->GetNameHeight());
     }
   }
 
+  int offset = height;
   switch (id) {
   case EF_STRANGELIGHTS:
     offset += 5;
@@ -153,13 +154,13 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 8;
     break;
   case EF_NPC_GATE_SKYBLUE:
-    offset -= 8;
+    offset = height + (-8);
     break;
   case EF_FSTONE:
     offset -= 7;
     break;
   case EF_CHAIN_REACTION_SHOT:
-    offset -= 7;
+    offset = height + (-7);
     break;
   case EF_QSCARABA:
     offset -= 5;
@@ -186,7 +187,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 5;
     break;
   case EF_ABYSS_DAGGER_HIT_2:
-    offset -= 5;
+    offset = height + (-5);
     break;
   case EF_FRESHSHRIMP:
   case EF_SU_TUNABELLY:
@@ -198,7 +199,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_SU_BUNCHOFSHRIMP:
   case EF_STRATUM_TREMOR:
   case EF_STRATUM_TREMOR_BOTTOM:
-    offset -= 8;
+    offset = height + (-8);
     break;
   case EF_SU_CHATTERING:
   case EF_SU_POWEROFFLOCK:
@@ -265,7 +266,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 6;
     break;
   case EF_OVERSLASH_HIT:
-    offset -= 6;
+    offset = height + (-6);
     break;
   case EF_WE_ONEFOREVER:
     offset -= 4;
@@ -364,7 +365,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 4;
     break;
   case EF_BLAST_FORGE_HIT:
-    offset -= 4;
+    offset = height + (-4);
     break;
   case EF_FALLING_STAR:
     offset -= 10;
@@ -373,10 +374,10 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 10;
     break;
   case EF_SOUL_REVOLVE:
-    offset -= 10;
+    offset = height + (-10);
     break;
   case EF_SOUL_GOLEM:
-    offset -= 16;
+    offset = height + (-16);
     break;
   case EF_NEWMOON_KICK:
   case EF_FULLMOON_KICK:
@@ -393,7 +394,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_RED_WAVE_1:
   case EF_RED_WAVE_2:
   case EF_RED_WAVE_3:
-    offset -= 6;
+    offset = height + (-6);
     break;
   case EF_TETRA_VORTEX_CAST:
     offset -= 2;
@@ -420,7 +421,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     offset -= 2;
     break;
   case EF_THE_W_PROTECTION_REUSE:
-    offset -= 2;
+    offset = height + (-2);
     break;
   case EF_ELEMENTAL_BUSTER_FIRE_REUSE:
     offset -= 2;
@@ -432,7 +433,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_TETRA_VORTEX_BALL_2:
   case EF_TETRA_VORTEX_BALL_3:
   case EF_TETRA_VORTEX_BALL_4:
-    offset -= 10;
+    offset = height + (-10);
     break;
   case EF_TETRA_VORTEX_FIRE_EXP:
   case EF_TETRA_VORTEX_WATER_EXP:
@@ -691,7 +692,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_STATE_CRYSTALLIZATION:
   case EF_STATE_DEADLYPOISON:
   case EF_SERVANT_SIGN_BOTTOM:
-    offset -= 2;
+    offset = height + (-2);
     break;
   case EF_NEW_ARMSCANNON_01_UP:
   case EF_NEW_ARMSCANNON_01_DOWN:
