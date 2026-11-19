@@ -31,6 +31,7 @@ public:
 
 private:
   void SetRandomColor(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
   void RenderParticle(CParticle* particle);
 };
 
