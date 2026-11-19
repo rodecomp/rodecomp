@@ -245,20 +245,20 @@ __declspec(noinline) bool CSession::UpdateSkill(const CSkillInfo& value, unsigne
       target.apCost = source.apCost;
     };
 
-    CSkillInfo* grouped = this->m_skillBundle.FindGrouped(snapshot.id);
-    if (grouped) {
+    bool known = true;
+    if (CSkillInfo* grouped = this->m_skillBundle.FindGrouped(snapshot.id)) {
       update(*grouped, snapshot, true, true);
+    } else if (!snapshot.available) {
+      known = false;
+    } else if (CSkillInfo* extra = this->m_skillBundle.FindExtra(snapshot.id)) {
+      update(*extra, snapshot, true, false);
     } else if (snapshot.available) {
-      if (CSkillInfo* extra = this->m_skillBundle.FindExtra(snapshot.id)) {
-        update(*extra, snapshot, true, false);
-      } else {
-        snapshot.treePosition = UINT32_MAX;
-        snapshot.canPlanLevel = 0;
-        this->m_skillBundle.AddExtra(snapshot);
-      }
+      snapshot.treePosition = UINT32_MAX;
+      snapshot.canPlanLevel = 0;
+      this->m_skillBundle.AddExtra(snapshot);
     }
 
-    if (grouped || snapshot.available) {
+    if (known) {
       if (CSkillInfo::UsesLevel(static_cast<int>(snapshot.id)) && snapshot.level != 0) {
         const int saved = this->UseLevel(static_cast<int>(snapshot.id));
         if (saved <= 0 || saved > snapshot.level) {
@@ -274,10 +274,7 @@ __declspec(noinline) bool CSession::UpdateSkill(const CSkillInfo& value, unsigne
     std::memcpy(&existing->range, &value.range, sizeof(existing->range));
     std::memcpy(&existing->upgradable, &value.upgradable, sizeof(existing->upgradable));
 
-    if (updateType == 1) {
-      std::memcpy(&existing->type, &value.type, sizeof(existing->type));
-    }
-
+    existing->type = updateType == 1 ? value.type : existing->type;
     existing->learnedLevel = value.learnedLevel;
     existing->apCost = value.apCost;
     if (notify == 1) {
