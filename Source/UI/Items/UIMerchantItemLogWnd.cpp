@@ -180,21 +180,21 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
   if (item.identity[1] > 0) {
     const int column = (x - 40) / 32;
     const int row = (y - 17) / 32;
-    int tooltipX = column * 32 + 40;
     int tooltipY = row * 32 + 1;
+    int tooltipX = column * 32 + 40;
     this->ToScreen(tooltipX, tooltipY);
 
     CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA5), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     }
