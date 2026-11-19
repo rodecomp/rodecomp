@@ -20,6 +20,7 @@ CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
 }
 
 // OFFSET: 0x00B6CA90
+// FUNCTION: fn_46110
 __declspec(noinline) CLightSphereEffect::~CLightSphereEffect() {
 }
 
@@ -112,6 +113,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
 }
 
 // OFFSET: 0x00B6CDB0
+// FUNCTION: fn_46111
 __forceinline void CLightSphereEffect::CreateSphereParticles() {
   for (int i = 0; i < 4; ++i) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
@@ -328,6 +330,7 @@ void CLightSphereEffect::Render() {
 }
 
 // OFFSET: 0x00B6DA40
+// FUNCTION: fn_46115
 __forceinline void CLightSphereEffect::RenderRay(CParticle* particle) {
   if (particle) {
     particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
