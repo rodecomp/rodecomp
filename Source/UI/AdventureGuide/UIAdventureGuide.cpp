@@ -863,8 +863,7 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 // OFFSET: 0x009DE680
 // FUNCTION: fn_45711
 void AdventureGuide::CUIQuest::MarkQuest(int questId) {
-  const auto& entries = this->questList->items;
-  std::vector<CUIQuestInfo*> items(entries.begin(), entries.end());
+  std::vector<CUIQuestInfo*> items = this->questList->items;
   auto found = std::find_if(items.begin(), items.end(), [questId](CUIQuestInfo* item) {
     return item->questId == questId;
   });
