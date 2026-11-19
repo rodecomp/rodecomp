@@ -158,8 +158,7 @@ std::string UIMacroReporterWnd::EllipsizeText(int maxWidth, const char* text, in
 
     if (wide.size() >= 2) {
       const std::size_t size = wide.size();
-      const std::size_t cut = (wide[size - 2] & 0x80) != 0 && (wide[size - 1] & 0x80) != 0 ? 2 : 1;
-      wide.resize(size - cut);
+      wide.resize((wide[size - 2] & 0x80) != 0 && (wide[size - 1] & 0x80) != 0 ? size - 2 : size - 1);
     }
 
     fitted = std::string(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP)) + "...";
