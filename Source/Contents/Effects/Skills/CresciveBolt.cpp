@@ -39,7 +39,9 @@ void CCresciveBolt::Open() {
   float toX;
   float toY;
   g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  const float* const toMatrix = g_modeMgr.GetGameMode()->camera->frame.view.values;
+  const float* const toPosition = this->sourcePosition;
+  g_renderer->ProjectViewport(toPosition, toMatrix, &toX, &toY, &toReciprocalDepth);
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;
