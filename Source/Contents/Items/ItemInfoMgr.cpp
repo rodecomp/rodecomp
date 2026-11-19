@@ -142,7 +142,8 @@ void CItemInfoMgr::SetItemInfo(std::map<int, ITEM_DESC>& descriptions) const {
     virtual ~lcMyInsertDesc() {
     }
     void operator()(const std::string& line) {
-      this->m_lines->push_back(line.c_str());
+      const char* text = line.c_str();
+      this->m_lines->push_back(text);
     }
 
     std::vector<const char*>* m_lines;
@@ -150,16 +151,17 @@ void CItemInfoMgr::SetItemInfo(std::map<int, ITEM_DESC>& descriptions) const {
 
   for (std::map<int, lcData>::const_iterator it = this->m_items.begin(); it != this->m_items.end(); ++it) {
     ITEM_DESC& desc = EnsureItemDescription(it->first, descriptions);
-    desc.identifiedName = it->second.identifiedDisplayName.c_str();
-    desc.identifiedResource = it->second.identifiedResourceName.c_str();
-    std::for_each(it->second.identifiedDescription.begin(), it->second.identifiedDescription.end(),
+    const lcData& data = it->second;
+    desc.identifiedName = data.identifiedDisplayName.c_str();
+    desc.identifiedResource = data.identifiedResourceName.c_str();
+    std::for_each(data.identifiedDescription.begin(), data.identifiedDescription.end(),
                   lcMyInsertDesc(&desc.identifiedDescription));
-    desc.unidentifiedName = it->second.unidentifiedDisplayName.c_str();
-    desc.unidentifiedResource = it->second.unidentifiedResourceName.c_str();
-    std::for_each(it->second.unidentifiedDescription.begin(), it->second.unidentifiedDescription.end(),
+    desc.unidentifiedName = data.unidentifiedDisplayName.c_str();
+    desc.unidentifiedResource = data.unidentifiedResourceName.c_str();
+    std::for_each(data.unidentifiedDescription.begin(), data.unidentifiedDescription.end(),
                   lcMyInsertDesc(&desc.unidentifiedDescription));
-    desc.slots = it->second.slotCount;
-    desc.viewId = it->second.classNum;
+    desc.slots = data.slotCount;
+    desc.viewId = data.classNum;
   }
 }
 
