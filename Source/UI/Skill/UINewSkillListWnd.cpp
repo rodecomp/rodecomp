@@ -1196,9 +1196,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
           }
         }
         skill.entries[i].requiredLevel = level;
-        const SkillInfoEntry& entry = skill.entries[i];
-        const NewSkillListValue value = {static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)};
-        this->m_values.push_front(value);
+        this->m_values.emplace_front(skill.entries[i].skillId, skill.entries[i].requiredLevel);
       }
       return;
     }
