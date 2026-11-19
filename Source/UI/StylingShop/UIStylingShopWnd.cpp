@@ -525,6 +525,22 @@ void UIDisplayCharacter::CopyStyle(const UIDisplayCharacter* other) {
   this->Invalidate();
 }
 
+// INLINED
+static bool IsSavedStyle(UIMyStyleWnd* myStyle, UIDisplayCharacter* display) {
+  for (int i = 0; i < 2; ++i) {
+    UISlotOfMyStyleWnd* slot = myStyle->m_slots[i];
+    if (slot) {
+      UIDisplayCharacter* saved = slot->m_display;
+      if (saved->head == display->head && saved->headPalette == display->headPalette && saved->bodyStyle == display->bodyStyle &&
+          saved->topAccessory == display->topAccessory && saved->middleAccessory == display->middleAccessory && saved->bottomAccessory == display->bottomAccessory &&
+          saved->job == display->job) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x00824760
 // FUNCTION: fn_10315
 void UIStylingShopWnd::RefreshFavoriteButton() {
@@ -543,20 +559,7 @@ void UIStylingShopWnd::RefreshFavoriteButton() {
     if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       UIDisplayCharacter* display = visibleTab->m_display;
-      bool favorite = false;
-      for (int i = 0; i < 2; ++i) {
-        UISlotOfMyStyleWnd* slot = myStyle->m_slots[i];
-        if (slot) {
-          UIDisplayCharacter* saved = slot->m_display;
-          if (saved->head == display->head && saved->headPalette == display->headPalette && saved->bodyStyle == display->bodyStyle &&
-              saved->topAccessory == display->topAccessory && saved->middleAccessory == display->middleAccessory && saved->bottomAccessory == display->bottomAccessory &&
-              saved->job == display->job) {
-            favorite = true;
-            break;
-          }
-        }
-      }
-
+      const bool favorite = IsSavedStyle(myStyle, display);
       visibleTab->UpdateFavoriteButton(favorite);
     }
   }
