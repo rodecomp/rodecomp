@@ -2,6 +2,8 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Guild/GuildMgr.h"
+#include "Network/Packets/ActorEntryPacket.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstdint>
 #include <string>
@@ -242,6 +244,111 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
       entry->robe = static_cast<std::uint16_t>(pc->robe);
       entry->characterId = pc->GetPkState();
       entry->body = static_cast<std::uint16_t>(pc->GetBodyCostume());
+    }
+  }
+
+  packet.insert(packet.end(), name.begin(), name.end());
+  return packet;
+}
+
+namespace {
+  // INLINED
+  template <typename Entry>
+  void FillLegacyActorEntry(Entry& entry, CGameActor* actor, std::uint16_t packetType, std::size_t nameLength) {
+    entry.packetType = packetType;
+    entry.packetLength = static_cast<short>(sizeof(Entry) + nameLength);
+    entry.objectType = actor->objectType;
+    entry.aid = actor->render.accountId;
+    entry.speed = static_cast<short>(actor->moveSpeed);
+    entry.bodyState = static_cast<short>(actor->bodyState);
+    entry.healthState = static_cast<short>(actor->effectState);
+    entry.effectState = actor->GetStateFlags();
+    entry.job = static_cast<short>(actor->GetEffectiveJob(-1));
+    entry.head = static_cast<short>(actor->headType);
+    entry.guildId = actor->GetGdid();
+    CGuildMgr* guildMgr = g_guildMgr;
+    entry.guildVersion = static_cast<short>(guildMgr->GetEmblemVersion(actor->GetGdid()));
+    entry.pkMode = actor->healthState != 0;
+    entry.sex = static_cast<unsigned char>(actor->sex);
+    entry.xSize = static_cast<unsigned char>(actor->xSize);
+    entry.ySize = static_cast<unsigned char>(actor->ySize);
+    entry.level = actor->characterLevel;
+    entry.font = static_cast<short>(actor->render.fontSequenceState);
+    entry.bodyPalette = static_cast<short>(actor->render.bodyPalette);
+    guildMgr = g_guildMgr;
+    entry.guildVersion = static_cast<short>(guildMgr->GetEmblemVersion(actor->GetGdid()));
+  }
+
+  // INLINED
+  template <typename Entry>
+  void FillLegacyPcAppearance(Entry& entry, const CPc* pc) {
+    entry.honor = static_cast<short>(pc->honor);
+    entry.virtue = pc->virtue;
+    entry.headDir = static_cast<short>(pc->headDir);
+    const std::int64_t equipment = pc->virtue;
+    entry.weapon = static_cast<int>(equipment);
+    entry.shield = static_cast<int>(equipment >> 32);
+    entry.accessory = static_cast<short>(pc->accessory);
+    entry.accessory2 = static_cast<short>(pc->accessory2);
+    entry.accessory3 = static_cast<short>(pc->accessory3);
+    entry.headPalette = static_cast<short>(pc->headPalette);
+    entry.robe = static_cast<short>(pc->robe);
+  }
+
+  // INLINED
+  void SplitMovementCoordinate(float value, int& cell, int& subcell) {
+    cell = 0;
+    subcell = 0;
+    if (value > 0.0f) {
+      const double rounded = static_cast<double>(value) + 0.5;
+      cell = static_cast<int>(rounded);
+      subcell = static_cast<int>(static_cast<float>(rounded - cell) * 16.0f);
+    }
+  }
+}
+
+// OFFSET: 0x00CD41E0
+// FUNCTION: fn_46326
+std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
+  std::vector<char> packet;
+  const std::string name = this->nameCard.Name(actor->render.accountId);
+  if (actor->render.state == 1) {
+    packet.resize(sizeof(ActorMoveEntryNamedPacket), 0);
+    ActorMoveEntryNamedPacket& entry = *reinterpret_cast<ActorMoveEntryNamedPacket*>(packet.data());
+    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_MOVEENTRY8, name.size());
+    entry.moveStartTime = actor->routeStartTick;
+    int metadata = 0;
+    float x = 0.0f;
+    float y = 0.0f;
+    actor->route.Sample(timeGetTime(), &x, &y, &metadata);
+
+    int cellX, cellY, subX, subY;
+    SplitMovementCoordinate(x, cellX, subX);
+    SplitMovementCoordinate(y, cellY, subY);
+    const unsigned int destinationX = actor->movementState[5];
+    const unsigned int destinationY = actor->destCellY;
+    entry.moveData[0] = static_cast<unsigned char>(cellX >> 2);
+    entry.moveData[1] = static_cast<unsigned char>((static_cast<unsigned int>(cellX) << 6) | ((cellY >> 4) & 0x3F));
+    entry.moveData[2] = static_cast<unsigned char>((static_cast<unsigned int>(cellY) << 4) | ((destinationX >> 6) & 0x0F));
+    entry.moveData[3] = static_cast<unsigned char>((destinationX << 2) | ((destinationY >> 8) & 3));
+    entry.moveData[4] = static_cast<unsigned char>(destinationY);
+    entry.moveData[5] = static_cast<unsigned char>((static_cast<unsigned int>(subX) << 4) | (subY & 0x0F));
+    if (actor->objectType == 0) {
+      FillLegacyPcAppearance(entry, static_cast<const CPc*>(actor));
+    }
+  } else {
+    packet.resize(sizeof(ActorStateEntryNamedOldPacket), 0);
+    ActorStateEntryNamedOldPacket& entry = *reinterpret_cast<ActorStateEntryNamedOldPacket*>(packet.data());
+    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_STANDENTRY7, name.size());
+    const int direction = (static_cast<int>(actor->render.angle) + 180) / 45 % 8;
+    const unsigned int cellX = actor->movementState[5];
+    const unsigned int cellY = actor->destCellY;
+    entry.posDir[0] = static_cast<unsigned char>(cellX >> 2);
+    entry.posDir[1] = static_cast<unsigned char>((cellX << 6) | ((cellY >> 4) & 0x3F));
+    entry.posDir[2] = static_cast<unsigned char>((cellY << 4) | (direction & 0x0F));
+    entry.state = actor->render.state == 3 ? 1 : actor->render.state == 6 ? 2 : 0;
+    if (actor->objectType == 0) {
+      FillLegacyPcAppearance(entry, static_cast<const CPc*>(actor));
     }
   }
 
