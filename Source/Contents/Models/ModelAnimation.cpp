@@ -277,8 +277,9 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     float secondWeight;
 
     if (dot > -0.95f) {
+      firstWeight = g_projectionDepthNumerator - amount;
+
       if (dot > 0.95f) {
-        firstWeight = g_projectionDepthNumerator - amount;
         secondWeight = amount;
       } else {
         const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
