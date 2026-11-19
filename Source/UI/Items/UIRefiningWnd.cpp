@@ -1125,29 +1125,27 @@ void UIRefiningWnd::Paint() {
       this->DrawBitmap(207, 55, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\slot_select_red.bmp"))), false);
     }
 
-    const char* color = "^CA152E";
-    int x = 10;
     int index = 0;
     for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
+      const int x = index * 49 + 10;
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
-      const int owned = g_session.LookupClientItem(material->itemId, 0).quantity;
+      icon.quantity = g_session.LookupClientItem(material->itemId, 0).quantity;
       this->DrawItemIcon(x + 12, 69, icon, 0);
-      const std::string count = FormatOwnedString("%s%d^000000/1", owned == 0 ? color : "", owned);
+      const std::string count = FormatOwnedString("%s%d^000000/1", icon.quantity == 0 ? "^CA152E" : "", icon.quantity);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
       if (index == this->selectedMaterial && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame == 0))) {
         this->DrawItemIcon(81, 150, icon, 0);
       }
       ++index;
-      x += 49;
     }
 
     if (this->catalystItemId > 0 && this->catalystCount > 0) {
       ITEM_INFO icon;
       icon.SetItemId(this->catalystItemId);
-      const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
+      icon.quantity = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       this->DrawItemIcon(218, 69, icon, 0);
-      const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount > owned ? color : "", owned, this->catalystCount);
+      const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount > icon.quantity ? "^CA152E" : "", icon.quantity, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
       if (this->catalystEnabled == 1 && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame < 13))) {
         this->DrawItemIcon(161, 150, icon, 0);
