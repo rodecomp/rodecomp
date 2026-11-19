@@ -41,7 +41,7 @@ HotkeyGuideLabel::HotkeyGuideLabel(std::string text, HotkeyGuideKey key, HotkeyG
 
 // OFFSET: 0x00966600
 // FUNCTION: fn_13157
-HotkeyGuideKey::HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height) {
+__declspec(noinline) HotkeyGuideKey::HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height) {
   this->align = align;
   this->width = width;
   this->padding = padding;
