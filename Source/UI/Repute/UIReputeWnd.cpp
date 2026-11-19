@@ -238,13 +238,13 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       std::string keyword(this->m_searchEdit->Text() ? this->m_searchEdit->Text() : "");
       if (keyword.size() == 0) {
         this->SendMsg(this->m_groupCombo, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
-      } else {
-        this->ClearUpdated();
-        this->m_reputes.clear();
-        this->m_reputes = Singleton<CReputeMgr>::GetInstance()->FindReputes(keyword);
-        this->SetPage(1);
-        this->Invalidate();
+        break;
       }
+      this->ClearUpdated();
+      this->m_reputes.clear();
+      this->m_reputes = Singleton<CReputeMgr>::GetInstance()->FindReputes(keyword);
+      this->SetPage(1);
+      this->Invalidate();
       break;
     }
     }
