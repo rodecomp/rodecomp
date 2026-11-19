@@ -19,6 +19,8 @@ public:
   bool IsAlive() override;
 
   void CreateRayParticles(int param);
+  static void UpdateRayVertices(CParticle* particle);
+  static void UpdateRay(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> spheres;
   /* 00D8 */ std::vector<CParticle*> rays;

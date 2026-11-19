@@ -112,6 +112,58 @@ void CLightSphereEffect::CreateRayParticles(int param) {
   }
 }
 
+// OFFSET: 0x00B6CEA0
+// FUNCTION: fn_46112
+void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
+  if (particle == nullptr) {
+    return;
+  }
+
+  EffectPoint points[3];
+  const float radius = particle->scale * g_sinTable[particle->angleParameter] + particle->scale;
+  const int pitch = particle->phaseParameter;
+  const int yaw = static_cast<int>(particle->angle);
+  const float flat = radius * g_cosTable[pitch];
+  const float corner0X = flat * g_cosTable[yaw];
+  const float corner0Y = radius * g_sinTable[pitch] - particle->animationParameter;
+  const float corner0Z = flat * g_sinTable[yaw];
+
+  float corner1X;
+  float corner1Y;
+  float corner1Z;
+  float corner2X;
+  float corner2Y;
+  float corner2Z;
+  if (particle->animationParameters[0] == 0.0f) {
+    corner1X = -0.5f;
+    corner1Y = -particle->animationParameter;
+    corner1Z = 0.0f;
+    corner2X = 0.5f;
+    corner2Y = -particle->animationParameter;
+    corner2Z = 0.0f;
+  } else {
+    corner1X = 0.0f;
+    corner1Y = -particle->animationParameter;
+    corner1Z = -0.5f;
+    corner2X = 0.0f;
+    corner2Y = -particle->animationParameter;
+    corner2Z = 0.5f;
+  }
+
+  particle->vertices[0].x = corner0X;
+  particle->vertices[0].y = corner0Y;
+  particle->vertices[0].z = corner0Z;
+  particle->vertices[1].x = corner0X;
+  particle->vertices[1].y = corner0Y;
+  particle->vertices[1].z = corner0Z;
+  particle->vertices[2].x = corner1X;
+  particle->vertices[2].y = corner1Y;
+  particle->vertices[2].z = corner1Z;
+  particle->vertices[3].x = corner2X;
+  particle->vertices[3].y = corner2Y;
+  particle->vertices[3].z = corner2Z;
+}
+
 // OFFSET: 0x00B6CDB0
 // FUNCTION: fn_46111
 __forceinline void CLightSphereEffect::CreateSphereParticles() {
@@ -316,6 +368,31 @@ __forceinline void CLightSphereEffect::UpdateSphere(CParticle* particle) {
   matrix transform;
   transform.Compose(billboard, translation);
   particle->transform = transform;
+}
+
+// OFFSET: 0x00B6D600
+// FUNCTION: fn_46113
+void CLightSphereEffect::UpdateRay(CParticle* particle) {
+  if (particle == nullptr) {
+    return;
+  }
+
+  float scale = particle->scale;
+  if (scale < 10.0f) {
+    scale *= 1.02f;
+  }
+  particle->scale = scale;
+
+  int alpha = particle->alpha;
+  if (particle->elapsedFrames > 500) {
+    alpha = std::max(alpha - 1, 0);
+  }
+  particle->alpha = alpha;
+
+  const int previous = particle->angleParameter;
+  const int phase = (previous + 1 + std::ranges::max(std::rand() % 2, 0)) % 360;
+  particle->angleParameter = phase;
+  CLightSphereEffect::UpdateRayVertices(particle);
 }
 
 // OFFSET: 0x00B6D990
