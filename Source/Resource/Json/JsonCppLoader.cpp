@@ -10,15 +10,19 @@
 // OFFSET: 0x004F3690
 // FUNCTION: fn_00483
 jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::json& node, jsoncons::json_type type) {
-  if (!node.is_null() && node.is_object() && node.find(key) != node.object_range().end()) {
-    jsoncons::json value = node.at(key);
-    if (this->GetValueType(value) != type) {
-      return jsoncons::json::null();
-    }
-    return value;
+  if (node.is_null() == true) {
+    return jsoncons::json::null();
   }
 
-  return jsoncons::json::null();
+  if (!node.is_object() || node.object_range().end() == node.find(key)) {
+    return jsoncons::json::null();
+  }
+
+  jsoncons::json value = node.at(key);
+  if (this->GetValueType(value) != type) {
+    return jsoncons::json::null();
+  }
+  return value;
 }
 
 // OFFSET: 0x004F3820
