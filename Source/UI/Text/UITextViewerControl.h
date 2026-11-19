@@ -45,6 +45,7 @@ public:
   void SetScrollBarBackground(const std::string& name);
   void Clear();
   void AddLine(const std::string& text);
+  void AddLineChild(UIWindow* child);
   void Relayout();
 
   /* 0080 */ int textX;

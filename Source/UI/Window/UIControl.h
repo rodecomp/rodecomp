@@ -310,6 +310,7 @@ public:
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
   void SetImage(const std::string& name);
   void SetSecondButton(CUIButton* button);
+  void ToggleParentHeight();
   void SetTitle(std::string_view title);
   // INLINED
   void SetTitle(const char* title, std::size_t length) {

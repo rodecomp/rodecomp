@@ -21,6 +21,7 @@
 #include "Script/LuaScript.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "UI/Layout/SnapMgr.h"
 #include "Client/Input/InputCharset.h"
 #include "Render/Text/TextContext.h"
 #include "File/File.h"
@@ -1314,6 +1315,8 @@ void CUITitleBar::Resize(int width, int height) {
     this->secondButton->Move(this->secondButton->geometry.x + delta, this->secondButton->geometry.y);
   }
 }
+
+// OFFSET: 0x009F1980
 
 // OFFSET: 0x009F19E0
 // FUNCTION: fn_14698
@@ -3736,6 +3739,16 @@ void CUITextViewer::AddLine(const std::string& text) {
     const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
     this->padding->SetPadding(this->paddingLeft, this->paddingTop, this->paddingRight + newScrollWidth, this->paddingBottom);
   }
+}
+
+// OFFSET: 0x009E9840
+// FUNCTION: fn_45734
+void CUITextViewer::AddLineChild(UIWindow* child) {
+  child->Move(child->geometry.x, child->geometry.y + this->contentHeight);
+  this->AddChildFront(child);
+  const int x = child->geometry.x;
+  const int y = child->geometry.y;
+  this->childPositions[child] = std::pair<int, int>(x, y);
 }
 
 // OFFSET: 0x009D8E30
