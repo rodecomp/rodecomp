@@ -1147,6 +1147,43 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
   this->chatWnd->SendMsg(this->chatWnd->m_whisperEdit, UM_COMBOBOX_SELECTED, index, 0, 0, 0);
 }
 
+// INLINED
+static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) {
+  if (!window || (manager->modal != nullptr && manager->navigationWnd != window)) {
+    return;
+  }
+
+  if (manager->LookupWindow(WID_NEWMAKECHARWND) || manager->LookupWindow(WID_MAKECHARWND) || manager->LookupWindow(WID_SECONDPASSWORDINPUTWND) || manager->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
+    return;
+  }
+
+  int companion = -1;
+
+  if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
+    companion = 234;
+  }
+  if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
+    companion = 250;
+  }
+
+  if (companion != -1) {
+    for (auto entry = manager->rendered.begin(); entry != manager->rendered.end(); ++entry) {
+      if ((*entry)->geometry.id == companion) {
+        UIWindow* value = *entry;
+        manager->rendered.erase(entry);
+        manager->rendered.push_back(value);
+        break;
+      }
+    }
+  }
+
+  const auto entry = std::find(manager->rendered.begin(), manager->rendered.end(), window);
+  if (entry != manager->rendered.end()) {
+    manager->rendered.erase(entry);
+    manager->rendered.push_back(window);
+  }
+}
+
 // GLOBAL: gl_25163
 const char* g_newWhisperWave = "..\\..\\BGM\\Msg_NewMsg.wav";
 
@@ -1192,35 +1229,7 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
 
   UIWindow* window = entry->second;
   window->SendMsg(nullptr, UM_ADDCHAT, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
-  if ((this->modal == nullptr || this->navigationWnd == window) && !this->LookupWindow(WID_NEWMAKECHARWND) && !this->LookupWindow(WID_MAKECHARWND) && !this->LookupWindow(WID_SECONDPASSWORDINPUTWND) &&
-      !this->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
-    int companion = -1;
-    if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
-      companion = 234;
-    }
-    if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
-      companion = 250;
-    }
-
-    if (companion != -1) {
-      for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-        if ((*it)->geometry.id == companion) {
-          UIWindow* value = *it;
-          this->rendered.erase(it);
-          this->rendered.push_back(value);
-          break;
-        }
-      }
-    }
-
-    for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-      if (*it == window) {
-        this->rendered.erase(it);
-        this->rendered.push_back(window);
-        break;
-      }
-    }
-  }
+  PromoteWindow(this, window);
   return 1;
 }
 
