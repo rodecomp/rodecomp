@@ -1115,6 +1115,11 @@ AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& sourc
     : name(source.name), info(std::move(source.info)) {
 }
 
+// INLINED
+static AdventureGuideResult FailedResult(const std::string& message) {
+  return AdventureGuideResult(false, message);
+}
+
 // OFFSET: 0x0065F680
 // FUNCTION: fn_05189
 static std::optional<AdventureGuideEntryTable::mapped_type*> FindMapped(AdventureGuideEntryTable& map, const int& key) {
@@ -1284,8 +1289,8 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonReward(int id, std::string
   const auto it = std::find_if(dungeonContents.begin(), dungeonContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
-  if (it == dungeonContents.end()) {
-    return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
+  if (dungeonContents.end() == it) {
+    return FailedResult(FormatOwnedString("[%d] cannot be find", id));
   }
 
   it->second[id].values.emplace_back(text.data());
@@ -1330,8 +1335,8 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeReward(int id, std::string
   const auto it = std::find_if(episodeContents.begin(), episodeContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
-  if (it == episodeContents.end()) {
-    return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
+  if (episodeContents.end() == it) {
+    return FailedResult(FormatOwnedString("[%d] cannot be find", id));
   }
 
   it->second[id].values.emplace_back(text.data());
@@ -1388,16 +1393,16 @@ AdventureGuideResult CAdventureGuideMgr::InsertObtainGuide(int type, int id, std
     it = std::find_if(itemEntries.begin(), itemEntries.end(), [id](const auto& entry) {
       return entry.second.end() != entry.second.find(id);
     });
-    if (it == itemEntries.end()) {
-      return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
+    if (itemEntries.end() == it) {
+      return FailedResult(FormatOwnedString("[%d] cannot be find", id));
     }
     break;
   case 6:
     it = std::find_if(equipmentEntries.begin(), equipmentEntries.end(), [id](const auto& entry) {
       return entry.second.end() != entry.second.find(id);
     });
-    if (it == equipmentEntries.end()) {
-      return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
+    if (equipmentEntries.end() == it) {
+      return FailedResult(FormatOwnedString("[%d] cannot be find", id));
     }
     break;
   }
@@ -1493,8 +1498,8 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestReward(int id, std::string_v
   const auto it = std::find_if(questContents.begin(), questContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
-  if (it == questContents.end()) {
-    return AdventureGuideResult(false, FormatOwnedString("[%d] cannot be find", id));
+  if (questContents.end() == it) {
+    return FailedResult(FormatOwnedString("[%d] cannot be find", id));
   }
 
   it->second[id].values.emplace_back(text.data());

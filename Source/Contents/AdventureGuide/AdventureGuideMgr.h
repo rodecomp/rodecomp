@@ -3,6 +3,7 @@
 
 #include "Script/LuaInstance.h"
 
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <list>
@@ -78,6 +79,10 @@ struct AdventureGuideEntry {
 
 struct AdventureGuideResult {
   AdventureGuideResult(bool ok, std::string_view message) : ok(ok), message(message) {
+  }
+
+  // INLINED
+  AdventureGuideResult(bool ok, const std::same_as<std::string> auto& message) : ok(ok), message(message) {
   }
 
   /* 0000 */ bool ok;
