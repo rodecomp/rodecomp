@@ -523,7 +523,7 @@ void UIAchSummaryWnd::Paint() {
   int x = 260;
   for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
     std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetIconName(it->first) + ".bmp";
-    this->DrawBitmap(x - 242, 314, AchievementBitmap(icon.c_str()), true);
+    this->DrawBitmap(x - 242, 314, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str()))), true);
     this->DrawBitmap(x, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
     this->DrawTextAt(x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetPoints(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
     this->DrawTextAt(x - 241, 365, g_achievementMgr->GetSummaryText(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
