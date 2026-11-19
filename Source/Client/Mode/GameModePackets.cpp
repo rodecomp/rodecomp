@@ -12915,7 +12915,8 @@ void CGameMode::NotifySkillCasting(
     int loopType = 0;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
     if (action != -1) {
-      source->SetAction(action * 8 - 8, 1, loopType == 0);
+      loopType = loopType == 0;
+      source->SetAction(action * 8 - 8, 1, loopType);
       if (skillId == NPC_METAMORPHOSIS) {
         source->SetAnimationSpeed(static_cast<float>(static_cast<unsigned>(delay) / 300));
       }
