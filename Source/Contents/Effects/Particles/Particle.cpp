@@ -797,7 +797,7 @@ CParticle::CParticle(vector3d position, int flags) : flags(flags), position(posi
 
 // OFFSET: 0x00B3F950
 // FUNCTION: fn_18831
-CParticle::~CParticle() {
+__declspec(noinline) CParticle::~CParticle() {
 }
 
 // OFFSET: 0x00B3F990
