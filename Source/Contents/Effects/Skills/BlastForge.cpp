@@ -128,6 +128,7 @@ void CBlastForge::OnProcess() {
 }
 
 // OFFSET: 0x006F7D20
+// FUNCTION: fn_46147
 __forceinline void CBlastForge::UpdateParticle(CEZ2STRParticle* particle) {
   if (!particle) {
     return;
