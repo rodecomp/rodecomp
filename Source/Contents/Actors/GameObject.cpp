@@ -1213,6 +1213,18 @@ struct PcMoveEntry {
 };
 }
 
+// OFFSET: 0x00CC3E10
+// FUNCTION: fn_46351
+__forceinline void CGameActor::BeginVanish() {
+  this->render.accountId = INVALID_AID;
+  this->levelAuraType = 0;
+  this->render.shadowVisible = 0;
+  this->vanishTime = static_cast<int>(timeGetTime() + 510);
+  if (this->vanishTime == 0) {
+    this->vanishTime = 1;
+  }
+}
+
 // OFFSET: 0x00CB4800
 // FUNCTION: fn_21112
 void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
@@ -2329,13 +2341,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->SetState(ST_STAND, 1);
     break;
   case AM_OUTOFSIGHT:
-    this->render.accountId = INVALID_AID;
-    this->levelAuraType = 0;
-    this->render.shadowVisible = 0;
-    this->vanishTime = static_cast<int>(timeGetTime() + 510);
-    if (this->vanishTime == 0) {
-      this->vanishTime = 1;
-    }
+    this->BeginVanish();
     break;
   case AM_MAKE_LEVEL99_EFFECT: {
     this->hasLevelAura = 1;

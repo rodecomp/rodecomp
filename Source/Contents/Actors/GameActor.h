@@ -248,6 +248,7 @@ public:
   void ApplySavedShapeShift();
   void ApplyNatureProtection();
   void UpdateMaxLevelAura();
+  __forceinline void BeginVanish();
   void SetActorJob(int job);
   void RenderMercenary(const float* matrix, int job);
   void ProcessBodyState();
