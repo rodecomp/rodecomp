@@ -13,9 +13,17 @@ const char* CSession::GetHitWaveName(int job) {
   if (!((job >= JT_MAX_BASIC && job < JT_MON_BEGIN) || job < JT_NOVICE || (job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978)) {
     const std::vector<std::string>& jobWaves = this->m_jobHitWaves;
     if (job > 3950) {
-      return jobWaves.begin()[job - 3950].c_str();
+      const std::string* wave = jobWaves.data() + job - 3950;
+      if (wave->capacity() > 15) {
+        return wave->c_str();
+      }
+      return reinterpret_cast<const char*>(wave);
     }
-    return jobWaves.begin()[job].c_str();
+    const std::string* wave = jobWaves.data() + job;
+    if (wave->capacity() > 15) {
+      return wave->c_str();
+    }
+    return reinterpret_cast<const char*>(wave);
   }
 
   return this->GetWeaponHitWaveName(-1);
