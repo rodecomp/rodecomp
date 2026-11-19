@@ -177,10 +177,10 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
     job = 0;
   }
 
-  std::string result = "";
   if (sex != 0) {
     sex = 1;
   }
+  std::string result = "";
   std::string sexName = "";
   std::string headName = "";
 
