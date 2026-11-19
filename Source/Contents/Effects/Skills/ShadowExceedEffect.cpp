@@ -118,22 +118,11 @@ bool CShadowExceed::IsAlive() {
 // FUNCTION: fn_07435
 void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    if (IsParticleActive(*it) == true) {
-      if (emitter) {
-        const vector3d position = this->positionVector;
-        const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-        vector3d viewPos = TransformPoint(view, position);
-        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-        viewPos.x += emitter->offsetX;
-        viewPos.y += emitter->offsetY;
-        viewPos.z += emitter->offsetZ;
-        emitter->position = TransformPoint(inverse, viewPos);
-        emitter->Process(0.0f, 0.0f, 0.0f);
-      }
+    if (IsParticleActive(*it)) {
+      this->UpdateEmitter(*it);
       ++it;
     } else {
-      FreeParticle(emitter);
+      FreeParticle(*it);
       it = this->emitters.erase(it);
     }
   }
@@ -151,6 +140,22 @@ void CShadowExceed::OnProcess() {
 }
 
 // OFFSET: 0x00729030
+// FUNCTION: fn_46095
+__forceinline void CShadowExceed::UpdateEmitter(CEZ2STRParticle* emitter) {
+  if (!emitter) {
+    return;
+  }
+
+  const vector3d position = this->positionVector;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  vector3d viewPos = TransformPoint(view, position);
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+  viewPos.x += emitter->offsetX;
+  viewPos.y += emitter->offsetY;
+  viewPos.z += emitter->offsetZ;
+  emitter->position = TransformPoint(inverse, viewPos);
+  emitter->Process(0.0f, 0.0f, 0.0f);
+}
 
 // OFFSET: 0x00729230
 // FUNCTION: fn_07437
