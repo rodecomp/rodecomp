@@ -8648,8 +8648,8 @@ int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 }
 
 // INLINED
-static __forceinline void RequestStatusPointUp(UIStatusWnd* window, CMode* mode, const int* statCosts, int statusPoint, int index) {
-  if (statCosts[index] <= statusPoint) {
+static __forceinline void RequestStatusPointUp(UIStatusWnd* window, CMode* mode, int index) {
+  if (g_session.m_statusPointCost[index] <= g_session.m_statusPoint) {
     mode->SendMsg(MM_STATUS_CHANGE, 13 + index, 1, 0, 0);
     window->SendMsg(window, UM_REFRESHBUTTON, 0, 0, 0, 0);
   }
@@ -8666,8 +8666,6 @@ static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
 // FUNCTION: fn_12383
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   CMode* mode = g_modeMgr.currentMode;
-  const int* statCosts = g_session.m_statusPointCost;
-  const int statusPoint = g_session.m_statusPoint;
   switch (message) {
   case UM_COMMAND:
     switch (a) {
@@ -8691,22 +8689,22 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       g_windowMgr.CloseWindow(WID_STATUSWND);
       break;
     case ID_STR:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 0);
+      RequestStatusPointUp(this, mode, 0);
       break;
     case ID_AGI:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 1);
+      RequestStatusPointUp(this, mode, 1);
       break;
     case ID_VIT:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 2);
+      RequestStatusPointUp(this, mode, 2);
       break;
     case ID_INT:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 3);
+      RequestStatusPointUp(this, mode, 3);
       break;
     case ID_DEX:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 4);
+      RequestStatusPointUp(this, mode, 4);
       break;
     case ID_LUK:
-      RequestStatusPointUp(this, mode, statCosts, statusPoint, 5);
+      RequestStatusPointUp(this, mode, 5);
       break;
     case ID_TOGGLE_STATUS_EXPAND: {
       const char* normal;
@@ -8766,23 +8764,21 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   case UM_REFRESHBUTTON:
     if (this->geometry.state == 0) {
-      int costs[6];
-      std::memcpy(costs, statCosts, sizeof(costs));
-      int y = 24;
-      for (int i = 0; i < 6; ++i, y += 16) {
-        if (costs[i] != 0 && statusPoint >= costs[i]) {
-          this->m_statButtons[i]->Move(78, y);
+      const int* statCosts = g_session.m_statusPointCost;
+      int costs[6] = {statCosts[0], statCosts[1], statCosts[2], statCosts[3], statCosts[4], statCosts[5]};
+      for (int i = 0; i < 6; ++i) {
+        if (costs[i] != 0 && g_session.m_statusPoint >= costs[i]) {
+          this->m_statButtons[i]->Move(78, i * 16 + 24);
         } else {
           this->m_statButtons[i]->Move(-100, -100);
         }
       }
       if (g_session.GetTraitStat(231) >= 1) {
-        std::int64_t traitCosts[6];
-        std::memcpy(traitCosts, g_session.m_traits.points, sizeof(traitCosts));
-        y = 145;
-        for (int i = 0; i < 6; ++i, y += 16) {
+        const std::int64_t* points = g_session.m_traits.points;
+        std::int64_t traitCosts[6] = {points[0], points[1], points[2], points[3], points[4], points[5]};
+        for (int i = 0; i < 6; ++i) {
           if (0 != traitCosts[i]) {
-            this->m_extendedButtons[i]->Move(78, y);
+            this->m_extendedButtons[i]->Move(78, i * 16 + 145);
           } else {
             this->m_extendedButtons[i]->Move(-100, -100);
           }
