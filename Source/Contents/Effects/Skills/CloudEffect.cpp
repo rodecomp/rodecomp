@@ -125,37 +125,14 @@ bool CCloud::IsAlive() {
 // OFFSET: 0x006FBED0
 // FUNCTION: fn_06920
 void CCloud::OnProcess() {
-  CParticle* particle = this->particle;
-  if (!particle) {
+  if (!this->particle) {
     return;
   }
 
-  const int frame = particle->elapsedFrames;
-  if (frame < this->fadeInEnd) {
-    this->alpha = std::min({this->alpha + this->fadeInStep, 255.0f});
-    particle->alpha = static_cast<int>(this->alpha);
-  } else if (frame > this->fadeOutStart) {
-    this->alpha -= this->fadeOutStep;
-    if (this->alpha <= 0.0f) {
-      this->ResetParticles();
-    } else {
-      particle->alpha = static_cast<int>(this->alpha);
-    }
-  } else {
-    particle->alpha = static_cast<int>(this->alpha);
-  }
-
+  this->UpdateAlpha();
   this->Drift();
-  this->phase = (this->phase + 1) % 360;
-  this->particle->scale = this->baseScale * this->scaleAmplitude * g_sinTable[this->phase] + this->baseScale;
-
-  matrix scale;
-  scale.SetScale(this->particle->scale, this->particle->scale, 1.0f);
-  matrix rotation;
-  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-  matrix transform;
-  transform.Compose(scale, rotation);
-  this->particle->transform = transform;
+  this->UpdateScale();
+  this->UpdateTransform();
   ++this->particle->elapsedFrames;
 }
 
@@ -165,6 +142,22 @@ void CCloud::Render() {
   if (this->particle) {
     this->particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
+}
+
+// OFFSET: 0x006FC0D0
+__forceinline void CCloud::UpdateAlpha() {
+  CParticle* particle = this->particle;
+  const int frame = particle->elapsedFrames;
+  if (frame < this->fadeInEnd) {
+    this->alpha = std::min(this->fadeInStep + this->alpha, 255.0f);
+  } else if (frame > this->fadeOutStart) {
+    this->alpha -= this->fadeOutStep;
+    if (this->alpha <= 0.0f) {
+      this->ResetParticles();
+      return;
+    }
+  }
+  particle->alpha = static_cast<int>(this->alpha);
 }
 
 // OFFSET: 0x006FC160
@@ -183,4 +176,22 @@ void CCloud::Drift() {
 
   const vector3d position = {offset.x + this->position[0], offset.y + this->position[1], offset.z + this->position[2]};
   this->particle->position = position;
+}
+
+// OFFSET: 0x006FC300
+// FUNCTION: fn_46171
+__forceinline void CCloud::UpdateScale() {
+  this->phase = (this->phase + 1) % 360;
+  this->particle->scale = this->baseScale * this->scaleAmplitude * g_sinTable[this->phase] + this->baseScale;
+}
+
+// OFFSET: 0x006FC350
+__forceinline void CCloud::UpdateTransform() {
+  matrix scale;
+  scale.SetScale(this->particle->scale, this->particle->scale, 1.0f);
+  matrix rotation;
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+  matrix transform;
+  transform.Compose(scale, rotation);
+  this->particle->transform = transform;
 }
