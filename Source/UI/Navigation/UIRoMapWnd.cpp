@@ -480,11 +480,7 @@ void UIRoMapWnd::RefreshPartyRecords() {
   if (count > 0) {
     for (int index = 0; index < count; ++index) {
       MessengerMember member = g_session.PartyAt(index);
-      if (member.valid == 0 || member.offline != 0) {
-        continue;
-      }
-
-      if (!this->AddRelatedName(member.map, member.name)) {
+      if (member.valid != 0 && member.offline == 0 && !this->AddRelatedName(member.map, member.name)) {
         WorldViewRecord record;
         record.name = member.map;
         record.relatedNames.push_back(member.name);

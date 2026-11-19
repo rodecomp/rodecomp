@@ -42,3 +42,4 @@
 extern template void std::string::resize(size_type, char);
 template __declspec(noinline) std::vector<std::string>& std::map<std::string, std::vector<std::string>>::operator[](const std::string&);
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+extern template std::string* std::vector<std::string>::_Ucopy<std::string*>(std::string*, std::string*, std::string*);
