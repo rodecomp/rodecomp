@@ -167,11 +167,7 @@ void UIRPData::DrawNamed(int x, int y, std::string name, std::uint32_t color, in
     primitive->quad[3].u = (static_cast<float>(width) + g_textureOffsetX) / static_cast<float>(textureWidth);
   }
 
-  if (height > imageHeight) {
-    primitive->quad[3].v = (static_cast<float>(imageHeight) + g_textureOffsetY) / static_cast<float>(textureHeight);
-  } else {
-    primitive->quad[3].v = (static_cast<float>(height) + g_textureOffsetX) / static_cast<float>(textureHeight);
-  }
+  primitive->quad[3].v = height > imageHeight ? (static_cast<float>(imageHeight) + g_textureOffsetY) / static_cast<float>(textureHeight) : (static_cast<float>(height) + g_textureOffsetX) / static_cast<float>(textureHeight);
 
   for (int i = 0; i < 4; ++i) {
     primitive->quad[i].diffuse = color;
