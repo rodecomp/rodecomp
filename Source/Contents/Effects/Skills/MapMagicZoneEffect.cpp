@@ -75,12 +75,9 @@ void CMapMagicZoneEffect::Close() {
   this->ribbon.clear();
 }
 
-// OFFSET: 0x00B6E1D0
-// FUNCTION: fn_19114
-void CMapMagicZoneEffect::Open() {
-  this->AddSpinner(0);
-  this->AddSpinner(1);
-
+// OFFSET: 0x00B6DDA0
+// FUNCTION: fn_46225
+__forceinline void CMapMagicZoneEffect::AddPetals() {
   int index = 0;
   for (int angle = 0; angle < 360; angle += 180) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
@@ -102,7 +99,11 @@ void CMapMagicZoneEffect::Open() {
 
     ++index;
   }
+}
 
+// OFFSET: 0x00B6DE70
+// FUNCTION: fn_46226
+__forceinline void CMapMagicZoneEffect::AddRibbon() {
   int row = 0;
   int angle = 0;
   for (int height = 55; height > 40; height -= 5) {
@@ -132,6 +133,15 @@ void CMapMagicZoneEffect::Open() {
   }
 }
 
+// OFFSET: 0x00B6E1D0
+// FUNCTION: fn_19114
+void CMapMagicZoneEffect::Open() {
+  this->AddSpinner(0);
+  this->AddSpinner(1);
+  this->AddPetals();
+  this->AddRibbon();
+}
+
 // OFFSET: 0x00B6E3B0
 // FUNCTION: fn_19115
 bool CMapMagicZoneEffect::IsAlive() {
@@ -139,7 +149,7 @@ bool CMapMagicZoneEffect::IsAlive() {
 }
 
 // INLINED
-static void UpdatePetal(CParticle* particle, int angle) {
+static __forceinline void AnimatePetal(CParticle* particle, int angle) {
   ZoneVector3d corners[4];
   particle->phaseParameter = (particle->phaseParameter + 3) % 360;
   const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
@@ -171,6 +181,14 @@ static void UpdatePetal(CParticle* particle, int angle) {
   particle->transform = rotation;
 }
 
+// OFFSET: 0x00B6EB70
+// FUNCTION: fn_46228
+void CMapMagicZoneEffect::UpdatePetal(CParticle* particle) {
+  if (particle) {
+    AnimatePetal(particle, particle->columnIndex * 23);
+  }
+}
+
 // OFFSET: 0x00B6E3C0
 // FUNCTION: fn_19116
 void CMapMagicZoneEffect::OnProcess() {
@@ -190,7 +208,7 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.z = this->position[2];
     ++particle->elapsedFrames;
 
-    UpdatePetal(particle, particle->columnIndex * 23);
+    AnimatePetal(particle, particle->columnIndex * 23);
   }
 
   for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
@@ -241,6 +259,59 @@ void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
   }
 }
 
+// OFFSET: 0x00B6DF90
+// FUNCTION: fn_46227
+__forceinline void CMapMagicZoneEffect::UpdateRibbonVertices(CParticle* particle) {
+  if (particle) {
+    const int segment = particle->columnIndex;
+    const float wave = g_sinTable[segment * 9] * particle->speedParameter;
+    const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+    const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
+    const float flat = wave * g_cosTable[particle->phaseParameter];
+    const float rise = wave * g_sinTable[particle->phaseParameter];
+
+    const float offsetX = flat * g_cosTable[angle];
+    const float offsetZ = flat * g_sinTable[angle];
+    ZoneVector3d points[2];
+    const float innerX = particle->scale * g_cosTable[angle];
+    const float innerY = 0.0f;
+    const float innerZ = particle->scale * g_sinTable[angle];
+    const float outerX = innerX + offsetX;
+    const float outerY = innerY - rise;
+    const float outerZ = innerZ + offsetZ;
+
+    points[0].x = innerX;
+    points[0].y = innerY;
+    points[0].z = innerZ;
+    points[1].x = outerX;
+    points[1].y = outerY;
+    points[1].z = outerZ;
+
+    particle->vertices[3].x = points[0].x;
+    particle->vertices[3].y = points[0].y;
+    particle->vertices[3].z = points[0].z;
+    particle->vertices[1].x = points[1].x;
+    particle->vertices[1].y = points[1].y;
+    particle->vertices[1].z = points[1].z;
+
+    if (segment != 0) {
+      particle->vertices[0].x = this->previousPoints[1].x;
+      particle->vertices[0].y = this->previousPoints[1].y;
+      particle->vertices[0].z = this->previousPoints[1].z;
+      particle->vertices[2].x = this->previousPoints[0].x;
+      particle->vertices[2].y = this->previousPoints[0].y;
+      particle->vertices[2].z = this->previousPoints[0].z;
+    }
+
+    this->previousPoints[0].x = points[0].x;
+    this->previousPoints[0].y = points[0].y;
+    this->previousPoints[0].z = points[0].z;
+    this->previousPoints[1].x = points[1].x;
+    this->previousPoints[1].y = points[1].y;
+    this->previousPoints[1].z = points[1].z;
+  }
+}
+
 // OFFSET: 0x00B6EDC0
 // FUNCTION: fn_46082
 void CMapMagicZoneEffect::UpdateRibbon(CParticle* particle) {
@@ -255,45 +326,7 @@ void CMapMagicZoneEffect::UpdateRibbon(CParticle* particle) {
       particle->transform = rotation;
     }
 
-    const int segment = particle->columnIndex;
-    const float wave = g_sinTable[segment * 9] * particle->speedParameter;
-    const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
-    const int angle = static_cast<int>(static_cast<float>(step * segment) + spinAngle) % 360;
-    const float flat = wave * g_cosTable[particle->phaseParameter];
-    const float rise = wave * g_sinTable[particle->phaseParameter];
-
-    const float offsetX = flat * g_cosTable[angle];
-    const float offsetZ = flat * g_sinTable[angle];
-    ZoneVector3d points[2];
-    const float innerX = particle->scale * g_cosTable[angle];
-    const float innerY = 0.0f;
-    const float innerZ = particle->scale * g_sinTable[angle];
-    const float outerX = innerX + offsetX;
-    const float outerY = innerY - rise;
-    const float outerZ = innerZ + offsetZ;
-
-    particle->vertices[3].x = innerX;
-    particle->vertices[3].y = innerY;
-    particle->vertices[3].z = innerZ;
-    particle->vertices[1].x = outerX;
-    particle->vertices[1].y = outerY;
-    particle->vertices[1].z = outerZ;
-
-    if (segment != 0) {
-      particle->vertices[0].x = this->previousPoints[1].x;
-      particle->vertices[0].y = this->previousPoints[1].y;
-      particle->vertices[0].z = this->previousPoints[1].z;
-      particle->vertices[2].x = this->previousPoints[0].x;
-      particle->vertices[2].y = this->previousPoints[0].y;
-      particle->vertices[2].z = this->previousPoints[0].z;
-    }
-
-    this->previousPoints[0].x = innerX;
-    this->previousPoints[0].y = innerY;
-    this->previousPoints[0].z = innerZ;
-    this->previousPoints[1].x = outerX;
-    this->previousPoints[1].y = outerY;
-    this->previousPoints[1].z = outerZ;
+    this->UpdateRibbonVertices(particle);
   }
 }
 

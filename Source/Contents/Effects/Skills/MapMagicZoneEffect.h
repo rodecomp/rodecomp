@@ -19,6 +19,10 @@ public:
   void Close() override;
   bool IsAlive() override;
   void AddSpinner(int kind);
+  void AddPetals();
+  void AddRibbon();
+  void UpdateRibbonVertices(CParticle* particle);
+  void UpdatePetal(CParticle* particle);
   __declspec(noinline) void UpdateSpinner(CParticle* particle);
   void UpdateRibbon(CParticle* particle);
   void RenderSpinner(CParticle* particle);
