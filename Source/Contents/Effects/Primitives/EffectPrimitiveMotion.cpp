@@ -7495,13 +7495,15 @@ bool CEffectPrim::Move2DPrimitive() {
       const DWORD now = timeGetTime();
 
       if (expiration > now || g_replayAnimationScaling != 0) {
-        if (expiration == 0 || expiration == 999999) {
-          slot.process = 999;
-        } else if (g_replayAnimationScaling == 0) {
-          slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
+        if (expiration != 0 && expiration != 999999) {
+          if (g_replayAnimationScaling == 0) {
+            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
+          } else {
+            const int elapsed = static_cast<int>(Replay::Instance().elapsed);
+            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - elapsed) / 1000);
+          }
         } else {
-          const int elapsed = static_cast<int>(Replay::Instance().elapsed);
-          slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - elapsed) / 1000);
+          slot.process = 999;
         }
       }
     }
@@ -7537,12 +7539,12 @@ bool CEffectPrim::Move2DPrimitive() {
     }
   }
 
-  if ((particle.pattern & 4u) == 0) {
-    this->render.position.x = particle.master->state.tlvertX + particle.deltaPos2.x;
-    this->render.position.y = particle.master->state.tlvertY + particle.deltaPos2.y;
-  } else {
+  if ((particle.pattern & 4u) != 0) {
     this->render.position.x = particle.deltaPos2.x;
     this->render.position.y = particle.deltaPos2.y;
+  } else {
+    this->render.position.x = particle.master->state.tlvertX + particle.deltaPos2.x;
+    this->render.position.y = particle.master->state.tlvertY + particle.deltaPos2.y;
   }
 
   particle.rollSpeed = particle.rollAccel + particle.rollSpeed;
@@ -7550,7 +7552,7 @@ bool CEffectPrim::Move2DPrimitive() {
   particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
   particle.speed = particle.accel + particle.speed;
 
-  if ((particle.pattern & 2u) != 0 && static_cast<int>(particle.chCnt) <= particle.stateCnt) {
+  if ((particle.pattern & 2u) != 0 && particle.stateCnt >= static_cast<int>(particle.chCnt)) {
     particle.widthAccel = 0.0f;
     particle.widthSpeed = 0.0f;
     particle.heightAccel = 0.0f;
@@ -7605,10 +7607,12 @@ bool CEffectPrim::Move2DPrimitive() {
   if (particle.stateCnt % particle.animSpeed == 0) {
     ++this->render.curMotion;
 
-    if (particle.repeatAnim != 0) {
+    if (particle.repeatAnim == 0) {
+      if (this->render.curMotion == static_cast<int>(particle.totalTexture)) {
+        return false;
+      }
+    } else {
       this->render.curMotion = this->render.curMotion % static_cast<int>(particle.totalTexture);
-    } else if (this->render.curMotion == static_cast<int>(particle.totalTexture)) {
-      return false;
     }
   }
 
