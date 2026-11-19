@@ -175,7 +175,7 @@ void ScopedDeviceStateDX9::Save() {
 
 // OFFSET: 0x005516A0
 // FUNCTION: fn_01998
-ScopedDeviceStateDX9::~ScopedDeviceStateDX9() {
+void ScopedDeviceStateDX9::Restore() {
   for (int state = 0; state < 210; ++state) {
     if (this->m_render[state] != this->m_state->render[state]) {
       this->m_state->SetRenderState(static_cast<D3DRENDERSTATETYPE>(state), this->m_render[state]);

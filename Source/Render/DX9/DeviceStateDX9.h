@@ -30,11 +30,16 @@ public:
     this->Save();
   }
 
-  ~ScopedDeviceStateDX9();
+  // INLINED
+  ~ScopedDeviceStateDX9() {
+    this->Restore();
+  }
+
   ScopedDeviceStateDX9(const ScopedDeviceStateDX9&) = delete;
   ScopedDeviceStateDX9& operator=(const ScopedDeviceStateDX9&) = delete;
 
   void Save();
+  void Restore();
 
 private:
   /* 0000 */ DeviceStateDX9* m_state;
