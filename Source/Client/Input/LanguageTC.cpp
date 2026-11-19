@@ -15,21 +15,20 @@ CLanguageTC::CLanguageTC() : keys() {
                                                 0xB4, 0xA3, 0x75, 0xA3, 0xA1, 0xA3, 0x7A, 0xA3, 0xA5, 0xA3, 0x74, 0xA3, 0xA3, 0xA3, 0x79, 0xA3, 0x74,
                                                 0xA3, 0xA8, 0xA3, 0x77, 0xA3, 0xB7, 0xA3, 0xB5, 0xA3, 0xAE, 0xA3, 0xB2, 0xA3, 0xB6, 0x00};
   const auto zhuyin = zhuyinBig5;
-  const char categories[] = "11441443331111111132331233111121111133333";
   const unsigned char keys[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                            'I', 'J', 'K', 'L', 'N', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                                            VK_OEM_MINUS, VK_OEM_1, VK_OEM_COMMA, VK_OEM_PERIOD, VK_OEM_2};
+  const char categories[] = "11441443331111111132331233111121111133333";
 
   for (int index = 0; index < 256; ++index) {
     this->mappings[index].category = 4;
   }
 
   for (unsigned index = 0; index < 41; ++index) {
-    auto& entry = this->mappings[keys[index]];
-    entry.bytes[0] = zhuyin[2 * index];
-    entry.bytes[1] = zhuyin[2 * index + 1];
-    entry.bytes[2] = 0;
-    entry.category = static_cast<std::uint8_t>(categories[index] - '1');
+    this->mappings[keys[index]].bytes[0] = zhuyin[2 * index];
+    this->mappings[keys[index]].bytes[1] = zhuyin[2 * index + 1];
+    this->mappings[keys[index]].bytes[2] = 0;
+    this->mappings[keys[index]].category = static_cast<std::uint8_t>(categories[index] - '1');
   }
 
   this->mappings['C'].bytes[0] = 0xA3;
