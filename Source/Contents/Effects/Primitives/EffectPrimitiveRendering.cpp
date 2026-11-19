@@ -5610,12 +5610,12 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
 
 // OFFSET: 0x00BCAAC0
 // FUNCTION: fn_19860
-void CEffectPrim::RenderArcBand(matrix& wtm) {
+__declspec(safebuffers) void CEffectPrim::RenderArcBand(matrix& wtm) {
   const float* tm = this->state.transform.values;
   const vector3d& position = this->render.position;
   float uInc = 0.0f;
   int rpCnt = 0;
-  const float last = 360.0f - this->state.arcAngle;
+  const float last = g_fullCircleAngle - this->state.arcAngle;
 
   for (float i = 0.0f; last >= i; i += this->state.arcAngle) {
     const int angle1 = static_cast<int>(i);
@@ -5690,7 +5690,7 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
     }
 
     uInc = uNext;
-    if (uInc >= 1.0f) {
+    if (uInc >= g_projectionDepthNumerator) {
       uInc = 0.0f;
     }
   }
