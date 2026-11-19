@@ -832,13 +832,13 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
     hours = 0;
     days = 0;
   }
-  int count = 2;
   if (display > 9999) {
     display = 9999;
   }
   if (display < 0) {
     display = 0;
   }
+  int count = 2;
   digits[0] = display % 10;
   digits[1] = (display /= 10) % 10;
   if (minutes > 0) {
@@ -869,7 +869,12 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
 
   const int center = g_renderer->viewport.width / 2;
   for (int index = 0; index < total; ++index, --startIndex) {
-    const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
+    int digit;
+    if ((index + 1) % 3 != 0) {
+      digit = digits[startIndex];
+    } else {
+      digit = 10;
+    }
     this->DrawActionSprite(
     center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
     );
