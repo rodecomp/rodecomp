@@ -114,6 +114,7 @@ bool CViolentQuakeEffect::IsAlive() {
 }
 
 // OFFSET: 0x0072FF90
+// FUNCTION: fn_46236
 __forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter) {
   if (emitter) {
     const vector3d origin = this->positionVector;
