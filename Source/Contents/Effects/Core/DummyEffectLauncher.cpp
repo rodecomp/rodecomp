@@ -29,7 +29,8 @@ __declspec(safebuffers) void CDummyEffectLauncher::SendMsg(CGameObject* sender, 
   this->render.position.z = position->z;
   this->render.visible = 0;
   this->render.motionStartTime = timeGetTime();
-  if (g_effectMgr->Spawn(0, static_cast<int>(c), this->render.position, 0, -1, 0, 0) != nullptr) {
+  EffectLists* effects = g_effectMgr;
+  if (effects->Spawn(0, static_cast<int>(c), this->render.position, 0, -1, 0, 0) != nullptr) {
     return;
   }
 
