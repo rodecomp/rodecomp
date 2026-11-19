@@ -148,10 +148,12 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
 
   page.texture = texture;
   texture->Fill(nullptr, 0);
-  page.cellWidth = cellSizes[category].width;
-  page.cellHeight = cellSizes[category].height;
-  const int columns = width / page.cellWidth;
-  const int rows = height / page.cellHeight;
+  const std::uint32_t cellWidth = cellSizes[category].width;
+  const std::uint32_t cellHeight = cellSizes[category].height;
+  page.cellWidth = cellWidth;
+  page.cellHeight = cellHeight;
+  const int columns = width / cellWidth;
+  const int rows = height / cellHeight;
   page.records.resize(columns * rows);
 
   for (int y = 0; y < rows; ++y) {
