@@ -11901,7 +11901,8 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     }
     if (this->scene->GetGameActorByAID(g_session.petGid)) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
-      const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 3);
+      const int friendly = g_session.GetPetFriendlyState(g_session.m_petFriendly);
+      const int action = g_session.GetPetActionNumber(hungerLevel, friendly, 3);
       const int emotion = g_session.GetPetEmotionNumber(g_session.petJob, 3, hungerLevel);
       this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
       this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
