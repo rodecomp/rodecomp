@@ -16,8 +16,7 @@ void UITransMenuWnd::Paint() {
     std::uint32_t color = this->m_items[i].enabled ? 0xFFFFFF : 0x646464;
     if (i == this->m_selected) {
       color = 0x282828;
-      const int half = this->m_margin / 2;
-      this->FillRegion(0, (i - 1) * half + cellHeight * i + this->m_margin, this->geometry.width, cellHeight + half, 0xC8C8C8);
+      this->FillRegion(0, (i - 1) * (this->m_margin / 2) + cellHeight * i + this->m_margin, this->geometry.width, cellHeight + this->m_margin / 2, 0xC8C8C8);
     }
 
     const int margin = this->m_margin;
