@@ -151,9 +151,9 @@ __forceinline void CBash::UpdateSpark(CParticle* particle) {
   const int fadeFrame = static_cast<int>(values[8]);
   const int limit = static_cast<int>(values[6]);
   const float speed = values[2] + values[1];
+  const float angle = speed + values[0];
   const float radius = values[5] + values[4];
   float step = values[7];
-  const float angle = speed + values[0];
   if (this->frame == fadeFrame) {
     step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
   }
