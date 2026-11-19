@@ -6,7 +6,8 @@
 #include <algorithm>
 #include <array>
 
-// INLINED
+// OFFSET: 0x00ABDD20
+// FUNCTION: fn_45864
 GroundLightmapSet::~GroundLightmapSet() {
   this->Clear();
 }
