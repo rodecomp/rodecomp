@@ -33,6 +33,52 @@ static __forceinline WorldViewRecord* FindRecord(std::vector<WorldViewRecord>& r
   return nullptr;
 }
 
+// OFFSET: 0x00612DF0
+// FUNCTION: fn_46304
+__forceinline CWorldViewMap::CWorldViewMap(int mapId, WorldViewArea bounds, const char* mapName, const char* mapDisplayName) {
+  if (mapName) {
+    this->name = mapName;
+  }
+  if (mapDisplayName) {
+    this->displayName = mapDisplayName;
+  }
+  this->id = mapId;
+  this->area = bounds;
+}
+
+// OFFSET: 0x00612F10
+// FUNCTION: fn_46305
+CWorldViewMap::CWorldViewMap() {
+  this->id = 0;
+}
+
+// OFFSET: 0x00613A00
+// FUNCTION: fn_46307
+void CWorldViewMap::ClearFields() {
+  for (auto it = this->fields.begin(); it != this->fields.end(); ++it) {
+    delete *it;
+  }
+  this->fields.clear();
+}
+
+// OFFSET: 0x00613C60
+// FUNCTION: fn_46308
+CWorldViewField* CWorldViewMap::FieldAt(int x, int y) {
+  for (auto it = this->fields.begin(); it != this->fields.end(); ++it) {
+    CWorldViewField* field = *it;
+    if (AreaContains(field->left, field->top, field->right, field->bottom, x, y)) {
+      return field;
+    }
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x00613EB0
+// FUNCTION: fn_46309
+__forceinline bool CWorldViewMap::Contains(int x, int y) const {
+  return AreaContains(this->left, this->top, this->right, this->bottom, x, y);
+}
+
 // OFFSET: 0x00612C70
 // FUNCTION: fn_04345
 __declspec(noinline) CWorldViewWorld::CWorldViewWorld(const char* name, const char* imageName) {
@@ -76,7 +122,7 @@ void CWorldViewWorld::AddField(int mapId, const char* name, CWorldViewField* fie
   }
 
   if (!map) {
-    map = new CWorldViewMap(mapId, name, field->area);
+    map = new CWorldViewMap(mapId, field->area, name, name);
     this->maps.push_back(map);
   }
 
@@ -200,7 +246,7 @@ CWorldViewMap* CWorldViewWorld::MapAt(unsigned int& mapIndex, int x, int y) {
   for (unsigned int index = 0; index < this->maps.size(); ++index) {
     if (this->maps[index]->id < 100) {
       if (this->maps[index]->fields.empty()) {
-        if (AreaContains(this->maps[index]->left, this->maps[index]->top, this->maps[index]->right, this->maps[index]->bottom, x, y)) {
+        if (this->maps[index]->Contains(x, y)) {
           mapIndex = index;
           return this->maps[index];
         }

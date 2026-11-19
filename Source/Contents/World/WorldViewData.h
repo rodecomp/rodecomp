@@ -43,14 +43,10 @@ public:
 
 class CWorldViewMap {
 public:
+  CWorldViewMap();
+  CWorldViewMap(int id, WorldViewArea area, const char* name, const char* displayName);
   // INLINED
-  CWorldViewMap(int id, const char* name, WorldViewArea area) {
-    if (name) {
-      this->name = name;
-      this->displayName = name;
-    }
-    this->id = id;
-    this->area = area;
+  CWorldViewMap(int id, const char* name, WorldViewArea area) : CWorldViewMap(id, area, name, name) {
   }
 
   // INLINED
@@ -61,6 +57,9 @@ public:
     this->fields.clear();
   }
 
+  void ClearFields();
+  CWorldViewField* FieldAt(int x, int y);
+  bool Contains(int x, int y) const;
   CWorldViewField* FindField(const char* name);
 
   /* 0000 */ std::string name;
