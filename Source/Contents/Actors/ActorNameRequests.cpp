@@ -49,10 +49,11 @@ void CActorNameCardHolder::ExpireRequests() {
 // FUNCTION: fn_45910
 std::uint32_t CActorNameCardHolder::PopNextRequest() {
   while (!this->pending.empty()) {
-    const std::uint32_t id = this->pending.front();
+    const int id = this->pending.front();
     const auto found = this->cards.find(id);
     if (found == this->cards.end() || found->second.received != 1) {
-      const auto requested = std::find_if(this->requests.begin(), this->requests.end(), [id](const Request& request) { return id == request.id; });
+      const auto end = this->requests.end();
+      const auto requested = std::find_if(this->requests.begin(), end, [id](const Request& request) { return id == request.id; });
       if (requested == this->requests.end()) {
         this->pending.pop_front();
         return id;
