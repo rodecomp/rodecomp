@@ -9,6 +9,20 @@
 #include <strstream>
 #include <cstring>
 
+struct RmaNameTag {
+  std::uint32_t first;
+  std::uint32_t second;
+};
+
+struct RmaActionTag {
+  std::uint32_t first;
+  std::uint16_t second;
+  std::uint8_t third;
+};
+
+template __declspec(noinline) void std::vector<std::string>::resize(std::size_t);
+template __declspec(noinline) void std::vector<int>::resize(std::size_t);
+
 // OFFSET: 0x007461C0
 // FUNCTION: fn_07770
 CRmaRes::CRmaRes() {
@@ -39,8 +53,6 @@ bool CRmaRes::Load(const char* name) {
   file.Close();
   buffer[size] = '\0';
 
-  const char rsxNameTag[] = {'#', 'r', 's', 'x', 'n', 'a', 'm', 'e', '\0'};
-  const char actionTag[] = {'#', 'a', 'c', 't', 'i', 'o', 'n', '\0'};
   std::istrstream stream(buffer);
   int model = -1;
   while (stream) {
@@ -49,11 +61,21 @@ bool CRmaRes::Load(const char* name) {
       continue;
     }
 
-    if (const auto& token = tokenizer[0]; token.size() == 8 && std::memcmp(token.data(), rsxNameTag, 8) == 0) {
+    if (const auto& token = tokenizer[0];
+        [&] {
+          const auto size = token.size();
+          const auto* tag = reinterpret_cast<const RmaNameTag*>(token.data());
+          return size == 8 && tag->first == 0x78737223u && tag->second == 0x656d616eu;
+        }()) {
       ++model;
       this->models.resize(model + 1);
       this->models[model] = tokenizer[1];
-    } else if (const auto& actionToken = tokenizer[0]; actionToken.size() == 7 && std::memcmp(actionToken.data(), actionTag, 7) == 0) {
+    } else if (const auto& actionToken = tokenizer[0];
+               [](const std::string& token) {
+                 const auto size = token.size();
+                 const auto* tag = reinterpret_cast<const RmaActionTag*>(token.data());
+                 return size == 7 && tag->first == 0x74636123u && tag->second == 0x6f69 && tag->third == 0x6e;
+               }(actionToken)) {
       const unsigned int action = std::atoi(tokenizer[1].c_str());
       if (action >= this->actions.size()) {
         this->actions.resize(action + 1);
