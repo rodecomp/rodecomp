@@ -4131,6 +4131,8 @@ void CPlayer::SendMsg(
 void CGrannyPc::RenderModel(
   const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation
 ) {
+  const int meshLayer = layer;
+
   if (!this->render.visible) {
     return;
   }
@@ -4145,7 +4147,7 @@ void CGrannyPc::RenderModel(
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
   granny_world_pose* pose = nullptr;
-  RenderCommand** commands = this->layerCommands[layer];
+  RenderCommand** commands = this->layerCommands[meshLayer];
   if (!model) {
     model = this->model;
     this->worldPose = this->UpdateAnimation(nullptr);
@@ -4191,10 +4193,10 @@ void CGrannyPc::RenderModel(
   bounds[4] = reciprocalDepth;
 
   for (int mesh = 0; mesh < model->instance->meshCount; ++mesh) {
-    if (layer == 0) {
+    if (meshLayer == 0) {
       model->deformBuffer = this->vertices[mesh];
     } else {
-      model->deformBuffer = this->layerVertices[layer][mesh];
+      model->deformBuffer = this->layerVertices[meshLayer][mesh];
     }
 
     int triangleCount;
@@ -4207,7 +4209,7 @@ void CGrannyPc::RenderModel(
     }
 
     const matrix* attachment;
-    if (layer == this->attachLayer) {
+    if (meshLayer == this->attachLayer) {
       attached = true;
       attachment = &this->attachTransform;
     } else {
@@ -4250,7 +4252,7 @@ void CGrannyPc::RenderModel(
                          static_cast<unsigned char>(light.blue + 0x38 + brightness) + (this->alpha << 24);
       }
 
-      if (layer != 1) {
+      if (meshLayer != 1) {
         this->attachmentPositions.push_back(position);
       }
     }
@@ -4258,9 +4260,9 @@ void CGrannyPc::RenderModel(
     command->texture = texture;
     command->vertexCount = vertexCount;
     static_cast<CRendererDX9*>(g_renderer)->Submit(command, 0);
-    this->meshTextures[layer][mesh] = texture;
-    this->meshIndices[layer][mesh] = indices;
-    this->meshTriangleCounts[layer][mesh] = triangleCount;
+    this->meshTextures[meshLayer][mesh] = texture;
+    this->meshIndices[meshLayer][mesh] = indices;
+    this->meshTriangleCounts[meshLayer][mesh] = triangleCount;
     this->meshTransforms[mesh] = transform;
   }
 
