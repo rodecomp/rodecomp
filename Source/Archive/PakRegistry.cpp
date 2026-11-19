@@ -71,14 +71,16 @@ bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
     }
   }
 
-  WIN32_FIND_DATAA information;
-  HANDLE search = FindFirstFileA(filename, &information);
-  if (search == INVALID_HANDLE_VALUE) {
-    return false;
-  }
+  {
+    WIN32_FIND_DATAA information;
+    HANDLE search = FindFirstFileA(filename, &information);
+    if (search == INVALID_HANDLE_VALUE) {
+      return false;
+    }
 
-  FindClose(search);
-  return true;
+    FindClose(search);
+    return true;
+  }
 }
 
 // OFFSET: 0x00AEA1F0
