@@ -7,6 +7,7 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstring>
@@ -45,6 +46,82 @@ __forceinline void CRainbowEffect::CreateBands() {
         this->bands.push_back(particle);
       }
     }
+  }
+}
+
+// OFFSET: 0x00B70A30
+// FUNCTION: fn_46057
+void CRainbowEffect::UpdateBandVertices(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int band = particle->rowIndex;
+  const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+  const int angle = static_cast<int>(static_cast<float>(step * particle->columnIndex) + particle->angle) % 360;
+
+  EffectPoint points[4];
+  const float width = particle->scale * g_cosTable[angle];
+  const float height = particle->scale * g_sinTable[angle];
+
+  float ratio = 1.0f - static_cast<float>(band) * 0.05f;
+  float flat = width * ratio;
+  float rise = height * ratio;
+  const float innerX = g_cosTable[particle->phaseParameter] * flat;
+  const float innerY = rise + rise;
+  const float innerZ = g_sinTable[particle->phaseParameter] * flat;
+
+  ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
+  flat = width * ratio;
+  rise = height * ratio;
+  const float outerX = g_cosTable[particle->phaseParameter] * flat;
+  const float outerY = rise + rise;
+  const float outerZ = g_sinTable[particle->phaseParameter] * flat;
+
+  if (particle->columnIndex != 0) {
+    particle->vertices[0].x = outerX;
+    particle->vertices[0].y = outerY;
+    particle->vertices[0].z = outerZ;
+    particle->vertices[1].x = innerX;
+    particle->vertices[1].y = innerY;
+    particle->vertices[1].z = innerZ;
+    particle->vertices[2].x = this->previousPoints[0].x;
+    particle->vertices[2].y = this->previousPoints[0].y;
+    particle->vertices[2].z = this->previousPoints[0].z;
+    particle->vertices[3].x = this->previousPoints[1].x;
+    particle->vertices[3].y = this->previousPoints[1].y;
+    particle->vertices[3].z = this->previousPoints[1].z;
+  }
+
+  this->previousPoints[0].x = outerX;
+  this->previousPoints[0].y = outerY;
+  this->previousPoints[0].z = outerZ;
+  this->previousPoints[1].x = innerX;
+  this->previousPoints[1].y = innerY;
+  this->previousPoints[1].z = innerZ;
+
+  switch (band) {
+  case 0:
+    particle->SetColor(255, 0, 0);
+    break;
+  case 1:
+    particle->SetColor(255, 126, 0);
+    break;
+  case 2:
+    particle->SetColor(255, 255, 0);
+    break;
+  case 3:
+    particle->SetColor(0, 255, 0);
+    break;
+  case 4:
+    particle->SetColor(0, 0, 255);
+    break;
+  case 5:
+    particle->SetColor(115, 50, 200);
+    break;
+  case 6:
+    particle->SetColor(255, 0, 255);
+    break;
   }
 }
 
@@ -174,6 +251,101 @@ void CRainbowEffect::OnProcess() {
     }
 
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00B71180
+// FUNCTION: fn_46058
+void CRainbowEffect::UpdateBand(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  int alpha = particle->alpha;
+  if (particle->elapsedFrames <= 180) {
+    ++alpha;
+  } else if (particle->elapsedFrames <= 360) {
+    --alpha;
+  }
+
+  particle->angle += g_projectionDepthNumerator;
+  if (alpha < 0) {
+    alpha = 0;
+  }
+
+  particle->alpha = alpha >= 250 ? 250 : alpha;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  particle->transform = rotation;
+
+  const int band = particle->rowIndex;
+  const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+  const int angle = static_cast<int>(static_cast<float>(step * particle->columnIndex) + particle->angle) % 360;
+
+  EffectPoint points[4];
+  const float width = particle->scale * g_cosTable[angle];
+  const float height = particle->scale * g_sinTable[angle];
+
+  float ratio = 1.0f - static_cast<float>(band) * 0.05f;
+  float flat = width * ratio;
+  float rise = height * ratio;
+  const float innerX = g_cosTable[particle->phaseParameter] * flat;
+  const float innerY = rise + rise;
+  const float innerZ = g_sinTable[particle->phaseParameter] * flat;
+
+  ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
+  flat = width * ratio;
+  rise = height * ratio;
+  const float outerX = g_cosTable[particle->phaseParameter] * flat;
+  const float outerY = rise + rise;
+  const float outerZ = g_sinTable[particle->phaseParameter] * flat;
+
+  if (particle->columnIndex != 0) {
+    particle->vertices[0].x = outerX;
+    particle->vertices[0].y = outerY;
+    particle->vertices[0].z = outerZ;
+    particle->vertices[1].x = innerX;
+    particle->vertices[1].y = innerY;
+    particle->vertices[1].z = innerZ;
+    particle->vertices[2].x = this->previousPoints[0].x;
+    particle->vertices[2].y = this->previousPoints[0].y;
+    particle->vertices[2].z = this->previousPoints[0].z;
+    particle->vertices[3].x = this->previousPoints[1].x;
+    particle->vertices[3].y = this->previousPoints[1].y;
+    particle->vertices[3].z = this->previousPoints[1].z;
+  }
+
+  this->previousPoints[0].x = outerX;
+  this->previousPoints[0].y = outerY;
+  this->previousPoints[0].z = outerZ;
+  this->previousPoints[1].x = innerX;
+  this->previousPoints[1].y = innerY;
+  this->previousPoints[1].z = innerZ;
+
+  switch (band) {
+  case 0:
+    particle->SetColor(255, 0, 0);
+    break;
+  case 1:
+    particle->SetColor(255, 126, 0);
+    break;
+  case 2:
+    particle->SetColor(255, 255, 0);
+    break;
+  case 3:
+    particle->SetColor(0, 255, 0);
+    break;
+  case 4:
+    particle->SetColor(0, 0, 255);
+    break;
+  case 5:
+    particle->SetColor(115, 50, 200);
+    break;
+  case 6:
+    particle->SetColor(255, 0, 255);
+    break;
   }
 }
 

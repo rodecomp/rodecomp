@@ -25,6 +25,8 @@ public:
 
 private:
   void CreateBands();
+  void UpdateBandVertices(CParticle* particle);
+  void UpdateBand(CParticle* particle);
   void RenderBand(CParticle* particle);
 };
 
