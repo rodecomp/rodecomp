@@ -32,6 +32,7 @@ public:
   /* 00DC */ std::vector<CEZ2STRParticle*> lights;
 
 private:
+  void ProcessParticle(CEZ2STRParticle* particle);
   void RenderParticle(CEZ2STRParticle* particle);
 };
 
