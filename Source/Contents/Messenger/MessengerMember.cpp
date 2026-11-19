@@ -1006,7 +1006,9 @@ void UIMessengerGroupWnd::Paint() {
         1, 0
       );
 
+      color = it->offline;
       if (it->offline == 0) {
+        color = 0;
         UIPcGage* gauge = this->gauges[index];
         if (gauge->geometry.x != -100) {
           char hpText[128];
@@ -1016,9 +1018,10 @@ void UIMessengerGroupWnd::Paint() {
           );
         }
       }
+      color = it->offline;
 
       memset(path, 0, sizeof(path));
-      if (it->offline == 0) {
+      if (color == 0) {
         if (it->accountId == g_session.m_aid) {
           sprintf(path, "%sicon_party_me.bmp", prefix.c_str());
         } else {
