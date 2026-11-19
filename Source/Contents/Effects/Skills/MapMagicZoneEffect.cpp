@@ -128,6 +128,39 @@ bool CMapMagicZoneEffect::IsAlive() {
   return this->ActorExists();
 }
 
+// INLINED
+static void UpdatePetal(CParticle* particle, int angle) {
+  ZoneVector3d corners[4];
+  particle->phaseParameter = (particle->phaseParameter + 3) % 360;
+  const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+  const float height = particle->animationParameter;
+
+  for (int corner = 0; corner < 4; ++corner) {
+    const int index = (angle + corner * 90) % 360;
+    corners[corner].x = radius * g_cosTable[index];
+    corners[corner].y = height;
+    corners[corner].z = radius * g_sinTable[index];
+  }
+
+  particle->vertices[0].x = corners[0].x;
+  particle->vertices[0].y = corners[0].y;
+  particle->vertices[0].z = corners[0].z;
+  particle->vertices[1].x = corners[1].x;
+  particle->vertices[1].y = corners[1].y;
+  particle->vertices[1].z = corners[1].z;
+  particle->vertices[3].x = corners[2].x;
+  particle->vertices[3].y = corners[2].y;
+  particle->vertices[3].z = corners[2].z;
+  particle->vertices[2].x = corners[3].x;
+  particle->vertices[2].y = corners[3].y;
+  particle->vertices[2].z = corners[3].z;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  particle->transform = rotation;
+}
+
 // OFFSET: 0x00B6E3C0
 // FUNCTION: fn_19116
 void CMapMagicZoneEffect::OnProcess() {
@@ -147,36 +180,7 @@ void CMapMagicZoneEffect::OnProcess() {
     particle->position.z = this->position[2];
     ++particle->elapsedFrames;
 
-    ZoneVector3d corners[4];
-    const int angle = particle->columnIndex * 23;
-    particle->phaseParameter = (particle->phaseParameter + 3) % 360;
-    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
-    const float height = particle->animationParameter;
-
-    for (int corner = 0; corner < 4; ++corner) {
-      const int index = (angle + corner * 90) % 360;
-      corners[corner].x = radius * g_cosTable[index];
-      corners[corner].y = height;
-      corners[corner].z = radius * g_sinTable[index];
-    }
-
-    particle->vertices[0].x = corners[0].x;
-    particle->vertices[0].y = corners[0].y;
-    particle->vertices[0].z = corners[0].z;
-    particle->vertices[1].x = corners[1].x;
-    particle->vertices[1].y = corners[1].y;
-    particle->vertices[1].z = corners[1].z;
-    particle->vertices[3].x = corners[2].x;
-    particle->vertices[3].y = corners[2].y;
-    particle->vertices[3].z = corners[2].z;
-    particle->vertices[2].x = corners[3].x;
-    particle->vertices[2].y = corners[3].y;
-    particle->vertices[2].z = corners[3].z;
-
-    matrix rotation;
-    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-    rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
-    particle->transform = rotation;
+    UpdatePetal(particle, particle->columnIndex * 23);
   }
 
   for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
