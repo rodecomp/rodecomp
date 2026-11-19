@@ -556,76 +556,72 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
     if (this->m_nameEdit->Length() < 4) {
       g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
-      return 0;
-    }
-
-    if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_makeCharItemLinkOpen.c_str())) != nullptr ||
+    } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_makeCharItemLinkOpen.c_str())) != nullptr ||
         _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_makeCharItemLinkClose.c_str())) != nullptr) {
       g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-      return 0;
-    }
-
-    int valid = TRUE;
-    if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
-      valid = FALSE;
-    }
-    int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
-    bool hasControlCharacter = false;
-    if (g_session.HasControlCharacter(this->m_nameEdit->Text())) {
-      hasControlCharacter = true;
-    }
-    int blank = g_session.IsBlankString(this->m_nameEdit->Text());
-
-    if (!hasControlCharacter && allowed == TRUE && valid == TRUE && blank == FALSE) {
-      if (this->m_nameEdit->Length() >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
-        this->m_nameEdit->SetText("");
-        return 0;
-      }
-
-      char name[24] = {};
-      strcpy(name, this->m_nameEdit->Text());
-      memcpy(this->m_character.name, name, sizeof(this->m_character.name));
-      memcpy_s(&g_charInfo, sizeof(g_charInfo), &this->m_character, sizeof(g_charInfo));
-      if (strstr(g_charInfo.name, "\xB1\xD7\xB6\xF3\xBA\xF1\xC6\xBC") != nullptr) {
-        return 0;
-      }
-      _strlwr(name);
-      if (strstr(name, "gravity") != nullptr) {
-        return 0;
-      }
-      if ((name[0] == '[' && name[1] == 'g' && name[2] == 'm') || (name[1] == '[' && name[2] == 'g' && name[3] == 'm') ||
-          (name[2] == '[' && name[3] == 'g' && name[4] == 'm')) {
-        return 0;
-      }
-
-      g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
-      g_windowMgr.Schedule(this);
     } else {
-      if (hasControlCharacter || !allowed) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+      int valid = TRUE;
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
+        valid = FALSE;
       }
-      if (!valid) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+      int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+      bool hasControlCharacter = false;
+      if (g_session.HasControlCharacter(this->m_nameEdit->Text())) {
+        hasControlCharacter = true;
       }
-      if (blank == TRUE) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-      }
-    }
+      int blank = g_session.IsBlankString(this->m_nameEdit->Text());
 
-    {
-    CMode* mode = g_modeMgr.currentMode;
-    mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
-    int payload[8];
-    payload[0] = this->m_character.stats[0];
-    payload[1] = this->m_character.stats[1];
-    payload[2] = this->m_character.stats[2];
-    payload[3] = this->m_character.stats[3];
-    payload[4] = this->m_character.stats[4];
-    payload[5] = this->m_character.stats[5];
-    payload[6] = this->m_character.headPalette;
-    payload[7] = this->m_character.head;
-    mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(payload), 0, 0, 0);
+      if (!hasControlCharacter && allowed == TRUE && valid == TRUE && blank == FALSE) {
+        if (this->m_nameEdit->Length() >= 24) {
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+          this->m_nameEdit->SetText("");
+          return 0;
+        }
+
+        char name[24] = {};
+        strcpy(name, this->m_nameEdit->Text());
+        memcpy(this->m_character.name, name, sizeof(this->m_character.name));
+        memcpy_s(&g_charInfo, sizeof(g_charInfo), &this->m_character, sizeof(g_charInfo));
+        if (strstr(g_charInfo.name, "\xB1\xD7\xB6\xF3\xBA\xF1\xC6\xBC") != nullptr) {
+          return 0;
+        }
+        _strlwr(name);
+        if (strstr(name, "gravity") != nullptr) {
+          return 0;
+        }
+        if ((name[0] == '[' && name[1] == 'g' && name[2] == 'm') || (name[1] == '[' && name[2] == 'g' && name[3] == 'm') ||
+            (name[2] == '[' && name[3] == 'g' && name[4] == 'm')) {
+          return 0;
+        }
+
+        g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      } else {
+        if (hasControlCharacter || !allowed) {
+          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        if (!valid) {
+          g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        if (blank == TRUE) {
+          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+      }
+
+      {
+      CMode* mode = g_modeMgr.currentMode;
+      mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      int payload[8];
+      payload[0] = this->m_character.stats[0];
+      payload[1] = this->m_character.stats[1];
+      payload[2] = this->m_character.stats[2];
+      payload[3] = this->m_character.stats[3];
+      payload[4] = this->m_character.stats[4];
+      payload[5] = this->m_character.stats[5];
+      payload[6] = this->m_character.headPalette;
+      payload[7] = this->m_character.head;
+      mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(payload), 0, 0, 0);
+      }
     }
     return 0;
   }
