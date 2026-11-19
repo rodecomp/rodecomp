@@ -8703,13 +8703,13 @@ void CRagEffect::ScatterItemIcons(char kind) {
     this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(static_cast<std::int16_t>(this->state.duration) - 50);
     this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(160) - 80);
     this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(160) - 80);
-    CWorld* world = g_modeMgr.GetGameMode()->scene;
-    const int drop = rand() % 66;
+    C3dAttr* terrain = g_modeMgr.GetGameMode()->scene->terrain;
+    const int drop = ClampedRandom(66);
     this->state.lastPrim->state.slots[i].vecBNow.y =
-      world->terrain->Height(
+      terrain->Height(
         this->state.lastPrim->state.slots[i].vecBNow.x + this->render.position.x, this->state.lastPrim->state.slots[i].vecBNow.z + this->render.position.z
       ) -
-      5.0f - static_cast<float>(std::max(drop, 0));
+      5.0f - static_cast<float>(drop);
     this->state.lastPrim->state.slots[i].vecBNow.x = this->render.position.x + this->state.lastPrim->state.slots[i].vecBNow.x;
     this->state.lastPrim->state.slots[i].vecBNow.z = this->render.position.z + this->state.lastPrim->state.slots[i].vecBNow.z;
     this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
