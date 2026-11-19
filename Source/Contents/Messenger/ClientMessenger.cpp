@@ -4868,9 +4868,10 @@ void CSession::AddFriend(MessengerMember& member) {
   int index = 0;
 
   for (std::list<MessengerMember>::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
-    if (member.name == it->name) {
+    MessengerMember& entry = *it;
+    if (entry.name == member.name) {
       member.color = MemberColor(index);
-      *it = member;
+      entry = member;
     }
 
     ++index;
@@ -4891,9 +4892,10 @@ void CSession::AddPartyMember(MessengerMember& member) {
   int index = 0;
 
   for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
-    if (it->name == member.name) {
+    MessengerMember& entry = *it;
+    if (entry.name == member.name) {
       member.color = MemberColor(index);
-      *it = member;
+      entry = member;
       return;
     }
 
