@@ -1204,22 +1204,22 @@ variant:
   switch (variant) {
   case ELE_WATER:
     effectId = EF_BEGINSPELL2;
-    return;
+    break;
   case ELE_EARTH:
     effectId = EF_BEGINSPELL4;
-    return;
+    break;
   case ELE_FIRE:
     effectId = EF_BEGINSPELL3;
-    return;
+    break;
   case ELE_WIND:
     effectId = EF_BEGINSPELL5;
-    return;
+    break;
   case ELE_POISON:
     effectId = EF_BEGINSPELL7;
-    return;
+    break;
   case ELE_HOLY:
     effectId = EF_BEGINSPELL6;
-    return;
+    break;
   }
 }
 
