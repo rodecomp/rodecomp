@@ -156,7 +156,13 @@ void UIWindow::DrawRightColoredText(
     }
 
     std::uint32_t segmentColor = 0;
-    const char* const segmentStart = this->ParseColorCode(next, segmentColor);
+    const char* segmentStart = next;
+    if (*segmentStart == '^') {
+      segmentColor = static_cast<unsigned char>(g_hexDigits[segmentStart[5]] * 16 + g_hexDigits[segmentStart[6]]);
+      segmentColor = (segmentColor << 8) | static_cast<unsigned char>(g_hexDigits[segmentStart[3]] * 16 + g_hexDigits[segmentStart[4]]);
+      segmentColor = (segmentColor << 8) | static_cast<unsigned char>(g_hexDigits[segmentStart[1]] * 16 + g_hexDigits[segmentStart[2]]);
+      segmentStart += 7;
+    }
     next = this->SegmentEnd(segmentStart, end);
     if (next >= end) {
       next = end;
