@@ -4871,7 +4871,12 @@ void CRagEffect::TexturedHalo(const char* name, char kind) {
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
 
-  if (kind == 3) {
+  if (kind == 2) {
+    this->state.lastPrim->state.slots[0].distance = 12.0f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 100;
+    this->state.lastPrim->state.size = 5.0f;
+  } else if (kind == 3) {
     this->state.lastPrim->state.slots[0].distance = 10.0f;
     this->state.lastPrim->state.slots[0].rotStart = 225;
     this->state.lastPrim->state.slots[0].alphaB = 250;
@@ -4881,13 +4886,23 @@ void CRagEffect::TexturedHalo(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 200;
     this->state.lastPrim->state.size = 4.0f;
-  } else if (kind == 10 || kind == 11 || kind == 12) {
-    this->state.lastPrim->state.slots[0].distance = kind == 10 ? 30.0f : (kind == 11 ? 28.0f : 20.0f);
+  } else if (kind == 10) {
+    this->state.lastPrim->state.slots[0].distance = 30.0f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 200;
+    this->state.lastPrim->state.size = 10.0f;
+  } else if (kind == 11) {
+    this->state.lastPrim->state.slots[0].distance = 28.0f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 200;
+    this->state.lastPrim->state.size = 10.0f;
+  } else if (kind == 12) {
+    this->state.lastPrim->state.slots[0].distance = 20.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 200;
     this->state.lastPrim->state.size = 10.0f;
   } else {
-    this->state.lastPrim->state.slots[0].distance = kind == 2 ? 12.0f : 7.0f;
+    this->state.lastPrim->state.slots[0].distance = 7.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 100;
     this->state.lastPrim->state.size = 5.0f;
@@ -13523,8 +13538,11 @@ void CRagEffect::ElementalOrbit(char kind) {
       this->state.lastPrim->state.slots[0].height[10] = 1.0f;
       this->state.lastPrim->state.slots[0].flag1[0] = 0;
     } else if (kind == 3 || kind == 4) {
-      this->state.lastPrim->state.slots[0].height[6] =
-        this->state.deltaPos.x <= 5.0f ? static_cast<float>(phase) / this->state.deltaPos.x : static_cast<float>(angle);
+      if (this->state.deltaPos.x <= 5.0f) {
+        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(phase) / this->state.deltaPos.x;
+      } else {
+        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle);
+      }
       this->state.lastPrim->state.slots[0].height[7] = -15.0f;
       this->state.lastPrim->state.slots[0].distance = 1.0f;
 
