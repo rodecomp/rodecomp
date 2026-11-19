@@ -1564,8 +1564,8 @@ void UIGuildInfoManageWnd::Paint() {
   g_skinInfo.PaletteChannels(14, 6, boxRed, boxGreen, boxBlue);
   this->FillRegion(200, 155, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   int row = 0;
-  int y = 157;
   for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
+    const int y = row * 16 + 157;
     if (y >= 205) {
       break;
     }
@@ -1577,15 +1577,14 @@ void UIGuildInfoManageWnd::Paint() {
       }
       this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
-      y += 16;
     }
   }
 
   g_skinInfo.PaletteChannels(14, 6, boxRed, boxGreen, boxBlue);
   this->FillRegion(200, 229, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   row = 0;
-  y = 231;
   for (auto related = guild.relatedGuilds.begin(); related != guild.relatedGuilds.end(); ++related) {
+    const int y = row * 16 + 231;
     if (y >= 279) {
       break;
     }
@@ -1597,7 +1596,6 @@ void UIGuildInfoManageWnd::Paint() {
       }
       this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
-      y += 16;
     }
   }
 }
@@ -1800,7 +1798,8 @@ void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int hei
   unsigned int green;
   unsigned int blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000;
+  const COLORREF rgb = RGB(red, green, blue);
+  viewer->backgroundColor = rgb | 0xFF000000u;
   viewer->Invalidate();
   this->AddChild(viewer);
   viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), width / 6, 0, 0);
