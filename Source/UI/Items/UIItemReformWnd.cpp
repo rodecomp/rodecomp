@@ -259,12 +259,12 @@ void UIItemReformWnd_DetailBtn::OnMouseEnter() {
 // FUNCTION: fn_04119
 void UIItemReformWnd_Item::OnMouseHover(int x, int y) {
   if (this->item) {
-    int screenY = y;
     int screenX = x;
+    int screenY = y;
     this->ToScreen(screenX, screenY);
+    CMode* mode = g_modeMgr.currentMode;
     const int tipX = screenX + 5;
     const int tipY = screenY - 5;
-    CMode* mode = g_modeMgr.currentMode;
     mode->ShowTooltip(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
@@ -526,9 +526,10 @@ int UIItemReformWnd_List::SendMsg(
   }
   case UM_REFRESHITEM: {
     this->items.clear();
-    std::vector<int> baseItems = CItemReformMgr::Instance()->GetReformBaseItems(argument1);
+    const int reformItemId = static_cast<int>(argument1);
+    std::vector<int> baseItems = CItemReformMgr::Instance()->GetReformBaseItems(reformItemId);
     for (std::vector<int>::iterator base = baseItems.begin(); base != baseItems.end(); ++base) {
-      ItemReformInfo* info = CItemReformMgr::Instance()->FindReform(argument1, *base);
+      ItemReformInfo* info = CItemReformMgr::Instance()->FindReform(reformItemId, *base);
       if (!info) {
         continue;
       }
