@@ -312,6 +312,113 @@ __forceinline void CStormKickEffect::RotateActor() {
   }
 }
 
+// OFFSET: 0x00B7C440
+// FUNCTION: fn_46021
+__forceinline void CStormKickEffect::AdvanceStorm(CParticle* particle) {
+  if (particle) {
+    int alpha = particle->alpha;
+    if (particle->elapsedFrames > 60 && this->id != EF_STORMKICK7) {
+      alpha = std::max(alpha - 1, 0);
+    }
+    if (particle->elapsedFrames <= 40) {
+      ++alpha;
+    }
+    particle->alpha = alpha;
+
+    float& rotation = particle->angle;
+    const int jitter = rand() % 3;
+    const int turned = static_cast<int>(rotation - static_cast<float>((jitter >= 0 ? jitter : 0) + 3));
+    rotation = static_cast<float>(turned % 360);
+
+    matrix transform;
+    std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
+    transform.MakeYRotation(rotation / 180.0f * 3.141592f);
+    particle->transform = transform;
+  }
+}
+
+// OFFSET: 0x00B7C560
+// FUNCTION: fn_46022
+__forceinline void CStormKickEffect::AdvanceCloud(CParticle* particle) {
+  if (particle) {
+    float& rotation = particle->angle;
+    const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
+    const int spread = std::min(particle->angleParameter + 3, 180);
+    particle->angleParameter = spread;
+    const int frame = particle->elapsedFrames;
+    int alpha = particle->alpha;
+    rotation = nextRotation;
+
+    if (this->id == EF_STORMKICK8) {
+      if (frame > 30) {
+        alpha -= 3;
+        if (alpha < 0) {
+          alpha = 0;
+        }
+      } else {
+        alpha += 3;
+      }
+    } else if (frame > 50) {
+      alpha = alpha - 1 < 0 ? 0 : alpha - 1;
+    } else if (frame < 12) {
+      ++alpha;
+    }
+    particle->alpha = alpha;
+    float scale = particle->scale;
+    if (frame > 12) {
+      scale += 0.1f;
+    }
+    particle->scale = scale;
+
+    const int segment = particle->columnIndex;
+    const float radius = particle->animationParameter;
+    const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(spread) / 20.0f) * segment) + nextRotation) % 360;
+    const int tilt = particle->phaseParameter;
+    const float horizontal = radius * g_cosTable[tilt];
+    const float vertical = radius * g_sinTable[tilt];
+
+    const float offsetX = horizontal * g_cosTable[angle];
+    const float offsetZ = horizontal * g_sinTable[angle];
+
+    EffectPoint corners[4];
+    const float innerX = g_cosTable[angle] * particle->scale;
+    const float innerY = -particle->speedParameter;
+    const float innerZ = g_sinTable[angle] * particle->scale;
+    const float outerX = innerX + offsetX;
+    const float outerY = innerY - vertical;
+    const float outerZ = offsetZ + innerZ;
+
+    corners[3].x = innerX;
+    corners[3].y = innerY;
+    corners[3].z = innerZ;
+    corners[1].x = outerX;
+    corners[1].y = outerY;
+    corners[1].z = outerZ;
+
+    particle->vertices[3].x = corners[3].x;
+    particle->vertices[3].y = corners[3].y;
+    particle->vertices[3].z = corners[3].z;
+    particle->vertices[1].x = corners[1].x;
+    particle->vertices[1].y = corners[1].y;
+    particle->vertices[1].z = corners[1].z;
+    if (segment != 0) {
+      particle->vertices[0].x = this->lastPoints[1].x;
+      particle->vertices[0].y = this->lastPoints[1].y;
+      particle->vertices[0].z = this->lastPoints[1].z;
+      particle->vertices[2].x = this->lastPoints[0].x;
+      particle->vertices[2].y = this->lastPoints[0].y;
+      particle->vertices[2].z = this->lastPoints[0].z;
+    }
+
+    this->lastPoints[0].x = corners[3].x;
+    this->lastPoints[0].y = corners[3].y;
+    this->lastPoints[0].z = corners[3].z;
+    this->lastPoints[1].x = corners[1].x;
+    this->lastPoints[1].y = corners[1].y;
+    this->lastPoints[1].z = corners[1].z;
+  }
+}
+
 // OFFSET: 0x00B7BF70
 // FUNCTION: fn_19225
 void CStormKickEffect::OnProcess() {
@@ -321,27 +428,7 @@ void CStormKickEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      int alpha = particle->alpha;
-      if (particle->elapsedFrames > 60 && this->id != EF_STORMKICK7) {
-        alpha = std::max(alpha - 1, 0);
-      }
-      if (particle->elapsedFrames <= 40) {
-        ++alpha;
-      }
-      particle->alpha = alpha;
-
-      float& rotation = particle->angle;
-      const int jitter = rand() % 3;
-      const int turned = static_cast<int>(rotation - static_cast<float>((jitter >= 0 ? jitter : 0) + 3));
-      rotation = static_cast<float>(turned % 360);
-
-      matrix transform;
-      std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
-      transform.MakeYRotation(rotation / 180.0f * 3.141592f);
-      particle->transform = transform;
-    }
-
+    this->AdvanceStorm(particle);
     ++particle->elapsedFrames;
   }
 
@@ -351,77 +438,7 @@ void CStormKickEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      float& rotation = particle->angle;
-      const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
-      const int spread = std::min(particle->angleParameter + 3, 180);
-      particle->angleParameter = spread;
-      const int frame = particle->elapsedFrames;
-      int alpha = particle->alpha;
-      rotation = nextRotation;
-
-      if (this->id == EF_STORMKICK8) {
-        if (frame > 30) {
-          alpha -= 3;
-          if (alpha < 0) {
-            alpha = 0;
-          }
-        } else {
-          alpha += 3;
-        }
-      } else if (frame > 50) {
-        alpha = alpha - 1 < 0 ? 0 : alpha - 1;
-      } else if (frame < 12) {
-        ++alpha;
-      }
-      particle->alpha = alpha;
-      float scale = particle->scale;
-      if (frame > 12) {
-        scale += 0.1f;
-      }
-      particle->scale = scale;
-
-      const int segment = particle->columnIndex;
-      const float radius = particle->animationParameter;
-      const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(spread) / 20.0f) * segment) + nextRotation) % 360;
-      const int tilt = particle->phaseParameter;
-      const float horizontal = radius * g_cosTable[tilt];
-      const float vertical = radius * g_sinTable[tilt];
-
-      const float offsetX = g_cosTable[angle] * horizontal;
-      const float offsetZ = g_sinTable[angle] * horizontal;
-
-      EffectPoint corners[4];
-      float innerX = g_cosTable[angle] * particle->scale;
-      float innerY = -particle->speedParameter;
-      float innerZ = g_sinTable[angle] * particle->scale;
-      float outerX = innerX + offsetX;
-      float outerY = innerY - vertical;
-      float outerZ = innerZ + offsetZ;
-
-      particle->vertices[3].x = innerX;
-      particle->vertices[3].y = innerY;
-      particle->vertices[3].z = innerZ;
-      particle->vertices[1].x = outerX;
-      particle->vertices[1].y = outerY;
-      particle->vertices[1].z = outerZ;
-      if (segment != 0) {
-        particle->vertices[0].x = this->lastPoints[1].x;
-        particle->vertices[0].y = this->lastPoints[1].y;
-        particle->vertices[0].z = this->lastPoints[1].z;
-        particle->vertices[2].x = this->lastPoints[0].x;
-        particle->vertices[2].y = this->lastPoints[0].y;
-        particle->vertices[2].z = this->lastPoints[0].z;
-      }
-
-      this->lastPoints[0].x = innerX;
-      this->lastPoints[0].y = innerY;
-      this->lastPoints[0].z = innerZ;
-      this->lastPoints[1].x = outerX;
-      this->lastPoints[1].y = outerY;
-      this->lastPoints[1].z = outerZ;
-    }
-
+    this->AdvanceCloud(particle);
     ++particle->elapsedFrames;
   }
 
@@ -451,38 +468,44 @@ __forceinline void CStormKickEffect::RenderCloud(CParticle* particle) {
   particle->Render(quad);
 }
 
+// OFFSET: 0x00B7C990
+// FUNCTION: fn_46023
+__forceinline void CStormKickEffect::RenderStorm(CParticle* particle) {
+  const int alpha = particle->alpha;
+  const float* motion = particle->animationParameters;
+
+  switch (this->id) {
+  case EF_STORMKICK1:
+  case EF_STORMKICK2:
+  case EF_STORMKICK3:
+  case EF_STORMKICK7:
+    particle->destinationBlend = 6;
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    break;
+  case EF_STORMKICK6:
+    if (0.0f == motion[1]) {
+      particle->destinationBlend = 6;
+      particle->alpha = alpha / 3;
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+      particle->alpha = alpha;
+      break;
+    }
+    if (1.0f != motion[1]) {
+      break;
+    }
+  default:
+    particle->destinationBlend = 2;
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    break;
+  }
+}
+
 // OFFSET: 0x00B7C7D0
 // FUNCTION: fn_19226
 void CStormKickEffect::Render() {
   for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
     CParticle* particle = *it;
-    const int alpha = particle->alpha;
-    const float* motion = particle->animationParameters;
-
-    switch (this->id) {
-    case EF_STORMKICK1:
-    case EF_STORMKICK2:
-    case EF_STORMKICK3:
-    case EF_STORMKICK7:
-      particle->destinationBlend = 6;
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-      break;
-    case EF_STORMKICK6:
-      if (0.0f == motion[1]) {
-        particle->destinationBlend = 6;
-        particle->alpha = alpha / 3;
-        particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-        particle->alpha = alpha;
-        break;
-      }
-      if (1.0f != motion[1]) {
-        break;
-      }
-    default:
-      particle->destinationBlend = 2;
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-      break;
-    }
+    this->RenderStorm(particle);
   }
 
   for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {

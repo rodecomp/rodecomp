@@ -33,6 +33,9 @@ private:
   void SetEffectLifetime();
   void SetStormColor(CParticle* particle, int effectId);
   void RotateActor();
+  void AdvanceStorm(CParticle* particle);
+  void AdvanceCloud(CParticle* particle);
+  void RenderStorm(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
