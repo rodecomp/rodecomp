@@ -413,7 +413,8 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       if (g_serviceType == ServiceIndonesia) {
         this->partnerText->SetText(std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3)));
       } else {
-        std::string job = g_session.ShortcutFilename(argument2);
+        const int jobId = static_cast<int>(argument2);
+        std::string job = g_session.ShortcutFilename(jobId);
         this->partnerText->SetText(std::format("{} Lv{} ({})", this->partnerName, static_cast<int>(argument3), job));
       }
     } else {
