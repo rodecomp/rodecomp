@@ -105,7 +105,7 @@ void CFriggSongEffect::Close() {
 // OFFSET: 0x00701F20
 // FUNCTION: fn_07002
 void CFriggSongEffect::Open() {
-  for (int segment = 0; segment <= 21; ++segment) {
+  for (int column = 0; column <= 21; ++column) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
@@ -113,31 +113,31 @@ void CFriggSongEffect::Open() {
 
     particle->SetTexture("effect\\ring_blue.tga");
     particle->effectId = this->id;
-    particle->columnIndex = segment;
+    particle->columnIndex = column;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
     particle->alpha = 50;
     particle->SetColor(50, 200, 50);
+    const int row = particle->rowIndex;
     particle->angleParameter = 360;
     particle->speedParameter = 120.0f;
     particle->phaseParameter = 90;
-    float& baseAngle = particle->angle;
-    const int row = particle->rowIndex;
-    baseAngle = static_cast<float>(row * 10);
+    particle->angle = static_cast<float>(row * 10);
     particle->scale = static_cast<float>(row) * 0.5f + 2.5f;
     (&particle->animationParameter)[row] = 0.0f;
     particle->elapsedFrames = particle->rowIndex;
 
-    int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
+    const float speed = particle->speedParameter;
+    int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + particle->angle) % 360;
     if (particle->columnIndex == 20) {
-      angle = static_cast<int>(baseAngle);
+      angle = static_cast<int>(particle->angle);
     }
 
     const int tilt = particle->phaseParameter;
-    const float spread = particle->speedParameter * g_cosTable[tilt];
-    const float height = particle->speedParameter * g_sinTable[tilt];
     const float cosine = g_cosTable[angle];
     const float sine = g_sinTable[angle];
+    const float spread = speed * g_cosTable[tilt];
+    const float height = speed * g_sinTable[tilt];
     const float offsetX = spread * cosine;
     const float offsetZ = spread * sine;
 
