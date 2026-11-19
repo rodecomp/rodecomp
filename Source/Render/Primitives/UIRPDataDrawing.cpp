@@ -45,7 +45,34 @@ void UIRPData::DrawCroppedTexture(int x, int y, CTexture* texture, int sourceLef
   const float v1 = (static_cast<float>(sourceBottom) + g_textureOffsetY) / textureHeight;
   const float right = static_cast<float>(x + (sourceRight - sourceLeft));
   const float bottom = static_cast<float>(y + (sourceBottom - sourceTop));
-  SetTextureRegion(primitive, static_cast<float>(x), static_cast<float>(y), right, bottom, u0, v0, u1, v1, color);
+  primitive->quad[0].u = u0;
+  primitive->quad[0].x = static_cast<float>(x);
+  primitive->quad[0].v = v0;
+  primitive->quad[1].u = u1;
+  primitive->quad[1].v = v0;
+  primitive->quad[2].x = static_cast<float>(x);
+  primitive->quad[0].y = static_cast<float>(y);
+  primitive->quad[1].y = static_cast<float>(y);
+  primitive->quad[2].u = u0;
+  primitive->quad[2].v = v1;
+  primitive->quad[3].u = u1;
+  primitive->quad[3].v = v1;
+  primitive->quad[1].x = right;
+  primitive->quad[2].y = bottom;
+  primitive->quad[3].x = right;
+  primitive->quad[3].y = bottom;
+  primitive->quad[0].z = 0.000001f;
+  primitive->quad[0].rhw = 0.999999f;
+  primitive->quad[0].diffuse = color;
+  primitive->quad[1].z = 0.000001f;
+  primitive->quad[1].rhw = 0.999999f;
+  primitive->quad[1].diffuse = color;
+  primitive->quad[2].z = 0.000001f;
+  primitive->quad[2].rhw = 0.999999f;
+  primitive->quad[2].diffuse = color;
+  primitive->quad[3].z = 0.000001f;
+  primitive->quad[3].rhw = 0.999999f;
+  primitive->quad[3].diffuse = color;
   this->m_primitives.push_back(primitive);
 }
 
