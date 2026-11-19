@@ -81,6 +81,7 @@ void CRichManKim::OnProcess() {
 }
 
 // OFFSET: 0x0070B5A0
+// FUNCTION: fn_46179
 __forceinline void CRichManKim::UpdateParticle(CParticle* particle) {
   if (particle) {
     int index = this->angleIndex + 1;
