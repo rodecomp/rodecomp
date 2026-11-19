@@ -314,7 +314,9 @@ void UICheckAttendanceWnd::OnMouseHover(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.currentMode->ShowTooltip(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
+    const int screenY = tipY + y;
+    const int screenX = tipX + x;
+    g_modeMgr.currentMode->ShowTooltip(name, screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -353,15 +355,12 @@ void UICheckAttendanceWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-  if (!window) {
-    return;
+  if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
+    ITEM_INFO item;
+    item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
+    item.identified = 1;
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
-
-  ITEM_INFO item;
-  item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
-  item.identified = 1;
-  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
 }
 
 // OFFSET: 0x007DE0C0
