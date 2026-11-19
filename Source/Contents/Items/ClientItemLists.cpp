@@ -244,7 +244,7 @@ static int CountItemOptions(const ItemRandomOption* options) {
 static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int itemId, unsigned char type,
                                             unsigned char identified, unsigned char damaged, unsigned char refine,
                                             std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
-                                            std::uint32_t card4, ItemRandomOptions options, int grade) {
+                                            std::uint32_t card4, ItemRandomOptions options, std::int16_t grade) {
   ITEM_INFO item;
   item.identity[1] = index;
   item.quantity = amount;
@@ -262,7 +262,7 @@ static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int 
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.values[index];
   }
-  item.grade = static_cast<std::int16_t>(grade);
+  item.grade = grade;
   g_session.AddCartItem(item, 1);
 }
 
@@ -271,7 +271,7 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
                                                     unsigned char identified, unsigned char damaged,
                                                     unsigned char refine, std::uint32_t card1, std::uint32_t card2,
                                                     std::uint32_t card3, std::uint32_t card4,
-                                                    ItemRandomOptions options, int grade) {
+                                                    ItemRandomOptions options, std::int16_t grade) {
   ITEM_INFO item;
   item.identity[1] = index;
   item.quantity = amount;
@@ -289,7 +289,7 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.values[index];
   }
-  item.grade = static_cast<std::int16_t>(grade);
+  item.grade = grade;
   g_session.AddMerchantShopItem(item);
 }
 
