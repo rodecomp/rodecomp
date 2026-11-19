@@ -617,39 +617,36 @@ void UIGradeEnchantWnd::SetEnchantInfo(
 ) {
   switch (this->state) {
   case 0:
-  case 1:
+  case 1: {
+    if (-1 == index) {
+      return;
+    }
+
+    const ITEM_INFO owned = g_session.LookupClientItemByIdentity(index);
+    if (owned.identity[1] <= 0) {
+      return;
+    }
+
+    this->item = owned;
+    this->info = info;
+    this->enchantOption = GradeEnchantOption{enchantOption, enchantOptionCount};
+    this->materials.assign(materials, materials + materialCount);
+    this->selectedMaterial = -1;
+    this->blessingAmount = 0;
+    this->baseSuccessRate = value;
+
+    this->state = 1;
+    this->result = -1;
+    this->stateTick = timeGetTime();
+    this->itemFrame = 1;
+    this->enhancedUpButton->tooltipEnabled = 1;
+    this->Invalidate();
+
+    this->requestPending = 0;
+    this->enhancedUpButton->tooltipValue = this->info.blessingStepAmount;
     break;
-  default:
-    return;
   }
-
-  if (-1 == index) {
-    return;
   }
-
-  const ITEM_INFO owned = g_session.LookupClientItemByIdentity(index);
-  if (owned.identity[1] == 0) {
-    return;
-  }
-
-  this->item = owned;
-  this->info = info;
-  this->enchantOption.option = enchantOption;
-  this->enchantOption.count = enchantOptionCount;
-  this->materials.assign(materials, materials + materialCount);
-  this->selectedMaterial = -1;
-  this->blessingAmount = 0;
-  this->baseSuccessRate = value;
-
-  this->state = 1;
-  this->result = -1;
-  this->stateTick = timeGetTime();
-  this->itemFrame = 1;
-  this->enhancedUpButton->tooltipEnabled = 1;
-  this->Invalidate();
-
-  this->requestPending = 0;
-  this->enhancedUpButton->tooltipValue = this->info.blessingStepAmount;
 }
 
 // OFFSET: 0x007E9910
