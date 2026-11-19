@@ -279,6 +279,7 @@ void CLightSphereEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B6D7B0
+// FUNCTION: fn_46114
 __forceinline void CLightSphereEffect::UpdateSphere(CParticle* particle) {
   if (!particle) {
     return;
