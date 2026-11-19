@@ -81,7 +81,7 @@ void CSignBoardMgr::Initialize() {
         object->Create();
         std::string image;
         if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
-          image = "유저인터페이스\\";
+          image = std::string("유저인터페이스\\");
         }
         image += it->image;
         object->SetWindowImage(image);
@@ -111,7 +111,7 @@ void CSignBoardMgr::Initialize() {
         object->Create();
         std::string image;
         if (_mbsstr(reinterpret_cast<const unsigned char*>(it->image), reinterpret_cast<const unsigned char*>("유저인터페이스")) == nullptr) {
-          image = "유저인터페이스\\";
+          image = std::string("유저인터페이스\\");
         }
         image += it->image;
         object->SetWindowImage(image);
