@@ -677,7 +677,10 @@ bool UIWindow::Update(int redraw) {
     }
 
     g_renderer->RenderToTexture(this->geometry.width, this->geometry.height, primitives, this->m_texture);
-    return this->parent != nullptr;
+    if (this->parent != nullptr) {
+      return true;
+    }
+    return false;
   }
 
   UIWindow* parentWindow = this->parent;
@@ -719,7 +722,7 @@ bool UIWindow::Update(int redraw) {
         height = (parentWindow->geometry.height - y);
       }
 
-      if (width > 0 && height > 0) {
+      if (width >= 1 && height > 0) {
         parentWindow->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, *static_cast<CDCBitmap*>(this->geometry.surface));
       }
     } else {
@@ -728,7 +731,10 @@ bool UIWindow::Update(int redraw) {
     return true;
   }
 
-  return redraw == 1 || changed == true;
+  if (redraw == 1 || changed == true) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x005C45B0
