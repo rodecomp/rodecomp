@@ -1791,14 +1791,11 @@ void UIBartermarketWnd::Paint() {
   for (int row = 0; row < rows; ++row) {
     this->DrawItemSlotFrame(40, row * 32 + 17);
   }
-  unsigned slotRed;
-  unsigned slotGreen;
-  unsigned slotBlue;
-  g_skinInfo.PaletteChannels(2, 2, slotRed, slotGreen, slotBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(slotRed, slotGreen, slotBlue));
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(red, green, blue));
 
-  int visible = 0;
   int index = 0;
+  int visible = 0;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
