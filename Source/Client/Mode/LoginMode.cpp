@@ -2137,7 +2137,7 @@ CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), padding_6F2C(), ac
 
 // OFFSET: 0x00D8C990
 // FUNCTION: fn_45557
-CLoginMode::~CLoginMode() {
+__declspec(noinline) CLoginMode::~CLoginMode() {
   g_inlineCharset = this->savedInlineCharset;
 }
 
