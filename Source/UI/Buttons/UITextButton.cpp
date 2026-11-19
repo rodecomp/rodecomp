@@ -1358,7 +1358,7 @@ void UIComboBoxID::Resize(int width, int height) {
 void UIListBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max(count - visible, 0);
+  const int overflow = count - visible > 0 ? count - visible : 0;
   this->verticalOverflow = overflow != 0;
   auto* bar = this->verticalBar;
 
