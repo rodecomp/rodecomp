@@ -6,6 +6,13 @@
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
 
+// INLINED
+static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
+
 // OFFSET: 0x006F6510
 // FUNCTION: fn_06846
 CAMachineEffect::CAMachineEffect() : CEffect(-1), state(0) {
@@ -78,17 +85,13 @@ void CAMachineEffect::OnProcess() {
   }
 
   const vector3d source = this->positionVector;
-  const float x = source.x;
-  const float y = source.y;
-  const float z = source.z;
-  const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
-  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-  float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + 0.0f;
-  float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] - 8.0f;
-  float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + 0.0f;
-  particle->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
-  particle->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
-  particle->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  vector3d viewPos = TransformPoint(view, source);
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+  viewPos.x += 0.0f;
+  viewPos.y -= 8.0f;
+  viewPos.z += 0.0f;
+  particle->position = TransformPoint(inverse, viewPos);
   if (!particle->Process(0.0f, 0.0f, 0.0f)) {
     this->SetState(2);
   }
