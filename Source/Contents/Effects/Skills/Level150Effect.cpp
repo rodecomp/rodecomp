@@ -142,50 +142,7 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
       particle->animationParameter = 0.0f;
       particle->elapsedFrames = 0;
 
-      const int index = particle->columnIndex;
-      const float radius = particle->speedParameter * g_sinTable[index * 9] * 0.15f + particle->speedParameter;
-      const int direction =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * index) +
-                         particle->angle) %
-        360;
-      const int tilt = particle->phaseParameter;
-      const float spread = radius * g_cosTable[tilt];
-      const float height = radius * g_sinTable[tilt];
-      const float cosine = g_cosTable[direction];
-      const float sine = g_sinTable[direction];
-      const float offsetX = spread * cosine;
-      const float offsetZ = spread * sine;
-
-      EffectPoint points[2];
-      const float innerX = cosine * particle->scale;
-      const float innerY = 5.0f;
-      const float innerZ = sine * particle->scale;
-      const float outerX = innerX + offsetX;
-      const float outerY = 5.0f - height;
-      const float outerZ = innerZ + offsetZ;
-
-      particle->vertices[3].x = innerX;
-      particle->vertices[3].y = innerY;
-      particle->vertices[3].z = innerZ;
-      particle->vertices[1].x = outerX;
-      particle->vertices[1].y = outerY;
-      particle->vertices[1].z = outerZ;
-
-      if (index != 0) {
-        particle->vertices[0].x = this->lastPoints[1].x;
-        particle->vertices[0].y = this->lastPoints[1].y;
-        particle->vertices[0].z = this->lastPoints[1].z;
-        particle->vertices[2].x = this->lastPoints[0].x;
-        particle->vertices[2].y = this->lastPoints[0].y;
-        particle->vertices[2].z = this->lastPoints[0].z;
-      }
-
-      this->lastPoints[0].x = innerX;
-      this->lastPoints[0].y = innerY;
-      this->lastPoints[0].z = innerZ;
-      this->lastPoints[1].x = outerX;
-      this->lastPoints[1].y = outerY;
-      this->lastPoints[1].z = outerZ;
+      this->BuildBubbleSegment(particle);
       this->bubbles.push_back(particle);
     }
   }
