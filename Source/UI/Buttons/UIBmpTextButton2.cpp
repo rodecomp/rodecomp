@@ -70,26 +70,24 @@ std::string UIBmpTextButton2::GetLabel(int index, int* height, std::uint32_t* co
 void UIBmpTextButton2::SetLabel(std::string text, int index, int height, std::uint32_t color,
                                 unsigned char bold, unsigned char shadow, int x, int y) {
   if (this->HasLabel(index)) {
-    BmpTextButtonLabel& label = this->labels[index];
-    label.text.assign(text.data(), text.size());
+    this->labels[index].text = text;
+    this->labels[index].height = height;
+    this->labels[index].color = color;
+    this->labels[index].bold = bold;
+    this->labels[index].shadow = shadow;
+    this->labels[index].x = x;
+    this->labels[index].y = y;
+  } else {
+    BmpTextButtonLabel label;
+    label.text = text;
     label.height = height;
     label.color = color;
     label.bold = bold;
     label.shadow = shadow;
     label.x = x;
     label.y = y;
-    return;
+    this->labels.push_back(label);
   }
-
-  BmpTextButtonLabel label;
-  label.text.assign(text.data(), text.size());
-  label.height = height;
-  label.color = color;
-  label.bold = bold;
-  label.shadow = shadow;
-  label.x = x;
-  label.y = y;
-  this->labels.push_back(label);
 }
 
 // OFFSET: 0x0086A670
