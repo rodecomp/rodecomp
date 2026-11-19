@@ -63,8 +63,9 @@ CBarterMarketItemMgr::CBarterMarketItemMgr()
   this->initialized = true;
 }
 
-// INLINED
-CBarterMarketItemMgr::~CBarterMarketItemMgr()
+// OFFSET: 0x005D75D0
+// FUNCTION: fn_46450
+__declspec(noinline) CBarterMarketItemMgr::~CBarterMarketItemMgr()
 {
 }
 
