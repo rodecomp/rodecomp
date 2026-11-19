@@ -76,6 +76,32 @@ void CChargingPierceNewEffect::SetCount(int count) {
 }
 
 // OFFSET: 0x007036B0
+// FUNCTION: fn_46209
+__declspec(noinline) void CChargingPierceEffect::SetCount(unsigned int count, int mode) {
+  if (mode != 0 || count > 10) {
+    return;
+  }
+
+  int active = this->ActiveCount();
+  if (active < 0 || static_cast<unsigned int>(active) > count) {
+    this->Close();
+  }
+
+  active = this->ActiveCount();
+  if (active < 0 || static_cast<unsigned int>(active) >= count) {
+    return;
+  }
+
+  for (unsigned int index = static_cast<unsigned int>(active); index < count; ++index) {
+    if (this->sparks[index] || this->emitters[index]) {
+      continue;
+    }
+
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+    particle->Open(std::string("new_chargingpierce\\new_chargingpierce_cast\\new_chargingpierce_cast.str"));
+    this->emitters[index] = particle;
+  }
+}
 
 // OFFSET: 0x00703C70
 
