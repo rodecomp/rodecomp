@@ -90,6 +90,44 @@ void CMagicFloorEffect::AddClouds(int layer) {
   }
 }
 
+// OFFSET: 0x00B48A00
+// FUNCTION: fn_46255
+void CMagicFloorEffect::UpdateRingVertices(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const float depth = -particle->animationParameter;
+  const float height = static_cast<float>(segment) * particle->animationParameters[0] + depth;
+  int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle) % 360;
+  float radius = particle->speedParameter;
+  for (int step = 1; step <= segment; ++step) {
+    radius -= (2.2f - static_cast<float>(step) * 0.2f) * particle->scale;
+  }
+
+  EffectPoint corners[4];
+  for (int i = 0; i < 4; ++i) {
+    angle = (angle + 90) % 360;
+    corners[i].x = radius * g_cosTable[angle];
+    corners[i].y = height - 1.0f;
+    corners[i].z = radius * g_sinTable[angle];
+  }
+
+  particle->vertices[0].x = corners[2].x;
+  particle->vertices[0].y = corners[2].y;
+  particle->vertices[0].z = corners[2].z;
+  particle->vertices[1].x = corners[1].x;
+  particle->vertices[1].y = corners[1].y;
+  particle->vertices[1].z = corners[1].z;
+  particle->vertices[2].x = corners[3].x;
+  particle->vertices[2].y = corners[3].y;
+  particle->vertices[2].z = corners[3].z;
+  particle->vertices[3].x = corners[0].x;
+  particle->vertices[3].y = corners[0].y;
+  particle->vertices[3].z = corners[0].z;
+}
+
 // OFFSET: 0x00B48D50
 // FUNCTION: fn_18931
 void CMagicFloorEffect::Close() {

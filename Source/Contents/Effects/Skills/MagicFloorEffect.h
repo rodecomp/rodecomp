@@ -28,6 +28,7 @@ public:
   /* 0108 */ std::vector<CParticle*> particles;
 
 private:
+  void UpdateRingVertices(CParticle* particle);
   void ResetFloor(CParticle* particle);
   void UpdateFloor(CParticle* particle);
   void UpdateCloud(CParticle* particle);
