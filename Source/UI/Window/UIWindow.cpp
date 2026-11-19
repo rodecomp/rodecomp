@@ -680,57 +680,55 @@ bool UIWindow::Update(int redraw) {
     return this->parent != nullptr;
   }
 
-  if (!this->parent) {
+  UIWindow* parentWindow = this->parent;
+  if (!parentWindow) {
     return false;
   }
 
-  UIWindow* parentWindow = this->Parent();
-  if (parentWindow->m_cached != 0) {
-    return redraw == 1 || changed == true;
-  }
+  if (parentWindow->m_cached == 0) {
+    if (redraw != 1 && changed != true) {
+      return false;
+    }
 
-  if (redraw != 1 && changed != true) {
-    return false;
-  }
+    if (this->m_clip != 0) {
+      const int x = this->geometry.x >= 0 ? this->geometry.x : 0;
+      int width = this->geometry.width;
+      int sourceX;
+      if (this->geometry.x < 0) {
+        width += this->geometry.x;
+        sourceX = -this->geometry.x;
+      } else {
+        sourceX = 0;
+      }
 
-  CDCBitmap& source = *static_cast<CDCBitmap*>(this->geometry.surface);
-  if (this->m_clip != 0) {
-    const int x = this->geometry.x >= 0 ? this->geometry.x : 0;
-    int width = this->geometry.width;
-    int sourceX;
-    if (this->geometry.x < 0) {
-      width += this->geometry.x;
-      sourceX = -this->geometry.x;
+      if (parentWindow->geometry.width < (x + width)) {
+        width = (parentWindow->geometry.width - x);
+      }
+
+      const int y = this->geometry.y >= 0 ? this->geometry.y : 0;
+      int height = this->geometry.height;
+      int sourceY;
+      if (this->geometry.y < 0) {
+        height += this->geometry.y;
+        sourceY = -this->geometry.y;
+      } else {
+        sourceY = 0;
+      }
+
+      if (parentWindow->geometry.height < (y + height)) {
+        height = (parentWindow->geometry.height - y);
+      }
+
+      if (width > 0 && height > 0) {
+        parentWindow->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, *static_cast<CDCBitmap*>(this->geometry.surface));
+      }
     } else {
-      sourceX = 0;
+      parentWindow->geometry.surface->BlendFrom(this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, *static_cast<CDCBitmap*>(this->geometry.surface));
     }
-
-    if (parentWindow->geometry.width < (x + width)) {
-      width = (parentWindow->geometry.width - x);
-    }
-
-    const int y = this->geometry.y >= 0 ? this->geometry.y : 0;
-    int height = this->geometry.height;
-    int sourceY;
-    if (this->geometry.y < 0) {
-      height += this->geometry.y;
-      sourceY = -this->geometry.y;
-    } else {
-      sourceY = 0;
-    }
-
-    if (parentWindow->geometry.height < (y + height)) {
-      height = (parentWindow->geometry.height - y);
-    }
-
-    if (width > 0 && height > 0) {
-      parentWindow->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, source);
-    }
-  } else {
-    parentWindow->geometry.surface->BlendFrom(this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, source);
+    return true;
   }
 
-  return true;
+  return redraw == 1 || changed == true;
 }
 
 // OFFSET: 0x005C45B0
