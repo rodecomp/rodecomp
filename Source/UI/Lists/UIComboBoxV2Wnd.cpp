@@ -14,7 +14,8 @@ void UIComboBoxV2Wnd::Initialize(int width, int height, std::string prefix) {
   const char* states[] = {"normal", "mouseon", "pressed", "disabled"};
   this->auxiliaryWindow = new UIBitmapButton();
   for (int state = 0; state < 4; ++state) {
-    std::string path = prefix + states[state];
+    std::string path(prefix);
+    path.append(states[state]);
     path.append(".bmp", 4);
     this->auxiliaryWindow->SetBitmap(path.c_str(), state, 0);
   }
