@@ -960,11 +960,12 @@ void CSkillAction_DR_WIND_BOMB::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_UNK_2468, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, EF_UNK_2468, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(effect)->SetTarget(target->render.position);
   }
 
-  EffectLists* effects = g_effectMgr;
+  effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("wind_bomb_main", 0xD1538513DF975701ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
