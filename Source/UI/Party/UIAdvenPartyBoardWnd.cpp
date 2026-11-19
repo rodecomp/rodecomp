@@ -43,6 +43,8 @@
 #include <vector>
 #include <string>
 
+template std::string std::operator+(std::string&&, const char* const);
+
 namespace {
   // OFFSET: 0x007BBFC0
   // FUNCTION: fn_09295
