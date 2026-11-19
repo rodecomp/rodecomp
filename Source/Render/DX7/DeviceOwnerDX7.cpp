@@ -516,11 +516,11 @@ HRESULT DeviceOwnerDX7::RestoreSurfaces() {
       if (status != S_OK) {
         surface->Restore();
       }
+    }
 
-      if (status == DDERR_SURFACELOST) {
-        this->draw->RestoreAllSurfaces();
-        return DDERR_SURFACELOST;
-      }
+    if (status == DDERR_SURFACELOST) {
+      this->draw->RestoreAllSurfaces();
+      return DDERR_SURFACELOST;
     }
   }
 
