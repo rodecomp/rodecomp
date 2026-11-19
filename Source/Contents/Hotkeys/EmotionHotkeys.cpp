@@ -88,6 +88,8 @@ bool CSession::LoadEmotionHotkeyDefaults() {
   this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_THINK));
 
   CLuaInstance script;
-  const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", this->ShortcutFilename(this->m_aid)), false);
-  return loaded && script.ReadStrings(this->m_emotionHotkeys.current, "tbl") == 0 && this->m_emotionHotkeys.current.size() == 10;
+  if (!script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", this->ShortcutFilename(this->m_aid)), false)) {
+    return false;
+  }
+  return script.ReadStrings(this->m_emotionHotkeys.current, "tbl") == 0 && this->m_emotionHotkeys.current.size() == 10;
 }
