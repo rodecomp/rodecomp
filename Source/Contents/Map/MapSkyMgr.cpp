@@ -41,11 +41,25 @@ CMapSkyMgr::CMapSkyMgr() : m_script(nullptr) {
 void CMapSkyMgr::Unused() {
 }
 
+// OFFSET: 0x005B8DE0
+// FUNCTION: fn_46466
+__declspec(noinline) CMapSkyMgr::~CMapSkyMgr() {
+  if (this->m_script) {
+    this->m_script->Close();
+    delete this->m_script;
+    this->m_script = nullptr;
+  }
+}
+
 // OFFSET: 0x005B8F00
 // FUNCTION: fn_03435
 bool CMapSkyMgr::LoadData() {
   return this->m_script->Load("Lua Files\\MapSkyData\\MapSkyData", true, false);
 }
+
+// OFFSET: 0x005B8F20
+
+// OFFSET: 0x005B8FF0
 
 // OFFSET: 0x00C7B200
 // FUNCTION: fn_20362

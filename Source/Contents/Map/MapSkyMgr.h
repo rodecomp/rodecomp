@@ -47,16 +47,11 @@ public:
 class CMapSkyMgr {
 public:
   __declspec(noinline) CMapSkyMgr();
-  // INLINED
-  virtual ~CMapSkyMgr() {
-    if (this->m_script) {
-      this->m_script->Close();
-      delete this->m_script;
-      this->m_script = nullptr;
-    }
-  }
+  virtual ~CMapSkyMgr();
 
   bool LoadData();
+  void ApplyBackgroundFog(const std::string& mapName);
+  void ApplyBackgroundColor(const std::string& mapName);
   void Unused();
   void CreateClouds(const std::string& mapName);
   void Apply(const std::string& mapName);
