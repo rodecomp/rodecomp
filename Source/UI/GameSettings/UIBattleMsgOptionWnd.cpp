@@ -136,11 +136,12 @@ void UIBattleMsgOptionWnd::OnLBtnDown(int x, int y) {
 
   if (this->hoveredOption != -1) {
     this->optionStates[this->hoveredOption] = this->optionStates[this->hoveredOption] == 0;
+    const int& window = this->chatWindowIndex;
     const bool state = this->optionStates[this->hoveredOption];
     if (this->useMainChatOptions) {
-      g_session.m_noSubChatWnds[this->chatWindowIndex].options[this->hoveredOption] = state;
+      g_session.m_noSubChatWnds[window].options[this->hoveredOption] = state;
     } else {
-      g_session.m_subChatWnds[this->chatWindowIndex].options[this->hoveredOption] = state;
+      g_session.m_subChatWnds[window].options[this->hoveredOption] = state;
     }
     this->allChecked = 1;
     for (int i = 0; i < 25; ++i) {
