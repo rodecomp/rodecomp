@@ -313,10 +313,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
   for (int ec = 0; ec < 4; ++ec) {
     for (int seg = 0; seg < this->state.numSegment; ++seg) {
       const EffectPrimitiveRecord& record = this->state.records[seg];
-      vector3d position;
-      position.x = record.position.x + this->state.slots[ec].vecBNow.x;
-      position.y = record.position.y + this->state.slots[ec].vecBNow.y;
-      position.z = record.position.z + this->state.slots[ec].vecBNow.z;
+      vector3d position = record.position;
+      position += this->state.slots[ec].vecBNow;
       const float depth = position.y * wtm.values[5] + position.x * wtm.values[2] + position.z * wtm.values[8] + wtm.values[11];
 
       float screenX;
@@ -1331,12 +1329,8 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
     pillar.vecTNow.x = cosB * height - sinB * 0.0f;
     pillar.vecTNow.z = sinB * height + cosB * 0.0f;
 
-    pillar.vecTPre.x = pillar.vecTPre.x + slot.vecBNow.x;
-    pillar.vecTPre.y = slot.vecBNow.y + pillar.vecTPre.y;
-    pillar.vecTPre.z = slot.vecBNow.z + pillar.vecTPre.z;
-    pillar.vecTNow.x = slot.vecBNow.x + pillar.vecTNow.x;
-    pillar.vecTNow.y = slot.vecBNow.y + pillar.vecTNow.y;
-    pillar.vecTNow.z = slot.vecBNow.z + pillar.vecTNow.z;
+    pillar.vecTPre += slot.vecBNow;
+    pillar.vecTNow += slot.vecBNow;
 
     vector3d lowNow;
     lowNow.x = pillar.vecTNow.x;
@@ -1785,18 +1779,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
     vec3.z = dist * g_sinTable[angle3] * g_depthAverageHalf + g_sinTable[angle] * dist;
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    vec1.x = this->state.slots[ec].vecBNow.x + vec1.x;
-    vec1.y = this->state.slots[ec].vecBNow.y + vec1.y;
-    vec1.z = this->state.slots[ec].vecBNow.z + vec1.z;
-    vec2.x = this->state.slots[ec].vecBNow.x + vec2.x;
-    vec2.y = this->state.slots[ec].vecBNow.y + vec2.y;
-    vec2.z = this->state.slots[ec].vecBNow.z + vec2.z;
-    vec3.x = this->state.slots[ec].vecBNow.x + vec3.x;
-    vec3.y = this->state.slots[ec].vecBNow.y + vec3.y;
-    vec3.z = this->state.slots[ec].vecBNow.z + vec3.z;
-    vec4.x = this->state.slots[ec].vecBNow.x + vec4.x;
-    vec4.y = this->state.slots[ec].vecBNow.y + vec4.y;
-    vec4.z = this->state.slots[ec].vecBNow.z + vec4.z;
+    vec1 += this->state.slots[ec].vecBNow;
+    vec2 += this->state.slots[ec].vecBNow;
+    vec3 += this->state.slots[ec].vecBNow;
+    vec4 += this->state.slots[ec].vecBNow;
     this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, this->state.slots[ec].flag1[0], 1, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }
