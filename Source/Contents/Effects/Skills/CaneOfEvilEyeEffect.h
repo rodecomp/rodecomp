@@ -11,6 +11,7 @@
 class CCaneOfEvilEyeEffect : public CEffect {
 public:
   CCaneOfEvilEyeEffect();
+  ~CCaneOfEvilEyeEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -29,6 +30,9 @@ public:
   /* 00CC */ std::uint32_t startTime;
   /* 00D0 */ std::vector<CEZ2STRParticle*> eyes;
   /* 00DC */ std::vector<CEZ2STRParticle*> lights;
+
+private:
+  void RenderParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

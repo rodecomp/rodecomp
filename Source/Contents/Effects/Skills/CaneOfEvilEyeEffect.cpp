@@ -29,6 +29,11 @@ CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(-1) {
   this->startTime = timeGetTime();
 }
 
+// OFFSET: 0x006F8800
+// FUNCTION: fn_46161
+__declspec(noinline) CCaneOfEvilEyeEffect::~CCaneOfEvilEyeEffect() {
+}
+
 // OFFSET: 0x006F8900
 // FUNCTION: fn_06872
 CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position) {
@@ -310,14 +315,18 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
 // FUNCTION: fn_06882
 void CCaneOfEvilEyeEffect::Render() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
-    if (*it) {
-      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderParticle(*it);
   }
 
   for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
-    if (*it) {
-      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderParticle(*it);
+  }
+}
+
+// OFFSET: 0x006F9DD0
+// FUNCTION: fn_46162
+__forceinline void CCaneOfEvilEyeEffect::RenderParticle(CEZ2STRParticle* particle) {
+  if (particle) {
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
