@@ -39,9 +39,11 @@ namespace {
   };
 
   void RecordLaunch(int effectId) {
+    std::uint32_t previous[8];
+    std::memcpy(previous, g_launchInfo, sizeof(previous));
     std::uint32_t recent[32];
     recent[0] = effectId;
-    std::memcpy(recent + 1, g_launchInfo, 7 * sizeof(recent[0]));
+    std::memcpy(recent + 1, previous, 7 * sizeof(recent[0]));
     std::memcpy(g_launchInfo, recent, 8 * sizeof(recent[0]));
   }
 }
