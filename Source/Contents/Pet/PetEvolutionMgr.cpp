@@ -18,6 +18,12 @@ extern "C" {
 // GLOBAL: gl_24877
 CPetEvolutionMgr* g_petEvolutionMgr;
 
+// OFFSET: 0x00672360
+// FUNCTION: fn_46423
+CPetEvolutionMgr::CPetEvolutionMgr() {
+  this->m_isValid = true;
+}
+
 // OFFSET: 0x00672C20
 // FUNCTION: fn_05367
 bool CPetEvolutionMgr::Create() {

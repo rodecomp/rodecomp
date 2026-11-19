@@ -21,12 +21,10 @@ struct PetEvolutionNote {
 // VTABLE: vt_00355
 class CPetEvolutionMgr {
 public:
-  // INLINED
-  CPetEvolutionMgr() {
-    this->m_isValid = true;
-  }
-  // INLINED
-  virtual ~CPetEvolutionMgr() {
+  CPetEvolutionMgr();
+  // OFFSET: 0x006729D0
+  // FUNCTION: fn_46424
+  __declspec(noinline) virtual ~CPetEvolutionMgr() {
     this->m_recipes.clear();
     this->m_notes.clear();
     this->m_autoFeeding.clear();
