@@ -43,15 +43,21 @@ RenderCommand::RenderCommand()
       primitiveType(D3DPT_TRIANGLELIST) {
 }
 
+namespace {
+  struct QuadVertex : RenderVertex {
+    // INLINED
+    QuadVertex() {
+      this->Reset();
+    }
+  };
+}
+
 // OFFSET: 0x005691D0
 // FUNCTION: fn_02250
 RenderPrimitive::RenderPrimitive() : RenderCommand() {
+  new (this->quad) QuadVertex[4];
   this->vertices = this->quad;
   this->vertexCount = 4;
-
-  for (RenderVertex& vertex : this->quad) {
-    vertex.Reset();
-  }
   this->primitiveType = D3DPT_TRIANGLESTRIP;
 }
 
