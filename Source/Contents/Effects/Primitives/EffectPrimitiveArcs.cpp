@@ -1320,12 +1320,16 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
     const float height = pillar.height[12] * g_depthAverageHalf;
     const int opposite = angle + (angle < 180 ? 180 : -180);
 
+    const float cosA = g_cosTable[angle];
+    const float sinA = g_sinTable[angle];
     pillar.vecTPre.y = height;
-    pillar.vecTPre.z = g_sinTable[angle] * height + g_cosTable[angle] * 0.0f;
-    pillar.vecTPre.x = g_cosTable[angle] * height - g_sinTable[angle] * 0.0f;
+    pillar.vecTPre.z = sinA * height + cosA * 0.0f;
+    pillar.vecTPre.x = cosA * height - sinA * 0.0f;
+    const float cosB = g_cosTable[opposite];
+    const float sinB = g_sinTable[opposite];
     pillar.vecTNow.y = height;
-    pillar.vecTNow.x = g_cosTable[opposite] * height - g_sinTable[opposite] * 0.0f;
-    pillar.vecTNow.z = g_sinTable[opposite] * height + g_cosTable[opposite] * 0.0f;
+    pillar.vecTNow.x = cosB * height - sinB * 0.0f;
+    pillar.vecTNow.z = sinB * height + cosB * 0.0f;
 
     pillar.vecTPre.x = pillar.vecTPre.x + slot.vecBNow.x;
     pillar.vecTPre.y = slot.vecBNow.y + pillar.vecTPre.y;
