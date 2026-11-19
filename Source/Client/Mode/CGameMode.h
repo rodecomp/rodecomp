@@ -407,6 +407,7 @@ public:
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
   void RemoveNotificationWindow(UIWindow* window);
   void DrawMiniMapNumber();
+  void DrawTimeAttackTitle();
   void DrawTimeAttackTimer();
   void DrawTimeAttackCountdown(std::uint32_t value, int mode);
   CMsgEffect* SpawnCashEmotion(const vector3d* position, int packId, int emotionId, std::uint32_t duration);
@@ -564,9 +565,11 @@ public:
   void ReceiveMailboxAvailability(const unsigned char* packet);
   void ReceiveNpcDialogEnd(const unsigned char* packet);
   void ResetItemLists(const unsigned char* packet);
+  void StepTowardCell(const int& targetX, const int& targetY, int& x, int& y, int step);
   void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);
+  void DrawMiniMapPings(const TextureRegion& view);
   void DrawMiniMap();
   void DrawMiniMapMembers(const TextureRegion& view);
   void DrawMiniMapTriangle(float x, float y, float size, std::uint32_t color);

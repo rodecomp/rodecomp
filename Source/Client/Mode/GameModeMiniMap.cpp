@@ -100,21 +100,27 @@ void CGameMode::CloseWhisperRecord() {
   }
 }
 
+// OFFSET: 0x00CD0100
+// FUNCTION: fn_46330
+__forceinline void CGameMode::StepTowardCell(const int& targetX, const int& targetY, int& x, int& y, int step) {
+  if (targetX > x) {
+    x += step;
+  } else if (targetX < x) {
+    x -= step;
+  }
+  if (targetY > y) {
+    y += step;
+  } else if (targetY < y) {
+    y -= step;
+  }
+}
+
 // OFFSET: 0x00CCFFA0
 // FUNCTION: fn_21250
 void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y) {
   const int startX = x;
   const int startY = y;
-  if (targetX > startX) {
-    x = startX + 1;
-  } else if (targetX < startX) {
-    x = startX - 1;
-  }
-  if (targetY > y) {
-    ++y;
-  } else if (targetY < y) {
-    --y;
-  }
+  this->StepTowardCell(targetX, targetY, x, y, 1);
 
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(x, y);
   if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
@@ -206,6 +212,28 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
     const int y = g_session.storeSearchY;
     if (y > -1) {
       this->DrawMiniMapMarker(view, g_session.storeSearchX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
+    }
+  }
+}
+
+// OFFSET: 0x00CD0840
+// FUNCTION: fn_46331
+__forceinline void CGameMode::DrawMiniMapPings(const TextureRegion& view) {
+  if (this->compassPosList.size() != 0) {
+    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end();) {
+      const std::uint32_t tick = it->second.tick;
+      if (it->second.persistent == 0 && timeGetTime() > tick + 15000) {
+        it = this->compassPosList.erase(it);
+      } else {
+        ++it;
+      }
+    }
+    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end(); ++it) {
+      const std::uint32_t tick = it->second.tick;
+      const int elapsed = timeGetTime() - tick;
+      if (elapsed % 1000 < 500) {
+        this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
+      }
     }
   }
 }
@@ -303,23 +331,7 @@ void CGameMode::DrawMiniMap() {
 
   this->DrawMiniMapMembers(view);
 
-  if (this->compassPosList.size() != 0) {
-    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end();) {
-      const std::uint32_t tick = it->second.tick;
-      if (it->second.persistent == 0 && timeGetTime() > tick + 15000) {
-        it = this->compassPosList.erase(it);
-      } else {
-        ++it;
-      }
-    }
-    for (auto it = this->compassPosList.begin(); it != this->compassPosList.end(); ++it) {
-      const std::uint32_t tick = it->second.tick;
-      const int elapsed = timeGetTime() - tick;
-      if (elapsed % 1000 < 500) {
-        this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
-      }
-    }
-  }
+  this->DrawMiniMapPings(view);
 
   g_textureReduction = reduction;
 }
@@ -649,6 +661,19 @@ void CGameMode::DrawMiniMapNumber() {
 // GLOBAL: gl_25050
 int g_timeAttackFrame;
 
+// OFFSET: 0x00CD2960
+// FUNCTION: fn_46332
+__forceinline void CGameMode::DrawTimeAttackTitle() {
+  CActRes* titleAction = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.act"));
+  CSprRes* titleSprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.spr"));
+  const int frame = g_timeAttackFrame / 3;
+  if (frame < static_cast<int>(titleAction->FrameCount(0))) {
+    const int titleX = g_renderer->viewport.width / 2 - titleSprite->images[0][0]->height / 2;
+    this->DrawActionSprite(titleX, 120, titleAction, titleSprite, 0, frame, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    ++g_timeAttackFrame;
+  }
+}
+
 // OFFSET: 0x00CD1EE0
 // FUNCTION: fn_21259
 void CGameMode::DrawTimeAttackTimer() {
@@ -733,16 +758,7 @@ void CGameMode::DrawTimeAttackTimer() {
   }
 
   if (g_session.m_timeAttackStart != 0 && timeGetTime() - g_session.m_timeAttackStart < 3000) {
-    CActRes* titleAction = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.act"));
-    CSprRes* titleSprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.spr"));
-    const int frame = g_timeAttackFrame / 3;
-    if (frame < static_cast<int>(titleAction->FrameCount(0))) {
-      const int titleX = g_renderer->viewport.width / 2 - titleSprite->images[0][0]->height / 2;
-      this->DrawActionSprite(
-    titleX, 120, titleAction, titleSprite, 0, frame, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
-      );
-      ++g_timeAttackFrame;
-    }
+    this->DrawTimeAttackTitle();
   }
 }
 
