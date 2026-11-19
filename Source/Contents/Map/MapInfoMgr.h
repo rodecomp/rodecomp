@@ -52,14 +52,12 @@ public:
 
   virtual ~CMapInfoMgr();
 
-  // INLINED
-  CMapInfoMgr() : m_display(nullptr) {
-    this->m_initialized = true;
-  }
+  CMapInfoMgr();
 
   void AddMapDisplayName(std::string map, std::string name, bool show);
   void AddMapSignName(std::string map, std::string name, std::string subName);
-  // INLINED
+  // OFFSET: 0x006CE790
+  // FUNCTION: fn_46452
   void AddMapBackgroundBmp(std::string map, std::string bmp) {
     this->m_maps[map].m_backgroundBmp = bmp;
   }

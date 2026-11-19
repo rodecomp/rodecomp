@@ -28,6 +28,12 @@ extern "C" {
 // GLOBAL: gl_24842
 CMapInfoMgr* g_mapInfoMgr;
 
+// OFFSET: 0x006CDD80
+// FUNCTION: fn_46451
+CMapInfoMgr::CMapInfoMgr() : m_display(nullptr) {
+  this->m_initialized = true;
+}
+
 // OFFSET: 0x006CDE30
 // FUNCTION: fn_06480
 MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::string bmp) {
