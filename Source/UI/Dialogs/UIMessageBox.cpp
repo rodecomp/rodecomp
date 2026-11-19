@@ -663,7 +663,11 @@ void UIMessageBox::Configure(
   this->viewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000u);
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
-  this->m_message0 = type != 2 ? ID_CANCEL : ID_NO;
+  if (type == 2) {
+    this->m_message0 = ID_NO;
+  } else {
+    this->m_message0 = ID_CANCEL;
+  }
 
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
@@ -713,7 +717,11 @@ void UIMessageBox::Configure(
       x += 45;
     }
 
-    this->m_message0 = defaultAccept ? ID_YES : ID_NO;
+    if (defaultAccept) {
+      this->m_message0 = ID_YES;
+    } else {
+      this->m_message0 = ID_NO;
+    }
     this->m_message1 = 188;
     break;
   }
