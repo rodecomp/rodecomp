@@ -3,9 +3,16 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/Particles/EZ2STREffect.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
+
+// OFFSET: 0x00B445D0
+// FUNCTION: fn_46008
+CGlassWall::CGlassWall() : CEffect(EF_GLASSWALL), effect(nullptr) {
+  this->effectLifetime = 9999;
+}
 
 // OFFSET: 0x00B44980
 // FUNCTION: fn_45941
@@ -17,7 +24,9 @@ __forceinline void CGlassWall::CloseScreenEffect() {
   }
 }
 
-CGlassWall::~CGlassWall() {
+// OFFSET: 0x00B44660
+// FUNCTION: fn_46009
+__declspec(noinline) CGlassWall::~CGlassWall() {
   this->CloseScreenEffect();
 }
 

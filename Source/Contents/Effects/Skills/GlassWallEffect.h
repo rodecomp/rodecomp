@@ -10,6 +10,7 @@ class CParticle;
 
 class CGlassWall : public CEffect {
 public:
+  CGlassWall();
   ~CGlassWall() override;
   void Open() override;
   void OnProcess() override;
