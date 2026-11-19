@@ -558,6 +558,11 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
   }
 }
 
+// INLINED
+static void AssignExpireText(std::string& text, const std::string& value) {
+  text = value;
+}
+
 // OFFSET: 0x00809670
 // FUNCTION: fn_10058
 void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t expireTime, unsigned char returned) {
@@ -574,14 +579,11 @@ void UIRodexInboxWnd::DrawExpireTime(int row, __time32_t sendTime, __time32_t ex
 
   std::string text;
   if (remaining / 86400 > 0) {
-    const std::string formatted = FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_DAY), remaining / 86400);
-    text = formatted;
+    AssignExpireText(text, FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_DAY), remaining / 86400));
   } else if (remaining / 3600 > 0) {
-    const std::string formatted = FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_HOUR), remaining / 3600);
-    text = formatted;
+    AssignExpireText(text, FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_HOUR), remaining / 3600));
   } else {
-    const std::string formatted = FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_MINUTE), remaining / 60);
-    text = formatted;
+    AssignExpireText(text, FormatOwnedString(LookupMessage(MSI_RODEX_DELETE_TIME_MINUTE), remaining / 60));
   }
 
   if (returned == 1) {
