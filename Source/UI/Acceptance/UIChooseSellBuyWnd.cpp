@@ -1295,12 +1295,12 @@ void UIProhibitListWnd::Paint() {
 
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_PROHIBIT_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
+  int y = 0;
   auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
   this->DrawBitmap(0, this->geometry.height - left->image.height, left, false);
   auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
   this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, right, false);
 
-  int y = 0;
   const int count = static_cast<int>(g_session.m_prohibitionLog.size());
   for (int index = 0; index < count; ++index) {
     const ProhibitionLogEntry& entry = g_session.m_prohibitionLog[index];
