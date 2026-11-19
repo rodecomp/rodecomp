@@ -67,17 +67,17 @@ void ModelMesh::CalculateNormals() {
   }
 
   for (int index = 0; index < this->faceCount; ++index) {
+    auto& normal = this->faceNormals[index];
     const ModelFace& face = this->faces[index];
+    const auto& third = this->vertices[face.vertices[2]];
     const auto& first = this->vertices[face.vertices[0]];
     const auto& second = this->vertices[face.vertices[1]];
-    const auto& third = this->vertices[face.vertices[2]];
     const float x1 = first[0] - third[0];
     const float y1 = first[1] - third[1];
     const float z1 = first[2] - third[2];
     const float x2 = second[0] - third[0];
     const float y2 = second[1] - third[1];
     const float z2 = second[2] - third[2];
-    auto& normal = this->faceNormals[index];
 
     normal.x = y2 * z1 - z2 * y1;
     normal.y = z2 * x1 - x2 * z1;
@@ -111,8 +111,8 @@ void ModelMesh::CalculateNormals() {
         const auto end = other.smoothing.end();
         for (std::uint32_t group : face.smoothing) {
           if (std::find(begin, end, group) != end) {
-            ShadeVector& normal = this->vertexNormals[index * 3 + corner];
             const ShadeVector& faceNormal = this->faceNormals[neighbor];
+            ShadeVector& normal = this->vertexNormals[index * 3 + corner];
             normal.x = normal.x + faceNormal.x;
             normal.y = faceNormal.y + normal.y;
             normal.z = faceNormal.z + normal.z;
