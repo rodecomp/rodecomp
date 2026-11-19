@@ -10,6 +10,8 @@ class CParticle;
 
 class CMagnumBreak : public CEffect {
 public:
+  CMagnumBreak();
+  ~CMagnumBreak() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -26,6 +28,11 @@ public:
   /* 00E4 */ float fadeStep;
   /* 00E8 */ int fadeFrame;
   /* 00EC */ int alpha;
+
+private:
+  void AdvanceRing(CParticle* ring);
+  void AdvanceWave(CParticle* wave);
+  void RenderWave(CParticle* wave);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

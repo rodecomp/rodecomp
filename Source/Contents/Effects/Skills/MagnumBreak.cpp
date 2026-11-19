@@ -1,8 +1,20 @@
 #include "Contents/Effects/Skills/MagnumBreak.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
+
+// OFFSET: 0x00B49910
+// FUNCTION: fn_45967
+CMagnumBreak::CMagnumBreak() : CEffect(EF_MAGNUMBREAK), fadeStep(16.933333f), fadeFrame(15), alpha(0) {
+  this->effectLifetime = 30;
+}
+
+// OFFSET: 0x00B499D0
+// FUNCTION: fn_45968
+__declspec(noinline) CMagnumBreak::~CMagnumBreak() {
+}
 
 // OFFSET: 0x00B49AD0
 // FUNCTION: fn_18938
@@ -26,8 +38,9 @@ void CMagnumBreak::AddRings() {
   }
 }
 
-// INLINED
-void CMagnumBreak::AddWaves() {
+// OFFSET: 0x00B49BD0
+// FUNCTION: fn_45969
+__forceinline void CMagnumBreak::AddWaves() {
   const float growth = -(1.15f / static_cast<float>(this->effectLifetime)) * 0.5f;
 
   for (int tilt = -90; tilt <= 54; tilt += 36) {
@@ -75,6 +88,10 @@ void CMagnumBreak::Open() {
 bool CMagnumBreak::IsAlive() {
   return !this->IsFinished();
 }
+
+// OFFSET: 0x00B4A030
+
+// OFFSET: 0x00B4A100
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
@@ -126,6 +143,23 @@ void CMagnumBreak::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B4A4D0
+// FUNCTION: fn_45973
+__forceinline void CMagnumBreak::RenderWave(CParticle* wave) {
+  CMagnumBreak::UpdateWave(wave);
+  const float column = static_cast<float>(wave->columnIndex / 36);
+  const float row = static_cast<float>(static_cast<int>((static_cast<float>(wave->rowIndex) + 90.0f) / 36.0f));
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.unused = false;
+  quad.depth = true;
+  quad.left = column * 0.1f;
+  quad.top = row * 0.2f;
+  quad.right = quad.left + 0.1f;
+  quad.bottom = quad.top + 0.2f;
+  wave->Render(quad);
+}
+
 // OFFSET: 0x00B4A150
 // FUNCTION: fn_18943
 void CMagnumBreak::Render() {
@@ -167,18 +201,7 @@ void CMagnumBreak::Render() {
 
   for (std::vector<CParticle*>::iterator it = this->waves.begin(); it != this->waves.end(); ++it) {
     CParticle* wave = *it;
-    CMagnumBreak::UpdateWave(wave);
-    const float column = static_cast<float>(wave->columnIndex / 36);
-    const float row = static_cast<float>(static_cast<int>((static_cast<float>(wave->rowIndex) + 90.0f) / 36.0f));
-    ParticleQuad quad;
-    quad.billboard = false;
-    quad.unused = false;
-    quad.depth = true;
-    quad.left = column * 0.1f;
-    quad.top = row * 0.2f;
-    quad.right = quad.left + 0.1f;
-    quad.bottom = quad.top + 0.2f;
-    wave->Render(quad);
+    this->RenderWave(wave);
   }
 }
 
