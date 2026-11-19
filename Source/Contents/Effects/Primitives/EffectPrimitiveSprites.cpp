@@ -129,8 +129,7 @@ void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   }
 
   const float z = this->render.position.z;
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  const float height = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z);
   vector3d position;
   position.x = this->render.position.x;
   position.y = height;
