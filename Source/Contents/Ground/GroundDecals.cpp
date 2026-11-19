@@ -16,12 +16,20 @@ float g_groundGridUV[8] = {0, 0, 1, 0, 0, 1, 1, 1};
 // OFFSET: 0x00AC0A90
 // FUNCTION: fn_17569
 bool GroundGeometry::CellRectangle(int column, int row, float* vertices) const {
-  if (column < 0 || (column >> 1) >= this->width || row < 0 || (row >> 1) >= this->height) {
+  if (column < 0) {
     return false;
   }
-
   const int cellColumn = column >> 1;
+  if (cellColumn >= this->width) {
+    return false;
+  }
+  if (row < 0) {
+    return false;
+  }
   const int cellRow = row >> 1;
+  if (cellRow >= this->height) {
+    return false;
+  }
 
   const float x0 = static_cast<float>(cellColumn - this->width / 2) * this->cellSize;
   const float z0 = static_cast<float>(cellRow - this->height / 2) * this->cellSize;
