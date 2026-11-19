@@ -29,6 +29,7 @@ CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x0072F560
+// FUNCTION: fn_46234
 __declspec(noinline) CViolentQuakeEffect::~CViolentQuakeEffect() {
 }
 
@@ -75,6 +76,7 @@ void CViolentQuakeEffect::Close() {
 }
 
 // OFFSET: 0x0072FAA0
+// FUNCTION: fn_46235
 __forceinline void CViolentQuakeEffect::InitViolentQuake() {
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   const int roll = rand() % 3;
