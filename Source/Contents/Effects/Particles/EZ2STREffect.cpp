@@ -1555,6 +1555,13 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   }
 }
 
+// INLINED
+static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
+
 // OFFSET: 0x00B51A60
 // FUNCTION: fn_19032
 bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
@@ -1580,27 +1587,21 @@ bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
     factor = scale * factor;
   }
 
-  float shiftX = offsetX * factor;
   float shiftY = factor * offsetY;
-  if (!(shiftX >= 0.0f || shiftY >= 0.0f)) {
-    return false;
+  float shiftX = offsetX * factor;
+  if (shiftX >= 0.0f || shiftY >= 0.0f) {
+    vector3d position = particle->position;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+
+    vector3d viewPos = TransformPoint(view, position);
+    viewPos.x += shiftX;
+    viewPos.y -= shiftY;
+    particle->position = TransformPoint(inverse, viewPos);
+    return true;
   }
 
-  vector3d position = particle->position;
-  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-
-  float x = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] + shiftX;
-  float y = position.y * view.values[4] + position.x * view.values[1] + position.z * view.values[7] + view.values[10] - shiftY;
-  float z = position.y * view.values[5] + position.x * view.values[2] + position.z * view.values[8] + view.values[11];
-
-  float worldX = y * inverse.values[3] + x * inverse.values[0] + z * inverse.values[6] + inverse.values[9];
-  float worldY = y * inverse.values[4] + x * inverse.values[1] + z * inverse.values[7] + inverse.values[10];
-  float worldZ = y * inverse.values[5] + x * inverse.values[2] + z * inverse.values[8] + inverse.values[11];
-  particle->position.x = worldX;
-  particle->position.y = worldY;
-  particle->position.z = worldZ;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00B51CC0
