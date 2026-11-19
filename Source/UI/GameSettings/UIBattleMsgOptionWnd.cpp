@@ -220,9 +220,14 @@ void UIBattleMsgOptionWnd::Paint() {
   this->DrawButtonBar(0, 0, 1);
 
   int index = 0;
+  std::vector<const char*>::iterator it = this->messages.begin();
+  if (it == this->messages.end()) {
+    return;
+  }
+
   int row = 1;
   int y = 22;
-  for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
+  for (; it != this->messages.end(); ++it, ++index) {
     if (std::strcmp(LookupMessage(MSI_VIEW_SEEK_PARTY), *it) == 0 || index < this->scrollPosition) {
       continue;
     }
