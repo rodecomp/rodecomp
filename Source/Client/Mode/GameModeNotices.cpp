@@ -5196,7 +5196,8 @@ struct GradeEnchantBroadcastPacket {
 // OFFSET: 0x00D6D400
 // FUNCTION: fn_22089
 void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned char refine, bool success) {
-  std::string name(playerName, 24);
+  std::string name;
+  name.assign(playerName, 24);
   std::string itemName;
   ITEM_INFO item;
   item.SetItemId(itemId);
