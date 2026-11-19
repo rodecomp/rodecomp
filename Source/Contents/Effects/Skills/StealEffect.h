@@ -22,6 +22,10 @@ public:
 
   /* 00CC */ std::list<CSpriteParticle*> particles;
   /* 00D4 */ vector3d offsets[10];
+
+private:
+  __declspec(noinline) void UpdateParticle(CSpriteParticle* particle);
+  __declspec(noinline) void RenderParticle(CSpriteParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

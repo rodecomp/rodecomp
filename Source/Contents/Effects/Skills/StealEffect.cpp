@@ -152,10 +152,18 @@ void CSteal::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B4D4F0
+
 // OFFSET: 0x00B4D720
 // FUNCTION: fn_18975
 void CSteal::Render() {
   for (std::list<CSpriteParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->Draw(1);
   }
+}
+
+// OFFSET: 0x00B4D750
+// FUNCTION: fn_46189
+__declspec(noinline) void CSteal::RenderParticle(CSpriteParticle* particle) {
+  particle->Draw(1);
 }
