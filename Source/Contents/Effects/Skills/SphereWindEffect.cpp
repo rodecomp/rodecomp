@@ -53,9 +53,9 @@ __forceinline void CSphereWindEffect::CreateRings(int start) {
         continue;
       }
 
+      particle->effectId = this->id;
       particle->columnIndex = segment;
       particle->rowIndex = ring;
-      particle->effectId = this->id;
       particle->groupIndex = 1;
       particle->speedParameter = radius;
       particle->scale = 14.0f;
