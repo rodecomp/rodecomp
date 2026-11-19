@@ -61,27 +61,28 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
     return true;
   }
 
-  if (previous == 32) {
-    return false;
+  if (previous != 32) {
+    const std::uint32_t& after = this->flags[current];
+    const std::uint32_t& before = this->flags[previous];
+    if ((options & 2) != 0) {
+      if (((after & 0x470) != 0) == ((before & 0x470) != 0) &&
+          ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
+           (HasClass(before, 1) && HasClass(after, 1)))) {
+        return true;
+      }
+    } else {
+      if (HasClass(after, 4) && !HasClass(before, 4)) {
+        return false;
+      }
+
+      if ((after & 0x60) != 0 || HasClass(before, 4) || (HasClass(before, 12) && HasClass(after, 0)) ||
+          (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10)) {
+        return true;
+      }
+    }
   }
 
-  const std::uint32_t& after = this->flags[current];
-  const std::uint32_t& before = this->flags[previous];
-  if ((options & 2) != 0) {
-    return ((after & 0x470) != 0) == ((before & 0x470) != 0) &&
-           ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
-            (HasClass(before, 1) && HasClass(after, 1)));
-  }
-
-  if (HasClass(after, 4) && !HasClass(before, 4)) {
-    return false;
-  }
-
-  if ((after & 0x60) != 0 || HasClass(before, 4) || (HasClass(before, 12) && HasClass(after, 0))) {
-    return true;
-  }
-
-  return (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10);
+  return false;
 }
 
 // OFFSET: 0x00AC3D50
