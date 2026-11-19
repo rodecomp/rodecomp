@@ -5232,9 +5232,10 @@ int CLuaInstance::GetFieldUIntMap(std::map<unsigned int, unsigned int>& values, 
   lua_pushstring(this->m_state, name);
   lua_gettable(this->m_state, -2);
   int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TTABLE) {
     lua_pushnil(this->m_state);
+    result = 0;
     while (lua_next(this->m_state, -2) != 0) {
       type = lua_type(this->m_state, -2);
       if (type != LUA_TNUMBER) {
