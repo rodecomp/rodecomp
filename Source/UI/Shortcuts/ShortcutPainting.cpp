@@ -19,6 +19,7 @@
 #include "UI/Window/UIWindow.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 
@@ -27,6 +28,7 @@ namespace {
   CBitmapRes* Load(const char* path) {
     return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   }
+
 }
 
 // OFFSET: 0x00A86200
@@ -134,10 +136,11 @@ void UIShortCutWnd::Paint() {
           this->DrawShortcutItem(x, y, item, item.identified);
 
           if (0 < item.grade) {
+            const std::string iconPath = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
             window.DrawBitmap(
               x, (y + 12),
               static_cast<CBitmapRes*>(
-                ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
+                ResourceMgr::Instance().Load(Resolve(iconPath.c_str()))
               ),
               true
             );
@@ -164,8 +167,39 @@ void UIShortCutWnd::Paint() {
   }
 
   for (int row = 0; row < grid.rows; ++row) {
-    window.DrawTextAt(6, ((row * 33) + 13), FormatOwnedString("%d", row + 1).c_str(), 0, 0, 11, 0x2F4A4A, 0, 0);
+    const std::string label = FormatOwnedString("%d", row + 1);
+    window.DrawTextAt(6, ((row * 33) + 13), label.c_str(), 0, 0, 11, 0x2F4A4A, 0, 0);
   }
 
-  PaintMainCooldowns(g_session.m_requestTimers, g_session.m_mainCooldownIcons, grid.rows, window.geometry.x, window.geometry.y, *g_cooldownOwner);
+  const std::uint32_t now = CooldownNow();
+
+  for (auto entry = g_session.m_requestTimers.begin(); entry != g_session.m_requestTimers.end();) {
+    if (entry->end > now) {
+      std::list<CooldownState>& states = entry->main;
+
+      for (auto icon = g_session.m_mainCooldownIcons.begin(); icon != g_session.m_mainCooldownIcons.end(); ++icon) {
+        if (entry->id == icon->id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon->id))) {
+          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == states.end()) {
+            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          }
+        }
+
+        if ((g_session.IsHomunculusSkill(icon->id) || g_session.IsMercenarySkill(icon->id)) && entry->id == 9999) {
+          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == states.end()) {
+            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          }
+        }
+      }
+
+      for (auto state = states.begin(); state != states.end(); ++state) {
+        g_cooldownOwner->Draw(0, 0, 12, 12, *state, grid.rows * 33 + 4, window.geometry.x, window.geometry.y);
+      }
+
+      ++entry;
+    } else {
+      entry = g_session.m_requestTimers.erase(entry);
+    }
+  }
 }
