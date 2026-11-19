@@ -437,24 +437,24 @@ void CNaviInfo::SearchMobs(const std::vector<std::string>& keywords, std::vector
   MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, buffer, 100);
   const std::wstring wideText(buffer);
 
-  for (CNavi_Object* mob : this->mobs) {
-    MultiByteToWideChar(CP_ACP, 0, mob->GetName(), -1, buffer, 100);
+  for (auto mobIt = this->mobs.begin(); mobIt != this->mobs.end(); ++mobIt) {
+    MultiByteToWideChar(CP_ACP, 0, (*mobIt)->GetName(), -1, buffer, 100);
     entryText = buffer;
 
     bool matched = true;
-    for (const std::wstring& keyword : wideKeywords) {
-      matched &= StrStrIW(entryText.c_str(), keyword.c_str()) != nullptr;
+    for (auto keywordIt = wideKeywords.begin(); keywordIt != wideKeywords.end(); ++keywordIt) {
+      matched &= StrStrIW(entryText.c_str(), keywordIt->c_str()) != nullptr;
     }
     if (!matched) {
       continue;
     }
 
     NaviCell cell;
-    const NaviCell* position = mob->GetCell(&cell);
+    const NaviCell* position = (*mobIt)->GetCell(&cell);
     target.x = position->x;
     target.y = position->y;
-    target.name = mob->GetName();
-    target.object = mob;
+    target.name = (*mobIt)->GetName();
+    target.object = *mobIt;
     out.push_back(target);
   }
 }
@@ -474,24 +474,24 @@ void CNaviInfo::SearchNpcs(const std::vector<std::string>& keywords, std::vector
   }
 
   std::wstring entryText;
-  for (CNavi_Object* npc : this->npcs) {
-    MultiByteToWideChar(CP_ACP, 0, npc->GetName(), -1, buffer, 100);
+  for (auto npcIt = this->npcs.begin(); npcIt != this->npcs.end(); ++npcIt) {
+    MultiByteToWideChar(CP_ACP, 0, (*npcIt)->GetName(), -1, buffer, 100);
     entryText = buffer;
 
     bool matched = true;
-    for (const std::wstring& keyword : wideKeywords) {
-      matched &= StrStrIW(entryText.c_str(), keyword.c_str()) != nullptr;
+    for (auto keywordIt = wideKeywords.begin(); keywordIt != wideKeywords.end(); ++keywordIt) {
+      matched &= StrStrIW(entryText.c_str(), keywordIt->c_str()) != nullptr;
     }
     if (!matched) {
       continue;
     }
 
     NaviCell cell;
-    const NaviCell* position = npc->GetCell(&cell);
+    const NaviCell* position = (*npcIt)->GetCell(&cell);
     target.x = position->x;
     target.y = position->y;
-    target.name = npc->GetName();
-    target.object = npc;
+    target.name = (*npcIt)->GetName();
+    target.object = *npcIt;
     out.push_back(target);
   }
 }
