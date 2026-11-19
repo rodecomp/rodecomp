@@ -47,6 +47,9 @@ public:
   }
 
 private:
+  bool InitializePools();
+  void DestroyPools();
+
   /* 0020 */ bool m_ready;
   /* 0024 */ CAsyncWorkRecycleObjectPoolMgr* m_pools;
 };

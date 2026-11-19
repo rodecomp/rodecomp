@@ -20,25 +20,49 @@
 // GLOBAL: gl_24349
 CAsyncWorkMgr* g_asyncWorkMgr;
 
-// INLINED
-CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_pools(nullptr) {
-  this->m_ready = false;
-  this->m_pools = new (std::nothrow) CAsyncWorkRecycleObjectPoolMgr;
+// OFFSET: 0x00573D70
+// FUNCTION: fn_46366
+void CAsyncWorkMgr::DestroyPools() {
   if (this->m_pools) {
-    if (!this->m_pools->Ready()) {
-      delete this->m_pools;
-      this->m_pools = nullptr;
-    } else {
-      this->m_ready = true;
-    }
+    delete this->m_pools;
+    this->m_pools = nullptr;
   }
 }
 
-// INLINED
-CAsyncWorkMgr::~CAsyncWorkMgr() {
+// OFFSET: 0x00573BB0
+// FUNCTION: fn_46365
+bool CAsyncWorkMgr::InitializePools() {
+  if (this->m_pools) {
+    return false;
+  }
+
+  this->m_pools = new (std::nothrow) CAsyncWorkRecycleObjectPoolMgr;
+  if (!this->m_pools) {
+    return false;
+  }
+
+  if (!this->m_pools->Ready()) {
+    this->DestroyPools();
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00573920
+// FUNCTION: fn_46363
+CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_pools(nullptr) {
+  this->m_ready = false;
+  if (this->InitializePools()) {
+    this->m_ready = true;
+  }
+}
+
+// OFFSET: 0x00573A30
+// FUNCTION: fn_46364
+__declspec(noinline) CAsyncWorkMgr::~CAsyncWorkMgr() {
   this->DestroyQueues();
-  delete this->m_pools;
-  this->m_pools = nullptr;
+  this->DestroyPools();
 }
 
 // OFFSET: 0x00573C50
