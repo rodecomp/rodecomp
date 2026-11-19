@@ -459,9 +459,9 @@ void UINameBalloonText::AddNameLine(const char* text) {
 
   this->m_lines.clear();
   this->m_lines.push_back(std::string(text));
-  const std::string& last = this->m_lines.back();
-  this->nameWidth =
-    std::max(this->TextWidth(last.c_str(), last.size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32);
+  this->nameWidth = std::max(
+    this->TextWidth(this->m_lines.back().c_str(), this->m_lines.back().size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32
+  );
   this->Resize(this->nameWidth, g_nameBalloonFontHeight + 8);
   this->Invalidate();
 }
