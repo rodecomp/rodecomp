@@ -796,22 +796,20 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
     this->DrawBitmap(x, y, bitmap, true);
   }
 
-  if (this->m_item.identity[1] <= 0 || this->m_item.quantity == 0) {
-    return;
-  }
-
-  const std::string count = FormatOwnedString("%d", this->m_item.quantity);
-  FontCache& fonts = g_fontCache;
-  if (compact) {
-    this->DrawTextAt(x + 16, y + 20, count.c_str(), 0, 0, 11, 0, 0, 0);
-  } else {
-    const int textY = y + 15;
-    x += this->m_item.quantity < 1000 ? 14 : 0;
-    this->DrawTextAt(x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
+  if (this->m_item.identity[1] > 0 && this->m_item.quantity != 0) {
+    const std::string count = FormatOwnedString("%d", this->m_item.quantity);
+    FontCache& fonts = g_fontCache;
+    if (compact) {
+      this->DrawTextAt(x + 16, y + 20, count.c_str(), 0, 0, 11, 0, 0, 0);
+    } else {
+      const int textY = y + 15;
+      x += this->m_item.quantity < 1000 ? 14 : 0;
+      this->DrawTextAt(x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
+    }
   }
 }
 
