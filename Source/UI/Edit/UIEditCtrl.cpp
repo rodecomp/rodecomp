@@ -7972,30 +7972,29 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
       int screenX = tooltipX;
       mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
-    return;
-  }
-
-  item = this->GetItemByIndex(this->GetItemIndexAt(x, y));
-  if (item.identity[1] <= 0) {
-    return;
-  }
-
-  int tooltipX = 72;
-  int tooltipY = (y - 17) / 32 * 32 + 1;
-  this->ToScreen(tooltipX, tooltipY);
-
-  if (item.identified == 1 && item.optionCount != 0) {
-    CMode* mode = g_modeMgr.currentMode;
-    std::uint32_t color = g_session.GetItemNameColor(item);
-    int screenY = tooltipY + 24;
-    int screenX = tooltipX - 2;
-    mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
   } else {
-    CMode* mode = g_modeMgr.currentMode;
-    std::uint32_t color = g_session.GetItemNameColor(item);
-    int screenY = tooltipY + 24;
-    int screenX = tooltipX - 2;
-    mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
+    item = this->GetItemByIndex(this->GetItemIndexAt(x, y));
+    if (item.identity[1] <= 0) {
+      return;
+    }
+
+    int tooltipX = 72;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    if (item.identified == 1 && item.optionCount != 0) {
+      CMode* mode = g_modeMgr.currentMode;
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenY = tooltipY + 24;
+      int screenX = tooltipX - 2;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
+    } else {
+      CMode* mode = g_modeMgr.currentMode;
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenY = tooltipY + 24;
+      int screenX = tooltipX - 2;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
+    }
   }
 }
 
