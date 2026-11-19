@@ -8627,10 +8627,9 @@ void CGameMode::ReceiveEquipWindowMicroscope3(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 45) / 41u;
+  const int count = static_cast<unsigned>(p->length - 45) / 41u;
   const auto* entry = reinterpret_cast<const StoreEquipRecord*>(p + 1);
-  for (int index = 0; index < count; ++index, ++entry) {
+  for (int index = count; index >= 1; --index, ++entry) {
     ITEM_INFO item;
     item.identity[0] = entry->type;
     item.identity[2] = entry->location;
