@@ -103,8 +103,7 @@ __forceinline void CStormGustEffect::UpdateAlpha(CParticle* particle) {
     alpha += fade;
     if (alpha < 0) {
       alpha = 0;
-    }
-    if (alpha > 254) {
+    } else if (alpha > 254) {
       alpha = 254;
     }
     particle->alpha = alpha;
