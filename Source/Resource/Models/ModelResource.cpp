@@ -514,8 +514,9 @@ __forceinline GrannyTextureEntry* C3dGrannyModelRes::FindMaterialTexture(const g
   const granny_texture* texture = GrannyGetMaterialTextureByType(material, 2);
   if (texture) {
     for (int index = 0; index < this->textureCount; ++index) {
-      if (std::strcmp(this->textures[index].name, texture->fromFileName) == 0) {
-        return &this->textures[index];
+      GrannyTextureEntry* entry = &this->textures[index];
+      if (std::strcmp(entry->name, texture->fromFileName) == 0) {
+        return entry;
       }
     }
   }
@@ -766,11 +767,11 @@ __forceinline granny_animation* GrannyAnimationLibrary::LoadAnimation(const Gran
 
   if (granny_file* file = this->ReadAnimationFile(name, suffix)) {
     if (granny_file_info* info = GrannyGetFileInfo(file)) {
-      if (!instance->instance || info->animationCount != 1) {
+      if (instance->instance && info->animationCount == 1) {
+        animation = info->animations[0];
+      } else {
         ShowErrorDialog("This sample only supports single-animation files", 0);
-        return nullptr;
       }
-      animation = info->animations[0];
     }
   }
   return animation;
