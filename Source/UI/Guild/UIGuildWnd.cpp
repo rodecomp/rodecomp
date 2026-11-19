@@ -1907,10 +1907,10 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   if (g_modeMgr.GetGameMode()) {
     member.name = LookupPlayerName(member.characterId);
   }
-  const std::string& name = member.name;
   if (member.name.size() == 0) {
     member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildNamelessTag;
   }
+  const std::string& name = member.name;
 
   if (member.online == 1) {
     this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, 0xE4FFE2);
