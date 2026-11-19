@@ -790,14 +790,15 @@ void UISerachStoreInfoWnd::Paint() {
     return;
   }
 
+  std::vector<SearchStoreResult>::const_iterator entry = g_session.storeSearchResults.begin() + (this->m_page - 1) * 10;
   int row = 0;
-  for (std::vector<SearchStoreResult>::const_iterator entry = g_session.storeSearchResults.begin() + (this->m_page - 1) * 10; entry != end; ++entry, ++row) {
+  for (; entry != end; ++entry, ++row) {
     if (row == 10) {
       break;
     }
 
     if (this->m_hoverRow == row) {
-      this->FillRegion(5, this->m_rowHeight * row + 100, this->geometry.width - 10, this->m_rowHeight, 0xFBDFCA);
+      this->FillRegion(5, this->m_rowHeight * this->m_hoverRow + 100, this->geometry.width - 10, this->m_rowHeight, 0xFBDFCA);
     }
     this->DrawRectOutline(50, this->m_rowHeight * row + 100, 110, this->m_rowHeight + 1, 0xC0C0C0);
     this->DrawRectOutline(330, this->m_rowHeight * row + 100, 30, this->m_rowHeight + 1, 0xC0C0C0);
