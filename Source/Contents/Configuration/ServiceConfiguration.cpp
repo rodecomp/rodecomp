@@ -206,6 +206,12 @@ void InitializeServiceStrings(char* protection) {
   }
 
   switch (g_serviceMode) {
+  case ServerSakray: {
+    g_clientExeName = OBFUSCATE_BYTES_TEXT("sakray.exe", 0x955D4DF94DE9BB07ULL);
+    g_patcherExeName = OBFUSCATE_BYTES_TEXT("Sakup.exe", 0x8741152D8FB34B4FULL);
+    g_runPatcherMessage = OBFUSCATE_TEXT("Please run sakray.exe", 0xB739073FE921AD6FULL);
+    break;
+  }
   case ServerLocal: {
     g_clientExeName = OBFUSCATE_BYTES_TEXT("RagIndoor.exe", 0xC399B7091589B50BULL);
     g_patcherExeName = OBFUSCATE_BYTES_TEXT("Indoorup.exe", 0x7FC1015DFFCF6D19ULL);
@@ -218,6 +224,7 @@ void InitializeServiceStrings(char* protection) {
     g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagGuild.exe", 0x3B915119EFD523EFULL);
     break;
   }
+  case ServerPrimary:
   default: {
     if (std::strstr(g_launchServerName, OBFUSCATE_BYTES_TEXT("Dev", 0x3F5315DFE32B4FAFULL))) {
       g_clientExeName = OBFUSCATE_BYTES_TEXT("RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
