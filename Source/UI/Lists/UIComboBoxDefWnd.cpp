@@ -432,13 +432,13 @@ int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
 // OFFSET: 0x008A1640
 // FUNCTION: fn_11636
-void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const* last) {
-  std::vector<UITextButton*> links;
+void UITextViewEX::AddLineLinks(std::vector<UIString*>::iterator first, std::vector<UIString*>::iterator last) {
+  std::vector<UIString*> links;
   for (; first != last; ++first) {
     links.push_back(*first);
   }
 
-  this->lineLinks.push_back(std::vector<UITextButton*>(links));
+  this->lineLinks.push_back(std::vector<UIString*>(links));
 }
 
 // OFFSET: 0x008A2480
@@ -453,7 +453,7 @@ void UITextViewEX::ArrangeLinks() {
     const std::string caption = label->GetText();
     x += label->geometry.width + 5;
     if (x + 15 > this->geometry.width || caption == "\n") {
-      this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+      this->AddLineLinks(first, link);
       first = link;
       if (label->GetText() == "\n") {
         x = 0;
@@ -463,7 +463,7 @@ void UITextViewEX::ArrangeLinks() {
     }
   }
 
-  this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+  this->AddLineLinks(first, link);
   this->Refresh();
 }
 

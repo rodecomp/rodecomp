@@ -3392,12 +3392,11 @@ void UITextViewEX::Paint() {
   int y = 7;
   int line = 0;
   for (auto it = this->lineLinks.begin(), end = this->lineLinks.end(); it != end; ++it, ++line) {
-    std::vector<UITextButton*> buttons = *it;
+    std::vector<UIString*> buttons = *it;
     if (line >= top) {
       int x = 0;
       for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
-        UITextButton* button = *buttonIt;
-        UIString* text = reinterpret_cast<UIString*>(button);
+        UIString* text = *buttonIt;
         if (StringText(*text) != "\n") {
           text->Show(1);
           x = text->enabled == 0 ? x : x - 5;
@@ -3416,7 +3415,7 @@ void UITextViewEX::Paint() {
       y += 21;
     } else {
       for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
-        UITextButton* button = *buttonIt;
+        UIString* button = *buttonIt;
         button->Show(0);
       }
     }

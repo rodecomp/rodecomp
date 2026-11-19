@@ -78,6 +78,7 @@ using ExtendedListLineTree = std::_Tree<std::_Tmap_traits<int, ExtendedListLine,
 extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, ExtendedListLine>, void*>*>
 ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;
 extern template UITextButton** std::allocator<UITextButton*>::allocate(const std::size_t);
+extern template UIString** std::allocator<UIString*>::allocate(const std::size_t);
 extern template std::string std::format<const std::string&>(const std::_Fmt_string<const std::string&>, const std::string&);
 extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
 template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
