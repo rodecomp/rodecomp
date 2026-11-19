@@ -130,6 +130,7 @@ void CEnergyOrbEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B514F0
+// FUNCTION: fn_46104
 __forceinline void CEnergyOrbEffect::UpdateParticle(CParticle* particle) {
   if (particle) {
     if (particle->elapsedFrames <= 200) {
