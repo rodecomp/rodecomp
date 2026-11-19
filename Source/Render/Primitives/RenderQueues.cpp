@@ -13,8 +13,8 @@ void CRenderer::Submit(RenderCommand* primitive, std::uint16_t flags) {
   }
 
   if (flags & 1) {
-    const auto first = [&]() { return primitive->vertices[0].rhw; };
-    const auto average = [&]() {
+    const auto first = [primitive]() { return primitive->vertices[0].rhw; };
+    const auto average = [primitive, first]() {
       const float second = primitive->vertices[1].rhw;
       return (first() - second) * 0.5f + second;
     };
