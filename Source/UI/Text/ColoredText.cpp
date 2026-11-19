@@ -9,6 +9,7 @@
 #include <cstring>
 #include <deque>
 #include <string>
+#include <vector>
 #include <windows.h>
 
 // GLOBAL: gl_24512
@@ -121,6 +122,66 @@ void UIWindow::DrawColoredText(
 
   if (this->HasTextBackground()) {
     context.SetBackgroundMode(TRANSPARENT);
+  }
+}
+
+// OFFSET: 0x00A850E0
+// FUNCTION: fn_45733
+void UIWindow::DrawRightColoredText(
+  int right, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height
+) {
+  if (bytes == 0) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+  }
+
+  struct Segment {
+    std::vector<unsigned char> prefix;
+    std::uint32_t color;
+    std::vector<unsigned char> text;
+  };
+
+  const char* const end = text + bytes;
+  const char* current = text;
+  const char* next = this->SegmentEnd(current, end);
+  const std::vector<unsigned char> initial(current, next);
+  std::vector<Segment> segments;
+  segments.push_back({initial, color, initial});
+  std::vector<unsigned char> prefix;
+
+  while (current < end) {
+    next = this->SegmentEnd(current, end);
+    prefix.insert(prefix.end(), current, next);
+    if (next >= end) {
+      break;
+    }
+
+    std::uint32_t segmentColor = 0;
+    const char* const segmentStart = this->ParseColorCode(next, segmentColor);
+    next = this->SegmentEnd(segmentStart, end);
+    if (next >= end) {
+      next = end;
+    }
+
+    Segment segment;
+    segment.prefix = prefix;
+    segment.color = segmentColor;
+    segment.text.assign(segmentStart, next);
+    segment.prefix.insert(segment.prefix.end(), segmentStart, next);
+    segments.push_back(segment);
+    current = segmentStart;
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, 0, 0);
+
+  for (const Segment& segment : segments) {
+    color = segment.color;
+    if (!segment.text.empty()) {
+      SIZE size;
+      context.Measure(reinterpret_cast<const char*>(segment.prefix.data()), static_cast<int>(segment.prefix.size()), &size);
+      context.SetColor(color);
+      context.Draw(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
+    }
   }
 }
 

@@ -159,6 +159,7 @@ public:
   void DrawVerticalText(int x, int y, const char* text, unsigned bytes, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawCenteredText(int x, int y, const char* text, int width, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawColoredText(int x, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height, bool shadow);
+  void DrawRightColoredText(int right, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height);
   void DrawStyledColoredText(
     int x, int y, const char* text, unsigned bytes, std::uint32_t& color, int family, int height, unsigned char bold, unsigned char italic,
     bool shadow
