@@ -5371,10 +5371,10 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   }
 }
 
-// OFFSET: 0x00B65EE0
-// FUNCTION: fn_19044
-void CEZ2STRScreenEffect::OnProcess() {
-  if (this->followCamera == 1 && this->particle) {
+// OFFSET: 0x00B663D0
+// FUNCTION: fn_46000
+__forceinline void CEZ2STRScreenEffect::UpdateCameraAngle() {
+  if (this->particle) {
     double yaw = g_modeMgr.GetGameMode()->camera->camera.yaw;
     if (yaw != this->cameraAngle) {
       CEZ2STRParticle* particle = this->particle;
@@ -5388,19 +5388,33 @@ void CEZ2STRScreenEffect::OnProcess() {
       this->cameraAngle = yaw;
     }
   }
+}
 
-  CEZ2STRParticle* target = this->particle;
-  target->position.x = this->position[0];
-  target->position.y = this->position[1];
-  target->position.z = this->position[2];
-
-  if (CEZ2STRParticle* particle = this->particle) {
+// OFFSET: 0x00B66140
+// FUNCTION: fn_45998
+__forceinline void CEZ2STRScreenEffect::ProcessParticle(CEZ2STRParticle* particle) {
+  if (particle) {
     if (this->ApplyHeadOffset(particle) || this->id == EF_NEW_RANGEDATTACK) {
       particle->Process(0.0f, 0.0f, 0.0f);
     } else {
       particle->Process(0.0f, -80.0f, 0.0f);
     }
   }
+}
+
+// OFFSET: 0x00B65EE0
+// FUNCTION: fn_19044
+void CEZ2STRScreenEffect::OnProcess() {
+  if (this->followCamera == 1 && this->particle) {
+    this->UpdateCameraAngle();
+  }
+
+  CEZ2STRParticle* target = this->particle;
+  target->position.x = this->position[0];
+  target->position.y = this->position[1];
+  target->position.z = this->position[2];
+
+  this->ProcessParticle(this->particle);
 
   ++this->particle->elapsedFrames;
   if (this->id == EF_ABYSS_SQUARE) {
@@ -5435,10 +5449,9 @@ void CEZ2STRScreenEffect::OnProcess() {
   this->particle->m_lift = actor->render.hoverOffset;
 }
 
-// OFFSET: 0x00B661B0
-// FUNCTION: fn_19045
-void CEZ2STRScreenEffect::Render() {
-  CEZ2STRParticle* particle = this->particle;
+// OFFSET: 0x00B662C0
+// FUNCTION: fn_45999
+__forceinline void CEZ2STRScreenEffect::RenderParticle(CEZ2STRParticle* particle) {
   if (!particle) {
     return;
   }
@@ -5472,6 +5485,12 @@ void CEZ2STRScreenEffect::Render() {
 
 draw:
   particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+}
+
+// OFFSET: 0x00B661B0
+// FUNCTION: fn_19045
+void CEZ2STRScreenEffect::Render() {
+  this->RenderParticle(this->particle);
 }
 
 // OFFSET: 0x00B66460

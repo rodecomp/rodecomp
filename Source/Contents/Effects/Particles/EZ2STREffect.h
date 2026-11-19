@@ -38,6 +38,9 @@ public:
   virtual void InitParticle(CEZ2STRParticle* particle, int id);
 
   bool ApplyHeadOffset(CEZ2STRParticle* particle);
+  void ProcessParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
+  void UpdateCameraAngle();
   bool IsAttachedToHead() const;
 
   /* 00CC */ CEZ2STRParticle* particle;
