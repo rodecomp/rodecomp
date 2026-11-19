@@ -4,6 +4,7 @@
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -64,6 +65,165 @@ void CRedLineEffect::CreateLines(int layer) {
 
     ++row;
   }
+}
+
+// OFFSET: 0x00B71940
+// FUNCTION: fn_46051
+void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int age = particle->elapsedFrames;
+  float width;
+  if (age < 100) {
+    width = 0.0f;
+  } else if (age <= 115) {
+    width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
+  } else {
+    width = particle->speedParameter;
+  }
+
+  width = std::max(width, 0.0f);
+
+  const int segment = particle->columnIndex;
+  const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+  const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
+  const float phaseCosine = g_cosTable[particle->phaseParameter];
+  const float phaseSine = g_sinTable[particle->phaseParameter];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+
+  const float flat = width * phaseCosine;
+  const float rise = width * phaseSine;
+  float innerX = particle->scale * cosine;
+  float innerY = 0.0f;
+  float innerZ = particle->scale * sine;
+
+  if (g_projectionDepthNumerator == particle->animationParameter) {
+    innerX *= 1.5f;
+    innerZ *= 1.5f;
+  }
+
+  float outerX = flat * cosine + innerX;
+  float outerY = innerY - rise;
+  float outerZ = flat * sine + innerZ;
+
+  innerX += particle->offsetX;
+  innerY += particle->offsetY;
+  innerZ += particle->offsetZ;
+  outerX += particle->offsetX;
+  outerY += particle->offsetY;
+  outerZ += particle->offsetZ;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->previousPoints[1].x;
+    particle->vertices[0].y = this->previousPoints[1].y;
+    particle->vertices[0].z = this->previousPoints[1].z;
+    particle->vertices[2].x = this->previousPoints[0].x;
+    particle->vertices[2].y = this->previousPoints[0].y;
+    particle->vertices[2].z = this->previousPoints[0].z;
+  }
+
+  particle->vertices[1].x = outerX;
+  particle->vertices[1].y = outerY;
+  particle->vertices[1].z = outerZ;
+  particle->vertices[3].x = innerX;
+  particle->vertices[3].y = innerY;
+  particle->vertices[3].z = innerZ;
+
+  this->previousPoints[0].x = innerX;
+  this->previousPoints[0].y = innerY;
+  this->previousPoints[0].z = innerZ;
+  this->previousPoints[1].x = outerX;
+  this->previousPoints[1].y = outerY;
+  this->previousPoints[1].z = outerZ;
+}
+
+// OFFSET: 0x00B71BF0
+// FUNCTION: fn_46052
+void CRedLineEffect::UpdateSegment(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  particle->angle += g_projectionDepthNumerator;
+  if (particle->angle >= 360.0f) {
+    particle->angle -= 360.0f;
+  }
+
+  if (particle->elapsedFrames >= 125) {
+    int alpha = particle->alpha - 15;
+    particle->alpha = alpha >= 0 ? alpha : 0;
+
+    float speed = particle->speedParameter - 5.0f;
+    particle->speedParameter = speed >= 0.0f ? speed : 0.0f;
+  }
+
+  const int age = particle->elapsedFrames;
+  float width;
+  if (age < 100) {
+    width = 0.0f;
+  } else if (age <= 115) {
+    width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
+  } else {
+    width = particle->speedParameter;
+  }
+
+  width = std::max(width, 0.0f);
+
+  const int segment = particle->columnIndex;
+  const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+  const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
+  const float phaseCosine = g_cosTable[particle->phaseParameter];
+  const float phaseSine = g_sinTable[particle->phaseParameter];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+
+  const float flat = width * phaseCosine;
+  const float rise = width * phaseSine;
+  float innerX = particle->scale * cosine;
+  float innerY = 0.0f;
+  float innerZ = particle->scale * sine;
+
+  if (g_projectionDepthNumerator == particle->animationParameter) {
+    innerX *= 1.5f;
+    innerZ *= 1.5f;
+  }
+
+  float outerX = flat * cosine + innerX;
+  float outerY = innerY - rise;
+  float outerZ = flat * sine + innerZ;
+
+  innerX += particle->offsetX;
+  innerY += particle->offsetY;
+  innerZ += particle->offsetZ;
+  outerX += particle->offsetX;
+  outerY += particle->offsetY;
+  outerZ += particle->offsetZ;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->previousPoints[1].x;
+    particle->vertices[0].y = this->previousPoints[1].y;
+    particle->vertices[0].z = this->previousPoints[1].z;
+    particle->vertices[2].x = this->previousPoints[0].x;
+    particle->vertices[2].y = this->previousPoints[0].y;
+    particle->vertices[2].z = this->previousPoints[0].z;
+  }
+
+  particle->vertices[1].x = outerX;
+  particle->vertices[1].y = outerY;
+  particle->vertices[1].z = outerZ;
+  particle->vertices[3].x = innerX;
+  particle->vertices[3].y = innerY;
+  particle->vertices[3].z = innerZ;
+
+  this->previousPoints[0].x = innerX;
+  this->previousPoints[0].y = innerY;
+  this->previousPoints[0].z = innerZ;
+  this->previousPoints[1].x = outerX;
+  this->previousPoints[1].y = outerY;
+  this->previousPoints[1].z = outerZ;
 }
 
 // OFFSET: 0x00B71B80

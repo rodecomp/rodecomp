@@ -26,6 +26,8 @@ public:
   /* 00E4 */ std::vector<CParticle*> lines;
 
 private:
+  void UpdateSegmentVertices(CParticle* particle);
+  void UpdateSegment(CParticle* particle);
   void RenderSegment(CParticle* particle);
 };
 
