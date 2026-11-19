@@ -17,7 +17,7 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
-  ~CLevel99Orb2Effect() override;
+  __forceinline ~CLevel99Orb2Effect() override;
 
   /* 00CC */ EffectPoint offsets[16];
   /* 018C */ std::vector<CParticle*> particles;

@@ -28,9 +28,10 @@ namespace {
 CLevel99Orb2Effect::CLevel99Orb2Effect() : CEffect(977) {
 }
 
+// OFFSET: 0x00B6BEA0
 // OFFSET: 0x00B6BF00
 // FUNCTION: fn_19097
-CLevel99Orb2Effect::~CLevel99Orb2Effect() {
+__forceinline CLevel99Orb2Effect::~CLevel99Orb2Effect() {
 }
 
 // OFFSET: 0x00B6BF80
