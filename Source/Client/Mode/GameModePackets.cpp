@@ -4329,14 +4329,14 @@ void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
 
   if (g_session.IsMonsterActor(actor) == 0) {
     this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(actor), p->level, 0);
-    return;
-  }
-
-  int action;
-  int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
-  if (action != -1 && gameActor != nullptr) {
-    gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+  } else {
+    int action;
+    int loopType;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
+    if (action != -1 && gameActor != nullptr) {
+      loopType = loopType == 0;
+      gameActor->SetAction(action * 8 - 8, 1, loopType);
+    }
   }
 }
 
@@ -4370,10 +4370,10 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_NOTIFY_SKILL_POSITION*>(packet);
   ActorSkillMessage message;
   message.skillId = p->skillId;
-  message.damage = p->damage;
   message.actionType = p->action;
-  message.targetId = p->targetId;
+  message.damage = p->damage;
   message.tick = p->startTime;
+  message.targetId = p->targetId;
   message.skillLevel = p->level;
   message.hitCount = p->count;
   message.cellX = p->xPos;
@@ -4385,31 +4385,30 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
   int job = -1;
 
   if (p->aid == g_session.m_aid) {
-    actor = this->scene->player;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-    actor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
+    actor = this->scene->player;
     job = actor->GetEffectiveJob(-1);
   } else {
-    actor = this->scene->GetGameActorByAID(p->aid);
-    if (actor != nullptr) {
+    CGameActor* gameActor = this->scene->GetGameActorByAID(p->aid);
+    if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
-      actor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
+      gameActor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
+      actor = gameActor;
       job = actor->GetEffectiveJob(-1);
     } else if (CRenderObject* skill = this->scene->GetSkillByAID(p->aid)) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       skill->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
-      actor = nullptr;
     }
   }
 
   if (g_session.IsMonsterActor(actor) == 0) {
     this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(actor), p->level, 0);
-    return;
+  } else {
+    int action;
+    int loopType;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
   }
-
-  int action;
-  int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
 }
 
 // OFFSET: 0x00D25310
