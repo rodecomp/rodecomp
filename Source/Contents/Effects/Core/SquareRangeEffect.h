@@ -11,6 +11,7 @@ class CParticle;
 class CSquareRangeEffect : public CEffect {
 public:
   CSquareRangeEffect();
+  ~CSquareRangeEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -20,6 +21,12 @@ public:
   /* 00CC */ float size;
   /* 00D0 */ unsigned char resize;
   /* 00D4 */ std::vector<CParticle*> particles;
+
+private:
+  void SetParticleStyle(CParticle* particle);
+  void SetInitialSize();
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
