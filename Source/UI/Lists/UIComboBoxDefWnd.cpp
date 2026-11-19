@@ -573,20 +573,16 @@ void UIDescriptRace::DrawRaceDescription() {
     this->DrawTextAt(49, 22, LookupMessage(MSI_NEWMAKECHAR_DORAM), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(MSI_NEWMAKECHAR_DORAMINFO), lines, 40);
-    int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
-      y += 20;
+      this->DrawTextAt(112, index * 20 + 22, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
     }
   } else if (this->m_race == 0) {
     this->DrawTextAt(50, 23, LookupMessage(MSI_NEWMAKECHAR_HUMAN), 0, 0, 12, 0x99634C, 1, 0);
     this->DrawTextAt(49, 22, LookupMessage(MSI_NEWMAKECHAR_HUMAN), 0, 0, 12, 0xFFFFFF, 1, 0);
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(MSI_NEWMAKECHAR_HUMANINFO), lines, 40);
-    int y = 22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawTextAt(112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
-      y += 20;
+      this->DrawTextAt(112, index * 20 + 22, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
     }
   }
 
@@ -753,7 +749,7 @@ int UITextViewEX::AddWords(std::string text, int attached, int red, int green, i
         continue;
       }
       word = "\n";
-    } else if (word.size() == 1 && word[0] == '\r') {
+    } else if (word == "\r") {
       position = space + 1;
       continue;
     }
