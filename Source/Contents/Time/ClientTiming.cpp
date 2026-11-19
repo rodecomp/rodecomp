@@ -140,41 +140,45 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   std::memset(message, 0, sizeof(message));
   this->data.ClearAll();
 
-  int cellX = 0;
-  int cellY = 0;
+  int index = 1;
+  const char* mapName;
+  const char* name;
+  const char* title;
+  const char* linkedMap;
+  int id;
+  int objectType;
+  int objectIndex;
+  POINT cell = {0, 0};
   int linkedX = 0;
   int linkedY = 0;
   int targetId = -1;
   int cost = 0;
-  int index = 1;
   for (; index < 9999; ++index) {
-    int type;
-    const char* name = nullptr;
-    const char* title = nullptr;
-    if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &name, &title, &type, &cellX, &cellY)) {
+    mapName = nullptr;
+    name = nullptr;
+    if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &mapName, &name, &id, &cell.x, &cell.y)) {
       std::sprintf(message, "Map 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
       break;
     }
-    if (!name) {
+    if (!mapName) {
       break;
     }
-    CNaviInfo* info = new CNaviInfo(static_cast<int>(this->data.destinations.size()), name, title, cellX, cellY, type);
+    CNaviInfo* info = new CNaviInfo(this->data.DestinationCount(), mapName, name, cell.x, cell.y, id);
     if (info) {
       this->data.AddDestination(info);
     }
   }
 
   for (index = 1; index < 99999; ++index) {
-    int objectType = 100;
-    const char* title = nullptr;
-    const char* name = nullptr;
-    const char* mapName = nullptr;
-    int objectX = 0;
-    int objectY = 0;
-    int objectIndex = 0;
-    int id = 0;
-    if (!script->Call("queryNavi_NpcInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY)) {
+    objectType = 100;
+    title = nullptr;
+    name = nullptr;
+    mapName = nullptr;
+    cell.x = 0;
+    cell.y = 0;
+    objectIndex = 0;
+    if (!script->Call("queryNavi_NpcInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y)) {
       std::sprintf(message, "Npc 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
       break;
@@ -184,22 +188,21 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
     CNaviInfo* info = this->FindObject(mapName);
     if (info) {
-      CNavi_Object* npc = new CNavi_Object(objectType, objectIndex, name, title, objectX, objectY, info);
+      CNavi_Object* npc = new CNavi_Object(objectType, objectIndex, name, title, cell.x, cell.y, info);
       npc->SetId(id);
       info->AddNpc(npc);
     }
   }
 
   for (index = 1; index < 99999; ++index) {
-    int objectType = 100;
-    const char* title = nullptr;
-    const char* name = nullptr;
-    const char* mapName = nullptr;
-    int objectX = 0;
-    int objectY = 0;
-    int objectIndex = 0;
-    int id = 0;
-    if (!script->Call("queryNavi_MobInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY)) {
+    objectType = 100;
+    title = nullptr;
+    name = nullptr;
+    mapName = nullptr;
+    cell.x = 0;
+    cell.y = 0;
+    objectIndex = 0;
+    if (!script->Call("queryNavi_MobInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y)) {
       std::sprintf(message, "몬스터 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
       break;
@@ -209,26 +212,25 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
     CNaviInfo* info = this->FindObject(mapName);
     if (info) {
-      CNavi_Object* mob = new CNavi_Object(objectType, objectIndex, name, title, objectX, objectY, info);
+      CNavi_Object* mob = new CNavi_Object(objectType, objectIndex, name, title, cell.x, cell.y, info);
       mob->SetId(id);
       info->AddMob(mob);
     }
   }
 
   for (index = 1; index < 99999; ++index) {
-    int objectType = 100;
-    const char* linkedMap = nullptr;
-    const char* title = nullptr;
-    const char* name = nullptr;
-    const char* mapName = nullptr;
+    objectType = 100;
+    linkedMap = nullptr;
+    title = nullptr;
+    name = nullptr;
+    mapName = nullptr;
     linkedX = 0;
     linkedY = 0;
-    int objectX = 0;
-    int objectY = 0;
-    int objectIndex = 0;
-    int id = 0;
+    cell.x = 0;
+    cell.y = 0;
+    objectIndex = 0;
     if (!script->Call(
-          "queryNavi_LinkInfo", "d>sdddssddsdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &objectX, &objectY, &linkedMap, &linkedX,
+          "queryNavi_LinkInfo", "d>sdddssddsdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y, &linkedMap, &linkedX,
           &linkedY
         )) {
       std::sprintf(message, "Link 루아 읽기 실패 %d", index);
@@ -241,7 +243,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     CNaviInfo* info = this->FindObject(mapName);
     CNaviInfo* linked = this->FindObject(linkedMap);
     if (info && linked) {
-      CNavi_Link* link = new CNavi_Link(objectType, objectIndex, name, title, objectX, objectY, info, linked, linkedX, linkedY);
+      CNavi_Link* link = new CNavi_Link(objectType, objectIndex, name, title, cell.x, cell.y, info, linked, linkedX, linkedY);
       link->SetId(id);
       info->AddLink(link);
     }
@@ -257,11 +259,12 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int accessory2 = 0;
   int robe = 0;
   for (index = 1; index < 9999; ++index) {
-    const char* mapName = nullptr;
-    int pickX = 0;
-    int pickY = 0;
+    mapName = nullptr;
+    cell.x = 0;
+    cell.y = 0;
+    objectIndex = 0;
     if (!script->Call(
-          "queryNavi_PickNpc", "d>sddddddddddd", index, &mapName, &pickX, &pickY, &job, &sex, &bodyPalette, &head, &headPalette, &accessory0, &accessory1,
+          "queryNavi_PickNpc", "d>sddddddddddd", index, &mapName, &cell.x, &cell.y, &job, &sex, &bodyPalette, &head, &headPalette, &accessory0, &accessory1,
           &accessory2, &robe
         )) {
       StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "Failed to read Link lua %d", index);
@@ -273,7 +276,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
     CNaviInfo* info = this->FindObject(mapName);
     if (info) {
-      CNavi_Object* npc = info->FindNpcAt(pickX, pickY);
+      CNavi_Object* npc = info->FindNpcAt(cell.x, cell.y);
       if (npc) {
         npc->look.job = job;
         npc->look.sex = sex;
@@ -289,7 +292,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   }
 
   for (int map = 1; map < 999999; map += 3) {
-    const char* mapName = nullptr;
+    mapName = nullptr;
     int count = 0;
     if (!script->Call("queryNavi_Distance_Map", "d>sd", map, &mapName, &count)) {
       std::sprintf(message, "워프 길 정보 읽기 실패 %d", map);
@@ -304,30 +307,30 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
       continue;
     }
     for (int entry = 1; entry < count + 1; ++entry) {
-      int linkId = -1;
-      if (!script->Call("queryNavi_Distance_Link", "dd>d", map, entry, &linkId)) {
+      id = -1;
+      if (!script->Call("queryNavi_Distance_Link", "dd>d", map, entry, &id)) {
         continue;
       }
-      CNavi_Link* link = info->FindLink(linkId, true);
+      CNavi_Link* link = info->FindLink(id, true);
       if (!link) {
         continue;
       }
       for (int pass = 1;; ++pass) {
-        const char* kind = nullptr;
+        name = nullptr;
         targetId = -1;
         cost = 0;
-        if (!script->Call("queryNavi_Distance_Pass", "ddd>sdd", map, entry, pass, &kind, &targetId, &cost)) {
+        if (!script->Call("queryNavi_Distance_Pass", "ddd>sdd", map, entry, pass, &name, &targetId, &cost)) {
           continue;
         }
-        if (std::strcmp("NULL", kind) == 0) {
+        if (std::strcmp("NULL", name) == 0) {
           break;
         }
-        if (std::strcmp(kind, "P") == 0) {
+        if (std::strcmp(name, "P") == 0) {
           CNavi_Link* target = info->FindLink(targetId, true);
           if (target) {
             link->AddLink(NaviLink{target, cost});
           }
-        } else if (std::strcmp(kind, "E") == 0) {
+        } else if (std::strcmp(name, "E") == 0) {
           CNavi_Link* target = link->GetLinkedInfo()->FindLink(targetId, true);
           if (target) {
             link->AddLinkedLink(NaviLink{target, cost});
@@ -338,7 +341,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   }
 
   for (int map = 1; map < 999999; map += 3) {
-    const char* mapName = nullptr;
+    mapName = nullptr;
     int count = 0;
     if (!script->Call("queryNavi_NpcDistance_Map", "d>sd", map, &mapName, &count)) {
       std::sprintf(message, "Npc 워프 길 정보 읽기 실패 %d", map);
@@ -353,25 +356,25 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
       continue;
     }
     for (int entry = 1; entry < count + 1; ++entry) {
-      int npcId = -1;
-      if (!script->Call("queryNavi_NpcDistance_Link", "dd>d", map, entry, &npcId)) {
+      id = -1;
+      if (!script->Call("queryNavi_NpcDistance_Link", "dd>d", map, entry, &id)) {
         continue;
       }
-      CNavi_Object* npc = info->FindNpc(npcId, true);
+      CNavi_Object* npc = info->FindNpc(id, true);
       if (!npc) {
         continue;
       }
       for (int pass = 1;; ++pass) {
-        const char* targetMap = nullptr;
+        name = nullptr;
         targetId = -1;
         cost = 0;
-        if (!script->Call("queryNavi_NpcDistance_Pass", "ddd>sdd", map, entry, pass, &targetMap, &targetId, &cost)) {
+        if (!script->Call("queryNavi_NpcDistance_Pass", "ddd>sdd", map, entry, pass, &name, &targetId, &cost)) {
           continue;
         }
         if (targetId == 0 && cost == 0) {
           break;
         }
-        CNaviInfo* targetInfo = this->FindObject(targetMap);
+        CNaviInfo* targetInfo = this->FindObject(name);
         CNavi_Link* target = targetInfo == nullptr ? this->data.FindLink(targetId, true) : targetInfo->FindLink(targetId, true);
         if (target) {
           npc->AddLink(NaviLink{target, cost});
@@ -381,23 +384,23 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   }
 
   for (index = 1; index < 200; ++index) {
-    const char* name = nullptr;
-    const char* mapName = nullptr;
-    int id = 0;
-    int objectIndex = 0;
+    name = nullptr;
+    linkedMap = nullptr;
+    id = 0;
+    objectIndex = 0;
     linkedX = 0;
     linkedY = 0;
-    if (!script->Call("queryNavi_Scroll", "d>sddsdd", index, &name, &id, &objectIndex, &mapName, &linkedX, &linkedY)) {
+    if (!script->Call("queryNavi_Scroll", "d>sddsdd", index, &name, &id, &objectIndex, &linkedMap, &linkedX, &linkedY)) {
       char text[260];
       std::memset(text, 0, sizeof(text));
       std::sprintf(text, "Scroll 정보 읽기 실패 %d", index);
       MessageBoxA(hWnd, text, "Error", 0);
       break;
     }
-    if (std::strcmp("NULL", name) == 0 && std::strcmp("NULL", mapName) == 0) {
+    if (std::strcmp("NULL", name) == 0 && std::strcmp("NULL", linkedMap) == 0) {
       break;
     }
-    CNaviInfo* info = this->FindObject(mapName);
+    CNaviInfo* info = this->FindObject(linkedMap);
     if (!info) {
       continue;
     }

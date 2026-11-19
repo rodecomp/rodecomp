@@ -209,14 +209,6 @@ void PaintCooldowns(
 );
 
 // INLINED
-void PaintMainCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownOwner& owner
-) {
-  const int limit = rows * 33 + 4;
-  PaintCooldowns(records, icons, &ShortcutCooldownRecord::main, limit, x, y, &owner);
-}
-
-// INLINED
 __forceinline void PaintAlternateCooldowns(
   std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownOwner& owner
 ) {

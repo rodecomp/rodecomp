@@ -31,30 +31,6 @@ namespace {
 
 }
 
-// OFFSET: 0x00A86200
-// FUNCTION: fn_17019
-__declspec(noinline) void UIWindow::DrawRightOutlinedText(
-  int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height,
-  unsigned char bold
-) {
-  if (bytes == 0) {
-    bytes = static_cast<int>(std::strlen(text));
-  }
-
-  TextContext context(*this->geometry.surface);
-  context.SetFont(family, height, bold, 0);
-  SIZE size;
-  context.Measure(text, static_cast<int>(std::strlen(text)), &size);
-  const int left = right - size.cx;
-  context.SetColor(outline);
-  context.Draw(left - 1, y, text, bytes);
-  context.Draw(left + 1, y, text, bytes);
-  context.Draw(left, y - 1, text, bytes);
-  context.Draw(left, y + 1, text, bytes);
-  context.SetColor(color);
-  context.Draw(left, y, text, bytes);
-}
-
 // OFFSET: 0x00918940
 // FUNCTION: fn_45758
 __forceinline void UIShortCutWnd::DrawShortcutItem(int x, int y, const ITEM_INFO& item, unsigned char identified) {

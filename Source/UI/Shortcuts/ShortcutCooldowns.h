@@ -65,9 +65,6 @@ inline bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int a
   return true;
 }
 
-void PaintMainCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownOwner& owner
-);
 void PaintAlternateCooldowns(
   std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownOwner& owner
 );

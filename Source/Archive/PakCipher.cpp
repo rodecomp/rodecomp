@@ -174,7 +174,8 @@ namespace myGPack {
         }
       }
 
-      std::memset(this->m_roundKeys[round], 0, sizeof(this->m_roundKeys[round]));
+      this->m_roundKeys[round].words[0] = 0;
+      this->m_roundKeys[round].words[1] = 0;
 
       unsigned bitsPerGroup = 6;
       for (std::uint8_t i = 0; i < 48; ++i) {
@@ -188,7 +189,7 @@ namespace myGPack {
         }
 
         if (halves.bytes[byte] & s_bitMasks[bit & 7]) {
-          this->m_roundKeys[round][i / bitsPerGroup] |= s_bitMasks[i % bitsPerGroup];
+          this->m_roundKeys[round].bytes[i / bitsPerGroup] |= s_bitMasks[i % bitsPerGroup];
         }
       }
     }
@@ -201,14 +202,14 @@ namespace myGPack {
 
   // OFFSET: 0x00AE8E70
   // FUNCTION: fn_18101
-  int PakCipher::DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const {
+  int PakCipher::DecodeBlock(int rounds, const Block64* roundKeys, Block64 input, Block64* output) const {
     output->words[0] = input.words[0];
     output->words[1] = input.words[1];
     InitialPermutation(output->bytes);
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
       Block64 key;
-      std::memcpy(&key, roundKeys[15 - round], sizeof(key));
+      std::memcpy(&key, &roundKeys[15 - round], sizeof(key));
 
       Block64 permuted;
       permuted.words[0] = permuted.words[1] = 0;
@@ -384,14 +385,14 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9020
   // FUNCTION: fn_18102
-  int PakCipher::EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const {
+  int PakCipher::EncodeBlock(int rounds, const Block64* roundKeys, Block64 input, Block64* output) const {
     output->words[0] = input.words[0];
     output->words[1] = input.words[1];
     InitialPermutation(output->bytes);
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
       Block64 key;
-      std::memcpy(&key, roundKeys[round], sizeof(key));
+      std::memcpy(&key, &roundKeys[round], sizeof(key));
 
       Block64 permuted;
       permuted.words[0] = permuted.words[1] = 0;
