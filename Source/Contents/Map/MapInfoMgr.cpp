@@ -192,23 +192,31 @@ bool CMapInfoMgr::LoadScript() {
   this->m_emptyName = LookupMessage(MSI_NOWHERE);
 
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    lua_register(lua.GetState(), "AddMapDisplayName", CMapInfoMgr::L_AddMapDisplayName);
-    lua_register(lua.GetState(), "AddMapSignName", CMapInfoMgr::L_AddMapSignName);
-    lua_register(lua.GetState(), "AddMapBackgroundBmp", CMapInfoMgr::L_AddMapBackgroundBmp);
-
-    if (luaL_loadfile(lua.GetState(), "system\\mapInfo_true.lub") == 0 && lua_pcall(lua.GetState(), 0, 0, 0) == 0) {
-      lua_getglobal(lua.GetState(), "main");
-      if (lua_pcall(lua.GetState(), 0, 2, 0) == 0) {
-        return true;
-      }
-    }
-
-    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CMapInfoMgr", MB_OK);
+  if (!lua.IsValid()) {
+    return false;
   }
 
-  return false;
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "AddMapDisplayName", CMapInfoMgr::L_AddMapDisplayName);
+  lua_register(lua.GetState(), "AddMapSignName", CMapInfoMgr::L_AddMapSignName);
+  lua_register(lua.GetState(), "AddMapBackgroundBmp", CMapInfoMgr::L_AddMapBackgroundBmp);
+
+  if (luaL_loadfile(lua.GetState(), "system\\mapInfo_true.lub") != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CMapInfoMgr", MB_OK);
+    return false;
+  }
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CMapInfoMgr", MB_OK);
+    return false;
+  }
+
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CMapInfoMgr", MB_OK);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x006CF290
