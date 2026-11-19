@@ -28,6 +28,8 @@
 
 #include <algorithm>
 
+template __declspec(noinline) void std::fill<std::_List_unchecked_const_iterator<std::_List_val<std::_List_simple_types<UIWindow*>>>*, std::_List_unchecked_const_iterator<std::_List_val<std::_List_simple_types<UIWindow*>>>>(std::_List_unchecked_const_iterator<std::_List_val<std::_List_simple_types<UIWindow*>>>* const, std::_List_unchecked_const_iterator<std::_List_val<std::_List_simple_types<UIWindow*>>>* const, const std::_List_unchecked_const_iterator<std::_List_val<std::_List_simple_types<UIWindow*>>>&);
+
 // INLINED
 static MessengerMember PartyMember(UIMiniPartyWnd* window) {
   return window->m_member;
