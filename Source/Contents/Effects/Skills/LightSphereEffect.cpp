@@ -120,8 +120,8 @@ void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
   }
 
   EffectPoint points[3];
-  const float radius = particle->scale * g_sinTable[particle->angleParameter] + particle->scale;
   const int pitch = particle->phaseParameter;
+  const float radius = particle->scale * g_sinTable[particle->angleParameter] + particle->scale;
   const int yaw = static_cast<int>(particle->angle);
   const float flat = radius * g_cosTable[pitch];
   const float corner0X = flat * g_cosTable[yaw];
@@ -134,7 +134,7 @@ void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
   float corner2X;
   float corner2Y;
   float corner2Z;
-  if (particle->animationParameters[0] == 0.0f) {
+  if (0.0f == particle->animationParameters[0]) {
     corner1X = -0.5f;
     corner1Y = -particle->animationParameter;
     corner1Z = 0.0f;
