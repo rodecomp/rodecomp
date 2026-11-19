@@ -341,7 +341,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
 
   for (int index = 0; index < 12; ++index) {
     this->m_slotButtons[index] = new UIStaticText();
-    static_cast<UIStaticText*>(this->m_slotButtons[index])->SetFont(0, 0xB, 0, 0);
+    this->m_slotButtons[index]->SetFont(0, 0xB, 0, 0);
     this->m_slotButtons[index]->SetSize(0x6B, 0xF);
     if (index == 11) {
       this->m_slotButtons[index]->Move(0x364, 0x74);
@@ -1154,21 +1154,21 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
 
   const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, current, 0, 0, 0));
   if (info) {
-    static_cast<UIStaticText*>(this->m_slotButtons[0])->SetTextFitted(g_session.GetJobName(info->job, info->sex));
-    static_cast<UIStaticText*>(this->m_slotButtons[1])->SetTextFitted(FormatOwnedString("%d", info->level).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[2])->SetTextFitted(FormatOwnedString("%lld", info->exp).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[3])->SetTextFitted(FormatOwnedString("%lld", info->hp).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[4])->SetTextFitted(FormatOwnedString("%lld", info->sp).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[5])->SetTextFitted(FormatOwnedString("%d", info->stats[0]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[6])->SetTextFitted(FormatOwnedString("%d", info->stats[1]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[7])->SetTextFitted(FormatOwnedString("%d", info->stats[2]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[8])->SetTextFitted(FormatOwnedString("%d", info->stats[3]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[9])->SetTextFitted(FormatOwnedString("%d", info->stats[4]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[10])->SetTextFitted(FormatOwnedString("%d", info->stats[5]).c_str());
-    static_cast<UIStaticText*>(this->m_slotButtons[11])->SetTextFitted(g_session.GetMapDisplayName(info->mapName));
+    this->m_slotButtons[0]->SetTextFitted(g_session.GetJobName(info->job, info->sex));
+    this->m_slotButtons[1]->SetTextFitted(FormatOwnedString("%d", info->level).c_str());
+    this->m_slotButtons[2]->SetTextFitted(FormatOwnedString("%lld", info->exp).c_str());
+    this->m_slotButtons[3]->SetTextFitted(FormatOwnedString("%lld", info->hp).c_str());
+    this->m_slotButtons[4]->SetTextFitted(FormatOwnedString("%lld", info->sp).c_str());
+    this->m_slotButtons[5]->SetTextFitted(FormatOwnedString("%d", info->stats[0]).c_str());
+    this->m_slotButtons[6]->SetTextFitted(FormatOwnedString("%d", info->stats[1]).c_str());
+    this->m_slotButtons[7]->SetTextFitted(FormatOwnedString("%d", info->stats[2]).c_str());
+    this->m_slotButtons[8]->SetTextFitted(FormatOwnedString("%d", info->stats[3]).c_str());
+    this->m_slotButtons[9]->SetTextFitted(FormatOwnedString("%d", info->stats[4]).c_str());
+    this->m_slotButtons[10]->SetTextFitted(FormatOwnedString("%d", info->stats[5]).c_str());
+    this->m_slotButtons[11]->SetTextFitted(g_session.GetMapDisplayName(info->mapName));
   } else {
     for (int index = 0; index < 12; ++index) {
-      static_cast<UIStaticText*>(this->m_slotButtons[index])->SetText("", 0);
+      this->m_slotButtons[index]->SetText("", 0);
     }
   }
 
