@@ -11,6 +11,11 @@
 
 #include <string>
 
+// OFFSET: 0x00702960
+// FUNCTION: fn_46186
+__declspec(noinline) CFuumaShouakuEffect::~CFuumaShouakuEffect() {
+}
+
 // OFFSET: 0x007028C0
 // FUNCTION: fn_07007
 CFuumaShouakuEffect::CFuumaShouakuEffect()

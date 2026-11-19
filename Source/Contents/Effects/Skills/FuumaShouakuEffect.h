@@ -10,6 +10,7 @@ class CEZ2STRParticle;
 class CFuumaShouakuEffect : public CEffect {
 public:
   CFuumaShouakuEffect();
+  __declspec(noinline) ~CFuumaShouakuEffect() override;
 
   void Open() override;
   void OnProcess() override;
