@@ -813,7 +813,7 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
       if (!g_session.IsCostumeLocation(this->m_type) && this->m_info != nullptr) {
         const ITEM_INFO equipped = g_session.GetEquippedItemAt(this->inventoryIndex);
         if (equipped.identity[1] > 0) {
-          const int key = this->GetValue(2);
+          const unsigned int key = this->GetValue(2);
           const int level = equipped.refiningLevel;
           if (level > 0) {
             switch (this->m_info->kind) {
