@@ -381,7 +381,8 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
   __declspec(align(8)) volatile __int64 aligned = 0;
   (void)aligned;
-  for (int layer : layers) {
+  for (auto it = layers.begin(); it != layers.end(); ++it) {
+    const int& layer = *it;
     std::string sprName;
     std::string actName;
     switch (layer) {
