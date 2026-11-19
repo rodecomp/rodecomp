@@ -9,6 +9,36 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 
+enum DialogKeyLParam : int {
+  KEYDOWN_Q = 0x100001,
+  KEYDOWN_W = 0x110001,
+  KEYDOWN_E = 0x120001,
+  KEYDOWN_R = 0x130001,
+  KEYDOWN_T = 0x140001,
+  KEYDOWN_Y = 0x150001,
+  KEYDOWN_U = 0x160001,
+  KEYDOWN_I = 0x170001,
+  KEYDOWN_O = 0x180001,
+  KEYDOWN_A = 0x1E0001,
+  KEYDOWN_S = 0x1F0001,
+  KEYDOWN_D = 0x200001,
+  KEYDOWN_F = 0x210001,
+  KEYDOWN_G = 0x220001,
+  KEYDOWN_H = 0x230001,
+  KEYDOWN_J = 0x240001,
+  KEYDOWN_K = 0x250001,
+  KEYDOWN_L = 0x260001,
+  KEYDOWN_Z = 0x2C0001,
+  KEYDOWN_X = 0x2D0001,
+  KEYDOWN_C = 0x2E0001,
+  KEYDOWN_V = 0x2F0001,
+  KEYDOWN_B = 0x300001,
+  KEYDOWN_N = 0x310001,
+  KEYDOWN_M = 0x320001,
+  KEYDOWN_COMMA = 0x330001,
+  KEYDOWN_PERIOD = 0x340001,
+};
+
 // OFFSET: 0x00A90950
 // FUNCTION: fn_17154
 bool UIWindowMgr::ProcessDialogKey(int, int key) {
@@ -21,85 +51,85 @@ bool UIWindowMgr::ProcessDialogKey(int, int key) {
   }
 
   switch (key) {
-  case 0x100001:
+  case KEYDOWN_Q:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 1, 0, 0);
     return false;
-  case 0x110001:
+  case KEYDOWN_W:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 1, 0, 0);
     return false;
-  case 0x120001:
+  case KEYDOWN_E:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 1, 0, 0);
     return false;
-  case 0x130001:
+  case KEYDOWN_R:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 1, 0, 0);
     return false;
-  case 0x140001:
+  case KEYDOWN_T:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 1, 0, 0);
     return false;
-  case 0x150001:
+  case KEYDOWN_Y:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 1, 0, 0);
     return false;
-  case 0x160001:
+  case KEYDOWN_U:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 1, 0, 0);
     return false;
-  case 0x170001:
+  case KEYDOWN_I:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 1, 0, 0);
     return false;
-  case 0x180001:
+  case KEYDOWN_O:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 1, 0, 0);
     return false;
-  case 0x1E0001:
+  case KEYDOWN_A:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 2, 0, 0);
     return false;
-  case 0x1F0001:
+  case KEYDOWN_S:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 2, 0, 0);
     return false;
-  case 0x200001:
+  case KEYDOWN_D:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 2, 0, 0);
     return false;
-  case 0x210001:
+  case KEYDOWN_F:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 2, 0, 0);
     return false;
-  case 0x220001:
+  case KEYDOWN_G:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 2, 0, 0);
     return false;
-  case 0x230001:
+  case KEYDOWN_H:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 2, 0, 0);
     return false;
-  case 0x240001:
+  case KEYDOWN_J:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 2, 0, 0);
     return false;
-  case 0x250001:
+  case KEYDOWN_K:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 2, 0, 0);
     return false;
-  case 0x260001:
+  case KEYDOWN_L:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 2, 0, 0);
     return false;
-  case 0x2C0001:
+  case KEYDOWN_Z:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 0, 0, 0, 0);
     return false;
-  case 0x2D0001:
+  case KEYDOWN_X:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 1, 0, 0, 0);
     return false;
-  case 0x2E0001:
+  case KEYDOWN_C:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 2, 0, 0, 0);
     return false;
-  case 0x2F0001:
+  case KEYDOWN_V:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 3, 0, 0, 0);
     return false;
-  case 0x300001:
+  case KEYDOWN_B:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 4, 0, 0, 0);
     return false;
-  case 0x310001:
+  case KEYDOWN_N:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 5, 0, 0, 0);
     return false;
-  case 0x320001:
+  case KEYDOWN_M:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 6, 0, 0, 0);
     return false;
-  case 0x330001:
+  case KEYDOWN_COMMA:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 7, 0, 0, 0);
     return false;
-  case 0x340001:
+  case KEYDOWN_PERIOD:
     this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 0, 0, 0);
     return false;
   default:
