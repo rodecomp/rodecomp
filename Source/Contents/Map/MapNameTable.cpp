@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <utility>
 #include <vector>
 
 // OFFSET: 0x00DE8740
@@ -78,8 +79,8 @@ bool CSession::LoadMapPosTable() {
         fields.push_back(std::string(start, cursor));
       } else {
         {
-          const std::string last(start, cursor);
-          fields.push_back(last);
+          std::string last(start, cursor);
+          fields.push_back(std::move(last));
         }
         const int bottom = std::atoi(fields[3].c_str());
         const int right = std::atoi(fields[2].c_str());
