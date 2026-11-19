@@ -9,6 +9,7 @@
 #include <cstring>
 
 // OFFSET: 0x0070AFB0
+// FUNCTION: fn_46176
 CRichManKim::CRichManKim() : CEffect(EF_BOTTOM_RICHMANKIM), unknown_00D0{}, unknown_00E8{}, angleIndex(0) {
 }
 
