@@ -256,9 +256,9 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
           }
         }
 
-        const unsigned char red = static_cast<unsigned char>(cell.color);
-        const unsigned char green = static_cast<unsigned char>(cell.color >> 8);
-        const unsigned char blue = static_cast<unsigned char>(cell.color >> 16);
+        const std::uint32_t red = cell.colorChannels.red;
+        const std::uint32_t green = cell.colorChannels.green;
+        const std::uint32_t blue = cell.colorChannels.blue;
         const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
         const float angle = static_cast<float>(cell.rotation) + this->state.roll;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
