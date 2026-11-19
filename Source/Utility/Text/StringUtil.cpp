@@ -70,10 +70,18 @@ bool CGPak::Extract(const myGPack::PakEntry* entry, void* buffer) {
       magnitude = size >= 10u ? 1 : 0;
     }
     cipher.Decode(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength, magnitude + 1);
-    source = this->m_scratch.empty() ? nullptr : this->m_scratch.data();
+    if (!this->m_scratch.empty()) {
+      source = this->m_scratch.data();
+    } else {
+      source = nullptr;
+    }
   } else if (entry->flags & 4) {
     cipher.DecodePrefix(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength);
-    source = this->m_scratch.empty() ? nullptr : this->m_scratch.data();
+    if (!this->m_scratch.empty()) {
+      source = this->m_scratch.data();
+    } else {
+      source = nullptr;
+    }
   } else {
     decodedLength = entry->compressedSize;
     source = mapped;
