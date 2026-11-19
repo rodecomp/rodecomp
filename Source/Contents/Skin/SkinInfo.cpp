@@ -80,17 +80,14 @@ void CSkinMgr::Prepare() {
     return;
   }
 
-  char noOverwrite[128];
-  char input[128];
-  char directoryOption[128];
-  char output[128];
-  std::strcpy(noOverwrite, "-n");
-  std::strcpy(input, "skin/");
-  std::strcat(input, this->names[this->selected].c_str());
-  std::strcpy(directoryOption, "-d");
-  std::strcpy(output, "_tmpskin_/");
-  std::strcat(output, this->names[this->selected].c_str());
-  _spawnl(_P_WAIT, "runzip.exe", "runzip.exe", noOverwrite, input, directoryOption, output, nullptr);
+  char arguments[4][128];
+  std::strcpy(arguments[0], "-n");
+  std::strcpy(arguments[1], "skin/");
+  std::strcat(arguments[1], this->names[this->selected].c_str());
+  std::strcpy(arguments[2], "-d");
+  std::strcpy(arguments[3], "_tmpskin_/");
+  std::strcat(arguments[3], this->names[this->selected].c_str());
+  _spawnl(_P_WAIT, "runzip.exe", "runzip.exe", arguments[0], arguments[1], arguments[2], arguments[3], nullptr);
 
   this->prepared[this->selected] = 1;
 }
