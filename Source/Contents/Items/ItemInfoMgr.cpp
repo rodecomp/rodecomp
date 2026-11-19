@@ -200,8 +200,8 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     int slotCount = static_cast<int>(lua_tonumber(state, -2));
     int classNum = static_cast<int>(lua_tonumber(state, -1));
     {
-      CItemInfoMgr* mgr = g_itemInfoMgr;
       const int index = static_cast<int>(id);
+      CItemInfoMgr* mgr = g_itemInfoMgr;
       mgr->m_items[index].slotCount = slotCount;
       mgr->m_items[index].classNum = classNum;
     }
