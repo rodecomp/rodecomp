@@ -10754,8 +10754,8 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     support = IsSupportSkill(this->skillId);
     attack = shiftHeld;
     if (support) {
-      attack = shiftHeld == 0;
       skillMode = 1;
+      attack = shiftHeld == 0;
     }
   } else {
     skillMode = 0;
@@ -10781,8 +10781,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       if (scene->isSiegeMode != 0) {
         if (actor) {
         GuildInfo* guildInfo = &g_guildInfo;
-        bool friendly = true;
-        bool known = true;
+        bool friendly = false;
         switch (actor->objectType) {
         case NPC_HO_TYPE:
         case NPC_MERSOL_TYPE:
@@ -10791,24 +10790,26 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         case NPC_BIONIC_TYPE: {
           CGameActor* summoner = scene->GetGameActorByAID(actor->emblemVersion);
           if (summoner) {
-            if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
-              friendly = guildInfo->HasRelatedGuild(summoner->GetGdid());
+            if (g_session.IsLocalPlayerAid(summoner->GetGdid()) || guildInfo->HasRelatedGuild(summoner->GetGdid())) {
+              friendly = true;
+            } else {
+              attack = 1;
             }
-          } else {
-            known = this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->emblemVersion);
+          } else if (this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->emblemVersion)) {
+            friendly = true;
           }
           break;
         }
         default:
-          if (!g_session.IsLocalPlayerAid(actor->GetGdid())) {
-            friendly = guildInfo->HasRelatedGuild(actor->GetGdid());
+          if (g_session.IsLocalPlayerAid(actor->GetGdid()) || guildInfo->HasRelatedGuild(actor->GetGdid())) {
+            friendly = true;
+          } else {
+            attack = 1;
           }
           break;
         }
 
-        if (!friendly) {
-          attack = 1;
-        } else if (known) {
+        if (friendly) {
           attack = 0;
           if (skillMode) {
             attack = support;
@@ -10830,7 +10831,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   if (attack && actor->render.state != 3) {
-    this->SetCursorAction(skillMode ? 11 : 5);
+    this->SetCursorAction(skillMode == 0 ? 5 : 11);
     handled = 1;
   } else if (skillMode && actor->render.state != 3) {
     this->SetCursorAction(10);
@@ -10950,10 +10951,12 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   int& balloonAid = this->lastPcGid;
-  if (this->oldMouseX != g_mouse.x || this->oldMouseY != g_mouse.y) {
-    balloonAid = 0;
+  if (this->oldMouseX == g_mouse.x && this->oldMouseY == g_mouse.y) {
+    this->ShowActorNameBalloon(balloonAid);
+    return;
   }
-  this->ShowActorNameBalloon(balloonAid);
+  balloonAid = 0;
+  this->ShowActorNameBalloon(0);
 }
 
 // OFFSET: 0x00CFE510
