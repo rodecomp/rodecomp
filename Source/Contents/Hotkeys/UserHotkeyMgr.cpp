@@ -261,12 +261,14 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
   g_userHotkeyMgr->Capture();
   Json::Value version2;
   const std::list<CUserHotkeyMgr::Hotkey> snapshot = g_userHotkeyMgr->m_original;
+  auto it = snapshot.begin();
   Json::Value skillBar1;
   Json::Value skillBar2;
   Json::Value interfaceTab;
   Json::Value emotionTab;
 
-  for (const CUserHotkeyMgr::Hotkey& hotkey : snapshot) {
+  while (it != snapshot.end()) {
+    const CUserHotkeyMgr::Hotkey& hotkey = *it;
     Json::Value value;
     value["index"] = hotkey.index;
     value["key1"] = hotkey.key1;
@@ -287,6 +289,7 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
       emotionTab.append(value);
       break;
     }
+    ++it;
   }
 
   version2["SkillBar_1Tab"] = skillBar1;
@@ -294,7 +297,8 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
   version2["InterfaceTab"] = interfaceTab;
   version2["EmotionTab"] = emotionTab;
   data["UserHotkey_V2"] = version2;
-  data["UserHotkey"] = Json::Value();
+  Json::Value empty;
+  data["UserHotkey"] = empty;
 }
 
 // INLINED
