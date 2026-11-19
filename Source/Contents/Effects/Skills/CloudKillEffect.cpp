@@ -39,6 +39,29 @@ CCloudKillEffect::CCloudKillEffect() : CEffect(1080) {
 __declspec(noinline) CCloudKillEffect::~CCloudKillEffect() {
 }
 
+// OFFSET: 0x006FC7D0
+// FUNCTION: fn_46119
+__forceinline void CCloudKillEffect::AddParticle() {
+  CParticle* created = CreateSpriteParticle(&this->positionVector, 1);
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
+  matrix& rotation = particle->rotation;
+  rotation.IsIdentity();
+  rotation.MakeYRotation(GetRadian(ClampedRandom(360)));
+  rotation.MakeXRotation(GetRadian(90));
+  const float speed = static_cast<float>(ClampedRandom(20) + 20) / 80.0f;
+  particle->frameDelay = speed;
+  particle->acceleration = -(speed / 10.0f) * g_depthAverageHalf;
+  particle->scale = 0.8f;
+  particle->spin = 3.0f;
+  particle->alpha = 70;
+  particle->animationParameter = 25.4f;
+  particle->animationParameters[0] = 8.0f;
+  particle->SetSprite("이팩트\\particle3.spr");
+  particle->SetAction("이팩트\\particle3.act");
+  particle->life = static_cast<float>(this->particleLifetimeFrames) / 60.0f;
+  this->particles.push_back(created);
+}
+
 // OFFSET: 0x006FC8F0
 // FUNCTION: fn_06926
 void CCloudKillEffect::AddSprites() {
@@ -148,24 +171,7 @@ __declspec(noinline) void CCloudKillEffect::UpdateParticle(CSpriteParticle* part
 // FUNCTION: fn_06930
 void CCloudKillEffect::OnProcess() {
   if (this->emitting && this->frame % 5 == 0) {
-    CParticle* created = CreateSpriteParticle(&this->positionVector, 1);
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
-    matrix& rotation = particle->rotation;
-    rotation.IsIdentity();
-    rotation.MakeYRotation(GetRadian(ClampedRandom(360)));
-    rotation.MakeXRotation(GetRadian(90));
-    const float speed = static_cast<float>(ClampedRandom(20) + 20) / 80.0f;
-    particle->frameDelay = speed;
-    particle->acceleration = -(speed / 10.0f) * g_depthAverageHalf;
-    particle->scale = 0.8f;
-    particle->spin = 3.0f;
-    particle->alpha = 70;
-    particle->animationParameter = 25.4f;
-    particle->animationParameters[0] = 8.0f;
-    particle->SetSprite("이팩트\\particle3.spr");
-    particle->SetAction("이팩트\\particle3.act");
-    particle->life = static_cast<float>(this->particleLifetimeFrames) / 60.0f;
-    this->particles.push_back(created);
+    this->AddParticle();
   }
 
   for (auto it = this->particles.begin(); it != this->particles.end();) {

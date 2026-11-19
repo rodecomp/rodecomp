@@ -19,6 +19,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
+  void AddParticle();
   void AddSprites();
   void UpdateSprite(CSpriteParticle* particle);
   void RenderParticle(CParticle* particle);
