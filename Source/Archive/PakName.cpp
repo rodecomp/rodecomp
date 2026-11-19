@@ -18,7 +18,16 @@ namespace myGPack {
   // OFFSET: 0x00AECF90
   // FUNCTION: fn_18149
   void PakName::Assign(const char* name) {
-    AssignNameKey(this->m_hash, this->m_name, name);
+    std::strcpy(this->m_name, name);
+    _strlwr(this->m_name);
+    const std::size_t length = std::strlen(this->m_name);
+    std::uint32_t hash = 5381;
+
+    for (std::size_t i = 0; i < length; ++i) {
+      hash = 33 * hash + static_cast<std::int8_t>(this->m_name[i]);
+    }
+
+    this->m_hash = hash;
   }
 
   // OFFSET: 0x00AECE20
