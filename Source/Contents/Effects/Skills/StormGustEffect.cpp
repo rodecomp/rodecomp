@@ -12,10 +12,12 @@
 #include <cstring>
 
 // OFFSET: 0x00B7A8C0
+// FUNCTION: fn_46034
 CStormGustEffect::CStormGustEffect() : CEffect(EF_STORMGUST) {
 }
 
 // OFFSET: 0x00B7A940
+// FUNCTION: fn_46035
 __declspec(noinline) CStormGustEffect::~CStormGustEffect() {
 }
 
