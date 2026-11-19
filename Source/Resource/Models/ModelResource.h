@@ -64,6 +64,8 @@ struct ModelKeyList4 : std::vector<ModelRotationKey> {
   void Read(CFile& file);
 };
 
+struct ModelPositionKeyList : std::vector<ModelPositionKey> {};
+
 struct ModelTextureChannelMap : ModelTextureChannels {
   void Read(CFile& file);
 };
@@ -106,8 +108,8 @@ public:
   /* 0064 */ float axis[3];
   /* 0070 */ float angle;
   /* 0074 */ float scale[3];
-  /* 0080 */ std::vector<ModelPositionKey> legacyPositionKeys;
-  /* 008C */ std::vector<ModelRotationKey> rotationKeys;
+  /* 0080 */ ModelPositionKeyList legacyPositionKeys;
+  /* 008C */ ModelKeyList2 rotationKeys;
 };
 
 class ModelNodeV2 : public ModelNode {

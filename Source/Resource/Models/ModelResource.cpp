@@ -282,7 +282,7 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   mesh.faces = faces;
   std::sort(mesh.faces, mesh.faces + mesh.faceCount);
   mesh.CalculateNormals();
-  static_cast<ModelKeyList2&>(node->rotationKeys).Read(file);
+  node->rotationKeys.Read(file);
 
   this->nodes.push_back(node);
   this->meshes[node->name] = node->mesh;
