@@ -184,7 +184,10 @@ void UIGuildPositionManageWnd::Invalidate() {
 int UIGuildMemberManageWnd::MemberIndexAt(int x, int y) {
   if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
     const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
-    return index >= this->m_members.size() ? -1 : index;
+    if (index >= this->m_members.size()) {
+      return -1;
+    }
+    return index;
   }
   return -1;
 }
