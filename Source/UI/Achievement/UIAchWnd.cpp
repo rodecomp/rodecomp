@@ -1517,8 +1517,9 @@ UIAchListWnd::UIAchListWnd() : UIWindow(0), rowHeight(0), rowCount(0), firstRow(
   this->buttons = nullptr;
 }
 
-// INLINED
-UIAchListWnd::~UIAchListWnd() {
+// OFFSET: 0x007B2BC0
+// FUNCTION: fn_46398
+__declspec(noinline) UIAchListWnd::~UIAchListWnd() {
   if (this->buttons) {
     delete[] this->buttons;
   }
