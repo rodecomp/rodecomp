@@ -48,9 +48,10 @@ void CBash::Close() {
 // FUNCTION: fn_45934
 __forceinline void CBash::CreateRays() {
   const int fadeFrame = this->effectLifetime - 10;
+  const vector3d* origin = &this->positionVector;
   int index = 0;
   for (int angle = 0; angle < 360; angle += 36) {
-    CParticle* particle = CreateParticle(&this->positionVector, 1);
+    CParticle* particle = CreateParticle(origin, 1);
     particle->effectId = this->id;
     particle->columnIndex = index;
     particle->rowIndex = 0;
@@ -235,7 +236,7 @@ __forceinline void CBash::RenderRay(CParticle* particle) {
   primitive.texture = particle->texture;
   primitive.sourceBlend = particle->sourceBlend;
   primitive.destinationBlend = particle->destinationBlend;
-  g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+  g_renderer->Submit(&primitive, particle->flags);
 }
 
 // OFFSET: 0x00B42A60
@@ -285,7 +286,7 @@ __forceinline void CBash::RenderSpark(CParticle* particle) {
   primitive.texture = particle->texture;
   primitive.sourceBlend = particle->sourceBlend;
   primitive.destinationBlend = particle->destinationBlend;
-  g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+  g_renderer->Submit(&primitive, particle->flags);
 }
 
 // OFFSET: 0x00B42C40
