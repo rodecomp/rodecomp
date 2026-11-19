@@ -167,8 +167,7 @@ void UIRuneSetReWard::Paint() {
 // OFFSET: 0x0081A1D0
 // FUNCTION: fn_10184
 void UIRuneSystemTab::Paint() {
-  ResourceMgr& resources = ResourceMgr::Instance();
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString(this->m_label.c_str(), this->geometry.state).c_str()))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString(this->m_label.c_str(), this->geometry.state).c_str()))), false);
 }
 
 // OFFSET: 0x0081BD10
