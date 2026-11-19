@@ -34,6 +34,30 @@ __declspec(noinline) CPowderingEffect::~CPowderingEffect() {
 }
 
 // OFFSET: 0x007090B0
+// FUNCTION: fn_46154
+void CPowderingEffect::CreateSpriteParticles() {
+  for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(
+      CreateSpriteParticle(&this->positionVector, 1)
+    );
+    if (!particle) {
+      continue;
+    }
+
+    particle->effectId = this->id;
+    int* indices = &particle->groupIndex;
+    indices[1] = i;
+    indices[2] = 0;
+    indices[0] = 1;
+
+    particle->SetSprite("이팩트\\particle2.spr");
+    particle->SetAction("이팩트\\particle2.act");
+
+    this->InitSpriteParticle(particle);
+    particle->InitParticleQuad(particle->vertices);
+    this->spriteParticles.push_back(particle);
+  }
+}
 
 // OFFSET: 0x00709170
 // FUNCTION: fn_46155
