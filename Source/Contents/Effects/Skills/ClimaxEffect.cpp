@@ -97,6 +97,7 @@ __forceinline void CClimaxEffect::PositionEmitter(CEZ2STRParticle* emitter) {
 }
 
 // OFFSET: 0x007070E0
+// FUNCTION: fn_46253
 __forceinline void CClimaxEffect::ProcessEmitter(CEZ2STRParticle* emitter) {
   if (emitter) {
     this->PositionEmitter(emitter);
