@@ -308,6 +308,7 @@ unsigned CSession::BaseJob(unsigned job) const {
   case JT_ALITEA_RIDING:
     return JT_ALITEA;
   case JT_CHICKEN_H:
+    return JT_KNIGHT_H;
   case JT_LION_KNIGHT_H:
     return JT_KNIGHT_H;
   default:
