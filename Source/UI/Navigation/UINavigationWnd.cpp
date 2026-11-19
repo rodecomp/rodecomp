@@ -709,7 +709,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
             g_windowMgr.modal->RefreshWorldMapSelection();
           }
           this->Invalidate();
-          return 0;
+          break;
         }
       }
       break;
@@ -782,7 +782,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->ClearHistory();
 
       const std::string directory = FormatOwnedString("%s\\Navigationdata\\", g_applicationDirectory);
-      EnumerateFileNames(this->m_history, directory.c_str(), "txt");
+      EnumerateFileNames(this->m_history, directory.c_str(), "*.txt");
       const int count = static_cast<int>(this->m_history.size());
       if (count != 0) {
         UIWindow* historyWindow = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
