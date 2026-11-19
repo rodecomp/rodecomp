@@ -7636,7 +7636,8 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
 // FUNCTION: fn_21618
 void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string text, bool flag) {
   const std::string sender(name);
-  std::vector<char> message(text.begin(), text.end());
+  std::vector<char> message(text.size());
+  std::memcpy(message.data(), text.data(), text.size());
   message.push_back('\0');
 
   std::string line(name);
