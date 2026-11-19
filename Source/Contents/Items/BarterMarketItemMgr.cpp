@@ -190,7 +190,10 @@ bool CBarterMarketItemMgr::HasItemByName(std::string name)
   std::list<BarterMarketItem>::iterator found = std::find_if(this->allItems.begin(), this->allItems.end(), [name](const BarterMarketItem& item) {
     return item.name == name;
   });
-  return found != this->allItems.end();
+  if (found != this->allItems.end()) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x005D6F60

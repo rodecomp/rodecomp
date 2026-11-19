@@ -70,12 +70,12 @@ std::uint8_t* CSprRes::ReduceSprite(const std::uint8_t* pixels, int width, int h
 // FUNCTION: fn_02405
 void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int count) {
   for (int index = 0; index < count; ++index) {
+    const std::uint8_t blue = input[index * 4 + 2];
     const std::uint8_t red = input[index * 4];
     const std::uint8_t green = input[index * 4 + 1];
-    const std::uint8_t blue = input[index * 4 + 2];
     const std::uint32_t g = green;
-    const std::uint32_t r = red;
     const std::uint32_t b = blue;
+    const std::uint32_t r = red;
     if (red >= 254 && green < 4 && blue >= 254) {
       output[index] = 1057;
     } else {
