@@ -208,13 +208,34 @@ void UIRPData::DrawNamedScaledRegion(float x, float y, std::string name, std::ui
   const float textureWidth = static_cast<float>(texture->TextureWidth());
   const float textureHeight = static_cast<float>(texture->TextureHeight());
   const float scale = 100.0f / scalePercent;
-  const int sourceRight = sourceX + (width > imageWidth ? imageWidth : width);
-  const int sourceBottom = sourceY + (height > imageHeight ? imageHeight : height);
-  const float u0 = static_cast<float>(sourceX) / textureWidth * scale;
-  const float v0 = static_cast<float>(sourceY) / textureHeight * scale;
-  const float u1 = static_cast<float>(sourceRight) / textureWidth * scale;
-  const float v1 = static_cast<float>(sourceBottom) / textureHeight * scale;
-  SetTextureRegion(primitive, x, y, static_cast<float>(width) + x, static_cast<float>(height) + y, u0, v0, u1, v1, color);
+
+  primitive->quad[0].x = x;
+  primitive->quad[0].y = y;
+  primitive->quad[1].x = static_cast<float>(width) + x;
+  primitive->quad[1].y = y;
+  primitive->quad[2].x = x;
+  primitive->quad[2].y = static_cast<float>(height) + y;
+  primitive->quad[3].x = static_cast<float>(width) + x;
+  primitive->quad[3].y = static_cast<float>(height) + y;
+
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].diffuse = color;
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].z = 0.000001f;
+    primitive->quad[i].rhw = 0.999999f;
+  }
+
+  primitive->quad[0].u = static_cast<float>(sourceX) / textureWidth * scale;
+  primitive->quad[0].v = static_cast<float>(sourceY) / textureHeight * scale;
+  primitive->quad[1].u = static_cast<float>(sourceX + (width > imageWidth ? imageWidth : width)) / textureWidth * scale;
+  primitive->quad[1].v = static_cast<float>(sourceY) / textureHeight * scale;
+  primitive->quad[2].u = static_cast<float>(sourceX) / textureWidth * scale;
+  primitive->quad[2].v = static_cast<float>(sourceY + (height > imageHeight ? imageHeight : height)) / textureHeight * scale;
+  primitive->quad[3].u = static_cast<float>(sourceX + (width > imageWidth ? imageWidth : width)) / textureWidth * scale;
+  primitive->quad[3].v = static_cast<float>(sourceY + (height > imageHeight ? imageHeight : height)) / textureHeight * scale;
+
   this->m_primitives.push_back(primitive);
 }
 
