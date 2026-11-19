@@ -33,6 +33,33 @@ bool CBitmapRes::Load(const char* name) {
   return false;
 }
 
+// OFFSET: 0x0074C570
+// FUNCTION: fn_45860
+bool CBitmapRes::LoadAlphaBitmap(const char* name) {
+  CBitmapRes mask;
+  if (!mask.Load(name)) {
+    ShowErrorDialog("Error reading alpha bitmap", 0);
+    mask.Unload();
+    return false;
+  }
+  if (!this->image.pixels) {
+    return false;
+  }
+
+  for (int y = 0; y < this->image.height; ++y) {
+    for (int x = 0; x < this->image.width; ++x) {
+      std::uint32_t& pixel = this->image.pixels[y * this->image.width + x];
+      const std::uint32_t source = mask.Pixel(x, y);
+      const std::uint32_t channels = (source | 0xFFu) + ((source | 0xFF00u) >> 8) + ((source | 0xFF0000u) >> 16);
+      const std::int32_t alpha = static_cast<std::int32_t>(channels) / 3;
+      pixel = (pixel & 0x00FFFFFFu) | (static_cast<std::uint32_t>(alpha) << 24);
+    }
+  }
+
+  mask.Unload();
+  return true;
+}
+
 // OFFSET: 0x00749850
 // FUNCTION: fn_07850
 void CBitmapRes::Unload() {

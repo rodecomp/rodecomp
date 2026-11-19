@@ -24,6 +24,7 @@ public:
   ~CBitmapRes() override = default;
   CBitmapRes* Create() override;
   bool Load(const char* name) override;
+  bool LoadAlphaBitmap(const char* name);
   void Unload() override;
   virtual bool Decode(const char* name, const void* data, int bytes, bool iconOnly);
   bool CreateAuxiliary(int mode);
