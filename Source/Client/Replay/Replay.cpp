@@ -583,19 +583,24 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
 
         if (this->header.signature != this->header.closingSignature) {
           std::uint32_t fileOffset = this->fileOffset;
-          ReplayRecordHeader record;
-          int count = static_cast<int>(this->header.records) - 1;
+          std::uint32_t tick;
+          {
+            ReplayRecordHeader record;
+            int count = static_cast<int>(this->header.records) - 1;
 
-          if (count > 0) {
-            do {
-              std::fseek(this->file, static_cast<long>(fileOffset), SEEK_SET);
-              std::fread(&record, sizeof(record), 1, this->file);
-              fileOffset += record.bytes + sizeof(record);
-              --count;
-            } while (count != 0);
+            if (count > 0) {
+              do {
+                std::fseek(this->file, static_cast<long>(fileOffset), SEEK_SET);
+                std::fread(&record, sizeof(record), 1, this->file);
+                fileOffset += record.bytes + sizeof(record);
+                --count;
+              } while (count != 0);
+            }
+
+            tick = record.tick;
           }
 
-          this->header.duration = record.tick;
+          this->header.duration = tick;
         }
         break;
       default:
