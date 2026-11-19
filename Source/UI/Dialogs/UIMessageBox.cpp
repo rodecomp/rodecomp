@@ -3711,23 +3711,25 @@ void UIPetInfoWnd::OnCreate(int, int) {
     this->AddChild(this->renameButton);
   }
 
-  this->statusButton = new UINoneVisibleButton();
-  this->statusButton->SetSize(120, 18);
-  this->statusButton->Move(150, 44);
-  this->statusButton->SetId(ID_COMMAND_MENU);
-  this->AddChild(this->statusButton);
   {
-    const std::string prefix("유저인터페이스\\basic_interface\\");
     const char tooltip[] = "Pet Command";
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(270 - button->BitmapWidth(), 44);
-    button->SetTooltip(tooltip);
-    button->SetId(ID_COMMAND_MENU);
-    this->AddChild(button);
+    this->statusButton = new UINoneVisibleButton();
+    this->statusButton->SetSize(120, 18);
+    this->statusButton->Move(150, 44);
+    this->statusButton->SetId(ID_COMMAND_MENU);
+    this->AddChild(this->statusButton);
+    {
+      const std::string prefix("유저인터페이스\\basic_interface\\");
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(270 - button->BitmapWidth(), 44);
+      button->SetTooltip(tooltip);
+      button->SetId(ID_COMMAND_MENU);
+      this->AddChild(button);
+    }
   }
 
   this->friendlyText = LookupMessage(MSI_UNKNOWN);
