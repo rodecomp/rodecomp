@@ -31,7 +31,8 @@ CCharacterLinkedUserDataLoadAsyncWork::CCharacterLinkedUserDataLoadAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x17359BF953C367B3ULL)), sourceFile, 29) {
 }
 
-// INLINED
+// OFFSET: 0x005E4D40
+// FUNCTION: fn_46415
 CCharacterLinkedUserDataLoadAsyncWork::~CCharacterLinkedUserDataLoadAsyncWork() = default;
 
 // OFFSET: 0x005E5190
