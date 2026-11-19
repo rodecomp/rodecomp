@@ -54,7 +54,8 @@ void CPacketQueue::Prepend(int bytes, const void* source) {
   const int capacity = static_cast<int>(this->m_storage.size());
   const int needed = this->GetSize() + bytes;
   std::vector<char> storage;
-  storage.resize(needed > capacity ? needed : capacity);
+  const int size = needed > capacity ? needed : capacity;
+  storage.resize(size);
   std::memcpy(storage.data(), source, bytes);
   std::memcpy(storage.data() + bytes, this->m_data + this->m_read, this->GetSize());
   this->m_write = this->GetSize() + bytes;
