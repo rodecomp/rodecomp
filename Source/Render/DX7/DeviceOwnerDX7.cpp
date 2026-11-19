@@ -483,6 +483,53 @@ HRESULT DeviceOwnerDX7::ClearDepth() {
   return this->device->Clear(1, &rectangle, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 }
 
+// OFFSET: 0x00549640
+// FUNCTION: fn_45922
+HRESULT DeviceOwnerDX7::RestoreSurfaces() {
+  IDirectDrawSurface7* surfaces[] = {this->primary, this->backBuffer, this->depthBuffer};
+  HRESULT status = S_OK;
+
+  for (unsigned index = 0; index < 3; ++index) {
+    IDirectDrawSurface7* surface = surfaces[index];
+
+    if (surface) {
+      status = surface->IsLost();
+
+      if (status != S_OK) {
+        surface->Restore();
+      }
+
+      if (status == DDERR_SURFACELOST) {
+        this->draw->RestoreAllSurfaces();
+        return DDERR_SURFACELOST;
+      }
+    }
+  }
+
+  return status;
+}
+
+// OFFSET: 0x00549790
+// FUNCTION: fn_45923
+HRESULT DeviceOwnerDX7::BlitBackBuffer() {
+  if (!this->primary) {
+    return DeviceError(14);
+  }
+
+  if (!this->backBuffer) {
+    return this->primary->IsLost();
+  }
+
+  if (this->fullscreen) {
+    return this->backBuffer->Blt(nullptr, this->primary, nullptr, DDBLT_WAIT, nullptr);
+  }
+
+  this->destination = ClientRectangle(this->window);
+  return this->backBuffer->Blt(&this->source, this->primary, &this->destination, DDBLT_WAIT, nullptr);
+}
+
+// OFFSET: 0x0054A650
+
 // OFFSET: 0x0054AF10
 // FUNCTION: fn_01903
 void DeviceOwnerDX7::MarkSurfacesLost() {

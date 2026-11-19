@@ -20,6 +20,9 @@ public:
   void DestroyRenderer(CRenderer* renderer);
   HRESULT Clear(DWORD color);
   HRESULT ClearDepth();
+  HRESULT RestoreSurfaces();
+  HRESULT BlitBackBuffer();
+  HRESULT CreateDepthBuffer();
   HRESULT Present(bool wait);
   int RestoreLostSurfaces();
   void MarkSurfacesLost();
