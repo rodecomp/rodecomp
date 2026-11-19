@@ -18318,7 +18318,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       int loopType;
       g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
       if (action != -1) {
-        source->SetAction(action * 8 - 8, 1, loopType == 0);
+        loopType = loopType == 0;
+        source->SetAction(action * 8 - 8, 1, loopType);
       }
     }
     if (g_session.IsMonsterActor(source) == 1) {
