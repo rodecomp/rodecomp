@@ -79,8 +79,8 @@ void CCartCannon::Open() {
     this->stepDelta *= this->speed;
   }
 
-  const float dx = target.x - current.x;
   const float dy = target.y - current.y;
+  const float dx = target.x - current.x;
   const float dz = target.z - current.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
 

@@ -13,15 +13,14 @@ CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_
                              int reverseValue)
     : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue) {
   for (int index = 0; index < 24; ++index) {
-    RenderVertex& vertex = this->vertices[index];
-    vertex.x = 0.0f;
-    vertex.y = 0.0f;
-    vertex.z = 0.0f;
-    vertex.rhw = 0.0f;
-    vertex.diffuse = 0;
-    vertex.specular = 0xFF000000;
-    vertex.u = 0.0f;
-    vertex.v = 0.0f;
+    this->vertices[index].y = 0.0f;
+    this->vertices[index].x = 0.0f;
+    this->vertices[index].z = 0.0f;
+    this->vertices[index].rhw = 0.0f;
+    this->vertices[index].diffuse = 0;
+    this->vertices[index].specular = 0xFF000000;
+    this->vertices[index].u = 0.0f;
+    this->vertices[index].v = 0.0f;
   }
   this->x = xValue;
   this->y = yValue;

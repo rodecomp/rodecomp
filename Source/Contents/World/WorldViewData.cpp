@@ -205,13 +205,12 @@ CWorldViewMap* CWorldViewWorld::FindMapAt(unsigned int& mapIndex, int x, int y) 
 CWorldViewField* CWorldViewWorld::FieldAt(unsigned int& mapIndex, int x, int y) {
   const unsigned int count = this->maps.size();
   for (unsigned int index = 0; index < count; ++index) {
-    const CWorldViewMap* map = this->maps[index];
     bool hit;
-    if (map->id < 100 && !map->fields.empty()) {
-      const CWorldViewField* first = map->fields.front();
+    if (this->maps[index]->id < 100 && !this->maps[index]->fields.empty()) {
+      const CWorldViewField* first = this->maps[index]->fields.front();
       hit = AreaContains(first->left, first->top, first->right, first->bottom, x, y);
     } else {
-      hit = AreaContains(map->left, map->top, map->right, map->bottom, x, y);
+      hit = AreaContains(this->maps[index]->left, this->maps[index]->top, this->maps[index]->right, this->maps[index]->bottom, x, y);
     }
 
     if (hit) {
@@ -667,7 +666,7 @@ int* CWorldViewMgr::LevelAreaAt(int& kind, unsigned int index, bool currentWorld
       kind = base + 5;
       return &this->levels[index].left;
     }
-    if (value > 49) {
+    if (value >= 50) {
       kind = base + 4;
       return &this->levels[index].left;
     }

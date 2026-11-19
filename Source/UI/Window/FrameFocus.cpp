@@ -223,7 +223,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
     }
 
     terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-    if (titleColumn == actorColumn && titleRow == actorRow) {
+    if (titleColumn == actorColumn && actorRow == titleRow) {
       return true;
     }
   }

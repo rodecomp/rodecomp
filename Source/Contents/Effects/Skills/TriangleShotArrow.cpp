@@ -74,8 +74,8 @@ void CTriangleShotArrow::Open() {
     this->direction *= this->speed;
   }
 
-  const float dx = target.x - pos.x;
   const float dy = target.y - pos.y;
+  const float dx = target.x - pos.x;
   const float dz = target.z - pos.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
   const float x = inverse * dx * 4.0f + pos.x;
