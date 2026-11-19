@@ -4039,6 +4039,7 @@ void CSevereRainStorm::Open() {
 bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
   case EF_UNK_1752:
+    return this->ActorExists();
   case EF_CROSS_RAIN:
   case EF_IG_CROSS_RAIN:
     return this->ActorExists();
