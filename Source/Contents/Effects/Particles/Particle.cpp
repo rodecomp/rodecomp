@@ -137,8 +137,9 @@ CEZ2STRParticle::CEZ2STRParticle(vector3d position, int flags) : CParticle(posit
   this->Clear();
 }
 
-// INLINED
-CEZ2STRParticle::~CEZ2STRParticle() {
+// OFFSET: 0x00B3CE90
+// FUNCTION: fn_45985
+__declspec(noinline) CEZ2STRParticle::~CEZ2STRParticle() {
 }
 
 // OFFSET: 0x00B3CFC0
