@@ -48,7 +48,8 @@ ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
     return entry->second;
   }
 
-  return values.insert({id, ItemCardName{nullptr, nullptr, nullptr}}).first->second;
+  const auto inserted = values.insert({id, ItemCardName{nullptr, nullptr, nullptr}});
+  return inserted.first->second;
 }
 
 // OFFSET: 0x006D3C10
