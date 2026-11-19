@@ -260,7 +260,7 @@ void CSkyCube::Render(const matrix& camera, const vector3d& position, float rota
   primitive->vertices[3].diffuse = 0xFFFFFFFF;
   g_renderer->Submit(primitive, 3);
 
-  this->m_flare.Update(nullptr, eye, target);
+  this->m_flare.Update(0.0f, eye, target);
   this->m_flare.Render(camera.values, eye, target);
 }
 
@@ -304,7 +304,7 @@ void CLensFlare::Init() {
 
 // OFFSET: 0x0075EA20
 // FUNCTION: fn_08051
-__declspec(noinline) void CLensFlare::Update(const float* matrix, vector3d eye, vector3d target) {
+__declspec(noinline) void CLensFlare::Update(float unused, vector3d eye, vector3d target) {
   this->m_position = g_weatherEffect.GetWindDirection();
   this->m_position.x += eye.x;
   this->m_position.z += eye.z;

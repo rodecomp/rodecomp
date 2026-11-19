@@ -42,7 +42,7 @@ public:
 
   void Init();
   FlareElement MakeElement(int type, float distance, float size, float red, float green, float blue) const;
-  void Update(const float* matrix, vector3d eye, vector3d target);
+  void Update(float unused, vector3d eye, vector3d target);
   void Render(const float* matrix, vector3d eye, vector3d target);
 
   /* 0000 */ FlareElement m_elements[12];
