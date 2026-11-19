@@ -224,7 +224,7 @@ Replay::Replay() : cipherIndex(0), cipherBase(0), cipherKey(0), recordingState(0
 // OFFSET: 0x00B855B0
 // FUNCTION: fn_19326
 bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int event) {
-  if (bytes.empty()) {
+  if (bytes.end() == bytes.begin()) {
     return false;
   }
 
