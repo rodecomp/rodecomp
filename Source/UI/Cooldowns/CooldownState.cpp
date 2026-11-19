@@ -4,24 +4,32 @@
 
 #include <cmath>
 #include <cstring>
+#include <new>
 #include <windows.h>
 #include <timeapi.h>
+
+namespace {
+  struct CooldownVertex : RenderVertex {
+    // INLINED
+    CooldownVertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+      this->rhw = 0.0f;
+      this->diffuse = 0;
+      this->specular = 0xFF000000u;
+      this->u = 0.0f;
+      this->v = 0.0f;
+    }
+  };
+}
 
 // OFFSET: 0x00CA4F30
 // FUNCTION: fn_20946
 CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_t durationValue, std::uint32_t startValue, std::uint32_t elapsedValue,
                              int reverseValue)
     : segment(0), vertexCount(24), angle(0), duration(durationValue), start(startValue), elapsed(elapsedValue), finalMinute(0), reverse(reverseValue) {
-  for (int index = 0; index < 24; ++index) {
-    this->vertices[index].y = 0.0f;
-    this->vertices[index].x = 0.0f;
-    this->vertices[index].z = 0.0f;
-    this->vertices[index].rhw = 0.0f;
-    this->vertices[index].diffuse = 0;
-    this->vertices[index].specular = 0xFF000000;
-    this->vertices[index].u = 0.0f;
-    this->vertices[index].v = 0.0f;
-  }
+  new (this->vertices) CooldownVertex[24];
   this->x = xValue;
   this->y = yValue;
   this->slot = slotValue;
