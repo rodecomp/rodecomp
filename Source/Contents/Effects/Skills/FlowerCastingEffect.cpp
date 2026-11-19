@@ -97,6 +97,7 @@ void CFlowerCastingEffect::AddRing(int kind) {
 }
 
 // OFFSET: 0x00B66AA0
+// FUNCTION: fn_46003
 __forceinline void CFlowerCastingEffect::UpdateSegmentVertices(CParticle* particle) {
   if (!particle) {
     return;
