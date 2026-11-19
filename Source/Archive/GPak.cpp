@@ -188,13 +188,7 @@ bool CGPak::ReadTableV1() {
     cursor += sizeof(nameSize);
     char name[256];
 
-    if (this->m_version < 0x101) {
-      std::int32_t length = static_cast<std::int32_t>(std::strlen(reinterpret_cast<const char*>(cursor)) + 1);
-
-      for (std::int32_t j = 0; j < length; ++j) {
-        name[j] = SwapNibbles(static_cast<char>(cursor[j]));
-      }
-    } else {
+    if (this->m_version >= 0x101) {
       if (this->m_version > 0x103) {
         return false;
       }
@@ -228,6 +222,12 @@ bool CGPak::ReadTableV1() {
       cipher.Decode(reinterpret_cast<const std::uint8_t*>(name), length, decoded, &decodedLength, 1);
       std::strcpy(name, reinterpret_cast<const char*>(decoded));
       nameSize -= 2;
+    } else {
+      std::int32_t length = static_cast<std::int32_t>(std::strlen(reinterpret_cast<const char*>(cursor)) + 1);
+
+      for (std::int32_t j = 0; j < length; ++j) {
+        name[j] = SwapNibbles(static_cast<char>(cursor[j]));
+      }
     }
 
     const std::uint8_t* metadata = cursor + nameSize;
