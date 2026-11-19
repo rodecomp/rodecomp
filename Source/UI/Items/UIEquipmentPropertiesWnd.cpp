@@ -796,8 +796,8 @@ void CUIEquipmentPropertiesWnd::SetTab(const int& tab) {
   std::list<std::string> lines;
   EquipmentProperties::EquipmentPropertiesMgr()->GetDescriptions(static_cast<int>(this->currentTab), lines);
 
-  auto* listBox = this->list;
-  if (listBox->data != lines) {
+  if (this->list->data != lines) {
+    auto* listBox = this->list;
     listBox->data.swap(lines);
     listBox->UpdateScrollBar();
   }
