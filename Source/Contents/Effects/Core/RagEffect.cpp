@@ -4924,27 +4924,21 @@ void CRagEffect::TexturedSlashCross(const char* name) {
     this->state.lastPrim->state.slots[index].distance = 20.0f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
 
-    switch (this->state.stateCnt) {
-    case 0:
+    if (this->state.stateCnt == 0) {
       this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
       this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
-      break;
-    case 1:
+    } else if (this->state.stateCnt == 1) {
       this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x + 5.0f;
       this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
-      break;
-    case 2:
+    } else if (this->state.stateCnt == 2) {
       this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x - 5.0f;
       this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
-      break;
-    case 3:
+    } else if (this->state.stateCnt == 3) {
       this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
       this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z + 5.0f;
-      break;
-    default:
+    } else {
       this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
       this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z - 5.0f;
-      break;
     }
 
     this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(5)) + (this->render.position.y - 10.0f);
@@ -6466,7 +6460,11 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = index * -8;
-    this->state.lastPrim->state.slots[index].maxHeight = wide ? 20.0f : 30.0f;
+    if (wide) {
+      this->state.lastPrim->state.slots[index].maxHeight = 20.0f;
+    } else {
+      this->state.lastPrim->state.slots[index].maxHeight = 30.0f;
+    }
     this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].rotStart
     );
@@ -6478,7 +6476,11 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
     }
 
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    this->state.lastPrim->state.slots[index].distance = (wide ? 9.0f : 6.0f) - static_cast<float>(index) * 0.1f;
+    if (wide) {
+      this->state.lastPrim->state.slots[index].distance = 9.0f - static_cast<float>(index) * 0.1f;
+    } else {
+      this->state.lastPrim->state.slots[index].distance = 6.0f - static_cast<float>(index) * 0.1f;
+    }
     this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>((14 - index) * 5);
     this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = 0.0f;
@@ -16048,41 +16050,37 @@ void CRagEffect::Cloud11Burst(char kind) {
     this->state.lastPrim->state.slots[i].process = 0;
     this->state.lastPrim->state.slots[i].fullDisplayAngle = 30;
 
-    float maxHeight;
     if (kind == 1) {
-      maxHeight = static_cast<float>(i) * 2.0f + 3.0f;
+      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(i) * 2.0f + 3.0f;
     } else if (kind == 2) {
-      maxHeight = 48.0f - static_cast<float>(i) * 5.0f;
+      this->state.lastPrim->state.slots[i].maxHeight = 48.0f - static_cast<float>(i) * 5.0f;
     } else if (kind == 3) {
-      maxHeight = 28.0f - static_cast<float>(i) * 5.0f;
+      this->state.lastPrim->state.slots[i].maxHeight = 28.0f - static_cast<float>(i) * 5.0f;
     } else {
-      maxHeight = static_cast<float>(i) * 2.0f + 5.0f;
+      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(i) * 2.0f + 5.0f;
     }
 
-    this->state.lastPrim->state.slots[i].maxHeight = maxHeight;
     this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(i * 90);
     this->state.lastPrim->state.slots[i].alphaB = 0;
 
-    float distance;
     if (kind >= 2) {
       this->state.lastPrim->state.slots[i].alphaT = 2;
       if (kind == 2) {
-        distance = 14.0f - static_cast<float>(i) * 2.0f;
+        this->state.lastPrim->state.slots[i].distance = 14.0f - static_cast<float>(i) * 2.0f;
       } else if (kind == 3) {
-        distance = 6.0f - static_cast<float>(i);
+        this->state.lastPrim->state.slots[i].distance = 6.0f - static_cast<float>(i);
       } else {
-        distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.03f + 4.5f;
+        this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.03f + 4.5f;
       }
     } else {
       this->state.lastPrim->state.slots[i].alphaT = 1;
       if (kind == 1) {
-        distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.01f + 2.5f;
+        this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.01f + 2.5f;
       } else {
-        distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.03f + 4.5f;
+        this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(101)) * 0.03f + 4.5f;
       }
     }
 
-    this->state.lastPrim->state.slots[i].distance = distance;
     this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(ClampedRandomAtZero(21) + 80);
 
     for (int j = 0; j < 21; ++j) {
