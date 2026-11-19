@@ -2485,7 +2485,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
   const int period = g_cashEmotionMgr->GetPackPeriod(packId);
   if (period > 0) {
     int days = period / 24;
-    const std::string text = fmt::vformat(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE"), fmt::make_format_args(days));
+    const std::string text = fmt::format(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE"), days);
     this->m_period->SetTextFitted(text.c_str());
     this->m_period->Show(1);
   } else {
