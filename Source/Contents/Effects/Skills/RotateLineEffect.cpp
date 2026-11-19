@@ -28,6 +28,23 @@ void CRotateLineEffect::Close() {
   this->particles.clear();
 }
 
+// OFFSET: 0x00B74520
+// FUNCTION: fn_46213
+__forceinline void CRotateLineEffect::SetParticleStyle(CParticle* particle) {
+  if (particle) {
+    switch (this->id) {
+    case EF_ROTATE_LINE_GRAY:
+      particle->SetColor(50, 50, 50);
+      particle->destinationBlend = 6;
+      break;
+    case EF_ROTATE_LINE_BLUE:
+      particle->SetColor(100, 100, 255);
+      particle->scale += 3.0f;
+      break;
+    }
+  }
+}
+
 // OFFSET: 0x00B743A0
 // FUNCTION: fn_19156
 void CRotateLineEffect::Open() {
@@ -54,16 +71,7 @@ void CRotateLineEffect::Open() {
       particle->scale = 7.0f - static_cast<float>(ring);
       particle->animationParameter = 28.0f - static_cast<float>(ring) * 5.0f;
       particle->animationParameters[0] = 3.0f;
-      switch (this->id) {
-      case EF_ROTATE_LINE_GRAY:
-        particle->SetColor(50, 50, 50);
-        particle->destinationBlend = 6;
-        break;
-      case EF_ROTATE_LINE_BLUE:
-        particle->SetColor(100, 100, 255);
-        particle->scale += 3.0f;
-        break;
-      }
+      this->SetParticleStyle(particle);
 
       this->particles.push_back(particle);
     }
@@ -76,6 +84,10 @@ void CRotateLineEffect::Open() {
 bool CRotateLineEffect::IsAlive() {
   return !this->IsFinished();
 }
+
+// OFFSET: 0x00B74C20
+
+// OFFSET: 0x00B74870
 
 // OFFSET: 0x00B74590
 // FUNCTION: fn_19158
@@ -167,21 +179,27 @@ void CRotateLineEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B74BA0
+// FUNCTION: fn_46215
+__forceinline void CRotateLineEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    const int segment = particle->columnIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = (segment - 1) / 21.0f;
+    quad.right = segment / 21.0f;
+    particle->Render(quad);
+  }
+}
+
 // OFFSET: 0x00B74B00
 // FUNCTION: fn_19159
 void CRotateLineEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (CParticle* particle = *it) {
-      const int segment = particle->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = (segment - 1) / 21.0f;
-      quad.right = segment / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderParticle(*it);
   }
 }
