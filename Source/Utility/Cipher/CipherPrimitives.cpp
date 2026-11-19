@@ -242,24 +242,6 @@ static __forceinline unsigned int CryptonGammaTau(unsigned int a, unsigned int b
          (static_cast<unsigned int>(g_cryptonSbox[(d >> shift) & 255]) << 24);
 }
 
-// INLINED
-static __forceinline void CryptonSubstitute(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int* output, bool alternate) {
-  for (unsigned int lane = 0; lane < 4; ++lane) {
-    const unsigned int shift = lane * 8;
-    if ((lane & 1) == alternate) {
-      output[lane] = g_cryptonSbox[(a >> shift) & 255] |
-                     (static_cast<unsigned int>(g_cryptonInverseSbox[(b >> shift) & 255]) << 8) |
-                     (static_cast<unsigned int>(g_cryptonSbox[(c >> shift) & 255]) << 16) |
-                     (static_cast<unsigned int>(g_cryptonInverseSbox[(d >> shift) & 255]) << 24);
-    } else {
-      output[lane] = g_cryptonInverseSbox[(a >> shift) & 255] |
-                     (static_cast<unsigned int>(g_cryptonSbox[(b >> shift) & 255]) << 8) |
-                     (static_cast<unsigned int>(g_cryptonInverseSbox[(c >> shift) & 255]) << 16) |
-                     (static_cast<unsigned int>(g_cryptonSbox[(d >> shift) & 255]) << 24);
-    }
-  }
-}
-
 #define RIPEMD128_F(b, c, d) ((b) ^ (c) ^ (d))
 #define RIPEMD128_G(b, c, d) (((b) & (c)) | (~(b) & (d)))
 #define RIPEMD128_H(b, c, d) (((b) | ~(c)) ^ (d))
@@ -451,11 +433,9 @@ void CryptonEncryptBlock(const unsigned int* input, unsigned int* output) {
   CryptonRound(b1, b0, g_cryptonEncryptKey + 36, false);
   CryptonRound(b0, b1, g_cryptonEncryptKey + 40, true);
   CryptonRound(b1, b0, g_cryptonEncryptKey + 44, false);
-  CryptonSubstitute(b1[0], b1[1], b1[2], b1[3], b0, true);
-  output[0] = b0[0] ^ g_cryptonEncryptKey[48];
-  output[1] = b0[1] ^ g_cryptonEncryptKey[49];
-  output[2] = b0[2] ^ g_cryptonEncryptKey[50];
-  output[3] = b0[3] ^ g_cryptonEncryptKey[51];
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    output[lane] = CryptonGammaTau(b1[0], b1[1], b1[2], b1[3], lane, true) ^ g_cryptonEncryptKey[48 + lane];
+  }
 }
 
 // OFFSET: 0x00B103A0
