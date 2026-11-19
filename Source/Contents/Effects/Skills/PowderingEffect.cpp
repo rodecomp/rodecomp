@@ -352,6 +352,7 @@ __forceinline void CPowderingEffect::RenderSmokeParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x00709ED0
+// FUNCTION: fn_46271
 __forceinline void CPowderingEffect::RenderSpriteParticle(CSpriteParticle* particle) {
   if (particle && particle->animationState != 2) {
     particle->Draw(1);
