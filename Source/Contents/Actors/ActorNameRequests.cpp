@@ -68,7 +68,7 @@ std::uint32_t CActorNameCardHolder::PopNextRequest() {
 // FUNCTION: fn_45911
 void CActorNameCardHolder::QueueRequest(std::uint32_t id) {
   const auto end = this->pending.end();
-  if (std::find(this->pending.begin(), end, id) == end) {
+  if (end == std::find(this->pending.begin(), end, id)) {
     this->pending.push_back(id);
   }
 }
