@@ -2619,8 +2619,8 @@ __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned cha
     const Item1740Record* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    item.identity[1] = record->index;
     item.identity[2] = record->location;
+    item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
     std::memcpy(item.cards, record->cards, sizeof(record->cards));
