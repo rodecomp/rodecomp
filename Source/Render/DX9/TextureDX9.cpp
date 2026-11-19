@@ -367,7 +367,8 @@ bool CTextureDX9::UploadSurface(
   }
 
   switch (description.Format) {
-  case D3DFMT_A1R5G5B5:
+  case D3DFMT_A1R5G5B5: {
+    volatile std::uint8_t transparent = blackTransparent;
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
       const std::uint32_t* input = pixels + row * stepY * sourceWidth;
@@ -378,7 +379,7 @@ bool CTextureDX9::UploadSurface(
         std::uint16_t value;
         if (rgb == 0x7C1F) {
           value = 0;
-        } else if (blackTransparent && !rgb) {
+        } else if (transparent && !rgb) {
           value = 0;
         } else {
           value = converted;
@@ -388,6 +389,7 @@ bool CTextureDX9::UploadSurface(
       }
     }
     break;
+  }
   case D3DFMT_A4R4G4B4:
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
