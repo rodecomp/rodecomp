@@ -893,18 +893,19 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
     return;
   }
 
-  this->mapStates.clear();
+  std::vector<MapStateEntry>& states = this->mapStates;
+  states.clear();
   MapStateEntry entry;
   entry.index = -1;
   for (int i = 0; i < static_cast<int>(count); ++i) {
     if (packet->states[i].state == 0) {
       entry.index = i;
       entry.data = packet->states[i].data;
-      this->mapStates.push_back(entry);
+      states.push_back(entry);
     }
   }
 
-  if (this->mapStates.size() == 0) {
+  if (states.size() == 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_EXIST_ENTRYMAP), 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
