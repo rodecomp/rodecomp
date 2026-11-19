@@ -189,6 +189,7 @@ bool CSaintCastingEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B75960
+// FUNCTION: fn_46268
 __forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
   if (!particle || particle->elapsedFrames <= 0) {
     return;
