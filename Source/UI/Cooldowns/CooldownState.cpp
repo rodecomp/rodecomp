@@ -71,40 +71,40 @@ float CooldownState::EdgePosition(float origin, int radius, unsigned char increa
 void CooldownState::UpdateSegment(std::uint32_t progress) {
   if (this->duration != 0) {
     this->angle = progress == 0 ? 0.0f : static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0);
-    int forwardCount = 0;
     int backwardCount = 0;
+    int forwardCount = 0;
     if (this->angle >= 0 && this->angle < 45) {
       this->segment = 0;
-      forwardCount = 3;
       backwardCount = 24;
+      forwardCount = 3;
     } else if (this->angle >= 45 && this->angle < 90) {
       this->segment = 1;
-      forwardCount = 6;
       backwardCount = 21;
+      forwardCount = 6;
     } else if (this->angle >= 90 && this->angle < 135) {
       this->segment = 2;
-      forwardCount = 9;
       backwardCount = 18;
+      forwardCount = 9;
     } else if (this->angle >= 135 && this->angle < 180) {
       this->segment = 3;
-      forwardCount = 12;
       backwardCount = 15;
+      forwardCount = 12;
     } else if (this->angle >= 180 && this->angle < 225) {
       this->segment = 4;
-      forwardCount = 15;
       backwardCount = 12;
+      forwardCount = 15;
     } else if (this->angle >= 225 && this->angle < 270) {
       this->segment = 5;
-      forwardCount = 18;
       backwardCount = 9;
+      forwardCount = 18;
     } else if (this->angle >= 270 && this->angle < 315) {
       this->segment = 6;
-      forwardCount = 21;
       backwardCount = 6;
+      forwardCount = 21;
     } else {
       this->segment = 7;
-      forwardCount = 24;
       backwardCount = 3;
+      forwardCount = 24;
     }
 
     this->vertexCount = this->reverse != 0 ? forwardCount : backwardCount;
