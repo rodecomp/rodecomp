@@ -10,6 +10,7 @@ class CEZ2STRParticle;
 class CTetraBallEffect : public CEffect {
 public:
   CTetraBallEffect();
+  ~CTetraBallEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -24,6 +25,10 @@ public:
   void MoveFirstTo(int index);
 
   /* 00CC */ CEZ2STRParticle* balls[5];
+
+private:
+  void UpdateBall(CEZ2STRParticle* ball);
+  void RenderBall(CEZ2STRParticle* ball);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -16,6 +16,11 @@ CTetraBallEffect::CTetraBallEffect() : CEffect(-1) {
   }
 }
 
+// OFFSET: 0x0072E710
+// FUNCTION: fn_46173
+__declspec(noinline) CTetraBallEffect::~CTetraBallEffect() {
+}
+
 // OFFSET: 0x0072E7D0
 // FUNCTION: fn_07511
 void CTetraBallEffect::AddBall(int id, int index) {
@@ -92,14 +97,17 @@ bool CTetraBallEffect::IsAlive() {
 // FUNCTION: fn_07517
 void CTetraBallEffect::OnProcess() {
   for (int index = 0; index < 5; ++index) {
-    CEZ2STRParticle* ball = this->balls[index];
-    if (ball) {
-      ball->position.x = this->position[0];
-      ball->position.y = this->position[1];
-      ball->position.z = this->position[2];
-      ball->Process(0.0f, 0.0f, 0.0f);
-      ++ball->elapsedFrames;
-    }
+    this->UpdateBall(this->balls[index]);
+  }
+}
+
+// OFFSET: 0x0072EB80
+// FUNCTION: fn_46174
+__forceinline void CTetraBallEffect::UpdateBall(CEZ2STRParticle* ball) {
+  if (ball) {
+    ball->position = this->positionVector;
+    ball->Process(0.0f, 0.0f, 0.0f);
+    ++ball->elapsedFrames;
   }
 }
 
@@ -107,10 +115,15 @@ void CTetraBallEffect::OnProcess() {
 // FUNCTION: fn_07518
 void CTetraBallEffect::Render() {
   for (int index = 0; index < 5; ++index) {
-    CEZ2STRParticle* ball = this->balls[index];
-    if (ball) {
-      ball->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderBall(this->balls[index]);
+  }
+}
+
+// OFFSET: 0x0072EC10
+// FUNCTION: fn_46175
+__forceinline void CTetraBallEffect::RenderBall(CEZ2STRParticle* ball) {
+  if (ball) {
+    ball->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
