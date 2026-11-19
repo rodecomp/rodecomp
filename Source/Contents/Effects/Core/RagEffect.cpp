@@ -6964,7 +6964,11 @@ void CRagEffect::WhiteRingRippleSized(char size) {
 
   this->state.lastPrim->state.slots[3].life = 0;
   this->state.lastPrim->state.slots[3].process = 0;
-  this->state.lastPrim->state.slots[3].alphaT = size == 29 ? 5 : 1;
+  if (size == 29) {
+    this->state.lastPrim->state.slots[3].alphaT = 5;
+  } else {
+    this->state.lastPrim->state.slots[3].alphaT = 1;
+  }
 }
 
 // OFFSET: 0x00C75050
@@ -11468,7 +11472,11 @@ void CRagEffect::WaterBubble(int) {
     this->state.lastPrim->state.slots[0].distance = this->state.param[0];
   }
 
-  this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.param[1] >= 360.0f ? 0 : static_cast<int>(this->state.param[1]));
+  if (this->state.param[1] >= 360.0f) {
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+  } else {
+    this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.param[1]);
+  }
 }
 
 // OFFSET: 0x00C134B0
@@ -12923,7 +12931,7 @@ void CRagEffect::RedParticleSpray(int count) {
     return;
   }
 
-  for (int angle = -90; count > 0; angle += 90, --count) {
+  for (int index = 0; index < count; ++index) {
     this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
@@ -12938,7 +12946,7 @@ void CRagEffect::RedParticleSpray(int count) {
     this->state.lastPrim->state.latiSpeed = -2.0f;
     const float spread = -(this->state.lastPrim->state.latiSpeed / this->state.lastPrim->state.duration);
     this->state.lastPrim->state.latiAccel = spread + spread;
-    this->state.lastPrim->state.roll = static_cast<float>(angle);
+    this->state.lastPrim->state.roll = static_cast<float>(index * 90 - 90);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     MatrixMult(this->state.lastPrim->state.deltaPos3, vector3d{0.0f, 0.0f, 1.0f}, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.rotAxis[0] = this->state.lastPrim->state.deltaPos3.x;
