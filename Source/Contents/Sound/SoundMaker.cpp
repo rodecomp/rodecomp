@@ -1535,12 +1535,15 @@ void CHalluPC2::Render(int argument) {
   rand();
   rand();
 
-  if (this->render.visible && this->render.enabled) {
-    this->DrawLayers(matrix, 1, 1);
-    return;
+  if (this->render.visible) {
+    if (this->render.enabled) {
+      this->DrawLayers(matrix, 1, 1);
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+  } else {
+    this->UpdateTlvertex(matrix);
   }
-
-  this->UpdateTlvertex(matrix);
 }
 
 // OFFSET: 0x00DA4340
