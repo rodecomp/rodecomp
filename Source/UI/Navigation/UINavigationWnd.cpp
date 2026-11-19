@@ -487,9 +487,20 @@ void UINavigationWnd::ApplyMinimized() {
     this->m_minimizeButton->Move(this->geometry.width - 28, 3);
     this->m_minimizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_MINI));
 
-    int buttonX[6] = {this->geometry.width - 66, this->geometry.width - 77, -1000, -1000, this->geometry.width - 224,
-                      this->geometry.width - 31};
-    int buttonY[6] = {18, this->geometry.height - 37, -1000, -1000, this->geometry.height - 22, 18};
+    int buttonX[6];
+    int buttonY[6];
+    buttonX[0] = this->geometry.width - 66;
+    buttonY[0] = 18;
+    buttonX[1] = this->geometry.width - 77;
+    buttonY[1] = this->geometry.height - 37;
+    buttonX[2] = -1000;
+    buttonY[2] = -1000;
+    buttonX[3] = -1000;
+    buttonY[3] = -1000;
+    buttonX[4] = this->geometry.width - 224;
+    buttonY[4] = this->geometry.height - 22;
+    buttonX[5] = this->geometry.width - 31;
+    buttonY[5] = 18;
     for (int index = 0; index < 6; ++index) {
       this->m_buttons[index]->Move(buttonX[index], buttonY[index]);
     }
