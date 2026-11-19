@@ -45,7 +45,7 @@ public:
 class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
   UIEntryQueueRequestWnd();
-  ~UIEntryQueueRequestWnd() override;
+  __declspec(noinline) ~UIEntryQueueRequestWnd() override;
   void OnDestroy() override;
   void OnProcess() override;
   void Paint() override;
@@ -68,7 +68,7 @@ public:
 class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
   UIEntryQueueStandByWnd();
-  ~UIEntryQueueStandByWnd() override;
+  __declspec(noinline) ~UIEntryQueueStandByWnd() override;
   void OnDestroy() override;
   void OnProcess() override;
   void Paint() override;
@@ -93,7 +93,7 @@ public:
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
   UIEntryQueueWnd();
-  ~UIEntryQueueWnd() override;
+  __declspec(noinline) ~UIEntryQueueWnd() override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
   void Paint() override;

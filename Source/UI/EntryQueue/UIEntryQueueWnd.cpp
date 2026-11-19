@@ -108,9 +108,9 @@ UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
     : UIFrameWnd(0), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
 }
 
-// INLINED
-UIEntryQueueRequestWnd::~UIEntryQueueRequestWnd() {
-}
+// OFFSET: 0x00BA4820
+// FUNCTION: fn_46460
+__declspec(noinline) UIEntryQueueRequestWnd::~UIEntryQueueRequestWnd() = default;
 
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
@@ -241,9 +241,9 @@ UIEntryQueueStandByWnd::UIEntryQueueStandByWnd()
       m_rankingText() {
 }
 
-// INLINED
-UIEntryQueueStandByWnd::~UIEntryQueueStandByWnd() {
-}
+// OFFSET: 0x00BA5620
+// FUNCTION: fn_46465
+__declspec(noinline) UIEntryQueueStandByWnd::~UIEntryQueueStandByWnd() = default;
 
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
@@ -348,9 +348,9 @@ UIEntryQueueWnd::UIEntryQueueWnd() : UIFrameWnd(0) {
   std::memset(this->m_values, 0, sizeof(this->m_values));
 }
 
-// INLINED
-UIEntryQueueWnd::~UIEntryQueueWnd() {
-}
+// OFFSET: 0x00BA60C0
+// FUNCTION: fn_46462
+__declspec(noinline) UIEntryQueueWnd::~UIEntryQueueWnd() = default;
 
 // OFFSET: 0x00BA6410
 // FUNCTION: fn_19706
