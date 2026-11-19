@@ -133,6 +133,19 @@ void CWorld::OnExitFrame() {
   g_texMgr.ClearUnused();
 }
 
+// OFFSET: 0x00ACA2B0
+// FUNCTION: fn_46302
+__forceinline bool CWorld::RemoveActor(CGameObject* object) {
+  auto it = std::find(this->actors.begin(), this->actors.end(), object);
+  if (it == this->actors.end()) {
+    return false;
+  }
+  this->RemovePcPos((*it)->render.accountId, true);
+  this->RemovePcPosForMove((*it)->render.accountId, true);
+  this->actors.erase(it);
+  return true;
+}
+
 // OFFSET: 0x00AC9F10
 // FUNCTION: fn_17688
 void CWorld::OnProcess() {
@@ -162,14 +175,7 @@ void CWorld::OnProcess() {
   auto objectEntry = this->objects.begin();
   while (objectEntry != this->objects.end()) {
     if (!(*objectEntry)->OnProcess()) {
-      auto actorEntry = std::find(this->actors.begin(), this->actors.end(), *objectEntry);
-      if (actorEntry != this->actors.end()) {
-        this->RemovePcPos((*actorEntry)->render.accountId, true);
-        this->RemovePcPosForMove((*actorEntry)->render.accountId, true);
-
-        this->actors.erase(actorEntry);
-      }
-
+      this->RemoveActor(*objectEntry);
       delete *objectEntry;
       objectEntry = this->objects.erase(objectEntry);
     } else {

@@ -73,6 +73,7 @@ public:
   float ActorCellKey(const CellFloatPos& cell) const;
   void InitWorld();
   void InitializeSpatial();
+  bool RemoveActor(CGameObject* object);
   void RemoveObject(CGameObject* object);
   void SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d);
   static unsigned long __stdcall LoadDeferredModels(void* parameter);
