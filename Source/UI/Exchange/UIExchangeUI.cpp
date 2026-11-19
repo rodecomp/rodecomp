@@ -523,21 +523,10 @@ void CUIExchangeUI::SetZeny(int amount) {
 // OFFSET: 0x00A18990
 // FUNCTION: fn_15307
 void CUIExchangeUI::UpdateZeny(bool mine) {
-  CUIStaticText* first;
-  CUIStaticText* second;
-  CUIStaticText* third;
-  int zeny;
-  if (mine) {
-    first = this->ownZenyHighlight;
-    second = this->ownZenyText;
-    third = this->ownZenyShadow;
-    zeny = g_session.exchangeMoney;
-  } else {
-    first = this->partnerZenyHighlight;
-    second = this->partnerZenyText;
-    third = this->partnerZenyShadow;
-    zeny = g_session.otherExchangeMoney;
-  }
+  CUIStaticText* const first = mine ? this->ownZenyHighlight : this->partnerZenyHighlight;
+  CUIStaticText* const second = mine ? this->ownZenyText : this->partnerZenyText;
+  CUIStaticText* const third = mine ? this->ownZenyShadow : this->partnerZenyShadow;
+  const int zeny = mine ? g_session.exchangeMoney : g_session.otherExchangeMoney;
 
   char text[24];
   FormatGroupedInteger(zeny, text, sizeof(text));
