@@ -109,15 +109,16 @@ void CSmokeEffect::UpdateParticle(CSpriteParticle* particle) {
     matrix& rotation = particle->rotation;
     float& angle = particle->angle;
     float& spin = particle->spin;
+    vector3d& velocity = particle->velocity;
     if (particle->elapsedFrames < 50) {
       const float speed = particle->frameDelay;
       const float* values = rotation.values;
       const float deltaX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
       const float deltaY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
       const float deltaZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
-      particle->velocity.x += deltaX;
-      particle->velocity.y += deltaY;
-      particle->velocity.z += deltaZ;
+      velocity.x += deltaX;
+      velocity.y += deltaY;
+      velocity.z += deltaZ;
       angle += spin;
       if (particle->elapsedFrames > 34) {
         particle->alpha = std::ranges::max(particle->alpha - 15, 0);
@@ -142,7 +143,7 @@ void CSmokeEffect::UpdateParticle(CSpriteParticle* particle) {
 
     matrix translate;
     std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-    translate.MakeTranslate(particle->velocity.x + 0.0f, particle->velocity.y - 9.0f, particle->velocity.z + 0.0f);
+    translate.MakeTranslate(velocity.x + 0.0f, velocity.y - 9.0f, velocity.z + 0.0f);
     particle->transform = translate;
   }
 }
