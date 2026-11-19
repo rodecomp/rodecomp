@@ -2503,8 +2503,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(EF_DANCE_BLADE_ATK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_DARKPIERCING: {
-    CRagEffect* first = target->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    CRagEffect* second = target->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* first = source->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* second = source->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (first) {
       vector3d position = source->render.position;
       first->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
