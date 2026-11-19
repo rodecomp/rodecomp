@@ -39,7 +39,7 @@ std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {
     return entry->second.name;
   }
 
-  if (std::find(this->m_pending.begin(), this->m_pending.end(), id) == this->m_pending.end()) {
+  if (this->m_pending.end() == std::find(this->m_pending.begin(), this->m_pending.end(), id)) {
     this->m_pending.push_back(id);
   }
 

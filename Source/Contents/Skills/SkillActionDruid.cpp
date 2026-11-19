@@ -724,7 +724,7 @@ void CEfstAction_THUNDERING_ROD::OnEfstEnd(int efstId, int argument2, int argume
 // FUNCTION: fn_04515
 int CEfstAction_THUNDERING_ROD::GetEffectId(int efstId, int argument4) {
   const int step = argument4 - 1;
-  if (static_cast<unsigned int>(step) <= 5) {
+  if (step >= 0 && step < 6) {
     std::string suffix = std::format("{:02}", step);
     return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(OBFUSCATE_TEXT_NAMED("thundering_rod_", 0x0BEB63A5C905B3A7ULL, prefixName)) + suffix);
   }
