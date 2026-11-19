@@ -259,7 +259,7 @@ struct CRagEffect : CRenderObject {
   void IceArrow();
   void Flasher();
   int SuperAngel(char type, int dummy = 0);
-  int WarpZone();
+  void WarpZone();
   void Enhance();
   void HealSP();
   void Cloud11Burst(char kind);

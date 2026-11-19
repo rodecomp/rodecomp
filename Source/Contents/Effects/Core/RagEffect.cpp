@@ -12690,7 +12690,7 @@ int CRagEffect::SuperAngel(char type, int dummy) {
 
 // OFFSET: 0x00C3EE10
 // FUNCTION: fn_20119
-int CRagEffect::WarpZone() {
+void CRagEffect::WarpZone() {
   if (this->state.stateCnt == 145) {
     this->state.stateCnt = 0;
   } else if (this->state.stateCnt != 0) {
@@ -12733,7 +12733,6 @@ check_cadence:
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 
-  int result = this->state.stateCnt / 10;
   if (this->state.stateCnt % 10 == 0) {
     this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 5.0f;
@@ -12753,7 +12752,6 @@ check_cadence:
     this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\particle1.act");
     this->state.lastPrim->InitSegment();
   }
-  return result;
 }
 
 // OFFSET: 0x00C12500
