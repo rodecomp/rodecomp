@@ -1201,7 +1201,8 @@ void __stdcall CreateHallucinationPc(
   argb.red = 0xFF;
   argb.blue = 0xFF;
 
-  g_modeMgr.GetGameMode()->scene->objects.push_back(hallu);
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
+  world->objects.push_back(hallu);
   delete pc;
 }
 
