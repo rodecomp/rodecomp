@@ -15,6 +15,7 @@ CMagicFloorEffect::CMagicFloorEffect() : CEffect(0x401) {
 }
 
 // OFFSET: 0x00B48300
+// FUNCTION: fn_45960
 __declspec(noinline) CMagicFloorEffect::~CMagicFloorEffect() {
 }
 
@@ -114,6 +115,7 @@ void CMagicFloorEffect::Open() {
 }
 
 // OFFSET: 0x00B48DE0
+// FUNCTION: fn_45961
 __forceinline void CMagicFloorEffect::ResetFloor(CParticle* particle) {
   particle->flags = 5;
   particle->position.x = this->position[0];
@@ -144,6 +146,7 @@ bool CMagicFloorEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B493A0
+// FUNCTION: fn_45962
 __forceinline void CMagicFloorEffect::UpdateFloor(CParticle* particle) {
   if (particle) {
     int angle = 0;
@@ -284,6 +287,7 @@ void CMagicFloorEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B49850
+// FUNCTION: fn_45964
 __forceinline void CMagicFloorEffect::RenderFloor(CParticle* particle) {
   if (particle) {
     particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
