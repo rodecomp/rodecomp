@@ -9460,18 +9460,23 @@ void UIItemPurchaseWnd::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const int fillWidth = (this->geometry.width - 60) % 32;
-  this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-  const int fillHeight = (this->geometry.height - 38) % 32;
-  const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
-  this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
+    const int fillHeight = (this->geometry.height - 38) % 32;
+    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int height = this->geometry.height;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
+  }
 
   int slots = (height - 58) / 32;
   for (int i = 0; i < slots; ++i) {
@@ -9920,13 +9925,15 @@ void UIMerchantItemPurchaseWnd::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const int fillWidth = (this->geometry.width - 60) % 32;
-  this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-  const int fillHeight = (this->geometry.height - 38) % 32;
-  const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
-  this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
+    const int fillHeight = (this->geometry.height - 38) % 32;
+    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -9936,9 +9943,11 @@ void UIMerchantItemPurchaseWnd::Paint() {
     this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
@@ -11109,13 +11118,15 @@ void UIItemSellWnd2::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const int fillWidth = (this->geometry.width - 60) % 32;
-  this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-  const int fillHeight = (this->geometry.height - 38) % 32;
-  const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
-  this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
+    const int fillHeight = (this->geometry.height - 38) % 32;
+    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -11125,9 +11136,11 @@ void UIItemSellWnd2::Paint() {
     this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
@@ -11190,13 +11203,15 @@ void UIItemShopWnd2::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const int fillWidth = (this->geometry.width - 60) % 32;
-  this->FillRegion(20, 17, fillWidth, this->geometry.height - this->bottomBarHeight - 17, RGB(red, green, blue));
-  const int fillHeight = (this->geometry.height - this->bottomBarHeight - 17) % 32;
-  const int fillY = (this->geometry.height - this->bottomBarHeight - 17) / 32 * 32 + 17;
-  this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - this->bottomBarHeight - 17, RGB(red, green, blue));
+    const int fillHeight = (this->geometry.height - this->bottomBarHeight - 17) % 32;
+    const int fillY = (this->geometry.height - this->bottomBarHeight - 17) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -11206,9 +11221,11 @@ void UIItemShopWnd2::Paint() {
     this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
