@@ -993,18 +993,20 @@ std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std:
   ReplaySkillInfoListHeader* header = reinterpret_cast<ReplaySkillInfoListHeader*>(packet.data());
   header->id = id;
   header->bytes = static_cast<std::uint16_t>(bytes);
-  ReplaySkillInfo* record = reinterpret_cast<ReplaySkillInfo*>(header + 1);
-  for (const CSkillInfo& skill : skills) {
-    record->id = static_cast<std::uint16_t>(skill.id);
-    record->type = skill.type;
-    record->level = static_cast<std::int16_t>(skill.level);
-    record->spCost = static_cast<std::int16_t>(skill.spCost);
-    record->upgradable = skill.upgradable != 0;
-    record->range = static_cast<std::int16_t>(skill.range);
-    const char* name = skill.name;
-    std::memcpy(record->name, name, (std::min)(std::strlen(name), sizeof(record->name)));
-    record->name[sizeof(record->name) - 1] = 0;
-    ++record;
+  ReplaySkillInfo* records = reinterpret_cast<ReplaySkillInfo*>(header + 1);
+  int index = 0;
+  for (auto skill = skills.begin(); skill != skills.end(); ++skill) {
+    ReplaySkillInfo& record = records[index];
+    record.id = static_cast<std::uint16_t>(skill->id);
+    record.type = skill->type;
+    record.level = static_cast<std::int16_t>(skill->level);
+    record.spCost = static_cast<std::int16_t>(skill->spCost);
+    record.upgradable = skill->upgradable != 0;
+    record.range = static_cast<std::int16_t>(skill->range);
+    const char* name = skill->name;
+    std::memcpy(record.name, name, (std::min)(sizeof(record.name), std::strlen(name)));
+    record.name[sizeof(record.name) - 1] = 0;
+    ++index;
   }
   return packet;
 }
