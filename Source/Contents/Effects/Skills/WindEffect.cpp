@@ -98,80 +98,7 @@ bool CWindEffect::IsAlive() {
 // FUNCTION: fn_07544
 void CWindEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle == nullptr) {
-      continue;
-    }
-
-    switch (particle->animationState) {
-    case 0: {
-      int alpha = particle->alpha + 1;
-      if (this->maxAlpha <= alpha) {
-        alpha = this->maxAlpha;
-        particle->animationState = 1;
-      }
-      particle->alpha = alpha;
-      break;
-    }
-    case 1: {
-      int alpha = particle->alpha - 1;
-      if (alpha <= 0) {
-        alpha = 0;
-        particle->animationState = 0;
-      }
-      particle->alpha = alpha;
-      break;
-    }
-    }
-
-    float& angle = particle->angle;
-    float nextAngle = particle->speedParameter + angle;
-    if (nextAngle > 360.0f) {
-      nextAngle -= 360.0f;
-    }
-    angle = nextAngle;
-
-    const float cosine = ClientCos(angle / 180.0f * 3.141592f);
-    const float sine = ClientSin(angle / 180.0f * 3.141592f);
-
-    EffectPoint points[4];
-    const float scale = particle->scale;
-    points[0].x += scale * cosine;
-    points[0].y = scale * 0.0f - particle->animationParameter;
-    points[0].z += scale * sine;
-    points[1].x = (cosine + 0.0f) * this->width + points[0].x;
-    points[1].y = this->width + points[0].y;
-    points[1].z = (sine + 0.0f) * this->width + points[0].z;
-
-    matrix transform;
-    transform.MakeXRotation(this->rotation.x / 180.0f * 3.141592f);
-    transform.AppendZRotation(this->rotation.z / 180.0f * 3.141592f);
-    transform.AppendTranslate(this->position);
-
-    const EffectPoint bottom = TransformPoint(transform, points[0]);
-    const EffectPoint top = TransformPoint(transform, points[1]);
-    particle->vertices[1].x = top.x;
-    particle->vertices[1].y = top.y;
-    particle->vertices[1].z = top.z;
-    particle->vertices[3].x = bottom.x;
-    particle->vertices[3].y = bottom.y;
-    particle->vertices[3].z = bottom.z;
-
-    if (particle->columnIndex != 0) {
-      particle->vertices[0].x = this->lastPoints[1].x;
-      particle->vertices[0].y = this->lastPoints[1].y;
-      particle->vertices[0].z = this->lastPoints[1].z;
-      particle->vertices[2].x = this->lastPoints[0].x;
-      particle->vertices[2].y = this->lastPoints[0].y;
-      particle->vertices[2].z = this->lastPoints[0].z;
-    }
-
-    this->lastPoints[0].x = bottom.x;
-    this->lastPoints[0].y = bottom.y;
-    this->lastPoints[0].z = bottom.z;
-    this->lastPoints[1].x = top.x;
-    this->lastPoints[1].y = top.y;
-    this->lastPoints[1].z = top.z;
+    this->UpdateParticle(*it);
   }
 }
 
@@ -184,6 +111,63 @@ void CWindEffect::Render() {
 }
 
 // OFFSET: 0x00730C70
+// FUNCTION: fn_46087
+__forceinline void CWindEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  this->UpdateParticleAlpha(particle);
+
+  float& angle = particle->angle;
+  float nextAngle = particle->speedParameter + angle;
+  if (nextAngle > 360.0f) {
+    nextAngle -= 360.0f;
+  }
+  angle = nextAngle;
+
+  const float cosine = ClientCos(angle / 180.0f * 3.141592f);
+  const float sine = ClientSin(angle / 180.0f * 3.141592f);
+
+  EffectPoint points[4];
+  const float scale = particle->scale;
+  points[0].x += scale * cosine;
+  points[0].y = scale * 0.0f - particle->animationParameter;
+  points[0].z += scale * sine;
+  points[1].x = (cosine + 0.0f) * this->width + points[0].x;
+  points[1].y = this->width + points[0].y;
+  points[1].z = (sine + 0.0f) * this->width + points[0].z;
+
+  matrix transform;
+  transform.MakeXRotation(this->rotation.x / 180.0f * 3.141592f);
+  transform.AppendZRotation(this->rotation.z / 180.0f * 3.141592f);
+  transform.AppendTranslate(this->position);
+
+  const EffectPoint bottom = TransformPoint(transform, points[0]);
+  const EffectPoint top = TransformPoint(transform, points[1]);
+  particle->vertices[1].x = top.x;
+  particle->vertices[1].y = top.y;
+  particle->vertices[1].z = top.z;
+  particle->vertices[3].x = bottom.x;
+  particle->vertices[3].y = bottom.y;
+  particle->vertices[3].z = bottom.z;
+
+  if (particle->columnIndex != 0) {
+    particle->vertices[0].x = this->lastPoints[1].x;
+    particle->vertices[0].y = this->lastPoints[1].y;
+    particle->vertices[0].z = this->lastPoints[1].z;
+    particle->vertices[2].x = this->lastPoints[0].x;
+    particle->vertices[2].y = this->lastPoints[0].y;
+    particle->vertices[2].z = this->lastPoints[0].z;
+  }
+
+  this->lastPoints[0].x = bottom.x;
+  this->lastPoints[0].y = bottom.y;
+  this->lastPoints[0].z = bottom.z;
+  this->lastPoints[1].x = top.x;
+  this->lastPoints[1].y = top.y;
+  this->lastPoints[1].z = top.z;
+}
 
 // OFFSET: 0x007310E0
 // FUNCTION: fn_46088
