@@ -89,8 +89,8 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
 void WrapRichText(
   const char* text, std::vector<std::string>& lines, int width, bool carriageReturns
 ) {
-  const char* begin = text;
   const char* current = text;
+  const char* begin = text;
   const char* breakAt = text;
   const unsigned bytes = static_cast<unsigned>(std::strlen(text));
   const char* end = text + bytes;
@@ -151,15 +151,15 @@ void WrapRichText(
       const unsigned char* bracket = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("]"));
       const std::intptr_t extent = reinterpret_cast<std::intptr_t>(bracket) - reinterpret_cast<std::intptr_t>(current) + 1;
 
-      if (reinterpret_cast<std::uintptr_t>(current) + extent < reinterpret_cast<std::uintptr_t>(limit)) {
-        ++current;
-      } else {
+      if (reinterpret_cast<std::uintptr_t>(current) + extent >= reinterpret_cast<std::uintptr_t>(limit)) {
         if (extent >= width) {
           break;
         }
 
         limit -= extent;
         --current;
+      } else {
+        ++current;
       }
     }
 

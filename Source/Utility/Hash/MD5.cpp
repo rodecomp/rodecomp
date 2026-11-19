@@ -273,7 +273,7 @@ __declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
   if (size.QuadPart > 500000000) {
     size.QuadPart = 500000000;
   }
-  if (size.QuadPart == 0) {
+  if (0 == size.QuadPart) {
     return 0;
   }
 

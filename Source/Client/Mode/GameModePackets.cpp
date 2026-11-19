@@ -11048,10 +11048,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_COINS: {
     char text[256];
     std::memset(text, 0, sizeof(text));
-    if (packet->value > 0) {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_USESKILL_FAIL_COINTS_NUM), packet->value);
-    } else {
+    if (packet->value <= 0) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_USESKILL_FAIL_COINTS));
+    } else {
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_USESKILL_FAIL_COINTS_NUM), packet->value);
     }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
     return;

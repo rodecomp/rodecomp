@@ -1400,7 +1400,7 @@ void UIAchSummaryWnd::UpdateInfo() {
 void UIAchViewWnd::UpdateInfo() {
   this->description->Clear();
   this->description->Invalidate();
-  for (int index = 0; index < 10; ++index) {
+  for (int index = 0; index <= 9; ++index) {
     this->conditions[index]->Clear();
     this->conditions[index]->Invalidate();
     this->conditions[index]->Show(0);
@@ -1459,7 +1459,11 @@ void UIAchViewWnd::UpdateInfo() {
           this->conditions[index]->textColor = 0xC9977D;
           this->conditions[index]->underline = 1;
         } else {
-          this->conditions[index]->textColor = record.objectives[index] == 0 ? 0x995736 : 0x4189E6;
+          if (record.objectives[index] == 0) {
+            this->conditions[index]->textColor = 0x995736;
+          } else {
+            this->conditions[index]->textColor = 0x4189E6;
+          }
         }
       }
 
