@@ -80,8 +80,9 @@ void CMergeItemWnd::SelectSameItems(int id) {
   }
 }
 
-// INLINED
-CMergeItemWnd::~CMergeItemWnd() {
+// OFFSET: 0x007DEEA0
+// FUNCTION: fn_46370
+__declspec(noinline) CMergeItemWnd::~CMergeItemWnd() {
 }
 
 
