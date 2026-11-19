@@ -1228,7 +1228,8 @@ std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkil
   std::string output;
   *activeSkillId = skillId;
 
-  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+  for (auto it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
+    const ActiveSkillEffect& effect = *it;
     const int effectId = static_cast<int>(effect.id);
     if (skillId != (effectId == 0x2A ? 0x0C : effectId)) {
       continue;
@@ -1253,13 +1254,13 @@ std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkil
     }
 
     char buffer[100];
+    int secondsPerMinute = 60;
     const int hours = remainingSeconds / 3600;
     if (hours != 0) {
       std::sprintf(buffer, "%d %s", hours, LookupMessage(MSI_TIME));
       output = buffer;
     }
 
-    int secondsPerMinute = 60;
     const int remainder = remainingSeconds - hours * 3600;
     const int minutes = remainder / secondsPerMinute;
     const int seconds = remainder % secondsPerMinute;
