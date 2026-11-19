@@ -7488,8 +7488,8 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
   std::uint32_t background;
   auto style = styles.find(kind);
   if (style != styles.end()) {
-    background = style->second.background;
     title = style->second.title;
+    background = style->second.background;
     color = style->second.color;
   } else {
     title = "===========================================";
