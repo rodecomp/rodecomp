@@ -19,6 +19,9 @@ class UIScrollBar;
 class UITabControl;
 
 struct NewSkillListValue {
+  // INLINED
+  NewSkillListValue(int id, int value) : id(id), value(value) {}
+
   /* 0000 */ int id;
   /* 0004 */ int value;
 };

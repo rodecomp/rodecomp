@@ -884,11 +884,11 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
       {"btn_apply", "btn_apply_a", "btn_apply_b"},
       {"btn_reset", "btn_reset_a", "btn_reset_b"},
     };
+    int buttonIds[2] = {271, 363};
     POINT buttonPos[2] = {
       {this->geometry.width - 100, this->geometry.height - 27},
       {this->geometry.width - 50, this->geometry.height - 27},
     };
-    int buttonIds[2] = {271, 363};
     UIBitmapButton** button = &this->m_btnApply;
     for (int i = 0; i < 2; ++i, ++button) {
       *button = new UIBitmapButton();
@@ -898,8 +898,9 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
       (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
       (*button)->Move(buttonPos[i].x, buttonPos[i].y);
       (*button)->SetId(buttonIds[i]);
-      (*button)->SetDisabled(1);
-      (*button)->Invalidate();
+      UIBitmapButton* const created = *button;
+      created->SetDisabled(1);
+      created->Invalidate();
       this->AddChild(*button);
     }
   }
@@ -956,14 +957,15 @@ void UINewSkillListWnd::Paint() {
 
   const int points = this->m_skillPoints;
   char text[80];
-  std::memset(text, 0, sizeof(text));
   if (g_session.m_simplifiedSkillList != 0) {
+    std::memset(text, 0, sizeof(text));
     const char* format = LookupMessage(MSI_SKILLPOINT);
     std::sprintf(text, format, points);
     this->TextWidth(text, 0, 0, 12, 0, 0);
     this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
     this->DrawSkillList();
   } else {
+    std::memset(text, 0, sizeof(text));
     const int total = g_session.m_skillPoint;
     if (points < total) {
       const int remaining = total - points;
@@ -973,7 +975,7 @@ void UINewSkillListWnd::Paint() {
       const char* label = LookupMessage(MSI_SKILLPOINT2);
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", label, total);
     }
-    this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
+    this->DrawWrappedFormattedText(80, this->geometry.height - 23, text, 0, 0, 0, 0, 12, 0, 0);
     this->DrawSkillTree();
     this->DrawCharacter();
   }
