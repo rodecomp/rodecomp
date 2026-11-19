@@ -190,6 +190,7 @@ void CRedLineEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B72180
+// FUNCTION: fn_46053
 __forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
   if (particle && particle->columnIndex > 0) {
     int blend;
