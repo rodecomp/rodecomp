@@ -29,7 +29,7 @@ int CImfRes::MaximumMotionCount(int layer) const {
   int maximum = 0;
   for (int action = 0; action < this->ActionCount(layer); ++action) {
     const int count = this->MotionCount(layer, action);
-    if (count > maximum) {
+    if (maximum < count) {
       maximum = count;
     }
   }
