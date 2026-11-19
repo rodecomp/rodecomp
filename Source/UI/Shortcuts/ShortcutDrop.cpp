@@ -139,9 +139,8 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
-  }
-
-  if (value.source == 6 || value.source == 9) {
+  } else {
+    if (value.source == 6 || value.source == 9) {
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
@@ -218,6 +217,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
 
   g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  }
 }
 
 namespace {
