@@ -273,15 +273,16 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   std::transform(filter.begin(), filter.end(), filter.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
   int index = 0;
-  for (auto entryIt = this->m_entries.begin(), entryEnd = this->m_entries.end(); entryIt != entryEnd; ++entryIt) {
+  for (auto entryIt = this->m_entries.begin(); entryIt != this->m_entries.end(); ++entryIt, ++index) {
     const MaterialListEntry& entry = *entryIt;
     std::string name = ItemDisplayName(entry.results.front().id);
     std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
-    if (name.find(filter) != std::string::npos) {
-      this->m_items.push_back(index);
+    if (name.find(filter) == std::string::npos) {
+      continue;
     }
-    ++index;
+
+    this->m_items.push_back(index);
   }
 
   this->UpdateScrollBar();
@@ -809,6 +810,7 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
 // FUNCTION: fn_03866
 bool MaterialNameLess::operator()(unsigned int first, unsigned int second) const {
   const std::string left = first < this->entries.size() ? ItemDisplayName(this->entries[first].results[0].id) : "";
-  const std::string right = second < this->entries.size() ? ItemDisplayName(this->entries[second].results[0].id) : "";
+  const unsigned int rightIndex = second;
+  const std::string right = rightIndex < this->entries.size() ? ItemDisplayName(this->entries[rightIndex].results[0].id) : "";
   return left < right;
 }
