@@ -715,10 +715,10 @@ namespace myGPack {
 
     const std::uint64_t offset = this->Allocate(auxiliarySize + compressedLength + sizeof(header));
 
+    PakHeaderTable information;
     if (this->m_output.Write(offset, &header, sizeof(header)) && this->m_output.Write(offset + sizeof(header), compressed.data(), compressedLength) &&
         this->m_output.Write(offset + compressedLength + sizeof(header), auxiliary.data(), auxiliarySize) &&
         this->m_output.Write(0, "Event Horizon", 14)) {
-      PakHeaderTable information;
       information.tableOffset = offset - kPakHeaderSize;
       information.entryCount = static_cast<std::uint32_t>(this->m_entries.size());
       information.version = kPakVersion;
