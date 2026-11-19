@@ -134,6 +134,31 @@ void CEvilsPawEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x006FF270
+// FUNCTION: fn_46144
+void CEvilsPawEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  particle->SetTexture(this->textures[this->textureIndex].c_str());
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeZRotation(3.141592f);
+  const CView* view = g_modeMgr.GetGameMode()->camera;
+  rotation.AppendXRotation(view->camera.pitch / 180.0f * 3.141592f);
+
+  matrix scale;
+  std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+  scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+  matrix result;
+  result.Compose(scale, rotation);
+  particle->transform = result;
+  particle->position = vector3d{this->position[0] + this->offset.x, this->position[1] + this->offset.y, this->position[2] + this->offset.z};
+}
+
 // OFFSET: 0x006FF3E0
 // FUNCTION: fn_06961
 void CEvilsPawEffect::Render() {

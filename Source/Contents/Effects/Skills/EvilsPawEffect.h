@@ -23,6 +23,7 @@ public:
   void ResetParticles() override;
   void AddParticle();
   void InitializeParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int frameDelay;
