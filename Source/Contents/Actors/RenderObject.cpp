@@ -4161,12 +4161,11 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
 
   matrix inverse;
   inverse.MakeInverse(view);
-  float lightX =
-    light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9];
-  float lightY =
-    light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10];
-  float lightZ =
-    light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + light.direction.z * inverse.values[8] + inverse.values[11];
+  const auto lightDirection = [&]() -> const vector3d& { return light.direction; };
+  const vector3d& direction = lightDirection();
+  float lightX = direction.x * inverse.values[0] + direction.y * inverse.values[3] + direction.z * inverse.values[6] + inverse.values[9];
+  float lightY = direction.x * inverse.values[1] + direction.y * inverse.values[4] + direction.z * inverse.values[7] + inverse.values[10];
+  float lightZ = direction.x * inverse.values[2] + direction.y * inverse.values[5] + direction.z * inverse.values[8] + inverse.values[11];
   const float scale = 1.0f / SquareRoot(lightY * lightY + lightX * lightX + lightZ * lightZ);
   lightX *= scale;
   lightY *= scale;
