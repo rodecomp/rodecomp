@@ -1,11 +1,21 @@
 #include "Contents/Effects/Skills/FortuneKissEffect.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
 #include <cstring>
+
+// OFFSET: 0x00701370
+CFortuneKiss::CFortuneKiss() : CEffect(EF_BOTTOM_FORTUNEKISS), unknown_00D0{}, unknown_00E8{}, angle(0), particles() {
+}
+
+// OFFSET: 0x00701440
+// FUNCTION: fn_46184
+__declspec(noinline) CFortuneKiss::~CFortuneKiss() {
+}
 
 // OFFSET: 0x00701520
 // FUNCTION: fn_06994
