@@ -574,8 +574,9 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
 
         const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
         const int remainder = code < 10 ? code : code - 10;
-        const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
-        g_navigationManager.StartNavigation(name.c_str(), mode, kind, flag == 0, x, y, id);
+        g_navigationManager.StartNavigation(
+          name.c_str(), mode, remainder < 1 ? group : static_cast<unsigned char>(group + 4), flag == 0, x, y, id
+        );
       }
     } else {
       g_navigationManager.StartNavigation(name.c_str(), 2, 5, false, x, y, 1002);
