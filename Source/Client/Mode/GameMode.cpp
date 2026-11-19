@@ -9500,7 +9500,8 @@ void CGameMode::Update() {
         g_soundMgr->Pause(0);
       } else {
         CSoundMgr* soundMgr = g_soundMgr;
-        soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
+        std::string (CGameMode::*const mapName)() = &CGameMode::MapName;
+        soundMgr->SetDefaultName(g_session.GetBgmFileName((this->*mapName)().c_str()));
       }
     }
 
@@ -9511,10 +9512,7 @@ void CGameMode::Update() {
     }
 
     if (g_updateTick > 0) {
-      SendGameTick(
-        false, this->syncAcknowledged, this->syncRequestTick, g_gameTickInterval,
-        GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
-      );
+      this->SendSyncRequest(false);
       if (timeGetTime() > g_spriteAtlasClearTick) {
         g_spriteAtlasClearTick = timeGetTime() + 15000;
         g_renderer->atlas.ClearExpired(g_resourceReuseDelay);
