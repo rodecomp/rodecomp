@@ -96,6 +96,7 @@ void CLevel99Orb2Effect::OnProcess() {
 }
 
 // OFFSET: 0x00B6C540
+// FUNCTION: fn_46247
 __forceinline void CLevel99Orb2Effect::UpdateParticle(CParticle* particle) {
   if (particle) {
     const int index = particle->columnIndex + particle->rowIndex * 4;
