@@ -75,6 +75,10 @@ void CChargingPierceNewEffect::SetCount(int count) {
   }
 }
 
+// OFFSET: 0x007036B0
+
+// OFFSET: 0x00703C70
+
 // OFFSET: 0x007038B0
 // FUNCTION: fn_07023
 void CChargingPierceEffect::Close() {
@@ -231,6 +235,8 @@ void CChargingPierceEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00704580
+
 // OFFSET: 0x00704360
 // FUNCTION: fn_07031
 void CChargingPierceNewEffect::OnProcess() {
@@ -282,6 +288,14 @@ void CChargingPierceEffect::Render() {
 // FUNCTION: fn_07033
 void CChargingPierceNewEffect::Render() {
   for (CEZ2STRParticle* particle : this->emitters) {
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+  }
+}
+
+// OFFSET: 0x00704BF0
+// FUNCTION: fn_46212
+__declspec(noinline) void CChargingPierceNewEffect::RenderParticle(CEZ2STRParticle* particle) {
+  if (particle) {
     particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
