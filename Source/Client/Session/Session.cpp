@@ -104,10 +104,17 @@ static std::string s_messageEndTag = "</MSG>";
 class CTokenizer {
 public:
   std::string& operator[](int index);
+  int TokenCount() const;
   void Parse(const std::string& text);
 
   /* 0000 */ std::vector<std::string> tokens;
 };
+
+// OFFSET: 0x00DFCD80
+// FUNCTION: fn_23601
+int CTokenizer::TokenCount() const {
+  return static_cast<int>(this->tokens.size());
+}
 
 class CUserHotkeyMgr {
 public:
