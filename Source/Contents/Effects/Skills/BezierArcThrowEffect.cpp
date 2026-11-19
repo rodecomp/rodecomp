@@ -27,6 +27,11 @@ CThunderingOrb::CThunderingOrb(const std::string& name) : CBezierArcThrowEffect(
 // FUNCTION: fn_09103
 CWindBomb::CWindBomb(const std::string& name) : CBezierArcThrowEffect(name) {}
 
+// OFFSET: 0x007AAFE0
+// FUNCTION: fn_46016
+__declspec(noinline) CBezierArcThrowEffect::~CBezierArcThrowEffect() {
+}
+
 // OFFSET: 0x007AB290
 // FUNCTION: fn_09107
 void CBezierArcThrowEffect::Close() {

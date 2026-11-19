@@ -17,6 +17,8 @@ public:
     this->m_target.z = 0.0f;
   }
 
+  ~CBezierArcThrowEffect() override;
+
   /* 00CC */ bool m_active;
   /* 00D0 */ float m_progress;
   /* 00D4 */ CEZ2STRParticle* m_particle;
