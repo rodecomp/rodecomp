@@ -25,16 +25,18 @@ public:
   CPrivateAirplaneMgr() {
     this->m_initialized = true;
   }
-  virtual ~CPrivateAirplaneMgr() = default;
+  virtual ~CPrivateAirplaneMgr();
 
   int GetNeedItem(int index);
   bool IsEndableMap(std::string map);
   bool IsStartableMap(std::string map);
-  // INLINED
+  // OFFSET: 0x006D0800
+  // FUNCTION: fn_46435
   void InsertStartableMap(std::string map) {
     this->m_startableMaps.insert(map);
   }
-  // INLINED
+  // OFFSET: 0x006D06C0
+  // FUNCTION: fn_46433
   void InsertEndableMap(std::string map) {
     this->m_endableMaps.insert(map);
   }

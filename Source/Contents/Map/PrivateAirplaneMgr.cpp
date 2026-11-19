@@ -15,6 +15,10 @@ extern "C" {
 // GLOBAL: gl_24636
 CPrivateAirplaneMgr* g_privateAirplaneItems;
 
+// OFFSET: 0x006D0340
+// FUNCTION: fn_46432
+__declspec(noinline) CPrivateAirplaneMgr::~CPrivateAirplaneMgr() = default;
+
 // OFFSET: 0x006D04C0
 // FUNCTION: fn_06504
 bool CPrivateAirplaneMgr::Create() {
