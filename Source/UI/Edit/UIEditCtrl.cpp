@@ -618,9 +618,9 @@ void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, co
 // OFFSET: 0x00856FB0
 // FUNCTION: fn_10758
 void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
+  const int right = this->geometry.width;
   const int extent = x < 3 ? x - 3 + width : width;
   const int left = x >= 3 ? x : 3;
-  const int right = this->geometry.width;
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
