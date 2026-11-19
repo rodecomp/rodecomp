@@ -139,16 +139,16 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
     return std::make_pair(false, BarterMarketItem());
   }
 
+  int index = 0;
+  int visible = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
-  int index = 0;
-  int visible = 0;
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
         if (column == 0) {
-          return std::make_pair(true, *it);
+          return std::pair<bool, BarterMarketItem>(true, *it);
         }
         BarterMarketItem price;
         char buffer[100];
@@ -156,7 +156,7 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
         _itoa(it->currencyItemId, buffer, 10);
         price.name = buffer;
         price.itemType = 20;
-        return std::make_pair(true, price);
+        return std::pair<bool, BarterMarketItem>(true, price);
       }
       ++visible;
     }
@@ -171,16 +171,16 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
     return std::make_pair(false, BarterMarketItem());
   }
 
+  int index = 0;
+  int visible = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
-  int index = 0;
-  int visible = 0;
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
         if (column == 0) {
-          return std::make_pair(true, *it);
+          return std::pair<bool, BarterMarketItem>(true, *it);
         }
         BarterMarketItem price;
         char buffer[100];
@@ -188,7 +188,7 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
         _itoa(it->currencyItemId, buffer, 10);
         price.name = buffer;
         price.itemType = 20;
-        return std::make_pair(true, price);
+        return std::pair<bool, BarterMarketItem>(true, price);
       }
       ++visible;
     }
@@ -1200,7 +1200,8 @@ bool UIBarterItemPurchaseWnd::Purchase() {
       totals.insert(std::make_pair(it->name, it->value));
     }
 
-    if (g_session.IsEquipItemType(it->itemType) == true || g_session.IsShadowItemType(it->itemType) == true) {
+    const unsigned char type = static_cast<unsigned char>(it->itemType);
+    if (g_session.IsEquipItemType(type) == true || g_session.IsShadowItemType(type) == true) {
       ++count;
     } else if (this->GetInventoryItemCount(std::atoi(it->name.c_str())) == 0) {
       ++count;
