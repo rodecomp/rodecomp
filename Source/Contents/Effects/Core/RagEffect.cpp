@@ -14561,13 +14561,15 @@ void CRagEffect::ForestLight(const char* name, char flag) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = 0;
 
-    std::int16_t alphaB = 25;
+    std::int16_t alphaB;
 
     if (flag == 2 || flag == 12 || flag == 13) {
       alphaB = 30;
+    } else if (flag == 10) {
+      alphaB = 25;
     } else if (flag == 11) {
       alphaB = 0;
-    } else if (flag != 10) {
+    } else {
       alphaB = 40;
     }
 
