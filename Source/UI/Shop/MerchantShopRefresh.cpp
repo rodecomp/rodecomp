@@ -21,8 +21,9 @@ void UIMerchantShopMakeWnd::Refresh() {
   CMCStoreInfoBackup& backup = g_session.m_storeInfoBackup;
 
   if (StoredTitle(backup).empty()) {
-    this->actionButton->SetDisabled(0);
-    this->actionButton->Invalidate();
+    UIBasicButton* button = this->actionButton;
+    button->SetDisabled(0);
+    button->Invalidate();
     return;
   }
 
@@ -30,20 +31,20 @@ void UIMerchantShopMakeWnd::Refresh() {
   this->titleEdit->Invalidate();
 
   for (int index = 0; index < this->slotCount; ++index) {
-    UIEditCtrl* edit = this->priceEdits[index];
-    edit->SetText("");
+    this->priceEdits[index]->SetText("");
 
     int background;
 
     if (this->mode != 0) {
       background = 232;
     } else {
+      UIEditCtrl* edit = this->priceEdits[index];
       edit->disabled = 1;
       edit->Invalidate();
       background = 182;
     }
 
-    edit->Background(background, background, background);
+    this->priceEdits[index]->Background(background, background, background);
   }
 
   const int count = g_session.GetNumMerchantPurchaseSavedItems();
@@ -56,24 +57,24 @@ void UIMerchantShopMakeWnd::Refresh() {
   g_session.ClearMerchantPurchaseSavedItems();
   backup.Restore(this->mode != 0, this->slotCount);
 
-  const std::vector<ITEM_INFO> displayed(backup.items);
   int index = 0;
-  UIEditCtrl** edit = this->priceEdits;
+  const std::vector<ITEM_INFO> displayed(backup.items);
 
   for (auto itemIt = displayed.begin(); itemIt != displayed.end(); ++itemIt) {
     const ITEM_INFO& item = *itemIt;
-    if (index >= this->slotCount) {
+    if (this->slotCount <= index) {
       break;
     }
 
     const int price = static_cast<int>(item.prices[0]);
     char value[24] = {};
     _itoa(price, value, 10);
-    (*edit)->disabled = 0;
-    (*edit)->Invalidate();
-    (*edit)->Background(232, 232, 232);
-    (*edit)->SelectAll();
-    (*edit)->SetText(value);
+    UIEditCtrl* edit = this->priceEdits[index];
+    edit->disabled = 0;
+    edit->Invalidate();
+    this->priceEdits[index]->Background(232, 232, 232);
+    this->priceEdits[index]->SelectAll();
+    this->priceEdits[index]->SetText(value);
 
     if (this->mode != 0 && index < 5) {
       char quantity[24] = {};
@@ -82,20 +83,20 @@ void UIMerchantShopMakeWnd::Refresh() {
       this->quantityEdits[index]->Invalidate();
     } else {
       const PriceColors colors = PriceColor(price);
-      (*edit)->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
+      this->priceEdits[index]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
       char grouped[24] = {};
       FormatGroupedInteger(static_cast<std::int64_t>(price), grouped, sizeof(grouped));
-      (*edit)->SetText(grouped);
-      this->previousPriceLength = (*edit)->Length();
+      this->priceEdits[index]->SetText(grouped);
+      this->previousPriceLength = this->priceEdits[index]->Length();
     }
 
-    ++edit;
     ++index;
   }
 
   g_session.RefreshItem1768Window(this->mode != 0, 0);
   g_session.RefreshItem1750Window(this->mode);
-  this->actionButton->SetDisabled(0);
-  this->actionButton->Invalidate();
+  UIBasicButton* button = this->actionButton;
+  button->SetDisabled(0);
+  button->Invalidate();
   backup.Clear();
 }
