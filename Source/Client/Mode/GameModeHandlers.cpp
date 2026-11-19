@@ -898,11 +898,10 @@ void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
   g_session.ClearTradeItems();
 
   const std::int64_t count = (static_cast<std::int64_t>(value->packetLength) - 4) / 19;
-  const Item1718BasicRecord* records = value->items;
 
   for (std::int64_t index = 0; index < count; ++index) {
     Item1718BasicRecord record;
-    memcpy_s(&record, sizeof(record), &records[index], sizeof(record));
+    memcpy_s(&record, sizeof(record), &value->items[index], sizeof(record));
 
     RawItemBasic item = {};
     _itoa(record.itemId, item.itemId, 10);
