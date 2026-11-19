@@ -1199,9 +1199,9 @@ void CAdventureGuideMgr::Destroy() {
 void CAdventureGuideMgr::GetEpisodeList(std::list<AdventureGuideEpisode>& out) {
   out.clear();
 
-  for (const AdventureGuideEpisode& episode : m_episodes) {
-    if (episode.info.order <= g_session.m_level && g_session.m_level <= episode.info.maxLevel) {
-      out.push_back(episode);
+  for (auto it = m_episodes.begin(); it != m_episodes.end(); ++it) {
+    if (it->info.order <= g_session.m_level && g_session.m_level <= it->info.maxLevel) {
+      out.push_back(*it);
     }
   }
 }
