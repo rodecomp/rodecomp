@@ -184,8 +184,9 @@ void ScopedDeviceStateDX9::Restore() {
 
   for (int stage = 0; stage < 2; ++stage) {
     for (int state = 0; state < 33; ++state) {
-      if (this->m_textureStage[stage][state] != this->m_state->textureStage[stage][state]) {
-        this->m_state->SetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), this->m_textureStage[stage][state]);
+      const DWORD saved = this->m_textureStage[stage][state];
+      if (saved != this->m_state->textureStage[stage][state]) {
+        this->m_state->SetTextureStageState(stage, static_cast<D3DTEXTURESTAGESTATETYPE>(state), saved);
       }
     }
 
