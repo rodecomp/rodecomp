@@ -301,6 +301,11 @@ Never use `/utf-8`, and never save sources as CP949/EUC-KR.
   used them; an optimized SIMD instruction alone is not evidence. Scalar data is not `__m128i`.
 - Do not use `#pragma optimize` (including `#pragma optimize("y", off)`) to alter compiler optimization or frame-pointer settings.
   Use the configured project compiler settings; byte matching does not justify source-level optimization overrides.
+- Explicit template instantiations and declarations that only steer linkage or inlining
+  (`template __declspec(noinline) ...;`, `extern template ...;`) go in the unit's linkage prelude
+  `Source/Linkage/<unit path>.h` (e.g. `Source/Linkage/Source/UI/Window/WindowDialogs.cpp.h`), never in the game
+  `.cpp`. The build forces that prelude into the unit; give it the includes it needs. A type local to the `.cpp` is
+  not visible there, so only such an instantiation stays in the unit.
 - Recover records and members instead of dereferencing integer pointers cast onto byte buffers. At a real
   binary-format boundary, use a typed record or `memcpy` for unaligned fields; preserve layout and aliasing.
 - Apply namespace and API conventions consistently throughout a subsystem, including declarations and callers.
