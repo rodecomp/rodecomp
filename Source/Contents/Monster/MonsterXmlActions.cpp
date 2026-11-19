@@ -50,10 +50,12 @@ void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, 
     return;
   }
 
-  char number[8];
   char skillName[8];
-  _itoa(skill, number, 10);
-  std::sprintf(skillName, "_%s", number);
+  {
+    char number[8];
+    _itoa(skill, number, 10);
+    std::sprintf(skillName, "_%s", number);
+  }
 
   char monsterName[256];
   std::strcpy(monsterName, monster);
@@ -79,12 +81,12 @@ void CSession::GetMonsterSkillInfo(const char* monster, int skill, int* action, 
     g_windowMgr.Confirm("에러발생. 클라이언트 담당자 에게 에러 사실을 통보 하세요. 위치 - CPlayer :: GetMonsterSkillInfo", 0, true, false, 0, "Message", 280, 120, 0);
     g_windowMgr.Confirm("action 또는 loopType 이 존재하지 않음.", 0, true, false, 0, "Message", 280, 120, 0);
     return;
+  } else {
+    char actionText[8];
+    char loopText[8];
+    std::sprintf(actionText, DecodeMessageRot(const_cast<char*>(actionNode->Text().c_str())));
+    std::sprintf(loopText, DecodeMessageRot(const_cast<char*>(loopNode->Text().c_str())));
+    *action = std::atoi(actionText);
+    *loopType = std::atoi(loopText);
   }
-
-  char actionText[8];
-  char loopText[8];
-  std::sprintf(actionText, DecodeMessageRot(const_cast<char*>(actionNode->Text().c_str())));
-  std::sprintf(loopText, DecodeMessageRot(const_cast<char*>(loopNode->Text().c_str())));
-  *action = std::atoi(actionText);
-  *loopType = std::atoi(loopText);
 }
