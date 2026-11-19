@@ -26,6 +26,9 @@
 #include <cstring>
 #include <regex>
 
+// GLOBAL: gl_25989
+float g_heightSpeedSign;
+
 // INLINED
 static __forceinline float ToRadians(float degrees) {
   return (degrees / 180.0f) * 3.141592f;
@@ -582,10 +585,10 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
     float x = (vertices[i].x - screenX) * this->m_scale;
     float y = (vertices[i].y - screenY) * this->m_scale;
     if (this->m_flipX) {
-      x *= -1.0f;
+      x *= g_heightSpeedSign;
     }
     if (this->m_flipY) {
-      y *= -1.0f;
+      y *= g_heightSpeedSign;
     }
     vertices[i].x = x + screenX;
     vertices[i].y = y + screenY;
