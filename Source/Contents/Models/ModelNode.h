@@ -9,7 +9,15 @@
 class C3dActor;
 
 struct ModelTextureTransform {
-  /* 0000 */ float values[5] = {0, 0, 1, 1, 0};
+  // INLINED
+  ModelTextureTransform() {
+    values[0] = 0.0f;
+    values[1] = 0.0f;
+    values[2] = 1.0f;
+    values[3] = 1.0f;
+    values[4] = 0.0f;
+  }
+  /* 0000 */ float values[5];
 };
 
 class C3dNode {
