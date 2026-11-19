@@ -93,6 +93,7 @@ public:
   CCashEmotionAction_Play();
   ~CCashEmotionAction_Play() override;
   bool Execute(int packId, int emotionId) override;
+  void RefreshSpecialEmotions();
 
 protected:
   /* 0004 */ int m_diceEmotion;
@@ -361,6 +362,12 @@ protected:
 // OFFSET: 0x00591CA0
 // FUNCTION: fn_02839
 CCashEmotionAction_Play::CCashEmotionAction_Play() : m_diceEmotion(0), m_yutEmotion(0) {
+  this->RefreshSpecialEmotions();
+}
+
+// OFFSET: 0x00591E30
+// FUNCTION: fn_45921
+void CCashEmotionAction_Play::RefreshSpecialEmotions() {
   this->m_diceEmotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Dice);
   this->m_yutEmotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Yut);
 }
