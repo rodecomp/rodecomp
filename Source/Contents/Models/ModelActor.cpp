@@ -82,9 +82,7 @@ void C3dActorV2::Assign(const C3dModelRes& resource) {
   const auto& modern = static_cast<const C3dModelResV2&>(resource);
   this->shade = resource.shade;
   this->framesPerSecond = modern.framesPerSecond;
-  const float inverse = 1.0f / modern.framesPerSecond;
-  const int milliseconds = 1000 * modern.animationLength;
-  this->duration = static_cast<float>(milliseconds) * inverse;
+  this->duration = static_cast<float>(1000 * modern.animationLength) * (1.0f / modern.framesPerSecond);
 
   auto* roots = &this->roots;
   resource.ForEachRootName([&resource, roots, this](const std::string& name) {
