@@ -193,8 +193,8 @@ __declspec(noinline) void MD5::Update(const unsigned char* input, std::uint32_t 
 __declspec(noinline) unsigned char* MD5::Finalize() {
   const std::uint32_t buffered = m_byteCount[0] & 63;
   unsigned char* padding = m_buffer + buffered;
-  *padding++ = 0x80;
   std::uint32_t remaining = 63 - buffered;
+  *padding++ = 0x80;
 
   if (remaining < 8) {
     std::memset(padding, 0, remaining);
@@ -208,10 +208,12 @@ __declspec(noinline) unsigned char* MD5::Finalize() {
   Decode(m_words, m_buffer, 14);
   m_words[14] = m_byteCount[0] << 3;
   m_words[15] = (m_byteCount[1] << 3) | (m_byteCount[0] >> 29);
-  Transform(m_state, m_words);
 
-  unsigned char* digest = reinterpret_cast<unsigned char*>(m_state);
-  Encode(digest, m_state, 16);
+  std::uint32_t* state = m_state;
+  Transform(state, m_words);
+
+  unsigned char* digest = reinterpret_cast<unsigned char*>(state);
+  Encode(digest, state, 16);
   return digest;
 }
 
