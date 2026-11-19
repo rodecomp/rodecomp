@@ -828,10 +828,13 @@ int CSkillAction_SS_KUNAIKAITEN::GetSkillAttackMotion() {
 void CSkillAction_SS_KUNAIKAITEN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     std::string names[] = {"kunaikaiten_bottom", "kunaikaiten_00", "kunaikaiten_01", "kunaikaiten_02"};
+    const auto spawn = [&](const std::string& name) {
+      EffectLists* effects = g_effectMgr;
+      return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position, 0, -1, 0, 0);
+    };
     for (int wave = 0; wave < 4; ++wave) {
       for (const std::string& name : names) {
-        EffectLists* effects = g_effectMgr;
-        CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position, 0, -1, 0, 0);
+        CEffect* effect = spawn(name);
         if (effect) {
           effect->SetDelay(wave * 480);
         }
