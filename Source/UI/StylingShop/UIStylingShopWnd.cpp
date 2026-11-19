@@ -1909,9 +1909,8 @@ bool UIShowInfoWnd::SendStyleChange() {
     } else if (type == STYLE_TABLE_BODY_STYLE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        UIDisplayCharacter* display = this->m_display;
-        std::map<int, int>::iterator job = display->m_jobs.find(display->job);
-        if (job != display->m_jobs.end()) {
+        std::map<int, int>::iterator job = this->m_display->m_jobs.find(this->m_display->job);
+        if (this->m_display->m_jobs.end() != job) {
           value = job->second;
           kind = 9;
         }

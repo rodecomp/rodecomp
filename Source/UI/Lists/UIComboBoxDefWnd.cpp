@@ -506,7 +506,45 @@ void UIString::ParseTags(std::string text) {
     TrimLeading(key, " \t");
     TrimTrailing(key, " \t");
 
-    if (key == "image") {
+    if (key != "image") {
+      if (key == "color") {
+        const std::size_t start = tags.find_first_of(" \t", index) + 1;
+        index = tags.find_first_of(" \t", start);
+        const std::string value = tags.substr(start, index - start);
+        const std::string red = value.substr(0, 2);
+        const std::string green = value.substr(2, 2);
+        const std::string blue = value.substr(4, 2);
+        char* stop;
+        this->red = std::strtol(red.c_str(), &stop, 16);
+        this->green = std::strtol(green.c_str(), &stop, 16);
+        this->blue = std::strtol(blue.c_str(), &stop, 16);
+      } else if (key == "link") {
+        const std::size_t start = tags.find_first_of("\"", index) + 1;
+        index = tags.find_first_of("\"", start);
+        this->link = tags.substr(start, index - start);
+        TrimLeading(this->link, " \t");
+        TrimTrailing(this->link, " \t");
+        TrimLeading(this->link, "\"");
+        TrimTrailing(this->link, "\"");
+        this->red = 10;
+        this->green = 10;
+        this->blue = 255;
+      } else if (key == "font") {
+        const std::size_t start = tags.find_first_of("\"", index) + 1;
+        index = tags.find_first_of("\"", start);
+        this->fontName = tags.substr(start, index - start);
+        TrimLeading(this->fontName, " \t");
+        TrimTrailing(this->fontName, " \t");
+        TrimLeading(this->fontName, "\"");
+        TrimTrailing(this->fontName, "\"");
+      } else if (key == "bold") {
+      } else if (key == "size") {
+        const std::size_t start = tags.find_first_of(" \t", index) + 1;
+        index = tags.find_first_of(" \t", start);
+        const std::string value = tags.substr(start, index - start);
+        this->fontSize = std::atoi(value.c_str());
+      }
+    } else {
       const std::size_t start = tags.find_first_of("\"", index) + 1;
       index = tags.find_first_of("\"", start);
       this->image = tags.substr(start, index - start);
@@ -514,42 +552,6 @@ void UIString::ParseTags(std::string text) {
       TrimTrailing(this->image, " \t");
       TrimLeading(this->image, "\"");
       TrimTrailing(this->image, "\"");
-    } else if (key == "color") {
-      const std::size_t start = tags.find_first_of(" \t", index) + 1;
-      index = tags.find_first_of(" \t", start);
-      const std::string value = tags.substr(start, index - start);
-      const std::string red = value.substr(0, 2);
-      const std::string green = value.substr(2, 2);
-      const std::string blue = value.substr(4, 2);
-      char* stop;
-      this->red = std::strtol(red.c_str(), &stop, 16);
-      this->green = std::strtol(green.c_str(), &stop, 16);
-      this->blue = std::strtol(blue.c_str(), &stop, 16);
-    } else if (key == "link") {
-      const std::size_t start = tags.find_first_of("\"", index) + 1;
-      index = tags.find_first_of("\"", start);
-      this->link = tags.substr(start, index - start);
-      TrimLeading(this->link, " \t");
-      TrimTrailing(this->link, " \t");
-      TrimLeading(this->link, "\"");
-      TrimTrailing(this->link, "\"");
-      this->red = 10;
-      this->green = 10;
-      this->blue = 255;
-    } else if (key == "font") {
-      const std::size_t start = tags.find_first_of("\"", index) + 1;
-      index = tags.find_first_of("\"", start);
-      this->fontName = tags.substr(start, index - start);
-      TrimLeading(this->fontName, " \t");
-      TrimTrailing(this->fontName, " \t");
-      TrimLeading(this->fontName, "\"");
-      TrimTrailing(this->fontName, "\"");
-    } else if (key == "bold") {
-    } else if (key == "size") {
-      const std::size_t start = tags.find_first_of(" \t", index) + 1;
-      index = tags.find_first_of(" \t", start);
-      const std::string value = tags.substr(start, index - start);
-      this->fontSize = std::atoi(value.c_str());
     }
 
     position = index + 1;
