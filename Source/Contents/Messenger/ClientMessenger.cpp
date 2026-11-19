@@ -964,7 +964,7 @@ __declspec(noinline) EquipmentPropertyStore& EquipmentPropertyStore::operator+=(
 // OFFSET: 0x006990E0
 // FUNCTION: fn_05780
 std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detailed, bool negative) {
-  std::string text;
+  std::string text = "";
   if (this->m_definition == nullptr) {
     return text;
   }
@@ -1006,14 +1006,14 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
     case 0:
       text = static_cast<const std::string&>(EncodeText(
         g_textCodePage,
-        fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)), DecodeText(g_textCodePage, number))));
+        fmt::format(DecodeText(g_textCodePage, this->m_definition->formatText), DecodeText(g_textCodePage, number))));
       break;
     case 2: {
-      const int index = negative == true ? nonPositive ^ 1 : nonPositive;
+      const int index = negative != true ? nonPositive : nonPositive ^ 1;
       if (index == 1) {
         text += "{~}";
       }
-      text += EncodeText(g_textCodePage, fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)),
+      text += EncodeText(g_textCodePage, fmt::format(DecodeText(g_textCodePage, this->m_definition->formatText),
                                                     DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, this->m_definition->signLabels[index])));
       break;
     }
