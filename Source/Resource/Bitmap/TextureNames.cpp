@@ -44,8 +44,9 @@ const char* Resolve(const char* name) {
       // GLOBAL: gl_24385
       static std::string selectedPath;
       std::string path(name);
+      const std::size_t size = path.size();
       selectedPath.clear();
-      const int length = static_cast<int>(path.size()) - 15;
+      const int length = static_cast<int>(size) - 15;
       for (int index = 0; index < length; ++index) {
         selectedPath.push_back(path[index + 15]);
       }
@@ -67,8 +68,9 @@ const char* Resolve(const char* name) {
       // GLOBAL: gl_24386
       static std::string uiPath;
       std::string path(name);
+      const std::size_t size = path.size();
       uiPath.clear();
-      const int length = static_cast<int>(path.size()) - 15;
+      const int length = static_cast<int>(size) - 15;
       for (int index = 0; index < length; ++index) {
         uiPath.push_back(path[index + 15]);
       }
