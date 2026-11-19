@@ -286,10 +286,8 @@ void ActionFrame::InitializeCells(unsigned cellCount) {
   const unsigned size = (std::min)(cellCount, 1000u);
   if (this->cells.size() > size) {
     this->cells.erase(this->cells.begin() + size, this->cells.end());
-  } else {
-    while (this->cells.size() < size) {
-      this->cells.push_back(SpriteFrameCell());
-    }
+  } else if (this->cells.size() < size) {
+    this->cells.resize(size);
   }
   this->anchors.clear();
   this->anchorCount = 0;
