@@ -299,7 +299,9 @@ void CMapChainEffect::UpdateParticle(CParticle* particle) {
   const int segment = particle->columnIndex;
   const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + particle->angle) % 360;
 
-  MapChainPoint points[4];
+  {
+    MapChainPoint points[4];
+  }
 
   const int tilt = particle->phaseParameter;
   const float sinIndex = g_sinTable[index];
