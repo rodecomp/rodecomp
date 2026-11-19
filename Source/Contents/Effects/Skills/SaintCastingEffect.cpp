@@ -229,11 +229,11 @@ __forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
   const float radius =
     particle->speedParameter * g_sinTable[segment * 9] * 0.3f * g_sinTable[wave] + particle->speedParameter;
   const float spread = radius * g_cosTable[tilt];
-  const float height = radius * g_sinTable[tilt];
   const int angle =
     static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
                      particle->angle) %
     360;
+  const float height = radius * g_sinTable[tilt];
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
   const float outerX = spread * cosine;
