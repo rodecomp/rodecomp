@@ -369,7 +369,8 @@ void UIMenuIconWnd::OnMouseMove(int x, int y) {}
 // OFFSET: 0x0084C260
 // FUNCTION: fn_10622
 int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
     if (!Replay::Instance().AllowsEvent(argument1)) {
       switch (argument1) {
       case ID_CLOSE:
@@ -490,8 +491,14 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       }
     }
-  } else if (message == UM_REFRESH) {
-    this->SendMsg(nullptr, UM_COMMAND, g_session.m_showMenuIcon == true ? ID_CLOSE : MENUICON_OPEN, 0, 0, 0);
+    break;
+  case UM_REFRESH:
+    if (g_session.m_showMenuIcon == true) {
+      this->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, UM_COMMAND, MENUICON_OPEN, 0, 0, 0);
+    }
+    break;
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
