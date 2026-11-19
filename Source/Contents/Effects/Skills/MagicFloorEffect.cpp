@@ -14,6 +14,10 @@
 CMagicFloorEffect::CMagicFloorEffect() : CEffect(0x401) {
 }
 
+// OFFSET: 0x00B48300
+__declspec(noinline) CMagicFloorEffect::~CMagicFloorEffect() {
+}
+
 // OFFSET: 0x00B48400
 // FUNCTION: fn_18929
 void CMagicFloorEffect::AddFloors() {
@@ -109,23 +113,27 @@ void CMagicFloorEffect::Open() {
   this->AddClouds(1);
 }
 
+// OFFSET: 0x00B48DE0
+__forceinline void CMagicFloorEffect::ResetFloor(CParticle* particle) {
+  particle->flags = 5;
+  particle->position.x = this->position[0];
+  particle->position.y = this->position[1];
+  particle->position.z = this->position[2];
+  particle->scale = this->scaleParameter;
+  particle->angle = static_cast<float>(this->baseAngle);
+  particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * this->rotationParameter);
+  particle->alpha = this->baseAlpha;
+  particle->sourceBlend = 5;
+  particle->destinationBlend = 7;
+  particle->InitParticleQuad(particle->vertices);
+  particle->elapsedFrames = 0;
+}
+
 // OFFSET: 0x00B48E70
 // FUNCTION: fn_18933
 void CMagicFloorEffect::ResetParticles() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
-    CParticle* particle = *it;
-    particle->flags = 5;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-    particle->scale = this->scaleParameter;
-    particle->angle = static_cast<float>(this->baseAngle);
-    particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * this->rotationParameter);
-    particle->alpha = this->baseAlpha;
-    particle->sourceBlend = 5;
-    particle->destinationBlend = 7;
-    particle->InitParticleQuad(particle->vertices);
-    particle->elapsedFrames = 0;
+    this->ResetFloor(*it);
   }
 }
 
@@ -133,6 +141,118 @@ void CMagicFloorEffect::ResetParticles() {
 // FUNCTION: fn_18934
 bool CMagicFloorEffect::IsAlive() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00B493A0
+__forceinline void CMagicFloorEffect::UpdateFloor(CParticle* particle) {
+  if (particle) {
+    int angle = 0;
+    switch (particle->columnIndex) {
+    case 0:
+      angle = static_cast<int>(particle->angle + 1.0f);
+      break;
+    case 1:
+      angle = static_cast<int>(particle->angle + 1.0f);
+      break;
+    case 2:
+      angle = static_cast<int>(particle->angle + 2.0f);
+      break;
+    case 3:
+      angle = static_cast<int>(particle->angle + 2.0f);
+      break;
+    case 4:
+      angle = static_cast<int>(particle->angle - 1.0f);
+      break;
+    case 5:
+      angle = static_cast<int>(particle->angle - 1.0f);
+      break;
+    }
+
+    if (angle >= 360) {
+      angle -= 360;
+    } else if (angle < 0) {
+      angle += 360;
+    }
+
+    particle->angle = static_cast<float>(angle);
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
+    rotation.AppendXRotation(90.0f / 180.0f * 3.141592f);
+    matrix scaling;
+    std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+    scaling.SetScale(particle->scale, particle->scale, 1.0f);
+    matrix result;
+    result.Compose(scaling, rotation);
+    particle->transform = result;
+  }
+}
+
+// OFFSET: 0x00B49530
+__forceinline void CMagicFloorEffect::UpdateCloud(CParticle* particle) {
+  if (particle) {
+    const int direction = static_cast<int>(particle->angle + 5.0f) % 360;
+    particle->angle = static_cast<float>(direction);
+    const int sweep = std::min(particle->angleParameter + 3, 180);
+    particle->angleParameter = sweep;
+    int alpha = particle->alpha;
+    const int phase = particle->elapsedFrames % 300;
+    if (phase == 0) {
+      alpha = 50;
+    } else if (phase > 100) {
+      alpha = std::max(alpha - 1, 0);
+    }
+    if (phase < 12) {
+      ++alpha;
+    }
+    particle->alpha = alpha;
+
+    const int segment = particle->columnIndex;
+    const float radius = particle->animationParameter;
+    const int angle =
+      static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(sweep) / 20.0f) * segment) +
+                       particle->angle) %
+      360;
+    const int tilt = particle->phaseParameter;
+    const float spread = radius * g_cosTable[tilt];
+    const float height = radius * g_sinTable[tilt];
+    const float cosine = g_cosTable[angle];
+    const float sine = g_sinTable[angle];
+    const float offsetX = cosine * spread;
+    const float offsetZ = sine * spread;
+
+    EffectPoint points[4];
+    const float floorRadius = this->scaleParameter;
+    points[0].x = floorRadius * cosine;
+    points[0].y = -particle->speedParameter;
+    points[0].z = floorRadius * sine;
+    points[1].x = points[0].x + offsetX;
+    points[1].y = points[0].y - height;
+    points[1].z = points[0].z + offsetZ;
+
+    particle->vertices[3].x = points[0].x;
+    particle->vertices[3].y = points[0].y;
+    particle->vertices[3].z = points[0].z;
+    particle->vertices[1].x = points[1].x;
+    particle->vertices[1].y = points[1].y;
+    particle->vertices[1].z = points[1].z;
+
+    if (segment != 0) {
+      particle->vertices[0].x = this->lastPoints[1].x;
+      particle->vertices[0].y = this->lastPoints[1].y;
+      particle->vertices[0].z = this->lastPoints[1].z;
+      particle->vertices[2].x = this->lastPoints[0].x;
+      particle->vertices[2].y = this->lastPoints[0].y;
+      particle->vertices[2].z = this->lastPoints[0].z;
+    }
+
+    this->lastPoints[0].x = points[0].x;
+    this->lastPoints[0].y = points[0].y;
+    this->lastPoints[0].z = points[0].z;
+    this->lastPoints[1].x = points[1].x;
+    this->lastPoints[1].y = points[1].y;
+    this->lastPoints[1].z = points[1].z;
+  }
 }
 
 // OFFSET: 0x00B48F30
@@ -145,47 +265,7 @@ void CMagicFloorEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
 
-    if (particle) {
-      int angle = 0;
-      switch (particle->columnIndex) {
-      case 0:
-        angle = static_cast<int>(particle->angle + 1.0f);
-        break;
-      case 1:
-        angle = static_cast<int>(particle->angle + 1.0f);
-        break;
-      case 2:
-        angle = static_cast<int>(particle->angle + 2.0f);
-        break;
-      case 3:
-        angle = static_cast<int>(particle->angle + 2.0f);
-        break;
-      case 4:
-        angle = static_cast<int>(particle->angle - 1.0f);
-        break;
-      case 5:
-        angle = static_cast<int>(particle->angle - 1.0f);
-        break;
-      }
-
-      if (angle >= 360) {
-        angle -= 360;
-      } else if (angle < 0) {
-        angle += 360;
-      }
-
-      particle->angle = static_cast<float>(angle);
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
-      rotation.AppendXRotation(90.0f / 180.0f * 3.141592f);
-      matrix scaling;
-      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-      scaling.SetScale(particle->scale, particle->scale, 1.0f);
-      matrix result;
-      result.Compose(scaling, rotation);
-      particle->transform = result;
-    }
+    this->UpdateFloor(particle);
 
     ++particle->elapsedFrames;
   }
@@ -197,71 +277,32 @@ void CMagicFloorEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
 
-    if (particle) {
-      const int direction = static_cast<int>(particle->angle + 5.0f) % 360;
-      particle->angle = static_cast<float>(direction);
-      const int sweep = std::min(particle->angleParameter + 3, 180);
-      particle->angleParameter = sweep;
-      int alpha = particle->alpha;
-      const int phase = particle->elapsedFrames % 300;
-      if (phase == 0) {
-        alpha = 50;
-      } else if (phase > 100) {
-        alpha = std::max(alpha - 1, 0);
-      }
-      if (phase < 12) {
-        ++alpha;
-      }
-      particle->alpha = alpha;
-
-      const int segment = particle->columnIndex;
-      const float radius = particle->animationParameter;
-      const int angle =
-        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(sweep) / 20.0f) * segment) +
-                         particle->angle) %
-        360;
-      const int tilt = particle->phaseParameter;
-      const float spread = radius * g_cosTable[tilt];
-      const float height = radius * g_sinTable[tilt];
-      const float cosine = g_cosTable[angle];
-      const float sine = g_sinTable[angle];
-      const float offsetX = cosine * spread;
-      const float offsetZ = sine * spread;
-
-      EffectPoint points[4];
-      const float floorRadius = this->scaleParameter;
-      points[0].x = floorRadius * cosine;
-      points[0].y = -particle->speedParameter;
-      points[0].z = floorRadius * sine;
-      points[1].x = points[0].x + offsetX;
-      points[1].y = points[0].y - height;
-      points[1].z = points[0].z + offsetZ;
-
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
-
-      if (segment != 0) {
-        particle->vertices[0].x = this->lastPoints[1].x;
-        particle->vertices[0].y = this->lastPoints[1].y;
-        particle->vertices[0].z = this->lastPoints[1].z;
-        particle->vertices[2].x = this->lastPoints[0].x;
-        particle->vertices[2].y = this->lastPoints[0].y;
-        particle->vertices[2].z = this->lastPoints[0].z;
-      }
-
-      this->lastPoints[0].x = points[0].x;
-      this->lastPoints[0].y = points[0].y;
-      this->lastPoints[0].z = points[0].z;
-      this->lastPoints[1].x = points[1].x;
-      this->lastPoints[1].y = points[1].y;
-      this->lastPoints[1].z = points[1].z;
-    }
+    this->UpdateCloud(particle);
 
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00B49850
+__forceinline void CMagicFloorEffect::RenderFloor(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
+// OFFSET: 0x00B49890
+// FUNCTION: fn_45965
+__forceinline void CMagicFloorEffect::RenderCloud(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(particle->columnIndex - 1) / 21.0f;
+    quad.right = static_cast<float>(particle->columnIndex) / 21.0f;
+    particle->Render(quad);
   }
 }
 
@@ -269,23 +310,10 @@ void CMagicFloorEffect::OnProcess() {
 // FUNCTION: fn_18936
 void CMagicFloorEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->floors.begin(); it != this->floors.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderFloor(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->columnIndex > 0) {
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(particle->columnIndex - 1) / 21.0f;
-      quad.right = static_cast<float>(particle->columnIndex) / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderCloud(*it);
   }
 }

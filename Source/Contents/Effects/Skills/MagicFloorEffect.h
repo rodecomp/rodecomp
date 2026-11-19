@@ -12,6 +12,7 @@ class CParticle;
 class CMagicFloorEffect : public CEffect {
 public:
   CMagicFloorEffect();
+  ~CMagicFloorEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -25,6 +26,13 @@ public:
   /* 00E4 */ EffectPoint unknown_00E4[2];
   /* 00FC */ std::vector<CParticle*> floors;
   /* 0108 */ std::vector<CParticle*> particles;
+
+private:
+  void ResetFloor(CParticle* particle);
+  void UpdateFloor(CParticle* particle);
+  void UpdateCloud(CParticle* particle);
+  void RenderFloor(CParticle* particle);
+  void RenderCloud(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
