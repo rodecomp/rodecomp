@@ -1752,9 +1752,10 @@ UITreeNode* UITreeView::AddNode(UITreeNode* node, int atFront) {
     this->AddNodeLabel(node, node->id);
     if (atFront) {
       parent->children.push_front(node);
-    } else {
-      parent->children.push_back(node);
+      return node;
     }
+    parent->children.push_back(node);
+    return node;
   } else {
     node->parent = this->root;
     if (this->FindChildNode(this->root, node->id, node->secondaryId)) {
@@ -1764,11 +1765,11 @@ UITreeNode* UITreeView::AddNode(UITreeNode* node, int atFront) {
     this->AddNodeLabel(node, node->id);
     if (atFront) {
       this->root->children.push_front(node);
-    } else {
-      this->root->children.push_back(node);
+      return node;
     }
+    this->root->children.push_back(node);
+    return node;
   }
-  return node;
 }
 
 // OFFSET: 0x0089E470
