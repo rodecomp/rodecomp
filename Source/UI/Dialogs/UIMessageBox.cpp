@@ -4181,13 +4181,17 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
 
         BOOL badName = FALSE;
+        BOOL blank = FALSE;
         if (g_session.HasControlCharacter(this->m_nameEdit->Text())) {
           badName = TRUE;
-        } else if (!allowed) {
-          badName = TRUE;
+          blank = g_session.IsBlankString(this->m_nameEdit->Text());
+        } else {
+          blank = g_session.IsBlankString(this->m_nameEdit->Text());
+          if (!allowed) {
+            badName = TRUE;
+          }
         }
 
-        const BOOL blank = g_session.IsBlankString(this->m_nameEdit->Text());
         if (badName || !valid || blank) {
           if (badName) {
             g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
