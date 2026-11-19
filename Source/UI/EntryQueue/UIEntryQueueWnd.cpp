@@ -69,8 +69,9 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 __declspec(noinline) UIEntryQueueListBox::UIEntryQueueListBox() : UIListBox() {
 }
 
-// INLINED
-UIEntryQueueListBox::~UIEntryQueueListBox() {
+// OFFSET: 0x00BA4370
+// FUNCTION: fn_46368
+__declspec(noinline) UIEntryQueueListBox::~UIEntryQueueListBox() {
 }
 
 // OFFSET: 0x00BA4490
