@@ -16,6 +16,33 @@ extern "C" {
 // GLOBAL: gl_24839
 CSpecialPopupMgr* g_specialPopupMgr = nullptr;
 
+// OFFSET: 0x007A72C0
+// FUNCTION: fn_46425
+CSpecialPopupMgr::CSpecialPopupMgr() {
+  this->m_initialized = true;
+}
+
+// OFFSET: 0x007A75A0
+// FUNCTION: fn_46426
+__declspec(noinline) CSpecialPopupMgr::~CSpecialPopupMgr() = default;
+
+// OFFSET: 0x007A7610
+// FUNCTION: fn_46427
+__declspec(noinline) PopupData::~PopupData() = default;
+
+// OFFSET: 0x007A7880
+// FUNCTION: fn_46428
+void CSpecialPopupMgr::AddDescription(int id, std::string description) {
+  this->m_popups[id].m_descriptions.push_back(description);
+}
+
+// OFFSET: 0x007A7900
+// FUNCTION: fn_46429
+void CSpecialPopupMgr::SetMessage(int id, int messageId, unsigned int color) {
+  this->m_popups[id].m_messageId = messageId;
+  this->m_popups[id].m_color = color;
+}
+
 // OFFSET: 0x007A7930
 // FUNCTION: fn_09052
 bool CSpecialPopupMgr::Create() {
@@ -161,7 +188,7 @@ int CSpecialPopupMgr::LuaAddMsg(lua_State* state) {
 
   const int messageId = static_cast<int>(lua_tonumber(state, -2));
   const unsigned int color = static_cast<unsigned int>(lua_tonumber(state, -1));
-  g_specialPopupMgr->SetMessage(id, messageId, color);
+  g_specialPopupMgr->SetMessage(id, messageId, RGB(color >> 16, color >> 8, color));
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatPopupString("good").c_str());
   return 2;

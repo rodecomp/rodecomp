@@ -12,8 +12,7 @@ struct PopupData {
   // INLINED
   PopupData() : m_messageId(0), m_color(0xFFFFFFFF) {
   }
-  virtual ~PopupData() {
-  }
+  virtual ~PopupData();
 
   /* 0004 */ int m_messageId;
   /* 0008 */ unsigned int m_color;
@@ -23,12 +22,8 @@ struct PopupData {
 // VTABLE: vt_00753
 class CSpecialPopupMgr {
 public:
-  // INLINED
-  CSpecialPopupMgr() {
-    this->m_initialized = true;
-  }
-  virtual ~CSpecialPopupMgr() {
-  }
+  CSpecialPopupMgr();
+  virtual ~CSpecialPopupMgr();
 
   static bool Create();
   static void Destroy();
@@ -37,16 +32,8 @@ public:
   static int LuaAddDesc(lua_State* state);
   static int LuaAddMsg(lua_State* state);
 
-  // INLINED
-  void AddDescription(int id, std::string description) {
-    this->m_popups[id].m_descriptions.push_back(description);
-  }
-
-  // INLINED
-  void SetMessage(int id, int messageId, unsigned int color) {
-    this->m_popups[id].m_messageId = messageId;
-    this->m_popups[id].m_color = static_cast<unsigned char>(color >> 16) | (static_cast<unsigned char>(color >> 8) << 8) | (static_cast<unsigned char>(color) << 16);
-  }
+  void AddDescription(int id, std::string description);
+  void SetMessage(int id, int messageId, unsigned int color);
 
   /* 0004 */ bool m_initialized;
   /* 0008 */ std::map<int, PopupData> m_popups;
