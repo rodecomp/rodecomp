@@ -92,14 +92,15 @@ bool CStormGustEffect::IsAlive() {
 // FUNCTION: fn_46039
 __forceinline void CStormGustEffect::UpdateAlpha(CParticle* particle) {
   if (particle) {
+    int alpha = particle->alpha;
     const int remaining = 215 - this->frame;
     int fade = 0;
     if (this->frame == remaining - 10) {
-      const float step = -(particle->alpha / (remaining - this->frame));
+      const float step = -(alpha / (remaining - this->frame));
       fade = static_cast<int>(step);
     }
 
-    int alpha = particle->alpha + fade;
+    alpha += fade;
     if (alpha < 0) {
       alpha = 0;
     }
