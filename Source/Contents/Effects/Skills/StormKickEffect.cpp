@@ -359,7 +359,8 @@ __forceinline void CStormKickEffect::AdvanceCloud(CParticle* particle) {
         alpha += 3;
       }
     } else if (frame > 50) {
-      alpha = alpha - 1 < 0 ? 0 : alpha - 1;
+      alpha -= 1;
+      alpha = alpha < 0 ? 0 : alpha;
     } else if (frame < 12) {
       ++alpha;
     }
