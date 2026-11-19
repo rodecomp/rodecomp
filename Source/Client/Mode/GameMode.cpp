@@ -1034,16 +1034,16 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
   CSkillInfo skill = g_session.LookupSkill(id);
   if (!skill.available) {
     skill = g_session.m_skillBundle.Pending(id);
+    level = skill.level;
     if (!skill.available) {
       return range;
     }
-
-    level = skill.level;
   }
 
+  const int skillRange = skill.range;
   int reduction = 0;
   g_session.m_hotkeyScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
-  range += skill.range - reduction;
+  range += skillRange - reduction;
   return range;
 }
 
@@ -6963,7 +6963,9 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   drag.name = packet->name;
   drag.skillName = packet->skillName;
   drag.skillLevel = packet->skillLevel;
-  std::memcpy(drag.cards, packet->cards, sizeof(drag.cards));
+  for (int index = 0; index < 4; ++index) {
+    drag.cards[index] = packet->cards[index];
+  }
   drag.skill = packet->skill;
   drag.optionCount = packet->optionCount;
   if (drag.optionCount > 5) {
