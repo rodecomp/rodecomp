@@ -287,7 +287,7 @@ void ActionFrame::InitializeCells(unsigned cellCount) {
   if (this->cells.size() > size) {
     this->cells.erase(this->cells.begin() + size, this->cells.end());
   } else if (this->cells.size() < size) {
-    this->cells.resize(size);
+    this->cells.resize(size, SpriteFrameCell{});
   }
   this->anchors.clear();
   this->anchorCount = 0;
