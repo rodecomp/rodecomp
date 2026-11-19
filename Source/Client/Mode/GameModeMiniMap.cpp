@@ -751,7 +751,12 @@ void CGameMode::DrawTimeAttackTimer() {
 
   const int center = g_renderer->viewport.width / 2;
   for (int index = 0; index < total; ++index, --startIndex) {
-    const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
+    int digit;
+    if ((index + 1) % 3 != 0) {
+      digit = digits[startIndex];
+    } else {
+      digit = 10;
+    }
     this->DrawActionSprite(
     center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
     );
