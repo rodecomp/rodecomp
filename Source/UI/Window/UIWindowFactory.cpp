@@ -53,7 +53,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
 
     int savedX;
     int savedY;
-    auto saved = this->savedRectangles.find(id);
+    auto saved = this->savedRectangles.find(int{id});
     if (saved != this->savedRectangles.end() && saved->second != nullptr) {
       savedX = saved->second->x;
       savedY = saved->second->y;
@@ -71,7 +71,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     }
 
     window->Move(x, y);
-    this->rendered.push_back(window);
+    this->rendered.push_back(static_cast<UIWindow*>(window));
     if (id == 0x9F) {
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->quickSlotWndInfo), 0, 0, 0);
     } else if (id == 0x9D) {
