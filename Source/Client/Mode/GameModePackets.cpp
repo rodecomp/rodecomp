@@ -13744,8 +13744,8 @@ void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
 // FUNCTION: fn_22162
 void CGameMode::ReceiveItem1758StoreList(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_PC_PURCHASE_MYITEMLIST*>(packet);
-  std::vector<ITEM_INFO> items;
   const unsigned int count = static_cast<unsigned int>(p->length - 8) / sizeof(Item1758StoreRecord2);
+  std::vector<ITEM_INFO> items;
   items.reserve(count);
   for (std::int64_t i = 0; i < count; ++i) {
     Item1758StoreRecord2 record;
