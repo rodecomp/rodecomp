@@ -40,7 +40,7 @@ __declspec(noinline) CAcidifiedThrow::~CAcidifiedThrow() {
 
 // OFFSET: 0x006F3680
 // FUNCTION: fn_46015
-void CAcidifiedThrow::PointOnCurve(vector3d& result, vector3d start, vector3d control, vector3d end, float t) {
+void CAcidifiedThrow::PointOnCurve(vector3d& result, vector3d start, vector3d control, vector3d end, float t) const {
   const float oneMinusT = g_projectionDepthNumerator - t;
   const float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
   const float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));

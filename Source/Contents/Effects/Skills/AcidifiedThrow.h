@@ -18,7 +18,7 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
-  static void PointOnCurve(vector3d& result, vector3d start, vector3d control, vector3d end, float t);
+  void PointOnCurve(vector3d& result, vector3d start, vector3d control, vector3d end, float t) const;
 
   /* 00CC */ CEZ2STRParticle* projectileEmitter;
   /* 00D0 */ CEZ2STRParticle* impactEmitters[3];
