@@ -250,8 +250,8 @@ bool CSoundMaker::OnProcess() {
 
   const float deltaX = player->render.position.x - this->render.position.x;
   const float deltaZ = player->render.position.z - this->render.position.z;
-  float signX = 1.0f;
   float signZ = 1.0f;
+  float signX = 1.0f;
   if (deltaX >= 0.0f && deltaZ >= 0.0f) {
   } else if (deltaX < 0.0f && deltaZ >= 0.0f) {
     signX = -1.0f;
@@ -275,7 +275,8 @@ bool CSoundMaker::OnProcess() {
 
   const float x = this->render.position.x + offsetX;
   const float z = this->render.position.z + offsetZ;
-  if (player->CalcDist(x, z) - this->range > 75.0f || this->file.empty()) {
+  const float playerDistance = player->CalcDist(x, z);
+  if (playerDistance - this->range > 75.0f || this->file.empty()) {
     return true;
   }
 
