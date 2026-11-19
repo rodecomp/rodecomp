@@ -444,10 +444,10 @@ void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const*
 // OFFSET: 0x008A2480
 // FUNCTION: fn_45677
 void UITextViewEX::ArrangeLinks() {
-  int x = 0;
   auto link = this->extraLinks.begin();
   const auto last = this->extraLinks.end();
   auto first = link;
+  int x = 0;
   for (; link != last; ++link) {
     UIString* label = *link;
     const std::string caption = label->GetText();
