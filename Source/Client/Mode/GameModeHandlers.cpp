@@ -2562,8 +2562,10 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     for (int card = 0; card < 4; ++card) {
       item.cards[card] = packet->cards[card];
     }
-    item.optionCount = CountItemRandomOptions(packet->options);
-    item.identity[2] = packet->expireTime;
+    const int optionCount = CountItemRandomOptions(packet->options);
+    const int expireTime = packet->expireTime;
+    item.optionCount = optionCount;
+    item.identity[2] = expireTime;
     for (int index = 0; index < item.optionCount; ++index) {
       item.options[index] = packet->options[index];
     }
