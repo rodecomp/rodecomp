@@ -5,6 +5,7 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -14,6 +15,11 @@
 // OFFSET: 0x00B73840
 // FUNCTION: fn_19146
 CRotateItemEffect::CRotateItemEffect() : CEffect(-1), alpha(0), angle(0) {
+}
+
+// OFFSET: 0x00B738D0
+// FUNCTION: fn_46069
+__declspec(noinline) CRotateItemEffect::~CRotateItemEffect() {
 }
 
 // OFFSET: 0x00B739B0
@@ -58,57 +64,69 @@ bool CRotateItemEffect::IsAlive() {
   return !this->IsFinished();
 }
 
+// OFFSET: 0x00B73E20
+// FUNCTION: fn_46070
+__forceinline void CRotateItemEffect::UpdateParticle(CParticle* particle) {
+  if (particle && this->frame >= 5) {
+    float& particleAngle = particle->angle;
+    if (particle->columnIndex == 0) {
+      particleAngle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + particleAngle) % 360);
+      if (this->id != EF_ROTATE_HUUMARANKA) {
+        if (CRenderObject* object = FindRenderObject(this->actor)) {
+          object->render.angle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + object->render.angle) % 360);
+        }
+      }
+    } else {
+      this->alpha -= particle->columnIndex != 1 ? 25 : 150;
+      particle->alpha = this->alpha;
+      particleAngle = this->angle;
+    }
+
+    const int index = static_cast<int>(particleAngle);
+    const float radius = particle->animationParameter;
+    particle->offset = vector3d{radius * g_cosTable[index], -8.0f, radius * g_sinTable[index]};
+    this->angle = static_cast<float>(static_cast<int>(particleAngle - 5.0f) % 360);
+    this->alpha = particle->alpha;
+    if (particle->alpha > 0) {
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      CGameMode* mode = g_modeMgr.GetGameMode();
+      rotation.MakeXRotation(mode->camera->camera.pitch / 180.0f * 3.141592f);
+      rotation.AppendYRotation(static_cast<float>(static_cast<int>(particleAngle + 45.0f) % 360) / 180.0f * 3.141592f);
+      matrix scale;
+      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+      scale.SetScale(particle->scale, particle->scale, 1.0f);
+      matrix translate;
+      std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
+      translate.MakeTranslate(particle->offsetX, particle->offsetY, particle->offsetZ);
+      matrix first;
+      first.Compose(scale, rotation);
+      matrix result;
+      result.Compose(first, translate);
+      particle->transform = result;
+    }
+  }
+}
+
 // OFFSET: 0x00B73AD0
 // FUNCTION: fn_19151
 void CRotateItemEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    vector3d& particlePosition = (*it)->position;
+    vector3d& particlePosition = particle->position;
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      if (this->frame >= 5) {
-        float& particleAngle = particle->angle;
-        if (particle->columnIndex == 0) {
-          particleAngle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + particleAngle) % 360);
-          if (this->id != 984) {
-            if (CRenderObject* object = FindRenderObject(this->actor)) {
-              object->render.angle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + object->render.angle) % 360);
-            }
-          }
-        } else {
-          this->alpha -= particle->columnIndex != 1 ? 25 : 150;
-          particle->alpha = this->alpha;
-          particleAngle = this->angle;
-        }
-
-        const int index = static_cast<int>(particleAngle);
-        const float radius = particle->animationParameter;
-        particle->offset = vector3d{radius * g_cosTable[index], -8.0f, radius * g_sinTable[index]};
-        this->angle = static_cast<float>(static_cast<int>(particleAngle - 5.0f) % 360);
-        this->alpha = particle->alpha;
-        if (particle->alpha > 0) {
-          matrix rotation;
-          std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-          CGameMode* mode = g_modeMgr.GetGameMode();
-          rotation.MakeXRotation(mode->camera->camera.pitch / 180.0f * 3.141592f);
-          rotation.AppendYRotation(static_cast<float>(static_cast<int>(particleAngle + 45.0f) % 360) / 180.0f * 3.141592f);
-          matrix scale;
-          std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-          scale.SetScale(particle->scale, particle->scale, 1.0f);
-          matrix translate;
-          std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-          translate.MakeTranslate(particle->offsetX, particle->offsetY, particle->offsetZ);
-          matrix first;
-          first.Compose(scale, rotation);
-          matrix result;
-          result.Compose(first, translate);
-          particle->transform = result;
-        }
-      }
-    }
+    this->UpdateParticle(particle);
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00B74170
+// FUNCTION: fn_46071
+__forceinline void CRotateItemEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
 
@@ -116,8 +134,6 @@ void CRotateItemEffect::OnProcess() {
 // FUNCTION: fn_19152
 void CRotateItemEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(*it);
   }
 }

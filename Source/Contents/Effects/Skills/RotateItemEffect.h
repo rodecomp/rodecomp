@@ -11,6 +11,7 @@ class CParticle;
 class CRotateItemEffect : public CEffect {
 public:
   CRotateItemEffect();
+  ~CRotateItemEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -21,6 +22,10 @@ public:
   /* 00CC */ int alpha;
   /* 00D0 */ float angle;
   /* 00D4 */ std::vector<CParticle*> particles;
+
+private:
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
