@@ -1792,8 +1792,8 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
   offset += 6;
   if (8000 != header.tag) {
     offset = static_cast<unsigned>(-1);
-  } else {
-    while (data.size() > offset) {
+  } else if (data.size() > 6) {
+    do {
       header.Read(data.data() + offset);
       offset += 6;
 
@@ -1950,13 +1950,21 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       case 8001:
-        this->ResumeRoute();
+        if (this->viewMode == 1) {
+          this->LoadTargetPreview();
+          g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
+        } else if (this->viewMode == 2) {
+          this->ShowRouteResult(this->RouteFromPlayer(), 1);
+          if (!this->hideWindow) {
+            g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
+          }
+        }
         return static_cast<int>(offset);
       default:
         offset += header.size;
         break;
       }
-    }
+    } while (data.size() > offset);
   }
   return static_cast<int>(offset);
 }
