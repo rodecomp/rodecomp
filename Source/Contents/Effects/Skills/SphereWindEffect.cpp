@@ -15,7 +15,7 @@
 // OFFSET: 0x00B77C80
 // FUNCTION: fn_46047
 CSphereWindEffect::CSphereWindEffect()
-    : CEffect(-1), lastInner{}, lastOuter{}, particles() {
+    : CEffect(-1), particles() {
 }
 
 // OFFSET: 0x00B77D20
@@ -116,20 +116,20 @@ static __forceinline void StoreSegment(CSphereWindEffect& effect, CParticle* par
   particle->vertices[3].z = points[3].z;
 
   if (segment != 0) {
-    particle->vertices[0].x = effect.lastOuter.x;
-    particle->vertices[0].y = effect.lastOuter.y;
-    particle->vertices[0].z = effect.lastOuter.z;
-    particle->vertices[2].x = effect.lastInner.x;
-    particle->vertices[2].y = effect.lastInner.y;
-    particle->vertices[2].z = effect.lastInner.z;
+    particle->vertices[0].x = effect.lastEdges[1].x;
+    particle->vertices[0].y = effect.lastEdges[1].y;
+    particle->vertices[0].z = effect.lastEdges[1].z;
+    particle->vertices[2].x = effect.lastEdges[0].x;
+    particle->vertices[2].y = effect.lastEdges[0].y;
+    particle->vertices[2].z = effect.lastEdges[0].z;
   }
 
-  effect.lastInner.x = points[3].x;
-  effect.lastInner.y = points[3].y;
-  effect.lastInner.z = points[3].z;
-  effect.lastOuter.x = points[2].x;
-  effect.lastOuter.y = points[2].y;
-  effect.lastOuter.z = points[2].z;
+  effect.lastEdges[0].x = points[3].x;
+  effect.lastEdges[0].y = points[3].y;
+  effect.lastEdges[0].z = points[3].z;
+  effect.lastEdges[1].x = points[2].x;
+  effect.lastEdges[1].y = points[2].y;
+  effect.lastEdges[1].z = points[2].z;
 }
 
 // OFFSET: 0x00B77FE0
@@ -144,21 +144,21 @@ void CSphereWindEffect::UpdateVertices(CParticle* particle) {
   EffectPoint points[4];
   const int tilt = particle->phaseParameter;
   const float scale = particle->scale;
-  const float radius = particle->speedParameter;
 
   points[0].x = g_cosTable[tilt] * scale * g_cosTable[angle];
   points[0].y = g_sinTable[tilt] * scale * g_cosTable[angle];
   points[0].z = scale * g_sinTable[angle];
+  const float radius = particle->speedParameter;
   points[1].x = -g_sinTable[tilt] * radius;
   points[1].y = g_cosTable[tilt] * radius;
   points[1].z = 0.0f;
   const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
-  points[2].x = points[0].x - points[1].x + offset.x;
-  points[2].y = points[0].y - points[1].y + offset.y;
-  points[2].z = points[0].z - points[1].z + offset.z;
   points[3].x = points[0].x + points[1].x + offset.x;
   points[3].y = points[0].y + points[1].y + offset.y;
   points[3].z = points[0].z + points[1].z + offset.z;
+  points[2].x = points[0].x - points[1].x + offset.x;
+  points[2].y = points[0].y - points[1].y + offset.y;
+  points[2].z = points[0].z - points[1].z + offset.z;
 
   StoreSegment(*this, particle, segment, points);
 }

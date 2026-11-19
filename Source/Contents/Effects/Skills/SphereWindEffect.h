@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_SPHEREWINDEFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -21,8 +22,7 @@ public:
   bool IsAlive() override;
   void UpdateParticle(CParticle* particle);
 
-  /* 00CC */ vector3d lastInner;
-  /* 00D8 */ vector3d lastOuter;
+  /* 00CC */ EffectPoint lastEdges[2];
   /* 00E4 */ std::vector<CParticle*> particles;
 
 private:
@@ -32,7 +32,7 @@ private:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CSphereWindEffect, lastInner) == 0xCC);
+static_assert(offsetof(CSphereWindEffect, lastEdges) == 0xCC);
 static_assert(offsetof(CSphereWindEffect, particles) == 0xE4);
 #endif
 
