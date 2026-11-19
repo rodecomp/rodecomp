@@ -295,10 +295,11 @@ bool DeviceOwnerDX9::SelectFullscreenMode(DWORD adapter, UINT width, UINT height
   if (!selectMode.Select(D3DSCANLINEORDERING_PROGRESSIVE) && !selectMode.Select(D3DSCANLINEORDERING_INTERLACED)) {
     D3DDISPLAYMODEEX mode = {sizeof(mode)};
     D3DDISPLAYROTATION rotation = D3DDISPLAYROTATION_IDENTITY;
-    if (FAILED(this->direct3D->GetAdapterDisplayModeEx(adapter, &mode, &rotation))) {
+    if (SUCCEEDED(this->direct3D->GetAdapterDisplayModeEx(adapter, &mode, &rotation))) {
+      this->displayMode = mode;
+    } else {
       return false;
     }
-    this->displayMode = mode;
   }
   return true;
 }
