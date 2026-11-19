@@ -288,7 +288,9 @@ void CGifRes::CreateBlank(int width, int height) {
 // OFFSET: 0x0074B300
 // FUNCTION: fn_07870
 bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
-  if (!IsGifSignature(data)) {
+  // STRING: st_03266
+  static constexpr char signature[] = {'G', 'I', 'F'};
+  if (std::memcmp(data, signature, sizeof(signature)) != 0) {
     return false;
   }
 
@@ -322,7 +324,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
   std::uint8_t transparent = 0;
   std::uint8_t transparentIndex = 0;
-  unsigned int delay = 0;
+  std::uint16_t delay = 0;
   while (bytes > cursor - start) {
     std::uint8_t blockType;
     memcpy_s(&blockType, sizeof(blockType), cursor, sizeof(blockType));
@@ -353,7 +355,8 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
         identifier.assign(cursor, cursor + blockSize);
         cursor += blockSize;
 
-        constexpr char netscape[] = {'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E'};
+        // GLOBAL: gl_25984
+        static constexpr char netscape[] = {'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E'};
         if (identifier.find(netscape, 0, sizeof(netscape)) != std::string::npos) {
           std::uint16_t subBlock;
           memcpy_s(&subBlock, sizeof(subBlock), cursor, sizeof(subBlock));
@@ -429,8 +432,8 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
           memcpy_s(pixels, 4 * pixelCount, this->frames.back().second, 4 * pixelCount);
         }
 
-        for (int y = 0; y < descriptor.height; ++y) {
-          for (int x = 0; x < descriptor.width; ++x) {
+        for (std::uint16_t y = 0; y < descriptor.height; ++y) {
+          for (std::uint16_t x = 0; x < descriptor.width; ++x) {
             const std::uint32_t color = palette[std::min<std::uint16_t>(indices[y * descriptor.width + x], paletteCount)];
             if (this->frames.empty() || transparent != 1 || color != palette[std::min<std::uint16_t>(transparentIndex, paletteCount)]) {
               const unsigned int position = (descriptor.top + y) * screenWidth + x + descriptor.left;
