@@ -31,8 +31,7 @@ __declspec(noinline) CRedLineEffect::~CRedLineEffect() {
 // OFFSET: 0x00B71770
 // FUNCTION: fn_19134
 void CRedLineEffect::CreateLines(int layer) {
-  int row = 0;
-  for (int angle = 0; angle < 360; angle += 90) {
+  for (int row = 0; row < 4; ++row) {
     const int life = ClampedRandom(40) + 60;
     const float scale = static_cast<float>(ClampedRandom(11)) * 0.015f + 0.15f;
     const short direction = static_cast<short>(ClampedRandom(360));
@@ -43,12 +42,12 @@ void CRedLineEffect::CreateLines(int layer) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_red.tga");
-        particle->rowIndex = row;
         particle->effectId = this->id;
+        particle->rowIndex = row;
         particle->columnIndex = segment;
         particle->groupIndex = 3;
         particle->angleParameter = 360;
-        particle->angle = static_cast<float>(angle);
+        particle->angle = static_cast<float>(row * 90);
         particle->alpha = 150;
         particle->speedParameter = 120.0f;
         particle->phaseParameter = 90;
@@ -62,20 +61,20 @@ void CRedLineEffect::CreateLines(int layer) {
         this->lines.push_back(particle);
       }
     }
-
-    ++row;
   }
 }
 
 // OFFSET: 0x00B71940
 // FUNCTION: fn_46051
-void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
+__forceinline void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
   if (!particle) {
     return;
   }
 
   const int age = particle->elapsedFrames;
+  const int segment = particle->columnIndex;
   float width;
+
   if (age < 100) {
     width = 0.0f;
   } else if (age <= 115) {
@@ -86,28 +85,28 @@ void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
 
   width = std::max(width, 0.0f);
 
-  const int segment = particle->columnIndex;
   const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
   const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
-  const float phaseCosine = g_cosTable[particle->phaseParameter];
-  const float phaseSine = g_sinTable[particle->phaseParameter];
-  const float cosine = g_cosTable[angle];
-  const float sine = g_sinTable[angle];
+  const float cosAngle = g_cosTable[angle];
+  const float sinAngle = g_sinTable[angle];
+  const float flat = width * g_cosTable[particle->phaseParameter];
+  const float rise = width * g_sinTable[particle->phaseParameter];
+  float outerX = flat * cosAngle;
+  float outerZ = flat * sinAngle;
 
-  const float rise = width * phaseSine;
-  const float flat = width * phaseCosine;
-  float innerX = particle->scale * cosine;
+  EffectPoint points[2];
+  float innerX = particle->scale * cosAngle;
   float innerY = 0.0f;
-  float innerZ = particle->scale * sine;
+  float innerZ = particle->scale * sinAngle;
 
-  if (g_projectionDepthNumerator == particle->animationParameter) {
+  if (1.0f == particle->animationParameter) {
     innerX *= 1.5f;
     innerZ *= 1.5f;
   }
 
-  float outerX = flat * cosine + innerX;
+  outerX += innerX;
   float outerY = innerY - rise;
-  float outerZ = flat * sine + innerZ;
+  outerZ += innerZ;
 
   innerX += particle->offsetX;
   innerY += particle->offsetY;
@@ -115,6 +114,13 @@ void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
   outerX += particle->offsetX;
   outerY += particle->offsetY;
   outerZ += particle->offsetZ;
+
+  particle->vertices[1].x = outerX;
+  particle->vertices[1].y = outerY;
+  particle->vertices[1].z = outerZ;
+  particle->vertices[3].x = innerX;
+  particle->vertices[3].y = innerY;
+  particle->vertices[3].z = innerZ;
 
   if (segment != 0) {
     particle->vertices[0].x = this->previousPoints[1].x;
@@ -124,13 +130,6 @@ void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
     particle->vertices[2].y = this->previousPoints[0].y;
     particle->vertices[2].z = this->previousPoints[0].z;
   }
-
-  particle->vertices[1].x = outerX;
-  particle->vertices[1].y = outerY;
-  particle->vertices[1].z = outerZ;
-  particle->vertices[3].x = innerX;
-  particle->vertices[3].y = innerY;
-  particle->vertices[3].z = innerZ;
 
   this->previousPoints[0].x = innerX;
   this->previousPoints[0].y = innerY;
@@ -142,92 +141,29 @@ void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
 
 // OFFSET: 0x00B71BF0
 // FUNCTION: fn_46052
-void CRedLineEffect::UpdateSegment(CParticle* particle) {
+__forceinline void CRedLineEffect::UpdateSegment(CParticle* particle) {
   if (!particle) {
     return;
   }
 
-  particle->angle += g_projectionDepthNumerator;
-  if (particle->angle >= 360.0f) {
-    particle->angle -= 360.0f;
+  float spin = particle->angle + 1.0f;
+  const int age = particle->elapsedFrames;
+  if (spin >= 360.0f) {
+    spin -= 360.0f;
   }
+  particle->angle = spin;
 
-  if (particle->elapsedFrames >= 125) {
-    int alpha = particle->alpha - 15;
+  if (age >= 125) {
+    const int alpha = particle->alpha - 15;
     if (alpha < 0) {
       particle->alpha = 0;
     } else {
       particle->alpha = alpha;
     }
-
-    float speed = particle->speedParameter - 5.0f;
-    particle->speedParameter = speed < 0.0f ? 0.0f : speed;
+    particle->speedParameter = std::max(particle->speedParameter - 5.0f, 0.0f);
   }
 
-  const int age = particle->elapsedFrames;
-  float width;
-  if (age < 100) {
-    width = 0.0f;
-  } else if (age <= 115) {
-    width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
-  } else {
-    width = particle->speedParameter;
-  }
-
-  width = std::max(width, 0.0f);
-
-  const int segment = particle->columnIndex;
-  const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
-  const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
-  const float phaseCosine = g_cosTable[particle->phaseParameter];
-  const float phaseSine = g_sinTable[particle->phaseParameter];
-  const float cosine = g_cosTable[angle];
-  const float sine = g_sinTable[angle];
-
-  const float rise = width * phaseSine;
-  const float flat = width * phaseCosine;
-  float innerX = particle->scale * cosine;
-  float innerY = 0.0f;
-  float innerZ = particle->scale * sine;
-
-  if (g_projectionDepthNumerator == particle->animationParameter) {
-    innerX *= 1.5f;
-    innerZ *= 1.5f;
-  }
-
-  float outerX = flat * cosine + innerX;
-  float outerY = innerY - rise;
-  float outerZ = flat * sine + innerZ;
-
-  innerX += particle->offsetX;
-  innerY += particle->offsetY;
-  innerZ += particle->offsetZ;
-  outerX += particle->offsetX;
-  outerY += particle->offsetY;
-  outerZ += particle->offsetZ;
-
-  if (segment != 0) {
-    particle->vertices[0].x = this->previousPoints[1].x;
-    particle->vertices[0].y = this->previousPoints[1].y;
-    particle->vertices[0].z = this->previousPoints[1].z;
-    particle->vertices[2].x = this->previousPoints[0].x;
-    particle->vertices[2].y = this->previousPoints[0].y;
-    particle->vertices[2].z = this->previousPoints[0].z;
-  }
-
-  particle->vertices[1].x = outerX;
-  particle->vertices[1].y = outerY;
-  particle->vertices[1].z = outerZ;
-  particle->vertices[3].x = innerX;
-  particle->vertices[3].y = innerY;
-  particle->vertices[3].z = innerZ;
-
-  this->previousPoints[0].x = innerX;
-  this->previousPoints[0].y = innerY;
-  this->previousPoints[0].z = innerZ;
-  this->previousPoints[1].x = outerX;
-  this->previousPoints[1].y = outerY;
-  this->previousPoints[1].z = outerZ;
+  this->UpdateSegmentVertices(particle);
 }
 
 // OFFSET: 0x00B71B80
@@ -264,94 +200,7 @@ void CRedLineEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
 
-    if (particle != nullptr) {
-      float& spinAngle = particle->angle;
-      float spin = spinAngle + 1.0f;
-      const int age = particle->elapsedFrames;
-
-      if (spin >= 360.0f) {
-        spin -= 360.0f;
-      }
-
-      spinAngle = spin;
-
-      float width;
-
-      if (age >= 125) {
-        const int alpha = particle->alpha - 15;
-        if (alpha < 0) {
-          particle->alpha = 0;
-        } else {
-          particle->alpha = alpha;
-        }
-        particle->speedParameter = std::max(particle->speedParameter - 5.0f, 0.0f);
-      }
-
-      const int segment = particle->columnIndex;
-
-      if (age < 100) {
-        width = 0.0f;
-      } else if (age <= 115) {
-        width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
-      } else {
-        width = particle->speedParameter;
-      }
-
-      width = std::max(width, 0.0f);
-
-      const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
-      const int angle = static_cast<int>(static_cast<float>(step * segment) + spin) % 360;
-      const float cosAngle = g_cosTable[angle];
-      const float sinAngle = g_sinTable[angle];
-      const float flat = width * g_cosTable[particle->phaseParameter];
-      const float rise = width * g_sinTable[particle->phaseParameter];
-      float outerX = flat * cosAngle;
-      float outerZ = flat * sinAngle;
-
-      EffectPoint points[2];
-      float innerX = particle->scale * cosAngle;
-      float innerY = 0.0f;
-      float innerZ = particle->scale * sinAngle;
-
-      if (1.0f == particle->animationParameter) {
-        innerX *= 1.5f;
-        innerZ *= 1.5f;
-      }
-
-      outerX += innerX;
-      float outerY = innerY - rise;
-      outerZ += innerZ;
-
-      innerX += particle->offsetX;
-      innerY += particle->offsetY;
-      innerZ += particle->offsetZ;
-      outerX += particle->offsetX;
-      outerY += particle->offsetY;
-      outerZ += particle->offsetZ;
-
-      particle->vertices[1].x = outerX;
-      particle->vertices[1].y = outerY;
-      particle->vertices[1].z = outerZ;
-      particle->vertices[3].x = innerX;
-      particle->vertices[3].y = innerY;
-      particle->vertices[3].z = innerZ;
-
-      if (segment != 0) {
-        particle->vertices[0].x = this->previousPoints[1].x;
-        particle->vertices[0].y = this->previousPoints[1].y;
-        particle->vertices[0].z = this->previousPoints[1].z;
-        particle->vertices[2].x = this->previousPoints[0].x;
-        particle->vertices[2].y = this->previousPoints[0].y;
-        particle->vertices[2].z = this->previousPoints[0].z;
-      }
-
-      this->previousPoints[0].x = innerX;
-      this->previousPoints[0].y = innerY;
-      this->previousPoints[0].z = innerZ;
-      this->previousPoints[1].x = outerX;
-      this->previousPoints[1].y = outerY;
-      this->previousPoints[1].z = outerZ;
-    }
+    this->UpdateSegment(particle);
 
     ++particle->elapsedFrames;
   }
