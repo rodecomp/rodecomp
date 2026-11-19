@@ -6881,10 +6881,11 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
         g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND_MODE_1);
         g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND_MODE_1);
         g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_2);
-      } else {
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
+        return 0;
       }
+
+      g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+      g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
       return 0;
     case ID_CANCEL: {
       int first;
@@ -8784,10 +8785,13 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == DRAG_ITEM_INVENTORY) {
+    switch (mode->drag.source) {
+    case DRAG_ITEM_INVENTORY:
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
+      break;
+    case DRAG_ITEM_MERCHANT_INVENTORY:
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -8798,58 +8802,68 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] == 0) {
-        continue;
-      }
-
-      item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
-      const int type = static_cast<int>(item.identity[0]);
-      bool matches = false;
-      if (item.saleData.costume != 0) {
-        matches = this->tabIndex == 4;
-      } else {
-        switch (this->tabIndex) {
-        case 0:
-          matches = type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL;
-          break;
-        case 1:
-          matches = type == TYPE_CASH_POINT_ITEM;
-          break;
-        case 2:
-          switch (type) {
-          case TYPE_ARMOR:
-          case TYPE_ARMORTM:
-          case TYPE_ARMORTB:
-          case TYPE_ARMORMB:
-          case TYPE_ARMORTMB:
+      if (item.identity[1] != 0) {
+        item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+        const int type = static_cast<int>(item.identity[0]);
+        bool matches = false;
+        if (item.saleData.costume != 0) {
+          if (this->tabIndex == 4) {
             matches = true;
+          }
+        } else {
+          switch (this->tabIndex) {
+          case 0:
+            if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
+              matches = true;
+            }
+            break;
+          case 1:
+            if (type == TYPE_CASH_POINT_ITEM) {
+              matches = true;
+            }
+            break;
+          case 2:
+            switch (type) {
+            case TYPE_ARMOR:
+            case TYPE_ARMORTM:
+            case TYPE_ARMORTB:
+            case TYPE_ARMORMB:
+            case TYPE_ARMORTMB:
+              matches = true;
+              break;
+            }
+            break;
+          case 3:
+            switch (type) {
+            case TYPE_WEAPON:
+            case TYPE_BOW:
+            case TYPE_BOTHHAND:
+            case TYPE_GUN:
+              matches = true;
+              break;
+            }
+            break;
+          case 5:
+            if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
+              matches = true;
+            }
+            break;
+          case 6:
+            if (type == TYPE_CARD) {
+              matches = true;
+            }
+            break;
+          case 7:
+            if (type == TYPE_EVENT || type == TYPE_PETEGG) {
+              matches = true;
+            }
             break;
           }
-          break;
-        case 3:
-          switch (type) {
-          case TYPE_WEAPON:
-          case TYPE_BOW:
-          case TYPE_BOTHHAND:
-          case TYPE_GUN:
-            matches = true;
-            break;
-          }
-          break;
-        case 5:
-          matches = type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL;
-          break;
-        case 6:
-          matches = type == TYPE_CARD;
-          break;
-        case 7:
-          matches = type == TYPE_EVENT || type == TYPE_PETEGG;
-          break;
         }
-      }
 
-      if (matches) {
-        this->items.push_back(item);
+        if (matches) {
+          this->items.push_back(item);
+        }
       }
     }
 
@@ -8985,9 +8999,9 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->buttons[1]->Enable(0);
       this->buttons[3]->Enable(1);
       this->buttons[3]->Move(this->geometry.width - 48, this->geometry.height - 52);
-      for (int id = 146; id < 153; ++id) {
-        if (g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
-          g_windowMgr.LookupWindow(static_cast<WindowId>(id))->SendMsg(nullptr, UM_SORT_ITEMS, 0, 0, 0, 0);
+      for (int index = 0; index < 7; ++index) {
+        if (g_windowMgr.LookupWindow(static_cast<WindowId>(index + WID_ITEMSTORESUBWND_TAB_0))) {
+          g_windowMgr.LookupWindow(static_cast<WindowId>(index + WID_ITEMSTORESUBWND_TAB_0))->SendMsg(nullptr, UM_SORT_ITEMS, 0, 0, 0, 0);
         }
       }
       if (g_windowMgr.LookupWindow(WID_ITEMSTORESUBWND_TAB_7)) {
@@ -9015,7 +9029,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       if (!text.empty()) {
         UIItemStoreFindWnd* window = static_cast<UIItemStoreFindWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND));
         this->m_searchWindow = window;
-        window->SetSearchText(std::string(text.c_str(), text.size()));
+        window->SetSearchText(text);
         this->m_searchWindow->SendMsg(nullptr, UM_REFRESHITEM, 365, 0, 0, 0);
         this->m_searchWindow->SendMsg(nullptr, UM_SEARCH_ITEMS, 0, 0, 0, 0);
         this->searchEdit->SetText("");
@@ -9078,7 +9092,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->m_searchWindow = g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND);
         std::string text(this->searchEdit->Text());
         if (!text.empty() && this->FilterByName(text)) {
-          static_cast<UIItemStoreFindWnd*>(this->m_searchWindow)->SetSearchText(std::string(text.c_str(), text.size()));
+          static_cast<UIItemStoreFindWnd*>(this->m_searchWindow)->SetSearchText(text);
           this->m_searchWindow->SendMsg(nullptr, UM_SEARCH_ITEMS, 0, 0, 0, 0);
         }
       }
@@ -9087,10 +9101,13 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == DRAG_ITEM_INVENTORY) {
+    switch (mode->drag.source) {
+    case DRAG_ITEM_INVENTORY:
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
+      break;
+    case DRAG_ITEM_MERCHANT_INVENTORY:
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -9133,58 +9150,68 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] == 0) {
-        continue;
-      }
-
-      item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
-      const int type = static_cast<int>(item.identity[0]);
-      bool matches = false;
-      if (item.saleData.costume != 0) {
-        matches = this->m_sortMode == 4;
-      } else {
-        switch (this->m_sortMode) {
-        case 0:
-          matches = type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL;
-          break;
-        case 1:
-          matches = type == TYPE_CASH_POINT_ITEM;
-          break;
-        case 2:
-          switch (type) {
-          case TYPE_ARMOR:
-          case TYPE_ARMORTM:
-          case TYPE_ARMORTB:
-          case TYPE_ARMORMB:
-          case TYPE_ARMORTMB:
+      if (item.identity[1] != 0) {
+        item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+        const int type = static_cast<int>(item.identity[0]);
+        bool matches = false;
+        if (item.saleData.costume != 0) {
+          if (this->m_sortMode == 4) {
             matches = true;
+          }
+        } else {
+          switch (this->m_sortMode) {
+          case 0:
+            if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
+              matches = true;
+            }
+            break;
+          case 1:
+            if (type == TYPE_CASH_POINT_ITEM) {
+              matches = true;
+            }
+            break;
+          case 2:
+            switch (type) {
+            case TYPE_ARMOR:
+            case TYPE_ARMORTM:
+            case TYPE_ARMORTB:
+            case TYPE_ARMORMB:
+            case TYPE_ARMORTMB:
+              matches = true;
+              break;
+            }
+            break;
+          case 3:
+            switch (type) {
+            case TYPE_WEAPON:
+            case TYPE_BOW:
+            case TYPE_BOTHHAND:
+            case TYPE_GUN:
+              matches = true;
+              break;
+            }
+            break;
+          case 5:
+            if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
+              matches = true;
+            }
+            break;
+          case 6:
+            if (type == TYPE_CARD) {
+              matches = true;
+            }
+            break;
+          case 7:
+            if (type == TYPE_EVENT || type == TYPE_PETEGG) {
+              matches = true;
+            }
             break;
           }
-          break;
-        case 3:
-          switch (type) {
-          case TYPE_WEAPON:
-          case TYPE_BOW:
-          case TYPE_BOTHHAND:
-          case TYPE_GUN:
-            matches = true;
-            break;
-          }
-          break;
-        case 5:
-          matches = type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL;
-          break;
-        case 6:
-          matches = type == TYPE_CARD;
-          break;
-        case 7:
-          matches = type == TYPE_EVENT || type == TYPE_PETEGG;
-          break;
         }
-      }
 
-      if (matches) {
-        this->items.push_back(item);
+        if (matches) {
+          this->items.push_back(item);
+        }
       }
     }
 
