@@ -170,13 +170,13 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_info.name[0] = 0;
   this->m_info.job = 0;
   this->m_info.jobPoint = 0;
-  this->m_info.hp = 100;
-  this->m_info.maxHp = 100;
-  this->m_info.sp = 100;
-  this->m_info.maxSp = 100;
-  this->m_info.exp = 0;
   this->m_info.level = 1;
   this->m_info.skillPoint = 1;
+  this->m_info.maxHp = 100;
+  this->m_info.hp = 100;
+  this->m_info.maxSp = 100;
+  this->m_info.sp = 100;
+  this->m_info.exp = 0;
   this->m_info.slot = static_cast<unsigned char>(g_selectedSlotIndex);
   this->m_info.headPalette = 0;
   this->m_info.bodyStyle = 0;
@@ -189,28 +189,28 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_view.x = 70;
   this->m_view.y = 123;
 
-  this->m_view.actionNames[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0)));
-  this->m_view.spriteNames[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0)));
+  this->m_view.actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
+  this->m_view.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0));
 
   if (this->m_info.sex == 1 && 13 == this->m_info.head) {
     this->m_info.head = 14;
   }
 
   int head = this->m_info.head;
-  this->m_view.actionNames[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_info.job, this->m_info.sex, &head)));
-  this->m_view.spriteNames[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_info.job, this->m_info.sex, &head)));
+  this->m_view.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_info.job, this->m_info.sex, &head));
+  this->m_view.spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_info.job, this->m_info.sex, &head));
 
   const int bodyPalette = this->m_info.bodyStyle;
   this->m_info.head = static_cast<std::int16_t>(head);
   this->m_view.bodyPalette = bodyPalette;
   if (bodyPalette) {
-    this->m_view.bodyPaletteName.assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_info.job, this->m_info.sex, bodyPalette, this->m_info.bodyCostume, 0, 0)));
+    this->m_view.bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_info.job, this->m_info.sex, bodyPalette, this->m_info.bodyCostume, 0, 0));
   }
 
   const int headPalette = this->m_info.headPalette;
   this->m_view.headPalette = headPalette;
   if (headPalette) {
-    this->m_view.headPaletteName.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette)));
+    this->m_view.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette));
   }
 
   this->m_view.imfName = g_session.GetBodyImfName(this->m_info.job, this->m_info.sex, this->m_info.head, this->m_info.bodyCostume);
