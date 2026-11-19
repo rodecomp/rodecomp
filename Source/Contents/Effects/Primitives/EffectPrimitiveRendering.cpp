@@ -5612,7 +5612,6 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
 // FUNCTION: fn_19860
 __declspec(safebuffers) void CEffectPrim::RenderArcBand(matrix& wtm) {
   const float* tm = this->state.transform.values;
-  const vector3d& position = this->render.position;
   float uInc = 0.0f;
   int rpCnt = 0;
   const float last = g_fullCircleAngle - this->state.arcAngle;
@@ -5624,21 +5623,24 @@ __declspec(safebuffers) void CEffectPrim::RenderArcBand(matrix& wtm) {
     const vector3d vert2 = {this->state.innerSize * g_cosTable[angle2], 0.0f, this->state.innerSize * g_sinTable[angle2]};
     const vector3d vert3 = {this->state.outerSize * g_cosTable[angle1], -this->state.heightSize, this->state.outerSize * g_sinTable[angle1]};
     const vector3d vert4 = {this->state.outerSize * g_cosTable[angle2], -this->state.heightSize, this->state.outerSize * g_sinTable[angle2]};
+    const vector3d innerHeight = {tm[3] * vert1.y, tm[4] * vert1.y, tm[5] * vert1.y};
+    const vector3d outerHeight = {vert3.y * tm[3], vert3.y * tm[4], vert3.y * tm[5]};
+    const vector3d position = this->render.position;
     const vector3d point1 = {
-      vert1.x * tm[0] + vert1.y * tm[3] + vert1.z * tm[6] + tm[9] + position.x, vert1.x * tm[1] + vert1.y * tm[4] + vert1.z * tm[7] + tm[10] + position.y,
-      vert1.x * tm[2] + vert1.y * tm[5] + vert1.z * tm[8] + tm[11] + position.z
+      vert1.x * tm[0] + innerHeight.x + vert1.z * tm[6] + tm[9] + position.x, vert1.x * tm[1] + innerHeight.y + vert1.z * tm[7] + tm[10] + position.y,
+      vert1.x * tm[2] + innerHeight.z + vert1.z * tm[8] + tm[11] + position.z
     };
     const vector3d point2 = {
-      vert2.x * tm[0] + vert2.y * tm[3] + vert2.z * tm[6] + tm[9] + position.x, vert2.x * tm[1] + vert2.y * tm[4] + vert2.z * tm[7] + tm[10] + position.y,
-      vert2.x * tm[2] + vert2.y * tm[5] + vert2.z * tm[8] + tm[11] + position.z
+      vert2.x * tm[0] + innerHeight.x + vert2.z * tm[6] + tm[9] + position.x, vert2.x * tm[1] + innerHeight.y + vert2.z * tm[7] + tm[10] + position.y,
+      vert2.x * tm[2] + innerHeight.z + vert2.z * tm[8] + tm[11] + position.z
     };
     const vector3d point3 = {
-      vert3.x * tm[0] + vert3.y * tm[3] + vert3.z * tm[6] + tm[9] + position.x, vert3.x * tm[1] + vert3.y * tm[4] + vert3.z * tm[7] + tm[10] + position.y,
-      vert3.x * tm[2] + vert3.y * tm[5] + vert3.z * tm[8] + tm[11] + position.z
+      vert3.x * tm[0] + outerHeight.x + vert3.z * tm[6] + tm[9] + position.x, vert3.x * tm[1] + outerHeight.y + vert3.z * tm[7] + tm[10] + position.y,
+      vert3.x * tm[2] + outerHeight.z + vert3.z * tm[8] + tm[11] + position.z
     };
     const vector3d point4 = {
-      vert4.x * tm[0] + vert4.y * tm[3] + vert4.z * tm[6] + tm[9] + position.x, vert4.x * tm[1] + vert4.y * tm[4] + vert4.z * tm[7] + tm[10] + position.y,
-      vert4.x * tm[2] + vert4.y * tm[5] + vert4.z * tm[8] + tm[11] + position.z
+      vert4.x * tm[0] + outerHeight.x + vert4.z * tm[6] + tm[9] + position.x, vert4.x * tm[1] + outerHeight.y + vert4.z * tm[7] + tm[10] + position.y,
+      vert4.x * tm[2] + outerHeight.z + vert4.z * tm[8] + tm[11] + position.z
     };
 
     const float uNext = uInc + 0.25f;
