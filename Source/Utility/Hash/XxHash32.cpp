@@ -53,25 +53,21 @@ std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32
 // FUNCTION: fn_00162
 std::uint32_t XxHash32(const void* data, std::uint32_t length, std::uint32_t seed) {
   const auto* current = static_cast<const unsigned char*>(data);
-  const unsigned char* const end = current + length;
   std::uint32_t hash;
 
   if (length >= 16u) {
-    const unsigned char* const limit = end - 15;
+    const unsigned char* const limit = current + (length - 15u);
     std::uint32_t first = seed + 0x9E3779B1u + 0x85EBCA77u;
     std::uint32_t second = seed + 0x85EBCA77u;
-    std::uint32_t third = seed + 0;
+    std::uint32_t third = seed;
     std::uint32_t fourth = seed - 0x9E3779B1u;
 
     do {
       first = XxHash32Round(first, ReadWord(current));
-      current += 4;
-      second = XxHash32Round(second, ReadWord(current));
-      current += 4;
-      third = XxHash32Round(third, ReadWord(current));
-      current += 4;
-      fourth = XxHash32Round(fourth, ReadWord(current));
-      current += 4;
+      second = XxHash32Round(second, ReadWord(current + 4));
+      third = XxHash32Round(third, ReadWord(current + 8));
+      fourth = XxHash32Round(fourth, ReadWord(current + 12));
+      current += 16;
     } while (current < limit);
 
     hash = std::rotl(first, 1) + std::rotl(second, 7) + std::rotl(third, 12) + std::rotl(fourth, 18);
