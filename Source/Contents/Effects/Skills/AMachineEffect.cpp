@@ -17,6 +17,7 @@ __declspec(noinline) CAMachineEffect::~CAMachineEffect() {
 }
 
 // OFFSET: 0x006F6A00
+// FUNCTION: fn_46158
 __forceinline CEZ2STRParticle* CAMachineEffect::FindStateParticle(int state) {
   auto it = this->stateParticles.find(state);
   if (it == this->stateParticles.end()) {
