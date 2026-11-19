@@ -211,14 +211,13 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
-      const float x = this->position[0] + eye->offsetX;
-      const float y = this->position[1] + eye->offsetY;
-      const float z = this->position[2] + eye->offsetZ;
+      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      position += eye->offset;
 
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
-      const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10];
-      const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
+      const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9];
+      const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10];
+      const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
 
       const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
       const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
@@ -292,14 +291,13 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       light->m_angle = static_cast<float>(angle);
       light->m_scale = SquareRoot(distance) * 0.0044f;
 
-      const float x = light->offsetX + this->position[0];
-      const float y = light->offsetY + this->position[1];
-      const float z = light->offsetZ + this->position[2];
+      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      position += light->offset;
 
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
-      const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10];
-      const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
+      const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9];
+      const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10];
+      const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
 
       const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
       const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
