@@ -307,12 +307,12 @@ void UIRoMapWnd::DrawArrow(
   const float midY = (y1 - y0) * progress + y0;
   float cornerX;
   float cornerY;
-  if (progress == 1.0f) {
-    cornerX = (sideX1 - sideX0) + sideX0;
-    cornerY = (sideY1 - sideY0) + sideY0;
-  } else {
+  if (progress != 1.0f) {
     cornerX = midX + offsetX;
     cornerY = midY + offsetY;
+  } else {
+    cornerX = (sideX1 - sideX0) + sideX0;
+    cornerY = (sideY1 - sideY0) + sideY0;
   }
   DrawScreenQuad({x0, y0}, {sideX0, sideY0}, {midX, midY}, {cornerX, cornerY}, body, color);
 
