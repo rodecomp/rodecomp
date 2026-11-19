@@ -27,7 +27,7 @@ __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const 
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
 int CNavi_Object::GetFlag() const {
-  return this->flag;
+  return static_cast<std::uint16_t>(this->index >> 16);
 }
 
 // OFFSET: 0x00B8E600
@@ -72,7 +72,7 @@ std::size_t CNaviInfo::GetNameLength() const {
 // FUNCTION: fn_19488
 int CNavi_Object::GetIndex() const {
   if (this->type == 300 || this->type == 301) {
-    return this->shortIndex;
+    return static_cast<std::uint16_t>(this->index);
   }
   return this->index;
 }

@@ -96,7 +96,7 @@ AnimatedModelRecord::~AnimatedModelRecord() {
 
 // OFFSET: 0x00755630
 // FUNCTION: fn_07985
-ModelNode::ModelNode() : model(nullptr), parent(nullptr), alpha(255) {
+ModelNode::ModelNode() : model(nullptr), parent(nullptr), mesh(nullptr), alpha(255) {
 }
 
 // OFFSET: 0x007568E0
@@ -112,8 +112,8 @@ ModelNode::~ModelNode() {
   this->textures.clear();
 
   if (this->mesh) {
-    delete this->mesh.get();
-    this->mesh.release();
+    delete this->mesh;
+    this->mesh = nullptr;
   }
 
   this->children.clear();
@@ -212,7 +212,7 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   file.Read(&node->angle, 4);
   file.Read(node->axis, sizeof(node->axis));
   file.Read(node->scale, sizeof(node->scale));
-  node->mesh = std::make_unique<ModelMesh>();
+  node->mesh = new ModelMesh;
   ModelMesh& mesh = *node->mesh;
   int vertexCount = 0;
   file.Read(&vertexCount, 4);
@@ -278,13 +278,12 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   }
 
   mesh.faces = faces;
-  // INLINED
-  std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+  std::sort(mesh.faces, mesh.faces + mesh.faceCount);
   mesh.CalculateNormals();
   static_cast<ModelKeyList2&>(node->rotationKeys).Read(file);
 
   this->nodes.push_back(node);
-  this->meshes[node->name] = node->mesh.get();
+  this->meshes[node->name] = node->mesh;
 }
 
 // OFFSET: 0x00750B10
@@ -376,7 +375,7 @@ bool C3dModelResV1::Load(const char* name) {
     file.Read(&node->angle, 4);
     file.Read(node->axis, sizeof(node->axis));
     file.Read(node->scale, sizeof(node->scale));
-    node->mesh = std::make_unique<ModelMesh>();
+    node->mesh = new ModelMesh;
     int vertexCount = 0;
     file.Read(&vertexCount, 4);
     node->mesh->vertexCount = vertexCount;
@@ -442,13 +441,12 @@ bool C3dModelResV1::Load(const char* name) {
     }
 
     node->mesh->faces = faces;
-    // INLINED
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
     node->mesh->CalculateNormals();
     static_cast<ModelKeyList2&>(node->rotationKeys).Read(file);
 
     this->nodes.push_back(node);
-    this->meshes[node->name] = node->mesh.get();
+    this->meshes[node->name] = node->mesh;
   }
 
   for (ModelNode* node : this->nodes) {

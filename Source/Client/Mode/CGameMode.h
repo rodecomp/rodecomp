@@ -97,6 +97,11 @@ struct MiniMapPing {
   /* 0010 */ std::uint32_t tick;
 };
 
+struct MiniMapTooltip {
+  /* 0000 */ std::string text;
+  /* 0018 */ int windowId;
+};
+
 struct MinimapMarker {
   /* 0000 */ std::int16_t x;
   /* 0002 */ std::int16_t y;
@@ -223,7 +228,7 @@ public:
   /* 05CF */ unsigned char padding_05CF;
   /* 05D0 */ UITransBalloonText* statusIconTooltip;
   /* 05D4 */ std::list<unsigned long> periodicTicks;
-  /* 05DC */ std::map<int, std::string> miniMapTooltipWindows;
+  /* 05DC */ std::map<int, MiniMapTooltip> miniMapTooltipWindows;
   /* 05E4 */ std::uint32_t wheelTick;
   /* 05E8 */ std::uint32_t replayPauseTick;
   /* 05EC */ unsigned char isDragAllowed;

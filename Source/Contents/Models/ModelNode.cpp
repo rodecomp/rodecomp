@@ -53,7 +53,7 @@ void C3dNode::Draw(const float*, unsigned char, bool, unsigned char) {
 void C3dNodeV1::Initialize(const ModelNode& base) {
   const auto& resource = static_cast<const ModelNodeV1&>(base);
   this->name = resource.name;
-  this->mesh = resource.mesh.get();
+  this->mesh = resource.mesh;
   this->textures.resize(resource.textures.size());
   for (unsigned int i = 0; i < resource.textures.size(); ++i) {
     this->textures[i] = resource.textures[i];
@@ -74,7 +74,7 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
   this->positionKeys = resource.legacyPositionKeys;
 
   if (this->positionKeys.size() == 0) {
-    this->positionKeys.push_back({0, {resource.position[0], resource.position[1], resource.position[2]}});
+    this->positionKeys.Add(0, resource.position[0], resource.position[1], resource.position[2]);
   }
 
   for (auto it = resource.children.begin(); it != resource.children.end(); ++it) {
@@ -94,7 +94,7 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
 void C3dNodeV2::Initialize(const ModelNode& base) {
   const auto& resource = static_cast<const ModelNodeV2&>(base);
   this->name = resource.name;
-  this->mesh = resource.mesh.get();
+  this->mesh = resource.mesh;
   std::memcpy(this->resourceTransform.values, resource.transform, sizeof(resource.transform));
 
   if (!this->parent) {

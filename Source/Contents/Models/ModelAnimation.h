@@ -9,6 +9,7 @@
 class LegacyPositionTrack : public std::vector<ModelPositionKey> {
 public:
   using std::vector<ModelPositionKey>::operator=;
+  void Add(int frame, float x, float y, float z);
   void Sample(int frame, matrix& output) const;
 };
 

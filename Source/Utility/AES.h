@@ -25,8 +25,8 @@ public:
 
   ~AES();
   ULONG Decrypt(std::span<UCHAR> input, std::span<UCHAR> output, UCHAR flags);
-  bool Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv, int mode);
-  bool Initialize(PUCHAR secret, ULONG secretSize, int mode);
+  bool Initialize(std::span<UCHAR> secret, std::span<const UCHAR> iv, int mode);
+  bool Initialize(std::span<UCHAR> secret, int mode);
   bool SetIV(std::span<const UCHAR> iv);
   bool SetMode(int mode);
 };

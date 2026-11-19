@@ -1091,7 +1091,6 @@
   "Source/UI/Text/ColoredText.cpp": 2,
   "Source/UI/Text/ItemLinkDisplay.cpp": 2,
   "Source/UI/Text/PixelTextWrapping.cpp": 2,
-  "Source/UI/Text/TextFitting.cpp": 2,
   "Source/UI/Text/TextMarkup.cpp": 2,
   "Source/UI/Text/TextTagExtraction.cpp": 2,
   "Source/UI/Text/TextTagRegistry.cpp": 2,

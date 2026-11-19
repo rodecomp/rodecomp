@@ -37,6 +37,17 @@ struct ModelScaleKeysV2 : std::vector<ModelVectorKey> {
 ModelQuaternionKey::ModelQuaternionKey() : frame(0), rotation{0.0f, 0.0f, 0.0f, 1.0f} {
 }
 
+// OFFSET: 0x0053FF20
+// FUNCTION: fn_01715
+__declspec(safebuffers) void LegacyPositionTrack::Add(int frame, float x, float y, float z) {
+  ModelPositionKey key;
+  key.frame = frame;
+  key.position[0] = x;
+  key.position[1] = y;
+  key.position[2] = z;
+  this->push_back(key);
+}
+
 // OFFSET: 0x0053FFE0
 // FUNCTION: fn_01716
 __declspec(safebuffers) void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle) {

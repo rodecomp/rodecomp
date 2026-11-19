@@ -816,8 +816,8 @@ public:
 };
 
 extern UIWindowMgr g_windowMgr;
-extern int g_renderDiagnosticLine;
-extern const char* g_renderDiagnosticFile;
+extern volatile int g_renderDiagnosticLine;
+extern const char* volatile g_renderDiagnosticFile;
 extern const int* g_windowCloseValue;
 extern const int* g_savedWindowCloseValue;
 

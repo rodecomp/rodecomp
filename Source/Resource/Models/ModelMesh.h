@@ -29,6 +29,11 @@ struct ModelFace {
   /* 0014 */ std::vector<std::uint32_t> smoothing;
 };
 
+// INLINED
+inline bool operator<(const ModelFace& a, const ModelFace& b) {
+  return a.texture < b.texture;
+}
+
 struct ModelTextureVertex {
   /* 0000 */ std::uint32_t shaded;
   /* 0004 */ float u;

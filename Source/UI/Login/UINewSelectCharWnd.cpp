@@ -107,10 +107,6 @@ UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
 
 UINewSelectCharWnd::~UINewSelectCharWnd() = default;
 
-// OFFSET: 0x007D4520
-// FUNCTION: fn_09578
-CharSlotInfo::CharSlotInfo() noexcept = default;
-
 // OFFSET: 0x007D4840
 // FUNCTION: fn_09582
 FuncDrawWNDChar::~FuncDrawWNDChar() = default;

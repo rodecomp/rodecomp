@@ -37,7 +37,7 @@ ULONG AES::Decrypt(std::span<UCHAR> input, std::span<UCHAR> output, UCHAR flags)
 
 // OFFSET: 0x0061B1A0
 // FUNCTION: fn_04419
-bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv, int mode) {
+bool AES::Initialize(std::span<UCHAR> secret, std::span<const UCHAR> iv, int mode) {
   if (m_key != nullptr) {
     BCryptDestroyKey(m_key);
     m_key = nullptr;
@@ -60,7 +60,7 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv,
     return false;
   }
   m_keyObject.resize(objectLength);
-  if (BCryptGenerateSymmetricKey(m_algorithm, &m_key, m_keyObject.data(), m_keyObject.size(), secret, secretSize, 0) < 0) {
+  if (BCryptGenerateSymmetricKey(m_algorithm, &m_key, m_keyObject.data(), m_keyObject.size(), secret.data(), secret.size(), 0) < 0) {
     return false;
   }
   return SetMode(mode);
@@ -68,9 +68,9 @@ bool AES::Initialize(PUCHAR secret, ULONG secretSize, std::span<const UCHAR> iv,
 
 // OFFSET: 0x0061B3C0
 // FUNCTION: fn_04420
-bool AES::Initialize(PUCHAR secret, ULONG secretSize, int mode) {
+bool AES::Initialize(std::span<UCHAR> secret, int mode) {
   UCHAR iv[16]{};
-  return Initialize(secret, secretSize, iv, mode);
+  return Initialize(secret, iv, mode);
 }
 
 // OFFSET: 0x0061B410

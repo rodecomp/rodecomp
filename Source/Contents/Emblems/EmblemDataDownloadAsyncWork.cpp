@@ -16,14 +16,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\Emblem\\CEmblemDataDownloadAsyncWork.cpp";
 
-  // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(success, std::move(message), sourceFile, line);
-  }
-
-  // INLINED
-  }
+}
 
 // GLOBAL: gl_25609
 const char* g_emblemDataDownloadPoolName = OBFUSCATE_BYTES_TEXT("Emblem_Download", 0x17359BF953C367B3ULL);
@@ -80,11 +73,9 @@ bool CEmblemDataDownloadAsyncWork::Execute() {
   if (handler.Perform() == 0) {
     this->m_responseCode = static_cast<int>(handler.ResponseCode());
     this->m_response = handler.Response();
-    AsyncDiagnostic diagnostic = Diagnostic(true, OBFUSCATE_BYTES_TEXT("good", 0x0F0F8B6B8F9D19D1ULL), 96);
-    this->m_diagnostic = std::move(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("good", 0x0F0F8B6B8F9D19D1ULL)), sourceFile, 96);
   } else {
-    AsyncDiagnostic diagnostic = Diagnostic(false, OBFUSCATE_BYTES_TEXT("fail", 0xD3755DD95F47A909ULL), 105);
-    this->m_diagnostic = std::move(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("fail", 0xD3755DD95F47A909ULL)), sourceFile, 105);
   }
 
   return false;

@@ -15,7 +15,11 @@ public:
   UINormalMB();
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  void SetAction(int id, void (*action)());
+  // OFFSET: 0x00CFE370
+  // FUNCTION: fn_21431
+  void SetAction(int id, void (*action)()) {
+    this->m_actions[id] = action;
+  }
   void Create(UIWindow* owner, const char* text, int type, bool defaultAccept, const char* title, int width, int height, const char* icon);
 
 protected:

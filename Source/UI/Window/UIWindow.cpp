@@ -2109,6 +2109,37 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
   return offset;
 }
 
+// OFFSET: 0x00A837D0
+// FUNCTION: fn_17007
+std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
+  if (!this->geometry.surface) {
+    this->Resize(width, 15);
+  }
+
+  std::string text(source);
+  int extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+  this->TextWidth("...", 3, 0, 12, 0, 0);
+  std::wstring remaining(ATL::CA2WEX<128>(text.c_str(), CP_THREAD_ACP));
+
+  while (extent > width) {
+    if (remaining.size() <= 1) {
+      return std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+    }
+
+    std::size_t length = remaining.size() - 1;
+
+    if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
+      --length;
+    }
+
+    remaining.resize(length);
+    text = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+    extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+  }
+
+  return text;
+}
+
 // INLINED
 static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale) {
   if (!width || !height || !frame || !sprite || !x || !y || !scale) {
@@ -3951,8 +3982,8 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
   CNavi_Object* target = static_cast<CNavi_Object*>(g_navigationManager.GetCurrentTarget().object);
   NavigationTargetLook look = {
-    target->job, target->sex, target->bodyPalette, target->head, target->headPalette,
-    target->accessory0, target->accessory1, target->accessory2, target->robe,
+    target->look.job, target->look.sex, target->look.bodyPalette, target->look.head, target->look.headPalette,
+    target->look.accessory0, target->look.accessory1, target->look.accessory2, target->look.robe,
   };
   if (!look.job) {
     this->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, x, y, width, height, 1500, true, background);

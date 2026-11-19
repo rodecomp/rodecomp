@@ -14,7 +14,7 @@ public:
   /* 0018 */ int rows;
   /* 001C */ std::list<int> cells;
 
-  virtual ~CMiniPartyWndSortArea() = default;
+  virtual ~CMiniPartyWndSortArea();
 
   explicit CMiniPartyWndSortArea(const RECT& bounds);
   std::list<int> GetCells() const;

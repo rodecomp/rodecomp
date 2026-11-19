@@ -88,33 +88,33 @@ struct NaviRouteLine {
   /* 0028 */ int shadowColor;
 };
 
+struct NaviNpcLook {
+  /* 0000 */ int job;
+  /* 0004 */ int sex;
+  /* 0008 */ int bodyPalette;
+  /* 000C */ int head;
+  /* 0010 */ int headPalette;
+  /* 0014 */ int accessory0;
+  /* 0018 */ int accessory1;
+  /* 001C */ int accessory2;
+  /* 0020 */ int robe;
+
+  NaviNpcLook();
+};
+
 // VTABLE: vt_01777
 class CNavi_Object {
 public:
   /* 0004 */ int id;
   /* 0008 */ int type;
-  union {
-    /* 000C */ int index;
-    struct {
-      /* 000C */ std::uint16_t shortIndex;
-      /* 000E */ std::uint16_t flag;
-    };
-  };
+  /* 000C */ int index;
   /* 0010 */ std::string name;
   /* 0028 */ std::string title;
   /* 0040 */ CNaviInfo* info;
   /* 0044 */ int cellX;
   /* 0048 */ int cellY;
   /* 004C */ std::vector<NaviLink> links;
-  /* 0058 */ int job;
-  /* 005C */ int sex;
-  /* 0060 */ int bodyPalette;
-  /* 0064 */ int head;
-  /* 0068 */ int headPalette;
-  /* 006C */ int accessory0;
-  /* 0070 */ int accessory1;
-  /* 0074 */ int accessory2;
-  /* 0078 */ int robe;
+  /* 0058 */ NaviNpcLook look;
 
   __declspec(noinline) CNavi_Object();
   __declspec(noinline) CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info);

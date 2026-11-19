@@ -19,11 +19,6 @@ struct ModelFaceRecord {
   /* 0014 */ std::uint32_t smoothing;
 };
 
-// INLINED
-static bool operator<(const ModelFace& a, const ModelFace& b) {
-  return a.texture < b.texture;
-}
-
 // OFFSET: 0x007555C0
 // FUNCTION: fn_07984
 C3dModelResV2::C3dModelResV2() : framesPerSecond(0.0f), animationLength(0) {
@@ -119,7 +114,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
   for (int index = 0; index < nodeCount; ++index) {
     auto* node = new ModelNodeV2;
     node->model = this;
-    node->mesh.reset(new ModelMesh);
+    node->mesh = new ModelMesh;
     int bytes = 0;
     input.Read(&bytes, 4);
     char name[40]{};
@@ -185,13 +180,13 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     }
 
     node->mesh->faces = faces;
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
     node->mesh->CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
     node->positionKeys.Read(input);
     this->nodes.push_back(node);
-    this->meshes[node->name] = node->mesh.get();
+    this->meshes[node->name] = node->mesh;
   }
 
   for (ModelNode* node : this->nodes) {
@@ -254,7 +249,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
   for (int index = 0; index < nodeCount; ++index) {
     auto* node = new ModelNodeV2;
     node->model = this;
-    node->mesh.reset(new ModelMesh);
+    node->mesh = new ModelMesh;
     unsigned bytes = 0;
     input.Read(&bytes, 4);
     char name[40]{};
@@ -330,7 +325,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     node->rotationKeys.Read(input);
     node->positionKeys.Read(input);
     this->nodes.push_back(node);
-    this->meshes[node->name] = node->mesh.get();
+    this->meshes[node->name] = node->mesh;
   }
 
   for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
@@ -381,7 +376,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
   for (int index = 0; index < nodeCount; ++index) {
     auto* node = new ModelNodeV2;
     node->model = this;
-    node->mesh.reset(new ModelMesh);
+    node->mesh = new ModelMesh;
     {
       int bytes = 0;
       input.Read(&bytes, 4);
@@ -473,7 +468,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     }
 
     this->nodes.push_back(node);
-    this->meshes[node->name] = node->mesh.get();
+    this->meshes[node->name] = node->mesh;
   }
 
   for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {

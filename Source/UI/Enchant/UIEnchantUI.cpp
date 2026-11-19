@@ -258,11 +258,6 @@ CUIMainPage::CUIMainPage() : CUIControl(), firstPage(nullptr), secondPage(nullpt
 }
 }
 
-// OFFSET: 0x009F7380
-// FUNCTION: fn_14771
-CUITab::CUITab() : CUIControl(), current(nullptr) {
-}
-
 // OFFSET: 0x009F7420
 // FUNCTION: fn_14772
 CUITabButton::CUITabButton()

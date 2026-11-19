@@ -47,6 +47,10 @@ struct CharSlotInfo {
   /* 0158 */ int robe;
 };
 
+// OFFSET: 0x007D4520
+// FUNCTION: fn_09578
+inline CharSlotInfo::CharSlotInfo() noexcept = default;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CharSlotInfo) == 348);
 #endif

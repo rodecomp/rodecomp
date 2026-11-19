@@ -14,7 +14,11 @@ public:
   int Perform();
   long ResponseCode();
 
-  std::string Response() const;
+  // OFFSET: 0x005CDD40
+  // FUNCTION: fn_03679
+  std::string Response() const {
+    return this->m_response;
+  }
 
 protected:
   /* 0004 */ bool m_enabled;

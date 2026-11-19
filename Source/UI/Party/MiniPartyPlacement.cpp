@@ -28,6 +28,11 @@ __forceinline CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
   }
 }
 
+// OFFSET: 0x007379A0
+// FUNCTION: fn_07653
+__declspec(noinline) CMiniPartyWndSortArea::~CMiniPartyWndSortArea() {
+}
+
 // OFFSET: 0x00737830
 // FUNCTION: fn_07651
 void __stdcall Nullsub228() {
@@ -48,18 +53,15 @@ UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
 // FUNCTION: fn_07657
 int CMiniPartyWndAreaMgr::FindFreeCell() {
   CMiniPartyWndSortArea area(g_windowMgr.GetMiniPartyUsableArea());
-  const std::list<int> cells = area.GetCells();
+  const std::list<int>& cells = area.GetCells();
 
-  for (std::vector<int>::iterator it = this->available.begin(); it != this->available.end(); ++it) {
-    const std::list<int>::const_iterator found = std::find(cells.begin(), cells.end(), *it);
-
-    if (found == cells.end()) {
+  for (const int& cell : this->available) {
+    if (std::find(cells.begin(), cells.end(), cell) == cells.end()) {
       continue;
     }
 
-    const UIWindow* const window = g_windowMgr.FindSnapExcludedWindow(*it);
-    if (window == nullptr) {
-      return *it;
+    if (g_windowMgr.FindSnapExcludedWindow(cell) == nullptr) {
+      return cell;
     }
   }
 

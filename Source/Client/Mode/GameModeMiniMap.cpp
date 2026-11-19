@@ -874,7 +874,7 @@ void CGameMode::RefreshMiniMapTooltips() {
       this->miniMapTooltipWindows.clear();
     } else {
       for (auto it = this->miniMapTooltipWindows.begin(), end = this->miniMapTooltipWindows.end(); it != end; ++it) {
-        if (it->second == this->miniMapTooltipText) {
+        if (it->second.text == this->miniMapTooltipText) {
           g_windowMgr.CloseWindow(it->first);
           this->miniMapTooltipWindows.erase(it);
           return;
@@ -898,7 +898,10 @@ void CGameMode::RefreshMiniMapTooltips() {
   for (int windowId = 216; windowId < 225; ++windowId) {
     if (this->miniMapTooltipWindows.find(windowId) == this->miniMapTooltipWindows.end()) {
       window = g_windowMgr.EnsureWindow(windowId);
-      this->miniMapTooltipWindows.insert(std::make_pair(windowId, std::string(this->miniMapTooltipText)));
+      MiniMapTooltip tooltip{};
+      tooltip.text = this->miniMapTooltipText;
+      tooltip.windowId = windowId;
+      this->miniMapTooltipWindows.insert(std::make_pair(windowId, tooltip));
       break;
     }
   }

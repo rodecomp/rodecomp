@@ -19,15 +19,7 @@ namespace {
                                 "\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AccountLinkedUserData\\CAcco"
                                 "untLinkedUserDataLoadAsyncWork.cpp";
 
-  // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(success, std::move(message), sourceFile, line);
-  }
-
-  // INLINED
-    // INLINED
-  }
+}
 
 // GLOBAL: gl_25600
 const char* g_accountLinkedUserDataLoadPoolName = OBFUSCATE_BYTES_TEXT("AccountLinkedUserData_Load", 0x1D6D75EDE7CD311FULL);
@@ -73,8 +65,7 @@ bool CAccountLinkedUserDataLoadAsyncWork::Execute() {
 
   if (handler.Perform() == 0) {
     this->m_response = handler.Response();
-    AsyncDiagnostic diagnostic = Diagnostic(true, OBFUSCATE_BYTES_TEXT("good", 0x2FF3C5036D070127ULL), 92);
-    this->m_diagnostic = std::move(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("good", 0x2FF3C5036D070127ULL)), sourceFile, 92);
   }
 
   return false;

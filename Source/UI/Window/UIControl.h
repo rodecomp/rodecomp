@@ -102,7 +102,7 @@ class CUITabButton;
 
 class CUITab : public CUIControl {
 public:
-  __declspec(noinline) CUITab();
+  CUITab();
 
   void Paint() override;
 
@@ -117,6 +117,11 @@ public:
   /* 0088 */ std::function<void(CUITabButton*)> onChange;
   /* 00B0 */ std::function<bool(CUITabButton*, CUITabButton*)> onChanging;
 };
+
+// OFFSET: 0x009F7380
+// FUNCTION: fn_14771
+inline CUITab::CUITab() : CUIControl(), current(nullptr) {
+}
 
 // OFFSET: 0x00A63C00
 // FUNCTION: fn_16441

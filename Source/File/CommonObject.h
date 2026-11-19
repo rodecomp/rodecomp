@@ -24,6 +24,8 @@ public:
   bool LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
                std::function<void(std::vector<const char*>&, std::any)> insert, std::any context);
 
+  void DecodeField(std::string& field, std::vector<std::string>& row, bool force);
+
 private:
   bool OpenCsv(const char* name, CFile& file);
   std::vector<std::string> ReadCsvRow(CFile& file, char separator);

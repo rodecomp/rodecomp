@@ -2,6 +2,8 @@
 
 #include <utility>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 // OFFSET: 0x005E9600
 // FUNCTION: fn_03955
 CCURLPostHander::CCURLPostHander(std::string url) : m_url(url), m_headers(nullptr), m_last(nullptr), m_form(nullptr), m_easy(nullptr) {
@@ -76,10 +78,4 @@ long CCURLPostHander::ResponseCode() {
   long code;
   g_curlMgr->easyGetinfo(this->m_easy, 2097154, &code);
   return code;
-}
-
-// OFFSET: 0x005CDD40
-// FUNCTION: fn_03679
-std::string CCURLPostHander::Response() const {
-  return this->m_response;
 }

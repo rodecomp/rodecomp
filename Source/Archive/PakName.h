@@ -32,10 +32,10 @@ namespace myGPack {
     bool operator<(const PakName& other) const;
 
     /* 0000 */ std::uint32_t m_hash;
-    /* 0004 */ char m_name[256];
+    /* 0004 */ char m_name[252];
   };
 
-  static_assert(sizeof(PakName) == 260);
+  static_assert(sizeof(PakName) == 256);
   static_assert(offsetof(PakName, m_name) == 4);
 
 }

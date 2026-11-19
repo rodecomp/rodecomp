@@ -301,10 +301,10 @@ const int* g_savedWindowCloseValue;
 static const char g_windowManagerDiagnosticFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\UIWindowMgr.cpp";
 
 // GLOBAL: gl_24696
-int g_renderDiagnosticLine = 0;
+volatile int g_renderDiagnosticLine = 0;
 
 // GLOBAL: gl_24697
-const char* g_renderDiagnosticFile = "";
+const char* volatile g_renderDiagnosticFile = "";
 
 // OFFSET: 0x00AA73B0
 // FUNCTION: fn_17238

@@ -4728,32 +4728,6 @@ namespace {
   };
   static_assert(sizeof(messageNames) / sizeof(messageNames[0]) == 4699);
 
-  // OFFSET: 0x005B8500
-  // FUNCTION: fn_03421
-  void DecodeField(std::string& field, std::vector<std::string>& row, bool force) {
-    if (!force && field.empty()) {
-      return;
-    }
-
-    std::string decoded = Base64Decode(field, false);
-    if (decoded.size() > 2) {
-      if (decoded.front() == '"' && decoded.back() == '"') {
-        decoded = decoded.substr(1);
-        decoded = decoded.substr(0, decoded.size() - 1);
-      }
-
-      std::size_t pos = 0;
-      const std::string pattern = "\\\"\"";
-      const std::string replacement = "\"";
-      for (; (pos = decoded.find(pattern, pos)) != std::string::npos; pos += replacement.size()) {
-        decoded.replace(pos, pattern.size(), replacement);
-      }
-    }
-
-    decoded = static_cast<const std::string&>(FromUtf8(decoded, g_textCodePage));
-    row.push_back(decoded);
-  }
-
   // OFFSET: 0x00B009D0
   // FUNCTION: fn_18373
   std::vector<std::string> TransformFields(const std::vector<std::string>& row) {
@@ -4777,6 +4751,32 @@ namespace {
     }
     return result;
   }
+}
+
+// OFFSET: 0x005B8500
+// FUNCTION: fn_03421
+void CCommonObject::DecodeField(std::string& field, std::vector<std::string>& row, bool force) {
+  if (!force && field.empty()) {
+    return;
+  }
+
+  std::string decoded = Base64Decode(field, false);
+  if (decoded.size() > 2) {
+    if (decoded.front() == '"' && decoded.back() == '"') {
+      decoded = decoded.substr(1);
+      decoded = decoded.substr(0, decoded.size() - 1);
+    }
+
+    std::size_t pos = 0;
+    const std::string pattern = "\\\"\"";
+    const std::string replacement = "\"";
+    for (; (pos = decoded.find(pattern, pos)) != std::string::npos; pos += replacement.size()) {
+      decoded.replace(pos, pattern.size(), replacement);
+    }
+  }
+
+  decoded = static_cast<const std::string&>(FromUtf8(decoded, g_textCodePage));
+  row.push_back(decoded);
 }
 
 // OFFSET: 0x005B8410
@@ -4817,7 +4817,7 @@ std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
     char value;
     file.Read(&value, 1);
     if (value == '\n' || value == '\r' || value == ',') {
-      DecodeField(field, row, false);
+      this->DecodeField(field, row, false);
       field.clear();
       if (value == '\r') {
         char next;
@@ -4833,7 +4833,7 @@ std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
     }
   }
 
-  DecodeField(field, row, false);
+  this->DecodeField(field, row, false);
   return row;
 }
 
@@ -4986,7 +4986,7 @@ bool ImportMessageCsv(std::string_view bytes) {
     while (cursor < bytes.size()) {
       char value = bytes[cursor++];
       if (value == ',' || value == '\r' || value == '\n') {
-        DecodeField(field, row, false);
+        g_messageTableObject.DecodeField(field, row, false);
         field.clear();
         if (value == '\n') {
           break;
@@ -5001,7 +5001,7 @@ bool ImportMessageCsv(std::string_view bytes) {
       }
     }
 
-    DecodeField(field, row, false);
+    g_messageTableObject.DecodeField(field, row, false);
     row = TransformFields(row);
     std::vector<const char*> fields;
     fields.reserve(row.size());

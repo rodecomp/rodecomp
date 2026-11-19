@@ -3598,7 +3598,8 @@ void CEffectPrim::PrimParticleUp() {
   FaceCamera(this->state.slots);
   FollowMaster(*this);
 
-  for (int index = 0; index < 4; ++index) {
+  int flash = 36;
+  for (int index = 0; index < 4; ++index, flash -= 7) {
     if (this->state.slots[index].life != 1) {
       continue;
     }
@@ -3617,14 +3618,16 @@ void CEffectPrim::PrimParticleUp() {
     }
 
     if (process == 1) {
-      const int angle = std::rand() % 360;
-      this->state.slots[index].rotStart = static_cast<std::int16_t>(angle < 0 ? 0 : angle);
+      this->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
     } else if (process <= 10) {
       this->state.slots[index].alphaB += 15;
     } else {
       if (this->state.slots[index].flag1[1] == 1) {
-        const int flash = 36 - index * 7;
-        this->state.slots[index].flag1[0] = process == flash - 1 || process == flash ? 1 : 0;
+        if (process == flash - 1 || process == flash) {
+          this->state.slots[index].flag1[0] = 1;
+        } else {
+          this->state.slots[index].flag1[0] = 0;
+        }
       }
 
       this->state.slots[index].alphaB -= 3;
@@ -5153,7 +5156,7 @@ void CEffectPrim::PrimExpandPulse() {
       if (slot.flag1[1] == 16) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       } else if (slot.flag1[1] == 24) {
-        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 8 : 15));
+        slot.alphaB += g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 8 : 15;
       } else {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       }

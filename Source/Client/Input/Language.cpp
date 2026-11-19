@@ -474,14 +474,6 @@ CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.Load()) {
 // FUNCTION: fn_17755
 CLanguageBase::~CLanguageBase() = default;
 
-// OFFSET: 0x00ACD200
-// FUNCTION: fn_17757
-CLanguageArabic::~CLanguageArabic() = default;
-
-// OFFSET: 0x00ACD300
-// FUNCTION: fn_17759
-CLanguageTH::~CLanguageTH() = default;
-
 // OFFSET: 0x00ACDD20
 // FUNCTION: fn_17775
 void CLanguageBase::RefreshComposition() {

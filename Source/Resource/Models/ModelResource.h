@@ -93,7 +93,7 @@ public:
   /* 0038 */ ModelNode* parent;
   /* 003C */ std::list<ModelNode*> children;
   /* 0044 */ std::vector<class CTexture*> textures;
-  /* 0050 */ std::unique_ptr<ModelMesh> mesh;
+  /* 0050 */ ModelMesh* mesh;
   /* 0054 */ unsigned char alpha;
 };
 

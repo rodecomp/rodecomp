@@ -29,25 +29,10 @@
 // GLOBAL: gl_24705
 int g_serviceMode;
 
-struct NaviUnknownBlock {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ int unknown_001C;
-  /* 0020 */ int unknown_0020;
-
-  NaviUnknownBlock();
-};
-
 // OFFSET: 0x00B8C870
 // FUNCTION: fn_19426
 CNavi_Object::CNavi_Object()
-    : cellX(0), cellY(0), job(0), sex(0), bodyPalette(0), head(0), headPalette(0),
-      accessory0(0), accessory1(0), accessory2(0), robe(0) {
+    : cellX(0), cellY(0) {
   this->id = -1;
   this->type = 101;
   this->index = 0;
@@ -58,16 +43,14 @@ CNavi_Object::CNavi_Object()
 
 // OFFSET: 0x00B8C990
 // FUNCTION: fn_19427
-NaviUnknownBlock::NaviUnknownBlock()
-    : unknown_0000(0), unknown_0004(0), unknown_0008(0), unknown_000C(0), unknown_0010(0), unknown_0014(0), unknown_0018(0), unknown_001C(0),
-      unknown_0020(0) {
+NaviNpcLook::NaviNpcLook()
+    : job(0), sex(0), bodyPalette(0), head(0), headPalette(0), accessory0(0), accessory1(0), accessory2(0), robe(0) {
 }
 
 // OFFSET: 0x00B8C710
 // FUNCTION: fn_19425
 CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info)
-    : cellX(0), cellY(0), job(0), sex(0), bodyPalette(0), head(0), headPalette(0), accessory0(0),
-      accessory1(0), accessory2(0), robe(0) {
+    : cellX(0), cellY(0) {
   this->type = type;
   this->id = -1;
   this->index = index;
@@ -292,15 +275,15 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     if (info) {
       CNavi_Object* npc = info->FindNpcAt(pickX, pickY);
       if (npc) {
-        npc->job = job;
-        npc->sex = sex;
-        npc->bodyPalette = bodyPalette;
-        npc->head = head;
-        npc->headPalette = headPalette;
-        npc->accessory0 = accessory0;
-        npc->accessory1 = accessory1;
-        npc->accessory2 = accessory2;
-        npc->robe = robe;
+        npc->look.job = job;
+        npc->look.sex = sex;
+        npc->look.bodyPalette = bodyPalette;
+        npc->look.head = head;
+        npc->look.headPalette = headPalette;
+        npc->look.accessory0 = accessory0;
+        npc->look.accessory1 = accessory1;
+        npc->look.accessory2 = accessory2;
+        npc->look.robe = robe;
       }
     }
   }
