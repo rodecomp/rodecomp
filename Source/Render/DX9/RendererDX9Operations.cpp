@@ -153,11 +153,11 @@ bool CRendererDX9::RenderToTexture(int width, int height, const std::list<Render
 
   {
     ScopedDeviceStateDX9 restore = this->device->SaveState();
-    this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-    this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
-    this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
-    this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-    this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+    this->device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+    this->device->SetRenderState(D3DRS_FOGENABLE, 0);
+    this->device->SetRenderState(D3DRS_ALPHAREF, 1);
+    this->device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+    this->device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
     this->nativeDevice->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
     if (SUCCEEDED(this->nativeDevice->BeginScene())) {
