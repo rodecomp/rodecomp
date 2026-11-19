@@ -58,6 +58,7 @@ public:
 class CStemSpearEffect : public CEffect {
 public:
   CStemSpearEffect();
+  ~CStemSpearEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -70,6 +71,7 @@ public:
 class CSvgSpiritEffect : public CEffect {
 public:
   CSvgSpiritEffect();
+  ~CSvgSpiritEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -82,6 +84,7 @@ public:
 class CTunaPartyEffect : public CEffect {
 public:
   CTunaPartyEffect();
+  ~CTunaPartyEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -94,6 +97,7 @@ public:
 class CCurseOfCubeEffect : public CEffect {
 public:
   CCurseOfCubeEffect();
+  ~CCurseOfCubeEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;

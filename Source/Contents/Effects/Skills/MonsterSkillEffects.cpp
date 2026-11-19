@@ -399,6 +399,11 @@ void CSpriteMableEffect::Render() {
 CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 }
 
+// OFFSET: 0x0070D380
+// FUNCTION: fn_46293
+__declspec(noinline) CStemSpearEffect::~CStemSpearEffect() {
+}
+
 // OFFSET: 0x0070D4A0
 // FUNCTION: fn_07151
 void CStemSpearEffect::Open() {
@@ -462,6 +467,11 @@ bool CStemSpearEffect::IsAlive() {
 // OFFSET: 0x0070D850
 // FUNCTION: fn_07156
 CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
+}
+
+// OFFSET: 0x0070D8C0
+// FUNCTION: fn_46294
+__declspec(noinline) CSvgSpiritEffect::~CSvgSpiritEffect() {
 }
 
 // OFFSET: 0x0070D690
@@ -554,6 +564,11 @@ void CSvgSpiritEffect::Render() {
 CTunaPartyEffect::CTunaPartyEffect() : CEffect(EF_TUNAPARTY) {
 }
 
+// OFFSET: 0x0070DD70
+// FUNCTION: fn_46295
+__declspec(noinline) CTunaPartyEffect::~CTunaPartyEffect() {
+}
+
 // OFFSET: 0x0070DF30
 // FUNCTION: fn_07167
 bool CTunaPartyEffect::IsAlive() {
@@ -572,6 +587,11 @@ void CTunaPartyEffect::Render() {
 // FUNCTION: fn_07170
 CCurseOfCubeEffect::CCurseOfCubeEffect()
     : CEffect(-1), spawnPhase(0), viewOffsetX(0), viewOffsetY(-10.0f), viewOffsetZ(0) {
+}
+
+// OFFSET: 0x0070E160
+// FUNCTION: fn_46296
+__declspec(noinline) CCurseOfCubeEffect::~CCurseOfCubeEffect() {
 }
 
 // OFFSET: 0x0070EB10
