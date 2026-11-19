@@ -134,8 +134,8 @@ void CGroundScope::Render(int argument) {
   g_modeMgr.GetGameMode();
   CGameMode* mode = g_modeMgr.GetGameMode();
   GroundGeometry* ground = mode->scene->ground;
-  const float center = static_cast<float>(this->m_size) * 0.5f;
   const int half = this->m_size / 2;
+  const float center = static_cast<float>(this->m_size) * 0.5f;
   const int left = cellX - half;
   const int top = cellY - half;
   const float sine = ClientSin(this->m_angle);
