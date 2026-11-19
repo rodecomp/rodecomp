@@ -1566,8 +1566,7 @@ void CUIRadioItem::OnCreate(int width, int height) {
       for (UIWindow* child : this->parent->m_children) {
         CUIRadioItem* item = dynamic_cast<CUIRadioItem*>(child);
         if (item) {
-          item->radioButton->checked = this == item;
-          item->radioButton->Invalidate();
+          item->SetChecked(this == item, false);
         }
       }
     }
@@ -1584,8 +1583,7 @@ void CUIRadioItem::OnCreate(int width, int height) {
     // GLOBAL: gl_25964
     this->radioButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x2BAD156DE3E1F9D9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xF161095D0DE18F95ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xEDC74F6D13DF71EFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x758F1D0B4F7705B9ULL)));
   }
-  this->radioButton->checked = true;
-  this->radioButton->Invalidate();
+  this->SetChecked(true, false);
   this->AddChild(this->radioButton);
 }
 
