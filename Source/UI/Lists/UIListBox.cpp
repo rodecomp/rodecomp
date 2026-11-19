@@ -462,17 +462,20 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
-    const int delta = message == UM_SCROLLHORZPAGEUP ? -15 : message == UM_SCROLLHORZPAGEDOWN ? 15 : value;
-    this->horizontalOffset = (previous + delta);
+    if (message == UM_SCROLLHORZPAGEUP) {
+      this->horizontalOffset = previous - 15;
+    } else if (message == UM_SCROLLHORZPAGEDOWN) {
+      this->horizontalOffset = previous + 15;
+    } else {
+      this->horizontalOffset = previous + value;
+    }
 
     if (this->horizontalOffset < 0) {
       this->horizontalOffset = 0;
     }
 
-    const int maximum = (((this->verticalOverflow * 16) - this->geometry.width) + this->contentWidth);
-
-    if (this->horizontalOffset > maximum) {
-      this->horizontalOffset = maximum;
+    if (this->horizontalOffset > this->verticalOverflow * 16 - this->geometry.width + this->contentWidth) {
+      this->horizontalOffset = this->verticalOverflow * 16 - this->geometry.width + this->contentWidth;
     }
 
     this->horizontalBar->position = this->horizontalOffset;
