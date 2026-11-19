@@ -416,7 +416,8 @@ int L_SetCaution(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   std::string caution(lua_tostring(L, -1));
-  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].caution = caution;
+  auto& enchants = CEnchantMgr::GetInstance()->m_enchants;
+  enchants[static_cast<uint64_t>(id)].caution = caution;
   return 2;
 }
 
