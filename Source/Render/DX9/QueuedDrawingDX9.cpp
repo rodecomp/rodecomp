@@ -29,25 +29,25 @@ void CRendererDX9::DrawAuxiliaryQueue() {
 
     return reinterpret_cast<std::uintptr_t>(left->lightmap) < reinterpret_cast<std::uintptr_t>(right->lightmap);
   });
-  this->device->state.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-  this->device->state.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->device->state.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-  this->device->state.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  this->device->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
-  this->device->state.SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  this->device->state.SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-  this->device->state.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-  this->device->state.SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  this->device->state.SetTextureStageState(1, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-  this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-  this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-  this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-  this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+  this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+  this->device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  this->device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  this->device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+  this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  this->device->SetTextureStageState(1, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+  this->device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+  this->device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+  this->device->SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  this->device->SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
   for (LightmappedCommand*& command : queue) {
     if (command->vertexCount > 0) {
-      this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
-      this->device->state.SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
+      this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      this->device->SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
       this->DrawAuxiliaryPrimitive(command);
     }
   }
