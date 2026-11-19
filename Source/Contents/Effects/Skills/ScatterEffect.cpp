@@ -29,6 +29,7 @@ void CScatterEffect::Close() {
 }
 
 // OFFSET: 0x00B76020
+// FUNCTION: fn_46190
 __forceinline void CScatterEffect::InitializeParticle(CSpriteParticle* particle) {
   if (particle && this->id == 1002) {
     this->effectLifetime = 300;
@@ -109,6 +110,7 @@ void CScatterEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B763C0
+// FUNCTION: fn_46192
 __forceinline void CScatterEffect::RenderParticle(CSpriteParticle* particle) {
   if (particle) {
     particle->Draw(1);
