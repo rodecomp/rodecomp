@@ -76,10 +76,7 @@ UIWindow* UIMenuIconWnd::HitTest(int x, int y) {
     if (x >= this->geometry.x + this->geometry.width || this->geometry.y > y || this->geometry.y + this->notificationOpenButton->geometry.height <= y) {
       return nullptr;
     }
-    if (this->notifiedCommands.size() == 0) {
-      return this->openButton;
-    }
-    return this->notificationOpenButton;
+    return this->notifiedCommands.size() == 0 ? this->openButton : this->notificationOpenButton;
   }
 
   if (this->geometry.x + this->geometry.width <= x || this->geometry.y > y || this->geometry.y + this->geometry.height <= y) {
