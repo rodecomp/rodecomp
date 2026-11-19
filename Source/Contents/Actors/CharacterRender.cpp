@@ -27,7 +27,6 @@
 #include "Script/LuaScript.h"
 
 #include <algorithm>
-#include <cstring>
 #include <list>
 #include <map>
 #include <string>
@@ -216,7 +215,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     int offsetX = 0;
     int offsetY = 0;
-    const SpriteRleImage* image = sprites[type]->images[cell->imageType][cell->image];
+    SpriteQuad quad{};
+    quad.image = sprites[type]->images[cell->imageType][cell->image];
     if (g_session.IsDoramJob(this->job) == true) {
       int doramX = 0;
       int doramY = 0;
@@ -262,7 +262,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         if (layerFrame != nullptr && syncedIndex != this->frameIndex) {
           cell = &layerFrame->Cell(cellIndex);
           if (cell->image != -1) {
-            image = sprites[type]->images[cell->imageType][cell->image];
+            quad.image = sprites[type]->images[cell->imageType][cell->image];
           }
         } else {
           layerFrame = frame;
@@ -297,12 +297,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     float bottomDepth = 0.0f;
     float topDepth = 0.0f;
-    SpriteQuad quad;
-    std::memset(&quad, 0, sizeof(quad));
     SpriteColor color = {};
     tagRECT rect;
     if (!this->ProjectCell(
-          index, layer, distanceScale, *cell, screenX, screenY, &position.x, 0.0f, bottomDepth, topDepth, *image,
+          index, layer, distanceScale, *cell, screenX, screenY, &position.x, 0.0f, bottomDepth, topDepth, *quad.image,
           quad, rect, color, offsetX, offsetY, 0
         )) {
       continue;
