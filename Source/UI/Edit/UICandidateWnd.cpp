@@ -70,14 +70,14 @@ void UICandidateWnd::Paint() {
   }
   case 2: {
     std::memset(text, 0, sizeof(text));
-    for (int i = 0, y = 12; i < this->m_count; ++i, y += 20) {
+    for (int i = 0; i < this->m_count; ++i) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (this->m_selection == i) {
         unsigned red, green, blue;
         g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-        this->FillRegion(8, y - 2, this->TextWidth(text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
+        this->FillRegion(8, i * 20 + 10, this->TextWidth(text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
       }
-      this->DrawTextAt(10, y, text, 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(10, i * 20 + 12, text, 0, 0, 12, 0, 0, 0);
     }
     std::sprintf(text, "%d / %d", this->m_page + 1, this->m_lastPage + 1);
     this->DrawTextAt(110 - this->TextWidth(text, 0, 0, 12, 0, 0), 192, text, 0, 0, 12, 0, 0, 0);
