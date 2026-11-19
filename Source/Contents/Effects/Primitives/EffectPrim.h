@@ -266,5 +266,6 @@ static_assert(offsetof(CEffectPrim, state) == 0x138);
 
 extern int g_overrideColor;
 extern float g_effectIconRadius;
+extern float g_heightSpeedSign;
 
 #endif

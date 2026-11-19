@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/WindowId.h"
@@ -25,9 +26,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <regex>
-
-// GLOBAL: gl_25989
-float g_heightSpeedSign;
 
 // INLINED
 static __forceinline float ToRadians(float degrees) {

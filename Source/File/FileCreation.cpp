@@ -54,71 +54,15 @@ std::string CreateUniqueFileName(const std::string& filename) {
   return result;
 }
 
-extern "C" void JsonCopyConstruct();
-extern "C" void JsonDestroy();
-
-struct JsonValue {
-  /* 0000 */ unsigned char type;
-  /* 0001 */ unsigned char padding_0001[3];
-  /* 0004 */ const JsonValue* pointer;
-  /* 0008 */ long long integer;
-
-  bool IsNull() const;
-};
-
-static_assert(sizeof(JsonValue) == sizeof(jsoncons::json));
-
-struct ScopedJsonValue {
-  /* 0000 */ JsonValue value;
-
-  // INLINED
-  ~ScopedJsonValue() {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
-  }
-};
-
-struct CopiedJsonValue {
-  /* 0000 */ JsonValue value;
-
-  // INLINED
-  explicit CopiedJsonValue(const jsoncons::json& other) {
-    reinterpret_cast<void(__thiscall*)(JsonValue*, const jsoncons::json*)>(JsonCopyConstruct)(&this->value, &other);
-  }
-
-  // INLINED
-  operator const jsoncons::json&() const {
-    return reinterpret_cast<const jsoncons::json&>(this->value);
-  }
-
-  // INLINED
-  ~CopiedJsonValue() {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
-  }
-};
-
-// INLINED
-static __forceinline void GetValue(JsonCppLoader* loader, JsonValue* result, const std::string& key, const jsoncons::json& node) {
-  using GetValueFn = void (JsonCppLoader::*)(JsonValue*, const std::string&, const jsoncons::json&, jsoncons::json_type);
-  (loader->*reinterpret_cast<GetValueFn>(&JsonCppLoader::GetValue))(result, key, node, jsoncons::json_type::double_value);
-}
-
-// INLINED
-static __forceinline bool IsNull(const JsonValue& value) {
-  const unsigned char type = value.type & 0x0f;
-  return type == 0 || (type == 0x0c && value.pointer->IsNull() == true);
-}
-
 // INLINED
 static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const jsoncons::json& node, const std::string& key, double* out) {
-  ScopedJsonValue value;
-  GetValue(loader, &value.value, key, node);
-  if (IsNull(value.value)) {
+  const jsoncons::json value = loader->GetValue(key, node, jsoncons::json_type::double_value);
+  if (value.is_null() == true) {
     loader->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  const double number = reinterpret_cast<const jsoncons::json&>(value.value).as_double();
-  *out = number;
+  *out = value.as_double();
   return true;
 }
 
@@ -138,7 +82,7 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
 
   for (const auto& member : document.at("EZ2STREffect").object_range()) {
     const std::string name = member.key();
-    const CopiedJsonValue node(member.value());
+    const jsoncons::json node = member.value();
     EZ2STREffectRecord record;
     this->GetStringValue(node, "FilePath", &record.name);
     GetDoubleValue(this, node, "PosX", &record.offsetX);
