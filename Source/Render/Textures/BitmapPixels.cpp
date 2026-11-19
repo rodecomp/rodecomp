@@ -252,7 +252,7 @@ void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount
 
   this->m_bitmap.dirty = true;
   const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->m_bitmap.width);
-  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->m_bitmap.height);
+  const int bottom = std::min(this->m_bitmap.height, static_cast<std::uint32_t>(y + copyHeight));
 
   for (int row = y; row < bottom; ++row) {
     for (int column = x; column < right; ++column) {
