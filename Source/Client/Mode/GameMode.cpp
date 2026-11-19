@@ -1047,6 +1047,8 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
   return range;
 }
 
+// OFFSET: 0x00CD35C0
+
 // OFFSET: 0x00CD54D0
 // FUNCTION: fn_21280
 int CGameMode::TerrainHeight() const {
@@ -8712,6 +8714,12 @@ void CGameMode::ReceiveSkillUpdate(
   g_equipmentPropertiesMgr->RefreshPretend();
 }
 
+// OFFSET: 0x00CD0360
+// FUNCTION: fn_46334
+__forceinline bool CGameMode::HasDifferentBalloonActor(std::uint32_t id) const {
+  return this->balloonActorId != id && this->balloonActorId != 0;
+}
+
 // OFFSET: 0x00CDB910
 // FUNCTION: fn_21310
 void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
@@ -8720,7 +8728,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
   }
 
   int& placed = this->isNameBalloonPlaced;
-  if (this->balloonActorId != id && this->balloonActorId != 0) {
+  if (this->HasDifferentBalloonActor(id)) {
     this->balloonActorId = id;
     placed = 1;
     return;
@@ -9380,6 +9388,8 @@ static_assert(sizeof(StatusPointRequestPacket) == 5);
 
 // GLOBAL: gl_25463
 std::uint32_t g_spriteAtlasClearTick;
+
+// OFFSET: 0x00CD09A0
 
 // OFFSET: 0x00CDF1E0
 // FUNCTION: fn_21323

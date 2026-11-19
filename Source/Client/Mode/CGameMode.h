@@ -294,6 +294,7 @@ public:
   void PlayerCell(int* column, int* row) const;
   void RefreshActorJobEffects(bool playerOnly);
   int GetSkillAttackRange(int id, int level);
+  int TerrainCellType(int column, int row) const;
   int TerrainHeight() const;
   int TerrainWidth() const;
   std::string LocationText();
@@ -421,6 +422,7 @@ public:
   void ExecuteTalkType(int talkType, std::string* arguments);
   int ProcessMousePick(int result, ActorPickInfo* pick);
   void ReceiveSkillList(int packetType, const std::vector<SkillListEntry>& skills);
+  bool HasDifferentBalloonActor(std::uint32_t id) const;
   void ShowActorNameBalloon(std::uint32_t id);
   int ProcessGroundClick(int result);
   void ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor);
@@ -570,6 +572,7 @@ public:
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);
   void DrawMiniMapPings(const TextureRegion& view);
+  void DrawDragCursor();
   void DrawMiniMap();
   void DrawMiniMapMembers(const TextureRegion& view);
   void DrawMiniMapTriangle(float x, float y, float size, std::uint32_t color);
