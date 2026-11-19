@@ -109,15 +109,11 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->topLine < 0) {
       this->topLine = 0;
     }
-    const std::size_t limit = this->lines.size() + (this->bottomMargin - this->geometry.height / this->lineHeight);
-    if (static_cast<std::size_t>(this->topLine) > limit) {
-      this->topLine = static_cast<int>(limit);
+    if (static_cast<std::size_t>(this->topLine) > this->lines.size() + (this->bottomMargin - this->geometry.height / this->lineHeight)) {
+      this->topLine = static_cast<int>(this->lines.size() + (this->bottomMargin - this->geometry.height / this->lineHeight));
     }
-    {
-      auto* verticalBar = this->verticalBar;
-      verticalBar->position = this->topLine;
-      verticalBar->Invalidate();
-    }
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Invalidate();
     this->Invalidate();
     if (this->transparent != 0 && this->parent) {
       this->parent->Invalidate();
@@ -131,25 +127,21 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalOffset;
-    int delta = argument1;
     if (message == UM_SCROLLHORZPAGEUP) {
-      delta = -15;
+      this->horizontalOffset = previous - 15;
     } else if (message == UM_SCROLLHORZPAGEDOWN) {
-      delta = 15;
+      this->horizontalOffset = previous + 15;
+    } else {
+      this->horizontalOffset = previous + argument1;
     }
-    this->horizontalOffset = previous + delta;
     if (this->horizontalOffset < 0) {
       this->horizontalOffset = 0;
     }
-    const int limit = this->contentWidth + this->verticalOverflow * 16 - this->geometry.width;
-    if (this->horizontalOffset > limit) {
-      this->horizontalOffset = limit;
+    if (this->horizontalOffset > this->verticalOverflow * 16 - this->geometry.width + this->contentWidth) {
+      this->horizontalOffset = this->verticalOverflow * 16 - this->geometry.width + this->contentWidth;
     }
-    {
-      auto* horizontalBar = this->horizontalBar;
-      horizontalBar->position = this->horizontalOffset;
-      horizontalBar->Invalidate();
-    }
+    this->horizontalBar->position = this->horizontalOffset;
+    this->horizontalBar->Invalidate();
     this->Invalidate();
     if (this->transparent != 0 && this->parent) {
       this->parent->Invalidate();
