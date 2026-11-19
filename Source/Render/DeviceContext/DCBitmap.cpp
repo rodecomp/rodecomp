@@ -7,8 +7,9 @@ CDCBitmap::CDCBitmap(int width, int height) : m_alpha(false) {
   this->Create(width, height);
 }
 
-// INLINED
-CDCBitmap::~CDCBitmap() {
+// OFFSET: 0x005459F0
+// FUNCTION: fn_46355
+__declspec(noinline) CDCBitmap::~CDCBitmap() {
   this->ClearTextures();
   SelectObject(this->m_bitmap.dc, this->m_bitmap.previous);
   DeleteObject(this->m_bitmap.bitmap);
