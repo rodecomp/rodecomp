@@ -543,12 +543,13 @@ HRESULT DeviceOwnerDX7::CreateDepthBuffer() {
     const HRESULT status = this->draw->CreateSurface(&description, &this->depthBuffer, nullptr);
 
     if (FAILED(status)) {
-      return SurfaceError(status, 5);
+      if (status == DDERR_OUTOFVIDEOMEMORY) {
+        return status;
+      }
+    } else if (SUCCEEDED(this->renderTarget->AddAttachedSurface(this->depthBuffer)) && SUCCEEDED(this->device->SetRenderTarget(this->renderTarget, 0))) {
+      return S_OK;
     }
-
-    if (FAILED(this->renderTarget->AddAttachedSurface(this->depthBuffer)) || FAILED(this->device->SetRenderTarget(this->renderTarget, 0))) {
-      return DeviceError(5);
-    }
+    return DeviceError(5);
   }
 
   return S_OK;
