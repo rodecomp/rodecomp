@@ -9,6 +9,7 @@
 
 class C3dActor;
 class CRes;
+struct matrix;
 
 struct FlareElement {
   FlareElement();
@@ -66,9 +67,10 @@ struct SkyCubeVertex : RenderVertex {
 class CSkyCube {
 public:
   CSkyCube();
+  void Render(const matrix& camera, const vector3d& position, float rotation, float height, vector3d eye, vector3d target);
 
   /* 0000 */ SkyCubeVertex m_vertices[10];
-  /* 0140 */ int m_loopRotationY;
+  /* 0140 */ float m_loopRotationY;
   /* 0144 */ CLensFlare m_flare;
 };
 
