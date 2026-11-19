@@ -907,7 +907,7 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
 
 // OFFSET: 0x00838780
 // FUNCTION: fn_10453
-int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
+__declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
   std::cmatch match;
 
   if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
