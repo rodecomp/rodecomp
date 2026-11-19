@@ -17,6 +17,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdlib>
+#include <cstring>
 #include <mbstring.h>
 #include <new>
 #include <windows.h>
@@ -65,7 +66,8 @@ void CSignBoardMgr::Initialize() {
   if (g_modeMgr.GetGameMode() != nullptr) {
     mapName = std::string(g_modeMgr.GetGameMode()->mapName);
   }
-  mapName = mapName.substr(0, mapName.find(".rsw"));
+  const char* extension = std::strstr(mapName.c_str(), ".rsw");
+  mapName = mapName.substr(0, extension != nullptr ? static_cast<std::size_t>(extension - mapName.c_str()) : std::string::npos);
 
   for (std::vector<SignBoardInfo>::iterator it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
     std::string entryMap(it->map);
