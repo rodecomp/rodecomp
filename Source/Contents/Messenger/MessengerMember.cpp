@@ -718,10 +718,11 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y)
     return MessengerMember(0);
   }
 
-  this->selected = (y - 17) / this->rowHeight + this->scrollTop;
+  const int index = (y - 17) / this->rowHeight + this->scrollTop;
+  this->selected = index;
   int position = 0;
   for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
-    if (position == this->selected) {
+    if (position == index) {
       return *it;
     }
   }
