@@ -18,6 +18,7 @@ __forceinline int ClampedRandom(int range) {
 }
 
 // OFFSET: 0x00B715F0
+// FUNCTION: fn_46049
 CRedLineEffect::CRedLineEffect() : CEffect(EF_REDLINE) {
 }
 
