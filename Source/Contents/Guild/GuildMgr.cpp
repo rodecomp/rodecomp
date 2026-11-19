@@ -6,7 +6,8 @@
 // GLOBAL: gl_24555
 CGuildMgr* g_guildMgr = nullptr;
 
-// INLINED
+// OFFSET: 0x0065D760
+// FUNCTION: fn_46445
 CGuildMgr::CGuildMgr() : m_reqBundle(nullptr), m_timeout(0xC800) {
   this->m_initialized = false;
   this->m_reqBundle = new (std::nothrow) CGuildEmblemReqBundle();
@@ -15,8 +16,9 @@ CGuildMgr::CGuildMgr() : m_reqBundle(nullptr), m_timeout(0xC800) {
   }
 }
 
-// INLINED
-CGuildMgr::~CGuildMgr() {
+// OFFSET: 0x0065DBC0
+// FUNCTION: fn_46446
+__declspec(noinline) CGuildMgr::~CGuildMgr() {
   if (this->m_reqBundle) {
     delete this->m_reqBundle;
     this->m_reqBundle = nullptr;
