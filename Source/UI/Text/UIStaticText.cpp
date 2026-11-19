@@ -76,6 +76,22 @@ void UIStaticText::SetTextTruncated(const char* value, int outlineValue) {
 }
 
 // OFFSET: 0x00869290
+// FUNCTION: fn_45621
+void UIStaticText3::SetTextCentered(const char* value, unsigned char outlineValue) {
+  this->text = value;
+  this->tooltip = value;
+  this->outline = outlineValue;
+  this->tooltipEnabled = 0;
+  this->textX = 0;
+
+  const int width = this->TextWidth(this->text.c_str(), 0, 0, this->fontHeight, this->bold, this->italic) + (this->outline != 0 ? 2 : 0);
+  if (this->geometry.width < width) {
+    this->SetTextFitted(this->text.c_str());
+  } else {
+    this->textX = static_cast<int>((this->geometry.width - width) * 0.5);
+  }
+  this->Invalidate();
+}
 
 // OFFSET: 0x008685B0
 // FUNCTION: fn_10961
