@@ -1313,33 +1313,32 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
   this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& pillar = this->state.slots[ec];
-    const int angle = pillar.rotStart;
-    const float height = pillar.height[12] * g_depthAverageHalf;
+    const int angle = this->state.slots[ec].rotStart;
     const int opposite = angle + (angle < 180 ? 180 : -180);
+    const float height = this->state.slots[ec].height[12] * g_depthAverageHalf;
 
     const float cosA = g_cosTable[angle];
     const float sinA = g_sinTable[angle];
-    pillar.vecTPre.y = height;
-    pillar.vecTPre.z = sinA * height + cosA * 0.0f;
-    pillar.vecTPre.x = cosA * height - sinA * 0.0f;
+    this->state.slots[ec].vecTPre.y = height;
+    this->state.slots[ec].vecTPre.z = sinA * height + cosA * 0.0f;
+    this->state.slots[ec].vecTPre.x = cosA * height - sinA * 0.0f;
     const float cosB = g_cosTable[opposite];
     const float sinB = g_sinTable[opposite];
-    pillar.vecTNow.y = height;
-    pillar.vecTNow.x = cosB * height - sinB * 0.0f;
-    pillar.vecTNow.z = sinB * height + cosB * 0.0f;
+    this->state.slots[ec].vecTNow.y = height;
+    this->state.slots[ec].vecTNow.x = cosB * height - sinB * 0.0f;
+    this->state.slots[ec].vecTNow.z = sinB * height + cosB * 0.0f;
 
-    pillar.vecTPre += slot.vecBNow;
-    pillar.vecTNow += slot.vecBNow;
+    this->state.slots[ec].vecTPre += slot.vecBNow;
+    this->state.slots[ec].vecTNow += slot.vecBNow;
 
     vector3d lowNow;
-    lowNow.x = pillar.vecTNow.x;
-    lowNow.y = pillar.vecTNow.y - pillar.height[12];
-    lowNow.z = pillar.vecTNow.z;
+    lowNow.x = this->state.slots[ec].vecTNow.x;
+    lowNow.y = this->state.slots[ec].vecTNow.y - this->state.slots[ec].height[12];
+    lowNow.z = this->state.slots[ec].vecTNow.z;
     vector3d lowPre;
-    lowPre.x = pillar.vecTPre.x;
-    lowPre.y = pillar.vecTPre.y - pillar.height[12];
-    lowPre.z = pillar.vecTPre.z;
+    lowPre.x = this->state.slots[ec].vecTPre.x;
+    lowPre.y = this->state.slots[ec].vecTPre.y - this->state.slots[ec].height[12];
+    lowPre.z = this->state.slots[ec].vecTPre.z;
 
     unsigned char shade;
     if (ec == 0) {
@@ -1350,9 +1349,9 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
       shade = ec == 2 ? 75 : 5;
     }
 
-    if (pillar.height[12] > 0.0f) {
+    if (this->state.slots[ec].height[12] > 0.0f) {
       this->RenderTeiRect(
-        &rpCnt, pillar.riseAngle, pillar.vecTPre, pillar.vecTNow, lowNow, lowPre, wtm, 0, 1, 0, shade, shade, 255, 0.0f, 1.0f, 0.0f,
+        &rpCnt, this->state.slots[ec].riseAngle, this->state.slots[ec].vecTPre, this->state.slots[ec].vecTNow, lowNow, lowPre, wtm, 0, 1, 0, shade, shade, 255, 0.0f, 1.0f, 0.0f,
         1.0f, 0
       );
     }
