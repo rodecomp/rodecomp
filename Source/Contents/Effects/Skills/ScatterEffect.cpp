@@ -48,9 +48,7 @@ void CScatterEffect::Open() {
       particle->angle = static_cast<float>(spinRoll >= 0 ? spinRoll : 0);
       const int angleRoll = rand() % 360;
       const int angle = angleRoll >= 0 ? angleRoll : 0;
-      particle->velocity.x = 0.0f;
-      particle->velocity.y = 0.0f;
-      particle->velocity.z = 0.0f;
+      particle->velocity = vector3d{0.0f, 0.0f, 0.0f};
       particle->alpha = 250;
       particle->phaseParameter = angle;
       particle->destinationBlend = 6;
