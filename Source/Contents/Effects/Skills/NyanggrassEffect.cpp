@@ -62,13 +62,18 @@ MultiTexVertex* MultiTexVertex::Self() {
   return this;
 }
 
+// INLINED
+template <typename T>
+static void SafeDeleteArray(T*& pointer) {
+  delete[] pointer;
+  pointer = nullptr;
+}
+
 // OFFSET: 0x00707FB0
 // FUNCTION: fn_07068
 void CMultiTexParticle::AllocateVertices(int count) {
-  delete[] this->command.indices;
-  this->command.indices = nullptr;
-  delete[] this->command.vertices;
-  this->command.vertices = nullptr;
+  SafeDeleteArray(this->command.indices);
+  SafeDeleteArray(this->command.vertices);
   this->command.indexCount = 0;
   this->command.vertexCount = count;
   this->command.vertices = new MultiTexVertex[count];
