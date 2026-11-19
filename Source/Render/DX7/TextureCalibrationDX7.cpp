@@ -13,6 +13,24 @@ namespace {
   }
 }
 
+// OFFSET: 0x0054A740
+// FUNCTION: fn_45916
+DWORD DeviceOwnerDX7::UnpackBlue(std::uint16_t pixel) const {
+  return Component(pixel, this->blueMask, this->blue);
+}
+
+// OFFSET: 0x0054A770
+// FUNCTION: fn_45917
+DWORD DeviceOwnerDX7::UnpackGreen(std::uint16_t pixel) const {
+  return Component(pixel, this->greenMask, this->green);
+}
+
+// OFFSET: 0x0054A7A0
+// FUNCTION: fn_45918
+DWORD DeviceOwnerDX7::UnpackRed(std::uint16_t pixel) const {
+  return Component(pixel, this->redMask, this->red);
+}
+
 // OFFSET: 0x0054B040
 // FUNCTION: fn_01905
 bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
@@ -98,9 +116,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
           std::memcpy(&pixel, source, 4);
         }
 
-        pixel = static_cast<std::uint16_t>(pixel);
-        const int value =
-          Component(pixel, this->greenMask, this->green) + Component(pixel, this->blueMask, this->blue) + Component(pixel, this->redMask, this->red);
+        const auto packed = static_cast<std::uint16_t>(pixel);
+        const int value = this->UnpackGreen(packed) + this->UnpackBlue(packed) + this->UnpackRed(packed);
 
         if (pattern[sample] == 0) {
           dark += value;

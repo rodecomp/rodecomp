@@ -41,6 +41,9 @@ public:
 
   CRenderer* CreateRenderer();
   std::uint16_t PackColor(int red, int green, int blue);
+  DWORD UnpackBlue(std::uint16_t pixel) const;
+  DWORD UnpackGreen(std::uint16_t pixel) const;
+  DWORD UnpackRed(std::uint16_t pixel) const;
   DWORD BlueMask();
   DWORD BlueExpansion();
   DWORD BlueShift();
