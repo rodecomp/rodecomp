@@ -72,9 +72,7 @@ void CPokJukEffect::SpawnParticles() {
         this->beats[index] = 0;
         this->delays[index] = ClampedRandom(4) * 20;
         for (int corner = 0; corner < 4; ++corner) {
-          this->trails[index][corner].x = -15.0f;
-          this->trails[index][corner].y = 0.0f;
-          this->trails[index][corner].z = 0.0f;
+          this->trails[index][corner] = vector3d{-15.0f, 0.0f, 0.0f};
         }
       }
     }
