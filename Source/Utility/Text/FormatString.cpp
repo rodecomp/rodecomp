@@ -125,7 +125,7 @@ std::string IntToSignedString(int value, bool grouped, bool showPlus) {
   }
 
   if (text.at(0) == ',') {
-    text.erase(0, 1);
+    text.erase(text.begin());
   }
 
   if (negative) {
