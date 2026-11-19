@@ -179,7 +179,7 @@ void UIReputeWnd::Paint() {
     }
   }
 
-  if (this->m_groupSelected) {
+  if (this->m_groupSelected == true) {
     this->FillRegion(375, 26, 256, 16, 0xEFEFEF);
     this->DrawRectOutline(374, 25, 258, 18, 0x636363);
     this->DrawTextAt(377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
