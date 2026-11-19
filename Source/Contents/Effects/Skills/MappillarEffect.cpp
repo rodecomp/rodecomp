@@ -18,6 +18,56 @@ CMappillarEffect::CMappillarEffect()
 __declspec(noinline) CMappillarEffect::~CMappillarEffect() {
 }
 
+// OFFSET: 0x00B4BA10
+// FUNCTION: fn_45990
+void CMappillarEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + particle->angle) % 360;
+  if (particle->columnIndex == 20) {
+    angle = static_cast<int>(particle->angle);
+  }
+
+  const int tilt = particle->phaseParameter;
+  const float spread = particle->speedParameter * g_cosTable[tilt];
+  const float height = particle->speedParameter * g_sinTable[tilt];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+
+  EffectPoint points[2];
+
+  const float innerX = particle->scale * cosine;
+  const float innerY = 0.0f;
+  const float innerZ = particle->scale * sine;
+  const float outerX = innerX + spread * cosine;
+  const float outerY = 0.0f - height;
+  const float outerZ = innerZ + spread * sine;
+
+  if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
+    particle->vertices[1].x = outerX;
+    particle->vertices[1].y = outerY;
+    particle->vertices[1].z = outerZ;
+    particle->vertices[3].x = innerX;
+    particle->vertices[3].y = innerY;
+    particle->vertices[3].z = innerZ;
+    particle->vertices[0].x = this->lastOuter.x;
+    particle->vertices[0].y = this->lastOuter.y;
+    particle->vertices[0].z = this->lastOuter.z;
+    particle->vertices[2].x = this->lastInner.x;
+    particle->vertices[2].y = this->lastInner.y;
+    particle->vertices[2].z = this->lastInner.z;
+  }
+
+  this->lastInner.x = innerX;
+  this->lastInner.y = innerY;
+  this->lastInner.z = innerZ;
+  this->lastOuter.x = outerX;
+  this->lastOuter.y = outerY;
+  this->lastOuter.z = outerZ;
+}
+
 // OFFSET: 0x00B4BBB0
 // FUNCTION: fn_18955
 void CMappillarEffect::Close() {
