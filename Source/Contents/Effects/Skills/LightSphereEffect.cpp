@@ -392,7 +392,7 @@ void CLightSphereEffect::UpdateRay(CParticle* particle) {
   const int previous = particle->angleParameter;
   const int phase = (previous + 1 + std::ranges::max(std::rand() % 2, 0)) % 360;
   particle->angleParameter = phase;
-  CLightSphereEffect::UpdateRayVertices(particle);
+  this->UpdateRayVertices(particle);
 }
 
 // OFFSET: 0x00B6D990
