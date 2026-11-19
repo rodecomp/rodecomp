@@ -988,10 +988,7 @@ void CLoginMode::OnUpdateEx(int value) {
 // OFFSET: 0x00D97780
 // FUNCTION: fn_22302
 void CLoginMode::SubD97780(int value) {
-  int timeout = 0x3A98;
-  if (g_serviceType == ServiceThai || g_serviceType == ServicePhilippine) {
-    timeout = 0x1D4C0;
-  }
+  const int timeout = g_serviceType == ServiceThai || g_serviceType == ServicePhilippine ? 0x1D4C0 : 0x3A98;
 
   switch (value) {
   case 4:
