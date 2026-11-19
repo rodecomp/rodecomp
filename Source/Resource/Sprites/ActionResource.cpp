@@ -262,19 +262,19 @@ void CActRes::Unload() {
 // FUNCTION: fn_46343
 void CActRes::InitializeAnimations(unsigned animationCount) {
   this->Unload();
-  if (this->animations.size() > animationCount) {
-    this->animations.erase(this->animations.begin() + animationCount, this->animations.end());
-  } else {
-    while (this->animations.size() < animationCount) {
+  if (this->animations.size() <= animationCount) {
+    while (animationCount > this->animations.size()) {
       this->animations.push_back(std::vector<ActionFrame>());
     }
-  }
-  if (this->speeds.size() > animationCount) {
-    this->speeds.erase(this->speeds.begin() + animationCount, this->speeds.end());
   } else {
+    this->animations.erase(this->animations.begin() + animationCount, this->animations.end());
+  }
+  if (animationCount >= this->speeds.size()) {
     while (this->speeds.size() < animationCount) {
       this->speeds.push_back(4.0f);
     }
+  } else {
+    this->speeds.erase(this->speeds.begin() + animationCount, this->speeds.end());
   }
 }
 
