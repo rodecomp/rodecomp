@@ -836,9 +836,9 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
                 static_cast<float>(static_cast<const CTexture*>(image->surface)->TextureHeight());
   }
 
-  const double depthBias = depthOffset * 0.000001;
   const double rhwBias = depthOffset * 0.0002;
   const float bottomRhw = static_cast<float>(rhwBias + quad.bottomRhw);
+  const double depthBias = depthOffset * 0.000001;
   const float topRhw = static_cast<float>(quad.topRhw + rhwBias);
   const float bottomZ = RhwToDepth(static_cast<float>(depthBias + quad.bottomRhw));
   const float topZ = RhwToDepth(static_cast<float>(quad.topRhw + depthBias));
