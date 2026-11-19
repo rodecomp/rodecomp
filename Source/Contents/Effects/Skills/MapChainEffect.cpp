@@ -16,6 +16,9 @@ CMapChainEffect::CMapChainEffect()
 }
 
 // OFFSET: 0x00B4AAC0
+// FUNCTION: fn_45980
+__declspec(noinline) CMapChainEffect::~CMapChainEffect() {
+}
 
 // OFFSET: 0x00B4AB90
 // FUNCTION: fn_18947
