@@ -1005,7 +1005,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     this->AddChild(this->m_disbandButton);
   }
 
-  this->m_agitList = new UIListBoxAgit();
+  this->m_agitList = new UIListBoxAgit;
   this->m_agitList->SetSize(95, 158);
   this->m_agitList->Move(this->TextWidth(LookupMessage(MSI_GUILD_MANAGE_LAND), 0, 0, 12, 0, 0) + 19, 129);
   this->m_agitList->lineHeight = 13;
@@ -2873,6 +2873,12 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   return 0;
 }
 
+// INLINED
+static void ClearCheck(UICheckBox* check) {
+  check->geometry.state = 0;
+  check->Invalidate();
+}
+
 // OFFSET: 0x0095B380
 // FUNCTION: fn_13063
 void UIGuildPositionManageWnd::OnCreate(int, int) {
@@ -2899,8 +2905,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
       this->inviteChecks[row]->SetSize(12, 12);
       this->inviteChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
       this->inviteChecks[row]->Move(this->geometry.width - 148, row * g_guildPositionRowHeight + 66);
-      this->inviteChecks[row]->geometry.state = 0;
-      this->inviteChecks[row]->Invalidate();
+      ClearCheck(this->inviteChecks[row]);
       this->AddChild(this->inviteChecks[row]);
     }
 
@@ -2909,8 +2914,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
       this->expelChecks[row]->SetSize(12, 12);
       this->expelChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
       this->expelChecks[row]->Move(this->geometry.width - 48, row * g_guildPositionRowHeight + 66);
-      this->expelChecks[row]->geometry.state = 0;
-      this->expelChecks[row]->Invalidate();
+      ClearCheck(this->expelChecks[row]);
       this->AddChild(this->expelChecks[row]);
     }
 
@@ -2919,8 +2923,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
       this->storageChecks[row]->SetSize(12, 12);
       this->storageChecks[row]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "");
       this->storageChecks[row]->Move(this->geometry.width - 124, row * g_guildPositionRowHeight + 66);
-      this->storageChecks[row]->geometry.state = 0;
-      this->storageChecks[row]->Invalidate();
+      ClearCheck(this->storageChecks[row]);
       this->AddChild(this->storageChecks[row]);
     }
   }
