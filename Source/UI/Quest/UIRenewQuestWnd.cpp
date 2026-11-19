@@ -302,7 +302,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
     height = this->m_lineHeight;
   } else {
     for (unsigned int index = 0; index < quest.m_descriptions.size(); ++index) {
-      viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(quest.m_descriptions[index].c_str()), 0, 0, 0);
+      viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>((quest.m_descriptions.begin() + index)->c_str()), 0, 0, 0);
     }
     height = viewer->ContentHeight();
   }
