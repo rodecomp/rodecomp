@@ -32,6 +32,7 @@ void CStormGustEffect::Close() {
 }
 
 // OFFSET: 0x00B7AC50
+// FUNCTION: fn_46036
 __forceinline void CStormGustEffect::SetupParticle(CParticle* particle) {
   if (particle) {
     particle->SetTexture("effect\\ice.tga");
@@ -88,6 +89,7 @@ bool CStormGustEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B7B2E0
+// FUNCTION: fn_46039
 __forceinline void CStormGustEffect::UpdateAlpha(CParticle* particle) {
   if (particle) {
     const int remaining = 215 - this->frame;
@@ -108,6 +110,7 @@ __forceinline void CStormGustEffect::UpdateAlpha(CParticle* particle) {
 }
 
 // OFFSET: 0x00B7B020
+// FUNCTION: fn_46037
 __forceinline void CStormGustEffect::UpdateParticle(CParticle* particle) {
   if (particle) {
     if (particle->elapsedFrames == 3) {
