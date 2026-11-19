@@ -2,5 +2,7 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 
 extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+extern template void std::vector<unsigned char>::_Tidy() noexcept;
