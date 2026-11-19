@@ -296,8 +296,6 @@ UIItemCollectionWnd::~UIItemCollectionWnd() {
   g_windowMgr.CloseWindow(WID_ROUNDBOXTOOLTIPWND);
 }
 
-UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
-
 // INLINED
 void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
   auto* button = new UIBitmapButton();

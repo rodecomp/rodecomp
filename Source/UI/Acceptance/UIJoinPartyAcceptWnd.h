@@ -11,7 +11,7 @@ struct ExchangeAcceptWndInfo;
 class UIChooseSellBuyWnd : public UIFrameWnd {
 public:
   UIChooseSellBuyWnd();
-  ~UIChooseSellBuyWnd() override;
+  ~UIChooseSellBuyWnd();
   void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -24,6 +24,10 @@ protected:
   void AddChoice(const char* name, int id, int x, int y);
   void CreateViewer(int width, int height);
 };
+
+// INLINED
+inline UIChooseSellBuyWnd::~UIChooseSellBuyWnd() {
+}
 
 class UIExchangeAcceptWnd : public UIChooseSellBuyWnd {
 public:
