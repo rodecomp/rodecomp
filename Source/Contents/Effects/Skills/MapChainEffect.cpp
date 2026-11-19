@@ -72,6 +72,8 @@ void CMapChainEffect::CreateChainParticles(int param) {
   }
 }
 
+// OFFSET: 0x00B4ADA0
+
 // OFFSET: 0x00B4AFA0
 // FUNCTION: fn_18948
 void CMapChainEffect::Close() {
@@ -89,6 +91,24 @@ void CMapChainEffect::Open() {
   this->CreateChainParticles(95);
   this->CreateChainParticles(120);
   this->CreateChainParticles(165);
+}
+
+// OFFSET: 0x00B4B020
+// FUNCTION: fn_46233
+void CMapChainEffect::ResetParticle(CParticle* particle) {
+  particle->flags = 5;
+  particle->position.x = this->position[0];
+  particle->position.y = this->position[1];
+  particle->position.z = this->position[2];
+  particle->speedParameter = this->areaSize;
+  particle->scale = this->scaleParameter;
+  particle->alpha = this->baseAlpha;
+  particle->animationParameter = this->heights[0];
+  particle->animationParameters[0] = this->heights[1];
+  particle->sourceBlend = 5;
+  particle->destinationBlend = 7;
+  particle->InitParticleQuad(particle->vertices);
+  particle->elapsedFrames = 0;
 }
 
 // OFFSET: 0x00B4B0A0

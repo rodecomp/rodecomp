@@ -29,6 +29,8 @@ public:
   void ResetParticles() override;
 
   void CreateChainParticles(int param);
+  void UpdateParticleGeometry(CParticle* particle);
+  void ResetParticle(CParticle* particle);
   void UpdateParticle(CParticle* particle);
   static void RenderParticle(CParticle* particle);
 
