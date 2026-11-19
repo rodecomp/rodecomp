@@ -112,6 +112,7 @@ void CSoulUnityEffect::Render() {
 }
 
 // OFFSET: 0x0072BA90
+// FUNCTION: fn_46208
 __forceinline void __stdcall CSoulUnityEffect::RenderParticle(CParticle* particle) {
   if (!particle) {
     return;
