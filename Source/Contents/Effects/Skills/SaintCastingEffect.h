@@ -21,6 +21,7 @@ public:
   bool IsAlive() override;
   void AddRing(const char* texture, int alpha);
   static void __stdcall SetRingColor(CParticle* particle, int effectId);
+  static void __stdcall InitializeRing(CParticle* particle, int effectId);
 
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;

@@ -46,6 +46,40 @@ __forceinline void __stdcall CSaintCastingEffect::SetRingColor(CParticle* partic
   }
 }
 
+// OFFSET: 0x00B755A0
+// FUNCTION: fn_46267
+__forceinline void __stdcall CSaintCastingEffect::InitializeRing(CParticle* particle, int effectId) {
+  particle->angleParameter = 360;
+  particle->scale = 4.1f;
+  particle->phaseParameter = 80;
+  particle->animationParameter = 0.0f;
+  const int row = particle->rowIndex;
+  particle->angle = static_cast<float>((row + 2) * 90 % 360);
+
+  switch (effectId) {
+  case EF_COUPLECASTING:
+    particle->alpha += (3 - row) * 45;
+    particle->speedParameter = 20.0f - static_cast<float>(row);
+    break;
+  case EF_AURABLADE:
+    particle->alpha = 0;
+    particle->elapsedFrames = -5 * row;
+    particle->speedParameter = 15.0f - static_cast<float>(row);
+    break;
+  case EF_BEGINSPELL:
+  case EF_BEGINSPELL6:
+  case EF_BLUECASTING:
+  case EF_DARKCASTING:
+  case EF_HOMUNCASTING:
+  case EF_DARKCASTING2:
+  case EF_GREENCASTING:
+    particle->alpha = 0;
+    particle->elapsedFrames = -5 * row;
+    particle->speedParameter = 20.0f - static_cast<float>(row);
+    break;
+  }
+}
+
 // OFFSET: 0x00B74F50
 // FUNCTION: fn_19161
 void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
@@ -62,35 +96,7 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       particle->groupIndex = 1;
       particle->SetTexture(texture);
       particle->alpha = alpha;
-      particle->angleParameter = 360;
-      particle->scale = 4.1f;
-      particle->phaseParameter = 80;
-      particle->animationParameter = 0.0f;
-      const int row = particle->rowIndex;
-      particle->angle = static_cast<float>((row + 2) * 90 % 360);
-
-      switch (this->id) {
-      case EF_COUPLECASTING:
-        particle->alpha += (3 - row) * 45;
-        particle->speedParameter = 20.0f - static_cast<float>(row);
-        break;
-      case EF_AURABLADE:
-        particle->alpha = 0;
-        particle->elapsedFrames = -5 * row;
-        particle->speedParameter = 15.0f - static_cast<float>(row);
-        break;
-      case EF_BEGINSPELL:
-      case EF_BEGINSPELL6:
-      case EF_BLUECASTING:
-      case EF_DARKCASTING:
-      case EF_HOMUNCASTING:
-      case EF_DARKCASTING2:
-      case EF_GREENCASTING:
-        particle->alpha = 0;
-        particle->elapsedFrames = -5 * row;
-        particle->speedParameter = 20.0f - static_cast<float>(row);
-        break;
-      }
+      InitializeRing(particle, this->id);
 
       SetRingColor(particle, this->id);
 
