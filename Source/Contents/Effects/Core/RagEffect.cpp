@@ -480,9 +480,10 @@ void CRagEffect::FrostDiver(char type) {
   }
 
   const vector3d saved = this->render.position;
-  this->render.position.x = this->state.deltaPos3.x + this->render.position.x;
-  this->render.position.y = this->state.deltaPos3.y + this->render.position.y;
-  this->render.position.z = this->state.deltaPos3.z + this->render.position.z;
+  this->render.position = vector3d{
+    this->state.deltaPos3.x + this->render.position.x, this->state.deltaPos3.y + this->render.position.y,
+    this->state.deltaPos3.z + this->render.position.z
+  };
 
   if (this->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) <= 2.5f) {
     this->state.flag = 1;
@@ -492,14 +493,16 @@ void CRagEffect::FrostDiver(char type) {
   this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.pattern |= 1u;
-  this->state.lastPrim->state.slots[0].flag1[0] = type == 3 ? 3 : 0;
+  if (type == 3) {
+    this->state.lastPrim->state.slots[0].flag1[0] = 3;
+  } else {
+    this->state.lastPrim->state.slots[0].flag1[0] = 0;
+  }
   const int angle = ClampedRandom(360);
   const float distance = static_cast<float>(ClampedRandom(10) + 5) / 10.0f;
   const float sine = ClientSine(angle);
   const float cosine = ClientCosine(angle);
-  this->state.lastPrim->state.deltaPos2.y = 30.0f;
-  this->state.lastPrim->state.deltaPos2.x = sine * distance;
-  this->state.lastPrim->state.deltaPos2.z = -distance * cosine;
+  this->state.lastPrim->state.deltaPos2 = vector3d{sine * distance, 30.0f, -distance * cosine};
   vector3d& velocity = this->state.lastPrim->state.deltaPos2;
   velocity.x = this->state.deltaPos3.x + velocity.x;
   velocity.y = this->state.deltaPos3.y + velocity.y;
