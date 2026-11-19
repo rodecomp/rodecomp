@@ -86,8 +86,96 @@ bool CRotateLineEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B74C20
+// FUNCTION: fn_46216
+__forceinline void CRotateLineEffect::UpdateVertices(CParticle* particle) {
+  if (particle) {
+    const int segment = particle->columnIndex;
+    const int& particleSpread = particle->angleParameter;
+    const float& particleAngle = particle->angle;
+    int index = static_cast<int>(static_cast<float>(static_cast<int>(particleSpread / 21.0f) * segment) + particleAngle) % 360;
+    if (particleSpread == 360 && segment == 20) {
+      index = static_cast<int>(particleAngle);
+    }
+
+    const float cosine = g_cosTable[index];
+    const float sine = g_sinTable[index];
+    const int tilt = particle->phaseParameter;
+    const float tiltCosine = g_cosTable[tilt];
+    const float tiltSine = g_sinTable[tilt];
+    const float offsetX = tiltCosine * cosine;
+    const float offsetZ = tiltCosine * sine;
+    EffectPoint points[2];
+    const float height = particle->animationParameters[0];
+    points[0].x = cosine * particle->scale;
+    points[0].y = -particle->animationParameter;
+    points[0].z = sine * particle->scale;
+    points[1].x = points[0].x + offsetX;
+    points[1].y = height - tiltSine + points[0].y;
+    points[1].z = points[0].z + offsetZ;
+
+    particle->vertices[3].x = points[0].x;
+    particle->vertices[3].y = points[0].y;
+    particle->vertices[3].z = points[0].z;
+    particle->vertices[1].x = points[1].x;
+    particle->vertices[1].y = points[1].y;
+    particle->vertices[1].z = points[1].z;
+    if (segment != 0) {
+      particle->vertices[0].x = this->previous[1].x;
+      particle->vertices[0].y = this->previous[1].y;
+      particle->vertices[0].z = this->previous[1].z;
+      particle->vertices[2].x = this->previous[0].x;
+      particle->vertices[2].y = this->previous[0].y;
+      particle->vertices[2].z = this->previous[0].z;
+    }
+    this->previous[0].x = points[0].x;
+    this->previous[0].y = points[0].y;
+    this->previous[0].z = points[0].z;
+    this->previous[1].x = points[1].x;
+    this->previous[1].y = points[1].y;
+    this->previous[1].z = points[1].z;
+  }
+}
 
 // OFFSET: 0x00B74870
+// FUNCTION: fn_46214
+__forceinline void CRotateLineEffect::UpdateParticle(CParticle* particle) {
+  if (particle) {
+    float& particleAngle = particle->angle;
+    int& particleSpread = particle->angleParameter;
+    if (particle->columnIndex == 0) {
+      this->angle = static_cast<int>(particleAngle);
+      this->spread = particleSpread;
+      this->alpha = particle->alpha;
+      this->scale = particle->scale;
+      this->started = true;
+    } else if (!this->started) {
+      return;
+    }
+
+    this->angle += 5;
+    particleAngle = static_cast<float>(this->angle % 360);
+    this->spread += 3;
+    if (this->spread > 180) {
+      this->spread = 180;
+    }
+    particleSpread = this->spread;
+
+    if (particle->elapsedFrames <= 12) {
+      particle->alpha = ++this->alpha;
+    } else {
+      this->scale += 0.1f;
+      particle->scale = this->scale;
+      if (particle->elapsedFrames > 50) {
+        if (--this->alpha < 0) {
+          this->alpha = 0;
+        }
+        particle->alpha = this->alpha;
+      }
+    }
+
+    this->UpdateVertices(particle);
+  }
+}
 
 // OFFSET: 0x00B74590
 // FUNCTION: fn_19158
@@ -98,83 +186,7 @@ void CRotateLineEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      float& particleAngle = particle->angle;
-      int& particleSpread = particle->angleParameter;
-      if (particle->columnIndex == 0) {
-        this->angle = static_cast<int>(particleAngle);
-        this->spread = particleSpread;
-        this->alpha = particle->alpha;
-        this->scale = particle->scale;
-        this->started = true;
-      } else if (!this->started) {
-        ++particle->elapsedFrames;
-        continue;
-      }
-
-      this->angle += 5;
-      particleAngle = static_cast<float>(this->angle % 360);
-      this->spread += 3;
-      if (this->spread > 180) {
-        this->spread = 180;
-      }
-      particleSpread = this->spread;
-
-      if (particle->elapsedFrames <= 12) {
-        particle->alpha = ++this->alpha;
-      } else {
-        this->scale += 0.1f;
-        particle->scale = this->scale;
-        if (particle->elapsedFrames > 50) {
-          if (--this->alpha < 0) {
-            this->alpha = 0;
-          }
-          particle->alpha = this->alpha;
-        }
-      }
-
-      const int segment = particle->columnIndex;
-      int index = static_cast<int>(static_cast<float>(static_cast<int>(particleSpread / 21.0f) * segment) + particleAngle) % 360;
-      if (particleSpread == 360 && segment == 20) {
-        index = static_cast<int>(particleAngle);
-      }
-
-      const float cosine = g_cosTable[index];
-      const float sine = g_sinTable[index];
-      const int tilt = particle->phaseParameter;
-      const float tiltCosine = g_cosTable[tilt];
-      const float offsetX = tiltCosine * cosine;
-      const float offsetZ = tiltCosine * sine;
-      EffectPoint points[2];
-      const float height = particle->animationParameters[0];
-      points[0].x = cosine * particle->scale;
-      points[0].y = -particle->animationParameter;
-      points[0].z = sine * particle->scale;
-      points[1].x = points[0].x + offsetX;
-      points[1].y = height - g_sinTable[tilt] + points[0].y;
-      points[1].z = points[0].z + offsetZ;
-
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
-      if (segment != 0) {
-        particle->vertices[0].x = this->previous[1].x;
-        particle->vertices[0].y = this->previous[1].y;
-        particle->vertices[0].z = this->previous[1].z;
-        particle->vertices[2].x = this->previous[0].x;
-        particle->vertices[2].y = this->previous[0].y;
-        particle->vertices[2].z = this->previous[0].z;
-      }
-      this->previous[0].x = points[0].x;
-      this->previous[0].y = points[0].y;
-      this->previous[0].z = points[0].z;
-      this->previous[1].x = points[1].x;
-      this->previous[1].y = points[1].y;
-      this->previous[1].z = points[1].z;
-    }
+    this->UpdateParticle(particle);
     ++particle->elapsedFrames;
   }
 }
