@@ -345,6 +345,7 @@ __forceinline void CWorld::AddPcPosUnindexed(std::uint32_t aid, const CellFloatP
 }
 
 // OFFSET: 0x00ACAC60
+// FUNCTION: fn_46300
 void CWorld::AddPcPosUnindexedFromCell(std::uint32_t aid, const int* cell) {
   CellFloatPos position(0.0f, 0.0f);
   g_modeMgr.GetGameMode()->CellCenter(cell[0], cell[1], position.x, position.z);
