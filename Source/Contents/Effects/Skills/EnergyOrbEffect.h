@@ -16,7 +16,7 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
-  ~CEnergyOrbEffect() override;
+  __forceinline ~CEnergyOrbEffect() override;
 
   void SetCount(int value);
 

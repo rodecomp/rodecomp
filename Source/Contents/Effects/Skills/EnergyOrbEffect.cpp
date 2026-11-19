@@ -16,9 +16,11 @@
 CEnergyOrbEffect::CEnergyOrbEffect() : CEffect(-1), count(0), mode(2), particles() {
 }
 
+// OFFSET: 0x00B50DA0
+// FUNCTION: fn_46241
 // OFFSET: 0x00B50E00
 // FUNCTION: fn_19023
-CEnergyOrbEffect::~CEnergyOrbEffect() {
+__forceinline CEnergyOrbEffect::~CEnergyOrbEffect() {
 }
 
 // OFFSET: 0x00B50E80
