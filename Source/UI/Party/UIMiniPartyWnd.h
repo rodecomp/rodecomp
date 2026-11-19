@@ -42,6 +42,7 @@ public:
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
+  void SetSizeMode(int mode);
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   // OFFSET: 0x00740170
   // FUNCTION: fn_07728

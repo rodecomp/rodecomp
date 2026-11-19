@@ -448,6 +448,39 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
   g_windowMgr.ArrangeMiniPartyWindows();
 }
 
+// OFFSET: 0x00743020
+// FUNCTION: fn_46344
+void UIMiniPartyWnd::SetSizeMode(int mode) {
+  this->m_sizeMode = mode;
+  switch (mode) {
+  case 0:
+    this->Resize(this->m_widths[0], this->geometry.height);
+    if (this->m_infoWnd) {
+      this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
+    }
+    this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
+    this->m_background->Move(this->m_widths[this->m_sizeMode] - 35, 25);
+    break;
+  case 1:
+    this->Resize(this->m_widths[1], this->geometry.height);
+    if (this->m_infoWnd) {
+      this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
+    }
+    this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg_mini.tga";
+    this->m_background->Move(this->m_widths[this->m_sizeMode] - 23, 25);
+    break;
+  case 2:
+    this->Resize(this->m_widths[2], this->geometry.height);
+    if (this->m_infoWnd) {
+      this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
+    }
+    this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg_maxmini.tga";
+    this->m_background->Move(this->m_widths[this->m_sizeMode] - 35, 25);
+    break;
+  }
+  this->Invalidate();
+}
+
 // OFFSET: 0x00743130
 // FUNCTION: fn_07744
 int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
