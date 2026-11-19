@@ -185,17 +185,13 @@ void UIReputeWnd::Paint() {
     this->DrawTextAt(377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
     this->DrawRightAlignedText(627, 29, FormatOwnedString("%I64d P", this->m_totalPoints).c_str(), 0, 0, 12, 0, 1);
 
-    const char* light;
-    if (this->m_totalPoints == 0) {
-      light = "유저인터페이스\\Reputation\\light_empty.bmp";
+    if (0 == this->m_totalPoints) {
+      this->DrawBitmap(439, 28, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp"))), true);
     } else if (this->m_totalPoints > 0) {
-      light = "유저인터페이스\\Reputation\\light_blue.bmp";
+      this->DrawBitmap(439, 28, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_blue.bmp"))), true);
     } else {
-      light = "유저인터페이스\\Reputation\\light_red.bmp";
+      this->DrawBitmap(439, 28, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_red.bmp"))), true);
     }
-
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(light)));
-    this->DrawBitmap(439, 28, bitmap, true);
   }
 
   const std::string separator = " / ";
