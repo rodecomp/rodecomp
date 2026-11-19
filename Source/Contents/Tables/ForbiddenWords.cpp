@@ -72,7 +72,7 @@ bool ForbiddenWords::Load(const char* name) {
     *cursor = '\0';
 
     if (*first != '\0') {
-      this->words.push_back(Lowercase(token));
+      this->words.emplace_back(Lowercase(token));
     }
   }
 
