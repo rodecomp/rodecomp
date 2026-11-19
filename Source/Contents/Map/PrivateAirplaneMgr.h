@@ -20,6 +20,8 @@ public:
   /* 0010 */ std::set<std::string> m_endableMaps;
   /* 0018 */ std::set<int> m_needItems;
 
+  // OFFSET: 0x006D00A0
+  // FUNCTION: fn_46431
   CPrivateAirplaneMgr() {
     this->m_initialized = true;
   }
