@@ -3013,17 +3013,17 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
   data.y = packet.y;
   data.visible = packet.visible;
   data.level = packet.level;
-  if (data.owner == g_session.m_aid) {
-    if (data.visible) {
+  if (data.owner != g_session.m_aid) {
+    if (!data.visible) {
+      const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
+      if (found != this->m_skillUnitIds.end()) {
+        this->m_skillUnitIds.erase(found);
+        data.visible = 0;
+      }
+    } else {
       this->m_skillUnitIds.push_back(packet.aid);
     }
-  } else if (!data.visible) {
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
-    if (found != this->m_skillUnitIds.end()) {
-      this->m_skillUnitIds.erase(found);
-      data.visible = 0;
-    }
-  } else {
+  } else if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 

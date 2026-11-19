@@ -5471,9 +5471,7 @@ void CEffectPrim::PrimWaveSpin() {
       slot.riseAngle = 30;
     }
 
-    if (process <= 10) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (slot.alphaT == 1 ? 10 : 20));
-    } else {
+    if (process > 10) {
       if (slot.alphaT == 2) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 8);
       } else if (slot.alphaT == 3) {
@@ -5489,6 +5487,8 @@ void CEffectPrim::PrimWaveSpin() {
       if (slot.alphaB <= 0) {
         slot.alphaB = 0;
       }
+    } else {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (slot.alphaT == 1 ? 10 : 20));
     }
 
     const int phase = index * 90;
@@ -5678,7 +5678,9 @@ bool CEffectPrim::PrimSpiralFade() {
     if (mode == 1) {
       phase = 60 - phase;
     }
-    slot.vecBPre = {static_cast<float>(radius) * g_sinTable[6 * phase], -25.0f, static_cast<float>(radius) * g_cosTable[6 * phase]};
+    slot.vecBPre.x = static_cast<float>(radius) * g_sinTable[6 * phase];
+    slot.vecBPre.y = -25.0f;
+    slot.vecBPre.z = static_cast<float>(radius) * g_cosTable[6 * phase];
   }
 
   return true;
