@@ -609,9 +609,8 @@ void CSession::SetShopItem(int shopId, unsigned int index, int itemId, int first
     shop->items.resize(index + 1);
   }
 
-  std::map<int, std::pair<int, int>>& items = shop->items[index];
-  if (items.end() == items.find(itemId)) {
-    items[itemId] = index == 0 ? std::make_pair(1, second) : std::make_pair(first, second);
+  if (shop->items[index].find(itemId) == shop->items[index].end()) {
+    shop->items[index][itemId] = index == 0 ? std::make_pair(1, second) : std::make_pair(first, second);
   }
 }
 
