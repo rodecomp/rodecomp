@@ -664,7 +664,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     UIListBox* tab = static_cast<UIListBox*>(this->m_tabs[this->m_currentTab]);
     if (tab != nullptr && tab->verticalOverflow != 0) {
       if (HIBYTE(GetKeyState(VK_CONTROL))) {
-        tab->SendMsg(nullptr, UM_SCROLLVERT, tab->LineCount(), 0, 0, 0);
+        const int lines = tab->LineCount();
+        tab->SendMsg(nullptr, UM_SCROLLVERT, lines, 0, 0, 0);
       } else {
         tab->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
       }
@@ -675,7 +676,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     UIListBox* tab = static_cast<UIListBox*>(this->m_tabs[this->m_currentTab]);
     if (tab != nullptr && tab->verticalOverflow != 0) {
       if (HIBYTE(GetKeyState(VK_CONTROL))) {
-        tab->SendMsg(nullptr, UM_SCROLLVERT, -tab->LineCount(), 0, 0, 0);
+        const int lines = tab->LineCount();
+        tab->SendMsg(nullptr, UM_SCROLLVERT, -lines, 0, 0, 0);
       } else {
         tab->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
       }
