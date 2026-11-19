@@ -28,8 +28,9 @@ CEmblemDataDownloadAsyncWork::CEmblemDataDownloadAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xC52FB5FBB94FF917ULL)), sourceFile, 29) {
 }
 
-// INLINED
-CEmblemDataDownloadAsyncWork::~CEmblemDataDownloadAsyncWork() = default;
+// OFFSET: 0x005E9F00
+// FUNCTION: fn_46404
+__declspec(noinline) CEmblemDataDownloadAsyncWork::~CEmblemDataDownloadAsyncWork() = default;
 
 // OFFSET: 0x005EA350
 // FUNCTION: fn_03966

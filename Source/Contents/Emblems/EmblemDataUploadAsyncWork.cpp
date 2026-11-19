@@ -30,8 +30,9 @@ CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x93E7A3A1F587CDC5ULL)), sourceFile, 27) {
 }
 
-// INLINED
-CEmblemDataUploadAsyncWork::~CEmblemDataUploadAsyncWork() = default;
+// OFFSET: 0x005EC260
+// FUNCTION: fn_46405
+__declspec(noinline) CEmblemDataUploadAsyncWork::~CEmblemDataUploadAsyncWork() = default;
 
 // OFFSET: 0x005EC6F0
 // FUNCTION: fn_03981

@@ -36,8 +36,9 @@ CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xF535E561137F138DULL)), loadSource, 28), m_type(0) {
 }
 
-// INLINED
-CMCStoreInfoBackupLoadAsyncWork::~CMCStoreInfoBackupLoadAsyncWork() = default;
+// OFFSET: 0x00607E10
+// FUNCTION: fn_46406
+__declspec(noinline) CMCStoreInfoBackupLoadAsyncWork::~CMCStoreInfoBackupLoadAsyncWork() = default;
 
 // OFFSET: 0x00608270
 // FUNCTION: fn_04244
@@ -100,8 +101,9 @@ CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x3FAF85D995034FD7ULL)), saveSource, 30), m_type(0) {
 }
 
-// INLINED
-CMCStoreInfoBackupSaveAsyncWork::~CMCStoreInfoBackupSaveAsyncWork() = default;
+// OFFSET: 0x00609080
+// FUNCTION: fn_46407
+__declspec(noinline) CMCStoreInfoBackupSaveAsyncWork::~CMCStoreInfoBackupSaveAsyncWork() = default;
 
 // OFFSET: 0x00609520
 // FUNCTION: fn_04250
