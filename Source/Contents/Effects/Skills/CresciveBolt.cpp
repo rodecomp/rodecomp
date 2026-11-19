@@ -15,6 +15,11 @@
 CCresciveBolt::CCresciveBolt() : CEffect(1951), particle(nullptr) {
 }
 
+// OFFSET: 0x0070AB40
+// FUNCTION: fn_46196
+__declspec(noinline) CCresciveBolt::~CCresciveBolt() {
+}
+
 // OFFSET: 0x0070AC00
 // FUNCTION: fn_07108
 void CCresciveBolt::Close() {

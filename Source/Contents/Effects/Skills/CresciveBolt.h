@@ -10,6 +10,7 @@ class CEZ2STRParticle;
 class CCresciveBolt : public CEffect {
 public:
   CCresciveBolt();
+  ~CCresciveBolt() override;
 
   void Open() override;
   void OnProcess() override;
