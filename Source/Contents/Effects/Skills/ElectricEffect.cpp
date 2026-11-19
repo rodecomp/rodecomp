@@ -19,6 +19,16 @@ struct EmptyElectricEffectDestructor {
   ~EmptyElectricEffectDestructor();
 };
 
+// INLINED
+static short HeadingOf(float nx, float nz) {
+  for (short step = 0; step <= 180; ++step) {
+    if (nx >= g_cosTable[step]) {
+      return nz >= 0.0f ? step : static_cast<short>(360 - step);
+    }
+  }
+  return 180;
+}
+
 // OFFSET: 0x00B4E7A0
 // FUNCTION: fn_45993
 EmptyElectricEffectDestructor::~EmptyElectricEffectDestructor() {
@@ -185,16 +195,6 @@ void CElectricEffect::UpdateTick() {
   }
 
   ++this->tick;
-}
-
-// INLINED
-static short HeadingOf(float nx, float nz) {
-  for (short step = 0; step <= 180; ++step) {
-    if (nx >= g_cosTable[step]) {
-      return nz >= 0.0f ? step : static_cast<short>(360 - step);
-    }
-  }
-  return 180;
 }
 
 // OFFSET: 0x00B4EF50
