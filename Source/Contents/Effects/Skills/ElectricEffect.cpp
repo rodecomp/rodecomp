@@ -315,6 +315,7 @@ __declspec(noinline) void CElectricEffect::UpdateParticleState(CParticle* partic
 
   const int segment = particle->columnIndex;
   const int strand = particle->groupIndex;
+  EffectPoint points[2];
   if (strand == 0) {
     const float* arc = &particle->animationParameter;
     for (int index = 0; index < 2; ++index) {
@@ -332,19 +333,13 @@ __declspec(noinline) void CElectricEffect::UpdateParticleState(CParticle* partic
       this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
     }
 
-    const float dx = this->path[0].x - this->path[1].x;
     const float dz = this->path[0].z - this->path[1].z;
+    const float dx = this->path[0].x - this->path[1].x;
     const float length = SquareRoot(dx * dx + dz * dz);
-    const float nx = dx / length;
     const float nz = dz / length;
+    const float nx = dx / length;
 
-    short heading = 180;
-    for (short step = 0; step <= 180; ++step) {
-      if (nx >= g_cosTable[step]) {
-        heading = nz < 0.0f ? static_cast<short>(360 - step) : step;
-        break;
-      }
-    }
+    const short heading = HeadingOf(nx, nz);
 
     this->angle = static_cast<short>((heading + 90) % 360);
   }
