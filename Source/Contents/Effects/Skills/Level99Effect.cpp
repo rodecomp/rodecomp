@@ -68,48 +68,7 @@ void CLevel99Effect::AddRings() {
       particle->InitParticleQuad(particle->vertices);
       this->sprites.push_back(particle);
 
-      if (particle) {
-        const int index = particle->columnIndex;
-        const float radius = g_sinTable[index * 9] * particle->speedParameter;
-        const float baseAngle = particle->angle;
-        const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
-        const int ringTilt = particle->phaseParameter;
-        const float spread = radius * g_cosTable[ringTilt];
-        const float cosine = g_cosTable[angle];
-        const float sine = g_sinTable[angle];
-        const float height = radius * g_sinTable[ringTilt];
-
-        EffectPoint points[2];
-        const float innerX = particle->scale * cosine;
-        const float innerY = 0.0f;
-        const float innerZ = particle->scale * sine;
-        const float outerX = innerX + spread * cosine;
-        const float outerY = 0.0f - height;
-        const float outerZ = innerZ + spread * sine;
-
-        particle->vertices[3].x = innerX;
-        particle->vertices[3].y = innerY;
-        particle->vertices[3].z = innerZ;
-        particle->vertices[1].x = outerX;
-        particle->vertices[1].y = outerY;
-        particle->vertices[1].z = outerZ;
-
-        if (index != 0) {
-          particle->vertices[0].x = this->previousRingPoints[1].x;
-          particle->vertices[0].y = this->previousRingPoints[1].y;
-          particle->vertices[0].z = this->previousRingPoints[1].z;
-          particle->vertices[2].x = this->previousRingPoints[0].x;
-          particle->vertices[2].y = this->previousRingPoints[0].y;
-          particle->vertices[2].z = this->previousRingPoints[0].z;
-        }
-
-        this->previousRingPoints[0].x = innerX;
-        this->previousRingPoints[0].y = innerY;
-        this->previousRingPoints[0].z = innerZ;
-        this->previousRingPoints[1].x = outerX;
-        this->previousRingPoints[1].y = outerY;
-        this->previousRingPoints[1].z = outerZ;
-      }
+      this->UpdateRingVertices(particle);
     }
 
     ++row;
@@ -140,6 +99,51 @@ __forceinline void CLevel99Effect::AddSparkles() {
 }
 
 // OFFSET: 0x00B6A8C0
+// FUNCTION: fn_46123
+__forceinline void CLevel99Effect::UpdateRingVertices(CParticle* particle) {
+  if (particle) {
+    const int index = particle->columnIndex;
+    const float radius = g_sinTable[index * 9] * particle->speedParameter;
+    const float baseAngle = particle->angle;
+    const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
+    const int ringTilt = particle->phaseParameter;
+    const float spread = radius * g_cosTable[ringTilt];
+    const float cosine = g_cosTable[angle];
+    const float sine = g_sinTable[angle];
+    const float height = radius * g_sinTable[ringTilt];
+
+    EffectPoint points[2];
+    points[0].x = particle->scale * cosine;
+    points[0].y = 0.0f;
+    points[0].z = particle->scale * sine;
+    points[1].x = points[0].x + spread * cosine;
+    points[1].y = 0.0f - height;
+    points[1].z = spread * sine + points[0].z;
+
+    particle->vertices[3].x = points[0].x;
+    particle->vertices[3].y = points[0].y;
+    particle->vertices[3].z = points[0].z;
+    particle->vertices[1].x = points[1].x;
+    particle->vertices[1].y = points[1].y;
+    particle->vertices[1].z = points[1].z;
+
+    if (index != 0) {
+      particle->vertices[0].x = this->previousRingPoints[1].x;
+      particle->vertices[0].y = this->previousRingPoints[1].y;
+      particle->vertices[0].z = this->previousRingPoints[1].z;
+      particle->vertices[2].x = this->previousRingPoints[0].x;
+      particle->vertices[2].y = this->previousRingPoints[0].y;
+      particle->vertices[2].z = this->previousRingPoints[0].z;
+    }
+
+    this->previousRingPoints[0].x = points[0].x;
+    this->previousRingPoints[0].y = points[0].y;
+    this->previousRingPoints[0].z = points[0].z;
+    this->previousRingPoints[1].x = points[1].x;
+    this->previousRingPoints[1].y = points[1].y;
+    this->previousRingPoints[1].z = points[1].z;
+  }
+}
 
 // OFFSET: 0x00B6AA60
 // FUNCTION: fn_19084
