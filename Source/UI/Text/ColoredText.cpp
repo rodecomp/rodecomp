@@ -140,12 +140,12 @@ void UIWindow::DrawRightColoredText(
     std::vector<unsigned char> text;
   };
 
-  const char* const end = text + bytes;
   const char* current = text;
+  const char* const end = text + bytes;
   const char* next = this->SegmentEnd(current, end);
-  const std::vector<unsigned char> initial(current, next);
-  std::vector<Segment> segments;
-  segments.push_back({initial, color, initial});
+  std::uint32_t segmentColor = color;
+  const Segment first{std::vector<unsigned char>(current, next), segmentColor, std::vector<unsigned char>(current, next)};
+  std::vector<Segment> segments(1, first);
   std::vector<unsigned char> prefix;
 
   while (current < end) {
@@ -155,24 +155,18 @@ void UIWindow::DrawRightColoredText(
       break;
     }
 
-    std::uint32_t segmentColor = 0;
-    const char* segmentStart = next;
-    if (*segmentStart == '^') {
-      segmentColor = static_cast<unsigned char>(g_hexDigits[segmentStart[5]] * 16 + g_hexDigits[segmentStart[6]]);
-      segmentColor = (segmentColor << 8) | static_cast<unsigned char>(g_hexDigits[segmentStart[3]] * 16 + g_hexDigits[segmentStart[4]]);
-      segmentColor = (segmentColor << 8) | static_cast<unsigned char>(g_hexDigits[segmentStart[1]] * 16 + g_hexDigits[segmentStart[2]]);
-      segmentStart += 7;
+    segmentColor = 0;
+    const char* segmentStart = this->ParseColorCode(next, segmentColor);
+    Segment segment{{}, segmentColor, {}};
+    segment.prefix.insert(segment.prefix.end(), prefix.begin(), prefix.end());
+    const char* segmentEnd = this->SegmentEnd(segmentStart, end);
+    if (segmentEnd < end) {
+      segment.text.insert(segment.text.end(), segmentStart, segmentEnd);
+    } else {
+      segment.text.insert(segment.text.end(), segmentStart, end);
+      segmentEnd = end;
     }
-    next = this->SegmentEnd(segmentStart, end);
-    if (next >= end) {
-      next = end;
-    }
-
-    Segment segment;
-    segment.prefix = prefix;
-    segment.color = segmentColor;
-    segment.text.assign(segmentStart, next);
-    segment.prefix.insert(segment.prefix.end(), segmentStart, next);
+    segment.prefix.insert(segment.prefix.end(), segmentStart, segmentEnd);
     segments.push_back(segment);
     current = segmentStart;
   }
@@ -182,8 +176,8 @@ void UIWindow::DrawRightColoredText(
 
   for (const Segment& segment : segments) {
     color = segment.color;
-    if (!segment.text.empty()) {
-      SIZE size;
+    if (segment.text.size() != 0) {
+      SIZE size = {};
       context.Measure(reinterpret_cast<const char*>(segment.prefix.data()), static_cast<int>(segment.prefix.size()), &size);
       context.SetColor(color);
       context.Draw(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
