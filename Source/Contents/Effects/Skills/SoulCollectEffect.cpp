@@ -31,6 +31,32 @@ void CSoulCollectEffect::Close() {
   this->particles.clear();
 }
 
+// OFFSET: 0x0072A3F0
+// FUNCTION: fn_46276
+__forceinline void CSoulCollectEffect::AddParticlePair() {
+  for (int layer = 0; layer < 2; ++layer) {
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
+    if (!particle) {
+      continue;
+    }
+
+    const int column = static_cast<int>(this->particles.size() / 2);
+    particle->SetTexture("effect\\soul_collect\\soul_collect.bmp");
+    particle->effectId = this->id;
+    particle->columnIndex = column;
+    particle->rowIndex = layer;
+    particle->groupIndex = 1;
+    particle->alpha = 0;
+    if (layer == 0) {
+      particle->depthOffset = 0.00001f;
+    } else if (layer == 1) {
+      particle->depthOffset = 0.00002f;
+    }
+    particle->InitParticleQuad(particle->vertices);
+    this->particles.push_back(particle);
+  }
+}
+
 // OFFSET: 0x0072A5F0
 // FUNCTION: fn_07460
 void CSoulCollectEffect::Open() {
@@ -42,27 +68,7 @@ void CSoulCollectEffect::Open() {
   const int current = static_cast<int>(this->particles.size() / 2);
   if (current < count) {
     for (int index = 0; index < this->effectLevel - current; ++index) {
-      for (int layer = 0; layer < 2; ++layer) {
-        CParticle* particle = CreateParticle(&this->positionVector, 5);
-        if (!particle) {
-          continue;
-        }
-
-        const int column = static_cast<int>(this->particles.size() / 2);
-        particle->SetTexture("effect\\soul_collect\\soul_collect.bmp");
-        particle->effectId = this->id;
-        particle->columnIndex = column;
-        particle->rowIndex = layer;
-        particle->groupIndex = 1;
-        particle->alpha = 0;
-        if (layer == 0) {
-          particle->depthOffset = 0.00001f;
-        } else if (layer == 1) {
-          particle->depthOffset = 0.00002f;
-        }
-        particle->InitParticleQuad(particle->vertices);
-        this->particles.push_back(particle);
-      }
+      this->AddParticlePair();
     }
   } else if (current > count) {
     for (int index = 0; index < current - this->effectLevel; ++index) {
