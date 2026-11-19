@@ -29,7 +29,8 @@ CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x2FF3C5036D070127ULL)), sourceFile, 27) {
 }
 
-// INLINED
+// OFFSET: 0x005CDB30
+// FUNCTION: fn_46408
 CChangePartyMasterAsyncWork::~CChangePartyMasterAsyncWork() = default;
 
 // OFFSET: 0x005CE080
