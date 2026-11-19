@@ -73,6 +73,65 @@ void CElectricEffect::AddBolt(int tilt) {
 // OFFSET: 0x00B4EDF0
 
 // OFFSET: 0x00B4EA20
+// FUNCTION: fn_46217
+void CElectricEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const int strand = particle->groupIndex;
+  if (strand == 0) {
+    const float* arc = &particle->animationParameter;
+    for (int index = 0; index < 2; ++index) {
+      const float bend = arc[segment + index];
+      const float radius = bend / 90.0f * particle->scale;
+      this->path[index].x = radius * g_cosTable[particle->phaseParameter];
+      this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * particle->angle;
+      this->path[index].z = radius * g_sinTable[particle->phaseParameter];
+
+      const int jitterZ = rand() % 7;
+      const int jitterY = rand() % 7;
+      const int jitterX = rand() % 7;
+      this->path[index].x += static_cast<float>(jitterX >= 0 ? jitterX : 0) * 0.1f - 2.3f;
+      this->path[index].y += static_cast<float>(jitterY >= 0 ? jitterY : 0) * 0.1f - 0.3f;
+      this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
+    }
+
+    const float dx = this->path[0].x - this->path[1].x;
+    const float dz = this->path[0].z - this->path[1].z;
+    short heading;
+    this->SetHeadingFromVector(dx, dz, &heading);
+    this->angle = static_cast<short>((heading + 90) % 360);
+  }
+
+  if (segment >= 1 && segment <= 18) {
+    const float radius = particle->speedParameter;
+    const float horizontal = radius * g_cosTable[strand * 120];
+    const float vertical = radius * g_sinTable[strand * 120];
+    const float offsetX = horizontal * g_cosTable[this->angle];
+    const float offsetZ = horizontal * g_sinTable[this->angle];
+    const vector3d first = {offsetX + this->path[0].x, vertical + this->path[0].y, offsetZ + this->path[0].z};
+    const vector3d second = {offsetX + this->path[1].x, vertical + this->path[1].y, offsetZ + this->path[1].z};
+
+    particle->vertices[1].x = first.x;
+    particle->vertices[1].y = first.y;
+    particle->vertices[1].z = first.z;
+    particle->vertices[3].x = second.x;
+    particle->vertices[3].y = second.y;
+    particle->vertices[3].z = second.z;
+    if (strand != 0) {
+      particle->vertices[0].x = this->lastEdge[0].x;
+      particle->vertices[0].y = this->lastEdge[0].y;
+      particle->vertices[0].z = this->lastEdge[0].z;
+      particle->vertices[2].x = this->lastEdge[1].x;
+      particle->vertices[2].y = this->lastEdge[1].y;
+      particle->vertices[2].z = this->lastEdge[1].z;
+    }
+    this->lastEdge[0] = first;
+    this->lastEdge[1] = second;
+  }
+}
 
 // OFFSET: 0x00B4EDB0
 // FUNCTION: fn_19003
