@@ -2239,7 +2239,8 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
+      const int level = g_session.UseLevel(skill->id);
+      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, a1, level, 0, 0);
     }
     break;
   }
