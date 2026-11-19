@@ -64,14 +64,16 @@ UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd()
     : UIFrameWnd(0), selected(0), quantity(0) {
 }
 
-// INLINED
-UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
+// OFFSET: 0x006030E0
+// FUNCTION: fn_46399
+__declspec(noinline) UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
   this->item = ITEM_INFO();
 
   LapineUpgradeClosePacket packet;
   packet.id = ID_CZ_RANDOM_UPGRADE_ITEM_UI_CLOSE;
   CRagConnection& connection = GetRagConnection();
-  connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+  const int packetSize = GetRagConnection().GetPacketSize(packet.id);
+  connection.Send(packetSize, &packet);
 }
 
 // OFFSET: 0x006035D0
