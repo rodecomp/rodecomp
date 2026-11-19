@@ -116,13 +116,12 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   std::vector<CActRes*> actions(9, nullptr);
   std::vector<CSprRes*> sprites(9, nullptr);
-  const int job = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
+  const int resourceJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
   actions[0] = static_cast<CActRes*>(
-    ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(job, this->appearance[0], this->bodyCostume, 0))
+    ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(resourceJob, this->appearance[0], this->bodyCostume, 0))
   );
-  const int spriteJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
   sprites[0] = static_cast<CSprRes*>(
-    ResourceMgr::Instance().Load(g_session.GetBodySprName(spriteJob, this->appearance[0], this->bodyCostume, 0))
+    ResourceMgr::Instance().Load(g_session.GetBodySprName(resourceJob, this->appearance[0], this->bodyCostume, 0))
   );
   actions[1] = static_cast<CActRes*>(
     ResourceMgr::Instance().Load(g_session.GetHeadActName(this->job, this->appearance[0], &this->appearance[1]))
@@ -167,7 +166,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   for (int index = 8; index >= 0; --index) {
     const int action = this->actionIndex;
-    const int order = GetSpriteLayerOrder(imf, index, action - action % 8, action, this->frameIndex);
+    const int baseAction = action - action % 8;
+    const int order = GetSpriteLayerOrder(imf, index, baseAction, action, this->frameIndex);
     int type = order;
     if (!bodyDrawn) {
       bodyDrawn = order == 1;
@@ -234,9 +234,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     switch (type) {
       case 1: {
-        const int bodyJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
         CActRes* bodyAction = static_cast<CActRes*>(
-          ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(bodyJob, this->appearance[0], this->bodyCostume, 0))
+          ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(resourceJob, this->appearance[0], this->bodyCostume, 0))
         );
         const ActionFrame& bodyFrame = bodyAction->Frame(this->actionIndex, this->frameIndex);
         if (frame->anchorCount > 0 && bodyFrame.anchorCount > 0) {
@@ -280,7 +279,6 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         }
 
         offsetX += g_headAnchorOffsetX;
-        const int baseAction = this->actionIndex - this->actionIndex % 8;
         if (IsIgnoredRidingState(views[type], this->job, baseAction, this->riding) == true) {
           offsetY += SpriteRidingOffset(&bodyFrame, this->actionIndex, this->frameIndex, this->job, this->appearance[0], this->bodyCostume);
         } else {
