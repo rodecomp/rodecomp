@@ -2038,7 +2038,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", "ADSkill"), 0);
   }
 }
 
