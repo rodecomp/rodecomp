@@ -604,8 +604,9 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_confirmRecipientButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_confirm_id_empty_press.bmp", 3, 0);
   this->m_confirmRecipientButton->SetSize(this->m_confirmRecipientButton->BitmapWidth(), this->m_confirmRecipientButton->BitmapHeight());
   {
+    const int textWidth = this->TextWidth(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0);
     const int textX = static_cast<int>(
-      static_cast<float>(this->m_confirmRecipientButton->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0)) *
+      static_cast<float>(this->m_confirmRecipientButton->geometry.width - textWidth) *
       g_depthAverageHalf
     );
     UIBmpTextButton* button = this->m_confirmRecipientButton;
