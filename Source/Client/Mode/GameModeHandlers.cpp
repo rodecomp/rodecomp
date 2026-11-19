@@ -2485,6 +2485,30 @@ void CGameMode::ReceiveAchievementResult(unsigned char result, int id) {
   }
 }
 
+// INLINED
+static void ApplyItemReward(ITEM_INFO reward, std::uint16_t value, unsigned char result) {
+  switch (result) {
+  case 0:
+    g_session.AddStackedItem(reward);
+    g_session.RemoveInventoryItem(reward.identity[1], reward.quantity);
+    g_session.achievementResult = value;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVER_WEIGHT)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_UNMOVEABLE_ITEM)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
+}
+
 // OFFSET: 0x00D68200
 // FUNCTION: fn_22040
 void CGameMode::ReceiveItemReward2(const unsigned char* data) {
@@ -2517,29 +2541,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     item.grade = packet->grade;
   }
 
-  const std::uint16_t value = packet->value;
-  const unsigned char result = packet->result;
-  ITEM_INFO reward = item;
-  switch (result) {
-  case 0:
-    g_session.AddStackedItem(reward);
-    g_session.RemoveInventoryItem(reward.identity[1], reward.quantity);
-    g_session.achievementResult = value;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
-    break;
-  case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVER_WEIGHT)), 0x64FFFF, 0, 0, 0);
-    break;
-  case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
-    break;
-  case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
-    break;
-  case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_UNMOVEABLE_ITEM)), 0x64FFFF, 0, 0, 0);
-    break;
-  }
+  ApplyItemReward(item, packet->value, packet->result);
 }
 
 // OFFSET: 0x00D684C0
