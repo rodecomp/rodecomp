@@ -684,42 +684,38 @@ int UIMacroReporterWnd::SendMsg(
         }
         const int result = g_windowMgr
                              .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
-        if (result != ID_NO) {
-          for (auto it = accounts.begin(); it != accounts.end(); ++it) {
-            PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
-            packet.packetType = ID_CZ_REQ_APPLY_MACRO_DETECTOR;
-            packet.accountId = *it;
-            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-          }
-          this->m_entries.clear();
-          for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-            it->first->SetDisabled(1);
-            it->first->Invalidate();
-            this->m_removedRows.push_back(it->first);
-            it->second->SetDisabled(1);
-            it->second->Invalidate();
-            this->m_removedRows.push_back(it->second);
-          }
-          this->m_rows.clear();
+        if (result == ID_NO) {
+          break;
         }
+        for (auto it = accounts.begin(); it != accounts.end(); ++it) {
+          PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
+          packet.packetType = ID_CZ_REQ_APPLY_MACRO_DETECTOR;
+          packet.accountId = *it;
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
+        }
+        this->m_entries.clear();
+        for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+          it->first->SetDisabled(1);
+          it->first->Invalidate();
+          this->m_removedRows.push_back(it->first);
+          it->second->SetDisabled(1);
+          it->second->Invalidate();
+          this->m_removedRows.push_back(it->second);
+        }
+        this->m_rows.clear();
       }
       break;
 
     case ID_RADIOBTN: {
       if (this->activeOnly == true) {
-        switch (this->m_mode) {
-        case 0:
-        case 1:
+        if (this->m_mode == 0 || this->m_mode == 1) {
           if (argument2 == 2 || argument2 == 3) {
             this->activeCheckBox->SetChecked(0);
           }
-          break;
-        case 2:
-        case 3:
+        } else if (this->m_mode == 2 || this->m_mode == 3) {
           if (argument2 == 0 || argument2 == 1) {
             this->activeCheckBox->SetChecked(0);
           }
-          break;
         }
       }
 
@@ -735,21 +731,22 @@ int UIMacroReporterWnd::SendMsg(
       }
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
-      UIEditCtrl* edit = this->m_edit;
       if (sender == this->m_tabs[1]) {
+        UIEditCtrl* edit = this->m_edit;
         edit->disabled = 0;
+        edit->Invalidate();
       } else {
+        UIEditCtrl* edit = this->m_edit;
         edit->disabled = 1;
+        edit->Invalidate();
       }
-      edit->Invalidate();
 
       if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
         g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          UIEditCtrl* field = this->m_fields[index];
-          field->disabled = 1;
-          field->Invalidate();
-          field->SetText("");
+          this->m_fields[index]->disabled = 1;
+          this->m_fields[index]->Invalidate();
+          this->m_fields[index]->SetText("");
         }
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
           it->first->SetDisabled(0);
@@ -769,16 +766,15 @@ int UIMacroReporterWnd::SendMsg(
           it->second->Enable(0);
         }
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          UIEditCtrl* field = this->m_fields[index];
-          field->disabled = 0;
-          field->Invalidate();
+          this->m_fields[index]->disabled = 0;
+          this->m_fields[index]->Invalidate();
           if (sender == this->m_tabs[2]) {
-            field->SetText(this->m_names[index].c_str());
+            this->m_fields[index]->SetText(this->m_names[index].c_str());
           } else if (sender == this->m_tabs[3]) {
             if (index == 0) {
-              field->SetText(this->m_target.c_str());
+              this->m_fields[index]->SetText(this->m_target.c_str());
             } else {
-              field->SetText("");
+              this->m_fields[index]->SetText("");
             }
           }
         }
@@ -835,7 +831,7 @@ int UIMacroReporterWnd::SendMsg(
     if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
       UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
-      const unsigned short job = entry->reportValue;
+      const int job = entry->reportValue;
       std::string name = entry->name;
       info->m_name = name;
       info->m_message = g_session.GetJobName(job, -1);
