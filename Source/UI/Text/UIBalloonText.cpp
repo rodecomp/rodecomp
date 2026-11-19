@@ -529,3 +529,12 @@ void UIVerticalNameBalloonText::SetNameLines(const CActorNameCard& info, bool st
   this->Resize(this->textHeight, static_cast<int>(this->m_lines.size()) * (g_nameBalloonFontHeight + 2) + 6);
   this->Invalidate();
 }
+
+// FOLDED: fn_21415
+std::string UIBalloonText::GetLine(unsigned int index) {
+  if (!this->m_lines.empty() && index <= this->m_lines.size()) {
+    return this->m_lines[index];
+  }
+
+  return "";
+}

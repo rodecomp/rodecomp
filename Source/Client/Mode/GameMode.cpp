@@ -11010,14 +11010,6 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
 // OFFSET: 0x00CFE510
 // FUNCTION: fn_21434
 void CGameMode::ProcessStatusIconTooltip(int x, int y) {
-  auto firstLine = [](UIWindow* window) -> std::string {
-    const std::vector<std::string>& lines = static_cast<UIBalloonText*>(window)->m_lines;
-    if (!lines.empty()) {
-      return lines[0];
-    }
-    return std::string();
-  };
-
   if (this->statusIconTooltip) {
     this->statusIconTooltip->Show(0);
   }
@@ -11125,7 +11117,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         }
 
         const std::uint32_t lineColor = RGB(red, green, blue);
-        if (line == 1 || firstLine(this->statusIconTooltip) == " ") {
+        if (line == 1 || this->statusIconTooltip->GetLine(0) == " ") {
           this->statusIconTooltip->SetLine(description.c_str(), lineColor);
         } else {
           this->statusIconTooltip->AddLine(description.c_str(), lineColor);
@@ -11147,7 +11139,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       break;
     }
 
-    if (firstLine(this->statusIconTooltip) != " ") {
+    if (this->statusIconTooltip->GetLine(0) != " ") {
       this->statusIconTooltip->Show(1);
       const int windowHeight = this->statusIconTooltip->geometry.height;
       const int left = right - 30 + (slot / rows) * -45 - this->statusIconTooltip->geometry.width;
@@ -11158,7 +11150,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 
     hoveredId = id;
   } else {
-    if (firstLine(this->statusIconTooltip).size() != 0) {
+    if (this->statusIconTooltip->GetLine(0).size() != 0) {
       this->statusIconTooltip->Show(1);
     }
   }
