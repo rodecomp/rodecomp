@@ -95,9 +95,9 @@ void CHitLineEffect::OnProcess() {
       }
       turns[0] = turn;
 
-      for (int index = 20; index > 0; --index) {
-        turns[index] = turns[index - 1];
-        halfTurns[index] = halfTurns[index - 1];
+      for (int index = 0; index < 20; ++index) {
+        turns[20 - index] = turns[19 - index];
+        halfTurns[20 - index] = halfTurns[19 - index];
       }
     }
 
