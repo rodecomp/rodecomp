@@ -104,34 +104,31 @@ __forceinline void CLevel99Orb2Effect::UpdateParticle(CParticle* particle) {
     const float speed = particle->speedParameter;
     if (this->offsets[index].y < 0.0f) {
       if (this->offsets[index].y < -30.0f) {
-        const float height = static_cast<float>(Random(100));
         this->offsets[index].x = 0.0f;
-        this->offsets[index].y = height;
+        this->offsets[index].y = static_cast<float>(Random(100));
         this->offsets[index].z = 0.0f;
 
-        float* angle = &particle->animationParameter;
         for (int i = 0; i < 4; ++i) {
-          *angle++ = static_cast<float>(Random(360));
+          particle->animationValues[i] = static_cast<float>(Random(360));
         }
 
         particle->alpha = 0;
       } else {
-        float* angles = &particle->animationParameter;
         for (int i = 0; i < 2; ++i) {
-          const int current = static_cast<int>(angles[i]);
-          const int difference = static_cast<int>(angles[i + 2]) - current;
-          angles[i] = static_cast<float>(current + (difference > 0 ? 3 : -2));
-          if (std::abs(difference) < 3) {
-            if (difference > 0) {
-              angles[i + 2] = static_cast<float>(Random(current));
+          const int current = static_cast<int>(particle->animationValues[i]);
+          const int delta = static_cast<int>(particle->animationValues[i + 2]) - current;
+          particle->animationValues[i] = static_cast<float>(current + (delta > 0 ? 3 : -2));
+          if (std::abs(delta) < 3) {
+            if (delta > 0) {
+              particle->animationValues[i + 2] = static_cast<float>(Random(current));
             } else {
-              angles[i + 2] = static_cast<float>(359 - Random(current));
+              particle->animationValues[i + 2] = static_cast<float>(359 - Random(current));
             }
           }
         }
 
-        this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationParameter)];
-        this->offsets[index].z += speed * g_sinTable[static_cast<int>(angles[1])];
+        this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationValues[0])];
+        this->offsets[index].z += speed * g_sinTable[static_cast<int>(particle->animationValues[1])];
         if (this->offsets[index].y < -20.0f) {
           const int alpha = particle->alpha - 4;
           particle->alpha = alpha >= 0 ? alpha : 0;
