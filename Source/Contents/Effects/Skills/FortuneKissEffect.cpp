@@ -28,10 +28,9 @@ void CFortuneKiss::Close() {
   this->particles.clear();
 }
 
-// OFFSET: 0x00701560
-// FUNCTION: fn_06995
-void CFortuneKiss::Open() {
-  CParticle* particle = CreateParticle(&this->positionVector, 5);
+// OFFSET: 0x00701650
+// FUNCTION: fn_46256
+__forceinline void CFortuneKiss::InitializeParticle(CParticle* particle) {
   if (!particle) {
     return;
   }
@@ -46,11 +45,21 @@ void CFortuneKiss::Open() {
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
   const int drift = rand() % 5;
-  float* values = &particle->animationParameter;
-  values[1] = 0.0f;
-  values[0] = -5.0f - static_cast<float>(drift);
+  particle->animationParameters[0] = 0.0f;
+  particle->animationParameter = -5.0f - static_cast<float>(drift);
   particle->InitParticleQuad(particle->vertices);
   this->angle = rand() % 359;
+}
+
+// OFFSET: 0x00701560
+// FUNCTION: fn_06995
+void CFortuneKiss::Open() {
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
+  if (!particle) {
+    return;
+  }
+
+  this->InitializeParticle(particle);
   this->particles.push_back(particle);
 }
 
@@ -58,6 +67,40 @@ void CFortuneKiss::Open() {
 // FUNCTION: fn_06996
 bool CFortuneKiss::IsAlive() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00701930
+// FUNCTION: fn_46257
+__forceinline void CFortuneKiss::UpdateParticle(CParticle* particle) {
+  if (particle) {
+    ++this->angle;
+    if (this->angle > 360) {
+      this->angle = 0;
+    }
+
+    float& offset = particle->animationParameter;
+    float& width = particle->animationParameters[0];
+    const float cosine = g_cosTable[this->angle];
+    const float newOffset = offset - cosine * 0.05;
+    const float newWidth = cosine * 0.02 + width;
+    offset = newOffset;
+    width = newWidth;
+
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.AppendXRotation(3.141592f);
+    matrix scale;
+    std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+    scale.SetScale(newWidth + 10.0f, 20.0f, 1.0f);
+    matrix translate;
+    translate.IsIdentity();
+    translate.MakeTranslate(0.0f, newOffset, 0.0f);
+    matrix result;
+    result.Compose(scale, rotation);
+    matrix first = result;
+    result.Compose(first, translate);
+    particle->transform = result;
+  }
 }
 
 // OFFSET: 0x00701710
@@ -69,36 +112,16 @@ void CFortuneKiss::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle) {
-      ++this->angle;
-      if (this->angle > 360) {
-        this->angle = 0;
-      }
-
-      float& offset = particle->animationParameter;
-      float& width = particle->animationParameters[0];
-      const float cosine = g_cosTable[this->angle];
-      const float newOffset = offset - cosine * 0.05;
-      const float newWidth = cosine * 0.02 + width;
-      offset = newOffset;
-      width = newWidth;
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.AppendXRotation(3.141592f);
-      matrix scale;
-      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-      scale.SetScale(newWidth + 10.0f, 20.0f, 1.0f);
-      matrix translate;
-      translate.IsIdentity();
-      translate.MakeTranslate(0.0f, newOffset, 0.0f);
-      matrix result;
-      result.Compose(scale, rotation);
-      matrix first = result;
-      result.Compose(first, translate);
-      particle->transform = result;
-    }
+    this->UpdateParticle(particle);
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00701B70
+// FUNCTION: fn_46258
+__forceinline void CFortuneKiss::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
 
@@ -106,8 +129,6 @@ void CFortuneKiss::OnProcess() {
 // FUNCTION: fn_06998
 void CFortuneKiss::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(*it);
   }
 }

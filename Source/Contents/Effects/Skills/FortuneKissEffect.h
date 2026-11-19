@@ -25,6 +25,11 @@ public:
   /* 0100 */ unsigned char padding_0100[4];
   /* 0104 */ int angle;
   /* 0108 */ std::vector<CParticle*> particles;
+
+private:
+  void InitializeParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
