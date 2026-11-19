@@ -87,6 +87,11 @@ bool CCrimsonArrowEffect::IsAlive() {
 CRootTwistEffect::CRootTwistEffect() : CEffect(EF_SU_SV_ROOTTWIST) {
 }
 
+// OFFSET: 0x0070C1D0
+// FUNCTION: fn_46289
+__declspec(noinline) CRootTwistEffect::~CRootTwistEffect() {
+}
+
 // OFFSET: 0x0070C0B0
 // FUNCTION: fn_07124
 void CCrimsonArrowEffect::OnProcess() {
@@ -325,6 +330,11 @@ void CSprArrowEffect::SetBulletSprite(int job) {
 // OFFSET: 0x0070CEA0
 // FUNCTION: fn_07141
 CSpriteMableEffect::CSpriteMableEffect() : CEffect(EF_SPRITEMABLE) {
+}
+
+// OFFSET: 0x0070CF20
+// FUNCTION: fn_46291
+__declspec(noinline) CSpriteMableEffect::~CSpriteMableEffect() {
 }
 
 // OFFSET: 0x0070D040
@@ -4023,6 +4033,11 @@ void CSevereRainStorm::Render() {
 // OFFSET: 0x0070B820
 // FUNCTION: fn_07119
 CCrimsonArrowEffect::CCrimsonArrowEffect() : CEffect(-1), emitter(nullptr) {
+}
+
+// OFFSET: 0x0070B880
+// FUNCTION: fn_46287
+__declspec(noinline) CCrimsonArrowEffect::~CCrimsonArrowEffect() {
 }
 
 // OFFSET: 0x0070B940

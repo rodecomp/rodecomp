@@ -18,6 +18,7 @@ class CSpriteParticle;
 class CCrimsonArrowEffect : public CEffect {
 public:
   CCrimsonArrowEffect();
+  ~CCrimsonArrowEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -30,6 +31,7 @@ public:
 class CRootTwistEffect : public CEffect {
 public:
   CRootTwistEffect();
+  ~CRootTwistEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -43,6 +45,7 @@ public:
 class CSpriteMableEffect : public CEffect {
 public:
   CSpriteMableEffect();
+  ~CSpriteMableEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
