@@ -318,7 +318,7 @@ __forceinline void CStormKickEffect::AdvanceStorm(CParticle* particle) {
   if (particle) {
     int alpha = particle->alpha;
     if (particle->elapsedFrames > 60 && this->id != EF_STORMKICK7) {
-      alpha = std::max(alpha - 1, 0);
+      alpha = alpha - 1 < 0 ? 0 : alpha - 1;
     }
     if (particle->elapsedFrames <= 40) {
       ++alpha;
