@@ -20,6 +20,7 @@ public:
   bool IsAlive() override {
     return this->ActorExists();
   }
+  void UpdatePetal(CParticle* particle);
   void RenderPetal(CParticle* particle);
 
   /* 00CC */ EffectPoint offsets[16];
