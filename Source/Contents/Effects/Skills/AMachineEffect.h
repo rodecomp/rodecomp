@@ -11,6 +11,7 @@ class CEZ2STRParticle;
 class CAMachineEffect : public CEffect {
 public:
   CAMachineEffect();
+  ~CAMachineEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -22,6 +23,9 @@ public:
 
   /* 00CC */ std::map<int, CEZ2STRParticle*> stateParticles;
   /* 00D4 */ int state;
+
+private:
+  CEZ2STRParticle* FindStateParticle(int state);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

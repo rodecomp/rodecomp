@@ -11,6 +11,20 @@
 CAMachineEffect::CAMachineEffect() : CEffect(-1), state(0) {
 }
 
+// OFFSET: 0x006F6770
+// FUNCTION: fn_46157
+__declspec(noinline) CAMachineEffect::~CAMachineEffect() {
+}
+
+// OFFSET: 0x006F6A00
+__forceinline CEZ2STRParticle* CAMachineEffect::FindStateParticle(int state) {
+  auto it = this->stateParticles.find(state);
+  if (it == this->stateParticles.end()) {
+    return nullptr;
+  }
+  return it->second;
+}
+
 // OFFSET: 0x006F6A50
 // FUNCTION: fn_06851
 void CAMachineEffect::Open() {
@@ -82,13 +96,7 @@ void CAMachineEffect::OnProcess() {
 // OFFSET: 0x006F7000
 // FUNCTION: fn_06854
 void CAMachineEffect::Render() {
-  const int key = this->state;
-  std::map<int, CEZ2STRParticle*>::iterator it = this->stateParticles.find(key);
-  if (it == this->stateParticles.end()) {
-    return;
-  }
-
-  CEZ2STRParticle* particle = it->second;
+  CEZ2STRParticle* particle = this->FindStateParticle(this->state);
   if (!particle) {
     return;
   }
@@ -105,12 +113,7 @@ bool CAMachineEffect::IsAlive() {
 // OFFSET: 0x006F7070
 // FUNCTION: fn_06855
 void CAMachineEffect::PlayAttack() {
-  std::map<int, CEZ2STRParticle*>::iterator it = this->stateParticles.find(1);
-  if (it == this->stateParticles.end()) {
-    return;
-  }
-
-  CEZ2STRParticle* particle = it->second;
+  CEZ2STRParticle* particle = this->FindStateParticle(1);
   if (!particle) {
     return;
   }
@@ -122,13 +125,7 @@ void CAMachineEffect::PlayAttack() {
 // OFFSET: 0x006F70E0
 // FUNCTION: fn_06856
 void CAMachineEffect::SetState(int state) {
-  const int key = state;
-  std::map<int, CEZ2STRParticle*>::iterator it = this->stateParticles.find(key);
-  if (it == this->stateParticles.end()) {
-    return;
-  }
-
-  CEZ2STRParticle* particle = it->second;
+  CEZ2STRParticle* particle = this->FindStateParticle(state);
   if (!particle) {
     return;
   }
