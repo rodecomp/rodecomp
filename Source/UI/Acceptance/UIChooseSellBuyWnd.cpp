@@ -5772,41 +5772,20 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   this->m_limit = 20;
   this->m_type = 0;
   this->m_typeLabels.push_back(std::string(LookupMessage(MSI_CHAT_ROOM)));
-  {
-    const std::uint32_t value = 0;
-    this->m_types.push_back(value);
-  }
+  this->m_types.push_back(0);
 
   this->m_limitLabels.push_back("2 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 2;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(2);
   this->m_limitLabels.push_back("3 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 3;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(3);
   this->m_limitLabels.push_back("5 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 5;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(5);
   this->m_limitLabels.push_back("10 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 10;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(10);
   this->m_limitLabels.push_back("15 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 15;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(15);
   this->m_limitLabels.push_back("20 " + std::string(LookupMessage(MSI_COUNT_UNIT_OF_PEOPLE)));
-  {
-    const std::uint32_t value = 20;
-    this->m_limits.push_back(value);
-  }
+  this->m_limits.push_back(20);
 
   this->m_closeButton = this->AddCloseButton("Alt+C", 0);
 
@@ -5866,7 +5845,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   this->m_public = 0;
   const char* labels[2] = {LookupMessage(MSI_ROOM_PUBLIC2), LookupMessage(MSI_ROOM_PRIVATE2)};
   const int states[2] = {1, 0};
-  for (int x = 44, width = 40, index = 0; width < 64; x += 52, width += 12, ++index) {
+  for (int x = 44, width = 40, index = 0; width < 64; width += 12, x += 52, ++index) {
     this->m_publicButtons[index] = new UIRadioBtn();
     this->m_publicButtons[index]->SetSize(width, 12);
     this->m_publicButtons[index]->Move(x, 70);
