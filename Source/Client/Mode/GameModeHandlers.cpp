@@ -1896,7 +1896,8 @@ void CGameMode::ReceiveClanInfo(const unsigned char* data) {
   for (int i = 0; i < packet->allyCount; ++i) {
     char name[24] = {};
     StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", relationName);
-    std::pair<int, std::string> relation(0, name);
+    std::pair<int, std::string> relation;
+    relation.second = name;
     g_clanInfo->m_relations.push_back(relation);
     relationName += sizeof(name);
   }
@@ -1904,7 +1905,9 @@ void CGameMode::ReceiveClanInfo(const unsigned char* data) {
   for (int i = 0; i < packet->hostileCount; ++i) {
     char name[24] = {};
     StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", relationName);
-    std::pair<int, std::string> relation(1, name);
+    std::pair<int, std::string> relation;
+    relation.first = 1;
+    relation.second = name;
     g_clanInfo->m_relations.push_back(relation);
     relationName += sizeof(name);
   }
