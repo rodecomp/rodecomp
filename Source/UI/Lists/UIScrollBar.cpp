@@ -1749,20 +1749,24 @@ UITreeNode* UITreeView::AddNode(UITreeNode* node, int atFront) {
     if (!parent->expandButton && !parent->collapseButton) {
       this->AddNodeButtons(parent, parent->id);
     }
+    this->AddNodeLabel(node, node->id);
+    if (atFront) {
+      parent->children.push_front(node);
+    } else {
+      parent->children.push_back(node);
+    }
   } else {
     node->parent = this->root;
     if (this->FindChildNode(this->root, node->id, node->secondaryId)) {
       return node;
     }
     this->AddNodeButtons(node, node->id);
-  }
-  this->AddNodeLabel(node, node->id);
-
-  auto& children = (parent ? parent : this->root)->children;
-  if (atFront) {
-    children.push_front(node);
-  } else {
-    children.push_back(node);
+    this->AddNodeLabel(node, node->id);
+    if (atFront) {
+      this->root->children.push_front(node);
+    } else {
+      this->root->children.push_back(node);
+    }
   }
   return node;
 }
