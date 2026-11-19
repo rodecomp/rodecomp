@@ -623,18 +623,20 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (0 == amount) {
       return 0;
     }
-    if (g_session.m_bankBalance < amount) {
+    if (g_session.m_bankBalance >= amount) {
+      if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_OVER_INT_MAX)), 255, 0, 0, 0);
+        this->m_status = LookupMessage(MSI_BANK_7_MINI);
+      } else {
+        packet.amount = static_cast<int>(amount);
+        packet.id = ID_CZ_REQ_BANKING_WITHDRAW;
+        packet.aid = g_session.m_aid;
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+        this->m_status.clear();
+      }
+    } else {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_WITHDRAW_NO_MONEY)), 255, 0, 0, 0);
       this->m_status = LookupMessage(MSI_BANK_6_MINI);
-    } else if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_OVER_INT_MAX)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(MSI_BANK_7_MINI);
-    } else {
-      packet.amount = static_cast<int>(amount);
-      packet.id = ID_CZ_REQ_BANKING_WITHDRAW;
-      packet.aid = g_session.m_aid;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-      this->m_status.clear();
     }
     return 0;
   }
