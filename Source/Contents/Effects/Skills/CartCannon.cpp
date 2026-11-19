@@ -146,6 +146,29 @@ void CCartCannon::OnProcess() {
 }
 
 // OFFSET: 0x006FAFC0
+// FUNCTION: fn_46165
+void CCartCannon::UpdateParticle(CEZ2STRParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const float step = static_cast<float>(this->currentStep);
+  const float x = step * this->stepDelta.x + this->startPosition.x;
+  const float y = step * this->stepDelta.y + this->startPosition.y;
+  const float z = step * this->stepDelta.z + this->startPosition.z;
+
+  this->currentPosition.x = x;
+  this->currentPosition.y = y;
+  this->currentPosition.z = z;
+  this->position[0] = x;
+  this->position[1] = y;
+  this->position[2] = z;
+
+  particle->position.x = x;
+  particle->position.y = y;
+  particle->position.z = z;
+  particle->Process(0.0f, 0.0f, 0.0f);
+}
 
 // OFFSET: 0x006FB080
 // FUNCTION: fn_06900
