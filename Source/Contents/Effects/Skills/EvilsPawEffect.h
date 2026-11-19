@@ -13,6 +13,7 @@ class CParticle;
 class CEvilsPawEffect : public CEffect {
 public:
   CEvilsPawEffect();
+  ~CEvilsPawEffect() override;
 
   void Open() override;
   void OnProcess() override;

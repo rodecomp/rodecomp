@@ -16,6 +16,11 @@ CEvilsPawEffect::CEvilsPawEffect()
     : CEffect(1039), particles(), frameDelay(5), size(50), delayCounter(5), offset{0.0f, -40.0f, 0.0f}, textures(), textureIndex(0) {
 }
 
+// OFFSET: 0x006FEB10
+// FUNCTION: fn_46141
+__declspec(noinline) CEvilsPawEffect::~CEvilsPawEffect() {
+}
+
 // OFFSET: 0x006FECE0
 // FUNCTION: fn_06956
 void CEvilsPawEffect::Close() {
