@@ -50,6 +50,7 @@ __forceinline void CRotateBgEffect::CreateRings() {
 }
 
 // OFFSET: 0x00B72630
+// FUNCTION: fn_46063
 __forceinline void CRotateBgEffect::CreateSegments() {
   int layer = 0;
   for (int angle = 0; angle < 360; angle += 90) {
@@ -163,6 +164,7 @@ __forceinline void CRotateBgEffect::UpdateRing(CParticle* particle) {
 }
 
 // OFFSET: 0x00B73690
+// FUNCTION: fn_46068
 __forceinline void CRotateBgEffect::UpdateSegmentVertices(CParticle* particle) {
   if (particle) {
     const int index = particle->columnIndex;
@@ -211,6 +213,7 @@ __forceinline void CRotateBgEffect::UpdateSegmentVertices(CParticle* particle) {
 }
 
 // OFFSET: 0x00B73250
+// FUNCTION: fn_46065
 __forceinline void CRotateBgEffect::UpdateSegment(CParticle* particle) {
   if (particle) {
     if (particle->columnIndex == 0) {
