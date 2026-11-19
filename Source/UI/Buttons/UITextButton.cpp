@@ -479,9 +479,7 @@ void UITabControl::OnMouseHover(int x, int y) {
     return;
   }
 
-  const std::string& tooltip = this->tooltips[index];
-
-  if (tooltip.empty() || tooltip == this->labels[index]) {
+  if (this->tooltips[index].empty() || this->labels[index] == this->tooltips[index]) {
     return;
   }
 
