@@ -324,11 +324,9 @@ __forceinline void CPowderingEffect::UpdateSmokeParticle(CParticle* particle) {
   result.Compose(scaleMat, rotation);
   particle->transform = result;
 
-  particle->position = {
-    this->position[0] + 0.0f + particle->offsetX,
-    this->position[1] - 10.0f + particle->offsetY,
-    this->position[2] + 0.0f + particle->offsetZ
-  };
+  vector3d position = {this->position[0] + 0.0f, this->position[1] - 10.0f, this->position[2] + 0.0f};
+  position += particle->offset;
+  particle->position = position;
   ++particle->elapsedFrames;
 }
 
