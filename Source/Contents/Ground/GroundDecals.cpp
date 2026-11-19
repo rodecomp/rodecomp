@@ -203,9 +203,9 @@ void GroundGeometry::DrawTerrainOverlay(
   }
 
   const float x = static_cast<float>(cellColumn - halfWidth) * this->cellSize + ((column & 1) ? halfSize : 0.0f);
+  vertices[0].y = cell->heights[0];
   const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + (rowParity == 1 ? halfSize : 0.0f);
   vertices[0].x = x - margin;
-  vertices[0].y = cell->heights[0];
   vertices[0].z = z - margin;
   vertices[1].x = (x + halfSize) + margin;
   vertices[1].y = cell->heights[1];
