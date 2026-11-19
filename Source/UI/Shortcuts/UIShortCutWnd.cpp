@@ -1272,7 +1272,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       RECT rectangle;
       rectangle.left = 0;
       rectangle.top = 0;
-      rectangle.right = (previousWidth >= this->m_inputWidth ? previousWidth : this->m_inputWidth) + 0x32;
+      rectangle.right = (previousWidth < this->m_inputWidth ? this->m_inputWidth : previousWidth) + 0x32;
       rectangle.bottom = this->m_inputHeight + 10;
       this->FillSurface(0xFFFF00FF, &rectangle);
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
