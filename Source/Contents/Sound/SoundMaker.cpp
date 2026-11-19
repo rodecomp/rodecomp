@@ -1624,10 +1624,14 @@ void CNpc::SetState(int state, int) {
         this->xSize = 10;
         width = 10;
       }
-      this->boundsLeft = this->render.position.x - static_cast<float>(width / 2);
-      this->boundsRight = static_cast<float>(width / 2) + this->render.position.x;
-      this->boundsTop = this->render.position.z - static_cast<float>(height / 2);
-      this->boundsBottom = static_cast<float>(height / 2) + this->render.position.z;
+      const float x = this->render.position.x;
+      const float z = this->render.position.z;
+      const int halfWidth = width / 2;
+      const int halfHeight = height / 2;
+      this->boundsLeft = x - static_cast<float>(halfWidth);
+      this->boundsRight = static_cast<float>(halfWidth) + x;
+      this->boundsTop = z - static_cast<float>(halfHeight);
+      this->boundsBottom = static_cast<float>(halfHeight) + z;
       if (this->appearanceInitialized == 0 && this->render.enabled) {
         this->appearanceInitialized = 1;
         this->LaunchEffect(EF_WARPZONE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
