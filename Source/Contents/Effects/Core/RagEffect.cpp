@@ -1636,7 +1636,10 @@ void CRagEffect::Bash() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
-  const int sparkCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10 : 20;
+  int sparkCount = 20;
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
+    sparkCount = 10;
+  }
 
   for (int spark = 0; spark < sparkCount; ++spark) {
     this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
