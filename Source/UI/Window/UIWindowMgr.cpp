@@ -7001,7 +7001,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     window->Show(1);
-    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->macroReporterWndInfo.x), 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->macroReporterWndInfo), 0, 0, 0);
     this->macroReporterVisible = true;
     break;
   case WID_MACROUSERINFOWND:
