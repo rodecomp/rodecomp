@@ -295,7 +295,7 @@ void CMapChainEffect::UpdateParticle(CParticle* particle) {
 
 // OFFSET: 0x00B4B800
 // FUNCTION: fn_45982
-void CMapChainEffect::RenderParticle(CParticle* particle) {
+void __stdcall CMapChainEffect::RenderParticle(CParticle* particle) {
   if (!particle || particle->columnIndex <= 0) {
     return;
   }

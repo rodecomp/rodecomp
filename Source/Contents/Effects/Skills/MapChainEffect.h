@@ -32,7 +32,7 @@ public:
   void UpdateParticleGeometry(CParticle* particle);
   void ResetParticle(CParticle* particle);
   void UpdateParticle(CParticle* particle);
-  static void RenderParticle(CParticle* particle);
+  static void __stdcall RenderParticle(CParticle* particle);
 
   /* 00CC */ MapChainPoint corners[2];
   /* 00E4 */ std::vector<CParticle*> particles;
