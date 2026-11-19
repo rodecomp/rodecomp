@@ -3743,11 +3743,14 @@ void CEffectPrim::PrimPokJuk() {
     } else if (slot.flag1[1] == 1) {
       const float speed = slot.distance;
       const float flat = speed * g_cosTable[slot.fullDisplayAngle];
-      slot.vecBNow.y = speed * g_sinTable[slot.fullDisplayAngle] + slot.vecBNow.y + 0.02f;
+      slot.vecBNow.y = speed * g_sinTable[slot.fullDisplayAngle] + slot.vecBNow.y;
+      const float headingCos = g_cosTable[slot.riseAngle];
+      const float headingSin = g_sinTable[slot.riseAngle];
+      slot.vecBNow.y += 0.02f;
       slot.distance = speed * 0.98f;
       --slot.alphaB;
-      slot.vecBNow.x += flat * g_cosTable[slot.riseAngle];
-      slot.vecBNow.z += flat * g_sinTable[slot.riseAngle];
+      slot.vecBNow.x = flat * headingCos + slot.vecBNow.x;
+      slot.vecBNow.z = flat * headingSin + slot.vecBNow.z;
 
       const int coin = std::rand() % 2;
 
@@ -6529,7 +6532,7 @@ namespace {
   __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot) {
     const float kind = slot.height[4];
 
-    if (kind >= 20.0f && slot.process > 200 &&
+    if (kind >= 20.0f && slot.process > 200u &&
         (prim.render.position.x != prim.state.master->render.position.x || prim.render.position.z != prim.state.master->render.position.z) &&
         slot.alphaT > 2000) {
       slot.alphaT = static_cast<std::int16_t>(slot.process);
@@ -6553,7 +6556,7 @@ namespace {
       }
 
       slot.height[2] = g_sinTable[angle >= 0 ? angle : 0] * slot.maxHeight;
-    } else if (slot.process < 90) {
+    } else if (slot.process < 90u) {
       slot.height[2] = g_sinTable[slot.process] * slot.maxHeight;
     } else {
       slot.height[2] = slot.maxHeight;
