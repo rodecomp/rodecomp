@@ -199,11 +199,16 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     g_session.AddMiniPartyRecord(record.id, record.cell);
 
     UIMenuWnd* drag = this->menuWnd;
-    if (drag != nullptr && drag->m_menuId == 301 && drag->m_targetWindowId == record.cell) {
-      const int x = drag->geometry.x;
-      const int y = drag->geometry.y;
-      window->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
-      this->menuWnd->Move(x, y);
+    if (drag != nullptr) {
+      if (drag->m_menuId != 301) {
+        continue;
+      }
+      if (drag->m_targetWindowId == record.cell) {
+        const int x = drag->geometry.x;
+        const int y = drag->geometry.y;
+        window->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
+        this->menuWnd->Move(x, y);
+      }
     }
   }
 
