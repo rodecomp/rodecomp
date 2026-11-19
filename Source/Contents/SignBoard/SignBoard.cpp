@@ -176,7 +176,7 @@ void CSignBoardMgr::LoadList() {
 
 // OFFSET: 0x00821040
 // FUNCTION: fn_10254
-C3DCooRendering::C3DCooRendering() : window(nullptr) {
+__declspec(noinline) C3DCooRendering::C3DCooRendering() : window(nullptr) {
 }
 
 // OFFSET: 0x008210A0
@@ -370,7 +370,7 @@ void CIcon::Load(const std::string& name) {
 
 // OFFSET: 0x00822310
 // FUNCTION: fn_10276
-void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
+__declspec(noinline) void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
   static_cast<CSignBoardWnd*>(this->window)->boardText = text;
   static_cast<CSignBoardWnd*>(this->window)->colorText = color;
   CSignBoardWnd* board = static_cast<CSignBoardWnd*>(this->window);
@@ -380,7 +380,7 @@ void C3DCooRendering::SetBoard(const std::string& text, const std::string& color
 
 // OFFSET: 0x00822390
 // FUNCTION: fn_10277
-void C3DCooRendering::SetWindowImage(const std::string& name) {
+__declspec(noinline) void C3DCooRendering::SetWindowImage(const std::string& name) {
   if (this->window == nullptr) {
     return;
   }
