@@ -27,7 +27,8 @@ CLoadPartyListAsyncWork::CLoadPartyListAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknown", 0x2D33791F67AD47DFULL)), sourceFile, 25) {
 }
 
-// INLINED
+// OFFSET: 0x005D19B0
+// FUNCTION: fn_46411
 CLoadPartyListAsyncWork::~CLoadPartyListAsyncWork() = default;
 
 // OFFSET: 0x005D1F30
