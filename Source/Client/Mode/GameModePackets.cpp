@@ -13202,9 +13202,9 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
   const auto* record = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item;
-    item.identity[1] = record->index;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
+    item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
     std::memcpy(item.cards, record->cards, sizeof(item.cards));
