@@ -244,8 +244,9 @@ UIMonsterInfoWnd::UIMonsterInfoWnd()
   this->actorId = 0;
 }
 
-// INLINED
-UIReplayRECControlWnd::~UIReplayRECControlWnd() {
+// OFFSET: 0x008A56B0
+// FUNCTION: fn_46403
+__declspec(noinline) UIReplayRECControlWnd::~UIReplayRECControlWnd() {
   this->recordStart = 0;
   this->mode = 0;
 }
