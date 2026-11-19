@@ -207,7 +207,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     HANDLE process = GetCurrentProcess();
     HANDLE thread = GetCurrentThread();
 
-    STACKFRAME frame = {};
+    STACKFRAME frame = {0};
     frame.AddrPC.Offset = context->Eip;
     frame.AddrPC.Mode = AddrModeFlat;
     frame.AddrStack.Offset = context->Esp;
@@ -282,11 +282,9 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
       sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", gameMode->MapName().c_str(), g_session.m_playerX, g_session.m_playerY);
     }
 
-    sprintf(
-      &g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d",
-      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_startTimeTicks)).count(),
-      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_loginTimeTicks)).count()
-    );
+    const int64_t startTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_startTimeTicks)).count();
+    const int64_t loginTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::duration(g_session.m_loginTimeTicks)).count();
+    sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", startTime, loginTime);
 
     int64_t reportTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     PROCESS_MEMORY_COUNTERS_EX memCounters;
