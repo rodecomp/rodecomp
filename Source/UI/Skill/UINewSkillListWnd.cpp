@@ -1532,13 +1532,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 // OFFSET: 0x009B3DC0
 // FUNCTION: fn_45784
 void UINewSkillListWnd::SetSkillLevel(int skillId, int level) {
-  UITabControl* tabs = this->m_tabs;
-  const int tabCount = static_cast<int>(tabs->labels.size());
-  for (int tab = 0; tab < tabCount; ++tab) {
-    std::list<CSkillInfo>& list = tab < 0 || static_cast<int>(tabs->labels.size()) - 1 != tab
-      ? this->m_lists[tab]
-      : g_session.m_skillBundle.extra;
-    for (CSkillInfo& skill : list) {
+  for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
+    for (CSkillInfo& skill : this->SkillList(tab, false)) {
       if (static_cast<int>(skill.id) == skillId) {
         skill.level = level;
         return;
