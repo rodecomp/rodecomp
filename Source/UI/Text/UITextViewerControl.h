@@ -68,7 +68,7 @@ public:
   /* 00C4 */ CUIPadding* padding;
   /* 00C8 */ std::vector<std::string> lines;
   /* 00D4 */ int contentHeight;
-  /* 00D8 */ std::map<UIWindow*, std::pair<int, int>> childPositions;
+  /* 00D8 */ std::map<UIWindow*, POINT> childPositions;
 };
 
 #endif

@@ -3355,7 +3355,7 @@ void CUITextViewer::OnCreate(int width, int height) {
 
     for (const auto& child : this->childPositions) {
       UIWindow* window = child.first;
-      window->Move(this->paddingLeft + child.second.first, child.second.second - position + y);
+      window->Move(this->paddingLeft + child.second.x, child.second.y - position + y);
       window->Show(window->geometry.y + window->geometry.height >= 0 && window->geometry.y < this->geometry.height);
     }
   });
@@ -3725,9 +3725,7 @@ void CUITextViewer::AddLine(const std::string& text) {
     this->contentHeight += this->childPositions.empty() ? 0 : this->lineSpacing;
     for (const auto& row : lineInfo.m_lines) {
       for (UIWindow* child : row) {
-        child->Move(child->geometry.x, child->geometry.y + this->contentHeight);
-        this->AddChildFront(child);
-        this->childPositions[child] = std::pair<int, int>(child->geometry.x, child->geometry.y);
+        this->AddLineChild(child);
       }
     }
     this->contentHeight += lineInfo.m_height;
@@ -3748,7 +3746,7 @@ void CUITextViewer::AddLineChild(UIWindow* child) {
   this->AddChildFront(child);
   const int x = child->geometry.x;
   const int y = child->geometry.y;
-  this->childPositions[child] = std::pair<int, int>(x, y);
+  this->childPositions[child] = POINT{x, y};
 }
 
 // OFFSET: 0x009D8E30
