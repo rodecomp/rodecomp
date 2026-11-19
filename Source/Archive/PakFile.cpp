@@ -550,8 +550,7 @@ namespace myGPack {
     used.insert({0, kPakHeaderSize});
     used.insert({this->m_tableOffset, this->m_tableSize});
 
-    for (auto entryIt = this->m_entries.begin(); entryIt != this->m_entries.end(); ++entryIt) {
-      const PakEntry& entry = *entryIt;
+    for (const PakEntry& entry : this->m_entries) {
       if (std::strrchr(entry.name.m_name, '.')) {
         used.insert({entry.dataOffset + kPakHeaderSize, entry.alignedSize});
       }
@@ -561,8 +560,8 @@ namespace myGPack {
     this->m_freeBlocks.clear();
 
     for (const PakUsedBlock& block : used) {
-      const std::uint64_t offset = block.offset;
       const std::uint32_t size = block.size;
+      const std::uint64_t offset = block.offset;
       if (position < offset) {
         const std::uint64_t gap = offset - position;
         this->m_freeBlocks.insert({static_cast<std::uint32_t>(gap), position});
