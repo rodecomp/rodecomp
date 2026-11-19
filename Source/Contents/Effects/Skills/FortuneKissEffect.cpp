@@ -9,6 +9,7 @@
 #include <cstring>
 
 // OFFSET: 0x00701370
+// FUNCTION: fn_46185
 CFortuneKiss::CFortuneKiss() : CEffect(EF_BOTTOM_FORTUNEKISS), unknown_00D0{}, unknown_00E8{}, angle(0), particles() {
 }
 
