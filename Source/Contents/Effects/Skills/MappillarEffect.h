@@ -19,6 +19,9 @@ public:
   void Close() override;
   bool IsAlive() override;
   void UpdateParticle(CParticle* particle);
+  void InitializeParticle(CParticle* particle);
+  void UpdateParticleTransform(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;
