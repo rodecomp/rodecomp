@@ -246,9 +246,10 @@ void CRectUpEffect::UpdateParticle(CParticle* particle) {
     return;
   }
 
+  const int elapsed = particle->elapsedFrames;
   int& phase = particle->angleParameter;
   phase += phase + 1 < 360 ? 1 : -359;
-  if (particle->elapsedFrames > this->particleLifetime) {
+  if (elapsed > this->particleLifetime) {
     int alpha = particle->alpha - 2;
     if (alpha < 0) {
       alpha = 0;
@@ -257,8 +258,8 @@ void CRectUpEffect::UpdateParticle(CParticle* particle) {
   }
 
   float height = particle->speedParameter * g_sinTable[phase] * 0.35f + particle->speedParameter * 0.65f;
-  if (particle->elapsedFrames < 90) {
-    height *= g_sinTable[particle->elapsedFrames];
+  if (elapsed < 90) {
+    height *= g_sinTable[elapsed];
   }
   particle->animationParameter = height;
   this->ProcessParticle(particle);
