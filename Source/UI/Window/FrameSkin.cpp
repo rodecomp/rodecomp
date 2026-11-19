@@ -19,14 +19,14 @@ CUIFrameWnd::~CUIFrameWnd() {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
-    CUIRegisterMgr::s_instance->windowPositions[this->geometry.id] = POINT{this->geometry.x, this->geometry.y};
+    CUIRegisterMgr::s_instance->windowPositions[static_cast<int>(this->geometry.id)] = POINT{this->geometry.x, this->geometry.y};
   }
 
   if (this->m_ownsBorderColor) {
     if (CUIRegisterMgr::s_instance == nullptr) {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
-    CUIRegisterMgr::s_instance->windowSizes[this->geometry.id] = SIZE{this->geometry.width, this->geometry.height};
+    CUIRegisterMgr::s_instance->windowSizes[static_cast<int>(this->geometry.id)] = SIZE{this->geometry.width, this->geometry.height};
   }
 }
 
