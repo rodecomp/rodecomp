@@ -59,6 +59,7 @@ TipBoxEntry::TipBoxEntry() {
 }
 
 // OFFSET: 0x007ABD90
+// FUNCTION: fn_46455
 CTipBoxMgr::CTipBoxMgr()
     : m_width(240),
       m_height(320),
@@ -76,6 +77,7 @@ CTipBoxMgr::CTipBoxMgr()
 }
 
 // OFFSET: 0x007AC220
+// FUNCTION: fn_46456
 __declspec(noinline) CTipBoxMgr::~CTipBoxMgr() = default;
 
 // OFFSET: 0x007AC710
