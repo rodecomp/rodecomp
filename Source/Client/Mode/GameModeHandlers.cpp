@@ -611,8 +611,9 @@ void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
   std::vector<PartyRosterEntry> members;
   const int count = (value->packetLength - 28) / sizeof(PartyRosterEntry);
   const PartyRosterEntry* entries = value->members;
-  for (int i = 0; i < count; ++i) {
-    members.push_back(entries[i]);
+  for (int i = 1; i <= count; ++i) {
+    members.push_back(*entries);
+    ++entries;
   }
   this->SetPartyMemberList(value->partyName, &members);
 }
@@ -2195,8 +2196,10 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
     message = MSI_RODEX_SPAMOPTION_RETURN_FAIL;
   }
 
-  g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, false);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x64FFFF, 0, 0, 0);
+  const char* text = LookupMessage(message);
+  g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, false);
+  const char* notice = LookupMessage(message);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D67360
