@@ -5,7 +5,6 @@
 #include <cstring>
 #include <iterator>
 #include <string>
-#include <tuple>
 
 namespace {
   // STATIC: 0x01311F00
@@ -52,6 +51,37 @@ FontCache::~FontCache() {
 
   this->m_fonts.clear();
   Gdiplus::GdiplusShutdown(this->m_gdiplus);
+}
+
+// OFFSET: 0x0054D4F0
+// FUNCTION: fn_46417
+FontEntry::FontEntry(int family, int height, int charset, unsigned char bold, unsigned char italic)
+    : family(family), height(height), charset(charset), bold(bold), italic(italic), font(nullptr), privateResources(0) {
+}
+
+// OFFSET: 0x0054D980
+// FUNCTION: fn_46419
+bool FontEntry::operator==(const FontEntry& other) const {
+  return this->family == other.family && this->height == other.height && this->charset == other.charset &&
+         this->bold == other.bold && this->italic == other.italic;
+}
+
+// OFFSET: 0x0054D9C0
+// FUNCTION: fn_46420
+bool FontEntry::operator<(const FontEntry& other) const {
+  if (this->family < other.family) {
+    return true;
+  }
+  if (this->family > other.family) {
+    return false;
+  }
+  if (this->height < other.height) {
+    return true;
+  }
+  if (this->height > other.height) {
+    return false;
+  }
+  return this->charset < other.charset;
 }
 
 // OFFSET: 0x0054F770
@@ -163,11 +193,8 @@ void FontEntry::RemovePrivateFont() const {
 // OFFSET: 0x0054F360
 // FUNCTION: fn_01958
 HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bold, unsigned char italic) {
-  FontEntry entry{family, height, charset, bold, italic, nullptr, 0};
-  const auto found = std::find_if(this->m_fonts.begin(), this->m_fonts.end(), [&entry](const FontEntry& font) {
-    return font.family == entry.family && font.height == entry.height && font.charset == entry.charset && font.bold == entry.bold &&
-           font.italic == entry.italic;
-  });
+  FontEntry entry(family, height, static_cast<int>(charset), bold, italic);
+  const auto found = std::find(this->m_fonts.begin(), this->m_fonts.end(), entry);
   if (found != this->m_fonts.end()) {
     return found->font;
   }
@@ -259,9 +286,7 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
 
   this->m_fonts.push_back(entry);
 
-  std::sort(this->m_fonts.begin(), this->m_fonts.end(), [](const FontEntry& a, const FontEntry& b) {
-    return std::tie(a.family, a.height, a.charset) < std::tie(b.family, b.height, b.charset);
-  });
+  std::sort(this->m_fonts.begin(), this->m_fonts.end());
   return entry.font;
 }
 
