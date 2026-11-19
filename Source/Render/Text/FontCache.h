@@ -18,6 +18,8 @@ namespace Gdiplus {
 
 struct FontEntry {
   void CreateSystemFont();
+  const char* FindSystemFace() const;
+  void LoadEmbeddedFont(std::int16_t familyIndex);
   bool CreatePrivateFont();
   void RemovePrivateFont() const;
   std::string PrivateFontFamilyName(const std::string& path) const;

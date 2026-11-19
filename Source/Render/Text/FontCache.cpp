@@ -54,21 +54,25 @@ FontCache::~FontCache() {
   Gdiplus::GdiplusShutdown(this->m_gdiplus);
 }
 
-// OFFSET: 0x0054DC90
-// FUNCTION: fn_01947
-__declspec(noinline) void FontEntry::CreateSystemFont() {
+// OFFSET: 0x0054F770
+// FUNCTION: fn_45913
+const char* FontEntry::FindSystemFace() const {
   LOGFONTA description = {};
   description.lfCharSet = static_cast<BYTE>(this->charset);
 
-  const char* face;
   if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(primary[this->family]), 0) == 0) {
-    face = primary[this->family];
-  } else if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(fallback[this->family]), 0) == 0) {
-    face = fallback[this->family];
-  } else {
-    face = nullptr;
+    return primary[this->family];
   }
+  if (EnumFontFamiliesExA(GetDC(nullptr), &description, MatchFont, reinterpret_cast<LPARAM>(fallback[this->family]), 0) == 0) {
+    return fallback[this->family];
+  }
+  return nullptr;
+}
 
+// OFFSET: 0x0054DC90
+// FUNCTION: fn_01947
+__declspec(noinline) void FontEntry::CreateSystemFont() {
+  const char* face = this->FindSystemFace();
   this->font = CreateFontA(
     this->height, 0, 0, 0, this->bold ? FW_BOLD : FW_NORMAL, this->italic != 0, 0, 0, this->charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
     NONANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, face
@@ -77,7 +81,7 @@ __declspec(noinline) void FontEntry::CreateSystemFont() {
 
 // OFFSET: 0x0054DD70
 // FUNCTION: fn_01948
-HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
+__declspec(noinline) HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
   LOGFONTA description = {};
   description.lfWeight = FW_NORMAL;
   description.lfCharSet = DEFAULT_CHARSET;
@@ -134,6 +138,12 @@ __declspec(noinline) bool FontEntry::CreatePrivateFont() {
   }
 
   return this->privateResources > 0;
+}
+
+// OFFSET: 0x0054E120
+// FUNCTION: fn_45912
+void FontEntry::LoadEmbeddedFont(std::int16_t familyIndex) {
+  this->font = CreateEmbeddedFont(12, familyIndex);
 }
 
 // OFFSET: 0x0054E140
