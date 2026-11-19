@@ -1740,8 +1740,8 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
     }
 
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const std::string character(current, next);
-    total += this->TextWidth(character.c_str(), 0, family, height, currentBold, 0);
+    const int width = this->TextWidth(std::string(current, next).c_str(), 0, family, height, currentBold, 0);
+    total += width;
     current = next;
   }
 
