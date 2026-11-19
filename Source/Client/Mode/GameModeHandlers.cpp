@@ -2684,8 +2684,8 @@ static_assert(sizeof(PACKET_ZC_RESULT_DDUKDDAKBOX_TEST) == 0x10);
 // FUNCTION: fn_21997
 void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_RESULT_DDUKDDAKBOX_TEST*>(packet);
-  std::map<int, int> counts;
   const DdukddakBoxTestEntry* source = value->entries;
+  std::map<int, int> counts;
   int total = 0;
   const int count = static_cast<unsigned int>(value->packetLength - 8) / sizeof(DdukddakBoxTestEntry);
   for (int i = 0; i < count; ++i) {
