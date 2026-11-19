@@ -54,14 +54,13 @@ std::string UIBmpTextButton2::GetLabel(int index, int* height, std::uint32_t* co
                                        unsigned char* shadow, int* x, int* y) const {
   std::string text;
   if (this->HasLabel(index)) {
-    const BmpTextButtonLabel& label = this->labels[index];
-    text = label.text;
-    *height = label.height;
-    *color = label.color;
-    *bold = label.bold;
-    *shadow = label.shadow;
-    *x = label.x;
-    *y = label.y;
+    text = this->labels[index].text;
+    *height = this->labels[index].height;
+    *color = this->labels[index].color;
+    *bold = this->labels[index].bold;
+    *shadow = this->labels[index].shadow;
+    *x = this->labels[index].x;
+    *y = this->labels[index].y;
   }
   return text;
 }
