@@ -281,8 +281,7 @@ void CView::Render() {
   renderer->viewDirectionY *= inverseLength;
   renderer->viewDirectionZ *= inverseLength;
 
-  this->spatial.inside.erase(this->spatial.inside.begin(), this->spatial.inside.end());
-  this->spatial.clipped.erase(this->spatial.clipped.begin(), this->spatial.clipped.end());
+  this->spatial.ClearVisibility();
 
   this->scene->ground->RenderLod(reinterpret_cast<int>(matrix));
 }
