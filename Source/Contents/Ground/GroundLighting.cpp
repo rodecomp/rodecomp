@@ -18,16 +18,31 @@
 #include <bit>
 #include <cstring>
 
+namespace {
+  struct LitGroundVertex : RenderVertex {
+    // INLINED
+    LitGroundVertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+      this->rhw = 0.0f;
+      this->diffuse = 0;
+      this->specular = 0xFF000000u;
+      this->u = 0.0f;
+      this->v = 0.0f;
+    }
+  };
+}
+
 // OFFSET: 0x00AC1D30
 // FUNCTION: fn_17592
 void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip) {
-  RenderVertex vertices[4]{};
+  LitGroundVertex vertices[4];
   float lightUV[4][2];
   float scales[3];
   std::memcpy(scales, g_weatherEffect.lightColor, sizeof(scales));
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner].specular = 0xFF000000u;
     g_renderer->Project(quad.vertices[corner].position, matrix, vertices[corner]);
   }
 
