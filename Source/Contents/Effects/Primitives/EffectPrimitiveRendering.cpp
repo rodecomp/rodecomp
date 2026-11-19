@@ -3591,15 +3591,21 @@ void CEffectPrim::RenderStackedRings(matrix& wtm) {
       if (angle1 >= 360) {
         angle1 = static_cast<short>(static_cast<unsigned short>(angle1) % 360u);
       }
+      vec1.Set(radius * g_cosTable[angle1], y - 1.0f, radius * g_sinTable[angle1]);
       short angle2 = static_cast<short>(angle1 + 90);
       if (angle2 >= 360) {
         angle2 = static_cast<short>(angle2 - 360);
       }
-      const short angle3 = static_cast<short>(angle2 + (angle2 + 90 < 360 ? 90 : -270));
-      const short angle4 = static_cast<short>(angle3 + (angle3 + 90 < 360 ? 90 : -270));
-      vec1.Set(radius * g_cosTable[angle1], y - 1.0f, radius * g_sinTable[angle1]);
       vec2.Set(radius * g_cosTable[angle2], y - 1.0f, radius * g_sinTable[angle2]);
+      short angle3 = static_cast<short>(angle2 + 90);
+      if (angle3 >= 360) {
+        angle3 = static_cast<short>(angle3 - 360);
+      }
       vec3.Set(radius * g_cosTable[angle3], y, radius * g_sinTable[angle3]);
+      short angle4 = static_cast<short>(angle3 + 90);
+      if (angle4 >= 360) {
+        angle4 = static_cast<short>(angle4 - 360);
+      }
       vec4.Set(radius * g_cosTable[angle4], y, radius * g_sinTable[angle4]);
 
       switch (slot.flag1[4]) {
