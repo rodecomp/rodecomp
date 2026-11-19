@@ -47,7 +47,9 @@ bool CRectUpEffect::IsAlive() {
 void CRectUpEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position = vector3d{this->position[0] + particle->offsetX, this->position[1] + particle->offsetY, this->position[2] + particle->offsetZ};
+    vector3d position = {this->position[0], this->position[1], this->position[2]};
+    position += particle->offset;
+    particle->position = position;
 
     int& phase = particle->angleParameter;
     phase += phase + 1 < 360 ? 1 : -359;
