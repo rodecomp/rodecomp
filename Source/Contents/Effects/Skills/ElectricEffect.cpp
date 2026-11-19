@@ -403,8 +403,17 @@ void CElectricEffect::Render() {
 // OFFSET: 0x00B4FA20
 // FUNCTION: fn_46286
 __declspec(noinline) void CElectricEffect::RenderParticle(CParticle* particle) {
-  if (particle && static_cast<unsigned>(particle->columnIndex - 1) <= 17 && particle->groupIndex > 0) {
-    const int frame = particle->columnIndex;
+  if (!particle) {
+    return;
+  }
+  const int frame = particle->columnIndex;
+  if (frame <= 0) {
+    return;
+  }
+  if (frame >= 19) {
+    return;
+  }
+  if (particle->groupIndex > 0) {
     const int alpha = particle->alpha;
     const int faded = alpha - frame * 5;
     particle->alpha = faded >= 0 ? faded : 0;
