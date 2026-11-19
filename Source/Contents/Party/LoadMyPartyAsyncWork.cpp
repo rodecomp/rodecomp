@@ -28,7 +28,8 @@ CLoadMyPartyAsyncWork::CLoadMyPartyAsyncWork()
     : NAsyncWork(g_loadMyPartyPoolName), m_accountId(0), m_characterId(0), m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x2FF3C5036D070127ULL)), sourceFile, 28) {
 }
 
-// INLINED
+// OFFSET: 0x005CF4A0
+// FUNCTION: fn_46409
 CLoadMyPartyAsyncWork::~CLoadMyPartyAsyncWork() = default;
 
 // OFFSET: 0x005CF8E0
