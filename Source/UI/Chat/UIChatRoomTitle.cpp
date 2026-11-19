@@ -132,39 +132,49 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   }
 
   this->roomOption = static_cast<short>(b);
+  UIStaticText* label;
   switch (static_cast<short>(b)) {
   case 1:
-    this->label->fontFamily = 21;
+    label = this->label;
+    label->fontFamily = 21;
     break;
   case 2:
-    this->label->fontFamily = 20;
+    label = this->label;
+    label->fontFamily = 20;
     break;
   case 3:
-    this->label->fontFamily = 22;
+    label = this->label;
+    label->fontFamily = 22;
     break;
   case 4:
-    this->label->fontFamily = 23;
+    label = this->label;
+    label->fontFamily = 23;
     break;
   case 5:
-    this->label->fontFamily = 24;
+    label = this->label;
+    label->fontFamily = 24;
     break;
   case 6:
-    this->label->fontFamily = 25;
+    label = this->label;
+    label->fontFamily = 25;
     break;
   case 7:
-    this->label->fontFamily = 26;
+    label = this->label;
+    label->fontFamily = 26;
     break;
   case 8:
-    this->label->fontFamily = 27;
+    label = this->label;
+    label->fontFamily = 27;
     break;
   case 9:
-    this->label->fontFamily = 28;
+    label = this->label;
+    label->fontFamily = 28;
     break;
   default:
-    this->label->fontFamily = 0;
+    label = this->label;
+    label->fontFamily = 0;
     break;
   }
-  UIStaticText* const label = this->label;
   label->bold = 0;
   label->italic = 0;
   label->fontHeight = 12;
