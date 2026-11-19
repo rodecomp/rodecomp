@@ -21,6 +21,8 @@ public:
 
   void Init();
   void SpawnStrike();
+  void ProcessParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
 
   /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
   /* 00D8 */ std::vector<CEZ2STRParticle*> strikes;
