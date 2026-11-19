@@ -12,15 +12,25 @@
 #include <algorithm>
 #include <cstring>
 
+struct WaterVertex : RenderVertex {
+  // INLINED
+  WaterVertex() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+    this->rhw = 0.0f;
+    this->diffuse = 0;
+    this->specular = 0xFF000000u;
+    this->u = 0.0f;
+    this->v = 0.0f;
+  }
+};
+
 // INLINED
 static __forceinline RenderPrimitive* BuildWaterPrimitive(
   const GroundGeometry& ground, GroundCell& cell, const float* matrix, const float* ambient, float middle, float first, float last
 ) {
-  RenderVertex vertices[4];
-
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner] = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000u, 0.0f, 0.0f};
-  }
+  WaterVertex vertices[4];
 
   if (!(cell.top->vertices[0].position[1] > middle || cell.top->vertices[1].position[1] > middle ||
         cell.top->vertices[2].position[1] > middle || cell.top->vertices[3].position[1] > middle)) {
