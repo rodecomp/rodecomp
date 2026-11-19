@@ -9,6 +9,10 @@ UIComboBoxID::UIComboBoxID() {
   this->targetId = 10041;
 }
 
+// OFFSET: 0x00870800
+// FUNCTION: fn_46472
+__declspec(noinline) UIComboBoxID::~UIComboBoxID() = default;
+
 // OFFSET: 0x00871120
 // FUNCTION: fn_11106
 UIListBoxID::~UIListBoxID() {

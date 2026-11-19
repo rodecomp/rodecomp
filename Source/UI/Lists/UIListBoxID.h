@@ -62,7 +62,7 @@ public:
 class UIComboBoxID : public UIListBoxID {
 public:
   UIComboBoxID();
-  ~UIComboBoxID() override = default;
+  __declspec(noinline) ~UIComboBoxID() override;
   void Resize(int width, int height) override;
   void OnCreate(int width, int height) override;
   void Paint() override;
