@@ -9,6 +9,7 @@
 #include <cstring>
 
 // OFFSET: 0x00B4B890
+// FUNCTION: fn_45988
 CMappillarEffect::CMappillarEffect()
     : CEffect(247), lastInner{}, lastOuter{}, particles() {
 }
