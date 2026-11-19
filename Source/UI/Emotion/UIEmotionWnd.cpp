@@ -52,28 +52,29 @@ __declspec(noinline) UIEmotionWnd::~UIEmotionWnd() = default;
 // OFFSET: 0x008A2980
 // FUNCTION: fn_11644
 void UIEmotionWnd::OnCreate(int, int) {
-  int y = 23;
   auto* emotions = &g_session.m_emotionHotkeys;
   char buffer[16];
+  int index = 0;
+  int number = 0;
+  UIStaticText** labels = this->m_labels;
 
-  for (int i = 0; i < 10; ++i) {
-    this->m_edits[i] = new UIEditCtrl2();
-    this->m_edits[i]->SetSize(270, 16);
-    this->m_edits[i]->Move(83, y - 3);
-    this->m_edits[i]->maximum = 50;
-    this->m_edits[i]->Background(232, 232, 232);
-    this->m_edits[i]->SetText(emotions->current[i].c_str());
-    this->AddChild(this->m_edits[i]);
+  for (int y = 23; y < 233; y += 21) {
+    this->m_edits[index] = new UIEditCtrl2();
+    this->m_edits[index]->SetSize(270, 16);
+    this->m_edits[index]->Move(83, y - 3);
+    this->m_edits[index]->maximum = 50;
+    this->m_edits[index]->Background(232, 232, 232);
+    this->m_edits[index]->SetText(emotions->current[index].c_str());
+    this->AddChild(this->m_edits[index]);
 
-    std::sprintf(buffer, "Alt + %d", i + 1);
+    std::sprintf(buffer, "Alt + %d", ++number);
 
-    this->m_labels[i] = new UIStaticText();
-    this->m_labels[i]->SetSize(70, 16);
-    this->m_labels[i]->Move(20, y);
-    this->m_labels[i]->SetText(buffer, 0);
-    this->AddChild(this->m_labels[i]);
-
-    y += 21;
+    this->m_labels[index] = new UIStaticText();
+    this->m_labels[index]->SetSize(70, 16);
+    this->m_labels[index]->Move(20, y);
+    this->m_labels[index]->SetText(buffer, 0);
+    this->AddChild(this->m_labels[index]);
+    ++index;
   }
 
   this->m_labels[9]->SetText("Alt + 0", 0);
@@ -97,7 +98,7 @@ void UIEmotionWnd::OnCreate(int, int) {
   for (int i = 0; i < 10; ++i) {
     HotkeyInfo info = g_session.GetHotkeyInfo(2, i);
     if (!info.description.empty()) {
-      this->m_labels[i]->SetText(info.text.c_str(), 0);
+      labels[i]->SetText(info.text.c_str(), 0);
     }
   }
 }
