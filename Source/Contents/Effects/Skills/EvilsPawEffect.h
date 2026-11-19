@@ -21,6 +21,8 @@ public:
   void Close() override;
   bool IsAlive() override;
   void ResetParticles() override;
+  void AddParticle();
+  void InitializeParticle(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int frameDelay;

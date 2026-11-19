@@ -21,6 +21,26 @@ CEvilsPawEffect::CEvilsPawEffect()
 __declspec(noinline) CEvilsPawEffect::~CEvilsPawEffect() {
 }
 
+// OFFSET: 0x006FEC10
+// FUNCTION: fn_46142
+__forceinline void CEvilsPawEffect::AddParticle() {
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
+  if (!particle) {
+    return;
+  }
+
+  particle->SetColor(255, 255, 255);
+  particle->alpha = 255;
+  particle->scale = static_cast<float>(this->size);
+  particle->offsetX = this->offset.x;
+  particle->offsetY = this->offset.y;
+  particle->offsetZ = this->offset.z;
+  particle->sourceBlend = 5;
+  particle->destinationBlend = 6;
+  particle->InitParticleQuad(particle->vertices);
+  this->particles.push_back(particle);
+}
+
 // OFFSET: 0x006FECE0
 // FUNCTION: fn_06956
 void CEvilsPawEffect::Close() {
@@ -34,19 +54,7 @@ void CEvilsPawEffect::Close() {
 // OFFSET: 0x006FED20
 // FUNCTION: fn_06957
 void CEvilsPawEffect::Open() {
-  CParticle* particle = CreateParticle(&this->positionVector, 5);
-  if (particle) {
-    particle->SetColor(255, 255, 255);
-    particle->alpha = 255;
-    particle->scale = static_cast<float>(this->size);
-    particle->offsetX = this->offset.x;
-    particle->offsetY = this->offset.y;
-    particle->offsetZ = this->offset.z;
-    particle->sourceBlend = 5;
-    particle->destinationBlend = 6;
-    particle->InitParticleQuad(particle->vertices);
-    this->particles.push_back(particle);
-  }
+  this->AddParticle();
 
   for (int set = 0; set < 2; ++set) {
     for (int frame = 0; frame < 10; ++frame) {
@@ -57,6 +65,17 @@ void CEvilsPawEffect::Open() {
   }
 }
 
+// OFFSET: 0x006FEF50
+// FUNCTION: fn_46143
+__forceinline void CEvilsPawEffect::InitializeParticle(CParticle* particle) {
+  particle->SetColor(255, 255, 255);
+  particle->alpha = 255;
+  particle->scale = static_cast<float>(this->size);
+  particle->offsetX = this->offset.x;
+  particle->offsetY = this->offset.y;
+  particle->offsetZ = this->offset.z;
+}
+
 // OFFSET: 0x006FEFC0
 // FUNCTION: fn_06958
 void CEvilsPawEffect::ResetParticles() {
@@ -64,12 +83,7 @@ void CEvilsPawEffect::ResetParticles() {
   this->delayCounter = this->frameDelay;
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->SetColor(255, 255, 255);
-    particle->alpha = 255;
-    particle->scale = static_cast<float>(this->size);
-    particle->offsetX = this->offset.x;
-    particle->offsetY = this->offset.y;
-    particle->offsetZ = this->offset.z;
+    this->InitializeParticle(particle);
   }
 }
 
