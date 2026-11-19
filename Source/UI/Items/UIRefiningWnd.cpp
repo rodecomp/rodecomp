@@ -65,6 +65,10 @@ UIRefiningWnd::UIRefiningWnd()
   this->catalystItemId = 6635;
 }
 
+// OFFSET: 0x007F4D20
+// FUNCTION: fn_46430
+__declspec(noinline) UIRefiningWnd::~UIRefiningWnd() = default;
+
 // OFFSET: 0x007F4A70
 // FUNCTION: fn_09891
 UIRefining_BtnAgain::UIRefining_BtnAgain() : UIBitmapButton(), cost(0) {
