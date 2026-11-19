@@ -80,10 +80,15 @@ __declspec(noinline) std::map<int, RankingBoardStyle> RankingBoardStyles();
 // FUNCTION: fn_04738
 std::map<int, RankingBoardStyle> RankingBoardStyles() {
   std::map<int, RankingBoardStyle> styles;
-  styles.insert({0, {"========== BLACKSMITH RANK ============", 0x9B9B9B, 0xCDCDCD}});
-  styles.insert({1, {"=========== ALCHEMIST RANK =============", 0x9BCD9B, 0xCDFFCD}});
-  styles.insert({2, {"============ TAEKWON RANK =============", 0xCD9B9B, 0xFFCDCD}});
-  styles.insert({3, {"=========== KILLER RANK ==============", 0x9B9B9B, 0xCDCDCD}});
+  RankingBoardStyle style;
+  style = {"========== BLACKSMITH RANK ============", 0x9B9B9B, 0xCDCDCD};
+  styles.insert({0, style});
+  style = {"=========== ALCHEMIST RANK =============", 0x9BCD9B, 0xCDFFCD};
+  styles.insert({1, style});
+  style = {"============ TAEKWON RANK =============", 0xCD9B9B, 0xFFCDCD};
+  styles.insert({2, style});
+  style = {"=========== KILLER RANK ==============", 0x9B9B9B, 0xCDCDCD};
+  styles.insert({3, style});
   return styles;
 }
 
