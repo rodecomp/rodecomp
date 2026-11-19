@@ -1392,14 +1392,13 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case ID_MINI:
       this->StoreInfo();
       this->m_needsRedraw = 1;
-      gate = gate == 0;
-      if (gate != 0) {
+      gate = !gate;
+      if (gate) {
         this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
-        return 0;
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
-        return 0;
       }
+      return 0;
     case ID_CHECK: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
