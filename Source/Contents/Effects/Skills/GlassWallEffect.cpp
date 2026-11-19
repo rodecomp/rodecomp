@@ -147,7 +147,7 @@ __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   params[0] = angle;
   params[1] = fade;
   particle->speedParameter = speed;
-  particle->alpha = alpha > maxAlpha ? maxAlpha : alpha;
+  particle->alpha = alpha <= maxAlpha ? alpha : maxAlpha;
   particle->transform = result;
 }
 
