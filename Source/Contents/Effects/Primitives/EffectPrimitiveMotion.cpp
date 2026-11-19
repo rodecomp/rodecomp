@@ -4130,13 +4130,7 @@ bool CEffectPrim::PrimCHOOKGI() {
   DriftSlotAngles(slot, 3);
 
   const char rate = slot.flag1[0];
-  bool spin = true;
-
-  if (rate != 0) {
-    spin = rate >= 10 ? slot.process % (rate - 9) == 0 : (slot.process & 1) == 0;
-  }
-
-  if (spin) {
+  if (rate == 0 || (rate >= 10 && slot.process % (rate - 9) == 0) || (rate < 10 && (slot.process & 1) == 0)) {
     slot.height[6] += 1.0f;
 
     if (slot.height[6] >= 360.0f) {
@@ -7501,11 +7495,11 @@ bool CEffectPrim::Move2DPrimitive() {
 
       if (expiration > now || g_replayAnimationScaling != 0) {
         if (expiration != 0 && expiration != 999999) {
-          if (g_replayAnimationScaling == 0) {
-            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
-          } else {
+          if (g_replayAnimationScaling != 0) {
             const int elapsed = static_cast<int>(Replay::Instance().elapsed);
             slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - elapsed) / 1000);
+          } else {
+            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
           }
         } else {
           slot.process = 999;
@@ -7584,19 +7578,19 @@ bool CEffectPrim::Move2DPrimitive() {
   particle.deltaPos.y = particle.deltaPos.y - cosine * particle.speed;
   this->render.position.y = particle.deltaPos.y + this->render.position.y;
 
-  if (particle.red >= 256) {
+  if (particle.red > 255) {
     particle.red = 0;
   } else if (particle.red < 0) {
     particle.red = 255;
   }
 
-  if (particle.green >= 256) {
+  if (particle.green > 255) {
     particle.green = 255;
   } else if (particle.green < 0) {
     particle.green = 0;
   }
 
-  if (particle.blue >= 256) {
+  if (particle.blue > 255) {
     particle.blue = 255;
   } else if (particle.blue < 0) {
     particle.blue = 0;
