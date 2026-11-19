@@ -1,6 +1,7 @@
 #include "Contents/Effects/Skills/RedLineEffect.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -14,6 +15,15 @@ __forceinline int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
 }
+}
+
+// OFFSET: 0x00B715F0
+CRedLineEffect::CRedLineEffect() : CEffect(EF_REDLINE) {
+}
+
+// OFFSET: 0x00B71690
+// FUNCTION: fn_46050
+__declspec(noinline) CRedLineEffect::~CRedLineEffect() {
 }
 
 // OFFSET: 0x00B71770
@@ -158,23 +168,53 @@ void CRedLineEffect::OnProcess() {
       particle->vertices[3].z = innerZ;
 
       if (segment != 0) {
-        particle->vertices[0].x = this->previousOuter.x;
-        particle->vertices[0].y = this->previousOuter.y;
-        particle->vertices[0].z = this->previousOuter.z;
-        particle->vertices[2].x = this->previousInner.x;
-        particle->vertices[2].y = this->previousInner.y;
-        particle->vertices[2].z = this->previousInner.z;
+        particle->vertices[0].x = this->previousPoints[1].x;
+        particle->vertices[0].y = this->previousPoints[1].y;
+        particle->vertices[0].z = this->previousPoints[1].z;
+        particle->vertices[2].x = this->previousPoints[0].x;
+        particle->vertices[2].y = this->previousPoints[0].y;
+        particle->vertices[2].z = this->previousPoints[0].z;
       }
 
-      this->previousInner.x = innerX;
-      this->previousInner.y = innerY;
-      this->previousInner.z = innerZ;
-      this->previousOuter.x = outerX;
-      this->previousOuter.y = outerY;
-      this->previousOuter.z = outerZ;
+      this->previousPoints[0].x = innerX;
+      this->previousPoints[0].y = innerY;
+      this->previousPoints[0].z = innerZ;
+      this->previousPoints[1].x = outerX;
+      this->previousPoints[1].y = outerY;
+      this->previousPoints[1].z = outerZ;
     }
 
     ++particle->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x00B72180
+__forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    int blend;
+    short shade;
+
+    if (particle->animationParameter == 0.0f) {
+      shade = 10;
+      blend = 6;
+    } else {
+      shade = 100;
+      blend = 2;
+    }
+
+    particle->destinationBlend = blend;
+    particle->SetColor(255, shade, shade);
+
+    const int segment = particle->columnIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(segment - 1) / 21.0f;
+    quad.right = static_cast<float>(segment) / 21.0f;
+    particle->Render(quad);
   }
 }
 
@@ -184,31 +224,6 @@ void CRedLineEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
 
-    if (particle && particle->columnIndex > 0) {
-      int blend;
-      short shade;
-
-      if (particle->animationParameter == 0.0f) {
-        shade = 10;
-        blend = 6;
-      } else {
-        shade = 100;
-        blend = 2;
-      }
-
-      particle->destinationBlend = blend;
-      particle->SetColor(255, shade, shade);
-
-      const int segment = particle->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(segment - 1) / 21.0f;
-      quad.right = static_cast<float>(segment) / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderSegment(particle);
   }
 }

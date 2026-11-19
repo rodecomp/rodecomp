@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_REDLINEEFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 
 #include <cstddef>
 #include <vector>
@@ -11,6 +11,9 @@ class CParticle;
 
 class CRedLineEffect : public CEffect {
 public:
+  CRedLineEffect();
+  ~CRedLineEffect() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -19,14 +22,15 @@ public:
 
   void CreateLines(int layer);
 
-  /* 00CC */ vector3d previousInner;
-  /* 00D8 */ vector3d previousOuter;
+  /* 00CC */ EffectPoint previousPoints[2];
   /* 00E4 */ std::vector<CParticle*> lines;
+
+private:
+  void RenderSegment(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CRedLineEffect, previousInner) == 0xCC);
-static_assert(offsetof(CRedLineEffect, previousOuter) == 0xD8);
+static_assert(offsetof(CRedLineEffect, previousPoints) == 0xCC);
 static_assert(offsetof(CRedLineEffect, lines) == 0xE4);
 static_assert(sizeof(CRedLineEffect) == 0xF0);
 #endif
