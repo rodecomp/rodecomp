@@ -270,4 +270,35 @@ void CRectUpEffect::UpdateParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x0070A0D0
+// FUNCTION: fn_46183
+void CRectUpEffect::UpdateParticlePositions(float x, float y, float z) {
+  int index = 0;
+  for (int angle = 45; angle <= 405; angle += 90, ++index) {
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
+    if (!particle) {
+      continue;
+    }
+
+    particle->offsetX = x;
+    particle->offsetY = y;
+    particle->offsetZ = z;
+    particle->effectId = this->id;
+    particle->columnIndex = index;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
+    particle->angleParameter = ClampedRandom(360);
+    particle->angle = static_cast<float>(angle);
+    particle->animationParameter = 0.0f;
+    if (this->id == 1088) {
+      particle->speedParameter = 16.0f;
+      particle->alpha = 120;
+      particle->scale = 3.5f;
+      particle->effectParameter = ClampedRandom(50) + 100;
+      particle->phaseParameter = 0;
+    }
+    this->InitParticle(particle);
+    particle->InitParticleQuad(particle->vertices);
+    this->particles.push_back(particle);
+  }
+}
 
