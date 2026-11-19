@@ -70,6 +70,17 @@ int CPrivateAirplaneMgr::GetNeedItem(int index) {
   return *it;
 }
 
+// OFFSET: 0x006D0720
+
+// OFFSET: 0x006D0910
+// FUNCTION: fn_46436
+bool CPrivateAirplaneMgr::IsNeedItem(int item) {
+  if (this->m_needItems.find(item) != this->m_needItems.end()) {
+    return true;
+  }
+  return false;
+}
+
 // OFFSET: 0x006D0860
 // FUNCTION: fn_06507
 bool CPrivateAirplaneMgr::IsEndableMap(std::string map) {

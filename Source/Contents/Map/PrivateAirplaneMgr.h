@@ -28,6 +28,8 @@ public:
   virtual ~CPrivateAirplaneMgr();
 
   int GetNeedItem(int index);
+  void InsertNeedItem(int item);
+  bool IsNeedItem(int item);
   bool IsEndableMap(std::string map);
   bool IsStartableMap(std::string map);
   // OFFSET: 0x006D0800
