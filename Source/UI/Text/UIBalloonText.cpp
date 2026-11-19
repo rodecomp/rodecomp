@@ -310,7 +310,7 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
 // OFFSET: 0x00865C40
 // FUNCTION: fn_45617
 void UIVerticalNameBalloonText::SetIcon(const char* name) {
-  if (name == nullptr || name[0] == '\0') {
+  if (name == nullptr || std::strlen(name) == 0) {
     return;
   }
 
