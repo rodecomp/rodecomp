@@ -272,11 +272,8 @@ CEffect* EffectLists::At(int id, unsigned index) const {
   return found->second[index];
 }
 
-// OFFSET: 0x00B24190
-// FUNCTION: fn_18771
-void EffectLists::Add(int actor, CEffect* effect) {
-  this->active[actor].push_back(effect);
-
+// INLINED
+static void IndexEffect(EffectLists* lists, CEffect* effect) {
   const int id = effect->id;
   switch (id) {
   case EF_EMITTER:
@@ -285,9 +282,19 @@ void EffectLists::Add(int actor, CEffect* effect) {
   case EF_ANIMATED_EMITTER:
   case EF_NEW_RANGEDATTACK:
   case EF_UNK_2343:
-    this->indexed[static_cast<int>(id)].push_back(effect);
+    {
+      std::vector<CEffect*>& list = lists->indexed[static_cast<int>(id)];
+      list.push_back(effect);
+    }
     break;
   }
+}
+
+// OFFSET: 0x00B24190
+// FUNCTION: fn_18771
+void EffectLists::Add(int actor, CEffect* effect) {
+  this->active[actor].push_back(effect);
+  IndexEffect(this, effect);
 }
 
 // OFFSET: 0x00B24A50
