@@ -223,6 +223,7 @@ public:
 class CFootprintEffect : public CEffect {
 public:
   CFootprintEffect();
+  ~CFootprintEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;

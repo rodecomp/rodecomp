@@ -1157,6 +1157,11 @@ CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), leftFo
   this->lastPosition.z = this->position[2];
 }
 
+// OFFSET: 0x007121C0
+// FUNCTION: fn_46319
+__declspec(noinline) CFootprintEffect::~CFootprintEffect() {
+}
+
 // OFFSET: 0x007123C0
 // FUNCTION: fn_07238
 bool CFootprintEffect::IsVisible() {
