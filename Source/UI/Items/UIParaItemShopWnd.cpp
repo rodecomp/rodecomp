@@ -329,8 +329,9 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ITEM_INFO item;
     item.Assign(drag);
     const int total = g_session.GetPurchaseItemTotalPrice();
-    const int price = drag.price;
-    const bool affordable = g_session.m_zeny >= static_cast<long long>(price) * drag.quantity + total;
+    const long long zeny = g_session.m_zeny;
+    const int price = mode->drag.price;
+    const bool affordable = zeny >= static_cast<long long>(price) * mode->drag.quantity + total;
 
     int existing = 0;
     for (const ITEM_INFO& value : this->items) {
