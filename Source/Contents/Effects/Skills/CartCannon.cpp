@@ -153,20 +153,14 @@ void CCartCannon::UpdateParticle(CEZ2STRParticle* particle) {
   }
 
   const float step = static_cast<float>(this->currentStep);
-  const float x = step * this->stepDelta.x + this->startPosition.x;
-  const float y = step * this->stepDelta.y + this->startPosition.y;
-  const float z = step * this->stepDelta.z + this->startPosition.z;
+  this->currentPosition.x = step * this->stepDelta.x + this->startPosition.x;
+  this->currentPosition.y = step * this->stepDelta.y + this->startPosition.y;
+  this->currentPosition.z = step * this->stepDelta.z + this->startPosition.z;
+  this->position[0] = this->currentPosition.x;
+  this->position[1] = this->currentPosition.y;
+  this->position[2] = this->currentPosition.z;
 
-  this->currentPosition.x = x;
-  this->currentPosition.y = y;
-  this->currentPosition.z = z;
-  this->position[0] = x;
-  this->position[1] = y;
-  this->position[2] = z;
-
-  particle->position.x = x;
-  particle->position.y = y;
-  particle->position.z = z;
+  particle->position = this->currentPosition;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
