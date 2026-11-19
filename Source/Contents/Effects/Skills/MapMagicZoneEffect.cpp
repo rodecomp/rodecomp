@@ -18,6 +18,16 @@ struct ZoneVector3d : vector3d {
   }
 };
 
+// OFFSET: 0x00B6DAC0
+// FUNCTION: fn_46117
+CMapMagicZoneEffect::CMapMagicZoneEffect() : CEffect(0x28A), spinners(), petals(), ribbon() {
+}
+
+// OFFSET: 0x00B6DB90
+// FUNCTION: fn_46118
+__declspec(noinline) CMapMagicZoneEffect::~CMapMagicZoneEffect() {
+}
+
 // OFFSET: 0x00B6DCB0
 // FUNCTION: fn_19112
 void CMapMagicZoneEffect::AddSpinner(int kind) {
@@ -270,20 +280,20 @@ void CMapMagicZoneEffect::UpdateRibbon(CParticle* particle) {
     particle->vertices[1].z = outerZ;
 
     if (segment != 0) {
-      particle->vertices[0].x = this->previousOuter.x;
-      particle->vertices[0].y = this->previousOuter.y;
-      particle->vertices[0].z = this->previousOuter.z;
-      particle->vertices[2].x = this->previousInner.x;
-      particle->vertices[2].y = this->previousInner.y;
-      particle->vertices[2].z = this->previousInner.z;
+      particle->vertices[0].x = this->previousPoints[1].x;
+      particle->vertices[0].y = this->previousPoints[1].y;
+      particle->vertices[0].z = this->previousPoints[1].z;
+      particle->vertices[2].x = this->previousPoints[0].x;
+      particle->vertices[2].y = this->previousPoints[0].y;
+      particle->vertices[2].z = this->previousPoints[0].z;
     }
 
-    this->previousInner.x = innerX;
-    this->previousInner.y = innerY;
-    this->previousInner.z = innerZ;
-    this->previousOuter.x = outerX;
-    this->previousOuter.y = outerY;
-    this->previousOuter.z = outerZ;
+    this->previousPoints[0].x = innerX;
+    this->previousPoints[0].y = innerY;
+    this->previousPoints[0].z = innerZ;
+    this->previousPoints[1].x = outerX;
+    this->previousPoints[1].y = outerY;
+    this->previousPoints[1].z = outerZ;
   }
 }
 
