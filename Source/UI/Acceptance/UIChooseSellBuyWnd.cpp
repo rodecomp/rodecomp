@@ -7014,7 +7014,7 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
 // FUNCTION: fn_12286
 void UIEquipWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->ItemEntryAt(x, y);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     item.identified = 1;
     int tooltipX = 6;
     int tooltipY = (y - this->m_contentTop - 17) / 24 * 26 - 3 + this->m_contentTop;
@@ -7026,7 +7026,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     CMode* tooltip = g_modeMgr.currentMode;
-    if (item.quantity < 2) {
+    if (item.quantity <= 1) {
       if (item.identified == 1 && item.optionCount != 0) {
         tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                       g_session.GetItemNameColor(item), 0, 1);
