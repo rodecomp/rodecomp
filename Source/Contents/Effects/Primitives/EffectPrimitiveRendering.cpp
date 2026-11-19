@@ -7127,7 +7127,7 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
       quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
       quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
       if ((this->state.pattern & 0x200) != 0) {
-        quad.color = (cell.color & 0xFF00FF00) | ((cell.color & 0xFF) << 16) | ((cell.color >> 16) & 0xFF);
+        quad.color = (cell.colorChannels.alpha << 24) + (cell.colorChannels.red << 16) + (cell.colorChannels.green << 8) + cell.colorChannels.blue;
       } else {
         quad.color = record.color;
       }
