@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
@@ -17,6 +18,21 @@ void C3dAttr::CellToWorld(float column, float row, float* position) const {
 void CWorld::CellOrigin(int column, int row, float& x, float& z) const {
   x = static_cast<float>((column - this->terrain->width / 2) * this->terrain->cellSize);
   z = static_cast<float>((row - this->terrain->height / 2) * this->terrain->cellSize);
+}
+
+// OFFSET: 0x00AC81B0
+// FUNCTION: fn_46288
+void CWorld::CellToWorld(float column, float row, float& x, float& z) const {
+  const C3dAttr* terrain = this->terrain;
+  x = (column - static_cast<float>(terrain->width) * g_depthAverageHalf) * static_cast<float>(terrain->cellSize);
+  z = (row - static_cast<float>(terrain->height) * g_depthAverageHalf) * static_cast<float>(terrain->cellSize);
+}
+
+// OFFSET: 0x00AC83E0
+// FUNCTION: fn_46290
+void CWorld::WorldToCell(float x, float z, int& column, int& row) const {
+  column = static_cast<int>(x) / this->terrain->cellSize + this->terrain->width / 2;
+  row = static_cast<int>(z) / this->terrain->cellSize + this->terrain->height / 2;
 }
 
 // OFFSET: 0x00CD36E0

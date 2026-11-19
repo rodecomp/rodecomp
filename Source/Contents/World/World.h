@@ -42,6 +42,8 @@ public:
   CWorld& operator=(const CWorld&) = delete;
   void LoadMapEffects();
   void CellOrigin(int column, int row, float& x, float& z) const;
+  void CellToWorld(float column, float row, float& x, float& z) const;
+  void WorldToCell(float x, float z, int& column, int& row) const;
   void Clear();
   void ClearChildren();
   void OnExitFrame();
