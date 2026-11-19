@@ -127,8 +127,8 @@ void CElectricEffect::UpdateParticle(CParticle* particle) {
   if (segment >= 1 && segment <= 18) {
     const float radius = particle->speedParameter;
     const float horizontal = radius * g_cosTable[strand * 120];
-    const float vertical = radius * g_sinTable[strand * 120];
     const float offsetX = horizontal * g_cosTable[this->angle];
+    const float vertical = radius * g_sinTable[strand * 120];
     const float offsetZ = horizontal * g_sinTable[this->angle];
     const vector3d first = {offsetX + this->path[0].x, vertical + this->path[0].y, offsetZ + this->path[0].z};
     const vector3d second = {offsetX + this->path[1].x, vertical + this->path[1].y, offsetZ + this->path[1].z};
