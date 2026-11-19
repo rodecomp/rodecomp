@@ -83,3 +83,35 @@ void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int 
     }
   }
 }
+
+// OFFSET: 0x007612C0
+// FUNCTION: fn_45828
+std::uint8_t* CSprRes::DecodeSpriteRuns(const std::uint8_t* runs, int width, int height) {
+  auto* pixels = new std::uint8_t[width * height];
+  std::uint16_t zeroCount = 0;
+
+  for (int y = 0; y < height; ++y) {
+    std::uint8_t* line = pixels + y * width;
+    if (line != nullptr && width > 0) {
+      const std::uint8_t* current = runs;
+      int remaining = width;
+      while (remaining != 0) {
+        std::uint8_t value = 0;
+        if (zeroCount == 0) {
+          value = *current++;
+          if (value == 0) {
+            zeroCount = *current++;
+          }
+        }
+
+        const std::uint16_t before = zeroCount;
+        zeroCount = before != 0 ? before - 1 : 0;
+        *line++ = before == 0 ? value : 0;
+        --remaining;
+        runs = current;
+      }
+    }
+  }
+
+  return pixels;
+}

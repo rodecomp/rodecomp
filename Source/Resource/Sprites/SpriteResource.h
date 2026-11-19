@@ -18,6 +18,7 @@ public:
   void Unload() override;
   std::uint8_t* EncodeSpriteRuns(const std::uint8_t* pixels, int width, int height, std::uint16_t& bytes);
   std::uint8_t* ReduceSprite(const std::uint8_t* pixels, int width, int height, int halfWidth, int halfHeight);
+  std::uint8_t* DecodeSpriteRuns(const std::uint8_t* runs, int width, int height);
 
   /* 0110 */ std::uint32_t palette[256];
   /* 0510 */ std::vector<SpriteRleImage*> images[2];
