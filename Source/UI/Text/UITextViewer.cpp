@@ -320,9 +320,8 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->topLine = 0;
     }
 
-    const int maximum = this->bottomMargin + (static_cast<int>(this->lineLinks.size()) - this->geometry.height / this->lineHeight);
-    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
-      this->topLine = maximum;
+    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(static_cast<int>(this->lineLinks.size()) - this->geometry.height / this->lineHeight + this->bottomMargin)) {
+      this->topLine = static_cast<int>(this->lineLinks.size()) - this->geometry.height / this->lineHeight + this->bottomMargin;
     }
 
     this->verticalBar->position = this->topLine;
