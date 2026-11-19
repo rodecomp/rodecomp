@@ -146,7 +146,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
           }
 
           if (newName[0] == '[' && newName[1] == 'g' && newName[2] == 'm') {
-            return 0;
+            break;
           }
 
           if (newName[1] == '[' && newName[2] == 'g' && newName[3] == 'm') {
