@@ -76,6 +76,7 @@ bool CScatterEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B76280
+// FUNCTION: fn_46191
 __forceinline void CScatterEffect::UpdateParticle(CSpriteParticle* particle) {
   if (particle) {
     particle->alpha = std::ranges::max(particle->alpha - 3, 0);
