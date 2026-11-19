@@ -658,6 +658,11 @@ int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
 }
 
+// INLINED
+static std::string RenewQuestImagePath(const std::string& name) {
+  return "유저인터페이스\\renew_questui\\" + name;
+}
+
 // OFFSET: 0x007FBB70
 // FUNCTION: fn_09963
 void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended) {
@@ -674,7 +679,7 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
     this->m_recommendedWnd->SetQuest(this->m_questId);
     this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).backgroundImage;
     if (!this->m_imageName.empty()) {
-      this->m_imageName = "유저인터페이스\\renew_questui\\" + this->m_imageName;
+      this->m_imageName = RenewQuestImagePath(this->m_imageName);
     }
   } else {
     const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(questId);
