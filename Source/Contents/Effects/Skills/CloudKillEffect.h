@@ -32,7 +32,7 @@ public:
   /* 00E4 */ unsigned char emitting;
 
 private:
-  __declspec(noinline) void UpdateParticle(CSpriteParticle* particle);
+  void UpdateParticle(CSpriteParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
