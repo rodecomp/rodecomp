@@ -162,11 +162,11 @@ void ITEM_INFO::Reset() {
   this->expireTime = 0;
   this->priceFactor = 0;
   this->sprite = 0;
-  this->optionCount = 0;
-  SecureZeroMemory(this->options, sizeof(this->options));
   for (int index = 0; index < 4; ++index) {
     this->flags[index] = 0;
   }
+  this->optionCount = 0;
+  SecureZeroMemory(this->options, sizeof(this->options));
   this->saleData.costume = 0;
   this->saleData.startTime = 0;
   this->saleData.endTime = 0;
@@ -713,10 +713,12 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
 // OFFSET: 0x00DDAB30
 // FUNCTION: fn_23348
 void CSession::RemovePurchaseItem(const ITEM_INFO& item) {
-  const bool hasFlag = item.flags[3] != 0;
   for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
-    const bool same = hasFlag ? it->identity[1] == item.identity[1] : it->itemId == item.itemId;
-    if (same) {
+    bool same = it->identity[1] == item.identity[1];
+    if (item.flags[3] == 0) {
+      same = it->itemId == item.itemId;
+    }
+    if (same == true) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
         this->m_purchaseItems.erase(it);
