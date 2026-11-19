@@ -1435,47 +1435,51 @@ void UIGuildPositionManageWnd::Paint() {
       this->positionNameLabels[drawn]->Move(g_guildPositionColumnWidths[0] + 9, y - 2);
     }
 
+    const int canInvite = position->canInvite;
     if (this->inviteChecks[drawn]) {
-      this->inviteChecks[drawn]->geometry.state = position->canInvite;
+      this->inviteChecks[drawn]->geometry.state = canInvite;
       this->inviteChecks[drawn]->Invalidate();
       this->inviteChecks[drawn]->Move(g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y);
     } else {
-      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canInvite != 0);
+      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canInvite != 0);
       this->DrawBitmap(
         g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))),
         false
       );
     }
 
+    const int canExpel = position->canExpel;
     if (this->expelChecks[drawn]) {
-      this->expelChecks[drawn]->geometry.state = position->canExpel;
+      this->expelChecks[drawn]->geometry.state = canExpel;
       this->expelChecks[drawn]->Invalidate();
       this->expelChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y);
     } else {
-      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canExpel != 0);
+      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canExpel != 0);
       this->DrawBitmap(
         g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y,
         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false
       );
     }
 
-    const int storageX =
-      g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1];
+    const int canStorage = position->canStorage;
     if (this->storageChecks[drawn]) {
-      this->storageChecks[drawn]->geometry.state = position->canStorage;
+      this->storageChecks[drawn]->geometry.state = canStorage;
       this->storageChecks[drawn]->Invalidate();
-      this->storageChecks[drawn]->Move(storageX, y);
+      this->storageChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1], y);
     } else {
-      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canStorage != 0);
-      this->DrawBitmap(storageX, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false);
+      std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canStorage != 0);
+      this->DrawBitmap(
+        g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1], y,
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false
+      );
     }
 
-    const int taxX = g_guildPositionColumnWidths[0] + 13 + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[2] +
-      g_guildPositionColumnWidths[1];
     if (this->taxEdits[drawn]) {
       std::sprintf(buffer, "%d", position->tax);
       this->taxEdits[drawn]->SetText(buffer);
-      this->taxEdits[drawn]->Move(taxX, y - 2);
+      this->taxEdits[drawn]->Move(
+        g_guildPositionColumnWidths[0] + 13 + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[1], y - 2
+      );
       this->DrawTextAt(g_guildPositionColumnWidths[5] / 2 + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[2] +
           g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 13,
         y, "%", 0, 0, 12, 0, 0, 0
@@ -1483,7 +1487,9 @@ void UIGuildPositionManageWnd::Paint() {
     } else if (this->taxLabels[drawn]) {
       std::sprintf(buffer, "%d %s", position->tax, "%");
       this->taxLabels[drawn]->SetText(buffer, 0);
-      this->taxLabels[drawn]->Move(taxX, y - 2);
+      this->taxLabels[drawn]->Move(
+        g_guildPositionColumnWidths[0] + 13 + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[1], y - 2
+      );
     }
 
     if (++drawn == this->m_visibleRows * this->m_columns) {
