@@ -297,9 +297,10 @@ namespace {
 
   // INLINED
   void SplitMovementCoordinate(float value, int& cell, int& subcell) {
-    cell = 0;
-    subcell = 0;
-    if (value > 0.0f) {
+    if (value <= 0.0f) {
+      cell = 0;
+      subcell = 0;
+    } else {
       const double rounded = static_cast<double>(value) + 0.5;
       cell = static_cast<int>(rounded);
       subcell = static_cast<int>(static_cast<float>(rounded - cell) * 16.0f);
@@ -325,8 +326,8 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     int cellX, cellY, subX, subY;
     SplitMovementCoordinate(x, cellX, subX);
     SplitMovementCoordinate(y, cellY, subY);
-    const unsigned int destinationX = actor->movementState[5];
-    const unsigned int destinationY = actor->destCellY;
+    const int destinationX = actor->movementState[5];
+    const int destinationY = actor->destCellY;
     entry.moveData[0] = static_cast<unsigned char>(cellX >> 2);
     entry.moveData[1] = static_cast<unsigned char>((static_cast<unsigned int>(cellX) << 6) | ((cellY >> 4) & 0x3F));
     entry.moveData[2] = static_cast<unsigned char>((static_cast<unsigned int>(cellY) << 4) | ((destinationX >> 6) & 0x0F));
@@ -341,12 +342,18 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     ActorStateEntryNamedOldPacket& entry = *reinterpret_cast<ActorStateEntryNamedOldPacket*>(packet.data());
     FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_STANDENTRY7, name.size());
     const int direction = (static_cast<int>(actor->render.angle) + 180) / 45 % 8;
-    const unsigned int cellX = actor->movementState[5];
-    const unsigned int cellY = actor->destCellY;
+    const int cellX = actor->movementState[5];
+    const int cellY = actor->destCellY;
     entry.posDir[0] = static_cast<unsigned char>(cellX >> 2);
     entry.posDir[1] = static_cast<unsigned char>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry.posDir[2] = static_cast<unsigned char>((cellY << 4) | (direction & 0x0F));
-    entry.state = actor->render.state == 3 ? 1 : actor->render.state == 6 ? 2 : 0;
+    if (actor->render.state == 3) {
+      entry.state = 1;
+    } else if (actor->render.state == 6) {
+      entry.state = 2;
+    } else {
+      entry.state = 0;
+    }
     if (actor->objectType == 0) {
       FillLegacyPcAppearance(entry, static_cast<const CPc*>(actor));
     }
