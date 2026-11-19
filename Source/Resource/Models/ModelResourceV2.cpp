@@ -346,7 +346,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
 
   for (int index = 0; index < volumeCount; ++index) {
     auto* volume = new ModelVolume;
-    std::memset(volume, 0, 132);
+    std::memset(volume, 0, sizeof(ModelVolume));
     input.Read(volume, sizeof(ModelVolume));
     this->volumes.push_back(volume);
   }
@@ -489,7 +489,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
 
   for (int index = 0; index < volumeCount; ++index) {
     auto* volume = new ModelVolume;
-    std::memset(volume, 0, 132);
+    std::memset(volume, 0, sizeof(ModelVolume));
     input.Read(volume, sizeof(ModelVolume));
     this->volumes.push_back(volume);
   }
