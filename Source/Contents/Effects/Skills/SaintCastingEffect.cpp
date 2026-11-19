@@ -22,6 +22,30 @@ CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1), lastInner{}, lastOuter
 __declspec(noinline) CSaintCastingEffect::~CSaintCastingEffect() {
 }
 
+// OFFSET: 0x00B754F0
+// FUNCTION: fn_46266
+__forceinline void __stdcall CSaintCastingEffect::SetRingColor(CParticle* particle, int effectId) {
+  switch (effectId) {
+  case EF_BEGINSPELL:
+    particle->SetColor(255, 255, 170);
+    break;
+  case EF_COUPLECASTING:
+  case EF_HOMUNCASTING:
+    particle->SetColor(255, 89, 182);
+    break;
+  case EF_BLUECASTING:
+    particle->SetColor(100, 100, 255);
+    break;
+  case EF_DARKCASTING:
+  case EF_DARKCASTING2:
+    particle->SetColor(50, 50, 50);
+    break;
+  case EF_GREENCASTING:
+    particle->SetColor(100, 255, 100);
+    break;
+  }
+}
+
 // OFFSET: 0x00B74F50
 // FUNCTION: fn_19161
 void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
@@ -68,25 +92,7 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
         break;
       }
 
-      switch (this->id) {
-      case EF_BEGINSPELL:
-        particle->SetColor(255, 255, 170);
-        break;
-      case EF_COUPLECASTING:
-      case EF_HOMUNCASTING:
-        particle->SetColor(255, 89, 182);
-        break;
-      case EF_BLUECASTING:
-        particle->SetColor(100, 100, 255);
-        break;
-      case EF_DARKCASTING:
-      case EF_DARKCASTING2:
-        particle->SetColor(50, 50, 50);
-        break;
-      case EF_GREENCASTING:
-        particle->SetColor(100, 255, 100);
-        break;
-      }
+      SetRingColor(particle, this->id);
 
       particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
