@@ -27,6 +27,7 @@ struct ActionFrame {
 
   // INLINED
   ActionFrame() {}
+  void InitializeCells(unsigned cellCount);
   const SpriteFrameCell& Cell(unsigned index) const;
 };
 
@@ -38,6 +39,7 @@ public:
   CActRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  void InitializeAnimations(unsigned animationCount);
   void AdjustCellPosition(SpriteFrameCell* cell, int width, int height, int doubleWidth, int doubleHeight);
   const std::vector<ActionFrame>& Animation(unsigned index) const;
   const ActionFrame& Frame(unsigned animation, unsigned frame) const;

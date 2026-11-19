@@ -258,6 +258,43 @@ void CActRes::Unload() {
   this->sounds.clear();
 }
 
+// OFFSET: 0x00746CF0
+// FUNCTION: fn_46343
+void CActRes::InitializeAnimations(unsigned animationCount) {
+  this->Unload();
+  if (this->animations.size() > animationCount) {
+    this->animations.erase(this->animations.begin() + animationCount, this->animations.end());
+  } else {
+    while (this->animations.size() < animationCount) {
+      this->animations.push_back(std::vector<ActionFrame>());
+    }
+  }
+  if (this->speeds.size() > animationCount) {
+    this->speeds.erase(this->speeds.begin() + animationCount, this->speeds.end());
+  } else {
+    while (this->speeds.size() < animationCount) {
+      this->speeds.push_back(4.0f);
+    }
+  }
+}
+
+// OFFSET: 0x00746ED0
+// FUNCTION: fn_46342
+void ActionFrame::InitializeCells(unsigned cellCount) {
+  this->cellCount = cellCount;
+  this->sound = -1;
+  const unsigned size = (std::min)(cellCount, 1000u);
+  if (this->cells.size() > size) {
+    this->cells.erase(this->cells.begin() + size, this->cells.end());
+  } else {
+    while (this->cells.size() < size) {
+      this->cells.push_back(SpriteFrameCell());
+    }
+  }
+  this->anchors.clear();
+  this->anchorCount = 0;
+}
+
 // OFFSET: 0x00746F80
 // FUNCTION: fn_07783
 const std::vector<ActionFrame>& CActRes::Animation(unsigned index) const {
