@@ -1,4 +1,22 @@
 #include "UI/Gauges/UIPcGage.h"
+#include "Utility/Math/Int64Math.h"
+
+#include <algorithm>
+
+// INLINED
+static __forceinline void DrawGageBar(UIPlayerGage* gage, int y, std::function<std::int64_t()>& current, std::function<std::int64_t()>& maximum,
+                                     const std::uint32_t& color, const std::uint32_t& alternateColor, bool thresholdColor, bool wideDenominator) {
+  const std::int64_t maximumValue = MaxIntAndInt64(1, maximum());
+  const std::int64_t denominator = (std::max)(current(), maximumValue);
+  const std::int64_t numerator = current();
+  const double divisor =
+      wideDenominator ? static_cast<double>(denominator) : static_cast<double>(static_cast<int>(denominator));
+  const float ratio = static_cast<float>(static_cast<double>(numerator) / divisor);
+
+  gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
+  gage->FillRegion(1, y, static_cast<int>(static_cast<float>(gage->geometry.width - 2) * ratio), 3,
+                   thresholdColor && ratio < 0.25f ? alternateColor : color);
+}
 
 // OFFSET: 0x0086D2D0
 // FUNCTION: fn_11044
@@ -93,56 +111,39 @@ void UIPlayerGage::SetSecondValues(std::function<std::int64_t()> current, std::f
 void UIPlayerGage::Paint() {
   this->ClearSurface(this->colors[0]);
 
-  const auto drawBar = [this](int y, std::function<std::int64_t()>& current, std::function<std::int64_t()>& maximum,
-                              std::uint32_t color, std::uint32_t alternateColor, bool thresholdColor,
-                              bool wideDenominator) {
-    const std::int64_t maximumValue = (std::max)(std::int64_t(1), maximum());
-    const std::int64_t denominator = (std::max)(current(), maximumValue);
-    const std::int64_t numerator = current();
-    const double divisor =
-        wideDenominator ? static_cast<double>(denominator) : static_cast<double>(static_cast<int>(denominator));
-    const float ratio = static_cast<float>(static_cast<double>(numerator) / divisor);
-
-    this->FillRegion(1, y, this->geometry.width - 2, 3, this->colors[1]);
-    if (thresholdColor && ratio < 0.25f) {
-      color = alternateColor;
-    }
-    this->FillRegion(1, y, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3, color);
-  };
-
   switch (this->actorKind) {
     case 7:
       if (this->m_thirdCurrent && this->m_thirdMaximum) {
-        drawBar(1, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
+        DrawGageBar(this, 1, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
       }
       break;
     case 9:
     case 10:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        drawBar(1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
-        drawBar(5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
+        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
+        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
       }
       break;
     case 13:
     case 14:
       if (this->m_firstCurrent && this->m_firstMaximum) {
-        drawBar(1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
+        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
       }
       break;
     case 8:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum &&
           this->m_thirdCurrent && this->m_thirdMaximum) {
-        drawBar(1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
-        drawBar(5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, true);
-        drawBar(9, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
+        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
+        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, true);
+        DrawGageBar(this, 9, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
       }
       break;
     default:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        drawBar(1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, false);
-        drawBar(5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
+        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, false);
+        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
         if (this->m_fourthCurrent && this->m_fourthMaximum) {
-          drawBar(9, this->m_fourthCurrent, this->m_fourthMaximum, this->colors[7], this->colors[7], false, false);
+          DrawGageBar(this, 9, this->m_fourthCurrent, this->m_fourthMaximum, this->colors[7], this->colors[7], false, false);
         }
       }
       break;
