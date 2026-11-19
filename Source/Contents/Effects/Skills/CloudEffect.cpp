@@ -145,6 +145,7 @@ void CCloud::Render() {
 }
 
 // OFFSET: 0x006FC0D0
+// FUNCTION: fn_46170
 __forceinline void CCloud::UpdateAlpha() {
   CParticle* particle = this->particle;
   const int frame = particle->elapsedFrames;
