@@ -134,20 +134,24 @@ struct WorldViewRecord {
 class CWorldViewMgr {
 public:
   CWorldViewMgr();
+  ~CWorldViewMgr();
 
   void Load(LuaScript& script);
+  void ScaleArea(int* area, int topOffset, int textureWidth, int textureHeight);
   bool ScaleToScreen();
   void LoadTextures();
   unsigned int FindWorld(int mapId);
   void ResetSelection();
   bool SelectField(const char* name);
   void Draw(int unused, int x, int y, int width, int height);
+  WorldViewRecord* FindMark(const char* name);
   bool AddMark(const char* name);
   void ClearMarks();
   WorldViewRecord* MarkAt(unsigned int index, bool currentWorldOnly);
   int* MarkAreaAt(unsigned int index, bool currentWorldOnly);
   int MarkCount();
   int SelectCurrentWorld();
+  WorldViewRecord* FindLevel(const char* name);
   bool AddLevel(const char* name, int level);
   void ClearLevels();
   int* LevelAreaAt(int& kind, unsigned int index, bool currentWorldOnly);

@@ -341,18 +341,30 @@ CWorldViewMgr::CWorldViewMgr() {
   }
 }
 
-// INLINED
-static void ScaleArea(int* area, int textureWidth, int textureHeight) {
+// OFFSET: 0x006152E0
+CWorldViewMgr::~CWorldViewMgr() {
+  this->ClearMarks();
+  this->ClearLevels();
+  this->ResetSelection();
+  for (auto it = this->worlds.begin(); it != this->worlds.end(); ++it) {
+    delete *it;
+  }
+  this->worlds.clear();
+}
+
+// OFFSET: 0x00617880
+// FUNCTION: fn_46323
+__forceinline void CWorldViewMgr::ScaleArea(int* area, int topOffset, int textureWidth, int textureHeight) {
   if (!area) {
     return;
   }
 
   const float scaleX = static_cast<float>(g_renderer->viewport.width) / static_cast<float>(textureWidth);
-  const float scaleY = static_cast<float>(g_renderer->viewport.height - 17) / static_cast<float>(textureHeight);
+  const float scaleY = static_cast<float>(g_renderer->viewport.height - topOffset) / static_cast<float>(textureHeight);
   area[0] = static_cast<int>(static_cast<float>(area[0]) * scaleX + 0.5);
-  area[1] = static_cast<int>(static_cast<float>(area[1]) * scaleY + 0.5) + 17;
+  area[1] = static_cast<int>(static_cast<float>(area[1]) * scaleY + 0.5) + topOffset;
   area[2] = static_cast<int>(static_cast<float>(area[2]) * scaleX + 0.5);
-  area[3] = static_cast<int>(static_cast<float>(area[3]) * scaleY + 0.5) + 17;
+  area[3] = static_cast<int>(static_cast<float>(area[3]) * scaleY + 0.5) + topOffset;
 }
 
 // OFFSET: 0x006166E0
@@ -366,12 +378,12 @@ bool CWorldViewMgr::ScaleToScreen() {
     const int textureWidth = (*it)->texture->Width();
     const int textureHeight = (*it)->texture->Height();
     for (CWorldViewMap* map : (*it)->maps) {
-      ScaleArea(&map->left, textureWidth, textureHeight);
+      this->ScaleArea(&map->left, 17, textureWidth, textureHeight);
       const auto fieldEnd = map->fields.end();
       for (auto fieldIt = map->fields.begin(); fieldIt != fieldEnd; ++fieldIt) {
         CWorldViewField* field = *fieldIt;
         if (field) {
-          ScaleArea(&field->left, textureWidth, textureHeight);
+          this->ScaleArea(&field->left, 17, textureWidth, textureHeight);
         }
       }
     }
@@ -475,6 +487,11 @@ void CWorldViewMgr::Draw(int unused, int x, int y, int width, int height) {
   this->worlds[this->currentWorld]->Draw(unused, x, y, width, height);
 }
 
+// OFFSET: 0x00617090
+__forceinline WorldViewRecord* CWorldViewMgr::FindMark(const char* name) {
+  return FindRecord(this->marks, name);
+}
+
 // OFFSET: 0x00616DD0
 // FUNCTION: fn_04380
 bool CWorldViewMgr::AddMark(const char* name) {
@@ -482,7 +499,7 @@ bool CWorldViewMgr::AddMark(const char* name) {
     return false;
   }
 
-  if (FindRecord(this->marks, name)) {
+  if (this->FindMark(name)) {
     return true;
   }
 
@@ -554,6 +571,11 @@ int CWorldViewMgr::SelectCurrentWorld() {
   return this->currentWorld = this->FindWorld(-1);
 }
 
+// OFFSET: 0x006175F0
+__forceinline WorldViewRecord* CWorldViewMgr::FindLevel(const char* name) {
+  return FindRecord(this->levels, name);
+}
+
 // OFFSET: 0x006172E0
 // FUNCTION: fn_04386
 bool CWorldViewMgr::AddLevel(const char* name, int level) {
@@ -561,7 +583,7 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
     return false;
   }
 
-  if (WorldViewRecord* found = FindRecord(this->levels, name)) {
+  if (WorldViewRecord* found = this->FindLevel(name)) {
     if (level != 0) {
       const int current = found->level;
       if (level == 10000) {
