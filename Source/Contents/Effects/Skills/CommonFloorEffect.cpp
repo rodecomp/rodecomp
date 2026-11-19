@@ -6,6 +6,15 @@
 
 #include <cstring>
 
+namespace {
+// INLINED
+__forceinline void RenderCommonFloorParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+}
+
 // OFFSET: 0x006FD760
 // FUNCTION: fn_06933
 CCommonFloorEffect::CCommonFloorEffect() : CEffect(1056) {
@@ -196,12 +205,16 @@ void CCommonFloorEffect::UpdateParticle(CParticle* particle) {
   }
 }
 
+// OFFSET: 0x006FE0C0
+// FUNCTION: fn_46283
+__declspec(noinline) void CCommonFloorEffect::RenderParticle(CParticle* particle) {
+  RenderCommonFloorParticle(particle);
+}
+
 // OFFSET: 0x006FE060
 // FUNCTION: fn_06942
 void CCommonFloorEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (CParticle* particle = *it) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    RenderCommonFloorParticle(*it);
   }
 }

@@ -29,6 +29,7 @@ private:
   void SpawnParticles();
   void ResetParticle(CParticle* particle);
   void UpdateParticle(CParticle* particle);
+  __declspec(noinline) void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
