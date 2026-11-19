@@ -254,6 +254,14 @@ void CRainbowEffect::OnProcess() {
   }
 }
 
+// INLINED
+static matrix CameraYawRotation() {
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  return rotation;
+}
+
 // OFFSET: 0x00B71180
 // FUNCTION: fn_46058
 void CRainbowEffect::UpdateBand(CParticle* particle) {
@@ -275,54 +283,52 @@ void CRainbowEffect::UpdateBand(CParticle* particle) {
 
   particle->alpha = alpha >= 250 ? 250 : alpha;
 
-  matrix rotation;
-  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
-  particle->transform = rotation;
+  particle->transform = CameraYawRotation();
 
   const int band = particle->rowIndex;
   const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
   const int angle = static_cast<int>(static_cast<float>(step * particle->columnIndex) + particle->angle) % 360;
 
-  EffectPoint points[4];
-  const float width = particle->scale * g_cosTable[angle];
-  const float height = particle->scale * g_sinTable[angle];
+  {
+    EffectPoint points[4];
+    const float width = particle->scale * g_cosTable[angle];
+    const float height = particle->scale * g_sinTable[angle];
 
-  float ratio = 1.0f - static_cast<float>(band) * 0.05f;
-  float flat = width * ratio;
-  float rise = height * ratio;
-  points[0].x = g_cosTable[particle->phaseParameter] * flat;
-  points[0].y = rise + rise;
-  points[0].z = g_sinTable[particle->phaseParameter] * flat;
+    float ratio = 1.0f - static_cast<float>(band) * 0.05f;
+    float flat = width * ratio;
+    float rise = height * ratio;
+    points[0].x = g_cosTable[particle->phaseParameter] * flat;
+    points[0].y = rise + rise;
+    points[0].z = g_sinTable[particle->phaseParameter] * flat;
 
-  ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
-  flat = width * ratio;
-  rise = height * ratio;
-  points[1].x = g_cosTable[particle->phaseParameter] * flat;
-  points[1].y = rise + rise;
-  points[1].z = g_sinTable[particle->phaseParameter] * flat;
+    ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
+    flat = width * ratio;
+    rise = height * ratio;
+    points[1].x = g_cosTable[particle->phaseParameter] * flat;
+    points[1].y = rise + rise;
+    points[1].z = g_sinTable[particle->phaseParameter] * flat;
 
-  if (particle->columnIndex != 0) {
-    particle->vertices[0].x = points[1].x;
-    particle->vertices[0].y = points[1].y;
-    particle->vertices[0].z = points[1].z;
-    particle->vertices[1].x = points[0].x;
-    particle->vertices[1].y = points[0].y;
-    particle->vertices[1].z = points[0].z;
-    particle->vertices[2].x = this->previousPoints[0].x;
-    particle->vertices[2].y = this->previousPoints[0].y;
-    particle->vertices[2].z = this->previousPoints[0].z;
-    particle->vertices[3].x = this->previousPoints[1].x;
-    particle->vertices[3].y = this->previousPoints[1].y;
-    particle->vertices[3].z = this->previousPoints[1].z;
-  }
+    if (particle->columnIndex != 0) {
+      particle->vertices[0].x = points[1].x;
+      particle->vertices[0].y = points[1].y;
+      particle->vertices[0].z = points[1].z;
+      particle->vertices[1].x = points[0].x;
+      particle->vertices[1].y = points[0].y;
+      particle->vertices[1].z = points[0].z;
+      particle->vertices[2].x = this->previousPoints[0].x;
+      particle->vertices[2].y = this->previousPoints[0].y;
+      particle->vertices[2].z = this->previousPoints[0].z;
+      particle->vertices[3].x = this->previousPoints[1].x;
+      particle->vertices[3].y = this->previousPoints[1].y;
+      particle->vertices[3].z = this->previousPoints[1].z;
+    }
 
-  this->previousPoints[0].x = points[1].x;
-  this->previousPoints[0].y = points[1].y;
-  this->previousPoints[0].z = points[1].z;
-  this->previousPoints[1].x = points[0].x;
-  this->previousPoints[1].y = points[0].y;
-  this->previousPoints[1].z = points[0].z;
+    this->previousPoints[0].x = points[1].x;
+    this->previousPoints[0].y = points[1].y;
+    this->previousPoints[0].z = points[1].z;
+    this->previousPoints[1].x = points[0].x;
+    this->previousPoints[1].y = points[0].y;
+    this->previousPoints[1].z = points[0].z;
 
   switch (band) {
   case 0:
@@ -346,6 +352,7 @@ void CRainbowEffect::UpdateBand(CParticle* particle) {
   case 6:
     particle->SetColor(255, 0, 255);
     break;
+  }
   }
 }
 
