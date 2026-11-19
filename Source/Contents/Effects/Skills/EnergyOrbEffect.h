@@ -23,6 +23,11 @@ public:
   /* 00CC */ int count;
   /* 00D0 */ int mode;
   /* 00D4 */ std::vector<CParticle*> particles;
+
+private:
+  void ConfigureParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
