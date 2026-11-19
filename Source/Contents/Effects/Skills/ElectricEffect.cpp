@@ -96,8 +96,10 @@ void CElectricEffect::UpdateParticle(CParticle* particle) {
     return;
   }
 
-  const int segment = particle->columnIndex;
   const int strand = particle->groupIndex;
+  const int segment = particle->columnIndex;
+  EffectPoint points[2];
+
   if (strand == 0) {
     const float* arc = &particle->animationParameter;
     for (int index = 0; index < 2; ++index) {
@@ -115,8 +117,8 @@ void CElectricEffect::UpdateParticle(CParticle* particle) {
       this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
     }
 
-    const float dx = this->path[0].x - this->path[1].x;
     const float dz = this->path[0].z - this->path[1].z;
+    const float dx = this->path[0].x - this->path[1].x;
     short heading;
     this->SetHeadingFromVector(dx, dz, &heading);
     this->angle = static_cast<short>((heading + 90) % 360);
