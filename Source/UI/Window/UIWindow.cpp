@@ -906,6 +906,54 @@ static __forceinline void MoveWindowToScreenPosition(UIWindow* window, int x, in
 }
 
 // OFFSET: 0x00A7AB50
+// FUNCTION: fn_45626
+bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
+  if (!anchor) {
+    return false;
+  }
+
+  int windowBounds[4];
+  int anchorBounds[4];
+  WindowScreenBounds(this, windowBounds[0], windowBounds[1], windowBounds[2], windowBounds[3]);
+  WindowScreenBounds(anchor, anchorBounds[0], anchorBounds[1], anchorBounds[2], anchorBounds[3]);
+  if (!WindowBoundsOverlap(windowBounds, anchorBounds)) {
+    return false;
+  }
+
+  const int leftX = static_cast<unsigned>(anchorBounds[0]) - this->geometry.width;
+  const int rightEdge = static_cast<unsigned>(anchorBounds[2]) + this->geometry.width;
+  const int topY = static_cast<unsigned>(anchorBounds[1]) - this->geometry.height;
+  const int bottomEdge = static_cast<unsigned>(anchorBounds[3]) + this->geometry.height;
+  const int left = leftX >= 0 ? static_cast<unsigned>(windowBounds[2]) - anchorBounds[0] : 0;
+  const int right = rightEdge <= g_renderer->viewport.width ? static_cast<unsigned>(anchorBounds[2]) - windowBounds[0] : 0;
+  const int top = topY >= 0 ? static_cast<unsigned>(windowBounds[3]) - anchorBounds[1] : 0;
+  const int bottom = bottomEdge <= g_renderer->viewport.height ? static_cast<unsigned>(anchorBounds[3]) - windowBounds[1] : 0;
+
+  const auto nearest = [](int first, int second) {
+    if (first > 0) {
+      return second > 0 ? std::min(first, second) : first;
+    }
+    return second > 0 ? second : 999999;
+  };
+  const auto moveLeft = [this, &anchorBounds, &windowBounds] {
+    MoveWindowToScreenPosition(this, static_cast<unsigned>(anchorBounds[0]) - this->geometry.width, windowBounds[1]);
+  };
+  const auto moveRight = [this, &anchorBounds, &windowBounds] {
+    MoveWindowToScreenPosition(this, anchorBounds[2], windowBounds[1]);
+  };
+  const auto moveAbove = [this, &windowBounds, &anchorBounds] {
+    MoveWindowToScreenPosition(this, windowBounds[0], static_cast<unsigned>(anchorBounds[1]) - this->geometry.height);
+  };
+  const auto moveBelow = [this, &windowBounds, &anchorBounds] {
+    MoveWindowToScreenPosition(this, windowBounds[0], anchorBounds[3]);
+  };
+  if (nearest(left, right) < nearest(top, bottom)) {
+    return RunWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight) ||
+           RunWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow);
+  }
+  return RunWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow) ||
+         RunWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight);
+}
 
 // OFFSET: 0x00A81A30
 // FUNCTION: fn_16979
