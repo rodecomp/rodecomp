@@ -12,6 +12,7 @@ class CParticle;
 class CThrowItemEffect : public CEffect {
 public:
   CThrowItemEffect();
+  ~CThrowItemEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -19,6 +20,7 @@ public:
   bool IsAlive() override;
   void InitEvents() override;
   void InitFlameParticle(CParticle* particle);
+  void InitializeParticle(CParticle* particle);
   void InitPotionParticle(CParticle* particle, int kind);
   void InitSpinParticle(CParticle* particle);
   void InitTrajectory(CParticle* particle);

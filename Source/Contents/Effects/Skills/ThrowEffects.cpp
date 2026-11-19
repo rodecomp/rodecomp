@@ -22,6 +22,11 @@ CThrowItemEffect::CThrowItemEffect()
       trail{0.0f, 0.0f, 0.0f} {
 }
 
+// OFFSET: 0x00B7CBE0
+// FUNCTION: fn_46327
+__declspec(noinline) CThrowItemEffect::~CThrowItemEffect() {
+}
+
 // OFFSET: 0x00B7CCC0
 // FUNCTION: fn_19229
 void CThrowItemEffect::Close() {
@@ -201,6 +206,8 @@ void CThrowItemEffect::Open() {
     }
   }
 }
+
+// OFFSET: 0x00B7D930
 
 // OFFSET: 0x00B7D3B0
 // FUNCTION: fn_19231
