@@ -3060,7 +3060,7 @@ void UICashEmotionPack::ShowExpiry(__time32_t value) {
   int day = expiry.Day();
   int month = expiry.Month();
   int year = expiry.Year();
-  std::string text = fmt::format(fmt::runtime(this->m_title), year, month, day, hour, minute);
+  std::string text = fmt::format(this->m_title, year, month, day, hour, minute);
   this->m_titleText->SetTextFitted(text.c_str());
 }
 
@@ -3076,7 +3076,7 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
   int day = expiry->Day();
   int month = expiry->Month();
   int year = expiry->Year();
-  std::string text = fmt::format(fmt::runtime(this->m_title), year, month, day, hour, minute);
+  std::string text = fmt::format(this->m_title, year, month, day, hour, minute);
   this->m_titleText->SetTextFitted(text.c_str());
 }
 
@@ -3318,7 +3318,7 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     unsigned int hours = remaining / 3600;
     remaining -= hours * 3600;
     unsigned int minutes = remaining / 60;
-    std::string text = fmt::vformat(this->m_title, fmt::make_format_args(days, hours, minutes));
+    std::string text = fmt::format(this->m_title, days, hours, minutes);
     this->m_titleText->SetTextFitted(text.c_str());
   } else {
     const char* text = g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME");
