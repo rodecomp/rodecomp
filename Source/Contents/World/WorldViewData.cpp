@@ -135,7 +135,7 @@ __forceinline void CWorldViewWorld::ClearMaps() {
 
 // OFFSET: 0x00613360
 // FUNCTION: fn_04349
-CWorldViewWorld::~CWorldViewWorld() {
+__declspec(noinline) CWorldViewWorld::~CWorldViewWorld() {
   this->ClearMaps();
 }
 
@@ -183,16 +183,16 @@ __declspec(noinline) bool CWorldViewWorld::LoadTexture() {
 // FUNCTION: fn_46318
 CWorldViewMap* CWorldViewWorld::FindMapAt(unsigned int& mapIndex, int x, int y) const {
   const unsigned int count = this->maps.size();
+  CWorldViewMap* const* maps = this->maps.data();
   for (unsigned int index = 0; index < count; ++index) {
-    const CWorldViewMap* map = this->maps[index];
-    bool hit;
+    const CWorldViewMap* map = maps[index];
     if (map->id < 100 && !map->fields.empty()) {
       const CWorldViewField* first = map->fields.front();
-      hit = AreaContains(first->left, first->top, first->right, first->bottom, x, y);
-    } else {
-      hit = map->Contains(x, y);
-    }
-    if (hit) {
+      if (AreaContains(first->left, first->top, first->right, first->bottom, x, y)) {
+        mapIndex = index;
+        return this->maps[index];
+      }
+    } else if (map->Contains(x, y)) {
       mapIndex = index;
       return this->maps[index];
     }
