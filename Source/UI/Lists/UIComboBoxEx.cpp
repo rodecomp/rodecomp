@@ -254,7 +254,7 @@ void UIComboBoxEx::Paint() {
 
   const int top = this->topLine;
   const int end = static_cast<int>(std::min(
-    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((top + (this->geometry.height / this->lineHeight - this->bottomMargin)))
+    static_cast<unsigned>((top + (this->geometry.height / this->lineHeight - this->bottomMargin))), static_cast<unsigned>(this->lines.size())
   ));
 
   for (int row = top; row < end; ++row) {
