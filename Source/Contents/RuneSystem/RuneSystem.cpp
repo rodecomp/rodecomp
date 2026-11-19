@@ -1025,8 +1025,29 @@ int AddRuneSetReward(lua_State* state) {
     return 2;
   }
 
-  RuneData* rune = g_runeSystemMgr->FindRune(tagId, 0, runeSetId, nullptr);
-  RuneSetReward* reward = rune ? &static_cast<RuneSetData*>(rune)->m_reward : nullptr;
+  RuneSetData* runeSet = nullptr;
+  int selectedTag = tagId;
+  if (selectedTag == -1) {
+    selectedTag = g_runeSystemMgr->m_selectTag;
+  }
+
+  if (selectedTag > 0) {
+    for (CTagData* tag : g_runeSystemMgr->m_tags) {
+      if (selectedTag == tag->m_id) {
+        if (tag != nullptr) {
+          for (RuneData* rune : tag->m_runes[0]) {
+            if (rune != nullptr && runeSetId == rune->m_id) {
+              runeSet = static_cast<RuneSetData*>(rune);
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  RuneSetReward* reward = runeSet ? &runeSet->m_reward : nullptr;
   if (!reward) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, std::format("ErrData TagID:{}RuneSetID:{}", tagId, runeSetId).c_str());
