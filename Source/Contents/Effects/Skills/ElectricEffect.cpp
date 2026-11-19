@@ -15,6 +15,15 @@
 #include <cstdlib>
 #include <cstring>
 
+struct EmptyElectricEffectDestructor {
+  ~EmptyElectricEffectDestructor();
+};
+
+// OFFSET: 0x00B4E7A0
+// FUNCTION: fn_45993
+EmptyElectricEffectDestructor::~EmptyElectricEffectDestructor() {
+}
+
 // OFFSET: 0x00B4E7B0
 // FUNCTION: fn_45994
 __declspec(noinline) CElectricEffect::~CElectricEffect() {
