@@ -904,8 +904,7 @@ bool CNavigationManager::GetMobInfo(
   if (exists) {
     *sprite = path;
   } else {
-    const std::string npcSprite = FormatOwnedString("npc\\%s", g_session.GetJobName(mob->GetIndex(), -1));
-    *sprite = npcSprite;
+    *sprite = static_cast<const std::string&>(FormatOwnedString("npc\\%s", g_session.GetJobName(mob->GetIndex(), -1)));
   }
 
   NaviCell cell;
