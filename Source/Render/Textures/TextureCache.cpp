@@ -90,8 +90,8 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
 
         if (movie) {
           const auto* handle = movie->decoder->Handle();
-          const std::uint32_t width = handle->width;
           const std::uint32_t height = handle->height;
+          const std::uint32_t width = handle->width;
           texture = GetRenderSystemHolder()->CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);
 
           if (texture) {
