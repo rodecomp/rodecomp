@@ -120,8 +120,8 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
       continue;
     }
 
-    int nameColumns[2] = {34, 173};
     int iconColumns[2] = {6, 250};
+    int nameColumns[2] = {34, 173};
     int yCoords[4] = {54, 80, 106, 132};
 
     if (fromSwap == true) {
