@@ -153,10 +153,7 @@ int LexiconSerializer::SiblingCount(const LexiconNode* node) const {
 // OFFSET: 0x00AC4D40
 // FUNCTION: fn_17633
 std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offset, unsigned char terminal) {
-  int siblings = 0;
-  for (LexiconNode* current = node; current != nullptr; current = current->sibling) {
-    ++siblings;
-  }
+  int siblings = this->SiblingCount(node);
 
   std::uint32_t next = offset + static_cast<std::uint32_t>(siblings) * 3u + 1u;
   while (siblings > 0) {
@@ -164,10 +161,7 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
     this->buffer[offset++] = static_cast<unsigned char>(next >> 8);
     this->buffer[offset++] = static_cast<unsigned char>(next);
 
-    unsigned char chain = 0;
-    for (LexiconNode* current = node; current != nullptr && current->sibling == nullptr; current = current->child) {
-      ++chain;
-    }
+    const unsigned char chain = this->UnbranchedLength(node);
 
     if (chain > 1) {
       this->buffer[next++] = chain;
