@@ -125,6 +125,14 @@ void UIWindow::DrawColoredText(
   }
 }
 
+struct ColoredTextSegment {
+  std::vector<unsigned char> prefix;
+  std::uint32_t color;
+  std::vector<unsigned char> text;
+};
+
+template __declspec(noinline) void std::allocator<ColoredTextSegment>::deallocate(ColoredTextSegment* const, const std::size_t);
+
 // OFFSET: 0x00A850E0
 // FUNCTION: fn_45733
 void UIWindow::DrawRightColoredText(
@@ -134,18 +142,12 @@ void UIWindow::DrawRightColoredText(
     bytes = static_cast<unsigned>(std::strlen(text));
   }
 
-  struct Segment {
-    std::vector<unsigned char> prefix;
-    std::uint32_t color;
-    std::vector<unsigned char> text;
-  };
-
   const char* current = text;
   const char* const end = text + bytes;
   const char* next = this->SegmentEnd(current, end);
   std::uint32_t segmentColor = color;
-  const Segment first{std::vector<unsigned char>(current, next), segmentColor, std::vector<unsigned char>(current, next)};
-  std::vector<Segment> segments(1, first);
+  const ColoredTextSegment first{std::vector<unsigned char>(current, next), segmentColor, std::vector<unsigned char>(current, next)};
+  std::vector<ColoredTextSegment> segments(1, first);
   std::vector<unsigned char> prefix;
 
   while (current < end) {
@@ -157,7 +159,7 @@ void UIWindow::DrawRightColoredText(
 
     segmentColor = 0;
     const char* segmentStart = this->ParseColorCode(next, segmentColor);
-    Segment segment{{}, segmentColor, {}};
+    ColoredTextSegment segment{{}, segmentColor, {}};
     segment.prefix.insert(segment.prefix.end(), prefix.begin(), prefix.end());
     const char* segmentEnd = this->SegmentEnd(segmentStart, end);
     if (segmentEnd < end) {
@@ -174,7 +176,7 @@ void UIWindow::DrawRightColoredText(
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, 0, 0);
 
-  for (const Segment& segment : segments) {
+  for (const ColoredTextSegment& segment : segments) {
     color = segment.color;
     if (segment.text.size() != 0) {
       SIZE size = {};
