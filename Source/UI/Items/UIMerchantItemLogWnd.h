@@ -22,6 +22,7 @@ public:
   };
 
   UIMerchantItemLogWnd(int mode);
+  ~UIMerchantItemLogWnd() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;
   void Paint() override;

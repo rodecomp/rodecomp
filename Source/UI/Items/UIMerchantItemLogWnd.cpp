@@ -42,6 +42,12 @@ UIMerchantItemLogWnd::UIMerchantItemLogWnd(int mode) : UIItemBaseWnd() {
 // FUNCTION: fn_45769
 UIMerchantItemLogWnd::lcData::~lcData() = default;
 
+// OFFSET: 0x0099E260
+// FUNCTION: fn_45768
+__declspec(noinline) UIMerchantItemLogWnd::~UIMerchantItemLogWnd() {
+  this->items.clear();
+}
+
 // OFFSET: 0x0099E510
 // FUNCTION: fn_13575
 void UIMerchantItemLogWnd::OnCreate(int width, int height) {
