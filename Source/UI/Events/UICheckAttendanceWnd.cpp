@@ -357,7 +357,8 @@ void UICheckAttendanceWnd::OnRBtnDown(int x, int y) {
 
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
     ITEM_INFO item;
-    item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
+    CCheckAttendanceMgr* manager = g_checkAttendanceMgr;
+    item.SetItemId(manager->GetReward(slot + 1).first);
     item.identified = 1;
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
