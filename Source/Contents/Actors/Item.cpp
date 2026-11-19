@@ -111,7 +111,9 @@ bool CItem::OnProcess() {
   if (this->isFalling) {
     this->render.position.y = (elapsed * 0.083f + this->fallVelocity) * elapsed + this->fallOrigin;
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
+    const float z = this->render.position.z;
+    const float x = this->render.position.x;
+    if (this->render.position.y > mode->scene->terrain->Height(x, z)) {
       this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
       this->isFalling = 0;
     }
