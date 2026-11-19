@@ -52,11 +52,11 @@ void CMode::DrawActionSprite(
     const float scaleY = cell.scaleY;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     const float left = static_cast<float>(cell.x) * scale;
-    const float scaledLeft = left * scaleX;
     const float top = static_cast<float>(cell.y) * scale * scaleY;
+    const float scaledLeft = left * scaleX;
+    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * scale * scaleY;
     const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x) * scale;
     const float scaledRight = right * scaleX;
-    const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * scale * scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
