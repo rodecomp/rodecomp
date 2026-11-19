@@ -147,8 +147,10 @@ const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
 void CChopChopClawMarks::OnInit() {
   const int id = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("chop_chop", 0x59278F63D79F3DA1ULL, std::uint8_t));
   if (EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(id)) {
-    this->offsetX = info->offsetX;
-    this->offsetY = info->offsetY;
+    const float offsetX = info->offsetX;
+    const float offsetY = info->offsetY;
+    this->offsetX = offsetX;
+    this->offsetY = offsetY;
   }
 }
 
