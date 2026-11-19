@@ -67,8 +67,8 @@ void CLevel150Effect::BuildBubbleSegment(CParticle* particle) {
                      particle->angle) %
     360;
   const int tilt = particle->phaseParameter;
-  const float spread = radius * g_cosTable[tilt];
   const float height = radius * g_sinTable[tilt];
+  const float spread = radius * g_cosTable[tilt];
   const float cosine = g_cosTable[direction];
   const float sine = g_sinTable[direction];
   const float offsetX = spread * cosine;
