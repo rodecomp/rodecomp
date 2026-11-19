@@ -22,20 +22,20 @@ void CWorld::CellOrigin(int column, int row, float& x, float& z) const {
 // OFFSET: 0x00CD36E0
 // FUNCTION: fn_21270
 void CGameMode::CellCenter(int column, int row, float& x, float& z) const {
-  const float offset = static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
-  x = (static_cast<float>(column) - static_cast<float>(this->scene->terrain->width) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    offset;
-  z = (static_cast<float>(row) - static_cast<float>(this->scene->terrain->height) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    offset;
+  const auto terrain = [this]() { return this->scene->terrain; };
+  const float offset = static_cast<float>(terrain()->cellSize) * 8.0f * 0.0625f;
+  x = (static_cast<float>(column) - static_cast<float>(terrain()->width) * 0.5f) * static_cast<float>(terrain()->cellSize) + offset;
+  z = (static_cast<float>(row) - static_cast<float>(terrain()->height) * 0.5f) * static_cast<float>(terrain()->cellSize) + offset;
 }
 
 // OFFSET: 0x00CD3620
 // FUNCTION: fn_21269
 void CGameMode::SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const {
-  x = (static_cast<float>(column) - static_cast<float>(this->scene->terrain->width) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    static_cast<float>(subColumn) * static_cast<float>(this->scene->terrain->cellSize) * 0.0625f;
-  z = (static_cast<float>(row) - static_cast<float>(this->scene->terrain->height) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    static_cast<float>(subRow) * static_cast<float>(this->scene->terrain->cellSize) * 0.0625f;
+  const auto terrain = [this]() { return this->scene->terrain; };
+  x = (static_cast<float>(column) - static_cast<float>(terrain()->width) * 0.5f) * static_cast<float>(terrain()->cellSize) +
+    static_cast<float>(subColumn) * static_cast<float>(terrain()->cellSize) * 0.0625f;
+  z = (static_cast<float>(row) - static_cast<float>(terrain()->height) * 0.5f) * static_cast<float>(terrain()->cellSize) +
+    static_cast<float>(subRow) * static_cast<float>(terrain()->cellSize) * 0.0625f;
 }
 
 // OFFSET: 0x00CD5230
