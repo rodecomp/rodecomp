@@ -187,6 +187,16 @@ void CElectricEffect::UpdateTick() {
   ++this->tick;
 }
 
+// INLINED
+static short HeadingOf(float nx, float nz) {
+  for (short step = 0; step <= 180; ++step) {
+    if (nx >= g_cosTable[step]) {
+      return nz >= 0.0f ? step : static_cast<short>(360 - step);
+    }
+  }
+  return 180;
+}
+
 // OFFSET: 0x00B4EF50
 // FUNCTION: fn_19006
 void CElectricEffect::OnProcess() {
@@ -246,20 +256,13 @@ void CElectricEffect::OnProcess() {
         this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
       }
 
-      const float dx = this->path[0].x - this->path[1].x;
       const float dz = this->path[0].z - this->path[1].z;
+      const float dx = this->path[0].x - this->path[1].x;
       const float length = SquareRoot(dx * dx + dz * dz);
-      const float nx = dx / length;
       const float nz = dz / length;
+      const float nx = dx / length;
 
-      short heading = 180;
-      for (short step = 0; step <= 180; ++step) {
-        if (nx >= g_cosTable[step]) {
-          heading = nz < 0.0f ? static_cast<short>(360 - step) : step;
-          break;
-        }
-      }
-
+      const short heading = HeadingOf(nx, nz);
       this->angle = static_cast<short>((heading + 90) % 360);
     }
 
@@ -267,8 +270,8 @@ void CElectricEffect::OnProcess() {
       const float radius = particle->speedParameter;
       const float horizontal = radius * g_cosTable[strand * 120];
       const float vertical = radius * g_sinTable[strand * 120];
-      const float offsetX = horizontal * g_cosTable[this->angle];
       const float offsetZ = horizontal * g_sinTable[this->angle];
+      const float offsetX = horizontal * g_cosTable[this->angle];
 
       const vector3d first = {offsetX + this->path[0].x, vertical + this->path[0].y, offsetZ + this->path[0].z};
       const vector3d second = {offsetX + this->path[1].x, vertical + this->path[1].y, offsetZ + this->path[1].z};
