@@ -17377,9 +17377,8 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
   const int length = packet->length;
   if (length != 0x1C) {
     const int count = (length - 0x1C) / 0x2E;
-    const PartyMemberListEntry* entries = reinterpret_cast<const PartyMemberListEntry*>(packet + 1);
     for (int index = 0; index < count; ++index) {
-      const PartyMemberListEntry entry = entries[index];
+      const PartyMemberListEntry entry = reinterpret_cast<const PartyMemberListEntry*>(packet + 1)[index];
       char name[25];
       name[24] = '\0';
       std::memcpy(name, entry.name, sizeof(entry.name));
