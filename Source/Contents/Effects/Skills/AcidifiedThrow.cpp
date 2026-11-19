@@ -10,6 +10,7 @@
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
@@ -35,6 +36,19 @@ CAcidifiedThrow::CAcidifiedThrow() : CEffect(-1) {
 // OFFSET: 0x006F35C0
 // FUNCTION: fn_46014
 __declspec(noinline) CAcidifiedThrow::~CAcidifiedThrow() {
+}
+
+// OFFSET: 0x006F3680
+// FUNCTION: fn_46015
+void CAcidifiedThrow::PointOnCurve(vector3d& result, vector3d start, vector3d control, vector3d end, float t) {
+  const float oneMinusT = g_projectionDepthNumerator - t;
+  const float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
+  const float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+  const float term1 = (t + t) * oneMinusT;
+
+  result.x = term1 * control.x + term2 * end.x + term0 * start.x;
+  result.y = term1 * control.y + term2 * end.y + term0 * start.y;
+  result.z = term1 * control.z + term2 * end.z + term0 * start.z;
 }
 
 // OFFSET: 0x006F3750
