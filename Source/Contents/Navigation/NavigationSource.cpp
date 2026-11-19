@@ -1030,8 +1030,9 @@ std::string CNavigationManager::StateMapName(int index, int* distance) {
       name.assign(info->GetName());
     }
   }
-  int stateType = this->states[index].type;
-  *distance = stateType == 3 ? static_cast<CNavi_Object*>(this->states[index].object)->GetFlag() : (stateType == 2 ? 10000 : 0);
+  const NavigationTarget& current = this->states[index];
+  int stateType = current.type;
+  *distance = stateType == 3 ? static_cast<CNavi_Object*>(current.object)->GetFlag() : (stateType == 2 ? 10000 : 0);
   return name;
 }
 
