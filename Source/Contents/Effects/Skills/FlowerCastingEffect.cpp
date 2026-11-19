@@ -183,6 +183,7 @@ bool CFlowerCastingEffect::IsAlive() {
 }
 
 // OFFSET: 0x00B66F90
+// FUNCTION: fn_46004
 __forceinline void CFlowerCastingEffect::UpdateSegment(CParticle* particle) {
   if (!particle || particle->elapsedFrames <= 0) {
     return;
