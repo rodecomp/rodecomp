@@ -7,6 +7,7 @@
 #include <list>
 
 class CParticle;
+class CSpriteParticle;
 
 class CCloudKillEffect : public CEffect {
 public:
@@ -19,6 +20,9 @@ public:
   bool IsAlive() override;
 
   void AddSprites();
+  void UpdateSprite(CSpriteParticle* particle);
+  void RenderParticle(CParticle* particle);
+  void RenderSprite(CParticle* particle);
 
   /* 00CC */ std::list<CParticle*> particles;
   /* 00D4 */ std::list<CParticle*> sprites;

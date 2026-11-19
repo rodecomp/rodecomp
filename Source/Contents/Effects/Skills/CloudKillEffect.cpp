@@ -101,6 +101,19 @@ bool CCloudKillEffect::IsAlive() {
   return !this->IsFinished();
 }
 
+// INLINED
+static __forceinline void AdvanceSpriteVelocity(CSpriteParticle* particle) {
+  const float* values = particle->rotation.values;
+  const float speed = particle->acceleration + particle->frameDelay;
+  particle->frameDelay = speed;
+  const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
+                             values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
+                             values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
+  particle->velocity = velocity;
+}
+
+// OFFSET: 0x006FD440
+
 // OFFSET: 0x006FCE60
 // FUNCTION: fn_06930
 void CCloudKillEffect::OnProcess() {
@@ -131,14 +144,8 @@ void CCloudKillEffect::OnProcess() {
       FreeParticle(particle);
       it = this->particles.erase(it);
     } else {
-      const float* values = particle->rotation.values;
       float& angle = particle->angle;
-      const float speed = particle->acceleration + particle->frameDelay;
-      particle->frameDelay = speed;
-      const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
-                                 values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
-                                 values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
-      particle->velocity = velocity;
+      AdvanceSpriteVelocity(particle);
       angle = particle->spin + angle;
       particle->position.z = particle->velocity.z + this->position[2];
       particle->position.x = particle->velocity.x + this->position[0];
@@ -167,14 +174,8 @@ void CCloudKillEffect::OnProcess() {
       FreeParticle(particle);
       it = this->sprites.erase(it);
     } else {
-      const float* values = particle->rotation.values;
       float& angle = particle->angle;
-      const float speed = particle->acceleration + particle->frameDelay;
-      particle->frameDelay = speed;
-      const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
-                                 values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
-                                 values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
-      particle->velocity = velocity;
+      AdvanceSpriteVelocity(particle);
       particle->position.y = particle->originY + this->position[1] + particle->velocity.y;
       particle->position.x = particle->originX + this->position[0] + particle->velocity.x;
       particle->position.z = this->position[2] + particle->originZ + particle->velocity.z;
@@ -199,18 +200,28 @@ void CCloudKillEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x006FD620
+// FUNCTION: fn_46274
+__forceinline void CCloudKillEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    static_cast<CSpriteParticle*>(particle)->Draw(1);
+  }
+}
+
+// OFFSET: 0x006FD690
+// FUNCTION: fn_46275
+__forceinline void CCloudKillEffect::RenderSprite(CParticle* particle) {
+  this->RenderParticle(particle);
+}
+
 // OFFSET: 0x006FD640
 // FUNCTION: fn_06931
 void CCloudKillEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it) {
-      static_cast<CSpriteParticle*>(*it)->Draw(1);
-    }
+    this->RenderParticle(*it);
   }
 
   for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-    if (*it) {
-      static_cast<CSpriteParticle*>(*it)->Draw(1);
-    }
+    this->RenderSprite(*it);
   }
 }
