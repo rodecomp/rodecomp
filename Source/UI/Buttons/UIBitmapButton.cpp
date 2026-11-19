@@ -49,10 +49,10 @@ bool UITextureButton::SetTexture(const char* name, int state) {
   }
 
   switch (state) {
-  case 0: this->normalTexture = name; break;
-  case 1: this->hoverTexture = name; break;
-  case 2: this->pressedTexture = name; break;
-  case 3: this->disabledTexture = name; break;
+  case 0: this->normalTexture.assign(name, std::strlen(name)); break;
+  case 1: this->hoverTexture.assign(name, std::strlen(name)); break;
+  case 2: this->pressedTexture.assign(name, std::strlen(name)); break;
+  case 3: this->disabledTexture.assign(name, std::strlen(name)); break;
   }
 
   return true;
