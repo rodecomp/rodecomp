@@ -9162,14 +9162,16 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
 
     case ID_STORE_PASSWORD_NUM_RESET:
-      if (this->passwordStage == 0) {
-        this->passwordStage = 0;
-        this->activeInputY = this->currentPasswordY;
-      } else if (g_session.m_passwordInputAlternate) {
-        this->passwordStage = 2;
-        this->activeInputY = this->newPasswordY;
+      if (this->passwordStage != 0) {
+        if (g_session.m_passwordInputAlternate) {
+          this->passwordStage = 2;
+          this->activeInputY = this->newPasswordY;
+        } else {
+          this->passwordStage = 1;
+          this->activeInputY = this->currentPasswordY;
+        }
       } else {
-        this->passwordStage = 1;
+        this->passwordStage = 0;
         this->activeInputY = this->currentPasswordY;
       }
       this->inputDigitCount = 0;
