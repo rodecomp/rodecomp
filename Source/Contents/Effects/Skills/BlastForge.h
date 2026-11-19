@@ -10,6 +10,7 @@
 class CBlastForge : public CEffect {
 public:
   CBlastForge();
+  ~CBlastForge() override;
 
   void Open() override;
   void OnProcess() override;

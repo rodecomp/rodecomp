@@ -51,6 +51,11 @@ CBlastForge::CBlastForge() : CEffect(-1), openToggle(0), startTime(timeGetTime()
   this->blastBottomParticle = nullptr;
 }
 
+// OFFSET: 0x006F7400
+// FUNCTION: fn_46145
+__declspec(noinline) CBlastForge::~CBlastForge() {
+}
+
 // OFFSET: 0x006F7660
 // FUNCTION: fn_06860
 void CBlastForge::RestartBlastParticles() {
