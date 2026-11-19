@@ -271,10 +271,9 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::str
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std::string text, int targetCount, int conditionId) {
   const auto found = this->achievements.find(id);
   if (found != this->achievements.end()) {
-    std::vector<AchievementReward>& rewards = found->second.rewards;
-    const auto end = rewards.end();
-    if (std::find_if(rewards.begin(), end, [text](const AchievementReward& reward) { return text.compare(reward.text) == 0; }) == end) {
-      rewards.push_back(AchievementReward(text, targetCount, conditionId));
+    const auto end = found->second.rewards.end();
+    if (end == std::find_if(found->second.rewards.begin(), end, [text](const AchievementReward& reward) { return text.compare(reward.text) == 0; })) {
+      found->second.rewards.push_back(AchievementReward(text, targetCount, conditionId));
       return std::make_pair(true, "good");
     } else {
       return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] - resource info already exist", id)));
