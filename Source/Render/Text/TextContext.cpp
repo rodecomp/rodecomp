@@ -35,11 +35,12 @@ namespace {
   bool ValidHex(unsigned char value) {
     return g_colorHexDigit[value] != 0;
   }
+}
 
-  // INLINED
-  unsigned InlineCharset(const char* marker) {
-    return 16 * g_inlineCharsetDigits[static_cast<unsigned char>(marker[1])] + g_inlineCharsetDigits[static_cast<unsigned char>(marker[2])];
-  }
+// OFFSET: 0x0054FFB0
+// FUNCTION: fn_45914
+unsigned InlineCharset(const char* marker) {
+  return 16 * g_inlineCharsetDigits[static_cast<unsigned char>(marker[1])] + g_inlineCharsetDigits[static_cast<unsigned char>(marker[2])];
 }
 
 // OFFSET: 0x0054D4B0
