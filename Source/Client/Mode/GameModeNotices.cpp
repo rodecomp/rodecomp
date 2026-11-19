@@ -5010,11 +5010,12 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
     info.m_state = entry->state;
     __time32_t endTime = entry->endTime > 0 ? entry->endTime : 0;
     const tm time = *_localtime32(&endTime);
+    const int rawEndTime = entry->endTime;
     info.m_year = time.tm_year + 1900;
     info.m_month = time.tm_mon + 1;
     info.m_day = time.tm_mday;
-    info.m_hour = entry->endTime != 0 ? time.tm_hour : 0;
-    info.m_minute = entry->endTime != 0 ? time.tm_min : 0;
+    info.m_hour = rawEndTime != 0 ? time.tm_hour : 0;
+    info.m_minute = rawEndTime != 0 ? time.tm_min : 0;
     info.m_huntCount = static_cast<char>(entry->huntCount);
 
     for (int i = 0; i < entry->huntCount; ++i) {
@@ -5022,12 +5023,12 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
       cursor += sizeof(OngoingQuestHunt);
       info.m_huntId[i] = hunt->huntId;
       info.m_huntConditionFlags[i] = hunt->conditionFlags;
-      info.m_huntMobId[i] = hunt->mobId;
+      const int mobId = hunt->mobId;
+      info.m_huntMobId[i] = mobId;
       info.m_huntKillCount[i] = hunt->count;
       info.m_huntMaxCount[i] = hunt->maxCount;
       info.m_huntMinLevel[i] = hunt->minLevel;
       info.m_huntMaxLevel[i] = hunt->maxLevel;
-      const int mobId = hunt->mobId;
       if ((mobId > JT_MON_BEGIN && mobId < JT_MONSTER_LAST) || static_cast<unsigned int>(mobId - JT_EXTENDED_JOB_NAME_START) <= QUEST_HUNT_CONDITIONAL_MONSTER - JT_EXTENDED_JOB_NAME_START) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
       } else if (mobId == QUEST_HUNT_DEATH) {
