@@ -78,11 +78,11 @@ int InsertIntroContents(lua_State* state) {
   if (!result.ok) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, FormatString("InsertIntroContents : %s", result.message.c_str()));
-  } else {
-    lua_pushboolean(state, 1);
-    lua_pushstring(state, "good");
+    return 2;
   }
 
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
 
