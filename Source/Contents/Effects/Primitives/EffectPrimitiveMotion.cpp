@@ -2397,11 +2397,11 @@ bool CEffectPrim::Prim3DParticle() {
       this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.x = -this->state.deltaPos3.x;
+        this->state.deltaPos3.x = this->state.deltaPos3.x * -1.0f;
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.z = -this->state.deltaPos3.z;
+        this->state.deltaPos3.z = this->state.deltaPos3.z * -1.0f;
       }
     }
 
@@ -2428,8 +2428,8 @@ bool CEffectPrim::Prim3DParticle() {
   }
 
   this->render.position = {
-    this->state.deltaPos.x + this->state.orgPos.x, this->state.deltaPos.y + this->state.orgPos.y,
-    this->state.deltaPos.z + this->state.orgPos.z
+    this->state.orgPos.x + this->state.deltaPos.x, this->state.orgPos.y + this->state.deltaPos.y,
+    this->state.orgPos.z + this->state.deltaPos.z
   };
 
   if ((this->state.pattern & 0x100u) != 0) {
@@ -2780,11 +2780,11 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
       this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.x = -this->state.deltaPos3.x;
+        this->state.deltaPos3.x = this->state.deltaPos3.x * -1.0f;
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.z = -this->state.deltaPos3.z;
+        this->state.deltaPos3.z = this->state.deltaPos3.z * -1.0f;
       }
     }
 
