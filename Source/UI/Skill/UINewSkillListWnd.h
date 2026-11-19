@@ -62,6 +62,7 @@ public:
   void DrawSkillList();
   void DrawSkillTree();
   void ApplySkillPoints();
+  void SetSkillLevel(int skillId, int level);
 
 public:
   /* 00B4 */ UITabControl* m_tabs;
