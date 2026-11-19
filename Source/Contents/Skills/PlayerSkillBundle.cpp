@@ -51,7 +51,7 @@ void CPlayerSkillBundle::Add(const CSkillInfo& value) {
 // FUNCTION: fn_08272
 void CPlayerSkillBundle::Remove(std::uint32_t id) {
   const auto entry = std::find_if(this->skills.begin(), this->skills.end(),
-                                  [id](const CSkillInfo& value) { return value.id == id; });
+                                  [id](const CSkillInfo& value) { return id == value.id; });
   if (entry == this->skills.end()) {
     return;
   }
@@ -298,11 +298,16 @@ void CPlayerSkillBundle::RecordLevelChange(const CSkillInfo& value) {
   }
 
   CSkillInfo* previous = this->FindGrouped(value.id);
-  if (!previous || previous->level >= value.level) {
+  if (!previous) {
     return;
   }
 
-  this->levelChanges[previous->id] = lcEXCInfo(previous->level, value.level);
+  const int previousLevel = previous->level;
+  if (previousLevel >= value.level) {
+    return;
+  }
+
+  this->levelChanges[previous->id] = lcEXCInfo(previousLevel, value.level);
   this->changed[previous->id] = true;
 }
 
