@@ -1502,7 +1502,10 @@ bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
     }
 
     listWnd->RefreshPackLists();
-    return this->m_expiry.size() != 0;
+    if (this->m_expiry.size() != 0) {
+      return true;
+    }
+    return false;
   }
 
   return false;
@@ -4037,8 +4040,8 @@ void UIHeadsprButton::Paint() {
     return;
   }
 
-  const int sourceY = static_cast<int>(record.v0 * 256.0f);
   const int sourceX = static_cast<int>(record.u0 * 256.0f);
+  const int sourceY = static_cast<int>(record.v0 * 256.0f);
   this->geometry.surface->DrawSurface(
     0, 0, texture, sourceX >= 0 ? sourceX : 0, sourceY >= 0 ? sourceY : 0, image->width, image->height, cell.mirrored, image->doubleWidth + 1,
     image->doubleHeight + 1, 0

@@ -38,7 +38,10 @@ bool CGuildMgr::IsInvalidEmblem(std::string path) const {
     name = path.substr(separator + 1, path.size());
   }
 
-  return this->m_invalidEmblems.end() != this->m_invalidEmblems.find(name);
+  if (this->m_invalidEmblems.end() != this->m_invalidEmblems.find(name)) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x0065DFB0
