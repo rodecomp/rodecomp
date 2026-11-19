@@ -743,8 +743,8 @@ CCreateLineInfo::CCreateLineInfo(
     this->m_color = style.color;
     this->m_defaultFontHeight = style.fontHeight;
     this->m_fontHeight = style.fontHeight;
-    this->m_bold = style.bold;
-    this->m_italic = style.italic;
+    this->m_bold = style.bold != 0;
+    this->m_italic = style.italic != 0;
     this->shadow = shadow;
     this->shadowColor = shadowColorValue;
     this->outline = outlineEnabled;
