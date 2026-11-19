@@ -12,14 +12,16 @@
 // GLOBAL: gl_24353
 CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
 
-// INLINED
+// OFFSET: 0x005E5AD0
+// FUNCTION: fn_46469
 CCharacterLinkedUserDataMgr::CCharacterLinkedUserDataMgr()
     : m_accountId(0), m_characterId(0), m_accountName("unknown"), m_loaded(false), m_pendingSaves(0), m_saveUrl(""), m_loadUrl("") {
   this->m_enabled = true;
 }
 
-// INLINED
-CCharacterLinkedUserDataMgr::~CCharacterLinkedUserDataMgr() = default;
+// OFFSET: 0x005E5CE0
+// FUNCTION: fn_46470
+__declspec(noinline) CCharacterLinkedUserDataMgr::~CCharacterLinkedUserDataMgr() = default;
 
 // OFFSET: 0x005E5DD0
 // FUNCTION: fn_03923
