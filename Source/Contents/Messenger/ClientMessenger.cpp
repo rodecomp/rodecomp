@@ -2004,11 +2004,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
       unsigned int key = 0;
       int result;
       int type = lua_type(this->script.GetState(), -2);
-      if (type == LUA_TNUMBER) {
+      if (type != LUA_TNUMBER) {
+        result = (type != LUA_TNIL) + 1;
+      } else {
         key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
         result = 0;
-      } else {
-        result = (type != LUA_TNIL) + 1;
       }
       this->loadValid &= result == 0;
       if (result != 0) {
