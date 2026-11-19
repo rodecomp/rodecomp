@@ -175,16 +175,17 @@ __declspec(noinline) void CCloudKillEffect::UpdateParticle(CSpriteParticle* part
                              values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
   particle->velocity = velocity;
   angle = particle->spin + angle;
-  particle->position.z = particle->velocity.z + this->position[2];
-  particle->position.x = particle->velocity.x + this->position[0];
-  particle->position.y = particle->velocity.y + this->position[1];
+  particle->position.z = velocity.z + this->position[2];
+  particle->position.x = velocity.x + this->position[0];
+  particle->position.y = velocity.y + this->position[1];
   const int age = particle->elapsedFrames;
   float fade = particle->animationParameter;
+  const float alpha = static_cast<float>(particle->alpha);
   if (age == static_cast<int>(particle->animationParameters[0])) {
-    fade = -(static_cast<float>(particle->alpha) / static_cast<float>(this->particleLifetimeFrames - age));
+    fade = -(alpha / static_cast<float>(this->particleLifetimeFrames - age));
   }
   particle->animationParameter = fade;
-  const float level = fade + static_cast<float>(particle->alpha);
+  const float level = fade + alpha;
   const float positive = level < 0.0f ? 0.0f : level;
   particle->alpha = static_cast<int>(positive > 254.0f ? 254.0f : positive);
 }
