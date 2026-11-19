@@ -13,6 +13,11 @@
 CScatterEffect::CScatterEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00B75D90
+// FUNCTION: fn_46040
+__declspec(noinline) CScatterEffect::~CScatterEffect() {
+}
+
 // OFFSET: 0x00B75E70
 // FUNCTION: fn_19169
 void CScatterEffect::Close() {
