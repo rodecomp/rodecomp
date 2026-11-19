@@ -104,7 +104,7 @@ static std::string s_messageEndTag = "</MSG>";
 class CTokenizer {
 public:
   std::string& operator[](int index);
-  int TokenCount() const;
+  __declspec(noinline) int TokenCount() const;
   void Parse(const std::string& text);
 
   /* 0000 */ std::vector<std::string> tokens;
@@ -1094,7 +1094,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     offset = 5;
   } else if (IsTalkCommand(tokenizer[0], {'/', 'v'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xBD'})) {
     *talkType = TT_VOLUME;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
       return -1;
     }
@@ -1104,7 +1104,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (IsTalkCommand(tokenizer[0], {'/', 'b', 'v'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xD0', '\xA4', '\xBD'})) {
     *talkType = TT_BVOLUME;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
       return -1;
     }
@@ -1112,49 +1112,49 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     _itoa(g_soundMgr->Volume(), volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'})) && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'})) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_GUILD_CHAT;
     parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) ? 4 : 11);
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'e', 'x'}) || IsTalkCommand(tokenizer[0], {'/', '\xC2', '\xF7', '\xB4', '\xDC'})) && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', 'e', 'x'}) || IsTalkCommand(tokenizer[0], {'/', '\xC2', '\xF7', '\xB4', '\xDC'})) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_EX;
     parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'e', 'x'}) ? 4 : 6);
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'i', 'n'}) || IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC1', '\xA6'})) && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', 'i', 'n'}) || IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC1', '\xA6'})) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_IN;
     parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'i', 'n'}) ? 4 : 6);
     return -1;
   } else if (IsTalkCommand(tokenizer[0], {'/', 'r', 'e', 'd'})) {
     *talkType = TT_IS_REDCELL;
-    for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
+    for (int index = 1; index < tokenizer.TokenCount(); ++index) {
       const std::string& token = tokenizer[index];
       parts[0].append(token.c_str(), token.size());
       parts[0].append(" ");
     }
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB0', '\xC5', '\xB7', '\xA1'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'j', 'f', 'o'}) || IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xB3', '\xC8', '\xAF'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'y', 'g', 'h', 'k', 's'}) || IsTalkCommand(tokenizer[0], {'/', 'd', 'e', 'a', 'l'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'})) && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB0', '\xC5', '\xB7', '\xA1'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'j', 'f', 'o'}) || IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xB3', '\xC8', '\xAF'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'y', 'g', 'h', 'k', 's'}) || IsTalkCommand(tokenizer[0], {'/', 'd', 'e', 'a', 'l'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'})) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_EXCHANGE_ITEM;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xE6', '\xB5', '\xE5'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'l', 'f', 'e', 'm'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd'})) && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xE6', '\xB5', '\xE5'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'l', 'f', 'e', 'm'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd'})) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_MAKE_GUILD;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC3', '\xBC'}) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC3', '\xBC'}) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_BREAK_GUILD;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((tokenizer[0] == "/결성" || tokenizer[0] == "/ruftjd" || tokenizer[0] == "/organize") && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if ((tokenizer[0] == "/결성" || tokenizer[0] == "/ruftjd" || tokenizer[0] == "/organize") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_MAKE_GROUP;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((tokenizer[0] == "/몬스터" || tokenizer[0] == "/아이템" || tokenizer[0] == "/item" || tokenizer[0] == "/monster") && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if ((tokenizer[0] == "/몬스터" || tokenizer[0] == "/아이템" || tokenizer[0] == "/item" || tokenizer[0] == "/monster") && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_ITEM_CREATE;
     parts[0] = tokenizer[1];
-    if (static_cast<int>(tokenizer.tokens.size()) > 2) {
+    if (tokenizer.TokenCount() > 2) {
       std::string joined;
-      for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
-        if (index + 1 != static_cast<int>(tokenizer.tokens.size())) {
+      for (int index = 1; index < tokenizer.TokenCount(); ++index) {
+        if (index + 1 != tokenizer.TokenCount()) {
           joined.append(tokenizer[index] + " ");
         } else {
           joined.append(tokenizer[index]);
@@ -1163,21 +1163,21 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       parts[0] = joined;
     }
     return -1;
-  } else if ((tokenizer[0] == "/맵이동" || tokenizer[0] == "/mapmove" || tokenizer[0] == "/mm") && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if ((tokenizer[0] == "/맵이동" || tokenizer[0] == "/mapmove" || tokenizer[0] == "/mm") && tokenizer.TokenCount() > 1) {
     *talkType = TT_REQ_MOVETO_MAP;
     parts[0] = tokenizer[1];
-    if (tokenizer.tokens.size() == 4) {
+    if (tokenizer.TokenCount() == 4) {
       parts[1] = tokenizer[2];
       parts[2] = tokenizer[3];
     } else {
       parts[1] = parts[2].assign("0");
     }
     return -1;
-  } else if ((tokenizer[0] == "/제명" || tokenizer[0] == "/wpaud" || tokenizer[0] == "/expel") && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if ((tokenizer[0] == "/제명" || tokenizer[0] == "/wpaud" || tokenizer[0] == "/expel") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_EXPEL_GROUP_MEMBER;
     parts[0] = tokenizer[1];
     return -1;
-  } else if (tokenizer[0] == "/sm" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/sm" && tokenizer.TokenCount() == 2) {
     *talkType = TT_TEST_SHOW_IMAGE;
     parts[0] = tokenizer[1];
     return -1;
@@ -1186,13 +1186,13 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/resetskill") {
     *talkType = TT_REQ_RESETSKILL;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     } else {
       parts[0].assign("1");
     }
     return -1;
-  } else if ((tokenizer[0] == "/changemaptype" || tokenizer[0] == "/cmt") && static_cast<int>(tokenizer.tokens.size()) == 4) {
+  } else if ((tokenizer[0] == "/changemaptype" || tokenizer[0] == "/cmt") && tokenizer.TokenCount() == 4) {
     *talkType = TT_CHANGE_MAPTYPE;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
@@ -1210,29 +1210,29 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
   } else if (tokenizer[0] == "/mineffect" || tokenizer[0] == LookupMessage(MSI_MINEFFECT)) {
     *talkType = TT_MIN_EFFECT_ON_OFF;
     return -1;
-  } else if (tokenizer[0] == "/remove" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/remove" && tokenizer.TokenCount() == 2) {
     *talkType = TT_REMOVE;
     parts[0] = tokenizer[1];
     return -1;
-  } else if (tokenizer[0] == "/summon" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/summon" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RECALL_GID;
     parts[0] = tokenizer[1];
     return -1;
   } else if (tokenizer[0] == "/shift") {
     *talkType = TT_SHIFT;
-    for (int index = 0; index < static_cast<int>(tokenizer.tokens.size()) - 1; ++index) {
+    for (int index = 0; index < tokenizer.TokenCount() - 1; ++index) {
       parts[index] = tokenizer[index + 1];
     }
     return -1;
-  } else if (tokenizer[0] == "/recall" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/recall" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RECALL_AID;
     parts[0] = tokenizer[1];
     return -1;
-  } else if (tokenizer[0] == "/check" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/check" && tokenizer.TokenCount() == 2) {
     *talkType = TT_CHECK_ID;
     parts[0] = tokenizer[1];
     return -1;
-  } else if (tokenizer[0] == "/rc" && static_cast<int>(tokenizer.tokens.size()) == 2) {
+  } else if (tokenizer[0] == "/rc" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RC_ID;
     parts[0] = tokenizer[1];
     return -1;
@@ -1242,48 +1242,48 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
   } else if (tokenizer[0] == "/이름표시" || tokenizer[0] == "/showname") {
     *talkType = TT_BOLD_NAME_TYPE_ON_OFF;
     offset = 0;
-  } else if (tokenizer[0] == "/str+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/str+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xD, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/agi+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/agi+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xE, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/luk+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/luk+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x12, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/int+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/int+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x10, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/vit+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/vit+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xF, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/dex+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/dex+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x11, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/pow+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/pow+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDB, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/sta+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/sta+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDC, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/wis+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/wis+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDD, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/spl+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/spl+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDE, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/con+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/con+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDF, std::atoi(tokenizer[1].c_str()), 0, 0);
-  } else if (tokenizer[0] == "/crt+" && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if (tokenizer[0] == "/crt+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
     g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xE0, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/hi") {
     std::string message("");
     *talkType = TT_EX_HI;
-    if (static_cast<int>(tokenizer.tokens.size()) > 1) {
+    if (tokenizer.TokenCount() > 1) {
       parts[0] = tokenizer[1];
-      for (int index = 1; index < static_cast<int>(tokenizer.tokens.size()); ++index) {
+      for (int index = 1; index < tokenizer.TokenCount(); ++index) {
         message.append(tokenizer[index]);
         message.append(" ");
       }
@@ -1310,15 +1310,15 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       g_windowMgr.SetChatInputText(LookupMessage(MSI_GUILD_INVITE));
     }
     return -1;
-  } else if (tokenizer[0] == "/web" && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if (tokenizer[0] == "/web" && tokenizer.TokenCount() >= 2) {
     *talkType = TT_WEB_BROWSER;
     parts[0] = tokenizer[1];
-  } else if ((tokenizer[0] == "/navi" || tokenizer[0] == "/navigation") && static_cast<int>(tokenizer.tokens.size()) >= 3) {
+  } else if ((tokenizer[0] == "/navi" || tokenizer[0] == "/navigation") && tokenizer.TokenCount() >= 3) {
     *talkType = TT_NAVIGATION;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
     return -1;
-  } else if ((tokenizer[0] == "/navi2" || tokenizer[0] == "/navigation2") && static_cast<int>(tokenizer.tokens.size()) >= 4) {
+  } else if ((tokenizer[0] == "/navi2" || tokenizer[0] == "/navigation2") && tokenizer.TokenCount() >= 4) {
     *talkType = TT_NAVIGATION2;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
@@ -1327,7 +1327,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
   } else if (tokenizer[0] == "/naviopen") {
     *talkType = TT_NAVIGATION3;
     return -1;
-  } else if ((tokenizer[0] == "/cl" || tokenizer[0] == "/clanchat") && static_cast<int>(tokenizer.tokens.size()) >= 2) {
+  } else if ((tokenizer[0] == "/cl" || tokenizer[0] == "/clanchat") && tokenizer.TokenCount() >= 2) {
     *talkType = TT_CLAN_CHAT;
     parts[0] = text + (tokenizer[0] == "/cl" ? 4 : 10);
     return -1;
@@ -1351,21 +1351,21 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/매크로확인" || tokenizer[0] == "/macro_preview" || tokenizer[0] == "/mp") {
     *talkType = TT_MACRO_PREVIEW;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
     return -1;
   } else if (tokenizer[0] == "/매크로신고" || tokenizer[0] == "/macro_detector" || tokenizer[0] == "/md") {
     *talkType = TT_MACRO_DETECTOR;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
     return -1;
-  } else if (tokenizer[0] == "/setcamera" && static_cast<int>(tokenizer.tokens.size()) > 2) {
+  } else if (tokenizer[0] == "/setcamera" && tokenizer.TokenCount() > 2) {
     *talkType = TT_SET_CAMERA;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
-    if (tokenizer.tokens.size() == 4) {
+    if (tokenizer.TokenCount() == 4) {
       parts[2] = tokenizer[3];
     }
     return -1;
@@ -1383,7 +1383,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/prison") {
     *talkType = TT_PRISON_USER;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
     return -1;
@@ -1395,16 +1395,16 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/removeon") {
     *talkType = TT_REMOVE_ON;
-    parts[0] = static_cast<int>(tokenizer.tokens.size()) >= 2 ? tokenizer[1] : std::string("0");
-    parts[1] = static_cast<int>(tokenizer.tokens.size()) >= 3 ? tokenizer[2] : std::string("0");
+    parts[0] = tokenizer.TokenCount() >= 2 ? tokenizer[1] : std::string("0");
+    parts[1] = tokenizer.TokenCount() >= 3 ? tokenizer[2] : std::string("0");
     return -1;
   } else if (tokenizer[0] == "/removeoff") {
     *talkType = TT_REMOVE_OFF;
-    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
+    if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
     return -1;
-  } else if ((tokenizer[0] == "/MacroChecker" || tokenizer[0] == "/macrochecker") && static_cast<int>(tokenizer.tokens.size()) > 1) {
+  } else if ((tokenizer[0] == "/MacroChecker" || tokenizer[0] == "/macrochecker") && tokenizer.TokenCount() > 1) {
     *talkType = TT_MACRO_CHECKER_MAP;
     parts[0] = tokenizer[1];
     return -1;
