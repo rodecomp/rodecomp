@@ -486,13 +486,13 @@ int UIChangeMaterialWnd_List::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollOffset;
-    int delta = static_cast<int>(argument1);
     if (message == UM_SCROLLVERTPAGEUP) {
-      delta = -1;
+      this->m_scrollOffset = previous - 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      delta = 1;
+      this->m_scrollOffset = previous + 1;
+    } else {
+      this->m_scrollOffset = previous + static_cast<int>(argument1);
     }
-    this->m_scrollOffset = previous + delta;
     if (previous != this->m_scrollOffset) {
       this->UpdateScrollBar();
     }
