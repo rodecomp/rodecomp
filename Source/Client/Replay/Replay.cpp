@@ -828,11 +828,11 @@ static __forceinline bool OpenReplayFile(Replay* replay, const char* path, int m
       section.fileOffset = 0;
     }
 
-    if (replay->ParseMetadata(replay->ReadSection(2)) != 0xFFFFFFFFu) {
+    if (replay->ParseMetadata(replay->ReadSection(2)) == 0xFFFFFFFFu) {
+      std::memset(&replay->header, 0, sizeof(replay->header));
+    } else {
       return true;
     }
-
-    std::memset(&replay->header, 0, sizeof(replay->header));
   }
 
   if (replay->file) {
@@ -858,8 +858,7 @@ int ReplayFileList::Open(int mode, int argument1, int argument2) {
     }
 
     std::string name("Replay\\");
-    const ReplayFileEntry& entry = this->files[this->selected];
-    name.append(entry.name, std::strlen(entry.name));
+    name += this->files[this->selected].name;
     std::memset(this->path, 0, sizeof(this->path));
     std::memcpy(this->path, name.data(), name.size());
     if (!OpenReplayFile(this->replay, this->path, 0x20)) {
