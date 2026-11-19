@@ -163,9 +163,14 @@ void CEvilsPawEffect::UpdateParticle(CParticle* particle) {
 // FUNCTION: fn_06961
 void CEvilsPawEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(*it);
+  }
+}
+
+// OFFSET: 0x006FF440
+// FUNCTION: fn_46284
+__forceinline void CEvilsPawEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
