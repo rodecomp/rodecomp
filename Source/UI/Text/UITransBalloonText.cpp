@@ -150,26 +150,27 @@ void UITransBalloonText::Paint() {
   int y = 4;
   int height = this->m_fontHeight;
   int family = 0;
-  if (this->m_fontMode != 0) {
+  const std::int16_t mode = this->m_fontMode;
+  if (mode != 0) {
     height = 12;
   }
-  if (this->m_fontMode == 1) {
+  if (mode == 1) {
     family = 21;
-  } else if (this->m_fontMode == 2) {
+  } else if (mode == 2) {
     family = 20;
-  } else if (this->m_fontMode == 3) {
+  } else if (mode == 3) {
     family = 22;
-  } else if (this->m_fontMode == 4) {
+  } else if (mode == 4) {
     family = 23;
-  } else if (this->m_fontMode == 5) {
+  } else if (mode == 5) {
     family = 24;
-  } else if (this->m_fontMode == 6) {
+  } else if (mode == 6) {
     family = 25;
-  } else if (this->m_fontMode == 7) {
+  } else if (mode == 7) {
     family = 26;
-  } else if (this->m_fontMode == 8) {
+  } else if (mode == 8) {
     family = 27;
-  } else if (this->m_fontMode == 9) {
+  } else if (mode == 9) {
     family = 28;
   }
 
