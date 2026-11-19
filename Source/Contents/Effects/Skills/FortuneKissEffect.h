@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_FORTUNEKISSEFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 
 #include <cstddef>
 #include <vector>
@@ -20,8 +20,8 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ unsigned char padding_00CC[4];
-  /* 00D0 */ vector3d unknown_00D0[2];
-  /* 00E8 */ vector3d unknown_00E8[2];
+  /* 00D0 */ EffectPoint unknown_00D0[2];
+  /* 00E8 */ EffectPoint unknown_00E8[2];
   /* 0100 */ unsigned char padding_0100[4];
   /* 0104 */ int angle;
   /* 0108 */ std::vector<CParticle*> particles;
