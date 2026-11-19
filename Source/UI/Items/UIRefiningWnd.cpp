@@ -569,15 +569,16 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       }
     }
   } else {
-    if (slot != 4 || this->catalystCount < 1) {
+    if (slot != 4 || this->catalystCount <= 0) {
       return;
     }
 
-    const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
+    const bool enough = this->catalystCount <= g_session.LookupClientItem(this->catalystItemId, 0).quantity;
+    UIRefining_Notice* const notice = this->notice;
     const char* text;
     int duration;
     unsigned char highlight;
-    if (this->catalystCount <= owned) {
+    if (enough) {
       if (this->catalystEnabled == 1) {
         this->catalystEnabled = 0;
         text = "";
@@ -592,7 +593,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       duration = 3000;
       highlight = 1;
     }
-    this->notice->SetNotice(text, duration, highlight);
+    notice->SetNotice(text, duration, highlight);
   }
 
   this->Invalidate();
