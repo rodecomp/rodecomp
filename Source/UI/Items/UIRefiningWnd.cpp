@@ -312,8 +312,7 @@ void UIRefiningWnd::ApplyResult() {
       }
     } else {
       this->notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
-      const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
-      if (this->catalystCount > owned) {
+      if (this->catalystCount > g_session.LookupClientItem(this->catalystItemId, 0).quantity) {
         this->catalystEnabled = 0;
         this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
         {
@@ -342,7 +341,7 @@ void UIRefiningWnd::ApplyResult() {
         auto found = std::find_if(this->nextMaterials.begin(), this->nextMaterials.end(), [&material](const RefiningMaterial& next) {
           return material.itemId == next.itemId;
         });
-        if (found == this->nextMaterials.end()) {
+        if (this->nextMaterials.end() == found) {
           same = false;
           break;
         }
