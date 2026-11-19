@@ -24,6 +24,12 @@ public:
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ long long quakeFrame;
+
+private:
+  void CreateMeteor();
+  void CreateMeteorShower();
+  void UpdateParticle(CSpriteParticle* particle);
+  void RenderParticle(CSpriteParticle* particle);
 };
 
 class CShadowExceedNew : public CEffect {
