@@ -427,6 +427,27 @@ void UIMiniMapWnd::Paint() {
 }
 
 // OFFSET: 0x0099C8D0
+// FUNCTION: fn_45723
+__declspec(noinline) int UIMiniMapWnd::SaveMemos() {
+  std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
+  FILE* file = std::fopen(text.c_str(), "wb");
+  int count = 0;
+  if (file) {
+    for (UIBitmapButton* const& memo : this->memoButtons) {
+      if (memo->geometry.x > 0 && memo->geometry.y > 0) {
+        {
+          const std::string tooltip = memo->m_tooltip;
+          const std::string line = FormatOwnedString(g_miniMapMemoLineFormat, memo->geometry.x, memo->geometry.y, tooltip.c_str());
+          text = line;
+        }
+        std::fwrite(text.c_str(), text.size(), 1, file);
+        ++count;
+      }
+    }
+    std::fclose(file);
+  }
+  return count;
+}
 
 // OFFSET: 0x0099CC20
 // FUNCTION: fn_13563
