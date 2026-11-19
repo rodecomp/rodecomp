@@ -136,6 +136,7 @@ __forceinline short CHitLineEffect::LineDirection(float dx, float dz) {
 }
 
 // OFFSET: 0x00705A70
+// FUNCTION: fn_46206
 void CHitLineEffect::RenderParticle(CParticle* particle) {
   if (particle && particle->effectParameter > 0 && particle->elapsedFrames > 0) {
     const int segment = particle->columnIndex;
