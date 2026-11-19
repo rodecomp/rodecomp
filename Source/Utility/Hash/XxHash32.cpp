@@ -28,10 +28,11 @@ std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32
   remaining &= 15u;
 
   while (remaining >= 4u) {
-    hash += ReadWord(current) * 0xC2B2AE3Du;
-    hash = std::rotl(hash, 17) * 0x27D4EB2Fu;
-    current += 4;
+    const unsigned char* const word = current;
     remaining -= 4;
+    current += 4;
+    hash += ReadWord(word) * 0xC2B2AE3Du;
+    hash = std::rotl(hash, 17) * 0x27D4EB2Fu;
   }
 
   while (remaining != 0) {
