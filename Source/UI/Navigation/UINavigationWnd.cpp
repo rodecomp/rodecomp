@@ -559,7 +559,7 @@ bool UINavigationWnd::DrawPlayerMarker(int x, int y, float size) {
 void UINavigationWnd::DrawRouteLabels(int activeLabel) {
   const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
   for (int index = 0; index < labelCount; ++index) {
-    if (g_navigationManager.routeLines[index].kind == activeLabel) {
+    if (activeLabel == g_navigationManager.routeLines[index].kind) {
       const int x = g_navigationManager.routeLines[index].x;
       const int y = g_navigationManager.routeLines[index].y;
       this->DrawTextAt(x + 1, y + 1, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
@@ -582,8 +582,8 @@ void UINavigationWnd::Paint() {
     return;
   }
 
-  int mapCellY = g_navigationManager.previewY;
   int mapCellX = g_navigationManager.previewX;
+  int mapCellY = g_navigationManager.previewY;
   const int targetType = g_navigationManager.GetCurrentTarget().type;
   int size = 0x80;
   this->FillRegion(6, 0x25, 0x82, 0x82, 0x646464);
@@ -634,16 +634,7 @@ void UINavigationWnd::Paint() {
     this->FillRegion(mapX + mapCellX - 1, mapY + mapCellY - 1, 2, 2, 0xFFFF);
   }
 
-  const int activeLabel = g_navigationManager.previewType;
-  const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
-  for (int index = 0; index < labelCount; ++index) {
-    if (g_navigationManager.routeLines[index].kind == activeLabel) {
-      const int x = g_navigationManager.routeLines[index].x;
-      const int y = g_navigationManager.routeLines[index].y;
-      this->DrawTextAt(x + 1, y + 1, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
-      this->DrawTextAt(x, y, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
-    }
-  }
+  this->DrawRouteLabels(g_navigationManager.previewType);
 }
 
 // OFFSET: 0x00935A00
