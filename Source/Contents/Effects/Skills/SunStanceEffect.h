@@ -19,6 +19,11 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ std::list<CParticle*> particles;
+
+private:
+  void Init();
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

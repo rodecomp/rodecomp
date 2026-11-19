@@ -20,18 +20,9 @@ CSunStanceEffect::CSunStanceEffect() : CEffect(-1) {
 __declspec(noinline) CSunStanceEffect::~CSunStanceEffect() {
 }
 
-// OFFSET: 0x0072D910
-// FUNCTION: fn_07494
-void CSunStanceEffect::Close() {
-  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    FreeParticle(*it);
-  }
-  this->particles.clear();
-}
-
-// OFFSET: 0x0072D980
-// FUNCTION: fn_07495
-void CSunStanceEffect::Open() {
+// OFFSET: 0x0072D790
+// FUNCTION: fn_46090
+__forceinline void CSunStanceEffect::Init() {
   for (int index = 0; index < 3; ++index) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
@@ -62,17 +53,32 @@ void CSunStanceEffect::Open() {
       break;
     }
 
+    const float angle = static_cast<float>(index) * 2.0943947f;
     particle->effectId = this->id;
-    int* indices = &particle->groupIndex;
-    indices[1] = 1;
-    indices[2] = 0;
-    indices[0] = 1;
+    particle->columnIndex = 1;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
     particle->alpha = 255;
     particle->scale = 3.0f;
-    particle->animationParameter = static_cast<float>(index) * 2.0943947f;
+    particle->animationParameter = angle;
     particle->InitParticleQuad(particle->vertices);
     this->particles.push_back(particle);
   }
+}
+
+// OFFSET: 0x0072D910
+// FUNCTION: fn_07494
+void CSunStanceEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->particles.clear();
+}
+
+// OFFSET: 0x0072D980
+// FUNCTION: fn_07495
+void CSunStanceEffect::Open() {
+  this->Init();
 }
 
 // OFFSET: 0x0072DB00
@@ -85,38 +91,49 @@ bool CSunStanceEffect::IsAlive() {
 // FUNCTION: fn_07497
 void CSunStanceEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (!particle) {
-      continue;
-    }
-
-    matrix rotation;
-    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-    matrix scaling;
-    scaling.SetScale(particle->scale, particle->scale, 1.0f);
-    matrix result;
-    result.Compose(scaling, rotation);
-    particle->transform = result;
-
-    particle->animationParameter += 0.02f;
-    const float angle = particle->animationParameter;
-    const float cosine = ClientCos(angle) * 8.0f;
-    const float sine = ClientSin(angle) * 8.0f;
-    const float z = cosine + this->position[2];
-    const float x = sine + this->position[0];
-    const float y = this->position[1] - 10.0f;
-    particle->position.z = z;
-    particle->position.y = y;
-    particle->position.x = x;
+    this->UpdateParticle(*it);
   }
+}
+
+// OFFSET: 0x0072DC80
+// FUNCTION: fn_46091
+__forceinline void CSunStanceEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  matrix rotation;
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+  matrix scaling;
+  scaling.SetScale(particle->scale, particle->scale, 1.0f);
+  matrix result;
+  result.Compose(scaling, rotation);
+  particle->transform = result;
+
+  particle->animationParameter += 0.02f;
+  const float angle = particle->animationParameter;
+  const float cosine = ClientCos(angle) * 8.0f;
+  const float sine = ClientSin(angle) * 8.0f;
+  const float z = cosine + this->position[2];
+  const float x = sine + this->position[0];
+  const float y = this->position[1] - 10.0f;
+  particle->position.z = z;
+  particle->position.y = y;
+  particle->position.x = x;
 }
 
 // OFFSET: 0x0072DDD0
 // FUNCTION: fn_07498
 void CSunStanceEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(*it);
+  }
+}
+
+// OFFSET: 0x0072DE30
+// FUNCTION: fn_46092
+__forceinline void CSunStanceEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
