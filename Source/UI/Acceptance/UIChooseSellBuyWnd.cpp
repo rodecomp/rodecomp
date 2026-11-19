@@ -12417,9 +12417,9 @@ void UIFrameWnd::WrapTextSegments(
   int lineWidth = 0;
   for (const auto& segment : segments) {
     const char* begin = segment.second.c_str();
-    const char* end = begin + segment.second.size();
     const char* lineStart = begin;
     const char* next = begin;
+    const char* end = segment.second.c_str() + segment.second.size();
     std::size_t offset = 0;
     int length;
     int measured;
