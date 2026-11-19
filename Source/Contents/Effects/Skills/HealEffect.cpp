@@ -771,6 +771,7 @@ static __forceinline void RenderStripParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x00B69D30
+// FUNCTION: fn_46264
 __forceinline void CHealEffect::RenderColumn(CParticle* particle) {
   RenderStripParticle(particle);
 }
@@ -782,6 +783,7 @@ __forceinline void CHealEffect::RenderCone(CParticle* particle) {
 }
 
 // OFFSET: 0x00B69B80
+// FUNCTION: fn_46263
 __forceinline void CHealEffect::RenderSpark(CParticle* particle) {
   if (particle) {
     particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
