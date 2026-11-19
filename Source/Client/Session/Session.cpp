@@ -3035,8 +3035,8 @@ void CSession::Init() {
   std::memset(modulePath, 0, sizeof(modulePath));
   std::memset(directory, 0, sizeof(directory));
   GetModuleFileNameA(nullptr, modulePath, MAX_PATH);
-  const char* fileName = std::strrchr(modulePath, '\\');
-  std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName + 1));
+  const char* fileName = std::strrchr(modulePath, '\\') + 1;
+  std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName));
 
   HKEY key;
   if (RegCreateKeyExA(HKEY_CURRENT_USER, OBFUSCATE_ARRAY_TEXT("Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL, char), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
