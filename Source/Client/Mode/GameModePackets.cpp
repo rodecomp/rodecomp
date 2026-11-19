@@ -3688,9 +3688,8 @@ void CGameMode::ReceiveItemIdentificationList(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMIDENTIFYWND);
   window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
   count >>= 1;
-  const std::int16_t* ids = p->indices;
-  for (unsigned int index = count; index != 0; --index, ++ids) {
-    ITEM_INFO item = g_session.LookupClientItemByIdentity(*ids);
+  for (unsigned int index = 0; index < count; ++index) {
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(p->indices[index]);
     if (item.identity[1] != 0) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
     }
@@ -3722,9 +3721,8 @@ void CGameMode::ReceiveCardCompositionItemList(const unsigned char* packet) {
   window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
   window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, this->cardItemIndex, 0, 0, 0);
   count >>= 1;
-  const std::int16_t* ids = p->indices;
-  for (unsigned int index = count; index != 0; --index, ++ids) {
-    ITEM_INFO item = g_session.LookupClientItemByIdentity(*ids);
+  for (unsigned int index = 0; index < count; ++index) {
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(p->indices[index]);
     if (item.identity[1] != 0) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
     }
@@ -4415,10 +4413,10 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
 // FUNCTION: fn_21672
 __declspec(noinline) void CGameMode::ReceiveItem1740List(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
-  const int length = p->length;
-  const int count = static_cast<int>(static_cast<unsigned int>(length - 4) / sizeof(StoreNormalRecord));
-  const auto* record = reinterpret_cast<const StoreNormalRecord*>(p + 1);
-  for (int index = count; index >= 1; --index, ++record) {
+  const int count = static_cast<int>(static_cast<unsigned int>(p->length - 4) / sizeof(StoreNormalRecord));
+  const auto* records = reinterpret_cast<const StoreNormalRecord*>(p + 1);
+  for (int index = 0; index < count; ++index) {
+    const StoreNormalRecord* record = &records[index];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[1] = record->index;
