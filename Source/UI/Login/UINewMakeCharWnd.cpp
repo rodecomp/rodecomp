@@ -571,15 +571,18 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
 
-    bool valid = true;
+    int valid = TRUE;
     if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
-      valid = false;
+      valid = FALSE;
     }
-    bool allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
-    bool hasControlCharacter = g_session.HasControlCharacter(this->m_nameEdit->Text());
-    bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
+    int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+    bool hasControlCharacter = false;
+    if (g_session.HasControlCharacter(this->m_nameEdit->Text())) {
+      hasControlCharacter = true;
+    }
+    int blank = g_session.IsBlankString(this->m_nameEdit->Text());
 
-    if (!hasControlCharacter && allowed && valid && !blank) {
+    if (!hasControlCharacter && allowed == TRUE && valid == TRUE && blank == FALSE) {
       if (this->m_nameEdit->Length() >= 24) {
         g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_nameEdit->SetText("");
@@ -611,11 +614,12 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       if (!valid) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
       }
-      if (blank) {
+      if (blank == TRUE) {
         g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
 
+    {
     CMode* mode = g_modeMgr.currentMode;
     mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
     int payload[8];
@@ -628,6 +632,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     payload[6] = this->m_character.headPalette;
     payload[7] = this->m_character.head;
     mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(payload), 0, 0, 0);
+    }
     return 0;
   }
 
@@ -651,7 +656,11 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       if (sender == this->m_raceViews[this->m_race]) {
         this->m_character.head = 1;
         for (int index = 0; index < 24; ++index) {
-          this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, index == 0 ? 1 : 0, 0, 0, 0);
+          if (index == 0) {
+            this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+          } else {
+            this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+          }
           this->m_hairStyleButtons[index]->m_race = this->m_race;
           this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
         }
@@ -675,7 +684,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         if (sender == this->m_hairColorButtons[index]) {
           this->m_hairColorButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
           this->m_character.headPalette = static_cast<short>(index);
-          if (this->m_character.headPalette < 0) {
+          if (0 > this->m_character.headPalette) {
             this->m_character.headPalette = 8;
           }
           this->UpdatePreviewResources();
