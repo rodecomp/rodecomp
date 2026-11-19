@@ -14,22 +14,16 @@ NAsyncWorkMgr::NAsyncWorkMgr(std::uint32_t workers) : m_workerCount(workers), m_
 // OFFSET: 0x00731530
 // FUNCTION: fn_07549
 NAsyncWorkMgr::~NAsyncWorkMgr() {
-  for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
-    (*worker)->Stop();
-  }
+  this->DestroyWorkers();
+  this->DestroyQueues();
+}
 
+// OFFSET: 0x00731700
+// FUNCTION: fn_46367
+void NAsyncWorkMgr::DestroyWorkers() {
+  this->Stop();
   for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
     delete *worker;
-  }
-
-  if (this->m_requests) {
-    delete this->m_requests;
-    this->m_requests = nullptr;
-  }
-
-  if (this->m_responses) {
-    delete this->m_responses;
-    this->m_responses = nullptr;
   }
 }
 

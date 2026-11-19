@@ -17,6 +17,7 @@ public:
 
 protected:
   bool Initialize(std::uint32_t workers);
+  void DestroyWorkers();
   void DestroyQueues();
 
   /* 0004 */ bool m_enabled;
