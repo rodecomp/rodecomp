@@ -89,6 +89,19 @@ bool CSoulCollectEffect::IsAlive() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x0072AF00
+// FUNCTION: fn_46277
+void CSoulCollectEffect::RenderParticle(CParticle* particle) {
+  if (particle && particle->alpha > 0) {
+    const float left = g_textureOffsetX / particle->texture->TextureWidth();
+    const float right = (particle->texture->Width() + g_textureOffsetX) / particle->texture->TextureWidth();
+    const float top = g_textureOffsetY / particle->texture->TextureHeight();
+    const float bottom = (particle->texture->Height() + g_textureOffsetY) / particle->texture->TextureHeight();
+
+    particle->Render(false, top, bottom, left, right, false, true);
+  }
+}
+
 // OFFSET: 0x0072A800
 // FUNCTION: fn_07463
 void CSoulCollectEffect::OnProcess() {
@@ -170,14 +183,6 @@ void CSoulCollectEffect::OnProcess() {
 // FUNCTION: fn_07464
 void CSoulCollectEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->alpha > 0) {
-      const float left = g_textureOffsetX / particle->texture->TextureWidth();
-      const float right = (particle->texture->Width() + g_textureOffsetX) / particle->texture->TextureWidth();
-      const float top = g_textureOffsetY / particle->texture->TextureHeight();
-      const float bottom = (particle->texture->Height() + g_textureOffsetY) / particle->texture->TextureHeight();
-
-      particle->Render(false, top, bottom, left, right, false, true);
-    }
+    this->RenderParticle(*it);
   }
 }

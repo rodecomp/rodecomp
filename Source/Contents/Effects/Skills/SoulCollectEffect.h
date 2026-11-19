@@ -20,6 +20,7 @@ public:
 
 private:
   __forceinline void AddParticlePair();
+  void RenderParticle(CParticle* particle);
 
 public:
   /* 00CC */ std::list<CParticle*> particles;
