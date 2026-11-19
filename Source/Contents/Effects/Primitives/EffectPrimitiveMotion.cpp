@@ -3717,7 +3717,11 @@ void CEffectPrim::PrimPokJuk() {
       if (beat == 15 || beat == 19) {
         slot.flag1[3] = 1;
       } else {
-        slot.flag1[3] = beat == 17 ? 2 : 0;
+        if (beat == 17) {
+          slot.flag1[3] = 2;
+        } else {
+          slot.flag1[3] = 0;
+        }
       }
     } else {
       slot.flag1[3] = 0;
