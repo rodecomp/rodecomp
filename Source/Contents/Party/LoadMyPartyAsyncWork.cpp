@@ -54,8 +54,8 @@ void CLoadMyPartyAsyncWork::Bind(std::uint32_t accountId, std::uint32_t characte
 // FUNCTION: fn_03690
 bool CLoadMyPartyAsyncWork::Execute() {
   char account[64] = {};
-  char character[64] = {};
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
+  char character[64] = {};
   StringFormat(character, sizeof(character), _TRUNCATE, "%lu", this->m_characterId);
   const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
