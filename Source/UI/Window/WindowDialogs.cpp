@@ -9,7 +9,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 
-
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
 // OFFSET: 0x00A90950
 // FUNCTION: fn_17154
@@ -191,12 +191,10 @@ int UIWindowMgr::Confirm(
   } else {
     this->modalResponse = 0;
     this->modalWindows.push_back(box);
-    response = ID_OK;
-
     if (g_modalImmediate == 0) {
       CMode* pump = g_modeMgr.currentMode;
 
-      for (;;) {
+      do {
         if (this->activeWindowId != 0) {
           if (UIWindow* active = this->Top()) {
             active->Show(0);
@@ -204,13 +202,14 @@ int UIWindowMgr::Confirm(
             this->modalWindows.pop_back();
           }
 
-          response = this->activeWindowId;
+          const int result = this->activeWindowId;
 
           if (this->modalWindows.empty()) {
             this->activeWindowId = 0;
           }
 
-          break;
+          this->RestoreInput();
+          return result;
         }
 
         if (this->modalResponse != 0) {
@@ -220,9 +219,10 @@ int UIWindowMgr::Confirm(
             this->modalWindows.pop_back();
           }
 
-          response = this->modalResponse;
+          const int result = this->modalResponse;
           this->modalResponse = 0;
-          break;
+          this->RestoreInput();
+          return result;
         }
 
         if (pump) {
@@ -230,7 +230,7 @@ int UIWindowMgr::Confirm(
           pump = g_modeMgr.currentMode;
         }
 
-        if (g_session.GetOption(20) > 0) {
+        if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
           this->activeWindowId = 0;
           this->modalResponse = 0;
 
@@ -241,12 +241,10 @@ int UIWindowMgr::Confirm(
 
           break;
         }
-
-        if (g_modalImmediate != 0) {
-          break;
-        }
-      }
+      } while (g_modalImmediate == 0);
     }
+
+    response = ID_OK;
   }
 
   this->RestoreInput();
