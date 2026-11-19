@@ -652,6 +652,13 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   this->submit(primitive, this->flags);
 }
 
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
 // OFFSET: 0x00B3F050
 // FUNCTION: fn_18827
 void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transform, const matrix& view, int index) {
@@ -678,14 +685,9 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   world.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw + this->m_angle));
   world.AppendTranslate(&this->position.x);
 
-  const float* values = world.values;
   for (int i = 0; i < 4; ++i) {
-    const float x = vertices[i].x;
-    const float y = vertices[i].y;
-    const float z = vertices[i].z;
-    point.x = x * values[0] + y * values[3] + z * values[6] + values[9];
-    point.y = x * values[1] + y * values[4] + z * values[7] + values[10];
-    point.z = x * values[2] + y * values[5] + z * values[8] + values[11];
+    const vector3d vertex = {vertices[i].x, vertices[i].y, vertices[i].z};
+    MatrixMult(point, vertex, world.values);
     CGameMode* mode = g_modeMgr.GetGameMode();
     point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;
     if (-1000.0f != this->m_groundHeight && point.y - this->m_groundHeight > 5.0f) {
