@@ -2106,11 +2106,10 @@ int UIMenuWnd::ItemAt(int x, int y) {
 // OFFSET: 0x008DA300
 // FUNCTION: fn_45674
 int UIMenuWnd::IsSeparator(int index) {
-  int separator = 0;
   if (this->m_items[index] == g_menuSeparator) {
-    separator = 1;
+    return 1;
   }
-  return separator;
+  return 0;
 }
 
 // OFFSET: 0x008D9D00
