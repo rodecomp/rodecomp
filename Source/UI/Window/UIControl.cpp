@@ -1500,20 +1500,20 @@ void CUIImageButton::SetImages(const std::string& normal, const std::string& hov
 // FUNCTION: fn_14411
 void CUICheckBox::Paint() {
   const std::map<int, CResPtr<CBitmapRes>>& images = this->images;
-  std::map<int, CResPtr<CBitmapRes>>::const_iterator found;
+  const auto drawImage = [&](const int& key) {
+    const auto found = images.find(key);
+    if (found != images.end() && found->second) {
+      this->DrawBitmap(0, 0, found->second, false);
+    }
+  };
   if (this->checked) {
-    found = images.find(1);
+    drawImage(1);
   } else if (this->disabled) {
     if (this->disabledImage) {
       this->DrawBitmap(0, 0, this->disabledImage, false);
     }
-    return;
   } else {
-    found = images.find(this->state);
-  }
-
-  if (found != images.end() && found->second) {
-    this->DrawBitmap(0, 0, found->second, false);
+    drawImage(this->state);
   }
 }
 
