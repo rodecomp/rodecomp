@@ -114,8 +114,9 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
 
     if (bitmap) {
       const auto& image = bitmap->image;
+      const auto format = image.alpha != 0 ? TextureFormat::A4R4G4B4 : TextureFormat::A1R5G5B5;
       texture = this->Upload(
-        image.width, image.height, image.pixels, image.alpha != 0 ? TextureFormat::A4R4G4B4 : TextureFormat::A1R5G5B5, option, fullSize, dynamic, renderTarget
+        image.width, image.height, image.pixels, format, option, fullSize, dynamic, renderTarget
       );
       ResourceMgr::Instance().Remove(bitmap);
 
