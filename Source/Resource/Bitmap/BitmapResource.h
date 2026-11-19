@@ -21,7 +21,13 @@ class CBitmapRes : public CRes {
 public:
   CBitmapRes();
   CBitmapRes(const char* extension, const char* prefix);
+#ifdef BITMAPRESOURCE_NOINLINE_DTOR
+// OFFSET: 0x0074A3B0
+// FUNCTION: fn_45840
+  __declspec(noinline) ~CBitmapRes() override = default;
+#else
   ~CBitmapRes() override = default;
+#endif
   CBitmapRes* Create() override;
   bool Load(const char* name) override;
   bool LoadAlphaBitmap(const char* name);

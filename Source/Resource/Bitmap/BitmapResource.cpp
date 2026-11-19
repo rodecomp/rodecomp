@@ -1,3 +1,4 @@
+#define BITMAPRESOURCE_NOINLINE_DTOR
 #include "Client/Application/ErrorDialog.h"
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
