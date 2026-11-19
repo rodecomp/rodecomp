@@ -20,6 +20,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -2218,14 +2219,14 @@ void CNewCloudKillEffect::OnProcess() {
       if (particle->elapsedFrames == 0) {
         particle->animationState = 1;
       } else {
-        int angle = static_cast<int>(particle->angle + 1.0f);
+        int angle = static_cast<int>(particle->angle + g_projectionDepthNumerator);
         angle %= 360;
         particle->alpha = static_cast<int>(static_cast<float>(particle->elapsedFrames) * 4.25f);
         particle->angle = static_cast<float>(angle);
 
         matrix rotation;
         rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
-        rotation.AppendXRotation(1.5707964f);
+        rotation.AppendXRotation(1.570796f);
 
         matrix scale;
         scale.SetScale(particle->scale, particle->scale, 1.0f);
@@ -2258,17 +2259,17 @@ void CNewCloudKillEffect::OnProcess() {
       if (alpha == 0) {
         particle->animationState = 1;
       } else {
-        const float fall = particle->speedParameter * 1.0;
+        const float fall = particle->speedParameter * g_projectionDepthNumerator;
         particle->scale -= particle->scale / static_cast<float>(alpha);
         particle->offsetY -= fall;
         particle->offsetX += 0.0f;
         particle->offsetZ += 0.0f;
 
+        particle->position.z = particle->offsetZ + this->position[2];
         particle->position.x = particle->offsetX + this->position[0];
         particle->position.y = particle->offsetY + this->position[1];
-        particle->position.z = particle->offsetZ + this->position[2];
 
-        int angle = static_cast<int>(particle->angle + 1.0f);
+        int angle = static_cast<int>(particle->angle + g_projectionDepthNumerator);
         angle %= 360;
         particle->angle = static_cast<float>(angle);
 
@@ -2300,14 +2301,15 @@ void CNewCloudKillEffect::OnProcess() {
     }
 
     const int maximum = particle->effectParameter;
+    int alpha = particle->alpha;
     if (particle->animationState == 0) {
-      int alpha = std::min(particle->alpha + 2, maximum);
+      alpha = std::min(alpha + 2, maximum);
       particle->alpha = alpha;
       if (alpha == maximum) {
         particle->animationState = 1;
       }
     } else if (particle->animationState == 1) {
-      int alpha = std::max(particle->alpha - 1, 0);
+      alpha = std::max(alpha - 1, 0);
       particle->alpha = alpha;
       if (alpha == 0) {
         ResetSmokeParticle(particle);
@@ -2316,14 +2318,14 @@ void CNewCloudKillEffect::OnProcess() {
       particle->scale -= particle->scale / static_cast<float>(alpha);
     }
 
-    const float fall = particle->speedParameter * 1.0;
+    const float fall = particle->speedParameter * g_projectionDepthNumerator;
     particle->offsetY -= fall;
     particle->offsetX += 0.0f;
     particle->offsetZ += 0.0f;
 
+    particle->position.z = particle->offsetZ + this->position[2];
     particle->position.x = particle->offsetX + this->position[0];
     particle->position.y = particle->offsetY + this->position[1];
-    particle->position.z = particle->offsetZ + this->position[2];
 
     matrix scale;
     scale.SetScale(particle->scale, particle->scale, 1.0f);
@@ -2387,14 +2389,15 @@ void CNewCloudKillEffect::OnProcess() {
     }
 
     const int maximum = particle->effectParameter;
+    int alpha = particle->alpha;
     if (particle->animationState == 0) {
-      int alpha = std::min(particle->alpha + 5, maximum);
+      alpha = std::min(alpha + 5, maximum);
       particle->alpha = alpha;
       if (alpha == maximum) {
         particle->animationState = 1;
       }
     } else if (particle->animationState == 1) {
-      int alpha = std::max(particle->alpha - 2, 0);
+      alpha = std::max(alpha - 2, 0);
       particle->alpha = alpha;
       if (alpha == 0) {
         ResetMistParticle(particle);
@@ -2403,14 +2406,14 @@ void CNewCloudKillEffect::OnProcess() {
       particle->scale = (particle->scale / static_cast<float>(maximum)) * static_cast<float>(alpha);
     }
 
-    const float fall = particle->speedParameter * 1.0;
+    const float fall = particle->speedParameter * g_projectionDepthNumerator;
     particle->offsetY -= fall;
     particle->offsetX += 0.0f;
     particle->offsetZ += 0.0f;
 
+    particle->position.z = particle->offsetZ + this->position[2];
     particle->position.x = particle->offsetX + this->position[0];
     particle->position.y = particle->offsetY + this->position[1];
-    particle->position.z = particle->offsetZ + this->position[2];
 
     matrix scale;
     scale.SetScale(particle->scale, particle->scale, 1.0f);
