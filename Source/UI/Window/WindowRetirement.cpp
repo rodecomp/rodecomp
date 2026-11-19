@@ -55,10 +55,13 @@ void UIWindowMgr::Destroy(UIWindow* window) {
   const auto rendered = std::find(this->rendered.begin(), this->rendered.end(), window);
 
   if (rendered != this->rendered.end()) {
-    if (snappingEnabled && g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) != 0) {
-      const auto snap = this->snapRectangles.find(window);
-      if (snap != this->snapRectangles.end()) {
-        this->snapRectangles.erase(snap);
+    if (snappingEnabled) {
+      UIWindow* const key = window;
+      if (g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) != 0) {
+        const auto snap = this->snapRectangles.find(key);
+        if (snap != this->snapRectangles.end()) {
+          this->snapRectangles.erase(snap);
+        }
       }
     }
 
