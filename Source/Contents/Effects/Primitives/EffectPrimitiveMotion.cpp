@@ -2950,23 +2950,22 @@ void CEffectPrim::ShiftSegment() {
     record.scale = this->state.size - this->state.size / static_cast<float>(this->state.numSegment) * static_cast<float>(index) * 0.5f;
   }
 
-  EffectPrimitiveRecord& first = this->state.records[0];
-  first.position = this->render.position;
+  this->state.records[0].position = this->render.position;
 
   for (int corner = 0; corner < 4; ++corner) {
-    first.corners[corner] = this->state.segPos[corner];
+    this->state.records[0].corners[corner] = this->state.segPos[corner];
   }
 
-  first.radius = this->state.radius;
-  first.scale = this->state.size;
-  first.angle = this->state.longitude;
-  std::memcpy(first.matrix, this->state.transform.values, sizeof(first.matrix));
-  first.alpha = this->state.alpha;
+  this->state.records[0].radius = this->state.radius;
+  this->state.records[0].scale = this->state.size;
+  this->state.records[0].angle = this->state.longitude;
+  std::memcpy(this->state.records[0].matrix, this->state.transform.values, sizeof(this->state.records[0].matrix));
+  this->state.records[0].alpha = this->state.alpha;
 
   const std::uint32_t red = static_cast<unsigned char>(this->state.red);
   const std::uint32_t green = static_cast<unsigned char>(this->state.green);
   const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
-  first.color = (static_cast<std::uint32_t>(static_cast<int>(first.alpha)) << 24) + (red << 16) + (green << 8) + blue;
+  this->state.records[0].color = (static_cast<std::uint32_t>(static_cast<int>(this->state.records[0].alpha)) << 24) + (red << 16) + (green << 8) + blue;
 }
 
 // INLINED

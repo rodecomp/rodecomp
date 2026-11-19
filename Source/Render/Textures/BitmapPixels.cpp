@@ -706,8 +706,8 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
     }
 
     const SpriteRleImage* image = sprite.images[cell.imageType][cell.image];
-    const int left = x - image->width / 2;
     const int top = y - image->height / 2;
+    const int left = x - image->width / 2;
     const int destinationX = std::max(left, 0);
     const int copyWidth = static_cast<int>(std::min(this->m_bitmap.width, static_cast<std::uint32_t>(left + image->width))) - destinationX;
     const int destinationY = std::max(top, 0);
@@ -753,9 +753,9 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
         row += this->m_bitmap.width;
       }
     } else {
-      for (; copyHeight > 0; --copyHeight) {
+      for (; copyHeight >= 1; --copyHeight) {
         std::uint32_t* pixel = row + copyWidth - 1;
-        for (int column = copyWidth; column > 0; --column, --pixel) {
+        for (int column = copyWidth; column >= 1; --column, --pixel) {
           const std::uint8_t index = next();
           if (index) {
             const std::uint32_t color = palette[index];
