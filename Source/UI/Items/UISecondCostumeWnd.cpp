@@ -79,10 +79,12 @@ void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
 void UISecondCostumeWnd::LoadLists() {
   const int job = g_session.GetDisplayJob();
   const int sex = g_session.GetCurrentSex();
+  const char* name;
+  int value;
 
   for (int index = 1;; ++index) {
-    const char* name = nullptr;
-    int value = 0;
+    name = nullptr;
+    value = 0;
     g_session.m_hotkeyScript->Call("_get_DressHeadPaletteList", "dd>sd", sex, index, &name, &value);
     if (name == nullptr) {
       break;
@@ -93,8 +95,8 @@ void UISecondCostumeWnd::LoadLists() {
   }
 
   for (int index = 1;; ++index) {
-    const char* name = nullptr;
-    int value = 0;
+    name = nullptr;
+    value = 0;
     g_session.m_hotkeyScript->Call("_get_Headstylelist", "dd>sd", sex, index, &name, &value);
     if (name == nullptr) {
       break;
@@ -105,8 +107,8 @@ void UISecondCostumeWnd::LoadLists() {
   }
 
   for (int index = 1;; ++index) {
-    const char* name = nullptr;
-    int value = 0;
+    name = nullptr;
+    value = 0;
     g_session.m_hotkeyScript->Call("_get_DressBodyPaletteList", "dd>sd", sex, index, &name, &value);
     if (name == nullptr) {
       break;
@@ -117,8 +119,8 @@ void UISecondCostumeWnd::LoadLists() {
   }
 
   for (int index = 1;; ++index) {
-    const char* name = nullptr;
-    int value = 0;
+    name = nullptr;
+    value = 0;
     g_session.m_hotkeyScript->Call("_get_dresslist", "ddd>sd", sex, job, index, &name, &value);
     if (name == nullptr) {
       break;
