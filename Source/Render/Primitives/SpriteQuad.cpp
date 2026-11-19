@@ -12,7 +12,7 @@ namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
+    if (this->m_commands.end() == this->m_current) {
       this->m_commands.emplace_back();
       this->m_current = this->m_commands.end();
       return &this->m_commands.back();
@@ -41,8 +41,10 @@ RenderPrimitive* CCharacterRender::BuildSpriteQuad(const SpriteQuad& quad, const
   } else {
     record.u0 = 0.0f;
     record.v0 = 0.0f;
-    record.u1 = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
-    record.v1 = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+    record.u1 = static_cast<float>(static_cast<const CTexture*>(image->surface)->ImageWidth()) /
+                static_cast<float>(static_cast<const CTexture*>(image->surface)->TextureWidth());
+    record.v1 = static_cast<float>(static_cast<const CTexture*>(image->surface)->ImageHeight()) /
+                static_cast<float>(static_cast<const CTexture*>(image->surface)->TextureHeight());
   }
 
   const float bottomZ = RhwToDepth(quad.bottomRhw);
