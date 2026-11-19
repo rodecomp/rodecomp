@@ -191,6 +191,7 @@ public:
   bool AddEmotion(int packId, int emotionId, const char* name, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
   void LoadScripts();
   void InsertEmotion(int packId, int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
+  void AddPack(int packId, const char* name, int price, unsigned int startTime, unsigned int endTime, int period, int limited);
   void AcquirePack(int packId, unsigned int expiry);
 
 protected:

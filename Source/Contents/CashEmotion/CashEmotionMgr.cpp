@@ -1238,6 +1238,14 @@ bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
   return false;
 }
 
+// OFFSET: 0x0059C020
+// FUNCTION: fn_46474
+void CCashEmotionMgr::AddPack(int packId, const char* name, int price, unsigned int startTime, unsigned int endTime, int period, int limited) {
+  if (this->packs.try_emplace(packId, name, price, startTime, endTime, period, static_cast<char>(limited)).second == true) {
+    this->packOrder.push_back(packId);
+  }
+}
+
 // OFFSET: 0x0059C0A0
 // FUNCTION: fn_02972
 void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
@@ -1728,12 +1736,8 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
     return 1;
   }
 
-  const char limited = static_cast<char>(luaL_checkinteger(state, 10));
-  CCashEmotionMgr* mgr = g_cashEmotionMgr;
-  if (mgr->packs.try_emplace(packId, name, price, startTime, endTime, period, limited).second == true) {
-    mgr->packOrder.push_back(packId);
-  }
-
+  const int limited = luaL_checkinteger(state, 10);
+  g_cashEmotionMgr->AddPack(packId, name, price, startTime, endTime, period, limited);
   return 1;
 }
 
