@@ -190,10 +190,10 @@ __forceinline void CRotateBgEffect::UpdateSegmentVertices(CParticle* particle) {
     edge[1].z = edge[0].z + tiltZ;
     particle->vertices[3].x = edge[0].x;
     particle->vertices[3].y = edge[0].y;
-    particle->vertices[1].z = edge[1].z;
+    particle->vertices[3].z = edge[0].z;
     particle->vertices[1].x = edge[1].x;
     particle->vertices[1].y = edge[1].y;
-    particle->vertices[3].z = edge[0].z;
+    particle->vertices[1].z = edge[1].z;
     if (index != 0) {
       particle->vertices[0].x = this->previousPoints[1].x;
       particle->vertices[0].y = this->previousPoints[1].y;
