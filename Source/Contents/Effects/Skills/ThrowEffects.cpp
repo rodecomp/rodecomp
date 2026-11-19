@@ -220,6 +220,148 @@ void CThrowItemEffect::Open() {
 }
 
 // OFFSET: 0x00B7D930
+// FUNCTION: fn_46328
+void CThrowItemEffect::InitializeParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  switch (this->id) {
+  case EF_THROWITEM:
+    this->effectLifetime = 300;
+    this->arcHeight = 30.0f;
+    this->InitTrajectory(particle);
+    particle->SetTexture("유저인터페이스\\item\\빈병.bmp");
+    particle->scale = 1.5f;
+    particle->SetColor(135, 255, 135);
+    particle->angle = 0;
+    particle->speedParameter = particle->animationParameter / 25.0f;
+    particle->alpha = 255;
+    particle->offsetX = this->position[0];
+    particle->offsetY = this->position[1] - 8.0f;
+    particle->offsetZ = this->position[2];
+    particle->destinationBlend = 6;
+    break;
+  case EF_THROWITEM2:
+    particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
+    this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
+    break;
+  case EF_THROWITEM3:
+    this->effectLifetime = 300;
+    this->arcHeight = 10.0f;
+    particle->SetTexture("유저인터페이스\\item\\돌.bmp");
+    particle->scale = 1.0f;
+    particle->SetColor(255, 255, 255);
+    particle->angle = 0;
+    particle->speedParameter = 2.0f;
+    particle->alpha = 255;
+    particle->offsetX = this->position[0];
+    particle->offsetY = this->position[1] - 8.0f;
+    particle->offsetZ = this->position[2];
+    particle->destinationBlend = 6;
+    break;
+  case EF_THROWITEM4:
+    this->launchDelay = 5;
+    particle->SetTexture("유저인터페이스\\item\\화염병.bmp");
+    this->InitFlameParticle(particle);
+    break;
+  case EF_THROWITEM5:
+    particle->SetTexture("유저인터페이스\\item\\버서크포션.bmp");
+    this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
+    break;
+  case EF_THROWITEM6:
+    particle->SetTexture("유저인터페이스\\item\\베넘나이프.bmp");
+    this->InitSpinParticle(particle);
+    break;
+  case EF_THROWITEM7:
+    particle->SetTexture("유저인터페이스\\item\\수리검.bmp");
+    this->InitSpinParticle(particle);
+    break;
+  case EF_THROWITEM8:
+    particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
+    this->InitSpinParticle(particle);
+    break;
+  case EF_THROWITEM9:
+    particle->SetTexture("유저인터페이스\\item\\풍마_열화.bmp");
+    this->InitSpinParticle(particle);
+    break;
+  case EF_THROWITEM10:
+    particle->SetTexture("effect\\coin_a.bmp");
+    this->InitSpinParticle(particle);
+    break;
+  case EF_THROWITEM11:
+    particle->SetTexture("유저인터페이스\\item\\폭탄버섯포자.bmp");
+    this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
+    break;
+  case EF_THROWITEM4_1:
+    this->launchDelay = 10;
+    particle->SetTexture("유저인터페이스\\item\\염산병.bmp");
+    this->InitFlameParticle(particle);
+    break;
+  case EF_THROW_BAKURETSU:
+    particle->SetTexture("유저인터페이스\\item\\쿠나이_화.bmp");
+    this->InitSpinParticle(particle);
+    particle->speedParameter = 1.0f;
+  case EF_THROW_HAPPOKUNAI:
+    this->effectLifetime = 200;
+    this->arcHeight = 1.0f;
+    particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
+    particle->scale = 3.0f;
+    particle->SetColor(255, 200, 255);
+    particle->angle = 330.0f;
+    particle->speedParameter = 1.5f;
+    particle->alpha = 255;
+    particle->offsetX = this->position[0];
+    particle->offsetZ = this->position[2];
+    particle->offsetY = this->position[1] - 8.0f;
+    particle->destinationBlend = 6;
+    if (this->sourceActor == 0) {
+      this->sourcePosition[1] = this->position[1];
+      this->sourcePosition[2] = this->position[2];
+      this->sourcePosition[0] = this->position[0] - 8.0f;
+    }
+    break;
+  case EF_THROW_MULTIPLE_COIN:
+    this->effectLifetime = 200;
+    this->arcHeight = 10.0f;
+    particle->SetTexture("effect\\coin_a.bmp");
+    particle->scale = 2.5f;
+    particle->SetColor(255, 200, 0);
+    particle->angle = 330.0f;
+    particle->speedParameter = 2.0f;
+    particle->alpha = 255;
+    particle->destinationBlend = 6;
+    particle->offsetZ = this->position[2];
+    particle->offsetY = this->position[1] - 8.0f;
+    particle->offsetX = this->position[0];
+    break;
+  case EF_KAIHOU:
+    if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+      if (owner->charmType == CHARM_TYPE_WATER) {
+        particle->SetTexture("effect\\WaterOrb.bmp");
+        particle->scale = 1.0f;
+      } else if (owner->charmType == CHARM_TYPE_LAND) {
+        particle->SetTexture("effect\\StoneOrb.bmp");
+      } else if (owner->charmType == CHARM_TYPE_FIRE) {
+        particle->SetTexture("effect\\FireOrb.bmp");
+      } else if (owner->charmType == CHARM_TYPE_WIND) {
+        particle->SetTexture("effect\\LightningOrb.bmp");
+      }
+
+      this->effectLifetime = 200;
+      particle->scale = 2.0f;
+      particle->angle = 330.0f;
+      particle->speedParameter = 1.5f;
+      particle->alpha = 255;
+      particle->offsetZ = this->position[2];
+      particle->offsetY = this->position[1] - 15.0f;
+      particle->offsetX = this->position[0];
+    }
+    break;
+  }
+
+  this->InitTrajectory(particle);
+}
 
 // OFFSET: 0x00B7D3B0
 // FUNCTION: fn_19231
