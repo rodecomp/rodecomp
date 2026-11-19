@@ -6,6 +6,7 @@
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
@@ -472,7 +473,7 @@ __forceinline void CLevel150SubEffect::UpdateParticle(CParticle* particle) {
     if (size > 20.0f) {
       int alpha = particle->alpha - 3;
       if (alpha <= 0) {
-        size = 10.0f;
+        size = g_projectionDepthOffset;
         particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
         alpha = 200;
       }
