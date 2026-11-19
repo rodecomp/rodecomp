@@ -31,12 +31,12 @@ void CRendererDX9::ApplyFog() {
   if (this->fog.dirty == 1) {
     const float inverseAspect = 1.0f / this->viewport.aspect;
     const bool supported = (this->device->caps.RasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
+    const float start = g_depthStart * 1490.0f + 10.0f;
+    const float end = g_depthEnd * 1490.0f + 10.0f;
     D3DMATRIX identity;
     identity._12 = identity._13 = identity._14 = identity._21 = identity._23 = identity._24 = identity._31 = identity._32 = identity._34 =
       identity._41 = identity._42 = identity._43 = 0.0f;
     identity._11 = identity._22 = identity._33 = identity._44 = 1.0f;
-    const float start = g_depthStart * 1490.0f + 10.0f;
-    const float end = g_depthEnd * 1490.0f + 10.0f;
     D3DMATRIX projection;
     D3DXMatrixPerspectiveFovLH(&projection, 0.2617994f, inverseAspect, 10.0f, 1500.0f);
     this->nativeDevice->SetTransform(D3DTS_WORLD, &identity);
