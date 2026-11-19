@@ -3968,8 +3968,18 @@ bool UIItemWnd::FilterItem(ITEM_INFO& item) {
     }
     return this->usableFilter == 3;
   case 1:
-    if (type != TYPE_ARMOR && type != TYPE_ARMORTM && type != TYPE_ARMORTB && type != TYPE_ARMORMB &&
-        type != TYPE_ARMORTMB && type != TYPE_WEAPON && type != TYPE_BOW && type != TYPE_BOTHHAND && type != TYPE_GUN) {
+    switch (type) {
+    case TYPE_ARMOR:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_GUN:
+      break;
+    default:
       return false;
     }
     if (this->equipmentFilter == 0) {
