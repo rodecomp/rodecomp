@@ -653,10 +653,10 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           std::vector<const char*> breaks;
           char name[260];
           std::memset(name, 0, sizeof(name));
-          int highlightColor;
-          char* cursor = name;
-          int remaining = sizeof(name);
           char* highlight = nullptr;
+          int remaining = sizeof(name);
+          char* cursor = name;
+          int highlightColor;
           this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
           if (owned.identified == 1 && owned.optionCount != 0) {
