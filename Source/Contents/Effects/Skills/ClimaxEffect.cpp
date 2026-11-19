@@ -15,6 +15,7 @@ CClimaxEffect::CClimaxEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x007068B0
+// FUNCTION: fn_46251
 __declspec(noinline) CClimaxEffect::~CClimaxEffect() {
 }
 
