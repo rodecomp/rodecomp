@@ -4510,14 +4510,14 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
 // OFFSET: 0x0090AD60
 // FUNCTION: fn_12417
 void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines) {
-  y -= (static_cast<int>(lines.end() - lines.begin()) - 1) * (lineHeight / 2);
+  int lineY = y - (static_cast<int>(lines.end() - lines.begin()) - 1) * (lineHeight / 2);
   for (const auto& line : lines) {
     int left = x;
     for (const auto& segment : line) {
-      this->DrawShadowedText(left, y, segment.second.c_str(), segment.second.size(), segment.first, 0xE0E0E0, family, 12, 0);
+      this->DrawShadowedText(left, lineY, segment.second.c_str(), segment.second.size(), segment.first, 0xE0E0E0, family, 12, 0);
       left += this->TextWidth(segment.second.c_str(), segment.second.size(), 0, 12, 0, 0);
     }
-    y += lineHeight;
+    lineY += lineHeight;
   }
 }
 
@@ -7751,7 +7751,7 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     char name[260] = {};
     strcpy_s(name, sizeof(name), reinterpret_cast<const char*>(b));
     if (g_forbiddenWords.Contains(name) == true) {
-      std::string masked;
+      std::string masked = "";
       g_forbiddenWords.Mask(name, &masked);
     }
 
@@ -7772,12 +7772,14 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (0x5528 != header.type) {
       break;
     }
-    while (static_cast<unsigned>(b) > offset) {
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
       std::memcpy(&header, bytes + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
       case 0x5529:
-        return 0;
+        scanning = false;
+        break;
       case 0x552A: {
         char name[260] = {};
         std::memcpy(name, bytes + offset, header.length);
@@ -8190,12 +8192,14 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (0x5460 != header.type) {
       break;
     }
-    while (offset < static_cast<unsigned>(b)) {
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
       std::memcpy(&header, packet + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
       case 0x5461:
-        return 0;
+        scanning = false;
+        break;
       case 0x5462: {
         char name[260];
         std::memset(name, 0, sizeof(name));
