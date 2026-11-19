@@ -25,6 +25,11 @@ __forceinline int ClampedRandom(int range) {
 CStormKickEffect::CStormKickEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00B7B3F0
+// FUNCTION: fn_46017
+__declspec(noinline) CStormKickEffect::~CStormKickEffect() {
+}
+
 // OFFSET: 0x00B7B4F0
 // FUNCTION: fn_19218
 void CStormKickEffect::CreateStorms(int layer) {

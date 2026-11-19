@@ -12,6 +12,7 @@ class CParticle;
 class CStormKickEffect : public CEffect {
 public:
   CStormKickEffect();
+  ~CStormKickEffect() override;
 
   void Open() override;
   void OnProcess() override;
