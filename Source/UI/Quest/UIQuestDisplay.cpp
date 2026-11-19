@@ -66,7 +66,7 @@ void UIQuestDisplay::Paint() {
     }
     this->DrawShadowedText(0, top, title.c_str(), 0, 0xD6E1, 0, 0, 12, 0);
 
-    std::string description = info.m_descriptions.empty() ? std::string() : info.summary;
+    std::string description = info.m_descriptions.empty() ? std::string("") : info.summary;
     description = StripColorCodes(description.c_str(), description.size());
     description = static_cast<const std::string&>(DisplayUrlTextTag(description));
     description = static_cast<const std::string&>(DisplayNavigationTextTag(description));
@@ -77,8 +77,7 @@ void UIQuestDisplay::Paint() {
       description = g_windowMgr.chatWnd->ConvertChat(std::move(description));
     }
     NavigationLinkParser* parser = g_navigationLinkParser;
-    std::string navigation = parser->DisplayNavigationLink(description);
-    description = std::move(navigation);
+    description = parser->DisplayNavigationLink(description);
     description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
     if (std::strlen(description.c_str()) > 30) {
@@ -93,21 +92,19 @@ void UIQuestDisplay::Paint() {
       ++none;
     } else {
       for (int index = 0; index < info.m_huntCount; ++index) {
-        std::string hunt("");
+        std::string hunt;
         if (info.m_huntMobId[index] != 31999) {
           const short minLevel = info.m_huntMinLevel[index];
           const short maxLevel = info.m_huntMaxLevel[index];
           const char* name = info.m_huntName[index];
-          if (minLevel > -1 && maxLevel > -1 && (minLevel != 0 || maxLevel != 0)) {
-            if (minLevel == 0) {
-              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-            } else if (maxLevel == 0) {
-              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
-            } else {
-              hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
-            }
-          } else {
+          if (-1 >= minLevel || -1 >= maxLevel || (0 == minLevel && 0 == maxLevel)) {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
+          } else if (0 == minLevel) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
+          } else if (0 == maxLevel) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+          } else {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
           }
         } else {
           hunt = static_cast<const std::string&>(
@@ -125,8 +122,7 @@ void UIQuestDisplay::Paint() {
           description = g_windowMgr.chatWnd->ConvertChat(std::move(description));
         }
         parser = g_navigationLinkParser;
-        std::string huntNavigation = parser->DisplayNavigationLink(description);
-        description = std::move(huntNavigation);
+        description = parser->DisplayNavigationLink(description);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
         const short goal = info.m_huntMaxCount[index];
