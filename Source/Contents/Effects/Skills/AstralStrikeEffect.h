@@ -11,6 +11,7 @@ class CEZ2STRParticle;
 class CAstralStrikeEffect : public CEffect {
 public:
   CAstralStrikeEffect();
+  ~CAstralStrikeEffect() override;
 
   void Open() override;
   void OnProcess() override;

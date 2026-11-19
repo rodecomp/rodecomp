@@ -28,6 +28,11 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 CAstralStrikeEffect::CAstralStrikeEffect() : CEffect(1768) {
 }
 
+// OFFSET: 0x006F48D0
+// FUNCTION: fn_46102
+__declspec(noinline) CAstralStrikeEffect::~CAstralStrikeEffect() {
+}
+
 // OFFSET: 0x006F49D0
 // FUNCTION: fn_06830
 void CAstralStrikeEffect::Init() {
