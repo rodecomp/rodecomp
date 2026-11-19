@@ -93,10 +93,10 @@ public:
   /* 0044 */ int waterPhase;
   /* 0048 */ int waterType;
   /* 004C */ float waterHeight;
-  /* 0050 */ std::uint32_t waterStateA;
+  /* 0050 */ CTexture* waterTexture;
   /* 0054 */ std::uint32_t waterStateB;
   /* 0058 */ std::uint32_t waterStateC;
-  /* 005C */ std::uint32_t waterStateD;
+  /* 005C */ int waterWavePhase;
   /* 0060 */ int loaded;
 };
 
@@ -127,6 +127,7 @@ public:
   bool CellRectangle(int column, int row, float* vertices) const;
   void DrawGridDecal(const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv) const;
   void DrawWaterCell(int column, int row, GroundCell& cell, const float* matrix, const float* ambient);
+  void DrawLegacyWaterCell(int row, int column, GroundCell& cell, const float* matrix, const float* ambient);
   __declspec(noinline) void DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip);
   __declspec(noinline) void DrawSide(const float* matrix, const GroundQuad& quad, bool clip);
   void WorldColor(vector3d position, std::uint32_t* output) const;

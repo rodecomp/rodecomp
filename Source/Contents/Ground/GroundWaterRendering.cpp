@@ -4,12 +4,79 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <algorithm>
 #include <cstring>
+
+// INLINED
+static __forceinline RenderPrimitive* BuildWaterPrimitive(
+  const GroundGeometry& ground, GroundCell& cell, const float* matrix, const float* ambient, float middle, float first, float last
+) {
+  RenderVertex vertices[4];
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    vertices[corner] = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000u, 0.0f, 0.0f};
+  }
+
+  if (!(cell.top->vertices[0].position[1] > middle || cell.top->vertices[1].position[1] > middle ||
+        cell.top->vertices[2].position[1] > middle || cell.top->vertices[3].position[1] > middle)) {
+    return nullptr;
+  }
+
+  cell.corners[0][1] = first;
+  cell.corners[1][1] = middle;
+  cell.corners[2][1] = middle;
+  cell.corners[3][1] = last;
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
+  }
+
+  const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);
+  const float secondArea = (vertices[1].x - vertices[0].x) * (vertices[2].y - vertices[0].y);
+
+  if (!(firstArea > secondArea)) {
+    return nullptr;
+  }
+
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  primitive->SetPosition(0, &vertices[0].x);
+  primitive->SetPosition(1, &vertices[1].x);
+  primitive->SetPosition(2, &vertices[2].x);
+  primitive->SetPosition(3, &vertices[3].x);
+
+  if (!g_overrideColor && ground.waterType == 4) {
+    const std::uint8_t red = static_cast<std::uint8_t>(ambient[0] * 255.0f);
+    const std::uint8_t green = static_cast<std::uint8_t>(ambient[1] * 255.0f);
+    const std::uint8_t blue = static_cast<std::uint8_t>(ambient[2] * 255.0f);
+    primitive->vertices[0].diffuse = 0xFF000000u + (red << 16) + (green << 8) + blue;
+    primitive->vertices[1].diffuse = primitive->vertices[0].diffuse;
+    primitive->vertices[2].diffuse = primitive->vertices[0].diffuse;
+    primitive->vertices[3].diffuse = primitive->vertices[0].diffuse;
+  } else {
+    for (unsigned corner = 0; corner < 4; ++corner) {
+      primitive->vertices[corner].diffuse = 0x90FFFFFFu;
+    }
+  }
+  return primitive;
+}
+
+// INLINED
+static __forceinline void SetWaterTextureCoordinates(RenderPrimitive& primitive, int column, int row, float unit) {
+  const float left = static_cast<float>(static_cast<unsigned>(column) & 3u) * 0.25f;
+  const float right = (static_cast<float>(static_cast<unsigned>(column) & 3u) + unit) * 0.25f;
+  const float top = static_cast<float>(static_cast<unsigned>(row) & 3u) * 0.25f;
+  const float bottom = (static_cast<float>(static_cast<unsigned>(row) & 3u) + unit) * 0.25f;
+
+  for (unsigned corner = 0; corner < 4; ++corner) {
+    primitive.vertices[corner].u = (corner & 1) ? right : left;
+    primitive.vertices[corner].v = (corner & 2) ? bottom : top;
+  }
+}
 
 // OFFSET: 0x00AC1540
 // FUNCTION: fn_45865
@@ -50,64 +117,43 @@ void GroundGeometry::DrawWaterCell(
     last = level;
   }
 
-  RenderVertex vertices[4];
-
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner] = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000u, 0.0f, 0.0f};
-  }
-
-  if (!(cell.top->vertices[0].position[1] > middle || cell.top->vertices[1].position[1] > middle ||
-        cell.top->vertices[2].position[1] > middle || cell.top->vertices[3].position[1] > middle)) {
+  RenderPrimitive* primitive = BuildWaterPrimitive(*this, cell, matrix, ambient, middle, first, last);
+  if (!primitive) {
     return;
   }
-
-  cell.corners[0][1] = first;
-  cell.corners[1][1] = middle;
-  cell.corners[2][1] = middle;
-  cell.corners[3][1] = last;
-
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
-  }
-
-  const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);
-  const float secondArea = (vertices[1].x - vertices[0].x) * (vertices[2].y - vertices[0].y);
-
-  if (!(firstArea > secondArea)) {
-    return;
-  }
-
-  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  primitive->SetPosition(0, &vertices[0].x);
-  primitive->SetPosition(1, &vertices[1].x);
-  primitive->SetPosition(2, &vertices[2].x);
-  primitive->SetPosition(3, &vertices[3].x);
-
-  if (!g_overrideColor && this->waterType == 4) {
-    const std::uint8_t red = static_cast<std::uint8_t>(ambient[0] * 255.0f);
-    const std::uint8_t green = static_cast<std::uint8_t>(ambient[1] * 255.0f);
-    const std::uint8_t blue = static_cast<std::uint8_t>(ambient[2] * 255.0f);
-    primitive->vertices[0].diffuse = 0xFF000000u + (red << 16) + (green << 8) + blue;
-    primitive->vertices[1].diffuse = primitive->vertices[0].diffuse;
-    primitive->vertices[2].diffuse = primitive->vertices[0].diffuse;
-    primitive->vertices[3].diffuse = primitive->vertices[0].diffuse;
-  } else {
-    for (unsigned corner = 0; corner < 4; ++corner) {
-      primitive->vertices[corner].diffuse = 0x90FFFFFFu;
-    }
-  }
-
-  const float left = static_cast<float>(static_cast<unsigned>(column) & 3u) * 0.25f;
-  const float right = (static_cast<float>(static_cast<unsigned>(column) & 3u) + 1.0f) * 0.25f;
-  const float top = static_cast<float>(static_cast<unsigned>(row) & 3u) * 0.25f;
-  const float bottom = (static_cast<float>(static_cast<unsigned>(row) & 3u) + 1.0f) * 0.25f;
-
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    primitive->vertices[corner].u = (corner & 1) ? right : left;
-    primitive->vertices[corner].v = (corner & 2) ? bottom : top;
-  }
+  SetWaterTextureCoordinates(*primitive, column, row, 1.0f);
 
   *reinterpret_cast<unsigned char*>(&primitive->depthFlags) = 1;
   primitive->texture = this->waterSurfaces[partition].texture;
+  g_renderer->Submit(primitive, 1);
+}
+
+// OFFSET: 0x00AC27C0
+// FUNCTION: fn_46292
+void GroundGeometry::DrawLegacyWaterCell(int row, int column, GroundCell& cell, const float* matrix, const float* ambient) {
+  const float level = this->WaterLevel(column, row);
+  float middle = level;
+  float first = level;
+  float last = level;
+  if (this->waterHeight != 0.0f) {
+    const auto waveHeight = [this, level](int diagonal) {
+      const float angle = static_cast<float>(diagonal * this->waterPitch + this->waterWavePhase);
+      return ClientSine(static_cast<int>(angle)) * this->waterHeight + level;
+    };
+    const int diagonal = column + row;
+    middle = waveHeight(diagonal);
+    first = waveHeight(diagonal - 1);
+    last = waveHeight(diagonal + 1);
+  }
+
+  RenderPrimitive* primitive = BuildWaterPrimitive(*this, cell, matrix, ambient, middle, first, last);
+  if (!primitive) {
+    return;
+  }
+  SetWaterTextureCoordinates(*primitive, column, row, g_projectionDepthNumerator);
+  if (!this->waterTexture) {
+    this->UpdateWater();
+  }
+  primitive->texture = this->waterTexture;
   g_renderer->Submit(primitive, 1);
 }

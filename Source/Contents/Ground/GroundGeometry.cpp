@@ -96,7 +96,7 @@ namespace {
 // OFFSET: 0x00ABD7D0
 // FUNCTION: fn_45862
 GroundBase::GroundBase() {
-  this->waterStateA = 0;
+  this->waterTexture = nullptr;
   this->cellSize = 10.0f;
   this->waterLevel = 0.0f;
   this->waterAnimation = 3;
@@ -139,7 +139,7 @@ void GroundGeometry::Reset(int columns, int rows) {
   this->cells.resize(static_cast<unsigned>(columns) * static_cast<unsigned>(rows));
   this->lighting.resize(4u * static_cast<unsigned>(columns) * static_cast<unsigned>(rows), white);
   this->waterStateC = 0;
-  this->waterStateD = 0;
+  this->waterWavePhase = 0;
 }
 
 // OFFSET: 0x00AC0350
