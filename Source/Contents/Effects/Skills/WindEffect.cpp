@@ -209,3 +209,30 @@ __forceinline void CWindEffect::RenderParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x00731160
+// FUNCTION: fn_46089
+void CWindEffect::UpdateParticleAlpha(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  switch (particle->animationState) {
+  case 0: {
+    int alpha = particle->alpha + 1;
+    if (this->maxAlpha <= alpha) {
+      alpha = this->maxAlpha;
+      particle->animationState = 1;
+    }
+    particle->alpha = alpha;
+    break;
+  }
+  case 1: {
+    int alpha = particle->alpha - 1;
+    if (alpha <= 0) {
+      alpha = 0;
+      particle->animationState = 0;
+    }
+    particle->alpha = alpha;
+    break;
+  }
+  }
+}
