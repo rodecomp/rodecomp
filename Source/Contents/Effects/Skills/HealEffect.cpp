@@ -430,6 +430,7 @@ void CHealEffect::SpawnParticles() {
 }
 
 // OFFSET: 0x00B68300
+// FUNCTION: fn_45996
 void CHealEffect::UpdateColumnParticle(CParticle* particle) {
   if (!particle) {
     return;
@@ -486,6 +487,7 @@ void CHealEffect::UpdateColumnParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x00B684F0
+// FUNCTION: fn_45997
 void CHealEffect::UpdateConeParticle(CParticle* particle) {
   if (!particle) {
     return;
@@ -557,6 +559,7 @@ static __forceinline void UpdateParticleAlpha(CParticle* particle, int lifetime)
 }
 
 // OFFSET: 0x00B69740
+// FUNCTION: fn_46261
 void CHealEffect::ProcessColumn(CParticle* particle) {
   if (particle) {
     UpdateParticleAlpha(particle, this->columnLifetime);
@@ -565,6 +568,7 @@ void CHealEffect::ProcessColumn(CParticle* particle) {
 }
 
 // OFFSET: 0x00B69960
+// FUNCTION: fn_46262
 void CHealEffect::ProcessCone(CParticle* particle) {
   if (particle) {
     UpdateParticleAlpha(particle, this->coneLifetime);
@@ -573,6 +577,7 @@ void CHealEffect::ProcessCone(CParticle* particle) {
 }
 
 // OFFSET: 0x00B69060
+// FUNCTION: fn_46260
 __forceinline void CHealEffect::ProcessSpark(CParticle* particle) {
   if (particle) {
     particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
