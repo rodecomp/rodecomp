@@ -5082,10 +5082,12 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
 
     if (kind == 0 || kind == 2 || kind == 4) {
       this->state.lastPrim->state.slots[index].flag1[2] = 0;
-      this->state.lastPrim->state.slots[index].flag1[4] = kind == 2 ? 1 : 0;
     } else if (kind == 1 || kind == 3 || kind == 5) {
       this->state.lastPrim->state.slots[index].flag1[2] = 1;
-      this->state.lastPrim->state.slots[index].flag1[4] = kind == 3 ? 1 : 0;
+    }
+
+    if (kind == 2 || kind == 3) {
+      this->state.lastPrim->state.slots[index].flag1[4] = 1;
     } else {
       this->state.lastPrim->state.slots[index].flag1[4] = 0;
     }
@@ -11906,7 +11908,10 @@ void CRagEffect::Bottom_Out(const char* name, char kind) {
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
 
-  const int count = kind != 1 ? 2 : 1;
+  int count = 2;
+  if (kind == 1) {
+    count = 1;
+  }
   for (int i = 0; i < count; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = ClampedRandom(11);
@@ -14559,19 +14564,15 @@ void CRagEffect::ForestLight(const char* name, char flag) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = 0;
 
-    std::int16_t alphaB;
-
     if (flag == 2 || flag == 12 || flag == 13) {
-      alphaB = 30;
+      this->state.lastPrim->state.slots[i].alphaB = 30;
     } else if (flag == 10) {
-      alphaB = 25;
+      this->state.lastPrim->state.slots[i].alphaB = 25;
     } else if (flag == 11) {
-      alphaB = 0;
+      this->state.lastPrim->state.slots[i].alphaB = 0;
     } else {
-      alphaB = 40;
+      this->state.lastPrim->state.slots[i].alphaB = 40;
     }
-
-    this->state.lastPrim->state.slots[i].alphaB = alphaB;
 
     this->state.lastPrim->state.slots[i].distance = 0.0f;
 
