@@ -10,6 +10,7 @@ class CParticle;
 class CCloud : public CEffect {
 public:
   CCloud();
+  ~CCloud() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;

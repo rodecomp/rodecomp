@@ -49,6 +49,11 @@ CCloud::CCloud()
       fadeInRange(0), fadeOutBase(0), fadeOutRange(0), offsetRangeY(0), offsetRangeX(0), offsetRangeZ(0), renderFlag(1) {
 }
 
+// OFFSET: 0x006FBAE0
+// FUNCTION: fn_46097
+__declspec(noinline) CCloud::~CCloud() {
+}
+
 // OFFSET: 0x006FBBA0
 // FUNCTION: fn_06916
 void CCloud::Close() {
