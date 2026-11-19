@@ -669,18 +669,26 @@ struct BarterEntryPair {
 void SortMedianOfThree(BarterEntryPair* first, BarterEntryPair* mid, BarterEntryPair* last)
 {
   if (mid->id < first->id) {
-    BarterEntryPair saved = *mid;
+    BarterEntryPair saved;
+    saved.id = mid->id;
+    saved.value = mid->value;
     *mid = *first;
     *first = saved;
   }
-  if (last->id < mid->id) {
-    BarterEntryPair saved = *last;
+  int lastId = last->id;
+  if (lastId < mid->id) {
+    BarterEntryPair saved;
+    saved.id = last->id;
+    saved.value = last->value;
     *last = *mid;
     *mid = saved;
-    if (mid->id < first->id) {
-      saved = *mid;
-      *mid = *first;
-      *first = saved;
+    if (lastId < first->id) {
+      int savedId2 = lastId;
+      int savedValue2 = mid->value;
+      mid->id = first->id;
+      mid->value = first->value;
+      first->id = savedId2;
+      first->value = savedValue2;
     }
   }
 }
