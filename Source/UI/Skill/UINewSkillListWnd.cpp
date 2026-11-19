@@ -398,21 +398,13 @@ void UINewSkillListWnd::DrawSkillList() {
 // OFFSET: 0x009B0320
 // FUNCTION: fn_45750
 int UINewSkillListWnd::AddedSkillLevel(int id) {
-  int planned = 0;
-  for (const NewSkillListValue& value : this->m_plannedSkillLevels) {
-    if (value.id == id) {
-      planned = value.value;
-      break;
-    }
-  }
-
+  const int planned = this->SkillValueOf(id);
   CSkillInfo* current = g_session.m_skillBundle.FindGrouped(id);
-  if (current == nullptr) {
-    return 0;
+  if (current != nullptr) {
+    const int added = planned - current->learnedLevel;
+    return added > 0 ? added : 0;
   }
-
-  const int added = planned - current->learnedLevel;
-  return added > 0 ? added : 0;
+  return 0;
 }
 
 // OFFSET: 0x009B0370
