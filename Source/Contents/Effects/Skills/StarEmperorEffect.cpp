@@ -14,6 +14,7 @@ CStarEmperorEffect::CStarEmperorEffect() : CEffect(-1), sphere(), rings() {
 }
 
 // OFFSET: 0x0072BC80
+// FUNCTION: fn_46128
 __declspec(noinline) CStarEmperorEffect::~CStarEmperorEffect() {
 }
 
@@ -272,6 +273,7 @@ __forceinline void CStarEmperorEffect::UpdateSphereParticle(CParticle* particle)
 }
 
 // OFFSET: 0x0072CC60
+// FUNCTION: fn_46131
 __forceinline void CStarEmperorEffect::RenderRing(CParticle* particle) {
   if (particle) {
     particle->Render(false, 0.0f, 1.0f, 0.0f, 0.25f, false, true);
