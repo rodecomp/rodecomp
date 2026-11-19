@@ -89,9 +89,9 @@ void CPlayerNameDictionary::Update() {
   while (!this->m_pending.empty()) {
     const std::uint32_t id = this->m_pending.front();
     const auto cached = this->m_names.find(id);
-    if (cached == this->m_names.end() || cached->second.IsExpired()) {
+    if (this->m_names.end() == cached || cached->second.IsExpired()) {
       const auto outstanding = std::find_if(this->m_requests.begin(), this->m_requests.end(), [&](const Request& request) { return id == request.id; });
-      if (outstanding == this->m_requests.end()) {
+      if (this->m_requests.end() == outstanding) {
         this->m_pending.pop_front();
 
         if (id != 0) {

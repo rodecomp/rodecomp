@@ -156,9 +156,9 @@ void RouletteMgr::SetQuad(int x, int y, int originX, int originY) {
     originY += 3;
   }
 
-  const float bottom = y + 18.0f + originY + 17.0f;
   const float left = x - 18.0f + originX;
   const float top = y - 18.0f + originY + 17.0f;
+  const float bottom = y + 18.0f + originY + 17.0f;
   const float right = x + 18.0f + originX;
 
   RenderVertex* vertices = this->m_quads.current.vertices;

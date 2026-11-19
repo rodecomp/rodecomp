@@ -1194,8 +1194,7 @@ int AddRuneSlotCollectionList(lua_State* state) {
   if (tag) {
     RuneData* runeSet = tag->FindRune(0, runeSetId, nullptr);
     if (runeSet) {
-      RuneData* rune = g_runeSystemMgr->FindRune(tagId, 1, static_cast<int>(runeValue), nullptr);
-      static_cast<RuneSetData*>(runeSet)->m_slots.push_back(rune);
+      static_cast<RuneSetData*>(runeSet)->m_slots.push_back(g_runeSystemMgr->FindRune(tagId, 1, static_cast<int>(runeValue), nullptr));
     }
   }
 

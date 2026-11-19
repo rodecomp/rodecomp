@@ -124,10 +124,10 @@ void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
   popup->Move(x, y);
 
   auto& rendered = this->rendered;
-  if (std::find(rendered.begin(), rendered.end(), popup) == rendered.end()) {
-    rendered.push_back(popup);
-  } else {
+  if (rendered.end() != std::find(rendered.begin(), rendered.end(), popup)) {
     PromoteWindow(this, popup);
+  } else {
+    rendered.push_back(popup);
   }
 
   popup->Show(1);
