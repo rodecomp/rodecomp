@@ -17458,8 +17458,8 @@ void CGameMode::UpdatePartyMemberInfo(
   member.job = job;
   member.level = level;
   char partyName[25];
-  partyName[24] = '\0';
   std::strncpy(partyName, value, 24);
+  partyName[24] = '\0';
   if (g_forbiddenWords.Contains(partyName)) {
     std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
