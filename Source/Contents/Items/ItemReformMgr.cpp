@@ -149,7 +149,8 @@ void CItemReformMgr::LoadReformInfo() {
           }
 
           const int materialId = EnsureItemDbMgr()->GetItemID(lua_tostring(state, -2));
-          info.materials[materialId] = static_cast<unsigned int>(lua_tointeger(state, -1));
+          const unsigned int count = static_cast<unsigned int>(lua_tointeger(state, -1));
+          info.materials[materialId] = count;
           lua_pop(state, 1);
         }
       } else {
@@ -174,7 +175,7 @@ void CItemReformMgr::LoadReformInfo() {
       lua_gettable(state, -2);
       if (lua_isnumber(state, -1) != 0) {
         const std::int64_t needRefineMax = lua_tointeger(state, -1);
-        if (needRefineMax < info.needRefineMin || needRefineMax > 20) {
+        if (info.needRefineMin > needRefineMax || needRefineMax > 20) {
           ShowFormattedError("ReformInfo[ %I64u ].needRefineMax must be between needRefineMin and 20", reformId);
         }
         info.needRefineMax = needRefineMax;
