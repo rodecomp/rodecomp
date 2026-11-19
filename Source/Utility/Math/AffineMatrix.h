@@ -25,6 +25,7 @@ struct matrix {
 
   void Identity();
   int IsIdentity() const;
+  void MakeTransform(const float* position, const float* rotaxis, float rotangle);
   void MakeTransform(const float* rotaxis, float rotangle);
   void MakeXRotation(float radians);
   void MakeYRotation(float radians);

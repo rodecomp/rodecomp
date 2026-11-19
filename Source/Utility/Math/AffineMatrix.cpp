@@ -190,6 +190,43 @@ int matrix::IsIdentity() const {
   return 1;
 }
 
+// OFFSET: 0x00554E10
+// FUNCTION: fn_45850
+void matrix::MakeTransform(const float* position, const float* rotaxis, float rotangle) {
+  const float omega = rotangle / 2.0f;
+  const float s = static_cast<float>(sin(static_cast<double>(omega)));
+  const float qx = rotaxis[0] * s;
+  const float qy = rotaxis[1] * s;
+  const float qz = rotaxis[2] * s;
+  const float qw = static_cast<float>(cos(static_cast<double>(omega)));
+
+  const float x2 = qx + qx;
+  const float y2 = qy + qy;
+  const float z2 = qz + qz;
+  const float wx = qw * x2;
+  const float wy = qw * y2;
+  const float wz = qw * z2;
+  const float xx = qx * x2;
+  const float xy = qx * y2;
+  const float xz = qx * z2;
+  const float yy = qy * y2;
+  const float yz = qy * z2;
+  const float zz = qz * z2;
+
+  this->values[0] = 1.0f - (yy + zz);
+  this->values[1] = xy + wz;
+  this->values[2] = xz - wy;
+  this->values[3] = xy - wz;
+  this->values[4] = 1.0f - (xx + zz);
+  this->values[5] = yz + wx;
+  this->values[6] = xz + wy;
+  this->values[7] = yz - wx;
+  this->values[8] = 1.0f - (xx + yy);
+  this->values[9] = position[0];
+  this->values[10] = position[1];
+  this->values[11] = position[2];
+}
+
 // OFFSET: 0x00554F70
 // FUNCTION: fn_02031
 void matrix::MakeTransform(const float* rotaxis, float rotangle) {
