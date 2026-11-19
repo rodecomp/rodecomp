@@ -196,9 +196,13 @@ __forceinline void CFlowerCastingEffect::UpdateSegment(CParticle* particle) {
   const int age = particle->elapsedFrames;
   int alpha = particle->alpha;
   if (age > 110) {
-    alpha = (std::max)(alpha - 1, 0);
+    const int faded = alpha - 1;
+    alpha = faded >= 0 ? faded : 0;
   } else if (age < 20) {
-    alpha = (std::min)(alpha + 5, 180);
+    alpha += 5;
+    if (alpha > 180) {
+      alpha = 180;
+    }
   }
   particle->alpha = alpha;
   this->UpdateSegmentVertices(particle);
