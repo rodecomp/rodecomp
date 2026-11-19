@@ -149,9 +149,10 @@ void CEvilsPawEffect::UpdateParticle(CParticle* particle) {
   const CView* view = g_modeMgr.GetGameMode()->camera;
   rotation.AppendXRotation(view->camera.pitch / 180.0f * 3.141592f);
 
+  const float size = particle->scale;
   matrix scale;
   std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-  scale.SetScale(particle->scale, particle->scale, 1.0f);
+  scale.SetScale(size, size, 1.0f);
 
   matrix result;
   result.Compose(scale, rotation);
