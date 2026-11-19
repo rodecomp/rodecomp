@@ -39,6 +39,9 @@ float g_navigationPointScale = 0.0078125f;
 // GLOBAL: gl_25084
 float g_navigationMarkerScale = 0.453125f;
 
+// GLOBAL: gl_24610
+int g_navigationMode;
+
 // OFFSET: 0x00911620
 // FUNCTION: fn_45713
 UINavigationWnd::UINavigationWnd() : UIFrameWnd(0) {
@@ -295,7 +298,7 @@ void UINavigationWnd::RefreshRouteList() {
   this->m_searchPanel->Invalidate();
 
   const int nodeCount = g_navigationManager.NodeCount();
-  if (g_navigationManager.viewMode != 2) {
+  if (g_navigationMode != 2) {
     return;
   }
 
@@ -329,8 +332,7 @@ void UINavigationWnd::RefreshRouteList() {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
-    std::string kind;
-    kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
+    std::string kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_S), mob->GetName(), kind.c_str());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
