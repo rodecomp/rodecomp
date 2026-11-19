@@ -593,12 +593,11 @@ __forceinline void CHealEffect::ProcessSpark(CParticle* particle) {
         particle->SetTexture("effect\\pok1.tga");
       }
     }
-    const int faded = alpha - 3;
-    particle->alpha = faded >= 0 ? faded : 0;
+    alpha -= 3;
+    particle->alpha = alpha >= 0 ? alpha : 0;
 
-    particle->offsetX -= 0.0f;
-    particle->offsetY -= particle->animationParameter;
-    particle->offsetZ -= 0.0f;
+    const vector3d offset = {particle->offsetX - 0.0f, particle->offsetY - particle->animationParameter, particle->offsetZ - 0.0f};
+    particle->offset = offset;
   }
   this->UpdateParticleVertices(particle);
 }
