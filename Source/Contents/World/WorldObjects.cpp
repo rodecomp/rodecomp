@@ -310,6 +310,17 @@ void CGameMode::SpawnArrowEffectToPosition(const vector3d* source, const vector3
   }
 }
 
+// OFFSET: 0x00CD8580
+// FUNCTION: fn_46329
+void CGameMode::SpawnBlowEffect(float x, float y, float z) {
+  CBlowEffect* effect = new CBlowEffect;
+  if (effect) {
+    this->scene->objects.push_back(effect);
+    vector3d position{x, y, z};
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00CD8730
 // FUNCTION: fn_21300
 void CGameMode::UnusedArrowStub(int, int, int, int, int, int, int, int, int, int) {

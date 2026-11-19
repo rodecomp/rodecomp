@@ -400,6 +400,7 @@ public:
   void ReceiveWhisperFilterResult(const unsigned char* packet);
   bool NotifyItemResult(int result);
   void NotifyItemBounds();
+  void SpawnBlowEffect(float x, float y, float z);
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
   void UpdateNameBalloon(CGameActor* actor);
