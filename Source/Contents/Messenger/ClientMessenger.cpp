@@ -253,7 +253,7 @@ namespace EquipmentProperties {
 
     /* 0000 */ int kind;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
-    /* 0024 */ std::unordered_map<int, int> statProperties;
+    /* 0024 */ std::unordered_map<unsigned int, int> statProperties;
   };
 
   class CEquipment {
@@ -1144,7 +1144,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
 // OFFSET: 0x0069A2A0
 // FUNCTION: fn_05782
 std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, bool negative) {
-  std::string text;
+  std::string text = "";
   if (this->m_definition == nullptr) {
     return text;
   }
@@ -1154,7 +1154,7 @@ std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, b
     text = this->m_definition->formatText;
     break;
   case 2:
-    text += EncodeText(g_textCodePage, fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)),
+    text += EncodeText(g_textCodePage, fmt::format(DecodeText(g_textCodePage, this->m_definition->formatText),
                                                   DecodeText(g_textCodePage, this->m_definition->signLabels[negative])));
     break;
   }
