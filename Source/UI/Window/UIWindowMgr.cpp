@@ -2266,14 +2266,8 @@ UIWindow* UIWindowMgr::OpenSubChatWindow(int id, int x, int y, int width, int he
   if (height == 0 || height > g_renderer->viewport.height) {
     height = 0x5F;
   }
-  int posX = g_renderer->viewport.width - width;
-  if (x <= g_renderer->viewport.width) {
-    posX = x;
-  }
-  int posY = y;
-  if (y > g_renderer->viewport.height) {
-    posY = 100;
-  }
+  const int posX = x > g_renderer->viewport.width ? g_renderer->viewport.width - width : x;
+  const int posY = y > g_renderer->viewport.height ? 100 : y;
 
   UIWindow* window = this->retainedWindows[id];
   if (window == nullptr) {
@@ -2698,7 +2692,9 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 }
 
 // INLINED
-static __forceinline void SaveWindowRectangle(std::map<int, SavedWindowRectangle*>& savedRectangles, int id, UIWindow* window) {
+static __forceinline void SaveWindowRectangle(UIWindowMgr* manager, int id) {
+  std::map<int, SavedWindowRectangle*>& savedRectangles = manager->savedRectangles;
+  UIWindow* window = manager->LookupWindow(static_cast<WindowId>(id));
   if (window) {
     if (savedRectangles.find(id) != savedRectangles.end()) {
       savedRectangles[id]->x = window->geometry.x;
@@ -2715,8 +2711,7 @@ static __forceinline void SaveWindowRectangle(std::map<int, SavedWindowRectangle
 // FUNCTION: fn_17143
 bool UIWindowMgr::CloseWindow(int id) {
   const WindowId windowId = static_cast<WindowId>(id);
-  UIWindow* window = this->LookupWindow(windowId);
-  SaveWindowRectangle(this->savedRectangles, id, window);
+  SaveWindowRectangle(this, id);
 
   bool closed = false;
   g_modeMgr.GetGameMode();
