@@ -114,17 +114,18 @@ void UIRoMapWnd::OnRBtnUp(int, int) {
 // OFFSET: 0x00916DD0
 // FUNCTION: fn_45684
 bool UIRoMapWnd::PopulateFieldNames(int x, int y) {
-  this->fieldNames.clear();
+  std::vector<std::string>& names = this->fieldNames;
+  names.clear();
 
   unsigned int mapIndex = 0;
   if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, x, y)) {
     this->selectedMapIndex = mapIndex;
     for (CWorldViewField* field : map->fields) {
-      this->fieldNames.push_back(field->fieldName);
+      names.push_back(field->fieldName);
     }
   }
 
-  return !this->fieldNames.empty();
+  return !names.empty();
 }
 
 // OFFSET: 0x00919B50
