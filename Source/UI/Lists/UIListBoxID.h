@@ -11,7 +11,8 @@
 class UIScrollBar;
 
 struct IdListLine {
-  IdListLine() = default;
+  // INLINED
+  IdListLine() : id(0) {}
   // INLINED
   IdListLine(int id, const char* text) : id(id), text(text) {}
 
