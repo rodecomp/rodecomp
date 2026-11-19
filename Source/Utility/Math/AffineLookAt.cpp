@@ -15,8 +15,8 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float forwardLength = SquareRoot((dy * dy + dx * dx) + dz * dz);
   const float numerator = g_projectionDepthNumerator;
   const float forwardInverse = numerator / forwardLength;
-  const float forwardZ = dz * forwardInverse;
   const float forwardY = dy * forwardInverse;
+  const float forwardZ = dz * forwardInverse;
   const float forwardX = dx * forwardInverse;
 
   const float sideX = forwardZ * up[1] - forwardY * up[2];
@@ -29,8 +29,8 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float rightZ = sideZ * sideInverse;
 
   const float crossX = rightZ * forwardY - rightY * forwardZ;
-  const float crossY = rightX * forwardZ - rightZ * forwardX;
   const float crossZ = rightY * forwardX - rightX * forwardY;
+  const float crossY = rightX * forwardZ - rightZ * forwardX;
   const float upLength = SquareRoot((crossY * crossY + crossX * crossX) + crossZ * crossZ);
   const float upInverse = numerator / upLength;
   const float upZ = crossZ * upInverse;
