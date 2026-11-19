@@ -7843,102 +7843,106 @@ void CRagEffect::FrostSplash(int, int) {
 
   this->state.lastPrim->state.size = 4.0f;
 
-  for (int i = 0; i < 4; ++i) {
-    this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(this->state.param[1]);
-    this->state.lastPrim->state.slots[i].fullDisplayAngle %= 360;
-    const std::int16_t angle = this->state.lastPrim->state.slots[i].fullDisplayAngle;
+  auto slotAt = [](EffectPrimitiveState& state, int offset) -> EffectPrimitiveSlot& {
+    return *reinterpret_cast<EffectPrimitiveSlot*>(reinterpret_cast<char*>(state.slots) + offset);
+  };
+
+  for (int offset = 0; offset < 4 * static_cast<int>(sizeof(EffectPrimitiveSlot)); offset += static_cast<int>(sizeof(EffectPrimitiveSlot))) {
+    slotAt(this->state.lastPrim->state, offset).fullDisplayAngle = static_cast<std::int16_t>(this->state.param[1]);
+    slotAt(this->state.lastPrim->state, offset).fullDisplayAngle %= 360;
+    const std::int16_t angle = slotAt(this->state.lastPrim->state, offset).fullDisplayAngle;
     if (this->state.param[0] < 10.0f) {
       this->state.param[0] = 10.0f;
     }
 
-    this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(this->state.param[0]);
-    const float scale = static_cast<float>(this->state.lastPrim->state.slots[i].riseAngle) / 10.0f;
+    slotAt(this->state.lastPrim->state, offset).riseAngle = static_cast<std::int16_t>(this->state.param[0]);
+    const float scale = static_cast<float>(slotAt(this->state.lastPrim->state, offset).riseAngle) / 10.0f;
     unsigned color = static_cast<unsigned>(this->state.param[2]);
     color %= 1000000;
-    this->state.lastPrim->state.slots[i].flag1[10] = static_cast<char>(color / 10000);
-    this->state.lastPrim->state.slots[i].flag1[11] = static_cast<char>((color - this->state.lastPrim->state.slots[i].flag1[12] * 10000) / 100);
-    this->state.lastPrim->state.slots[i].flag1[12] = static_cast<char>(color - static_cast<char>(color / 100) * 100);
-    this->state.lastPrim->state.slots[i].life = 1;
-    this->state.lastPrim->state.slots[i].maxHeight = 0.05f;
+    slotAt(this->state.lastPrim->state, offset).flag1[10] = static_cast<char>(color / 10000);
+    slotAt(this->state.lastPrim->state, offset).flag1[11] = static_cast<char>((color - slotAt(this->state.lastPrim->state, offset).flag1[12] * 10000) / 100);
+    slotAt(this->state.lastPrim->state, offset).flag1[12] = static_cast<char>(color - static_cast<char>(color / 100) * 100);
+    slotAt(this->state.lastPrim->state, offset).life = 1;
+    slotAt(this->state.lastPrim->state, offset).maxHeight = 0.05f;
     if (textureKind == 1) {
-      this->state.lastPrim->state.slots[i].distance = scale * 7.0f;
+      slotAt(this->state.lastPrim->state, offset).distance = scale * 7.0f;
     } else {
-      this->state.lastPrim->state.slots[i].distance = scale * 4.5f;
+      slotAt(this->state.lastPrim->state, offset).distance = scale * 4.5f;
     }
 
-    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(30));
-    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(45) - 22);
-    this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(11) - 5);
-    this->state.lastPrim->state.slots[i].vecBPre.x = scale * this->state.lastPrim->state.slots[i].vecBPre.x;
-    this->state.lastPrim->state.slots[i].vecBPre.z = scale * this->state.lastPrim->state.slots[i].vecBPre.z;
-    this->state.lastPrim->state.slots[i].vecBPre.y = scale * this->state.lastPrim->state.slots[i].vecBPre.y;
+    slotAt(this->state.lastPrim->state, offset).vecBPre.y = static_cast<float>(ClampedRandom(30));
+    slotAt(this->state.lastPrim->state, offset).height[0] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[1] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[2] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[3] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).vecBPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    slotAt(this->state.lastPrim->state, offset).vecBPre.z = static_cast<float>(ClampedRandom(11) - 5);
+    slotAt(this->state.lastPrim->state, offset).vecBPre.x = scale * slotAt(this->state.lastPrim->state, offset).vecBPre.x;
+    slotAt(this->state.lastPrim->state, offset).vecBPre.z = scale * slotAt(this->state.lastPrim->state, offset).vecBPre.z;
+    slotAt(this->state.lastPrim->state, offset).vecBPre.y = scale * slotAt(this->state.lastPrim->state, offset).vecBPre.y;
     {
-      const float x = this->state.lastPrim->state.slots[i].vecBPre.x;
-      const float z = this->state.lastPrim->state.slots[i].vecBPre.z;
-      this->state.lastPrim->state.slots[i].vecBPre.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
-      this->state.lastPrim->state.slots[i].vecBPre.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
+      const float x = slotAt(this->state.lastPrim->state, offset).vecBPre.x;
+      const float z = slotAt(this->state.lastPrim->state, offset).vecBPre.z;
+      slotAt(this->state.lastPrim->state, offset).vecBPre.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
+      slotAt(this->state.lastPrim->state, offset).vecBPre.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
-    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
-    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(30));
-    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(11) - 5);
-    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecBNow.x = scale * this->state.lastPrim->state.slots[i].vecBNow.x;
-    this->state.lastPrim->state.slots[i].vecBNow.z = scale * this->state.lastPrim->state.slots[i].vecBNow.z;
-    this->state.lastPrim->state.slots[i].vecBNow.y = scale * this->state.lastPrim->state.slots[i].vecBNow.y;
+    slotAt(this->state.lastPrim->state, offset).vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    slotAt(this->state.lastPrim->state, offset).vecBNow.y = static_cast<float>(ClampedRandom(30));
+    slotAt(this->state.lastPrim->state, offset).vecBNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    slotAt(this->state.lastPrim->state, offset).height[4] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[5] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[6] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[7] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).vecBNow.x = scale * slotAt(this->state.lastPrim->state, offset).vecBNow.x;
+    slotAt(this->state.lastPrim->state, offset).vecBNow.z = scale * slotAt(this->state.lastPrim->state, offset).vecBNow.z;
+    slotAt(this->state.lastPrim->state, offset).vecBNow.y = scale * slotAt(this->state.lastPrim->state, offset).vecBNow.y;
     {
-      const float x = this->state.lastPrim->state.slots[i].vecBNow.x;
-      const float z = this->state.lastPrim->state.slots[i].vecBNow.z;
-      this->state.lastPrim->state.slots[i].vecBNow.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
-      this->state.lastPrim->state.slots[i].vecBNow.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
+      const float x = slotAt(this->state.lastPrim->state, offset).vecBNow.x;
+      const float z = slotAt(this->state.lastPrim->state, offset).vecBNow.z;
+      slotAt(this->state.lastPrim->state, offset).vecBNow.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
+      slotAt(this->state.lastPrim->state, offset).vecBNow.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
     }
 
-    this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
-    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(30));
-    this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(11) - 5);
-    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTPre.x = scale * this->state.lastPrim->state.slots[i].vecTPre.x;
-    this->state.lastPrim->state.slots[i].vecTPre.z = scale * this->state.lastPrim->state.slots[i].vecTPre.z;
-    this->state.lastPrim->state.slots[i].vecTPre.y = scale * this->state.lastPrim->state.slots[i].vecTPre.y;
-    {
-      const float cosValue = g_cosTable[angle];
-      const float sinValue = g_sinTable[angle];
-      const float z = this->state.lastPrim->state.slots[i].vecTPre.z;
-      const float x = this->state.lastPrim->state.slots[i].vecTPre.x;
-      this->state.lastPrim->state.slots[i].vecTPre.x = x * cosValue - z * sinValue;
-      this->state.lastPrim->state.slots[i].vecTPre.z = x * sinValue + z * cosValue;
-    }
-
-    this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(45) - 22);
-    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(30));
-    this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(11) - 5);
-    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTNow.x = scale * this->state.lastPrim->state.slots[i].vecTNow.x;
-    this->state.lastPrim->state.slots[i].vecTNow.z = scale * this->state.lastPrim->state.slots[i].vecTNow.z;
-    this->state.lastPrim->state.slots[i].vecTNow.y = scale * this->state.lastPrim->state.slots[i].vecTNow.y;
+    slotAt(this->state.lastPrim->state, offset).vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    slotAt(this->state.lastPrim->state, offset).vecTPre.y = static_cast<float>(ClampedRandom(30));
+    slotAt(this->state.lastPrim->state, offset).vecTPre.z = static_cast<float>(ClampedRandom(11) - 5);
+    slotAt(this->state.lastPrim->state, offset).height[8] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[9] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[10] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[11] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).vecTPre.x = scale * slotAt(this->state.lastPrim->state, offset).vecTPre.x;
+    slotAt(this->state.lastPrim->state, offset).vecTPre.z = scale * slotAt(this->state.lastPrim->state, offset).vecTPre.z;
+    slotAt(this->state.lastPrim->state, offset).vecTPre.y = scale * slotAt(this->state.lastPrim->state, offset).vecTPre.y;
     {
       const float cosValue = g_cosTable[angle];
       const float sinValue = g_sinTable[angle];
-      const float z = this->state.lastPrim->state.slots[i].vecTNow.z;
-      const float x = this->state.lastPrim->state.slots[i].vecTNow.x;
-      this->state.lastPrim->state.slots[i].vecTNow.x = x * cosValue - z * sinValue;
-      this->state.lastPrim->state.slots[i].vecTNow.z = x * sinValue + z * cosValue;
+      const float z = slotAt(this->state.lastPrim->state, offset).vecTPre.z;
+      const float x = slotAt(this->state.lastPrim->state, offset).vecTPre.x;
+      slotAt(this->state.lastPrim->state, offset).vecTPre.x = x * cosValue - z * sinValue;
+      slotAt(this->state.lastPrim->state, offset).vecTPre.z = x * sinValue + z * cosValue;
     }
 
-    this->state.lastPrim->state.slots[i].flag1[0] = 2;
+    slotAt(this->state.lastPrim->state, offset).vecTNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    slotAt(this->state.lastPrim->state, offset).vecTNow.y = static_cast<float>(ClampedRandom(30));
+    slotAt(this->state.lastPrim->state, offset).vecTNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    slotAt(this->state.lastPrim->state, offset).height[12] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[13] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[14] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).height[15] = static_cast<float>(ClampedRandom(360));
+    slotAt(this->state.lastPrim->state, offset).vecTNow.x = scale * slotAt(this->state.lastPrim->state, offset).vecTNow.x;
+    slotAt(this->state.lastPrim->state, offset).vecTNow.z = scale * slotAt(this->state.lastPrim->state, offset).vecTNow.z;
+    slotAt(this->state.lastPrim->state, offset).vecTNow.y = scale * slotAt(this->state.lastPrim->state, offset).vecTNow.y;
+    {
+      const float cosValue = g_cosTable[angle];
+      const float sinValue = g_sinTable[angle];
+      const float z = slotAt(this->state.lastPrim->state, offset).vecTNow.z;
+      const float x = slotAt(this->state.lastPrim->state, offset).vecTNow.x;
+      slotAt(this->state.lastPrim->state, offset).vecTNow.x = x * cosValue - z * sinValue;
+      slotAt(this->state.lastPrim->state, offset).vecTNow.z = x * sinValue + z * cosValue;
+    }
+
+    slotAt(this->state.lastPrim->state, offset).flag1[0] = 2;
   }
 }
 
