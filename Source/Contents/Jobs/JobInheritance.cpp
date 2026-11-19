@@ -1593,7 +1593,7 @@ int CSession::SetPairValue(int value, int slot) {
 
 // OFFSET: 0x00E25F20
 // FUNCTION: fn_23911
-int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
+void CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
   for (int index = 0; index < 2; ++index) {
     NormalItemSlot& entry = this->SkillHotkey(index);
 
@@ -1616,7 +1616,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
     this->SkillHotkey(slot).itemId = ITEMID_NONE;
   }
 
-  return g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
 }
 
 // OFFSET: 0x00E26030

@@ -927,7 +927,7 @@ public:
   bool IsSuperNoviceJob(int job) const;
   bool IsSuperNoviceClass(int job) const;
   void ApplySaveDataOptions();
-  int SetHotkeyEntry(char enabled, int id, int value, int slot);
+  void SetHotkeyEntry(char enabled, int id, int value, int slot);
   int SetFlag(int value);
   void SetPlayerNameKey(const unsigned char* key);
   // INLINED
