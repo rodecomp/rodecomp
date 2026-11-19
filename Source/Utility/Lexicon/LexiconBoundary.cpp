@@ -221,16 +221,17 @@ bool LexiconSerializer::Load(const char* path) {
         this->nodeCount = this->header.nodeCount;
         this->serializedSize = this->header.size;
         this->header.loaded = result;
-        return result;
       }
     }
 
-    if (this->buffer) {
-      delete this->buffer;
-      this->buffer = nullptr;
-    }
+    if (!result) {
+      if (this->buffer) {
+        delete this->buffer;
+        this->buffer = nullptr;
+      }
 
-    this->header.loaded = result;
+      this->header.loaded = result;
+    }
   }
 
   return result;
