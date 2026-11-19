@@ -893,20 +893,38 @@ int CGameActor::MountedJob(int job, std::uint32_t flags) {
   return job;
 }
 
-// OFFSET: 0x00CAD420
-// FUNCTION: fn_21051
-CGameObject* CGameActor::GetEffectCounter(int effectId) {
-  switch (effectId) {
+// OFFSET: 0x00CADB80
+// FUNCTION: fn_46347
+bool __stdcall IsFalconAttackSkill(int skillId) {
+  switch (skillId) {
   case HT_BLITZBEAT:
   case SN_FALCONASSAULT:
   case WH_HAWKRUSH:
   case WH_HAWKBOOMERANG:
   case WH_WILD_WALK:
-    return this->statusEffects[0];
+    return true;
   }
-  switch (effectId) {
+  return false;
+}
+
+// OFFSET: 0x00CADD40
+// FUNCTION: fn_46348
+bool __stdcall IsWugAttackSkill(int skillId) {
+  switch (skillId) {
   case RA_WUGSTRIKE:
   case RA_WUGBITE:
+    return true;
+  }
+  return false;
+}
+
+// OFFSET: 0x00CAD420
+// FUNCTION: fn_21051
+CGameObject* CGameActor::GetEffectCounter(int effectId) {
+  if (IsFalconAttackSkill(effectId)) {
+    return this->statusEffects[0];
+  }
+  if (IsWugAttackSkill(effectId)) {
     return this->statusEffects[1];
   }
   return nullptr;
@@ -1131,10 +1149,22 @@ __declspec(noinline) bool CSession::IsMonsterClass(int job) {
   return false;
 }
 
+// OFFSET: 0x00CADC80
+// FUNCTION: fn_46345
+int CGameActor::IsBladeStopped() const {
+  return this->isBladeStop != 0;
+}
+
 // OFFSET: 0x00CADCC0
 // FUNCTION: fn_21066
 bool CGameActor::HasPendingDamage() {
   return this->willBeAttackedList.size() > 0;
+}
+
+// OFFSET: 0x00CADCD0
+// FUNCTION: fn_46346
+bool CGameActor::IsInDeathState() const {
+  return this->render.state == ST_DEAD || this->willBeDead == 1 || this->isTrickDead == 1;
 }
 
 // OFFSET: 0x00CADCF0

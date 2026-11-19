@@ -302,7 +302,9 @@ public:
   int GetGaugeCurrent();
   int GetGaugeMaximum();
   void ResetTransformJobs();
+  int IsBladeStopped() const;
   bool HasPendingDamage();
+  bool IsInDeathState() const;
   bool UpdateMaximumValue(std::int64_t value);
   int IsPlayerClass(int job);
   bool UpdateFadeOut();
