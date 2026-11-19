@@ -25,6 +25,11 @@ namespace {
 CSpriteEffect::CSpriteEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00B788C0
+// FUNCTION: fn_46249
+__declspec(noinline) CSpriteEffect::~CSpriteEffect() {
+}
+
 // OFFSET: 0x00B78B00
 // FUNCTION: fn_19196
 void CSpriteEffect::Close() {

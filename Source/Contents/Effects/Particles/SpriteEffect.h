@@ -11,6 +11,7 @@ class CSpriteParticle;
 class CSpriteEffect : public CEffect {
 public:
   CSpriteEffect();
+  ~CSpriteEffect() override;
 
   void Open() override;
   void OnProcess() override;
