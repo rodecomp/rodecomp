@@ -104,8 +104,10 @@ const char* FontEntry::FindSystemFace() const {
 // FUNCTION: fn_01947
 __declspec(noinline) void FontEntry::CreateSystemFont() {
   const char* face = this->FindSystemFace();
+  const DWORD italic = this->italic != 0;
+  const int weight = this->bold ? FW_BOLD : FW_NORMAL;
   this->font = CreateFontA(
-    this->height, 0, 0, 0, this->bold ? FW_BOLD : FW_NORMAL, this->italic != 0, 0, 0, this->charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+    this->height, 0, 0, 0, weight, italic, 0, 0, this->charset, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
     NONANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, face
   );
 }
