@@ -108,10 +108,10 @@
 #include "Resource/MSGSTRINGID.h"
 
 // GLOBAL: gl_25153
-static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
+const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 
 // GLOBAL: gl_25154
-static const std::string s_messageBoxItemLinkClosing = "</ITEML>";
+const std::string s_messageBoxItemLinkClosing = "</ITEML>";
 
 namespace {
   // INLINED

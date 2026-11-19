@@ -5,6 +5,9 @@
 
 #include <string>
 
+extern const std::string s_messageBoxItemLinkOpening;
+extern const std::string s_messageBoxItemLinkClosing;
+
 class UITextViewer;
 class UIWindowMgr;
 

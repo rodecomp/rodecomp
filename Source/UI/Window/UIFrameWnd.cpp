@@ -1055,8 +1055,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
     }
 
-    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) ||
-        _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("</ITEML>"))) {
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+        _mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
       lines.push_back(std::string(text));
     } else {
       WrapPlainText(text, lines, wrapWidth);
