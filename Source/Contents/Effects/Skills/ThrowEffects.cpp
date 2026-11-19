@@ -522,9 +522,10 @@ void CThrowItemEffect::OnProcess() {
       } else {
         const int index = target->phaseParameter;
         const float radius = angle / target->animationParameter;
-        offsetX = angle * g_cosTable[index] + offsetX;
-        offsetY = radius * this->heightDelta + offsetY;
-        offsetZ = angle * g_sinTable[index] + offsetZ;
+        const vector3d moved{angle * g_cosTable[index] + offsetX, radius * this->heightDelta + offsetY, angle * g_sinTable[index] + offsetZ};
+        offsetX = moved.x;
+        offsetY = moved.y;
+        offsetZ = moved.z;
         height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->arcHeight;
       }
 
