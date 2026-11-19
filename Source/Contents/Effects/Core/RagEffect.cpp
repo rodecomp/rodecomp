@@ -1255,14 +1255,16 @@ void CRagEffect::Yufitel(char F1) {
     this->state.lastPrim->render.angle = this->state.lastPrim->render.angle + 360.0f;
   }
 
-  CEffectPrim& center = *this->state.lastPrim;
-  center.state.speed = -(center.CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / center.state.duration);
+  this->state.lastPrim->state.speed = -(this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   this->state.lastPrim->state.deltaPos2.y = -5.0f;
   this->state.lastPrim->state.alpha = 170.0f;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  this->state.lastPrim->state.textures[0] =
-    F1 != 0 ? g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false) : g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
+  if (F1 != 0) {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
+  } else {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
+  }
   this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern = 0x40u;
@@ -3646,19 +3648,21 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].height[4] = scale;
-    std::int16_t base;
 
     if (kind == 2 || kind == 3 || kind == 6) {
       this->state.lastPrim->state.slots[index].process = 0;
       this->state.lastPrim->state.slots[index].distance = 2.0f;
-      base = kind == 3 ? static_cast<std::int16_t>(phase * 7) : static_cast<std::int16_t>(phase * 22);
+      if (kind == 3) {
+        this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 7 + index * 90);
+      } else {
+        this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 22 + index * 90);
+      }
     } else {
       this->state.lastPrim->state.slots[index].process = -24;
       this->state.lastPrim->state.slots[index].distance = 2.0f;
-      base = static_cast<std::int16_t>(phase * 22);
+      this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 22 + index * 90);
     }
 
-    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(base + index * 90);
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.slots[index].height[0] = -12.0f;
@@ -9818,7 +9822,10 @@ void CRagEffect::SpawnBlurAfterimage() {
   }
 
   if (this->render.position.x == -1.0f) {
-    const int value = std::rand() % 14 > 0 ? 200 : 250;
+    int value = 200;
+    if (std::rand() % 14 < 1) {
+      value = 250;
+    }
     this->state.parent->SetColor(-1, 250, value, value);
     return;
   }
