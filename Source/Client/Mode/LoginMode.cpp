@@ -2085,7 +2085,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   case 36: {
     const std::div_t remaining = std::div(this->remainingLoginSeconds, 3600);
-    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f))));
+    const int minutes = static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f));
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, minutes));
     break;
   }
   case 243:
