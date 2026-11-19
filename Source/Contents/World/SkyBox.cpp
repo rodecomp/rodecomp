@@ -32,6 +32,9 @@ struct PrimitivePoolAccess : RenderPrimitivePool {
 };
 }
 
+// GLOBAL: gl_25991
+float g_skyBoxHeight = 1200.0f;
+
 // OFFSET: 0x0075DC00
 // FUNCTION: fn_08044
 CLensFlare::CLensFlare() : m_position{0.0f, 0.0f, 0.0f} {
@@ -155,6 +158,95 @@ static __forceinline void DrawSkyFace(const char* textureName, const RenderVerte
   primitive->vertices[2].diffuse = third.diffuse;
   primitive->vertices[3].diffuse = fourth.diffuse;
   g_renderer->Submit(primitive, 3);
+}
+
+// OFFSET: 0x0075FA20
+// FUNCTION: fn_45842
+void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotation, float, vector3d eye, vector3d target) {
+  vector3d actorPosition = position;
+  actorPosition.y += g_skyBoxHeight;
+  this->m_actor->SetPosition(actorPosition);
+  this->m_actor->Update();
+  this->m_actor->Draw(camera.values, true);
+
+  RenderVertex points[2];
+  RenderVertex projected[2];
+  for (int i = 0; i < 2; ++i) {
+    points[i].x = 0.0f;
+    points[i].y = 0.0f;
+    points[i].z = 0.0f;
+    points[i].rhw = 0.0f;
+    points[i].diffuse = 0;
+    points[i].specular = 0xFF000000;
+    points[i].u = 0.0f;
+    points[i].v = 0.0f;
+  }
+  for (int i = 0; i < 2; ++i) {
+    projected[i].x = 0.0f;
+    projected[i].y = 0.0f;
+    projected[i].z = 0.0f;
+    projected[i].rhw = 0.0f;
+    projected[i].diffuse = 0;
+    projected[i].specular = 0xFF000000;
+    projected[i].u = 0.0f;
+    projected[i].v = 0.0f;
+  }
+
+  matrix transform;
+  transform.Identity();
+  transform.AppendYRotation(rotation / 180.0f * 3.141592f);
+  transform.AppendTranslate(&position.x);
+
+  matrix combined;
+  combined.Compose(transform, camera);
+
+  points[0].x = -1250.0f;
+  points[0].y = -250.0f;
+  points[0].z = 1240.0f;
+  points[1].x = 1250.0f;
+  points[1].y = 100.0f;
+  points[1].z = 1250.0f;
+
+  for (int i = 0; i < 2; ++i) {
+    g_renderer->Project(&points[i].x, combined.values, projected[i]);
+  }
+
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  primitive->vertices[0].x = projected[0].x;
+  primitive->vertices[0].y = projected[0].y;
+  primitive->vertices[0].z = projected[0].z;
+  primitive->vertices[0].rhw = projected[0].rhw;
+  primitive->vertices[1].x = projected[1].x;
+  primitive->vertices[1].y = projected[0].y;
+  primitive->vertices[1].z = projected[0].z;
+  primitive->vertices[1].rhw = projected[0].rhw;
+  primitive->vertices[2].x = projected[0].x;
+  primitive->vertices[2].y = projected[1].y;
+  primitive->vertices[2].z = projected[0].z;
+  primitive->vertices[2].rhw = projected[0].rhw;
+  primitive->vertices[3].x = projected[1].x;
+  primitive->vertices[3].y = projected[1].y;
+  primitive->vertices[3].z = projected[0].z;
+  primitive->vertices[3].rhw = projected[0].rhw;
+  primitive->vertices[0].u = 0.0f;
+  primitive->vertices[0].v = 0.0f;
+  primitive->vertices[1].u = 1.0f;
+  primitive->vertices[1].v = 0.0f;
+  primitive->vertices[2].u = 0.0f;
+  primitive->vertices[2].v = 1.0f;
+  primitive->vertices[3].u = 1.0f;
+  primitive->vertices[3].v = 1.0f;
+  primitive->sourceBlend = 5;
+  primitive->destinationBlend = 6;
+  primitive->texture = nullptr;
+  primitive->vertices[0].diffuse = 0x00FFFFFF;
+  primitive->vertices[1].diffuse = 0x00FFFFFF;
+  primitive->vertices[2].diffuse = 0xFFFFFFFF;
+  primitive->vertices[3].diffuse = 0xFFFFFFFF;
+  g_renderer->Submit(primitive, 5);
+
+  this->m_flare.Update(0.0f, eye, target);
+  this->m_flare.Render(camera.values, eye, target);
 }
 
 // OFFSET: 0x0075F080

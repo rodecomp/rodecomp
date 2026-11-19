@@ -85,6 +85,7 @@ class CSkyBox {
 public:
   CSkyBox();
   ~CSkyBox();
+  void Render(const matrix& camera, const vector3d& position, float rotation, float height, vector3d eye, vector3d target);
 
   /* 0000 */ CRes* m_model;
   /* 0004 */ C3dActor* m_actor;
