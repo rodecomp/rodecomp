@@ -258,9 +258,8 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     if (this->m_entries.empty()) {
       g_windowMgr.Confirm(LookupMessage(MSI_GET_OFF_MINI_PARTYWND), 0, false, false, 0, "Message", 280, 120, 0);
-      return 0;
-    }
-    switch (this->m_entries[argument1].value) {
+    } else {
+      switch (this->m_entries[argument1].value) {
     case MENUID_SEND_MSG:
       this->SendMsg(nullptr, UM_COMMAND, ID_SENDMSG, 0, 0, 0);
       return 0;
@@ -317,6 +316,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         return 0;
       }
       break;
+      }
     }
     return 0;
   case UM_COMMAND:
