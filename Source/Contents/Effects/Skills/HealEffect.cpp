@@ -462,6 +462,10 @@ void CHealEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
       const float tiltSin = g_sinTable[particle->phaseParameter];
+      const float reach = height * tiltCos;
+      const float reachX = reach * cosine;
+      const float reachZ = reach * sine;
+      const float rise = height * tiltSin;
 
       EffectPoint points[2];
       const float bottomX = particle->scale * cosine;
@@ -470,9 +474,9 @@ void CHealEffect::OnProcess() {
       particle->vertices[3].y = 0.0f;
       particle->vertices[3].z = bottomZ;
 
-      const float topX = bottomX + height * tiltCos * cosine;
-      const float topY = 0.0f - height * tiltSin;
-      const float topZ = bottomZ + height * tiltCos * sine;
+      const float topX = bottomX + reachX;
+      const float topY = 0.0f - rise;
+      const float topZ = bottomZ + reachZ;
       particle->vertices[1].x = topX;
       particle->vertices[1].y = topY;
       particle->vertices[1].z = topZ;
@@ -528,6 +532,10 @@ void CHealEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
       const float tiltSin = g_sinTable[particle->phaseParameter];
+      const float reach = height * tiltCos;
+      const float reachX = reach * cosine;
+      const float reachZ = reach * sine;
+      const float rise = height * tiltSin;
 
       EffectPoint points[2];
       const float bottomX = particle->scale * cosine;
@@ -536,9 +544,9 @@ void CHealEffect::OnProcess() {
       particle->vertices[3].x = bottomX;
       particle->vertices[3].z = bottomZ;
 
-      const float topY = 0.0f - height * tiltSin;
-      const float topX = height * tiltCos * cosine + bottomX;
-      const float topZ = bottomZ + height * tiltCos * sine;
+      const float topY = 0.0f - rise;
+      const float topX = reachX + bottomX;
+      const float topZ = bottomZ + reachZ;
       particle->vertices[1].y = topY;
       particle->vertices[1].x = topX;
       particle->vertices[1].z = topZ;
