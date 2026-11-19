@@ -793,34 +793,34 @@ void CRenderObject::ScaleByPulse(float& scale) const {
 // OFFSET: 0x00CC1A00
 // FUNCTION: fn_46352
 CSprRes* CRenderObject::GetSequenceSpriteOverride(int type, int layer) {
-  const char* path = nullptr;
   if (layer == 0) {
     if (this->render.sequenceMode == 1) {
       if (++this->render.sequenceReset > 20) {
+        ++this->render.sequenceSpriteIndex;
         this->render.sequenceReset = 0;
-        if (++this->render.sequenceSpriteIndex > 2) {
+        if (this->render.sequenceSpriteIndex > 2) {
           this->render.sequenceSpriteIndex = 0;
         }
       }
       if (this->render.sequenceSpriteIndex == 1) {
-        path = "sprite\\인간족\\몸통\\남\\몽크_남.spr";
-      } else if (this->render.sequenceSpriteIndex == 2) {
-        path = "sprite\\인간족\\몸통\\남\\로그_남.spr";
+        return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\인간족\\몸통\\남\\몽크_남.spr"));
+      }
+      if (this->render.sequenceSpriteIndex == 2) {
+        return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\인간족\\몸통\\남\\로그_남.spr"));
       }
     } else if (this->render.sequenceMode == 3) {
-      path = "sprite\\인간족\\몸통\\남\\몽크_남.spr";
+      return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\인간족\\몸통\\남\\몽크_남.spr"));
     }
-  } else if (type == 15 && layer == 3) {
+  }
+  if (type == 15 && layer == 3) {
     if (this->render.runStartTick < 20) {
-      path = "sprite\\악세사리\\남\\남_천사의머리띠.spr";
-    } else if (this->render.runStartTick < 40) {
-      path = "sprite\\악세사리\\남\\남_악마의머리띠.spr";
+      return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\악세사리\\남\\남_천사의머리띠.spr"));
+    }
+    if (this->render.runStartTick < 40) {
+      return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\악세사리\\남\\남_악마의머리띠.spr"));
     }
   }
-  if (path == nullptr) {
-    return nullptr;
-  }
-  return static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+  return nullptr;
 }
 
 // OFFSET: 0x00CC18F0
