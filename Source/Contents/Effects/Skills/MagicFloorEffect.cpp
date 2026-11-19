@@ -192,6 +192,7 @@ __forceinline void CMagicFloorEffect::UpdateFloor(CParticle* particle) {
 }
 
 // OFFSET: 0x00B49530
+// FUNCTION: fn_45963
 __forceinline void CMagicFloorEffect::UpdateCloud(CParticle* particle) {
   if (particle) {
     const int direction = static_cast<int>(particle->angle + 5.0f) % 360;
