@@ -166,7 +166,12 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
     }
   }
 
-  if (it != recipes.end()) {
+  if (it == recipes.end()) {
+    PetEvolutionRecipe recipe;
+    recipe.target = target;
+    recipe.materials.push_back(std::make_pair(material, count));
+    recipes.push_back(std::move(recipe));
+  } else {
     if (std::find_if(it->materials.begin(), it->materials.end(), [material](const std::pair<int, int>& entry) {
           return entry.first == material;
         }) != it->materials.end()) {
@@ -174,11 +179,7 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
     }
 
     it->materials.push_back(std::make_pair(material, count));
-  } else {
-    PetEvolutionRecipe recipe;
-    recipe.target = target;
-    recipe.materials.push_back(std::make_pair(material, count));
-    recipes.push_back(std::move(recipe));
+    return std::make_pair(true, "good");
   }
 
   return std::make_pair(true, "good");
