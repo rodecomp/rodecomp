@@ -123,9 +123,9 @@ struct SeekPartyClosePacket {
 void CGameMode::LoadCooldownSnapshot(const void* packet) {
   g_session.m_requestTimers.clear();
   const auto* snapshot = static_cast<const CooldownSnapshotPacket*>(packet);
-  const CooldownSnapshotEntry* entry = snapshot->entries;
   const int count = (snapshot->size - 2) / 10;
 
+  const CooldownSnapshotEntry* entry = snapshot->entries;
   for (int index = 0; index < count; ++index, ++entry) {
     ShortcutCooldownRecord value;
     value.id = entry->id;
