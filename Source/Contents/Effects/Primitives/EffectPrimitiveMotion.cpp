@@ -3597,8 +3597,8 @@ void CEffectPrim::PrimParticleUp() {
   FaceCamera(this->state.slots);
   FollowMaster(*this);
 
-  int flash = 36;
-  for (int index = 0; index < 4; ++index, flash -= 7) {
+  int index = 0;
+  for (int flash = 36; flash > 8; flash -= 7, ++index) {
     if (this->state.slots[index].life != 1) {
       continue;
     }
