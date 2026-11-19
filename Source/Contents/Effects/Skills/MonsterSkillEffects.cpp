@@ -3837,9 +3837,10 @@ void CSevereRainStorm::SpawnCrossRain() {
 void CSevereRainStorm::SpawnGrenades() {
   const long long ranges[5] = {11, 11, 11, 9, 9};
   const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 5u) - 1] * 50;
+  const float* const origin = this->position;
   for (int count = 0; count < (this->effectLevel + 1) / 2; ++count) {
     const float half = static_cast<float>(spread) * 0.5f;
-    const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+    const vector3d base = {origin[0] + 0.0f, origin[1] - 15.0f, origin[2] + 0.0f};
     vector3d position = base;
     position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
     position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
