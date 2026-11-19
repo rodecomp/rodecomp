@@ -12049,23 +12049,21 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
 
   const char* start = text.c_str();
   const char* cursor = start;
-  while (cursor != text.c_str() + text.size()) {
+  for (; cursor != text.c_str() + text.size(); ++cursor) {
     if (*cursor == '\n') {
       lines.push_back(std::string(start, cursor));
-      ++cursor;
-      start = cursor;
+      start = cursor + 1;
     } else if (cursor[0] < 0 && cursor[1] < 0) {
       if (width < this->TextWidth(std::string(start, cursor + 2).c_str(), 0, 0, 12, 0, 0)) {
         lines.push_back(std::string(start, cursor));
         start = cursor;
       }
-      cursor += 2;
+      ++cursor;
     } else {
       if (width < this->TextWidth(std::string(start, cursor + 1).c_str(), 0, 0, 12, 0, 0)) {
         lines.push_back(std::string(start, cursor));
         start = cursor;
       }
-      ++cursor;
     }
   }
 
