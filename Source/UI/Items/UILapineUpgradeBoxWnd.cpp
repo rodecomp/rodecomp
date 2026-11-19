@@ -595,9 +595,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   if (item.IsEquipment() == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
-    const std::uint32_t* cards = item.cards;
-    const std::uint32_t* cardsEnd = cards + 4;
-    if (std::find_if(cards, cardsEnd, [](std::uint32_t card) { return card != 0; }) != cardsEnd) {
+    if (std::find_if(std::begin(item.cards), std::end(item.cards), [](std::uint32_t card) { return card != 0; }) != std::end(item.cards)) {
       this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_WARNING_HAS_CARD_OR_ENCHANTED)), 0, 0, 0);
     }
   }
