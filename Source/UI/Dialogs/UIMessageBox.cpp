@@ -305,8 +305,7 @@ void UILoginWnd::Paint() {
 // OFFSET: 0x008B8620
 // FUNCTION: fn_11766
 void UIMakeCharWnd::Paint() {
-  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp")));
-  this->DrawBitmap(0, 17, background, false);
+  this->DrawBitmap(0, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\login_interface\\win_make2.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(MSI_STR_MAKECHARACTER), 0);
   this->DrawButtonBar(2, 0, 1);
 
@@ -434,7 +433,10 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   if (std::string(LookupMessage(MSI_BANK_MAX)) == text) {
     const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
-    const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
+    long long excess = 0;
+    if (cash + balance > 0x7FFFFFFF) {
+      excess = cash + balance - 0x7FFFFFFF;
+    }
     if (deposit) {
       if (balance >= 0x7FFFFFFF) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_7_MINI)), 255, 0, 0, 0);
