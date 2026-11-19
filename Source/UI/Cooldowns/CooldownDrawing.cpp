@@ -57,6 +57,7 @@ void CooldownOwner::Draw(
     vertex.diffuse = color;
   }
 
+  const int reverse = value.reverse;
   vertices[5].y = static_cast<float>(centerY);
   vertices[7].y = static_cast<float>(centerY);
   vertices[2].y = top;
@@ -71,7 +72,7 @@ void CooldownOwner::Draw(
   vertices[22].y = top;
   const float right = static_cast<float>((centerX + radiusX));
   const float left = static_cast<float>((centerX - radiusX));
-  if (value.reverse == 0) {
+  if (reverse == 0) {
     vertices[2].x = left;
     vertices[4].x = left;
     vertices[5].x = left;
