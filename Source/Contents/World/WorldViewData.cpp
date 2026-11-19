@@ -79,6 +79,10 @@ __forceinline bool CWorldViewMap::Contains(int x, int y) const {
   return AreaContains(this->left, this->top, this->right, this->bottom, x, y);
 }
 
+// OFFSET: 0x00612D50
+// FUNCTION: fn_46316
+CWorldViewWorld::CWorldViewWorld() = default;
+
 // OFFSET: 0x00612C70
 // FUNCTION: fn_04345
 __declspec(noinline) CWorldViewWorld::CWorldViewWorld(const char* name, const char* imageName) {
@@ -111,13 +115,19 @@ __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const 
   }
 }
 
-// OFFSET: 0x00613360
-// FUNCTION: fn_04349
-CWorldViewWorld::~CWorldViewWorld() {
+// OFFSET: 0x006138F0
+// FUNCTION: fn_46317
+__forceinline void CWorldViewWorld::ClearMaps() {
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
     delete *it;
   }
   this->maps.clear();
+}
+
+// OFFSET: 0x00613360
+// FUNCTION: fn_04349
+CWorldViewWorld::~CWorldViewWorld() {
+  this->ClearMaps();
 }
 
 // OFFSET: 0x006135C0
@@ -159,6 +169,8 @@ __declspec(noinline) bool CWorldViewWorld::LoadTexture() {
   this->texture = g_texMgr.Load(path.c_str(), 0, true, true, false);
   return this->texture != nullptr;
 }
+
+// OFFSET: 0x00613D20
 
 // OFFSET: 0x00613AB0
 // FUNCTION: fn_04352

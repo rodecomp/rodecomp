@@ -82,9 +82,12 @@ public:
 
 class CWorldViewWorld {
 public:
+  CWorldViewWorld();
   CWorldViewWorld(const char* name, const char* imageName);
   ~CWorldViewWorld();
 
+  void ClearMaps();
+  CWorldViewMap* FindMapAt(unsigned int& mapIndex, int x, int y) const;
   void AddField(int mapId, const char* name, CWorldViewField* field);
   bool LoadTexture();
   CWorldViewField* FieldAt(unsigned int& mapIndex, int x, int y);
