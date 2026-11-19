@@ -118,10 +118,10 @@ bool CSteal::IsAlive() {
 void CSteal::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    const vector3d origin = this->positionVector;
     const float scale = particle->scale;
     float* params = &particle->animationParameter;
     const float scaleStep = params[5];
+    const vector3d origin = this->positionVector;
     const int index = particle->columnIndex;
     const float velocityX = particle->velocity.x;
     const float velocityY = particle->velocity.y;
@@ -161,10 +161,10 @@ void CSteal::OnProcess() {
 // OFFSET: 0x00B4D4F0
 // FUNCTION: fn_46188
 __declspec(noinline) void CSteal::UpdateParticle(CSpriteParticle* particle) {
-  const vector3d origin = this->positionVector;
   const float scale = particle->scale;
   float* params = &particle->animationParameter;
   const float scaleStep = params[5];
+  const vector3d origin = this->positionVector;
   const int index = particle->columnIndex;
   const float velocityX = particle->velocity.x;
   const float velocityY = particle->velocity.y;
