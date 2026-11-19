@@ -15,6 +15,41 @@
 #include <cstring>
 #include <utility>
 
+extern "C" void JsonCopyConstruct();
+extern "C" void JsonDestroy();
+
+struct JsonValueData {
+  /* 0000 */ unsigned char type;
+  /* 0001 */ unsigned char padding_0001;
+  /* 0002 */ unsigned short smallValue;
+  /* 0004 */ void* pointer;
+  /* 0008 */ long long integer;
+};
+
+static_assert(sizeof(JsonValueData) == sizeof(jsoncons::json));
+
+struct JsonValueCopy {
+  /* 0000 */ JsonValueData value;
+
+  // INLINED
+  JsonValueCopy(const jsoncons::json& other) {
+    reinterpret_cast<void(__thiscall*)(JsonValueData*, const jsoncons::json*)>(JsonCopyConstruct)(&this->value, &other);
+  }
+
+  JsonValueCopy(const JsonValueCopy&) = delete;
+  JsonValueCopy& operator=(const JsonValueCopy&) = delete;
+
+  // INLINED
+  operator const jsoncons::json&() const {
+    return reinterpret_cast<const jsoncons::json&>(this->value);
+  }
+
+  // INLINED
+  ~JsonValueCopy() {
+    reinterpret_cast<void(__thiscall*)(JsonValueData*)>(JsonDestroy)(&this->value);
+  }
+};
+
 // OFFSET: 0x0050AE30
 // FUNCTION: fn_00894
 bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
@@ -30,13 +65,13 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
 
   for (const auto& member : this->document["ReputeGroup"].object_range()) {
     const std::string name = member.key();
-    const jsoncons::json node = member.value();
+    const JsonValueCopy node(member.value());
     ReputeGroupRecord record;
     this->GetStringValue(node, "ID", &record.id);
     this->GetStringValue(node, "Name", &record.name);
     this->GetIntVectorValue(node, "ReputeList", &record.reputes);
 
-    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
+    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
       this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
       return false;
     }
