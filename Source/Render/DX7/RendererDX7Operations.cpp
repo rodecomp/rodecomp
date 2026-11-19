@@ -263,27 +263,29 @@ void CRendererDX7::FlushRenderList() {
   this->DrawTopmostQueue();
   this->device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
 
-  DWORD depthWrite = 0;
-  DWORD alphaTest = 0;
-  DWORD alphaReference = 0;
-  DWORD alphaFunction = 0;
-  this->device->GetRenderState(D3DRENDERSTATE_ZWRITEENABLE, &depthWrite);
-  this->device->GetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, &alphaTest);
-  this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &alphaReference);
-  this->device->GetRenderState(D3DRENDERSTATE_ALPHAFUNC, &alphaFunction);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
-  this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 159);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-  this->DrawDepthSortedQueue();
-  this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 159);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_LESS);
-  this->DrawDepthSortedQueue();
-  this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, depthWrite);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, alphaTest);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, alphaReference);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, alphaFunction);
+  {
+    DWORD depthWrite = 0;
+    DWORD alphaTest = 0;
+    DWORD alphaReference = 0;
+    DWORD alphaFunction = 0;
+    this->device->GetRenderState(D3DRENDERSTATE_ZWRITEENABLE, &depthWrite);
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, &alphaTest);
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &alphaReference);
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHAFUNC, &alphaFunction);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
+    this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 159);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+    this->DrawDepthSortedQueue();
+    this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 159);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_LESS);
+    this->DrawDepthSortedQueue();
+    this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, depthWrite);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, alphaTest);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, alphaReference);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, alphaFunction);
+  }
 
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -300,18 +302,20 @@ void CRendererDX7::FlushRenderList() {
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
   this->DrawAlphaQueues();
 
-  DWORD reference = 0;
-  this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &reference);
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 207);
-  std::sort(this->queue_0228.begin(), this->queue_0228.end());
+  {
+    DWORD reference = 0;
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &reference);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 207);
+    std::sort(this->queue_0228.begin(), this->queue_0228.end());
 
-  for (auto it = this->queue_0228.begin(); it != this->queue_0228.end(); ++it) {
-    RenderCommand* command = it->primitive;
-    this->BindTexture(static_cast<CTextureDX7*>(command->texture));
-    command->Draw(reinterpret_cast<int>(this->device));
+    for (auto it = this->queue_0228.begin(); it != this->queue_0228.end(); ++it) {
+      RenderCommand* command = it->primitive;
+      this->BindTexture(static_cast<CTextureDX7*>(command->texture));
+      command->Draw(reinterpret_cast<int>(this->device));
+    }
+
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, reference);
   }
-
-  this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, reference);
   this->device->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
