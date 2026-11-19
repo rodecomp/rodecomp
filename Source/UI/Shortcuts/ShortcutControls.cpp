@@ -11,8 +11,6 @@
 #include <iterator>
 #include <new>
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
 void UIShortCutWnd::OnCreate(int, int) {

@@ -2,8 +2,6 @@
 
 #include <utility>
 
-template __declspec(noinline) std::string::basic_string(const std::string&);
-
 // OFFSET: 0x005E9600
 // FUNCTION: fn_03955
 CCURLPostHander::CCURLPostHander(std::string url) : m_url(url), m_headers(nullptr), m_last(nullptr), m_form(nullptr), m_easy(nullptr) {

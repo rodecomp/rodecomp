@@ -20,9 +20,6 @@ struct RmaActionTag {
   std::uint8_t third;
 };
 
-template __declspec(noinline) void std::vector<std::string>::resize(std::size_t);
-template __declspec(noinline) void std::vector<int>::resize(std::size_t);
-
 // OFFSET: 0x007461C0
 // FUNCTION: fn_07770
 CRmaRes::CRmaRes() {

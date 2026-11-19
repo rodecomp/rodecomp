@@ -9,8 +9,6 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 
-template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
-
 // OFFSET: 0x00A90950
 // FUNCTION: fn_17154
 bool UIWindowMgr::ProcessDialogKey(int, int key) {

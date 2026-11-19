@@ -26,12 +26,6 @@
 #include <cstdlib>
 #include <shellapi.h>
 
-template __declspec(noinline) std::string::~basic_string() noexcept;
-template __declspec(noinline) std::string::basic_string(const char* const);
-template __declspec(noinline) std::string::basic_string(const std::string&);
-template __declspec(noinline) std::string& std::string::operator=(const std::string&);
-template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
-
 // INLINED
 __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
   switch (id) {
