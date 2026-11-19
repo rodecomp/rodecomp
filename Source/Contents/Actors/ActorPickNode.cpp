@@ -50,20 +50,20 @@ __declspec(noinline) CActorPickNode::~CActorPickNode() {
 // OFFSET: 0x00AD9980
 // FUNCTION: fn_17889
 bool CPathFinder::LoadAttr(std::string name) {
+  C3dAttr* attr;
   const auto found = this->attrCache.find(name);
   if (found != this->attrCache.end()) {
-    this->attr = found->second;
-    return true;
-  }
+    attr = found->second;
+  } else {
+    attr = new C3dAttr;
+    if (attr == nullptr) {
+      return false;
+    }
 
-  C3dAttr* attr = new C3dAttr;
-  if (attr == nullptr) {
-    return false;
+    this->attrCache[name] = attr;
+    name += ".gat";
+    attr->Load(name.c_str());
   }
-
-  this->attrCache[name] = attr;
-  name += ".gat";
-  attr->Load(name.c_str());
   this->attr = attr;
   return true;
 }
