@@ -130,10 +130,7 @@ void CLevel99Effect::Close() {
 // OFFSET: 0x00B6AAD0
 // FUNCTION: fn_19085
 void CLevel99Effect::Open() {
-  int index = 0;
-  int tilt = 0;
-  int angle = 0;
-  do {
+  for (int index = 0; index < 2; ++index) {
     CParticle* particle = CreateParticle(&this->positionVector, 13);
     if (particle) {
       particle->SetTexture("effect\\pikapika2.bmp");
@@ -142,17 +139,13 @@ void CLevel99Effect::Open() {
       particle->rowIndex = 0;
       particle->groupIndex = 1;
       particle->alpha = 200;
-      particle->angle = static_cast<float>(angle);
-      particle->phaseParameter = tilt;
+      particle->angle = static_cast<float>(index * 22);
+      particle->phaseParameter = index * 180;
       particle->scale = 9.0f;
       particle->InitParticleQuad(particle->vertices);
       this->sparkles.push_back(particle);
     }
-
-    tilt += 180;
-    angle += 22;
-    ++index;
-  } while (angle < 44);
+  }
 
   this->AddRings();
 }
