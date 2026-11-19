@@ -8,6 +8,16 @@
 #include <algorithm>
 #include <cstring>
 
+// OFFSET: 0x00B4B890
+CMappillarEffect::CMappillarEffect()
+    : CEffect(247), lastInner{}, lastOuter{}, particles() {
+}
+
+// OFFSET: 0x00B4B930
+// FUNCTION: fn_45989
+__declspec(noinline) CMappillarEffect::~CMappillarEffect() {
+}
+
 // OFFSET: 0x00B4BBB0
 // FUNCTION: fn_18955
 void CMappillarEffect::Close() {

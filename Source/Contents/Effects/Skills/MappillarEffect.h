@@ -11,11 +11,14 @@ class CParticle;
 
 class CMappillarEffect : public CEffect {
 public:
+  CMappillarEffect();
+  ~CMappillarEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
   void Close() override;
   bool IsAlive() override;
+
 
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;
