@@ -11,6 +11,9 @@ class CParticle;
 
 class CSphereWindEffect : public CEffect {
 public:
+  CSphereWindEffect();
+  ~CSphereWindEffect() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;

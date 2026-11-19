@@ -12,6 +12,16 @@
 #include <cstdlib>
 #include <cstring>
 
+// OFFSET: 0x00B77C80
+CSphereWindEffect::CSphereWindEffect()
+    : CEffect(-1), lastInner{}, lastOuter{}, particles() {
+}
+
+// OFFSET: 0x00B77D20
+// FUNCTION: fn_46048
+__declspec(noinline) CSphereWindEffect::~CSphereWindEffect() {
+}
+
 // OFFSET: 0x00B781E0
 // FUNCTION: fn_19188
 void CSphereWindEffect::Close() {
