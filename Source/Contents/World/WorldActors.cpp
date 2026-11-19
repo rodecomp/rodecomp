@@ -25,13 +25,16 @@ ActorHealth CWorld::GetActorHealth(std::uint32_t aid) const {
 
   const CPc* actor = static_cast<const CPc*>(this->GetGameActorByAID(aid));
   if (!actor) {
-    return {};
+    return {0, 0, false};
   }
   const UIPcGage* gauge = actor->gaugeWindow;
-  if (!gauge) {
-    return {0, 0, true};
+  int maximum = 0;
+  int current = 0;
+  if (gauge) {
+    maximum = gauge->maximum;
+    current = gauge->current;
   }
-  return {gauge->maximum, gauge->current, true};
+  return {maximum, current, true};
 }
 
 #pragma inline_depth(0)
