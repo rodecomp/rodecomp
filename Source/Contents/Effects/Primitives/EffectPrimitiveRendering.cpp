@@ -115,61 +115,59 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
   TransformPrimitiveVertex(matrix, vert[3], tvert[3]);
 
   {
-    RenderTriangle& triangle = this->state.triangles[0];
     const float firstPosition[3] = {tvert[0].x + this->render.position.x, tvert[0].y + this->render.position.y, tvert[0].z + this->render.position.z};
     RenderVertex first{};
     first.specular = 0xFF000000;
     g_renderer->Project(firstPosition, wtm.values, first);
-    triangle.vertices[0] = first;
-    triangle.vertices[0].diffuse = this->state.argb;
-    triangle.vertices[0].u = 0.0f;
-    triangle.vertices[0].v = this->state.v1;
+    this->state.triangles[0].vertices[0] = first;
+    this->state.triangles[0].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[0].vertices[0].u = 0.0f;
+    this->state.triangles[0].vertices[0].v = this->state.v1;
     const float secondPosition[3] = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
     RenderVertex second{};
     second.specular = 0xFF000000;
     g_renderer->Project(secondPosition, wtm.values, second);
-    triangle.vertices[1] = second;
-    triangle.vertices[1].diffuse = this->state.argb;
-    triangle.vertices[1].u = 1.0f;
-    triangle.vertices[1].v = this->state.v1;
+    this->state.triangles[0].vertices[1] = second;
+    this->state.triangles[0].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[0].vertices[1].u = 1.0f;
+    this->state.triangles[0].vertices[1].v = this->state.v1;
     const float thirdPosition[3] = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
     RenderVertex third{};
     third.specular = 0xFF000000;
     g_renderer->Project(thirdPosition, wtm.values, third);
-    triangle.vertices[2] = third;
-    triangle.vertices[2].diffuse = this->state.argb;
-    triangle.vertices[2].u = 0.0f;
-    triangle.vertices[2].v = this->state.v2;
-    triangle.texture = this->state.textures[this->render.curMotion];
+    this->state.triangles[0].vertices[2] = third;
+    this->state.triangles[0].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[0].vertices[2].u = 0.0f;
+    this->state.triangles[0].vertices[2].v = this->state.v2;
+    this->state.triangles[0].texture = this->state.textures[this->render.curMotion];
   }
 
   {
-    RenderTriangle& triangle = this->state.triangles[1];
     const float firstPosition[3] = {tvert[3].x + this->render.position.x, tvert[3].y + this->render.position.y, tvert[3].z + this->render.position.z};
     RenderVertex first{};
     first.specular = 0xFF000000;
     g_renderer->Project(firstPosition, wtm.values, first);
-    triangle.vertices[0] = first;
-    triangle.vertices[0].diffuse = this->state.argb;
-    triangle.vertices[0].u = 1.0f;
-    triangle.vertices[0].v = this->state.v2;
+    this->state.triangles[1].vertices[0] = first;
+    this->state.triangles[1].vertices[0].diffuse = this->state.argb;
+    this->state.triangles[1].vertices[0].u = 1.0f;
+    this->state.triangles[1].vertices[0].v = this->state.v2;
     const float secondPosition[3] = {tvert[2].x + this->render.position.x, tvert[2].y + this->render.position.y, tvert[2].z + this->render.position.z};
     RenderVertex second{};
     second.specular = 0xFF000000;
     g_renderer->Project(secondPosition, wtm.values, second);
-    triangle.vertices[1] = second;
-    triangle.vertices[1].diffuse = this->state.argb;
-    triangle.vertices[1].u = 0.0f;
-    triangle.vertices[1].v = this->state.v2;
+    this->state.triangles[1].vertices[1] = second;
+    this->state.triangles[1].vertices[1].diffuse = this->state.argb;
+    this->state.triangles[1].vertices[1].u = 0.0f;
+    this->state.triangles[1].vertices[1].v = this->state.v2;
     const float thirdPosition[3] = {tvert[1].x + this->render.position.x, tvert[1].y + this->render.position.y, tvert[1].z + this->render.position.z};
     RenderVertex third{};
     third.specular = 0xFF000000;
     g_renderer->Project(thirdPosition, wtm.values, third);
-    triangle.vertices[2] = third;
-    triangle.vertices[2].diffuse = this->state.argb;
-    triangle.vertices[2].u = 1.0f;
-    triangle.vertices[2].v = this->state.v1;
-    triangle.texture = this->state.textures[this->render.curMotion];
+    this->state.triangles[1].vertices[2] = third;
+    this->state.triangles[1].vertices[2].diffuse = this->state.argb;
+    this->state.triangles[1].vertices[2].u = 1.0f;
+    this->state.triangles[1].vertices[2].v = this->state.v1;
+    this->state.triangles[1].texture = this->state.textures[this->render.curMotion];
   }
 
   for (int index = 0; index < 2; ++index) {
