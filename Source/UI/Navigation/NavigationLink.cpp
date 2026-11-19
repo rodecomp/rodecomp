@@ -988,33 +988,34 @@ void CCreateLineInfo::BuildWindows() {
 
   for (auto segment = this->m_segments.begin(); segment != this->m_segments.end(); ++segment) {
     const std::string text = segment->text;
-    switch (segment->type) {
-    case LINE_SEGMENT_URL:
-    case LINE_SEGMENT_NAVI:
-    case LINE_SEGMENT_ITEM:
-    case LINE_SEGMENT_TIPBOX:
-    case LINE_SEGMENT_QUEST:
-      x = this->LayoutLink(x, text, segment->type, segment->style);
-      break;
-    case LINE_SEGMENT_MESSAGE: {
-      const std::string expanded = GetNavigationLinkParser()->ExpandMessages(text);
-      x = this->LayoutText(x, expanded, segment->style);
-      break;
-    }
-    case LINE_SEGMENT_EMOTION:
-      x = this->LayoutEmotion(x, text);
-      break;
-    case LINE_SEGMENT_ITEM_IMAGE:
-      x = this->LayoutItemImage(x, text);
-      break;
-    case LINE_SEGMENT_TEXT:
+    if (segment->type != LINE_SEGMENT_TEXT) {
+      switch (segment->type) {
+      case LINE_SEGMENT_URL:
+      case LINE_SEGMENT_NAVI:
+      case LINE_SEGMENT_ITEM:
+      case LINE_SEGMENT_TIPBOX:
+      case LINE_SEGMENT_QUEST:
+        x = this->LayoutLink(x, text, segment->type, segment->style);
+        break;
+      case LINE_SEGMENT_MESSAGE: {
+        const std::string expanded = GetNavigationLinkParser()->ExpandMessages(text);
+        x = this->LayoutText(x, expanded, segment->style);
+        break;
+      }
+      case LINE_SEGMENT_EMOTION:
+        x = this->LayoutEmotion(x, text);
+        break;
+      case LINE_SEGMENT_ITEM_IMAGE:
+        x = this->LayoutItemImage(x, text);
+        break;
+      }
+    } else {
       if (text.compare("\n") == 0) {
         this->NewLine();
         x = 0;
       } else {
         x = this->LayoutText(x, text, segment->style);
       }
-      break;
     }
   }
 }
