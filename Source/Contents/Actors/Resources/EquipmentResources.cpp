@@ -7,6 +7,16 @@
 #include <new>
 #include <string>
 
+// INLINED
+static const std::string SexNameOf(int sex) {
+  return g_session.GetSexName(sex);
+}
+
+// INLINED
+static const std::string AccessoryNameOf(int accessory) {
+  return g_session.GetAccessoryName(accessory);
+}
+
 // OFFSET: 0x00BA9950
 // FUNCTION: fn_19742
 bool EquipmentResourceMgr::Init() {
@@ -100,10 +110,7 @@ std::string EquipmentResourceMgr::GetNamedAccessoryResourceName(int type, int se
   std::string path = "";
   std::string sexName = "";
 
-  {
-    const std::string& name = g_session.GetSexName(sex);
-    sexName = name;
-  }
+  sexName = SexNameOf(sex);
   path = static_cast<const std::string&>(FormatOwnedString("sprite\\악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
   return path;
 }
