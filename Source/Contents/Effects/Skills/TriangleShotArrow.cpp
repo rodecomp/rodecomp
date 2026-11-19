@@ -26,6 +26,11 @@ CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1) {
   this->rotationParameter = 0;
 }
 
+// OFFSET: 0x0072EDC0
+// FUNCTION: fn_46011
+__declspec(noinline) CTriangleShotArrow::~CTriangleShotArrow() {
+}
+
 // OFFSET: 0x0072EE80
 // FUNCTION: fn_07523
 void CTriangleShotArrow::Close() {
@@ -102,6 +107,22 @@ bool CTriangleShotArrow::IsAlive() {
   return true;
 }
 
+// OFFSET: 0x0072F3B0
+// FUNCTION: fn_46012
+__forceinline void CTriangleShotArrow::UpdateArrow(CEZ2STRParticle* particle) {
+  if (particle) {
+    const float step = static_cast<float>(this->step);
+    this->current.x = step * this->direction.x + this->origin.x;
+    this->current.y = step * this->direction.y + this->origin.y;
+    this->current.z = step * this->direction.z + this->origin.z;
+    this->position[0] = this->current.x;
+    this->position[1] = this->current.y;
+    this->position[2] = this->current.z;
+    particle->position = this->current;
+    particle->Process(0.0f, 0.0f, 0.0f);
+  }
+}
+
 // OFFSET: 0x0072F2E0
 // FUNCTION: fn_07526
 void CTriangleShotArrow::OnProcess() {
@@ -110,28 +131,22 @@ void CTriangleShotArrow::OnProcess() {
     return;
   }
 
-  CEZ2STRParticle* arrow = this->arrow;
-  if (arrow) {
-    const float step = static_cast<float>(this->step);
-    this->current.x = step * this->direction.x + this->origin.x;
-    this->current.y = step * this->direction.y + this->origin.y;
-    this->current.z = step * this->direction.z + this->origin.z;
-    this->position[0] = this->current.x;
-    this->position[1] = this->current.y;
-    this->position[2] = this->current.z;
-    arrow->position = this->current;
-    arrow->Process(0.0f, 0.0f, 0.0f);
-  }
-
+  this->UpdateArrow(this->arrow);
   ++this->step;
+}
+
+// OFFSET: 0x0072F4A0
+// FUNCTION: fn_46013
+__forceinline void CTriangleShotArrow::RenderArrow(CEZ2STRParticle* particle) {
+  if (particle) {
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+  }
 }
 
 // OFFSET: 0x0072F470
 // FUNCTION: fn_07527
 void CTriangleShotArrow::Render() {
-  if (this->arrow) {
-    this->arrow->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-  }
+  this->RenderArrow(this->arrow);
 }
 
 // OFFSET: 0x0072F4D0

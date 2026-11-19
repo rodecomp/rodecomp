@@ -11,6 +11,7 @@ class CEZ2STRParticle;
 class CTriangleShotArrow : public CEffect {
 public:
   CTriangleShotArrow();
+  ~CTriangleShotArrow() override;
 
   void Open() override;
   void OnProcess() override;
@@ -26,6 +27,10 @@ public:
   /* 00DC */ vector3d current;
   /* 00E8 */ vector3d direction;
   /* 00F4 */ vector3d origin;
+
+private:
+  void UpdateArrow(CEZ2STRParticle* particle);
+  void RenderArrow(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
