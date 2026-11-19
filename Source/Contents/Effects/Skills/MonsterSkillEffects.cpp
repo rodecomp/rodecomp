@@ -941,6 +941,11 @@ void CEternalSlashAttackEffect::Render() {
 CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(EF_ETERNAL_SLASH_COUNT), emitter(nullptr) {
 }
 
+// OFFSET: 0x00711190
+// FUNCTION: fn_46313
+__declspec(noinline) CEternalSlashCountEffect::~CEternalSlashCountEffect() {
+}
+
 // OFFSET: 0x00711280
 // FUNCTION: fn_07216
 void CEternalSlashCountEffect::Open() {

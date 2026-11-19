@@ -181,6 +181,7 @@ public:
 class CEternalSlashCountEffect : public CEffect {
 public:
   CEternalSlashCountEffect();
+  ~CEternalSlashCountEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
