@@ -16,6 +16,11 @@ CBindTrapEffect::CBindTrapEffect() : CEffect(-1), particles() {
   this->effectLifetime = 8000;
 }
 
+// OFFSET: 0x006FB400
+// FUNCTION: fn_46167
+__declspec(noinline) CBindTrapEffect::~CBindTrapEffect() {
+}
+
 // OFFSET: 0x006FB4E0
 // FUNCTION: fn_06906
 void CBindTrapEffect::AddParticle(int index) {
@@ -97,6 +102,27 @@ void CBindTrapEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x006FB790
+// FUNCTION: fn_46168
+void CBindTrapEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeXRotation(1.570796f);
+  rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+
+  matrix scale;
+  std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+  scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+  matrix composed;
+  composed.Compose(scale, rotation);
+  particle->transform = composed;
+}
+
 // OFFSET: 0x006FB8B0
 // FUNCTION: fn_06911
 void CBindTrapEffect::Render() {
@@ -105,5 +131,13 @@ void CBindTrapEffect::Render() {
     if (particle) {
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
+  }
+}
+
+// OFFSET: 0x006FB910
+// FUNCTION: fn_46169
+void CBindTrapEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }

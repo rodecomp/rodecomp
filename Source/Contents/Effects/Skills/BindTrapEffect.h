@@ -11,6 +11,7 @@ class CParticle;
 class CBindTrapEffect : public CEffect {
 public:
   CBindTrapEffect();
+  __declspec(noinline) ~CBindTrapEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -19,6 +20,10 @@ public:
   void AddParticle(int index);
 
   /* 00CC */ std::vector<CParticle*> particles;
+
+private:
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
