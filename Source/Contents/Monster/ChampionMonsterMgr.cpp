@@ -22,10 +22,31 @@ extern "C" {
 // GLOBAL: gl_24813
 CChampionMonsterMgr* g_championMonsterMgr;
 
+// OFFSET: 0x00ADDAB0
+// FUNCTION: fn_46437
+CChampionMonsterMgr::CChampionMonsterMgr() {
+  this->m_isValid = true;
+}
+
+// OFFSET: 0x00ADDD90
+// FUNCTION: fn_46438
+__declspec(noinline) CChampionMonsterMgr::~CChampionMonsterMgr() = default;
+
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
 __declspec(noinline) void CChampionMonsterMgr::AddItem(int id, float value) {
   this->m_items.insert(std::pair<int, lcData>(id, lcData(value)));
+}
+
+// OFFSET: 0x00ADE140
+// FUNCTION: fn_46440
+void CChampionMonsterMgr::AddEffect(int id, int effect) {
+  if (!this->m_items.empty()) {
+    const auto it = this->m_items.find(id);
+    if (it != this->m_items.end()) {
+      it->second.m_effects.push_back(effect);
+    }
+  }
 }
 
 // OFFSET: 0x00ADE1B0
