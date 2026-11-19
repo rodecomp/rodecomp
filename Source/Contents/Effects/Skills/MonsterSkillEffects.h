@@ -103,6 +103,7 @@ public:
   void Render() override;
   bool IsAlive() override;
   void Close() override;
+  void UpdateParticle(CEZ2STRParticle* emitter);
   virtual void SpawnStart();
   virtual void SpawnLoop();
   virtual void SpawnShock();

@@ -594,6 +594,32 @@ CCurseOfCubeEffect::CCurseOfCubeEffect()
 __declspec(noinline) CCurseOfCubeEffect::~CCurseOfCubeEffect() {
 }
 
+// OFFSET: 0x0070EE70
+// FUNCTION: fn_46297
+void CCurseOfCubeEffect::UpdateParticle(CEZ2STRParticle* emitter) {
+  if (!emitter) {
+    return;
+  }
+
+  const vector3d position = *&this->positionVector;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const vector3d viewPosition = {
+      position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9],
+      position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10],
+      position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11]};
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+
+  const float vx = viewPosition.x + this->viewOffsetX;
+  const float vy = viewPosition.y + this->viewOffsetY;
+  const float vz = viewPosition.z + this->viewOffsetZ;
+
+  const vector3d world = {vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9],
+                          vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10],
+                          vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11]};
+  emitter->position = world;
+  emitter->Process(0.0f, 0.0f, 0.0f);
+}
+
 // OFFSET: 0x0070EB10
 // FUNCTION: fn_07176
 void CCurseOfCubeEffect::Restart() {
