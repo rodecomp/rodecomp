@@ -147,9 +147,11 @@ void UIMiniPartyInfoWnd::OnMouseHover(int, int) {
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.6f), text, 0, 12, 1);
   }
 
+  int x;
+  int y;
   if (fitted.find(text) == std::string::npos) {
-    int x = this->geometry.x + 15;
-    int y = this->geometry.y - 12;
+    x = this->geometry.x + 15;
+    y = this->geometry.y - 12;
     this->ToScreen(x, y);
     mode->ShowTooltip(text, x, y, 0xFFFFFFFF, 0, 1);
   }
