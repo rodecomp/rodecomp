@@ -15117,10 +15117,11 @@ bool CRagEffect::StormGust() {
 
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt % 29 == 0 &&
       static_cast<unsigned int>(this->state.stateCnt - 31) <= 119u) {
+    const vector3d origin{0.0f, 0.0f, 0.0f};
     for (int count = 2; count != 0; --count) {
       const int longitudeAngle = rand() % 360;
       const int radius = ClampedRandom(25) + 3;
-      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(9, origin);
       this->state.lastPrim->state.duration = 215 - this->state.stateCnt;
       this->state.lastPrim->state.pattern |= 1u;
 
