@@ -5631,7 +5631,10 @@ void CGameMode::ReceiveQuestHuntUpdate2(const unsigned char* data) {
 
       std::string name;
       if (info.m_huntMobId[index] == QUEST_HUNT_CONDITIONAL_MONSTER) {
-        name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
+        const unsigned conditionFlags = info.m_huntConditionFlags[index];
+        const int minLevel = info.m_huntMinLevel[index];
+        const int maxLevel = info.m_huntMaxLevel[index];
+        name = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(conditionFlags, minLevel, maxLevel));
       } else {
         name.assign(info.m_huntName[index]);
       }
