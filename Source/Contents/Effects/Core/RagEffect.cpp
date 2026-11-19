@@ -6985,7 +6985,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  if (kind < 2) {
+  if (kind <= 1) {
     this->state.lastPrim->state.size = 4.0f;
   } else if (kind == 2) {
     this->state.lastPrim->state.size = 7.0f;
@@ -7007,11 +7007,12 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
     }
   }
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 90);
@@ -14429,18 +14430,15 @@ void CRagEffect::CHIMTO(char flag) {
 
   this->state.lastPrim->state.renderFlag |= 0x200u;
 
-  int animation;
   if (angle >= 180 && angle < 270) {
-    animation = 0;
+    this->state.lastPrim->SetAction(0, 16, 1);
   } else if (angle >= 90 && angle < 180) {
-    animation = 1;
+    this->state.lastPrim->SetAction(1, 16, 1);
   } else if (angle >= 0 && angle < 90) {
-    animation = 2;
+    this->state.lastPrim->SetAction(2, 16, 1);
   } else {
-    animation = 3;
+    this->state.lastPrim->SetAction(3, 16, 1);
   }
-
-  this->state.lastPrim->SetAction(animation, 16, 1);
   this->state.lastPrim->InitSegment();
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
@@ -15223,25 +15221,25 @@ void CRagEffect::TexturedSkillAura(char type) {
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
+  const vector3d& playerPosition = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
   if (type == 0) {
     g_soundMgr->PlayWave(
-      "effect\\hunter_detecting.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z,
+      "effect\\hunter_detecting.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
       250, 40, 1.0f, 0
     );
   } else if (type == 2) {
     g_soundMgr->PlayWave(
-      "effect\\priest_benedictio.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z,
+      "effect\\priest_benedictio.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
       250, 40, 1.0f, 0
     );
   } else if (type == 4) {
     g_soundMgr->PlayWave(
-      "effect\\cru_grand cross.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z,
+      "effect\\cru_grand cross.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
       250, 40, 1.0f, 0
     );
   } else if (type == 5) {
     g_soundMgr->PlayWave(
-      "effect\\ANALYZE.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40,
+      "effect\\ANALYZE.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z, 250, 40,
       1.0f, 0
     );
   }
@@ -16709,8 +16707,11 @@ void CRagEffect::LineStreakLayered(short kind) {
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  this->state.lastPrim->state.textures[0] =
-    g_texMgr.Load(kind < 10 ? "effect\\line3.tga" : "effect\\line3y.tga", 0, false, true, false);
+  if (kind < 10) {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\line3.tga", 0, false, true, false);
+  } else {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\line3y.tga", 0, false, true, false);
+  }
   this->state.lastPrim->state.slots[0].life = 0;
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
@@ -16729,22 +16730,20 @@ void CRagEffect::LineStreakLayered(short kind) {
 
     this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(200));
 
-    if (kind >= 10) {
-      if (kind > 19) {
-        this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(rand() % 4) * 0.1f + 0.4f;
-        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 30.0f;
-        this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(rand() % 3 + 20);
-        this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
-      } else {
-        this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandom(6)) * 0.1f + g_depthAverageHalf;
-        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 40.0f;
-        this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(rand() % 3 + 10);
-        this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
-      }
-    } else {
-      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(rand() % 4) * 0.1f + 0.3f;
+    if (kind < 10) {
+      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandom(4)) * 0.1f + 0.3f;
       this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 20.0f;
-      this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(rand() % 3);
+      this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(ClampedRandom(3));
+      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
+    } else if (kind < 20) {
+      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandom(6)) * 0.1f + g_depthAverageHalf;
+      this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 40.0f;
+      this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(ClampedRandom(3) + 10);
+      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
+    } else {
+      this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandom(4)) * 0.1f + 0.4f;
+      this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(31)) + 30.0f;
+      this->state.lastPrim->state.slots[i].flag1[0] = static_cast<char>(ClampedRandom(3) + 20);
       this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
     }
 
