@@ -5,6 +5,7 @@
 
 #include <map>
 #include <utility>
+#include <windows.h>
 
 class CTexture;
 class UIScrollBar;
@@ -47,7 +48,7 @@ public:
   /* 00A0 */ int scrollPosition;
   /* 00A4 */ unsigned char horizontalScrollable;
   /* 00A5 */ unsigned char wheelScroll;
-  /* 00A8 */ std::map<UIWindow*, std::pair<int, int>> childOrigins;
+  /* 00A8 */ std::map<UIWindow*, POINT> childOrigins;
 };
 
 #endif

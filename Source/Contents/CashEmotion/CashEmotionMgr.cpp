@@ -3789,7 +3789,8 @@ void UICashEmotionScrollWnd::AddChild(UIWindow* child) {
       continue;
     }
 
-    this->childOrigins[window] = std::make_pair(window->geometry.x, window->geometry.y);
+    const POINT origin = {window->geometry.x, window->geometry.y};
+    this->childOrigins[window] = origin;
   }
 }
 

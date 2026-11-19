@@ -89,7 +89,8 @@ void UIScrollWnd::AddScrollChild(UIWindow* child) {
 
   for (UIWindow* window : this->m_children) {
     if (window != this->horizontalBar && window != this->scrollBar) {
-      this->childOrigins[window] = std::make_pair(window->geometry.x, window->geometry.y);
+      const POINT origin = {window->geometry.x, window->geometry.y};
+      this->childOrigins[window] = origin;
     }
   }
 
@@ -100,8 +101,8 @@ void UIScrollWnd::AddScrollChild(UIWindow* child) {
 // FUNCTION: fn_13777
 void UIScrollWnd::MoveScrollChild(UIWindow* child, int x, int y) {
   child->Move(x, y);
-  this->childOrigins[child].first = x;
-  this->childOrigins[child].second = y;
+  this->childOrigins[child].x = x;
+  this->childOrigins[child].y = y;
   this->UpdateScrollRange();
 }
 
@@ -119,7 +120,7 @@ bool UIScrollWnd::Update(int redraw) {
 // FUNCTION: fn_45697
 bool UIScrollWnd::UpdateUncached(int redraw) {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
-    it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
+    it->first->Move(it->second.x - this->horizontalScrollPosition, it->second.y - this->scrollPosition);
   }
 
   if (this->m_dirty == 1) {
@@ -154,7 +155,7 @@ bool UIScrollWnd::UpdateUncached(int redraw) {
 // FUNCTION: fn_13779
 bool UIScrollWnd::UpdateCached(int redraw) {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
-    it->first->Move(it->second.first, it->second.second);
+    it->first->Move(it->second.x, it->second.y);
   }
 
   if (this->m_dirty == 1) {
@@ -190,7 +191,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
   }
 
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
-    it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
+    it->first->Move(it->second.x - this->horizontalScrollPosition, it->second.y - this->scrollPosition);
   }
   return changed;
 }
@@ -338,11 +339,11 @@ void UIScrollWnd::UpdateScrollRange() {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
     UIWindow* child = it->first;
     if (child->geometry.visible != 0) {
-      const int childRight = child->geometry.width + it->second.first;
+      const int childRight = child->geometry.width + it->second.x;
       if (right < childRight) {
         right = childRight;
       }
-      const int childBottom = it->second.second + child->geometry.height;
+      const int childBottom = it->second.y + child->geometry.height;
       if (bottom < childBottom) {
         bottom = childBottom;
       }
