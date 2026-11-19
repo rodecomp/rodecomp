@@ -4495,9 +4495,8 @@ __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* pa
   g_session.ClearMerchantPurchaseItems();
 
   const int count = static_cast<unsigned int>(static_cast<int>(p->length) - 12) / 11u;
-  const Item1758Record* record = reinterpret_cast<const Item1758Record*>(p + 1);
-  for (int index = 0; index < count; ++index, ++record) {
-    const Item1758Record entry = *record;
+  for (int index = 0; index < count; ++index) {
+    const Item1758Record entry = reinterpret_cast<const Item1758Record*>(p + 1)[index];
     ITEM_INFO item;
     item.prices[0] = entry.price;
     item.prices[1] = entry.price;
