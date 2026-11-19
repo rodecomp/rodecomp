@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_MAPPILLAREFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
-#include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 
 #include <cstddef>
 #include <vector>
@@ -23,8 +23,7 @@ public:
   void UpdateParticleTransform(CParticle* particle);
   void RenderParticle(CParticle* particle);
 
-  /* 00CC */ vector3d lastInner;
-  /* 00D8 */ vector3d lastOuter;
+  /* 00CC */ EffectPoint lastPoints[2];
   /* 00E4 */ std::vector<CParticle*> particles;
 };
 

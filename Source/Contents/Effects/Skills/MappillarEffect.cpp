@@ -1,6 +1,7 @@
 #include "Contents/Effects/Skills/MappillarEffect.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -11,7 +12,7 @@
 // OFFSET: 0x00B4B890
 // FUNCTION: fn_45988
 CMappillarEffect::CMappillarEffect()
-    : CEffect(247), lastInner{}, lastOuter{}, particles() {
+    : CEffect(EF_MAPPILLAR2) {
 }
 
 // OFFSET: 0x00B4B930
@@ -26,25 +27,28 @@ void CMappillarEffect::UpdateParticle(CParticle* particle) {
     return;
   }
 
+  const float speed = particle->speedParameter;
   int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + particle->angle) % 360;
   if (particle->columnIndex == 20) {
     angle = static_cast<int>(particle->angle);
   }
 
   const int tilt = particle->phaseParameter;
-  const float spread = particle->speedParameter * g_cosTable[tilt];
-  const float height = particle->speedParameter * g_sinTable[tilt];
+  const float spread = speed * g_cosTable[tilt];
+  const float height = speed * g_sinTable[tilt];
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
+  const float spreadX = spread * cosine;
+  const float spreadZ = spread * sine;
 
   EffectPoint points[2];
 
   const float innerX = particle->scale * cosine;
   const float innerY = 0.0f;
   const float innerZ = particle->scale * sine;
-  const float outerX = innerX + spread * cosine;
+  const float outerX = innerX + spreadX;
   const float outerY = 0.0f - height;
-  const float outerZ = innerZ + spread * sine;
+  const float outerZ = innerZ + spreadZ;
 
   if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
     particle->vertices[1].x = outerX;
@@ -53,20 +57,20 @@ void CMappillarEffect::UpdateParticle(CParticle* particle) {
     particle->vertices[3].x = innerX;
     particle->vertices[3].y = innerY;
     particle->vertices[3].z = innerZ;
-    particle->vertices[0].x = this->lastOuter.x;
-    particle->vertices[0].y = this->lastOuter.y;
-    particle->vertices[0].z = this->lastOuter.z;
-    particle->vertices[2].x = this->lastInner.x;
-    particle->vertices[2].y = this->lastInner.y;
-    particle->vertices[2].z = this->lastInner.z;
+    particle->vertices[0].x = this->lastPoints[1].x;
+    particle->vertices[0].y = this->lastPoints[1].y;
+    particle->vertices[0].z = this->lastPoints[1].z;
+    particle->vertices[2].x = this->lastPoints[0].x;
+    particle->vertices[2].y = this->lastPoints[0].y;
+    particle->vertices[2].z = this->lastPoints[0].z;
   }
 
-  this->lastInner.x = innerX;
-  this->lastInner.y = innerY;
-  this->lastInner.z = innerZ;
-  this->lastOuter.x = outerX;
-  this->lastOuter.y = outerY;
-  this->lastOuter.z = outerZ;
+  this->lastPoints[0].x = innerX;
+  this->lastPoints[0].y = innerY;
+  this->lastPoints[0].z = innerZ;
+  this->lastPoints[1].x = outerX;
+  this->lastPoints[1].y = outerY;
+  this->lastPoints[1].z = outerZ;
 }
 
 // OFFSET: 0x00B4BBB0
@@ -145,20 +149,20 @@ __forceinline void CMappillarEffect::InitializeParticle(CParticle* particle) {
     particle->vertices[3].x = innerX;
     particle->vertices[3].y = innerY;
     particle->vertices[3].z = innerZ;
-    particle->vertices[0].x = this->lastOuter.x;
-    particle->vertices[0].y = this->lastOuter.y;
-    particle->vertices[0].z = this->lastOuter.z;
-    particle->vertices[2].x = this->lastInner.x;
-    particle->vertices[2].y = this->lastInner.y;
-    particle->vertices[2].z = this->lastInner.z;
+    particle->vertices[0].x = this->lastPoints[1].x;
+    particle->vertices[0].y = this->lastPoints[1].y;
+    particle->vertices[0].z = this->lastPoints[1].z;
+    particle->vertices[2].x = this->lastPoints[0].x;
+    particle->vertices[2].y = this->lastPoints[0].y;
+    particle->vertices[2].z = this->lastPoints[0].z;
   }
 
-  this->lastInner.x = innerX;
-  this->lastInner.y = innerY;
-  this->lastInner.z = innerZ;
-  this->lastOuter.x = outerX;
-  this->lastOuter.y = outerY;
-  this->lastOuter.z = outerZ;
+  this->lastPoints[0].x = innerX;
+  this->lastPoints[0].y = innerY;
+  this->lastPoints[0].z = innerZ;
+  this->lastPoints[1].x = outerX;
+  this->lastPoints[1].y = outerY;
+  this->lastPoints[1].z = outerZ;
 }
 
 // OFFSET: 0x00B4C0B0
