@@ -403,7 +403,7 @@ __forceinline NaviCell CNavigationManager::ParseCell(const char* text) {
 // FUNCTION: fn_19565
 NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
   NavigationTarget target;
-  target.type = reinterpret_cast<const NaviTargetRecord*>(data)->type;
+  std::memcpy(&target.type, data, sizeof(target.type));
   std::vector<char> buffer(size - 3, '\0');
   if (target.type == 1 || target.type == 0) {
     std::memcpy(buffer.data(), data + 4, size - 4);
