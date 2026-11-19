@@ -422,6 +422,29 @@ void CStormKickEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B7CA90
+// FUNCTION: fn_46024
+__forceinline void CStormKickEffect::RenderCloud(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int texPart = particle->columnIndex;
+  if (texPart <= 0) {
+    return;
+  }
+
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.unused = false;
+  quad.depth = true;
+  quad.top = 0.0f;
+  quad.bottom = 1.0f;
+  quad.left = static_cast<float>(texPart - 1) / 21.0f;
+  quad.right = static_cast<float>(texPart) / 21.0f;
+  particle->Render(quad);
+}
+
 // OFFSET: 0x00B7C7D0
 // FUNCTION: fn_19226
 void CStormKickEffect::Render() {
@@ -458,23 +481,6 @@ void CStormKickEffect::Render() {
 
   for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
     CParticle* particle = *it;
-    if (!particle) {
-      continue;
-    }
-
-    const int texPart = particle->columnIndex;
-    if (texPart <= 0) {
-      continue;
-    }
-
-    ParticleQuad quad;
-    quad.billboard = false;
-    quad.unused = false;
-    quad.depth = true;
-    quad.top = 0.0f;
-    quad.bottom = 1.0f;
-    quad.left = static_cast<float>(texPart - 1) / 21.0f;
-    quad.right = static_cast<float>(texPart) / 21.0f;
-    particle->Render(quad);
+    this->RenderCloud(particle);
   }
 }

@@ -29,6 +29,7 @@ public:
   /* 00F0 */ std::vector<CParticle*> clouds;
 
 private:
+  void RenderCloud(CParticle* particle);
   void SetEffectLifetime();
   void SetStormColor(CParticle* particle, int effectId);
 };
