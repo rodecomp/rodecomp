@@ -653,6 +653,8 @@ void CGameMode::SpawnMandraAttack(std::uint32_t target, int job, float startFram
   }
 }
 
+template __declspec(noinline) std::string std::operator+(std::string&&, std::string&&);
+
 // OFFSET: 0x00CD8FE0
 // FUNCTION: fn_21307
 void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
@@ -786,7 +788,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     if (target->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
       name = "??????";
     } else {
-      name = this->ActorName(pick->accountId);
+      name = static_cast<const std::string&>(this->ActorName(pick->accountId));
     }
 
     if (g_windowMgr.menuWnd != nullptr) {
