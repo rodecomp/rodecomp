@@ -1018,19 +1018,21 @@ std::string CNavigationManager::StateMapName(int index, int* distance) {
   if (index < 0 || this->states.size() <= static_cast<unsigned int>(index)) {
     return name;
   }
-  if (this->states[index].object != nullptr) {
+  const NavigationTarget& state = this->states[index];
+  if (state.object != nullptr) {
     CNaviInfo* info = nullptr;
-    int type = this->states[index].type;
+    int type = state.type;
     if (type == 0 || type == 1) {
-      info = static_cast<CNaviInfo*>(this->states[index].object);
+      info = static_cast<CNaviInfo*>(state.object);
     } else if (type == 2 || type == 3 || type == 6) {
-      info = static_cast<CNavi_Object*>(this->states[index].object)->GetInfo();
+      info = static_cast<CNavi_Object*>(state.object)->GetInfo();
     }
     if (info != nullptr) {
       name.assign(info->GetName());
     }
   }
-  *distance = this->states[index].type == 3 ? static_cast<CNavi_Object*>(this->states[index].object)->GetFlag() : (this->states[index].type == 2 ? 10000 : 0);
+  int stateType = this->states[index].type;
+  *distance = stateType == 3 ? static_cast<CNavi_Object*>(this->states[index].object)->GetFlag() : (stateType == 2 ? 10000 : 0);
   return name;
 }
 
