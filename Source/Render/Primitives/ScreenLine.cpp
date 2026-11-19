@@ -55,8 +55,8 @@ void UIRoMapWnd::DrawDashedArrow(
   const float normalX = cosine * inverseNormal;
   const float normalY = sine * inverseNormal;
   const float sideX = static_cast<float>(thickness) * normalX;
-  const float sideY = static_cast<float>(thickness) * normalY;
   const float stepX = static_cast<float>(stepWidth) * directionX;
+  const float sideY = static_cast<float>(thickness) * normalY;
   const float stepY = static_cast<float>(stepWidth) * directionY;
   float currentX = startX - static_cast<float>(offset) * normalX;
   float currentY = startY - static_cast<float>(offset) * normalY;
@@ -94,8 +94,8 @@ void UIRoMapWnd::DrawDashedArrow(
     const float tipBaseY = (sideY * 0.5f + nextY) - static_cast<float>(thickness) * directionY;
     const float headX = static_cast<float>(headSize);
     const float tipX = tipBaseX + headX * normalX;
-    const float tipY = tipBaseY + headX * normalY;
     const float otherBaseX = tipBaseX - headX * normalX;
+    const float tipY = tipBaseY + headX * normalY;
     const float otherBaseY = tipBaseY - headX * normalY;
     const float doubledStepX = headX * directionX + headX * directionX;
     const float doubledStepY = headX * directionY + headX * directionY;
