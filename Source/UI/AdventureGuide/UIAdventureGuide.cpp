@@ -343,15 +343,18 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->itemId = data.id;
   const ITEM_DESC& desc = FindItemDescription(std::atoi(info.itemId.c_str()));
   const std::string image = "유저인터페이스\\collection\\" + std::string(desc.identifiedResource) + ".bmp";
-  item->nameText->SetText(std::string(desc.identifiedName));
+  {
+    const std::string name = desc.identifiedName;
+    item->nameText->SetText(name);
+  }
   item->image->SetImage(image);
-  item->SetStatusLines(data.first, data.second, data.third);
+  item->SetStatusLines(data.entry.firstFlag, data.entry.secondFlag, data.entry.thirdFlag);
   item->SetDescription(data.type, info.Description());
   item->sourcesViewer->Clear();
-  for (const std::string& value : data.values) {
+  for (const std::string& value : data.entry.values) {
     item->sourcesViewer->AddLine(value);
   }
-  item->description = data.text;
+  item->description = data.entry.text;
 }
 
 // OFFSET: 0x009DC770
@@ -360,30 +363,30 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
   switch (data.type) {
   case 1:
     owner->SetTitle(data.id);
-    owner->SetViewerLines(data.rewards);
-    owner->title = data.title;
+    owner->SetViewerLines(data.contents.values);
+    owner->title = data.contents.first;
     owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.text);
-    owner->questId = data.questId;
+    owner->statusViewer->AddLine(data.contents.second);
+    owner->questId = data.contents.questId;
     {
-      const bool isNew = g_renewQuestMgr->IsNewQuest(data.questId);
+      const bool isNew = g_renewQuestMgr->IsNewQuest(data.contents.questId);
       owner->stampImage->Show(isNew);
     }
     break;
   case 3:
     owner->SetTitle(data.id);
-    owner->SetViewerLines(data.rewards);
-    owner->title = data.title;
+    owner->SetViewerLines(data.contents.values);
+    owner->title = data.contents.first;
     owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.text);
+    owner->statusViewer->AddLine(data.contents.second);
     owner->stampImage->Show(0);
     return;
   case 4:
     owner->SetTip(data.id);
-    owner->SetViewerLines(data.rewards);
-    owner->title = data.title;
+    owner->SetViewerLines(data.contents.values);
+    owner->title = data.contents.first;
     owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.text);
+    owner->statusViewer->AddLine(data.contents.second);
     owner->stampImage->Show(0);
     return;
   }
@@ -625,13 +628,7 @@ void CUIItem::LoadPage(int type, int id) {
   for (const auto& [key, entry] : entries) {
     CItemData data;
     data.id = key;
-    data.first = entry.firstFlag;
-    data.second = entry.secondFlag;
-    data.third = entry.thirdFlag;
-    data.categoryId = entry.minLevel;
-    data.categoryIndex = entry.maxLevel;
-    data.text = entry.text;
-    data.values = entry.values;
+    data.entry = entry;
     data.type = type;
     this->itemList->data.push_back(data);
   }
@@ -655,13 +652,7 @@ void CUIQuest::LoadPage(int type, int id) {
   for (const auto& [key, content] : contents) {
     CQuestInfo data;
     data.id = key;
-    data.categoryType = content.flag;
-    data.categoryId = content.minLevel;
-    data.categoryIndex = content.maxLevel;
-    data.questId = content.questId;
-    data.title = content.first;
-    data.text = content.second;
-    data.rewards = content.values;
+    data.contents = content;
     data.type = type;
     this->questList->data.push_back(data);
     if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.questId)) {

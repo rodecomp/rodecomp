@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_LISTS_UILISTBOXTEMPLATE_H
 #define RAGNAROK_SOURCE_UI_LISTS_UILISTBOXTEMPLATE_H
 
+#include "Contents/AdventureGuide/AdventureGuideMgr.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Window/UIControl.h"
 
@@ -145,14 +146,8 @@ public:
 };
 class CItemData {
 public:
-  /* 0000 */ int id;
-  /* 0004 */ std::uint8_t first;
-  /* 0005 */ std::uint8_t second;
-  /* 0006 */ std::uint8_t third;
-  /* 0008 */ int categoryId;
-  /* 000C */ int categoryIndex;
-  /* 0010 */ std::string text;
-  /* 0028 */ std::vector<std::string> values;
+  /* 0000 */ int id = 0;
+  /* 0004 */ AdventureGuideEntry entry;
   /* 0034 */ int type;
 };
 
@@ -163,14 +158,8 @@ public:
 };
 class CQuestInfo {
 public:
-  /* 0000 */ int id;
-  /* 0004 */ std::uint8_t categoryType;
-  /* 0008 */ int categoryId;
-  /* 000C */ int categoryIndex;
-  /* 0010 */ int questId;
-  /* 0014 */ std::string title;
-  /* 002C */ std::string text;
-  /* 0044 */ std::vector<std::string> rewards;
+  /* 0000 */ int id = 0;
+  /* 0004 */ AdventureGuideContents contents;
   /* 0050 */ int type;
 };
 }
