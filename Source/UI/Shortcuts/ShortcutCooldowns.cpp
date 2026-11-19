@@ -223,25 +223,23 @@ __forceinline void PaintCooldowns(
 
   for (auto entry = records.begin(); entry != records.end();) {
     if (entry->end > now) {
-      std::list<CooldownState>& states = (*entry).*values;
-
       for (auto icon = icons.begin(); icon != icons.end(); ++icon) {
         if (entry->id == icon->id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon->id))) {
-          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
-          if (previous == states.end()) {
-            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          const auto previous = std::find_if(((*entry).*values).begin(), ((*entry).*values).end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == ((*entry).*values).end()) {
+            ((*entry).*values).push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
           }
         }
 
         if ((g_session.IsHomunculusSkill(icon->id) || g_session.IsMercenarySkill(icon->id)) && entry->id == 9999) {
-          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
-          if (previous == states.end()) {
-            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          const auto previous = std::find_if(((*entry).*values).begin(), ((*entry).*values).end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == ((*entry).*values).end()) {
+            ((*entry).*values).push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
           }
         }
       }
 
-      for (auto state = states.begin(); state != states.end(); ++state) {
+      for (auto state = ((*entry).*values).begin(); state != ((*entry).*values).end(); ++state) {
         owner->Draw(0, 0, 12, 12, *state, limit, x, y);
       }
 
