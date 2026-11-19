@@ -877,7 +877,8 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
 // FUNCTION: fn_03403
 void CWhirlwindEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   if (parent && !parent->HasId(0x98C)) {
-    parent->render.instant.Values()[25] = static_cast<std::int64_t>(parent->render.angle * 1000.0f);
+    const std::int64_t angle = static_cast<std::int64_t>(parent->render.angle * 1000.0f);
+    parent->render.instant.Values()[25] = angle;
   }
 
   this->CRagEffect::Init(parent, id, deltaPos);
@@ -893,7 +894,7 @@ bool CWhirlwindEffect::OnProcess() {
   this->render.position = this->state.parent->render.position;
 
   const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-  const int remaining = std::max(static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(this->endTime - now).count()), 0);
+  const int remaining = std::max(std::chrono::duration_cast<std::chrono::duration<int, std::milli>>(this->endTime - now).count(), 0);
   this->state.parent->render.angle = static_cast<float>(MulDiv(remaining % this->duration, 360, this->duration));
   if (now < this->endTime) {
     return true;
