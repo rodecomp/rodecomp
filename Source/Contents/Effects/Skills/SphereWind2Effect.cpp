@@ -153,6 +153,7 @@ __forceinline void CSphereWind2Effect::UpdateSegmentVertices(CParticle* particle
 }
 
 // OFFSET: 0x00B778C0
+// FUNCTION: fn_46045
 __forceinline void CSphereWind2Effect::UpdateSegment(CParticle* particle) {
   if (particle) {
     if (particle->elapsedFrames > 0) {
