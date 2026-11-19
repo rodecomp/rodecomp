@@ -13,6 +13,7 @@ class CParticle;
 class CHealEffect : public CEffect {
 public:
   CHealEffect();
+  __declspec(noinline) ~CHealEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -25,6 +26,8 @@ public:
   void AddColumn(int kind);
   void AddCone(int kind);
   void SpawnParticles();
+  void UpdateColumnParticle(CParticle* particle);
+  void UpdateConeParticle(CParticle* particle);
   void UpdateParticleVertices(CParticle* particle);
   void RotateToCamera(EffectPoint* points);
 

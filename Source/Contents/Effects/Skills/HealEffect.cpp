@@ -24,6 +24,10 @@ CHealEffect::CHealEffect() : CEffect(-1) {
   this->spawnTick = 0;
 }
 
+// OFFSET: 0x00B67410
+// FUNCTION: fn_45995
+CHealEffect::~CHealEffect() = default;
+
 // OFFSET: 0x00B67530
 // FUNCTION: fn_19067
 void CHealEffect::AddSparks(int kind) {
@@ -424,6 +428,10 @@ void CHealEffect::SpawnParticles() {
 
   ++this->spawnTick;
 }
+
+// OFFSET: 0x00B68300
+
+// OFFSET: 0x00B684F0
 
 // OFFSET: 0x00B69160
 // FUNCTION: fn_19076
