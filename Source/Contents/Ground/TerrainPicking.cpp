@@ -23,11 +23,11 @@ float C3dAttr::RayDistance(const float* ray, int column, int row) const {
     float z;
   };
   Point corners[4];
+  corners[0].y = cell->heights[0];
   const float size = static_cast<float>(this->cellSize);
   const int dx = column - this->width / 2;
   const int dz = row - this->height / 2;
   corners[0].x = static_cast<float>(dx) * size;
-  corners[0].y = cell->heights[0];
   corners[0].z = static_cast<float>(dz) * size;
   corners[1].x = static_cast<float>(dx + 1) * size;
   corners[1].y = cell->heights[1];
