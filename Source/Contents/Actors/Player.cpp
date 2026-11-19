@@ -4131,8 +4131,6 @@ void CPlayer::SendMsg(
 void CGrannyPc::RenderModel(
   const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation
 ) {
-  const int meshLayer = layer;
-
   if (!this->render.visible) {
     return;
   }
@@ -4147,7 +4145,7 @@ void CGrannyPc::RenderModel(
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
   granny_world_pose* pose = nullptr;
-  RenderCommand** commands = this->layerCommands[meshLayer];
+  RenderCommand** commands = this->layerCommands[layer];
   if (!model) {
     model = this->model;
     this->worldPose = this->UpdateAnimation(nullptr);
@@ -4176,10 +4174,14 @@ void CGrannyPc::RenderModel(
   bool attached = false;
   matrix inverse;
   inverse.MakeInverse(view);
-  vector3d direction;
-  direction.x = light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9];
-  direction.y = light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10];
-  direction.z = light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + inverse.values[8] * light.direction.z + inverse.values[11];
+  const auto transformLight = [&]() {
+    return vector3d{
+      light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9],
+      light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10],
+      light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + inverse.values[8] * light.direction.z + inverse.values[11]
+    };
+  };
+  const vector3d direction = transformLight();
   const float scale = 1.0f / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
   const float lightX = scale * direction.x;
   const float lightY = scale * direction.y;
@@ -4193,10 +4195,10 @@ void CGrannyPc::RenderModel(
   bounds[4] = reciprocalDepth;
 
   for (int mesh = 0; mesh < model->instance->meshCount; ++mesh) {
-    if (meshLayer == 0) {
+    if (layer == 0) {
       model->deformBuffer = this->vertices[mesh];
     } else {
-      model->deformBuffer = this->layerVertices[meshLayer][mesh];
+      model->deformBuffer = this->layerVertices[layer][mesh];
     }
 
     int triangleCount;
@@ -4209,7 +4211,7 @@ void CGrannyPc::RenderModel(
     }
 
     const matrix* attachment;
-    if (meshLayer == this->attachLayer) {
+    if (layer == this->attachLayer) {
       attached = true;
       attachment = &this->attachTransform;
     } else {
@@ -4249,10 +4251,10 @@ void CGrannyPc::RenderModel(
           static_cast<unsigned>(shadeFactor * static_cast<float>(light.intensity) + static_cast<float>(255 - light.intensity));
         this->brightness = brightness;
         output.diffuse = ((light.red + 0x38 + brightness) << 16 & 0xFF0000) + ((light.green + 0x38 + brightness) << 8 & 0xFF00) +
-                         static_cast<unsigned char>(light.blue + 0x38 + brightness) + (this->alpha << 24);
+                         ((light.blue + 0x38 + brightness) & 0xFF) + (this->alpha << 24);
       }
 
-      if (meshLayer != 1) {
+      if (layer != 1) {
         this->attachmentPositions.push_back(position);
       }
     }
@@ -4260,9 +4262,9 @@ void CGrannyPc::RenderModel(
     command->texture = texture;
     command->vertexCount = vertexCount;
     static_cast<CRendererDX9*>(g_renderer)->Submit(command, 0);
-    this->meshTextures[meshLayer][mesh] = texture;
-    this->meshIndices[meshLayer][mesh] = indices;
-    this->meshTriangleCounts[meshLayer][mesh] = triangleCount;
+    this->meshTextures[layer][mesh] = texture;
+    this->meshIndices[layer][mesh] = indices;
+    this->meshTriangleCounts[layer][mesh] = triangleCount;
     this->meshTransforms[mesh] = transform;
   }
 
