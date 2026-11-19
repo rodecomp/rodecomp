@@ -87,14 +87,12 @@ ITEM_INFO UIRodexContentsWnd::GetItemAtPoint(int x, int y) {
   }
 
   this->m_itemIndex = 0;
-  int index = 0;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
-    const int left = 30 + index * 34;
+    const int left = 30 + this->m_itemIndex * 34;
     if (x > left && x < left + 24) {
       return *item;
     }
-    ++index;
-    this->m_itemIndex = index;
+    ++this->m_itemIndex;
   }
   return ITEM_INFO(0);
 }
@@ -200,8 +198,9 @@ void UIRodexContentsWnd::Paint() {
     );
   }
 
-  int x = 30;
+  int index = 0;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    const int x = index * 34 + 30;
     this->DrawBitmap(
       x - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true
     );
@@ -212,7 +211,7 @@ void UIRodexContentsWnd::Paint() {
         true
       );
     }
-    x += 34;
+    ++index;
   }
 }
 
