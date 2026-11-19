@@ -12,6 +12,7 @@ class CParticle;
 class CCherryBlossomEffect : public CEffect {
 public:
   CCherryBlossomEffect();
+  ~CCherryBlossomEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;

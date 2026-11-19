@@ -28,6 +28,11 @@ namespace {
 CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013) {
 }
 
+// OFFSET: 0x00B43A70
+// FUNCTION: fn_46010
+__declspec(noinline) CCherryBlossomEffect::~CCherryBlossomEffect() {
+}
+
 // OFFSET: 0x00B43B50
 // FUNCTION: fn_18884
 void CCherryBlossomEffect::Close() {
