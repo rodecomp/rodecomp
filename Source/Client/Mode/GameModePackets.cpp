@@ -4591,26 +4591,27 @@ void CGameMode::ReceiveItem1748List(const unsigned char* packet) {
   g_session.ClearMerchantMirrorItems();
   g_session.ClearMerchantHopeToSellItems();
 
+  const Item1748Record* records = reinterpret_cast<const Item1748Record*>(p + 1);
   const int count = (p->length - 0x0C) / sizeof(Item1748Record);
   for (int i = 0; i < count; ++i) {
-    const Item1748Record record = reinterpret_cast<const Item1748Record*>(p + 1)[i];
+    const Item1748Record record = records[i];
     ITEM_INFO item;
-    item.identity[0] = record.type;
     item.identity[1] = record.index;
-    item.identity[2] = record.location;
     item.prices[0] = record.price;
     item.prices[1] = record.price;
+    item.identity[0] = record.type;
     item.quantity = record.amount;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.SetItemId(record.itemId);
     item.identified = record.identified;
     item.damaged = record.damaged;
     item.refiningLevel = record.refine;
-    item.sprite = record.sprite;
+    item.SetItemId(record.itemId);
+    std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.optionCount = CountStoreItemOptions(record.options);
     for (int index = 0; index < item.optionCount; ++index) {
       item.options[index] = record.options[index];
     }
+    item.identity[2] = record.location;
+    item.sprite = record.sprite;
     g_session.AddMerchantMirrorItem(item);
   }
 
