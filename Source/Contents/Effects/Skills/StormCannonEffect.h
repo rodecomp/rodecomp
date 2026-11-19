@@ -12,6 +12,7 @@ class CEZ2STRParticle;
 class CStormCannonEffect : public CEffect {
 public:
   CStormCannonEffect();
+  ~CStormCannonEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -28,6 +29,10 @@ public:
   /* 00E4 */ vector3d origin = {};
   /* 00F0 */ double speed;
   /* 00F8 */ double distance;
+
+private:
+  void UpdateEmitter(CEZ2STRParticle* emitter);
+  void RenderEmitter(CEZ2STRParticle* emitter);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

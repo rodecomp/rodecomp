@@ -15,6 +15,11 @@
 CStormCannonEffect::CStormCannonEffect() : CEffect(1755), direction({0.0f, 0.0f, 0.0f}), origin({0.0f, 0.0f, 0.0f}) {
 }
 
+// OFFSET: 0x0072CE80
+// FUNCTION: fn_46079
+__declspec(noinline) CStormCannonEffect::~CStormCannonEffect() {
+}
+
 // OFFSET: 0x0072CF60
 // FUNCTION: fn_07486
 void CStormCannonEffect::Close() {
@@ -68,6 +73,17 @@ bool CStormCannonEffect::IsAlive() {
   return this->Alpha() > 0;
 }
 
+// OFFSET: 0x0072D4B0
+// FUNCTION: fn_46080
+__forceinline void CStormCannonEffect::UpdateEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    emitter->m_alpha = static_cast<float>(this->Alpha() / 255.0);
+    const vector3d position = {this->position[0] - 1.5f, this->position[1] - 17.0f, this->position[2] + 0.0f};
+    emitter->position = position;
+    emitter->Process(0.0f, 0.0f, 0.0f);
+  }
+}
+
 // OFFSET: 0x0072D360
 // FUNCTION: fn_07489
 void CStormCannonEffect::OnProcess() {
@@ -88,15 +104,15 @@ void CStormCannonEffect::OnProcess() {
   }
 
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CEZ2STRParticle* emitter = *it;
-    if (!emitter) {
-      continue;
-    }
+    this->UpdateEmitter(*it);
+  }
+}
 
-    emitter->m_alpha = static_cast<float>(this->Alpha() / 255.0);
-    const vector3d position = {this->position[0] - 1.5f, this->position[1] - 17.0f, this->position[2] + 0.0f};
-    emitter->position = position;
-    emitter->Process(0.0f, 0.0f, 0.0f);
+// OFFSET: 0x0072D590
+// FUNCTION: fn_46081
+__forceinline void CStormCannonEffect::RenderEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -104,8 +120,6 @@ void CStormCannonEffect::OnProcess() {
 // FUNCTION: fn_07490
 void CStormCannonEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    if (*it) {
-      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderEmitter(*it);
   }
 }
