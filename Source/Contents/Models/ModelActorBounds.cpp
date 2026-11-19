@@ -187,14 +187,14 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
   }
 
   for (unsigned axis = 0; axis < 3; ++axis) {
-    const float low = Coordinate(bounds, actor->transform.values, axis);
     const float high = Coordinate(bounds + 3, actor->transform.values, axis);
-    actor->oriented.center[axis] = (modern || axis == 2 ? high + low : low + high) * g_depthAverageHalf;
+    const float low = Coordinate(bounds, actor->transform.values, axis);
+    actor->oriented.center[axis] = (high + low) * g_depthAverageHalf;
   }
 
-  for (unsigned axis = 0; axis < 3; ++axis) {
-    actor->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&actor->scale.x)[axis]) * g_depthAverageHalf;
-  }
+  actor->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * actor->scale.z) * g_depthAverageHalf;
+  actor->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * actor->scale.y) * g_depthAverageHalf;
+  actor->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * actor->scale.x) * g_depthAverageHalf;
 
   matrix axes;
   axes.SetScale(actor->scale.x, actor->scale.y, actor->scale.z);
