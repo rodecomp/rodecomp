@@ -130,18 +130,8 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter) {
   this->presentation.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 
   if (!this->presentation.Windowed) {
-    const DWORD adapter = selectedAdapter;
-    const D3DFORMAT format = D3DFMT_X8R8G8B8;
-    DisplayModeSelectorDX9 selectMode{format, this, adapter, width, height};
-    if (!selectMode.Select(D3DSCANLINEORDERING_PROGRESSIVE) && !selectMode.Select(D3DSCANLINEORDERING_INTERLACED)) {
-      D3DDISPLAYMODEEX mode = {sizeof(D3DDISPLAYMODEEX)};
-      D3DDISPLAYROTATION rotation = D3DDISPLAYROTATION_IDENTITY;
-
-      if (FAILED(this->direct3D->GetAdapterDisplayModeEx(adapter, &mode, &rotation))) {
-        return deviceError;
-      }
-
-      this->displayMode = mode;
+    if (!this->SelectFullscreenMode(selectedAdapter, width, height, D3DFMT_X8R8G8B8)) {
+      return deviceError;
     }
 
     this->presentation.BackBufferWidth = this->displayMode.Width;
@@ -298,16 +288,36 @@ void DeviceOwnerDX9::UpdateMipmapFiltering() {
 void DeviceOwnerDX9::RestoreDisplayMode() {
 }
 
+// OFFSET: 0x0054C080
+// FUNCTION: fn_45930
+bool DeviceOwnerDX9::SelectFullscreenMode(DWORD adapter, UINT width, UINT height, D3DFORMAT format) {
+  DisplayModeSelectorDX9 selectMode{format, this, adapter, width, height};
+  if (!selectMode.Select(D3DSCANLINEORDERING_PROGRESSIVE) && !selectMode.Select(D3DSCANLINEORDERING_INTERLACED)) {
+    D3DDISPLAYMODEEX mode = {sizeof(mode)};
+    D3DDISPLAYROTATION rotation = D3DDISPLAYROTATION_IDENTITY;
+    if (FAILED(this->direct3D->GetAdapterDisplayModeEx(adapter, &mode, &rotation))) {
+      return false;
+    }
+    this->displayMode = mode;
+  }
+  return true;
+}
+
 // OFFSET: 0x0054C490
 // FUNCTION: fn_01920
 HRESULT DeviceOwnerDX9::ClipFullscreenCursor() {
+  this->ConfineFullscreenCursor();
+  return D3D_OK;
+}
+
+// OFFSET: 0x0054C4D0
+// FUNCTION: fn_45931
+void DeviceOwnerDX9::ConfineFullscreenCursor() {
   if (!this->presentation.Windowed) {
     RECT rectangle;
     GetWindowRect(this->window, &rectangle);
     ClipCursor(&rectangle);
   }
-
-  return D3D_OK;
 }
 
 // OFFSET: 0x0054C510

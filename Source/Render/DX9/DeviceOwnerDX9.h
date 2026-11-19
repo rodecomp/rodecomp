@@ -13,6 +13,7 @@ public:
   DeviceOwnerDX9& operator=(const DeviceOwnerDX9&) = delete;
   HRESULT Initialize(HWND window, UINT adapter);
   HRESULT CreateDevice(UINT adapter);
+  bool SelectFullscreenMode(DWORD adapter, UINT width, UINT height, D3DFORMAT format);
   __declspec(noinline) HRESULT AcquireBackBuffer();
   void SetInitialStates();
 
@@ -23,6 +24,7 @@ public:
   void RestoreDisplayMode();
   HRESULT Present(unsigned char unused);
   HRESULT ClipFullscreenCursor();
+  void ConfineFullscreenCursor();
   HRESULT CheckState();
   bool Begin();
   void End();
