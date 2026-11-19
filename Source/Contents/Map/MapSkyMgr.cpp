@@ -75,7 +75,8 @@ void CMapSkyMgr::ApplyBackgroundColor(const std::string& mapName) {
   int blue = 0;
   this->m_script->Call("GetBackgroundColor", "s>ddd", mapName.c_str(), &red, &green, &blue);
   g_renderer->SetClearColor(
-      0xFF000000u | ((red & 255) << 16) | ((green & 255) << 8) | (blue & 255));
+      0xFF000000u + (static_cast<unsigned char>(red) << 16) +
+      (static_cast<unsigned char>(green) << 8) + static_cast<unsigned char>(blue));
 }
 
 // OFFSET: 0x00C7B200
