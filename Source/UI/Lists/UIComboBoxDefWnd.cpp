@@ -445,17 +445,21 @@ void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const*
 // FUNCTION: fn_45677
 void UITextViewEX::ArrangeLinks() {
   int x = 0;
-  auto first = this->extraLinks.begin();
-  auto link = first;
+  auto link = this->extraLinks.begin();
   const auto last = this->extraLinks.end();
+  auto first = link;
   for (; link != last; ++link) {
     UIString* label = *link;
-    const std::string caption = label->text;
+    const std::string caption = label->GetText();
     x += label->geometry.width + 5;
     if (x + 15 > this->geometry.width || caption == "\n") {
       this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
       first = link;
-      x = label->text == "\n" ? 0 : label->geometry.width + 5;
+      if (label->GetText() == "\n") {
+        x = 0;
+      } else {
+        x = label->geometry.width + 5;
+      }
     }
   }
 
