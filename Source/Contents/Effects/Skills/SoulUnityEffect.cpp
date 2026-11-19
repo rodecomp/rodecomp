@@ -61,6 +61,7 @@ void CSoulUnityEffect::OnProcess() {
 }
 
 // OFFSET: 0x0072B680
+// FUNCTION: fn_46207
 __forceinline void CSoulUnityEffect::UpdateParticle(CParticle* particle) {
   if (!particle) {
     return;
