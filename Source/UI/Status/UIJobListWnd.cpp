@@ -148,15 +148,16 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 // FUNCTION: fn_12834
 void UIJobListWnd::RefreshJobs() {
   const std::string path = "유저인터페이스\\";
-  for (int index = 0; index < 6; ++index) {
-    if (this->m_jobChecks[index]) {
-      this->RemoveChild(this->m_jobChecks[index], 1);
-      this->m_jobChecks[index] = nullptr;
+  for (UICheckBox*& checkbox : this->m_jobChecks) {
+    if (checkbox) {
+      this->RemoveChild(checkbox, 1);
+      checkbox = nullptr;
     }
   }
 
   int index = 0;
-  for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
+  const auto end = g_partyBookingJobs.end();
+  for (auto it = g_partyBookingJobs.begin(); it != end; ++it, ++index) {
     UICheckBox*& checkbox = this->m_jobChecks[index];
     checkbox = new UICheckBox();
     checkbox->SetSize(120, 15);
