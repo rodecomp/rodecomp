@@ -725,7 +725,9 @@ int CRuneSystemMgr::UpdateOwnedDecomItems() {
   this->m_ownedDecomItems.clear();
   for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
-    if (this->m_itemDecoms.find(std::atoi(item.itemId.c_str())) != this->m_itemDecoms.end()) {
+    const auto decom = this->m_itemDecoms.find(std::atoi(item.itemId.c_str()));
+    const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
+    if (types) {
       this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
     }
   }
@@ -1276,6 +1278,11 @@ int AddItemDecom(lua_State* state) {
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatOwnedString("good").c_str());
   return 2;
+}
+
+// INLINED
+static void AddDecomTypeItem(int type, int itemId, int minCount, int maxCount, int percent) {
+  g_runeSystemMgr->m_decomTypes[type].emplace_back(itemId, minCount, maxCount, percent);
 }
 
 // OFFSET: 0x0076AC70
