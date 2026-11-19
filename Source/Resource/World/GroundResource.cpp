@@ -194,26 +194,28 @@ void GroundLegacyLightmap::Encode(const unsigned char* input) {
 // FUNCTION: fn_07910
 void CGndRes::Lightmap(int index, unsigned char* output) const {
   if (this->minor >= 7) {
-    std::memcpy(output, this->lightmaps + (static_cast<std::uint32_t>(index) << 8), 256);
+    std::memcpy(output, this->lightmaps + index * 256, 256);
     return;
   }
 
+  const GroundLegacyLightmap* lightmaps = this->legacyLightmaps;
   const std::uint32_t* indices = this->legacyLightmapIndices + 4 * index;
   unsigned char brightness[64];
   unsigned char red[64];
   unsigned char green[64];
   unsigned char blue[64];
-  this->legacyLightmaps[indices[0]].Decode(brightness);
-  this->legacyLightmaps[indices[1]].Decode(red);
-  this->legacyLightmaps[indices[2]].Decode(green);
-  this->legacyLightmaps[indices[3]].Decode(blue);
+  lightmaps[indices[0]].Decode(brightness);
+  lightmaps[indices[1]].Decode(red);
+  lightmaps[indices[2]].Decode(green);
+  lightmaps[indices[3]].Decode(blue);
 
   for (int pixel = 0; pixel < 64; ++pixel) {
     const unsigned transposed = static_cast<unsigned>(pixel) / 8 + 8 * (pixel & 7);
     output[transposed] = brightness[pixel];
-    output[64 + 3 * transposed] = red[pixel];
-    output[65 + 3 * transposed] = green[pixel];
-    output[66 + 3 * transposed] = blue[pixel];
+    unsigned char* color = output + 64 + 3 * transposed;
+    color[0] = red[pixel];
+    color[1] = green[pixel];
+    color[2] = blue[pixel];
   }
 }
 
