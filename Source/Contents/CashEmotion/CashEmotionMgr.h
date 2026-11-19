@@ -130,6 +130,7 @@ public:
   void ClearCommands();
   __declspec(noinline) void HideSuggestions();
   __declspec(noinline) int FindEmotionId(const char* name);
+  int FindEmotionIdByKey(const std::string& name);
   void ProcessChatCommand(const char* command);
   __declspec(noinline) const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
@@ -137,6 +138,7 @@ public:
   int GetSpecialEmotion(CashEmotionSpecial type);
   CashEmotionData* GetEmotionData(int packId, int emotionId);
   const char* GetEmotionName(int packId, int emotionId);
+  const char* GetBaseEmotionName(int emotionId);
   __declspec(noinline) std::vector<int> GetPackEmotions(int packId);
   int GetEarliestExpiry();
   CashEmotionTable* GetPackEmotionTable(int packId);
@@ -172,6 +174,7 @@ public:
   void ShowErrorMessage(const char* key, int value);
   void EmptyHandler59D040(int argument1, int argument2);
   __declspec(noinline) int GetServerTime();
+  int ToServerTime(int localTime) const;
   // INLINED
   int BasePackId() const {
     return this->basePackId;

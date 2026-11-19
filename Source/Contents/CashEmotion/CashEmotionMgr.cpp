@@ -590,12 +590,14 @@ int CCashEmotionMgr::FindEmotionId(const char* name) {
   }
 
   std::string key(name);
-  auto it = this->m_emotionIds.find(key);
-  if (it != this->m_emotionIds.end()) {
-    return it->second;
-  }
+  return this->FindEmotionIdByKey(key);
+}
 
-  return -1;
+// OFFSET: 0x00599470
+// FUNCTION: fn_45926
+int CCashEmotionMgr::FindEmotionIdByKey(const std::string& name) {
+  auto it = this->m_emotionIds.find(name);
+  return it != this->m_emotionIds.end() ? it->second : -1;
 }
 
 // OFFSET: 0x00599650
@@ -642,7 +644,7 @@ void CCashEmotionMgr::HideSuggestions() {
 void CCashEmotionMgr::RefreshCommands() {
   this->ClearCommands();
 
-  const unsigned int now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
+  const unsigned int now = this->ToServerTime(_time32(nullptr));
   for (auto& shortcut : this->m_shortcuts) {
     for (const std::pair<int, int>& entry : shortcut.second->entries) {
       const int packId = entry.first;
@@ -735,7 +737,7 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
     others.reserve(it->second.size());
 
     for (int emotionId : it->second) {
-      const char* name = this->GetEmotionName(this->basePackId, emotionId);
+      const char* name = this->GetBaseEmotionName(emotionId);
       if (name) {
         if (std::strstr(name, filter)) {
           result.push_back(emotionId);
@@ -809,6 +811,12 @@ const char* CCashEmotionMgr::GetEmotionName(int packId, int emotionId) {
   }
 
   return emoIt->second.name.c_str();
+}
+
+// OFFSET: 0x00599910
+// FUNCTION: fn_45928
+const char* CCashEmotionMgr::GetBaseEmotionName(int emotionId) {
+  return this->GetEmotionName(this->basePackId, emotionId);
 }
 
 // OFFSET: 0x00599DE0
@@ -1133,8 +1141,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type, const char* n
   int emotionId;
   {
     std::string key(name);
-    auto it = this->m_emotionIds.find(key);
-    emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+    emotionId = this->FindEmotionIdByKey(key);
   }
 
   this->m_specials.emplace(type, emotionId);
@@ -1195,7 +1202,7 @@ void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int a
     return;
   }
 
-  const char* baseName = this->GetEmotionName(this->basePackId, emotionId);
+  const char* baseName = this->GetBaseEmotionName(emotionId);
   if (!baseName) {
     return;
   }
@@ -1295,7 +1302,7 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 bool CCashEmotionMgr::RemoveExpiredPacks() {
   bool expired = false;
   auto* listWnd = g_windowMgr.cashEmotionListWnd;
-  const __time32_t now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
+  const __time32_t now = this->ToServerTime(_time32(nullptr));
 
   for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
     if (it->second.IsBefore(now + 1)) {
@@ -1347,7 +1354,7 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
 // FUNCTION: fn_02979
 CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
   bool changed = false;
-  const unsigned int now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
+  const unsigned int now = this->ToServerTime(_time32(nullptr));
 
   std::unordered_map<int, int> owned;
   for (int packId : this->m_ownedPacks) {
@@ -1498,7 +1505,13 @@ bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
 // OFFSET: 0x0059FC50
 // FUNCTION: fn_03031
 int CCashEmotionMgr::GetServerTime() {
-  return _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
+  return this->ToServerTime(_time32(nullptr));
+}
+
+// OFFSET: 0x00599630
+// FUNCTION: fn_45927
+int CCashEmotionMgr::ToServerTime(int localTime) const {
+  return localTime - this->serverTimeOffset - this->intendedDelay;
 }
 
 // OFFSET: 0x0059FC70
@@ -1586,7 +1599,7 @@ int CCashEmotionMgr::InsertEmotionMsgListTableForCustom(lua_State* state) {
   const int emotionId = luaL_checkinteger(state, 2);
   const int baseEmotionId = luaL_checkinteger(state, 3);
 
-  const char* name = g_cashEmotionMgr->GetEmotionName(g_cashEmotionMgr->basePackId, baseEmotionId);
+  const char* name = g_cashEmotionMgr->GetBaseEmotionName(baseEmotionId);
   if (name && std::strlen(name) > 1) {
     g_cashEmotionMgr->AddShortcut(name + 1, packId, emotionId);
   }
