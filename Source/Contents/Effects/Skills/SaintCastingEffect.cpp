@@ -14,7 +14,7 @@
 
 // OFFSET: 0x00B74DD0
 // FUNCTION: fn_46163
-CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1), lastInner{}, lastOuter{}, particles() {
+CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x00B74E70
@@ -255,20 +255,20 @@ __forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
   particle->vertices[1].z = points[1].z;
 
   if (segment != 0) {
-    particle->vertices[0].x = this->lastOuter.x;
-    particle->vertices[0].y = this->lastOuter.y;
-    particle->vertices[0].z = this->lastOuter.z;
-    particle->vertices[2].x = this->lastInner.x;
-    particle->vertices[2].y = this->lastInner.y;
-    particle->vertices[2].z = this->lastInner.z;
+    particle->vertices[0].x = this->lastPoints[1].x;
+    particle->vertices[0].y = this->lastPoints[1].y;
+    particle->vertices[0].z = this->lastPoints[1].z;
+    particle->vertices[2].x = this->lastPoints[0].x;
+    particle->vertices[2].y = this->lastPoints[0].y;
+    particle->vertices[2].z = this->lastPoints[0].z;
   }
 
-  this->lastInner.x = points[0].x;
-  this->lastInner.y = points[0].y;
-  this->lastInner.z = points[0].z;
-  this->lastOuter.x = points[1].x;
-  this->lastOuter.y = points[1].y;
-  this->lastOuter.z = points[1].z;
+  this->lastPoints[0].x = points[0].x;
+  this->lastPoints[0].y = points[0].y;
+  this->lastPoints[0].z = points[0].z;
+  this->lastPoints[1].x = points[1].x;
+  this->lastPoints[1].y = points[1].y;
+  this->lastPoints[1].z = points[1].z;
 }
 
 // OFFSET: 0x00B756B0
