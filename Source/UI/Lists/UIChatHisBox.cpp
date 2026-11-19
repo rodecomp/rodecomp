@@ -23,8 +23,8 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
   std::string result = "";
 
   for (std::list<std::vector<UIItemTagButton*>>::iterator row = this->itemTags.begin(); row != this->itemTags.end(); ++row) {
-    const int count = static_cast<int>(row->size());
     int position = 0;
+    const int count = static_cast<int>(row->size());
 
     for (int index = 0; index < count; ++index) {
       const int line = (*row)[index]->line;
