@@ -1420,7 +1420,7 @@ UIMerchantShopMakeWnd::UIMerchantShopMakeWnd(int mode) : UIFrameWnd(0), mode(mod
 int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_SETTITLE: {
-    char text[40];
+    char text[200];
     std::sprintf(text, "%s : %s", LookupMessage(this->buyingShop != 0 ? MSI_BUYINGSTORE_MYSHOPWND_TITLE : MSI_ITEM_MY_STORE), g_session.storeTitle.c_str());
     this->title->SetTextFitted(text);
     return 0;
@@ -1524,9 +1524,10 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         if (this->buyingShop == 1) {
           g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
-        } else {
-          g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
+          return 0;
         }
+
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
         return 0;
       }
       break;
@@ -10908,10 +10909,10 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
     return false;
   }
 
-  do {
+  while (close != std::string::npos) {
     text = text.substr(0, close);
     std::size_t open = text.find(g_itemLinkOpen);
-    if (open == std::string::npos) {
+    if (close != std::string::npos && open == std::string::npos) {
       position += g_itemLinkClose.size();
       text = source;
       text = text.substr(position);
@@ -10920,8 +10921,8 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
 
     close = text.find(g_itemLinkClose);
     if (open != std::string::npos) {
-      position += open;
       do {
+        position += open;
         text = text.substr(open + g_itemLinkOpen.size());
         open = text.find(g_itemLinkOpen);
         close = text.find(g_itemLinkClose);
@@ -10941,7 +10942,7 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
 
       text = text.substr(position + link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
     }
-  } while (close != std::string::npos);
+  }
 
   return true;
 }
