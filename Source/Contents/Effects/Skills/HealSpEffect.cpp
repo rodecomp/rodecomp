@@ -12,6 +12,13 @@
 
 namespace {
 // INLINED
+void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
+// INLINED
 __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
   if (0.0f == particle->life) {
     return true;
@@ -100,6 +107,8 @@ __forceinline void CHealSp::UpdateRing(CParticle* particle) {
   const float angle = spin + params[5];
   matrix rotation;
   rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
+  const float nextAngle = angle + spin;
+  const int limit = static_cast<int>(maxAlpha);
   if (this->frame == static_cast<int>(endFrame)) {
     fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
   }
@@ -108,16 +117,15 @@ __forceinline void CHealSp::UpdateRing(CParticle* particle) {
   if (level < 0.0f) {
     level = 0.0f;
   }
-  const float limit = static_cast<float>(static_cast<int>(maxAlpha));
-  if (level > limit) {
-    level = limit;
+  if (level > static_cast<float>(limit)) {
+    level = static_cast<float>(limit);
   }
   this->alphaLevel = static_cast<int>(level);
   params[2] = fade;
-  params[5] = spin + angle;
+  params[5] = nextAngle;
   params[6] = level;
-  particle->transform = rotation;
   particle->alpha = this->alphaLevel;
+  particle->transform = rotation;
 }
 
 // OFFSET: 0x00B45ED0
@@ -134,10 +142,12 @@ __forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
   velocity.y += lift;
   matrix rotation;
   rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
-  const float* values = rotation.values;
-  const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * radius + values[9] + (velocity.x + origin.x);
-  const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * radius + values[10] + (velocity.y + origin.y);
-  const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * radius + values[11] + (velocity.z + origin.z);
+  const vector3d offset{0.0f, 0.0f, radius};
+  vector3d point;
+  MatrixMult(point, offset, rotation.values);
+  const float x = point.x + (velocity.x + origin.x);
+  const float y = point.y + (velocity.y + origin.y);
+  const float z = point.z + (velocity.z + origin.z);
   const int elapsed = sprite->elapsedFrames;
   float level;
   if (this->frame < this->holdFrame) {
@@ -156,13 +166,13 @@ __forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
     level = static_cast<float>(this->alphaLevel);
   }
 
+  params[5] = fade;
   params[2] = lift;
   sprite->velocity = velocity;
-  sprite->alpha = static_cast<int>(level);
-  params[5] = fade;
   sprite->position.x = x;
   sprite->position.y = y;
   sprite->position.z = z;
+  sprite->alpha = static_cast<int>(level);
 }
 
 // OFFSET: 0x00B458E0
@@ -173,10 +183,9 @@ void CHealSp::OnProcess() {
     const int roll = rand() % 360;
     const float angle = static_cast<float>(roll >= 0 ? roll : 0);
     rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
-    const float* values = rotation.values;
-    const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * 3.0f + values[9];
-    const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * 3.0f + values[10];
-    const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * 3.0f + values[11];
+    const vector3d offset{0.0f, 0.0f, 3.0f};
+    vector3d point;
+    MatrixMult(point, offset, rotation.values);
     CSpriteParticle* sprite = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     float* params = &sprite->animationParameter;
     sprite->life = 0.5f;
@@ -187,9 +196,9 @@ void CHealSp::OnProcess() {
     params[3] = 0.02666667f;
     params[4] = 20.0f;
     params[5] = 0.0f;
-    sprite->velocity.x = x;
-    sprite->velocity.y = y;
-    sprite->velocity.z = z;
+    sprite->velocity.x = point.x;
+    sprite->velocity.y = point.y;
+    sprite->velocity.z = point.z;
     sprite->SetSprite("이팩트\\particle2.spr");
     sprite->SetAction("이팩트\\particle2.act");
     sprite->alpha = 254;
