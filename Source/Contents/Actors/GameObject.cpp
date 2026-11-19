@@ -767,11 +767,9 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   const float* matrix = reinterpret_cast<const float*>(argument);
   const float z = this->render.position.z;
   CGameMode* mode = g_modeMgr.GetGameMode();
-  vector3d position;
-  position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-  position.x = this->render.position.x;
-  position.z = z;
-  const float depth = position.y * matrix[5] + position.x * matrix[2] + z * matrix[8] + matrix[11];
+  const float height = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  vector3d position{this->render.position.x, height, z};
+  const float depth = height * matrix[5] + position.x * matrix[2] + z * matrix[8] + matrix[11];
 
   float screenX;
   float screenY;
@@ -789,24 +787,25 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   float pulse = 1.0f;
   const SpriteRleImage* image = sprite->images[cell.imageType][0];
   this->ScaleByPulse(pulse);
-  const double size = pulse * scale * this->render.shadowScale;
   const double factor = distanceScale;
+  const double size = pulse * scale * this->render.shadowScale;
 
-  SpriteQuad quad;
-  quad.top = static_cast<float>(cell.y * factor * cell.scaleY * size + screenY);
-  quad.bottom = static_cast<float>(((image->doubleHeight + 1) * image->height + cell.y) * factor * cell.scaleY * size + screenY + 1.0);
-  float left = static_cast<float>(cell.x * factor * cell.scaleX * size + screenX);
-  quad.right = static_cast<float>(((image->doubleWidth + 1) * image->width + cell.x) * factor * cell.scaleX * size + screenX + 1.0);
-  if (quad.top >= static_cast<float>(g_renderer->viewport.height) || quad.bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||
-      quad.right <= 0.0f) {
+  const float top = static_cast<float>(cell.y * factor * cell.scaleY * size + screenY);
+  const float bottom = static_cast<float>(((image->doubleHeight + 1) * image->height + cell.y) * factor * cell.scaleY * size + screenY + 1.0);
+  const float left = static_cast<float>(cell.x * factor * cell.scaleX * size + screenX);
+  const float right = static_cast<float>(((image->doubleWidth + 1) * image->width + cell.x) * factor * cell.scaleX * size + screenX + 1.0);
+  if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
     return;
   }
 
+  SpriteQuad quad;
+  quad.top = top;
+  quad.bottom = bottom;
   quad.left = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + left;
-  quad.right = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + quad.right;
+  quad.right = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + right;
   quad.color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
-  quad.bottomRhw = g_projectionDepthNumerator / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
-  quad.topRhw = g_projectionDepthNumerator / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
+  quad.bottomRhw = g_projectionDepthNumerator / (depth - (bottom - screenY) * g_cotangent) + 0.00001f;
+  quad.topRhw = g_projectionDepthNumerator / (depth - (top - screenY) * g_cotangent) + 0.00001f;
   quad.angle = static_cast<float>(cell.rotation);
   quad.image = image;
 
