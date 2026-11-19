@@ -503,6 +503,13 @@ float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const
 }
 
 // OFFSET: 0x00CACE40
+// FUNCTION: fn_46349
+float CRenderObject::GetMotionActionSpeed(unsigned animation) const {
+  if (this->render.action == nullptr) {
+    return 1.0f;
+  }
+  return this->GetScaledActionSpeed(animation, this->render.motionSpeedScale);
+}
 
 // OFFSET: 0x00CBFAE0
 // FUNCTION: fn_21118
