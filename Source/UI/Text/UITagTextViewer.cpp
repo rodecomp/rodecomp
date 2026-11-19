@@ -247,7 +247,7 @@ void UITagTextViewer::AddText(const std::string& text) {
 
   const int previousCursor = this->m_cursorY;
   const int spacing = previousCursor > 0 ? this->m_lineSpacing : 0;
-  this->m_cursorY = previousCursor + spacing;
+  this->m_cursorY += spacing;
 
   CCreateLineInfo info(
     this, text.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font, this->m_outlined, this->m_outlineColor,
