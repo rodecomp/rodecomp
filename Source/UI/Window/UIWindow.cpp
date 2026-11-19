@@ -241,9 +241,13 @@ UIWindow::~UIWindow() {
   g_windowMgr.ForgetWindowReferences(this);
 }
 
+struct WindowActionRunner {
+  bool operator()(bool primary, bool secondary, int value, int limit, std::function<void()> primaryAction, std::function<void()> secondaryAction) const;
+};
+
 // OFFSET: 0x00A79F80
 // FUNCTION: fn_16918
-bool RunWindowAction(bool primary, bool secondary, int value, int limit, std::function<void()> primaryAction, std::function<void()> secondaryAction) {
+bool WindowActionRunner::operator()(bool primary, bool secondary, int value, int limit, std::function<void()> primaryAction, std::function<void()> secondaryAction) const {
   if (!primary && !secondary) {
     return false;
   }
@@ -947,12 +951,13 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   const auto moveBelow = [this, &windowBounds, &anchorBounds] {
     MoveWindowToScreenPosition(this, windowBounds[0], anchorBounds[3]);
   };
+  const WindowActionRunner runWindowAction{};
   if (nearest(left, right) < nearest(top, bottom)) {
-    return RunWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight) ||
-           RunWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow);
+    return runWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight) ||
+           runWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow);
   }
-  return RunWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow) ||
-         RunWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight);
+  return runWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow) ||
+         runWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight);
 }
 
 // OFFSET: 0x00A81A30
@@ -1201,12 +1206,13 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
   }
 
   const char* const end = text + bytes;
-  const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   int widest = 0;
+  const char* current = text;
+  const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
   context.SetColor(color);
-  for (const char* current = text; current < end;) {
+  while (current < end) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
     SIZE size;
     context.Measure(current, static_cast<int>(next - current), &size);
@@ -1220,12 +1226,11 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
     text = marker + 3;
   }
 
-  for (const char* current = text; current < end;) {
-    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+  while (text < end) {
+    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
     SIZE size;
     context.Measure(text, static_cast<int>(next - text), &size);
     context.Draw(x + (widest - size.cx) / 2, y, text, static_cast<int>(next - text));
-    current = next;
     text = next;
     y += size.cy;
   }
