@@ -12109,12 +12109,12 @@ void CGameMode::ReceiveGuildInfo4(const unsigned char* data) {
   }
 
   char guildName[25];
-  guildName[24] = '\0';
   char manageLand[25];
-  manageLand[24] = '\0';
   if (g_guildInfo.masterName == g_session.DecodePlayerName()) {
     g_guildInfo.isMaster = 1;
   }
+  guildName[24] = '\0';
+  manageLand[24] = '\0';
   std::memcpy(guildName, packet->guildName, sizeof(packet->guildName));
   std::memcpy(manageLand, packet->manageLand, sizeof(manageLand) - 1);
   if (g_forbiddenWords.Contains(guildName)) {
