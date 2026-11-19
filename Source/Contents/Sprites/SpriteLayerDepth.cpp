@@ -136,8 +136,32 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
   case 2:
     switch (this->lowerHeadgear) {
     case 1041:
+      if (g_cameraDistance < robeTopLayerThreshold) {
+        quad.bottomRhw = 0.0008f + bottomDepth;
+        quad.topRhw = 0.0008f + topDepth;
+      } else {
+        quad.bottomRhw = 0.00019f + bottomDepth;
+        quad.topRhw = 0.00019f + topDepth;
+      }
+      break;
     case 1358:
+      if (g_cameraDistance < robeTopLayerThreshold) {
+        quad.bottomRhw = 0.0008f + bottomDepth;
+        quad.topRhw = 0.0008f + topDepth;
+      } else {
+        quad.bottomRhw = 0.00019f + bottomDepth;
+        quad.topRhw = 0.00019f + topDepth;
+      }
+      break;
     case 1478:
+      if (g_cameraDistance < robeTopLayerThreshold) {
+        quad.bottomRhw = 0.0008f + bottomDepth;
+        quad.topRhw = 0.0008f + topDepth;
+      } else {
+        quad.bottomRhw = 0.00019f + bottomDepth;
+        quad.topRhw = 0.00019f + topDepth;
+      }
+      break;
     case 1499:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
@@ -195,8 +219,16 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
       farOffset = 0.0001;
     }
 
-    const double offset = g_cameraDistance < robeTopLayerThreshold ? nearOffset : farOffset;
-    quad.bottomRhw = static_cast<float>(static_cast<double>(bottomDepth) + offset);
-    quad.topRhw = static_cast<float>(static_cast<double>(topDepth) + offset);
+    double bottom = bottomDepth;
+    double top = topDepth;
+    if (g_cameraDistance < robeTopLayerThreshold) {
+      bottom += nearOffset;
+      top += nearOffset;
+    } else {
+      bottom += farOffset;
+      top += farOffset;
+    }
+    quad.bottomRhw = static_cast<float>(bottom);
+    quad.topRhw = static_cast<float>(top);
   }
 }
