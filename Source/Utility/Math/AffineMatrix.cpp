@@ -272,19 +272,21 @@ void matrix::MakeTransform(const float* rotaxis, float rotangle) {
 // FUNCTION: fn_46340
 void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQuaternion& first, const RotationQuaternion& second) {
   double dot = second.x * first.x + second.w * first.w + second.y * first.y + second.z * first.z;
-  RotationQuaternion end = second;
-  if (dot < 0.0) {
+  RotationQuaternion end;
+  if (0.0 > dot) {
     dot = -dot;
     end = {-second.w, -second.x, -second.y, -second.z};
+  } else {
+    end = second;
   }
 
   double firstWeight = 1.0 - amount;
   double secondWeight = amount;
   if (1.0 - dot > 0.00001f) {
     const double angle = std::acos(dot);
-    const double denominator = ClientSin(static_cast<float>(angle));
-    firstWeight = ClientSin(static_cast<float>(firstWeight * angle)) / denominator;
-    secondWeight = ClientSin(static_cast<float>(amount * angle)) / denominator;
+    const double denominator = sinf(static_cast<float>(angle));
+    firstWeight = sinf(static_cast<float>(firstWeight * angle)) / denominator;
+    secondWeight = sinf(static_cast<float>(amount * angle)) / denominator;
   }
 
   const float a = static_cast<float>(firstWeight);
