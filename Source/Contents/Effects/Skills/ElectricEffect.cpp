@@ -70,6 +70,10 @@ void CElectricEffect::AddBolt(int tilt) {
   }
 }
 
+// OFFSET: 0x00B4EDF0
+
+// OFFSET: 0x00B4EA20
+
 // OFFSET: 0x00B4EDB0
 // FUNCTION: fn_19003
 void CElectricEffect::Close() {
@@ -90,6 +94,23 @@ void CElectricEffect::Open() {
 // FUNCTION: fn_19005
 bool CElectricEffect::IsAlive() {
   return !this->IsFinished();
+}
+
+// OFFSET: 0x00B4EE90
+// FUNCTION: fn_46219
+void CElectricEffect::UpdateTick() {
+  if (this->tick >= 20 && this->tick < 24) {
+    this->AddBolt(0);
+    this->AddBolt(180);
+  }
+
+  if (this->tick == 25) {
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
+    const vector3d& player = world->player->render.position;
+    g_soundMgr->PlayWave("effect\\T_\xC0\xFC\xB1\xE2.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
+  }
+
+  ++this->tick;
 }
 
 // OFFSET: 0x00B4EF50
