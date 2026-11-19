@@ -15,7 +15,7 @@ namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
+    if (this->m_commands.end() == this->m_current) {
       this->m_commands.emplace_back();
       this->m_current = this->m_commands.end();
       return &this->m_commands.back();
