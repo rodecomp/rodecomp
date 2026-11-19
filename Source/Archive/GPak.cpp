@@ -99,11 +99,6 @@ namespace {
   char SwapNibbles(char c) {
     return static_cast<char>((c << 4) | ((c >> 4) & 0x0F));
   }
-
-  // INLINED
-  void SortEntries(std::vector<myGPack::PakEntry>& entries) {
-    std::sort(entries.begin(), entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
-  }
 }
 
 // OFFSET: 0x00AE97D0
@@ -263,7 +258,7 @@ bool CGPak::ReadTableV1() {
     legacyKey -= 2;
   }
 
-  SortEntries(this->m_entries);
+  std::sort(this->m_entries.begin(), this->m_entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
   this->m_scratch.resize(maximum);
   return true;
 }
@@ -302,7 +297,7 @@ bool CGPak::ReadTableV2() {
     maximum = std::max(maximum, entry.alignedSize);
   }
 
-  SortEntries(this->m_entries);
+  std::sort(this->m_entries.begin(), this->m_entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
   this->m_scratch.resize(maximum);
   return true;
 }
@@ -341,7 +336,7 @@ bool CGPak::ReadTableV3() {
     maximum = std::max(maximum, entry.alignedSize);
   }
 
-  SortEntries(this->m_entries);
+  std::sort(this->m_entries.begin(), this->m_entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
   this->m_scratch.resize(maximum);
   return true;
 }
