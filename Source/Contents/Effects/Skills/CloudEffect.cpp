@@ -187,6 +187,7 @@ __forceinline void CCloud::UpdateScale() {
 }
 
 // OFFSET: 0x006FC350
+// FUNCTION: fn_46172
 __forceinline void CCloud::UpdateTransform() {
   matrix scale;
   scale.SetScale(this->particle->scale, this->particle->scale, 1.0f);
