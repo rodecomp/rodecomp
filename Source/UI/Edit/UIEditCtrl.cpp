@@ -1619,7 +1619,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       format = "Total : %d Zeny";
     }
 
-    char text[80];
+    char text[16];
     std::sprintf(text, format, 0);
     this->title->SetTextAutoWidth(text);
     return 0;
@@ -1721,7 +1721,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           amount = g_session.GetPurchaseItemTotalPrice();
         }
 
-        char text[16];
+        char text[12];
         _itoa(amount, text, 10);
         g_windowMgr.SetFocus(this->quantityEdit);
         this->quantityEdit->SetText(text);
@@ -1770,7 +1770,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           amount = g_session.m_pendingGid;
         }
 
-        char text[12];
+        char text[4];
         _itoa(amount, text, 10);
         this->quantityEdit->SetText(text);
         g_windowMgr.SetFocus(nullptr);
