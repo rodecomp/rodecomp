@@ -8487,9 +8487,8 @@ namespace {
 // FUNCTION: fn_21733
 __declspec(noinline) void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_ITEM_PICKUP_PARTY*>(packet);
-  const std::uint32_t aid = p->aid;
-  MessengerMember member = g_session.PartyByAccount(aid);
-  if (aid != g_session.m_aid && member.valid) {
+  MessengerMember member = g_session.PartyByAccount(p->aid);
+  if (p->aid != g_session.m_aid && member.valid) {
     ITEM_INFO item;
     item.identity[0] = p->itemType;
     item.identity[2] = p->location;
@@ -13613,8 +13612,8 @@ static_assert(sizeof(Item1758StoreRecord2) == 0x3A);
 // FUNCTION: fn_22161
 void CGameMode::ReceiveItem1748List2(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_PC_PURCHASE_ITEMLIST_FROMMC*>(packet);
-  std::vector<ITEM_INFO> items;
   const unsigned int count = static_cast<unsigned int>(p->length - 0x0C) / sizeof(Item1748Record2);
+  std::vector<ITEM_INFO> items;
   items.reserve(count);
   for (std::int64_t i = 0; i < count; ++i) {
     Item1748Record2 record;
@@ -17370,8 +17369,9 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
   }
   g_session.partyName = partyName;
 
-  if (packet->length != 0x1C) {
-    const int count = (packet->length - 0x1C) / 0x2E;
+  const int length = packet->length;
+  if (length != 0x1C) {
+    const int count = (length - 0x1C) / 0x2E;
     const PartyMemberListEntry* entries = reinterpret_cast<const PartyMemberListEntry*>(packet + 1);
     for (int index = 0; index < count; ++index) {
       const PartyMemberListEntry entry = entries[index];
