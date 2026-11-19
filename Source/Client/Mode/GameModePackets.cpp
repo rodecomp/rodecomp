@@ -8221,12 +8221,12 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
     g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
     break;
   case 2:
-    std::sprintf(
-      text, LookupMessage(MSI_BUYINGSTORE_OVERWEIGHT),
-      static_cast<int>(
+    {
+      const int overweight = static_cast<int>(
         static_cast<float>(p->weight / 10 + g_session.m_weight) - static_cast<float>(g_session.m_maxWeight) * 0.9f
-      )
-    );
+      );
+      std::sprintf(text, LookupMessage(MSI_BUYINGSTORE_OVERWEIGHT), overweight);
+    }
     g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 9:

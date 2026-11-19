@@ -173,3 +173,4 @@
 
 template __declspec(noinline) decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, const int&>(std::string&, const int&);
 template __declspec(noinline) void std::list<CSkillInfo>::clear() noexcept;
+template __declspec(noinline) void std::list<BarterMarketItem>::push_back(const BarterMarketItem&);
