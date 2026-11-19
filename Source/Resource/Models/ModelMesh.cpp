@@ -102,15 +102,11 @@ void ModelMesh::CalculateNormals() {
 
     for (int corner = 0; corner < 3; ++corner) {
       for (int neighbor : adjacent[face.vertices[corner]]) {
-        if (face.smoothing.empty()) {
-          continue;
-        }
-
         const ModelFace& other = this->faces[neighbor];
         const auto begin = other.smoothing.begin();
         const auto end = other.smoothing.end();
-        for (std::uint32_t group : face.smoothing) {
-          if (std::find(begin, end, group) != end) {
+        for (auto group = face.smoothing.begin(); group != face.smoothing.end(); ++group) {
+          if (std::find(begin, end, *group) != end) {
             const ShadeVector& faceNormal = this->faceNormals[neighbor];
             ShadeVector& normal = this->vertexNormals[index * 3 + corner];
             normal.x = normal.x + faceNormal.x;
