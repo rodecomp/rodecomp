@@ -10,19 +10,32 @@ class CParticle;
 
 class CRichManKim : public CEffect {
 public:
+  CRichManKim();
+  ~CRichManKim() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ unsigned char padding_00CC[0x38];
+  /* 00CC */ unsigned char padding_00CC[4];
+  /* 00D0 */ vector3d unknown_00D0[2];
+  /* 00E8 */ vector3d unknown_00E8[2];
+  /* 0100 */ unsigned char padding_0100[4];
   /* 0104 */ int angleIndex;
   /* 0108 */ std::vector<CParticle*> particles;
+
+private:
+  void ConfigureParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRichManKim) == 0x114);
+static_assert(offsetof(CRichManKim, unknown_00D0) == 0xD0);
+static_assert(offsetof(CRichManKim, unknown_00E8) == 0xE8);
 static_assert(offsetof(CRichManKim, angleIndex) == 0x104);
 static_assert(offsetof(CRichManKim, particles) == 0x108);
 #endif

@@ -1,11 +1,21 @@
 #include "Contents/Effects/Skills/RichManKim.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
 #include <cstring>
+
+// OFFSET: 0x0070AFB0
+CRichManKim::CRichManKim() : CEffect(EF_BOTTOM_RICHMANKIM), unknown_00D0{}, unknown_00E8{}, angleIndex(0) {
+}
+
+// OFFSET: 0x0070B080
+// FUNCTION: fn_46177
+__declspec(noinline) CRichManKim::~CRichManKim() {
+}
 
 // OFFSET: 0x0070B160
 // FUNCTION: fn_07114
@@ -20,6 +30,15 @@ void CRichManKim::Close() {
 // FUNCTION: fn_07115
 void CRichManKim::Open() {
   CParticle* particle = CreateParticle(&this->positionVector, 5);
+  if (particle) {
+    this->ConfigureParticle(particle);
+    this->particles.push_back(particle);
+  }
+}
+
+// OFFSET: 0x0070B2A0
+// FUNCTION: fn_46178
+__forceinline void CRichManKim::ConfigureParticle(CParticle* particle) {
   if (!particle) {
     return;
   }
@@ -33,13 +52,11 @@ void CRichManKim::Open() {
   particle->angle = 0;
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
-  float* values = &particle->animationParameter;
-  values[0] = -5.0f - static_cast<float>(rand() % 5);
-  values[1] = 0.0f;
+  particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);
+  particle->animationParameters[0] = 0.0f;
   particle->SetColor(200, 200, 200);
   particle->InitParticleQuad(particle->vertices);
   this->angleIndex = rand() % 359;
-  this->particles.push_back(particle);
 }
 
 // OFFSET: 0x0070B370
@@ -57,38 +74,42 @@ void CRichManKim::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle) {
-      int index = this->angleIndex + 1;
-      this->angleIndex = index;
-      if (index > 360) {
-        this->angleIndex = 0;
-        index = 0;
-      }
+    this->UpdateParticle(particle);
+    ++particle->elapsedFrames;
+  }
+}
 
-      float& width = particle->animationParameters[0];
-      const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
-      const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
-      particle->animationParameter = height;
-      width = stretch;
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.AppendXRotation(3.141592f);
-      matrix scaling;
-      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-      scaling.SetScale(stretch + 2.0f, 5.0f, 1.0f);
-      matrix translation;
-      translation.IsIdentity();
-      translation.MakeTranslate(0.0f, height, 0.0f);
-
-      matrix transform;
-      transform.Compose(scaling, rotation);
-      const matrix combined = transform;
-      transform.Compose(combined, translation);
-      particle->transform = transform;
+// OFFSET: 0x0070B5A0
+__forceinline void CRichManKim::UpdateParticle(CParticle* particle) {
+  if (particle) {
+    int index = this->angleIndex + 1;
+    this->angleIndex = index;
+    if (index > 360) {
+      this->angleIndex = 0;
+      index = 0;
     }
 
-    ++particle->elapsedFrames;
+    float& width = particle->animationParameters[0];
+    const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
+    const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
+    particle->animationParameter = height;
+    width = stretch;
+
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.AppendXRotation(3.141592f);
+    matrix scaling;
+    std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+    scaling.SetScale(stretch + 2.0f, 5.0f, 1.0f);
+    matrix translation;
+    translation.IsIdentity();
+    translation.MakeTranslate(0.0f, height, 0.0f);
+
+    matrix transform;
+    transform.Compose(scaling, rotation);
+    const matrix combined = transform;
+    transform.Compose(combined, translation);
+    particle->transform = transform;
   }
 }
 
@@ -96,8 +117,14 @@ void CRichManKim::OnProcess() {
 // FUNCTION: fn_07118
 void CRichManKim::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(*it);
+  }
+}
+
+// OFFSET: 0x0070B7E0
+// FUNCTION: fn_46180
+__forceinline void CRichManKim::RenderParticle(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
