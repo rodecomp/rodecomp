@@ -753,8 +753,8 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
   case STYLINGSHOP_TAB_FAVORITE:
     this->m_checkTop = 1;
     this->paymentFontSize = 11;
-    this->paymentTextX = 24;
-    this->paymentTextYOffset = 0;
+    this->m_paymentLayout.textX = 24;
+    this->m_paymentLayout.textYOffset = 0;
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
     for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
       for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
@@ -769,10 +769,10 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
     this->showPaymentItems = 1;
     this->showDottedLines = 1;
     this->showPayments = 1;
-    this->paymentIconX = 41;
-    this->paymentIconYOffset = -2;
-    this->paymentTextX = 68;
-    this->paymentTextYOffset = 6;
+    this->m_paymentLayout.iconX = 41;
+    this->m_paymentLayout.iconYOffset = -2;
+    this->m_paymentLayout.textX = 68;
+    this->m_paymentLayout.textYOffset = 6;
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_off.bmp";
     for (int i = static_cast<int>(this->m_list.size()); i < 8; ++i) {
       this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
@@ -782,8 +782,8 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
   case STYLINGSHOP_TAB_ACCESSORY:
     this->m_checkTop = 1;
     this->paymentFontSize = 11;
-    this->paymentTextX = 24;
-    this->paymentTextYOffset = 0;
+    this->m_paymentLayout.textX = 24;
+    this->m_paymentLayout.textYOffset = 0;
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
     for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
       for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
@@ -799,10 +799,10 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
     this->showPaymentItems = 1;
     this->showDottedLines = 1;
     this->showPayments = 1;
-    this->paymentIconX = 41;
-    this->paymentIconYOffset = -2;
-    this->paymentTextX = 68;
-    this->paymentTextYOffset = 6;
+    this->m_paymentLayout.iconX = 41;
+    this->m_paymentLayout.iconYOffset = -2;
+    this->m_paymentLayout.textX = 68;
+    this->m_paymentLayout.textYOffset = 6;
     this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_off.bmp";
     for (int i = static_cast<int>(this->m_list.size()); i < 8; ++i) {
       this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
@@ -1294,12 +1294,12 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   }
 
   if (!enabled) {
-    this->DrawAuxiliary(1, this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, bitmap, true, false);
+    this->DrawAuxiliary(1, this->m_paymentLayout.iconX, this->geometry.height / 8 * row + this->m_paymentLayout.iconYOffset, bitmap, true, false);
     return;
   }
 
   if (bitmap) {
-    this->DrawBitmap(this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, bitmap, false);
+    this->DrawBitmap(this->m_paymentLayout.iconX, this->geometry.height / 8 * row + this->m_paymentLayout.iconYOffset, bitmap, false);
   }
 }
 
@@ -1328,7 +1328,8 @@ void UIMyStyleWnd::RemoveSelectedStyle() {
 // FUNCTION: fn_10291
 UIShowInfoWnd::UIShowInfoWnd()
     : UIWindow(0), m_display(nullptr), showPayments(0), showPaymentItems(0), showDottedLines(0), m_checkTop(5), paymentFontSize(12), m_changed{},
-      costumeChanged(0), paymentIconX(0), paymentIconYOffset(0), paymentTextX(0), paymentTextYOffset(0), m_offBitmap(nullptr) {
+      costumeChanged(0), m_offBitmap(nullptr) {
+  std::memset(&this->m_paymentLayout, 0, sizeof(this->m_paymentLayout));
 }
 
 // OFFSET: 0x008232F0
@@ -1645,23 +1646,23 @@ void UIShowInfoWnd::DrawPayments() {
   if (dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->primaryTabVisible == true ||
       dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->accessoryTabVisible == true) {
     for (int i = 0; i < 8; ++i) {
-      positions[i][0] = this->paymentTextX + 3;
-      positions[i][1] = this->paymentTextYOffset + this->geometry.height / 8 * i;
+      positions[i][0] = this->m_paymentLayout.textX + 3;
+      positions[i][1] = this->m_paymentLayout.textYOffset + this->geometry.height / 8 * i;
     }
   } else {
     for (int i = 0; i < 4; ++i) {
-      const int left = this->paymentTextX - 4;
-      const int right = this->paymentTextX + 101;
+      const int left = this->m_paymentLayout.textX - 4;
+      const int right = this->m_paymentLayout.textX + 101;
       if (i == 0) {
         positions[i * 2][0] = left;
-        positions[i * 2][1] = this->paymentTextYOffset;
+        positions[i * 2][1] = this->m_paymentLayout.textYOffset;
         positions[i * 2 + 1][0] = right;
-        positions[i * 2 + 1][1] = this->paymentTextYOffset;
+        positions[i * 2 + 1][1] = this->m_paymentLayout.textYOffset;
       } else {
         positions[i * 2][0] = left;
-        positions[i * 2][1] = this->geometry.height / 8 * i + this->paymentTextYOffset;
+        positions[i * 2][1] = this->geometry.height / 8 * i + this->m_paymentLayout.textYOffset;
         positions[i * 2 + 1][0] = right;
-        positions[i * 2 + 1][1] = this->geometry.height / 8 * i + this->paymentTextYOffset;
+        positions[i * 2 + 1][1] = this->geometry.height / 8 * i + this->m_paymentLayout.textYOffset;
       }
     }
   }
@@ -1753,7 +1754,7 @@ void UIShowInfoWnd::DrawPayments() {
       }
 
       if (this->showPaymentItems == 1) {
-        this->DrawBitmap(this->paymentIconX, this->geometry.height / 8 * row + this->paymentIconYOffset, icon, false);
+        this->DrawBitmap(this->m_paymentLayout.iconX, this->geometry.height / 8 * row + this->m_paymentLayout.iconYOffset, icon, false);
       }
       this->DrawTextAt(x, y, text, 0, 0, this->paymentFontSize, 0x5A5A84, 0, 0);
     }
@@ -1767,8 +1768,8 @@ void UIShowInfoWnd::DrawPayments() {
 
   if (this->m_list.size() == 0) {
     for (int i = 0; i < 8; ++i) {
-      positions[i][0] = this->paymentTextX;
-      positions[i][1] = this->paymentTextYOffset + this->geometry.height / 8 * i;
+      positions[i][0] = this->m_paymentLayout.textX;
+      positions[i][1] = this->m_paymentLayout.textYOffset + this->geometry.height / 8 * i;
     }
     this->m_buyable = false;
 

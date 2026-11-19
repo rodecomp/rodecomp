@@ -64,7 +64,7 @@ class UIStaticText3 : public UIStaticText {
 public:
   UIStaticText3();
   void Paint() override;
-  void SetTextCentered(const char* value, unsigned char outlineValue);
+  void SetTextCentered(const char* value, unsigned char outlineValue, int);
 
   /* 00D8 */ int textX;
 };

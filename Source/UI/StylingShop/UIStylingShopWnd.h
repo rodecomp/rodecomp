@@ -70,6 +70,13 @@ public:
   /* 00C8 */ std::map<int, int> m_jobs;
 };
 
+struct PaymentLayout {
+  /* 0000 */ int iconX;
+  /* 0004 */ int iconYOffset;
+  /* 0008 */ int textX;
+  /* 000C */ int textYOffset;
+};
+
 class UIShowInfoWnd : public UIWindow {
 public:
   UIShowInfoWnd();
@@ -99,10 +106,7 @@ public:
   /* 00AD */ bool m_changed[6];
   /* 00B4 */ std::list<int> m_list;
   /* 00BC */ unsigned char costumeChanged;
-  /* 00C0 */ int paymentIconX;
-  /* 00C4 */ int paymentIconYOffset;
-  /* 00C8 */ int paymentTextX;
-  /* 00CC */ int paymentTextYOffset;
+  /* 00C0 */ PaymentLayout m_paymentLayout;
   /* 00D0 */ const char* m_offBitmap;
 };
 

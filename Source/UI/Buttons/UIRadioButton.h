@@ -12,7 +12,7 @@ public:
   /* 0128 */ std::function<void(bool)> onCheck;
 
   CUICheckBox();
-  __declspec(noinline) ~CUICheckBox() override;
+  ~CUICheckBox() override;
 
   void SetOnCheck(std::function<void(bool)> callback);
   void Paint() override;

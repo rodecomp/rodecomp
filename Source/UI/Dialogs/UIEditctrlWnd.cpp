@@ -43,42 +43,6 @@ const char* g_miniMapMemoPath = "%s\\Memo\\$$%s.txt";
 // GLOBAL: gl_25072
 const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
-struct MiniMapTownNode {
-  /* 0000 */ MiniMapTownNode* left;
-  /* 0004 */ MiniMapTownNode* parent;
-  /* 0008 */ MiniMapTownNode* right;
-  /* 000C */ unsigned char color;
-  /* 000D */ unsigned char isNil;
-  /* 000E */ unsigned char padding_000E[2];
-  /* 0010 */ int key;
-  /* 0014 */ UIBitmapButton* value;
-};
-
-struct MiniMapTownMap {
-  /* 0000 */ MiniMapTownNode* head;
-};
-
-struct MiniMapQuestNode {
-  /* 0000 */ MiniMapQuestNode* left;
-  /* 0004 */ MiniMapQuestNode* parent;
-  /* 0008 */ MiniMapQuestNode* right;
-  /* 000C */ unsigned char color;
-  /* 000D */ unsigned char isNil;
-  /* 000E */ unsigned char padding_000E[2];
-  /* 0010 */ int key;
-  /* 0014 */ UIButton* value;
-};
-
-struct MiniMapQuestMap {
-  /* 0000 */ MiniMapQuestNode* head;
-};
-
-class MiniMapWindowHelper : public UIMiniMapWnd {
-public:
-  void UpdateTownButtons();
-  void UpdateQuestButtons();
-};
-
 // OFFSET: 0x0099B0C0
 // FUNCTION: fn_13549
 UIEditctrlWnd::UIEditctrlWnd()
@@ -446,20 +410,20 @@ __declspec(noinline) int UIMiniMapWnd::SaveMemos() {
   return count;
 }
 
+// INLINED
+static const std::string FormatMemoLine(int x, int y, const std::string& tooltip) {
+  return FormatOwnedString(g_miniMapMemoLineFormat, x, y, tooltip.c_str());
+}
+
 // OFFSET: 0x0099CC20
 // FUNCTION: fn_13563
 int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case ID_ITEMS: {
-      const bool enabled = this->townCheckBox->geometry.state != 0;
-      for (auto it = this->townButtons.begin(); it != this->townButtons.end(); ++it) {
-        it->second->Enable(enabled);
-      }
-      this->Invalidate();
+    case ID_ITEMS:
+      this->UpdateTownButtons();
       return 0;
-    }
     case ID_BASE:
       return 0;
     case ID_CLOSE:
@@ -468,14 +432,9 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     case ID_BOOKMARK:
       this->dragging = 1;
       return 0;
-    case 361: {
-      const bool enabled = this->questCheckBox->geometry.state != 0;
-      for (auto it = this->questButtons.begin(); it != this->questButtons.end(); ++it) {
-        it->second->Enable(enabled);
-      }
-      this->Invalidate();
+    case 361:
+      this->UpdateQuestButtons();
       return 0;
-    }
     case 373:
       this->Invalidate();
       return 0;
@@ -491,7 +450,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
             for (int index = 0; index < 20; ++index) {
               UIBitmapButton* memo = this->memoButtons[index];
               if (memo->geometry.x > 0 && memo->geometry.y > 0) {
-                text = FormatOwnedString(g_miniMapMemoLineFormat, memo->geometry.x, memo->geometry.y, std::string(memo->m_tooltip).c_str());
+                text = FormatMemoLine(memo->geometry.x, memo->geometry.y, std::string(memo->m_tooltip));
                 std::fwrite(text.c_str(), text.size(), 1, file);
               }
             }
@@ -610,50 +569,20 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
 // OFFSET: 0x0099D920
 // FUNCTION: fn_45726
-void MiniMapWindowHelper::UpdateTownButtons() {
+void UIMiniMapWnd::UpdateTownButtons() {
   const bool enabled = this->townCheckBox->geometry.state != 0;
-  MiniMapTownMap* buttons = reinterpret_cast<MiniMapTownMap*>(&this->townButtons);
-  MiniMapTownNode* it = buttons->head->left;
-  while (it != buttons->head) {
-    it->value->Enable(enabled);
-    if (it->right->isNil) {
-      MiniMapTownNode* node = it->parent;
-      while (!node->isNil && it == node->right) {
-        it = node;
-        node = node->parent;
-      }
-      it = node;
-    } else {
-      it = it->right;
-      while (!it->left->isNil) {
-        it = it->left;
-      }
-    }
+  for (auto it = this->townButtons.begin(); it != this->townButtons.end(); ++it) {
+    it->second->Enable(enabled);
   }
   this->Invalidate();
 }
 
 // OFFSET: 0x0099D9B0
 // FUNCTION: fn_45724
-void MiniMapWindowHelper::UpdateQuestButtons() {
+void UIMiniMapWnd::UpdateQuestButtons() {
   const bool enabled = this->questCheckBox->geometry.state != 0;
-  MiniMapQuestMap* buttons = reinterpret_cast<MiniMapQuestMap*>(&this->questButtons);
-  MiniMapQuestNode* it = buttons->head->left;
-  while (it != buttons->head) {
-    it->value->Enable(enabled);
-    if (it->right->isNil) {
-      MiniMapQuestNode* node = it->parent;
-      while (!node->isNil && it == node->right) {
-        it = node;
-        node = node->parent;
-      }
-      it = node;
-    } else {
-      it = it->right;
-      while (!it->left->isNil) {
-        it = it->left;
-      }
-    }
+  for (auto it = this->questButtons.begin(); it != this->questButtons.end(); ++it) {
+    it->second->Enable(enabled);
   }
   this->Invalidate();
 }

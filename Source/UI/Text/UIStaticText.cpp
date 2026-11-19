@@ -77,7 +77,7 @@ void UIStaticText::SetTextTruncated(const char* value, int outlineValue) {
 
 // OFFSET: 0x00869290
 // FUNCTION: fn_45621
-void UIStaticText3::SetTextCentered(const char* value, unsigned char outlineValue) {
+void UIStaticText3::SetTextCentered(const char* value, unsigned char outlineValue, int) {
   this->text = value;
   this->tooltip = value;
   this->outline = outlineValue;

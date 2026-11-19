@@ -860,7 +860,7 @@ public:
   void LoadRobeAlpha();
   void LoadDamageSkinSettings();
   bool LoadExceptionMinimapNameTable();
-  bool LoadMapNameTable();
+  BOOL LoadMapNameTable();
   bool LoadMapPosTable();
   BOOL ScaleMapPositions();
   bool LoadFogParameters();

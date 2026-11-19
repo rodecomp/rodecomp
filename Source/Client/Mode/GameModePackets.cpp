@@ -22885,8 +22885,8 @@ struct PACKET_ZC_BROADCAST_ITEMREFINING_RESULT2 {
   /* 0002 */ char name[24];
   /* 001A */ int itemId;
   /* 001E */ unsigned char refine;
-  /* 001F */ unsigned char result;
-  /* 0020 */ unsigned char grade;
+  /* 001F */ unsigned char grade;
+  /* 0020 */ bool result;
 };
 
 struct PACKET_ZC_CONFIG_NOTIFY5 {
@@ -28275,7 +28275,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xC3B: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT2*>(g_gameModePacketBuffer);
       this->ReceiveRefineStatusGraded(packet->name, packet->itemId,
-                                      packet->refine, packet->result, packet->grade);
+                                      packet->refine, packet->grade, packet->result);
       break;
     }
     case 0xBC9: {

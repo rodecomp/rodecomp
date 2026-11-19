@@ -20,7 +20,8 @@ struct EZ2STREffectInfo {
   /* 0020 */ float offsetY;
   /* 0024 */ unsigned int flags = 0;
   /* 0028 */ std::string soundPath;
-  /* 0040 */ int delays[2] = {-1, 0};
+  /* 0040 */ int delay = -1;
+  /* 0044 */ int interval = 0;
 };
 
 struct EZ2STREffectRecord {

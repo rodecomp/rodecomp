@@ -12295,17 +12295,31 @@ void UITipboxWnd::RefreshTip() {
 __forceinline void UITipboxWnd::SetPageButtonEnabled(PageButton pageButton, int enabled) {
   switch (pageButton) {
   case PageButton::Previous: {
-    UIButton* button = this->previousButton;
-    button->SetDisabled(enabled != 1);
-    button->Invalidate();
-    this->previousButton->Invalidate();
+    if (enabled == 1) {
+      UIButton* button = this->previousButton;
+      button->SetDisabled(0);
+      button->Invalidate();
+      this->previousButton->Invalidate();
+    } else {
+      UIButton* button = this->previousButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+      this->previousButton->Invalidate();
+    }
     break;
   }
   case PageButton::Next: {
-    UIButton* button = this->nextButton;
-    button->SetDisabled(enabled != 1);
-    button->Invalidate();
-    this->nextButton->Invalidate();
+    if (enabled == 1) {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(0);
+      button->Invalidate();
+      this->nextButton->Invalidate();
+    } else {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+      this->nextButton->Invalidate();
+    }
     break;
   }
   }

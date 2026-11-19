@@ -41,10 +41,8 @@ __forceinline bool GroundQuadVisible(const RenderVertex* vertices) {
     return false;
   }
 
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    if (0.0f > vertices[corner].rhw) {
-      return false;
-    }
+  if (0.0f > vertices[0].rhw || 0.0f > vertices[1].rhw || 0.0f > vertices[2].rhw || 0.0f > vertices[3].rhw) {
+    return false;
   }
 
   return true;

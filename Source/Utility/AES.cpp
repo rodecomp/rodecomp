@@ -37,7 +37,7 @@ ULONG AES::Decrypt(std::span<UCHAR> input, std::span<UCHAR> output, UCHAR flags)
 
 // OFFSET: 0x0061B1A0
 // FUNCTION: fn_04419
-bool AES::Initialize(std::span<UCHAR> secret, std::span<const UCHAR> iv, int mode) {
+bool AES::Initialize(std::span<UCHAR> secret, std::span<UCHAR> iv, int mode) {
   if (m_key != nullptr) {
     BCryptDestroyKey(m_key);
     m_key = nullptr;

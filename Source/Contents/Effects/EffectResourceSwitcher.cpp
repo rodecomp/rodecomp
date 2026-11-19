@@ -287,14 +287,14 @@ void CEZ2STREffectEx::Open() {
     emitter->m_loop = 1;
   }
 
-  emitter->m_delay = info->delays[1];
-  this->frameStep = info->delays[1] / 16;
+  emitter->m_delay = info->interval;
+  this->frameStep = info->interval / 16;
   if (!info->soundPath.empty()) {
     this->AddEvent(0, info->soundPath.c_str(), this->frameStep + 1, 0);
   }
 
-  if (info->delays[0] >= 0) {
-    this->AddEvent(1, nullptr, info->delays[0], 0);
+  if (info->delay >= 0) {
+    this->AddEvent(1, nullptr, info->delay, 0);
   }
 
   if (info->flags & 2) {
@@ -495,8 +495,8 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
   info.flags = entry.second.aboveUi ? info.flags | 4 : info.flags;
   info.soundPath = static_cast<const std::string&>(FromUtf8(entry.second.soundPath, g_textCodePage));
   info.flags = entry.second.soundLoop ? info.flags | 8 : info.flags;
-  info.delays[0] = entry.second.delays[0];
-  info.delays[1] = entry.second.delays[1];
+  info.delay = entry.second.delays[0];
+  info.interval = entry.second.delays[1];
   info.flags = entry.second.toGround ? info.flags | 16 : info.flags;
 
   std::string key = FromUtf8(entry.first, g_textCodePage);

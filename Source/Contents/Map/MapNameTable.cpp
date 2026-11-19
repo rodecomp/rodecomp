@@ -19,7 +19,7 @@
 
 // OFFSET: 0x00DE8740
 // FUNCTION: fn_23498
-bool CSession::LoadMapNameTable() {
+BOOL CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
   CCommonObject& storage = this->m_tableLoader;
   const bool loaded = storage.LoadTokens(tokens, OBFUSCATE_TEXT("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL), 0);

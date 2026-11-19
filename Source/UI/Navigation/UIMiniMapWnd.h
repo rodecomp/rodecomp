@@ -33,6 +33,8 @@ public:
   int MapToWindowX(float x, int halfWidth) const;
   int MapToWindowY(float y, int halfHeight) const;
   void UpdatePlayerHead();
+  void UpdateTownButtons();
+  void UpdateQuestButtons();
 
   /* 00B4 */ MiniMapWndInfo* m_saved;
   /* 00B8 */ float scale;
