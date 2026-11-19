@@ -4172,14 +4172,14 @@ void CGrannyPc::RenderModel(
   bool attached = false;
   matrix inverse;
   inverse.MakeInverse(view);
-  const auto transformLight = [&]() {
+  const auto transformLight = [&](const GrannyPcLight& l) {
     return vector3d{
-      light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9],
-      light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10],
-      light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + inverse.values[8] * light.direction.z + inverse.values[11]
+      l.direction.x * inverse.values[0] + l.direction.y * inverse.values[3] + l.direction.z * inverse.values[6] + inverse.values[9],
+      l.direction.x * inverse.values[1] + l.direction.y * inverse.values[4] + l.direction.z * inverse.values[7] + inverse.values[10],
+      l.direction.x * inverse.values[2] + l.direction.y * inverse.values[5] + inverse.values[8] * l.direction.z + inverse.values[11]
     };
   };
-  const vector3d direction = transformLight();
+  const vector3d direction = transformLight(light);
   const float scale = 1.0f / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
   const float lightX = scale * direction.x;
   const float lightY = scale * direction.y;
