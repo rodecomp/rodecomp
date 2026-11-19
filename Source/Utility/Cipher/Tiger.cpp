@@ -273,12 +273,14 @@ std::uint64_t g_tigerTable3[256] = {
 };
 
 // INLINED
-inline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::uint64_t& c, std::uint64_t x, int pass) {
+static __forceinline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::uint64_t& c, std::uint64_t x, int pass) {
   c ^= x;
-  a -= g_tigerTable[static_cast<std::uint8_t>(c)] ^ g_tigerTable1[static_cast<std::uint8_t>(c >> 16)]
-    ^ g_tigerTable2[static_cast<std::uint8_t>(c >> 32)] ^ g_tigerTable3[static_cast<std::uint8_t>(c >> 48)];
-  b += g_tigerTable3[static_cast<std::uint8_t>(c >> 8)] ^ g_tigerTable2[static_cast<std::uint8_t>(c >> 24)]
-    ^ g_tigerTable1[static_cast<std::uint8_t>(c >> 40)] ^ g_tigerTable[static_cast<std::uint8_t>(c >> 56)];
+  const std::uint32_t cLow = static_cast<std::uint32_t>(c);
+  const std::uint32_t cHigh = static_cast<std::uint32_t>(c >> 32);
+  a -= g_tigerTable[cLow & 0xff] ^ g_tigerTable1[(cLow >> 16) & 0xff]
+    ^ g_tigerTable2[cHigh & 0xff] ^ g_tigerTable3[(cHigh >> 16) & 0xff];
+  b += g_tigerTable3[(cLow >> 8) & 0xff] ^ g_tigerTable2[(cLow >> 24) & 0xff]
+    ^ g_tigerTable1[(cHigh >> 8) & 0xff] ^ g_tigerTable[(cHigh >> 24) & 0xff];
   if (pass == 0) {
     b *= 5;
   } else if (pass == 1) {
