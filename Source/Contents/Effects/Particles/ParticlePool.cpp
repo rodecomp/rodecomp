@@ -56,8 +56,8 @@ void ParticlePool::Release(CParticle* particle) {
 // OFFSET: 0x00B40850
 // FUNCTION: fn_45932
 void ParticlePool::DeactivateAll() {
-  for (auto& entry : this->particles) {
-    entry.second = false;
+  for (auto it = this->particles.begin(); it != this->particles.end(); it++) {
+    it->second = false;
   }
   this->active = 0;
 }
