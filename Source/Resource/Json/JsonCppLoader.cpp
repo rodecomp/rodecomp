@@ -53,8 +53,8 @@ bool JsonCppLoader::GetMapStringBoolValue(const jsoncons::json& node, const std:
       return false;
     }
 
-    const std::pair<std::string, bool> item(name, element.as_bool());
-    if (!out->insert(item).second) {
+    const auto inserted = out->insert(std::pair<std::string, bool>(name, element.as_bool()));
+    if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
@@ -233,8 +233,8 @@ bool JsonCppLoader::GetMapStringIntValue(const jsoncons::json& node, const std::
       return false;
     }
 
-    const std::map<std::string, int>::value_type item(name, element.as<int>());
-    if (!out->insert(item).second) {
+    const auto inserted = out->insert(std::map<std::string, int>::value_type(name, element.as<int>()));
+    if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
@@ -260,8 +260,8 @@ bool JsonCppLoader::GetMapStringStringValue(const jsoncons::json& node, const st
       return false;
     }
 
-    const std::map<std::string, std::string>::value_type item(name, element.as<std::string>());
-    if (!out->insert(item).second) {
+    const auto inserted = out->insert(std::map<std::string, std::string>::value_type(name, element.as<std::string>()));
+    if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
@@ -297,7 +297,8 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
       values.push_back(item.as<int>());
     }
 
-    if (!out->insert(std::make_pair(name, values)).second) {
+    const auto inserted = out->insert(std::make_pair(name, values));
+    if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
