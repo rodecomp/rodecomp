@@ -10,6 +10,7 @@
 #include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
 #include "Contents/Effects/Core/RagEffectState.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Client/Mode/CGameMode.h"
@@ -34,6 +35,15 @@
 
 // GLOBAL: gl_24499
 int g_overrideColor = 0;
+
+// GLOBAL: gl_25977
+float g_effectIconOuterRadius = 2.0f;
+
+// GLOBAL: gl_25989
+float g_heightSpeedSign = -1.0f;
+
+// GLOBAL: gl_25990
+float g_fullCircleAngle = 360.0f;
 
 // INLINED
 static __forceinline void ZeroVector(vector3d& v) {
@@ -940,7 +950,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   unsigned char red = 255;
   unsigned char green = 255;
   unsigned char blue = 255;
-  float textureV = 1.0f;
+  float textureV = g_projectionDepthNumerator;
 
   switch (static_cast<int>(this->state.size)) {
   case 0:
@@ -4252,9 +4262,9 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
       const float level = static_cast<float>(row - 1);
 
       for (int turn = 0; turn < 225; turn += 45) {
-        this->state.slots[ec].distance = 1.5f - (level < 0.0f ? level * -1.0f : level) + 1.5f;
+        this->state.slots[ec].distance = 1.5f - (level < 0.0f ? level * g_heightSpeedSign : level) + 1.5f;
 
-        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight, this->state.slots[ec].maxHeight + 2.0f, vec1, vec2, vec3, vec4);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight, this->state.slots[ec].maxHeight + g_effectIconOuterRadius, vec1, vec2, vec3, vec4);
         if (this->state.slots[ec].flag1[0] == 3) {
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 2) {
