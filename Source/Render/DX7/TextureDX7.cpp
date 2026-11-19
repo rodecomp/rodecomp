@@ -442,7 +442,7 @@ void CTextureDX7::UploadSprite(int x, int y, int width, int height, const Sprite
     return;
   }
 
-  const RECT rectangle = Rectangle(x, y, width, height);
+  const RECT rectangle = {x, y, x + width, y + height};
   DDSURFACEDESC2 description = {sizeof(description)};
 
   if (FAILED(this->m_surface->Lock(const_cast<RECT*>(&rectangle), &description, DDLOCK_WAIT, nullptr))) {
