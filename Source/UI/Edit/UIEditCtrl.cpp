@@ -619,7 +619,10 @@ void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, co
 // FUNCTION: fn_10758
 void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
   const int right = this->geometry.width;
-  const int extent = x < 3 ? x - 3 + width : width;
+  if (x < 3) {
+    width += x - 3;
+  }
+  const int extent = width;
   const int left = x >= 3 ? x : 3;
 
   if (left < right && extent > 0) {
