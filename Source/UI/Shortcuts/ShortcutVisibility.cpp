@@ -18,39 +18,38 @@
 namespace {
   // INLINED
   __forceinline void PromoteWindow(UIWindow* window) {
-    if (window == nullptr) {
+    if (!window || (g_windowMgr.modal != nullptr && g_windowMgr.navigationWnd != window)) {
       return;
     }
 
-    if ((g_windowMgr.modal != nullptr && g_windowMgr.navigationWnd != window) || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_MAKECHARWND) ||
-        g_windowMgr.LookupWindow(WID_SECONDPASSWORDINPUTWND) || g_windowMgr.LookupWindow(WID_SECONDPASSWORDEDITWND)) {
+    if (g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_MAKECHARWND) || g_windowMgr.LookupWindow(WID_SECONDPASSWORDINPUTWND) ||
+        g_windowMgr.LookupWindow(WID_SECONDPASSWORDEDITWND)) {
       return;
     }
 
     int companion = -1;
-    if (window->geometry.id == 12) {
+    if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
       companion = 234;
-    } else if (window->geometry.id == 82) {
+    }
+    if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
       companion = 250;
     }
 
     if (companion != -1) {
-      for (auto found = g_windowMgr.rendered.begin(); found != g_windowMgr.rendered.end(); ++found) {
-        if ((*found)->geometry.id == companion) {
-          UIWindow* value = *found;
-          g_windowMgr.rendered.erase(found);
-          g_windowMgr.rendered.push_back(value);
-          break;
-        }
+      const auto it = std::find_if(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), [companion](UIWindow* entry) { return entry->geometry.id == companion; });
+
+      if (it != g_windowMgr.rendered.end()) {
+        UIWindow* value = *it;
+        g_windowMgr.rendered.erase(it);
+        g_windowMgr.rendered.push_back(value);
       }
     }
 
-    for (auto found = g_windowMgr.rendered.begin(); found != g_windowMgr.rendered.end(); ++found) {
-      if (*found == window) {
-        g_windowMgr.rendered.erase(found);
-        g_windowMgr.rendered.push_back(window);
-        break;
-      }
+    const auto entry = std::find(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), window);
+
+    if (entry != g_windowMgr.rendered.end()) {
+      g_windowMgr.rendered.erase(entry);
+      g_windowMgr.rendered.push_back(window);
     }
   }
 }
