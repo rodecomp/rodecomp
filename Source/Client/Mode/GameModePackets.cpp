@@ -1122,8 +1122,8 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 1);
-  for (int remaining = count; remaining > 0; --remaining, ++records) {
-    const StoreEquipOptionRecord* record = records;
+  for (int index = 0; index < count; ++index) {
+    const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     StoreItemOption options[5];
@@ -9558,8 +9558,9 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
 
   const int length = p->length;
   const int count = static_cast<unsigned>(length - 4) / 41u;
-  const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(p + 1);
-  for (int index = 0; index < count; ++index, ++record) {
+  const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
+  for (int index = 0; index < count; ++index) {
+    const StoreEquipRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     StoreItemOption options[5] = {0};
