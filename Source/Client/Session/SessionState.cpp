@@ -266,9 +266,9 @@ void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (std::get<0>(slots) < 10) {
       if (std::get<0>(slots) != -1) {
-        ITEM_INFO& entry = this->swapCostumeItems[std::get<0>(slots)];
-        entry.identity[3] = 0;
-        entry.Reset();
+        const int index = std::get<0>(slots);
+        this->swapCostumeItems[index].identity[3] = 0;
+        this->swapCostumeItems[index].Reset();
       }
       if (std::get<1>(slots) != -1 && std::get<1>(slots) < 10) {
         this->swapCostumeItems[std::get<1>(slots)].Reset();
