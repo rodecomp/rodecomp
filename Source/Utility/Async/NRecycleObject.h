@@ -44,16 +44,69 @@ template <class T> class NRecycleObjectPool : public NRecycleObjectPoolInter {
 public:
   // OFFSET: 0x00575AC0
   // FUNCTION: fn_02529
+  // OFFSET: 0x00576140
+  // FUNCTION: fn_46379
+  // OFFSET: 0x00575C60
+  // FUNCTION: fn_46373
+  // OFFSET: 0x00576550
+  // FUNCTION: fn_46384
+  // OFFSET: 0x00576480
+  // FUNCTION: fn_46383
+  // OFFSET: 0x00576070
+  // FUNCTION: fn_46378
+  // OFFSET: 0x00576210
+  // FUNCTION: fn_46380
+  // OFFSET: 0x005763B0
+  // FUNCTION: fn_46382
+  // OFFSET: 0x005762E0
+  // FUNCTION: fn_46381
+  // OFFSET: 0x00575ED0
+  // FUNCTION: fn_46376
+  // OFFSET: 0x00575FA0
+  // FUNCTION: fn_46377
+  // OFFSET: 0x00575E00
+  // FUNCTION: fn_46375
+  // OFFSET: 0x00575D30
+  // FUNCTION: fn_46374
+  // OFFSET: 0x00575B90
+  // FUNCTION: fn_46372
   explicit NRecycleObjectPool(std::uint32_t minimumFree) : m_minimumFree(minimumFree) {
     this->m_enabled = false;
     InitializeCriticalSection(&this->m_criticalSection);
     this->m_enabled = true;
   }
 
-  // INLINED
-  ~NRecycleObjectPool() override {
-    for (NRecycleObject* object : this->m_objects) {
-      delete object;
+  // OFFSET: 0x00576CD0
+  // FUNCTION: fn_46392
+  // OFFSET: 0x00576850
+  // FUNCTION: fn_46386
+  // OFFSET: 0x00577090
+  // FUNCTION: fn_46397
+  // OFFSET: 0x00576FD0
+  // FUNCTION: fn_46396
+  // OFFSET: 0x00576C10
+  // FUNCTION: fn_46391
+  // OFFSET: 0x00576D90
+  // FUNCTION: fn_46393
+  // OFFSET: 0x00576F10
+  // FUNCTION: fn_46395
+  // OFFSET: 0x00576E50
+  // FUNCTION: fn_46394
+  // OFFSET: 0x00576A90
+  // FUNCTION: fn_46389
+  // OFFSET: 0x00576B50
+  // FUNCTION: fn_46390
+  // OFFSET: 0x005769D0
+  // FUNCTION: fn_46388
+  // OFFSET: 0x00576910
+  // FUNCTION: fn_46387
+  // OFFSET: 0x00576790
+  // FUNCTION: fn_46385
+  // OFFSET: 0x005766D0
+  // FUNCTION: fn_46371
+  __declspec(noinline) ~NRecycleObjectPool() override {
+    for (auto object = this->m_objects.begin(); object != this->m_objects.end(); ++object) {
+      delete *object;
     }
     DeleteCriticalSection(&this->m_criticalSection);
   }
