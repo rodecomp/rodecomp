@@ -432,16 +432,15 @@ __declspec(safebuffers) bool CGameMode::LaunchTargetEffect(int effectId, CGameAc
   }
 
   CRagEffect* effect = source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  if (!effect) {
-    return false;
+  if (effect) {
+    vector3d position = target->render.position;
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    if (argument != -1) {
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, argument, 0, 0, 0, 0);
+    }
+    return true;
   }
-
-  vector3d position = target->render.position;
-  effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-  if (argument != -1) {
-    effect->SendMsg(nullptr, AM_SETCOUNT, 0, argument, 0, 0, 0, 0);
-  }
-  return true;
+  return false;
 }
 
 // OFFSET: 0x00CD7800
