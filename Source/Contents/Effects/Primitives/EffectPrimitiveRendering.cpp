@@ -39,8 +39,14 @@ int g_overrideColor = 0;
 // GLOBAL: gl_25977
 float g_effectIconOuterRadius = 2.0f;
 
+// GLOBAL: gl_25975
+float g_effectIconRadius = 4.0f;
+
 // GLOBAL: gl_25989
 float g_heightSpeedSign = -1.0f;
+
+// GLOBAL: gl_26011
+float g_groundBubbleAlphaBase = 130.0f;
 
 // GLOBAL: gl_25990
 float g_fullCircleAngle = 360.0f;
@@ -4147,8 +4153,8 @@ static __forceinline void RenderGroundBubbleQuad(
   if (slot.flag1[1] != 2) {
     alpha = 130;
   }
-  if (-1.0f > vec1.y) {
-    alpha = static_cast<int>((vec1.y + 1.0f) * 4.0f + 130.0f);
+  if (g_heightSpeedSign > vec1.y) {
+    alpha = static_cast<int>((vec1.y + g_projectionDepthNumerator) * g_effectIconRadius + g_groundBubbleAlphaBase);
   }
   if (alpha < 0) {
     alpha = 0;
