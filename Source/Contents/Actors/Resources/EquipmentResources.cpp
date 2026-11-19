@@ -13,6 +13,11 @@ static const std::string SexNameOf(int sex) {
 }
 
 // INLINED
+static const std::string BodyJobNameOf(int job) {
+  return g_session.GetBodyJobName(job);
+}
+
+// INLINED
 static const std::string AccessoryNameOf(int accessory) {
   return g_session.GetAccessoryName(accessory);
 }
@@ -158,16 +163,14 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
 // OFFSET: 0x00BAA670
 // FUNCTION: fn_19749
 std::string EquipmentResourceMgr::GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob) {
-  std::string result = "";
-  std::string sexName = "";
-  std::string jobName = "";
+  std::string result;
+  std::string sexName;
+  std::string jobName;
 
   sexName = SexNameOf(sex);
   const bool secondJob = g_session.IsSecondJob(costumeJob);
-  {
-    const std::string& name = g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true));
-    jobName = name;
-  }
+  const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
+  jobName = BodyJobNameOf(spriteJob);
 
   if (secondJob == true) {
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(raceJob)) +
