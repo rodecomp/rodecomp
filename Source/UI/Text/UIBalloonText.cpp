@@ -373,8 +373,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
     }
 
     if (info.title[0] != '\0') {
-      const std::string titledName = FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str());
-      name = titledName;
+      name = static_cast<const std::string&>(FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str()));
     }
 
     if (info.partyName[0] == '\0') {
