@@ -137,6 +137,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
 // FUNCTION: fn_04808
 void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std::uint32_t* palette, int blend) {
   const int direction = this->pc->render.previousAnimation - this->pc->render.animation;
+  SpriteLayerQuad entry;
   if (this->layerViews[layer] > 0) {
     int priority = -1;
     g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", direction, layer, this->layerViews[layer], &priority);
@@ -144,13 +145,11 @@ void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std
       return;
     }
 
-    SpriteLayerQuad entry;
     memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
     entry.palette = palette;
     entry.blend = blend;
     this->quads.insert(std::make_pair(priority, entry));
   } else {
-    SpriteLayerQuad entry;
     memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
     entry.palette = palette;
     entry.blend = blend;
