@@ -12,6 +12,7 @@ class CParticle;
 class CRotateLineEffect : public CEffect {
 public:
   CRotateLineEffect();
+  ~CRotateLineEffect() override;
 
   void Open() override;
   void OnProcess() override;

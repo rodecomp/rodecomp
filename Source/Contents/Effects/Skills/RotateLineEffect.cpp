@@ -13,6 +13,11 @@
 CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread(0), alpha(0), started(false) {
 }
 
+// OFFSET: 0x00B74280
+// FUNCTION: fn_46072
+__declspec(noinline) CRotateLineEffect::~CRotateLineEffect() {
+}
+
 // OFFSET: 0x00B74360
 // FUNCTION: fn_19155
 void CRotateLineEffect::Close() {
