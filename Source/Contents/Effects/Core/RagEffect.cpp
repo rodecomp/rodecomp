@@ -7537,24 +7537,24 @@ __declspec(safebuffers) bool CRagEffect::AgilityChange(char increase, const std:
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 15.0f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 15;
 
-    const char* sound;
     if (increase == 1) {
       this->state.lastPrim->state.speed = 1.5f;
       EffectPrimitiveState& rising = this->state.lastPrim->state;
       rising.accel = -(rising.speed / rising.duration) * 1.2f;
-      sound = "effect\\EF_IncAgility.wav";
+      g_soundMgr->PlayWave(
+        "effect\\EF_IncAgility.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+      );
     } else {
       this->state.lastPrim->state.deltaPos2.y -= 80.0f;
       this->state.lastPrim->state.longitude = 180.0f;
       this->state.lastPrim->state.speed = 1.0f;
       EffectPrimitiveState& falling = this->state.lastPrim->state;
       falling.accel = -(falling.speed / falling.duration);
-      sound = "effect\\EF_DecAgility.wav";
+      g_soundMgr->PlayWave(
+        "effect\\EF_DecAgility.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+      );
     }
 
-    g_soundMgr->PlayWave(
-      sound, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
   }
 
   if ((this->state.stateCnt & 1) != 0) {
@@ -8507,45 +8507,43 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 4.0f;
 
-  const float rise = static_cast<float>(level * 60);
-  const float shrink = static_cast<float>(level * 2);
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[0].maxHeight = rise + 100.0f;
+  this->state.lastPrim->state.slots[0].maxHeight = static_cast<float>(level * 60) + 100.0f;
   this->state.lastPrim->state.slots[0].rotStart = 180;
   this->state.lastPrim->state.slots[0].alphaB = 100;
-  this->state.lastPrim->state.slots[0].distance = 1.5f - shrink;
+  this->state.lastPrim->state.slots[0].distance = 1.5f - static_cast<float>(level * 2);
   this->state.lastPrim->state.slots[0].riseAngle = 90;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[1].process = 0;
   this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[1].maxHeight = rise + 70.0f;
+  this->state.lastPrim->state.slots[1].maxHeight = static_cast<float>(level * 60) + 70.0f;
   this->state.lastPrim->state.slots[1].rotStart = 270;
   this->state.lastPrim->state.slots[1].alphaB = 80;
-  this->state.lastPrim->state.slots[1].distance = 3.0f - shrink;
+  this->state.lastPrim->state.slots[1].distance = 3.0f - static_cast<float>(level * 2);
   this->state.lastPrim->state.slots[1].riseAngle = 89;
   this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
   this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[2].maxHeight = rise + 40.0f;
+  this->state.lastPrim->state.slots[2].maxHeight = static_cast<float>(level * 60) + 40.0f;
   this->state.lastPrim->state.slots[2].rotStart = 0;
   this->state.lastPrim->state.slots[2].alphaB = 60;
-  this->state.lastPrim->state.slots[2].distance = 4.0f - shrink;
+  this->state.lastPrim->state.slots[2].distance = 4.0f - static_cast<float>(level * 2);
   this->state.lastPrim->state.slots[2].riseAngle = 88;
   this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[3].life = 1;
   this->state.lastPrim->state.slots[3].process = 0;
   this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[3].maxHeight = rise + 15.0f;
+  this->state.lastPrim->state.slots[3].maxHeight = static_cast<float>(level * 60) + 15.0f;
   this->state.lastPrim->state.slots[3].rotStart = 90;
   this->state.lastPrim->state.slots[3].alphaB = 40;
-  this->state.lastPrim->state.slots[3].distance = 5.0f - shrink;
+  this->state.lastPrim->state.slots[3].distance = 5.0f - static_cast<float>(level * 2);
   this->state.lastPrim->state.slots[3].riseAngle = 87;
   this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
 
@@ -12421,7 +12419,7 @@ void CRagEffect::IceArrow() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 12) {
-    char soundBuffer[64];
+    char soundBuffer[52];
     sprintf(soundBuffer, "effect\\EF_IceArrow%d.wav", ClampedRandom(3) + 1);
     PlayEffectWaveInline(*this, soundBuffer);
     this->state.count *= 10;
@@ -12442,26 +12440,25 @@ void CRagEffect::IceArrow() {
       arrow.deltaPos2.x = static_cast<float>(spreadX + 25);
       arrow.deltaPos2.z = static_cast<float>(spreadZ + 15);
 
-      const int aimZ = ClampedRandom(4);
-      const int aimX = ClampedRandom(4);
-      const float angleY = -this->Heading(
+      const float angleY = -this->state.lastPrim->Heading(
         this->state.lastPrim->state.deltaPos2.x,
         this->state.lastPrim->state.deltaPos2.z,
-        static_cast<float>(aimX - 2),
-        static_cast<float>(aimZ - 2)
+        static_cast<float>(ClampedRandom(4) - 2),
+        static_cast<float>(ClampedRandom(4) - 2)
       );
       this->state.lastPrim->state.longitude = angleY;
       this->state.longitude = angleY;
 
-      const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
       const float dz = std::fabs(this->state.lastPrim->state.deltaPos2.z);
+      const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
       const float distXZ = SquareRoot(dx * dx + dz * dz);
       const float angleX = this->state.lastPrim->Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), distXZ, 0.0f, 0.0f);
       this->state.lastPrim->state.latitude = angleX;
       this->state.latitude = angleX;
 
       EffectPrimitiveState& tilt = this->state.lastPrim->state;
-      tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+      const float pitch = GetRadian(static_cast<int>(tilt.latitude));
+      tilt.transform.MakeXRotation(pitch);
       this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
 
       this->state.lastPrim->state.speed = -2.75f;
