@@ -3,10 +3,7 @@
 // OFFSET: 0x00B402F0
 // FUNCTION: fn_18849
 ParticlePool::ParticlePool() {
-  for (auto& entry : this->particles) {
-    entry.second = false;
-  }
-  this->active = 0;
+  this->DeactivateAll();
 }
 
 // OFFSET: 0x00B40560
@@ -54,6 +51,15 @@ void ParticlePool::Release(CParticle* particle) {
     --this->active;
     this->particles[particle] = false;
   }
+}
+
+// OFFSET: 0x00B40850
+// FUNCTION: fn_45932
+void ParticlePool::DeactivateAll() {
+  for (auto& entry : this->particles) {
+    entry.second = false;
+  }
+  this->active = 0;
 }
 
 // OFFSET: 0x00B40890

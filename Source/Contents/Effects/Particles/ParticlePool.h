@@ -16,6 +16,7 @@ public:
   void Release(CParticle* particle);
   bool IsActive(CParticle* particle);
   void ActivateAll();
+  void DeactivateAll();
   void Add(CParticle* particle);
 
   /* 0000 */ std::map<CParticle*, bool> particles;
