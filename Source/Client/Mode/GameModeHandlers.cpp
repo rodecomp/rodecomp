@@ -2690,7 +2690,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   for (int i = 0; i < count; ++i) {
     DdukddakBoxTestEntry entry;
     memcpy_s(&entry, sizeof(entry), source, sizeof(entry));
-    if (counts.find(entry.itemId) == counts.end()) {
+    if (counts.end() == counts.find(entry.itemId)) {
       counts.insert(std::make_pair(entry.itemId, 0));
     }
     counts[entry.itemId] += entry.count;
@@ -2720,7 +2720,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   std::string path = FormatOwnedString("%s\\%s\\%s", g_applicationDirectory, folder.c_str(), fileName.c_str());
   path = static_cast<const std::string&>(CreateUniqueFileName(path));
 
-  std::ofstream output(path.c_str());
+  std::ofstream output(path);
   output << FormatOwnedString("%s\t%s\t%s\t%s\n\n", "ID", "name", "count", "property");
   for (auto item = items.begin(); item != items.end(); ++item) {
     ITEM_INFO info;
