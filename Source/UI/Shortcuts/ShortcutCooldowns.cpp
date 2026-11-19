@@ -608,31 +608,29 @@ int g_charViewOffsetY;
 void UISelCharForUServerWnd::Paint() {
   const char* background =
     g_session.characterCount > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
-  this->DrawBitmap(0, 0, bitmap, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), false);
 
   for (int index = 0; index < g_session.characterCount; ++index) {
     if (this->m_slotEnabled[index] != 0) {
       continue;
     }
 
-    CharSlotInfo& slot = this->m_slots[index];
-    this->DrawRobeSprite(slot.job, g_session.GetCurrentSex(), slot.robe, slot.x, slot.y, false, 0, 0);
+    this->DrawRobeSprite(this->m_slots[index].job, g_session.GetCurrentSex(), this->m_slots[index].robe, this->m_slots[index].x, this->m_slots[index].y, false, 0, 0);
 
     SpriteAtlasRecord record{};
     for (int layer = 0; layer < 5; ++layer) {
-      if (slot.actionNames[layer].size() == 0 || slot.spriteNames[layer].size() == 0) {
+      if (this->m_slots[index].actionNames[layer].size() == 0 || this->m_slots[index].spriteNames[layer].size() == 0) {
         continue;
       }
 
-      ResourceMgr::Instance().Load(slot.imfName.c_str());
-      auto* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[layer].c_str()));
-      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(slot.spriteNames[layer].c_str()));
-      const ActionFrame* frame = &act->Frame(slot.action, slot.frame);
+      ResourceMgr::Instance().Load(this->m_slots[index].imfName.c_str());
+      auto* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[layer].c_str()));
+      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_slots[index].spriteNames[layer].c_str()));
+      const ActionFrame* frame = &act->Frame(this->m_slots[index].action, this->m_slots[index].frame);
 
       int offsetX = 0;
       int offsetY = 0;
-      if (g_session.IsDoramJob(slot.job) == true) {
+      if (g_session.IsDoramJob(this->m_slots[index].job) == true) {
         const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         int x = 0;
         int y = 0;
@@ -646,13 +644,13 @@ void UISelCharForUServerWnd::Paint() {
         }
 
         int turn = 0;
-        if (slot.frame == 2) {
+        if (this->m_slots[index].frame == 2) {
           turn = -1;
-        } else if (slot.frame == 1) {
+        } else if (this->m_slots[index].frame == 1) {
           turn = 1;
         }
 
-        int direction = turn - slot.actionBase + slot.action;
+        int direction = turn - this->m_slots[index].actionBase + this->m_slots[index].action;
         if (direction < 0) {
           direction = 7;
         }
@@ -664,7 +662,7 @@ void UISelCharForUServerWnd::Paint() {
       }
 
       if (layer == 1) {
-        const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[0].c_str()))->Frame(slot.action, slot.frame);
+        const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[0].c_str()))->Frame(this->m_slots[index].action, this->m_slots[index].frame);
         if (frame->anchorCount != 0 && body->anchorCount != 0) {
           const ActionAnchor* head = frame->anchors.data();
           const ActionAnchor* base = body->anchors.data();
@@ -676,20 +674,20 @@ void UISelCharForUServerWnd::Paint() {
           }
         }
       } else if (layer == 2 || layer == 3 || layer == 4) {
-        const ActionFrame* head = &static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[1].c_str()))->Frame(slot.action, slot.frame);
+        const ActionFrame* head = &static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[1].c_str()))->Frame(this->m_slots[index].action, this->m_slots[index].frame);
         int syncedFrame = 0;
         const ActionFrame* synced = g_session.GetSyncedFrame(
-          static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[1].c_str())),
-          static_cast<CActRes*>(ResourceMgr::Instance().Load(slot.actionNames[layer].c_str())), slot.action, slot.frame, this->m_startTime, &syncedFrame
+          static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[1].c_str())),
+          static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[layer].c_str())), this->m_slots[index].action, this->m_slots[index].frame, this->m_startTime, &syncedFrame
         );
-        if (synced && syncedFrame != slot.frame) {
+        if (synced && syncedFrame != this->m_slots[index].frame) {
           frame = synced;
         }
 
         if (frame->anchorCount != 0 && head->anchorCount != 0) {
           const ActionAnchor* anchor = frame->anchors.data();
           const ActionAnchor* base = head->anchors.data();
-          if (anchor->attachmentId == base->attachmentId) {
+          if (base->attachmentId == anchor->attachmentId) {
             offsetX += base->x - anchor->x;
             offsetY += base->y - anchor->y;
           }
@@ -704,16 +702,16 @@ void UISelCharForUServerWnd::Paint() {
 
       const std::uint32_t* palette = sprite->palette;
       if (layer == 0) {
-        if (slot.bodyPalette != 0) {
-          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(slot.bodyPaletteName.c_str()))->palette;
+        if (this->m_slots[index].bodyPalette != 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].bodyPaletteName.c_str()))->palette;
         }
       } else if (layer == 1) {
-        if (slot.headPalette != 0) {
-          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(slot.headPaletteName.c_str()))->palette;
+        if (this->m_slots[index].headPalette != 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].headPaletteName.c_str()))->palette;
         }
       }
 
-      const SpriteFrameCell& cell = frame->Cell(layer < 2 ? layer : 0);
+      const SpriteFrameCell& cell = frame->Cell(layer <= 1 ? layer : 0);
       if (cell.image == -1) {
         continue;
       }
@@ -730,7 +728,7 @@ void UISelCharForUServerWnd::Paint() {
       }
 
       this->geometry.surface->DrawSurface(
-        cell.x + offsetX + slot.x, cell.y + offsetY + slot.y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
+        cell.x + offsetX + this->m_slots[index].x, cell.y + offsetY + this->m_slots[index].y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
         image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
