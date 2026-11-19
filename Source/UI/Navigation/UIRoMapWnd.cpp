@@ -940,8 +940,8 @@ __forceinline void CFlyingShipRouteInfo::UpdateAnimation(UIRoMapWnd* wnd, float 
       this->segmentIndex = index;
     }
 
-    const float dx = this->entries[index].center[0] - this->entries[index + 1].center[0];
     const float dy = this->entries[index].center[1] - this->entries[index + 1].center[1];
+    const float dx = this->entries[index].center[0] - this->entries[index + 1].center[0];
     const float distance = SquareRoot(dx * dx + dy * dy);
     if (this->travelledDistance == 0.0f) {
       this->segmentLength = distance;
