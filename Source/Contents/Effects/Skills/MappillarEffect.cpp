@@ -101,6 +101,7 @@ void CMappillarEffect::Open() {
 }
 
 // OFFSET: 0x00B4BE90
+// FUNCTION: fn_46193
 __forceinline void CMappillarEffect::InitializeParticle(CParticle* particle) {
   if (!particle) {
     return;
@@ -180,6 +181,7 @@ void CMappillarEffect::OnProcess() {
 }
 
 // OFFSET: 0x00B4C2F0
+// FUNCTION: fn_46194
 __forceinline void CMappillarEffect::UpdateParticleTransform(CParticle* particle) {
   if (!particle) {
     return;
