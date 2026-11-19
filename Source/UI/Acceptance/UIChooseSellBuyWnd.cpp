@@ -7579,6 +7579,10 @@ UICardItemIllustWnd::UICardItemIllustWnd()
     : UIFrameWnd(0) {
 }
 
+// OFFSET: 0x008CA530
+// FUNCTION: fn_46441
+__declspec(noinline) UICardItemIllustWnd::~UICardItemIllustWnd() = default;
+
 // OFFSET: 0x008C8390
 // FUNCTION: fn_11953
 UIMenuWnd::UIMenuWnd()
