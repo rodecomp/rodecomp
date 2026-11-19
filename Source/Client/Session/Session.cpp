@@ -1675,6 +1675,12 @@ const char* CSession::GetHotkeyDescription(int index) const {
   return this->m_hotkeyDescriptions[index].c_str();
 }
 
+// OFFSET: 0x00DE0E20
+// FUNCTION: fn_23473
+void CSession::ItemBitmapPath(const char* name, char* output) {
+  std::sprintf(output, "유저인터페이스\\item\\%s.bmp", name);
+}
+
 // OFFSET: 0x00DE0EB0
 // FUNCTION: fn_23475
 ITEM_INFO CSession::FindCartItem(std::uint32_t id) const {
