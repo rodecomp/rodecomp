@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -99,7 +100,7 @@ void CMagicFloorEffect::UpdateRingVertices(CParticle* particle) {
 
   const int segment = particle->columnIndex;
   const float depth = -particle->animationParameter;
-  const float height = static_cast<float>(segment) * particle->animationParameters[0] + depth;
+  const float height = static_cast<float>(segment) * particle->animationParameters[0] + depth - g_projectionDepthNumerator;
   int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle) % 360;
   float radius = particle->speedParameter;
   for (int step = 1; step <= segment; ++step) {
@@ -110,7 +111,7 @@ void CMagicFloorEffect::UpdateRingVertices(CParticle* particle) {
   for (int i = 0; i < 4; ++i) {
     angle = (angle + 90) % 360;
     corners[i].x = radius * g_cosTable[angle];
-    corners[i].y = height - 1.0f;
+    corners[i].y = height;
     corners[i].z = radius * g_sinTable[angle];
   }
 
