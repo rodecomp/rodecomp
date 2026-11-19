@@ -36,6 +36,11 @@ __forceinline vector3d TransformPoint(const matrix& transform, const vector3d po
 CShadowExceed::CShadowExceed() : CEffect(1867), finishSpawned(0) {
 }
 
+// OFFSET: 0x00727D80
+// FUNCTION: fn_46094
+__declspec(noinline) CShadowExceed::~CShadowExceed() {
+}
+
 // OFFSET: 0x00727E60
 // FUNCTION: fn_07429
 void CShadowExceed::Close() {
@@ -145,12 +150,20 @@ void CShadowExceed::OnProcess() {
   }
 }
 
+// OFFSET: 0x00729030
+
 // OFFSET: 0x00729230
 // FUNCTION: fn_07437
 void CShadowExceed::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    if (*it) {
-      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderEmitter(*it);
+  }
+}
+
+// OFFSET: 0x00729310
+// FUNCTION: fn_46096
+__forceinline void CShadowExceed::RenderEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }

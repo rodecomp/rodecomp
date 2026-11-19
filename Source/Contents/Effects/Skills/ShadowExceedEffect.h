@@ -11,6 +11,7 @@ class CEZ2STRParticle;
 class CShadowExceed : public CEffect {
 public:
   CShadowExceed();
+  ~CShadowExceed() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -19,6 +20,10 @@ public:
 
   /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
   /* 00D8 */ unsigned char finishSpawned;
+
+private:
+  void UpdateEmitter(CEZ2STRParticle* emitter);
+  void RenderEmitter(CEZ2STRParticle* emitter);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
