@@ -14,6 +14,10 @@ CClimaxEffect::CClimaxEffect() : CEffect(-1) {
   this->particles[1] = nullptr;
 }
 
+// OFFSET: 0x007068B0
+__declspec(noinline) CClimaxEffect::~CClimaxEffect() {
+}
+
 // OFFSET: 0x00706AD0
 // FUNCTION: fn_07049
 void CClimaxEffect::Close() {
@@ -74,6 +78,30 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
   result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
 }
 
+// OFFSET: 0x00706970
+__forceinline void CClimaxEffect::PositionEmitter(CEZ2STRParticle* emitter) {
+  if (FindRenderObject(this->actor)) {
+    const vector3d position = emitter->position;
+    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+    vector3d viewPosition;
+    MatrixMult(viewPosition, position, view);
+    viewPosition.x += 0.0f;
+    viewPosition.y -= 10.0f;
+    vector3d world;
+    MatrixMult(world, viewPosition, inverse);
+    emitter->position = world;
+  }
+}
+
+// OFFSET: 0x007070E0
+__forceinline void CClimaxEffect::ProcessEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    this->PositionEmitter(emitter);
+    emitter->Process(0.0f, 0.0f, 0.0f);
+  }
+}
+
 // OFFSET: 0x00706F10
 // FUNCTION: fn_07052
 void CClimaxEffect::OnProcess() {
@@ -87,25 +115,17 @@ void CClimaxEffect::OnProcess() {
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
 
-    CEZ2STRParticle* climax = static_cast<CEZ2STRParticle*>(this->particles[index]);
-    if (climax) {
-      if (FindRenderObject(this->actor)) {
-        const vector3d position = climax->position;
-        const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-        const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-        vector3d viewPosition;
-        MatrixMult(viewPosition, position, view);
-        viewPosition.x += 0.0f;
-        viewPosition.y -= 10.0f;
-        vector3d world;
-        MatrixMult(world, viewPosition, inverse);
-        climax->position = world;
-      }
-
-      climax->Process(0.0f, 0.0f, 0.0f);
-    }
+    this->ProcessEmitter(static_cast<CEZ2STRParticle*>(this->particles[index]));
 
     ++this->particles[index]->elapsedFrames;
+  }
+}
+
+// OFFSET: 0x007072B0
+// FUNCTION: fn_46254
+__forceinline void CClimaxEffect::RenderEmitter(CEZ2STRParticle* emitter) {
+  if (emitter) {
+    emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -113,9 +133,6 @@ void CClimaxEffect::OnProcess() {
 // FUNCTION: fn_07053
 void CClimaxEffect::Render() {
   for (int index = 0; index < 2; ++index) {
-    CParticle* particle = this->particles[index];
-    if (particle) {
-      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    this->RenderEmitter(static_cast<CEZ2STRParticle*>(this->particles[index]));
   }
 }

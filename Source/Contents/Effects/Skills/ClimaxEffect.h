@@ -6,10 +6,12 @@
 #include <cstddef>
 
 class CParticle;
+class CEZ2STRParticle;
 
 class CClimaxEffect : public CEffect {
 public:
   CClimaxEffect();
+  ~CClimaxEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -18,6 +20,11 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ CParticle* particles[2];
+
+private:
+  void PositionEmitter(CEZ2STRParticle* emitter);
+  void ProcessEmitter(CEZ2STRParticle* emitter);
+  void RenderEmitter(CEZ2STRParticle* emitter);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
