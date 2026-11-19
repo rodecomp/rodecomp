@@ -32,6 +32,7 @@ private:
   void RenderCloud(CParticle* particle);
   void SetEffectLifetime();
   void SetStormColor(CParticle* particle, int effectId);
+  void RotateActor();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

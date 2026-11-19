@@ -279,6 +279,39 @@ bool CStormKickEffect::IsAlive() {
   return !this->IsFinished();
 }
 
+// OFFSET: 0x00B7C3D0
+// FUNCTION: fn_46020
+__forceinline void CStormKickEffect::RotateActor() {
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    return;
+  }
+
+  float angle;
+  switch (this->id) {
+  case EF_STORMKICK:
+  case EF_STORMKICK8:
+    if (this->frame > 47) {
+      return;
+    }
+    angle = actor->render.angle + 30.0f;
+    break;
+  case EF_STORMKICK1:
+    if (this->frame > 50) {
+      return;
+    }
+    angle = actor->render.angle + 14.0f;
+    break;
+  default:
+    return;
+  }
+
+  actor->render.angle = angle;
+  if (angle > 360.0f) {
+    actor->render.angle = angle - 360.0f;
+  }
+}
+
 // OFFSET: 0x00B7BF70
 // FUNCTION: fn_19225
 void CStormKickEffect::OnProcess() {
@@ -392,34 +425,7 @@ void CStormKickEffect::OnProcess() {
     ++particle->elapsedFrames;
   }
 
-  CRenderObject* actor = FindRenderObject(this->actor);
-  if (!actor) {
-    return;
-  }
-
-  float angle;
-  switch (this->id) {
-  case EF_STORMKICK:
-  case EF_STORMKICK8:
-    if (this->frame > 47) {
-      return;
-    }
-    angle = actor->render.angle + 30.0f;
-    break;
-  case EF_STORMKICK1:
-    if (this->frame > 50) {
-      return;
-    }
-    angle = actor->render.angle + 14.0f;
-    break;
-  default:
-    return;
-  }
-
-  actor->render.angle = angle;
-  if (angle > 360.0f) {
-    actor->render.angle = angle - 360.0f;
-  }
+  this->RotateActor();
 }
 
 // OFFSET: 0x00B7CA90
