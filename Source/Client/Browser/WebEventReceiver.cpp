@@ -45,7 +45,7 @@ HRESULT __stdcall AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID e
 
 // OFFSET: 0x00AB39E0
 // FUNCTION: fn_17428
-HRESULT __stdcall UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie) {
+__declspec(noinline) HRESULT __stdcall UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie) {
   if (!source) {
     return E_INVALIDARG;
   }
