@@ -21,6 +21,9 @@ public:
 
   /* 00CC */ int visibleCount;
   /* 00D0 */ std::vector<CSpriteParticle*> particles;
+
+private:
+  void UpdateParticle(CSpriteParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

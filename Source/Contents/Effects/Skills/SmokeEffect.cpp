@@ -102,6 +102,51 @@ void CSmokeEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B76A70
+// FUNCTION: fn_46187
+void CSmokeEffect::UpdateParticle(CSpriteParticle* particle) {
+  if (particle) {
+    matrix& rotation = particle->rotation;
+    float& angle = particle->angle;
+    float& spin = particle->spin;
+    if (particle->elapsedFrames < 50) {
+      const float speed = particle->frameDelay;
+      const float* values = rotation.values;
+      const float deltaX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
+      const float deltaY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
+      const float deltaZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
+      particle->velocity.x += deltaX;
+      particle->velocity.y += deltaY;
+      particle->velocity.z += deltaZ;
+      angle += spin;
+      if (particle->elapsedFrames > 34) {
+        particle->alpha = std::ranges::max(particle->alpha - 15, 0);
+      }
+    } else {
+      particle->SetSprite("이팩트\\굴뚝연기.spr");
+      particle->SetAction("이팩트\\굴뚝연기.act");
+      particle->scale = 1.5f;
+      spin = 0.75f;
+      particle->frameDelay = static_cast<float>(std::ranges::max(rand() % 3, 0) + 3) / 10.0f;
+      particle->elapsedFrames = 0;
+      particle->velocity.x = 0.0f;
+      particle->velocity.y = 0.0f;
+      particle->velocity.z = 0.0f;
+      particle->flags = 1;
+      particle->alpha = 255;
+      rotation.IsIdentity();
+      rotation.MakeXRotation(static_cast<float>(std::ranges::max(rand() % 30, 0) + 75) / 180.0f * 3.141592f);
+      rotation.AppendYRotation(static_cast<float>(std::ranges::max(rand() % 360, 0)) / 180.0f * 3.141592f);
+      this->visibleCount = static_cast<int>(RandomRange(1.0f, static_cast<float>(this->particles.size())));
+    }
+
+    matrix translate;
+    std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
+    translate.MakeTranslate(particle->velocity.x + 0.0f, particle->velocity.y - 9.0f, particle->velocity.z + 0.0f);
+    particle->transform = translate;
+  }
+}
+
 // OFFSET: 0x00B76D80
 // FUNCTION: fn_19180
 void CSmokeEffect::Render() {
