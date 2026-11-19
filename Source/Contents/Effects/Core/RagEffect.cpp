@@ -2502,7 +2502,7 @@ bool CRagEffect::Potion_Berserk() {
 
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt >= 13 && this->state.stateCnt <= 109 && this->state.stateCnt % 4 == 0) {
+  if (static_cast<std::uint32_t>(this->state.stateCnt - 13) <= 96 && this->state.stateCnt % 4 == 0) {
     this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
