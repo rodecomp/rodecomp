@@ -85,8 +85,7 @@ UIGradeEnchantWnd::UIGradeEnchantWnd()
       messageIds(), item(0) {
   this->requestPending = 0;
   this->info = {};
-  this->enchantOption = 0;
-  this->enchantOptionCount = 0;
+  std::memset(&this->enchantOption, 0, sizeof this->enchantOption);
 }
 
 // OFFSET: 0x007E6A60
@@ -127,8 +126,7 @@ void UIGradeEnchantWnd::ResetItem() {
   this->materials.clear();
   this->selectedMaterial = -1;
   this->info = GradeEnchantInfo{};
-  this->enchantOption = 0;
-  this->enchantOptionCount = 0;
+  std::memset(&this->enchantOption, 0, sizeof this->enchantOption);
   this->blessingAmount = 0;
   this->protect = 0;
   this->baseSuccessRate = 0;
@@ -636,8 +634,8 @@ void UIGradeEnchantWnd::SetEnchantInfo(
 
   this->item = owned;
   this->info = info;
-  this->enchantOption = enchantOption;
-  this->enchantOptionCount = enchantOptionCount;
+  this->enchantOption.option = enchantOption;
+  this->enchantOption.count = enchantOptionCount;
   this->materials.assign(materials, materials + materialCount);
   this->selectedMaterial = -1;
   this->blessingAmount = 0;

@@ -30,6 +30,11 @@ struct GradeEnchantInfo {
   /* 000C */ std::int32_t bonusPerStep;
 };
 
+struct GradeEnchantOption {
+  /* 0000 */ std::int32_t option;
+  /* 0004 */ std::int32_t count;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GradeEnchantMaterial) == 17);
 static_assert(sizeof(GradeEnchantInfo) == 16);
@@ -99,8 +104,7 @@ public:
   /* 00E8 */ int hoverMaterial;
   /* 00EC */ std::vector<GradeEnchantMaterial> materials;
   /* 00F8 */ GradeEnchantInfo info;
-  /* 0108 */ int enchantOption;
-  /* 010C */ int enchantOptionCount;
+  /* 0108 */ GradeEnchantOption enchantOption;
   /* 0110 */ unsigned char protect;
   /* 0111 */ unsigned char unknown_0111;
   /* 0114 */ int blessingAmount;
