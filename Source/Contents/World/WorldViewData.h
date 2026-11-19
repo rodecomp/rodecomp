@@ -51,13 +51,7 @@ public:
   CWorldViewMap(int id, const char* name, WorldViewArea area) : CWorldViewMap(id, area, name, name) {
   }
 
-  // INLINED
-  ~CWorldViewMap() {
-    for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
-      delete *it;
-    }
-    this->fields.clear();
-  }
+  ~CWorldViewMap();
 
   void ClearFields();
   CWorldViewField* FieldAt(int x, int y);

@@ -52,6 +52,15 @@ CWorldViewMap::CWorldViewMap() {
   this->id = 0;
 }
 
+// OFFSET: 0x00613490
+// FUNCTION: fn_46306
+CWorldViewMap::~CWorldViewMap() {
+  for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
+    delete *it;
+  }
+  this->fields.clear();
+}
+
 // OFFSET: 0x00613A00
 // FUNCTION: fn_46307
 void CWorldViewMap::ClearFields() {
