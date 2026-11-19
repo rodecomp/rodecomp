@@ -11,6 +11,7 @@ class CParticle;
 class CCompetentia : public CEffect {
 public:
   CCompetentia();
+  ~CCompetentia() override;
 
   void Open() override;
   void OnProcess() override;
@@ -20,6 +21,10 @@ public:
   void SetLifeTime(int argument) override;
 
   /* 00CC */ std::vector<CParticle*> particles;
+
+private:
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
