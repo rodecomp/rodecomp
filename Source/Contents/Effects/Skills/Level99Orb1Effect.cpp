@@ -29,6 +29,7 @@ CLevel99Orb1Effect::CLevel99Orb1Effect() : CEffect(976) {
 }
 
 // OFFSET: 0x00B6B2B0
+// FUNCTION: fn_46229
 __declspec(noinline) CLevel99Orb1Effect::~CLevel99Orb1Effect() {
 }
 
