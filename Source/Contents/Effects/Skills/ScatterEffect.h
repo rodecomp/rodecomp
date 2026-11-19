@@ -20,6 +20,11 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ std::vector<CSpriteParticle*> particles;
+
+private:
+  void InitializeParticle(CSpriteParticle* particle);
+  void UpdateParticle(CSpriteParticle* particle);
+  void RenderParticle(CSpriteParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
