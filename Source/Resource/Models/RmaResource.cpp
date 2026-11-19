@@ -110,6 +110,15 @@ int CRmaRes::EndFrame(int action) {
 }
 
 // OFFSET: 0x00747130
+// FUNCTION: fn_45822
+int CRmaRes::GetFirstFrame(int action) {
+  const auto& frames = this->actions[action].frames;
+  if (frames.empty()) {
+    return -1;
+  }
+
+  return frames.front();
+}
 
 // OFFSET: 0x007473A0
 // FUNCTION: fn_45823
@@ -130,8 +139,28 @@ int CRmaRes::GetStartFrame(int action) {
 }
 
 // OFFSET: 0x00747400
+// FUNCTION: fn_45826
+bool CRmaRes::HasFrame(int action, int frame) {
+  const auto& frames = this->actions[action].frames;
+  const int count = static_cast<int>(frames.size());
+  for (int index = 0; index < count; ++index) {
+    if (frame == frames[index]) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00747450
+// FUNCTION: fn_45827
+bool CRmaRes::IsValidAction(int action) {
+  if (action < this->actions.size() && action >= 0 && this->actions[action].startFrame != -1) {
+    return true;
+  }
+
+  return false;
+}
 
 // INLINED
 CRmaRes::CRmaRes(const char* extension, const char* prefix) {
