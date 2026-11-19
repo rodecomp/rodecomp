@@ -1177,7 +1177,7 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
 
   bool inserted = false;
   auto it = this->m_emotionsByPack.find(packId);
-  if (this->m_emotionsByPack.end() != it) {
+  if (it != this->m_emotionsByPack.end()) {
     auto result = it->second.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId);
     return result.second;
   }
@@ -1185,7 +1185,8 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
   CashEmotionTable table;
   auto result = table.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId);
   if (result.second == true) {
-    inserted = this->m_emotionsByPack.emplace(packId, table).second;
+    auto added = this->m_emotionsByPack.emplace(packId, table);
+    inserted = added.second;
   }
 
   return inserted;
