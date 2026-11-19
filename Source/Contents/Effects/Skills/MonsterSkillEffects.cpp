@@ -867,6 +867,11 @@ void CDancingKnifeEffect::Render() {
 CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00710B60
+// FUNCTION: fn_46312
+__declspec(noinline) CEternalSlashAttackEffect::~CEternalSlashAttackEffect() {
+}
+
 // OFFSET: 0x00710C80
 // FUNCTION: fn_07209
 void CEternalSlashAttackEffect::Open() {

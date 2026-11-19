@@ -168,6 +168,7 @@ public:
 class CEternalSlashAttackEffect : public CEffect {
 public:
   CEternalSlashAttackEffect();
+  ~CEternalSlashAttackEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
