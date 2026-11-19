@@ -43,8 +43,8 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
     return RegQueryValueExA(handle, name, nullptr, &type, reinterpret_cast<BYTE*>(&value), &size) == ERROR_SUCCESS && CSkillInfo::UsesLevel(id);
   };
 
-  int value;
   for (int id = 1; id < 7999; ++id) {
+    int value;
     if (read(id, value)) {
       g_session.m_skillBundle.SetSkillValue(id, value);
     } else {
@@ -53,6 +53,7 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
   }
 
   for (int id = 8000; id < 8061; ++id) {
+    int value;
     if (read(id, value)) {
       g_session.SetHomunSkillLevel(id, value);
     } else {
@@ -61,6 +62,7 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
   }
 
   for (int id = 8200; id < 8458; ++id) {
+    int value;
     if (read(id, value)) {
       g_session.SetMercSkillLevel(id, value);
     } else {
