@@ -1586,9 +1586,7 @@ void UIStatusWnd::Paint() {
   }
 
   const char* background = this->m_extended == 1 ? "유저인터페이스\\statuswnd\\w_ex_statwin_bg.bmp" : "유저인터페이스\\statuswnd\\w_statwin_bg.bmp";
-  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
-    this->DrawBitmap(0, this->m_titleHeight, bitmap, true);
-  }
+  this->DrawBitmap(0, this->m_titleHeight, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), true);
 
   const int stats[6][2] = {
     {g_session.m_standardStats[0], g_session.strengthBonus},
@@ -1598,11 +1596,11 @@ void UIStatusWnd::Paint() {
     {g_session.m_standardStats[4], g_session.dexterityBonus},
     {g_session.m_standardStats[5], g_session.luckBonus},
   };
-  const int* entry = stats[0];
-  for (int y = 23; y < 119; y += 16, entry += 2) {
-    const int value = entry[0];
+  for (int i = 0; i < 6; ++i) {
+    const int y = i * 16 + 23;
+    const int value = stats[i][0];
     this->DrawTextAt(36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
-    const int bonus = entry[1];
+    const int bonus = stats[i][1];
     if (bonus > 0) {
       if (value < 100) {
         this->DrawTextAt(49, y, FormatOwnedString("+%d", bonus).c_str(), 0, 1, 14, 0, 0, 0);
