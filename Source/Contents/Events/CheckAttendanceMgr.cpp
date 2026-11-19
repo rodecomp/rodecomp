@@ -16,6 +16,16 @@ extern "C" {
 // GLOBAL: gl_24876
 CCheckAttendanceMgr* g_checkAttendanceMgr;
 
+// OFFSET: 0x00670C40
+// FUNCTION: fn_46421
+CCheckAttendanceMgr::CCheckAttendanceMgr() : m_config0(0), m_config1(0) {
+  this->m_isValid = true;
+}
+
+// OFFSET: 0x00670F00
+// FUNCTION: fn_46422
+__declspec(noinline) CCheckAttendanceMgr::~CCheckAttendanceMgr() = default;
+
 // OFFSET: 0x00671040
 // FUNCTION: fn_05349
 bool CCheckAttendanceMgr::Create() {
