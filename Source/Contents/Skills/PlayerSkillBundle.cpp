@@ -336,11 +336,11 @@ void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
 
   const auto removedEnd = this->removals.end();
   for (auto removedIt = this->removals.begin(); removedIt != removedEnd; ++removedIt) {
-    int removed = *removedIt;
-    const auto change = this->levelChanges.find(removed);
+    const int removed = *removedIt;
+    const auto change = this->levelChanges.find(static_cast<int>(*removedIt));
     if (change != this->levelChanges.end()) {
       this->levelChanges.erase(change);
-      const auto flag = this->changed.find(removed);
+      const auto flag = this->changed.find(static_cast<int>(*removedIt));
       if (flag != this->changed.end()) {
         this->changed.erase(flag);
       }
