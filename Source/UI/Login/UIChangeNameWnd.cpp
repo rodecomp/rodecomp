@@ -113,61 +113,72 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
       if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_edit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
-        return 0;
+        break;
       }
 
-      if (this->m_edit->Length() < 4) {
+      if (this->m_edit->Length() >= 4) {
+        const int allowed = g_forbiddenWords.Allows(this->m_edit->Text());
+        const int blank = g_session.IsBlankString(this->m_edit->Text());
+        if (allowed && !blank) {
+          if (this->m_edit->Length() >= 24) {
+            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+            this->m_edit->SetText("");
+            break;
+          }
+
+          if (!this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
+            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+            this->m_edit->SetText("");
+            break;
+          }
+
+          char newName[24] = {};
+          std::strcpy(newName, this->m_edit->Text());
+          memcpy_s(&this->m_info, sizeof(this->m_info), this->m_character, sizeof(CharacterInfo));
+          std::memcpy(this->m_info.name, newName, sizeof(newName));
+          if (std::strstr(this->m_info.name, "그라비티") != nullptr) {
+            return 0;
+          }
+
+          _strlwr(newName);
+          if (std::strstr(newName, "gravity") != nullptr) {
+            return 0;
+          }
+
+          if (newName[0] == '[' && newName[1] == 'g' && newName[2] == 'm') {
+            return 0;
+          }
+
+          if (newName[1] == '[' && newName[2] == 'g' && newName[3] == 'm') {
+            return 0;
+          }
+
+          if (newName[2] == '[' && newName[3] == 'g' && newName[4] == 'm') {
+            return 0;
+          }
+
+          char text[300];
+          std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
+          if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+            CharacterRenamePacket packet;
+            packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
+            packet.gid = this->m_character->gid;
+            g_session.m_renameGid = packet.gid;
+            std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
+            std::memcpy(g_session.m_renameName, this->m_info.name, sizeof(g_session.m_renameName));
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+            g_windowMgr.Schedule(this);
+          }
+        } else {
+          if (!allowed) {
+            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          }
+          if (blank) {
+            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          }
+        }
+      } else {
         g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-
-      const int allowed = g_forbiddenWords.Allows(this->m_edit->Text());
-      const int blank = g_session.IsBlankString(this->m_edit->Text());
-      if (!allowed || blank) {
-        if (!allowed) {
-          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-        }
-        if (blank) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-        }
-        break;
-      }
-
-      if (this->m_edit->Length() >= 24 || !this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
-        this->m_edit->SetText("");
-        break;
-      }
-
-      char newName[24] = {};
-      std::strcpy(newName, this->m_edit->Text());
-      memcpy_s(&this->m_info, sizeof(this->m_info), this->m_character, sizeof(CharacterInfo));
-      std::memcpy(this->m_info.name, newName, sizeof(newName));
-      if (std::strstr(this->m_info.name, "그라비티") != nullptr) {
-        return 0;
-      }
-
-      _strlwr(newName);
-      if (std::strstr(newName, "gravity") != nullptr) {
-        return 0;
-      }
-
-      if ((newName[0] == '[' && newName[1] == 'g' && newName[2] == 'm') || (newName[1] == '[' && newName[2] == 'g' && newName[3] == 'm') ||
-          (newName[2] == '[' && newName[3] == 'g' && newName[4] == 'm')) {
-        return 0;
-      }
-
-      char text[300];
-      std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
-      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        CharacterRenamePacket packet;
-        packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
-        packet.gid = this->m_character->gid;
-        g_session.m_renameGid = packet.gid;
-        std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
-        std::memcpy(g_session.m_renameName, this->m_info.name, sizeof(g_session.m_renameName));
-        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-        g_windowMgr.Schedule(this);
       }
       break;
     }
