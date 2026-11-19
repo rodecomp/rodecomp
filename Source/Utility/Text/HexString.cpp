@@ -7,40 +7,42 @@
 int ParseHexString(const char* text) {
   unsigned int value = 0;
   int index = static_cast<int>(std::strlen(text)) - 1;
-  int shift = 0;
-  for (; index >= 2; --index) {
-    const int digit = text[index];
-    switch (digit) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      value += (digit - '0') << shift;
-      break;
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-      value += (digit - 'A' + 10) << shift;
-      break;
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-      value += (digit - 'a' + 10) << shift;
-      break;
+  if (index >= 2) {
+    int shift = 0;
+    for (; index >= 2; --index) {
+      const int digit = text[index];
+      switch (digit) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        value += (digit - '0') << shift;
+        break;
+      case 'A':
+      case 'B':
+      case 'C':
+      case 'D':
+      case 'E':
+      case 'F':
+        value += (digit - 'A' + 10) << shift;
+        break;
+      case 'a':
+      case 'b':
+      case 'c':
+      case 'd':
+      case 'e':
+      case 'f':
+        value += (digit - 'a' + 10) << shift;
+        break;
+      }
+      shift += 4;
     }
-    shift += 4;
   }
   return value;
 }
