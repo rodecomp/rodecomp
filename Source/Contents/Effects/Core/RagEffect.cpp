@@ -18291,7 +18291,9 @@ void CRagEffect::FreezingCircle(char kind) {
     } else if (kind == 3) {
       this->state.lastPrim->state.slots[i].distance = 3.2f;
       this->state.lastPrim->state.slots[i].maxHeight = 0.6f;
-    } else if (kind == 4 || kind == 5 || kind >= 8) {
+    } else if (kind == 4) {
+      this->state.lastPrim->state.slots[i].distance = 2.4f;
+    } else if (kind == 5 || kind > 7) {
       this->state.lastPrim->state.slots[i].distance = 2.4f;
     } else if (kind == 6) {
       this->state.lastPrim->state.slots[i].distance = 2.4f;
