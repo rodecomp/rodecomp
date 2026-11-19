@@ -41,10 +41,11 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
 
   switch (root[(OBFUSCATE_DECRYPT_BYTES(0xC52FB5FBB94FF917ULL, 5, {0x43, 0x80, 0x3F, 0xDC, 0xFB}))].asInt()) {
   case 1: {
+    const int version = root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt();
     EmblemVersionPacket packet;
-    packet.version = root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt();
     packet.id = ID_CZ_REQ_ADD_NEW_EMBLEM;
     packet.guildId = guildId;
+    packet.version = version;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
