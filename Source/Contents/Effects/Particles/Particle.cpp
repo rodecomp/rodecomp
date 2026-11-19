@@ -776,22 +776,26 @@ static __forceinline void ResetParticle(CParticle& particle) {
 
 // OFFSET: 0x00B3F630
 // FUNCTION: fn_18830
-CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position), motionVelocity({0.0f, 0.0f, 0.0f}) {
-  for (RenderVertex& vertex : this->vertices) {
-    vertex.x = 0;
-    vertex.y = 0;
-    vertex.z = 0;
-    vertex.rhw = 0;
-    vertex.diffuse = 0;
-    vertex.specular = 0xFF000000;
-    vertex.u = 0;
-    vertex.v = 0;
+CParticle::CParticle(vector3d position, int flags) {
+  this->flags = flags;
+  this->position = position;
+  RenderVertex* vertex = this->vertices;
+  for (int i = 4; i != 0; --i, ++vertex) {
+    vertex->x = 0;
+    vertex->y = 0;
+    vertex->z = 0;
+    vertex->rhw = 0;
+    vertex->diffuse = 0;
+    vertex->specular = 0xFF000000;
+    vertex->u = 0;
+    vertex->v = 0;
   }
 
-  for (vector3d& corner : this->corners) {
-    corner.x = 0;
-    corner.y = 0;
-    corner.z = 0;
+  vector3d* corner = this->corners;
+  for (int i = 4; i != 0; --i, ++corner) {
+    corner->x = 0;
+    corner->y = 0;
+    corner->z = 0;
   }
 
   this->submit = SubmitParticlePrimitive;
