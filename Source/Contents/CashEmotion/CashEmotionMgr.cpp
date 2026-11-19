@@ -1193,7 +1193,7 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
 }
 
 // INLINED
-static void AddSearchKey(std::unordered_map<std::string, std::pair<int, int>>& index, const char* key, int packId, int emotionId) {
+static __forceinline void AddSearchKey(std::unordered_map<std::string, std::pair<int, int>>& index, const char* key, int packId, int emotionId) {
   if (!key || std::strlen(key) == 0) {
     return;
   }
@@ -1587,10 +1587,7 @@ int CCashEmotionMgr::InsertEmotionMsgListTable(lua_State* state) {
   for (int index = 5; index < count + 5; ++index) {
     std::string name = raw ? static_cast<const std::string&>(std::string(luaL_checkstring(state, index))) : FromUtf8(luaL_checkstring(state, index), g_textCodePage);
 
-    const char* key = name.c_str();
-    if (key && std::strlen(key) != 0) {
-      g_cashEmotionMgr->m_searchIndex.try_emplace(key, packId, emotionId);
-    }
+    AddSearchKey(g_cashEmotionMgr->m_searchIndex, name.c_str(), packId, emotionId);
 
     if (name.find('/') == 0) {
       name.erase(0, 1);
