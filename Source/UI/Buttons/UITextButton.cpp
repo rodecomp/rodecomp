@@ -3178,7 +3178,8 @@ void UIItemStoreComboBox::Paint() {
           std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_pink%d.bmp", this->selected);
         }
 
-        this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false);
+        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+        this->DrawBitmap(0, 0, bitmap, false);
       }
     }
 
