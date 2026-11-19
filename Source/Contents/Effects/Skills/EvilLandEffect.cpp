@@ -12,6 +12,11 @@
 CEvilLandEffect::CEvilLandEffect() : CEffect(1555), particles() {
 }
 
+// OFFSET: 0x006FE410
+// FUNCTION: fn_46238
+__declspec(noinline) CEvilLandEffect::~CEvilLandEffect() {
+}
+
 // OFFSET: 0x006FE4F0
 // FUNCTION: fn_06947
 void CEvilLandEffect::Close() {
@@ -86,12 +91,33 @@ bool CEvilLandEffect::IsAlive() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x006FE880
+// FUNCTION: fn_46239
+__forceinline void CEvilLandEffect::ScrollParticleTexture(CMultiTexParticle* particle) {
+  if (particle) {
+    particle->offsetV += 0.001f;
+  }
+}
+
 // OFFSET: 0x006FE840
 // FUNCTION: fn_06950
 void CEvilLandEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    if (CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(*it)) {
-      particle->offsetV += 0.001f;
+    this->ScrollParticleTexture(static_cast<CMultiTexParticle*>(*it));
+  }
+}
+
+// OFFSET: 0x006FE950
+// FUNCTION: fn_46240
+__forceinline void CEvilLandEffect::RenderParticle(CMultiTexParticle* particle) {
+  if (particle) {
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
+    if (gameMode) {
+      int column = 0;
+      int row = 0;
+      gameMode->WorldCell(this->position[0], this->position[2], column, row);
+      const int half = this->effectLevel / 2;
+      particle->Render(particle->columnIndex - half + column, particle->rowIndex - half + row);
     }
   }
 }
@@ -100,16 +126,6 @@ void CEvilLandEffect::OnProcess() {
 // FUNCTION: fn_06951
 void CEvilLandEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(*it);
-    if (particle) {
-      CGameMode* gameMode = g_modeMgr.GetGameMode();
-      if (gameMode) {
-        int column = 0;
-        int row = 0;
-        gameMode->WorldCell(this->position[0], this->position[2], column, row);
-        const int half = this->effectLevel / 2;
-        particle->Render(particle->columnIndex - half + column, particle->rowIndex - half + row);
-      }
-    }
+    this->RenderParticle(static_cast<CMultiTexParticle*>(*it));
   }
 }

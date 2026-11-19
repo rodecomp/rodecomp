@@ -7,10 +7,12 @@
 #include <vector>
 
 class CParticle;
+class CMultiTexParticle;
 
 class CEvilLandEffect : public CEffect {
 public:
   CEvilLandEffect();
+  ~CEvilLandEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -18,6 +20,10 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
+
+private:
+  void ScrollParticleTexture(CMultiTexParticle* particle);
+  void RenderParticle(CMultiTexParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
