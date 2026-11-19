@@ -191,16 +191,15 @@ void UIListBoxEx::Paint() {
 
   const int first = this->topLine;
   const int visible = this->geometry.height / this->lineHeight - this->bottomMargin;
-  const unsigned end = std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(visible + first));
+  const unsigned end = std::min(static_cast<unsigned>(visible + first), static_cast<unsigned>(this->lines.size()));
 
   for (int index = first; index < static_cast<int>(end); ++index) {
-    const int row = index - first;
     if (index == this->selected) {
-      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+      this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
 
     const int x = 3 - this->horizontalOffset;
-    const int y = row * this->lineHeight;
+    const int y = (index - first) * this->lineHeight;
     std::uint32_t color = this->lines[index].color;
     this->DrawColoredText(
       x, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
