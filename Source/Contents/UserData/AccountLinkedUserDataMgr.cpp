@@ -31,14 +31,16 @@ namespace {
 // GLOBAL: gl_24351
 CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
-// INLINED
+// OFFSET: 0x005BB530
+// FUNCTION: fn_46463
 CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
     : m_accountId(0), m_accountName(DefaultAccountName()), m_loaded(false), m_pendingLoads(0), m_saveUrl(""), m_loadUrl("") {
   this->m_enabled = true;
 }
 
-// INLINED
-CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
+// OFFSET: 0x005BBB00
+// FUNCTION: fn_46464
+__declspec(noinline) CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
 
 struct WhisperNameAppender {
   /* 0000 */ Json::Value* values;
