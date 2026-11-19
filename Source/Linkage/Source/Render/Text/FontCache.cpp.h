@@ -9,3 +9,4 @@
 #include <tuple>
 
 extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) void std::wstring::reserve(size_type);
