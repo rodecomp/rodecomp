@@ -43,6 +43,7 @@ void CSphereWind2Effect::Close() {
 }
 
 // OFFSET: 0x00B76F70
+// FUNCTION: fn_46043
 __forceinline void CSphereWind2Effect::CreateRings(int baseAngle) {
   int angle = baseAngle;
   const vector3d* origin = &this->positionVector;
@@ -101,6 +102,7 @@ bool CSphereWind2Effect::IsAlive() {
 }
 
 // OFFSET: 0x00B77140
+// FUNCTION: fn_46044
 __forceinline void CSphereWind2Effect::UpdateSegmentVertices(CParticle* particle) {
   if (particle && particle->elapsedFrames > 0) {
     const int angle = particle->phaseParameter;
