@@ -198,7 +198,58 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
 // OFFSET: 0x00AEE770
 // FUNCTION: fn_18175
 CRes* ResourceMgr::Load(const char* name) {
-  return this->LoadNamed(name);
+  if (!name) {
+    return nullptr;
+  }
+
+  std::string resolved;
+  {
+    CSyncObject lock(&this->m_lock);
+    char normalized[260] = {};
+    StringFormat(normalized, sizeof(normalized), _TRUNCATE, "%s", name);
+
+    for (char* c = normalized; *c; ++c) {
+      *c = g_lowercaseTable[static_cast<unsigned char>(*c)];
+    }
+
+    const char* dot = ReverseFindChar(normalized, '.');
+    const int type = this->FindType(dot ? dot + 1 : nullptr);
+    if (type < 0) {
+      return nullptr;
+    }
+
+    resolved = this->AddResourcePrefix(this->Resolve(normalized), this->m_prefixes[type]);
+    if (CRes* existing = this->Find(type, resolved.c_str())) {
+      existing->lastUse = timeGetTime();
+      return existing;
+    }
+
+    CRes* resource = this->m_prototypes[type]->Create();
+    if (!resource) {
+      return nullptr;
+    }
+
+    if (resource->Load(resolved.c_str()) == 1) {
+      resource->name.Assign(resolved.c_str());
+      resource->type = type;
+      resource->lastUse = timeGetTime();
+      this->m_resources[type].insert({&resource->name, resource});
+
+      if (resource->IsTransient() == 1) {
+        this->m_transient.push_back(resource);
+      }
+
+      return resource;
+    }
+
+    delete resource;
+  }
+
+  if (resolved.find("\\map\\") == std::string::npos) {
+    g_resourceFailures.Report(name, resolved);
+  }
+
+  return nullptr;
 }
 
 // OFFSET: 0x00AEECC0
