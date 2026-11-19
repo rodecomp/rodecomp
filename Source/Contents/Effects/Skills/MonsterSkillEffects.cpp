@@ -661,6 +661,11 @@ void CCurseOfCubeEffect::Render() {
 CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(EF_WARNING_PLANE), fadingIn(0), expireTime(0) {
 }
 
+// OFFSET: 0x0070F160
+// FUNCTION: fn_46301
+__declspec(noinline) CWarningPlaneEffect::~CWarningPlaneEffect() {
+}
+
 // OFFSET: 0x0070F240
 // FUNCTION: fn_07183
 void CWarningPlaneEffect::AddPlane(vector3d position) {

@@ -119,6 +119,7 @@ public:
 class CWarningPlaneEffect : public CEffect {
 public:
   CWarningPlaneEffect();
+  ~CWarningPlaneEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
