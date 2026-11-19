@@ -245,18 +245,21 @@ void DeviceOwnerDX9::SetInitialStates() {
   this->state.SetSamplerState(1, D3DSAMP_BORDERCOLOR, 0xFF000000u);
 }
 
+// INLINED
+template <typename T>
+static void SafeRelease(T*& object) {
+  if (object) {
+    object->Release();
+    object = nullptr;
+  }
+}
+
 // OFFSET: 0x0054BFA0
 // FUNCTION: fn_01915
 HRESULT DeviceOwnerDX9::Close() {
-  if (this->backBuffer) {
-    this->backBuffer->Release();
-    this->backBuffer = nullptr;
-  }
+  SafeRelease(this->backBuffer);
 
-  if (this->capturedBackBuffer) {
-    this->capturedBackBuffer->Release();
-    this->capturedBackBuffer = nullptr;
-  }
+  SafeRelease(this->capturedBackBuffer);
 
   ULONG references = 0;
 
@@ -265,10 +268,7 @@ HRESULT DeviceOwnerDX9::Close() {
     this->device = nullptr;
   }
 
-  if (this->direct3D) {
-    this->direct3D->Release();
-    this->direct3D = nullptr;
-  }
+  SafeRelease(this->direct3D);
 
   return references > 0 ? static_cast<HRESULT>(0x8200000Bu) : D3D_OK;
 }
