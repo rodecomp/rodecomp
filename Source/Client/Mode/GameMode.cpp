@@ -9390,6 +9390,24 @@ static_assert(sizeof(StatusPointRequestPacket) == 5);
 std::uint32_t g_spriteAtlasClearTick;
 
 // OFFSET: 0x00CD09A0
+// FUNCTION: fn_46335
+void CGameMode::DrawDragCursor() {
+  if (this->drag.source != DRAG_NONE && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
+    if (this->drag.source == DRAG_MESSENGER_MEMBER) {
+      if (g_windowMgr.Window4F250Ready() == 1) {
+        g_windowMgr.MoveTransient(g_mouse.x, g_mouse.y);
+      }
+    } else if (this->drag.resource.empty()) {
+      this->ClearDrag();
+    } else {
+      const std::string resource = this->drag.resource;
+      this->DrawActionSprite(
+        g_mouse.x, g_mouse.y, static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str())),
+        static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str())), 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201
+      );
+    }
+  }
+}
 
 // OFFSET: 0x00CDF1E0
 // FUNCTION: fn_21323
