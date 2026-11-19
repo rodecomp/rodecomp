@@ -31,6 +31,17 @@ __declspec(noinline) CAxeBoomerang::~CAxeBoomerang() {
 }
 
 // OFFSET: 0x006F5990
+// FUNCTION: fn_46150
+__forceinline vector3d CAxeBoomerang::EvaluateTrajectory(vector3d start, vector3d control, vector3d end, float t) {
+  const float oneMinusT = 1.0f - t;
+  const float startWeight = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
+  const float endWeight = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+  const float controlWeight = (t + t) * oneMinusT;
+  return vector3d{
+      controlWeight * control.x + endWeight * end.x + startWeight * start.x,
+      controlWeight * control.y + endWeight * end.y + startWeight * start.y,
+      controlWeight * control.z + endWeight * end.z + startWeight * start.z};
+}
 
 // OFFSET: 0x006F5A60
 // FUNCTION: fn_06839
@@ -69,71 +80,70 @@ bool CAxeBoomerang::IsAlive() {
 // OFFSET: 0x006F5CE0
 // FUNCTION: fn_06842
 void CAxeBoomerang::OnProcess() {
-  if (CEZ2STRParticle* emitter = this->emitter) {
-    CRenderObject* actor = FindRenderObject(this->actor);
-    if (!actor) {
-      this->alive = 0;
-    } else {
-      CRenderObject* sourceActor = FindRenderObject(this->sourceActor);
-      if (sourceActor) {
-        this->launchPosition = sourceActor->render.position;
-      }
-
-      float scale;
-      float angle;
-      if (this->returning == 0) {
-        this->trajectoryTime -= 0.05f;
-        if (this->trajectoryTime <= 0.0f) {
-          this->returning = 1;
-        }
-        scale = 20.0f;
-        angle = 1.745329f;
-      } else {
-        this->trajectoryTime += 0.02f;
-        scale = 40.0f;
-        angle = 4.537855f;
-      }
-
-      matrix rotation;
-      rotation.MakeYRotation(angle);
-
-      vector3d delta;
-      delta.y = this->launchPosition.y - actor->render.position.y;
-      delta.x = this->launchPosition.x - actor->render.position.x;
-      delta.z = this->launchPosition.z - actor->render.position.z;
-      const float invDist = 1.0f / SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
-      const vector3d target = actor->render.position;
-      const vector3d launch = this->launchPosition;
-
-      vector3d offset;
-      offset.x = invDist * delta.x * scale;
-      offset.y = invDist * delta.y * scale;
-      offset.z = invDist * delta.z * scale;
-
-      const float oneMinusT = 1.0f - this->trajectoryTime;
-      const float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
-      const float term2 = static_cast<float>(std::pow(static_cast<double>(this->trajectoryTime), 2.0));
-      const float term1 = (this->trajectoryTime + this->trajectoryTime) * oneMinusT;
-
-      const bool finished = 1.0f <= this->trajectoryTime;
-
-      this->particlePosition.x = (offset.y * rotation.values[3] + offset.x * rotation.values[0] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x) * term1 + term2 * target.x + term0 * launch.x;
-      this->particlePosition.y = (offset.y * rotation.values[4] + offset.x * rotation.values[1] + offset.z * rotation.values[7] + rotation.values[10] + this->launchPosition.y) * term1 + term2 * target.y + term0 * launch.y;
-      this->particlePosition.z = (offset.y * rotation.values[5] + offset.x * rotation.values[2] + offset.z * rotation.values[8] + rotation.values[11] + this->launchPosition.z) * term1 + term2 * target.z + term0 * launch.z;
-
-      if (finished) {
-        this->alive = 0;
-      }
-
-      emitter->position = this->particlePosition;
-      static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
-    }
-  }
-
+  this->UpdateParticle(this->emitter);
   ++this->processCount;
 }
 
 // OFFSET: 0x006F6060
+__forceinline void CAxeBoomerang::UpdateParticle(CEZ2STRParticle* emitter) {
+  if (!emitter) {
+    return;
+  }
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    this->alive = 0;
+    return;
+  }
+
+  CRenderObject* sourceActor = FindRenderObject(this->sourceActor);
+  if (sourceActor) {
+    this->launchPosition = sourceActor->render.position;
+  }
+
+  float scale;
+  float angle;
+  if (this->returning == 0) {
+    this->trajectoryTime -= 0.05f;
+    if (this->trajectoryTime <= 0.0f) {
+      this->returning = 1;
+    }
+    scale = 20.0f;
+    angle = 1.745329f;
+  } else {
+    this->trajectoryTime += 0.02f;
+    scale = 40.0f;
+    angle = 4.537855f;
+  }
+
+  matrix rotation;
+  rotation.MakeYRotation(angle);
+
+  vector3d delta;
+  delta.y = this->launchPosition.y - actor->render.position.y;
+  delta.x = this->launchPosition.x - actor->render.position.x;
+  delta.z = this->launchPosition.z - actor->render.position.z;
+  const float invDist = 1.0f / SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
+  const vector3d target = actor->render.position;
+  const vector3d launch = this->launchPosition;
+
+  vector3d offset;
+  offset.x = invDist * delta.x * scale;
+  offset.y = invDist * delta.y * scale;
+  offset.z = invDist * delta.z * scale;
+
+  const vector3d control{
+      offset.y * rotation.values[3] + offset.x * rotation.values[0] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x,
+      offset.y * rotation.values[4] + offset.x * rotation.values[1] + offset.z * rotation.values[7] + rotation.values[10] + this->launchPosition.y,
+      offset.y * rotation.values[5] + offset.x * rotation.values[2] + offset.z * rotation.values[8] + rotation.values[11] + this->launchPosition.z};
+  this->particlePosition = this->EvaluateTrajectory(launch, control, target, this->trajectoryTime);
+
+  if (1.0f <= this->trajectoryTime) {
+    this->alive = 0;
+  }
+
+  emitter->position = this->particlePosition;
+  emitter->Process(0.0f, 0.0f, 0.0f);
+}
 
 // OFFSET: 0x006F63F0
 // FUNCTION: fn_06843
