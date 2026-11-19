@@ -24,6 +24,8 @@ struct WorldViewArea {
 
 class CWorldViewField {
 public:
+  CWorldViewField();
+  CWorldViewField(WorldViewArea area, const std::string& name, const std::string& fieldName, const std::string& description);
   CWorldViewField(WorldViewArea area, const char* name, const char* fieldName, const char* description);
 
   union {

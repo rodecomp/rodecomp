@@ -86,6 +86,16 @@ __declspec(noinline) CWorldViewWorld::CWorldViewWorld(const char* name, const ch
   this->imageName = imageName;
 }
 
+// OFFSET: 0x00612FD0
+// FUNCTION: fn_46314
+CWorldViewField::CWorldViewField(WorldViewArea bounds, const std::string& mapName, const std::string& field, const std::string& text)
+    : area(bounds), name(mapName), fieldName(field), description(text) {
+}
+
+// OFFSET: 0x00613180
+// FUNCTION: fn_46315
+CWorldViewField::CWorldViewField() = default;
+
 // OFFSET: 0x00613050
 // FUNCTION: fn_04346
 __declspec(noinline) CWorldViewField::CWorldViewField(WorldViewArea area, const char* name, const char* fieldName, const char* description) {
