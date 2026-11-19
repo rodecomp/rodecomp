@@ -13,6 +13,7 @@ class CParticle;
 class CFriggSongEffect : public CEffect {
 public:
   CFriggSongEffect();
+  ~CFriggSongEffect() override;
 
   void Open() override;
   void OnProcess() override;
@@ -20,6 +21,10 @@ public:
   void Close() override;
   bool IsAlive() override;
   void InitEvents() override;
+
+  void UpdateSegmentVertices(CParticle* particle);
+  void SetupParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
 
   /* 00CC */ EffectPoint lastInner[2];
   /* 00E4 */ std::vector<CParticle*> particles;

@@ -15,6 +15,15 @@ CFriggSongEffect::CFriggSongEffect() : CEffect(0x423) {
   this->effectLifetime = EffectLifetime(0x423);
 }
 
+// OFFSET: 0x00701C60
+// FUNCTION: fn_46106
+__declspec(noinline) CFriggSongEffect::~CFriggSongEffect() {
+}
+
+// OFFSET: 0x00701D40
+
+// OFFSET: 0x007021C0
+
 // OFFSET: 0x00701EE0
 // FUNCTION: fn_07001
 void CFriggSongEffect::Close() {
@@ -108,6 +117,8 @@ void CFriggSongEffect::InitEvents() {
 bool CFriggSongEffect::IsAlive() {
   return !this->IsFinished();
 }
+
+// OFFSET: 0x00702600
 
 // OFFSET: 0x007023E0
 // FUNCTION: fn_07005
