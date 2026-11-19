@@ -1050,9 +1050,6 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
 // OFFSET: 0x00CD35C0
 // FUNCTION: fn_46336
 int CGameMode::TerrainCellType(int column, int row) const {
-  if (column < 0) {
-    return TERRAIN_CELL_BLOCKED;
-  }
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
   return cell ? cell->type : TERRAIN_CELL_BLOCKED;
 }
@@ -6817,7 +6814,7 @@ struct GameModeUiDragMessage {
   /* 0097 */ char name[100];
   /* 00FB */ char skillName[100];
   /* 015F */ int skillLevel;
-  /* 0163 */ unsigned char cards[16];
+  /* 0163 */ std::uint32_t cards[4];
   /* 0173 */ unsigned char skill;
   /* 0174 */ int optionCount;
   /* 0178 */ unsigned char options[25];
