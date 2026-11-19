@@ -28,6 +28,81 @@ __forceinline int RandomSpan(int range) {
 CPowderingEffect::CPowderingEffect() : CEffect(-1), particleGridSize(0) {
 }
 
+// OFFSET: 0x00708FB0
+// FUNCTION: fn_46153
+__declspec(noinline) CPowderingEffect::~CPowderingEffect() {
+}
+
+// OFFSET: 0x007090B0
+
+// OFFSET: 0x00709170
+// FUNCTION: fn_46155
+void CPowderingEffect::CreateSmokeParticles() {
+  for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
+    if (!particle) {
+      continue;
+    }
+
+    particle->effectId = this->id;
+    int* indices = &particle->groupIndex;
+    indices[1] = i;
+    indices[2] = 0;
+    indices[0] = 1;
+
+    particle->SetTexture("smoke2.bmp");
+
+    const int offsetX = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
+    const int offsetZ = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
+
+    const vector3d offset = {static_cast<float>(offsetX), 0.0f, static_cast<float>(offsetZ)};
+    particle->offsetY = offset.y;
+    particle->offsetX = offset.x;
+    particle->offsetZ = offset.z;
+
+    this->InitSmokeParticle(particle);
+    particle->InitParticleQuad(particle->vertices);
+    this->smokeParticles.push_back(particle);
+  }
+}
+
+// OFFSET: 0x00709B40
+// FUNCTION: fn_46156
+void CPowderingEffect::UpdateParticle(CParticle* particle) {
+  if (!particle || particle->animationState == 2) {
+    return;
+  }
+
+  CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
+  int alpha = particle->alpha;
+  if (particle->animationState == 0) {
+    alpha += RandomSpan(30);
+    if (alpha >= 255) {
+      alpha = 254;
+      particle->animationState = 1;
+    }
+  } else if (particle->animationState == 1) {
+    alpha -= RandomSpan(30);
+    if (alpha < 0) {
+      if (!this->ActorExists()) {
+        alpha = 0;
+        particle->animationState = 2;
+      } else {
+        particle->animationState = 0;
+        this->InitSpriteParticle(particle);
+        return;
+      }
+    }
+  }
+
+  particle->alpha = alpha;
+  vector3d velocity = spriteParticle->velocity;
+  velocity.y += static_cast<float>(RandomSpan(10)) * 0.01f;
+  spriteParticle->velocity = velocity;
+  particle->position = {velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};
+  ++particle->elapsedFrames;
+}
+
 // OFFSET: 0x007092C0
 // FUNCTION: fn_07088
 void CPowderingEffect::Close() {
