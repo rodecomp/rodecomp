@@ -363,8 +363,8 @@ void UIStaticText::SetTextAutoWidth(const char* value, int outlineValue) {
   this->outline = outlineValue;
   this->tooltipEnabled = 0;
 
-  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, this->italic);
-  this->Resize(width + (this->outline ? 2 : 0), this->geometry.height);
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, this->italic) + (this->outline ? 2 : 0);
+  this->Resize(width, this->geometry.height);
   this->Invalidate();
 }
 
