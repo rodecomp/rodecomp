@@ -84,17 +84,9 @@ void CElectricEffect::AddBolt(int tilt) {
 // FUNCTION: fn_46218
 void __stdcall CElectricEffect::SetHeadingFromVector(float x, float z, short* heading) {
   const float length = SquareRoot(x * x + z * z);
-  const float nx = x / length;
   const float nz = z / length;
-
-  for (short step = 0; step <= 180; ++step) {
-    if (nx >= g_cosTable[step]) {
-      *heading = nz < 0.0f ? static_cast<short>(360 - step) : step;
-      return;
-    }
-  }
-
-  *heading = 180;
+  const float nx = x / length;
+  *heading = HeadingOf(nx, nz);
 }
 
 // OFFSET: 0x00B4EA20
