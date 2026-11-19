@@ -181,7 +181,8 @@ bool CRenderObject::OnProcess() {
 // OFFSET: 0x00CB0500
 // FUNCTION: fn_21094
 void CRenderObject::ProcessMotion() {
-  this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
+  const int direction = this->Get8Dir(this->render.angle);
+  this->render.previousAnimation = this->render.animation + direction;
   g_modeMgr.GetGameMode();
   const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   CActRes* action = this->render.action;
