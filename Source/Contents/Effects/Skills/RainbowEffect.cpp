@@ -67,24 +67,24 @@ void CRainbowEffect::UpdateBandVertices(CParticle* particle) {
   float ratio = 1.0f - static_cast<float>(band) * 0.05f;
   float flat = width * ratio;
   float rise = height * ratio;
-  const float innerX = g_cosTable[particle->phaseParameter] * flat;
-  const float innerY = rise + rise;
-  const float innerZ = g_sinTable[particle->phaseParameter] * flat;
+  points[0].x = g_cosTable[particle->phaseParameter] * flat;
+  points[0].y = rise + rise;
+  points[0].z = g_sinTable[particle->phaseParameter] * flat;
 
   ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
   flat = width * ratio;
   rise = height * ratio;
-  const float outerX = g_cosTable[particle->phaseParameter] * flat;
-  const float outerY = rise + rise;
-  const float outerZ = g_sinTable[particle->phaseParameter] * flat;
+  points[1].x = g_cosTable[particle->phaseParameter] * flat;
+  points[1].y = rise + rise;
+  points[1].z = g_sinTable[particle->phaseParameter] * flat;
 
   if (particle->columnIndex != 0) {
-    particle->vertices[0].x = outerX;
-    particle->vertices[0].y = outerY;
-    particle->vertices[0].z = outerZ;
-    particle->vertices[1].x = innerX;
-    particle->vertices[1].y = innerY;
-    particle->vertices[1].z = innerZ;
+    particle->vertices[0].x = points[1].x;
+    particle->vertices[0].y = points[1].y;
+    particle->vertices[0].z = points[1].z;
+    particle->vertices[1].x = points[0].x;
+    particle->vertices[1].y = points[0].y;
+    particle->vertices[1].z = points[0].z;
     particle->vertices[2].x = this->previousPoints[0].x;
     particle->vertices[2].y = this->previousPoints[0].y;
     particle->vertices[2].z = this->previousPoints[0].z;
@@ -93,12 +93,12 @@ void CRainbowEffect::UpdateBandVertices(CParticle* particle) {
     particle->vertices[3].z = this->previousPoints[1].z;
   }
 
-  this->previousPoints[0].x = outerX;
-  this->previousPoints[0].y = outerY;
-  this->previousPoints[0].z = outerZ;
-  this->previousPoints[1].x = innerX;
-  this->previousPoints[1].y = innerY;
-  this->previousPoints[1].z = innerZ;
+  this->previousPoints[0].x = points[1].x;
+  this->previousPoints[0].y = points[1].y;
+  this->previousPoints[0].z = points[1].z;
+  this->previousPoints[1].x = points[0].x;
+  this->previousPoints[1].y = points[0].y;
+  this->previousPoints[1].z = points[0].z;
 
   switch (band) {
   case 0:
@@ -291,24 +291,24 @@ void CRainbowEffect::UpdateBand(CParticle* particle) {
   float ratio = 1.0f - static_cast<float>(band) * 0.05f;
   float flat = width * ratio;
   float rise = height * ratio;
-  const float innerX = g_cosTable[particle->phaseParameter] * flat;
-  const float innerY = rise + rise;
-  const float innerZ = g_sinTable[particle->phaseParameter] * flat;
+  points[0].x = g_cosTable[particle->phaseParameter] * flat;
+  points[0].y = rise + rise;
+  points[0].z = g_sinTable[particle->phaseParameter] * flat;
 
   ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
   flat = width * ratio;
   rise = height * ratio;
-  const float outerX = g_cosTable[particle->phaseParameter] * flat;
-  const float outerY = rise + rise;
-  const float outerZ = g_sinTable[particle->phaseParameter] * flat;
+  points[1].x = g_cosTable[particle->phaseParameter] * flat;
+  points[1].y = rise + rise;
+  points[1].z = g_sinTable[particle->phaseParameter] * flat;
 
   if (particle->columnIndex != 0) {
-    particle->vertices[0].x = outerX;
-    particle->vertices[0].y = outerY;
-    particle->vertices[0].z = outerZ;
-    particle->vertices[1].x = innerX;
-    particle->vertices[1].y = innerY;
-    particle->vertices[1].z = innerZ;
+    particle->vertices[0].x = points[1].x;
+    particle->vertices[0].y = points[1].y;
+    particle->vertices[0].z = points[1].z;
+    particle->vertices[1].x = points[0].x;
+    particle->vertices[1].y = points[0].y;
+    particle->vertices[1].z = points[0].z;
     particle->vertices[2].x = this->previousPoints[0].x;
     particle->vertices[2].y = this->previousPoints[0].y;
     particle->vertices[2].z = this->previousPoints[0].z;
@@ -317,12 +317,12 @@ void CRainbowEffect::UpdateBand(CParticle* particle) {
     particle->vertices[3].z = this->previousPoints[1].z;
   }
 
-  this->previousPoints[0].x = outerX;
-  this->previousPoints[0].y = outerY;
-  this->previousPoints[0].z = outerZ;
-  this->previousPoints[1].x = innerX;
-  this->previousPoints[1].y = innerY;
-  this->previousPoints[1].z = innerZ;
+  this->previousPoints[0].x = points[1].x;
+  this->previousPoints[0].y = points[1].y;
+  this->previousPoints[0].z = points[1].z;
+  this->previousPoints[1].x = points[0].x;
+  this->previousPoints[1].y = points[0].y;
+  this->previousPoints[1].z = points[0].z;
 
   switch (band) {
   case 0:
