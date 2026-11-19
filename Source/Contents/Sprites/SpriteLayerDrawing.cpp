@@ -26,6 +26,13 @@
 
 #include <cstring>
 
+// INLINED
+static void TransformPoint(vector3d& out, const vector3d& point, const float* matrix) {
+  out.x = point.x * matrix[0] + point.y * matrix[3] + point.z * matrix[6] + matrix[9];
+  out.y = point.x * matrix[1] + point.y * matrix[4] + point.z * matrix[7] + matrix[10];
+  out.z = point.x * matrix[2] + point.y * matrix[5] + point.z * matrix[8] + matrix[11];
+}
+
 // OFFSET: 0x0063F500
 // FUNCTION: fn_04807
 void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendVariant) {
@@ -38,10 +45,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
   this->blendVariant = blendVariant;
   this->PrepareLayers();
 
-  const vector3d& origin = this->pc->render.position;
-  this->position.x = origin.x * matrix[0] + origin.y * matrix[3] + origin.z * matrix[6] + matrix[9];
-  this->position.y = origin.x * matrix[1] + origin.y * matrix[4] + origin.z * matrix[7] + matrix[10];
-  this->position.z = origin.x * matrix[2] + origin.y * matrix[5] + origin.z * matrix[8] + matrix[11];
+  TransformPoint(this->position, this->pc->render.position, matrix);
   g_renderer->ProjectViewport(&this->pc->render.position.x, matrix, &this->x, &this->y, &this->rhw);
   this->distanceScale = g_renderer->ScaleDistance(this->rhw);
   this->pc->render.distanceScale = this->distanceScale / g_heightScale;
@@ -114,12 +118,11 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     if (sound.first == true) {
       this->pc->isPlayHitWave = 1;
       std::string name = sound.second;
-      char* buffer = this->pc->hitWaveName;
-      StringFormat(buffer, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? buffer : name.c_str());
+      StringFormat(this->pc->hitWaveName, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? this->pc->hitWaveName : name.c_str());
     }
 
     const auto synced = this->FindSyncedFrame(layer, action);
-    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second.sprite, action, stanceAnimation, frameIndex, replaced);
+    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second, stanceAnimation, frameIndex, replaced);
   }
 
   this->DrawQueuedLayers();
@@ -145,15 +148,17 @@ void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std
       return;
     }
 
+    std::map<int, SpriteLayerQuad>& quads = this->quads;
     memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
     entry.palette = palette;
     entry.blend = blend;
-    this->quads.insert(std::make_pair(priority, entry));
+    quads.insert(std::make_pair(priority, entry));
   } else {
+    std::map<int, SpriteLayerQuad>& quads = this->quads;
     memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
     entry.palette = palette;
     entry.blend = blend;
-    this->quads.emplace(this->quads.size() + 1, entry);
+    quads.emplace(this->quads.size() + 1, entry);
   }
 }
 
@@ -308,7 +313,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
       entry.quad = quad;
       entry.palette = sprite->palette;
       entry.blend = blend;
-      this->quads.insert(std::map<int, SpriteLayerQuad>::value_type(400, entry));
+      this->quads.emplace(400, entry);
     } else {
       this->QueueQuad(0, &quad, sprite->palette, blend);
     }
@@ -506,7 +511,7 @@ std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActR
 // OFFSET: 0x00641850
 // FUNCTION: fn_04817
 void SpriteLayerRenderer::DrawLayer(
-  int index, int layer, const ActionFrame* frame, CSprRes* sprite, CActRes* action, int animation, int frameIndex, bool replaced
+  int index, int layer, const ActionFrame* frame, SpriteLayerResources resources, int animation, int frameIndex, bool replaced
 ) {
   int cellIndex;
   if (g_session.IsSpecialMonsterJob(this->layerViews[layer])) {
@@ -526,13 +531,13 @@ void SpriteLayerRenderer::DrawLayer(
       continue;
     }
 
-    const SpriteRleImage* image = sprite->images[cell->imageType][cell->image];
+    const SpriteRleImage* image = resources.sprite->images[cell->imageType][cell->image];
     int offsetX = 0;
     int offsetY = 0;
     const std::pair<int, int> itemOffset = this->GetItemOffset(layer);
     offsetX += itemOffset.first;
     offsetY += itemOffset.second;
-    const SpriteLayerCell resolved = this->ResolveCell(layer, cell, cellIndex, sprite, action, frame, image, animation, frameIndex, replaced);
+    const SpriteLayerCell resolved = this->ResolveCell(layer, cell, cellIndex, resources.sprite, resources.action, frame, image, animation, frameIndex, replaced);
     offsetX += resolved.offsetX;
     offsetY += resolved.offsetY;
     this->pc->ApplySwing(layer, offsetX, offsetY, this->swingX, this->swingY);
@@ -561,15 +566,18 @@ void SpriteLayerRenderer::DrawLayer(
     }
 
     if (layer == 1) {
-      this->pc->extentRight = static_cast<float>(resolved.cell->x + this->swingX);
-      this->pc->extentBottom = static_cast<float>(resolved.cell->y + this->swingY);
+      CPc* pc = this->pc;
+      const float right = static_cast<float>(resolved.cell->x + this->swingX);
+      const float bottom = static_cast<float>(resolved.cell->y + this->swingY);
+      pc->extentRight = right;
+      pc->extentBottom = bottom;
       if (this->hideHeadLayer == true) {
         continue;
       }
     }
 
     quad.image = resolved.image;
-    const std::uint32_t* palette = this->GetPalette(layer, sprite, action);
+    const std::uint32_t* palette = this->GetPalette(layer, resources.sprite, resources.action);
     int effect = 0xA6;
     this->pc->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
 

@@ -57,7 +57,7 @@ public:
   __declspec(noinline) std::pair<bool, SpriteLayerResources> FindLayer(int layer);
   std::pair<bool, std::string> GetLayerSound(int layer, CActRes* action, int sound);
   void DrawLayer(
-    int index, int layer, const ActionFrame* frame, CSprRes* sprite, CActRes* action, int animation, int frameIndex, bool replaced
+    int index, int layer, const ActionFrame* frame, SpriteLayerResources resources, int animation, int frameIndex, bool replaced
   );
   void LoadLayers();
   void PrepareLayers();
