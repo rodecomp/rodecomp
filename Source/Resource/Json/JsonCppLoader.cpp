@@ -253,9 +253,10 @@ bool JsonCppLoader::GetMapStringStringValue(const jsoncons::json& node, const st
     return false;
   }
 
-  for (const auto& member : value.object_range()) {
-    std::string name = member.key();
-    const jsoncons::json element = member.value();
+  auto&& members = value.object_range();
+  for (auto it = members.begin(); it != members.end(); ++it) {
+    std::string name = it->key();
+    const jsoncons::json element = it->value();
     if (this->GetValueType(element) != jsoncons::json_type::string_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. stringValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -280,9 +281,10 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
     return false;
   }
 
-  for (const auto& member : value.object_range()) {
-    std::string name = member.key();
-    const jsoncons::json element = member.value();
+  auto&& members = value.object_range();
+  for (auto it = members.begin(); it != members.end(); ++it) {
+    std::string name = it->key();
+    const jsoncons::json element = it->value();
     if (this->GetValueType(element) != jsoncons::json_type::array_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. arrayValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
