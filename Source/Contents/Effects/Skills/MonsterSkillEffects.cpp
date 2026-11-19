@@ -3863,8 +3863,9 @@ void CSevereRainStorm::SpawnGrenades() {
 // OFFSET: 0x007265B0
 // FUNCTION: fn_07416
 void CSevereRainStorm::SpawnBombardHits() {
+  const float* const origin = this->position;
   for (int count = 0; count < 3; ++count) {
-    const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+    const vector3d base = {origin[0] + 0.0f, origin[1] - 15.0f, origin[2] + 0.0f};
     vector3d position = base;
     position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.x;
     position.z = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.z;
