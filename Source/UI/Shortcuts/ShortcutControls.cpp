@@ -16,7 +16,8 @@ template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
 void UIShortCutWnd::OnCreate(int, int) {
-  this->AddCloseButton("F12", 0)->Move(this->geometry.width - 10, 0);
+  UIBitmapButton* closeButton = this->AddCloseButton("F12", 0);
+  closeButton->Move(this->geometry.width - 10, 0);
 
   std::memset(this->m_slots, 0, sizeof(this->m_slots));
 
