@@ -478,11 +478,11 @@ void CHealEffect::UpdateColumnParticle(CParticle* particle) {
     particle->vertices[2].z = this->columnEdge[0].z;
   }
 
-  this->columnEdge[1].x = topX;
-  this->columnEdge[1].y = topY;
   this->columnEdge[0].x = bottomX;
   this->columnEdge[0].y = 0.0f;
   this->columnEdge[0].z = bottomZ;
+  this->columnEdge[1].x = topX;
+  this->columnEdge[1].y = topY;
   this->columnEdge[1].z = topZ;
 }
 
