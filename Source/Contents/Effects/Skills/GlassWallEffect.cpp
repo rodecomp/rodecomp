@@ -117,17 +117,16 @@ __forceinline void CGlassWall::UpdateScreenEffect() {
 // OFFSET: 0x00B44DD0
 // FUNCTION: fn_45943
 __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
+  const int maxAlpha = static_cast<int>(particle->animationValues[3]);
   const int frame = this->frame;
-  float* params = particle->animationValues;
-  const int maxAlpha = static_cast<int>(params[3]);
   float speed = particle->speedParameter;
-  const float angle = speed + params[0];
-  float fade = params[1];
-  if (frame % static_cast<int>(params[4]) == 0) {
+  float fade = particle->animationValues[1];
+  const float angle = speed + particle->animationValues[0];
+  if (frame % static_cast<int>(particle->animationValues[4]) == 0) {
     speed *= -1.0f;
   }
 
-  if (frame == static_cast<int>(params[2])) {
+  if (frame == static_cast<int>(particle->animationValues[2])) {
     fade = static_cast<float>(-(particle->alpha / (this->effectLifetime - frame)));
   }
 
@@ -144,8 +143,8 @@ __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   matrix result;
   result.Compose(rotation, translation);
 
-  params[0] = angle;
-  params[1] = fade;
+  particle->animationValues[0] = angle;
+  particle->animationValues[1] = fade;
   particle->speedParameter = speed;
   particle->alpha = alpha <= maxAlpha ? alpha : maxAlpha;
   particle->transform = result;
