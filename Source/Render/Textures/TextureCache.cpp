@@ -80,6 +80,7 @@ CTexture* TextureCache::CreateTexture(std::uint32_t width, std::uint32_t height,
 // FUNCTION: fn_02455
 CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget) {
   CTexture* texture;
+  std::uint32_t transparent;
 
   if (std::strstr(name, ".bik")) {
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->scene) {
@@ -101,7 +102,7 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
       }
     }
 
-    const std::uint32_t transparent = 0;
+    transparent = 0;
     const int extent = 1 / g_textureReduction;
     texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
 
@@ -121,7 +122,7 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
       return texture;
     }
 
-    const std::uint32_t transparent = 0;
+    transparent = 0;
     const int extent = 1 / g_textureReduction;
     texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
 
