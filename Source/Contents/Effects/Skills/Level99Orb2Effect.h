@@ -21,6 +21,10 @@ public:
 
   /* 00CC */ EffectPoint offsets[16];
   /* 018C */ std::vector<CParticle*> particles;
+
+private:
+  __forceinline void UpdateParticle(CParticle* particle);
+  __forceinline void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
