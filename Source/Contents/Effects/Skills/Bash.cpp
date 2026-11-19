@@ -6,6 +6,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -15,6 +16,17 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
+
+// OFFSET: 0x00B41DE0
+// FUNCTION: fn_46006
+CBash::CBash() : CEffect(EF_BASH), screenX(0.0f), screenY(0.0f) {
+  this->effectLifetime = 40;
+}
+
+// OFFSET: 0x00B41EA0
+// FUNCTION: fn_46007
+__declspec(noinline) CBash::~CBash() {
+}
 
 // OFFSET: 0x00B42270
 // FUNCTION: fn_18869

@@ -10,6 +10,8 @@ class CParticle;
 
 class CBash : public CEffect {
 public:
+  CBash();
+  ~CBash() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
