@@ -10,6 +10,9 @@ class CParticle;
 
 class CStormGustEffect : public CEffect {
 public:
+  CStormGustEffect();
+  ~CStormGustEffect() override;
+
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -17,6 +20,12 @@ public:
   bool IsAlive() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
+
+private:
+  void SetupParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void UpdateAlpha(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
