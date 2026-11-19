@@ -327,7 +327,7 @@ const char* CSession::GetJobName(unsigned job, int sex) {
     return this->m_jobNameTable[job];
   }
 
-  const unsigned base = this->BaseJob(job);
+  const int base = this->BaseJob(job);
 
   if (sex == -1) {
     sex = this->GetCurrentSex();
