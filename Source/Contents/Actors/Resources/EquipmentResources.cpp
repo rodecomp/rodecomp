@@ -79,28 +79,22 @@ std::string EquipmentResourceMgr::GetAccessoryResourceName(int type, int job, in
     headName = g_session.m_humanFemaleHeadNames[head];
   }
 
-  {
-    const std::string& name = g_session.GetSexName(sex);
-    sexName = name;
-  }
-  {
-    const std::string& name = g_session.GetAccessoryName(accessory);
-    accessoryName = name;
-  }
+  sexName = SexNameOf(sex);
+  accessoryName = AccessoryNameOf(accessory);
 
   if (accessoryName.size() == 0) {
     return "";
   }
 
   if (g_session.IsDoramJob(job) == true) {
-    path = static_cast<const std::string&>(FormatOwnedString("악세사리\\%s_doram\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
+    path = FormatOwnedString("악세사리\\%s_doram\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]);
 
     if (ResourceMgr::Instance().Exists(path.c_str()) == true) {
       return path;
     }
   }
 
-  path = static_cast<const std::string&>(FormatOwnedString("악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
+  path = FormatOwnedString("악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]);
   return path;
 }
 
@@ -128,10 +122,7 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
   std::string result = "";
   std::string sexName = "";
 
-  {
-    const std::string& name = g_session.GetSexName(sex);
-    sexName = name;
-  }
+  sexName = SexNameOf(sex);
 
   if (g_session.IsDoramJob(job) == true) {
     if (secondJob == true) {
