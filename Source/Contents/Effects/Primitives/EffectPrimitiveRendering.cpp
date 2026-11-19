@@ -6978,7 +6978,7 @@ void CEffectPrim::Render2DPrimitive() {
   const float height = this->state.heightSize;
   float negHeight = -height;
   float extra = 0.0f;
-  if ((this->state.pattern & 1) != 0) {
+  if (0 != (this->state.pattern & 1)) {
     negHeight += negHeight;
   } else {
     extra = height;
@@ -6986,11 +6986,11 @@ void CEffectPrim::Render2DPrimitive() {
 
   const float x0 = negWidth * cosRoll;
   const float y0 = negWidth * sinRoll;
-  const float p1_x = x0 - negHeight * sinRoll;
   const float p1_y = y0 + negHeight * cosRoll;
+  const float p1_x = x0 - negHeight * sinRoll;
 
-  const float p3_x = width * sinRoll + extra * cosRoll;
   const float p3_y = width * cosRoll - extra * sinRoll;
+  const float p3_x = width * sinRoll + extra * cosRoll;
 
   this->state.triangles[0].vertices[0].x = (x0 - extra * sinRoll) + this->render.position.x - 0.5f;
   this->state.triangles[0].vertices[0].y = (y0 + extra * cosRoll) + this->render.position.y - 0.5f;
