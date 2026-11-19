@@ -6963,10 +6963,10 @@ void CRagEffect::WhiteRingRippleSized(char size) {
 
   this->state.lastPrim->state.slots[3].life = 0;
   this->state.lastPrim->state.slots[3].process = 0;
-  if (size == 29) {
-    this->state.lastPrim->state.slots[3].alphaT = 5;
-  } else {
+  if (size != 29) {
     this->state.lastPrim->state.slots[3].alphaT = 1;
+  } else {
+    this->state.lastPrim->state.slots[3].alphaT = 5;
   }
 }
 
