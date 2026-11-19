@@ -291,7 +291,8 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
     }
 
     std::vector<int> values;
-    for (const jsoncons::json& item : element.array_range()) {
+    for (auto it = element.array_value().begin(); it != element.array_value().end(); ++it) {
+      const jsoncons::json& item = *it;
       if (this->GetValueType(item) != jsoncons::json_type::int64_value) {
         this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
         return false;
