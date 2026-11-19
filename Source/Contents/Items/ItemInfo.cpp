@@ -156,17 +156,18 @@ void ITEM_INFO::Reset() {
   this->itemId = "";
   this->displayName = "";
   this->identified = this->damaged = 0;
-  this->refiningLevel = 0;
   this->bindOnEquip = 0;
   this->durationInHours = 0;
   this->expireTime = 0;
   this->priceFactor = 0;
   this->sprite = 0;
-  for (int index = 0; index < 4; ++index) {
+  for (int index = 0; index < 3; ++index) {
     this->flags[index] = 0;
   }
   this->optionCount = 0;
   SecureZeroMemory(this->options, sizeof(this->options));
+  this->refiningLevel = 0;
+  this->flags[3] = 0;
   this->saleData.costume = 0;
   this->saleData.startTime = 0;
   this->saleData.endTime = 0;
