@@ -33,16 +33,20 @@ static void SetTextureRegion(RenderPrimitive* primitive, float left, float top, 
 // FUNCTION: fn_45595
 void UIRPData::DrawCroppedTexture(int x, int y, CTexture* texture, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  primitive->texture = texture ? texture : g_texMgr.Default();
+  if (!texture) {
+    primitive->texture = g_texMgr.Default();
+  } else {
+    primitive->texture = texture;
+  }
   texture->Width();
   texture->Height();
 
   const float textureWidth = static_cast<float>(texture->TextureWidth());
   const float textureHeight = static_cast<float>(texture->TextureHeight());
-  const float u0 = (static_cast<float>(sourceLeft) + g_textureOffsetX) / textureWidth;
   const float v0 = (static_cast<float>(sourceTop) + g_textureOffsetY) / textureHeight;
-  const float u1 = (static_cast<float>(sourceRight) + g_textureOffsetX) / textureWidth;
+  const float u0 = (static_cast<float>(sourceLeft) + g_textureOffsetX) / textureWidth;
   const float v1 = (static_cast<float>(sourceBottom) + g_textureOffsetY) / textureHeight;
+  const float u1 = (static_cast<float>(sourceRight) + g_textureOffsetX) / textureWidth;
   const float right = static_cast<float>(x + (sourceRight - sourceLeft));
   const float bottom = static_cast<float>(y + (sourceBottom - sourceTop));
   primitive->quad[0].u = u0;

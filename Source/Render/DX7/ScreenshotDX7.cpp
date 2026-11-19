@@ -88,8 +88,8 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
         bool fromOverlay = false;
 
         if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
-          const int overlayX = x - (this->viewport.width - overlay->image.width);
           const int overlayY = y - (this->viewport.height - overlay->image.height);
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
 
           if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
             const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
@@ -116,8 +116,8 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
 
       for (int x = 0; x < this->viewport.width; ++x, pixel += 4, destination += 3) {
         if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
-          const int overlayX = x - (this->viewport.width - overlay->image.width);
           const int overlayY = y - (this->viewport.height - overlay->image.height);
+          const int overlayX = x - (this->viewport.width - overlay->image.width);
 
           if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
             const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];

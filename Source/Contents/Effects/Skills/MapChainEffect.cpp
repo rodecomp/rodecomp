@@ -91,9 +91,9 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
   const float sinTilt = g_sinTable[tilt];
   const float cosTilt = g_cosTable[tilt];
 
-  const float centerX = (sinTilt * particle->scale) * cosIndex;
   const float centerY = particle->scale * sinIndex;
   const float centerZ = (particle->scale * cosTilt) * cosIndex;
+  const float centerX = (sinTilt * particle->scale) * cosIndex;
   const float sideX = particle->speedParameter * cosTilt;
   const float sideZ = -sinTilt * particle->speedParameter;
 

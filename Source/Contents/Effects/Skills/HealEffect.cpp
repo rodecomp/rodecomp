@@ -451,13 +451,13 @@ void CHealEffect::UpdateColumnParticle(CParticle* particle) {
   const float sine = g_sinTable[angle];
   const float tiltSin = g_sinTable[particle->phaseParameter];
   const float reach = height * tiltCos;
-  const float reachX = reach * cosine;
   const float reachZ = reach * sine;
+  const float reachX = reach * cosine;
   const float rise = height * tiltSin;
 
   EffectPoint points[2];
-  const float bottomX = particle->scale * cosine;
   const float bottomZ = particle->scale * sine;
+  const float bottomX = particle->scale * cosine;
   particle->vertices[3].x = bottomX;
   particle->vertices[3].y = 0.0f;
   particle->vertices[3].z = bottomZ;

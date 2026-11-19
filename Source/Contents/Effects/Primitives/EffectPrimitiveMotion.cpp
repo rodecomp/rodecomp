@@ -2368,8 +2368,8 @@ bool CEffectPrim::Prim3DParticle() {
   this->state.sizeSpeed = lateral;
 
   if ((flags & 0x400u) != 0) {
-    const float z = this->state.deltaPosAccel.z + this->state.speed3d.z;
     const float x = this->state.deltaPosAccel.x + this->state.speed3d.x;
+    const float z = this->state.deltaPosAccel.z + this->state.speed3d.z;
     const float y = this->state.deltaPosAccel.y + this->state.speed3d.y;
     this->state.speed3d.z = z;
     this->state.deltaPos.z = z + this->state.deltaPos.z;
@@ -2751,8 +2751,8 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   this->state.sizeSpeed = lateral;
 
   if ((flags & 0x400u) != 0) {
-    const float z = this->state.deltaPosAccel.z + this->state.speed3d.z;
     const float x = this->state.deltaPosAccel.x + this->state.speed3d.x;
+    const float z = this->state.deltaPosAccel.z + this->state.speed3d.z;
     const float y = this->state.deltaPosAccel.y + this->state.speed3d.y;
     this->state.speed3d.z = z;
     this->state.deltaPos.z = z + this->state.deltaPos.z;
@@ -5700,8 +5700,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     }
   }
 
-  const vector3d& anchor = this->state.master->render.position;
-  this->state.orgPos = {this->state.deltaPos2.x + anchor.x, anchor.y + this->state.deltaPos2.y, anchor.z + this->state.deltaPos2.z};
+  this->state.orgPos = {this->state.deltaPos2.x + this->state.master->render.position.x, this->state.master->render.position.y + this->state.deltaPos2.y, this->state.master->render.position.z + this->state.deltaPos2.z};
 
   if (this->state.stateCnt == this->state.changePoint) {
     this->state.speed3d.x = this->state.changeSpeed3d.x;
@@ -5733,7 +5732,6 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.roll = this->state.rollSpeed + this->state.roll;
   }
 
-  auto& rotation = this->state.transform;
 
   if ((this->state.pattern & 2u) != 0) {
     if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
@@ -5762,8 +5760,8 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (this->state.longitude - 40.0f);
     const int pitch = std::rand() % 80;
     this->state.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (this->state.latitude - 40.0f);
-    rotation.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    rotation.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     const int delay = std::rand() % 10;
     this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
   }
@@ -5773,8 +5771,8 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (this->state.longitude - 5.0f);
     const int pitch = std::rand() % 10;
     this->state.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (this->state.latitude - 5.0f);
-    rotation.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    rotation.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
     const int delay = std::rand() % 15;
     this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
   }
