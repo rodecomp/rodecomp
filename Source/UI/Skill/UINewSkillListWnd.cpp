@@ -1520,7 +1520,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
   case UM_REFRESH_EXTRA_SKILL_TAB:
     if (!this->IsExtraTab(this->m_tab)) {
-      this->m_tabs->SetFlag(this->m_tabs->TabCount() - 1, !g_session.m_skillBundle.extraIds.empty());
+      const int lastTab = this->m_tabs->TabCount() - 1;
+      this->m_tabs->SetFlag(lastTab, !g_session.m_skillBundle.extraIds.empty());
       this->m_tabs->Invalidate();
     }
     break;
