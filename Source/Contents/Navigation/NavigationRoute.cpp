@@ -114,8 +114,8 @@ void CNavigationManager::DrawRoute(const float* matrix) {
     }
   }
 
-  if (visible == 0 && !points.empty()) {
-    this->BuildRoute(playerX, playerY, points.back().x, points.back().y, true);
+  if (visible == 0 && points.size() != 0) {
+    this->BuildRoute(playerX, playerY, points[points.size() - 1].x, points[points.size() - 1].y, true);
   }
 }
 
