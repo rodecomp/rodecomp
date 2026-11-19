@@ -114,8 +114,9 @@ CTextureDX9::CTextureDX9(DeviceOwnerDX9& owner, IDirect3DTexture9* texture) : CT
   }
 }
 
-// INLINED
-CTextureDX9::~CTextureDX9() {
+// OFFSET: 0x00572810
+// FUNCTION: fn_46356
+__declspec(noinline) CTextureDX9::~CTextureDX9() {
   if (this->m_surface) {
     this->m_surface->Release();
     this->m_surface = nullptr;
