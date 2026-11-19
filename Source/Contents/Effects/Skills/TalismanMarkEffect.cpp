@@ -224,13 +224,18 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
+// OFFSET: 0x0072E640
+// FUNCTION: fn_46282
+__forceinline void __stdcall CTalismanMarkEffect::RenderParticle(CEZ2STRParticle* particle) {
+  if (particle) {
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x0072E5F0
 // FUNCTION: fn_07507
 void CTalismanMarkEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CEZ2STRParticle* particle = *it;
-    if (particle) {
-      particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
-    }
+    RenderParticle(*it);
   }
 }
