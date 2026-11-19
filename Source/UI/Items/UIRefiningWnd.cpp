@@ -238,25 +238,46 @@ void UIRefiningWnd::ApplyResult() {
 
   switch (this->result) {
   case REFINING_STATE_SUCCESS:
-    this->returnButton->highlighted = 1;
-    this->returnButton->UpdateBitmaps();
-    this->againButton->success = 1;
-    this->againButton->UpdateBitmaps();
+    {
+      UIRefining_BtnReturn* button = this->returnButton;
+      button->highlighted = 1;
+      button->UpdateBitmaps();
+    }
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->success = 1;
+      button->UpdateBitmaps();
+    }
     break;
   case REFINING_STATE_FAIL:
-    this->returnButton->highlighted = 0;
-    this->returnButton->UpdateBitmaps();
-    this->againButton->success = 0;
-    this->againButton->UpdateBitmaps();
-    this->againButton->SetDisabled(1);
-    this->againButton->Invalidate();
+    {
+      UIRefining_BtnReturn* button = this->returnButton;
+      button->highlighted = 0;
+      button->UpdateBitmaps();
+    }
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->success = 0;
+      button->UpdateBitmaps();
+    }
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     break;
   case REFINING_STATE_DOWNGRADE:
   case REFINING_STATE_FAIL2:
-    this->returnButton->highlighted = 0;
-    this->returnButton->UpdateBitmaps();
-    this->againButton->success = 0;
-    this->againButton->UpdateBitmaps();
+    {
+      UIRefining_BtnReturn* button = this->returnButton;
+      button->highlighted = 0;
+      button->UpdateBitmaps();
+    }
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->success = 0;
+      button->UpdateBitmaps();
+    }
     break;
   }
 
@@ -270,27 +291,36 @@ void UIRefiningWnd::ApplyResult() {
 
   if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
     this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 5000, 1);
-    this->againButton->SetDisabled(1);
+    UIRefining_BtnAgain* button = this->againButton;
+    button->SetDisabled(1);
+    button->Invalidate();
   } else {
-    this->againButton->cost = this->SelectedMaterialValue();
+    UIRefining_BtnAgain* button = this->againButton;
+    button->cost = this->SelectedMaterialValue();
+    button->Invalidate();
   }
-  this->againButton->Invalidate();
 
   this->catalystCount = this->nextCatalystCount;
   if (this->catalystEnabled == 1) {
     if (this->nextCatalystCount == 0) {
       this->catalystEnabled = 0;
       this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
-      this->againButton->SetDisabled(1);
-      this->againButton->Invalidate();
+      {
+        UIRefining_BtnAgain* button = this->againButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
     } else {
       this->notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
       const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       if (this->catalystCount > owned) {
         this->catalystEnabled = 0;
         this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
-        this->againButton->SetDisabled(1);
-        this->againButton->Invalidate();
+        {
+          UIRefining_BtnAgain* button = this->againButton;
+          button->SetDisabled(1);
+          button->Invalidate();
+        }
       }
     }
   }
@@ -300,8 +330,11 @@ void UIRefiningWnd::ApplyResult() {
     this->materials.clear();
     this->selectedMaterial = -1;
     this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 5000, 1);
-    this->againButton->SetDisabled(1);
-    this->againButton->Invalidate();
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
   } else {
     bool same = true;
     if (this->materials.size() == count) {
@@ -318,19 +351,25 @@ void UIRefiningWnd::ApplyResult() {
       same = false;
     }
 
-    this->materials = this->nextMaterials;
+    this->materials.assign(this->nextMaterials.begin(), this->nextMaterials.end());
 
-    this->againButton->remainingCount = this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
-        this->materials.size() > static_cast<unsigned>(this->selectedMaterial)
-      ? this->materials[this->selectedMaterial].successRate
-      : 0;
-    this->againButton->Invalidate();
+    {
+      UIRefining_BtnAgain* button = this->againButton;
+      button->remainingCount = this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+          this->materials.size() > static_cast<unsigned>(this->selectedMaterial)
+        ? this->materials[this->selectedMaterial].successRate
+        : 0;
+      button->Invalidate();
+    }
 
     if (!same) {
       this->selectedMaterial = -1;
       this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
-      this->againButton->SetDisabled(1);
-      this->againButton->Invalidate();
+      {
+        UIRefining_BtnAgain* button = this->againButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
     } else if (this->selectedMaterial >= 0 && static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
       this->selectedMaterial = nextIndex;
       const std::uint32_t itemId = this->materials[nextIndex].itemId;
@@ -346,8 +385,11 @@ void UIRefiningWnd::ApplyResult() {
       const ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       if (owned.quantity == 0) {
         this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_INGREDIENT), 5000, 1);
-        this->againButton->SetDisabled(1);
-        this->againButton->Invalidate();
+        {
+          UIRefining_BtnAgain* button = this->againButton;
+          button->SetDisabled(1);
+          button->Invalidate();
+        }
       }
     }
   }
