@@ -19,6 +19,7 @@ public:
   bool IsAlive() override {
     return this->ActorExists();
   }
+  void RenderPetal(CParticle* particle);
 
   /* 00CC */ EffectPoint offsets[16];
   /* 018C */ std::vector<CParticle*> petals;

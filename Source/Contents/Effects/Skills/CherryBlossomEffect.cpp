@@ -145,15 +145,22 @@ void CCherryBlossomEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B44580
+// FUNCTION: fn_45966
+void CCherryBlossomEffect::RenderPetal(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  for (int i = 0; i < 2; ++i) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
 // OFFSET: 0x00B44500
 // FUNCTION: fn_18888
 void CCherryBlossomEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle) {
-      for (int i = 0; i < 2; ++i) {
-        particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-      }
-    }
+    this->RenderPetal(*it);
   }
 }
