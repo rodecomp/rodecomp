@@ -13,6 +13,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x00B74DD0
+// FUNCTION: fn_46163
 CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1), lastInner{}, lastOuter{}, particles() {
 }
 
