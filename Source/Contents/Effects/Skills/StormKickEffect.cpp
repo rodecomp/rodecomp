@@ -489,11 +489,11 @@ __forceinline void CStormKickEffect::RenderStorm(CParticle* particle) {
       particle->alpha = alpha / 3;
       particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
       particle->alpha = alpha;
-      break;
+    } else if (1.0f == motion[1]) {
+      particle->destinationBlend = 2;
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
     }
-    if (1.0f != motion[1]) {
-      break;
-    }
+    break;
   default:
     particle->destinationBlend = 2;
     particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
