@@ -246,6 +246,7 @@ public:
   void SetHealthState(int value);
   void SetSexBit(int value);
   void ApplySavedShapeShift();
+  __forceinline void RefreshBodyPaletteName();
   void ApplyNatureProtection();
   void UpdateMaxLevelAura();
   __forceinline void BeginVanish();

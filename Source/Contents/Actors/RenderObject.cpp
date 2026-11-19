@@ -4629,6 +4629,17 @@ void C3dGrannyGameActor::MakeCorpse() {
   );
 }
 
+// OFFSET: 0x00CC2120
+// FUNCTION: fn_46354
+__forceinline void CGameActor::RefreshBodyPaletteName() {
+  const int costume = this->GetMadogearType();
+  const int costumeJob = this->GetBodyCostume();
+  const std::string paletteName = g_session.GetBodyPalName(
+    this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
+  );
+  this->render.name = paletteName;
+}
+
 // OFFSET: 0x00CC40D0
 // FUNCTION: fn_21158
 void CGameActor::ApplyNatureProtection() {
@@ -4642,12 +4653,7 @@ void CGameActor::ApplyNatureProtection() {
   this->render.specialMotionLocked = 1;
   this->shapeShift = SHAPESHIFT_NATURE_PROTECTION;
   this->SetSprJob(this->job);
-  const int costume = this->GetMadogearType();
-  const int costumeJob = this->GetBodyCostume();
-  const std::string paletteName = g_session.GetBodyPalName(
-    this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
-  );
-  this->render.name = paletteName;
+  this->RefreshBodyPaletteName();
 }
 
 __declspec(noinline) void CGameActor::ProcessViewCheck() {
