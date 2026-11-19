@@ -7,6 +7,7 @@
 #include "Render/Renderer.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 
+#include <cstdio>
 #include <cstring>
 
 namespace {
@@ -89,6 +90,23 @@ namespace {
   HRESULT SurfaceError(HRESULT status, unsigned code) {
     return status == DDERR_OUTOFVIDEOMEMORY ? status : DeviceError(code);
   }
+}
+
+// OFFSET: 0x00548D90
+// FUNCTION: fn_46358
+HRESULT DebugStringDX7(const char* file, long line, HRESULT result, const char* message) {
+  char buffer[256];
+  std::sprintf(buffer, "%s(%ld): ", file, line);
+  OutputDebugStringA(buffer);
+  OutputDebugStringA(message);
+
+  if (result != S_OK) {
+    std::sprintf(buffer, "(hr=%08lx)\n", static_cast<unsigned long>(result));
+    OutputDebugStringA(buffer);
+  }
+
+  OutputDebugStringA("\n");
+  return result;
 }
 
 // OFFSET: 0x005493B0
