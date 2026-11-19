@@ -32,6 +32,10 @@ CChampionMonsterMgr::CChampionMonsterMgr() {
 // FUNCTION: fn_46438
 __declspec(noinline) CChampionMonsterMgr::~CChampionMonsterMgr() = default;
 
+// OFFSET: 0x00ADDE00
+// FUNCTION: fn_46439
+__declspec(noinline) CChampionMonsterMgr::lcData::~lcData() = default;
+
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
 __declspec(noinline) void CChampionMonsterMgr::AddItem(int id, float value) {

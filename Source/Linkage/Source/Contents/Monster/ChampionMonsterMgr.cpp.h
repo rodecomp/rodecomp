@@ -20,4 +20,6 @@ extern "C" {
 #include <utility>
 #include <windows.h>
 
+extern template std::vector<int>::~vector();
+
 template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);

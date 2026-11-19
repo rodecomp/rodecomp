@@ -19,9 +19,7 @@ public:
     // INLINED
     __forceinline lcData(const lcData& other) : m_value(other.m_value), m_effects(other.m_effects) {
     }
-    // INLINED
-    virtual ~lcData() {
-    }
+    virtual ~lcData();
 
     /* 0004 */ float m_value;
     /* 0008 */ std::vector<int> m_effects;
