@@ -25,8 +25,8 @@ void CMapChainEffect::CreateChainParticles(int param) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->rowIndex = local8;
         particle->effectId = this->id;
+        particle->rowIndex = local8;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
@@ -50,8 +50,8 @@ void CMapChainEffect::CreateChainParticles(int param) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->rowIndex = localC2;
         particle->effectId = this->id;
+        particle->rowIndex = localC2;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
@@ -123,9 +123,7 @@ bool CMapChainEffect::IsAlive() {
 void CMapChainEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
+    (*it)->position = this->positionVector;
     if (particle) {
       float angle = *static_cast<const float*>(particle->animationParameters) + particle->angle;
       if (angle >= 360.0f) {
