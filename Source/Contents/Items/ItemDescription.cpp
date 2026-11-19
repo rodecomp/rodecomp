@@ -77,7 +77,8 @@ ITEM_DESC& EnsureItemDescription(int id, std::map<int, ITEM_DESC>& values) {
     return entry->second;
   }
 
-  return values.insert({id, ITEM_DESC()}).first->second;
+  const auto inserted = values.insert({id, ITEM_DESC()});
+  return inserted.first->second;
 }
 
 // OFFSET: 0x00DDD280
