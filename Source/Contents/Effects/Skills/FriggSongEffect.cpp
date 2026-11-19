@@ -21,6 +21,55 @@ __declspec(noinline) CFriggSongEffect::~CFriggSongEffect() {
 }
 
 // OFFSET: 0x00701D40
+// FUNCTION: fn_46107
+void CFriggSongEffect::UpdateSegmentVertices(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + particle->angle) % 360;
+  if (segment == 20) {
+    angle = static_cast<int>(particle->angle);
+  }
+
+  const int tilt = particle->phaseParameter;
+  const float spread = particle->speedParameter * g_cosTable[tilt];
+  const float height = particle->speedParameter * g_sinTable[tilt];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+  const float offsetX = spread * cosine;
+  const float offsetZ = spread * sine;
+  EffectPoint points[2];
+  const float innerX = particle->scale * cosine;
+  const float innerY = 0.0f;
+  const float innerZ = particle->scale * sine;
+  const float outerX = innerX + offsetX;
+  const float outerY = 0.0f - height;
+  const float outerZ = innerZ + offsetZ;
+
+  if (segment >= 1 && segment <= 20) {
+    particle->vertices[1].x = outerX;
+    particle->vertices[1].y = outerY;
+    particle->vertices[1].z = outerZ;
+    particle->vertices[3].x = innerX;
+    particle->vertices[3].y = innerY;
+    particle->vertices[3].z = innerZ;
+    particle->vertices[0].x = this->lastInner[1].x;
+    particle->vertices[0].y = this->lastInner[1].y;
+    particle->vertices[0].z = this->lastInner[1].z;
+    particle->vertices[2].x = this->lastInner[0].x;
+    particle->vertices[2].y = this->lastInner[0].y;
+    particle->vertices[2].z = this->lastInner[0].z;
+  }
+
+  this->lastInner[0].x = innerX;
+  this->lastInner[0].y = innerY;
+  this->lastInner[0].z = innerZ;
+  this->lastInner[1].x = outerX;
+  this->lastInner[1].y = outerY;
+  this->lastInner[1].z = outerZ;
+}
 
 // OFFSET: 0x007021C0
 
