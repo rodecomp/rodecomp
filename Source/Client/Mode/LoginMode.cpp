@@ -3157,9 +3157,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     ConnectionEndpoint endpoint;
     wsprintfA(endpoint.address, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), servers[selected].address.ip & 0xFF, (servers[selected].address.ip >> 8) & 0xFF,
       (servers[selected].address.ip >> 16) & 0xFF, servers[selected].address.ip >> 24);
-    const int selected2 = this->selectedServer;
-    endpoint.port = servers[selected2].address.port;
-    StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[selected2].domain);
+    endpoint.port = servers[this->selectedServer].address.port;
+    StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[this->selectedServer].domain);
     g_charServerEndpoint = endpoint;
     g_charServerIp = servers[this->selectedServer].address.ip;
     g_session.m_serverName = servers[this->selectedServer].address.name;
