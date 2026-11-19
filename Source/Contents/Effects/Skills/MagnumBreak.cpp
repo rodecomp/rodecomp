@@ -90,41 +90,48 @@ bool CMagnumBreak::IsAlive() {
 }
 
 // OFFSET: 0x00B4A030
+// FUNCTION: fn_45970
+__forceinline void CMagnumBreak::AdvanceRing(CParticle* ring) {
+  float& growth = ring->animationParameter;
+  float& maximum = ring->animationParameters[0];
+  float& spin = ring->animationParameters[1];
+  const float angle = spin;
+  float speed = growth + ring->speedParameter;
+  speed = 0.0f > speed ? 0.0f : speed;
+  float scale = speed + ring->scale;
+  scale = maximum < scale ? maximum : scale;
+  matrix rotation;
+  rotation.MakeXRotation(1.570796f);
+  ring->scale = scale;
+  ring->speedParameter = speed;
+  spin = angle + speed;
+  ring->alpha = this->alpha;
+  ring->transform = rotation;
+}
 
 // OFFSET: 0x00B4A100
+__forceinline void CMagnumBreak::AdvanceWave(CParticle* wave) {
+  const float speed = wave->animationParameter + wave->speedParameter;
+  wave->speedParameter = speed;
+  wave->scale = speed + wave->scale;
+  wave->animationParameters[1] =
+      wave->animationParameters[0] + wave->animationParameters[1];
+  wave->alpha = this->alpha;
+}
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
 void CMagnumBreak::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
-    float& growth = ring->animationParameter;
-    float& maximum = ring->animationParameters[0];
-    float& spin = ring->animationParameters[1];
-    const float angle = spin;
-    float speed = growth + ring->speedParameter;
-    speed = 0.0f > speed ? 0.0f : speed;
-    float scale = speed + ring->scale;
-    scale = maximum < scale ? maximum : scale;
-    matrix rotation;
-    rotation.MakeXRotation(1.570796f);
-    ring->scale = scale;
-    ring->speedParameter = speed;
-    spin = angle + speed;
+    this->AdvanceRing(ring);
     ++ring->elapsedFrames;
-    ring->alpha = this->alpha;
-    ring->transform = rotation;
   }
 
   for (std::vector<CParticle*>::iterator it = this->waves.begin(); it != this->waves.end(); ++it) {
     CParticle* wave = *it;
-    const float speed = wave->animationParameter + wave->speedParameter;
-    wave->speedParameter = speed;
-    wave->scale = speed + wave->scale;
-    wave->animationParameters[1] =
-        wave->animationParameters[0] + wave->animationParameters[1];
+    this->AdvanceWave(wave);
     ++wave->elapsedFrames;
-    wave->alpha = this->alpha;
   }
 
   float step;
