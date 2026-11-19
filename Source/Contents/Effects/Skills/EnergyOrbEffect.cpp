@@ -71,6 +71,7 @@ void CEnergyOrbEffect::Open() {
 }
 
 // OFFSET: 0x00B51120
+// FUNCTION: fn_46103
 __forceinline void CEnergyOrbEffect::ConfigureParticle(CParticle* particle) {
   if (!particle) {
     return;
