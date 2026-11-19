@@ -173,10 +173,11 @@ void CSoulCollectEffect::OnProcess() {
     }
   }
 
-  rotation += 0.5f;
-  if (rotation > 360.0f) {
-    rotation -= 360.0f;
+  float next = rotation + 0.5f;
+  if (next > 360.0f) {
+    next -= 360.0f;
   }
+  rotation = next;
 }
 
 // OFFSET: 0x0072AD90
