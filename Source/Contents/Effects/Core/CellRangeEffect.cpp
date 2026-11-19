@@ -94,6 +94,44 @@ void CCellRangeEffect::Open() {
   }
 }
 
+// OFFSET: 0x00B43740
+// FUNCTION: fn_45947
+void CCellRangeEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  vector3d position;
+  std::memcpy(&position, this->position, sizeof(position));
+  position.x = static_cast<float>(particle->columnIndex) * this->cellSize + position.x;
+  position.z = static_cast<float>(particle->rowIndex) * this->cellSize + position.z;
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  position.y = mode->scene->terrain->Height(position.x, position.z) - 1.2f;
+  particle->position = position;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+  rotation.AppendXRotation(3.141592f);
+
+  matrix scale;
+  std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+  scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+  matrix result;
+  result.Compose(scale, rotation);
+  particle->transform = result;
+}
+
+// OFFSET: 0x00B43980
+// FUNCTION: fn_45948
+void CCellRangeEffect::RenderParticle(CParticle* particle) {
+  if (particle) {
+    this->SetCellTexture(particle);
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
 // OFFSET: 0x00B43520
 // FUNCTION: fn_18880
 void CCellRangeEffect::OnProcess() {
@@ -103,28 +141,7 @@ void CCellRangeEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      vector3d position;
-      std::memcpy(&position, this->position, sizeof(position));
-      position.x = static_cast<float>(particle->columnIndex) * this->cellSize + position.x;
-      position.z = static_cast<float>(particle->rowIndex) * this->cellSize + position.z;
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      position.y = mode->scene->terrain->Height(position.x, position.z) - 1.2f;
-      particle->position = position;
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-      rotation.AppendXRotation(3.141592f);
-
-      matrix scale;
-      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-      scale.SetScale(particle->scale, particle->scale, 1.0f);
-
-      matrix result;
-      result.Compose(scale, rotation);
-      particle->transform = result;
-    }
+    this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
   }
@@ -135,9 +152,6 @@ void CCellRangeEffect::OnProcess() {
 void CCellRangeEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    if (particle) {
-      this->SetCellTexture(particle);
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderParticle(particle);
   }
 }

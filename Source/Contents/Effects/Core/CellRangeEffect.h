@@ -19,6 +19,8 @@ public:
     return this->ActorExists();
   }
   __declspec(noinline) void SetCellTexture(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 
   /* 00CC */ float cellSize;
   /* 00D0 */ std::vector<CParticle*> particles;
