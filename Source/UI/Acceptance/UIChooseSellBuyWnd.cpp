@@ -7605,6 +7605,11 @@ UIPartyInvitationToWnd::UIPartyInvitationToWnd()
     : UIPartySettingWnd() {
 }
 
+// OFFSET: 0x008CB550
+// FUNCTION: fn_46448
+__declspec(noinline) UIPartyInvitationToWnd::~UIPartyInvitationToWnd() {
+}
+
 // OFFSET: 0x008E60A0
 // FUNCTION: fn_12191
 void UIPartySettingWnd::OnCreate(int width, int height) {
@@ -7703,6 +7708,10 @@ UIPartySettingWnd::UIPartySettingWnd()
   this->m_mode = 0;
   this->m_placement = nullptr;
 }
+
+// OFFSET: 0x008CB5B0
+// FUNCTION: fn_46449
+__declspec(noinline) UIPartySettingWnd::~UIPartySettingWnd() = default;
 
 // OFFSET: 0x008C8AB0
 // FUNCTION: fn_11967
