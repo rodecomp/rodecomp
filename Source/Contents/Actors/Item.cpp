@@ -51,29 +51,29 @@ void CItem::SetRenderInfo(const float* bounds, float x, float y) {
     // GLOBAL: gl_25149
     static const int minimumSize = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
-    info->left = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
-    info->top = bounds[1];
-    info->depth = bounds[4] + 300.0f;
-    info->right = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
-    info->bottom = bounds[3];
-    info->depthOffset = bounds[4] + 300.0f;
+    info->corners[0].x = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
+    info->corners[0].y = bounds[1];
+    info->corners[0].z = bounds[4] + 300.0f;
+    info->corners[1].x = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
+    info->corners[1].y = bounds[3];
+    info->corners[1].z = bounds[4] + 300.0f;
     info->accountId = this->itemAid;
     info->job = ItemPickJob;
     info->healthState = 0;
     info->kind = 1;
 
-    const int width = static_cast<int>(info->right - info->left);
+    const int width = static_cast<int>(info->corners[1].x - info->corners[0].x);
     if (width < minimumSize) {
       const float grow = static_cast<float>((minimumSize - width) / 2);
-      info->left -= grow;
-      info->right += grow;
+      info->corners[0].x -= grow;
+      info->corners[1].x += grow;
     }
 
-    const int height = static_cast<int>(info->bottom - info->top);
+    const int height = static_cast<int>(info->corners[1].y - info->corners[0].y);
     if (height < minimumSize) {
       const float grow = static_cast<float>((minimumSize - height) / 2);
-      info->top -= grow;
-      info->bottom += grow;
+      info->corners[0].y -= grow;
+      info->corners[1].y += grow;
     }
 
     g_actorPickNode.AddPickInfo(info);

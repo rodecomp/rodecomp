@@ -5,18 +5,20 @@
 #include <cstdint>
 #include <list>
 
-struct ActorPickInfo {
+struct ActorPickPoint {
   // INLINED
-  ActorPickInfo() : left(0.0f), top(0.0f), depth(0.0f), right(0.0f), bottom(0.0f), depthOffset(0.0f) {
+  ActorPickPoint() : x(0.0f), y(0.0f), z(0.0f) {
   }
+
+  /* 0000 */ float x;
+  /* 0004 */ float y;
+  /* 0008 */ float z;
+};
+
+struct ActorPickInfo {
   bool Contains(float x, float y) const;
 
-  /* 0000 */ float left;
-  /* 0004 */ float top;
-  /* 0008 */ float depth;
-  /* 000C */ float right;
-  /* 0010 */ float bottom;
-  /* 0014 */ float depthOffset;
+  /* 0000 */ ActorPickPoint corners[2];
   /* 0018 */ std::uint32_t accountId;
   /* 001C */ int job;
   /* 0020 */ int kind;
@@ -50,10 +52,6 @@ extern CActorPickNode g_actorPickNode;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ActorPickInfo) == 0x28);
-static_assert(offsetof(ActorPickInfo, depth) == 0x08);
-static_assert(offsetof(ActorPickInfo, right) == 0x0C);
-static_assert(offsetof(ActorPickInfo, bottom) == 0x10);
-static_assert(offsetof(ActorPickInfo, depthOffset) == 0x14);
 static_assert(sizeof(ActorPickBounds) == 0x10);
 static_assert(offsetof(CActorPickNode, children) == 0x14);
 static_assert(offsetof(CActorPickNode, pickInfos) == 0x24);

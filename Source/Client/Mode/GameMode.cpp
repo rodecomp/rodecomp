@@ -9651,8 +9651,8 @@ void CGameMode::ProcessInput() {
         offset = pick->kind != 3 && pick->kind != 4 && eligible;
       }
       if (offset) {
-        this->cursorOffsetX = (pick->left - pick->right) * g_depthAverageHalf + pick->right - static_cast<float>(g_mouse.x);
-        this->cursorOffsetY = (pick->top - pick->bottom) * g_depthAverageHalf + pick->bottom - static_cast<float>(g_mouse.y);
+        this->cursorOffsetX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x - static_cast<float>(g_mouse.x);
+        this->cursorOffsetY = (pick->corners[0].y - pick->corners[1].y) * g_depthAverageHalf + pick->corners[1].y - static_cast<float>(g_mouse.y);
       }
     }
   }

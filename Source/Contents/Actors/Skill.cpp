@@ -259,29 +259,29 @@ void CSkill::SetRenderInfo(const float* box, float x, float y) {
     // GLOBAL: gl_25171
     static int minimum = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
-    info->left = box[0] < box[2] ? box[0] : box[2];
-    info->top = box[1];
-    info->depth = box[4] + 350.0f;
-    info->right = box[0] > box[2] ? box[0] : box[2];
-    info->bottom = box[3];
-    info->depthOffset = box[4] + 350.0f;
+    info->corners[0].x = box[0] < box[2] ? box[0] : box[2];
+    info->corners[0].y = box[1];
+    info->corners[0].z = box[4] + 350.0f;
+    info->corners[1].x = box[0] > box[2] ? box[0] : box[2];
+    info->corners[1].y = box[3];
+    info->corners[1].z = box[4] + 350.0f;
     info->accountId = this->skillAid;
     info->job = this->GetEffectiveJob(-1);
     info->healthState = 0;
     info->kind = 2;
 
-    const int width = static_cast<int>(info->right - info->left);
+    const int width = static_cast<int>(info->corners[1].x - info->corners[0].x);
     if (width < minimum) {
       const float pad = static_cast<float>((minimum - width) / 2);
-      info->right += pad;
-      info->left -= pad;
+      info->corners[1].x += pad;
+      info->corners[0].x -= pad;
     }
 
-    const int height = static_cast<int>(info->bottom - info->top);
+    const int height = static_cast<int>(info->corners[1].y - info->corners[0].y);
     if (height < minimum) {
       const float pad = static_cast<float>((minimum - height) / 2);
-      info->bottom += pad;
-      info->top -= pad;
+      info->corners[1].y += pad;
+      info->corners[0].y -= pad;
     }
 
     g_actorPickNode.AddPickInfo(info);

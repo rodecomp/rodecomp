@@ -73,8 +73,8 @@ bool CPathFinder::LoadAttr(std::string name) {
 void CActorPickNode::AddPickInfo(ActorPickInfo* info) {
   CActorPickNode* node = this;
   while (node->children[0] != nullptr) {
-    const int x = static_cast<int>(info->left);
-    const int y = static_cast<int>(info->top);
+    const int x = static_cast<int>(info->corners[0].x);
+    const int y = static_cast<int>(info->corners[0].y);
     const int centerX = node->bounds.right / 2;
     const int centerY = node->bounds.bottom / 2;
     if (x <= centerX) {
@@ -112,9 +112,9 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     ActorPickInfo* result = nullptr;
     float bestDepth = 0.0f;
     for (ActorPickInfo* info : this->pickInfos) {
-      if (info->Contains(x, y) && info->depthOffset + info->depth > bestDepth) {
+      if (info->Contains(x, y) && info->corners[1].z + info->corners[0].z > bestDepth) {
         result = info;
-        bestDepth = info->depthOffset + info->depth;
+        bestDepth = info->corners[1].z + info->corners[0].z;
       }
     }
     return result;
@@ -151,7 +151,7 @@ int CActorPickNode::QuadrantAt(int x, int y) const {
 // OFFSET: 0x00ADAA20
 // FUNCTION: fn_45896
 bool ActorPickInfo::Contains(float x, float y) const {
-  return x > this->left && x < this->right && y > this->top && y < this->bottom;
+  return x > this->corners[0].x && x < this->corners[1].x && y > this->corners[0].y && y < this->corners[1].y;
 }
 
 // OFFSET: 0x00ADAA60

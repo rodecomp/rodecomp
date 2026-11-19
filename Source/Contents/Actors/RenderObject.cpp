@@ -923,19 +923,21 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       }
 
       ActorPickInfo* info = new ActorPickInfo;
-      info->left = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
-      info->top = bounds[1];
-      info->depth = depth + bounds[4];
-      info->right = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
-      info->bottom = bounds[3];
-      info->depthOffset = depth + bounds[4];
+      info->corners[0].x = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
+      info->corners[0].y = bounds[1];
+      info->corners[0].z = depth + bounds[4];
+      info->corners[1].x = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
+      info->corners[1].y = bounds[3];
+      info->corners[1].z = depth + bounds[4];
       info->accountId = this->render.accountId;
       info->job = this->GetEffectiveJob(-1);
       info->healthState = this->healthState;
       if (this->objectType == 7) {
         info->kind = 3;
+      } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1))) {
+        info->kind = 4;
       } else {
-        info->kind = g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
+        info->kind = 0;
       }
       switch (this->objectType) {
       case NPC_MERSOL_TYPE:
@@ -946,17 +948,17 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         break;
       }
 
-      const int width = static_cast<int>(info->right - info->left);
+      const int width = static_cast<int>(info->corners[1].x - info->corners[0].x);
       if (width < s_minPickSize) {
         const float grow = static_cast<float>((s_minPickSize - width) / 2);
-        info->right += grow;
-        info->left -= grow;
+        info->corners[1].x += grow;
+        info->corners[0].x -= grow;
       }
-      const int height = static_cast<int>(info->bottom - info->top);
+      const int height = static_cast<int>(info->corners[1].y - info->corners[0].y);
       if (height < s_minPickSize) {
         const float grow = static_cast<float>((s_minPickSize - height) / 2);
-        info->bottom += grow;
-        info->top -= grow;
+        info->corners[1].y += grow;
+        info->corners[0].y -= grow;
       }
       g_actorPickNode.AddPickInfo(info);
     }
