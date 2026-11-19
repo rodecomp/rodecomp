@@ -251,16 +251,15 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   for (AnimatedModelNode* node : this->nodes) {
     if (!node->parentName.empty()) {
-      const char* parentName = node->parentName.c_str();
-      AnimatedModelNode* parent = nullptr;
-
-      for (AnimatedModelNode* candidate : this->nodes) {
-        if (candidate->name == parentName) {
-          parent = candidate;
-          break;
+      const auto findNode = [this](const char* name) -> AnimatedModelNode* {
+        for (AnimatedModelNode* candidate : this->nodes) {
+          if (candidate->name == name) {
+            return candidate;
+          }
         }
-      }
-
+        return nullptr;
+      };
+      AnimatedModelNode* parent = findNode(node->parentName.c_str());
       node->parent = parent;
       parent->children.push_back(node);
     }
