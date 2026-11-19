@@ -143,12 +143,11 @@ __forceinline void CMeteorEffect::UpdateParticle(CSpriteParticle* particle) {
 // FUNCTION: fn_07058
 void CMeteorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ) {
-    CParticle* particle = *it;
-    if (IsParticleAlive(particle) == true) {
-      this->UpdateParticle(static_cast<CSpriteParticle*>(particle));
-      ++it;
+    if (IsParticleAlive(*it) == true) {
+      this->UpdateParticle(static_cast<CSpriteParticle*>(*it));
+      it++;
     } else {
-      FreeParticle(particle);
+      FreeParticle(*it);
       it = this->particles.erase(it);
     }
   }
