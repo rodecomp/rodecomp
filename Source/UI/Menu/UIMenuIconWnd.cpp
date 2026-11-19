@@ -206,17 +206,15 @@ void UIMenuIconWnd::Paint() {
   this->notificationOpenButton->Enable(0);
   this->closeButton->Enable(0);
 
-  UIButton* toggle;
   if (!g_session.m_showMenuIcon) {
     if (this->notifiedCommands.size() != 0) {
-      toggle = this->notificationOpenButton;
+      this->notificationOpenButton->Enable(1);
     } else {
-      toggle = this->openButton;
+      this->openButton->Enable(1);
     }
   } else {
-    toggle = this->closeButton;
+    this->closeButton->Enable(1);
   }
-  toggle->Enable(1);
 
   for (auto it = this->menuButtons.begin(); it != this->menuButtons.end(); ++it) {
     if (!g_session.m_showMenuIcon) {
@@ -226,7 +224,7 @@ void UIMenuIconWnd::Paint() {
       }
     } else {
       this->DrawNamed(0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
-      const bool pinned = std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), it->first) != this->notifiedCommands.end();
+      const bool pinned = this->notifiedCommands.end() != std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), it->first);
       it->second->Enable(!pinned);
       if (this->notificationButtons.end() != this->notificationButtons.find(it->first)) {
         this->notificationButtons[it->first]->Enable(pinned);
