@@ -258,11 +258,6 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
   } while (position != std::string::npos);
 }
 
-// INLINED
-static void AddTextLinkArgument(std::vector<std::string>& lines, std::string argument) {
-  lines.push_back(argument);
-}
-
 // OFFSET: 0x00877650
 // FUNCTION: fn_11210
 void UITextViewer::SplitTextLinkArguments(std::string text, UITextButton* button) {
@@ -275,10 +270,10 @@ void UITextViewer::SplitTextLinkArguments(std::string text, UITextButton* button
 
   while (comma != std::string::npos) {
     const std::string argument = remaining.substr(0, comma);
-    AddTextLinkArgument(button->m_lines, argument);
+    button->AddLine(argument);
     remaining = remaining.substr(comma + 1);
     comma = remaining.find(",");
   }
 
-  AddTextLinkArgument(button->m_lines, remaining);
+  button->AddLine(remaining);
 }
