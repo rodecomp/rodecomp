@@ -50,7 +50,7 @@ void CGuildMgr::MarkInvalidEmblem(std::string path) {
     name = path.substr(separator + 1, path.size());
   }
 
-  if (this->m_invalidEmblems.find(name) == this->m_invalidEmblems.end()) {
+  if (this->m_invalidEmblems.end() == this->m_invalidEmblems.find(name)) {
     this->m_invalidEmblems.insert(name);
   }
 }
