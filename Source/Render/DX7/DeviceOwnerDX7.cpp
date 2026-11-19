@@ -529,6 +529,30 @@ HRESULT DeviceOwnerDX7::BlitBackBuffer() {
 }
 
 // OFFSET: 0x0054A650
+// FUNCTION: fn_45924
+HRESULT DeviceOwnerDX7::CreateDepthBuffer() {
+  this->device->GetCaps(&this->caps);
+
+  if (!(this->caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR)) {
+    DDSURFACEDESC2 description;
+    SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
+    description.ddsCaps.dwCaps = this->depthMemory | DDSCAPS_ZBUFFER;
+    description.dwWidth = this->width;
+    description.dwHeight = this->height;
+    description.ddpfPixelFormat = this->depthFormat;
+    const HRESULT status = this->draw->CreateSurface(&description, &this->depthBuffer, nullptr);
+
+    if (FAILED(status)) {
+      return SurfaceError(status, 5);
+    }
+
+    if (FAILED(this->renderTarget->AddAttachedSurface(this->depthBuffer)) || FAILED(this->device->SetRenderTarget(this->renderTarget, 0))) {
+      return DeviceError(5);
+    }
+  }
+
+  return S_OK;
+}
 
 // OFFSET: 0x0054AF10
 // FUNCTION: fn_01903
