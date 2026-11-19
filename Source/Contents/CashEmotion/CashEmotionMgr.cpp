@@ -3083,11 +3083,11 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
 // OFFSET: 0x007CA100
 // FUNCTION: fn_09443
 __declspec(noinline) std::string UICashEmotionPack::GetPriceText(int packId) {
-  int price = g_cashEmotionMgr->GetPackPrice(packId);
+  const int price = g_cashEmotionMgr->GetPackPrice(packId);
   if (price > 0) {
     const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
     if (format) {
-      return fmt::vformat(format, fmt::make_format_args(price));
+      return fmt::format(format, price);
     }
 
     return std::to_string(price);
