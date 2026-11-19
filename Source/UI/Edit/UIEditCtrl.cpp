@@ -10214,9 +10214,8 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->UpdateScrollBar();
       this->Invalidate();
       const int positions[3] = {3, this->geometry.width - 28, this->geometry.width - 14};
-      UIBitmapButton* buttons[3] = {this->baseButton, this->minimizeButton, this->closeButton};
       for (int index = 0; index < 3; ++index) {
-        buttons[index]->Move(positions[index], 3);
+        this->buttons[index]->Move(positions[index], 3);
       }
     }
     this->expandedHeight = this->geometry.height;
