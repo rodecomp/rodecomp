@@ -519,9 +519,9 @@ void CHealEffect::UpdateConeParticle(CParticle* particle) {
   particle->vertices[3].x = bottomX;
   particle->vertices[3].z = bottomZ;
 
+  const float topZ = bottomZ + reachZ;
   const float topY = 0.0f - rise;
   const float topX = reachX + bottomX;
-  const float topZ = bottomZ + reachZ;
   particle->vertices[1].y = topY;
   particle->vertices[1].x = topX;
   particle->vertices[1].z = topZ;
