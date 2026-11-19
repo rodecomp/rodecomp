@@ -1732,8 +1732,11 @@ void UIBarterItemPurchaseWnd::Paint() {
     const int x = column * 32;
     const int y = row * 32;
     if (this->hovered == index) {
-      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-      this->FillRegion(x + 72, y + 19, 0xBF, 0x1C, RGB(red, green, blue));
+      unsigned hoverRed;
+      unsigned hoverGreen;
+      unsigned hoverBlue;
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(x + 72, y + 19, 0xBF, 0x1C, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
     const ITEM_INFO item = it->ToItemInfo();
