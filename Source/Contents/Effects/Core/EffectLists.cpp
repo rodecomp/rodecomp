@@ -224,13 +224,13 @@ void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
 // OFFSET: 0x00B25120
 // FUNCTION: fn_18777
 void EffectLists::Retire(int actor, int id) {
-  CEffect* effect = this->Find(actor, id);
-  if (effect) {
+  if (CEffect* found = this->Find(actor, id)) {
+    CEffect* effect = found;
     this->retired.push_back(effect);
 
     const int owner = effect->actor;
-    auto found = this->active.find(owner);
-    if (found != this->active.end()) {
+    auto entry = this->active.find(owner);
+    if (entry != this->active.end()) {
       this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
     }
   }
