@@ -173,14 +173,22 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     display = DisplayQuestTextTag(display);
 
     if (pixels) {
-      const int scrollWidth = carriageReturns ? this->verticalBar->geometry.width + 2 : 0;
+      int scrollWidth = 0;
+      if (carriageReturns) {
+        scrollWidth = this->verticalBar->geometry.width + 2;
+      }
+
       this->WrapPixelText(display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
+
+      for (unsigned index = 0; index < wrapped.size(); ++index) {
+        this->AddLine(wrapped[index].c_str());
+      }
     } else {
       WrapRichText(display.c_str(), wrapped, lineWidth, carriageReturns != 0);
-    }
 
-    for (unsigned index = 0; index < wrapped.size(); ++index) {
-      this->AddLine(wrapped[index].c_str());
+      for (unsigned index = 0; index < wrapped.size(); ++index) {
+        this->AddLine(wrapped[index].c_str());
+      }
     }
 
     this->AddItemLinks(text, static_cast<unsigned>(wrapped.size()));
@@ -190,14 +198,22 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     this->AddQuestLinks(text, static_cast<unsigned>(wrapped.size()));
   } else {
     if (pixels) {
-      const int scrollWidth = carriageReturns ? this->verticalBar->geometry.width + 2 : 0;
+      int scrollWidth = 0;
+      if (carriageReturns) {
+        scrollWidth = this->verticalBar->geometry.width + 2;
+      }
+
       this->WrapPixelText(text, wrapped, this->geometry.width - scrollWidth - 4);
+
+      for (unsigned index = 0; index < wrapped.size(); ++index) {
+        this->AddLine(wrapped[index].c_str());
+      }
     } else {
       WrapRichText(text, wrapped, lineWidth, carriageReturns != 0);
-    }
 
-    for (unsigned index = 0; index < wrapped.size(); ++index) {
-      this->AddLine(wrapped[index].c_str());
+      for (unsigned index = 0; index < wrapped.size(); ++index) {
+        this->AddLine(wrapped[index].c_str());
+      }
     }
   }
 
