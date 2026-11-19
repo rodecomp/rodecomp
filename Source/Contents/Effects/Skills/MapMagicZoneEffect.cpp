@@ -190,13 +190,60 @@ void CMapMagicZoneEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
     ++particle->elapsedFrames;
+    this->UpdateRibbon(particle);
+  }
+}
+
+// OFFSET: 0x00B6E8F0
+// FUNCTION: fn_19117
+void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
+  if (particle) {
+    ZoneVector3d corners[4];
     float& spinAngle = particle->angle;
-    spinAngle = static_cast<float>(static_cast<int>(particle->rowIndex + spinAngle + 3.0f));
+    const int angle = static_cast<int>(spinAngle + 1.0f);
+    spinAngle = static_cast<float>(angle % 360);
+    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+
+    for (int corner = 0; corner < 4; ++corner) {
+      const int index = (angle + corner * 90) % 360;
+      corners[corner].x = radius * g_cosTable[index];
+      corners[corner].y = particle->animationParameter;
+      corners[corner].z = radius * g_sinTable[index];
+    }
+
+    particle->vertices[0].x = corners[0].x;
+    particle->vertices[0].y = corners[0].y;
+    particle->vertices[0].z = corners[0].z;
+    particle->vertices[1].x = corners[1].x;
+    particle->vertices[1].y = corners[1].y;
+    particle->vertices[1].z = corners[1].z;
+    particle->vertices[3].x = corners[2].x;
+    particle->vertices[3].y = corners[2].y;
+    particle->vertices[3].z = corners[2].z;
+    particle->vertices[2].x = corners[3].x;
+    particle->vertices[2].y = corners[3].y;
+    particle->vertices[2].z = corners[3].z;
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
     rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
     particle->transform = rotation;
+  }
+}
+
+// OFFSET: 0x00B6EDC0
+// FUNCTION: fn_46082
+void CMapMagicZoneEffect::UpdateRibbon(CParticle* particle) {
+  if (particle) {
+    float& spinAngle = particle->angle;
+    spinAngle = static_cast<float>(static_cast<int>(particle->rowIndex + spinAngle + 3.0f));
+
+    {
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+      particle->transform = rotation;
+    }
 
     const int segment = particle->columnIndex;
     const float wave = g_sinTable[segment * 9] * particle->speedParameter;
@@ -239,45 +286,6 @@ void CMapMagicZoneEffect::OnProcess() {
     this->previousOuter.z = outerZ;
   }
 }
-
-// OFFSET: 0x00B6E8F0
-// FUNCTION: fn_19117
-void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
-  if (particle) {
-    ZoneVector3d corners[4];
-    float& spinAngle = particle->angle;
-    const int angle = static_cast<int>(spinAngle + 1.0f);
-    spinAngle = static_cast<float>(angle % 360);
-    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
-
-    for (int corner = 0; corner < 4; ++corner) {
-      const int index = (angle + corner * 90) % 360;
-      corners[corner].x = radius * g_cosTable[index];
-      corners[corner].y = particle->animationParameter;
-      corners[corner].z = radius * g_sinTable[index];
-    }
-
-    particle->vertices[0].x = corners[0].x;
-    particle->vertices[0].y = corners[0].y;
-    particle->vertices[0].z = corners[0].z;
-    particle->vertices[1].x = corners[1].x;
-    particle->vertices[1].y = corners[1].y;
-    particle->vertices[1].z = corners[1].z;
-    particle->vertices[3].x = corners[2].x;
-    particle->vertices[3].y = corners[2].y;
-    particle->vertices[3].z = corners[2].z;
-    particle->vertices[2].x = corners[3].x;
-    particle->vertices[2].y = corners[3].y;
-    particle->vertices[2].z = corners[3].z;
-
-    matrix rotation;
-    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-    rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
-    particle->transform = rotation;
-  }
-}
-
-// OFFSET: 0x00B6EDC0
 
 // OFFSET: 0x00B6F010
 // FUNCTION: fn_19118
