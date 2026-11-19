@@ -12470,45 +12470,7 @@ void UIFrameWnd::DrawItemNameText(
     this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
 
     FrameTextLines lines(2);
-    std::vector<std::pair<int, std::string>>* line = &lines[0];
-    int lineCount = 1;
-    int lineWidth = 0;
-    for (auto segment = segments.begin(); segment != segments.end(); ++segment) {
-      const char* begin = segment->second.c_str();
-      const char* end = begin + segment->second.size();
-      const char* lineStart = begin;
-      const char* next = begin;
-      std::size_t offset = 0;
-      int length;
-      int measured;
-      do {
-        next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
-        length = static_cast<int>(next - lineStart);
-        measured = this->TextWidth(begin, length, 0, 12, 0, 0);
-        if (measured + lineWidth > width) {
-          std::pair<int, std::string> piece;
-          piece.second = segment->second.substr(offset, length);
-          piece.first = segment->first;
-          line->push_back(piece);
-          ++line;
-          ++lineCount;
-          lineStart = next;
-          offset = length;
-          lineWidth = 0;
-        }
-      } while (next < end && lineCount < 3);
-
-      lineWidth += measured;
-      if (lineCount > 2) {
-        break;
-      }
-      if (next >= end) {
-        std::pair<int, std::string> piece;
-        piece.second = segment->second.substr(offset, length);
-        piece.first = segment->first;
-        line->push_back(piece);
-      }
-    }
+    this->WrapTextSegments(width, 2, segments, lines);
 
     if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
       this->FitLastTextLine(width, 2, position->family, position->height, lines);
