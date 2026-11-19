@@ -513,11 +513,13 @@ void UINewSelectCharWnd::Paint() {
   if (selected && selected->deleteDate > 0) {
     Timestamp deleteDate(selected->deleteDate);
     if (deleteDate.IsBeforeNow() == 1) {
-      this->m_window100->SetDisabled(0);
-      this->m_window100->Invalidate();
+      auto* const window = this->m_window100;
+      window->SetDisabled(0);
+      window->Invalidate();
     } else {
-      this->m_window100->SetDisabled(1);
-      this->m_window100->Invalidate();
+      auto* const window = this->m_window100;
+      window->SetDisabled(1);
+      window->Invalidate();
     }
   }
 }
