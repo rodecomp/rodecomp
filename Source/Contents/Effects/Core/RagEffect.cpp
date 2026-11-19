@@ -5920,7 +5920,7 @@ void CRagEffect::WhiteSpray(char kind) {
 // OFFSET: 0x00C5D810
 // FUNCTION: fn_20235
 void CRagEffect::TexturedComet(const char* name, char kind) {
-  if (this->state.stateCnt != 0) {
+  if (static_cast<std::uint32_t>(this->state.stateCnt) > 0) {
     return;
   }
 
