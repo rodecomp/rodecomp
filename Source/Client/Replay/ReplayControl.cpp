@@ -40,7 +40,7 @@ bool Replay::SetState(int state) {
   }
   if (state >= 1 && state <= 8) {
     this->state = state;
-    g_replayAnimationScaling = state <= 3 ? 0 : g_replayAnimationScaling;
+    g_replayAnimationScaling = static_cast<unsigned>(state - 1) <= 2 ? 0 : g_replayAnimationScaling;
   } else {
     this->state = 1;
   }
