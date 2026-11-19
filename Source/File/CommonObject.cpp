@@ -52,7 +52,7 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
       buffer[index] = '\0';
 
       if (start && *start != '\0' && mode != 0 && std::strncmp(start, "//", 2) != 0) {
-        tokens.push_back(start);
+        tokens.emplace_back(start);
       }
 
       start = buffer + index + 1;
@@ -60,7 +60,7 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
     case '#':
       if (std::strncmp(start, "//", 2) != 0) {
         buffer[index] = '\0';
-        tokens.push_back(start);
+        tokens.emplace_back(start);
 
         if (mode == 2) {
           tokens.push_back(nullptr);
