@@ -385,15 +385,13 @@ RuneData* CRuneSystemMgr::FindRune(int tagId, int type, std::int64_t id, unsigne
 // FUNCTION: fn_08138
 RuneData* CTagData::FindRune(int type, std::int64_t id, unsigned int* index) {
   if (type == 0 || type == 1) {
-    std::vector<RuneData*>& runes = this->m_runes[type];
-    const unsigned int count = static_cast<unsigned int>(runes.size());
-    for (unsigned int i = 0; i < count; ++i) {
-      if (runes[i] && id == runes[i]->m_id) {
+    for (unsigned int i = 0; i < this->m_runes[type].size(); ++i) {
+      if (this->m_runes[type][i] && id == this->m_runes[type][i]->m_id) {
         if (index) {
           *index = i;
         }
 
-        return runes[i];
+        return this->m_runes[type][i];
       }
     }
   }
