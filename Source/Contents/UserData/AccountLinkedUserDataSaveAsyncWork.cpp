@@ -31,7 +31,8 @@ CAccountLinkedUserDataSaveAsyncWork::CAccountLinkedUserDataSaveAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x59278F63D79F3DA1ULL)), sourceFile, 26) {
 }
 
-// INLINED
+// OFFSET: 0x005BDD80
+// FUNCTION: fn_46414
 CAccountLinkedUserDataSaveAsyncWork::~CAccountLinkedUserDataSaveAsyncWork() = default;
 
 // OFFSET: 0x005BE1F0
