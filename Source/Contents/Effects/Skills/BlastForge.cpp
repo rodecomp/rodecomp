@@ -57,6 +57,7 @@ __declspec(noinline) CBlastForge::~CBlastForge() {
 }
 
 // OFFSET: 0x006F74C0
+// FUNCTION: fn_46146
 __forceinline void CBlastForge::CreateLoopParticles() {
   this->openToggle = (this->openToggle == 0);
   this->loopParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
