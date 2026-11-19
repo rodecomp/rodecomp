@@ -1331,7 +1331,7 @@ int AddItemDecomType(lua_State* state) {
     return 2;
   }
 
-  g_runeSystemMgr->m_decomTypes[static_cast<int>(typeValue)].emplace_back(itemId, minCount, maxCount, percent);
+  AddDecomTypeItem(static_cast<int>(typeValue), itemId, minCount, maxCount, percent);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatOwnedString("good").c_str());
   return 2;
