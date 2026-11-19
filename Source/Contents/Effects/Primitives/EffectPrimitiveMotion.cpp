@@ -5955,7 +5955,7 @@ void CEffectPrim::PrimSpiralCollapse() {
 
       ++this->state.slots[index].flag1[1];
 
-      if (this->state.slots[index].flag1[1] > 9) {
+      if (this->state.slots[index].flag1[1] >= 10) {
         this->state.slots[index].flag1[0] = 2;
       }
 
@@ -5998,8 +5998,8 @@ void CEffectPrim::PrimSpiralCollapse() {
       }
     }
 
-    const float cosRise = g_cosTable[this->state.slots[index].riseAngle];
     const float sinRise = g_sinTable[this->state.slots[index].riseAngle];
+    const float cosRise = g_cosTable[this->state.slots[index].riseAngle];
     const float sinRot = g_sinTable[this->state.slots[index].rotStart];
     this->state.slots[index].vecBNow.x -= this->state.slots[index].height[1] * cosRise * g_cosTable[this->state.slots[index].rotStart];
     this->state.slots[index].vecBNow.y -= sinRot * this->state.slots[index].height[1] * cosRise + 0.0f;
@@ -6444,7 +6444,7 @@ bool CEffectPrim::PrimRippleRings() {
 
         this->state.slots[index].alphaB -= 7;
 
-        if (this->state.slots[index].alphaB < 0) {
+        if (0 > this->state.slots[index].alphaB) {
           this->state.slots[index].alphaB = 0;
 
           if (this->state.slots[3].process > 1400) {
@@ -6480,29 +6480,31 @@ bool CEffectPrim::PrimRippleRings() {
       }
     }
 
-    if (this->state.slots[3].alphaT == 3) {
+    if (this->state.slots[3].alphaT != 3) {
+      if (this->state.slots[index].process < 10) {
+        if (this->state.slots[3].alphaT == 4) {
+          this->state.slots[index].alphaB += 4;
+
+          if (this->state.slots[index].alphaB > 40) {
+            this->state.slots[index].alphaB = 40;
+          }
+        } else {
+          this->state.slots[index].alphaB += 24;
+
+          if (this->state.slots[3].alphaT == 5) {
+            if (this->state.slots[index].alphaB > 120) {
+              this->state.slots[index].alphaB = 120;
+            }
+          } else if (this->state.slots[index].alphaB > 240) {
+            this->state.slots[index].alphaB = 240;
+          }
+        }
+      }
+    } else {
       if (this->state.slots[index].process < 20) {
         this->state.slots[index].alphaB += 12;
 
         if (this->state.slots[index].alphaB > 240) {
-          this->state.slots[index].alphaB = 240;
-        }
-      }
-    } else if (this->state.slots[index].process < 10) {
-      if (this->state.slots[3].alphaT == 4) {
-        this->state.slots[index].alphaB += 4;
-
-        if (this->state.slots[index].alphaB > 40) {
-          this->state.slots[index].alphaB = 40;
-        }
-      } else {
-        this->state.slots[index].alphaB += 24;
-
-        if (this->state.slots[3].alphaT == 5) {
-          if (this->state.slots[index].alphaB > 120) {
-            this->state.slots[index].alphaB = 120;
-          }
-        } else if (this->state.slots[index].alphaB > 240) {
           this->state.slots[index].alphaB = 240;
         }
       }

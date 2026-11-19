@@ -51,12 +51,12 @@ void CFuumaShouakuEffect::Open() {
   const float* target = this->sourcePosition;
   const float* origin = this->position;
   const float dx = target[0] - origin[0];
-  const float dy = target[1] - origin[1];
   const float dz = target[2] - origin[2];
+  const float dy = target[1] - origin[1];
   this->travelFrames = static_cast<int>(SquareRoot(dy * dy + dx * dx + dz * dz) * g_depthAverageHalf);
 
-  const float velocityX = target[0] - origin[0];
   const float velocityY = target[1] - origin[1];
+  const float velocityX = target[0] - origin[0];
   const float velocityZ = target[2] - origin[2];
   this->velocityX = velocityX;
   this->velocityY = velocityY;
