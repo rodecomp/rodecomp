@@ -81,6 +81,7 @@ struct SkyBoxVertex {
 
 class CSkyBox {
 public:
+  CSkyBox();
   ~CSkyBox();
 
   /* 0000 */ CRes* m_model;

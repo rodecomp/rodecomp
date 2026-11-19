@@ -7,6 +7,8 @@
 #include "Render/Renderer.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/Models/ModelResource.h"
+#include "Resource/ResourceMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdio>
@@ -78,6 +80,31 @@ CSkyCube::CSkyCube() {
   this->m_vertices[9].y = 100.0f;
   this->m_vertices[9].z = 1250.0f;
 
+  this->m_flare.Init();
+}
+
+// OFFSET: 0x0075DE20
+// FUNCTION: fn_45841
+CSkyBox::CSkyBox() {
+  this->m_model = ResourceMgr::Instance().Load("skybox.rsm");
+
+  if (static_cast<C3dModelRes*>(this->m_model)->major == 1) {
+    this->m_actor = new C3dActorV1;
+  } else if (static_cast<C3dModelRes*>(this->m_model)->major == 2) {
+    this->m_actor = new C3dActorV2;
+  }
+
+  this->m_actor->SetScale({30.0f, 30.0f, 30.0f});
+  this->m_actor->SetRotation({0.0f, 0.0f, 0.0f});
+  this->m_loopRotationX = 0;
+  this->m_actor->SetSpeed(0.1f);
+  this->m_actor->Assign(*static_cast<C3dModelRes*>(this->m_model));
+
+  const vector3d direction{0.0f, 1.0f, 0.0f};
+  const vector3d diffuse{1.0f, 1.0f, 1.0f};
+  const vector3d ambient{1.0f, 1.0f, 1.0f};
+  this->m_actor->Prepare(&direction.x, &diffuse.x, &ambient.x);
+  this->m_actor->Animate(0.0);
   this->m_flare.Init();
 }
 
