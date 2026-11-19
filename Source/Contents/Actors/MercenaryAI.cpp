@@ -421,8 +421,8 @@ int AiHomunGetV(lua_State* state) {
               const float dy = static_cast<float>(cellY - targetY);
               const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
               cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
-              const float sine = ClientSin(angle);
-              cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
+              const float sine = -ClientSin(angle);
+              cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
 
               if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
                 if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
@@ -456,23 +456,21 @@ int AiHomunGetV(lua_State* state) {
       return 1;
     }
 
-  case V_ATTACKRANGE: {
-    int range = g_session.m_homunAttackRange;
-    if (!actor || range == 0) {
+  case V_ATTACKRANGE:
+    if (!actor || g_session.m_homunAttackRange == 0) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(range));
+      lua_pushnumber(state, static_cast<double>(g_session.m_homunAttackRange));
       return 1;
     }
-  }
 
   case V_TARGET:
     if (!actor) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(actor->hitTargetAid));
+      lua_pushnumber(state, static_cast<int>(actor->hitTargetAid));
       return 1;
     }
 
@@ -481,9 +479,7 @@ int AiHomunGetV(lua_State* state) {
     std::uint32_t skillId = static_cast<std::uint32_t>(luaL_checknumber(state, 3));
     CSkillInfo skill = g_session.LookupHomunSkill(skillId);
     double result;
-    if (!skill.available) {
-      result = 1.0;
-    } else {
+    if (skill.available) {
       int range = skill.range;
       if (property == 14) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
@@ -491,6 +487,8 @@ int AiHomunGetV(lua_State* state) {
       }
       std::uint32_t homunAid = g_session.m_homunAid;
       result = static_cast<double>(ClampTargetAttackRange(homunAid, range));
+    } else {
+      result = 1.0;
     }
     lua_pushnumber(state, result);
     return 1;
@@ -509,11 +507,11 @@ int AiHomunGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.hp));
       return 1;
-    } else if (!g_session.IsHomunAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsHomunAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_homunHp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_homunHp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -521,11 +519,11 @@ int AiHomunGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.m_sp));
       return 1;
-    } else if (!g_session.IsHomunAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsHomunAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_homunSp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_homunSp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -533,11 +531,11 @@ int AiHomunGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.maxHp));
       return 1;
-    } else if (!g_session.IsHomunAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsHomunAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_homunMaxHp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_homunMaxHp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -545,11 +543,11 @@ int AiHomunGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.m_maxSp));
       return 1;
-    } else if (!g_session.IsHomunAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsHomunAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.homunMaxSp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.homunMaxSp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -610,8 +608,8 @@ int AiMercenaryGetV(lua_State* state) {
               const float dist = SquareRoot(dy * dy + dx * dx);
               const float angle = std::acos((1.0f / dist) * dx);
               cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
-              const float sine = ClientSin(angle);
-              cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
+              const float sine = -ClientSin(angle);
+              cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
 
               if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
                 if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
@@ -645,23 +643,21 @@ int AiMercenaryGetV(lua_State* state) {
       return 1;
     }
 
-  case V_ATTACKRANGE: {
-    int range = g_session.m_mercenaryAttackRange;
-    if (!actor || range == 0) {
+  case V_ATTACKRANGE:
+    if (!actor || g_session.m_mercenaryAttackRange == 0) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(range));
+      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryAttackRange));
       return 1;
     }
-  }
 
   case V_TARGET:
     if (!actor || actor->render.state == ST_DEAD) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(actor->hitTargetAid));
+      lua_pushnumber(state, static_cast<int>(actor->hitTargetAid));
       return 1;
     }
 
@@ -670,9 +666,7 @@ int AiMercenaryGetV(lua_State* state) {
     std::uint32_t skillId = static_cast<std::uint32_t>(luaL_checknumber(state, 3));
     CSkillInfo skill = g_session.LookupMercSkill(skillId);
     double result;
-    if (!skill.available) {
-      result = 1.0;
-    } else {
+    if (skill.available) {
       int range = skill.range;
       if (property == 14) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
@@ -680,6 +674,8 @@ int AiMercenaryGetV(lua_State* state) {
       }
       std::uint32_t mercAid = g_session.m_mercenaryAid;
       result = static_cast<double>(ClampTargetAttackRange(mercAid, range));
+    } else {
+      result = 1.0;
     }
     lua_pushnumber(state, result);
     return 1;
@@ -703,11 +699,11 @@ int AiMercenaryGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.hp));
       return 1;
-    } else if (!g_session.IsMercenaryAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsMercenaryAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryHp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryHp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -715,11 +711,11 @@ int AiMercenaryGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.m_sp));
       return 1;
-    } else if (!g_session.IsMercenaryAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsMercenaryAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_mercenarySp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_mercenarySp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -727,11 +723,11 @@ int AiMercenaryGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.maxHp));
       return 1;
-    } else if (!g_session.IsMercenaryAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsMercenaryAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryMaxHp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryMaxHp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
@@ -739,11 +735,11 @@ int AiMercenaryGetV(lua_State* state) {
     if (aid == g_session.m_aid) {
       lua_pushnumber(state, static_cast<double>(g_session.m_maxSp));
       return 1;
-    } else if (!g_session.IsMercenaryAid(aid)) {
-      lua_pushnumber(state, -1.0);
+    } else if (g_session.IsMercenaryAid(aid)) {
+      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryMaxSp));
       return 1;
     } else {
-      lua_pushnumber(state, static_cast<double>(g_session.m_mercenaryMaxSp));
+      lua_pushnumber(state, -1.0);
       return 1;
     }
 
