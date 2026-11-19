@@ -44,14 +44,14 @@ void CGraffiSkill::BuildTexture() {
     char letter = this->m_text[i];
     unsigned char glyph;
     int x = this->m_penX;
-    if (letter >= 'a' && letter <= 'z') {
-      glyph = letter - 'a' + 26;
+    if (static_cast<unsigned char>(letter - 'a') <= 25) {
+      glyph = static_cast<unsigned char>(letter - 'a') + 26;
       width = 32;
-    } else if (letter >= 'A' && letter <= 'Z') {
-      glyph = letter - 'A';
+    } else if (static_cast<unsigned char>(letter - 'A') <= 25) {
+      glyph = static_cast<unsigned char>(letter - 'A');
       width = 32;
-    } else if (letter >= '0' && letter <= '9') {
-      glyph = letter - '0' + 54;
+    } else if (static_cast<unsigned char>(letter - '0') <= 9) {
+      glyph = static_cast<unsigned char>(letter - '0') + 54;
       width = 32;
     } else if (letter == '?') {
       glyph = 53;
@@ -60,14 +60,14 @@ void CGraffiSkill::BuildTexture() {
       glyph = 54;
       width = 16;
     } else if (letter == ' ') {
-      for (const char* next = &this->m_text[i + 1]; *next != ' ' && *next != '\0'; ++next) {
+      for (int next = i + 1; this->m_text[next] != ' ' && this->m_text[next] != '\0'; ++next) {
         x += 32;
       }
 
       if (x >= 0x160) {
         this->m_penY += 36;
-        x = 0;
         this->m_penX = 0;
+        x = 0;
       } else {
         x = this->m_penX;
       }
@@ -80,8 +80,8 @@ void CGraffiSkill::BuildTexture() {
 
     if (width + x >= 0x160) {
       this->m_penY += 36;
-      x = 0;
       this->m_penX = 0;
+      x = 0;
     }
 
     if (glyph != 99) {
