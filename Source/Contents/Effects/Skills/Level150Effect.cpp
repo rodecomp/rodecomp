@@ -20,6 +20,9 @@ CLevel150Effect::CLevel150Effect() : CEffect(-1) {
 }
 
 // OFFSET: 0x00B464A0
+// FUNCTION: fn_45949
+__declspec(noinline) CLevel150Effect::~CLevel150Effect() {
+}
 
 // OFFSET: 0x00B465A0
 // FUNCTION: fn_18908
