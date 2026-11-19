@@ -124,8 +124,8 @@ bool CBash::IsAlive() {
 __forceinline void CBash::UpdateRay(CParticle* particle) {
   float* values = particle->animationValues;
   const int fadeFrame = static_cast<int>(values[1]);
-  const int limit = static_cast<int>(values[2]);
   float step = values[0];
+  const int limit = static_cast<int>(values[2]);
   if (this->frame == fadeFrame) {
     step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
   }
@@ -157,11 +157,11 @@ __forceinline void CBash::UpdateSpark(CParticle* particle) {
     step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
   }
 
+  values[7] = step;
+  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
   values[0] = angle;
   values[1] = speed;
   values[4] = radius;
-  values[7] = step;
-  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
   if (alpha < 0.0f) {
     alpha = 0;
   }
