@@ -1081,13 +1081,12 @@ void UIDecomlist::Paint() {
 // FUNCTION: fn_10177
 void UIEquipRuneSetWnd::Paint() {
   RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
-  ResourceMgr& resources = ResourceMgr::Instance();
   if (!runeSet) {
-    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip_empty.bmp"))), false);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip_empty.bmp"))), false);
     return;
   }
 
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp"))), false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp"))), false);
   int x = 25;
   for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index, x += 40) {
     RuneData* rune = runeSet->m_slots[index];
@@ -1375,10 +1374,9 @@ void UIRuneSystem_DecomItemWnd::Paint() {
 // OFFSET: 0x0081A980
 // FUNCTION: fn_10188
 void UIRuneSystem_DecomResultWnd::Paint() {
-  ResourceMgr& resources = ResourceMgr::Instance();
   this->DrawBitmap(
     0, 0,
-    static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_decomResult_%d.bmp", this->m_total > 0).c_str()))),
+    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_decomResult_%d.bmp", this->m_total > 0).c_str()))),
     false
   );
   if (this->m_total == 0) {
