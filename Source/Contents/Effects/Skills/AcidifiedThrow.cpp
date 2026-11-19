@@ -32,6 +32,11 @@ CAcidifiedThrow::CAcidifiedThrow() : CEffect(-1) {
   this->impactPosition.z = 0.0f;
 }
 
+// OFFSET: 0x006F35C0
+// FUNCTION: fn_46014
+__declspec(noinline) CAcidifiedThrow::~CAcidifiedThrow() {
+}
+
 // OFFSET: 0x006F3750
 // FUNCTION: fn_06823
 void CAcidifiedThrow::Close() {

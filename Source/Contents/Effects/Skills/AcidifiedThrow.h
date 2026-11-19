@@ -11,6 +11,7 @@ struct CEZ2STRParticle;
 class CAcidifiedThrow : public CEffect {
 public:
   CAcidifiedThrow();
+  ~CAcidifiedThrow() override;
 
   void Open() override;
   void OnProcess() override;
