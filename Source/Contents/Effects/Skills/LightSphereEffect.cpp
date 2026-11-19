@@ -19,6 +19,10 @@
 CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
 }
 
+// OFFSET: 0x00B6CA90
+__declspec(noinline) CLightSphereEffect::~CLightSphereEffect() {
+}
+
 // OFFSET: 0x00B6CB90
 // FUNCTION: fn_19105
 void CLightSphereEffect::CreateRayParticles(int param) {
@@ -107,23 +111,8 @@ void CLightSphereEffect::CreateRayParticles(int param) {
   }
 }
 
-// OFFSET: 0x00B6CFF0
-// FUNCTION: fn_19106
-void CLightSphereEffect::Close() {
-  for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
-    FreeParticle(*it);
-  }
-  this->spheres.clear();
-
-  for (std::vector<CParticle*>::iterator it = this->rays.begin(); it != this->rays.end(); ++it) {
-    FreeParticle(*it);
-  }
-  this->rays.clear();
-}
-
-// OFFSET: 0x00B6D060
-// FUNCTION: fn_19107
-void CLightSphereEffect::Open() {
+// OFFSET: 0x00B6CDB0
+__forceinline void CLightSphereEffect::CreateSphereParticles() {
   for (int i = 0; i < 4; ++i) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle != nullptr) {
@@ -153,7 +142,26 @@ void CLightSphereEffect::Open() {
       this->spheres.push_back(particle);
     }
   }
+}
 
+// OFFSET: 0x00B6CFF0
+// FUNCTION: fn_19106
+void CLightSphereEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->spheres.clear();
+
+  for (std::vector<CParticle*>::iterator it = this->rays.begin(); it != this->rays.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->rays.clear();
+}
+
+// OFFSET: 0x00B6D060
+// FUNCTION: fn_19107
+void CLightSphereEffect::Open() {
+  this->CreateSphereParticles();
   this->CreateRayParticles(0);
   this->CreateRayParticles(1);
 }
@@ -189,39 +197,7 @@ void CLightSphereEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
 
-    if (particle != nullptr) {
-      if (particle->elapsedFrames < 300) {
-        const int alpha = particle->alpha + 1;
-        particle->alpha = alpha >= 255 ? 255 : alpha;
-      } else {
-        const int alpha = particle->alpha - 1;
-        particle->alpha = alpha < 0 ? 0 : alpha;
-      }
-
-      float& phase = particle->animationParameters[0];
-      const int spin = (static_cast<int>(phase) + 2) % 360;
-      phase = static_cast<float>(spin);
-      const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-
-      matrix scaling;
-      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-      scaling.SetScale(scale, scale, 1.0f);
-
-      matrix billboard;
-      billboard.Compose(scaling, rotation);
-
-      matrix translation;
-      std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-      translation.MakeTranslate(0.0f, particle->animationParameter, 0.0f);
-
-      matrix transform;
-      transform.Compose(billboard, translation);
-      particle->transform = transform;
-    }
+    this->UpdateSphere(particle);
 
     ++particle->elapsedFrames;
   }
@@ -300,22 +276,68 @@ void CLightSphereEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B6D7B0
+__forceinline void CLightSphereEffect::UpdateSphere(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  if (particle->elapsedFrames < 300) {
+    const int alpha = particle->alpha + 1;
+    particle->alpha = alpha >= 255 ? 255 : alpha;
+  } else {
+    const int alpha = particle->alpha - 1;
+    particle->alpha = alpha < 0 ? 0 : alpha;
+  }
+
+  float& phase = particle->animationParameters[0];
+  const int spin = (static_cast<int>(phase) + 2) % 360;
+  phase = static_cast<float>(spin);
+  const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+
+  matrix scaling;
+  std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+  scaling.SetScale(scale, scale, 1.0f);
+
+  matrix billboard;
+  billboard.Compose(scaling, rotation);
+
+  matrix translation;
+  std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
+  translation.MakeTranslate(0.0f, particle->animationParameter, 0.0f);
+
+  matrix transform;
+  transform.Compose(billboard, translation);
+  particle->transform = transform;
+}
+
 // OFFSET: 0x00B6D990
 // FUNCTION: fn_19110
 void CLightSphereEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
-    CParticle* particle = *it;
-
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderSphere(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->rays.begin(); it != this->rays.end(); ++it) {
-    CParticle* particle = *it;
+    this->RenderRay(*it);
+  }
+}
 
-    if (particle) {
-      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+// OFFSET: 0x00B6DA40
+__forceinline void CLightSphereEffect::RenderRay(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
+// OFFSET: 0x00B6DA80
+// FUNCTION: fn_46116
+__forceinline void CLightSphereEffect::RenderSphere(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
