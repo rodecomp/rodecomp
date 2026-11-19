@@ -119,18 +119,17 @@ __forceinline void CAxeBoomerang::UpdateParticle(CEZ2STRParticle* emitter) {
   matrix rotation;
   rotation.MakeYRotation(angle);
 
-  vector3d delta;
-  delta.y = this->launchPosition.y - actor->render.position.y;
-  delta.x = this->launchPosition.x - actor->render.position.x;
-  delta.z = this->launchPosition.z - actor->render.position.z;
-  const float invDist = 1.0f / SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
+  const float deltaX = this->launchPosition.x - actor->render.position.x;
+  const float deltaY = this->launchPosition.y - actor->render.position.y;
+  const float deltaZ = this->launchPosition.z - actor->render.position.z;
+  const float invDist = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const vector3d target = actor->render.position;
   const vector3d launch = this->launchPosition;
 
   vector3d offset;
-  offset.x = invDist * delta.x * scale;
-  offset.y = invDist * delta.y * scale;
-  offset.z = invDist * delta.z * scale;
+  offset.x = invDist * deltaX * scale;
+  offset.y = invDist * deltaY * scale;
+  offset.z = invDist * deltaZ * scale;
 
   const vector3d control{
       offset.y * rotation.values[3] + offset.x * rotation.values[0] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x,
