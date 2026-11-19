@@ -5853,7 +5853,11 @@ void CRagEffect::BlueRingStack() {
     this->state.lastPrim->state.slots[index].maxHeight = 13.0f - (step + step);
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 90);
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    this->state.lastPrim->state.slots[index].distance = step * 0.2f + (this->state.deltaPos2.y == 0.0f ? 3.4f : 2.4f);
+    if (this->state.deltaPos2.y == 0.0f) {
+      this->state.lastPrim->state.slots[index].distance = step * 0.2f + 3.4f;
+    } else {
+      this->state.lastPrim->state.slots[index].distance = step * 0.2f + 2.4f;
+    }
     this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>((11 - index) * 5);
     this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
 
