@@ -135,8 +135,8 @@ bool CSession::ValidateCharacterName(const char* name) {
 // FUNCTION: fn_23578
 bool CSession::IsNavigationAllowed() const {
   const std::string name = ScriptMapName(this->m_navigationPlayerMap);
-  for (const auto& forbidden : this->m_navigationForbiddenMaps) {
-    if (std::strcmp(forbidden.c_str(), name.c_str()) == 0) {
+  for (auto it = this->m_navigationForbiddenMaps.begin(); it != this->m_navigationForbiddenMaps.end(); ++it) {
+    if (std::strcmp(it->c_str(), name.c_str()) == 0) {
       return false;
     }
   }
