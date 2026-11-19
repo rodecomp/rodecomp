@@ -1048,6 +1048,14 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
 }
 
 // OFFSET: 0x00CD35C0
+// FUNCTION: fn_46336
+int CGameMode::TerrainCellType(int column, int row) const {
+  if (column < 0) {
+    return TERRAIN_CELL_BLOCKED;
+  }
+  const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
+  return cell ? cell->type : TERRAIN_CELL_BLOCKED;
+}
 
 // OFFSET: 0x00CD54D0
 // FUNCTION: fn_21280
@@ -9547,21 +9555,7 @@ void CGameMode::Update() {
       this->DrawTimeAttackCountdown(g_session.m_timeAttackCountdown, g_session.m_timeAttackMode);
     }
 
-    if (this->drag.source != DRAG_NONE && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
-      if (this->drag.source == DRAG_MESSENGER_MEMBER) {
-        if (g_windowMgr.Window4F250Ready() == 1) {
-          g_windowMgr.MoveTransient(g_mouse.x, g_mouse.y);
-        }
-      } else if (this->drag.resource.empty()) {
-        this->drag.Clear();
-      } else {
-        const std::string resource = this->drag.resource;
-        this->DrawActionSprite(
-          g_mouse.x, g_mouse.y, static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str())),
-          static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str())), 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201
-        );
-      }
-    }
+    this->DrawDragCursor();
 
     this->DrawCursor();
     this->DrawMiniMapNumber();
