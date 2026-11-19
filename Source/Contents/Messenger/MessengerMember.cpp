@@ -222,9 +222,10 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     return offset;
   }
 
+  int position = offset;
   std::vector<unsigned char> buffer(size, 0);
-  std::memcpy(buffer.data(), data.data() + offset, size);
-  int end = offset + size;
+  std::memcpy(buffer.data(), data.data() + position, size);
+  position += size;
   std::uint32_t consumed = 0;
   std::vector<unsigned char> remaining(buffer);
   while (consumed < buffer.size()) {
@@ -237,7 +238,7 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     }
   }
 
-  return end;
+  return position;
 }
 
 // OFFSET: 0x00E494F0
