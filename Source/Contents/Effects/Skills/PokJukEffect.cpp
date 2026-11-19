@@ -164,8 +164,10 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
 
         if (beat == 15 || beat == 19) {
           this->beats[index] = 1;
+        } else if (beat == 17) {
+          this->beats[index] = 2;
         } else {
-          this->beats[index] = beat == 17 ? 2 : 0;
+          this->beats[index] = 0;
         }
       } else {
         this->beats[index] = 0;
