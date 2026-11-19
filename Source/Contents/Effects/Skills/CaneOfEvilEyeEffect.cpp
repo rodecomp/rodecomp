@@ -333,13 +333,13 @@ __forceinline void CCaneOfEvilEyeEffect::RenderParticle(CEZ2STRParticle* particl
 // FUNCTION: fn_46281
 void CCaneOfEvilEyeEffect::ProcessParticle(CEZ2STRParticle* particle) {
   if (particle) {
-    const float x = this->position[0] + particle->offsetX;
-    const float y = this->position[1] + particle->offsetY;
-    const float z = this->position[2] + particle->offsetZ;
+    vector3d position = {this->position[0], this->position[1], this->position[2]};
+    position += particle->offset;
 
     const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-    const vector3d viewPos = {y * view[3] + x * view[0] + z * view[6] + view[9], y * view[4] + x * view[1] + z * view[7] + view[10],
-                              y * view[5] + x * view[2] + z * view[8] + view[11]};
+    const vector3d viewPos = {position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9],
+                              position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10],
+                              position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11]};
 
     const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
     const vector3d world = {viewPos.y * inverse[3] + viewPos.x * inverse[0] + viewPos.z * inverse[6] + inverse[9],
