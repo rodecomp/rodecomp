@@ -95,7 +95,9 @@ CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9* owner, IDirect3DSurface9* surface) : m_
   }
 }
 
-CSurfaceDX9::~CSurfaceDX9() {
+// OFFSET: 0x00570880
+// FUNCTION: fn_46362
+__declspec(noinline) CSurfaceDX9::~CSurfaceDX9() {
   if (this->m_surface) {
     this->m_surface->Release();
     this->m_surface = nullptr;
