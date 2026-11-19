@@ -1,6 +1,7 @@
 #include "Contents/Effects/Skills/HealSpEffect.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Effects/Particles/SpriteParticle.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -17,6 +18,13 @@ __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
   }
   return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
+}
+
+// OFFSET: 0x00B45140
+// FUNCTION: fn_45974
+CHealSp::CHealSp() : CEffect(EF_HEALSP) {
+  this->effectLifetime = 100;
+  this->holdFrame = 80;
 }
 
 // OFFSET: 0x00B45200
@@ -79,6 +87,10 @@ void CHealSp::Open() {
 bool CHealSp::IsAlive() {
   return !this->IsFinished();
 }
+
+// OFFSET: 0x00B457C0
+
+// OFFSET: 0x00B45ED0
 
 // OFFSET: 0x00B458E0
 // FUNCTION: fn_18903
@@ -193,6 +205,12 @@ void CHealSp::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B463D0
+// FUNCTION: fn_45979
+__forceinline void CHealSp::RenderSprite(CSpriteParticle* sprite) {
+  sprite->Draw(1);
+}
+
 // OFFSET: 0x00B46230
 // FUNCTION: fn_18905
 void CHealSp::Render() {
@@ -238,6 +256,6 @@ void CHealSp::Render() {
   }
 
   for (std::list<CSpriteParticle*>::iterator it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-    (*it)->Draw(1);
+    this->RenderSprite(*it);
   }
 }

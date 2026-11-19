@@ -12,6 +12,7 @@ class CSpriteParticle;
 
 class CHealSp : public CEffect {
 public:
+  CHealSp();
   ~CHealSp() override;
   void Open() override;
   void OnProcess() override;
@@ -25,6 +26,11 @@ public:
   /* 00D8 */ std::list<CSpriteParticle*> sprites;
   /* 00E0 */ int holdFrame;
   /* 00E4 */ int alphaLevel;
+
+private:
+  void UpdateRing(CParticle* particle);
+  void UpdateSprite(CSpriteParticle* sprite);
+  void RenderSprite(CSpriteParticle* sprite);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
