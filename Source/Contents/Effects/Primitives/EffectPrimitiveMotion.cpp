@@ -6418,98 +6418,100 @@ bool CEffectPrim::PrimRippleRings() {
   const CRagEffect* master = this->state.master;
   this->render.position = master->render.position;
 
-  EffectPrimitiveSlot& control = this->state.slots[3];
-
   for (int index = 0; index < 3; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    ++slot.process;
+    ++this->state.slots[index].process;
 
     if (index == 0) {
-      ++control.process;
+      ++this->state.slots[3].process;
     }
 
-    if (slot.process <= 0) {
+    if (this->state.slots[index].process <= 0) {
       continue;
     }
 
-    if (control.alphaT == 3) {
-      slot.distance -= 0.25f;
+    if (this->state.slots[3].alphaT == 3) {
+      this->state.slots[index].distance -= 0.25f;
 
-      if (slot.distance < 7.0f) {
-        if (slot.distance < 0.0f) {
-          slot.distance = 0.0f;
+      if (this->state.slots[index].distance < 7.0f) {
+        if (this->state.slots[index].distance < 0.0f) {
+          this->state.slots[index].distance = 0.0f;
         }
 
-        slot.alphaB -= 7;
+        this->state.slots[index].alphaB -= 7;
 
-        if (slot.alphaB < 0) {
-          slot.alphaB = 0;
+        if (this->state.slots[index].alphaB < 0) {
+          this->state.slots[index].alphaB = 0;
 
-          if (control.process > 1400) {
-            slot.life = 0;
+          if (this->state.slots[3].process > 1400) {
+            this->state.slots[index].life = 0;
           } else {
-            slot.process = 0;
-            slot.distance = 14.0f;
+            this->state.slots[index].process = 0;
+            this->state.slots[index].distance = 14.0f;
           }
         }
       }
     } else {
-      slot.distance += 0.5f;
+      this->state.slots[index].distance += 0.5f;
 
-      if (slot.distance > 7.0f) {
-        slot.alphaB = control.alphaT == 4 ? slot.alphaB - 5 : (control.alphaT == 5 ? slot.alphaB - 8 : slot.alphaB - 15);
+      if (this->state.slots[index].distance > 7.0f) {
+        if (this->state.slots[3].alphaT == 4) {
+          this->state.slots[index].alphaB -= 5;
+        } else if (this->state.slots[3].alphaT == 5) {
+          this->state.slots[index].alphaB -= 8;
+        } else {
+          this->state.slots[index].alphaB -= 15;
+        }
 
-        if (slot.alphaB < 0) {
-          slot.alphaB = 0;
+        if (this->state.slots[index].alphaB < 0) {
+          this->state.slots[index].alphaB = 0;
 
-          if ((control.process > 120 && (control.alphaT == 1 || control.alphaT == 4 || control.alphaT == 5)) || control.process > 1400) {
-            slot.life = 0;
+          if ((this->state.slots[3].process > 120 && (this->state.slots[3].alphaT == 1 || this->state.slots[3].alphaT == 4 || this->state.slots[3].alphaT == 5)) || this->state.slots[3].process > 1400) {
+            this->state.slots[index].life = 0;
           } else {
-            slot.process = 0;
-            slot.distance = 0.0f;
+            this->state.slots[index].process = 0;
+            this->state.slots[index].distance = 0.0f;
           }
         }
       }
     }
 
-    if (control.alphaT == 3) {
-      if (slot.process < 20) {
-        slot.alphaB += 12;
+    if (this->state.slots[3].alphaT == 3) {
+      if (this->state.slots[index].process < 20) {
+        this->state.slots[index].alphaB += 12;
 
-        if (slot.alphaB > 240) {
-          slot.alphaB = 240;
+        if (this->state.slots[index].alphaB > 240) {
+          this->state.slots[index].alphaB = 240;
         }
       }
-    } else if (slot.process < 10) {
-      if (control.alphaT == 4) {
-        slot.alphaB += 4;
+    } else if (this->state.slots[index].process < 10) {
+      if (this->state.slots[3].alphaT == 4) {
+        this->state.slots[index].alphaB += 4;
 
-        if (slot.alphaB > 40) {
-          slot.alphaB = 40;
+        if (this->state.slots[index].alphaB > 40) {
+          this->state.slots[index].alphaB = 40;
         }
       } else {
-        slot.alphaB += 24;
+        this->state.slots[index].alphaB += 24;
 
-        if (control.alphaT == 5) {
-          if (slot.alphaB > 120) {
-            slot.alphaB = 120;
+        if (this->state.slots[3].alphaT == 5) {
+          if (this->state.slots[index].alphaB > 120) {
+            this->state.slots[index].alphaB = 120;
           }
-        } else if (slot.alphaB > 240) {
-          slot.alphaB = 240;
+        } else if (this->state.slots[index].alphaB > 240) {
+          this->state.slots[index].alphaB = 240;
         }
       }
     }
 
     for (int column = 0; column < 21; ++column) {
-      slot.height[column] = slot.maxHeight;
+      this->state.slots[index].height[column] = this->state.slots[index].maxHeight;
 
-      if (slot.process <= 10) {
-        slot.height[column] *= g_sinTable[slot.process * 9];
+      if (this->state.slots[index].process <= 10) {
+        this->state.slots[index].height[column] *= g_sinTable[this->state.slots[index].process * 9];
       }
     }
   }
