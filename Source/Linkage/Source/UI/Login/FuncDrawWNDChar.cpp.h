@@ -21,3 +21,4 @@
 #include "UI/Window/UIWindow.h"
 
 template __declspec(noinline) std::string::~basic_string() noexcept;
+template __declspec(noinline) std::pair<CSprRes*, CActRes*>& std::map<int, std::pair<CSprRes*, CActRes*>>::operator[](const int&);
