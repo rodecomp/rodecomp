@@ -448,13 +448,8 @@ int AiHomunGetV(lua_State* state) {
     return 1;
 
   case V_MOTION:
-    if (!actor) {
-      lua_pushnumber(state, -1.0);
-      return 1;
-    } else {
-      lua_pushnumber(state, static_cast<double>(actor->render.state));
-      return 1;
-    }
+    lua_pushnumber(state, !actor ? -1.0 : static_cast<double>(actor->render.state));
+    return 1;
 
   case V_ATTACKRANGE:
     if (!actor || g_session.m_homunAttackRange == 0) {
@@ -635,13 +630,8 @@ int AiMercenaryGetV(lua_State* state) {
     return 1;
 
   case V_MOTION:
-    if (!actor) {
-      lua_pushnumber(state, -1.0);
-      return 1;
-    } else {
-      lua_pushnumber(state, static_cast<double>(actor->render.state));
-      return 1;
-    }
+    lua_pushnumber(state, !actor ? -1.0 : static_cast<double>(actor->render.state));
+    return 1;
 
   case V_ATTACKRANGE:
     if (!actor || g_session.m_mercenaryAttackRange == 0) {
