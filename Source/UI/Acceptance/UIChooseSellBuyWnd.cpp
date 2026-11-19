@@ -13048,7 +13048,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       lines.push_back(text);
     }
     for (unsigned index = 0; index < descriptions.size(); ++index) {
-      lines.emplace_back(descriptions[index]);
+      lines.push_back(std::string(descriptions[index]));
     }
     this->m_viewButton->Move(6, IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
     CGameMode* mode = g_modeMgr.GetGameMode();
