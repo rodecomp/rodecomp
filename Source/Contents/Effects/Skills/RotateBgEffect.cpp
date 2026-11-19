@@ -241,9 +241,8 @@ __forceinline void CRotateBgEffect::UpdateSegment(CParticle* particle) {
       this->segmentScale += 0.1f;
       particle->scale = this->segmentScale;
       if (particle->elapsedFrames > 50) {
-        const int alpha = this->segmentAlpha - 1;
-        this->segmentAlpha = alpha;
-        if (alpha < 0) {
+        --this->segmentAlpha;
+        if (this->segmentAlpha < 0) {
           this->segmentAlpha = 0;
         }
 
