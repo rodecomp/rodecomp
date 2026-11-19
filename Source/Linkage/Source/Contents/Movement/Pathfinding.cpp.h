@@ -5,4 +5,4 @@
 
 template __declspec(noinline) std::vector<PathNode*>::~vector();
 template __declspec(noinline) std::vector<PathNode>::~vector();
-template __declspec(noinline) std::map<int, PathNode*>::~map();
+template __declspec(noinline) std::map<int, PathNode*>::_Mybase::~_Tree() noexcept;
