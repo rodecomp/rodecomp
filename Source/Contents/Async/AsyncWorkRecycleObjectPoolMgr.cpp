@@ -24,8 +24,9 @@ CAsyncWorkRecycleObjectPoolMgr::CAsyncWorkRecycleObjectPoolMgr() : m_registered(
   }
 }
 
-// INLINED
-CAsyncWorkRecycleObjectPoolMgr::~CAsyncWorkRecycleObjectPoolMgr() {
+// OFFSET: 0x00577400
+// FUNCTION: fn_46369
+__declspec(noinline) CAsyncWorkRecycleObjectPoolMgr::~CAsyncWorkRecycleObjectPoolMgr() {
   this->DeletePools();
 }
 
