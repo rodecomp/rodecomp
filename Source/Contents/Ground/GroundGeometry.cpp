@@ -110,6 +110,8 @@ GroundBase::GroundBase() {
 }
 
 // OFFSET: 0x00ABDCA0
+// FUNCTION: fn_45863
+__declspec(noinline) GroundBase::~GroundBase() = default;
 
 // OFFSET: 0x00ABD640
 // FUNCTION: fn_17546
