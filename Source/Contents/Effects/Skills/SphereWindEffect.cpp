@@ -133,6 +133,35 @@ static __forceinline void StoreSegment(CSphereWindEffect& effect, CParticle* par
 }
 
 // OFFSET: 0x00B77FE0
+// FUNCTION: fn_46243
+void CSphereWindEffect::UpdateVertices(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + particle->angle) % 360;
+  EffectPoint points[4];
+  const int tilt = particle->phaseParameter;
+  const float scale = particle->scale;
+  const float radius = particle->speedParameter;
+
+  points[0].x = g_cosTable[tilt] * scale * g_cosTable[angle];
+  points[0].y = g_sinTable[tilt] * scale * g_cosTable[angle];
+  points[0].z = scale * g_sinTable[angle];
+  points[1].x = -g_sinTable[tilt] * radius;
+  points[1].y = g_cosTable[tilt] * radius;
+  points[1].z = 0.0f;
+  const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
+  points[2].x = points[0].x - points[1].x + offset.x;
+  points[2].y = points[0].y - points[1].y + offset.y;
+  points[2].z = points[0].z - points[1].z + offset.z;
+  points[3].x = points[0].x + points[1].x + offset.x;
+  points[3].y = points[0].y + points[1].y + offset.y;
+  points[3].z = points[0].z + points[1].z + offset.z;
+
+  StoreSegment(*this, particle, segment, points);
+}
 
 // OFFSET: 0x00B78480
 // FUNCTION: fn_19192
