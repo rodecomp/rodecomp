@@ -69,6 +69,8 @@ public:
   void AddPcPos(std::uint32_t aid, const CellFloatPos& cell);
   void AddPcPosFromCell(std::uint32_t aid, const int* cell);
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);
+  void AddPcPosUnindexedFromCell(std::uint32_t aid, const int* cell);
+  float ActorCellKey(const CellFloatPos& cell) const;
   void InitWorld();
   void InitializeSpatial();
   void RemoveObject(CGameObject* object);
