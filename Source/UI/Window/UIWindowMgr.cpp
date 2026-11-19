@@ -1129,9 +1129,7 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
   }
 
   std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(this->chatWnd->m_whisperEdit)->history;
-  std::vector<std::string>::iterator it = names.begin();
-  const std::vector<std::string>::iterator end = names.end();
-  for (; it != end; ++it) {
+  for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
     if (*it == name) {
       found = true;
       break;
@@ -1241,8 +1239,8 @@ void UIWindowMgr::AddWhisperName(const char* name) {
   }
 
   std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(this->chatWnd->m_whisperEdit)->history;
-  for (const std::string& entry : names) {
-    if (entry == name) {
+  for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+    if (*it == name) {
       return;
     }
   }
@@ -1430,8 +1428,8 @@ struct ReplaySettingHeader {
   }
 
   void Read(const unsigned char* source) {
-    this->size = 0;
     this->tag = 0;
+    this->size = 0;
     std::memcpy(this, source, sizeof(*this));
   }
 };
@@ -1537,8 +1535,8 @@ int UIWindowMgr::LoadReplaySettings(const std::vector<unsigned char>& data) {
   }
 
   ReplaySettingHeader header;
-  unsigned offset = 6;
   header.Read(data.data());
+  unsigned offset = 6;
   if (25000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
@@ -1569,8 +1567,8 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
   }
 
   ReplaySettingHeader header;
-  unsigned offset = 6;
   header.Read(data.data());
+  unsigned offset = 6;
   if (26000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
@@ -1851,8 +1849,8 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
 
   ReplaySettingHeader header;
   std::vector<char> payload;
-  unsigned offset = 6;
   header.Read(data.data());
+  unsigned offset = 6;
   if (20000 != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
