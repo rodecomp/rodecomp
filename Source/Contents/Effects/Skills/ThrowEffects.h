@@ -24,6 +24,7 @@ public:
   void InitPotionParticle(CParticle* particle, int kind);
   void InitSpinParticle(CParticle* particle);
   void InitTrajectory(CParticle* particle);
+  short CalculateTrajectoryOffset(CParticle* particle);
 
   /* 00CC */ int travelFrames;
   /* 00D0 */ int launchDelay;

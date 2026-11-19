@@ -37,6 +37,18 @@ void CThrowItemEffect::Close() {
   this->particles.clear();
 }
 
+// OFFSET: 0x00B7CD00
+// FUNCTION: fn_46333
+short CThrowItemEffect::CalculateTrajectoryOffset(CParticle* particle) {
+  short offset = 0;
+
+  if (this->id == 981) {
+    offset = static_cast<short>(static_cast<short>(360 / this->projectileCount) * particle->rowIndex);
+  }
+
+  return offset;
+}
+
 // OFFSET: 0x00B7CD30
 // FUNCTION: fn_19230
 void CThrowItemEffect::Open() {
