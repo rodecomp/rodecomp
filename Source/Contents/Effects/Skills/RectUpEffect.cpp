@@ -192,3 +192,54 @@ void CRectUpEffect::Open() {
   }
 }
 
+// OFFSET: 0x0070A8B0
+// FUNCTION: fn_46181
+void CRectUpEffect::RenderParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int previous = particle->columnIndex;
+  const int angle = static_cast<int>(particle->angle) % 360;
+  const float x = particle->scale * g_cosTable[angle];
+  const float z = particle->scale * g_sinTable[angle];
+  const float height = particle->animationParameter;
+
+  EffectPoint edge[2];
+  edge[0].x = x;
+  edge[0].y = 0.0f;
+  edge[0].z = z;
+  edge[1].x = x;
+  edge[1].y = -height;
+  edge[1].z = z;
+
+  particle->vertices[1].x = edge[1].x;
+  particle->vertices[1].y = edge[1].y;
+  particle->vertices[1].z = edge[1].z;
+  particle->vertices[3].x = edge[0].x;
+  particle->vertices[3].y = edge[0].y;
+  particle->vertices[3].z = edge[0].z;
+  if (previous) {
+    particle->vertices[0].x = this->previousEdge[1].x;
+    particle->vertices[0].y = this->previousEdge[1].y;
+    particle->vertices[0].z = this->previousEdge[1].z;
+    particle->vertices[2].x = this->previousEdge[0].x;
+    particle->vertices[2].y = this->previousEdge[0].y;
+    particle->vertices[2].z = this->previousEdge[0].z;
+  }
+  this->previousEdge[0].x = edge[0].x;
+  this->previousEdge[0].y = edge[0].y;
+  this->previousEdge[0].z = edge[0].z;
+  this->previousEdge[1].x = edge[1].x;
+  this->previousEdge[1].y = edge[1].y;
+  this->previousEdge[1].z = edge[1].z;
+
+  if (previous) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+}
+
+// OFFSET: 0x0070A5D0
+
+// OFFSET: 0x0070A0D0
+

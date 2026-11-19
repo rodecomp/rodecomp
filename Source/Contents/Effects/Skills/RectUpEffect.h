@@ -23,6 +23,9 @@ public:
   void InitEvents() override;
   virtual void ProcessParticle(CParticle* particle);
   virtual void InitParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
+  void UpdateParticle(CParticle* particle);
+  void UpdateParticlePositions(float x, float y, float z);
 
   /* 00CC */ EffectPoint previousEdge[2];
   /* 00E4 */ int particleLifetime;
