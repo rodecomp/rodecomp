@@ -12,6 +12,7 @@ class CParticle;
 class CLevel150Effect : public CEffect {
 public:
   CLevel150Effect();
+  ~CLevel150Effect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -25,11 +26,20 @@ public:
   /* 00CC */ EffectPoint lastPoints[2];
   /* 00E4 */ std::vector<CParticle*> bubbles;
   /* 00F0 */ std::vector<CParticle*> shocks;
+
+private:
+  bool IsFourthJobEffect() const;
+  void BuildBubbleSegment(CParticle* particle);
+  void UpdateBubble(CParticle* particle);
+  void UpdateShock(CParticle* particle);
+  void RenderBubble(CParticle* particle);
+  void RenderShock(CParticle* particle);
 };
 
 class CLevel150SubEffect : public CEffect {
 public:
   CLevel150SubEffect();
+  ~CLevel150SubEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -40,6 +50,11 @@ public:
   void Init();
 
   /* 00CC */ std::vector<CParticle*> particles;
+
+private:
+  void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
+  void UpdateParticleTransform(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -19,6 +19,8 @@
 CLevel150Effect::CLevel150Effect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00B464A0
+
 // OFFSET: 0x00B465A0
 // FUNCTION: fn_18908
 void CLevel150Effect::SetDestinationBlend(int blend) {
@@ -46,6 +48,8 @@ void CLevel150Effect::SetColor(int red, int green, int blue) {
     (*it)->SetColor(red, green, blue);
   }
 }
+
+// OFFSET: 0x00B46B60
 
 // OFFSET: 0x00B46680
 // FUNCTION: fn_18910
@@ -214,6 +218,78 @@ bool CLevel150Effect::IsAlive() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00B46DC0
+// FUNCTION: fn_45951
+bool CLevel150Effect::IsFourthJobEffect() const {
+  return this->id == EF_LEVEL4TH;
+}
+
+// OFFSET: 0x00B46DD0
+// FUNCTION: fn_45952
+__forceinline void CLevel150Effect::UpdateBubble(CParticle* particle) {
+  if (particle) {
+    int tilt = particle->phaseParameter - 1;
+    float scale = particle->scale + 0.07f;
+    int alpha = particle->alpha;
+    if (tilt < 10) {
+      tilt = 10;
+      alpha = 0;
+    }
+
+    if (scale >= 3.5f) {
+      alpha -= 3;
+      if (alpha <= 0) {
+        tilt = 74;
+        scale = 2.87f;
+      }
+      alpha = std::max(0, alpha);
+    } else {
+      alpha += 10;
+    }
+
+    particle->alpha = alpha;
+    particle->scale = scale;
+    particle->phaseParameter = tilt;
+
+    const float radius = particle->speedParameter;
+    const int segment = particle->columnIndex;
+    matrix transform;
+    std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
+    transform.SetScale(scale * 0.5f, radius * g_sinTable[tilt] / (radius * g_sinTable[segment * 9] * 0.15f + radius), scale * 0.5f);
+    particle->transform = transform;
+  }
+}
+
+// OFFSET: 0x00B47230
+// FUNCTION: fn_45953
+__forceinline void CLevel150Effect::UpdateShock(CParticle* particle) {
+  if (particle) {
+    int tilt = particle->phaseParameter + 3;
+    if (tilt >= 360) {
+      tilt -= 360;
+    }
+    particle->phaseParameter = tilt;
+
+    const float size = particle->animationParameters[0];
+    const float scale = size * 0.1f * g_sinTable[tilt] + 1.0f + size * 0.8f;
+    const int segment = particle->columnIndex;
+    CGameMode* mode = g_modeMgr.GetGameMode();
+    const int yaw = static_cast<int>(mode->camera->camera.yaw);
+
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeXRotation(90.0f / 180.0f * 3.141592f);
+    rotation.AppendYRotation(static_cast<float>(segment * 23) / 180.0f * 3.141592f - 160.0f / 180.0f * 3.141592f -
+                             static_cast<float>(yaw) / 180.0f * 3.141592f);
+    matrix scaling;
+    std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+    scaling.SetScale(scale, scale, 1.0f);
+    matrix result;
+    result.Compose(scaling, rotation);
+    particle->transform = result;
+  }
+}
+
 // OFFSET: 0x00B46F00
 // FUNCTION: fn_18915
 void CLevel150Effect::OnProcess() {
@@ -223,37 +299,7 @@ void CLevel150Effect::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle) {
-      int tilt = particle->phaseParameter - 1;
-      float scale = particle->scale + 0.07f;
-      int alpha = particle->alpha;
-      if (tilt < 10) {
-        tilt = 10;
-        alpha = 0;
-      }
-
-      if (scale >= 3.5f) {
-        alpha -= 3;
-        if (alpha <= 0) {
-          tilt = 74;
-          scale = 2.87f;
-        }
-        alpha = std::max(0, alpha);
-      } else {
-        alpha += 10;
-      }
-
-      particle->alpha = alpha;
-      particle->scale = scale;
-      particle->phaseParameter = tilt;
-
-      const float radius = particle->speedParameter;
-      const int segment = particle->columnIndex;
-      matrix transform;
-      std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
-      transform.SetScale(scale * 0.5f, radius * g_sinTable[tilt] / (radius * g_sinTable[segment * 9] * 0.15f + radius), scale * 0.5f);
-      particle->transform = transform;
-    }
+    this->UpdateBubble(particle);
 
     ++particle->elapsedFrames;
   }
@@ -264,59 +310,51 @@ void CLevel150Effect::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle) {
-      int tilt = particle->phaseParameter + 3;
-      if (tilt >= 360) {
-        tilt -= 360;
-      }
-      particle->phaseParameter = tilt;
-
-      const float size = particle->animationParameters[0];
-      const float scale = size * 0.1f * g_sinTable[tilt] + 1.0f + size * 0.8f;
-      const int segment = particle->columnIndex;
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      const int yaw = static_cast<int>(mode->camera->camera.yaw);
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(90.0f / 180.0f * 3.141592f);
-      rotation.AppendYRotation(static_cast<float>(segment * 23) / 180.0f * 3.141592f - 160.0f / 180.0f * 3.141592f -
-                               static_cast<float>(yaw) / 180.0f * 3.141592f);
-      matrix scaling;
-      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-      scaling.SetScale(scale, scale, 1.0f);
-      matrix result;
-      result.Compose(scaling, rotation);
-      particle->transform = result;
-    }
+    this->UpdateShock(particle);
 
     ++particle->elapsedFrames;
   }
+}
+
+// OFFSET: 0x00B473D0
+// FUNCTION: fn_45954
+__forceinline void CLevel150Effect::RenderBubble(CParticle* particle) {
+  if (!particle || particle->columnIndex <= 0) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment) / 21.0f, static_cast<float>(segment + 1) / 21.0f, false, true};
+  particle->SetTexture(FormatOwnedString("effect\\W_bubble%02d.tga", particle->elapsedFrames % 27 + 1).c_str());
+  particle->Render(quad);
+}
+
+// OFFSET: 0x00B47630
+// FUNCTION: fn_45955
+__forceinline void CLevel150Effect::RenderShock(CParticle* particle) {
+  particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
 }
 
 // OFFSET: 0x00B474C0
 // FUNCTION: fn_18916
 void CLevel150Effect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
-    CParticle* particle = *it;
-    if (!particle || particle->columnIndex <= 0) {
-      continue;
-    }
-
-    const int segment = particle->columnIndex;
-    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment) / 21.0f, static_cast<float>(segment + 1) / 21.0f, false, true};
-    particle->SetTexture(FormatOwnedString("effect\\W_bubble%02d.tga", particle->elapsedFrames % 27 + 1).c_str());
-    particle->Render(quad);
+    this->RenderBubble(*it);
   }
 
   for (std::vector<CParticle*>::iterator it = this->shocks.begin(); it != this->shocks.end(); ++it) {
-    (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    this->RenderShock(*it);
   }
 }
 
 // OFFSET: 0x00B47670
 // FUNCTION: fn_18917
 CLevel150SubEffect::CLevel150SubEffect() : CEffect(-1) {
+}
+
+// OFFSET: 0x00B476F0
+// FUNCTION: fn_45956
+__declspec(noinline) CLevel150SubEffect::~CLevel150SubEffect() {
 }
 
 // OFFSET: 0x00B477D0
@@ -398,6 +436,51 @@ bool CLevel150SubEffect::IsAlive() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00B48060
+// FUNCTION: fn_45959
+__forceinline void CLevel150SubEffect::UpdateParticleTransform(CParticle* particle) {
+  const int angle = static_cast<int>(particle->angle);
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  const int yaw = static_cast<int>(mode->camera->camera.yaw);
+  const float scale = particle->animationParameter;
+  const float height = particle->animationParameters[0];
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f - static_cast<float>(yaw) / 180.0f * 3.141592f);
+  matrix scaling;
+  std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+  scaling.SetScale(scale * 0.5f, scale * 0.5f, 1.0f);
+  matrix translate;
+  std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
+  translate.MakeTranslate(0.0f, -height, 0.0f);
+  matrix first;
+  first.Compose(scaling, rotation);
+  matrix result;
+  result.Compose(first, translate);
+  particle->transform = result;
+}
+
+// OFFSET: 0x00B47D90
+// FUNCTION: fn_45957
+__forceinline void CLevel150SubEffect::UpdateParticle(CParticle* particle) {
+  if (particle && particle->elapsedFrames > 0) {
+    float size = particle->animationParameter * 1.02;
+    if (size > 20.0f) {
+      int alpha = particle->alpha - 3;
+      if (alpha <= 0) {
+        size = 10.0f;
+        particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
+        alpha = 200;
+      }
+      particle->alpha = alpha;
+    }
+    particle->animationParameter = size;
+
+    this->UpdateParticleTransform(particle);
+  }
+}
+
 // OFFSET: 0x00B47AF0
 // FUNCTION: fn_18925
 void CLevel150SubEffect::OnProcess() {
@@ -407,49 +490,22 @@ void CLevel150SubEffect::OnProcess() {
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
-    if (particle && particle->elapsedFrames > 0) {
-      float size = particle->animationParameter * 1.02;
-      if (size > 20.0f) {
-        int alpha = particle->alpha - 3;
-        if (alpha <= 0) {
-          size = 10.0f;
-          particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
-          alpha = 200;
-        }
-        particle->alpha = alpha;
-      }
-      particle->animationParameter = size;
-
-      const int angle = static_cast<int>(particle->angle);
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      const int yaw = static_cast<int>(mode->camera->camera.yaw);
-      const float scale = particle->animationParameter;
-      const float height = particle->animationParameters[0];
-
-      matrix rotation;
-      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f - static_cast<float>(yaw) / 180.0f * 3.141592f);
-      matrix scaling;
-      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-      scaling.SetScale(scale * 0.5f, scale * 0.5f, 1.0f);
-      matrix translate;
-      std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-      translate.MakeTranslate(0.0f, -height, 0.0f);
-      matrix first;
-      first.Compose(scaling, rotation);
-      matrix result;
-      result.Compose(first, translate);
-      particle->transform = result;
-    }
+    this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
   }
+}
+
+// OFFSET: 0x00B48020
+// FUNCTION: fn_45958
+__forceinline void CLevel150SubEffect::RenderParticle(CParticle* particle) {
+  particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
 }
 
 // OFFSET: 0x00B47FD0
 // FUNCTION: fn_18926
 void CLevel150SubEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    this->RenderParticle(*it);
   }
 }
