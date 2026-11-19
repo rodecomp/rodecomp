@@ -86,7 +86,17 @@ void __stdcall CElectricEffect::SetHeadingFromVector(float x, float z, short* he
   const float length = SquareRoot(x * x + z * z);
   const float nz = z / length;
   const float nx = x / length;
-  *heading = HeadingOf(nx, nz);
+  for (short step = 0; step <= 180; ++step) {
+    if (nx >= g_cosTable[step]) {
+      if (nz >= 0.0f) {
+        *heading = step;
+      } else {
+        *heading = static_cast<short>(360 - step);
+      }
+      return;
+    }
+  }
+  *heading = 180;
 }
 
 // OFFSET: 0x00B4EA20
