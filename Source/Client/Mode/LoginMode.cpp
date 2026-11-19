@@ -1892,11 +1892,11 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_DELETED_ACCOUNT);
     break;
   case REFUSE_BLOCK_TEMPORARY: {
-    message = FormatOwnedString(LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), argument);
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), argument));
     break;
   }
   case REFUSE_TEMP_BAN_HACKING_INVESTIGATION: {
-    message = FormatOwnedString(LookupMessage(MSI_HACKING_INVESTIGATION), argument);
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_HACKING_INVESTIGATION), argument));
     break;
   }
   case REFUSE_TEMP_BAN_BUG_INVESTIGATION:
@@ -1936,7 +1936,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_REFUSE_WAIT_FOR_SAKRAY_ACTIVE);
     break;
   case REFUSE_ALREADY_CONNECT: {
-    message = FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument);
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument));
     break;
   }
   case 16:
@@ -1960,7 +1960,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_PHONE_BLOCK);
     break;
   case 17: {
-    message = FormatOwnedString(LookupMessage(MSI_RE17), argument);
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RE17), argument));
     if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == ID_YES) {
       g_modeMgr.Quit();
     }
@@ -2004,7 +2004,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
     break;
   case 0x1394: {
-    message = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BLOCKED), argument));
     break;
   }
   case 0x1395:
@@ -2019,7 +2019,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       } else {
         url.assign("https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=", 121);
       }
-      url += g_stoveMgr->GetAccessToken();
+      url.append(g_stoveMgr->GetAccessToken());
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
       ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
       message.assign("", 0);
@@ -2087,7 +2087,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   case 36: {
     const std::div_t remaining = std::div(this->remainingLoginSeconds, 3600);
-    message = FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f)));
+    message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f))));
     break;
   }
   case 243:
