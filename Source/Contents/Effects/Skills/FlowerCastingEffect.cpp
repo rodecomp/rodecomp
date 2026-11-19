@@ -13,10 +13,12 @@
 #include <algorithm>
 
 // OFFSET: 0x00B666F0
+// FUNCTION: fn_46001
 CFlowerCastingEffect::CFlowerCastingEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x00B66790
+// FUNCTION: fn_46002
 __declspec(noinline) CFlowerCastingEffect::~CFlowerCastingEffect() {
 }
 
