@@ -403,18 +403,16 @@ void UIDragMiniPartyWnd::Paint() {
     }
 
     memset(text, 0, 0x100);
-    const char* statusIcon;
     if (this->member.offline == 0) {
       if (this->member.accountId == g_session.m_aid) {
-        statusIcon = "%sicon_party_me.bmp";
+        sprintf(text, "%sicon_party_me.bmp", prefix.c_str());
       } else {
-        statusIcon = "%sicon_party_on.bmp";
+        sprintf(text, "%sicon_party_on.bmp", prefix.c_str());
       }
     } else {
-      statusIcon = "%sicon_party_off.bmp";
+      sprintf(text, "%sicon_party_off.bmp", prefix.c_str());
     }
 
-    sprintf(text, statusIcon, prefix.c_str());
     CBitmapRes* statusBmp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     if (this->gauge) {
       this->DrawBitmap(
