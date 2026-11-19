@@ -36,6 +36,7 @@ private:
   void CreateLines();
   short LineDirection(float dx, float dz);
   void UpdateParticle(CParticle* particle);
+  void RenderParticle(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
