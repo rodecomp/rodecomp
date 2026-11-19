@@ -24,6 +24,11 @@ public:
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;
   /* 00E4 */ std::vector<CParticle*> particles;
+
+private:
+  void CreateRings(int start);
+  void UpdateVertices(CParticle* particle);
+  void RenderSegment(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
