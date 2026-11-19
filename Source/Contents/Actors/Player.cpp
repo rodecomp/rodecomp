@@ -3846,6 +3846,8 @@ void CPlayer::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  const int bLow = static_cast<int>(b);
+  const int cLow = static_cast<int>(c);
   switch (message) {
   case AM_REQ_GROUND_SKILL: {
     PlayerSkillRequest request;
@@ -3902,13 +3904,13 @@ void CPlayer::SendMsg(
     if (this->render.state != 0x4B) {
       if (this->IsSpecialState(this->render.state)) {
         this->isPreengageStateOfMove = 1;
-        this->preengageXOfMove = static_cast<int>(b);
-        this->preengageYOfMove = static_cast<int>(c);
+        this->preengageXOfMove = bLow;
+        this->preengageYOfMove = cLow;
       } else {
         this->isPreengageStateOfMove = 0;
         this->preengageXOfMove = -1;
         this->preengageYOfMove = -1;
-        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, static_cast<int>(b), static_cast<int>(c), 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, bLow, cLow, 0, 0, 0, 0);
       }
     }
     break;
@@ -3916,7 +3918,7 @@ void CPlayer::SendMsg(
     g_moveRequestPending = false;
     if (timeGetTime() > this->standTick + 350) {
       this->standTick = timeGetTime();
-      mode->SendMsg(MM_REQUEST_MOVE, static_cast<int>(b), static_cast<int>(c), 0, 0);
+      mode->SendMsg(MM_REQUEST_MOVE, bLow, cLow, 0, 0);
     }
     break;
   case AM_REQ_CHANGE_DIR: {
@@ -3926,16 +3928,12 @@ void CPlayer::SendMsg(
     }
     float targetX;
     float targetZ;
-    mode->CellCenter(static_cast<int>(b), static_cast<int>(c), targetX, targetZ);
+    mode->CellCenter(bLow, cLow, targetX, targetZ);
     const float heading = this->Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
     const float facing = static_cast<float>((CPlayer::AngleToDirection(static_cast<float>(heading + 22.5)) + 4) * 45);
     int delta = static_cast<int>(this->render.angle - facing);
-    switch (delta < 0) {
-    case 1:
+    if (delta < 0) {
       delta += 360;
-      break;
-    default:
-      break;
     }
     int direction = delta / 45;
     if (direction < 0) {
@@ -3987,8 +3985,8 @@ void CPlayer::SendMsg(
   case AM_PREMOVE:
     this->preMoveOn = 1;
     this->preMoveStartTick = timeGetTime();
-    this->destCellX = static_cast<int>(b);
-    this->destCellZ = static_cast<int>(c);
+    this->destCellX = bLow;
+    this->destCellZ = cLow;
     break;
   case AM_MOVE: {
     this->preMoveOn = 0;
@@ -4043,14 +4041,14 @@ void CPlayer::SendMsg(
     break;
   }
   case AM_SET_SKILL_USE_LEVEL:
-    this->skillUseLevel = static_cast<int>(b);
+    this->skillUseLevel = bLow;
     break;
   case AM_PROCEEDGROUNDSKILL:
     if (this->render.state != ST_SIT &&
         (!IsHiding(this->stateFlags) || b == 0x89 || b == 0xD4 || b == 0x211 || b == 0x212)) {
       this->proceedType = 4;
-      this->skillId = static_cast<int>(b);
-      this->gSkillDx = static_cast<int>(c);
+      this->skillId = bLow;
+      this->gSkillDx = cLow;
       this->gSkillDy = static_cast<int>(d);
       this->proceedTargetGid = 0;
     }
@@ -4059,8 +4057,8 @@ void CPlayer::SendMsg(
     if (this->render.state != ST_SIT &&
         (!IsHiding(this->stateFlags) || c == 0x89 || c == 0xD4 || c == 0x211 || c == 0x212 || c == 0x250)) {
       this->proceedType = 3;
-      this->proceedTargetGid = static_cast<int>(b);
-      this->skillId = static_cast<int>(c);
+      this->proceedTargetGid = bLow;
+      this->skillId = cLow;
     }
     break;
   case AM_RESUMEPROCEEDATTACK:
@@ -4076,7 +4074,7 @@ void CPlayer::SendMsg(
       }
       this->tickOfMoveForAttack = timeGetTime() - 1200;
       this->proceedType = attackMode;
-      this->proceedTargetGid = static_cast<int>(b);
+      this->proceedTargetGid = bLow;
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
       this->destCellX = -1;
@@ -4092,9 +4090,9 @@ void CPlayer::SendMsg(
               static_cast<std::uint32_t>(static_cast<CGameActor*>(target)->moveSpeed)
             ? 5
             : 1;
-        this->proceedTargetGid = static_cast<int>(b);
+        this->proceedTargetGid = bLow;
         this->isAttackRequest = 0;
-        this->attackMode = static_cast<int>(c);
+        this->attackMode = cLow;
         this->totalAttackReqCnt = 0;
       }
     }
@@ -4102,7 +4100,7 @@ void CPlayer::SendMsg(
   case AM_PROCEEDPICKUPITEM:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       this->proceedType = 2;
-      this->proceedTargetGid = static_cast<int>(b);
+      this->proceedTargetGid = bLow;
     }
     break;
   case AM_PROCEEDTOUCHSKILL:
@@ -4111,7 +4109,7 @@ void CPlayer::SendMsg(
       this->proceedType = 6;
       this->skillId = skill[1];
       this->skillUseLevel = skill[3];
-      this->proceedTargetGid = static_cast<int>(b);
+      this->proceedTargetGid = bLow;
       this->attackMode = static_cast<int>(d);
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
