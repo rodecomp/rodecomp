@@ -215,36 +215,39 @@ bool CAchievementMgr::FindTab(int id, int& group, int& index) {
 // FUNCTION: fn_05322
 bool CAchievementMgr::LoadAchievementInfo() {
   NLuaState lua;
-  if (lua.IsValid()) {
-    luaL_openlibs(lua.GetState());
-    lua_register(lua.GetState(), "InsertAchieveInfo", CAchievementMgr::L_InsertAchieveInfo);
-    lua_register(lua.GetState(), "InsertAchieveResource", CAchievementMgr::L_InsertAchieveResource);
-    lua_register(lua.GetState(), "InsertAchieveRewardItem", CAchievementMgr::L_InsertAchieveRewardItem);
-    lua_register(lua.GetState(), "InsertAchieveRewardTitle", CAchievementMgr::L_InsertAchieveRewardTitle);
-    lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
-    lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
-    lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
-    if (luaL_loadfile(lua.GetState(), OBFUSCATE_TEXT_NAMED("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL, path)) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
-      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
-      return false;
-    }
-    lua_getglobal(lua.GetState(), "main");
-    if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
-      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
-      return false;
-    }
-    if (!lua_isstring(lua.GetState(), -1)) {
-      MessageBoxA(nullptr, "second return value is not string...", "CAchievementMgr", 0);
-      return false;
-    }
-    if (!lua_toboolean(lua.GetState(), -2)) {
-      MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CAchievementMgr", 0);
-      return false;
-    }
-    return true;
+  if (!lua.IsValid()) {
+    return false;
   }
-
-  return false;
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "InsertAchieveInfo", CAchievementMgr::L_InsertAchieveInfo);
+  lua_register(lua.GetState(), "InsertAchieveResource", CAchievementMgr::L_InsertAchieveResource);
+  lua_register(lua.GetState(), "InsertAchieveRewardItem", CAchievementMgr::L_InsertAchieveRewardItem);
+  lua_register(lua.GetState(), "InsertAchieveRewardTitle", CAchievementMgr::L_InsertAchieveRewardTitle);
+  lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
+  lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
+  lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
+  if (luaL_loadfile(lua.GetState(), OBFUSCATE_TEXT_NAMED("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL, path)) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+    return false;
+  }
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+    return false;
+  }
+  lua_getglobal(lua.GetState(), "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+    return false;
+  }
+  if (!lua_isstring(lua.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CAchievementMgr", 0);
+    return false;
+  }
+  if (!lua_toboolean(lua.GetState(), -2)) {
+    MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CAchievementMgr", 0);
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x0066ED90
