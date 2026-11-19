@@ -46,8 +46,8 @@ void CMappillarEffect::UpdateParticle(CParticle* particle) {
   const float innerX = particle->scale * cosine;
   const float innerY = 0.0f;
   const float innerZ = particle->scale * sine;
-  const float outerX = innerX + spreadX;
   const float outerY = 0.0f - height;
+  const float outerX = innerX + spreadX;
   const float outerZ = innerZ + spreadZ;
 
   if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {

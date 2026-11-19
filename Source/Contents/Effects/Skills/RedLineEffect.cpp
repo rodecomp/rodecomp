@@ -94,8 +94,8 @@ void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
 
-  const float flat = width * phaseCosine;
   const float rise = width * phaseSine;
+  const float flat = width * phaseCosine;
   float innerX = particle->scale * cosine;
   float innerY = 0.0f;
   float innerZ = particle->scale * sine;
@@ -154,10 +154,14 @@ void CRedLineEffect::UpdateSegment(CParticle* particle) {
 
   if (particle->elapsedFrames >= 125) {
     int alpha = particle->alpha - 15;
-    particle->alpha = alpha >= 0 ? alpha : 0;
+    if (alpha < 0) {
+      particle->alpha = 0;
+    } else {
+      particle->alpha = alpha;
+    }
 
     float speed = particle->speedParameter - 5.0f;
-    particle->speedParameter = speed >= 0.0f ? speed : 0.0f;
+    particle->speedParameter = speed < 0.0f ? 0.0f : speed;
   }
 
   const int age = particle->elapsedFrames;
@@ -180,8 +184,8 @@ void CRedLineEffect::UpdateSegment(CParticle* particle) {
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
 
-  const float flat = width * phaseCosine;
   const float rise = width * phaseSine;
+  const float flat = width * phaseCosine;
   float innerX = particle->scale * cosine;
   float innerY = 0.0f;
   float innerZ = particle->scale * sine;
