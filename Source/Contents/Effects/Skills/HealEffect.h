@@ -28,6 +28,12 @@ public:
   void SpawnParticles();
   void UpdateColumnParticle(CParticle* particle);
   void UpdateConeParticle(CParticle* particle);
+  void ProcessSpark(CParticle* particle);
+  void ProcessColumn(CParticle* particle);
+  void ProcessCone(CParticle* particle);
+  void RenderSpark(CParticle* particle);
+  void RenderColumn(CParticle* particle);
+  void RenderCone(CParticle* particle);
   void UpdateParticleVertices(CParticle* particle);
   void RotateToCamera(EffectPoint* points);
 

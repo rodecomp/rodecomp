@@ -430,8 +430,173 @@ void CHealEffect::SpawnParticles() {
 }
 
 // OFFSET: 0x00B68300
+void CHealEffect::UpdateColumnParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const int age = particle->elapsedFrames;
+  float height = particle->speedParameter * 0.25f * g_sinTable[((4 - particle->rowIndex) * age + segment * 34) % 360] + particle->speedParameter * 0.75f;
+  if (age <= 90) {
+    height *= g_sinTable[age];
+  }
+  height = (std::max)(height, 0.0f);
+
+  const float baseAngle = particle->angle;
+  const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + baseAngle) % 360;
+  const float tiltCos = g_cosTable[particle->phaseParameter];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+  const float tiltSin = g_sinTable[particle->phaseParameter];
+  const float reach = height * tiltCos;
+  const float reachX = reach * cosine;
+  const float reachZ = reach * sine;
+  const float rise = height * tiltSin;
+
+  EffectPoint points[2];
+  const float bottomX = particle->scale * cosine;
+  const float bottomZ = particle->scale * sine;
+  particle->vertices[3].x = bottomX;
+  particle->vertices[3].y = 0.0f;
+  particle->vertices[3].z = bottomZ;
+
+  const float topX = bottomX + reachX;
+  const float topY = 0.0f - rise;
+  const float topZ = bottomZ + reachZ;
+  particle->vertices[1].x = topX;
+  particle->vertices[1].y = topY;
+  particle->vertices[1].z = topZ;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->columnEdge[1].x;
+    particle->vertices[0].y = this->columnEdge[1].y;
+    particle->vertices[0].z = this->columnEdge[1].z;
+    particle->vertices[2].x = this->columnEdge[0].x;
+    particle->vertices[2].y = this->columnEdge[0].y;
+    particle->vertices[2].z = this->columnEdge[0].z;
+  }
+
+  this->columnEdge[1].x = topX;
+  this->columnEdge[1].y = topY;
+  this->columnEdge[0].x = bottomX;
+  this->columnEdge[0].y = 0.0f;
+  this->columnEdge[0].z = bottomZ;
+  this->columnEdge[1].z = topZ;
+}
 
 // OFFSET: 0x00B684F0
+void CHealEffect::UpdateConeParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  const int segment = particle->columnIndex;
+  const int age = particle->elapsedFrames;
+  float height = particle->speedParameter * 0.25f * g_sinTable[((segment * 17 + age) * 2) % 360] + particle->speedParameter * 0.75f;
+  if (age <= 90) {
+    height *= g_sinTable[age];
+  }
+  height = (std::max)(height, 0.0f);
+
+  const float baseAngle = particle->angle;
+  const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + baseAngle) % 360;
+  const float tiltCos = g_cosTable[particle->phaseParameter];
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+  const float tiltSin = g_sinTable[particle->phaseParameter];
+  const float reach = height * tiltCos;
+  const float reachX = reach * cosine;
+  const float reachZ = reach * sine;
+  const float rise = height * tiltSin;
+
+  EffectPoint points[2];
+  const float bottomX = particle->scale * cosine;
+  const float bottomZ = particle->scale * sine;
+  particle->vertices[3].y = 0.0f;
+  particle->vertices[3].x = bottomX;
+  particle->vertices[3].z = bottomZ;
+
+  const float topY = 0.0f - rise;
+  const float topX = reachX + bottomX;
+  const float topZ = bottomZ + reachZ;
+  particle->vertices[1].y = topY;
+  particle->vertices[1].x = topX;
+  particle->vertices[1].z = topZ;
+
+  if (segment != 0) {
+    particle->vertices[0].x = this->coneEdge[1].x;
+    particle->vertices[0].y = this->coneEdge[1].y;
+    particle->vertices[0].z = this->coneEdge[1].z;
+    particle->vertices[2].x = this->coneEdge[0].x;
+    particle->vertices[2].y = this->coneEdge[0].y;
+    particle->vertices[2].z = this->coneEdge[0].z;
+  }
+
+  this->coneEdge[0].x = bottomX;
+  this->coneEdge[0].y = 0.0f;
+  this->coneEdge[0].z = bottomZ;
+  this->coneEdge[1].x = topX;
+  this->coneEdge[1].y = topY;
+  this->coneEdge[1].z = topZ;
+}
+
+// INLINED
+static __forceinline void UpdateParticleAlpha(CParticle* particle, int lifetime) {
+  const int age = particle->elapsedFrames;
+  int alpha = particle->alpha;
+  if (lifetime < 0 || lifetime > age) {
+    if (age < 16) {
+      alpha = (std::min)(alpha + 5, 180);
+    }
+  } else {
+    const int faded = alpha - 2;
+    alpha = faded >= 0 ? faded : 0;
+  }
+  particle->alpha = alpha;
+}
+
+// OFFSET: 0x00B69740
+void CHealEffect::ProcessColumn(CParticle* particle) {
+  if (particle) {
+    UpdateParticleAlpha(particle, this->columnLifetime);
+    this->UpdateColumnParticle(particle);
+  }
+}
+
+// OFFSET: 0x00B69960
+void CHealEffect::ProcessCone(CParticle* particle) {
+  if (particle) {
+    UpdateParticleAlpha(particle, this->coneLifetime);
+    this->UpdateConeParticle(particle);
+  }
+}
+
+// OFFSET: 0x00B69060
+__forceinline void CHealEffect::ProcessSpark(CParticle* particle) {
+  if (particle) {
+    particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
+
+    int alpha = particle->alpha;
+    if (particle->elapsedFrames <= 10) {
+      alpha += 15;
+    } else if (this->id != 312) {
+      const int segment = particle->columnIndex;
+      if ((5 - segment) * 7 == particle->elapsedFrames || 36 - segment * 7 == particle->elapsedFrames) {
+        particle->SetTexture("effect\\pok3.tga");
+      } else {
+        particle->SetTexture("effect\\pok1.tga");
+      }
+    }
+    const int faded = alpha - 3;
+    particle->alpha = faded >= 0 ? faded : 0;
+
+    particle->offsetX -= 0.0f;
+    particle->offsetY -= particle->animationParameter;
+    particle->offsetZ -= 0.0f;
+  }
+  this->UpdateParticleVertices(particle);
+}
 
 // OFFSET: 0x00B69160
 // FUNCTION: fn_19076
@@ -584,29 +749,42 @@ void CHealEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle) {
-      particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
-
-      int alpha = particle->alpha;
-      if (particle->elapsedFrames <= 10) {
-        alpha += 15;
-      } else if (this->id != 312) {
-        const int segment = particle->columnIndex;
-        if ((5 - segment) * 7 == particle->elapsedFrames || 36 - segment * 7 == particle->elapsedFrames) {
-          particle->SetTexture("effect\\pok3.tga");
-        } else {
-          particle->SetTexture("effect\\pok1.tga");
-        }
-      }
-      const int faded = alpha - 3;
-      particle->alpha = faded >= 0 ? faded : 0;
-
-      particle->offsetX -= 0.0f;
-      particle->offsetY -= particle->animationParameter;
-      particle->offsetZ -= 0.0f;
-    }
-    this->UpdateParticleVertices(particle);
+    this->ProcessSpark(particle);
     ++particle->elapsedFrames;
+  }
+}
+
+// INLINED
+static __forceinline void RenderStripParticle(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    const int segment = particle->columnIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = 0.0f;
+    quad.bottom = 1.0f;
+    quad.left = static_cast<float>(segment - 1) / 21.0f;
+    quad.right = static_cast<float>(segment) / 21.0f;
+    particle->Render(quad);
+  }
+}
+
+// OFFSET: 0x00B69D30
+__forceinline void CHealEffect::RenderColumn(CParticle* particle) {
+  RenderStripParticle(particle);
+}
+
+// OFFSET: 0x00B69DB0
+// FUNCTION: fn_46265
+__forceinline void CHealEffect::RenderCone(CParticle* particle) {
+  RenderStripParticle(particle);
+}
+
+// OFFSET: 0x00B69B80
+__forceinline void CHealEffect::RenderSpark(CParticle* particle) {
+  if (particle) {
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 }
 
@@ -614,41 +792,15 @@ void CHealEffect::OnProcess() {
 // FUNCTION: fn_19077
 void CHealEffect::Render() {
   for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->columnIndex > 0) {
-      const int segment = particle->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(segment - 1) / 21.0f;
-      quad.right = static_cast<float>(segment) / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderColumn(*it);
   }
 
   for (auto it = this->coneParticles.begin(); it != this->coneParticles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->columnIndex > 0) {
-      const int segment = particle->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(segment - 1) / 21.0f;
-      quad.right = static_cast<float>(segment) / 21.0f;
-      particle->Render(quad);
-    }
+    this->RenderCone(*it);
   }
 
   for (auto it = this->sparkParticles.begin(); it != this->sparkParticles.end(); ++it) {
-    if (*it) {
-      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
-    }
+    this->RenderSpark(*it);
   }
 }
 
