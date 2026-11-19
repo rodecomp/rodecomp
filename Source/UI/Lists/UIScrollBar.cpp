@@ -2146,20 +2146,20 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
       remaining = remaining.substr(position);
     }
 
-    position = remaining.find(open);
+    position = remaining.find('<');
     if (position != std::string::npos) {
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
       std::string tail = remaining.substr(1);
-      position = tail.find(open);
+      position = tail.find('<');
       while (position != std::string::npos) {
         offset += static_cast<unsigned int>(position);
         remaining = tail;
         tail = remaining.substr(1);
-        position = tail.find(open);
+        position = tail.find('<');
       }
 
-      if (line + 1 < wrapped.size() && wrapped[line + 1].find(close) != std::string::npos) {
+      if (line + 1 < wrapped.size() && wrapped[line + 1].find('>') != std::string::npos) {
         remaining.append(wrapped[line + 1]);
         wrapped[line + 1].swap(remaining);
         std::string truncated = wrapped[line].substr(0, offset);
