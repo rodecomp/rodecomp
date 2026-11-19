@@ -133,7 +133,7 @@ struct RenderObjectState {
     struct {
       /* 00FC */ std::uint16_t font;
       /* 00FE */ unsigned char sequenceMode;
-      /* 00FF */ unsigned char padding_00FF;
+      /* 00FF */ unsigned char sequenceSpriteIndex;
     };
   };
   /* 0100 */ unsigned char sequenceReset;

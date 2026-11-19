@@ -64,6 +64,9 @@ public:
   void UpdateTlvertex(const float* matrix);
   __declspec(noinline) void SetAnimationSpeed(float speed);
   void SetActionSpeed(float speed);
+  float GetMotionActionSpeed(unsigned animation) const;
+  float GetScaledActionSpeed(unsigned animation, float scale) const;
+  CSprRes* GetSequenceSpriteOverride(int type, int layer);
   void DrawSprite(int argument, bool seasonal, float offset);
   void DrawShadow(int argument, float scale);
   void DrawQuad(const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY, int depthOffset);

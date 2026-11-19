@@ -492,6 +492,18 @@ void CRenderObject::SetTlvert(float x, float y) {
   this->render.screenY = static_cast<int>(y);
 }
 
+// OFFSET: 0x00CACEA0
+// FUNCTION: fn_46350
+float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const {
+  if (this->render.action == nullptr || scale <= 0.0f) {
+    return 1.0f;
+  }
+  const float speed = this->render.action->Speed(animation);
+  return (std::max)(speed, 1.0f) * scale;
+}
+
+// OFFSET: 0x00CACE40
+
 // OFFSET: 0x00CBFAE0
 // FUNCTION: fn_21118
 void CRenderObject::SetAction(unsigned animation, int, int repeat) {
@@ -770,6 +782,8 @@ void CRenderObject::ScaleByPulse(float& scale) const {
     }
   }
 }
+
+// OFFSET: 0x00CC1A00
 
 // OFFSET: 0x00CC18F0
 // FUNCTION: fn_21124
