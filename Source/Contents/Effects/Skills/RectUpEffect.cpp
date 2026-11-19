@@ -240,6 +240,34 @@ void CRectUpEffect::RenderParticle(CParticle* particle) {
 }
 
 // OFFSET: 0x0070A5D0
+// FUNCTION: fn_46182
+void CRectUpEffect::UpdateParticle(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  int& phase = particle->angleParameter;
+  phase += phase + 1 < 360 ? 1 : -359;
+  if (particle->elapsedFrames > this->particleLifetime) {
+    int alpha = particle->alpha - 2;
+    if (alpha < 0) {
+      alpha = 0;
+    }
+    particle->alpha = alpha;
+  }
+
+  float height = particle->speedParameter * g_sinTable[phase] * 0.35f + particle->speedParameter * 0.65f;
+  if (particle->elapsedFrames < 90) {
+    height *= g_sinTable[particle->elapsedFrames];
+  }
+  particle->animationParameter = height;
+  this->ProcessParticle(particle);
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+  particle->transform = rotation;
+}
 
 // OFFSET: 0x0070A0D0
 
