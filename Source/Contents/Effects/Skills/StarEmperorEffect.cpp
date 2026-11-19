@@ -27,6 +27,7 @@ static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
 }
 
 // OFFSET: 0x0072BD80
+// FUNCTION: fn_46129
 __forceinline void CStarEmperorEffect::BuildRings() {
   for (int i = 0; i < 10; ++i) {
     CParticle* particle = CreateParticle(&this->positionVector, 0x201);
