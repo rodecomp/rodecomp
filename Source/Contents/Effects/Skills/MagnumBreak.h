@@ -32,6 +32,7 @@ public:
 private:
   void AdvanceRing(CParticle* ring);
   void AdvanceWave(CParticle* wave);
+  void RenderRing(CParticle* ring);
   void RenderWave(CParticle* wave);
 };
 

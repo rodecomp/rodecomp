@@ -110,7 +110,8 @@ __forceinline void CMagnumBreak::AdvanceRing(CParticle* ring) {
 }
 
 // OFFSET: 0x00B4A100
-__forceinline void CMagnumBreak::AdvanceWave(CParticle* wave) {
+// FUNCTION: fn_45971
+void CMagnumBreak::AdvanceWave(CParticle* wave) {
   const float speed = wave->animationParameter + wave->speedParameter;
   wave->speedParameter = speed;
   wave->scale = speed + wave->scale;
@@ -118,6 +119,8 @@ __forceinline void CMagnumBreak::AdvanceWave(CParticle* wave) {
       wave->animationParameters[0] + wave->animationParameters[1];
   wave->alpha = this->alpha;
 }
+
+// OFFSET: 0x00B4A380
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
