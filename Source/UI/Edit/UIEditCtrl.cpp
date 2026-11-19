@@ -6699,7 +6699,9 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     for (int i = 0; i < stockCount; ++i) {
       stock = g_session.GetMerchantMirrorItemInfoBySequence(i);
       if (this->buyingStore) {
-        if (std::atoi(stock.itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+        const int stockId = std::atoi(stock.itemId.c_str());
+        const int itemId = std::atoi(item.itemId.c_str());
+        if (stockId == itemId) {
           limit = stock.quantity;
           break;
         }
