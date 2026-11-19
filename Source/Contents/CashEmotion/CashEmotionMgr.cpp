@@ -1177,7 +1177,7 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
 
   bool inserted = false;
   auto it = this->m_emotionsByPack.find(packId);
-  if (it != this->m_emotionsByPack.end()) {
+  if (this->m_emotionsByPack.end() != it) {
     auto result = it->second.try_emplace(emotionId, packId, emotionId, name, actionIndex, frameIndex, actId, sprId);
     return result.second;
   }
