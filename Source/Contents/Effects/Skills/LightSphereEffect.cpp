@@ -282,8 +282,8 @@ void CLightSphereEffect::OnProcess() {
       particle->angleParameter = phase;
 
       EffectPoint points[3];
-      const float radius = particle->scale * g_sinTable[phase] + particle->scale;
       const int pitch = particle->phaseParameter;
+      const float radius = particle->scale * g_sinTable[phase] + particle->scale;
       const int yaw = static_cast<int>(particle->angle);
       const float flat = radius * g_cosTable[pitch];
       float corner0X = flat * g_cosTable[yaw];
@@ -296,20 +296,20 @@ void CLightSphereEffect::OnProcess() {
       float corner2X;
       float corner2Y;
       float corner2Z;
-      if (0.0f == particle->animationParameters[0]) {
-        corner1X = -0.5f;
-        corner1Y = -particle->animationParameter;
-        corner1Z = 0.0f;
-        corner2X = 0.5f;
-        corner2Y = -particle->animationParameter;
-        corner2Z = 0.0f;
-      } else {
+      if (0.0f != particle->animationParameters[0]) {
         corner1X = 0.0f;
         corner1Y = -particle->animationParameter;
         corner1Z = -0.5f;
         corner2X = 0.0f;
         corner2Y = -particle->animationParameter;
         corner2Z = 0.5f;
+      } else {
+        corner1X = -0.5f;
+        corner1Y = -particle->animationParameter;
+        corner1Z = 0.0f;
+        corner2X = 0.5f;
+        corner2Y = -particle->animationParameter;
+        corner2Z = 0.0f;
       }
 
       particle->vertices[0].x = corner0X;
