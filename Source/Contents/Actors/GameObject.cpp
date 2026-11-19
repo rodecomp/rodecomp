@@ -937,6 +937,18 @@ void CRenderObject::SendValueMessage(int value, CGameObject* target) {
   }
 }
 
+// INLINED
+static int ShapeShiftJob(const CGameActor& actor, int shapeShift) {
+  switch (shapeShift) {
+  case SHAPESHIFT_WEREWOLF:
+    return JT_WEREWOLF;
+  case SHAPESHIFT_WERERAPTOR:
+    return JT_WERERAPTOR;
+  default:
+    return actor.job;
+  }
+}
+
 // OFFSET: 0x00CB4070
 // FUNCTION: fn_21110
 void CGameActor::ApplySavedShapeShift() {
@@ -948,19 +960,7 @@ void CGameActor::ApplySavedShapeShift() {
   this->render.isMotionFreezed = false;
   this->render.specialMotionLocked = 0;
 
-  int value;
-  switch (pending) {
-  case SHAPESHIFT_WEREWOLF:
-    value = JT_WEREWOLF;
-    break;
-  case SHAPESHIFT_WERERAPTOR:
-    value = JT_WERERAPTOR;
-    break;
-  default:
-    value = this->job;
-    break;
-  }
-  this->SetSprJob(value);
+  this->SetSprJob(ShapeShiftJob(*this, pending));
   this->SetBodyPaletteName();
 
   if (this->render.state != ST_DEAD) {
