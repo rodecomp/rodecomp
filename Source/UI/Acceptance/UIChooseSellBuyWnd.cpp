@@ -12247,7 +12247,7 @@ void UITipboxWnd::RefreshTip() {
     }
 
     int height;
-    if (count < 2) {
+    if (count <= 1) {
       this->tipViewer->Move(250, 70);
       height = 245;
     } else {
