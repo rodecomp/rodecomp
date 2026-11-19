@@ -60,6 +60,7 @@ public:
   void SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags);
   void SubmitAuxiliaryPrimitive(LightmappedCommand* primitive);
   void DrawBattleFieldIcon();
+  void DrawHourlyBanner();
   void DrawOverlays();
   void DrawOverlays(CRenderSystemBase& system);
   __declspec(noinline) void ClearFrame();

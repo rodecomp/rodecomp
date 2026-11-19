@@ -118,6 +118,42 @@ void CRenderer::DrawBattleFieldIcon() {
   }
 }
 
+// INLINED
+static __forceinline void DrawActiveHourlyBanner(CRenderer& renderer) {
+  CTexture* texture = g_texMgr.Load("유저인터페이스\\", 0, false, true, false);
+  if (texture != nullptr) {
+    RECT rect;
+    rect.bottom = texture->Height() + 45;
+    const int width = renderer.viewport.width;
+    rect.left = width - texture->Width() - 140;
+    rect.top = 45;
+    rect.right = width - 140;
+    if (s_hourlyBannerState == 1) {
+      if (s_hourlyBannerAlpha < 220) {
+        ++s_hourlyBannerAlpha;
+      }
+    } else if (s_hourlyBannerAlpha > 0) {
+      --s_hourlyBannerAlpha;
+    } else {
+      s_hourlyBannerState = 0;
+    }
+
+    const std::uint32_t color = (s_hourlyBannerAlpha << 24) + 0xFFFFFF;
+    const TextureRegion region = {0.0f, 0.0f, 1.0f, 1.0f};
+    g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, color, texture, region);
+  }
+}
+
+// OFFSET: 0x0055A7E0
+// FUNCTION: fn_46353
+void CRenderer::DrawHourlyBanner() {
+  SYSTEMTIME now;
+  GetLocalTime(&now);
+  if (s_hourlyBannerState >= 1) {
+    DrawActiveHourlyBanner(*this);
+  }
+}
+
 // OFFSET: 0x0055E840
 // FUNCTION: fn_02112
 void CRenderer::DrawOverlays() {
@@ -133,29 +169,7 @@ void CRenderer::DrawOverlays() {
       goto timer;
     }
 
-    {
-      CTexture* texture = g_texMgr.Load("유저인터페이스\\", 0, false, true, false);
-      if (texture != nullptr) {
-        RECT rect;
-        rect.bottom = texture->Height() + 45;
-        rect.left = this->viewport.width - texture->Width() - 140;
-        rect.top = 45;
-        rect.right = this->viewport.width - 140;
-        if (s_hourlyBannerState == 1) {
-          if (s_hourlyBannerAlpha < 220) {
-            ++s_hourlyBannerAlpha;
-          }
-        } else if (s_hourlyBannerAlpha > 0) {
-          --s_hourlyBannerAlpha;
-        } else {
-          s_hourlyBannerState = 0;
-        }
-
-        const std::uint32_t color = (s_hourlyBannerAlpha << 24) + 0xFFFFFF;
-        const TextureRegion region = {0.0f, 0.0f, 1.0f, 1.0f};
-        g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, color, texture, region);
-      }
-    }
+    DrawActiveHourlyBanner(*this);
   }
 
 timer:
