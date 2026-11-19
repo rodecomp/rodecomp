@@ -1103,8 +1103,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
     int emotionId;
     {
       std::string key("ET_CHAT_PROHIBIT");
-      auto it = this->m_emotionIds.find(key);
-      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+      emotionId = this->FindEmotionIdByKey(key);
     }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
@@ -1113,8 +1112,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
     int emotionId;
     {
       std::string key("ET_YUT1");
-      auto it = this->m_emotionIds.find(key);
-      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+      emotionId = this->FindEmotionIdByKey(key);
     }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
@@ -1123,8 +1121,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
     int emotionId;
     {
       std::string key("ET_DICE1");
-      auto it = this->m_emotionIds.find(key);
-      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
+      emotionId = this->FindEmotionIdByKey(key);
     }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
