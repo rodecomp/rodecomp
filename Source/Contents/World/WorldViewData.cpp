@@ -538,15 +538,11 @@ bool CWorldViewMgr::AddMark(const char* name) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
     if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
       WorldViewRecord mark;
+      mark.worldIndex = index;
       mark.mapIndex = mapIndex;
       mark.level = 0;
-      mark.worldIndex = index;
       mark.name = field->name;
-      mark.areaFlags = field->areaFlags;
-      mark.left = field->left;
-      mark.top = field->top;
-      mark.right = field->right;
-      mark.bottom = field->bottom;
+      mark.area = field->area;
       this->marks.push_back(mark);
       return true;
     }
@@ -637,14 +633,10 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
     if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
       WorldViewRecord record;
-      record.mapIndex = mapIndex;
       record.worldIndex = index;
+      record.mapIndex = mapIndex;
       record.name = field->name;
-      record.areaFlags = field->areaFlags;
-      record.left = field->left;
-      record.top = field->top;
-      record.right = field->right;
-      record.bottom = field->bottom;
+      record.area = field->area;
       record.level = level;
       this->levels.push_back(record);
       return true;
