@@ -11793,7 +11793,8 @@ void CGameMode::ReceiveActorAction(
         const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
         const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 1);
         if (rand() % 100 < 25 && g_session.CheckInterval(60000) == true) {
-          this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 1, hungerLevel), 0, 0, 0);
+          const int emotion = g_session.GetPetEmotionNumber(g_session.petJob, 1, hungerLevel);
+          this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
           this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
         }
       }
