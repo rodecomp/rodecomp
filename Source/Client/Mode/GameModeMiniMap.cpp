@@ -395,8 +395,8 @@ void CGameMode::DrawMiniMapMarker(
 
   const int width = this->scene->terrain->width;
   const int height = this->scene->terrain->height;
-  const int longest = width >= height ? width : height;
   const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
+  const int longest = width >= height ? width : height;
   const float widthF = static_cast<float>(width);
   const float longestF = static_cast<float>(longest);
   const float mapWidth = widthF * 128.0f / longestF;
@@ -408,8 +408,8 @@ void CGameMode::DrawMiniMapMarker(
 
   const float marginX = (128.0f - mapWidth) * g_depthAverageHalf;
   const float viewWidth = view.right - view.left;
-  const float viewLeft = view.left * 128.0f / viewWidth;
   const float marginY = (128.0f - mapHeight) * g_depthAverageHalf;
+  const float viewLeft = view.left * 128.0f / viewWidth;
   const double offsetX = (static_cast<double>(static_cast<float>(x) * mapWidth / widthF) + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
   const float viewTop = view.top * 128.0f / viewHeight;
