@@ -26,8 +26,14 @@ CAsyncWorkRecycleObjectPoolMgr::CAsyncWorkRecycleObjectPoolMgr() : m_registered(
 
 // INLINED
 CAsyncWorkRecycleObjectPoolMgr::~CAsyncWorkRecycleObjectPoolMgr() {
-  for (const auto& entry : this->m_pools) {
-    delete entry.second;
+  this->DeletePools();
+}
+
+// OFFSET: 0x0057A6C0
+// FUNCTION: fn_45925
+void CAsyncWorkRecycleObjectPoolMgr::DeletePools() {
+  for (auto entry = this->m_pools.begin(); entry != this->m_pools.end(); ++entry) {
+    delete entry->second;
   }
 }
 

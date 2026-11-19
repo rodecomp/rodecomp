@@ -14,6 +14,7 @@ public:
 
 private:
   bool RegisterPools();
+  void DeletePools();
   /* 002C */ bool m_registered;
 };
 
