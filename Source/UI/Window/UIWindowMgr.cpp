@@ -2470,7 +2470,11 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       g_session.m_autoReplyEnabled = false;
     }
 
-    if ((this->IsHoverOnWindow01C8Button() || (this->windowHistory.begin() != this->windowHistory.end() && *this->windowHistory.begin() == 1)) && this->inputSuggestionsEnabled != 0 &&
+    const auto hoverHistoryCheck = [this]() {
+      const auto it = this->windowHistory.begin();
+      return it != this->windowHistory.end() && *it == 1;
+    };
+    if ((this->IsHoverOnWindow01C8Button() || hoverHistoryCheck()) && this->inputSuggestionsEnabled != 0 &&
         this->chatModeChanged != 0) {
       UINewChatWnd* suggestions = this->chatWnd;
       if (suggestions && suggestions->SuggestionsVisible()) {
@@ -2506,7 +2510,8 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       return false;
     }
 
-    const int id = this->windowHistory.begin() != this->windowHistory.end() ? *this->windowHistory.begin() : -1;
+    const auto historyIt = this->windowHistory.begin();
+    const int id = historyIt != this->windowHistory.end() ? *historyIt : -1;
     const int replaying = g_replayAnimationScaling;
     if (replaying != 0 && (static_cast<unsigned int>(id) > 10040 || this->policy[id].actions[3] == 0)) {
       return false;
@@ -2514,6 +2519,14 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
       switch (id) {
+      case WID_BATTLEMSGOPTIONWND:
+      case WID_SEARCH_STORE_INFO:
+      case WID_NCASHWND:
+      case WID_NAVIGATIONV4WND:
+      case WID_STYLINGSHOPWND:
+      case WID_REQUESTJOINPARTYWND:
+        window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+        return false;
       case WID_ITEMSHOPWND:
       case WID_ITEMPURCHASEWND:
       case WID_ITEMSELLWND:
@@ -2526,15 +2539,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
         if (replaying != 0) {
           return false;
         }
-        window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
-        return false;
-      case WID_BATTLEMSGOPTIONWND:
-      case WID_SEARCH_STORE_INFO:
-      case WID_NCASHWND:
-      case WID_NAVIGATIONV4WND:
-      case WID_STYLINGSHOPWND:
-      case WID_REQUESTJOINPARTYWND:
-        window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+        window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, replaying, replaying, replaying);
         return false;
       case WID_BALLOONOPENBTN:
       case WID_WAITDBSAVEWND:
