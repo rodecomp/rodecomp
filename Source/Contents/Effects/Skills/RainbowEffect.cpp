@@ -5,24 +5,25 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Core/EffectPoint.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstring>
 
-// OFFSET: 0x00B70CB0
-// FUNCTION: fn_19128
-void CRainbowEffect::Close() {
-  for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
-    FreeParticle(*it);
-  }
-
-  this->bands.clear();
+// OFFSET: 0x00B707B0
+// FUNCTION: fn_46054
+CRainbowEffect::CRainbowEffect() : CEffect(EF_RAINBOW) {
 }
 
-// OFFSET: 0x00B70CF0
-// FUNCTION: fn_19129
-void CRainbowEffect::Open() {
+// OFFSET: 0x00B70850
+// FUNCTION: fn_46055
+__declspec(noinline) CRainbowEffect::~CRainbowEffect() {
+}
+
+// OFFSET: 0x00B70930
+// FUNCTION: fn_46056
+__forceinline void CRainbowEffect::CreateBands() {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const int angle = (360 - static_cast<int>(mode->camera->camera.yaw)) % 360;
   for (int row = 0; row < 7; ++row) {
@@ -45,7 +46,22 @@ void CRainbowEffect::Open() {
       }
     }
   }
+}
 
+// OFFSET: 0x00B70CB0
+// FUNCTION: fn_19128
+void CRainbowEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->bands.clear();
+}
+
+// OFFSET: 0x00B70CF0
+// FUNCTION: fn_19129
+void CRainbowEffect::Open() {
+  this->CreateBands();
   this->effectLifetime = 300;
 }
 
@@ -117,20 +133,20 @@ void CRainbowEffect::OnProcess() {
         particle->vertices[1].x = innerX;
         particle->vertices[1].y = innerY;
         particle->vertices[1].z = innerZ;
-        particle->vertices[2].x = this->previousOuter.x;
-        particle->vertices[2].y = this->previousOuter.y;
-        particle->vertices[2].z = this->previousOuter.z;
-        particle->vertices[3].x = this->previousInner.x;
-        particle->vertices[3].y = this->previousInner.y;
-        particle->vertices[3].z = this->previousInner.z;
+        particle->vertices[2].x = this->previousPoints[0].x;
+        particle->vertices[2].y = this->previousPoints[0].y;
+        particle->vertices[2].z = this->previousPoints[0].z;
+        particle->vertices[3].x = this->previousPoints[1].x;
+        particle->vertices[3].y = this->previousPoints[1].y;
+        particle->vertices[3].z = this->previousPoints[1].z;
       }
 
-      this->previousOuter.x = outerX;
-      this->previousOuter.y = outerY;
-      this->previousOuter.z = outerZ;
-      this->previousInner.x = innerX;
-      this->previousInner.y = innerY;
-      this->previousInner.z = innerZ;
+      this->previousPoints[0].x = outerX;
+      this->previousPoints[0].y = outerY;
+      this->previousPoints[0].z = outerZ;
+      this->previousPoints[1].x = innerX;
+      this->previousPoints[1].y = innerY;
+      this->previousPoints[1].z = innerZ;
 
       switch (band) {
       case 0:
@@ -161,23 +177,29 @@ void CRainbowEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B71570
+// FUNCTION: fn_46059
+__forceinline void CRainbowEffect::RenderBand(CParticle* particle) {
+  if (particle && particle->columnIndex > 0) {
+    const int segment = particle->columnIndex;
+    ParticleQuad quad;
+    quad.billboard = false;
+    quad.unused = false;
+    quad.depth = true;
+    quad.top = static_cast<float>(segment - 1) / 21.0f;
+    quad.bottom = static_cast<float>(segment) / 21.0f;
+    quad.left = 0.0f;
+    quad.right = 1.0f;
+    particle->Render(quad);
+  }
+}
+
 // OFFSET: 0x00B714C0
 // FUNCTION: fn_19132
 void CRainbowEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
     CParticle* particle = *it;
 
-    if (particle && particle->columnIndex > 0) {
-      const int segment = particle->columnIndex;
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.unused = false;
-      quad.depth = true;
-      quad.top = static_cast<float>(segment - 1) / 21.0f;
-      quad.bottom = static_cast<float>(segment) / 21.0f;
-      quad.left = 0.0f;
-      quad.right = 1.0f;
-      particle->Render(quad);
-    }
+    this->RenderBand(particle);
   }
 }
