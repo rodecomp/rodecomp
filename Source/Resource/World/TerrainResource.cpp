@@ -52,7 +52,10 @@ bool C3dAttr::Load(const char* name) {
   file.Read(&major, 1);
   file.Read(&minor, 1);
 
-  if (major == 1 && minor <= 3) {
+  if (major != 1 || minor > 3) {
+    ShowErrorDialog("C3dAttr::Unsupported Version", 0);
+    return true;
+  } else {
     int columns;
     int rows;
     file.Read(&columns, sizeof(columns));
@@ -69,11 +72,8 @@ bool C3dAttr::Load(const char* name) {
     }
 
     file.Close();
-  } else {
-    ShowErrorDialog("C3dAttr::Unsupported Version", 0);
+    return true;
   }
-
-  return true;
 }
 
 // OFFSET: 0x00748840
