@@ -61,14 +61,10 @@ void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMem
     UIWindow* const other = it->first;
     const bool otherConnected = g_snapMgr.ConnectedToRoot(other);
 
-    if (groupMember != 0) {
-      if (window == other || otherRoot || connected || otherConnected) {
-        continue;
-      }
-    } else {
-      if (window == other || (root && (otherConnected || connected))) {
-        continue;
-      }
+    const bool skip = groupMember != 0 ? window == other || otherRoot || connected || otherConnected
+                                       : window == other || (root && (otherConnected || connected));
+    if (skip) {
+      continue;
     }
 
     rectangle.Snap(moving, snapX, snapY);
