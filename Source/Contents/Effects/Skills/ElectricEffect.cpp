@@ -15,6 +15,11 @@
 #include <cstdlib>
 #include <cstring>
 
+// OFFSET: 0x00B4E7B0
+// FUNCTION: fn_45994
+__declspec(noinline) CElectricEffect::~CElectricEffect() {
+}
+
 // OFFSET: 0x00B4E890
 // FUNCTION: fn_19002
 void CElectricEffect::AddBolt(int tilt) {

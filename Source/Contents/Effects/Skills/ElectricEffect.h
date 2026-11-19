@@ -11,6 +11,7 @@ class CParticle;
 
 class CElectricEffect : public CEffect {
 public:
+  ~CElectricEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
