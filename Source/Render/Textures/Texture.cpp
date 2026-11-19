@@ -147,8 +147,6 @@ void CTexture::Stretch(int x, int y, int width, int height) {
 // OFFSET: 0x00544840
 // FUNCTION: fn_01819
 void CTexture::StretchTintedTo(int x, int y, int width, int height, std::uint32_t color) {
-  constexpr float z = 0.00001f;
-  constexpr float rhw = 0.99999f;
   const int right = x + width;
   const int bottom = y + height;
   const float u0 = g_textureOffsetX / static_cast<float>(this->m_textureWidth);
@@ -156,43 +154,7 @@ void CTexture::StretchTintedTo(int x, int y, int width, int height, std::uint32_
   const float u1 = (static_cast<float>(this->m_width) + g_textureOffsetX) / static_cast<float>(this->m_textureWidth);
   const float v1 = (static_cast<float>(this->m_height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  primitive->texture = this;
-  RenderVertex vertex;
-  vertex.x = static_cast<float>(x);
-  vertex.y = static_cast<float>(y);
-  vertex.z = z;
-  vertex.rhw = rhw;
-  vertex.diffuse = color;
-  vertex.specular = 0xFFFFFFFF;
-  vertex.u = u0;
-  vertex.v = v0;
-  primitive->quad[0] = vertex;
-  vertex.x = static_cast<float>(right);
-  vertex.y = static_cast<float>(y);
-  vertex.z = z;
-  vertex.rhw = rhw;
-  vertex.diffuse = color;
-  vertex.specular = 0xFFFFFFFF;
-  vertex.u = u1;
-  vertex.v = v0;
-  primitive->quad[1] = vertex;
-  vertex.x = static_cast<float>(x);
-  vertex.y = static_cast<float>(bottom);
-  vertex.z = z;
-  vertex.rhw = rhw;
-  vertex.diffuse = color;
-  vertex.specular = 0xFFFFFFFF;
-  vertex.u = u0;
-  vertex.v = v1;
-  primitive->quad[2] = vertex;
-  vertex.x = static_cast<float>(right);
-  vertex.y = static_cast<float>(bottom);
-  vertex.z = z;
-  vertex.rhw = rhw;
-  vertex.diffuse = 0xFFFFFFFF;
-  vertex.specular = 0xFFFFFFFF;
-  vertex.u = u1;
-  vertex.v = v1;
-  primitive->quad[3] = vertex;
+  SetQuad(primitive, this, x, y, right, bottom, color, u0, v0, u1, v1);
+  primitive->quad[3].diffuse = 0xFFFFFFFF;
   g_renderer->Submit(primitive, 513);
 }
