@@ -44,7 +44,9 @@ std::string UINewChatWnd::ConvertChat(const std::string& text) {
 // OFFSET: 0x0089C900
 // FUNCTION: fn_11589
 std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned addedLines) {
-  std::pair<int, int> result(0, 0);
+  std::pair<int, int> result;
+  result.second = 0;
+  result.first = 0;
   int accumulated = 0;
 
   for (unsigned index = this->lines.size() - addedLines; index < this->lines.size(); ++index) {
