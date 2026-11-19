@@ -1227,8 +1227,8 @@ __forceinline void CGameActor::BeginVanish() {
 // OFFSET: 0x00CB4800
 // FUNCTION: fn_21112
 void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
-  CGameMode* mode = g_modeMgr.GetGameMode();
   bool visible = true;
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->render.accountId != g_session.m_aid) {
     if (IsHiding(this->stateFlags) || IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags)) {
       visible = false;
