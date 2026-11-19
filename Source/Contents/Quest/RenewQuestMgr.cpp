@@ -799,7 +799,7 @@ void CRenewQuestMgr::SaveOngoingSimpleViewList() {
     text = "OngoingSimpleViewList = \r\n{\r\n";
     file.Write(text.c_str(), text.size());
 
-    for (auto it = this->m_ongoingQuests.begin(); it != this->m_ongoingQuests.end(); ++it) {
+    for (auto it = this->m_ongoingQuests.begin(); this->m_ongoingQuests.end() != it; ++it) {
       if (!it->second.m_simpleView) {
         text = '\t' + IntToString(it->first, 0) + ",\r\n";
         file.Write(text.c_str(), text.size());
@@ -823,7 +823,7 @@ void CRenewQuestMgr::SaveRecommendedActiveList() {
     text = "RecommendedActiveList = \r\n{\r\n";
     file.Write(text.c_str(), text.size());
 
-    for (auto it = this->m_recommendedQuests.begin(); it != this->m_recommendedQuests.end(); ++it) {
+    for (auto it = this->m_recommendedQuests.begin(); this->m_recommendedQuests.end() != it; ++it) {
       if (!it->second.m_active) {
         text = '\t' + IntToString(it->first, 0) + ",\r\n";
         file.Write(text.c_str(), text.size());
