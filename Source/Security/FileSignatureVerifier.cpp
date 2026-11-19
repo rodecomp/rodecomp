@@ -82,6 +82,7 @@ FileSignatureVerifier::~FileSignatureVerifier() {
 // OFFSET: 0x00402BE0
 // FUNCTION: fn_00138
 bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName) {
+  HCRYPTKEY* key = &publicKey;
   std::memcpy(&footer, data + dataSize - sizeof(footer), sizeof(footer));
   if (footer.startMarker == 0x32812622 && footer.endMarker == 0x32812621) {
     const DWORD blockSize = footer.signatureSize + footer.fileNameSize + sizeof(footer);
@@ -123,11 +124,11 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
     return false;
   }
 
-  if (publicKey != 0) {
-    CryptDestroyKey(publicKey);
-    publicKey = 0;
+  if (*key != 0) {
+    CryptDestroyKey(*key);
+    *key = 0;
   }
-  if (!CryptImportKey(provider, g_rsaPublicKeyBlob, g_rsaPublicKeyBlobLen, 0, 0, &publicKey)) {
+  if (!CryptImportKey(provider, g_rsaPublicKeyBlob, g_rsaPublicKeyBlobLen, 0, 0, key)) {
     if (GetLastError() != ERROR_INVALID_PARAMETER) {
       error = 9;
       return false;
@@ -136,7 +137,7 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
       error = 98;
       return false;
     }
-    if (!CryptImportKey(provider, g_rsaPublicKeyBlob, g_rsaPublicKeyBlobLen, 0, 0, &publicKey)) {
+    if (!CryptImportKey(provider, g_rsaPublicKeyBlob, g_rsaPublicKeyBlobLen, 0, 0, key)) {
       error = 9;
       return false;
     }
