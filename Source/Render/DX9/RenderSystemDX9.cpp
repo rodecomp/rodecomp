@@ -92,7 +92,8 @@ CSurface* CRenderSystemDX9::CreateSurfaceOrTexture(std::uint32_t width, std::uin
 // FUNCTION: fn_02369
 CTexture* CRenderSystemDX9::BackBufferTexture() {
   if (!this->m_defaultTexture) {
-      this->m_defaultTexture = std::make_unique<CTextureDX9>(*this->m_device);
+      const auto create = [this]() { return std::unique_ptr<CTextureDX9>(new CTextureDX9(*this->m_device)); };
+      this->m_defaultTexture = create();
   }
 
   return this->m_defaultTexture.get();
