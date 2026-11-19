@@ -195,5 +195,5 @@ __forceinline void CCloud::UpdateTransform() {
   rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
   matrix transform;
   transform.Compose(scale, rotation);
-  this->particle->transform = transform;
+  this->particle->transform = matrix(transform);
 }
