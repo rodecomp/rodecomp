@@ -1151,8 +1151,7 @@ void CUITabButton::SetSelected(bool selected) {
 // OFFSET: 0x009F1740
 // FUNCTION: fn_14696
 void CUITabButton::SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow) {
-  this->normalCell.column = normalColumn;
-  this->normalCell.row = normalRow;
+  this->normalCell = SkinPaletteCell{normalColumn, normalRow};
   this->selectedCell.column = selectedColumn;
   this->selectedCell.row = selectedRow;
   this->borderCell.column = borderColumn;
