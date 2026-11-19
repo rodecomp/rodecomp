@@ -3,6 +3,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Render/Projection/RenderProjection.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
@@ -265,4 +266,66 @@ void matrix::MakeTransform(const float* rotaxis, float rotangle) {
   this->values[9] = 0.0f;
   this->values[10] = 0.0f;
   this->values[11] = 0.0f;
+}
+
+// OFFSET: 0x005544C0
+// FUNCTION: fn_46340
+void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQuaternion& first, const RotationQuaternion& second) {
+  double dot = second.x * first.x + second.w * first.w + second.y * first.y + second.z * first.z;
+  RotationQuaternion end = second;
+  if (dot < 0.0) {
+    dot = -dot;
+    end = {-second.w, -second.x, -second.y, -second.z};
+  }
+
+  double firstWeight = 1.0 - amount;
+  double secondWeight = amount;
+  if (1.0 - dot > 0.00001f) {
+    const double angle = std::acos(dot);
+    const double denominator = ClientSin(static_cast<float>(angle));
+    firstWeight = ClientSin(static_cast<float>(firstWeight * angle)) / denominator;
+    secondWeight = ClientSin(static_cast<float>(amount * angle)) / denominator;
+  }
+
+  const float a = static_cast<float>(firstWeight);
+  const float b = static_cast<float>(secondWeight);
+  result = {a * first.w + b * end.w, a * first.x + b * end.x, a * first.y + b * end.y, a * first.z + b * end.z};
+}
+
+// OFFSET: 0x005546F0
+// FUNCTION: fn_46341
+void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation) {
+  const float* m = rotation.values;
+  const float w = m[4] + m[0] + m[8] + 1.0f;
+  const float x = m[0] - m[4] - m[8] + 1.0f;
+  const float y = m[4] - m[0] - m[8] + 1.0f;
+  const float z = -m[0] - m[4] + m[8] + 1.0f;
+  const float largest = (std::max)((std::max)((std::max)(w, z), y), x);
+  const float divisor = std::sqrt(largest) * 2.0f;
+
+  if (x == largest) {
+    result.x = largest / divisor;
+    result.y = (m[3] + m[1]) / divisor;
+    result.z = (m[6] + m[2]) / divisor;
+    result.w = (m[7] - m[5]) / divisor;
+  } else if (y == largest) {
+    result.y = largest / divisor;
+    result.x = (m[3] + m[1]) / divisor;
+    result.z = (m[7] + m[5]) / divisor;
+    result.w = (m[2] - m[6]) / divisor;
+  } else if (z == largest) {
+    result.x = (m[6] + m[2]) / divisor;
+    result.z = largest / divisor;
+    result.y = (m[7] + m[5]) / divisor;
+    result.w = (m[3] - m[1]) / divisor;
+  } else if (w == largest) {
+    result.x = (m[7] - m[5]) / divisor;
+    result.y = (m[2] - m[6]) / divisor;
+    result.w = largest / divisor;
+    result.z = (m[3] - m[1]) / divisor;
+  }
+
+  if (result.w < 0.0f) {
+    result = {-result.w, -result.x, -result.y, -result.z};
+  }
 }

@@ -44,6 +44,16 @@ struct matrix {
   void LookAt(const float* origin, const float* target, const float* up);
 };
 
+struct RotationQuaternion {
+  /* 0000 */ float w;
+  /* 0004 */ float x;
+  /* 0008 */ float y;
+  /* 000C */ float z;
+};
+
+void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQuaternion& first, const RotationQuaternion& second);
+void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation);
+
 // INLINED
 inline void matrix::Identity() {
   std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
