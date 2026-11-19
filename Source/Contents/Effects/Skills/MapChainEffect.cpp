@@ -260,12 +260,12 @@ void CMapChainEffect::OnProcess() {
         particle->vertices[2].z = this->corners[0].z;
       }
 
-      this->corners[1].x = v1x;
-      this->corners[1].y = v1y;
-      this->corners[1].z = v1z;
       this->corners[0].x = v3x;
       this->corners[0].y = v3y;
       this->corners[0].z = v3z;
+      this->corners[1].x = v1x;
+      this->corners[1].y = v1y;
+      this->corners[1].z = v1z;
     }
 
     ++particle->elapsedFrames;
