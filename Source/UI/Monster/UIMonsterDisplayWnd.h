@@ -8,6 +8,7 @@
 class UIMonsterDisplayWnd : public UIFrameWnd {
 public:
   UIMonsterDisplayWnd();
+  __declspec(noinline) ~UIMonsterDisplayWnd() override;
   /* 00B4 */ std::string m_name;
   /* 00CC */ std::string titleText;
   /* 00E4 */ unsigned char unknown_00E4;

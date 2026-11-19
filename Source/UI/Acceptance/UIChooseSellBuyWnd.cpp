@@ -7595,6 +7595,10 @@ UIMonsterDisplayWnd::UIMonsterDisplayWnd()
     : UIFrameWnd(0) {
 }
 
+// OFFSET: 0x008CB280
+// FUNCTION: fn_46447
+__declspec(noinline) UIMonsterDisplayWnd::~UIMonsterDisplayWnd() = default;
+
 // OFFSET: 0x008C8900
 // FUNCTION: fn_11963
 UIPartyInvitationToWnd::UIPartyInvitationToWnd()
