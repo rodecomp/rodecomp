@@ -161,14 +161,13 @@ __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
   int none = 0;
   int multiple = 0;
   int index = 0;
-  int offset = 0;
   const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
-  for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); it != end; ++it, ++index) {
+  for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); end != it; ++it, ++index) {
     if (single + multiple + none >= 5) {
       break;
     }
 
-    const int top = offset + (none + multiple * 2) * 40;
+    const int top = single * 50 + (none + multiple * 2) * 40;
     const RenewQuestOngoingInfo& info = it->second;
     if (info.m_active && info.m_simpleView) {
       if (y >= top && y <= top + 10) {
@@ -182,7 +181,6 @@ __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
         ++multiple;
       } else {
         ++single;
-        offset += 50;
       }
     }
   }
