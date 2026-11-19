@@ -662,7 +662,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     point.z = x * values[2] + y * values[5] + z * values[8] + values[11];
     CGameMode* mode = g_modeMgr.GetGameMode();
     point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;
-    if (this->m_groundHeight != -1000.0f && point.y - this->m_groundHeight > 5.0f) {
+    if (-1000.0f != this->m_groundHeight && point.y - this->m_groundHeight > 5.0f) {
       point.y = this->m_groundHeight;
     }
     this->m_groundHeight = point.y;
@@ -672,8 +672,8 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
-    vertices[i].specular = 0xFFFFFFFF;
     vertices[i].diffuse = ClipColor(*transform, this->m_alpha);
+    vertices[i].specular = 0xFFFFFFFF;
   }
 
   primitive->texture = texture;
