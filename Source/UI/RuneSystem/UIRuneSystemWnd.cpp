@@ -2128,12 +2128,13 @@ void UIRune_Decom::Paint() {
   this->DrawBitmap(200, 0x149, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
   unsigned int rowIndex = 0;
   for (int y = 0x177; y < 0x1E3; y += 0x36, rowIndex += 4) {
+    const int slotY = y - 6;
     unsigned int index = rowIndex;
     for (int x = 0xD8; x < 0x1B0; x += 0x36, ++index) {
       this->DrawBitmap(
-        x - 1, y - 6, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_yellow.bmp"))), true
+        x - 1, slotY, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_yellow.bmp"))), true
       );
-      if (index >= this->m_decomList->size()) {
+      if (this->m_decomList->size() <= index) {
         continue;
       }
 
