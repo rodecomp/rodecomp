@@ -4281,16 +4281,16 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   if (price <= 0x7FFFFFFF && price < 0) {
     price = 0;
   } else if (price > 0x7FFFFFFF || price > 1000000000) {
-    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) != ID_YES) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      price = 1000000000;
+      edit->SetText(_itoa(1000000000, text, 10));
+      this->Invalidate();
+    } else {
       edit->SetText("0");
       g_windowMgr.SetFocus(edit);
       edit->SelectAll();
       return 0;
     }
-
-    price = 1000000000;
-    edit->SetText(_itoa(1000000000, text, 10));
-    this->Invalidate();
   }
 
   if (price >= std::atoi(LookupMessage(MSI_WARNING_PRICE4))) {
