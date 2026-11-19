@@ -13,6 +13,7 @@
 #include <cstring>
 
 // OFFSET: 0x00B77C80
+// FUNCTION: fn_46047
 CSphereWindEffect::CSphereWindEffect()
     : CEffect(-1), lastInner{}, lastOuter{}, particles() {
 }
