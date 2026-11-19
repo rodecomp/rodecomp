@@ -835,6 +835,11 @@ void CCylinderEffect::RenderParticle(CParticle* particle) {
 CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(EF_DANCING_KNIFE) {
 }
 
+// OFFSET: 0x00710170
+// FUNCTION: fn_46311
+__declspec(noinline) CDancingKnifeEffect::~CDancingKnifeEffect() {
+}
+
 // OFFSET: 0x00710830
 // FUNCTION: fn_07203
 bool CDancingKnifeEffect::IsAlive() {

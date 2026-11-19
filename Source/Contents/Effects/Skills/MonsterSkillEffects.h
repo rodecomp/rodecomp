@@ -150,6 +150,7 @@ public:
 class CDancingKnifeEffect : public CEffect {
 public:
   CDancingKnifeEffect();
+  ~CDancingKnifeEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
