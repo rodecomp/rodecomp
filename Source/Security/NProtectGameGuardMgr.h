@@ -13,10 +13,12 @@ public:
   class lcCSAuthToken {
   public:
     // INLINED
-    lcCSAuthToken(int id, const std::vector<unsigned char>& bytes) : id(id), bytes(bytes) {
+    lcCSAuthToken(int id, std::vector<unsigned char> bytes) : id(id), bytes(bytes) {
     }
 
-    virtual ~lcCSAuthToken() = default;
+    // INLINED
+    virtual ~lcCSAuthToken() {
+    }
 
     /* 0004 */ int id;
     /* 0008 */ std::vector<unsigned char> bytes;

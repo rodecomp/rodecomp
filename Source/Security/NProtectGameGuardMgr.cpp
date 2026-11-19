@@ -197,9 +197,10 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
     return 0;
   }
   case NPGAMEMON_CHECK_CSAUTH3: {
+    const int id = packet[0];
+    const unsigned char* end = reinterpret_cast<const unsigned char*>(packet + 2) + packet[1];
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    const unsigned char* data = reinterpret_cast<const unsigned char*>(packet + 2);
-    CNProtectGameGuardMgr::lcCSAuthToken token(packet[0], std::vector<unsigned char>(data, data + packet[1]));
+    CNProtectGameGuardMgr::lcCSAuthToken token(id, std::vector<unsigned char>(reinterpret_cast<const unsigned char*>(packet + 2), end));
     NSyncObject lock(&manager->m_lock);
     manager->m_tokens.push_back(token);
     break;
