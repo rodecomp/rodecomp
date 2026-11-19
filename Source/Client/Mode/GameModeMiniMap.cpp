@@ -386,49 +386,47 @@ void CGameMode::DrawMiniMapMarker(
   const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
   const float widthF = static_cast<float>(width);
   const float longestF = static_cast<float>(longest);
-  const double mapWidth = widthF * 128.0f / longestF;
+  const float mapWidth = widthF * 128.0f / longestF;
   const float heightF = static_cast<float>(height);
-  const double mapHeight = heightF * 128.0f / longestF;
+  const float mapHeight = heightF * 128.0f / longestF;
   if (static_cast<float>(x) < 0.0f || static_cast<float>(y) < 0.0f) {
     return;
   }
 
-  const float marginX = (128.0f - static_cast<float>(mapWidth)) * g_depthAverageHalf;
+  const float marginX = (128.0f - mapWidth) * g_depthAverageHalf;
   const float viewWidth = view.right - view.left;
   const float viewLeft = view.left * 128.0f / viewWidth;
-  const float marginY = (128.0f - static_cast<float>(mapHeight)) * g_depthAverageHalf;
-  const double offsetX = (static_cast<double>(static_cast<float>(x) * static_cast<float>(mapWidth) / widthF) + marginX) / viewWidth;
+  const float marginY = (128.0f - mapHeight) * g_depthAverageHalf;
+  const double offsetX = (static_cast<double>(static_cast<float>(x) * mapWidth / widthF) + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
   const float viewTop = view.top * 128.0f / viewHeight;
   const double offsetY =
-    (mapHeight - static_cast<double>(static_cast<float>(y) * static_cast<float>(mapHeight) / heightF) + marginY) / viewHeight;
+    (static_cast<double>(mapHeight) - static_cast<double>(static_cast<float>(y) * mapHeight / heightF) + marginY) / viewHeight;
   const double left = originX - 64.0;
   double drawX = (left - viewLeft) + offsetX;
   double drawY = (16.0 - viewTop) + offsetY;
 
   if (clamp) {
-    int direction = 0;
+    int directionX = 0;
+    int directionY = 0;
     if (drawX - size < left) {
-      direction = 1;
+      directionX = 1;
       drawX = size + left;
     } else if (drawX + size > originX + 64.0) {
-      direction = 2;
+      directionX = 2;
       drawX = (originX + 64.0) - size;
     }
     if (drawY - size < 16.0) {
       drawY = size + 16.0;
-      if (direction == 0) {
-        direction = 3;
-      }
+      directionY = 3;
     } else if (drawY + size > 144.0) {
       drawY = 144.0 - size;
-      if (direction == 0) {
-        direction = 4;
-      }
+      directionY = 4;
     }
+    const int direction = directionX != 0 ? directionX : directionY;
     if (kind != 5 && direction != 0) {
       const std::string arrow = FormatOwnedString("유저인터페이스\\basic_interface\\quest_arrow%d.bmp", direction);
-      texture = arrow;
+      texture.assign(arrow.c_str(), arrow.size());
     }
   } else if (kind != 4) {
     if (drawX - size < left || drawX + size > originX + 64.0 || drawY - size < 16.0 || drawY + size > 144.0) {
