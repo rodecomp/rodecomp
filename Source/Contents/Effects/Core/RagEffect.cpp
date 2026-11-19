@@ -17752,37 +17752,61 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind >= 10 && kind <= 11) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 70.0f : this->state.param[0] * 0.7f;
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 70.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0] * 0.7f;
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 10;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 12) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 120.0f : this->state.param[0] * 1.2f;
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 120.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0] * 1.2f;
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 12;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 13) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 300.0f : this->state.param[0] * 3.0f;
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 300.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0] * 3.0f;
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 12;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 14) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 30.0f : this->state.param[0];
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 30.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0];
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 4;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 15) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 30.0f : this->state.param[0];
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 30.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0];
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 15;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind >= 16 && kind <= 17) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 9.5f : this->state.param[0] * 0.9f;
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 9.5f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0] * 0.9f;
+    }
     if (kind == 17) {
       this->state.lastPrim->state.slots[0].distance *= 0.85f;
     }
@@ -17792,7 +17816,11 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 18) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 9.0f : this->state.param[0] * 0.9f;
+    if (this->state.param[0] <= 0.0f) {
+      this->state.lastPrim->state.slots[0].distance = 9.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0] * 0.9f;
+    }
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 5;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
@@ -17823,9 +17851,16 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
       CActRes* action = this->state.parent->GetActRes();
 
       if (action != nullptr) {
-        const SpriteFrameCell& cell = action->Frame(0, 0).Cell(0);
-        const float height = static_cast<float>(cell.y) * 0.29f;
-        lift = height == 0.0f ? -30.0f : height - 4.0f;
+        const ActionFrame* frame = &action->Frame(0, 0);
+
+        if (frame != nullptr) {
+          const SpriteFrameCell* cell = &frame->Cell(0);
+
+          if (cell != nullptr) {
+            const float height = static_cast<float>(cell->y) * 0.29f;
+            lift = height == 0.0f ? -30.0f : height - 4.0f;
+          }
+        }
       }
     }
 
@@ -17865,7 +17900,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].vecBNow.z = this->render.position.z;
   this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[4] = static_cast<char>(kind == 4 ? 1 : kind);
+  this->state.lastPrim->state.slots[0].flag1[4] = static_cast<char>(kind == 4 ? 1 : static_cast<unsigned char>(kind));
   this->state.lastPrim->state.slots[0].height[15] = this->render.position.y - this->state.lastPrim->state.slots[0].vecBPre.y;
 }
 
