@@ -1212,10 +1212,9 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
           if (!this->MatchesFilter(entry.second)) {
             continue;
           }
-          if (entry.second.questType != 1) {
-            continue;
+          if (entry.second.questType == 1) {
+            listBox->AddData(entry.first, false);
           }
-          listBox->AddData(entry.first, false);
         }
         listBox->UpdateScrollBar();
         if (position == -1) {
