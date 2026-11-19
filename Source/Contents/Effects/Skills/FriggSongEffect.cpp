@@ -28,16 +28,17 @@ void CFriggSongEffect::UpdateSegmentVertices(CParticle* particle) {
   }
 
   const int segment = particle->columnIndex;
+  const float speed = particle->speedParameter;
   int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + particle->angle) % 360;
   if (segment == 20) {
     angle = static_cast<int>(particle->angle);
   }
 
   const int tilt = particle->phaseParameter;
-  const float spread = particle->speedParameter * g_cosTable[tilt];
-  const float height = particle->speedParameter * g_sinTable[tilt];
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
+  const float spread = speed * g_cosTable[tilt];
+  const float height = speed * g_sinTable[tilt];
   const float offsetX = spread * cosine;
   const float offsetZ = spread * sine;
   EffectPoint points[2];
