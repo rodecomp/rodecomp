@@ -25,6 +25,13 @@ CAxeBoomerang::CAxeBoomerang() : CEffect(-1) {
   this->launchPosition = vector3d{0.0f, 0.0f, 0.0f};
 }
 
+// OFFSET: 0x006F58D0
+// FUNCTION: fn_46149
+__declspec(noinline) CAxeBoomerang::~CAxeBoomerang() {
+}
+
+// OFFSET: 0x006F5990
+
 // OFFSET: 0x006F5A60
 // FUNCTION: fn_06839
 void CAxeBoomerang::Close() {
@@ -126,10 +133,17 @@ void CAxeBoomerang::OnProcess() {
   ++this->processCount;
 }
 
+// OFFSET: 0x006F6060
+
 // OFFSET: 0x006F63F0
 // FUNCTION: fn_06843
 void CAxeBoomerang::Render() {
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(this->emitter);
+  this->RenderParticle(this->emitter);
+}
+
+// OFFSET: 0x006F6420
+// FUNCTION: fn_46152
+__forceinline void CAxeBoomerang::RenderParticle(CEZ2STRParticle* particle) {
   if (particle) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     particle->DrawScreen(mode->camera->frame.view);

@@ -11,6 +11,7 @@ struct CEZ2STRParticle;
 class CAxeBoomerang : public CEffect {
 public:
   CAxeBoomerang();
+  ~CAxeBoomerang() override;
 
   void Open() override;
   void OnProcess() override;
@@ -26,6 +27,11 @@ public:
   /* 00D8 */ float trajectoryTime;
   /* 00DC */ vector3d particlePosition;
   /* 00E8 */ vector3d launchPosition;
+
+private:
+  vector3d EvaluateTrajectory(vector3d start, vector3d control, vector3d end, float t);
+  void UpdateParticle(CEZ2STRParticle* emitter);
+  void RenderParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
