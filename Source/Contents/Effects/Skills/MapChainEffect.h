@@ -20,6 +20,7 @@ struct MapChainPoint {
 class CMapChainEffect : public CEffect {
 public:
   CMapChainEffect();
+  ~CMapChainEffect() override;
   void Open() override;
   void OnProcess() override;
   void Render() override;
@@ -28,6 +29,7 @@ public:
   void ResetParticles() override;
 
   void CreateChainParticles(int param);
+  static void RenderParticle(CParticle* particle);
 
   /* 00CC */ MapChainPoint corners[2];
   /* 00E4 */ std::vector<CParticle*> particles;

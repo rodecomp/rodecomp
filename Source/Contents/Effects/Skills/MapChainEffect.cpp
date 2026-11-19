@@ -15,6 +15,8 @@ CMapChainEffect::CMapChainEffect()
     : CEffect(1024), particles(), chainModeA(2), chainModeB(2), chainModeC(2), chainModeD(2), chainModeE(2) {
 }
 
+// OFFSET: 0x00B4AAC0
+
 // OFFSET: 0x00B4AB90
 // FUNCTION: fn_18947
 void CMapChainEffect::CreateChainParticles(int param) {
@@ -198,25 +200,32 @@ void CMapChainEffect::OnProcess() {
   }
 }
 
+// OFFSET: 0x00B4B800
+// FUNCTION: fn_45982
+void CMapChainEffect::RenderParticle(CParticle* particle) {
+  if (!particle || particle->columnIndex <= 0) {
+    return;
+  }
+
+  if (particle->rowIndex < 6) {
+    particle->destinationBlend = 6;
+  }
+
+  ParticleQuad quad;
+  quad.billboard = false;
+  quad.top = 0.0f;
+  quad.bottom = 1.0f;
+  quad.left = static_cast<float>(particle->columnIndex - 1) / 21.0f;
+  quad.right = static_cast<float>(particle->columnIndex) / 21.0f;
+  quad.unused = true;
+  quad.depth = true;
+  particle->Render(quad);
+}
+
 // OFFSET: 0x00B4B740
 // FUNCTION: fn_18953
 void CMapChainEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    if (particle && particle->columnIndex > 0) {
-      if (particle->rowIndex < 6) {
-        particle->destinationBlend = 6;
-      }
-
-      ParticleQuad quad;
-      quad.billboard = false;
-      quad.top = 0.0f;
-      quad.bottom = 1.0f;
-      quad.left = static_cast<float>(particle->columnIndex - 1) / 21.0f;
-      quad.right = static_cast<float>(particle->columnIndex) / 21.0f;
-      quad.unused = true;
-      quad.depth = true;
-      particle->Render(quad);
-    }
+    CMapChainEffect::RenderParticle(*it);
   }
 }
