@@ -29,7 +29,8 @@ CStopRecruitingAsyncWork::CStopRecruitingAsyncWork()
       m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xA5FD29D7AB6DC59FULL)), sourceFile, 28) {
 }
 
-// INLINED
+// OFFSET: 0x005D6060
+// FUNCTION: fn_46413
 CStopRecruitingAsyncWork::~CStopRecruitingAsyncWork() = default;
 
 // OFFSET: 0x005D64A0
