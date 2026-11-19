@@ -32,15 +32,9 @@ void CBash::Close() {
   this->sparks.clear();
 }
 
-// OFFSET: 0x00B422E0
-// FUNCTION: fn_18870
-__declspec(safebuffers) void CBash::Open() {
-  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-  RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->Project(this->position, view, screen);
-  this->screenX = screen.x;
-  this->screenY = screen.y - 40.0f;
-
+// OFFSET: 0x00B41FA0
+// FUNCTION: fn_45934
+__forceinline void CBash::CreateRays() {
   const int fadeFrame = this->effectLifetime - 10;
   int index = 0;
   for (int angle = 0; angle < 360; angle += 36) {
@@ -52,7 +46,7 @@ __declspec(safebuffers) void CBash::Open() {
     particle->angle = static_cast<float>(angle);
     particle->scale = 100.0f;
     particle->speedParameter = 28.333334f;
-    float* values = &particle->animationParameter;
+    float* values = particle->animationValues;
     values[0] = 28.333334f;
     values[1] = static_cast<float>(fadeFrame);
     values[2] = 170.0f;
@@ -61,7 +55,11 @@ __declspec(safebuffers) void CBash::Open() {
     this->rays.push_back(particle);
     ++index;
   }
+}
 
+// OFFSET: 0x00B42090
+// FUNCTION: fn_45935
+__forceinline void CBash::CreateSparks() {
   int count = 20;
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     count = 10;
@@ -76,7 +74,7 @@ __declspec(safebuffers) void CBash::Open() {
     const int radius = rand() % 40;
     const int growth = rand() % 30;
     const int lifetime = this->effectLifetime;
-    float* values = &particle->animationParameter;
+    float* values = particle->animationValues;
     values[0] = static_cast<float>(angle >= 0 ? angle : 0);
     values[1] = speed;
     values[2] = acceleration;
@@ -92,10 +90,77 @@ __declspec(safebuffers) void CBash::Open() {
   } while (--count);
 }
 
+// OFFSET: 0x00B422E0
+// FUNCTION: fn_18870
+__declspec(safebuffers) void CBash::Open() {
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+  RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  g_renderer->Project(this->position, view, screen);
+  this->screenX = screen.x;
+  this->screenY = screen.y - 40.0f;
+
+  this->CreateRays();
+  this->CreateSparks();
+}
+
 // OFFSET: 0x00B42600
 // FUNCTION: fn_18871
 bool CBash::IsAlive() {
   return !this->IsFinished();
+}
+
+// OFFSET: 0x00B42610
+// FUNCTION: fn_45936
+__forceinline void CBash::UpdateRay(CParticle* particle) {
+  float* values = particle->animationValues;
+  const int fadeFrame = static_cast<int>(values[1]);
+  const int limit = static_cast<int>(values[2]);
+  float step = values[0];
+  if (this->frame == fadeFrame) {
+    step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
+  }
+
+  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
+  values[0] = step;
+  if (alpha < 0.0f) {
+    alpha = 0;
+  }
+
+  if (alpha > limit) {
+    alpha = limit;
+  }
+
+  particle->alpha = alpha;
+}
+
+// OFFSET: 0x00B42680
+// FUNCTION: fn_45937
+__forceinline void CBash::UpdateSpark(CParticle* particle) {
+  float* values = particle->animationValues;
+  const int fadeFrame = static_cast<int>(values[8]);
+  const int limit = static_cast<int>(values[6]);
+  const float speed = values[2] + values[1];
+  const float radius = values[5] + values[4];
+  float step = values[7];
+  const float angle = speed + values[0];
+  if (this->frame == fadeFrame) {
+    step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
+  }
+
+  values[0] = angle;
+  values[1] = speed;
+  values[4] = radius;
+  values[7] = step;
+  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
+  if (alpha < 0.0f) {
+    alpha = 0;
+  }
+
+  if (alpha > limit) {
+    alpha = limit;
+  }
+
+  particle->alpha = alpha;
 }
 
 // OFFSET: 0x00B42720
@@ -103,157 +168,125 @@ bool CBash::IsAlive() {
 void CBash::OnProcess() {
   for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
     CParticle* particle = *it;
-    float* values = &particle->animationParameter;
-    const int fadeFrame = static_cast<int>(values[1]);
-    const int limit = static_cast<int>(values[2]);
-    float step = values[0];
-    if (this->frame == fadeFrame) {
-      step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
-    }
-
-    int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
-    values[0] = step;
-    if (alpha < 0.0f) {
-      alpha = 0;
-    }
-
-    if (alpha > limit) {
-      alpha = limit;
-    }
-
+    this->UpdateRay(particle);
     ++particle->elapsedFrames;
-    particle->alpha = alpha;
   }
 
   for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
     CParticle* particle = *it;
-    float* values = &particle->animationParameter;
-    const int fadeFrame = static_cast<int>(values[8]);
-    const int limit = static_cast<int>(values[6]);
-    const float speed = values[2] + values[1];
-    const float radius = values[5] + values[4];
-    float step = values[7];
-    const float angle = speed + values[0];
-    if (this->frame == fadeFrame) {
-      step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
-    }
-
-    values[0] = angle;
-    values[1] = speed;
-    values[4] = radius;
-    values[7] = step;
-    int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
-    if (alpha < 0.0f) {
-      alpha = 0;
-    }
-
-    if (alpha > limit) {
-      alpha = limit;
-    }
-
+    this->UpdateSpark(particle);
     ++particle->elapsedFrames;
-    particle->alpha = alpha;
   }
+}
+
+// OFFSET: 0x00B42870
+// FUNCTION: fn_45938
+__forceinline void CBash::RenderRay(CParticle* particle) {
+  const int angle = static_cast<int>(particle->angle);
+  const float scale = particle->scale;
+  const float cosine = g_cosTable[angle];
+  const float sine = g_sinTable[angle];
+  const float nextCosine = g_cosTable[angle + 36];
+  const float nextSine = g_sinTable[angle + 36];
+  const float left = static_cast<float>(particle->columnIndex % 4) * 0.25f;
+  const std::uint32_t color = ((static_cast<std::uint32_t>(particle->alpha) << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
+  const float inner = 0.0f;
+
+  RenderPrimitive& primitive = particle->primitive;
+  RenderVertex* vertices = primitive.quad;
+  vertices[0].x = scale * cosine + this->screenX;
+  vertices[0].y = this->screenY - scale * sine;
+  vertices[0].z = 0.000001f;
+  vertices[0].rhw = 0.999999f;
+  vertices[0].diffuse = color;
+  vertices[0].u = left;
+  vertices[0].v = 0.0f;
+  vertices[1].x = scale * nextCosine + this->screenX;
+  vertices[1].y = this->screenY - nextSine * scale;
+  vertices[1].z = 0.000001f;
+  vertices[1].rhw = 0.999999f;
+  vertices[1].diffuse = color;
+  vertices[1].u = left + 0.25f;
+  vertices[1].v = 0.0f;
+  vertices[2].x = cosine * inner + this->screenX;
+  vertices[2].y = this->screenY - sine * inner;
+  vertices[2].z = 0.000001f;
+  vertices[2].rhw = 0.999999f;
+  vertices[2].diffuse = color;
+  vertices[2].u = left;
+  vertices[2].v = 1.0f;
+  vertices[3].x = nextCosine * inner + this->screenX;
+  vertices[3].y = nextSine * inner + this->screenY;
+  vertices[3].z = 0.000001f;
+  vertices[3].rhw = 0.999999f;
+  vertices[3].diffuse = color;
+  vertices[3].u = left;
+  vertices[3].v = 1.0f;
+  primitive.texture = particle->texture;
+  primitive.sourceBlend = particle->sourceBlend;
+  primitive.destinationBlend = particle->destinationBlend;
+  g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+}
+
+// OFFSET: 0x00B42A60
+// FUNCTION: fn_45939
+__forceinline void CBash::RenderSpark(CParticle* particle) {
+  const float* values = particle->animationValues;
+  const float angle = values[0];
+  const float width = values[3];
+  const float radius = values[4];
+  const int first = static_cast<int>(angle - width);
+  const float firstCosine = ClientCosine(first);
+  const float firstSine = ClientSine(first);
+  const int second = static_cast<int>(width + angle);
+  const float secondCosine = ClientCosine(second);
+  const float secondSine = ClientSine(second);
+  const std::uint32_t color = ((static_cast<std::uint32_t>(particle->alpha) << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
+
+  RenderPrimitive& primitive = particle->primitive;
+  RenderVertex* vertices = primitive.quad;
+  vertices[0].x = this->screenX;
+  vertices[0].y = this->screenY;
+  vertices[0].z = 0.000001f;
+  vertices[0].rhw = 0.999999f;
+  vertices[0].diffuse = color;
+  vertices[0].u = 0.5f;
+  vertices[0].v = 0.0f;
+  vertices[1].x = firstCosine * radius + this->screenX;
+  vertices[1].y = this->screenY - firstSine * radius;
+  vertices[1].z = 0.000001f;
+  vertices[1].rhw = 0.999999f;
+  vertices[1].diffuse = color;
+  vertices[1].u = 1.0f;
+  vertices[1].v = 1.0f;
+  vertices[2].x = secondCosine * radius + this->screenX;
+  vertices[2].y = this->screenY - secondSine * radius;
+  vertices[2].z = 0.000001f;
+  vertices[2].rhw = 0.999999f;
+  vertices[2].diffuse = color;
+  vertices[2].u = 0.0f;
+  vertices[2].v = 1.0f;
+  vertices[3].x = this->screenX;
+  vertices[3].y = this->screenY;
+  vertices[3].z = 0.000001f;
+  vertices[3].rhw = 0.999999f;
+  vertices[3].diffuse = color;
+  vertices[3].u = 0.5f;
+  vertices[3].v = 0.0f;
+  primitive.texture = particle->texture;
+  primitive.sourceBlend = particle->sourceBlend;
+  primitive.destinationBlend = particle->destinationBlend;
+  g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
 }
 
 // OFFSET: 0x00B42C40
 // FUNCTION: fn_18873
 void CBash::Render() {
   for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
-    CParticle* particle = *it;
-    const int angle = static_cast<int>(particle->angle);
-    const float scale = particle->scale;
-    const float cosine = g_cosTable[angle];
-    const float sine = g_sinTable[angle];
-    const float nextCosine = g_cosTable[angle + 36];
-    const float nextSine = g_sinTable[angle + 36];
-    const float left = static_cast<float>(particle->columnIndex % 4) * 0.25f;
-    const std::uint32_t color = ((particle->alpha << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
-    const float inner = 0.0f;
-
-    RenderPrimitive& primitive = particle->primitive;
-    RenderVertex* vertices = primitive.quad;
-    vertices[0].x = scale * cosine + this->screenX;
-    vertices[0].y = this->screenY - scale * sine;
-    vertices[0].z = 0.000001f;
-    vertices[0].rhw = 0.999999f;
-    vertices[0].diffuse = color;
-    vertices[0].u = left;
-    vertices[0].v = 0.0f;
-    vertices[1].x = scale * nextCosine + this->screenX;
-    vertices[1].y = this->screenY - nextSine * scale;
-    vertices[1].z = 0.000001f;
-    vertices[1].rhw = 0.999999f;
-    vertices[1].diffuse = color;
-    vertices[1].u = left + 0.25f;
-    vertices[1].v = 0.0f;
-    vertices[2].x = cosine * inner + this->screenX;
-    vertices[2].y = this->screenY - sine * inner;
-    vertices[2].z = 0.000001f;
-    vertices[2].rhw = 0.999999f;
-    vertices[2].diffuse = color;
-    vertices[2].u = left;
-    vertices[2].v = 1.0f;
-    vertices[3].x = nextCosine * inner + this->screenX;
-    vertices[3].y = nextSine * inner + this->screenY;
-    vertices[3].z = 0.000001f;
-    vertices[3].rhw = 0.999999f;
-    vertices[3].diffuse = color;
-    vertices[3].u = left;
-    vertices[3].v = 1.0f;
-    primitive.texture = particle->texture;
-    primitive.sourceBlend = particle->sourceBlend;
-    primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+    this->RenderRay(*it);
   }
 
   for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
-    CParticle* particle = *it;
-    const float* values = &particle->animationParameter;
-    const float angle = values[0];
-    const float width = values[3];
-    const float radius = values[4];
-    const int first = static_cast<int>(angle - width);
-    const float firstCosine = ClientCosine(first);
-    const float firstSine = ClientSine(first);
-    const int second = static_cast<int>(width + angle);
-    const float secondCosine = ClientCosine(second);
-    const float secondSine = ClientSine(second);
-    const std::uint32_t color = ((particle->alpha << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
-
-    RenderPrimitive& primitive = particle->primitive;
-    RenderVertex* vertices = primitive.quad;
-    vertices[0].x = this->screenX;
-    vertices[0].y = this->screenY;
-    vertices[0].z = 0.000001f;
-    vertices[0].rhw = 0.999999f;
-    vertices[0].diffuse = color;
-    vertices[0].u = 0.5f;
-    vertices[0].v = 0.0f;
-    vertices[1].x = firstCosine * radius + this->screenX;
-    vertices[1].y = this->screenY - firstSine * radius;
-    vertices[1].z = 0.000001f;
-    vertices[1].rhw = 0.999999f;
-    vertices[1].diffuse = color;
-    vertices[1].u = 1.0f;
-    vertices[1].v = 1.0f;
-    vertices[2].x = secondCosine * radius + this->screenX;
-    vertices[2].y = this->screenY - secondSine * radius;
-    vertices[2].z = 0.000001f;
-    vertices[2].rhw = 0.999999f;
-    vertices[2].diffuse = color;
-    vertices[2].u = 0.0f;
-    vertices[2].v = 1.0f;
-    vertices[3].x = this->screenX;
-    vertices[3].y = this->screenY;
-    vertices[3].z = 0.000001f;
-    vertices[3].rhw = 0.999999f;
-    vertices[3].diffuse = color;
-    vertices[3].u = 0.5f;
-    vertices[3].v = 0.0f;
-    primitive.texture = particle->texture;
-    primitive.sourceBlend = particle->sourceBlend;
-    primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+    this->RenderSpark(*it);
   }
 }

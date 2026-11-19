@@ -20,6 +20,14 @@ public:
   /* 00D8 */ std::vector<CParticle*> sparks;
   /* 00E4 */ float screenX;
   /* 00E8 */ float screenY;
+
+private:
+  void CreateRays();
+  void CreateSparks();
+  void UpdateRay(CParticle* particle);
+  void UpdateSpark(CParticle* particle);
+  void RenderRay(CParticle* particle);
+  void RenderSpark(CParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
