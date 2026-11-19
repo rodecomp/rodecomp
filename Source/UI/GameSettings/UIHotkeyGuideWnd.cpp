@@ -69,48 +69,61 @@ HotkeyGuideLabel& HotkeyGuideLabel::operator=(const HotkeyGuideLabel& other) {
   return *this;
 }
 
+// INLINED
+static HotkeyGuideKey MakeKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height) {
+  HotkeyGuideKey key;
+  key.valid = true;
+  key.align = align;
+  key.width = width;
+  key.padding = padding;
+  key.height = height;
+  key.x = x;
+  key.y = y;
+  return key;
+}
+
 // OFFSET: 0x00966C70
 // FUNCTION: fn_13164
 void UIHotkeyGuideWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  this->m_labels[8] = HotkeyGuideLabel("←", HotkeyGuideKey(528, 93, 0, 75, 15, 36), HotkeyGuideKey());
-  this->m_labels[9] = HotkeyGuideLabel("Tab", HotkeyGuideKey(21, 132, 0, 55, 15, 36), HotkeyGuideKey());
-  this->m_labels[13] = HotkeyGuideLabel("Enter", HotkeyGuideKey(528, 171, 2, 75, 20, 36), HotkeyGuideKey(876, 210, 6, 36, 0, 75));
-  this->m_labels[16] = HotkeyGuideLabel("Shift", HotkeyGuideKey(21, 210, 0, 94, 15, 36), HotkeyGuideKey(508, 210, 2, 95, 20, 36));
-  this->m_labels[17] = HotkeyGuideLabel("Ctrl", HotkeyGuideKey(21, 249, 0, 55, 15, 36), HotkeyGuideKey());
-  this->m_labels[18] = HotkeyGuideLabel("Alt", HotkeyGuideKey(118, 249, 6, 49, 0, 36), HotkeyGuideKey());
-  this->m_labels[19] = HotkeyGuideLabel("Pause", HotkeyGuideKey(702, 46, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[20] = HotkeyGuideLabel("Caps", HotkeyGuideKey(21, 171, 0, 75, 15, 36), HotkeyGuideKey());
-  this->m_labels[25] = HotkeyGuideLabel(LookupMessage(MSI_CHINESE_CHARACTER), HotkeyGuideKey(547, 249, 6, 56, 0, 36), HotkeyGuideKey());
-  this->m_labels[27] = HotkeyGuideLabel("Esc", HotkeyGuideKey(21, 46, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[32] = HotkeyGuideLabel("Space", HotkeyGuideKey(170, 249, 6, 246, 0, 36), HotkeyGuideKey());
-  this->m_labels[33] = HotkeyGuideLabel("PgUp", HotkeyGuideKey(702, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[34] = HotkeyGuideLabel("PgDn", HotkeyGuideKey(702, 132, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[35] = HotkeyGuideLabel("End", HotkeyGuideKey(663, 132, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[36] = HotkeyGuideLabel("Home", HotkeyGuideKey(663, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[37] = HotkeyGuideLabel("←", HotkeyGuideKey(624, 249, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[38] = HotkeyGuideLabel("↑", HotkeyGuideKey(663, 210, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[39] = HotkeyGuideLabel("→", HotkeyGuideKey(702, 249, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[40] = HotkeyGuideLabel("↓", HotkeyGuideKey(663, 249, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[44] = HotkeyGuideLabel("PrtSc", HotkeyGuideKey(624, 46, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[45] = HotkeyGuideLabel("Insert", HotkeyGuideKey(624, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[46] = HotkeyGuideLabel("Delete", HotkeyGuideKey(624, 132, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[48] = HotkeyGuideLabel("0", HotkeyGuideKey(411, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[49] = HotkeyGuideLabel("1", HotkeyGuideKey(60, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[50] = HotkeyGuideLabel("2", HotkeyGuideKey(99, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[51] = HotkeyGuideLabel("3", HotkeyGuideKey(138, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[52] = HotkeyGuideLabel("4", HotkeyGuideKey(177, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[53] = HotkeyGuideLabel("5", HotkeyGuideKey(216, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[54] = HotkeyGuideLabel("6", HotkeyGuideKey(255, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[55] = HotkeyGuideLabel("7", HotkeyGuideKey(294, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[56] = HotkeyGuideLabel("8", HotkeyGuideKey(333, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[57] = HotkeyGuideLabel("9", HotkeyGuideKey(372, 93, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[65] = HotkeyGuideLabel("A", HotkeyGuideKey(99, 171, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[66] = HotkeyGuideLabel("B", HotkeyGuideKey(274, 210, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[67] = HotkeyGuideLabel("C", HotkeyGuideKey(196, 210, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[68] = HotkeyGuideLabel("D", HotkeyGuideKey(177, 171, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[8] = HotkeyGuideLabel("←", MakeKey(528, 93, 0, 75, 15, 36), HotkeyGuideKey());
+  this->m_labels[9] = HotkeyGuideLabel("Tab", MakeKey(21, 132, 0, 55, 15, 36), HotkeyGuideKey());
+  this->m_labels[13] = HotkeyGuideLabel("Enter", MakeKey(528, 171, 2, 75, 20, 36), MakeKey(876, 210, 6, 36, 0, 75));
+  this->m_labels[16] = HotkeyGuideLabel("Shift", MakeKey(21, 210, 0, 94, 15, 36), MakeKey(508, 210, 2, 95, 20, 36));
+  this->m_labels[17] = HotkeyGuideLabel("Ctrl", MakeKey(21, 249, 0, 55, 15, 36), HotkeyGuideKey());
+  this->m_labels[18] = HotkeyGuideLabel("Alt", MakeKey(118, 249, 6, 49, 0, 36), HotkeyGuideKey());
+  this->m_labels[19] = HotkeyGuideLabel("Pause", MakeKey(702, 46, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[20] = HotkeyGuideLabel("Caps", MakeKey(21, 171, 0, 75, 15, 36), HotkeyGuideKey());
+  this->m_labels[25] = HotkeyGuideLabel(LookupMessage(MSI_CHINESE_CHARACTER), MakeKey(547, 249, 6, 56, 0, 36), HotkeyGuideKey());
+  this->m_labels[27] = HotkeyGuideLabel("Esc", MakeKey(21, 46, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[32] = HotkeyGuideLabel("Space", MakeKey(170, 249, 6, 246, 0, 36), HotkeyGuideKey());
+  this->m_labels[33] = HotkeyGuideLabel("PgUp", MakeKey(702, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[34] = HotkeyGuideLabel("PgDn", MakeKey(702, 132, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[35] = HotkeyGuideLabel("End", MakeKey(663, 132, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[36] = HotkeyGuideLabel("Home", MakeKey(663, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[37] = HotkeyGuideLabel("←", MakeKey(624, 249, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[38] = HotkeyGuideLabel("↑", MakeKey(663, 210, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[39] = HotkeyGuideLabel("→", MakeKey(702, 249, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[40] = HotkeyGuideLabel("↓", MakeKey(663, 249, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[44] = HotkeyGuideLabel("PrtSc", MakeKey(624, 46, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[45] = HotkeyGuideLabel("Insert", MakeKey(624, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[46] = HotkeyGuideLabel("Delete", MakeKey(624, 132, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[48] = HotkeyGuideLabel("0", MakeKey(411, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[49] = HotkeyGuideLabel("1", MakeKey(60, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[50] = HotkeyGuideLabel("2", MakeKey(99, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[51] = HotkeyGuideLabel("3", MakeKey(138, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[52] = HotkeyGuideLabel("4", MakeKey(177, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[53] = HotkeyGuideLabel("5", MakeKey(216, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[54] = HotkeyGuideLabel("6", MakeKey(255, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[55] = HotkeyGuideLabel("7", MakeKey(294, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[56] = HotkeyGuideLabel("8", MakeKey(333, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[57] = HotkeyGuideLabel("9", MakeKey(372, 93, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[65] = HotkeyGuideLabel("A", MakeKey(99, 171, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[66] = HotkeyGuideLabel("B", MakeKey(274, 210, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[67] = HotkeyGuideLabel("C", MakeKey(196, 210, 6, 36, 0, 36), HotkeyGuideKey());
+  this->m_labels[68] = HotkeyGuideLabel("D", MakeKey(177, 171, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[69] = HotkeyGuideLabel("E", HotkeyGuideKey(157, 132, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[70] = HotkeyGuideLabel("F", HotkeyGuideKey(216, 171, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[71] = HotkeyGuideLabel("G", HotkeyGuideKey(255, 171, 6, 36, 0, 36), HotkeyGuideKey());
