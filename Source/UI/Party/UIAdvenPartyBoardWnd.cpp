@@ -184,17 +184,15 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
 
   std::vector<std::string> lines;
   WrapPlainText(LookupMessage(MSI_ADVEN_WARNING_TEXT), lines, 40);
-  int y = 136;
 
   for (unsigned index = 0; index < lines.size(); ++index) {
     auto* value = new UIStaticText();
     value->SetSize(this->geometry.width - 18, 15);
-    value->Move(9, y);
+    value->Move(9, 136 + index * 12);
     value->SetText(lines[index].c_str(), 0);
     value->SetFont(0, 11, 0, 0);
     value->SetColor(255, 0, 0);
     this->AddChild(value);
-    y += 12;
   }
 
   auto* close = new UIBitmapButton();
