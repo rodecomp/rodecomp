@@ -400,11 +400,11 @@ void Ripemd128Transform(unsigned int* state, const unsigned int* block) {
   RIPEMD128_STEP(cc, dd, aa, bb, block[10], 15, RIPEMD128_F, 0u);
   RIPEMD128_STEP(bb, cc, dd, aa, block[14], 8, RIPEMD128_F, 0u);
 
-  const unsigned int result = state[1] + c + dd;
+  dd += c + state[1];
   state[1] = state[2] + d + aa;
   state[2] = state[3] + a + bb;
   state[3] = state[0] + b + cc;
-  state[0] = result;
+  state[0] = dd;
 }
 
 #undef RIPEMD128_STEP
@@ -787,7 +787,11 @@ void BuildKeyedBoxes(unsigned char* boxes, const unsigned char* key, int keyLeng
   }
 }
 
-#define SBOX_ROUND(a, b, c)                                                     ((g_sboxLookup[((a) & 0x36) | ((c) & 0x6900) | ((b) & 0x6C0)] & 0xF) |         (g_sboxLookup[((c) & 0x22A) | ((a) & 0x2980) | ((b) & 0x9011)] & 0xCC00) |    (g_sboxLookup[((b) & 0x4828) | ((c) & 0x10C4) | ((a) & 0x8601)] & 0x3300) |    (g_sboxLookup[((c) & 0x8411) | ((a) & 0x5048) | ((b) & 0x2106)] & 0xF0))
+// INLINED
+static __forceinline unsigned short SboxRound(unsigned int a, unsigned int b, unsigned int c) {
+  return (g_sboxLookup[(a & 0x36) | (c & 0x6900) | (b & 0x6C0)] & 0xF) | (g_sboxLookup[(c & 0x22A) | (a & 0x2980) | (b & 0x9011)] & 0xCC00) |
+         (g_sboxLookup[(b & 0x4828) | (c & 0x10C4) | (a & 0x8601)] & 0x3300) | (g_sboxLookup[(c & 0x8411) | (a & 0x5048) | (b & 0x2106)] & 0xF0);
+}
 
 // OFFSET: 0x00B120B0
 // FUNCTION: fn_18412
@@ -798,25 +802,10 @@ void SboxEncryptBlock(unsigned char* block, const unsigned short* key) {
   unsigned short x3 = static_cast<unsigned short>((block[7] << 8) | block[6]);
 
   for (int round = 8; round != 0; --round) {
-    unsigned int a;
-    unsigned int b;
-    unsigned int c;
-    a = static_cast<unsigned short>(key[0] ^ x1);
-    b = static_cast<unsigned short>(key[1] ^ x2);
-    c = static_cast<unsigned short>(key[2] ^ x3);
-    x0 ^= SBOX_ROUND(a, b, c);
-    a = static_cast<unsigned short>(key[3] ^ x2);
-    b = static_cast<unsigned short>(key[4] ^ x3);
-    c = static_cast<unsigned short>(key[5] ^ x0);
-    x1 ^= SBOX_ROUND(a, b, c);
-    a = static_cast<unsigned short>(key[6] ^ x3);
-    b = static_cast<unsigned short>(key[7] ^ x0);
-    c = static_cast<unsigned short>(key[8] ^ x1);
-    x2 ^= SBOX_ROUND(a, b, c);
-    a = static_cast<unsigned short>(key[9] ^ x0);
-    b = static_cast<unsigned short>(key[10] ^ x1);
-    c = static_cast<unsigned short>(key[11] ^ x2);
-    x3 ^= SBOX_ROUND(a, b, c);
+    x0 ^= SboxRound(static_cast<unsigned short>(key[0] ^ x1), static_cast<unsigned short>(key[1] ^ x2), static_cast<unsigned short>(key[2] ^ x3));
+    x1 ^= SboxRound(static_cast<unsigned short>(key[3] ^ x2), static_cast<unsigned short>(key[4] ^ x3), static_cast<unsigned short>(key[5] ^ x0));
+    x2 ^= SboxRound(static_cast<unsigned short>(key[6] ^ x3), static_cast<unsigned short>(key[7] ^ x0), static_cast<unsigned short>(key[8] ^ x1));
+    x3 ^= SboxRound(static_cast<unsigned short>(key[9] ^ x0), static_cast<unsigned short>(key[10] ^ x1), static_cast<unsigned short>(key[11] ^ x2));
     key += 12;
   }
 
