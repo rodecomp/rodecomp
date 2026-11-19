@@ -3142,21 +3142,23 @@ void CEffectPrim::RenderTube(matrix& wtm) {
     return;
   }
 
-  const float deltaX = slot.vecTNow.x - slot.vecTPre.x;
   const float deltaZ = slot.vecTNow.z - slot.vecTPre.z;
+  const float deltaX = slot.vecTNow.x - slot.vecTPre.x;
   const float length = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
-  const float dirX = deltaX / length;
   const float dirZ = deltaZ / length;
+  const float dirX = deltaX / length;
   short heading;
   for (heading = 0; heading <= 180; ++heading) {
     if (dirX >= g_cosTable[heading]) {
       break;
     }
   }
-  if (heading > 180) {
+  if (heading <= 180) {
+    if (dirZ < 0.0f) {
+      heading = static_cast<short>(360 - heading);
+    }
+  } else {
     heading = 180;
-  } else if (dirZ < 0.0f) {
-    heading = static_cast<short>(360 - heading);
   }
   short side = static_cast<short>(heading + 90);
   if (side >= 360) {
@@ -3197,15 +3199,19 @@ void CEffectPrim::RenderTube(matrix& wtm) {
         const float mode = slot.height[4];
         if (pass == 0) {
           alpha = slot.alphaB;
-          if (mode == 2.0f) {
+          if (2.0f == mode) {
             this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 0, 100, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          } else if (mode == 3.0f) {
-            this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          } else if (mode == 4.0f) {
-            alpha = static_cast<short>(slot.alphaB / 2);
-            this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           } else {
-            this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            if (mode != 3.0f) {
+              if (mode == 4.0f) {
+                alpha = static_cast<short>(slot.alphaB / 2);
+                this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              } else {
+                this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              }
+            } else {
+              this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            }
           }
         } else if (mode == 2.0f) {
           alpha = static_cast<short>(2 * slot.alphaB);
