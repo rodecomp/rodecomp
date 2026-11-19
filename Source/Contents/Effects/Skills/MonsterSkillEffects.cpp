@@ -4463,8 +4463,8 @@ void CDancingKnifeEffect::Open() {
 // FUNCTION: fn_07204
 void CDancingKnifeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    if (IsEmitterAlive(emitter) == true) {
+    if (IsEmitterAlive(*it) == true) {
+      CEZ2STRParticle* emitter = *it;
       if (emitter) {
         const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
         emitter->position = position;
@@ -4472,7 +4472,7 @@ void CDancingKnifeEffect::OnProcess() {
       }
       ++it;
     } else {
-      FreeParticle(emitter);
+      FreeParticle(*it);
       it = this->emitters.erase(it);
     }
   }
