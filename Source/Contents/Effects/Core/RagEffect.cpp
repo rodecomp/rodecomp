@@ -10499,7 +10499,9 @@ void CRagEffect::SkyCloud(char kind) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
-      if (std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
+      const char* mapName = g_modeMgr.GetGameMode()->mapName;
+
+      if (std::string(mapName) == "ecl_fild01.rsw") {
         this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
         this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
       }
@@ -10541,26 +10543,37 @@ void CRagEffect::SkyCloud(char kind) {
 
     this->state.lastPrim->state.slots[index].height[8] = static_cast<float>(ClampedRandom(360));
 
-    if (kind == 3) {
+    switch (kind) {
+    case 3:
       this->state.lastPrim->state.slots[index].flag1[2] = 12;
-    } else if (kind == 5) {
+      break;
+    case 5:
       this->state.lastPrim->state.slots[index].flag1[2] = 14;
-    } else if (kind == 7) {
+      break;
+    case 7:
       this->state.lastPrim->state.slots[index].flag1[2] = 16;
-    } else if (kind == 8) {
+      break;
+    case 8:
       this->state.lastPrim->state.slots[index].flag1[2] = 17;
-    } else if (kind == 9) {
+      break;
+    case 9:
       this->state.lastPrim->state.slots[index].flag1[2] = 23;
-    } else if (kind == 15) {
+      break;
+    case 15:
       this->state.lastPrim->state.slots[index].flag1[2] = 25;
-    } else if (kind == 11) {
+      break;
+    case 11:
       this->state.lastPrim->state.slots[index].flag1[2] = 14;
-    } else if (kind == 12) {
+      break;
+    case 12:
       this->state.lastPrim->state.slots[index].flag1[2] = 16;
-    } else if (kind == 13) {
+      break;
+    case 13:
       this->state.lastPrim->state.slots[index].flag1[2] = 17;
-    } else {
+      break;
+    default:
       this->state.lastPrim->state.slots[index].flag1[2] = kind == 14 ? 24 : 0;
+      break;
     }
   }
 }
