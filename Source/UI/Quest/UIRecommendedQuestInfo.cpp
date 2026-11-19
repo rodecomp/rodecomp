@@ -302,7 +302,7 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
   }
 
   const auto& quests = g_renewQuestMgr->m_recommendedQuests;
-  const auto found = quests.find(questId);
+  const auto& found = quests.find(questId);
   if (found != quests.end()) {
     const RenewQuestRecommendedInfo& quest = found->second;
     this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.backgroundImage);
@@ -315,7 +315,7 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
 
     SetQuestNpc(this, quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
   } else {
-    std::string text = std::format("Not found Quest Info = %lu", questId);
+    std::string text = std::format("Not found Quest Info = %lu", static_cast<unsigned long>(questId));
     g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
