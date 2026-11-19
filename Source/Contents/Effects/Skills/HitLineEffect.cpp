@@ -7,14 +7,16 @@
 #include <algorithm>
 #include <cstdlib>
 
-struct HitLineVector3d : vector3d {
-  // INLINED
-  HitLineVector3d() {
-    this->x = 0.0f;
-    this->y = 0.0f;
-    this->z = 0.0f;
-  }
-};
+// OFFSET: 0x00704D60
+// FUNCTION: fn_46201
+CHitLineEffect::CHitLineEffect() : CEffect(330) {
+  this->effectLifetime = 200;
+}
+
+// OFFSET: 0x00704E10
+// FUNCTION: fn_46202
+__declspec(noinline) CHitLineEffect::~CHitLineEffect() {
+}
 
 // OFFSET: 0x00705040
 // FUNCTION: fn_07035
@@ -26,40 +28,46 @@ void CHitLineEffect::Close() {
   this->particles.clear();
 }
 
+// OFFSET: 0x00704EF0
+// FUNCTION: fn_46203
+__forceinline void CHitLineEffect::CreateLines() {
+  for (int line = 0; line < 4; ++line) {
+    const int delayRoll = rand() % 26;
+    const int delay = -(delayRoll >= 0 ? delayRoll : 0);
+    const int brightnessRoll = rand() % 51;
+    const int brightness = (brightnessRoll >= 0 ? brightnessRoll : 0) + 125;
+    const int angleRoll = rand() % 360;
+    const int angle = angleRoll >= 0 ? angleRoll : 0;
+    for (int segment = 0; segment < 20; ++segment) {
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
+      if (particle) {
+        particle->SetTexture("effect\\white02.bmp");
+        const int id = this->id;
+        particle->rowIndex = line;
+        particle->effectId = id;
+        particle->columnIndex = segment;
+        particle->groupIndex = 4;
+        particle->elapsedFrames = delay;
+        particle->scale = 0.1f;
+        particle->effectParameter = brightness;
+        particle->phaseParameter = angle;
+        particle->speedParameter = 14.0f;
+        for (int index = 0; index < 21; ++index) {
+          (&particle->animationState)[index] = 0;
+          (&particle->animationParameter)[index] = 0.0f;
+        }
+        particle->InitParticleQuad(particle->vertices);
+        this->particles.push_back(particle);
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00705100
 // FUNCTION: fn_07036
 void CHitLineEffect::Open() {
   for (int pass = 0; pass < 4; ++pass) {
-    for (int line = 0; line < 4; ++line) {
-      const int delayRoll = rand() % 26;
-      const int delay = -(delayRoll >= 0 ? delayRoll : 0);
-      const int brightnessRoll = rand() % 51;
-      const int brightness = (brightnessRoll >= 0 ? brightnessRoll : 0) + 125;
-      const int angleRoll = rand() % 360;
-      const int angle = angleRoll >= 0 ? angleRoll : 0;
-      for (int segment = 0; segment < 20; ++segment) {
-        CParticle* particle = CreateParticle(&this->positionVector, 5);
-        if (particle) {
-          particle->SetTexture("effect\\white02.bmp");
-          const int id = this->id;
-          particle->rowIndex = line;
-          particle->effectId = id;
-          particle->columnIndex = segment;
-          particle->groupIndex = 4;
-          particle->elapsedFrames = delay;
-          particle->scale = 0.1f;
-          particle->effectParameter = brightness;
-          particle->phaseParameter = angle;
-          particle->speedParameter = 14.0f;
-          for (int index = 0; index < 21; ++index) {
-            (&particle->animationState)[index] = 0;
-            (&particle->animationParameter)[index] = 0.0f;
-          }
-          particle->InitParticleQuad(particle->vertices);
-          this->particles.push_back(particle);
-        }
-      }
-    }
+    this->CreateLines();
   }
 }
 
@@ -67,6 +75,33 @@ void CHitLineEffect::Open() {
 // FUNCTION: fn_07037
 bool CHitLineEffect::IsAlive() {
   return !this->IsFinished();
+}
+
+// OFFSET: 0x007053F0
+// FUNCTION: fn_46205
+__forceinline void CHitLineEffect::UpdateParticle(CParticle* particle) {
+  if (particle && particle->elapsedFrames > 0) {
+    int& brightness = particle->effectParameter;
+    short level = static_cast<short>(brightness);
+    if (particle->elapsedFrames > 35) {
+      level -= 5;
+    }
+    brightness = std::max<short>(0, level);
+
+    float* turns = &particle->animationParameter;
+    signed char* halfTurns = &particle->animationState;
+    float turn = turns[0] + 8.0f;
+    if (turn > 180.0f) {
+      ++halfTurns[0];
+      turn -= 180.0f;
+    }
+    turns[0] = turn;
+
+    for (int index = 0; index < 20; ++index) {
+      turns[20 - index] = turns[19 - index];
+      halfTurns[20 - index] = halfTurns[19 - index];
+    }
+  }
 }
 
 // OFFSET: 0x00705280
@@ -78,32 +113,12 @@ void CHitLineEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    if (particle && particle->elapsedFrames > 0) {
-      int& brightness = particle->effectParameter;
-      short level = static_cast<short>(brightness);
-      if (particle->elapsedFrames > 35) {
-        level -= 5;
-      }
-      brightness = std::max<short>(0, level);
-
-      float* turns = &particle->animationParameter;
-      signed char* halfTurns = &particle->animationState;
-      float turn = turns[0] + 8.0f;
-      if (turn > 180.0f) {
-        ++halfTurns[0];
-        turn -= 180.0f;
-      }
-      turns[0] = turn;
-
-      for (int index = 0; index < 20; ++index) {
-        turns[20 - index] = turns[19 - index];
-        halfTurns[20 - index] = halfTurns[19 - index];
-      }
-    }
-
+    this->UpdateParticle(particle);
     ++particle->elapsedFrames;
   }
 }
+
+// OFFSET: 0x00705080
 
 // OFFSET: 0x00705510
 // FUNCTION: fn_07039
