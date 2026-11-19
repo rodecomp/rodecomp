@@ -46,12 +46,12 @@ inline bool HexColorToken(const char* text, const char* end) {
 // FUNCTION: fn_13829
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width) {
   const char* begin = text;
-  const char* chunk = text;
   const char* current = text;
-  const char* breakAt = text;
   const char* end = text + std::strlen(text);
+  const char* breakAt = text;
   const char* limit = text + width;
   const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
+  const char* chunk = text;
 
   while (current < end) {
     current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
