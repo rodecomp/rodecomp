@@ -232,6 +232,7 @@ void CStarEmperorEffect::OnProcess() {
 }
 
 // OFFSET: 0x0072CAA0
+// FUNCTION: fn_46130
 __forceinline void CStarEmperorEffect::UpdateSphereParticle(CParticle* particle) {
   if (particle) {
     const int frame = particle->elapsedFrames;
