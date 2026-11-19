@@ -519,11 +519,10 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     this->AddChild(this->m_tabs[index]);
   }
 
-  int y = 56;
   for (int row = 0; row < this->m_visibleRows; ++row) {
     this->m_fields[row] = new UIEditCtrl();
     this->m_fields[row]->SetSize(214, 18);
-    this->m_fields[row]->Move(14, y);
+    this->m_fields[row]->Move(14, row * 22 + 56);
     this->m_fields[row]->flat = 0;
     this->m_fields[row]->Border(125, 125, 125);
     this->m_fields[row]->preserveInput = 1;
@@ -534,7 +533,6 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     this->m_fields[row]->SetTooltip(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_MAP_QUIZ_INPUT));
     this->AddChild(this->m_fields[row]);
     this->m_names[row] = "";
-    y += 22;
   }
   this->m_target = "";
 
