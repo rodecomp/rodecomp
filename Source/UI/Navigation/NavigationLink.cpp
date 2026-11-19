@@ -940,45 +940,47 @@ int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
 // OFFSET: 0x008389A0
 // FUNCTION: fn_10454
 int CCreateLineInfo::LayoutText(int x, std::string text, LineTextStyle style) {
-  const int width = MeasureText(this->m_parent, text, style).cx;
+  int position = x;
+  const LineTextStyle measureStyle = style;
+  const int width = MeasureText(this->m_parent, text, measureStyle).cx;
   if (width > this->m_width) {
-    const std::string first = FitText(this->m_parent, text, style, this->m_width - x);
-    UIWindow* last = this->CreateTextWindow(first, style);
+    const std::string first = FitText(this->m_parent, text, measureStyle, this->m_width - position);
+    UIWindow* last = this->CreateTextWindow(first, measureStyle);
     if (last) {
       this->AddWindow(last);
     }
 
     const std::string rest = text.substr(first.size(), text.size() - first.size());
-    const std::vector<std::string> lines = SplitLines(this->m_parent, rest, style, this->m_width);
+    const std::vector<std::string> lines = SplitLines(this->m_parent, rest, measureStyle, this->m_width);
     if (!lines.empty()) {
-      x = 0;
+      position = 0;
     }
 
     for (auto line = lines.begin(); line != lines.end(); ++line) {
       this->NewLine();
-      last = this->CreateTextWindow(*line, style);
+      last = this->CreateTextWindow(*line, measureStyle);
       if (last) {
         this->AddWindow(last);
       }
     }
 
     if (last) {
-      x += last->geometry.width;
+      position += last->geometry.width;
     }
   } else {
-    if (this->m_width < x + width) {
+    if (this->m_width < position + width) {
       this->NewLine();
-      x = 0;
+      position = 0;
     }
 
     UIWindow* window = this->CreateTextWindow(text, style);
     if (window) {
       this->AddWindow(window);
-      x += window->geometry.width;
+      position += window->geometry.width;
     }
   }
 
-  return x;
+  return position;
 }
 
 // OFFSET: 0x00838D40
