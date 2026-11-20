@@ -762,12 +762,14 @@ static __forceinline void ResetParticle(CParticle& particle) {
   particle.depthOffset = 0;
 
   for (int i = 0; i < 4; ++i) {
-    particle.vertices[i].x = 0;
-    particle.vertices[i].y = 0;
-    particle.vertices[i].z = 0;
-    particle.corners[i].x = 0;
-    particle.corners[i].y = 0;
-    particle.corners[i].z = 0;
+    RenderVertex& vertex = particle.vertices[i];
+    vertex.x = 0;
+    vertex.y = 0;
+    vertex.z = 0;
+    vector3d& corner = particle.corners[i];
+    corner.x = 0;
+    corner.y = 0;
+    corner.z = 0;
   }
 
   particle.InitParticleQuad(particle.vertices);
