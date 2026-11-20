@@ -10696,7 +10696,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
   fields[6] = -1;
   value.assign(text, 5);
   fields[0] = this->DecodeLinkNumber(std::move(value));
-  value.clear();
+  value = "";
   value += text[5];
   fields[1] = this->DecodeLinkNumber(value);
   value.clear();
