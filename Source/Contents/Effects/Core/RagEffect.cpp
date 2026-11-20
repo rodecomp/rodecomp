@@ -10000,7 +10000,7 @@ void CRagEffect::NapalmFragments() {
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
-  if (this->state.stateCnt >= 15 || this->state.stateCnt % 5 > this->state.stateCnt) {
+  if (this->state.stateCnt >= 15 || this->state.stateCnt < this->state.stateCnt % 5) {
     return;
   }
 
