@@ -4077,7 +4077,9 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         step *= 3;
       }
       const float radius = static_cast<float>(step) + this->state.slots[ec].distance;
-      this->state.slots[ec].vecBPre = {radius * g_cosTable[angle1], 0.0f, g_sinTable[angle1] * radius};
+      this->state.slots[ec].vecBPre.x = radius * g_cosTable[angle1];
+      this->state.slots[ec].vecBPre.y = 0.0f;
+      this->state.slots[ec].vecBPre.z = g_sinTable[angle1] * radius;
       this->state.slots[ec].vecBNow = {radius * g_cosTable[angle2], 0.0f, g_sinTable[angle2] * radius};
       unsigned angle3 = static_cast<unsigned>(angle2 + (mode == 6 || mode == 7 ? 70 : 90));
       if (angle3 >= 360) {
