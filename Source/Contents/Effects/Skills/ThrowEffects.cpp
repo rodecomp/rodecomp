@@ -131,7 +131,7 @@ void CThrowItemEffect::Open() {
       particle->groupIndex = 1;
 
       switch (this->id) {
-      case EF_THROWITEM:
+      case EF_THROWITEM: {
         this->effectLifetime = 300;
         this->arcHeight = 30.0f;
         this->InitTrajectory(particle);
@@ -141,16 +141,18 @@ void CThrowItemEffect::Open() {
         particle->angle = 0;
         particle->speedParameter = particle->animationParameter / 25.0f;
         particle->alpha = 255;
-        particle->offsetX = this->position[0];
-        particle->offsetY = this->position[1] - 8.0f;
-        particle->offsetZ = this->position[2];
+        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+        particle->offsetX = offset.x;
+        particle->offsetY = offset.y;
+        particle->offsetZ = offset.z;
         particle->destinationBlend = 6;
         break;
+      }
       case EF_THROWITEM2:
         particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
         this->InitPotionParticle(particle, this->effectArgument == -1 ? 1 : this->effectArgument);
         break;
-      case EF_THROWITEM3:
+      case EF_THROWITEM3: {
         this->effectLifetime = 300;
         this->arcHeight = 10.0f;
         particle->SetTexture("유저인터페이스\\item\\돌.bmp");
@@ -159,11 +161,13 @@ void CThrowItemEffect::Open() {
         particle->angle = 0;
         particle->speedParameter = 2.0f;
         particle->alpha = 255;
-        particle->offsetX = this->position[0];
-        particle->offsetY = this->position[1] - 8.0f;
-        particle->offsetZ = this->position[2];
+        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+        particle->offsetX = offset.x;
+        particle->offsetY = offset.y;
+        particle->offsetZ = offset.z;
         particle->destinationBlend = 6;
         break;
+      }
       case EF_THROWITEM4:
         this->launchDelay = 5;
         particle->SetTexture("유저인터페이스\\item\\화염병.bmp");
@@ -206,7 +210,7 @@ void CThrowItemEffect::Open() {
         particle->SetTexture("유저인터페이스\\item\\쿠나이_화.bmp");
         this->InitSpinParticle(particle);
         particle->speedParameter = 1.0f;
-      case EF_THROW_HAPPOKUNAI:
+      case EF_THROW_HAPPOKUNAI: {
         this->effectLifetime = 200;
         this->arcHeight = 1.0f;
         particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
@@ -215,16 +219,19 @@ void CThrowItemEffect::Open() {
         particle->angle = 330.0f;
         particle->speedParameter = 1.5f;
         particle->alpha = 255;
-        particle->offsetX = this->position[0];
-        particle->offsetZ = this->position[2];
-        particle->offsetY = this->position[1] - 8.0f;
+        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
+        particle->offsetX = offset.x;
+        particle->offsetZ = offset.z;
+        particle->offsetY = offset.y;
         particle->destinationBlend = 6;
         if (this->sourceActor == 0) {
-          this->sourcePosition[1] = this->position[1];
-          this->sourcePosition[2] = this->position[2];
-          this->sourcePosition[0] = this->position[0] - 8.0f;
+          const vector3d source = {this->position[0] - 8.0f, this->position[1], this->position[2]};
+          this->sourcePosition[1] = source.y;
+          this->sourcePosition[2] = source.z;
+          this->sourcePosition[0] = source.x;
         }
         break;
+      }
       case EF_THROW_MULTIPLE_COIN:
         this->effectLifetime = 200;
         this->arcHeight = 10.0f;
