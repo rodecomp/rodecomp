@@ -405,7 +405,9 @@ bool CWorldViewMgr::ScaleToScreen() {
 
     const int textureWidth = (*it)->texture->Width();
     const int textureHeight = (*it)->texture->Height();
-    for (CWorldViewMap* map : (*it)->maps) {
+    const auto mapEnd = (*it)->maps.end();
+    for (auto mapIt = (*it)->maps.begin(); mapIt != mapEnd; ++mapIt) {
+      CWorldViewMap* map = *mapIt;
       this->ScaleArea(&map->left, 17, textureWidth, textureHeight);
       const auto fieldEnd = map->fields.end();
       for (auto fieldIt = map->fields.begin(); fieldIt != fieldEnd; ++fieldIt) {
