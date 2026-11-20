@@ -383,18 +383,18 @@ void CRenderObject::ProcessMotion() {
 // FUNCTION: fn_21096
 void CRenderObject::PlayFrameSounds() {
   int lastMotion = static_cast<int>(this->render.lastSoundMotion);
-  if (lastMotion != this->render.curMotion || this->render.lastSoundAnimation != static_cast<std::uint32_t>(this->render.animation)) {
-    if (this->render.lastSoundAnimation != static_cast<std::uint32_t>(this->render.animation)) {
+  if (this->render.curMotion != lastMotion || static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
+    if (static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
       this->render.lastSoundMotion = 0;
       lastMotion = 0;
     }
     CActRes* action = this->render.action;
-    if (lastMotion < this->render.curMotion) {
+    if (this->render.curMotion > lastMotion) {
       for (int motion = lastMotion + 1; motion <= this->render.curMotion; ++motion) {
         const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
-        if (actionFrame.sound != -1) {
+        if (-1 != actionFrame.sound) {
           std::string sound = action->Sound(actionFrame.sound);
-          if (sound.find(".wav", 0) != std::string::npos) {
+          if (std::string::npos != sound.find(".wav", 0)) {
             CWorld* world = g_modeMgr.GetGameMode()->scene;
             const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
@@ -403,18 +403,18 @@ void CRenderObject::PlayFrameSounds() {
           }
         }
       }
-    } else if (lastMotion > this->render.curMotion) {
+    } else if (this->render.curMotion < lastMotion) {
       const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
       lastMotion = static_cast<int>(this->render.lastSoundMotion);
-      if (lastMotion >= count) {
+      if (count <= lastMotion) {
         lastMotion = count - 1;
         this->render.lastSoundMotion = static_cast<std::uint32_t>(lastMotion);
       }
       for (int motion = lastMotion + 1; motion < count; ++motion) {
         const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
-        if (actionFrame.sound != -1) {
+        if (-1 != actionFrame.sound) {
           std::string sound = action->Sound(actionFrame.sound);
-          if (sound.find(".wav", 0) != std::string::npos) {
+          if (std::string::npos != sound.find(".wav", 0)) {
             CWorld* world = g_modeMgr.GetGameMode()->scene;
             const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
@@ -425,9 +425,9 @@ void CRenderObject::PlayFrameSounds() {
       }
       for (int motion = 0; motion <= this->render.curMotion; ++motion) {
         const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
-        if (actionFrame.sound != -1) {
+        if (-1 != actionFrame.sound) {
           std::string sound = action->Sound(actionFrame.sound);
-          if (sound.find(".wav") != std::string::npos) {
+          if (std::string::npos != sound.find(".wav")) {
             CWorld* world = g_modeMgr.GetGameMode()->scene;
             const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
