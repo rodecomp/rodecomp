@@ -458,7 +458,7 @@ void UINameBalloonText::AddNameLine(const char* text) {
   }
 
   this->m_lines.clear();
-  this->m_lines.push_back(std::string(text));
+  this->m_lines.push_back(text);
   this->nameWidth = std::max(
     this->TextWidth(this->m_lines.back().c_str(), this->m_lines.back().size(), 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8, 32
   );
@@ -474,7 +474,7 @@ void UIVerticalNameBalloonText::AddNameLine(const char* text) {
   }
 
   this->m_lines.clear();
-  this->m_lines.push_back(std::string(text));
+  this->m_lines.push_back(text);
   const int textHeight = this->VerticalTextHeight(this->m_lines.back().c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06);
   this->textHeight = std::max(textHeight + 8, 32);
   this->Resize(g_nameBalloonFontHeight + 8, this->textHeight);
