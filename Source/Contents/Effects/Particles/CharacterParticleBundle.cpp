@@ -186,7 +186,8 @@ bool CChopChopClawMarks::IsAlive() {
 // FUNCTION: fn_03139
 void CharacterParticleBundle::OnProcess() {
   this->EmitParticles();
-  this->particles.erase(std::remove_if(this->particles.begin(), this->particles.end(), [](CEZ2STRParticle* particle) {
+  const auto last = this->particles.end();
+  this->particles.erase(std::remove_if(this->particles.begin(), last, [](CEZ2STRParticle* particle) {
     if (!particle) {
       return true;
     }
@@ -195,7 +196,7 @@ void CharacterParticleBundle::OnProcess() {
       return true;
     }
     return false;
-  }), this->particles.end());
+  }), last);
 
   for (auto particleIt = this->particles.begin(); particleIt != this->particles.end(); ++particleIt) {
     CEZ2STRParticle*& particle = *particleIt;
