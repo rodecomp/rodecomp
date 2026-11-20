@@ -459,8 +459,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   if (actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
     card.name = "??????";
   } else {
-    const std::string name = this->nameCard.Name(actor->render.accountId);
-    card.name = name;
+    card.name = this->nameCard.Name(actor->render.accountId);
   }
 
   if (g_session.IsMonsterActor(actor) == 1) {
