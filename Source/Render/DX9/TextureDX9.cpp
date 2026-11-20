@@ -368,24 +368,27 @@ bool CTextureDX9::UploadSurface(
 
   switch (description.Format) {
   case D3DFMT_A1R5G5B5: {
-    volatile std::uint8_t transparent = blackTransparent;
-    for (int row = 0; row < h; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
+    int row = 0;
+    if (h > 0) {
+      volatile std::uint8_t transparent = blackTransparent;
+      for (; row < h; ++row) {
+        auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
+        const std::uint32_t* input = pixels + row * stepY * sourceWidth;
 
-      for (int column = 0; column < w; ++column) {
-        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
-        const std::uint16_t rgb = converted & 0x7FFF;
-        std::uint16_t value;
-        if (rgb == 0x7C1F) {
-          value = 0;
-        } else if (transparent && !rgb) {
-          value = 0;
-        } else {
-          value = converted;
+        for (int column = 0; column < w; ++column) {
+          const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
+          const std::uint16_t rgb = converted & 0x7FFF;
+          std::uint16_t value;
+          if (rgb == 0x7C1F) {
+            value = 0;
+          } else if (transparent && !rgb) {
+            value = 0;
+          } else {
+            value = converted;
+          }
+
+          std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
-
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
     }
     break;
