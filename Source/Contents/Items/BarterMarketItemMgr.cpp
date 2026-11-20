@@ -692,12 +692,11 @@ void SortMedianOfThree(BarterEntryPair* first, BarterEntryPair* mid, BarterEntry
     *last = *mid;
     *mid = saved;
     if (lastId < first->id) {
-      int savedId2 = lastId;
-      int savedValue2 = mid->value;
-      mid->id = first->id;
-      mid->value = first->value;
-      first->id = savedId2;
-      first->value = savedValue2;
+      BarterEntryPair saved2;
+      saved2.id = lastId;
+      saved2.value = mid->value;
+      *mid = *first;
+      *first = saved2;
     }
   }
 }
