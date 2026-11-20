@@ -2097,12 +2097,11 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
     this->keyCode = VK_OEM_PERIOD;
   } else {
     this->keyCode = key;
-    this->modifierKey = 0;
-    if (key == VK_ESCAPE) {
-      return 0;
-    }
   }
   this->modifierKey = 0;
+  if (key == VK_ESCAPE) {
+    return 0;
+  }
 
   int& primary = this->keyCode;
   if (HIBYTE(GetAsyncKeyState(VK_MENU)) && primary != VK_MENU) {
