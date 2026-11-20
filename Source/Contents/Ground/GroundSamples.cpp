@@ -77,33 +77,32 @@ static __forceinline void ReadLightmapSample(const GroundCell& cell, unsigned sa
 // OFFSET: 0x00AC11D0
 // FUNCTION: fn_17579
 void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const {
-  if (column < 0 || (column >> 1) >= this->width || row <= -1 || (row >> 1) >= this->height || this->cells.empty()) {
-    alpha = red = green = blue = 255;
-    return;
-  }
+  if (column >= 0 && (column >> 1) < this->width && row >= 0 && (row >> 1) < this->height && !this->cells.empty()) {
+    const unsigned index = static_cast<unsigned>(column >> 1) + static_cast<unsigned>(row >> 1) * static_cast<unsigned>(this->width);
+    const GroundCell& cell = this->cells[index];
 
-  const unsigned index = static_cast<unsigned>(column >> 1) + static_cast<unsigned>(row >> 1) * static_cast<unsigned>(this->width);
-
-  if (!this->cells[index].top || !this->cells[index].top->lightmap) {
-    alpha = red = green = blue = 255;
-    return;
-  }
-
-  const GroundCell& cell = this->cells[index];
-
-  if ((column & 1) == 0) {
-    if ((row & 1) == 0) {
-      ReadLightmapSample(cell, 0, alpha, red, green, blue);
-    } else {
-      ReadLightmapSample(cell, 2, alpha, red, green, blue);
-    }
-  } else {
-    if ((row & 1) == 0) {
-      ReadLightmapSample(cell, 1, alpha, red, green, blue);
-    } else {
-      ReadLightmapSample(cell, 3, alpha, red, green, blue);
+    if (cell.top && cell.top->lightmap) {
+      if ((column & 1) == 0) {
+        if ((row & 1) == 0) {
+          ReadLightmapSample(cell, 0, alpha, red, green, blue);
+        } else {
+          ReadLightmapSample(cell, 2, alpha, red, green, blue);
+        }
+      } else {
+        if ((row & 1) == 0) {
+          ReadLightmapSample(cell, 1, alpha, red, green, blue);
+        } else {
+          ReadLightmapSample(cell, 3, alpha, red, green, blue);
+        }
+      }
+      return;
     }
   }
+
+  alpha = 255;
+  red = 255;
+  green = 255;
+  blue = 255;
 }
 
 // OFFSET: 0x00AC0C40
