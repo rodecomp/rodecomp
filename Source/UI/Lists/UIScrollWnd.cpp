@@ -342,13 +342,9 @@ void UIScrollWnd::UpdateScrollRange() {
     UIWindow* child = it->first;
     if (child->geometry.visible != 0) {
       const int childRight = child->geometry.width + it->second.x;
-      if (right < childRight) {
-        right = childRight;
-      }
+      right = right < childRight ? childRight : right;
       const int childBottom = it->second.y + child->geometry.height;
-      if (bottom < childBottom) {
-        bottom = childBottom;
-      }
+      bottom = bottom < childBottom ? childBottom : bottom;
     }
   }
 
@@ -387,14 +383,8 @@ void UIScrollWnd::UpdateScrollRange() {
     this->viewWidth = visibleWidth;
   }
 
-  if (right < visibleWidth) {
-    right = visibleWidth;
-  }
-  this->contentWidth = right;
-  if (bottom < visibleHeight) {
-    bottom = visibleHeight;
-  }
-  this->contentHeight = bottom;
+  this->contentWidth = right < visibleWidth ? visibleWidth : right;
+  this->contentHeight = bottom < visibleHeight ? visibleHeight : bottom;
 
   if (this->horizontalScrollable == 1) {
     this->horizontalBar->Resize(visibleWidth, this->scrollBarHeight);
