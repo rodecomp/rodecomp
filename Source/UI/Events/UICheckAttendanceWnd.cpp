@@ -202,9 +202,12 @@ void UICheckAttendanceWnd::Paint() {
       std::list<std::string> lines;
       this->WrapText(message, &lines, 112, 0, 12, 1);
       const int top = static_cast<int>((77 - lines.size() * 15) * 0.5 + 95);
-      int line = 0;
-      for (auto it = lines.begin(); it != lines.end(); ++it, ++line) {
-        this->DrawCenteredText(343, bannerHeight + top + line * 12 + std::max(line - 1, 0) * 3, it->c_str(), 112, 0, 12, 0x613CA5, 1);
+      int line = -1;
+      int offset = 0;
+      for (auto it = lines.begin(); it != lines.end(); ++it) {
+        this->DrawCenteredText(343, bannerHeight + (std::max(line, 0) + offset) * 3 + top, it->c_str(), 112, 0, 12, 0x613CA5, 1);
+        ++line;
+        offset += 4;
       }
     }
   }
