@@ -540,7 +540,9 @@ int L_SetSuccessRate(lua_State* L) {
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -3));
   uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint64_t rate = static_cast<uint64_t>(lua_tonumber(L, -1));
-  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].options[optionKey].successRate = rate;
+  const uint64_t key = id;
+  const uint32_t option = optionKey;
+  CEnchantMgr::GetInstance()->m_enchants[key].options[option].successRate = rate;
   return 2;
 }
 
@@ -1033,9 +1035,10 @@ int L_SetReset(lua_State* L) {
   }
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[id].resetEnabled = enabled;
-  mgr->m_enchants[id].resetRate = rate;
-  mgr->m_enchants[id].reset.cost = cost;
-  mgr->m_enchants[id].reset.materials = mgr->ConvertMaterials(materials);
+  const uint64_t key = id;
+  mgr->m_enchants[key].resetEnabled = enabled;
+  mgr->m_enchants[key].resetRate = rate;
+  mgr->m_enchants[key].reset.cost = cost;
+  mgr->m_enchants[key].reset.materials = mgr->ConvertMaterials(materials);
   return 2;
 }
