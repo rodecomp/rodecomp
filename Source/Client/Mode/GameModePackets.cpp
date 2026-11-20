@@ -11788,7 +11788,8 @@ void CGameMode::ReceiveActorAction(
     if (sourceAid == g_session.m_aid) {
       if (this->scene->GetGameActorByAID(g_session.petGid)) {
         const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
-        const int action = g_session.GetPetActionNumber(hungerLevel, g_session.GetPetFriendlyState(g_session.m_petFriendly), 1);
+        const int friendlyState = g_session.GetPetFriendlyState(g_session.m_petFriendly);
+        const int action = g_session.GetPetActionNumber(hungerLevel, friendlyState, 1);
         if (rand() % 100 < 25 && g_session.CheckInterval(60000) == true) {
           const int emotion = g_session.GetPetEmotionNumber(g_session.petJob, 1, hungerLevel);
           this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
@@ -11797,7 +11798,8 @@ void CGameMode::ReceiveActorAction(
       }
     } else {
       char text[256];
-      g_session.GetMonsterTalkText(static_cast<CGameActor*>(actor)->GetEffectiveJob(-1), 0, 0, text, sourceAid);
+      const int job = static_cast<CGameActor*>(actor)->GetEffectiveJob(-1);
+      g_session.GetMonsterTalkText(job, 0, 0, text, sourceAid);
       if (std::strcmp(text, "") != 0) {
         actor->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text), 0, 0, 0, 0, 0);
         if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
