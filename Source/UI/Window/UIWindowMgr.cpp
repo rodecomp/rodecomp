@@ -2148,7 +2148,8 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     const unsigned id = static_cast<unsigned>((*it)->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, (*it)->GetReplayData()));
+      std::vector<unsigned char> state = (*it)->GetReplayData();
+      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, state));
     }
   }
   AppendReplayChunk(data, MakeReplayMarker(20001));
