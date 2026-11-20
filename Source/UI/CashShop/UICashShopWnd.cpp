@@ -916,7 +916,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       if (selected != this->m_selectedTab) {
         for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
           if (tab->first != 10 && tab->first != 8 && tab->second != nullptr) {
-            tab->second->SendMsg(this, UM_SETSTATE, selected == tab->first, 0, 0, 0);
+            if (selected == tab->first) {
+              tab->second->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+            } else {
+              tab->second->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+            }
           }
         }
         this->m_selectedTab = selected;
