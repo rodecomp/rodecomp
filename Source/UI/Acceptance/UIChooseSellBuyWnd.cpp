@@ -9126,23 +9126,31 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
 
     case ID_STORE_PASSWORD_NUM_RESET:
-      if (this->passwordStage != 0) {
-        if (g_session.m_passwordInputAlternate) {
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
-        } else {
-          this->passwordStage = 1;
-          this->activeInputY = this->currentPasswordY;
-        }
-      } else {
+      if (this->passwordStage == 0) {
         this->passwordStage = 0;
         this->activeInputY = this->currentPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+      } else if (g_session.m_passwordInputAlternate) {
+        this->passwordStage = 2;
+        this->activeInputY = this->newPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+      } else {
+        this->passwordStage = 1;
+        this->activeInputY = this->currentPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       }
-      this->inputDigitCount = 0;
-      this->maskTextX = 0;
-      std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-      std::memset(this->newPassword, 0, sizeof(this->newPassword));
-      std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       this->Paint();
       break;
 
