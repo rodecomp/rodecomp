@@ -12480,12 +12480,13 @@ void UIFrameWnd::DrawItemNameText(
     FrameTextLines lines(2);
     this->WrapTextSegments(width, 2, segments, lines);
 
-    if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+    const std::size_t textLength = std::strlen(text);
+    if (this->TextWidth(text, textLength, position->family, position->height, 0, 0) > width * 2) {
       this->FitLastTextLine(width, 2, position->family, position->height, lines);
     }
 
     {
-      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
+      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, textLength)};
       this->m_textCache[std::move(key)] = lines;
     }
     this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
