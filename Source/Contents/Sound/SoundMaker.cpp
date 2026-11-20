@@ -1626,12 +1626,12 @@ void CNpc::SetState(int state, int) {
       }
       const float x = this->render.position.x;
       const float z = this->render.position.z;
-      const int halfWidth = width / 2;
-      const int halfHeight = height / 2;
-      this->boundsLeft = x - static_cast<float>(halfWidth);
-      this->boundsRight = static_cast<float>(halfWidth) + x;
-      this->boundsTop = z - static_cast<float>(halfHeight);
-      this->boundsBottom = static_cast<float>(halfHeight) + z;
+      const float halfWidth = static_cast<float>(width / 2);
+      const float halfHeight = static_cast<float>(height / 2);
+      this->boundsLeft = x - halfWidth;
+      this->boundsRight = halfWidth + x;
+      this->boundsTop = z - halfHeight;
+      this->boundsBottom = halfHeight + z;
       if (this->appearanceInitialized == 0 && this->render.enabled) {
         this->appearanceInitialized = 1;
         this->LaunchEffect(EF_WARPZONE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
