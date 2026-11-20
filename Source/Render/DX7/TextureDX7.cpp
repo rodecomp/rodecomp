@@ -108,26 +108,32 @@ bool MatchesTextureFormatDX7(const DDPIXELFORMAT& format, TextureFormat requeste
   switch (requested) {
   case TextureFormat::A1R5G5B5:
     if (format.dwRGBAlphaBitMask == 0x8000 && format.dwRBitMask == 0x7C00 && format.dwGBitMask == 0x03E0 &&
-        format.dwBBitMask == 0x001F)
-      return true;
-    break;
+        format.dwBBitMask == 0x001F) {
+      break;
+    }
+    return false;
   case TextureFormat::A4R4G4B4:
     if (format.dwRGBAlphaBitMask == 0xF000 && format.dwRBitMask == 0x0F00 && format.dwGBitMask == 0x00F0 &&
-        format.dwBBitMask == 0x000F)
-      return true;
-    break;
+        format.dwBBitMask == 0x000F) {
+      break;
+    }
+    return false;
+  default:
+    return false;
   case TextureFormat::R5G6B5:
     if (format.dwRGBAlphaBitMask == 0 && format.dwRBitMask == 0xF800 && format.dwGBitMask == 0x07E0 &&
-        format.dwBBitMask == 0x001F)
-      return true;
-    break;
+        format.dwBBitMask == 0x001F) {
+      break;
+    }
+    return false;
   case TextureFormat::A8R8G8B8:
     if (format.dwRGBAlphaBitMask == 0xFF000000 && format.dwRBitMask == 0x00FF0000 &&
-        format.dwGBitMask == 0x0000FF00 && format.dwBBitMask == 0x000000FF)
-      return true;
-    break;
+        format.dwGBitMask == 0x0000FF00 && format.dwBBitMask == 0x000000FF) {
+      break;
+    }
+    return false;
   }
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00543B00
