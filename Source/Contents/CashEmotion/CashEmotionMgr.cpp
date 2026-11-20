@@ -1290,7 +1290,7 @@ bool CCashEmotionMgr::IsChatProhibitEmotion(int emotionId) {
     return false;
   }
 
-  return this->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit) == emotionId;
+  return this->GetSpecialEmotionInline(CashEmotionSpecial::ChatProhibit) == emotionId;
 }
 
 // OFFSET: 0x0059C410

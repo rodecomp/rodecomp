@@ -135,7 +135,15 @@ public:
   __declspec(noinline) const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
   __declspec(noinline) CashEmotionTable* GetBasePackEmotions();
-  int GetSpecialEmotion(CashEmotionSpecial type);
+  __declspec(noinline) int GetSpecialEmotion(CashEmotionSpecial type);
+  // INLINED
+  __forceinline int GetSpecialEmotionInline(CashEmotionSpecial type) {
+    auto it = this->m_specials.find(type);
+    if (this->m_specials.end() != it) {
+      return it->second;
+    }
+    return this->LookupSpecialEmotion(type);
+  }
   CashEmotionData* GetEmotionData(int packId, int emotionId);
   const char* GetEmotionName(int packId, int emotionId);
   const char* GetBaseEmotionName(int emotionId);
