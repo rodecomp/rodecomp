@@ -69,8 +69,7 @@ namespace {
 
     // INLINED
     void Clear() {
-      this->bytes = 0;
-      this->id = 0;
+      this->bytes = this->id = 0;
     }
 
     /* 0000 */ std::int16_t id;
