@@ -5,8 +5,8 @@
 
 // OFFSET: 0x0054FFA0
 // FUNCTION: fn_01965
-__declspec(noinline) bool IsValidIdentChar(char value) {
-  return g_colorHexDigit[static_cast<unsigned char>(value)] != 0;
+__declspec(noinline) unsigned char IsValidIdentChar(char value) {
+  return g_colorHexDigit[static_cast<unsigned char>(value)];
 }
 #include "Client/Mode/CMode.h"
 
