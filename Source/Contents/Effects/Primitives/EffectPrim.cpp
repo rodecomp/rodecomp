@@ -9,6 +9,32 @@
 // INLINED
 __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->textures = nullptr;
+
+  this->speed3d = {};
+  this->orgPos = {};
+  this->deltaPos = {};
+  this->deltaPos2 = {};
+  this->deltaPos3 = {};
+  this->deltaPosAccel = {};
+
+  for (vector3d& corner : this->segPos) {
+    corner = {};
+  }
+
+  for (EffectPrimitiveRecord& record : this->records) {
+    record.position = {};
+
+    for (vector3d& corner : record.corners) {
+      corner = {};
+    }
+  }
+
+  for (RenderTriangle& triangle : this->triangles) {
+    for (RenderVertex& vertex : triangle.vertices) {
+      vertex = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+    }
+  }
+
   this->playWaveType = 0;
   this->playWaveName = 0;
   this->type = 0;
@@ -105,31 +131,6 @@ __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& rend
   this->useRenderFlag[0] = 0;
   this->spriteLiftLow = 0;
   this->spriteLiftHigh = 0;
-
-  this->speed3d = {};
-  this->orgPos = {};
-  this->deltaPos = {};
-  this->deltaPos2 = {};
-  this->deltaPos3 = {};
-  this->deltaPosAccel = {};
-
-  for (vector3d& corner : this->segPos) {
-    corner = {};
-  }
-
-  for (EffectPrimitiveRecord& record : this->records) {
-    record.position = {};
-
-    for (vector3d& corner : record.corners) {
-      corner = {};
-    }
-  }
-
-  for (RenderTriangle& triangle : this->triangles) {
-    for (RenderVertex& vertex : triangle.vertices) {
-      vertex = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    }
-  }
 
   std::memcpy(&this->transform, g_identityMatrix, sizeof(g_identityMatrix));
   std::memcpy(&this->rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
