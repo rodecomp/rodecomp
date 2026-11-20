@@ -26,6 +26,10 @@ public:
   /* 0040 */ int viewId;
 };
 
+// OFFSET: 0x006D3610
+// FUNCTION: fn_06541
+inline ITEM_DESC::~ITEM_DESC() = default;
+
 extern std::map<int, ITEM_DESC> g_itemDescriptions;
 extern std::map<int, std::vector<const char*>> g_metalProcessItems;
 extern std::map<int, std::vector<const char*>> g_bookItemNames;

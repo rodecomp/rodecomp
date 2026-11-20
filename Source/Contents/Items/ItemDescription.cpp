@@ -21,10 +21,6 @@ ITEM_DESC::ITEM_DESC()
 // FUNCTION: fn_06560
 ITEM_DESC::ITEM_DESC(const ITEM_DESC&) = default;
 
-// OFFSET: 0x006D3610
-// FUNCTION: fn_06541
-ITEM_DESC::~ITEM_DESC() = default;
-
 // OFFSET: 0x006D5160
 // FUNCTION: fn_06568
 ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) = default;
