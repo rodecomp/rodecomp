@@ -669,8 +669,14 @@ int CSession::FindShopId(std::string name) {
 // FUNCTION: fn_05621
 bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
   SessionShop* shop = g_session.FindShop(g_session.FindShopId(""));
+  if (shop == nullptr) {
+    const bool changed = this->m_active != true;
+    this->m_active = true;
+    return changed;
+  }
+
   bool active = true;
-  if (shop != nullptr && shop->items.size() >= 1) {
+  if (shop->items.size() >= 1) {
     active = shop->items[0].end() != shop->items[0].find(this->m_id);
   }
   const bool changed = this->m_active != active;
@@ -5203,9 +5209,10 @@ int CLuaInstance::GetFieldStringArray(std::vector<std::string>& values, const ch
 
   lua_getfield(this->m_state, -1, name);
   int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TTABLE) {
     lua_pushnil(this->m_state);
+    result = 0;
     while (lua_next(this->m_state, -2) != 0) {
       result = lua_type(this->m_state, -1) == LUA_TSTRING ? 0 : 2;
       if (result != 0) {
