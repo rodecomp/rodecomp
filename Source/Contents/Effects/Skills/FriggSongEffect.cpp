@@ -4,6 +4,7 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -198,7 +199,7 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
   const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
   float& height = particle->animationParameter;
   if (age < 20) {
-    height = 1.0f;
+    height = g_projectionDepthNumerator;
   } else if (age <= 140) {
     height = (std::max)(g_sinTable[age - 20] * particle->speedParameter, 0.0f);
   } else {
