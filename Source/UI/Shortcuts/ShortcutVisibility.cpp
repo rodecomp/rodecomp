@@ -41,7 +41,7 @@ namespace {
       if (it != g_windowMgr.rendered.end()) {
         UIWindow* value = *it;
         g_windowMgr.rendered.erase(it);
-        g_windowMgr.rendered.push_back(value);
+        g_windowMgr.rendered.emplace_back(value);
       }
     }
 
@@ -49,7 +49,7 @@ namespace {
 
     if (entry != g_windowMgr.rendered.end()) {
       g_windowMgr.rendered.erase(entry);
-      g_windowMgr.rendered.push_back(window);
+      g_windowMgr.rendered.emplace_back(window);
     }
   }
 }
