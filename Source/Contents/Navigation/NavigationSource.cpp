@@ -723,7 +723,22 @@ void CNavigationManager::ClearCurrentObject() {
 // OFFSET: 0x00B95280
 // FUNCTION: fn_19573
 int CNavigationManager::RouteFromPlayer() {
-  CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
+  NaviCell player;
+  NaviCell start;
+  int result;
+  NaviCell destination;
+  NaviCell cell;
+  CNaviInfo* info;
+  NaviCell cell2;
+  NaviCell linked;
+  NaviCell cellX;
+  NaviCell cellY;
+  NaviCell cellX2;
+  NaviCell cellY2;
+  NaviCell cellX3;
+  NaviCell cellY3;
+
+  info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
     const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
@@ -735,11 +750,10 @@ int CNavigationManager::RouteFromPlayer() {
     }
   }
 
-  int result = -96;
+  result = -96;
   this->drawRoute = false;
   this->routeFlag = false;
   this->drawDestination = false;
-  NaviCell player;
   player.x = 0;
   player.y = 0;
   if (CGameMode* mode = g_modeMgr.GetGameMode()) {
@@ -757,7 +771,6 @@ int CNavigationManager::RouteFromPlayer() {
       return code;
     }
 
-    NaviCell cell;
     if (player.x == this->data.GetCell(&cell)->x && player.y == this->data.GetCell(&cell)->y) {
       this->movementRoute.points.clear();
       PathCell point = {player.x, player.y, 0, 0};
@@ -766,7 +779,6 @@ int CNavigationManager::RouteFromPlayer() {
       return 11;
     }
 
-    NaviCell destination;
     if (this->BuildRoute(player.x, player.y, this->data.GetCell(&destination)->x, this->data.GetCell(&cell)->y, true)) {
       this->nodes.clear();
       this->routeResult = std::abs(player.x - this->data.GetCell(&destination)->x) + std::abs(player.y - this->data.GetCell(&cell)->y);
@@ -790,7 +802,7 @@ int CNavigationManager::RouteFromPlayer() {
     }
   }
 
-  const NaviCell start = player;
+  start = player;
   if (this->nodes.empty() || info == nullptr) {
     return result;
   }
@@ -811,10 +823,8 @@ int CNavigationManager::RouteFromPlayer() {
         continue;
       }
 
-      const NaviCell linked = this->nodes[index - 1]->GetLinkedCell();
+      linked = this->nodes[index - 1]->GetLinkedCell();
       if (linked.x == start.x && linked.y == start.y) {
-        NaviCell cellX;
-        NaviCell cellY;
         if (this->BuildRoute(start.x, start.y, this->nodes[index]->GetCell(&cellX)->x, this->nodes[index]->GetCell(&cellY)->y, true)) {
           this->selectedNode = index;
           this->SelectTarget(index);
@@ -828,11 +838,9 @@ int CNavigationManager::RouteFromPlayer() {
 
     if (this->nodes[0]->GetInfo() == info) {
       this->movementRoute.points.clear();
-      NaviCell cellX;
-      NaviCell cellY;
-      if (start.x == this->nodes[0]->GetCell(&cellX)->x && start.y == this->nodes[0]->GetCell(&cellY)->y) {
+      if (start.x == this->nodes[0]->GetCell(&cell)->x && start.y == this->nodes[0]->GetCell(&cell2)->y) {
         this->movementRoute.points.push_back({start.x, start.y, 0, 0});
-      } else if (!this->BuildRoute(start.x, start.y, this->nodes[0]->GetCell(&cellX)->x, this->nodes[0]->GetCell(&cellY)->y, true)) {
+      } else if (!this->BuildRoute(start.x, start.y, this->nodes[0]->GetCell(&cellX2)->x, this->nodes[0]->GetCell(&cellY2)->y, true)) {
         goto search;
       }
       this->selectedNode = 0;
@@ -843,9 +851,7 @@ int CNavigationManager::RouteFromPlayer() {
 
   search:
     for (int index = 0; index < static_cast<int>(candidates.size()); ++index) {
-      NaviCell cellX;
-      NaviCell cellY;
-      if (this->BuildRoute(start.x, start.y, this->nodes[candidates[index]]->GetCell(&cellX)->x, this->nodes[candidates[index]]->GetCell(&cellY)->y, true)) {
+      if (this->BuildRoute(start.x, start.y, this->nodes[candidates[index]]->GetCell(&cellX3)->x, this->nodes[candidates[index]]->GetCell(&cellY3)->y, true)) {
         this->selectedNode = candidates[index];
         this->SelectTarget(candidates[index]);
         this->drawRoute = true;
