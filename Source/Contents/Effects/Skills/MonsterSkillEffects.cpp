@@ -1680,10 +1680,9 @@ void CFullScreenEffect::Open() {
       particle->alpha = 0xFF;
       this->particles.push_back(particle);
     }
-    return;
+  } else {
+    this->loaded = 0;
   }
-
-  this->loaded = 0;
 }
 
 // OFFSET: 0x00716BD0
