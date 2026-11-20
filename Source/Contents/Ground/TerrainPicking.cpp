@@ -4,7 +4,9 @@
 // OFFSET: 0x00749300
 // FUNCTION: fn_07842
 float C3dAttr::RayDistance(const float* ray, int column, int row) const {
-  float nearest = 999999.0f;
+  constexpr float noIntersectionDistance = 999999.0f;
+  float firstDistance = noIntersectionDistance;
+  float nearest = noIntersectionDistance;
   const TerrainHeightCell* cell;
 
   cell = this->CellAt(column, row);
@@ -43,11 +45,12 @@ float C3dAttr::RayDistance(const float* ray, int column, int row) const {
   float distance;
 
   if (IntersectRayTriangle(ray, &corners[0].x, &corners[1].x, &corners[2].x, u, v, distance)) {
-    nearest = distance < nearest ? distance : nearest;
+    firstDistance = distance < noIntersectionDistance ? distance : noIntersectionDistance;
+    nearest = firstDistance;
   }
 
   if (IntersectRayTriangle(ray, &corners[1].x, &corners[3].x, &corners[2].x, u, v, distance)) {
-    nearest = distance < nearest ? distance : nearest;
+    nearest = distance < firstDistance ? distance : firstDistance;
   }
 
   return nearest;
