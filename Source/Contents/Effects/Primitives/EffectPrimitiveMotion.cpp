@@ -2475,8 +2475,9 @@ bool CEffectPrim::Prim3DParticleGravity() {
   this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
   this->state.size = this->state.sizeSpeed + this->state.size;
 
-  if (this->state.gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
-    this->state.gravSpeed = this->state.gravSpeed / -1.5f;
+  const float gravSpeed = this->state.gravSpeed;
+  if (gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
+    this->state.gravSpeed = gravSpeed / -1.5f;
 
     if (this->state.playWaveType == 1) {
       char name[52];
