@@ -283,7 +283,7 @@ void CUIAdventureGuide::OnButtonClick() {
 
 // OFFSET: 0x009DBFD0
 // FUNCTION: fn_14313
-__declspec(noinline) void CRenewQuestMgr::AddStatusRequest(unsigned int id) {
+void CRenewQuestMgr::AddStatusRequest(unsigned int id) {
   this->m_statusRequests.insert(id);
 }
 
@@ -657,7 +657,7 @@ void CUIQuest::LoadPage(int type, int id) {
     data.type = type;
     this->questList->data.push_back(data);
     if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.questId)) {
-      g_renewQuestMgr->m_statusRequests.insert(content.questId);
+      g_renewQuestMgr->AddStatusRequest(content.questId);
     }
   }
   this->questList->UpdateScrollBar();
