@@ -10944,7 +10944,7 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
   while (close != std::string::npos) {
     text = text.substr(0, close);
     std::size_t open = text.find(g_itemLinkOpen);
-    if (close != std::string::npos && open == std::string::npos) {
+    if (open == std::string::npos && close != std::string::npos) {
       position += g_itemLinkClose.size();
       text = source;
       text = text.substr(position);
