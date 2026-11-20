@@ -84,12 +84,11 @@ void CRichManKim::OnProcess() {
 // FUNCTION: fn_46179
 __forceinline void CRichManKim::UpdateParticle(CParticle* particle) {
   if (particle) {
-    int index = this->angleIndex + 1;
-    this->angleIndex = index;
-    if (index > 360) {
+    ++this->angleIndex;
+    if (this->angleIndex > 360) {
       this->angleIndex = 0;
-      index = 0;
     }
+    const int index = this->angleIndex;
 
     float& width = particle->animationParameters[0];
     const float height = static_cast<float>(static_cast<double>(particle->animationParameter) - static_cast<double>(g_cosTable[index]) * 0.08);
