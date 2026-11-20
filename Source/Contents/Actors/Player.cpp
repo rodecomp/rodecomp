@@ -4221,11 +4221,12 @@ void CGrannyPc::RenderModel(
     matrix world;
     world.Compose(local, view);
 
+    std::uint16_t* meshIndices = indices;
     int vertexCount = 0;
     RenderCommand* command = commands[mesh];
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       for (int corner = 3; corner != 0; --corner) {
-        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        const GrannyPNT332Vertex& vertex = source[meshIndices[vertexCount]];
         RenderVertex& output = command->vertices[vertexCount];
         ++vertexCount;
         position.x = vertex.position[0];
