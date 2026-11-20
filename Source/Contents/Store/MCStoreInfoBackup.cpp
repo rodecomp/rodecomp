@@ -5,6 +5,7 @@
 #include "Client/Session/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
+#include "Linkage/Source/Contents/Emblems/EmblemDataDownloadAsyncWork.cpp.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
@@ -14,7 +15,7 @@
 
 // OFFSET: 0x00605BF0
 // FUNCTION: fn_04226
-CMCStoreInfoBackup::CMCStoreInfoBackup() : loaded(false), pendingSaves(0), saveUrl(""), loadUrl(""), title(""), type(0) {
+CMCStoreInfoBackup::CMCStoreInfoBackup() : loaded(false), pendingSaves(0), saveUrl(0, '\0'), loadUrl(0, '\0'), title(0, '\0'), type(0) {
   this->enabled = true;
 }
 
@@ -167,7 +168,8 @@ void CMCStoreInfoBackup::Save(int type) {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveStore(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->SaveUrl(),
+    CAsyncWorkMgr* mgr = g_asyncWorkMgr;
+    mgr->SaveStore(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->SaveUrl(),
                               std::string(g_session.m_webAuthToken, 16), response, this->type);
 
     ++this->pendingSaves;
