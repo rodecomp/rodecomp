@@ -220,7 +220,12 @@ __declspec(noinline) unsigned char* MD5::Finalize() {
 // OFFSET: 0x00402520
 // FUNCTION: fn_00128
 __declspec(noinline) unsigned char* MD5::DigestBuffer(const unsigned char* input, std::uint32_t length, unsigned char* digest) {
-  Initialize();
+  m_byteCount[0] = 0;
+  m_byteCount[1] = 0;
+  m_state[0] = 0x67452301;
+  m_state[1] = 0xEFCDAB89;
+  m_state[2] = 0x98BADCFE;
+  m_state[3] = 0x10325476;
   Update(input, length);
   Finalize();
   for (std::uint32_t i = 0; i < 4; ++i) {
