@@ -1459,7 +1459,7 @@ void CGameMode::ReceiveEnchantSimulation(const unsigned char* packet) {
   std::fprintf(file, "\n- %s\n\n", ToUtf8(name, g_textCodePage).c_str());
   std::fprintf(file, "============================\tSTART\t============================\n");
   std::fprintf(file, "\nGrade %d\n", grade);
-  for (int i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i, ++record) {
     ITEM_INFO item;
     item.SetItemId(record->itemId);
     item.identified = 1;
@@ -1467,7 +1467,6 @@ void CGameMode::ReceiveEnchantSimulation(const unsigned char* packet) {
     std::fprintf(file, "\t\t%s\t%d\t%.5f%%\n", ToUtf8(item.DisplayName(0), g_textCodePage).c_str(), record->count,
                  static_cast<float>(record->rate) / 1000.0f);
     total += record->count;
-    ++record;
   }
   std::fprintf(file, "Try\t%d\tSetEnchant\n", total);
   std::fprintf(file, "============================\tEND\t============================\n");
