@@ -1047,13 +1047,13 @@ int AddRuneSetReward(lua_State* state) {
     }
   }
 
-  RuneSetReward* reward = runeSet ? &runeSet->m_reward : nullptr;
-  if (!reward) {
+  if (!runeSet) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, std::format("ErrData TagID:{}RuneSetID:{}", tagId, runeSetId).c_str());
     return 2;
   }
 
+  RuneSetReward* reward = &runeSet->m_reward;
   reward->values[0] = 1;
   for (int index = 0; index < 7; ++index) {
     const int itemId = static_cast<int>(lua_tonumber(state, index - 7));
