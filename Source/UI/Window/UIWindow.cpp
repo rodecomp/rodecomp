@@ -2252,18 +2252,19 @@ std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
   this->TextWidth("...", 3, 0, 12, 0, 0);
   std::wstring remaining(ATL::CA2WEX<128>(text.c_str(), CP_THREAD_ACP));
 
-  while (extent > width) {
+  while (width < extent) {
     if (remaining.size() <= 1) {
       return std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
     }
 
-    std::size_t length = remaining.size() - 1;
+    if (remaining.size() >= 2) {
+      std::size_t length = remaining.size() - 1;
+      if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
+        length = remaining.size() - 2;
+      }
 
-    if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
-      --length;
+      remaining.resize(length);
     }
-
-    remaining.resize(length);
     text = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
     extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   }
