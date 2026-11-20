@@ -117,8 +117,8 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int 
     return std::make_pair(false, BarterMarketItem());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
