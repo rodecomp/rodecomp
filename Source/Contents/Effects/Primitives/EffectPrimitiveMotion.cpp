@@ -7494,15 +7494,15 @@ bool CEffectPrim::Move2DPrimitive() {
       const DWORD now = timeGetTime();
 
       if (expiration > now || g_replayAnimationScaling != 0) {
-        if (expiration != 0 && expiration != 999999) {
+        if (expiration == 0 || expiration == 999999) {
+          slot.process = 999;
+        } else {
           if (g_replayAnimationScaling != 0) {
             const int elapsed = static_cast<int>(Replay::Instance().elapsed);
             slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - elapsed) / 1000);
           } else {
             slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
           }
-        } else {
-          slot.process = 999;
         }
       }
     }
