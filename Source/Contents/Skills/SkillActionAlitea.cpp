@@ -1757,8 +1757,8 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
   const float deltaZ = target->render.position.z - source->render.position.z;
   const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const float forwardY = inverseLength * deltaY * 35.0f;
-  const float forwardZ = inverseLength * deltaZ * 35.0f;
   const float forwardX = inverseLength * deltaX * 35.0f;
+  const float forwardZ = inverseLength * deltaZ * 35.0f;
 
   const float sideX = forwardY * 0.0f - forwardZ;
   const float sideY = forwardZ * 0.0f - forwardX * 0.0f;
@@ -1774,8 +1774,8 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
     const float advance = static_cast<float>(row + 1) / 3.0f;
     const float shift = static_cast<float>(row);
     const float baseX = (forwardX * advance + source->render.position.x) - rightX * shift;
-    const float baseY = (forwardY * advance + source->render.position.y) - rightY * shift;
     const float baseZ = (forwardZ * advance + source->render.position.z) - rightZ * shift;
+    const float baseY = (forwardY * advance + source->render.position.y) - rightY * shift;
 
     for (int column = 0; column < count; ++column) {
       const int skip = std::rand() % 2;
@@ -1788,7 +1788,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
       const float step = static_cast<float>(column);
       const vector3d position = {rightX * step + baseX + offset * forwardX, rightY * step + baseY + offset * forwardY, rightZ * step + baseZ + offset * forwardZ};
       const int jitter = std::rand() % 101;
-      const int fade = (jitter >= 0 ? jitter : 0) + alpha;
+      const int fade = (jitter > -1 ? jitter : 0) + alpha;
       const int scale = std::max(std::rand() % 11, 7);
       if (CEffect* effect = g_effectMgr->Spawn(0, effectId, position, 0, -1, 0, 0)) {
         effect->SetFlipX(flipped);
