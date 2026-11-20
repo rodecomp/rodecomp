@@ -231,8 +231,9 @@ void CAcidifiedThrow::OnProcess() {
     }
   }
 
+  __int64 i = 0;
   __int64 activeCount = 0;
-  for (__int64 i = 0; i < 3; ++i) {
+  for (; i < 3; ++i) {
     CEZ2STRParticle* emitter = this->impactEmitters[i];
     if (emitter) {
       if (IsParticleActive(emitter) != true) {
