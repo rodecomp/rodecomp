@@ -20,7 +20,8 @@ CNavigationManager g_navigationManager;
 // OFFSET: 0x00B96980
 // FUNCTION: fn_19588
 NavigationTarget CNavigationManager::GetCurrentTarget() const {
-  return this->currentTarget;
+  NavigationTarget target = this->currentTarget;
+  return target;
 }
 
 // OFFSET: 0x00B96A10
@@ -41,7 +42,8 @@ std::string CNavigationManager::GetCurrentTargetName() const {
 // OFFSET: 0x00B96AE0
 // FUNCTION: fn_19590
 NavigationTarget CNavigationManager::GetSavedTarget() const {
-  return this->savedTarget;
+  NavigationTarget target = this->savedTarget;
+  return target;
 }
 
 // OFFSET: 0x00B96B70
