@@ -6486,10 +6486,10 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = index * -8;
-    if (wide) {
-      this->state.lastPrim->state.slots[index].maxHeight = 20.0f;
-    } else {
+    if (!wide) {
       this->state.lastPrim->state.slots[index].maxHeight = 30.0f;
+    } else {
+      this->state.lastPrim->state.slots[index].maxHeight = 20.0f;
     }
     this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].rotStart
@@ -6502,10 +6502,10 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
     }
 
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    if (wide) {
-      this->state.lastPrim->state.slots[index].distance = 9.0f - static_cast<float>(index) * 0.1f;
-    } else {
+    if (!wide) {
       this->state.lastPrim->state.slots[index].distance = 6.0f - static_cast<float>(index) * 0.1f;
+    } else {
+      this->state.lastPrim->state.slots[index].distance = 9.0f - static_cast<float>(index) * 0.1f;
     }
     this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>((14 - index) * 5);
     this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
@@ -8551,15 +8551,16 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
   this->state.lastPrim->state.slots[0].riseAngle = 90;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[1].maxHeight = static_cast<float>(level * 60) + 70.0f;
-  this->state.lastPrim->state.slots[1].rotStart = 270;
-  this->state.lastPrim->state.slots[1].alphaB = 80;
-  this->state.lastPrim->state.slots[1].distance = 3.0f - static_cast<float>(level * 2);
-  this->state.lastPrim->state.slots[1].riseAngle = 89;
-  this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot1].maxHeight = static_cast<float>(level * 60) + 70.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = 270;
+  this->state.lastPrim->state.slots[slot1].alphaB = 80;
+  this->state.lastPrim->state.slots[slot1].distance = 3.0f - static_cast<float>(level * 2);
+  this->state.lastPrim->state.slots[slot1].riseAngle = 89;
+  this->state.lastPrim->state.slots[slot1].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
