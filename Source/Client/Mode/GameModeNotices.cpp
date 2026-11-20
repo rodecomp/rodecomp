@@ -4469,7 +4469,7 @@ struct Window227EntriesPacket {
 void CGameMode::ReceiveStatusChangeList(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StatusChangeListPacket*>(data);
   const unsigned int count = (packet->length - 9u) >> 1;
-  for (int index = 0; index < static_cast<int>(count); ++index) {
+  for (int index = 0; index < count; ++index) {
     this->ApplyStatusChange(packet->aid, packet->on, 0x37F, 0, packet->values[index], 0, 0, 0, 0);
   }
 }
