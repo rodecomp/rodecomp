@@ -368,18 +368,19 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     base4.x = vec4.x;
     base4.y = vec4.y;
     base4.z = vec4.z;
-    vec1.x = slot.vecBNow.x + vec1.x;
-    vec1.y = slot.vecBNow.y + vec1.y;
-    vec1.z = slot.vecBNow.z + vec1.z;
-    vec2.x = slot.vecBNow.x + vec2.x;
-    vec2.y = slot.vecBNow.y + vec2.y;
-    vec2.z = slot.vecBNow.z + vec2.z;
-    vec3.x = slot.vecBNow.x + vec3.x;
-    vec3.y = slot.vecBNow.y + vec3.y;
-    vec3.z = slot.vecBNow.z + vec3.z;
-    vec4.x = slot.vecBNow.x + vec4.x;
-    vec4.y = slot.vecBNow.y + vec4.y;
-    vec4.z = slot.vecBNow.z + vec4.z;
+    vector3d& vecBNow = slot.vecBNow;
+    vec1.x = vecBNow.x + vec1.x;
+    vec1.y = vecBNow.y + vec1.y;
+    vec1.z = vecBNow.z + vec1.z;
+    vec2.x = vecBNow.x + vec2.x;
+    vec2.y = vecBNow.y + vec2.y;
+    vec2.z = vecBNow.z + vec2.z;
+    vec3.x = vecBNow.x + vec3.x;
+    vec3.y = vecBNow.y + vec3.y;
+    vec3.z = vecBNow.z + vec3.z;
+    vec4.x = vecBNow.x + vec4.x;
+    vec4.y = vecBNow.y + vec4.y;
+    vec4.z = vecBNow.z + vec4.z;
 
     const int alpha = slot.alphaB < 0 ? 0 : slot.alphaB;
     if (slot.flag1[0] == 0) {
