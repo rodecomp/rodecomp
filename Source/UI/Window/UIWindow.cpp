@@ -953,29 +953,54 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
 
   const int nearestHorizontal = left > 0 ? (right > 0 ? std::min(left, right) : left) : (right > 0 ? right : 999999);
   const int nearestVertical = top > 0 ? (bottom > 0 ? std::min(top, bottom) : top) : (bottom > 0 ? bottom : 999999);
-  std::function<void()> moveRight = [this, &anchorBounds, &windowBounds] {
+  const auto moveRightAction = [this, &anchorBounds, &windowBounds] {
     MoveWindowToScreenPosition(this, anchorBounds[2], windowBounds[1]);
   };
-  std::function<void()> moveLeft = [this, &anchorBounds, &windowBounds] {
+  const auto moveLeftAction = [this, &anchorBounds, &windowBounds] {
     MoveWindowToScreenPosition(this, static_cast<unsigned>(anchorBounds[0]) - this->geometry.width, windowBounds[1]);
   };
-  const auto moveAbove = [this, &windowBounds, &anchorBounds] {
+  const auto moveAboveAction = [this, &windowBounds, &anchorBounds] {
     MoveWindowToScreenPosition(this, windowBounds[0], static_cast<unsigned>(anchorBounds[1]) - this->geometry.height);
   };
-  const auto moveBelow = [this, &windowBounds, &anchorBounds] {
+  const auto moveBelowAction = [this, &windowBounds, &anchorBounds] {
     MoveWindowToScreenPosition(this, windowBounds[0], anchorBounds[3]);
   };
   const WindowActionRunner runWindowAction{};
   if (nearestHorizontal < nearestVertical) {
-    if (runWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight)) {
+    std::function<void()> moveRight = moveRightAction;
+    std::function<void()> moveLeft = moveLeftAction;
+    if (left > 0) {
+      if (right > 0 && left > right) {
+        moveRight();
+      } else {
+        moveLeft();
+      }
       return true;
     }
-    return runWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow);
+    if (right > 0) {
+      moveRight();
+      return true;
+    }
+    return runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction);
   }
-  if (runWindowAction(top > 0, bottom > 0, top, bottom, moveAbove, moveBelow)) {
+  if (runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction)) {
     return true;
   }
-  return runWindowAction(left > 0, right > 0, left, right, moveLeft, moveRight);
+  std::function<void()> moveRight = moveRightAction;
+  std::function<void()> moveLeft = moveLeftAction;
+  if (left > 0) {
+    if (right > 0 && left > right) {
+      moveRight();
+    } else {
+      moveLeft();
+    }
+    return true;
+  }
+  if (right > 0) {
+    moveRight();
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00A81A30
