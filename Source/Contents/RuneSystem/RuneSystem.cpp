@@ -1412,7 +1412,8 @@ int SetRuneUpGradeTable(lua_State* state) {
     return 2;
   }
 
-  RuneData* rune = g_runeSystemMgr->FindRune(tagId, 0, runeSetId, nullptr);
+  CTagData* tag = g_runeSystemMgr->GetTag(tagId);
+  RuneData* rune = tag ? tag->FindRune(0, runeSetId, nullptr) : nullptr;
   if (rune) {
     RuneSetData* runeSet = static_cast<RuneSetData*>(rune);
     runeSet->m_gradeType = static_cast<int>(gradeType);
