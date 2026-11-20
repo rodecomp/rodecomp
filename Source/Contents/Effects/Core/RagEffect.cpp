@@ -8699,7 +8699,9 @@ void CRagEffect::NotifyGameMode(char value) {
 // FUNCTION: fn_20287
 void CRagEffect::ScatterItemIcons(char kind) {
   const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  this->render.position = player->render.position;
+  this->render.position.x = player->render.position.x;
+  this->render.position.y = player->render.position.y;
+  this->render.position.z = player->render.position.z;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17499,9 +17501,10 @@ void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name,
   this->state.lastPrim->state.slots[0].alphaT = kind;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
   if (kind == 2) {
     this->state.lastPrim->state.slots[1].maxHeight = 24.0f;
   } else if (kind == 22) {
@@ -17510,12 +17513,13 @@ void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name,
     this->state.lastPrim->state.slots[1].maxHeight = 19.0f;
   }
 
-  this->state.lastPrim->state.slots[1].rotStart = 270;
-  this->state.lastPrim->state.slots[1].alphaB = baseAlpha + 90;
-  this->state.lastPrim->state.slots[1].distance = 4.1f;
-  this->state.lastPrim->state.slots[1].riseAngle = 80;
-  this->state.lastPrim->state.slots[1].alphaT = kind;
-  this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
+  int slot1b = 1;
+  this->state.lastPrim->state.slots[slot1b].rotStart = 270;
+  this->state.lastPrim->state.slots[slot1b].alphaB = baseAlpha + 90;
+  this->state.lastPrim->state.slots[slot1b].distance = 4.1f;
+  this->state.lastPrim->state.slots[slot1b].riseAngle = 80;
+  this->state.lastPrim->state.slots[slot1b].alphaT = kind;
+  this->state.lastPrim->state.slots[slot1b].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
@@ -17528,12 +17532,13 @@ void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name,
     this->state.lastPrim->state.slots[2].maxHeight = 18.0f;
   }
 
-  this->state.lastPrim->state.slots[2].rotStart = 0;
-  this->state.lastPrim->state.slots[2].alphaB = baseAlpha + 45;
-  this->state.lastPrim->state.slots[2].distance = 4.1f;
-  this->state.lastPrim->state.slots[2].riseAngle = 80;
-  this->state.lastPrim->state.slots[2].alphaT = kind;
-  this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
+  int slot2b = 2;
+  this->state.lastPrim->state.slots[slot2b].rotStart = 0;
+  this->state.lastPrim->state.slots[slot2b].alphaB = baseAlpha + 45;
+  this->state.lastPrim->state.slots[slot2b].distance = 4.1f;
+  this->state.lastPrim->state.slots[slot2b].riseAngle = 80;
+  this->state.lastPrim->state.slots[slot2b].alphaT = kind;
+  this->state.lastPrim->state.slots[slot2b].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[3].life = 1;
   this->state.lastPrim->state.slots[3].process = 0;

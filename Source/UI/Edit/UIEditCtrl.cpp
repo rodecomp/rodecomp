@@ -4278,7 +4278,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   }
 
   std::int64_t price = _atoi64(text);
-  if (price <= 0x7FFFFFFF && price < 0) {
+  if (0x7FFFFFFF >= price && price < 0) {
     price = 0;
   } else if (price > 0x7FFFFFFF || price > 1000000000) {
     if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
