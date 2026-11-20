@@ -11140,7 +11140,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case 116:
   case 117:
-    notice = LookupMessage(packet->value != 0 ? packet->value : 0x1119);
+    notice = LookupMessage(packet->value == 0 ? 0x1119 : packet->value);
     break;
   default:
     return;
