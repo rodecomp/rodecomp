@@ -90,8 +90,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry(name, value);
-    this->m_entries[0].push_back(entry);
+    this->m_entries[0].push_back(SecondCostumeEntry(name, value));
   }
 
   for (int index = 1;; ++index) {
@@ -102,8 +101,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry(name, value);
-    this->m_entries[1].push_back(entry);
+    this->m_entries[1].push_back(SecondCostumeEntry(name, value));
   }
 
   for (int index = 1;; ++index) {
@@ -114,8 +112,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry(name, value);
-    this->m_entries[2].push_back(entry);
+    this->m_entries[2].push_back(SecondCostumeEntry(name, value));
   }
 
   for (int index = 1;; ++index) {
@@ -126,8 +123,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry(name, value);
-    this->m_entries[3].push_back(entry);
+    this->m_entries[3].push_back(SecondCostumeEntry(name, value));
   }
 
   this->SelectSavedEntries();
