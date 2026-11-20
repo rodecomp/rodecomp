@@ -447,8 +447,9 @@ int L_SetCondition(lua_State* L) {
   uint32_t condition1 = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint32_t condition2 = static_cast<uint32_t>(lua_tonumber(L, -1));
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[static_cast<uint64_t>(id)].condition1 = condition1;
-  mgr->m_enchants[static_cast<uint64_t>(id)].condition2 = condition2;
+  const uint64_t key = id;
+  mgr->m_enchants[key].condition1 = condition1;
+  mgr->m_enchants[key].condition2 = condition2;
   return 2;
 }
 
