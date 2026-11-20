@@ -340,6 +340,35 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
       return true;
     }
     return false;
+  case JT_TAEKWON:
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_LINKER:
+  case JT_GANGSI:
+  case JT_DEATHKNIGHT:
+  case JT_COLLECTOR:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_WOLF_RANGER_B:
+  case JT_MADOGEAR_B:
+  case JT_TAEKWON_B:
+  case JT_STAR_B:
+  case JT_LINKER_B:
+  case JT_STAR2_B:
+  case JT_STAR_EMPEROR:
+  case JT_SOUL_REAPER:
+  case JT_STAR_EMPEROR_B:
+  case JT_SOUL_REAPER_B:
+  case JT_STAR2_EMPEROR:
+  case JT_STAR2_EMPEROR_B:
+  case JT_WOLF_WINDHAWK:
+  case JT_MEISTER_MADOGEAR:
+  case JT_SKY_EMPEROR:
+  case JT_SOUL_ASCETIC:
+  case JT_SKY_EMPEROR2:
+    return false;
   case JT_DO_SUMMONER:
   case JT_DO_SUMMONER_B:
   case JT_SPIRIT_HANDLER:
