@@ -294,7 +294,10 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
 
   if (index != -1) {
     const auto it = this->hotkeys[tab].find(index);
-    if (it == this->hotkeys[tab].end() || (info = it->second).description.empty()) {
+    if (it != this->hotkeys[tab].end()) {
+      info = it->second;
+    }
+    if (info.description.empty()) {
       info = g_session.GetHotkeyInfo(tab, index);
     }
   }
