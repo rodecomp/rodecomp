@@ -333,23 +333,22 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    vec1.x = slot.distance * g_cosTable[45];
+    vec1.x = this->state.slots[ec].distance * g_cosTable[45];
     vec1.y = 0.0f;
-    vec1.z = slot.distance * g_sinTable[45];
-    vec2.x = slot.distance * g_cosTable[135];
+    vec1.z = this->state.slots[ec].distance * g_sinTable[45];
+    vec2.x = this->state.slots[ec].distance * g_cosTable[135];
     vec2.y = 0.0f;
-    vec2.z = slot.distance * g_sinTable[135];
-    vec3.x = slot.distance * g_cosTable[225];
+    vec2.z = this->state.slots[ec].distance * g_sinTable[135];
+    vec3.x = this->state.slots[ec].distance * g_cosTable[225];
     vec3.y = 0.0f;
-    vec3.z = slot.distance * g_sinTable[225];
-    vec4.x = slot.distance * g_cosTable[315];
+    vec3.z = this->state.slots[ec].distance * g_sinTable[225];
+    vec4.x = this->state.slots[ec].distance * g_cosTable[315];
     vec4.y = 0.0f;
-    vec4.z = slot.distance * g_sinTable[315];
+    vec4.z = this->state.slots[ec].distance * g_sinTable[315];
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vector3d base1;
@@ -368,7 +367,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     base4.x = vec4.x;
     base4.y = vec4.y;
     base4.z = vec4.z;
-    vector3d& vecBNow = slot.vecBNow;
+    vector3d& vecBNow = this->state.slots[ec].vecBNow;
     vec1.x = vecBNow.x + vec1.x;
     vec1.y = vecBNow.y + vec1.y;
     vec1.z = vecBNow.z + vec1.z;
@@ -382,27 +381,27 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     vec4.y = vecBNow.y + vec4.y;
     vec4.z = vecBNow.z + vec4.z;
 
-    const int alpha = slot.alphaB < 0 ? 0 : slot.alphaB;
-    if (slot.flag1[0] == 0) {
+    const int alpha = this->state.slots[ec].alphaB < 0 ? 0 : this->state.slots[ec].alphaB;
+    if (this->state.slots[ec].flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (slot.flag1[0] == 1) {
+    } else if (this->state.slots[ec].flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 160, 160, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (slot.flag1[0] == 2) {
+    } else if (this->state.slots[ec].flag1[0] == 2) {
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 90, 90, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     }
 
-    vec1.x = base1.x * 1.1f + slot.vecBNow.x;
-    vec1.y = base1.y * 1.1f + slot.vecBNow.y;
-    vec1.z = base1.z * 1.1f + slot.vecBNow.z;
-    vec2.x = base2.x * 1.1f + slot.vecBNow.x;
-    vec2.y = base2.y * 1.1f + slot.vecBNow.y;
-    vec2.z = base2.z * 1.1f + slot.vecBNow.z;
-    vec3.x = base3.x * 1.1f + slot.vecBNow.x;
-    vec3.y = base3.y * 1.1f + slot.vecBNow.y;
-    vec3.z = base3.z * 1.1f + slot.vecBNow.z;
-    vec4.x = base4.x * 1.1f + slot.vecBNow.x;
-    vec4.y = base4.y * 1.1f + slot.vecBNow.y;
-    vec4.z = base4.z * 1.1f + slot.vecBNow.z;
+    vec1.x = base1.x * 1.1f + this->state.slots[ec].vecBNow.x;
+    vec1.y = base1.y * 1.1f + this->state.slots[ec].vecBNow.y;
+    vec1.z = base1.z * 1.1f + this->state.slots[ec].vecBNow.z;
+    vec2.x = base2.x * 1.1f + this->state.slots[ec].vecBNow.x;
+    vec2.y = base2.y * 1.1f + this->state.slots[ec].vecBNow.y;
+    vec2.z = base2.z * 1.1f + this->state.slots[ec].vecBNow.z;
+    vec3.x = base3.x * 1.1f + this->state.slots[ec].vecBNow.x;
+    vec3.y = base3.y * 1.1f + this->state.slots[ec].vecBNow.y;
+    vec3.z = base3.z * 1.1f + this->state.slots[ec].vecBNow.z;
+    vec4.x = base4.x * 1.1f + this->state.slots[ec].vecBNow.x;
+    vec4.y = base4.y * 1.1f + this->state.slots[ec].vecBNow.y;
+    vec4.z = base4.z * 1.1f + this->state.slots[ec].vecBNow.z;
     this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }

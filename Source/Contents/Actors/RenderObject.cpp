@@ -383,13 +383,13 @@ void CRenderObject::ProcessMotion() {
 // FUNCTION: fn_21096
 void CRenderObject::PlayFrameSounds() {
   int lastMotion = static_cast<int>(this->render.lastSoundMotion);
-  if (this->render.curMotion != lastMotion || static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
+  if (lastMotion != this->render.curMotion || static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
     if (static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
       this->render.lastSoundMotion = 0;
       lastMotion = 0;
     }
     CActRes* action = this->render.action;
-    if (this->render.curMotion > lastMotion) {
+    if (lastMotion < this->render.curMotion) {
       for (int motion = lastMotion + 1; motion <= this->render.curMotion; ++motion) {
         const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
         if (-1 != actionFrame.sound) {
@@ -406,7 +406,7 @@ void CRenderObject::PlayFrameSounds() {
     } else if (this->render.curMotion < lastMotion) {
       const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
       lastMotion = static_cast<int>(this->render.lastSoundMotion);
-      if (count <= lastMotion) {
+      if (lastMotion >= count) {
         lastMotion = count - 1;
         this->render.lastSoundMotion = static_cast<std::uint32_t>(lastMotion);
       }
