@@ -131,7 +131,7 @@ void GroundGeometry::DrawWaterCell(
   if (!primitive) {
     return;
   }
-  SetWaterTextureCoordinates(*primitive, column, row, 1.0f);
+  SetWaterTextureCoordinates(*primitive, column, row, g_projectionDepthNumerator);
 
   *reinterpret_cast<unsigned char*>(&primitive->depthFlags) = 1;
   primitive->texture = this->waterSurfaces[partition].texture;
