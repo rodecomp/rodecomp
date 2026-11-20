@@ -220,9 +220,9 @@ bool CUserHotkeyMgr::HasUserAssignments() const {
         continue;
       }
 
-      std::string keyName;
       int key1 = 0;
       int key2 = 0;
+      std::string keyName;
       std::string userDescription;
       const char* keyText = nullptr;
       const char* description = nullptr;
