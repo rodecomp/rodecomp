@@ -51,6 +51,18 @@ float g_groundBubbleAlphaBase = 130.0f;
 // GLOBAL: gl_25990
 float g_fullCircleAngle = 360.0f;
 
+// GLOBAL: gl_25987
+float g_masterReachDistance = 3.0f;
+
+// GLOBAL: gl_26003
+float g_fireflyNormalDrift = 0.05f;
+
+// GLOBAL: gl_26024
+float g_layeredGlowModeTwentyScale = 1.3f;
+
+// GLOBAL: gl_26025
+float g_layeredGlowModeTwentyOneScale = 1.7f;
+
 // INLINED
 static __forceinline void ZeroVector(vector3d& v) {
   v.x = 0.0f;
@@ -4331,7 +4343,7 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
 
 // INLINED
 static __forceinline void BuildLayeredGlowSquare(CEffectPrim& prim, const EffectPrimitiveSlot& slot, float scale, vector3d* corners) {
-  const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance * scale;
+  const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * g_fireflyNormalDrift + slot.distance * scale;
   corners[0] = {rx * g_cosTable[0], 0.0f, rx * g_sinTable[0]};
   corners[1] = {rx * g_cosTable[90], 0.0f, rx * g_sinTable[90]};
   corners[2] = {rx * g_cosTable[180], 0.0f, rx * g_sinTable[180]};
@@ -4355,12 +4367,12 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
   vector3d quad[4];
   const char kind = slot.flag1[0];
   if (kind == 21) {
-    BuildLayeredGlowSquare(*this, slot, 3.0f, quad);
+    BuildLayeredGlowSquare(*this, slot, g_masterReachDistance, quad);
     this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 2), quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    BuildLayeredGlowSquare(*this, slot, 1.7f, quad);
+    BuildLayeredGlowSquare(*this, slot, g_layeredGlowModeTwentyOneScale, quad);
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else if (kind == 20) {
-    BuildLayeredGlowSquare(*this, slot, 1.3f, quad);
+    BuildLayeredGlowSquare(*this, slot, g_layeredGlowModeTwentyScale, quad);
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 
@@ -4384,7 +4396,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 
-  BuildLayeredGlowSquare(*this, slot, 0.5f, quad);
+  BuildLayeredGlowSquare(*this, slot, g_depthAverageHalf, quad);
   if (slot.flag1[0] == 1) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else if (slot.flag1[0] == 10) {
