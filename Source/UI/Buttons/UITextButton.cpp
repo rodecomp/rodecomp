@@ -599,14 +599,16 @@ void UIServerListBox::OnMouseHover(int x, int y) {
 // OFFSET: 0x00891BC0
 // FUNCTION: fn_11456
 void UIMemberListBox::OnMouseHover(int, int y) {
-  const unsigned visible =
-    std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine), static_cast<unsigned>(this->lines.size()));
-  const int line = this->topLine + y / this->lineHeight;
-  if (line < this->topLine) {
+  const unsigned count = static_cast<unsigned>(this->lines.size());
+  const int lineHeight = this->lineHeight;
+  const int topLine = this->topLine;
+  const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + topLine;
+  const int line = topLine + y / lineHeight;
+  if (line < topLine) {
     return;
   }
 
-  if (line >= static_cast<int>(visible)) {
+  if (line >= static_cast<int>(std::min(count, end))) {
     return;
   }
 
