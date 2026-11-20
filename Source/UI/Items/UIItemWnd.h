@@ -41,9 +41,7 @@ public:
   bool FilterItem(ITEM_INFO& item);
 
   /* 00F0 */ ItemWndInfo* saved;
-  /* 00F4 */ UIBitmapButton* baseButton;
-  /* 00F8 */ UIBitmapButton* minimizeButton;
-  /* 00FC */ UIBitmapButton* closeButton;
+  /* 00F4 */ UIBitmapButton* titleButtons[3];
   /* 0100 */ int usableFilter;
   /* 0104 */ int equipmentFilter;
   /* 0108 */ int miscFilter;

@@ -8363,9 +8363,9 @@ void UIItemWnd::OnCreate(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 17, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
-  this->baseButton = this->AddBaseButton();
-  this->minimizeButton = this->AddMinimizeButton("Ctrl+E", 0);
-  this->closeButton = this->AddCloseButton("Alt+E", 0);
+  this->titleButtons[0] = this->AddBaseButton();
+  this->titleButtons[1] = this->AddMinimizeButton("Ctrl+E", 0);
+  this->titleButtons[2] = this->AddCloseButton("Alt+E", 0);
   this->expandedHeight = this->geometry.height;
   this->columns = (width - 40) / 32;
   this->visibleRows = (height - 38) / 32;
@@ -10365,7 +10365,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->Invalidate();
       const int positions[3] = {3, this->geometry.width - 28, this->geometry.width - 14};
       for (int index = 0; index < 3; ++index) {
-        this->buttons[index]->Move(positions[index], 3);
+        this->titleButtons[index]->Move(positions[index], 3);
       }
     }
     this->expandedHeight = this->geometry.height;
