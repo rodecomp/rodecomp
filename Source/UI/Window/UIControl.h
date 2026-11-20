@@ -141,7 +141,16 @@ public:
   void OnMouseEnter() override;
   void OnMouseLeave() override;
 
-  void SetState(int value);
+  __declspec(noinline) void SetState(int value);
+  // INLINED
+  __forceinline void SetStateInline(int value) {
+    if (this->state != value) {
+      this->state = value;
+      if (!this->disabled) {
+        this->Invalidate();
+      }
+    }
+  }
   void SetOnClick(std::function<void()> handler);
 
   /* 0080 */ int state;

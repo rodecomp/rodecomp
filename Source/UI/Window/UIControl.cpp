@@ -797,7 +797,7 @@ void CUIButton::OnLBtnDblClk(int x, int y) {
 // OFFSET: 0x009EE930
 // FUNCTION: fn_14628
 void CUIButton::OnLBtnDown(int, int) {
-  this->SetState(1);
+  this->SetStateInline(1);
   if (!this->disabled) {
     g_windowMgr.SetCapture(this);
   }
@@ -806,7 +806,7 @@ void CUIButton::OnLBtnDown(int, int) {
 // OFFSET: 0x009EE970
 // FUNCTION: fn_14629
 void CUIButton::OnLBtnUp(int, int) {
-  this->SetState(2);
+  this->SetStateInline(2);
   if (this == g_windowMgr.Capture()) {
     if (!this->disabled && this->onClick) {
       this->onClick();
@@ -818,7 +818,7 @@ void CUIButton::OnLBtnUp(int, int) {
 // OFFSET: 0x009EE9D0
 // FUNCTION: fn_14630
 void CUIButton::OnMouseEnter() {
-  this->SetState(2);
+  this->SetStateInline(2);
 }
 
 // OFFSET: 0x009EEA00
@@ -843,7 +843,7 @@ void CUIButton::OnMouseHover(int, int) {
 // OFFSET: 0x009EEA70
 // FUNCTION: fn_14632
 void CUIButton::OnMouseLeave() {
-  this->SetState(0);
+  this->SetStateInline(0);
 }
 
 // OFFSET: 0x009EEAA0
