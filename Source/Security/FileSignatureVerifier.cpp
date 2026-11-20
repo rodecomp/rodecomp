@@ -55,6 +55,7 @@ FileSignatureVerifier::FileSignatureVerifier() {
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
 // OFFSET: 0x00402B60
 // FUNCTION: fn_45444
 FileSignatureVerifier::~FileSignatureVerifier() {
@@ -80,6 +81,7 @@ FileSignatureVerifier::~FileSignatureVerifier() {
     CryptReleaseContext(provider, 0);
   }
 }
+#pragma optimize("", on)
 
 // OFFSET: 0x00402BE0
 // FUNCTION: fn_00138
