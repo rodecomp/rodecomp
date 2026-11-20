@@ -365,14 +365,12 @@ CCashEmotionAction_Play::CCashEmotionAction_Play() : m_diceEmotion(0), m_yutEmot
   this->RefreshSpecialEmotions();
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x00591E30
 // FUNCTION: fn_45921
 void CCashEmotionAction_Play::RefreshSpecialEmotions() {
   this->m_diceEmotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Dice);
   this->m_yutEmotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Yut);
 }
-#pragma inline_depth()
 
 // OFFSET: 0x00591D30
 // FUNCTION: fn_02840

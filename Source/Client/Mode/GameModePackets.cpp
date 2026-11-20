@@ -3529,15 +3529,6 @@ __declspec(noinline) void CGameMode::ReceiveChatEntries(unsigned char* data) {
   window->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
 }
 
-// INLINED
-static __forceinline std::uint32_t ActorStateFlags(CGameActor* actor) {
-  using StateFlagsFn = std::uint32_t (__thiscall *)(CGameActor*);
-  StateFlagsFn stateFlags = reinterpret_cast<StateFlagsFn>(
-    *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(actor)) + 0x34)
-  );
-  return stateFlags(actor);
-}
-
 // OFFSET: 0x00D7A200
 // FUNCTION: fn_22189
 __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data) {
@@ -3552,7 +3543,7 @@ __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data
     return;
   }
 
-  if (IsHiding(ActorStateFlags(actor)) || IsCloaking(ActorStateFlags(actor))) {
+  if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
     g_effectMgr->Retire(actor->render.accountId, 1225);
   }
 

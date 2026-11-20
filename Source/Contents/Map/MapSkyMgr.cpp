@@ -125,11 +125,7 @@ vector3d CWeatherEffect::GetWindDirection() const {
 // FUNCTION: fn_20367
 __declspec(noinline) void CWeatherEffect::Play(char kind) {
   if (this->effect) {
-    using DurationFn = int (__thiscall *)(CRagEffect*);
-    DurationFn duration = reinterpret_cast<DurationFn>(
-      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
-    );
-    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+    if (this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
       return;
     }
   }
@@ -186,11 +182,7 @@ void CWeatherEffect::Fireworks() {
 // FUNCTION: fn_45933
 void CWeatherEffect::Maple() {
   if (this->effect) {
-    using DurationFn = int (__thiscall *)(CRagEffect*);
-    DurationFn duration = reinterpret_cast<DurationFn>(
-      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
-    );
-    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+    if (this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
       return;
     }
   }
@@ -204,11 +196,7 @@ void CWeatherEffect::Maple() {
 // FUNCTION: fn_45581
 void CWeatherEffect::Sakura() {
   if (this->effect) {
-    using DurationFn = int (__thiscall *)(CRagEffect*);
-    DurationFn duration = reinterpret_cast<DurationFn>(
-      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
-    );
-    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+    if (this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
       return;
     }
   }
@@ -222,11 +210,7 @@ void CWeatherEffect::Sakura() {
 // FUNCTION: fn_20370
 void CWeatherEffect::Snow() {
   if (this->effect) {
-    using DurationFn = int (__thiscall *)(CRagEffect*);
-    DurationFn duration = reinterpret_cast<DurationFn>(
-      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
-    );
-    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+    if (this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
       return;
     }
   }

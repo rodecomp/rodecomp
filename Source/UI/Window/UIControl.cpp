@@ -755,7 +755,6 @@ void CUIVThumb::Paint() {
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x009F1650
 // FUNCTION: fn_14692
 void CUITabButton::OnMouseEnter() {
@@ -771,7 +770,6 @@ void CUITabButton::OnMouseLeave() {
     this->SetState(0);
   }
 }
-#pragma inline_depth()
 
 // OFFSET: 0x009EE8F0
 // FUNCTION: fn_14626
@@ -1137,7 +1135,7 @@ bool CUITab::SelectIndex(unsigned int index) {
 // OFFSET: 0x009F16F0
 // FUNCTION: fn_14695
 void CUITabButton::SetSelected(bool selected) {
-  [[msvc::noinline_calls]] this->SetState(selected);
+  this->SetState(selected);
   if (this->page) {
     this->page->Show(selected);
   }

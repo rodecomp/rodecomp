@@ -85,7 +85,6 @@ void CBarterMarketItemMgr::RefreshTotals()
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x005D7990
 // FUNCTION: fn_03724
 void CBarterMarketItemMgr::Clear()
@@ -94,7 +93,6 @@ void CBarterMarketItemMgr::Clear()
   this->items.clear();
   this->totals.clear();
 }
-#pragma inline_depth()
 
 // OFFSET: 0x005D79B0
 // FUNCTION: fn_03725
