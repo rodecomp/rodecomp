@@ -6330,7 +6330,7 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
+    if (1 != this->state.slots[ec].life || 0 >= this->state.slots[ec].alphaB) {
       continue;
     }
 
@@ -6339,7 +6339,7 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
 
     for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
       int angle = count + this->state.slots[ec].riseAngle;
-      if (angle >= 360) {
+      if (360 <= angle) {
         angle -= 360;
       }
       if (this->state.slots[ec].fullDisplayAngle == 360 && count == 360) {
@@ -6366,7 +6366,7 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
       vec2.z += this->state.slots[ec].vecTNow.z * cs3 * this->state.slots[ec].maxHeight;
 
       int angle3 = static_cast<int>(this->state.slots[ec].height[1] + 10.0f);
-      if (angle3 > 90) {
+      if (90 < angle3) {
         angle3 = 90;
       }
       cs3 = g_cosTable[angle3];
@@ -6383,13 +6383,13 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
       vec4.x += this->state.slots[ec].vecTNow.x * cs3 * this->state.slots[ec].maxHeight;
       vec4.z += this->state.slots[ec].vecTNow.z * cs3 * this->state.slots[ec].maxHeight;
 
-      if (count > 0) {
+      if (0 < count) {
         this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
         this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
       }
 
       ++order;
-      if (order > 20) {
+      if (20 < order) {
         order = 20;
       }
 
