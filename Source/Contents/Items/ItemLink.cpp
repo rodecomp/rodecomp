@@ -52,7 +52,7 @@ int UIChatHisBox::DecodeCards(std::vector<std::int32_t>& fields, const char* tex
     const char byte = text[position];
 
     if (byte >= '0') {
-      value += byte;
+      value.push_back(byte);
     } else if (byte == delimiter) {
       ++count;
       cards.push_back(this->Number(value));
