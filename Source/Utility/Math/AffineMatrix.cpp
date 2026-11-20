@@ -289,9 +289,10 @@ void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQu
     secondWeight = sinf(static_cast<float>(amount * angle)) / denominator;
   }
 
-  const float a = static_cast<float>(firstWeight);
-  const float b = static_cast<float>(secondWeight);
-  result = {a * first.w + b * end.w, a * first.x + b * end.x, a * first.y + b * end.y, a * first.z + b * end.z};
+  result.w = static_cast<float>(firstWeight) * first.w + static_cast<float>(secondWeight) * end.w;
+  result.x = static_cast<float>(firstWeight) * first.x + static_cast<float>(secondWeight) * end.x;
+  result.y = static_cast<float>(firstWeight) * first.y + static_cast<float>(secondWeight) * end.y;
+  result.z = static_cast<float>(firstWeight) * first.z + static_cast<float>(secondWeight) * end.z;
 }
 
 // OFFSET: 0x005546F0
