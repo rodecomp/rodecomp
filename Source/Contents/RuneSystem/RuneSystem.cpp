@@ -353,17 +353,8 @@ int CTagData::GetRuneCount(int type) const {
 int CRuneSystemMgr::GetGradeValue(RuneSetData* runeSet) {
   if (runeSet) {
     const auto found = this->m_gradeTypes.find(runeSet->m_gradeType);
-    if (found != this->m_gradeTypes.end()) {
-      const unsigned int grade = runeSet->m_grade;
-      if (found->second.size() > grade) {
-        int failValue = 0;
-        const auto fail = this->m_gradeFailTypes.find(runeSet->m_gradeFailType);
-        if (fail != this->m_gradeFailTypes.end() && fail->second.size() > grade) {
-          failValue = fail->second[grade];
-        }
-
-        return runeSet->m_gradeLevel * failValue + found->second[grade];
-      }
+    if (this->m_gradeTypes.end() != found && found->second.size() > static_cast<unsigned int>(runeSet->m_grade)) {
+      return runeSet->m_gradeLevel * this->GetGradeFailValue(runeSet) + found->second[runeSet->m_grade];
     }
   }
 
