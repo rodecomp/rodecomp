@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstring>
@@ -105,7 +106,7 @@ __forceinline void CLevel99Effect::UpdateRingVertices(CParticle* particle) {
     const int index = particle->columnIndex;
     const float radius = g_sinTable[index * 9] * particle->speedParameter;
     const float baseAngle = particle->angle;
-    const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
+    const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / g_fireflyGroundOffset) * index + baseAngle) % 360;
     const int ringTilt = particle->phaseParameter;
     const float spread = radius * g_cosTable[ringTilt];
     const float cosine = g_cosTable[angle];
@@ -113,18 +114,18 @@ __forceinline void CLevel99Effect::UpdateRingVertices(CParticle* particle) {
     const float height = radius * g_sinTable[ringTilt];
 
     EffectPoint points[2];
-    points[0].x = particle->scale * cosine;
     points[0].y = 0.0f;
+    points[1].y = 0.0f - height;
+    points[0].x = particle->scale * cosine;
     points[0].z = particle->scale * sine;
     points[1].x = points[0].x + spread * cosine;
-    points[1].y = 0.0f - height;
     points[1].z = spread * sine + points[0].z;
 
-    particle->vertices[3].x = points[0].x;
     particle->vertices[3].y = points[0].y;
+    particle->vertices[1].y = points[1].y;
+    particle->vertices[3].x = points[0].x;
     particle->vertices[3].z = points[0].z;
     particle->vertices[1].x = points[1].x;
-    particle->vertices[1].y = points[1].y;
     particle->vertices[1].z = points[1].z;
 
     if (index != 0) {

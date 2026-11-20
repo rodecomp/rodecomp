@@ -268,5 +268,6 @@ extern int g_overrideColor;
 extern float g_effectIconOuterRadius;
 extern float g_effectIconRadius;
 extern float g_heightSpeedSign;
+extern float g_fireflyGroundOffset;
 
 #endif
