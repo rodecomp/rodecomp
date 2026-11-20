@@ -378,7 +378,8 @@ int L_ApproveRandomOption(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   bool approve = lua_toboolean(L, -1) != 0;
-  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].approveRandomOption = approve;
+  const uint64_t key = id;
+  CEnchantMgr::GetInstance()->m_enchants[key].approveRandomOption = approve;
   return 2;
 }
 
@@ -978,8 +979,10 @@ int L_SetRequire(lua_State* L) {
   }
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].require.cost = cost;
-  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].require.materials = mgr->ConvertMaterials(materials);
+  const uint64_t key = id;
+  const uint32_t option = optionKey;
+  mgr->m_enchants[key].options[option].require.cost = cost;
+  mgr->m_enchants[key].options[option].require.materials = mgr->ConvertMaterials(materials);
   return 2;
 }
 
