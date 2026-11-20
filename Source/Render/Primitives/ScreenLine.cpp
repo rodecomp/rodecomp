@@ -62,6 +62,8 @@ void UIRoMapWnd::DrawDashedArrow(
   float currentY = startY - static_cast<float>(offset) * normalY;
   float nextX = stepX + currentX;
   float nextY = stepY + currentY;
+  const float visibleEndX = directionX * visibleDistance + startX;
+  const float visibleEndY = directionY * visibleDistance + startY;
   std::uint32_t segmentColor = 0x33FFFFFF;
   ScreenPoint quad[4];
 
@@ -74,8 +76,8 @@ void UIRoMapWnd::DrawDashedArrow(
       quad[1] = {currentX + sideX, currentY + sideY};
       quad[2] = {nextX, nextY};
       quad[3] = {nextX + sideX, nextY + sideY};
-      const float remainingX = (directionX * visibleDistance + startX) - currentX;
-      const float remainingY = (directionY * visibleDistance + startY) - currentY;
+      const float remainingX = visibleEndX - currentX;
+      const float remainingY = visibleEndY - currentY;
       if (SquareRoot(remainingY * remainingY + remainingX * remainingX) < 100.0f) {
         DrawScreenQuad(quad[0], quad[1], quad[2], quad[3], body, segmentColor);
         segmentColor += 0x33000000;
