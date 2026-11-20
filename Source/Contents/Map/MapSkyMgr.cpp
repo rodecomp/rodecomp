@@ -124,8 +124,14 @@ vector3d CWeatherEffect::GetWindDirection() const {
 // OFFSET: 0x00C7B790
 // FUNCTION: fn_20367
 __declspec(noinline) void CWeatherEffect::Play(char kind) {
-  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
-    return;
+  if (this->effect) {
+    using DurationFn = int (__thiscall *)(CRagEffect*);
+    DurationFn duration = reinterpret_cast<DurationFn>(
+      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
+    );
+    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+      return;
+    }
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
@@ -179,13 +185,19 @@ void CWeatherEffect::Fireworks() {
 // OFFSET: 0x00C7B960
 // FUNCTION: fn_45933
 void CWeatherEffect::Maple() {
-  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
-    return;
+  if (this->effect) {
+    using DurationFn = int (__thiscall *)(CRagEffect*);
+    DurationFn duration = reinterpret_cast<DurationFn>(
+      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
+    );
+    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+      return;
+    }
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
-  static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_MAPLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_MAPLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00C7BAA0
@@ -209,8 +221,14 @@ void CWeatherEffect::Sakura() {
 // OFFSET: 0x00C7BB20
 // FUNCTION: fn_20370
 void CWeatherEffect::Snow() {
-  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
-    return;
+  if (this->effect) {
+    using DurationFn = int (__thiscall *)(CRagEffect*);
+    DurationFn duration = reinterpret_cast<DurationFn>(
+      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this->effect)) + 0x48)
+    );
+    if (duration(this->effect) - this->effect->state.stateCnt <= 300) {
+      return;
+    }
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
