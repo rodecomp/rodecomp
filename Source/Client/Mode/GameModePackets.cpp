@@ -16465,7 +16465,7 @@ void CGameMode::SpawnStandingActor(
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     } else {
-      if (!((objectType == 1 || objectType == 6 || objectType == 5) && g_session.IsPlayerJob(job))) {
+      if (!((objectType == 1 || objectType == 6 || objectType == 5) && g_session.IsPlayerJob(job) == 1)) {
         entry.appearanceVariant = 0;
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, reinterpret_cast<int>(&entry), 1, 0, 0, 0, 0);
