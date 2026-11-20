@@ -69,8 +69,8 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
-    const int previous = this->firstVisibleLine;
     this->manualScroll = 1;
+    const int previous = this->firstVisibleLine;
 
     if (message == UM_SCROLLVERTPAGEUP) {
       this->firstVisibleLine = previous - this->geometry.height / this->lineHeight + 1;
@@ -113,7 +113,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       int bytes = 0;
       int width = 0;
       const char* const end = current + std::strlen(current);
-      int column = 0;
 
       if (this->previousLineLength != 0) {
         while (current < end) {
@@ -126,21 +125,20 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           bytes += length;
 
           if (length == 1 && *start == '\n') {
-            column = bytes - 1;
+            --bytes;
             break;
           }
 
-          column = bytes;
           if (width > this->caretPixelX) {
             if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              column = previousBytes;
+              bytes = previousBytes;
             }
             break;
           }
         }
       }
 
-      this->verticalCursorStep = this->previousLineLength - column + static_cast<int>(std::strlen(this->previousLineText));
+      this->verticalCursorStep = this->previousLineLength - bytes + static_cast<int>(std::strlen(this->previousLineText));
     }
 
     g_serverLanguage->RetreatCursor(this->verticalCursorStep);
@@ -161,7 +159,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->movingUp = 0;
       int bytes = 0;
       int width = 0;
-      int column = 0;
       const unsigned lines = this->wrappedLines.size();
 
       if (lines > 1 && static_cast<unsigned>(this->textY) < lines - 1) {
@@ -178,21 +175,20 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           bytes += length;
 
           if (length == 1 && *start == '\n') {
-            column = bytes - 1;
+            --bytes;
             break;
           }
 
-          column = bytes;
           if (width > this->caretPixelX) {
             if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              column = previousBytes;
+              bytes = previousBytes;
             }
             break;
           }
         }
       }
 
-      this->verticalCursorStep = this->nextLineLength + column;
+      this->verticalCursorStep = this->nextLineLength + bytes;
     }
 
     g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
