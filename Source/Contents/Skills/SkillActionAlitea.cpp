@@ -562,7 +562,11 @@ void CSkillAction_Thundering::OnSkillDamage(CGameActor* source, CGameActor* targ
 // FUNCTION: fn_03177
 void CEfstAction_BasicAction::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    const int id = this->GetEffectId(efstId, argument4);
+    using EffectIdFn = int (__thiscall *)(CEfstAction_BasicAction*, int, int);
+    EffectIdFn effectId = reinterpret_cast<EffectIdFn>(
+      *reinterpret_cast<void**>(reinterpret_cast<char*>(*reinterpret_cast<void**>(this)) + 0x14)
+    );
+    const int id = effectId(this, efstId, argument4);
     if (id >= 0) {
       g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
