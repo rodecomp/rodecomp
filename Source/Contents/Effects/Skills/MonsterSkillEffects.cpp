@@ -4881,14 +4881,15 @@ void CHawkVumerangEffect::Open() {
   this->originPosition.x = this->sourcePosition[0];
   this->originPosition.y = this->sourcePosition[1];
   this->originPosition.z = this->sourcePosition[2];
-  this->orbitCenter.x = (this->originPosition.x + this->targetPosition.x) * 0.5f;
-  this->orbitCenter.y = (this->originPosition.y + this->targetPosition.y) * 0.5f;
-  this->orbitCenter.z = (this->originPosition.z + this->targetPosition.z) * 0.5f;
+  const float half = g_depthAverageHalf;
+  this->orbitCenter.x = (this->originPosition.x + this->targetPosition.x) * half;
+  this->orbitCenter.y = (this->originPosition.y + this->targetPosition.y) * half;
+  this->orbitCenter.z = (this->originPosition.z + this->targetPosition.z) * half;
 
   const float dx = this->originPosition.x - this->targetPosition.x;
   const float dy = this->originPosition.y - this->targetPosition.y;
   const float dz = this->originPosition.z - this->targetPosition.z;
-  this->orbitRadius = SquareRoot(dy * dy + dx * dx + dz * dz) * 0.5f;
+  this->orbitRadius = static_cast<double>(SquareRoot(dy * dy + dx * dx + dz * dz)) * g_depthAverageHalf;
   this->startAngle = std::acos(static_cast<double>(this->targetPosition.x - this->orbitCenter.x) / this->orbitRadius);
   if (this->orbitCenter.z > this->targetPosition.z) {
     this->startAngle = 6.283184f - this->startAngle;
