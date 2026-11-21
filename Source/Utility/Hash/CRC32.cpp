@@ -153,8 +153,9 @@ bool CRC32::CalculateFile(const WCHAR* filename, DWORD* checksum) {
 
   LARGE_INTEGER fileSize;
   if (GetFileSizeEx(file, &fileSize)) {
-    if (fileSize.QuadPart > 500000000) {
-      fileSize.QuadPart = 500000000;
+      if (fileSize.HighPart >= 0 && (fileSize.HighPart > 0 || fileSize.LowPart > 500000000)) {
+        fileSize.LowPart = 500000000;
+        fileSize.HighPart = 0;
     }
 
     HANDLE mapping = CreateFileMappingW(file, nullptr, PAGE_READONLY, fileSize.HighPart, fileSize.LowPart, nullptr);
