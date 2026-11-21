@@ -42,11 +42,11 @@ void UIRPData::DrawCroppedTexture(int x, int y, CTexture* texture, int sourceLef
   texture->Height();
 
   const float textureWidth = static_cast<float>(texture->TextureWidth());
+  const float u0 = (static_cast<float>(sourceLeft) + g_textureOffsetX) / textureWidth;
+  const float u1 = (static_cast<float>(sourceRight) + g_textureOffsetX) / textureWidth;
   const float textureHeight = static_cast<float>(texture->TextureHeight());
   const float v0 = (static_cast<float>(sourceTop) + g_textureOffsetY) / textureHeight;
-  const float u0 = (static_cast<float>(sourceLeft) + g_textureOffsetX) / textureWidth;
   const float v1 = (static_cast<float>(sourceBottom) + g_textureOffsetY) / textureHeight;
-  const float u1 = (static_cast<float>(sourceRight) + g_textureOffsetX) / textureWidth;
   const float right = static_cast<float>(x + (sourceRight - sourceLeft));
   const float bottom = static_cast<float>(y + (sourceBottom - sourceTop));
   primitive->quad[0].u = u0;
