@@ -617,7 +617,7 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
-  record.SplitDate(packet.completedAt, record.year, record.month, record.day);
+  ::SplitDate(packet.completedAt, record.year, record.month, record.day);
   this->achievements.insert({packet.id, record});
 }
 
