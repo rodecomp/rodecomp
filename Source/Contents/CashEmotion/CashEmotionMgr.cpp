@@ -2419,7 +2419,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
   }
 
   auto tab = this->m_tabs.find(3);
-  if (tab != this->m_tabs.end()) {
+  if (this->m_tabs.end() != tab) {
     this->SendMsg(tab->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   }
 
