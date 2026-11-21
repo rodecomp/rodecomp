@@ -5348,7 +5348,12 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
   for (int index = 0; index < 4; ++index, phase += 90) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
-    if (slot.life != 1 || ++slot.process <= 0) {
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    if (process <= 0) {
       continue;
     }
 
@@ -5357,14 +5362,14 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
-    if (slot.process < 30) {
+    if (process < 30) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 3);
       if (slot.alphaB > 100) {
         slot.alphaB = 100;
       }
     }
 
-    if (slot.process > this->state.duration - 46) {
+    if (process > this->state.duration - 46) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 2);
       if (slot.alphaB < 0) {
         slot.alphaB = 0;
