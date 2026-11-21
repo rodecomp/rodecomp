@@ -209,9 +209,17 @@ void CDCBitmap::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidth, 
 // FUNCTION: fn_01844
 void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int copyHeight, const CDCBitmap& source) {
   std::uint32_t* pixels = this->m_bitmap.pixels;
+  if (!pixels) {
+    return;
+  }
+
   const std::uint32_t width = this->m_bitmap.width;
+  if (x >= width) {
+    return;
+  }
+
   const std::uint32_t height = this->m_bitmap.height;
-  if (!pixels || x >= width || y >= height) {
+  if (y >= height) {
     return;
   }
 
