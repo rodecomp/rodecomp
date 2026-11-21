@@ -36,9 +36,10 @@ void CDCBitmap::UpdateCache() {
     }
 
     const std::int32_t bytes = static_cast<std::int32_t>(4u * this->m_bitmap.width * this->m_bitmap.height);
+    auto* pixels = reinterpret_cast<unsigned char*>(this->m_bitmap.pixels);
 
     for (std::int32_t offset = 0; offset < bytes; offset += 4) {
-      reinterpret_cast<unsigned char*>(this->m_bitmap.pixels)[offset + 3] = 255;
+      pixels[offset + 3] = 255;
     }
 
     auto texture = this->m_textures.begin();
