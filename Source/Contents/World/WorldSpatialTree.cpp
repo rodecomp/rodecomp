@@ -142,9 +142,10 @@ void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
 // OFFSET: 0x00AC8590
 // FUNCTION: fn_17674
 void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
+  const float minimumZ = this->minimum[2];
   this->dirty = 1;
   this->terrain = &resource;
-  resource.SpatialCell(this->minimum[0], this->minimum[2], this->terrainCells[0], this->terrainCells[1]);
+  resource.SpatialCell(this->minimum[0], minimumZ, this->terrainCells[0], this->terrainCells[1]);
   this->terrain->SpatialCell(this->maximum[0], this->maximum[2], this->terrainCells[2], this->terrainCells[3]);
 
   if (depth != 5) {
@@ -157,9 +158,10 @@ void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
 // OFFSET: 0x00AC8620
 // FUNCTION: fn_17675
 void WorldSpatialTree::BindGround(GroundGeometry& resource, int depth) {
+  const float minimumZ = this->minimum[2];
   this->dirty = 1;
   this->ground = &resource;
-  resource.SpatialCell(this->minimum[0], this->minimum[2], this->groundCells[0], this->groundCells[1]);
+  resource.SpatialCell(this->minimum[0], minimumZ, this->groundCells[0], this->groundCells[1]);
   this->ground->SpatialCell(this->maximum[0], this->maximum[2], this->groundCells[2], this->groundCells[3]);
 
   if (depth != 5) {
