@@ -1406,14 +1406,18 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       delta = 1;
     }
 
-    this->m_scroll = previous + delta;
-
-    if (this->m_scroll > this->m_bottomPositions[this->m_index] - 19) {
-      this->m_scroll = this->m_bottomPositions[this->m_index] - 19;
+    int current = previous + delta;
+    this->m_scroll = current;
+    const int index = this->m_index;
+    const int upper = this->m_bottomPositions[index] - 19;
+    if (current > upper) {
+      this->m_scroll = upper;
+      current = upper;
     }
 
-    if (this->m_scroll < this->m_scrollPositions[this->m_index]) {
-      this->m_scroll = this->m_scrollPositions[this->m_index];
+    const int lower = this->m_scrollPositions[index];
+    if (current < lower) {
+      this->m_scroll = lower;
     }
 
     this->LoadNotice();
