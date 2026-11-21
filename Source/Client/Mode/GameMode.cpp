@@ -5912,7 +5912,8 @@ void CGameMode::UpdatePetFriendlyWindow(int previousFriendly) {
   }
 
   if (g_session.GetPetFriendlyState(g_session.m_petFriendly) == 0 && g_session.m_petFriendly <= 100) {
-    if (this->petFriendlyNoticeIds.find(g_session.petGid) == this->petFriendlyNoticeIds.end()) {
+    const int petId = g_session.petGid;
+    if (this->petFriendlyNoticeIds.find(petId) == this->petFriendlyNoticeIds.end()) {
       if (g_windowMgr.petInfoWnd == nullptr) {
         g_windowMgr.EnsureWindow(WID_PETINFOWND);
       }
