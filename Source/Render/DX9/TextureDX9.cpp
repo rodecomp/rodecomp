@@ -371,9 +371,11 @@ bool CTextureDX9::UploadSurface(
     int row = 0;
     if (h > 0) {
       volatile std::uint8_t transparent = blackTransparent;
+      const int sourceRowStride = sourceWidth * stepY;
+      const std::uint32_t* inputRow = pixels;
       for (; row < h; ++row) {
         auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-        const std::uint32_t* input = pixels + row * stepY * sourceWidth;
+        const std::uint32_t* input = inputRow;
 
         for (int column = 0; column < w; ++column) {
           const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
@@ -389,14 +391,20 @@ bool CTextureDX9::UploadSurface(
 
           std::memcpy(output + column * sizeof(value), &value, sizeof(value));
         }
+
+        if (row + 1 < h) {
+          inputRow += sourceRowStride;
+        }
       }
     }
     break;
   }
-  case D3DFMT_A4R4G4B4:
+  case D3DFMT_A4R4G4B4: {
+    const int sourceRowStride = sourceWidth * stepY;
+    const std::uint32_t* inputRow = pixels;
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
+      const std::uint32_t* input = inputRow;
 
       for (int column = 0; column < w; ++column) {
         const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
@@ -412,30 +420,49 @@ bool CTextureDX9::UploadSurface(
 
         std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
+
+      if (row + 1 < h) {
+        inputRow += sourceRowStride;
+      }
     }
     break;
-  case D3DFMT_R5G6B5:
+  }
+  case D3DFMT_R5G6B5: {
+    const int sourceRowStride = sourceWidth * stepY;
+    const std::uint32_t* inputRow = pixels;
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
+      const std::uint32_t* input = inputRow;
 
       for (int column = 0; column < w; ++column) {
         const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_R5G6B5);
         std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
       }
+
+      if (row + 1 < h) {
+        inputRow += sourceRowStride;
+      }
     }
     break;
-  case D3DFMT_A8R8G8B8:
+  }
+  case D3DFMT_A8R8G8B8: {
+    const int sourceRowStride = sourceWidth * stepY;
+    const std::uint32_t* inputRow = pixels;
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
+      const std::uint32_t* input = inputRow;
 
       for (int column = 0; column < w; ++column) {
         const std::uint32_t color = input[column * stepX];
         std::memcpy(output + column * sizeof(color), &color, sizeof(color));
       }
+
+      if (row + 1 < h) {
+        inputRow += sourceRowStride;
+      }
     }
     break;
+  }
   default:
     break;
   }
