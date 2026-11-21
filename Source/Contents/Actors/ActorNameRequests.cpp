@@ -54,7 +54,7 @@ std::uint32_t CActorNameCardHolder::PopNextRequest() {
     if (found == this->cards.end() || found->second.received != 1) {
       const auto end = this->requests.end();
       const auto requested = std::find_if(this->requests.begin(), end, [id](const Request& request) { return id == request.id; });
-      if (requested == this->requests.end()) {
+      if (end == requested) {
         this->pending.pop_front();
         return id;
       }
