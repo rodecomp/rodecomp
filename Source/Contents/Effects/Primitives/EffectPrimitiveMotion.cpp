@@ -22,6 +22,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Effects/Core/RagEffectState.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
 #include "Contents/Actors/RenderObjectState.h"
@@ -6531,10 +6532,10 @@ bool CEffectPrim::PrimRippleRings() {
 
 namespace {
   // INLINED
-  __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot) {
+  __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot, float groundOffset, float projectionDepthOffset) {
     const float kind = slot.height[4];
 
-    if (kind >= 20.0f && slot.process > 200u &&
+    if (kind >= groundOffset && slot.process > 200u &&
         (prim.render.position.x != prim.state.master->render.position.x || prim.render.position.z != prim.state.master->render.position.z) &&
         slot.alphaT > 2000) {
       slot.alphaT = static_cast<std::int16_t>(slot.process);
@@ -6543,9 +6544,9 @@ namespace {
     if (slot.process > slot.alphaT) {
       int angle;
 
-      if (kind >= 20.0f) {
+      if (kind >= groundOffset) {
         angle = (slot.alphaT - slot.process + 18) * 5;
-      } else if (kind >= 10.0f) {
+      } else if (kind >= projectionDepthOffset) {
         angle = slot.alphaT - slot.process + 90;
       } else if (kind == 0.0f) {
         angle = 2505 - slot.process;
@@ -6569,6 +6570,9 @@ namespace {
 // OFFSET: 0x00BC14F0
 // FUNCTION: fn_19828
 void CEffectPrim::PrimFadingColumns() {
+  const float groundOffset = g_fireflyGroundOffset;
+  const float projectionDepthOffset = g_projectionDepthOffset;
+
   for (int index = 0; index < 2; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -6584,9 +6588,10 @@ void CEffectPrim::PrimFadingColumns() {
       continue;
     }
 
-    FadeColumnHeight(*this, slot);
+    FadeColumnHeight(*this, slot, groundOffset, projectionDepthOffset);
   }
 
+  const float depthAverageHalf = g_depthAverageHalf;
   for (int index = 2; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -6602,13 +6607,13 @@ void CEffectPrim::PrimFadingColumns() {
       continue;
     }
 
-    slot.distance += 0.5f;
+    slot.distance += depthAverageHalf;
 
     if (slot.distance > slot.height[0] * 8.0f) {
       slot.distance -= slot.height[0] * 8.0f;
     }
 
-    FadeColumnHeight(*this, slot);
+    FadeColumnHeight(*this, slot, groundOffset, projectionDepthOffset);
   }
 
   const CRagEffect* master = this->state.master;
