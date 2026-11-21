@@ -217,15 +217,16 @@ void matrix::MakeTransform(const float* position, const float* rotaxis, float ro
   const float yz = qy * z2;
   const float zz = qz * z2;
 
-  this->values[0] = g_projectionDepthNumerator - (yy + zz);
+  const float projectionDepthNumerator = g_projectionDepthNumerator;
+  this->values[0] = projectionDepthNumerator - (yy + zz);
   this->values[1] = xy + wz;
-  this->values[2] = xz - wy;
   this->values[3] = xy - wz;
-  this->values[4] = g_projectionDepthNumerator - (xx + zz);
-  this->values[5] = yz + wx;
+  this->values[2] = xz - wy;
   this->values[6] = xz + wy;
+  this->values[4] = projectionDepthNumerator - (xx + zz);
+  this->values[5] = yz + wx;
   this->values[7] = yz - wx;
-  this->values[8] = g_projectionDepthNumerator - (xx + yy);
+  this->values[8] = projectionDepthNumerator - (xx + yy);
   this->values[9] = position[0];
   this->values[10] = position[1];
   this->values[11] = position[2];
