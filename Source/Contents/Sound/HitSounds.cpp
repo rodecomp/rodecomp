@@ -52,9 +52,8 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
     return nullptr;
   }
 
-  const std::string* firstWave = weaponWaves.data();
   if (this->GetDisplayJob() == JT_TAEKWON || this->GetDisplayJob() == JT_TAEKWON_B) {
-    return firstWave[realWeapon].c_str();
+    return weaponWaves[realWeapon].c_str();
   }
 
   if (realWeapon == 0) {
