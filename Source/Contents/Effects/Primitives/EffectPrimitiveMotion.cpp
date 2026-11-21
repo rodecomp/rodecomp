@@ -28,6 +28,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderPrimitive.h"
 
 #include <algorithm>
@@ -344,6 +345,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
 // OFFSET: 0x00BB6180
 // FUNCTION: fn_19773
 bool CEffectPrim::Prim3DCasting4() {
+  const float resetHeight = g_projectionDepthOffset;
   const vector3d& parent = this->state.master->render.position;
   this->render.position = parent;
 
@@ -361,7 +363,7 @@ bool CEffectPrim::Prim3DCasting4() {
     if (height <= 0.0f) {
       slot.distance = 10.0f;
       slot.alphaB = 0;
-      height = 10.0f;
+      height = resetHeight;
     }
 
     slot.maxHeight = height;
