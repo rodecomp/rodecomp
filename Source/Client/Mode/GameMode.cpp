@@ -9825,8 +9825,8 @@ static_assert(sizeof(TalkSelectPacket) == 8);
 // INLINED
 static __forceinline void PrepareChatLog(CGameMode* mode, char* directory) {
   mode->chatLogLines = 0;
-  std::sprintf(directory, "%s\\Chat", g_applicationDirectory);
   int index = 0;
+  std::sprintf(directory, "%s\\Chat", g_applicationDirectory);
   if (_access(directory, 0) == 0 || _mkdir(directory) == 0) {
     std::sprintf(g_chatLogPath, "%s\\Chat\\Chat.txt", g_applicationDirectory);
     if (_access(g_chatLogPath, 0) == 0) {
