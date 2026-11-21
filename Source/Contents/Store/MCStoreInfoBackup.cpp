@@ -36,7 +36,7 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
   int examined = 0;
   auto saved = this->items.begin();
 
-  while (saved != this->items.end() && maximum > examined) {
+  for (; saved != this->items.end() && maximum > examined; ++examined) {
     std::pair<bool, ITEM_INFO> found = lists.FindMerchantMyShopItem(*saved, wholeItem);
 
     if (!found.first) {
@@ -53,8 +53,6 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
 
       ++saved;
     }
-
-    ++examined;
   }
 
   return examined;
