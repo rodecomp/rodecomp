@@ -456,7 +456,7 @@ void CExpandedBarterMarketItemMgr::RemoveEntry(const BarterMarketEntry& entry)
   }
   for (std::vector<BarterChunk16>::const_iterator it = entry.chunks.begin(); it != entry.chunks.end(); ++it) {
     int count = entry.value;
-    BarterChunk16 chunk = *it;
+    alignas(16) BarterChunk16 chunk = *it;
     for (std::vector<BarterChunk16>::iterator target = this->chunks.begin(); target != this->chunks.end(); ++target) {
       if (target->field_0 == chunk.field_0 && target->field_4 == chunk.field_4) {
         target->amount -= chunk.amount * count;
