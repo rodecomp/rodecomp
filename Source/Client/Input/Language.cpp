@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
-#include <format>
+#include <fmt/core.h>
 #include <imm.h>
 
 // OFFSET: 0x00ACF2A0
@@ -490,7 +490,7 @@ void CLanguageBase::RefreshComposition() {
   ImmReleaseContext(hWnd, context);
   this->candidate.assign(converted, size);
 
-  *std::format_to_n(converted, sizeof(converted) - 1, "{}{}", this->text, this->candidate).out = 0;
+  *fmt::format_to_n(converted, sizeof(converted) - 1, "{}{}", this->text, this->candidate).out = 0;
 
   this->SuggestChatCommand(converted);
 }
