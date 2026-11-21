@@ -134,19 +134,19 @@ void CBarterMarketItemMgr::AddItem(const BarterMarketItem& item)
   } else {
     this->allItems.push_back(item);
   }
-  for (std::list<BarterMarketItem>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    if (it->id == item.id) {
-      if (!it->flag_38) {
-        it->value -= item.value;
-        if (it->value <= 0) {
-          this->items.erase(it);
-          UIWindow* window = g_windowMgr.LookupWindow(WID_BARTERMARKETWND);
-          if (window != NULL) {
-            window->SendMsg(NULL, UM_REFRESHITEM, 0, 0, 0, 0);
-          }
-        }
+  const auto itemsEnd = this->items.end();
+  const int itemId = item.id;
+  std::list<BarterMarketItem>::iterator it = std::find_if(this->items.begin(), itemsEnd, [itemId](const BarterMarketItem& entry) {
+    return entry.id == itemId;
+  });
+  if (it != itemsEnd && !it->flag_38) {
+    it->value -= item.value;
+    if (it->value <= 0) {
+      this->items.erase(it);
+      UIWindow* window = g_windowMgr.LookupWindow(WID_BARTERMARKETWND);
+      if (window != NULL) {
+        window->SendMsg(NULL, UM_REFRESHITEM, 0, 0, 0, 0);
       }
-      break;
     }
   }
   this->RefreshTotals();
