@@ -25,10 +25,10 @@ BitmapPixels::BitmapPixels(int newWidth, int newHeight) : dc(CreateCompatibleDC(
 // FUNCTION: fn_01847
 void CDCBitmap::UploadTexture(CTexture*& texture) {
   auto& bitmap = this->m_bitmap;
-  auto width = bitmap.width;
-  auto* pixels = bitmap.pixels;
   auto height = bitmap.height;
-  const auto size = static_cast<std::int32_t>(width * height * sizeof(*pixels));
+  auto* pixels = bitmap.pixels;
+  auto width = bitmap.width;
+  const auto size = static_cast<std::int32_t>(sizeof(*pixels) * width * height);
 
   if (size > 0) {
     auto* bytes = reinterpret_cast<unsigned char*>(pixels);
