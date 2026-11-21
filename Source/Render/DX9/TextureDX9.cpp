@@ -169,14 +169,19 @@ bool CTextureDX9::Create(int width, int height, int format) {
   DWORD usage = renderTarget ? 0 : D3DUSAGE_DYNAMIC;
   UINT size[2];
   const UINT* adjusted = this->m_owner->AdjustTextureDimensions(size, width, height);
-  this->m_textureWidth = adjusted[0];
-  this->m_textureHeight = adjusted[1];
+  UINT textureWidth = adjusted[0];
+  UINT textureHeight = adjusted[1];
+  this->m_textureWidth = textureWidth;
+  this->m_textureHeight = textureHeight;
   this->m_format = format;
   UINT levels;
 
   if (this->m_allowDynamic && this->m_owner->dynamicTextures) {
-    this->m_dynamic = this->m_owner->CanAutoGenerateMipmaps(nativeFormat);
-    if (this->m_dynamic) {
+    const bool dynamic = this->m_owner->CanAutoGenerateMipmaps(nativeFormat);
+    textureWidth = this->m_textureWidth;
+    textureHeight = this->m_textureHeight;
+    this->m_dynamic = dynamic;
+    if (dynamic) {
       usage = renderTarget ? D3DUSAGE_AUTOGENMIPMAP : D3DUSAGE_DYNAMIC | D3DUSAGE_AUTOGENMIPMAP;
     }
     levels = 0;
@@ -185,7 +190,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
     levels = 1;
   }
 
-  if (FAILED(device->CreateTexture(this->m_textureWidth, this->m_textureHeight, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
+  if (FAILED(device->CreateTexture(textureWidth, textureHeight, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
       FAILED(this->m_texture->GetSurfaceLevel(0, &this->m_surface)) || FAILED(this->m_surface->GetDesc(&this->m_description))) {
     return false;
   }
