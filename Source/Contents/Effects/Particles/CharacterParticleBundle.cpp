@@ -25,6 +25,13 @@
 
 namespace {
 
+  // INLINED
+  static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+    return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                    point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                    point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+  }
+
   // GLOBAL: gl_24870
   std::unordered_map<int, std::vector<RadialGridPoint>> g_clawMarkRings;
 }
@@ -43,21 +50,14 @@ __declspec(noinline) CharacterParticleBundle::~CharacterParticleBundle() {
 // FUNCTION: fn_03129
 void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
   if (particle) {
-    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
     const vector3d origin = this->positionVector;
-    const float x = origin.x;
-    const float y = origin.y;
-    const float z = origin.z;
-    vector3d camera;
-    camera.x = view[0] * x + view[3] * y + view[6] * z + view[9] + this->offsetX + particle->offsetX;
-    camera.y = view[1] * x + view[4] * y + view[7] * z + view[10] - this->offsetY + particle->offsetY;
-    camera.z = view[2] * x + view[5] * y + view[8] * z + view[11] + particle->offsetZ;
-    vector3d world;
-    world.x = camera.y * inverse[3] + camera.x * inverse[0] + camera.z * inverse[6] + inverse[9];
-    world.y = camera.x * inverse[1] + camera.y * inverse[4] + camera.z * inverse[7] + inverse[10];
-    world.z = camera.x * inverse[2] + camera.y * inverse[5] + camera.z * inverse[8] + inverse[11];
-    particle->position = world;
+    vector3d camera = TransformPoint(view, origin);
+    camera.x += this->offsetX;
+    camera.y -= this->offsetY;
+    camera += particle->offset;
+    particle->position = TransformPoint(inverse, camera);
   }
 }
 
