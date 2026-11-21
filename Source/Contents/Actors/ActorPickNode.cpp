@@ -112,9 +112,12 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     ActorPickInfo* result = nullptr;
     float bestDepth = 0.0f;
     for (ActorPickInfo* info : this->pickInfos) {
-      if (info->Contains(x, y) && info->corners[1].z + info->corners[0].z > bestDepth) {
-        result = info;
-        bestDepth = info->corners[1].z + info->corners[0].z;
+      if (info->Contains(x, y)) {
+        const float depth = info->corners[1].z + info->corners[0].z;
+        if (depth > bestDepth) {
+          bestDepth = depth;
+          result = info;
+        }
       }
     }
     return result;
