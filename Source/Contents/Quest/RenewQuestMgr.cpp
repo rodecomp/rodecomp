@@ -439,19 +439,22 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     *reinterpret_cast<RenewQuestOngoingRecord*>(buffer + offset) = record;
     offset += sizeof(RenewQuestOngoingRecord);
 
-    for (int index = 0; index < huntCount; ++index) {
-      RenewQuestHuntRecord hunt;
-      SecureZeroMemory(&hunt, sizeof(hunt));
-      hunt.killCount = info.m_huntKillCount[index];
-      hunt.huntId = static_cast<int>(info.m_huntId[index]);
-      hunt.maxLevel = info.m_huntMaxLevel[index];
-      hunt.minLevel = info.m_huntMinLevel[index];
-      hunt.killGoal = info.m_huntMaxCount[index];
-      hunt.monsterId = info.m_huntMobId[index];
-      hunt.monsterCondition = info.m_huntConditionFlags[index];
-      strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
-      *reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset) = hunt;
-      offset += sizeof(RenewQuestHuntRecord);
+    if (huntCount > 0) {
+      RenewQuestHuntRecord* huntDestination = reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset);
+      offset += static_cast<int>(huntCount) * sizeof(RenewQuestHuntRecord);
+      for (int index = 0; index < huntCount; ++index) {
+        RenewQuestHuntRecord hunt;
+        SecureZeroMemory(&hunt, sizeof(hunt));
+        hunt.killCount = info.m_huntKillCount[index];
+        hunt.huntId = static_cast<int>(info.m_huntId[index]);
+        hunt.maxLevel = info.m_huntMaxLevel[index];
+        hunt.minLevel = info.m_huntMinLevel[index];
+        hunt.killGoal = info.m_huntMaxCount[index];
+        hunt.monsterId = info.m_huntMobId[index];
+        hunt.monsterCondition = info.m_huntConditionFlags[index];
+        strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
+        *huntDestination++ = hunt;
+      }
     }
   }
 }
