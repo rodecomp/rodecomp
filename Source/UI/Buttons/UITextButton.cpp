@@ -2673,8 +2673,9 @@ void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
     button->m_value = reinterpret_cast<int>(node);
     this->AddChild(button);
 
-    if (this->itemHeight < this->itemPadding + button->BitmapHeight()) {
-      this->itemHeight = this->itemPadding + button->BitmapHeight();
+    const int buttonHeight = this->itemPadding + button->BitmapHeight();
+    if (this->itemHeight < buttonHeight) {
+      this->itemHeight = buttonHeight;
     }
 
     if (index == 0) {
