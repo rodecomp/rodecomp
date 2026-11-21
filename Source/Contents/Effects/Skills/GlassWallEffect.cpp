@@ -5,6 +5,7 @@
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -123,14 +124,15 @@ __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   float fade = particle->animationValues[1];
   const float angle = speed + particle->animationValues[0];
   if (frame % static_cast<int>(particle->animationValues[4]) == 0) {
-    speed *= -1.0f;
+    speed *= g_heightSpeedSign;
   }
 
+  const int previousAlpha = particle->alpha;
   if (frame == static_cast<int>(particle->animationValues[2])) {
-    fade = static_cast<float>(-(particle->alpha / (this->effectLifetime - frame)));
+    fade = static_cast<float>(-(previousAlpha / (this->effectLifetime - frame)));
   }
 
-  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + fade);
+  int alpha = static_cast<int>(static_cast<float>(previousAlpha) + fade);
   if (static_cast<float>(alpha) < 0.0f) {
     alpha = 0;
   }
