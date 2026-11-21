@@ -11,12 +11,15 @@ void UIEditCtrl3::UpdateScrollBar() {
   const int total = this->lineCount;
   int maximum = total - visible;
   if (maximum == 1 && this->firstVisibleLine == 0) {
+    this->scrollEnabled = false;
     maximum = 0;
+  } else {
+    if (maximum < 0) {
+      maximum = 0;
+    }
+    this->scrollEnabled = maximum > 0;
   }
-  if (maximum < 0) {
-    maximum = 0;
-  }
-  this->scrollEnabled = maximum > 0;
+
   if (maximum > 0) {
     this->scrollBar->SetRange(maximum, visible, total);
     this->scrollBar->SetPosition(this->firstVisibleLine);
