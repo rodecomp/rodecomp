@@ -268,11 +268,13 @@ void UIListBox::Refresh() {
   this->verticalOverflow = overflow != 0;
   UIScrollBar* bar = this->verticalBar;
   if (overflow != 0) {
+    const int total = static_cast<int>(this->lines.size());
     bar->maximum = this->bottomMargin + overflow;
-    bar->total = static_cast<int>(this->lines.size());
+    bar->total = total;
   } else {
+    const int total = static_cast<int>(this->lines.size());
     bar->maximum = 0;
-    bar->total = static_cast<int>(this->lines.size());
+    bar->total = total;
   }
   bar->visible = visible;
   bar->Invalidate();
