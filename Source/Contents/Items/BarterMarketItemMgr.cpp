@@ -888,15 +888,16 @@ bool CExpandedBarterMarketItemMgr::HasRequiredItems()
         return false;
       }
       if (std::atoi(it->second.itemId.c_str()) == chunk->field_0 && (chunk->field_4 <= 0 || it->second.refiningLevel >= chunk->field_4)) {
-        if (it->second.quantity > required) {
-          it->second.quantity -= required;
+        const int available = it->second.quantity;
+        if (available > required) {
+          it->second.quantity = available - required;
           break;
         }
-        if (it->second.quantity == required) {
+        if (available == required) {
           this->itemInfos.erase(it);
           break;
         }
-        required -= it->second.quantity;
+        required -= available;
         it = this->itemInfos.erase(it);
       } else {
         ++it;
