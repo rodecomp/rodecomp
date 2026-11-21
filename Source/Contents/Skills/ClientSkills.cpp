@@ -587,6 +587,16 @@ SessionRecord6144 CSession::FindAchievementRecord(int key) const {
   return {};
 }
 
+// INLINED
+static __forceinline void SplitDate(__time32_t time, std::int16_t& year, std::int16_t& month, std::int16_t& day) {
+  time = time > 0 ? time : 0;
+
+  const std::tm local = *_localtime32(&time);
+  year = static_cast<std::int16_t>(local.tm_year + 1900);
+  month = static_cast<std::int16_t>(local.tm_mon + 1);
+  day = static_cast<std::int16_t>(local.tm_mday);
+}
+
 // OFFSET: 0x00E06FD0
 // FUNCTION: fn_23738
 void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
@@ -664,12 +674,7 @@ int CSession::CountSelectionItems() const {
 // OFFSET: 0x00E09080
 // FUNCTION: fn_23775
 __declspec(noinline) void SessionRecord6144::SplitDate(__time32_t time, std::int16_t& year, std::int16_t& month, std::int16_t& day) const {
-  time = time > 0 ? time : 0;
-
-  const std::tm local = *_localtime32(&time);
-  year = static_cast<std::int16_t>(local.tm_year + 1900);
-  month = static_cast<std::int16_t>(local.tm_mon + 1);
-  day = static_cast<std::int16_t>(local.tm_mday);
+  ::SplitDate(time, year, month, day);
 }
 
 // OFFSET: 0x00E091F0
