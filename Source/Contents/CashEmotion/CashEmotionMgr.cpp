@@ -1781,11 +1781,12 @@ __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
 // FUNCTION: fn_09344
 void UICashEmotionListChildWnd_Abstract::OnWheel(int delta) {
   if (this->wheelScroll == 1) {
+    UIWindow* scrollBar = this->scrollBar;
     if (delta < 0) {
-      this->SendMsg(this->scrollBar, UM_SCROLLVERT, 15, 0, 0, 0);
+      this->SendMsg(scrollBar, UM_SCROLLVERT, 15, 0, 0, 0);
       return;
     }
-    this->SendMsg(this->scrollBar, UM_SCROLLVERT, -15, 0, 0, 0);
+    this->SendMsg(scrollBar, UM_SCROLLVERT, -15, 0, 0, 0);
   }
 }
 
