@@ -115,7 +115,9 @@ void CMultiTexParticle::Render(int column, int row) {
     g_renderer->Project(&corners[i].x, cameraMatrix, this->command.vertices[i]);
     this->command.vertices[i].z -= 0.000030517578125f;
     this->command.vertices[i].diffuse = 0xFFFFFFFF;
-    SetTexCoord(this->command.vertices[i], this->uv1[i][0] + this->offsetU, this->uv1[i][1] + this->offsetV);
+    const float u = this->uv1[i][0] + this->offsetU;
+    const float v = this->uv1[i][1] + this->offsetV;
+    SetTexCoord(this->command.vertices[i], u, v);
     SetLightCoord(this->command.vertices[i], this->uv2[i][0], this->uv2[i][1]);
   }
 
