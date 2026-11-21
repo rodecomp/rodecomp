@@ -271,9 +271,10 @@ static UIRegistration s_recommendedQuestRegistered(10010, CreateRecommendedQuest
 void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
   const auto& quests = g_renewQuestMgr->m_recommendedQuests;
   const auto found = quests.find(questId);
+  const unsigned int selectedQuestId = questId;
   if (found != quests.end()) {
     this->titleText->SetText(found->second.m_title.c_str(), found->second.m_title.size());
-    this->scrollWindow->SetQuest(questId);
+    this->scrollWindow->SetQuest(selectedQuestId);
   }
 }
 
