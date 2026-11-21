@@ -731,16 +731,18 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
       continue;
     }
 
+    const std::uint32_t bitmapWidth = this->m_bitmap.width;
     const SpriteRleImage* image = sprite.images[cell.imageType][cell.image];
+    const int imageWidth = image->width;
     const int top = y - image->height / 2;
-    const int left = x - image->width / 2;
+    const int left = x - imageWidth / 2;
     const int destinationX = std::max(left, 0);
-    const int copyWidth = static_cast<int>(std::min(this->m_bitmap.width, static_cast<std::uint32_t>(left + image->width))) - destinationX;
+    const int copyWidth = static_cast<int>(std::min(bitmapWidth, static_cast<std::uint32_t>(left + imageWidth))) - destinationX;
     const int destinationY = std::max(top, 0);
     int copyHeight = static_cast<int>(std::min(this->m_bitmap.height, static_cast<std::uint32_t>(top + image->height))) - destinationY;
-    const int rowSkip = image->width - copyWidth;
-    const int skip = std::max(-top, 0) * image->width + std::max(-left, 0);
-    std::uint32_t* row = this->m_bitmap.pixels + destinationY * this->m_bitmap.width + destinationX;
+    const int rowSkip = imageWidth - copyWidth;
+    const int skip = std::max(-top, 0) * imageWidth + std::max(-left, 0);
+    std::uint32_t* row = this->m_bitmap.pixels + destinationY * bitmapWidth + destinationX;
     const std::uint8_t* runs = image->runs;
     int remaining = 0;
     auto next = [&]() -> std::uint8_t {
