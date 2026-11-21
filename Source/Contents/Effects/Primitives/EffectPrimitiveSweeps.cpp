@@ -1,5 +1,6 @@
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -78,8 +79,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 
     for (int drop = 0, turn = 0; drop < 72; drop += 2, ++turn) {
       const short spin = static_cast<short>(static_cast<short>(turn * 45 + slot.process) % 360);
-      const float offsetX = g_cosTable[spin] * 10.0f;
-      const float offsetZ = g_sinTable[spin] * 10.0f;
+      const float offsetX = g_cosTable[spin] * g_projectionDepthOffset;
+      const float offsetZ = g_sinTable[spin] * g_projectionDepthOffset;
       const float lift = static_cast<float>(drop);
       vector3d corner1;
       corner1.x = offsetX + vec1.x;
