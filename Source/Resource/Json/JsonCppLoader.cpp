@@ -7,6 +7,18 @@
 #include <cstring>
 #include <fstream>
 
+namespace {
+// INLINED
+  jsoncons::json_type NormalizeValueType(const jsoncons::json& value) {
+    const jsoncons::json_type type = value.type();
+    if (type == jsoncons::json_type::uint64_value) {
+      return jsoncons::json_type::int64_value;
+    }
+
+    return type;
+  }
+}
+
 // OFFSET: 0x004F3690
 // FUNCTION: fn_00483
 jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::json& node, jsoncons::json_type type) {
@@ -19,7 +31,7 @@ jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::j
   }
 
   jsoncons::json value = node.at(key);
-  if (this->GetValueType(value) != type) {
+  if (NormalizeValueType(value) != type) {
     return jsoncons::json::null();
   }
   return value;
@@ -28,12 +40,7 @@ jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::j
 // OFFSET: 0x004F3820
 // FUNCTION: fn_00484
 __declspec(noinline) jsoncons::json_type JsonCppLoader::GetValueType(const jsoncons::json& value) {
-  const jsoncons::json_type type = value.type();
-  if (type == jsoncons::json_type::uint64_value) {
-    return jsoncons::json_type::int64_value;
-  }
-
-  return type;
+  return NormalizeValueType(value);
 }
 
 // OFFSET: 0x00509940
