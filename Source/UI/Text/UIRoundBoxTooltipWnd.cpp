@@ -75,7 +75,12 @@ void UIColoringTextViewer::Paint() {
     end = this->lineLimit;
   }
 
-  for (int row = 0; row < end - first; ++row) {
+  if (first >= end) {
+    return;
+  }
+
+  const int visibleCount = end - first;
+  for (int row = 0; row < visibleCount; ++row) {
     const auto& line = this->lines[first + row];
     this->DrawColoredText(3, this->lineHeight * row + 4, line.c_str(), static_cast<unsigned>(line.size()), this->color, 0, 12, false);
   }
