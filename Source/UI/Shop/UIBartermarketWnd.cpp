@@ -1166,9 +1166,10 @@ void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
       text += "\n";
     }
   }
-  if (g_expandedBarterMarketItemMgr->total > 0) {
-    std::string total = FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), g_expandedBarterMarketItemMgr->total);
-    text += "\n" + total;
+  const auto total = g_expandedBarterMarketItemMgr->total;
+  if (total > 0) {
+    std::string totalText = FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), total);
+    text += "\n" + totalText;
   }
   if (!text.empty()) {
     int tooltipX = 0;
