@@ -1,6 +1,8 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Renderer.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/SpritePixels.h"
@@ -58,18 +60,18 @@ void UIWindow::AddSpriteCellOverlay(
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float sine = ClientSine(static_cast<int>(angle));
     const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
-    const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
+    const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y);
     float startX;
     float endX;
     if (cell->mirrored & 1) {
       startX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x);
-      endX = static_cast<float>(cell->x) * scale + static_cast<float>(x) + 1.0f;
+      endX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
     } else {
       startX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
-      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x) + 1.0f;
+      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x);
     }
-    const float halfWidth = (endX - startX) * 0.5f;
-    const float halfHeight = (lower - upper) * 0.5f;
+    const float halfWidth = (endX - startX + g_projectionDepthNumerator) * g_depthAverageHalf;
+    const float halfHeight = (lower - upper + g_projectionDepthNumerator) * g_depthAverageHalf;
     const float centerX = startX + halfWidth;
     const float centerY = upper + halfHeight;
     x0 = (-halfWidth) * cosine - (-halfHeight) * sine + centerX;
@@ -99,14 +101,14 @@ void UIWindow::AddSpriteCellOverlay(
   }
 
   RenderVertex* vertices = primitive->quad;
-  vertices[0].x = x0 + 0.5f;
-  vertices[0].y = y0 + 0.5f;
-  vertices[1].x = x1 + 0.5f;
-  vertices[1].y = y1 + 0.5f;
-  vertices[2].x = x2 + 0.5f;
-  vertices[2].y = y2 + 0.5f;
-  vertices[3].x = x3 + 0.5f;
-  vertices[3].y = y3 + 0.5f;
+  vertices[0].x = x0 + g_depthAverageHalf;
+  vertices[0].y = y0 + g_depthAverageHalf;
+  vertices[1].x = x1 + g_depthAverageHalf;
+  vertices[1].y = y1 + g_depthAverageHalf;
+  vertices[2].x = x2 + g_depthAverageHalf;
+  vertices[2].y = y2 + g_depthAverageHalf;
+  vertices[3].x = x3 + g_depthAverageHalf;
+  vertices[3].y = y3 + g_depthAverageHalf;
 
   vertices[0].z = 0.000001f;
   vertices[0].rhw = 0.999999f;
