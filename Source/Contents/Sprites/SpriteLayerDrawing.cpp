@@ -15,6 +15,7 @@
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Contents/Sprites/SpriteRidingPolicy.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Resource/Sprites/ImfResource.h"
 #include "Resource/Bitmap/PaletteResource.h"
@@ -387,12 +388,13 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
 
       CActRes* body = static_cast<CActRes*>(this->pc->GetEquipAction(1));
-      const ActionFrame* bodyFrame;
+      int bodyAnimation = this->pc->render.previousAnimation;
+      int bodyFrameIndex = this->pc->render.curMotion;
       if (replaced == true) {
-        bodyFrame = &body->Frame(animation, frameIndex);
-      } else {
-        bodyFrame = &body->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
+        bodyAnimation = animation;
+        bodyFrameIndex = frameIndex;
       }
+      const ActionFrame* bodyFrame = &body->Frame(bodyAnimation, bodyFrameIndex);
 
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
         if (frame->anchors[0].attachmentId == bodyFrame->anchors[0].attachmentId) {
@@ -412,10 +414,11 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
         offsetY = this->swingY + anchorY;
       }
 
-      if (1.0f != cell->scaleX) {
+      const float projectionDepthNumerator = g_projectionDepthNumerator;
+      if (projectionDepthNumerator != cell->scaleX) {
         offsetX = static_cast<int>(static_cast<float>(offsetX) / cell->scaleX);
       }
-      if (1.0f != cell->scaleY) {
+      if (projectionDepthNumerator != cell->scaleY) {
         offsetY = static_cast<int>(static_cast<float>(offsetY) / cell->scaleY);
       }
       break;
