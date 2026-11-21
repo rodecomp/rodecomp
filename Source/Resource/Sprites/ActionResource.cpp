@@ -107,10 +107,7 @@ bool CActRes::Load(const char* name) {
     return false;
   }
 
-  const int animationCount = header.count;
-  this->Unload();
-  this->animations.resize(animationCount);
-  this->speeds.resize(animationCount, 4.0f);
+  this->InitializeAnimations(header.count);
 
   for (unsigned animationIndex = 0; animationIndex < this->animations.size(); ++animationIndex) {
     std::vector<ActionFrame>& animation = this->animations[animationIndex];
@@ -262,12 +259,8 @@ void CActRes::Unload() {
 // FUNCTION: fn_46343
 void CActRes::InitializeAnimations(unsigned animationCount) {
   this->Unload();
-  this->animations.resize(animationCount, std::vector<ActionFrame>());
-  if (animationCount < this->speeds.size()) {
-    this->speeds.erase(this->speeds.begin() + animationCount, this->speeds.end());
-  } else if (animationCount > this->speeds.size()) {
-    this->speeds.insert(this->speeds.end(), animationCount - this->speeds.size(), 4.0f);
-  }
+  this->animations.resize(animationCount);
+  this->speeds.resize(animationCount, 4.0f);
 }
 
 // OFFSET: 0x00746ED0
