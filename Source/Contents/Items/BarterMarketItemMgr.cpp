@@ -503,7 +503,7 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
     if (target != this->chunks.end()) {
       target->amount += chunk.amount * count;
     } else {
-      BarterChunk16 added;
+      alignas(16) BarterChunk16 added;
       added.field_0 = chunk.field_0;
       added.field_4 = chunk.field_4;
       added.amount = chunk.amount * count;
