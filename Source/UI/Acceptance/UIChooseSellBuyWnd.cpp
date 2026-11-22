@@ -10345,12 +10345,14 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
     if (0x5654 == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
         case 0x5655:
-          return 0;
+          scanning = false;
+          break;
         case 0x5656: {
           int value = 0;
           std::memcpy(&value, records + position, header.length);
