@@ -3150,97 +3150,90 @@ void CEffectPrim::RenderTube(matrix& wtm) {
   ZeroVector3d prevEnd;
   int rpCnt = 0;
 
-  if (slot.life != 1 || slot.alphaB <= 0) {
-    return;
-  }
-
-  const float deltaZ = slot.vecTNow.z - slot.vecTPre.z;
-  const float deltaX = slot.vecTNow.x - slot.vecTPre.x;
-  const float length = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
-  const float dirZ = deltaZ / length;
-  const float dirX = deltaX / length;
-  short heading;
-  for (heading = 0; heading <= 180; ++heading) {
-    if (dirX >= g_cosTable[heading]) {
-      break;
+  if (slot.life == 1 && slot.alphaB > 0) {
+    const float deltaZ = slot.vecTNow.z - slot.vecTPre.z;
+    const float deltaX = slot.vecTNow.x - slot.vecTPre.x;
+    const float length = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
+    const float dirZ = deltaZ / length;
+    const float dirX = deltaX / length;
+    short heading;
+    for (heading = 0; heading <= 180; ++heading) {
+      if (dirX >= g_cosTable[heading]) {
+        break;
+      }
     }
-  }
-  if (heading <= 180) {
-    if (dirZ < 0.0f) {
-      heading = static_cast<short>(360 - heading);
+    if (heading <= 180) {
+      heading = static_cast<short>(dirZ >= 0.0f ? heading : 360 - heading);
+    } else {
+      heading = 180;
     }
-  } else {
-    heading = 180;
-  }
-  short side = static_cast<short>(heading + 90);
-  if (side >= 360) {
-    side = static_cast<short>(side - 360);
-  }
-
-  vector3d end;
-  if (slot.process < 15) {
-    const float t = g_sinTable[6 * slot.process];
-    end = {
-      (slot.vecTPre.x - slot.vecTNow.x) * t + slot.vecTNow.x, (slot.vecTPre.y - slot.vecTNow.y) * t + slot.vecTNow.y,
-      (slot.vecTPre.z - slot.vecTNow.z) * t + slot.vecTNow.z
-    };
-  } else {
-    end = slot.vecTPre;
-  }
-
-  short alpha = slot.alphaB;
-  float radius;
-
-  for (int pass = 0; pass < 2; ++pass) {
-    if (pass == 0) {
-      radius = slot.maxHeight;
-    } else if (pass == 1) {
-      radius = slot.maxHeight + slot.maxHeight;
+    short side = static_cast<short>(heading + 90);
+    if (side >= 360) {
+      side = static_cast<short>(side - 360);
     }
 
-    for (int step = 0; step <= 10; ++step) {
-      const int angle = step * 36;
-      const float across = radius * g_cosTable[angle];
-      const float up = radius * g_sinTable[angle];
-      const float offsetX = across * g_cosTable[side];
-      const float offsetZ = across * g_sinTable[side];
-      start.Set(offsetX + slot.vecTNow.x, up + slot.vecTNow.y, offsetZ + slot.vecTNow.z);
-      finish.Set(end.x + offsetX, end.y + up, end.z + offsetZ);
+    vector3d end;
+    if (slot.process < 15) {
+      const float t = g_sinTable[6 * slot.process];
+      end = {
+        (slot.vecTPre.x - slot.vecTNow.x) * t + slot.vecTNow.x, (slot.vecTPre.y - slot.vecTNow.y) * t + slot.vecTNow.y,
+        (slot.vecTPre.z - slot.vecTNow.z) * t + slot.vecTNow.z
+      };
+    } else {
+      end = slot.vecTPre;
+    }
 
-      if (step > 0) {
-        const float mode = slot.height[4];
+    int alpha;
+    float radius;
+
+    for (int pass = 0; pass < 2; ++pass) {
+      for (int step = 0; step <= 10; ++step) {
         if (pass == 0) {
-          alpha = slot.alphaB;
-          if (2.0f == mode) {
-            this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 0, 100, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-          } else {
-            if (mode != 3.0f) {
-              if (mode == 4.0f) {
-                alpha = static_cast<short>(slot.alphaB / 2);
-                this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-              } else {
-                this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-              }
+          radius = slot.maxHeight;
+        } else if (pass == 1) {
+          radius = slot.maxHeight + slot.maxHeight;
+        }
+
+        const int angle = step * 36;
+        const float across = radius * g_cosTable[angle];
+        const float up = radius * g_sinTable[angle];
+        const float offsetX = across * g_cosTable[side];
+        const float offsetZ = across * g_sinTable[side];
+        start.Set(offsetX + slot.vecTNow.x, up + slot.vecTNow.y, offsetZ + slot.vecTNow.z);
+        finish.Set(end.x + offsetX, end.y + up, end.z + offsetZ);
+
+        if (step > 0) {
+          if (pass == 0) {
+            alpha = slot.alphaB;
+            if (slot.height[4] == 2.0f) {
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 0, 100, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 3.0f) {
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 4.0f) {
+              alpha = slot.alphaB / 2;
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else {
-              this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            }
+          } else if (pass == 1) {
+            if (slot.height[4] == 2.0f) {
+              alpha = 2 * slot.alphaB;
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 50, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 3.0f) {
+              alpha = 2 * slot.alphaB;
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 4.0f) {
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else {
+              alpha = 2 * slot.alphaB;
+              this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
-        } else if (mode == 2.0f) {
-          alpha = static_cast<short>(2 * slot.alphaB);
-          this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 50, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (mode == 3.0f) {
-          alpha = static_cast<short>(2 * slot.alphaB);
-          this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (mode == 4.0f) {
-          this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 1, 0, 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else {
-          alpha = static_cast<short>(2 * slot.alphaB);
-          this->RenderTeiRect(&rpCnt, alpha, prevStart, start, finish, prevEnd, wtm, 0, 0, 1, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
-      }
 
-      prevStart = start;
-      prevEnd = finish;
+        prevStart = start;
+        prevEnd = finish;
+      }
     }
   }
 }
