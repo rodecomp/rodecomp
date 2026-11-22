@@ -2517,8 +2517,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
     if (this->mode != 0) {
       this->priceEdits[index]->Background(232, 232, 232);
     } else {
-      this->priceEdits[index]->disabled = 1;
-      this->priceEdits[index]->Invalidate();
+      SetEditDisabled(*this->priceEdits[index], 1);
       this->priceEdits[index]->Background(182, 182, 182);
     }
     this->AddChild(this->priceEdits[index]);
