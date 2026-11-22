@@ -1384,59 +1384,58 @@ void CPc::SetSprWeapon2(int first, int second) {
         break;
       }
     }
-    return;
-  }
-
-  int viewType = g_session.GetWeaponViewValue(this->weapon);
-  const std::string actName = g_session.GetWeaponActName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
-  if (ResourceMgr::Instance().Exists(actName.c_str())) {
-    this->LoadEquipAction(5, actName.c_str());
-    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
-    this->LoadEquipSprite(5, sprName.c_str());
-    viewType = this->MapMotion(viewType);
   } else {
-    viewType = g_session.GetWeaponViewValue(weaponItem);
-    if (viewType == -1 || viewType == 0 || weaponItem == 1599) {
-      return;
-    }
+    int viewType = g_session.GetWeaponViewValue(this->weapon);
+    const std::string actName = g_session.GetWeaponActName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
+    if (ResourceMgr::Instance().Exists(actName.c_str())) {
+      this->LoadEquipAction(5, actName.c_str());
+      const std::string sprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
+      this->LoadEquipSprite(5, sprName.c_str());
+      viewType = this->MapMotion(viewType);
+    } else {
+      viewType = g_session.GetWeaponViewValue(weaponItem);
+      if (viewType == -1 || viewType == 0 || weaponItem == 1599) {
+        return;
+      }
 
-    if (viewType == W_KNUCKLE) {
-      switch (this->GetEffectiveJob(-1)) {
-        case JT_PRIEST:
-        case JT_PRIEST_H:
-        case JT_PRIEST_B:
-        case JT_ARCHBISHOP:
-        case JT_ARCHBISHOP_H:
-        case JT_ARCHBISHOP_B:
-          return;
+      if (viewType == W_KNUCKLE) {
+        switch (this->GetEffectiveJob(-1)) {
+          case JT_PRIEST:
+          case JT_PRIEST_H:
+          case JT_PRIEST_B:
+          case JT_ARCHBISHOP:
+          case JT_ARCHBISHOP_H:
+          case JT_ARCHBISHOP_B:
+            return;
+        }
+      }
+
+      if (this->GetEffectiveJob(-1) == JT_CARDINAL && viewType == W_KNUCKLE) {
+        return;
+      }
+
+      viewType = this->MapMotion(viewType);
+      const std::string fallbackActName = g_session.GetWeaponActName(viewJob, this->sex, viewType, -1, this->bodyStyle);
+      if (ResourceMgr::Instance().Exists(fallbackActName.c_str())) {
+        this->LoadEquipAction(5, fallbackActName.c_str());
+        const std::string fallbackSprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, -1, this->bodyStyle);
+        this->LoadEquipSprite(5, fallbackSprName.c_str());
       }
     }
 
-    if (this->GetEffectiveJob(-1) == JT_CARDINAL && viewType == W_KNUCKLE) {
-      return;
-    }
-
-    viewType = this->MapMotion(viewType);
-    const std::string fallbackActName = g_session.GetWeaponActName(viewJob, this->sex, viewType, -1, this->bodyStyle);
-    if (ResourceMgr::Instance().Exists(fallbackActName.c_str())) {
-      this->LoadEquipAction(5, fallbackActName.c_str());
-      const std::string fallbackSprName = g_session.GetWeaponSprName(viewJob, this->sex, viewType, -1, this->bodyStyle);
-      this->LoadEquipSprite(5, fallbackSprName.c_str());
-    }
-  }
-
-  std::string effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
-  std::string effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
-  if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
-    effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
-    effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
+    std::string effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
+    std::string effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, weaponItem, 0, this->bodyStyle);
     if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
-      return;
+      effectActName = g_session.GetWeaponEffectActName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
+      effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, viewType, -1, 0, this->bodyStyle);
+      if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
+        return;
+      }
     }
-  }
 
-  this->LoadEquipAction(6, effectActName.c_str());
-  this->LoadEquipSprite(6, effectSprName.c_str());
+    this->LoadEquipAction(6, effectActName.c_str());
+    this->LoadEquipSprite(6, effectSprName.c_str());
+  }
 }
 
 // OFFSET: 0x00DB3740
