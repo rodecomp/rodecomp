@@ -1474,24 +1474,28 @@ void UITreeView::UpdateScrollBar() {
   const int count = this->itemCount;
   const int overflow = 0 > count - visible ? 0 : count - visible;
   this->verticalOverflow = overflow != 0;
-  this->verticalBar->total = count;
-  this->verticalBar->visible = visible;
+  UIScrollBar* bar = this->verticalBar;
+  bar->total = count;
+  bar->visible = visible;
   if (overflow != 0) {
-    this->verticalBar->maximum = overflow;
-    this->verticalBar->Invalidate();
-    if (this->verticalBar->position > this->verticalBar->maximum) {
-      this->verticalBar->position = this->verticalBar->maximum;
+    bar->maximum = overflow;
+    bar->Invalidate();
+    const int maximum = bar->maximum;
+    if (bar->position > maximum) {
+      bar->position = maximum;
     }
-  } else {
-    this->verticalBar->maximum = 0;
     this->verticalBar->Invalidate();
-    if (this->verticalBar->position > this->verticalBar->maximum) {
-      this->verticalBar->position = this->verticalBar->maximum;
-    }
-    this->scrollRow = 0;
-    this->itemCount = 0;
+    return;
   }
 
+  bar->maximum = 0;
+  bar->Invalidate();
+  const int maximum = bar->maximum;
+  if (bar->position > maximum) {
+    bar->position = maximum;
+  }
+  this->scrollRow = 0;
+  this->itemCount = 0;
   this->verticalBar->Invalidate();
 
 }
