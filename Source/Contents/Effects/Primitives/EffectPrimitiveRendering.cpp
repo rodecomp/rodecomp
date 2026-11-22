@@ -2479,10 +2479,10 @@ __declspec(safebuffers) void CEffectPrim::RenderPeong(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     const vector3d& base = slot.vecBPre;
-    vec1.Set(vec1.x + base.x, vec1.y + base.y, vec1.z + base.z);
-    vec2.Set(vec2.x + base.x, vec2.y + base.y, vec2.z + base.z);
-    vec3.Set(vec3.x + base.x, vec3.y + base.y, vec3.z + base.z);
-    vec4.Set(vec4.x + base.x, vec4.y + base.y, vec4.z + base.z);
+    vec1 = {vec1.x + base.x, vec1.y + base.y, vec1.z + base.z};
+    vec2 = {vec2.x + base.x, vec2.y + base.y, vec2.z + base.z};
+    vec3 = {vec3.x + base.x, vec3.y + base.y, vec3.z + base.z};
+    vec4 = {vec4.x + base.x, vec4.y + base.y, vec4.z + base.z};
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
