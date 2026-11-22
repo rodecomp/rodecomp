@@ -821,9 +821,9 @@ __forceinline int UIBartermarketWnd::GetBarterItemIndexAt(int x, int y) {
   if (column > this->columns - 1) {
     column = this->columns - 1;
   }
-  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
-  int index = 0;
   int visible = 0;
+  int index = 0;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row + column) {
