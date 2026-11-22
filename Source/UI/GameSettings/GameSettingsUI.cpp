@@ -484,11 +484,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
   this->selected = static_cast<unsigned int>(-1);
 
   if (this->geometry.height >= this->rowHeight) {
-    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight >= 2) {
-      ++count;
-    }
-    this->items.resize(count);
+    const unsigned int rows = static_cast<unsigned int>(this->geometry.height / this->rowHeight);
+    const unsigned int extra = this->geometry.height % this->rowHeight >= 2 ? 2 : 1;
+    this->items.resize(rows + extra);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -527,11 +525,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
   this->selected = static_cast<unsigned int>(-1);
 
   if (this->geometry.height >= this->rowHeight) {
-    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight >= 2) {
-      ++count;
-    }
-    this->items.resize(count);
+    const unsigned int rows = static_cast<unsigned int>(this->geometry.height / this->rowHeight);
+    const unsigned int extra = this->geometry.height % this->rowHeight >= 2 ? 2 : 1;
+    this->items.resize(rows + extra);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -570,11 +566,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
   this->selected = static_cast<unsigned int>(-1);
 
   if (this->geometry.height >= this->rowHeight) {
-    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight >= 2) {
-      ++count;
-    }
-    this->items.resize(count);
+    const unsigned int rows = static_cast<unsigned int>(this->geometry.height / this->rowHeight);
+    const unsigned int extra = this->geometry.height % this->rowHeight >= 2 ? 2 : 1;
+    this->items.resize(rows + extra);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
@@ -613,11 +607,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
   this->selected = static_cast<unsigned int>(-1);
 
   if (this->geometry.height >= this->rowHeight) {
-    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
-    if (this->geometry.height % this->rowHeight >= 2) {
-      ++count;
-    }
-    this->items.resize(count);
+    const unsigned int rows = static_cast<unsigned int>(this->geometry.height / this->rowHeight);
+    const unsigned int extra = this->geometry.height % this->rowHeight >= 2 ? 2 : 1;
+    this->items.resize(rows + extra);
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
