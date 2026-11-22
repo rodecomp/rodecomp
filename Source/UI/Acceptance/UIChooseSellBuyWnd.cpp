@@ -12068,9 +12068,10 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     return 0;
   case UM_SETINFO: {
-    ChooseWndInfo* placement = reinterpret_cast<ChooseWndInfo*>(a);
-    this->m_placement = placement;
-    placement->IsValid();
+    this->m_placement = reinterpret_cast<ChooseWndInfo*>(a);
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
+    }
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   }
