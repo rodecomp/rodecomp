@@ -8409,7 +8409,7 @@ void UIItemWnd::OnCreate(int width, int height) {
 
   UIBitmapButton* lockDeal = new UIBitmapButton();
   this->dealLockButton = lockDeal;
-  lockDeal->SetBitmap(g_session.m_blockPrivateTab != 1 ? "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp" : "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp", 0, 0);
+  lockDeal->SetBitmap(g_session.m_blockPrivateTab == 1 ? "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp" : "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp", 0, 0);
   this->dealLockButton->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
   this->dealLockButton->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_press.bmp", 2, 0);
   this->dealLockButton->SetSize(this->dealLockButton->BitmapWidth(), this->dealLockButton->BitmapHeight());
