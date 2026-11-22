@@ -7010,8 +7010,9 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (this->buyingShop == 0) {
+      ModeDragState& drag = mode->drag;
       ITEM_INFO item;
-      item.Assign(mode->drag);
+      item.Assign(drag);
       g_session.RemoveMerchantHopeToSellItem(item);
       if (g_windowMgr.merchantItemPurchaseWnd) {
         static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -7025,15 +7026,11 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   case UM_RESIZE:
     if (a == 3) {
-      int width;
+      int width = b;
       if (this->buyingShop) {
-        width = b <= 426 ? b : 426;
-      } else {
-        if (b > 320) {
-          width = 320;
-        } else {
-          width = b;
-        }
+        width = width <= 426 ? width : 426;
+      } else if (width > 320) {
+        width = 320;
       }
       int height = c <= 336 ? c : 336;
       if (width < 232) {
