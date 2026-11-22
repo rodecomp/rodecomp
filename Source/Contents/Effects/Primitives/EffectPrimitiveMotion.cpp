@@ -3075,8 +3075,9 @@ static __forceinline void LaunchVector(vector3d& point, float speed, float pitch
 static __forceinline void WaveSlotHeights(EffectPrimitiveSlot& slot, int index, float amplitude, int steps) {
   for (int value = 0; value < 21; ++value) {
     const int phase = index * 45 < 90 ? slot.process + index * 90 : (slot.process + index * 45) * 2;
-    slot.height[value] = slot.maxHeight;
-    slot.height[value] = g_sinTable[value * 9] * slot.maxHeight * amplitude * g_sinTable[phase % steps] + slot.maxHeight;
+    const float base = slot.maxHeight;
+    slot.height[value] = base;
+    slot.height[value] = g_sinTable[value * 9] * slot.maxHeight * amplitude * g_sinTable[phase % steps] + base;
   }
 }
 
