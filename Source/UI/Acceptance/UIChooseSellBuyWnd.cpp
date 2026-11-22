@@ -9660,10 +9660,15 @@ void UIExchangeWnd::OnProcess() {
 
   std::int64_t money = std::max<std::int64_t>(_atoi64(text), 0);
   if (money > 1000000000) {
-    g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0);
-    FormatGroupedInteger(1000000000LL, text, sizeof(text));
-    this->zenyEdit->SetText(text);
-    money = 1000000000;
+    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      FormatGroupedInteger(1000000000LL, text, sizeof(text));
+      this->zenyEdit->SetText(text);
+      money = 1000000000;
+    } else {
+      FormatGroupedInteger(1000000000LL, text, sizeof(text));
+      this->zenyEdit->SetText(text);
+      money = 1000000000;
+    }
   } else {
     FormatGroupedInteger(money, text, sizeof(text));
     this->zenyEdit->SetText(text);
