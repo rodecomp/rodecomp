@@ -8551,8 +8551,9 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     switch (a) {
     case 0: {
       CGameMode* mode = g_modeMgr.GetGameMode();
+      ModeDragState& drag = mode->drag;
       ITEM_INFO item;
-      item.Assign(mode->drag);
+      item.Assign(drag);
       g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.itemPurchaseWnd) {
         g_windowMgr.itemPurchaseWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -8564,8 +8565,9 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     case 1: {
       CGameMode* mode = g_modeMgr.GetGameMode();
+      ModeDragState& drag = mode->drag;
       ITEM_INFO item;
-      item.Assign(mode->drag);
+      item.Assign(drag);
       CSession* lists = &g_session;
       lists->MergeShopItem(item);
       lists->RemoveStorageItem(item);
@@ -8618,7 +8620,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const int size = g_session.GetNumShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetShopItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
