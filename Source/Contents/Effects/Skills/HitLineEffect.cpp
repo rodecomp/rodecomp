@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
@@ -218,6 +219,7 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
 // OFFSET: 0x00705510
 // FUNCTION: fn_07039
 void CHitLineEffect::Render() {
+  const float attenuationBase = g_projectionDepthNumerator;
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->effectParameter <= 0 || particle->elapsedFrames <= 0) {
@@ -233,7 +235,7 @@ void CHitLineEffect::Render() {
     for (int index = 0; index < 2; ++index) {
       const int count = halfTurns[index];
       float distance = 0.0f;
-      float factor = 1.0f;
+      float factor = attenuationBase;
       for (int step = 0; step < count; ++step) {
         distance += particle->speedParameter * 2.0f * factor;
         factor *= 0.7f;
@@ -245,7 +247,7 @@ void CHitLineEffect::Render() {
       }
 
       float height = -radius * g_sinTable[static_cast<int>(turn)] * 1.5f;
-      float scale = 1.0f;
+      float scale = attenuationBase;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
       }
