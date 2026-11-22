@@ -200,6 +200,9 @@ static_assert(sizeof(TradeItemRecord) == 0x22);
 // GLOBAL: gl_24992
 char g_pendingWhisperCount;
 
+// GLOBAL: gl_25467
+std::uint32_t g_playTimeNoticeHours;
+
 namespace {
 #pragma pack(push, 1)
   struct SimulationPacketHeader {
@@ -6881,6 +6884,9 @@ void CGameMode::ApplyStatusChange(
 
     color = 0xFF;
     switch (type) {
+    default:
+      this->RefreshStatusStateEffect(aid);
+      return;
     case EFST_TWOHANDQUICKEN:
     case EFST_ATTHASTE_POTION1:
     case EFST_ATTHASTE_POTION2:
@@ -6961,8 +6967,6 @@ void CGameMode::ApplyStatusChange(
       std::sprintf(message, LookupMessage(MSI_DSST_ENERGYCOAT));
       break;
     case EFST_ATTHASTE_INFINITY:
-    case EFST_INC_AGI:
-    case EFST_MOVHASTE_INFINITY:
       if (aid == g_session.m_aid) {
         for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
           if (it->id == type) {
@@ -7316,6 +7320,20 @@ void CGameMode::ApplyStatusChange(
         std::sprintf(message, "");
       }
       break;
+    case EFST_INC_AGI:
+    case EFST_MOVHASTE_INFINITY:
+      if (aid == g_session.m_aid) {
+        for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+          if (it->id == type) {
+            g_activeSkillEffects.erase(it);
+            it = g_activeSkillEffects.begin();
+          } else {
+            ++it;
+          }
+        }
+      }
+      std::sprintf(message, LookupMessage(MSI_SPEEDDOWN));
+      break;
     case EFST_DA_ILLUSION:
       if (aid == g_session.m_aid) {
         g_session.guildLeader = 0;
@@ -7465,9 +7483,6 @@ void CGameMode::ApplyStatusChange(
     case EFST_RELIGIO:
     case EFST_BLOCK:
       break;
-    default:
-      this->RefreshStatusStateEffect(aid);
-      return;
     }
   }
 
@@ -11557,7 +11572,6 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
     return;
   }
 
-  vector3d deltaPos{0.0f, 0.0f, 0.0f};
   CGameActor* actor;
   if (packet->aid == g_session.m_aid && (actor = this->scene->player) != nullptr) {
     if (packet->count == 1) {
@@ -11599,7 +11613,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_CHANGE_RANK, packet->value, packet->count, 0, 0, 0, 0);
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
     if (packet->count <= 10) {
-      if (CRagEffect* effect = actor->LaunchEffect(EF_TOPRANK, deltaPos, 0.0f)) {
+      if (CRagEffect* effect = actor->LaunchEffect(EF_TOPRANK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETCOUNT, 0, packet->count, 0, 0, 0, 0);
       }
     }
@@ -13786,11 +13800,10 @@ void CGameMode::ReceiveItem1758StoreList(const unsigned char* packet) {
     g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
     g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
     g_session.ClearItems1760And1748();
-    return;
-  }
-
-  for (ITEM_INFO item : items) {
-    g_session.AddMerchantPurchaseItem(item);
+  } else {
+    for (ITEM_INFO item : items) {
+      g_session.AddMerchantPurchaseItem(item);
+    }
   }
 }
 
@@ -23218,18 +23231,9 @@ struct PACKET_ZC_ITEM_FALL_ENTRY {
   /* 000A */ unsigned char identify;
   /* 000B */ std::int16_t x;
   /* 000D */ std::int16_t y;
-  /* 000F */ union {
-    /* 0000 */ struct {
-      /* 0000 */ unsigned char subX;
-      /* 0001 */ unsigned char subY;
-      /* 0002 */ std::int16_t amount;
-    } falling;
-    /* 0000 */ struct {
-      /* 0000 */ std::int16_t amount;
-      /* 0002 */ unsigned char subX;
-      /* 0003 */ unsigned char subY;
-    } standing;
-  } position;
+  /* 000F */ unsigned char subX;
+  /* 0010 */ unsigned char subY;
+  /* 0011 */ std::int16_t amount;
 };
 
 struct PACKET_ZC_AUTOSPELLLIST {
@@ -23450,6 +23454,21 @@ void CGameMode::ProcessIncomingPackets() {
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!g_replayAnimationScaling) {
     const std::uint32_t elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
+    if (elapsedHours != 0 && g_playTimeNoticeHours != elapsedHours) {
+      if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+        std::uint32_t color = 0x62B0FF;
+        BroadcastBalloonMessage message;
+        {
+          std::string text = FormatOwnedString(OBFUSCATE_TEXT("%d 시간이 경과했습니다.", 0xD97D5DBDBB2F2709ULL), elapsedHours);
+          message.lines.emplace_back(text, color);
+        }
+        const char* warning = OBFUSCATE_TEXT("과도한 게임이용은 정상적인 일상생활에 지장을 줄 수 있습니다.", 0xBF2B4B31397FF5A7ULL);
+        message.lines.emplace_back(warning, color);
+        balloon->AddMessage(0, message);
+      }
+      g_playTimeNoticeHours = elapsedHours;
+    }
+
     if (!GetRagConnection().Update()) {
       g_modeMgr.currentMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
     }
@@ -23530,17 +23549,80 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xC29:
     case 0xC35:
       break;
+    case ID_ZC_NOTIFY_ACTORINIT:
+      this->ReceiveDeferredReset(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILD_POSITIONNAME:
+      this->ReceiveActorClanName(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_VIEW_CAMERAINFO: {
+      const auto* packet = reinterpret_cast<const CameraInfoPacket*>(g_gameModePacketBuffer);
+      if (packet->action == 1) {
+        UIWindow *window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
+        if (!window) {
+          window = g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
+        }
+        g_session.showCameraInfo = !g_session.showCameraInfo;
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.showCameraInfo == true ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+        window->Show(g_session.showCameraInfo);
+      } else if (CView *camera = this->camera) {
+        camera->camera.desiredDistance = packet->distance;
+        this->camera->camera.desiredYaw = packet->yaw;
+        this->camera->camera.desiredPitch = packet->pitch;
+      }
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH01: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH01;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH02: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH02;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH03: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH03;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH04: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH04;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH05: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH05;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH44: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH44;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
     case ID_ZC_NOTIFY_STANDENTRY:
       this->ReceiveActorTypedEntry(g_gameModePacketBuffer);
       break;
-    case ID_ZC_NOTIFY_NEWENTRY:
-      this->ReceiveActorStandEntryOld0(g_gameModePacketBuffer);
+    case ID_ZC_REASSEMBLY_AUTH45: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH45;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_NOTIFY_STANDENTRY_NPC:
+      this->ReceiveNpcStandEntry(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_MOVEENTRY:
       this->ReceiveActorMoveEntryOld0(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY_NPC:
-      this->ReceiveNpcStandEntry(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_VANISH:
       this->ReceiveActorDisappear(g_gameModePacketBuffer);
@@ -23548,1130 +23630,137 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_SC_NOTIFY_BAN:
       this->ReceiveNotifyBan(g_gameModePacketBuffer);
       break;
-    case ID_ZC_NOTIFY_CHAT:
-      this->ReceiveActorChat(g_gameModePacketBuffer);
+    case ID_ZC_REASSEMBLY_AUTH46: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH46;
+      GetRagConnection().Send(sizeof(packet), packet);
       break;
+    }
+    case ID_ZC_NOTIFY_MOVE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MOVE*>(g_gameModePacketBuffer);
+      const std::uint32_t aid = packet->gid;
+      ActorMoveRoute path;
+      path.tick = packet->moveStartTime;
+      DecodeSrcDst(packet->moveData, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
+      CRenderObject *actor = this->scene->GetGameActorByAID(aid);
+      g_session.SyncServerTime(path.tick);
+      if (actor) {
+        const int pathAddress = reinterpret_cast<int>(&path);
+        actor->SendMsg(nullptr, AM_MOVE, pathAddress, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_PLAYERMOVE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_PLAYERMOVE*>(g_gameModePacketBuffer);
+      ActorMoveRoute path;
+      path.tick = packet->moveStartTime;
+      DecodeSrcDst(packet->moveData, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
+      g_session.SyncServerTime(path.tick);
+      const int pathAddress = reinterpret_cast<int>(&path);
+      this->scene->player->SendMsg(nullptr, AM_MOVE, pathAddress, 0, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_NOTIFY_ACT: {
+      const ActorActionPacket *packet = reinterpret_cast<const ActorActionPacket *>(g_gameModePacketBuffer);
+      this->ReceiveActorAction(packet->sourceAid, packet->targetAid, packet->tick, packet->attackMT, packet->attackedMT, packet->damage, packet->count,
+                               packet->type, packet->damage2, 0);
+      break;
+    }
+    case ID_ZC_NOTIFY_ACT2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_ACT2*>(g_gameModePacketBuffer);
+      this->ReceiveActorAction(
+          packet->srcId, packet->targetId,
+          packet->serverTick, packet->srcSpeed,
+          packet->dmgSpeed, packet->damage,
+          packet->div, packet->type,
+          packet->damage2, 0);
+      break;
+    }
+    case ID_ZC_NOTIFY_ACT3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_ACT3*>(g_gameModePacketBuffer);
+      this->ReceiveActorAction(
+          packet->srcId, packet->targetId,
+          packet->serverTick, packet->srcSpeed,
+          packet->dmgSpeed, packet->damage,
+          packet->div, packet->type,
+          packet->damage2, packet->isSpDamage);
+      break;
+    }
     case ID_ZC_NOTIFY_PLAYERCHAT:
       this->ReceiveBroadcast(g_gameModePacketBuffer);
       break;
+    case ID_ZC_REASSEMBLY_AUTH50: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH50;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_NOTIFY_CHAT:
+      this->ReceiveActorChat(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SEEK_PARTY: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SEEK_PARTY*>(g_gameModePacketBuffer);
+      char message[256];
+      memset(message, 0, sizeof(message));
+      const char *job = g_session.GetJobName(packet->job, -1);
+      sprintf(message, LookupMessage(MSI_SEEK_PARTY_SET), packet->level,
+              packet->name, job);
+      if (g_windowMgr.chatRoomWnd) {
+        g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
+      } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
+      }
+      if (g_session.m_whisperRecord) {
+        this->WriteChatLog(message);
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_TIME: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_TIME*>(g_gameModePacketBuffer);
+      if (g_pingLogEnabled) {
+        FILE *file = fopen("PingLog.txt", "at");
+        if (file) {
+          const std::uint32_t sent = g_pingLogTicks.front();
+          fprintf(file, "%10.2f\t%10d\n", static_cast<float>(sent - g_pingLogFirstTick) / 1000.0f, timeGetTime() - sent);
+          fclose(file);
+        }
+        g_pingLogTicks.pop_front();
+      }
+
+      const std::uint32_t serverTime = packet->time;
+      if (this->serverTimeSyncCount == 0) {
+        g_session.SetServerTime(serverTime);
+      } else {
+        g_session.SyncServerTime(serverTime);
+      }
+      ++this->serverTimeSyncCount;
+      this->syncAcknowledged = 1;
+      g_session.AddPingSample(timeGetTime() - this->syncRequestTick);
+      break;
+    }
     case ID_ZC_NPCACK_MAPMOVE:
       this->ReceiveMapMove(g_gameModePacketBuffer);
       break;
-    case ID_ZC_NPCACK_SERVERMOVE:
-      this->ReceiveZoneServerChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_WHISPER:
-      this->ReceiveWhisper(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK:
-      this->ReceiveItemPickupAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PAR_CHANGE:
-      this->ReceiveParChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_LONGPAR_CHANGE:
-      this->ReceiveExpChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CLOSE_DIALOG:
-      this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MENU_LIST:
-      this->ReceiveWindow17Entries(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STATUS_CHANGE_ACK:
-      this->ReceiveStatusChangeAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STATUS:
-      this->ReceiveStatus(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STATUS_CHANGE:
-      this->ReceiveStatusChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPRITE_CHANGE:
-      this->ReceiveSpriteChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_SELL_ITEMLIST:
-      this->ReceiveItem1718IndexList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_RESULT:
-      this->ReceiveItem1718Result(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SETTING_WHISPER_PC:
-      this->ReceiveWhisperFilterResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ROOM_NEWENTRY:
-      this->ReceiveActorMessage32(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REFUSE_ENTER_ROOM:
-      this->ReceiveChatRoomEntryFailure(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ENTER_ROOM:
-      this->ReceiveChatRoomMemberList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGE_CHATROOM:
-      this->ReceiveActorMessage34(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_EXCHANGE_ITEM:
-      this->ReceiveExchangeRequestAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ADD_EXCHANGE_ITEM:
-      this->ReceiveExchangeItemAddAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GROUP_LIST:
-      this->ReceivePartyMemberList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQ_JOIN_GROUP:
-    case ID_ZC_PARTY_JOIN_REQ_ACK:
-      this->ReceiveNamedActionResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_MEMBER_TO_GROUP:
-      this->ReceivePartyMemberInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DELETE_MEMBER_FROM_GROUP:
-      this->ReceivePartyMemberLeft(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_CHAT_PARTY:
-      this->ReceivePartyChat(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILLINFO_UPDATE:
-    case ID_ZC_HOSKILLINFO_UPDATE:
-    case ID_ZC_MER_SKILLINFO_UPDATE:
-      this->ApplySkillUpdatePacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_SKILL:
-      this->ReceiveActorSkillAction(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_SKILL_POSITION:
-      this->ReceiveActorSkillMessage(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_GROUNDSKILL:
-      this->ReceiveNotifyGroundSkill(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_ENTRY:
-      this->Zc_Skill_Entry(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC:
-    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC2:
-      this->ReceiveItem1748List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_RESULT_FROMMC:
-      this->ReceiveEquipItemNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_MYITEMLIST:
-      this->ReceiveOpenedVendingItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACTION_FAILURE:
-      this->ReceiveEquipAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_COUPLESTATUS:
-      this->ReceiveStatusBonus(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MYGUILD_BASIC_INFO:
-      this->ReceiveGuildRelationList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_INFO:
-      this->ReceiveGuildInfo2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBERMGR_INFO:
-      this->ReceiveGuildMemberMemoList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_LEAVE_GUILD:
-      this->ReceiveGuildMemberLeft(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_POSITION_INFO:
-      this->ReceiveGuildPositionInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BAN_LIST:
-      this->ReceiveGuildBanList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_POSITION_ID_NAME_INFO:
-      this->ReceiveGuildPositionNames(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_NOTICE:
-      this->ReceiveGuildNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_CHANGE_GUILD_POSITIONINFO:
-      this->ReceiveGuildPositionUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ITEMCOMPOSITION:
-      this->ReceiveCardCompositionResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_CHAT:
-      this->ReceiveGuildChat(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBER_ADD:
-      this->ReceiveGuildMemberAdd(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_RELATED_GUILD:
-      this->ReceiveAddRelatedGuild(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ITEMREFINING:
-      this->ReceiveRefineResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQMAKINGITEM:
-      this->ReceiveItemEffectResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQNAMEALL:
-      this->ReceiveActorNameAll(reinterpret_cast<const ActorNameAllPacket *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_MSG_STATE_CHANGE:
-      this->ReceiveStatusChangeNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_RANKING:
-      this->ReceiveEffectNumber(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EFFECT:
-      this->ReceivePartyMemberEffect(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_START_CAPTURE:
-      this->Zc_Start_Capture(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_TRYCAPTURE_MONSTER:
-      this->Zc_Trycapture_Monster(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FEED_PET:
-    case ID_ZC_FEED_MER:
-      this->ReceiveFeedResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGESTATE_PET:
-      this->ReceivePetChangeState(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PET_ACT:
-      this->ReceivePetAct(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_INFO2:
-      this->ReceiveGuildInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DISPEL:
-      this->ReceiveDispel(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REPLY_REMAINTIME:
-      this->ReceiveBillingInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_STORE2:
-      this->ReceiveItem1738Add(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_CART2:
-      this->ReceiveItem1740Add(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_ENTRY2:
-      this->Zc_Skill_Entry2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DEVOTIONLIST:
-      this->ReceiveDevotionList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BLADESTOP:
-      this->ReceiveActorPairFreeze(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_COMBODELAY:
-    case 0xC36:
-      this->ReceiveActorSequenceDeadline(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SOUND:
-      this->ReceiveSound(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPRITE_CHANGE2:
-      this->ReceiveSpriteChange2Mirrored(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY2:
-      this->ReceiveActorStateEntryOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY2:
-      this->ReceiveActorStandEntryOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY2:
-      this->ReceiveActorMoveEntryOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_SKILL2:
-      this->ReceiveNotifySkill(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPIRITS2:
-      this->Zc_Spirits2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_START_COUPLE:
-      this->Zc_Start_Couple(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_COUPLENAME:
-      this->ReceiveCoupleName(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CONGRATULATION:
-      this->ReceiveCongratulation(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EFFECT2:
-      this->ReceiveNotifyEffect(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_EXCHANGE_ITEM2:
-      this->ReceiveExchangeRequestAck2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_START_BABY:
-      this->Zc_Start_Baby(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FRIENDS_LIST:
-      this->ReceiveFriendList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STARSKILL:
-      this->ReceiveSpecialBroadcast(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_STATUS_GM:
-      this->ReceiveStatDump(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILLMSG:
-      this->ReceiveStatusNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_WEAPONREFINE:
-      this->ReceiveItemObtainNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY3:
-      this->ReceiveActorStandEntry(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY3:
-      this->ReceiveActorStandEntryOld2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY3:
-      this->ReceiveActorMoveEntryOld2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PROPERTY_HOMUN:
-      this->ReceiveHomunculusInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGESTATE_MER:
-      this->ReceiveHomunculusChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_HUNTINGLIST:
-      this->ReceiveHuntingList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PCBANG_EFFECT:
-      this->ReceiveBroadcastBalloonNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EFFECT3:
-      this->ReceiveActorStatusValuePacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_CASH_POINT_ITEMLIST:
-      this->ReceivePendingItem1718List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_CASH_POINT_UPDATE:
-      this->ReceivePendingResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_SHOWEFST_UPDATE:
-      this->ReceiveActorStatusEffects(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MSG:
-      this->Zc_Msg(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BOSS_INFO:
-      this->ReceiveBossMonsterInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_READ_BOOK:
-      this->ReceiveBookOpen(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPMENT_ITEMLIST2:
-      this->ReceiveEquipItemList34(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_EQUIPMENT_ITEMLIST2:
-      this->ReceiveStorageEquipList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CART_EQUIPMENT_ITEMLIST2:
-      this->ReceiveItem1740BasicList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CASH_TIME_COUNTER:
-      this->ReceiveRentalItemTime(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CASH_ITEM_DELETE:
-      this->ReceiveItemDeletionNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK2:
-      this->ReceiveItemPickupAck2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MER_INIT:
-      this->Zc_Mer_Init(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MER_PAR_CHANGE:
-      this->Zc_Mer_Par_Change(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_PARTY:
-      this->ReceivePartyItemPickupNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPITEM_DAMAGED:
-      this->ReceiveEquipItemDamaged(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_CHAT:
-      this->ReceiveActorColorChat(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FORMATSTRING_MSG:
-      this->ReceiveFormatStringMessage(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_CONFIG:
-      this->ReceiveToggleNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMORIALDUNGEON_SUBSCRIPTION_INFO:
-      this->ReceiveMemorialDungeonSubscriptionInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMORIALDUNGEON_SUBSCRIPTION_NOTIFY:
-      this->ReceiveMemorialDungeonSubscriptionNotify(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMORIALDUNGEON_INFO:
-      this->ReceiveMemorialDungeonInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMORIALDUNGEON_NOTIFY:
-      this->ReceiveMemorialDungeonNotify(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPMENT_ITEMLIST3:
-      this->ReceiveEquipItemList38(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_EQUIPMENT_ITEMLIST3:
-      this->ReceiveStorageEquipList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CART_EQUIPMENT_ITEMLIST3:
-      this->ReceiveItem1740BasicListBind(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK3:
-      this->ReceiveItemPickupAck3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ISVR_DISCONNECT:
-      this->ReceiveMemorialDungeonError(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPWIN_MICROSCOPE:
-    case ID_ZC_EQUIPWIN_MICROSCOPE2:
-      this->ReceiveEquipWindowMicroscope2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CONFIG:
-      this->ReceiveFeedOption(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CONFIG_NOTIFY:
-      this->ReceiveEquipmentViewState(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BATTLEFIELD_CHAT:
-      this->ReceiveActorBroadcastText(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACCEPT_ENTER2:
-      this->ReceiveAcceptEnter(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY4:
-    case ID_ZC_NOTIFY_MOVEENTRY7:
-    case ID_ZC_NOTIFY_MOVEENTRY8:
-      this->ReceiveActorMoveEntryNamed(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY4:
-      this->ReceiveActorStandEntryOld3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY4:
-      this->ReceiveActorStandEntryFont(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_POSTDELAY:
-      this->ApplyCooldownStart(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_POSTDELAY_LIST:
-      this->LoadCooldownRecords(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MSG_STATE_CHANGE2:
-      this->ReceiveStatusChangeExtended(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MILLENNIUMSHIELD:
-      this->ReceiveMillenniumShield(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_QUEST_NOTIFY_EFFECT:
-      this->ReceiveMinimapMarker(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REQ_GROUPINFO_CHANGE_V2:
-      this->ReceiveServerRateNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_HO_PAR_CHANGE:
-      this->ReceiveHomunculusProperty(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MSG_VALUE:
-      this->ReceiveFormattedMessage(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEMLISTWIN_OPEN:
-      this->ReceiveTradeItemFilter(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EXP:
-      this->Zc_Notify_Exp(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY5:
-    case ID_ZC_NOTIFY_NEWENTRY6:
-      this->ReceiveActorStandEntryNamedOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY5:
-    case ID_ZC_NOTIFY_STANDENTRY7:
-      this->ReceiveActorStateEntryNamedOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DELETE_ITEM_FROM_BODY:
-      this->ReceiveItemConsumed(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGE_GROUP_MASTER:
-      this->ReceivePartyLeaderChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PLAY_NPC_BGM:
-      this->ReceiveNpcBgm(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_ACK_REGISTER:
-      this->ReceivePartyBookingUpdateResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_ACK_SEARCH:
-      this->ReceivePartyBookingSearchResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_ACK_DELETE:
-      this->ReceivePartyBookingRegisterResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_NOTIFY_INSERT:
-      this->ReceivePartyBookingInsert(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_NOTIFY_UPDATE:
-      this->ReceivePartyBookingUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PARTY_BOOKING_NOTIFY_DELETE:
-      this->ReceivePartyBookingDelete(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_OPEN_BUYING_STORE:
-      this->ReceiveOpenStore(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FAILED_OPEN_BUYING_STORE_TO_BUYER:
-      this->ReceiveBuyingStoreOpenResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MYITEMLIST_BUYING_STORE:
-      this->ReceiveItem1758List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BUYING_STORE_ENTRY:
-      this->ReceiveActorText(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DISAPPEAR_BUYING_STORE_ENTRY:
-      this->ReceiveActorSignal(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ITEMLIST_BUYING_STORE:
-      this->ReceiveBuyingStoreItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_BUYER:
-      this->ReceiveBuyingStoreClose(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE:
-      this->ReceiveVendingItemSoldNow(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_DELETE_BUYING_STORE:
-      this->ReceiveItemSellResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EL_INIT:
-      this->ReceiveActorStatusBlock(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EL_PAR_CHANGE:
-      this->ReceiveActorStatusUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BROADCAST4:
-      this->ReceiveColoredNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_SELLER:
-      this->ReceiveBuyingStoreSellResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SEARCH_STORE_INFO_ACK:
-      this->ReceiveSearchStoreItemsOld(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SEARCH_STORE_INFO_FAILED:
-      this->ReceiveWindow181Message(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_BAN_GUILD_SSO:
-      this->ReceiveGuildMemberExpelled(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_OPEN_SEARCH_STORE_INFO:
-      this->ReceiveSearchStoreOpen(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SE_PC_BUY_CASHITEM_RESULT:
-      this->ReceiveRequestResult(g_gameModePacketBuffer);
-      break;
-    case ID_CC_REPLAYPACKET:
-      this->ProcessUiMessage(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MCSTORE_NOTMOVEITEM_LIST:
-      this->ReceiveItemNameListNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SHOWSCRIPT:
-      this->ReceiveActorMessage7(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_START_COLLECTION:
-      this->Zc_Start_Collection(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_TRYCOLLECTION:
-      this->Zc_Trycollection(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_ENTRY3:
-      this->ReceiveGroundSkill8(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_SCHEDULER_CASHITEM:
-      this->ReceiveTypedItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PERSONAL_INFOMATION:
-    case ID_ZC_PERSONAL_INFOMATION2:
-      this->ReceiveRateInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FAILED_GET_ITEM_FROM_ZONEDA:
-      this->ReceiveZoneItemRetrievalFailure(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPIRITS_ATTRIBUTE:
-      this->ReceiveActorCharm(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_FASTMOVE:
-      this->ReceiveFastMove(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CLEAR_DIALOG:
-      this->RefreshWindow16(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EFST_SET_ENTER:
-      this->ReceiveStatusChangeEffect(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_ITEMLIST_EQUIP:
-      this->ReceiveEquipItemListFlags(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MICROSCOPE:
-      this->ReceiveEquipWindowMicroscope(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_TAB:
-      this->ReceiveInventoryItemUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY7:
-      this->ReceiveActorStandEntryLegacy(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY9:
-      this->ReceiveActorMoveEntryLegacy(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY8:
-      this->ReceiveActorStateEntryLegacy(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PRNPC_STATE:
-      this->ReceiveNavigationRouteResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MERGE_ITEM_OPEN:
-      this->ReceiveWindow227Entries(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_MERGE_ITEM:
-      this->ReceiveWindow227Result(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_ITEMLIST_NORMAL_V2:
-      this->ReceiveStorageNormalList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_ITEMLIST_EQUIP_V2:
-      this->ReceiveStorageEquipList3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_HP_INFO:
-      this->ReceiveActorInt64Pair(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_RANKING:
-      this->ReceiveRankingList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_RANKING_POINT:
-      this->ReceiveTypedNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SELECTCART:
-      this->ReceiveWindow95Data(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MSG_STATE_CHANGE3:
-      this->ReceiveStatusChangeEffect2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EFST_SET_ENTER2:
-      this->ReceiveStatusChangeEntry(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_POSTDELAY_LIST2:
-      this->LoadCooldownSnapshot(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_CLAN_CONNECTINFO:
-      this->ReceiveClanMemberCount(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_CLAN_LEAVE:
-      this->ReceiveClanLeave(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CLANINFO:
-      this->ReceiveClanInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_CLAN_CHAT:
-      this->ReceiveClanChat(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_ITEMLIST_NORMAL_V5:
-      this->ReceiveItemInventoryList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V5:
-      this->ReceiveInventoryEquipList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CART_ITEMLIST_NORMAL_V5:
-      this->ReceiveItem1740List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CART_ITEMLIST_EQUIP_V5:
-      this->ReceiveItem1740EquipList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_ITEMLIST_NORMAL_V5:
-      this->ReceiveStorageNormalList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_ITEMLIST_EQUIP_V5:
-      this->ReceiveStorageEquipList4(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPWIN_MICROSCOPE_V5:
-      this->ReceiveEquipWindowMicroscope3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MAPPROPERTY_R2:
-      this->ReceiveMapProperty(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_ENTRY4:
-      this->ReceiveGroundSkill32(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BANKING_CHECK:
-      this->ReceiveBankCheck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_BANKING_DEPOSIT:
-      this->ReceiveBankDepositAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_BANKING_WITHDRAW:
-      this->ReceiveBankWithdrawAck(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_C_MARKERINFO:
-      this->AddMiniMapEffectMarker(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SKILL_ENTRY5:
-      this->ReceiveGroundSkillExtended(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MSG_COLOR:
-      this->Zc_Msg_Color(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILDSTORAGE_ITEMLIST_NORMAL_V5:
-      this->ReceiveItem1738NormalList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILDSTORAGE_ITEMLIST_EQUIP_V5:
-      this->ReceiveItem1738EquipList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_GUILDSTORAGE_LOG:
-      this->ReceiveGuildStorageLog(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY10:
-      this->ReceiveActorMoveEntry(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY10:
-      this->ReceiveActorStandEntryNamed(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY10:
-      this->ReceiveActorStateEntryNamed(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_WHISPER02:
-      this->ReceiveWhisper2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_UNREAD_RODEX:
-      this->ReceiveMailboxAvailability(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_SEND_RODEX:
-      this->ReceiveRodexComposeResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_RODEX_LIST:
-      this->ReceiveRodexMailListAppend(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ZENY_FROM_RODEX:
-      this->ReceiveRodexMailReturn(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ITEM_FROM_RODEX:
-      this->ReceiveRodexItemReturn(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_DELETE_RODEX:
-      this->ReceiveRodexMailDeleted(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ALL_QUEST_LIST3:
-      this->ReceiveOngoingQuestList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_QUEST_EX:
-      this->ReceiveAddQuest(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_MISSION_HUNT_EX:
-      this->ReceiveQuestHuntUpdate2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MOVEENTRY11:
-      this->ReceiveActorMoveEntryBody(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_NEWENTRY11:
-      this->ReceiveActorStandEntryNamedBody(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_STANDENTRY11:
-      this->ReceiveActorStateEntryNamedBody(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DRESSROOM_OPEN:
-      this->EnsureWindow259(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ADD_ITEM_RODEX:
-      this->ReceiveItemReward(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REMOVE_RODEX_ITEM:
-      this->ReceiveStackedItemReturn(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_STORE3:
-      this->ReceiveItem1738AddOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_CART3:
-      this->ReceiveItem1740AddOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK_V6:
-      this->ReceiveItemPickupAck7(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V6:
-      this->ReceiveInventoryEquipList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CART_ITEMLIST_EQUIP_V6:
-      this->ReceiveItem1740EquipListOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_STORE_ITEMLIST_EQUIP_V6:
-      this->ReceiveStorageEquipList5(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILDSTORAGE_ITEMLIST_EQUIP_V6:
-      this->ReceiveItem1738EquipListOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_OPEN_WRITE_RODEX:
-      this->ReceiveRodexOpen(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GOLDPCCAFE_POINT:
-      this->ReceiveMileageInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DYNAMICNPC_CREATE_RESULT:
-      this->ReceiveDynamicNpcNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_OPEN_ROULETTE:
-      this->ReceiveRouletteOpen(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ROULEITTE_INFO:
-      this->ReceiveRouletteInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_CLOSE_ROULETTE:
-      this->ReceiveRouletteClose(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_GENERATE_ROULETTE:
-      this->ReceiveRouletteResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_RECV_ROULETTE_ITEM:
-      this->ReceiveRouletteSetResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPWIN_MICROSCOPE_V6:
-      this->ReceiveEquipWindowMicroscope4(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQNAMEALL2:
-      this->ReceiveActorNameCard(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_RESULT_PACKAGE_ITEM_TEST:
-      this->ReceivePackageItemTest(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_ROULETTE_COIN:
-      this->ReceiveRouletteBonusPoints(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_HP_INFO_TINY:
-      this->ReceiveActorInt8(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK_V7:
-      this->ReceiveItemPickupAck8(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPMENT_EFFECT:
-      this->ReceiveStatusChangeList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_CARDSLOT:
-      this->ReceiveEquipCardChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_MEMBER_TO_GROUP3:
-      this->ReceivePartyMemberInfoWithoutCharacterId(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GROUP_LIST2:
-      this->ReceivePartyInfo2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_BUY_STYLINGSHOP:
-      this->ReceiveCharacterRenameResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_LATEST_RODEX_LIST:
-      this->ReceiveRodexMailListRefresh(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_BAN_GUILD_DELNAME:
-      this->ReceiveGuildExpulsion2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_LEAVE_GUILD_DELNAME:
-      this->ReceiveGuildLeave2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_INFO_DELNAME:
-      this->ReceiveGuildInfo3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBER_ADD_DELNAME:
-      this->ReceiveGuildMemberAdd3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBERMGR_INFO_DELNAME:
-      this->ReceiveGuildMemberList3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BAN_LIST_DELNAME:
-      this->ReceiveGuildBanList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_EXCHANGE_ITEM4:
-      this->ReceiveItemSlotAddOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ADD_SWAP_EQUIPITEM:
-      this->ReceiveEquipItemResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REMOVE_SWQP_EQUIPITEM:
-      this->ReceiveTakeOffEquipItemResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SEND_SWAP_EQUIPITEM_INFO:
-      this->ReceiveSwapEquipmentList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_DO_SWAP_EQUIPITEM:
-      this->ReceiveCharViewResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBERMGR_INFO2:
-      this->ReceiveGuildMemberList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBER_ADD2:
-      this->ReceiveGuildMemberAdd4(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MOVE_ITEM_FAILED:
-      this->ClearItemLists(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_DEATH_TO_GROUPM:
-      this->ReceivePartyDead(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SYNC_ATTACKED_POS:
-      this->ReceivePlayerRouteClear(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_MEMBERINFO_TO_GROUPM:
-      this->ReceivePartyJobLevel(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_WARPLIST2:
-      this->ReceiveChatEntries(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SHOW_WARPLIST:
-      this->ReceiveWindow308TextEntries(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ALL_RODEX_LIST:
-      this->ReceiveRodexMailList(g_gameModePacketBuffer);
-      break;
+    case ID_ZC_NPCACK_ENABLE:
+      this->noMove = 0;
+      break;
+    case ID_ZC_REASSEMBLY_AUTH56: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH56;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH84: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH84;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
     case ID_ZC_NPCACK_SERVERMOVE_DOMAIN:
       this->ReceiveChangeZoneServerWithHost(g_gameModePacketBuffer);
       break;
-    case ID_ZC_CLEAR_SWAP_EQUIPITEM_LIST:
-      this->ResetItemLists(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_LONGLONGPAR_CHANGE:
-      this->ReceiveLongParChange(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EXP2:
-      this->ReceiveExpGainNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_FALL_ENTRY5:
-      this->ReceiveItemDropEntry(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_RECOVER_PENALTY_OVERWEIGHT:
-      this->ReceiveOverweightThreshold(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQNAMEALL_NPC:
-      this->ReceiveActorNameTitle(reinterpret_cast<const ActorNameTitlePacket *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_SETTING_WHISPER_PC2:
-      this->ReceiveNamedResultNotice(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_MEMBER_TO_GROUP4:
-      this->ReceivePartyMemberInfoWithCharacterId(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GROUP_LIST3:
-      this->ReceivePartyRoster(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_RANKING2:
-      this->ReceiveShowRankingSchedule(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_REQNAME_BYGID2:
-      this->ReceivePlayerNameUpdate(reinterpret_cast<const PlayerNameUpdatePacket *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_GUILD_POSITIONNAME:
-      this->ReceiveActorClanName(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_UPDATE_MISSION_HUNT_EX2:
-      this->ReceiveQuestHuntUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ALL_QUEST_LIST4:
-      this->ReceiveOngoingQuestList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPWIN_MICROSCOPE_V7:
-      this->ReceiveEquipWindowMicroscope5(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPLIT_SEND_ITEMLIST_SET:
-      this->ReceiveInventoryStart(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_QUEST_EX2:
-      this->ReceiveAddQuest64(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CLEAR_EFFECT:
-      this->ReceiveEffectRemove(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_OPEN_MSGBOX_EXTEND_BODYITEM_SIZE:
-      this->ReceiveExtraInventoryResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_EXTEND_BODYITEM_SIZE:
-      this->NotifyInventoryExpansionResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EXTEND_BODYITEM_SIZE:
-      this->ReceiveExtraInventorySlots(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_USESKILL_ACK3:
-      this->ReceiveActorSkillResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_ACTORINIT:
-      this->ReceiveDeferredReset(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SHORTCUT_KEY_LIST_V4:
-      this->ReceiveShortcutPagePacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_AGIT_INFO:
-      this->ReceiveGuildAgitList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY:
-      this->ReceiveHomunculusInfo2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_EQUIPWIN_MICROSCOPE_V8:
-      this->ReceiveEquipWindowMicroscope6(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SPLIT_SEND_ITEMLIST_EQUIPV8:
-      this->ReceiveEquipItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V8:
-      this->ReceiveInventoryEquipList3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC4:
-      this->ReceiveItem1748List2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_GUILDSTORAGE_LOG2:
-      this->ReceiveGuildStorageLogItems(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_ADD_ITEM_RODEX2:
-      this->ReceiveItemReward2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_MYITEMLIST3:
-      this->ReceiveItem1758StoreList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_ACK_V8:
-      this->ReceiveItemPickupAck9(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_EXCHANGE_ITEM5:
-      this->ReceiveItemSlotAddGrade(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGE_ITEM_OPTION3:
-      this->RefreshInventoryOrEquipItem2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_STORE4:
-      this->ReceiveItem1738AddGrade(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ADD_ITEM_TO_CART4:
-      this->ReceiveItem1740AddGrade(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GET_ACCOUNT_LIMTIED_SALE_LIST:
-      this->ReceiveItem1784List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_MARKET_PURCHASE_RESULT_V2:
-      this->ReceiveParaResultList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_EXPANDED_BARTER_MARKET_ITEMINFO:
-      this->ReceiveExpandedBarterMarketItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GRADE_ENCHANT_MATERIAL_LIST:
-      this->ReceiveGradeEnchantInfo(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GRADE_ENCHANT_ACK:
-      this->ReceiveGradeEnchantResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GRADE_ENCHANT_BROADCAST_RESULT:
-      this->ReceiveGradeEnchantBroadcast(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEMLIST_FROM_ASSISTANT_VENDING4:
-      this->ReceiveShopItemListPacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ACK_READ_RODEX2:
-      this->ReceiveRodexReadMail(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SEARCH_STORE_INFO_ACK2:
-      this->ReceiveSearchStoreItems(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REPAIRITEMLIST2:
-      this->ReceiveWindow107List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ITEM_PICKUP_PARTY2:
-      this->ReceivePartyItemPickup(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_EFFECT4:
-      this->ReceiveActorStatusValuePacket2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ABR_INIT:
-      this->ReceiveSummonHpInit(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ABR_PAR_CHANGE:
-      this->ReceiveSummonHpUpdate(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SOULENERGY:
-      this->ReceiveSoulEnergy(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PC_PURCHASE_ITEMLIST2:
-      this->ReceiveItem1718BasicList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_BARTER_MARKET_ITEMINFO2:
-      this->ReceiveBarterMarketItemList(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_EXPANDED_BARTER_MARKET_ITEMINFO2:
-      this->ReceiveExpandedBarterMarketItemList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NPC_MARKET_OPEN2:
-      this->ReceiveItem1718List(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_GUILD_INFO_NEW:
-      this->ReceiveGuildInfo4(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_BAN_LIST_NEW:
-      this->ReceiveGuildBanList3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBERMGR_INFO_NEW:
-      this->ReceiveGuildMemberList2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_MEMBER_ADD_NEW:
-      this->ReceiveGuildMemberAdd2(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY3:
-      this->ReceiveHomunculusInfo3(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_HO_PAR_CHANGE2:
-      this->ReceiveHomunculusProperty64(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_RESULT_DDUKDDAKBOX_TEST:
-      this->ReceiveDdukddakBoxTest(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_CHANGE_ITEM_OPTION4:
-      this->ReceiveItemOptionsRefresh(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_NOTIFY_LISTOFMODIFIED_ITEMNSKILL:
-      this->ReceiveShopItemList(g_gameModePacketBuffer);
-      break;
-    case 0xBCC:
-      this->ReceiveRuneActivation(g_gameModePacketBuffer);
-      break;
-    case 0xBCD:
-      this->ReceiveRuneSetGrades(g_gameModePacketBuffer);
-      break;
-    case 0xBD9:
-      this->ReceiveRuneRewardPacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ALLY_CHAT:
-      this->ReceiveBroadcastText(g_gameModePacketBuffer);
-      break;
-    case 0xC10:
-      this->ReceiveStovePurchaseResult(g_gameModePacketBuffer);
-      break;
-    case 0xC14:
-      this->ReceiveMessageBox(g_gameModePacketBuffer);
-      break;
-    case 0xC15:
-      this->ReceiveRuneRewardSteps(g_gameModePacketBuffer);
-      break;
-    case 0xC2B:
-      this->ReceiveDebuffRemovalResult(g_gameModePacketBuffer);
-      break;
-    case 0xC2C:
-      this->ReceiveResultNotice4327(g_gameModePacketBuffer);
-      break;
-    case 0xC38:
-      this->ReceiveItemBroadcast(g_gameModePacketBuffer);
-      break;
-    case 0xC39:
-      this->ReceiveTradeBroadcast(g_gameModePacketBuffer);
-      break;
-    case 0xC3A:
-      this->ReceiveRefineBroadcast(g_gameModePacketBuffer);
-      break;
-    case 0xC44:
-      this->ReceiveSimulationResult(g_gameModePacketBuffer);
+    case ID_ZC_NPCACK_SERVERMOVE:
+      this->ReceiveZoneServerChange(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACCEPT_ENTER: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACCEPT_ENTER*>(g_gameModePacketBuffer);
@@ -24701,96 +23790,8 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_NOTIFY_TIME: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_TIME*>(g_gameModePacketBuffer);
-      if (g_pingLogEnabled) {
-        FILE *file = fopen("PingLog.txt", "at");
-        if (file) {
-          const std::uint32_t sent = g_pingLogTicks.front();
-          fprintf(file, "%10.2f\t%10d\n", static_cast<float>(sent - g_pingLogFirstTick) / 1000.0f, timeGetTime() - sent);
-          fclose(file);
-        }
-        g_pingLogTicks.pop_front();
-      }
-
-      const std::uint32_t serverTime = packet->time;
-      if (this->serverTimeSyncCount == 0) {
-        g_session.SetServerTime(serverTime);
-      } else {
-        g_session.SyncServerTime(serverTime);
-      }
-      ++this->serverTimeSyncCount;
-      this->syncAcknowledged = 1;
-      g_session.AddPingSample(timeGetTime() - this->syncRequestTick);
-      break;
-    }
-    case ID_ZC_NOTIFY_MOVE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MOVE*>(g_gameModePacketBuffer);
-      const std::uint32_t aid = packet->gid;
-      ActorMoveRoute path;
-      path.tick = packet->moveStartTime;
-      DecodeSrcDst(packet->moveData, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
-      CRenderObject *actor = this->scene->GetGameActorByAID(aid);
-      g_session.SyncServerTime(path.tick);
-      if (actor) {
-        const int pathAddress = reinterpret_cast<int>(&path);
-        actor->SendMsg(nullptr, AM_MOVE, pathAddress, 0, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_NOTIFY_PLAYERMOVE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_PLAYERMOVE*>(g_gameModePacketBuffer);
-      ActorMoveRoute path;
-      path.tick = packet->moveStartTime;
-      DecodeSrcDst(packet->moveData, &path.srcX, &path.srcY, &path.dstX, &path.dstY, &path.subX, &path.subY);
-      g_session.SyncServerTime(path.tick);
-      const int pathAddress = reinterpret_cast<int>(&path);
-      this->scene->player->SendMsg(nullptr, AM_MOVE, pathAddress, 0, 0, 0, 0, 0);
-      break;
-    }
-    case ID_ZC_STOPMOVE: {
-      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
-      this->StopActorMove(packet->aid, packet->x, packet->y, 0);
-      break;
-    }
-    case ID_ZC_NOTIFY_ACT: {
-      const ActorActionPacket *packet = reinterpret_cast<const ActorActionPacket *>(g_gameModePacketBuffer);
-      this->ReceiveActorAction(packet->sourceAid, packet->targetAid, packet->tick, packet->attackMT, packet->attackedMT, packet->damage, packet->count,
-                               packet->type, packet->damage2, 0);
-      break;
-    }
-    case ID_ZC_NOTIFY_ACT_POSITION: {
-      const ActorRestPacket *packet = reinterpret_cast<const ActorRestPacket *>(g_gameModePacketBuffer);
-      if (packet->damage == -30000) {
-        break;
-      }
-
-      ACTSTRUCT act;
-      act.damage = packet->damage;
-      act.type = packet->type;
-      act.targetId = packet->targetAid;
-      act.tick = packet->tick;
-      act.count = packet->count;
-      act.attackMotion = packet->attackMT;
-      act.damageMotion = packet->attackedMT;
-      act.damage2 = 0;
-      act.attackMT = 432;
-      act.attackedMT = 288;
-      CRenderObject *actor;
-      if (packet->sourceAid == g_session.m_aid) {
-        actor = this->scene->player;
-      } else {
-        actor = this->scene->GetGameActorByAID(packet->sourceAid);
-        if (!actor) {
-          break;
-        }
-      }
-      const int actAddress = reinterpret_cast<int>(&act);
-      actor->SendMsg(nullptr, AM_ACTION, actAddress, 0, 0, 0, 0, 0);
-      break;
-    }
-    case ID_ZC_NPCACK_ENABLE:
-      this->noMove = 0;
+    case ID_ZC_ACCEPT_ENTER2:
+      this->ReceiveAcceptEnter(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_REQNAME: {
       const ActorNamePacket *packet = reinterpret_cast<const ActorNamePacket *>(g_gameModePacketBuffer);
@@ -24806,6 +23807,38 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_BROADCAST:
       this->ReceiveTaggedBroadcast(g_gameModePacketBuffer);
       break;
+    case ID_ZC_WHISPER:
+      this->ReceiveWhisper(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NORMAL_SYSTEM_MSG: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NORMAL_SYSTEM_MSG*>(g_gameModePacketBuffer);
+      std::string text(packet->text,
+                       packet->text + packet->length - 4);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_DEBUGMSG: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DEBUGMSG*>(g_gameModePacketBuffer);
+      std::string text(packet->text,
+                       packet->text + packet->length - 8);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), packet->color, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_WHISPER02:
+      this->ReceiveWhisper2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH60: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH60;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_ACK_WHISPER02: {
+      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
+      this->ReceiveWhisperResult(packet->result, packet->itemId);
+      break;
+    }
     case ID_ZC_CHANGE_DIRECTION: {
       const ActorDirectionPacket *packet = reinterpret_cast<const ActorDirectionPacket *>(g_gameModePacketBuffer);
       CRenderObject *actor;
@@ -24821,20 +23854,61 @@ void CGameMode::ProcessIncomingPackets() {
       actor->SendMsg(nullptr, AM_SET_HEAD_DIR, packet->headDirection, 0, 0, 0, 0, 0);
       break;
     }
-    case ID_ZC_ITEM_ENTRY:
-    case ID_ZC_ITEM_FALL_ENTRY: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_FALL_ENTRY*>(g_gameModePacketBuffer);
-      const bool falling = static_cast<short>(type) == ID_ZC_ITEM_FALL_ENTRY;
+    case ID_ZC_REASSEMBLY_AUTH73: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH73;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_ACK_DISCONNECT_CHARACTER: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_DISCONNECT_CHARACTER*>(g_gameModePacketBuffer);
+      char text[80];
+      sprintf(text, LookupMessage(packet->result == 0 ? MSI_FAIL_DISCONNECT_CHARACTER : MSI_SUCCESS_DISCONNECT_CHARACTER));
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH11: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH11;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH12: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH12;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH13: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH13;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH14: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH14;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH15: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH15;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_ITEM_ENTRY: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_ENTRY*>(g_gameModePacketBuffer);
       ItemFallEntry entry = {};
-      entry.count = falling ? packet->position.falling.amount : packet->position.standing.amount;
+      entry.count = packet->amount;
       entry.aid = packet->aid;
       entry.column = packet->x;
       entry.row = packet->y;
-      entry.subColumn = falling ? packet->position.falling.subX : packet->position.standing.subX;
-      entry.subRow = falling ? packet->position.falling.subY : packet->position.standing.subY;
-      entry.falling = 0;
+      entry.subColumn = packet->subX;
+      entry.subRow = packet->subY;
       _itoa(packet->itemId, entry.itemId, 10);
-      entry.falling = falling;
+      entry.falling = 0;
       entry.identified = packet->identify;
 
       CItem *item = this->scene->GetItemByAID(entry.aid);
@@ -24848,6 +23922,21 @@ void CGameMode::ProcessIncomingPackets() {
       item->SendMsg(nullptr, AM_INITSTANDENTRY, entryAddress, 0, 0, 0, 0, 0);
       break;
     }
+    case ID_ZC_REASSEMBLY_AUTH74: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH74;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH51: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH51;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_ITEM_PICKUP_ACK:
+      this->ReceiveItemPickupAck(g_gameModePacketBuffer);
+      break;
     case ID_ZC_ITEM_DISAPPEAR: {
       const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
       const std::uint32_t aid = packet->aid;
@@ -24877,6 +23966,206 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
+    case ID_ZC_NORMAL_ITEMLIST2: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case ID_ZC_NORMAL_ITEMLIST3: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        item.expireTime = entry->expireTime;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case ID_ZC_INVENTORY_ITEMLIST_NORMAL: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_session.KeepEquipment();
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.damaged = 0;
+        item.identified = record->flags & 1;
+        item.refiningLevel = 0;
+        item.expireTime = record->expireTime;
+        item.placeEtcTab = (record->flags >> 1) & 1;
+        g_session.UpdateInventoryItem(item, 0);
+      }
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+    case ID_ZC_INVENTORY_ITEMLIST_EQUIP:
+      this->ReceiveEquipItemListFlags(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_ITEMLIST_NORMAL: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.damaged = 0;
+        item.identified = record->flags & 1;
+        item.refiningLevel = 0;
+        item.expireTime = record->expireTime;
+        item.placeEtcTab = (record->flags >> 1) & 1;
+        g_session.AddMerchantShopItem(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH80: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH80;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_CART_ITEMLIST_EQUIP: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedEquipRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord*>(packet + 1) + i;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = record->location;
+        item.identity[1] = record->index;
+        item.identity[3] = record->wearState;
+        item.quantity = 1;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->flags & 1;
+        item.damaged = (record->flags >> 1) & 1;
+        item.refiningLevel = record->refine;
+        item.expireTime = record->expireTime;
+        item.bindOnEquip = record->bindOnEquip;
+        item.sprite = record->look;
+        item.placeEtcTab = (record->flags >> 2) & 1;
+        g_session.AddMerchantShopItem(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case ID_ZC_STORE_ITEMLIST_NORMAL: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.damaged = 0;
+        item.identified = record->flags & 1;
+        item.refiningLevel = 0;
+        item.expireTime = record->expireTime;
+        item.placeEtcTab = (record->flags >> 1) & 1;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case ID_ZC_STORE_ITEMLIST_EQUIP: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedEquipRecord);
+      for (int i = 0; i < count; ++i) {
+        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord*>(packet + 1) + i;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = record->location;
+        item.identity[1] = record->index;
+        item.identity[3] = record->wearState;
+        item.quantity = 1;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->flags & 1;
+        item.damaged = (record->flags >> 1) & 1;
+        item.refiningLevel = record->refine;
+        item.expireTime = record->expireTime;
+        item.bindOnEquip = record->bindOnEquip;
+        item.sprite = record->look;
+        item.placeEtcTab = (record->flags >> 2) & 1;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case ID_ZC_STORE_ITEMLIST_NORMAL_V2:
+      this->ReceiveStorageNormalList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_ITEMLIST_EQUIP_V2:
+      this->ReceiveStorageEquipList3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MICROSCOPE:
+      this->ReceiveEquipWindowMicroscope(g_gameModePacketBuffer);
+      break;
     case ID_ZC_EQUIPMENT_ITEMLIST: {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       g_session.RemoveEquipment();
@@ -24910,50 +24199,97 @@ void CGameMode::ProcessIncomingPackets() {
       RefreshItemWindows(&g_windowMgr);
       break;
     }
-    case ID_ZC_STORE_NORMAL_ITEMLIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(NormalItemRecord);
-      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        std::memset(item.cards, 0, sizeof(item.cards));
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        g_session.AddCartItem(item, 0);
+    case ID_ZC_ITEM_FALL_ENTRY: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_FALL_ENTRY*>(g_gameModePacketBuffer);
+      ItemFallEntry entry = {};
+      entry.count = packet->amount;
+      entry.aid = packet->aid;
+      entry.column = packet->x;
+      entry.row = packet->y;
+      entry.subColumn = packet->subX;
+      entry.subRow = packet->subY;
+      _itoa(packet->itemId, entry.itemId, 10);
+      entry.falling = 1;
+      entry.identified = packet->identify;
+
+      CItem *item = this->scene->GetItemByAID(entry.aid);
+      if (!item) {
+        item = new CItem;
+        this->scene->objects.push_back(item);
+        this->scene->items.push_back(item);
       }
-      g_session.RefreshItem1738Window();
+
+      const int entryAddress = reinterpret_cast<int>(&entry);
+      item->SendMsg(nullptr, AM_INITSTANDENTRY, entryAddress, 0, 0, 0, 0, 0);
       break;
     }
-    case ID_ZC_STORE_EQUIPMENT_ITEMLIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(EquipItemRecord);
-      const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = record->location;
-        item.identity[1] = record->index;
-        item.identity[3] = record->wearState;
-        item.quantity = 1;
-        std::memcpy(item.cards, record->cards, sizeof(record->cards));
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = record->damaged;
-        item.refiningLevel = record->refine;
-        g_session.AddCartItem(item, 0);
+    case ID_ZC_ITEM_FALL_ENTRY4: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_FALL_ENTRY4*>(g_gameModePacketBuffer);
+      ItemFallEntry entry = {};
+      entry.count = packet->amount;
+      entry.aid = packet->aid;
+      entry.column = packet->x;
+      entry.row = packet->y;
+      entry.subColumn = packet->subX;
+      entry.subRow = packet->subY;
+      entry.falling = 0;
+      _itoa(packet->itemId, entry.itemId, 10);
+      entry.identified = packet->identify;
+      entry.falling = 1;
+      entry.type = packet->type;
+
+      CItem *item = this->scene->GetItemByAID(entry.aid);
+      if (!item) {
+        item = new CItem;
+        this->scene->objects.push_back(item);
+        this->scene->items.push_back(item);
       }
-      g_session.RefreshItem1738Window();
+
+      const int entryAddress = reinterpret_cast<int>(&entry);
+      item->SendMsg(nullptr, AM_INITSTANDENTRY, entryAddress, 0, 0, 0, 0, 0);
       break;
     }
+    case ID_ZC_STOPMOVE: {
+      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
+      this->StopActorMove(packet->aid, packet->x, packet->y, 0);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH66: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH66;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_STOPMOVE_FORCE: {
+      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
+      this->StopActorMove(packet->aid, packet->x, packet->y, 1);
+      break;
+    }
+    case ID_ZC_HIGHJUMP: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
+      vector3d position{0.0f, 0.0f, 0.0f};
+      g_modeMgr.GetGameMode()
+          ->CellCenter(packet->xPos, packet->yPos,
+                       position.x, position.z);
+      position.y = this->scene->terrain->Height(position.x, position.z);
+      if (packet->aid == g_session.m_aid) {
+        this->scene->player->damageDestX = position.x;
+        this->scene->player->damageDestZ = position.z;
+        this->scene->player->render.position = position;
+      } else if (CGameActor *actor =
+                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
+        actor->damageDestX = position.x;
+        actor->damageDestZ = position.z;
+        actor->render.position = position;
+      }
+      break;
+    }
+    case ID_ZC_PAR_CHANGE:
+      this->ReceiveParChange(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_LONGPAR_CHANGE:
+      this->ReceiveExpChange(g_gameModePacketBuffer);
+      break;
     case ID_ZC_USE_ITEM_ACK: {
       const ItemUseAckPacket *packet = reinterpret_cast<const ItemUseAckPacket *>(g_gameModePacketBuffer);
       if (packet->result) {
@@ -24988,6 +24324,25 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_REQ_WEAR_EQUIP_ACK2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_WEAR_EQUIP_ACK*>(g_gameModePacketBuffer);
+      this->waitingWearEquipAck = timeGetTime() - 2000;
+      switch (packet->result) {
+      case ITEM_EQUIP_ACK_OK: {
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
+        if (item.identity[1]) {
+          item.sprite = packet->wItemSpriteNumber;
+          item.identity[3] = packet->wearLocation;
+          g_session.OnItemEquipped(item);
+        }
+        break;
+      }
+      case ITEM_EQUIP_ACK_FAILLEVEL:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID)), 0xFF, 7, 0, 0);
+        break;
+      }
+      break;
+    }
     case ID_ZC_REQ_TAKEOFF_EQUIP_ACK: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK*>(g_gameModePacketBuffer);
       this->waitingTakeoffEquipAck = timeGetTime() - 2000;
@@ -24998,6 +24353,27 @@ void CGameMode::ProcessIncomingPackets() {
         } else {
           g_session.UnequipItem(location, 0);
         }
+      }
+      break;
+    }
+    case ID_ZC_REQ_TAKEOFF_EQUIP_ACK2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK*>(g_gameModePacketBuffer);
+      this->waitingTakeoffEquipAck = timeGetTime() - 2000;
+      switch (packet->flag) {
+      case 0: {
+        const std::uint16_t location = packet->wearLocation;
+        if (location) {
+          if (g_session.IsCostumeLocation(location)) {
+            g_session.UnequipCostumeItem(location);
+          } else {
+            g_session.UnequipItem(location, 0);
+          }
+        }
+        break;
+      }
+      case 1:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID)), 0xFF, 7, 0, 0);
+        break;
       }
       break;
     }
@@ -25017,22 +24393,6 @@ void CGameMode::ProcessIncomingPackets() {
       }
       g_session.RemoveInventoryItem(index, amount);
       this->waitingItemThrowAck = 0;
-      break;
-    }
-    case ID_ZC_RESTART_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RESTART_ACK*>(g_gameModePacketBuffer);
-      g_navigationManager.Reset(true);
-      g_navigationManager.ClearData();
-      g_navigationManager.displayMode = 0;
-      g_clanInfo->Clear();
-      if (packet->type == 1) {
-        g_timeScheduler->RemoveSchedulesByKey(6);
-        g_timeScheduler->RemoveSchedulesByKey(5);
-        g_timeScheduler->RemoveSchedulesByKey(7);
-        GetRagConnection().Close();
-        g_loginStartMode = 5;
-        g_modeMgr.Switch(0, "login.rsw");
-      }
       break;
     }
     case ID_ZC_SAY_DIALOG: {
@@ -25058,6 +24418,192 @@ void CGameMode::ProcessIncomingPackets() {
       this->isOnQuest = 1;
       this->lastNaid = packet->value;
       g_windowMgr.EnsureWindow(WID_SAYDIALOGWND)->SendMsg(nullptr, UM_ENABLENEXTBUTTON, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_SAY_DIALOG2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SAY_DIALOG2*>(g_gameModePacketBuffer);
+      this->isOnQuest = 1;
+      this->lastNaid = packet->npcId;
+      unsigned int length = packet->length - 9;
+      char text[0x803];
+      if (g_serviceType == ServiceGermany) {
+        sprintf(text, "|%02x", LanguageCharset(31));
+        memcpy(text + 3, packet->text, length);
+        length += 3;
+      } else {
+        memcpy(text, packet->text, length);
+      }
+      text[length] = 0;
+      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), packet->npcId, 0, 0);
+      break;
+    }
+    case ID_ZC_WAIT_DIALOG2: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->isOnQuest = 1;
+      this->lastNaid = packet->value;
+      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_ENABLENEXTBUTTON, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH36: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH36;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH37: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH37;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH38: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH38;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH39: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH39;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH40: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH40;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_CLOSE_DIALOG:
+      this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
+      break;
+    case 0xC08:
+      this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
+      this->miniMapTooltipId = -1;
+      this->miniMapTooltipText.assign("", 0);
+      g_windowMgr.CloseWindow(WID_ILLUSTWND);
+      g_windowMgr.RestoreHiddenWindows();
+      this->miniMapTooltipWindows.clear();
+      break;
+    case ID_ZC_MENU_LIST:
+      this->ReceiveWindow17Entries(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_RESTART_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RESTART_ACK*>(g_gameModePacketBuffer);
+      g_navigationManager.Reset(true);
+      g_navigationManager.ClearData();
+      g_navigationManager.displayMode = 0;
+      g_clanInfo->Clear();
+      if (packet->type == 1) {
+        g_timeScheduler->RemoveSchedulesByKey(6);
+        g_timeScheduler->RemoveSchedulesByKey(5);
+        g_timeScheduler->RemoveSchedulesByKey(7);
+        GetRagConnection().Close();
+        g_loginStartMode = 5;
+        g_modeMgr.Switch(0, "login.rsw");
+      }
+      break;
+    }
+    case ID_ZC_STATUS_CHANGE_ACK:
+      this->ReceiveStatusChangeAck(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STATUS:
+      this->ReceiveStatus(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STATUS_CHANGE:
+      this->ReceiveStatusChange(g_gameModePacketBuffer);
+      break;
+    case 0xBF6: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_LIST*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 10) / 7;
+      CCashEmotionMgr *manager = g_cashEmotionMgr;
+      if (!manager) {
+        break;
+      }
+      manager->SetServerTime(packet->serverTime);
+      manager->SetServerTimeZone(packet->timeZone);
+      const auto* entry = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_LIST_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++entry) {
+        manager->SetOwnedPack(entry->packId, entry->hasExpireTime ? entry->expireTime : 0);
+      }
+      this->RefreshEmotionSaleSchedule();
+      this->RefreshEmotionPurchaseSchedule();
+      break;
+    }
+    case 0xBEA: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION*>(g_gameModePacketBuffer);
+      CRenderObject *actor;
+      if (g_session.m_aid == packet->aid) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(packet->aid);
+        if (!actor) {
+          this->isEmotionRequested = 0;
+          break;
+        }
+      }
+      const int first = packet->packId;
+      const int second = packet->emotionId;
+      actor->SendMsg(nullptr, AM_CASH_EMOTION, first, second, 0, 0, 0, 0);
+      break;
+    }
+    case 0xBEB: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_USE_RESULT*>(g_gameModePacketBuffer);
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
+        g_cashEmotionMgr->RemoveOwnedPack(packet->packId, true, true);
+        this->RefreshEmotionPurchaseSchedule();
+        break;
+      case 1:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
+        break;
+      default:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        break;
+      }
+      this->isEmotionRequested = 0;
+      break;
+    }
+    case 0xBED: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_ACQUIRE*>(g_gameModePacketBuffer);
+      g_cashEmotionMgr->AcquirePack(packet->packId,
+                                    packet->hasExpireTime ? packet->expireTime : 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_BUY_SUCCESS")), 0xFFFF, 0, 0, 0);
+      this->RefreshEmotionPurchaseSchedule();
+      break;
+    }
+    case 0xBEE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_PURCHASE_RESULT*>(g_gameModePacketBuffer);
+      switch (packet->result) {
+      case 0:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
+        this->RefreshEmotionSaleSchedule();
+        break;
+      case 2:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
+        break;
+      case 3:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
+        break;
+      case 4:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
+                               0, 0);
+        break;
+      case 5:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
+        this->RefreshEmotionSaleSchedule();
+        break;
+      default:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
+        break;
+      }
       break;
     }
     case ID_ZC_EMOTION: {
@@ -25088,6 +24634,18 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
       break;
     }
+    case ID_ZC_ACK_RANKING:
+      this->ReceiveRankingList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_RANKING_POINT:
+      this->ReceiveTypedNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_NEWENTRY:
+      this->ReceiveActorStandEntryOld0(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SPRITE_CHANGE:
+      this->ReceiveSpriteChange(g_gameModePacketBuffer);
+      break;
     case ID_ZC_SELECT_DEALTYPE: {
       const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
       this->isOnQuest = 1;
@@ -25122,6 +24680,15 @@ void CGameMode::ProcessIncomingPackets() {
       sellWindow->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     }
+    case ID_ZC_PC_PURCHASE_ITEMLIST2:
+      this->ReceiveItem1718BasicList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_SELL_ITEMLIST:
+      this->ReceiveItem1718IndexList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_PURCHASE_RESULT:
+      this->ReceiveItem1718Result(g_gameModePacketBuffer);
+      break;
     case ID_ZC_PC_SELL_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PC_SELL_RESULT*>(g_gameModePacketBuffer);
       switch (packet->result) {
@@ -25139,14 +24706,76 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.CloseWindow(WID_ITEMSELLWND);
       break;
     }
-    case ID_ZC_ACK_DISCONNECT_CHARACTER: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_DISCONNECT_CHARACTER*>(g_gameModePacketBuffer);
-      char text[80];
-      sprintf(text, LookupMessage(packet->result == 0 ? MSI_FAIL_DISCONNECT_CHARACTER : MSI_SUCCESS_DISCONNECT_CHARACTER));
-      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
+    case ID_ZC_NPC_MARKET_OPEN: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_session.ClearTradeItems();
+      const int count = static_cast<unsigned int>(packet->length - 4) / 15;
+      const auto* record = reinterpret_cast<const PACKET_ZC_NPC_MARKET_OPEN_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        const PACKET_ZC_NPC_MARKET_OPEN_sub entry = *record;
+        RawItemBasic item = {};
+        _itoa(entry.nameId, item.itemId, 10);
+        item.price = entry.price;
+        item.realPrice = entry.price;
+        item.type = entry.type;
+        item.id = -1;
+        item.identified = 1;
+        g_session.AddShopItem(item, entry.qty,
+                              static_cast<std::uint16_t>(entry.weight / 10));
+      }
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_PARAITEMSHOPWND);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window = g_windowMgr.EnsureWindow(WID_PARAITEMPURCHASEWND);
+      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     }
+    case ID_ZC_NPC_MARKET_OPEN2:
+      this->ReceiveItem1718List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_MARKET_PURCHASE_RESULT_V2:
+      this->ReceiveParaResultList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_BARTER_MARKET_ITEMINFO: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_barterMarketItemMgr->Clear();
+      const int count = static_cast<unsigned int>(packet->length - 4) / 25;
+      const auto* record = reinterpret_cast<const PACKET_ZC_NPC_BARTER_MARKET_ITEMINFO_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        BarterMarketItem item;
+        char itemName[33] = {};
+        _itoa(record->nameId, itemName, 10);
+        item.name.assign(itemName, strlen(itemName));
+        item.itemType = record->type;
+        item.value = record->amount;
+        item.currencyItemId = record->currencyNameId;
+        item.currencyAmount = record->currencyAmount;
+        item.flag_24 = true;
+        item.amount = record->weight / 10;
+        item.flag_38 = record->amount == -1;
+        item.id = record->index;
+        g_barterMarketItemMgr->items.push_back(item);
+      }
+      g_windowMgr.EnsureWindow(WID_BARTERMARKETWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      g_windowMgr.EnsureWindow(WID_BARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_NPC_EXPANDED_BARTER_MARKET_ITEMINFO:
+      this->ReceiveExpandedBarterMarketItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_BARTER_MARKET_ITEMINFO2:
+      this->ReceiveBarterMarketItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_EXPANDED_BARTER_MARKET_ITEMINFO2:
+      this->ReceiveExpandedBarterMarketItemList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SETTING_WHISPER_PC:
+      this->ReceiveWhisperFilterResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SETTING_WHISPER_PC2:
+      this->ReceiveNamedResultNotice(g_gameModePacketBuffer);
+      break;
     case ID_ZC_SETTING_WHISPER_STATE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SETTING_WHISPER_STATE*>(g_gameModePacketBuffer);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -25216,6 +24845,9 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_ROOM_NEWENTRY:
+      this->ReceiveActorMessage32(g_gameModePacketBuffer);
+      break;
     case ID_ZC_DESTROY_ROOM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_DESTROY_ROOM*>(g_gameModePacketBuffer);
       const std::uint32_t roomId = packet->chatId;
@@ -25228,6 +24860,9 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_ENTER_ROOM:
+      this->ReceiveChatRoomMemberList(g_gameModePacketBuffer);
+      break;
     case ID_ZC_MEMBER_NEWENTRY: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_MEMBER_NEWENTRY*>(g_gameModePacketBuffer);
       char name[25];
@@ -25284,6 +24919,12 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, UM_ROLE_CHANGE, reinterpret_cast<std::intptr_t>(name), packet->role, 0, 0);
       break;
     }
+    case ID_ZC_REFUSE_ENTER_ROOM:
+      this->ReceiveChatRoomEntryFailure(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_CHATROOM:
+      this->ReceiveActorMessage34(g_gameModePacketBuffer);
+      break;
     case ID_ZC_REQ_EXCHANGE_ITEM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_EXCHANGE_ITEM*>(g_gameModePacketBuffer);
       if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
@@ -25298,6 +24939,36 @@ void CGameMode::ProcessIncomingPackets() {
       this->exchangeName.assign(name, strlen(name));
       break;
     }
+    case ID_ZC_REQ_EXCHANGE_ITEM2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_EXCHANGE_ITEM2*>(g_gameModePacketBuffer);
+      if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
+        g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
+        break;
+      }
+
+      char name[25];
+      std::memcpy(name, packet->name, 24);
+      name[24] = '\0';
+      g_windowMgr.EnsureWindow(WID_EXCHANGEACCEPTWND)->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), packet->aid,
+                                          packet->level, 0);
+      this->exchangeName.assign(name, strlen(name));
+      break;
+    }
+    case ID_ZC_ACK_EXCHANGE_ITEM:
+      this->ReceiveExchangeRequestAck(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_EXCHANGE_ITEM2:
+      this->ReceiveExchangeRequestAck2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_EXCHANGE_ITEM2:
+      ReceiveItemSlot(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_EXCHANGE_ITEM3:
+      ReceiveItemSlotOptions(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ADD_EXCHANGE_ITEM:
+      this->ReceiveExchangeItemAddAck(g_gameModePacketBuffer);
+      break;
     case ID_ZC_CONCLUDE_EXCHANGE_ITEM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CONCLUDE_EXCHANGE_ITEM*>(g_gameModePacketBuffer);
       if (UIWindow *window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
@@ -25343,10 +25014,98 @@ void CGameMode::ProcessIncomingPackets() {
       this->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
       break;
-    case ID_ZC_NOTIFY_STOREITEM_COUNTINFO: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_STOREITEM_COUNTINFO*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND)->SendMsg(nullptr, UM_SETCOUNTINFO, packet->amount,
-                                          packet->maxAmount, 0, 0);
+    case ID_ZC_STORE_NORMAL_ITEMLIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(NormalItemRecord);
+      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        std::memset(item.cards, 0, sizeof(item.cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case ID_ZC_STORE_NORMAL_ITEMLIST2: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case ID_ZC_STORE_NORMAL_ITEMLIST3: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        item.expireTime = entry->expireTime;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
+      break;
+    }
+    case ID_ZC_STORE_EQUIPMENT_ITEMLIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(EquipItemRecord);
+      const EquipItemRecord *record = reinterpret_cast<const EquipItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = record->location;
+        item.identity[1] = record->index;
+        item.identity[3] = record->wearState;
+        item.quantity = 1;
+        std::memcpy(item.cards, record->cards, sizeof(record->cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = record->damaged;
+        item.refiningLevel = record->refine;
+        g_session.AddCartItem(item, 0);
+      }
+      g_session.RefreshItem1738Window();
       break;
     }
     case ID_ZC_DELETE_ITEM_FROM_STORE: {
@@ -25362,6 +25121,12 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.CloseWindow(WID_ITEMSTOREWND);
       g_session.ClearCartItems();
       break;
+    case ID_ZC_NOTIFY_STOREITEM_COUNTINFO: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_STOREITEM_COUNTINFO*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND)->SendMsg(nullptr, UM_SETCOUNTINFO, packet->amount,
+                                          packet->maxAmount, 0, 0);
+      break;
+    }
     case ID_ZC_ACK_MAKE_GROUP: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_MAKE_GROUP*>(g_gameModePacketBuffer);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -25382,6 +25147,26 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_GROUP_LIST:
+      this->ReceivePartyMemberList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER:
+      ReceivePartyJoinResult(reinterpret_cast<const void *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_PARTY_REQ_MASTER_TO_JOIN: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_PARTY_REQ_MASTER_TO_JOIN*>(g_gameModePacketBuffer);
+      char name[25];
+      strncpy(name, packet->name, 24);
+      name[24] = 0;
+      g_requestJoinPartyMgr->Add(
+          packet->cid, packet->aid, name,
+          packet->job, packet->level);
+      break;
+    }
+    case ID_ZC_ACK_REQ_JOIN_GROUP:
+    case ID_ZC_PARTY_JOIN_REQ_ACK:
+      this->ReceiveNamedActionResult(g_gameModePacketBuffer);
+      break;
     case ID_ZC_REQ_JOIN_GROUP:
     case ID_ZC_PARTY_JOIN_REQ: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PARTY_JOIN_REQ*>(g_gameModePacketBuffer);
@@ -25396,24 +25181,191 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.EnsureWindow(WID_JOINPARTYACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, packet->aid, reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
-    case ID_ZC_GROUPINFO_CHANGE: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      char text[128];
-      g_session.partyExpShare = packet->value;
-      if (g_windowMgr.partySettingWnd) {
-        g_windowMgr.partySettingWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-      }
-      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      if (g_session.partyExpShare == 0 || g_session.partyExpShare == 1) {
-        sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWEXPDIV), LookupMessage(g_session.partyExpShare == 0 ? MSI_EXPDIV1 : MSI_EXPDIV2));
-      } else if (g_session.partyExpShare == 2) {
-        StringFormat(text, 128, static_cast<std::size_t>(-1), LookupMessage(MSI_PARTYSETTING_CHANGE_IMPOSSIBLE), LookupMessage(MSI_HOWEXPDIV), LookupMessage(MSI_EXPDIV2));
-      } else {
-        break;
-      }
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+    case ID_ZC_REQ_COUPLE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_COUPLE*>(g_gameModePacketBuffer);
+      char name[25];
+      strncpy(name, packet->name, 24);
+      name[24] = 0;
+      this->lastCoupleIds[0] = packet->aid;
+      this->lastCoupleIds[1] = packet->gid;
+      g_windowMgr.EnsureWindow(WID_COUPLEACCEPTWND)->SendMsg(nullptr, UM_SET_COUPLE_MSG, static_cast<int>(packet->gid), reinterpret_cast<std::intptr_t>(name), 0,
+                                           0);
       break;
     }
+    case ID_ZC_REQ_BABY: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_COUPLE*>(g_gameModePacketBuffer);
+      char name[25];
+      strncpy(name, packet->name, 24);
+      name[24] = 0;
+      this->lastCoupleIds[0] = packet->aid;
+      this->lastCoupleIds[1] = packet->gid;
+      g_windowMgr.EnsureWindow(WID_BABYACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, static_cast<int>(packet->gid), reinterpret_cast<std::intptr_t>(name), 0,
+                                           0);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH21: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH21;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH22: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH22;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH23: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH23;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH24: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH24;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH25: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH25;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_STARPLACE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_STARPLACE*>(g_gameModePacketBuffer);
+      g_windowMgr.EnsureWindow(WID_STARPLACEACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, static_cast<signed char>(packet->place), 0, 0, 0);
+      break;
+    }
+    case ID_ZC_NOTIFY_BIND_ON_EQUIP: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_BIND_ON_EQUIP*>(g_gameModePacketBuffer);
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
+      if (item.identity[1]) {
+        std::string name = item.DisplayName(0);
+        std::string message = FormatOwnedString(LookupMessage(MSI_YOURITEM_EQUIPED), name.c_str());
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0x6EFFFF, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_BATTLEFIELD_NOTIFY_CAMPINFO: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_CAMPINFO*>(g_gameModePacketBuffer);
+      if (packet->aid == g_session.m_aid) {
+        g_session.playerTeam = packet->camp;
+        break;
+      }
+      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
+        const unsigned char team = packet->camp;
+        actor->render.battleTeam = team;
+        if (team != g_session.playerTeam) {
+          OpenWordDisplay(actor);
+        } else if (actor->actorTitleWindow) {
+          g_windowMgr.Schedule(actor->actorTitleWindow);
+          actor->actorTitleWindow = nullptr;
+        }
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_FONT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_FONT*>(g_gameModePacketBuffer);
+      if (packet->aid == g_session.m_aid) {
+        g_session.chatFont = static_cast<unsigned char>(packet->font);
+      } else if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
+        actor->render.font = packet->font;
+      }
+      break;
+    }
+    case ID_ZC_SKILL_POSTDELAY:
+      this->ApplyCooldownStart(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_POSTDELAY2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_POSTDELAY2*>(g_gameModePacketBuffer);
+      this->UpdateSkillCooldown(packet->skillId,
+                                packet->delay,
+                                packet->remainTime);
+      break;
+    }
+    case ID_ZC_SKILL_POSTDELAY_LIST:
+      this->LoadCooldownRecords(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_POSTDELAY_LIST2:
+      this->LoadCooldownSnapshot(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PROGRESS: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_PROGRESS*>(g_gameModePacketBuffer);
+      if (CPlayer *player = this->scene->player) {
+        player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(packet->time * 1000), 0, 0, 0, 0, 0);
+        g_session.m_playerMessage82Pending = true;
+      }
+      break;
+    }
+    case ID_ZC_PROGRESS_ACTOR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_PROGRESSBAR_UNIT*>(g_gameModePacketBuffer);
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
+        actor->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(packet->time * 1000), 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_PROGRESS_CANCEL:
+      if (CPlayer *player = this->scene->player) {
+        player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
+        if (player->render.state == 8) {
+          player->SetState(ST_STAND, 1);
+        }
+      }
+      break;
+    case ID_ZC_BATTLEFIELD_CHAT:
+      this->ReceiveActorBroadcastText(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BATTLEFIELD_NOTIFY_POINT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_POINT*>(g_gameModePacketBuffer);
+      g_session.m_score1 = packet->point1;
+      g_session.m_score2 = packet->point2;
+      break;
+    }
+    case ID_ZC_BATTLEFIELD_NOTIFY_POSITION: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_POSITION*>(g_gameModePacketBuffer);
+      if (packet->aid != g_session.m_aid) {
+        this->SendMsg(MM_ADDPARTYPOS, static_cast<int>(packet->aid), packet->xPos,
+                      packet->yPos, 0);
+      }
+      break;
+    }
+    case ID_ZC_BATTLEFIELD_NOTIFY_HP: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HP*>(g_gameModePacketBuffer);
+      if (g_session.IsCompanionAid(packet->aid)) {
+        break;
+      }
+      if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
+        const int x = packet->hp;
+        const int y = packet->maxHp;
+        actor->SendMsg(nullptr, AM_UPDATEGAGE, x, y, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_BATTLEFIELD_NOTIFY_HP2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_HP_TO_GROUPM_R2*>(g_gameModePacketBuffer);
+      if (!g_session.IsCompanionAid(packet->aid)) {
+        if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
+          const int hp = packet->hp;
+          const int maxHp = packet->maxHp;
+          actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case ID_ZC_STARSKILL:
+      this->ReceiveSpecialBroadcast(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_STATUS_GM:
+      this->ReceiveStatDump(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_MEMBER_TO_GROUP:
+      this->ReceivePartyMemberInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DELETE_MEMBER_FROM_GROUP:
+      this->ReceivePartyMemberLeft(g_gameModePacketBuffer);
+      break;
     case ID_ZC_NOTIFY_HP_TO_GROUPM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_HP_TO_GROUPM*>(g_gameModePacketBuffer);
       const std::uint32_t aid = packet->aid;
@@ -25431,12 +25383,69 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.NotifyItemWindows(aid, hp, maxHp);
       break;
     }
+    case ID_ZC_NOTIFY_HP_TO_GROUPM_R2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_HP_TO_GROUPM_R2*>(g_gameModePacketBuffer);
+      if (!g_session.IsCompanionAid(packet->aid)) {
+        if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
+          const int hp = packet->hp;
+          const int maxHp = packet->maxHp;
+          actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
+        }
+        if (g_windowMgr.messengerGroupWnd) {
+          g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, static_cast<int>(packet->aid),
+                                           packet->hp,
+                                           packet->maxHp);
+        }
+        g_windowMgr.NotifyItemWindows(static_cast<int>(packet->aid), packet->hp,
+                                      packet->maxHp);
+      }
+      break;
+    }
+    case ID_ZC_BATTLEFIELD_NOTIFY_HPSP: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HPSP*>(g_gameModePacketBuffer);
+      this->RejectRequest(packet->aid, packet->hp,
+                          packet->maxHp, packet->sp,
+                          packet->maxSp);
+      break;
+    }
+    case ID_ZC_NOTIFY_HPSP_TO_GROUPM_R2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HPSP*>(g_gameModePacketBuffer);
+      this->IgnoreRemovedPacket12(packet->aid,
+                                  packet->hp, packet->maxHp,
+                                  packet->sp, packet->maxSp);
+      break;
+    }
     case ID_ZC_NOTIFY_POSITION_TO_GROUPM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
       this->SendMsg(MM_ADDPARTYPOS, static_cast<int>(packet->aid), packet->xPos,
                     packet->yPos, 0);
       break;
     }
+    case ID_ZC_NOTIFY_POSITION_TO_GUILDM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
+      if (packet->aid != g_session.m_aid) {
+        this->SendMsg(MM_ADDGUILDPOS, static_cast<int>(packet->aid), packet->xPos,
+                      packet->yPos, 0);
+      }
+      break;
+    }
+    case ID_ZC_GUILD_MEMBER_MAP_CHANGE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_GUILD_MEMBER_MAP_CHANGE*>(g_gameModePacketBuffer);
+      if (strcmp(g_session.m_navigationPlayerMap, packet->mapName)) {
+        this->SendMsg(MM_DELETEGUILDPOS, static_cast<int>(packet->aid), 0, 0, 0);
+        if (CGameActor *actor =
+                static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
+          actor->SetGroupMemberVisible(0);
+        }
+      } else if (CGameActor *actor =
+                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
+        actor->SetGroupMemberVisible(1);
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_CHAT_PARTY:
+      this->ReceivePartyChat(g_gameModePacketBuffer);
+      break;
     case ID_ZC_MVP_GETTING_ITEM: {
       const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
       char itemId[25];
@@ -25474,6 +25483,29 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_YOU_THROW_MVPITEM)), 0xFF, 0, 0, 0);
       break;
+    case ID_ZC_SKILLINFO_UPDATE:
+    case ID_ZC_HOSKILLINFO_UPDATE:
+    case ID_ZC_MER_SKILLINFO_UPDATE:
+      this->ApplySkillUpdatePacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILLINFO_UPDATE2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE2*>(g_gameModePacketBuffer);
+      this->ReceiveSkillUpdate(
+          packet->id, packet->level,
+          packet->sp, packet->upFlag,
+          packet->range, packet->inf,
+          packet->level);
+      break;
+    }
+    case ID_ZC_SKILLINFO_UPDATE3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE3*>(g_gameModePacketBuffer);
+      this->ReceiveSkillUpdate(
+          packet->id, packet->level,
+          packet->sp, packet->upFlag,
+          packet->range, packet->inf,
+          packet->level2);
+      break;
+    }
     case ID_ZC_SKILLINFO_LIST:
     case ID_ZC_HOSKILLINFO_LIST:
     case ID_ZC_MER_SKILLINFO_LIST: {
@@ -25495,9 +25527,109 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveSkillList(static_cast<std::int16_t>(packet->packetType), skills);
       break;
     }
+    case ID_ZC_SKILLINFO_LIST3: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      std::vector<SkillListEntry> skills;
+      const int count = (static_cast<std::uint16_t>(packet->length) - 4u) / sizeof(SkillListEntry);
+      const SkillListEntry *record = reinterpret_cast<const SkillListEntry*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        skills.push_back(*record);
+      }
+      this->ReceiveSkillList(static_cast<std::int16_t>(packet->packetType), skills);
+      break;
+    }
+    case ID_ZC_ALL_QUEST_LIST3:
+      this->ReceiveOngoingQuestList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_MISSION_HUNT_EX:
+      this->ReceiveQuestHuntUpdate2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACTIVE_QUEST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACTIVE_QUEST*>(g_gameModePacketBuffer);
+      g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->active);
+      g_renewQuestMgr->UpdateQuestWindows();
+      break;
+    }
+    case ID_ZC_ADD_QUEST_EX:
+      this->ReceiveAddQuest(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DEL_QUEST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DEL_QUEST*>(g_gameModePacketBuffer);
+      std::string title = g_renewQuestMgr->GetOngoingQuest(packet->questId).m_title;
+      CRenewQuestMgr *manager = g_renewQuestMgr;
+      unsigned int id = packet->questId;
+      manager->m_ongoingQuests.erase(id);
+      manager->UpdateQuestWindows();
+      std::string message = FormatOwnedString(LookupMessage(MSI_DELETE_QUEST), title.c_str());
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
+      break;
+    }
+    case ID_ZC_UPDATE_MISSION_HUNT_EX2:
+      this->ReceiveQuestHuntUpdate(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_QUEST_EX2:
+      this->ReceiveAddQuest64(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ALL_QUEST_LIST4:
+      this->ReceiveOngoingQuestList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_HUNTING_QUEST_INFO: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / 12;
+      const auto* entry = reinterpret_cast<const PACKET_ZC_QUEST_UPDATE_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const RenewQuestOngoingInfo &quest = g_renewQuestMgr->GetOngoingQuest(entry->questId);
+        if (quest.m_title.empty()) {
+          continue;
+        }
+
+        RenewQuestOngoingInfo info = quest;
+        for (int index = i; index < 3; ++index) {
+          if (entry->mobId == info.m_huntMobId[index]) {
+            info.m_huntKillCount[index] = entry->count;
+            info.m_huntMaxCount[index] = entry->maxCount;
+            g_renewQuestMgr->SetOngoingQuest(entry->questId, info);
+            break;
+          }
+        }
+      }
+      if (g_windowMgr.questDisplayWnd) {
+        g_windowMgr.questDisplayWnd->Invalidate();
+      }
+      g_renewQuestMgr->UpdateOngoingQuestInfo();
+      break;
+    }
     case ID_ZC_ACK_TOUSESKILL:
       this->ReceiveSkillFailure(g_gameModePacketBuffer);
       break;
+    case ID_ZC_MSG_SKILL: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MSG_SKILL*>(g_gameModePacketBuffer);
+      char text[256];
+      sprintf(text, LookupMessage(packet->msgId));
+      char message[256];
+      sprintf(message, "[%s] %s", CSkillInfo::DisplayName(packet->skillId),
+              text);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
+      break;
+    }
+    case ID_ZC_SKILLMSG:
+      this->ReceiveStatusNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BABYMSG: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      switch (packet->value) {
+      case 0:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY1)), 0x9B9BFF, 0, 0, 0);
+        break;
+      case 1:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY2)), 0x9B9BFF, 0, 0, 0);
+        break;
+      case 2:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY3)), 0x9B9BFF, 0, 0, 0);
+        break;
+      }
+      break;
+    }
     case ID_ZC_ADD_SKILL: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ADD_SKILL*>(g_gameModePacketBuffer);
       this->ReceiveLearnedSkill(packet->id, packet->level,
@@ -25505,6 +25637,21 @@ void CGameMode::ProcessIncomingPackets() {
                                 packet->range, packet->level);
       break;
     }
+    case ID_ZC_ADD_SKILL3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE3*>(g_gameModePacketBuffer);
+      this->ReceiveLearnedSkill(
+          packet->id, packet->level,
+          packet->inf, packet->upFlag,
+          packet->sp, packet->range,
+          packet->level2);
+      break;
+    }
+    case ID_ZC_NOTIFY_SKILL:
+      this->ReceiveActorSkillAction(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_GROUNDSKILL:
+      this->ReceiveNotifyGroundSkill(g_gameModePacketBuffer);
+      break;
     case ID_ZC_STATE_CHANGE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_STATE_CHANGE*>(g_gameModePacketBuffer);
       int state[4];
@@ -25535,12 +25682,100 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_STATE_CHANGE3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_STATE_CHANGE3*>(g_gameModePacketBuffer);
+      int state[4];
+      state[1] = packet->effectState;
+      state[3] = packet->isPkModeOn;
+      state[0] = packet->bodyState;
+      state[2] = packet->healthState;
+      CRenderObject *actor;
+      if (packet->aid == g_session.m_aid) {
+        actor = this->scene->player;
+        this->ApplyStatusIcons(state[0], state[2]);
+        g_session.m_bodyState = state[0];
+        g_session.m_effectState = state[2];
+        g_session.m_jobFlags = state[1];
+        if (g_windowMgr.equipWnd) {
+          g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+        }
+        if (g_session.replayPacketMode <= 0) {
+          g_session.ClearMerchantShopItems();
+          g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
+        }
+      } else {
+        actor = this->scene->GetGameActorByAID(packet->aid);
+      }
+      if (actor) {
+        const int stateAddress = reinterpret_cast<int>(state);
+        actor->SendMsg(nullptr, AM_ATTR_STATE_CHANGE, stateAddress, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
     case ID_ZC_USE_SKILL: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_USE_SKILL*>(g_gameModePacketBuffer);
       this->ReceiveSkillUse(packet->skillId, packet->level,
                             packet->sourceId, packet->targetId, packet->result);
       break;
     }
+    case ID_ZC_USE_SKILL2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_USE_SKILL2*>(g_gameModePacketBuffer);
+      this->ReceiveSkillUse(packet->skillId, packet->level,
+                            packet->sourceId,
+                            packet->targetId, packet->result);
+      break;
+    }
+    case ID_ZC_SKILL_ENTRY:
+      this->Zc_Skill_Entry(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_DISAPPEAR: {
+      const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
+      const std::uint32_t aid = packet->aid;
+      std::vector<std::uint32_t>::iterator it = this->spriteMirrorActorIds.begin();
+      while (it != this->spriteMirrorActorIds.end() && *it != aid) {
+        ++it;
+      }
+      if (it == this->spriteMirrorActorIds.end()) {
+        this->scene->RemoveSkill(aid);
+      } else if (this->scene->RemoveItem(aid) == true) {
+        this->SendMsg(MM_DELETEREGISTERPOS, aid, 0, 0, 0);
+        this->spriteMirrorActorIds.erase(it);
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_ACT_POSITION: {
+      const ActorRestPacket *packet = reinterpret_cast<const ActorRestPacket *>(g_gameModePacketBuffer);
+      if (packet->damage == -30000) {
+        break;
+      }
+
+      ACTSTRUCT act;
+      act.damage = packet->damage;
+      act.type = packet->type;
+      act.targetId = packet->targetAid;
+      act.tick = packet->tick;
+      act.count = packet->count;
+      act.attackMotion = packet->attackMT;
+      act.damageMotion = packet->attackedMT;
+      act.damage2 = 0;
+      act.attackMT = 432;
+      act.attackedMT = 288;
+      CRenderObject *actor;
+      if (packet->sourceAid == g_session.m_aid) {
+        actor = this->scene->player;
+      } else {
+        actor = this->scene->GetGameActorByAID(packet->sourceAid);
+        if (!actor) {
+          break;
+        }
+      }
+      const int actAddress = reinterpret_cast<int>(&act);
+      actor->SendMsg(nullptr, AM_ACTION, actAddress, 0, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_NOTIFY_SKILL_POSITION:
+      this->ReceiveActorSkillMessage(g_gameModePacketBuffer);
+      break;
     case ID_ZC_WARPLIST: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_WARPLIST*>(g_gameModePacketBuffer);
       g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
@@ -25577,21 +25812,6 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_SKILL_DISAPPEAR: {
-      const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
-      const std::uint32_t aid = packet->aid;
-      std::vector<std::uint32_t>::iterator it = this->spriteMirrorActorIds.begin();
-      while (it != this->spriteMirrorActorIds.end() && *it != aid) {
-        ++it;
-      }
-      if (it == this->spriteMirrorActorIds.end()) {
-        this->scene->RemoveSkill(aid);
-      } else if (this->scene->RemoveItem(aid) == true) {
-        this->SendMsg(MM_DELETEREGISTERPOS, aid, 0, 0, 0);
-        this->spriteMirrorActorIds.erase(it);
-      }
-      break;
-    }
     case ID_ZC_NOTIFY_CARTITEM_COUNTINFO: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_CARTITEM_COUNTINFO*>(g_gameModePacketBuffer);
       g_session.cartCount = packet->curCount;
@@ -25601,6 +25821,75 @@ void CGameMode::ProcessIncomingPackets() {
       if (g_windowMgr.merchantItemWnd) {
         g_windowMgr.merchantItemWnd->SendMsg(nullptr, UM_SETCOUNTINFO, 0, 0, 0, 0);
       }
+      break;
+    }
+    case ID_ZC_CART_NORMAL_ITEMLIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(NormalItemRecord);
+      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        std::memset(item.cards, 0, sizeof(item.cards));
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        g_session.AddMerchantShopItem(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case ID_ZC_CART_NORMAL_ITEMLIST2: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
+      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        g_session.AddMerchantShopItem(item);
+      }
+      g_session.RefreshItem1740Window();
+      break;
+    }
+    case ID_ZC_CART_NORMAL_ITEMLIST3: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
+      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++entry) {
+        const CardItemRecord *record = &entry->base;
+        ITEM_INFO item;
+        item.identity[0] = record->type;
+        item.identity[2] = 0;
+        item.identity[1] = record->index;
+        item.identity[3] = record->location;
+        item.quantity = record->amount;
+        for (int card = 0; card < 4; ++card) {
+          item.cards[card] = record->cards[card];
+        }
+        item.SetItemId(record->itemId);
+        item.identified = record->identified;
+        item.damaged = 0;
+        item.refiningLevel = 0;
+        item.expireTime = entry->expireTime;
+        g_session.AddMerchantShopItem(item);
+      }
+      g_session.RefreshItem1740Window();
       break;
     }
     case ID_ZC_CART_EQUIPMENT_ITEMLIST: {
@@ -25624,25 +25913,22 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.RefreshItem1740Window();
       break;
     }
-    case ID_ZC_CART_NORMAL_ITEMLIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(NormalItemRecord);
-      const NormalItemRecord *record = reinterpret_cast<const NormalItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        std::memset(item.cards, 0, sizeof(item.cards));
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        g_session.AddMerchantShopItem(item);
+    case ID_ZC_CARTOFF:
+      g_session.ClearMerchantShopItems();
+      g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
+      break;
+    case ID_ZC_ACK_ADDITEM_TO_CART: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ADDITEM_TO_CART*>(g_gameModePacketBuffer);
+      switch (packet->result) {
+      case ADDITEM_TO_CART_FAIL_WEIGHT:
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_WEIGHT)), 0xFF, 0, 0, 0);
+        break;
+      case ADDITEM_TO_CART_FAIL_COUNT:
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_OVER_COUNT)), 0xFF, 0, 0, 0);
+        break;
       }
-      g_session.RefreshItem1740Window();
       break;
     }
     case ID_ZC_ADD_ITEM_TO_CART: {
@@ -25667,24 +25953,34 @@ void CGameMode::ProcessIncomingPackets() {
       this->inventoryChanged = 1;
       break;
     }
-    case ID_ZC_CARTOFF:
-      g_session.ClearMerchantShopItems();
-      g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
-      break;
-    case ID_ZC_ACK_ADDITEM_TO_CART: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ADDITEM_TO_CART*>(g_gameModePacketBuffer);
-      switch (packet->result) {
-      case ADDITEM_TO_CART_FAIL_WEIGHT:
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_WEIGHT)), 0xFF, 0, 0, 0);
-        break;
-      case ADDITEM_TO_CART_FAIL_COUNT:
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_OVER_COUNT)), 0xFF, 0, 0, 0);
-        break;
+    case ID_ZC_SE_CASHSHOP_OPEN:
+    case ID_ZC_SE_CASHSHOP_OPEN2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN2*>(g_gameModePacketBuffer);
+      if (!g_windowMgr.CloseWindow(WID_CASHSHOP_WND)) {
+        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_CASHSHOP_WND)) {
+          window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, packet->cashPoints, packet->kafraPoints,
+                          0, 0);
+        } else {
+          std::int16_t packetType = ID_CZ_SE_CASHSHOP_OPEN;
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packetType), &packetType);
+        }
       }
       break;
     }
+    case ID_ZC_SE_CASHSHOP_UPDATE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN2*>(g_gameModePacketBuffer);
+      if (UIWindow *window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
+        window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, packet->cashPoints, packet->kafraPoints, 0,
+                        0);
+      }
+      break;
+    }
+    case ID_ZC_ACK_SCHEDULER_CASHITEM:
+      this->ReceiveTypedItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SE_PC_BUY_CASHITEM_RESULT:
+      this->ReceiveRequestResult(g_gameModePacketBuffer);
+      break;
     case ID_ZC_OPENSTORE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_OPENSTORE*>(g_gameModePacketBuffer);
       CGameMode *mode = g_modeMgr.GetGameMode();
@@ -25708,6 +26004,40 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_ACK_OPENSTORE2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_OPENSTORE2*>(g_gameModePacketBuffer);
+      switch (packet->result) {
+      case OPENSTORE2_SUCCESS:
+        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMMYSHOPWND)) {
+          window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        }
+        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND))) {
+          window->PrintSellList();
+        }
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
+        this->isOnQuest = 1;
+        break;
+      case OPENSTORE2_FAILED:
+        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
+        g_session.ClearItems1760And1748();
+        g_session.ClearMerchantPurchaseItems();
+        g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_MAKING_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
+        break;
+      case OPENSTORE2_NOVENDING:
+        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
+        g_session.ClearItems1760And1748();
+        g_session.ClearMerchantPurchaseItems();
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MERCHANTSHOP_FAIL_POSITION)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    }
     case ID_ZC_STORE_ENTRY: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_STORE_ENTRY*>(g_gameModePacketBuffer);
       char title[81];
@@ -25726,10 +26056,27 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC:
+    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC2:
+      this->ReceiveItem1748List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_PURCHASE_RESULT_FROMMC:
+      this->ReceiveEquipItemNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_PURCHASE_MYITEMLIST:
+      this->ReceiveOpenedVendingItemList(g_gameModePacketBuffer);
+      break;
     case ID_ZC_DELETEITEM_FROM_MCSTORE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_DELETEITEM_FROM_MCSTORE*>(g_gameModePacketBuffer);
       ProcessVendingSale(_time32(nullptr), packet->index,
                  packet->amount, 0, 0);
+      break;
+    }
+    case ID_ZC_DELETEITEM_FROM_MCSTORE2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DELETEITEM_FROM_MCSTORE2*>(g_gameModePacketBuffer);
+      ProcessVendingSale(packet->time, packet->index,
+                 packet->amount, packet->totalPrice,
+                 packet->price);
       break;
     }
     case ID_ZC_ATTACK_FAILURE_FOR_DISTANCE: {
@@ -25752,6 +26099,9 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.storeItemLimit = packet->range;
       break;
     }
+    case ID_ZC_ACTION_FAILURE:
+      this->ReceiveEquipAck(g_gameModePacketBuffer);
+      break;
     case ID_ZC_EQUIP_ARROW: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_EQUIP_ARROW*>(g_gameModePacketBuffer);
       if (static_cast<std::uint16_t>(packet->index) == 0 && g_session.equippedArrowIndex) {
@@ -25770,8 +26120,38 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_RECOVERY:
       this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 0);
       break;
+    case ID_ZC_RECOVERY2:
+      this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 1);
+      break;
     case ID_ZC_USESKILL_ACK:
       this->ProcessSkillUsePacket(g_gameModePacketBuffer, 0);
+      break;
+    case ID_ZC_USESKILL_ACK2:
+      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
+      break;
+    case ID_ZC_USESKILL_ACK3:
+      this->ReceiveActorSkillResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GROUPINFO_CHANGE: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      char text[128];
+      g_session.partyExpShare = packet->value;
+      if (g_windowMgr.partySettingWnd) {
+        g_windowMgr.partySettingWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+      }
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      if (g_session.partyExpShare == 0 || g_session.partyExpShare == 1) {
+        sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWEXPDIV), LookupMessage(g_session.partyExpShare == 0 ? MSI_EXPDIV1 : MSI_EXPDIV2));
+      } else if (g_session.partyExpShare == 2) {
+        StringFormat(text, 128, static_cast<std::size_t>(-1), LookupMessage(MSI_PARTYSETTING_CHANGE_IMPOSSIBLE), LookupMessage(MSI_HOWEXPDIV), LookupMessage(MSI_EXPDIV2));
+      } else {
+        break;
+      }
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+      break;
+    }
+    case ID_ZC_COUPLESTATUS:
+      this->ReceiveStatusBonus(g_gameModePacketBuffer);
       break;
     case ID_ZC_OPEN_EDITDLG: {
       const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
@@ -25808,6 +26188,18 @@ void CGameMode::ProcessIncomingPackets() {
       this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), index, 0, 0);
       break;
     }
+    case ID_ZC_SHOW_IMAGE2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SHOW_IMAGE2*>(g_gameModePacketBuffer);
+      char name[65];
+      strncpy(name, packet->imageName, 64);
+      int position = packet->type;
+      name[64] = 0;
+      if (position == 255) {
+        position = -1;
+      }
+      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), position, 0, 0);
+      break;
+    }
     case ID_ZC_AUTORUN_SKILL: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_AUTORUN_SKILL*>(g_gameModePacketBuffer);
       CSkillInfo skill;
@@ -25841,38 +26233,6 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_ACK_GIVE_MANNER_POINT: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      switch (packet->value) {
-      case MP_SUCCESS:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MANNER_POINT)), 0xFFFF00, 0, 0, 0);
-        break;
-      case MP_SUCCESS_BY_ADMIN:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GM_BAD_MANNER_START)), 0xFFFF, 0, 0, 0);
-        break;
-      case MP_BYSELF:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AUTO_BAD_MANNER_START)), 0xFFFF, 0, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_NOTIFY_MANNER_POINT_GIVEN: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MANNER_POINT_GIVEN*>(g_gameModePacketBuffer);
-      char name[25];
-      std::memcpy(name, packet->otherCharName, 24);
-      name[24] = 0;
-      if (packet->type == 0) {
-        char text[128];
-        sprintf(text, LookupMessage(MSI_RECEIVE_PLUS_MANNER_POINT), name);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_ACK_GUILD_MENUINTERFACE: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      g_guildInfo.guildTabBitmask = packet->value;
-      break;
-    }
     case ID_ZC_GUILD_EMBLEM_IMG: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_GUILD_EMBLEM_IMG*>(g_gameModePacketBuffer);
       const std::uint32_t guildId = packet->guildId;
@@ -25886,52 +26246,8 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_ACK_REQ_CHANGE_MEMBERS: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / 12;
-      const auto* record = reinterpret_cast<const PACKET_ZC_ACK_REQ_CHANGE_MEMBERS_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        g_guildInfo.ChangeMemberPosition(record->aid, record->gid, record->position);
-        if (record->position == 0) {
-          g_guildInfo.SetMasterCharacterId(record->gid);
-        }
-      }
-      if (UIWindow *window = g_windowMgr.LookupWindow(WID_GUILDMEMBERMANAGEWND)) {
-        window->SendMsg(nullptr, UM_SET_DISABLE, 0, 0, 0, 0);
-      }
-      g_windowMgr.RefreshGuildWindows();
-      break;
-    }
-    case ID_ZC_ACK_DISORGANIZE_GUILD_RESULT: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      switch (packet->value) {
-      case DISRESULT_SUCCESS:
-        g_session.ClearAdditionalShortcutSkills();
-        g_guildInfo.Init();
-        g_windowMgr.CloseWindow(WID_GUILDWND);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_SUCCESS)), 0xFFFF, 4, 0, 0);
-        break;
-      case DISRESULT_INVALIDKEY:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_INVALIDKEY)), 0xFFFF, 0, 0, 0);
-        break;
-      case DISRESULT_MEMBEREXIST:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_MEMBEREXIST)), 0xFFFF, 4, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_ACK_DISORGANIZE_GUILD: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_DISORGANIZE_GUILD*>(g_gameModePacketBuffer);
-      char reason[41];
-      std::memcpy(reason, packet->reason, 40);
-      reason[40] = 0;
-      char text[1024];
-      sprintf(text, LookupMessage(MSI_DISORGANIZATION_REASON), reason);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 4, 0, 0);
-      break;
-    }
-    case ID_ZC_GUILD_SKILLINFO:
-      this->ApplyAdditionalSkillPacket(g_gameModePacketBuffer);
+    case ID_ZC_GUILD_INFO:
+      this->ReceiveGuildInfo2(g_gameModePacketBuffer);
       break;
     case ID_ZC_RESULT_MAKE_GUILD: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RESULT_MAKE_GUILD*>(g_gameModePacketBuffer);
@@ -25991,6 +26307,76 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.EnsureWindow(WID_JOINGUILDACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_GUILD_MSG, packet->guildId, reinterpret_cast<std::intptr_t>(name), 0, 0);
       break;
     }
+    case ID_ZC_MYGUILD_BASIC_INFO:
+      this->ReceiveGuildRelationList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_GUILD_MENUINTERFACE: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      g_guildInfo.guildTabBitmask = packet->value;
+      break;
+    }
+    case ID_ZC_MEMBERMGR_INFO:
+      this->ReceiveGuildMemberMemoList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_REQ_CHANGE_MEMBERS: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / 12;
+      const auto* record = reinterpret_cast<const PACKET_ZC_ACK_REQ_CHANGE_MEMBERS_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        g_guildInfo.ChangeMemberPosition(record->aid, record->gid, record->position);
+        if (record->position == 0) {
+          g_guildInfo.SetMasterCharacterId(record->gid);
+        }
+      }
+      if (UIWindow *window = g_windowMgr.LookupWindow(WID_GUILDMEMBERMANAGEWND)) {
+        window->SendMsg(nullptr, UM_SET_DISABLE, 0, 0, 0, 0);
+      }
+      g_windowMgr.RefreshGuildWindows();
+      break;
+    }
+    case ID_ZC_ACK_LEAVE_GUILD:
+      this->ReceiveGuildMemberLeft(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_BAN_GUILD_SSO:
+      this->ReceiveGuildMemberExpelled(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_DISORGANIZE_GUILD_RESULT: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      switch (packet->value) {
+      case DISRESULT_SUCCESS:
+        g_session.ClearAdditionalShortcutSkills();
+        g_guildInfo.Init();
+        g_windowMgr.CloseWindow(WID_GUILDWND);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_SUCCESS)), 0xFFFF, 4, 0, 0);
+        break;
+      case DISRESULT_INVALIDKEY:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_INVALIDKEY)), 0xFFFF, 0, 0, 0);
+        break;
+      case DISRESULT_MEMBEREXIST:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DISORGANIZE_GUILD_MEMBEREXIST)), 0xFFFF, 4, 0, 0);
+        break;
+      }
+      break;
+    }
+    case ID_ZC_ACK_DISORGANIZE_GUILD: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_DISORGANIZE_GUILD*>(g_gameModePacketBuffer);
+      char reason[41];
+      std::memcpy(reason, packet->reason, 40);
+      reason[40] = 0;
+      char text[1024];
+      sprintf(text, LookupMessage(MSI_DISORGANIZATION_REASON), reason);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 4, 0, 0);
+      break;
+    }
+    case ID_ZC_POSITION_INFO:
+      this->ReceiveGuildPositionInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BAN_LIST:
+      this->ReceiveGuildBanList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_POSITION_ID_NAME_INFO:
+      this->ReceiveGuildPositionNames(g_gameModePacketBuffer);
+      break;
     case ID_ZC_UPDATE_GDID: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_GDID*>(g_gameModePacketBuffer);
       const int flags = packet->mode;
@@ -26010,6 +26396,25 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_UPDATE_GDID2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_GDID_02f7*>(g_gameModePacketBuffer);
+      const std::uint32_t flags = packet->mode;
+      g_guildInfo.canInvite = flags & 1;
+      g_guildInfo.isMaster = packet->isMaster;
+      g_guildInfo.m_guildId = packet->guildId;
+      g_guildInfo.canExpel = (flags >> 4) & 1;
+      g_guildInfo.masterCharacterId = packet->masterGid;
+      this->scene->player->SetGuildInfo(static_cast<int>(packet->guildId), packet->emblemVersion);
+      if (!g_guildInfo.skillsRequested) {
+        g_guildInfo.skillsRequested = 1;
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
+      }
+      if (!g_guildInfo.membersRequested) {
+        g_guildInfo.membersRequested = 1;
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
+      }
+      break;
+    }
     case ID_ZC_UPDATE_CHARSTAT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_CHARSTAT*>(g_gameModePacketBuffer);
       const int online = packet->status;
@@ -26023,6 +26428,57 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_UPDATE_CHARSTAT2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_CHARSTAT2*>(g_gameModePacketBuffer);
+      g_guildInfo.UpdateMemberStatus(
+          packet->aid, packet->status,
+          static_cast<int>(packet->gid), packet->sex,
+          packet->classId, packet->level);
+      std::string name = LookupPlayerName(packet->gid);
+      if (name.size()) {
+        this->SendMsg(MM_GUILD_MEMBER_STATUS_CHANGE, reinterpret_cast<int>(name.c_str()), packet->status, 0, 0);
+      }
+      if (packet->status == 0) {
+        this->SendMsg(MM_DELETEGUILDPOS, packet->aid, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_ACK_GIVE_MANNER_POINT: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      switch (packet->value) {
+      case MP_SUCCESS:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MANNER_POINT)), 0xFFFF00, 0, 0, 0);
+        break;
+      case MP_SUCCESS_BY_ADMIN:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GM_BAD_MANNER_START)), 0xFFFF, 0, 0, 0);
+        break;
+      case MP_BYSELF:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AUTO_BAD_MANNER_START)), 0xFFFF, 0, 0, 0);
+        break;
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_MANNER_POINT_GIVEN: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MANNER_POINT_GIVEN*>(g_gameModePacketBuffer);
+      char name[25];
+      std::memcpy(name, packet->otherCharName, 24);
+      name[24] = 0;
+      if (packet->type == 0) {
+        char text[128];
+        sprintf(text, LookupMessage(MSI_RECEIVE_PLUS_MANNER_POINT), name);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_GUILD_NOTICE:
+      this->ReceiveGuildNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILD_CHAT:
+      this->ReceiveGuildChat(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ALLY_CHAT:
+      this->ReceiveBroadcastText(g_gameModePacketBuffer);
+      break;
     case ID_ZC_REQ_ALLY_GUILD: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_JOIN_GUILD*>(g_gameModePacketBuffer);
       char name[25];
@@ -26059,6 +26515,9 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_ACK_CHANGE_GUILD_POSITIONINFO:
+      this->ReceiveGuildPositionUpdate(g_gameModePacketBuffer);
+      break;
     case ID_ZC_ITEMIDENTIFY_LIST: {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       unsigned int count = (static_cast<std::uint16_t>(packet->length) - 4u) >> 1;
@@ -26106,6 +26565,9 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       break;
     }
+    case ID_ZC_ACK_ITEMCOMPOSITION:
+      this->ReceiveCardCompositionResult(g_gameModePacketBuffer);
+      break;
     case ID_ZC_ACK_REQ_HOSTILE_GUILD: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_REQ_HOSTILE_GUILD*>(g_gameModePacketBuffer);
       switch (packet->result) {
@@ -26124,6 +26586,9 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_MEMBER_ADD:
+      this->ReceiveGuildMemberAdd(g_gameModePacketBuffer);
+      break;
     case ID_ZC_DELETE_RELATED_GUILD: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_DELETE_RELATED_GUILD*>(g_gameModePacketBuffer);
       if (g_guildInfo.infoRequested) {
@@ -26131,6 +26596,12 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_ADD_RELATED_GUILD:
+      this->ReceiveAddRelatedGuild(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ITEMREFINING:
+      this->ReceiveRefineResult(g_gameModePacketBuffer);
+      break;
     case ID_ZC_NOTIFY_MAPINFO: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MAPINFO*>(g_gameModePacketBuffer);
       switch (packet->type) {
@@ -26190,6 +26661,86 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_REASSEMBLY_AUTH26: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH26;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH27: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH27;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH28: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH28;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH29: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH29;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH30: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH30;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REPAIRITEMLIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / 23;
+      if (count == 0) {
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
+      const unsigned char *record = reinterpret_cast<const unsigned char*>(packet + 1);
+      for (int i = 0; i < count; ++i, record += 23) {
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_NOTIFY_WEAPONITEMLIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) / 23;
+      if (count == 0) {
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+        break;
+      }
+      if (g_windowMgr.LookupWindow(WID_WEAPONREFINEWND)) {
+        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
+      }
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_WEAPONREFINEWND);
+      const auto* record = reinterpret_cast<const PACKET_ZC_NOTIFY_WEAPONITEMLIST_sub*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++record) {
+        window->SendMsg(nullptr, UM_ADDITEM, record->itemId, record->index, 0, 0);
+      }
+      break;
+    }
+    case ID_ZC_ACK_WEAPONREFINE:
+      this->ReceiveItemObtainNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ITEMREPAIR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ITEMREPAIR*>(g_gameModePacketBuffer);
+      switch (packet->result) {
+      case ITEMREPAIR_SUCCESS:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REPAIR_SUCCEESS)), 0xFFFF00, 0, 0, 0);
+        break;
+      case ITEMREPAIR_FAIL:
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REPAIR_FAIL)), 0xFF, 0, 0, 0);
+        break;
+      }
+      break;
+    }
+    case ID_ZC_ACK_REQMAKINGITEM:
+      this->ReceiveItemEffectResult(g_gameModePacketBuffer);
+      break;
     case ID_ZC_TALKBOX_CHATCONTENTS: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_TALKBOX_CHATCONTENTS*>(g_gameModePacketBuffer);
       if (CRenderObject *skill = this->scene->GetSkillByAID(packet->aid)) {
@@ -26213,6 +26764,24 @@ void CGameMode::ProcessIncomingPackets() {
           std::string(packet->name, packet->name + 24).c_str());
       break;
     }
+    case ID_ZC_ACK_REQNAMEALL:
+      this->ReceiveActorNameAll(reinterpret_cast<const ActorNameAllPacket *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_ACK_REQNAMEALL_NPC:
+      this->ReceiveActorNameTitle(reinterpret_cast<const ActorNameTitlePacket *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_MSG_STATE_CHANGE:
+      this->ReceiveStatusChangeNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MSG_STATE_CHANGE2:
+      this->ReceiveStatusChangeExtended(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EFST_SET_ENTER:
+      this->ReceiveStatusChangeEffect(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_SHOWEFST_UPDATE:
+      this->ReceiveActorStatusEffects(g_gameModePacketBuffer);
+      break;
     case ID_ZC_NOTIFY_MAPPROPERTY: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MAPPROPERTY*>(g_gameModePacketBuffer);
       g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, g_session.m_serviceOption229 != 0);
@@ -26240,6 +26809,57 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_NOTIFY_RANKING:
+      this->ReceiveEffectNumber(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EFFECT:
+      this->ReceivePartyMemberEffect(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EFFECT2:
+      this->ReceiveNotifyEffect(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EFFECT3:
+      this->ReceiveActorStatusValuePacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EFFECT4:
+      this->ReceiveActorStatusValuePacket2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_START_CAPTURE:
+      this->Zc_Start_Capture(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_START_COUPLE:
+      this->Zc_Start_Couple(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_START_BABY:
+      this->Zc_Start_Baby(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_COUPLENAME:
+      this->ReceiveCoupleName(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CONGRATULATION:
+      this->ReceiveCongratulation(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_TRYCAPTURE_MONSTER:
+      this->Zc_Trycapture_Monster(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PETEGG_LIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 4) >> 1;
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_PETEGGLISTWND);
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+      const std::int16_t *index = reinterpret_cast<const std::int16_t*>(packet + 1);
+      for (int i = 0; i < count; ++i, ++index) {
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
+        if (item.identity[1]) {
+          window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
+        }
+      }
+      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_CHANGESTATE_PET:
+      this->ReceivePetChangeState(g_gameModePacketBuffer);
+      break;
     case ID_ZC_PROPERTY_PET: {
       auto* packet = reinterpret_cast<PACKET_ZC_PROPERTY_PET*>(g_gameModePacketBuffer);
       g_session.petJob = packet->job;
@@ -26272,21 +26892,13 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.petLevel = value;
       break;
     }
-    case ID_ZC_PETEGG_LIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) >> 1;
-      UIWindow *window = g_windowMgr.EnsureWindow(WID_PETEGGLISTWND);
-      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
-      const std::int16_t *index = reinterpret_cast<const std::int16_t*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++index) {
-        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
-        if (item.identity[1]) {
-          window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
-        }
-      }
-      window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+    case ID_ZC_FEED_PET:
+    case ID_ZC_FEED_MER:
+      this->ReceiveFeedResult(g_gameModePacketBuffer);
       break;
-    }
+    case ID_ZC_PET_ACT:
+      this->ReceivePetAct(g_gameModePacketBuffer);
+      break;
     case ID_ZC_PAR_CHANGE_USER: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PAR_CHANGE_USER*>(g_gameModePacketBuffer);
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
@@ -26323,6 +26935,21 @@ void CGameMode::ProcessIncomingPackets() {
         window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
       }
       window->SendMsg(nullptr, UM_SETINFO, 2, 0, 0, 0);
+      break;
+    }
+    case ID_ZC_MAKINGITEM_LIST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MAKINGITEM_LIST*>(g_gameModePacketBuffer);
+      const unsigned int count = static_cast<unsigned int>(packet->length - 6) >> 2;
+      UIWindow *window = g_windowMgr.EnsureWindow(WID_MAKINGARROWLISTWND);
+      if (!window) {
+        break;
+      }
+      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, packet->skillId, 0, 0, 0);
+      const unsigned char *entry = reinterpret_cast<const unsigned char*>(packet + 1);
+      for (unsigned int i = count; i != 0; --i, entry += 4) {
+        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      }
       break;
     }
     case ID_ZC_NPCSPRITE_CHANGE: {
@@ -26362,18 +26989,6 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_SHOW_IMAGE2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SHOW_IMAGE2*>(g_gameModePacketBuffer);
-      char name[65];
-      strncpy(name, packet->imageName, 64);
-      int position = packet->type;
-      name[64] = 0;
-      if (position == 255) {
-        position = -1;
-      }
-      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), position, 0, 0);
-      break;
-    }
     case ID_ZC_CHANGE_GUILD: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_GUILD*>(g_gameModePacketBuffer);
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
@@ -26381,6 +26996,15 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_GUILD_INFO2:
+      this->ReceiveGuildInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DISPEL:
+      this->ReceiveDispel(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REPLY_REMAINTIME:
+      this->ReceiveBillingInfo(g_gameModePacketBuffer);
+      break;
     case ID_ZC_INFO_REMAINTIME: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_INFO_REMAINTIME*>(g_gameModePacketBuffer);
       char message[256];
@@ -26409,6 +27033,21 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_BROADCAST2:
       this->ReceiveColorBroadcast(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILD_SKILLINFO:
+      this->ApplyAdditionalSkillPacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_STORE2:
+      this->ReceiveItem1738Add(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_CART2:
+      this->ReceiveItem1740Add(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_STORE3:
+      this->ReceiveItem1738AddOptions(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_CART3:
+      this->ReceiveItem1740AddOptions(g_gameModePacketBuffer);
       break;
     case ID_SC_ACK_ENCRYPTION:
       ShowErrorDialog("No Packet Encryption !!!", 0);
@@ -26439,6 +27078,40 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_SKILL_ENTRY2:
+      this->Zc_Skill_Entry2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_ENTRY3:
+      this->ReceiveGroundSkill8(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_ENTRY4:
+      this->ReceiveGroundSkill32(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SKILL_ENTRY5:
+      this->ReceiveGroundSkillExtended(g_gameModePacketBuffer);
+      break;
+    case 0xBC8: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_ENTRY5*>(g_gameModePacketBuffer);
+      if (packet->job != UNT_GRAFFITI) {
+        this->SpawnGroundSkill(
+            packet->aid, packet->creatorId,
+            packet->skillId, packet->x,
+            packet->y, packet->job,
+            packet->visible, packet->level, packet->range);
+        break;
+      }
+      if (packet->length - 27 > 0) {
+        CGraffiSkill *skill = new CGraffiSkill;
+        skill->SendMsg(nullptr, AM_SETMASTERGID, packet->aid, 0, 0, 0, 0, 0);
+        const int address = reinterpret_cast<int>(packet->text);
+        const int x = static_cast<std::int16_t>(packet->x);
+        const int y = static_cast<std::int16_t>(packet->y);
+        skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
+        this->scene->objects.push_back(skill);
+        this->scene->skills.push_back(skill);
+      }
+      break;
+    }
     case ID_ZC_AUTOSPELLLIST: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_AUTOSPELLLIST*>(g_gameModePacketBuffer);
       char count = 0;
@@ -26461,12 +27134,46 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
+    case ID_ZC_SKILL_SELECT_REQUEST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_SELECT_REQUEST*>(g_gameModePacketBuffer);
+      const int count = static_cast<unsigned int>(packet->length - 8) >> 1;
+      if (count == 0) {
+        break;
+      }
+      if (UIWindow *window = g_windowMgr.EnsureWindow(WID_SPELLLISTWND)) {
+        window->SendMsg(nullptr, UM_SETCHOOSE, packet->why, 0, 0, 0);
+        const std::uint16_t *skills = reinterpret_cast<const std::uint16_t*>(packet + 1);
+        for (int i = 0; i < count; ++i) {
+          window->SendMsg(nullptr, UM_ADDITEM, skills[i], 0, 0, 0);
+        }
+      }
+      break;
+    }
+    case ID_ZC_DEVOTIONLIST:
+      this->ReceiveDevotionList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MILLENNIUMSHIELD:
+      this->ReceiveMillenniumShield(g_gameModePacketBuffer);
+      break;
     case ID_ZC_SPIRITS: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SPIRITS*>(g_gameModePacketBuffer);
       this->UpdateActorSpiritCount(packet->aid,
                                    packet->amount);
       break;
     }
+    case ID_ZC_SPIRITS2:
+      this->Zc_Spirits2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BLADESTOP:
+      this->ReceiveActorPairFreeze(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_COMBODELAY:
+    case 0xC36:
+      this->ReceiveActorSequenceDeadline(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SOUND:
+      this->ReceiveSound(g_gameModePacketBuffer);
+      break;
     case ID_ZC_OPEN_EDITDLGSTR: {
       const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
       if (this->scene->GetGameActorByAID(packet->aid) ||
@@ -26518,215 +27225,39 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case ID_ZC_REQ_COUPLE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_COUPLE*>(g_gameModePacketBuffer);
-      char name[25];
-      strncpy(name, packet->name, 24);
-      name[24] = 0;
-      this->lastCoupleIds[0] = packet->aid;
-      this->lastCoupleIds[1] = packet->gid;
-      g_windowMgr.EnsureWindow(WID_COUPLEACCEPTWND)->SendMsg(nullptr, UM_SET_COUPLE_MSG, static_cast<int>(packet->gid), reinterpret_cast<std::intptr_t>(name), 0,
-                                           0);
+    case ID_ZC_SPRITE_CHANGE2:
+      this->ReceiveSpriteChange2Mirrored(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_NOTIFY_POSITION_TO_GUILDM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
-      if (packet->aid != g_session.m_aid) {
-        this->SendMsg(MM_ADDGUILDPOS, static_cast<int>(packet->aid), packet->xPos,
-                      packet->yPos, 0);
-      }
+    case ID_ZC_NOTIFY_STANDENTRY2:
+      this->ReceiveActorStateEntryOld(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_GUILD_MEMBER_MAP_CHANGE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_GUILD_MEMBER_MAP_CHANGE*>(g_gameModePacketBuffer);
-      if (strcmp(g_session.m_navigationPlayerMap, packet->mapName)) {
-        this->SendMsg(MM_DELETEGUILDPOS, static_cast<int>(packet->aid), 0, 0, 0);
-        if (CGameActor *actor =
-                static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
-          actor->SetGroupMemberVisible(0);
-        }
-      } else if (CGameActor *actor =
-                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
-        actor->SetGroupMemberVisible(1);
-      }
+    case ID_ZC_NOTIFY_STANDENTRY3:
+      this->ReceiveActorStandEntry(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_NORMAL_ITEMLIST2: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_session.KeepEquipment();
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
-      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        g_session.UpdateInventoryItem(item, 0);
-      }
-      RefreshItemWindows(&g_windowMgr);
+    case ID_ZC_NOTIFY_STANDENTRY4:
+      this->ReceiveActorStandEntryFont(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_CART_NORMAL_ITEMLIST2: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
-      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        g_session.AddMerchantShopItem(item);
-      }
-      g_session.RefreshItem1740Window();
+    case ID_ZC_NOTIFY_NEWENTRY2:
+      this->ReceiveActorStandEntryOld(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_STORE_NORMAL_ITEMLIST2: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemRecord);
-      const CardItemRecord *record = reinterpret_cast<const CardItemRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        g_session.AddCartItem(item, 0);
-      }
-      g_session.RefreshItem1738Window();
+    case ID_ZC_NOTIFY_NEWENTRY3:
+      this->ReceiveActorStandEntryOld2(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_UPDATE_CHARSTAT2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_CHARSTAT2*>(g_gameModePacketBuffer);
-      g_guildInfo.UpdateMemberStatus(
-          packet->aid, packet->status,
-          static_cast<int>(packet->gid), packet->sex,
-          packet->classId, packet->level);
-      std::string name = LookupPlayerName(packet->gid);
-      if (name.size()) {
-        this->SendMsg(MM_GUILD_MEMBER_STATUS_CHANGE, reinterpret_cast<int>(name.c_str()), packet->status, 0, 0);
-      }
-      if (packet->status == 0) {
-        this->SendMsg(MM_DELETEGUILDPOS, packet->aid, 0, 0, 0);
-      }
+    case ID_ZC_NOTIFY_NEWENTRY4:
+      this->ReceiveActorStandEntryOld3(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_REQ_EXCHANGE_ITEM2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_EXCHANGE_ITEM2*>(g_gameModePacketBuffer);
-      if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
-        g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
-        break;
-      }
-
-      char name[25];
-      std::memcpy(name, packet->name, 24);
-      name[24] = '\0';
-      g_windowMgr.EnsureWindow(WID_EXCHANGEACCEPTWND)->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), packet->aid,
-                                          packet->level, 0);
-      this->exchangeName.assign(name, strlen(name));
+    case ID_ZC_NOTIFY_MOVEENTRY2:
+      this->ReceiveActorMoveEntryOld(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_REQ_BABY: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_COUPLE*>(g_gameModePacketBuffer);
-      char name[25];
-      strncpy(name, packet->name, 24);
-      name[24] = 0;
-      this->lastCoupleIds[0] = packet->aid;
-      this->lastCoupleIds[1] = packet->gid;
-      g_windowMgr.EnsureWindow(WID_BABYACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, static_cast<int>(packet->gid), reinterpret_cast<std::intptr_t>(name), 0,
-                                           0);
+    case ID_ZC_NOTIFY_MOVEENTRY3:
+      this->ReceiveActorMoveEntryOld2(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_REPAIRITEMLIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / 23;
-      if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-      g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
-      UIWindow *window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
-      const unsigned char *record = reinterpret_cast<const unsigned char*>(packet + 1);
-      for (int i = 0; i < count; ++i, record += 23) {
-        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(record), 0, 0, 0);
-      }
+    case ID_ZC_NOTIFY_SKILL2:
+      this->ReceiveNotifySkill(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_ACK_ITEMREPAIR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ITEMREPAIR*>(g_gameModePacketBuffer);
-      switch (packet->result) {
-      case ITEMREPAIR_SUCCESS:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REPAIR_SUCCEESS)), 0xFFFF00, 0, 0, 0);
-        break;
-      case ITEMREPAIR_FAIL:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REPAIR_FAIL)), 0xFF, 0, 0, 0);
-        break;
-      }
+    case ID_ZC_FRIENDS_LIST:
+      this->ReceiveFriendList(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_HIGHJUMP: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
-      vector3d position{0.0f, 0.0f, 0.0f};
-      g_modeMgr.GetGameMode()
-          ->CellCenter(packet->xPos, packet->yPos,
-                       position.x, position.z);
-      position.y = this->scene->terrain->Height(position.x, position.z);
-      if (packet->aid == g_session.m_aid) {
-        this->scene->player->damageDestX = position.x;
-        this->scene->player->damageDestZ = position.z;
-        this->scene->player->render.position = position;
-      } else if (CGameActor *actor =
-                     static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
-        actor->damageDestX = position.x;
-        actor->damageDestZ = position.z;
-        actor->render.position = position;
-      }
-      break;
-    }
-    case ID_ZC_DIVORCE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DIVORCE*>(g_gameModePacketBuffer);
-      char message[1024];
-      sprintf(message, LookupMessage(MSI_DIVORCE), g_session.DecodePlayerName(), packet->name);
-      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
-      break;
-    }
-    case ID_ZC_FRIENDS_STATE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_FRIENDS_STATE*>(g_gameModePacketBuffer);
-      g_session.UpdateFriendName(packet->cid,
-                                 packet->name);
-      if (g_session.SetFriendOffline(packet->aid,
-                                     packet->cid, packet->offline)) {
-        g_session.RefreshMessengerGroupWindow();
-      }
-      break;
-    }
     case ID_ZC_REQ_ADD_FRIENDS: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_COUPLE*>(g_gameModePacketBuffer);
       char name[25];
@@ -26740,440 +27271,6 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.EnsureWindow(WID_JOINFRIENDACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, static_cast<int>(packet->aid),
                                              static_cast<int>(packet->gid), reinterpret_cast<std::intptr_t>(name), 0);
       }
-      break;
-    }
-    case ID_ZC_ADD_FRIENDS_LIST:
-      ReceiveFriendAddResult(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_DELETE_FRIENDS: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DELETE_FRIENDS*>(g_gameModePacketBuffer);
-      if (g_session.RemoveFriendByCharacterId(packet->cid)) {
-        g_session.RefreshMessengerGroupWindow();
-      }
-      break;
-    }
-    case ID_ZC_BABYMSG: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      switch (packet->value) {
-      case 0:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY1)), 0x9B9BFF, 0, 0, 0);
-        break;
-      case 1:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY2)), 0x9B9BFF, 0, 0, 0);
-        break;
-      case 2:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BABY3)), 0x9B9BFF, 0, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_NOTIFY_WEAPONITEMLIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / 23;
-      if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
-        break;
-      }
-      if (g_windowMgr.LookupWindow(WID_WEAPONREFINEWND)) {
-        g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
-      }
-      UIWindow *window = g_windowMgr.EnsureWindow(WID_WEAPONREFINEWND);
-      const auto* record = reinterpret_cast<const PACKET_ZC_NOTIFY_WEAPONITEMLIST_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        window->SendMsg(nullptr, UM_ADDITEM, record->itemId, record->index, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_STATE_CHANGE3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_STATE_CHANGE3*>(g_gameModePacketBuffer);
-      int state[4];
-      state[1] = packet->effectState;
-      state[3] = packet->isPkModeOn;
-      state[0] = packet->bodyState;
-      state[2] = packet->healthState;
-      CRenderObject *actor;
-      if (packet->aid == g_session.m_aid) {
-        actor = this->scene->player;
-        this->ApplyStatusIcons(state[0], state[2]);
-        g_session.m_bodyState = state[0];
-        g_session.m_effectState = state[2];
-        g_session.m_jobFlags = state[1];
-        if (g_windowMgr.equipWnd) {
-          g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-        }
-        if (g_session.replayPacketMode <= 0) {
-          g_session.ClearMerchantShopItems();
-          g_windowMgr.CloseWindow(WID_MERCHANTITEMWND);
-        }
-      } else {
-        actor = this->scene->GetGameActorByAID(packet->aid);
-      }
-      if (actor) {
-        const int stateAddress = reinterpret_cast<int>(state);
-        actor->SendMsg(nullptr, AM_ATTR_STATE_CHANGE, stateAddress, 0, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_STARPLACE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_STARPLACE*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_STARPLACEACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, static_cast<signed char>(packet->place), 0, 0, 0);
-      break;
-    }
-    case ID_ZC_MAKINGITEM_LIST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MAKINGITEM_LIST*>(g_gameModePacketBuffer);
-      const unsigned int count = static_cast<unsigned int>(packet->length - 6) >> 2;
-      UIWindow *window = g_windowMgr.EnsureWindow(WID_MAKINGARROWLISTWND);
-      if (!window) {
-        break;
-      }
-      window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
-      window->SendMsg(nullptr, UM_SETINFO, packet->skillId, 0, 0, 0);
-      const unsigned char *entry = reinterpret_cast<const unsigned char*>(packet + 1);
-      for (unsigned int i = count; i != 0; --i, entry += 4) {
-        window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_DEL_QUEST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DEL_QUEST*>(g_gameModePacketBuffer);
-      std::string title = g_renewQuestMgr->GetOngoingQuest(packet->questId).m_title;
-      CRenewQuestMgr *manager = g_renewQuestMgr;
-      unsigned int id = packet->questId;
-      manager->m_ongoingQuests.erase(id);
-      manager->UpdateQuestWindows();
-      std::string message = FormatOwnedString(LookupMessage(MSI_DELETE_QUEST), title.c_str());
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 19, 0, 0);
-      break;
-    }
-    case ID_ZC_ACTIVE_QUEST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACTIVE_QUEST*>(g_gameModePacketBuffer);
-      g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->active);
-      g_renewQuestMgr->UpdateQuestWindows();
-      break;
-    }
-    case ID_ZC_NOTIFY_BIND_ON_EQUIP: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_BIND_ON_EQUIP*>(g_gameModePacketBuffer);
-      ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
-      if (item.identity[1]) {
-        std::string name = item.DisplayName(0);
-        std::string message = FormatOwnedString(LookupMessage(MSI_YOURITEM_EQUIPED), name.c_str());
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0x6EFFFF, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_CAMPINFO: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_CAMPINFO*>(g_gameModePacketBuffer);
-      if (packet->aid == g_session.m_aid) {
-        g_session.playerTeam = packet->camp;
-        break;
-      }
-      if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
-        const unsigned char team = packet->camp;
-        actor->render.battleTeam = team;
-        if (team != g_session.playerTeam) {
-          OpenWordDisplay(actor);
-        } else if (actor->actorTitleWindow) {
-          g_windowMgr.Schedule(actor->actorTitleWindow);
-          actor->actorTitleWindow = nullptr;
-        }
-      }
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_POINT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_POINT*>(g_gameModePacketBuffer);
-      g_session.m_score1 = packet->point1;
-      g_session.m_score2 = packet->point2;
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_POSITION: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_POSITION*>(g_gameModePacketBuffer);
-      if (packet->aid != g_session.m_aid) {
-        this->SendMsg(MM_ADDPARTYPOS, static_cast<int>(packet->aid), packet->xPos,
-                      packet->yPos, 0);
-      }
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_HP: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HP*>(g_gameModePacketBuffer);
-      if (g_session.IsCompanionAid(packet->aid)) {
-        break;
-      }
-      if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
-        const int x = packet->hp;
-        const int y = packet->maxHp;
-        actor->SendMsg(nullptr, AM_UPDATEGAGE, x, y, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_NOTIFY_ACT2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_ACT2*>(g_gameModePacketBuffer);
-      this->ReceiveActorAction(
-          packet->srcId, packet->targetId,
-          packet->serverTick, packet->srcSpeed,
-          packet->dmgSpeed, packet->damage,
-          packet->div, packet->type,
-          packet->damage2, 0);
-      break;
-    }
-    case ID_ZC_NORMAL_ITEMLIST3: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_session.KeepEquipment();
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
-      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++entry) {
-        const CardItemRecord *record = &entry->base;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        item.expireTime = entry->expireTime;
-        g_session.UpdateInventoryItem(item, 0);
-      }
-      RefreshItemWindows(&g_windowMgr);
-      break;
-    }
-    case ID_ZC_CART_NORMAL_ITEMLIST3: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
-      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++entry) {
-        const CardItemRecord *record = &entry->base;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        item.expireTime = entry->expireTime;
-        g_session.AddMerchantShopItem(item);
-      }
-      g_session.RefreshItem1740Window();
-      break;
-    }
-    case ID_ZC_STORE_NORMAL_ITEMLIST3: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(CardItemExpiryRecord);
-      const CardItemExpiryRecord *entry = reinterpret_cast<const CardItemExpiryRecord*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++entry) {
-        const CardItemRecord *record = &entry->base;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->identified;
-        item.damaged = 0;
-        item.refiningLevel = 0;
-        item.expireTime = entry->expireTime;
-        g_session.AddCartItem(item, 0);
-      }
-      g_session.RefreshItem1738Window();
-      break;
-    }
-    case ID_ZC_NOTIFY_FONT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_FONT*>(g_gameModePacketBuffer);
-      if (packet->aid == g_session.m_aid) {
-        g_session.chatFont = static_cast<unsigned char>(packet->font);
-      } else if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
-        actor->render.font = packet->font;
-      }
-      break;
-    }
-    case ID_ZC_PROGRESS: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_PROGRESS*>(g_gameModePacketBuffer);
-      if (CPlayer *player = this->scene->player) {
-        player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(packet->time * 1000), 0, 0, 0, 0, 0);
-        g_session.m_playerMessage82Pending = true;
-      }
-      break;
-    }
-    case ID_ZC_PROGRESS_CANCEL:
-      if (CPlayer *player = this->scene->player) {
-        player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
-        if (player->render.state == 8) {
-          player->SetState(ST_STAND, 1);
-        }
-      }
-      break;
-    case ID_ZC_UPDATE_GDID2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_GDID_02f7*>(g_gameModePacketBuffer);
-      const std::uint32_t flags = packet->mode;
-      g_guildInfo.canInvite = flags & 1;
-      g_guildInfo.isMaster = packet->isMaster;
-      g_guildInfo.m_guildId = packet->guildId;
-      g_guildInfo.canExpel = (flags >> 4) & 1;
-      g_guildInfo.masterCharacterId = packet->masterGid;
-      this->scene->player->SetGuildInfo(static_cast<int>(packet->guildId), packet->emblemVersion);
-      if (!g_guildInfo.skillsRequested) {
-        g_guildInfo.skillsRequested = 1;
-        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
-      }
-      if (!g_guildInfo.membersRequested) {
-        g_guildInfo.membersRequested = 1;
-        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_SKILLINFO_DELETE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_DELETE*>(g_gameModePacketBuffer);
-      g_session.RemoveSkill(packet->skillId);
-      break;
-    }
-    case ID_ZC_SKILL_SELECT_REQUEST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_SELECT_REQUEST*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 8) >> 1;
-      if (count == 0) {
-        break;
-      }
-      if (UIWindow *window = g_windowMgr.EnsureWindow(WID_SPELLLISTWND)) {
-        window->SendMsg(nullptr, UM_SETCHOOSE, packet->why, 0, 0, 0);
-        const std::uint16_t *skills = reinterpret_cast<const std::uint16_t*>(packet + 1);
-        for (int i = 0; i < count; ++i) {
-          window->SendMsg(nullptr, UM_ADDITEM, skills[i], 0, 0, 0);
-        }
-      }
-      break;
-    }
-    case ID_ZC_SEEK_PARTY: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SEEK_PARTY*>(g_gameModePacketBuffer);
-      char message[256];
-      memset(message, 0, sizeof(message));
-      const char *job = g_session.GetJobName(packet->job, -1);
-      sprintf(message, LookupMessage(MSI_SEEK_PARTY_SET), packet->level,
-              packet->name, job);
-      if (g_windowMgr.chatRoomWnd) {
-        g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
-      } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
-      }
-      if (g_session.m_whisperRecord) {
-        this->WriteChatLog(message);
-      }
-      break;
-    }
-    case ID_ZC_SKILLINFO_UPDATE2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE2*>(g_gameModePacketBuffer);
-      this->ReceiveSkillUpdate(
-          packet->id, packet->level,
-          packet->sp, packet->upFlag,
-          packet->range, packet->inf,
-          packet->level);
-      break;
-    }
-    case ID_ZC_MSG_SKILL: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MSG_SKILL*>(g_gameModePacketBuffer);
-      char text[256];
-      sprintf(text, LookupMessage(packet->msgId));
-      char message[256];
-      sprintf(message, "[%s] %s", CSkillInfo::DisplayName(packet->skillId),
-              text);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
-      break;
-    }
-    case ID_ZC_USESKILL_ACK2:
-      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH01: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH01;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH02: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH02;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH03: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH03;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH04: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH04;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH05: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH05;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH06:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH06);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH07: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH07;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH08:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH08);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH09: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH09;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH10:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH10);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH11: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH11;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH12: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH12;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH13: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH13;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH14: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH14;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH15: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH15;
-      GetRagConnection().Send(sizeof(packet), packet);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH16: {
@@ -27206,1640 +27303,49 @@ void CGameMode::ProcessIncomingPackets() {
       GetRagConnection().Send(sizeof(packet), packet);
       break;
     }
-    case ID_ZC_REASSEMBLY_AUTH21: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH21;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH22: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH22;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH23: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH23;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH24: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH24;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH25: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH25;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH26: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH26;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH27: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH27;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH28: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH28;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH29: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH29;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH30: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH30;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH31:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH31);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH32: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH32;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH33: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH33;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH34:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH34);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH35: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH35;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH36: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH36;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH37: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH37;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH38: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH38;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH39: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH39;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH40: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH40;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH41:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH41);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH42: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH42;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH43:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH43);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH44: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH44;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH45: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH45;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH46: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH46;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH47:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH47);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH48:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH48);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH49: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH49;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH50: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH50;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH51: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH51;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH52: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH52;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH53:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH53);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH54: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH54;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH55: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH55;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH56: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH56;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH57:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH57);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH58: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH58;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH59: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH59;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH60: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH60;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH61: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH61;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH62: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH62;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH63:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH63);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH64: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH64;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH65:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH65);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH66: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH66;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH67:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH67);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH68: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH68;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH69:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH69);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH70: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH70;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH71:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH71);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH72:
-      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH72);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH73: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH73;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH74: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH74;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH75: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH75;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH76: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH76;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH77: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH77;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH78:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH78);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH79:
-      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH79);
-      break;
-    case ID_ZC_REASSEMBLY_AUTH80: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH80;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH81: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH81;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH82: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH82;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH83: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH83;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_REASSEMBLY_AUTH84: {
-      std::uint16_t packet[1];
-      packet[0] = ID_CZ_REASSEMBLY_AUTH84;
-      GetRagConnection().Send(sizeof(packet), packet);
-      break;
-    }
-    case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN:
-      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, false);
-      break;
-    case ID_ZC_NOTIFY_HP_TO_GROUPM_R2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_HP_TO_GROUPM_R2*>(g_gameModePacketBuffer);
-      if (!g_session.IsCompanionAid(packet->aid)) {
-        if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
-          const int hp = packet->hp;
-          const int maxHp = packet->maxHp;
-          actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
-        }
-        if (g_windowMgr.messengerGroupWnd) {
-          g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, static_cast<int>(packet->aid),
-                                           packet->hp,
-                                           packet->maxHp);
-        }
-        g_windowMgr.NotifyItemWindows(static_cast<int>(packet->aid), packet->hp,
-                                      packet->maxHp);
+    case ID_ZC_ADD_FRIENDS_LIST:
+      ReceiveFriendAddResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DELETE_FRIENDS: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DELETE_FRIENDS*>(g_gameModePacketBuffer);
+      if (g_session.RemoveFriendByCharacterId(packet->cid)) {
+        g_session.RefreshMessengerGroupWindow();
       }
       break;
     }
-    case ID_ZC_ADD_EXCHANGE_ITEM2:
-      ReceiveItemSlot(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_SSILIST_ITEM_CLICK_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SSILIST_ITEM_CLICK_ACK*>(g_gameModePacketBuffer);
-      g_session.storeSearchX = packet->x;
-      g_session.storeSearchY = packet->y;
-      break;
-    }
-    case ID_ZC_SE_CASHSHOP_OPEN:
-    case ID_ZC_SE_CASHSHOP_OPEN2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN2*>(g_gameModePacketBuffer);
-      if (!g_windowMgr.CloseWindow(WID_CASHSHOP_WND)) {
-        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_CASHSHOP_WND)) {
-          window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, packet->cashPoints, packet->kafraPoints,
-                          0, 0);
-        } else {
-          std::int16_t packetType = ID_CZ_SE_CASHSHOP_OPEN;
-          GetRagConnection().Send(GetRagConnection().GetPacketSize(packetType), &packetType);
-        }
+    case ID_ZC_FRIENDS_STATE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_FRIENDS_STATE*>(g_gameModePacketBuffer);
+      g_session.UpdateFriendName(packet->cid,
+                                 packet->name);
+      if (g_session.SetFriendOffline(packet->aid,
+                                     packet->cid, packet->offline)) {
+        g_session.RefreshMessengerGroupWindow();
       }
       break;
     }
-    case ID_ZC_ITEM_FALL_ENTRY4: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_FALL_ENTRY4*>(g_gameModePacketBuffer);
-      ItemFallEntry entry = {};
-      entry.count = packet->amount;
-      entry.aid = packet->aid;
-      entry.column = packet->x;
-      entry.row = packet->y;
-      entry.subColumn = packet->subX;
-      entry.subRow = packet->subY;
-      entry.falling = 0;
-      _itoa(packet->itemId, entry.itemId, 10);
-      entry.identified = packet->identify;
-      entry.falling = 1;
-      entry.type = packet->type;
-
-      CItem *item = this->scene->GetItemByAID(entry.aid);
-      if (!item) {
-        item = new CItem;
-        this->scene->objects.push_back(item);
-        this->scene->items.push_back(item);
-      }
-
-      const int entryAddress = reinterpret_cast<int>(&entry);
-      item->SendMsg(nullptr, AM_INITSTANDENTRY, entryAddress, 0, 0, 0, 0, 0);
+    case ID_ZC_DIVORCE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DIVORCE*>(g_gameModePacketBuffer);
+      char message[1024];
+      sprintf(message, LookupMessage(MSI_DIVORCE), g_session.DecodePlayerName(), packet->name);
+      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
       break;
     }
-    case ID_ZC_NOTIFY_ACT3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_ACT3*>(g_gameModePacketBuffer);
-      this->ReceiveActorAction(
-          packet->srcId, packet->targetId,
-          packet->serverTick, packet->srcSpeed,
-          packet->dmgSpeed, packet->damage,
-          packet->div, packet->type,
-          packet->damage2, packet->isSpDamage);
-      break;
-    }
-    case ID_ZC_STOPMOVE_FORCE: {
-      const ActorStopPacket *packet = reinterpret_cast<const ActorStopPacket *>(g_gameModePacketBuffer);
-      this->StopActorMove(packet->aid, packet->x, packet->y, 1);
-      break;
-    }
-    case ID_ZC_REQ_WEAR_EQUIP_ACK2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_WEAR_EQUIP_ACK*>(g_gameModePacketBuffer);
-      this->waitingWearEquipAck = timeGetTime() - 2000;
-      switch (packet->result) {
-      case ITEM_EQUIP_ACK_OK: {
-        ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
-        if (item.identity[1]) {
-          item.sprite = packet->wItemSpriteNumber;
-          item.identity[3] = packet->wearLocation;
-          g_session.OnItemEquipped(item);
-        }
-        break;
-      }
-      case ITEM_EQUIP_ACK_FAILLEVEL:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID)), 0xFF, 7, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_REQ_TAKEOFF_EQUIP_ACK2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK*>(g_gameModePacketBuffer);
-      this->waitingTakeoffEquipAck = timeGetTime() - 2000;
-      switch (packet->flag) {
-      case 0: {
-        const std::uint16_t location = packet->wearLocation;
-        if (location) {
-          if (g_session.IsCostumeLocation(location)) {
-            g_session.UnequipCostumeItem(location);
-          } else {
-            g_session.UnequipItem(location, 0);
-          }
-        }
-        break;
-      }
-      case 1:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID)), 0xFF, 7, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_SE_CASHSHOP_UPDATE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN2*>(g_gameModePacketBuffer);
-      if (UIWindow *window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
-        window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, packet->cashPoints, packet->kafraPoints, 0,
-                        0);
-      }
-      break;
-    }
-    case ID_ZC_ACK_ENTRY_QUEUE_APPLY:
-      g_entryQueueMgr->OnApplyResult(reinterpret_cast<const EntryQueueApplyResult *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_NOTIFY_ENTRY_QUEUE_APPLY:
-      g_entryQueueMgr->OnStatus(reinterpret_cast<const EntryQueueStatus *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_ACK_ENTRY_QUEUE_CANCEL:
-      g_entryQueueMgr->OnCancelResult(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_NOTIFY_ENTRY_QUEUE_ADMISSION:
-      g_entryQueueMgr->IgnorePacket(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REPLY_ACK_ENTRY_QUEUE_ADMISSION:
-      g_entryQueueMgr->OnResultNotice(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_NOTIFY_LOBBY_ADMISSION:
-      g_entryQueueMgr->OnReady(reinterpret_cast<const EntryQueueReady *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_REPLY_ACK_LOBBY_ADMISSION:
-      g_entryQueueMgr->OnNotify(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_NAVIGATION_ACTIVE:
-      ReceiveNavigation(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_ENTRY_QUEUE_INIT:
-      g_entryQueueMgr->ResetCurrent(reinterpret_cast<int>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_ACK_TAKEOFF_EQUIP_V5: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_TAKEOFF_EQUIP_V5*>(g_gameModePacketBuffer);
-      this->ReceiveTakeOffEquipResult(packet->flag, packet->wearLocation,
-                                      packet->index);
-      break;
-    }
-    case ID_ZC_ACK_OPEN_GUILD_STORAGE:
-      ReceiveBuyingStoreResult(reinterpret_cast<const BuyingStoreResultPacket *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_ACK_CLOSE_GUILD_STORAGE:
-      ReceiveStorageClose(reinterpret_cast<const AchievementStatePacket *>(g_gameModePacketBuffer));
-      break;
     case ID_ZC_NPROTECTGAMEGUARDCSAUTH: {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       g_nProtectGameGuardMgr->ProcessAuth(reinterpret_cast<int>(reinterpret_cast<const unsigned char*>(packet + 1)),
                                           static_cast<std::uint16_t>(packet->length) - 4);
       break;
     }
-    case ID_ZC_ACK_WHISPER02: {
-      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
-      this->ReceiveWhisperResult(packet->result, packet->itemId);
+    case ID_ZC_CHANGESTATE_MER:
+      this->ReceiveHomunculusChange(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE2:
-      ReceiveBuyingStorePurchase(g_gameModePacketBuffer);
+    case ID_ZC_PROPERTY_HOMUN:
+      this->ReceiveHomunculusInfo(g_gameModePacketBuffer);
       break;
-    case ID_ZC_PET_EVOLUTION_RESULT: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->NotifyPetEvolutionResult(packet->value);
+    case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY:
+      this->ReceiveHomunculusInfo2(g_gameModePacketBuffer);
       break;
-    }
-    case ID_ZC_ADD_EXCHANGE_ITEM3:
-      ReceiveItemSlotOptions(g_gameModePacketBuffer);
-      break;
-    case ID_ZC_REQ_ACH_REWARD_ACK: {
-      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
-      this->ReceiveAchievementResult(packet->result, packet->itemId);
-      break;
-    }
-    case ID_ZC_RECOVERY2:
-      this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 1);
-      break;
-    case ID_ZC_REQ_AU_BOT: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveAntiBotChallenge(packet->value);
-      break;
-    }
-    case ID_ZC_ACK_CHANGE_TITLE: {
-      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
-      this->ReceiveJobTitle(packet->result, packet->itemId);
-      break;
-    }
-    case ID_ZC_UI_OPEN: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN*>(g_gameModePacketBuffer);
-      this->OpenServiceWindow(packet->uiType);
-      break;
-    }
-    case ID_ZC_SKILL_POSTDELAY2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_POSTDELAY2*>(g_gameModePacketBuffer);
-      this->UpdateSkillCooldown(packet->skillId,
-                                packet->delay,
-                                packet->remainTime);
-      break;
-    }
-    case ID_ZC_ACK_PRIVATE_AIRPLANE_CALL: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->NotifyPrivateAirplaneResult(packet->value);
-      break;
-    }
-    case ID_ZC_MAPMOVE_PRIVATE_AIRPLANE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MAPMOVE_PRIVATE_AIRPLANE*>(g_gameModePacketBuffer);
-      this->RequestLocalMapMove(packet->mapName,
-                                packet->x,
-                                packet->y);
-      break;
-    }
-    case ID_ZC_RANDOM_COMBINE_ITEM_UI_OPEN: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveLapineBoxIngredient(packet->value);
-      break;
-    }
-    case ID_ZC_ACK_RANDOM_COMBINE_ITEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_RANDOM_COMBINE_ITEM*>(g_gameModePacketBuffer);
-      this->ReceiveLapineBoxResult(packet->result);
-      break;
-    }
-    case ID_ZC_ACK_UPLOAD_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_UPLOAD_MACRO_DETECTOR*>(g_gameModePacketBuffer);
-      this->ReceiveCaptchaUploadRequest(&packet->captchaKey,
-                                        packet->captchaFlag);
-      break;
-    }
-    case ID_ZC_COMPLETE_UPLOAD_MACRO_DETECTOR_CAPTCHA:
-      this->NotifyCaptchaRegistered();
-      break;
-    case ID_ZC_ACK_APPLY_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->NotifyCaptchaRegistrationResult(packet->value);
-      break;
-    }
-    case ID_ZC_APPLY_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR*>(g_gameModePacketBuffer);
-      this->BeginCaptchaImage(packet->imageSize,
-                              packet->captchaKey);
-      break;
-    }
-    case ID_ZC_REQ_ANSWER_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ANSWER_MACRO_DETECTOR*>(g_gameModePacketBuffer);
-      this->SetMacroDetectorCountdown(packet->retry, packet->timeout);
-      break;
-    }
-    case ID_ZC_CLOSE_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveMacroDetectorResult(packet->value);
-      break;
-    }
-    case ID_ZC_MACRO_CHECK_REMOVE_CHEAT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MACRO_CHECK_REMOVE_CHEAT*>(g_gameModePacketBuffer);
-      this->NotifyMacroCheckRemovalResult(packet->result);
-      break;
-    }
-    case ID_ZC_ACK_PREVIEW_MACRO_DETECTOR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_PREVIEW_MACRO_DETECTOR*>(g_gameModePacketBuffer);
-      this->ReceiveCaptchaPreview(packet->captchaFlag,
-                                  packet->imageSize,
-                                  packet->captchaKey);
-      break;
-    }
-    case ID_ZC_ACK_PLAYER_AID_IN_RANGE: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      ReceiveMacroReporterList((static_cast<unsigned int>(packet->length - 4) >> 2),
-                 reinterpret_cast<const int*>(packet + 1));
-      break;
-    }
-    case ID_ZC_MSG_VALUE_STRING: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MSG_VALUE_STRING*>(g_gameModePacketBuffer);
-      this->ShowFormattedNotice(packet->msgId,
-                                packet->value, reinterpret_cast<int>(packet->text));
-      break;
-    }
-    case ID_ZC_ACK_CREATE_ASSISTANT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_CREATE_ASSISTANT*>(g_gameModePacketBuffer);
-      this->ReceiveStoreResult(packet->result, packet->type);
-      break;
-    }
-    case ID_ZC_STORE_ASSISTANT_DISAPPEAR: {
-      const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
-      this->ReceiveItemDisappear(packet->aid);
-      break;
-    }
-    case ID_ZC_OPEN_UI_ASSISTANT_BUYING: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_OPEN_UI_ASSISTANT_BUYING*>(g_gameModePacketBuffer);
-      this->OpenBuyingStoreMake(packet->slots);
-      break;
-    }
-    case ID_ZC_CONFIG_NOTIFY2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY2*>(g_gameModePacketBuffer);
-      this->ReceiveFeedConfig(packet->type, packet->flag);
-      break;
-    }
-    case ID_ZC_OPEN_REFINING_UI:
-      g_windowMgr.EnsureWindow(WID_REFININGWND);
-      break;
-    case ID_ZC_RANDOM_UPGRADE_ITEM_UI_OPEN: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveLapineUpgradeBoxValue(packet->value);
-      break;
-    }
-    case ID_ZC_ACK_RANDOM_UPGRADE_ITEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_RANDOM_UPGRADE_ITEM*>(g_gameModePacketBuffer);
-      this->ReceiveLapineUpgradeResult(packet->result);
-      break;
-    }
-    case ID_ZC_ACK_FAILED_ALL_RODEX_LIST:
-      this->IgnoreRemovedPacket6();
-      break;
-    case ID_ZC_UI_OPEN_V2: {
-      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
-      this->ReceiveServiceRequest(packet->result, packet->itemId);
-      break;
-    }
-    case ID_ZC_ACK_CHECK_ATTENDANCE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_CHECK_ATTENDANCE*>(g_gameModePacketBuffer);
-      this->ReceiveWindow328Result(packet->result, packet->count);
-      break;
-    }
-    case ID_ZC_SET_CLAIRVOYANCE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SET_CLAIRVOYANCE*>(g_gameModePacketBuffer);
-      SetClairvoyance(packet->flag);
-      break;
-    }
-    case ID_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER:
-      ReceivePartyJoinResult(reinterpret_cast<const void *>(g_gameModePacketBuffer));
-      break;
-    case ID_ZC_AUTOSPELLLIST2: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      this->ReceiveWindow99Values((static_cast<unsigned int>(packet->length - 4) >> 2),
-                                  reinterpret_cast<const int*>(packet + 1));
-      break;
-    }
-    case ID_ZC_SPLIT_SEND_ITEMLIST_RESULT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_RESULT*>(g_gameModePacketBuffer);
-      this->RefreshItemListWindow(packet->type, packet->result);
-      break;
-    }
-    case ID_ZC_CHANGE_AGIT_OWNER: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_AGIT_OWNER*>(g_gameModePacketBuffer);
-      this->ReceiveGuildAgitOwnershipChange(packet->agitId, packet->guildId,
-                                          packet->emblemVersion);
-      break;
-    }
-    case ID_ZC_REQ_ACK_AGIT_INVESTMENT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ACK_AGIT_INVESTMENT*>(g_gameModePacketBuffer);
-      this->ReceiveAgitNotice(packet->castleId, packet->result,
-                              packet->money);
-      break;
-    }
-    case ID_ZC_REQ_ACK_MOVE_GUILD_AGIT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ACK_MOVE_GUILD_AGIT*>(g_gameModePacketBuffer);
-      this->ReceiveGuildAgitMoveResult(packet->result);
-      break;
-    }
-    case ID_ZC_REMOVE_NEIGHBORHOOD_CHARACTERS: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      this->ReceiveObjectsDisappear((static_cast<unsigned int>(packet->length - 4) >> 2),
-                                    reinterpret_cast<const std::uint32_t*>(packet + 1));
-      break;
-    }
-    case ID_ZC_ACK_ADD_NEW_EMBLEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ADD_NEW_EMBLEM*>(g_gameModePacketBuffer);
-      this->ReceiveGuildEmblemVersion(packet->result,
-                                      packet->guildId,
-                                      packet->emblemVersion);
-      break;
-    }
-    case ID_ZC_ADD_ACCOUNT_LIMTIED_SALE_ITEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ADD_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
-      this->ReceiveWindow154Result(packet->result);
-      break;
-    }
-    case ID_ZC_DEL_ACCOUNT_LIMTIED_SALE_ITEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DEL_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
-      this->ReceiveWindow154Close(packet->result);
-      break;
-    }
-    case ID_ZC_OPEN_ACCOUNT_LIMTIED_SALE_TOOL:
-      this->OpenWindow154();
-      break;
-    case ID_ZC_CLOSE_ACCOUNT_LIMTIED_SALE_TOOL:
-      CloseAccountLimitedTool();
-      break;
-    case ID_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
-      this->ReceiveAccountLimitedToolApplyResult(packet->result,
-                                 packet->itemId);
-      break;
-    }
-    case ID_ZC_TARGET_SPIRITS: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_TARGET_SPIRITS*>(g_gameModePacketBuffer);
-      this->ReceiveActorStateValue(packet->aid,
-                                   packet->targetId,
-                                   packet->amount);
-      break;
-    }
-    case ID_ZC_SE_CASHSHOP_OPEN_V2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN_V2*>(g_gameModePacketBuffer);
-      this->ReceiveCashShopBanner(packet->cashPoints, packet->kafraPoints,
-                                  packet->bannerId);
-      break;
-    }
-    case ID_ZC_UI_OPEN_REPUTE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN_REPUTE*>(g_gameModePacketBuffer);
-      this->ReceiveReputeOpen(packet->reputePoints,
-                              packet->reputeGrade);
-      break;
-    }
-    case ID_ZC_OPEN_REFORM_UI: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveItemReformOpen(packet->value);
-      break;
-    }
-    case ID_ZC_ITEM_REFORM_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_REFORM_ACK*>(g_gameModePacketBuffer);
-      this->ReceiveWindow348Result(packet->result, packet->index);
-      break;
-    }
-    case ID_ZC_SET_USERCONFIG_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SET_USERCONFIG_ACK*>(g_gameModePacketBuffer);
-      this->ReceiveGameOptionResult(packet->configType, packet->value,
-                                    packet->result);
-      break;
-    }
-    case ID_ZC_GET_USERCONFIG_LIST: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      this->ReceiveGameOptions((static_cast<unsigned int>(packet->length - 4) >> 3),
-                               reinterpret_cast<const GameOptionEntry*>(packet + 1));
-      break;
-    }
-    case ID_ZC_RODEX_RETURN_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RODEX_RETURN_ACK*>(g_gameModePacketBuffer);
-      this->ReceiveRodexMailDeleteResult(packet->mailId,
-                                         packet->result);
-      break;
-    }
-    case ID_ZC_UI_OPEN_V3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN_V3*>(g_gameModePacketBuffer);
-      this->ReceiveUiOpen(packet->uiType, packet->data);
-      break;
-    }
-    case ID_ZC_RESPONSE_ENCHANT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RESPONSE_ENCHANT*>(g_gameModePacketBuffer);
-      this->ReceiveEnchantResult(packet->result, packet->itemId);
-      break;
-    }
-    case ID_ZC_DIALOG_TEXT_ALIGN: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_TEXT_ALIGN*>(g_gameModePacketBuffer);
-      this->SetWindow16Align(packet->align);
-      break;
-    }
-    case ID_ZC_DIALOG_WINDOW_SIZE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_SIZE*>(g_gameModePacketBuffer);
-      this->ResizeWindow16(packet->height, packet->width);
-      break;
-    }
-    case ID_ZC_DIALOG_WINDOW_POS: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_POS*>(g_gameModePacketBuffer);
-      this->MoveWindow16(packet->x, packet->y);
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_HPSP: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HPSP*>(g_gameModePacketBuffer);
-      this->RejectRequest(packet->aid, packet->hp,
-                          packet->maxHp, packet->sp,
-                          packet->maxSp);
-      break;
-    }
-    case ID_ZC_NOTIFY_HPSP_TO_GROUPM_R2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HPSP*>(g_gameModePacketBuffer);
-      this->IgnoreRemovedPacket12(packet->aid,
-                                  packet->hp, packet->maxHp,
-                                  packet->sp, packet->maxSp);
-      break;
-    }
-    case ID_ZC_ACK_TAKEOFF_EQUIP_ALL: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_TAKEOFF_EQUIP_ALL*>(g_gameModePacketBuffer);
-      this->ReceiveBasicInfoResult(packet->result);
-      break;
-    }
-    case ID_ZC_DIALOG_WINDOW_POS2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_POS2*>(g_gameModePacketBuffer);
-      this->PlaceWindow16(packet->x,
-                          packet->y);
-      break;
-    }
-    case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN_WITH_REFINE_LEVEL:
-      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, 1);
-      break;
-    case ID_ZC_REQ_LISTOFMODIFIED_ITEMNSKILL: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_LISTOFMODIFIED_ITEMNSKILL*>(g_gameModePacketBuffer);
-      this->ReceiveShopName(packet->name, packet->type);
-      break;
-    }
-    case ID_ZC_SPECIALPOPUP: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ShowSpecialPopup(packet->value);
-      break;
-    }
-    case ID_ZC_ACK_MACRO_BLACKLIST_USER_HUMAN_CHECK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_MACRO_BLACKLIST_USER_HUMAN_CHECK*>(g_gameModePacketBuffer);
-      this->NotifyMacroBlacklistCheckResult(packet->result, packet->timeout);
-      break;
-    }
-    case ID_ZC_REQ_ANSWER_MACROBLUSER_HUMAN_CHECK: {
-      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
-      this->ActivateMacroBlackListCheck(packet->result, packet->itemId);
-      break;
-    }
-    case ID_ZC_CLOSE_MACROBLUSER_HUMAN_CHECK: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveMacroBlackListResult(packet->value);
-      break;
-    }
-    case 0xBD7: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
-      this->ApplyRuneSetResult(packet->result, packet->slot,
-                               packet->runeId);
-      break;
-    }
-    case 0xBDB: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_MACRO_BLACKLIST_CODE*>(g_gameModePacketBuffer);
-      this->ReceiveMacroBlackListCode(packet->result, packet->code);
-      break;
-    }
-    case 0xBDF: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
-      this->ToggleWindow169(packet->result);
-      break;
-    }
-    case 0xBE1: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
-      this->RequestWindow169(packet->result);
-      break;
-    }
-    case 0xC06: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RESULT_NOTICE*>(g_gameModePacketBuffer);
-      this->ReceiveResultNotice(packet->result);
-      break;
-    }
-    case ID_ZC_GM_CHECKER: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_GM_CHECKER*>(g_gameModePacketBuffer);
-      this->NotifyGmCheckerResult(packet->result);
-      break;
-    }
-    case 0xC3C: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveToggle128(packet->value);
-      break;
-    }
-    case ID_ZC_NPC_MARKETGEAR_OPEN: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      ReceiveTradeItems(static_cast<unsigned int>(packet->length - 4) / sizeof(TradeItemRecord),
-                        reinterpret_cast<const TradeItemRecord*>(packet + 1));
-      break;
-    }
-    case ID_ZC_APPLY_MACRO_DETECTOR_CAPTCHA: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR_CAPTCHA*>(g_gameModePacketBuffer);
-      this->ReceiveCaptchaImageData(packet->captchaKey, reinterpret_cast<const unsigned char*>(packet + 1),
-                                    static_cast<std::uint16_t>(packet->length - 8));
-      break;
-    }
-    case ID_ZC_PREVIEW_MACRO_DETECTOR_CAPTCHA: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR_CAPTCHA*>(g_gameModePacketBuffer);
-      this->ReceiveCaptchaPreviewImage(packet->captchaKey, reinterpret_cast<const unsigned char*>(packet + 1),
-                                       static_cast<std::uint16_t>(packet->length - 8));
-      break;
-    }
-    case 0xBF4: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      this->ReceiveQuestStates(static_cast<unsigned int>(packet->length - 4) / 5,
-                               reinterpret_cast<const unsigned char*>(packet + 1));
-      break;
-    }
-    case ID_ZC_OPEN_UI_ASSISTANT_VENDING: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_OPEN_UI_ASSISTANT_VENDING*>(g_gameModePacketBuffer);
-      this->OpenVendingMake(packet->slots, static_cast<unsigned int>(packet->length - 5) >> 1,
-                            reinterpret_cast<const short*>(packet + 1));
-      break;
-    }
-    case ID_ZC_CONFIG_NOTIFY3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY3*>(g_gameModePacketBuffer);
-      this->ReceiveFeedConfig2(packet->type, packet->flag, packet->value);
-      break;
-    }
-    case ID_ZC_REPUTE_INFO: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REPUTE_INFO*>(g_gameModePacketBuffer);
-      this->ReceiveReputeInfo(packet->success,
-                              static_cast<unsigned int>(packet->length - 5) >> 4,
-                              reinterpret_cast<const ReputePointEntry*>(packet + 1));
-      break;
-    }
-    case ID_ZC_ADVANCED_STATUS_CHANGE_ACK: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ADVANCED_STATUS_CHANGE_ACK*>(g_gameModePacketBuffer);
-      this->ReceiveTraitStatusChangeAck(packet->result, packet->type,
-                                        packet->value);
-      break;
-    }
-    case ID_ZC_CHECK_RECEIVE_CHARACTER_NAME2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CHECK_RECEIVE_CHARACTER_NAME2*>(g_gameModePacketBuffer);
-      this->ReceiveRodexRecipient(
-          packet->charId, packet->classId,
-          packet->level, packet->name);
-      break;
-    }
-    case ID_ZC_BROADCAST_ITEMREFINING_RESULT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT*>(g_gameModePacketBuffer);
-      this->ReceiveRefineStatus(packet->name, packet->itemId,
-                                packet->refine, packet->result);
-      break;
-    }
-    case 0xBD5: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
-      this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
-                                          packet->runeId, -1, -1);
-      break;
-    }
-    case ID_ZC_RODEX_BLOCK_RECEIVE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RODEX_BLOCK_RECEIVE*>(g_gameModePacketBuffer);
-      this->ShowNoticeText(packet->name);
-      break;
-    }
-    case 0xBCF: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
-      this->ReceiveRuneGradeResult(packet->result, packet->slot, 1,
-                                   static_cast<std::uint32_t>(packet->runeId), 0, 0);
-      break;
-    }
-    case ID_ZC_ACK_WEAR_EQUIP_V5: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_WEAR_EQUIP_V5*>(g_gameModePacketBuffer);
-      this->ReceiveWearEquipAck(packet->result, packet->index,
-                                packet->itemSpriteNumber,
-                                packet->wearLocation);
-      break;
-    }
-    case ID_ZC_SPLIT_SEND_ITEMLIST_NORMAL: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
-      this->ReceiveItemListPart(packet->type,
-                                static_cast<unsigned int>(packet->length - 5) / 34,
-                                reinterpret_cast<const unsigned char*>(packet + 1));
-      break;
-    }
-    case ID_ZC_SPLIT_SEND_ITEMLIST_EQUIP: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
-      this->ReceiveEquipListPart(packet->type,
-                                 static_cast<unsigned int>(packet->length - 5) / 67,
-                                 reinterpret_cast<const unsigned char*>(packet + 1));
-      break;
-    }
-    case ID_ZC_NPC_MARKETGEAR_PURCHASE_RESULT: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
-      this->ReceiveParaItemResult(packet->type,
-                                  static_cast<unsigned int>(packet->length - 5) / 29,
-                                  reinterpret_cast<const unsigned char*>(packet + 1));
-      break;
-    }
-    case ID_ZC_DELETEITEM_FROM_MCSTORE2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DELETEITEM_FROM_MCSTORE2*>(g_gameModePacketBuffer);
-      ProcessVendingSale(packet->time, packet->index,
-                 packet->amount, packet->totalPrice,
-                 packet->price);
-      break;
-    }
-    case 0xC17: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_REWARD_RESULT*>(g_gameModePacketBuffer);
-      this->ReceiveRuneRewardResult(packet->result, packet->slot,
-                                    packet->rewardId, packet->type);
-      break;
-    }
-    case ID_ZC_CONFIG_NOTIFY4: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY4*>(g_gameModePacketBuffer);
-      this->ReceiveFeedConfig3(packet->type, packet->flag, packet->value, packet->option);
-      break;
-    }
-    case ID_ZC_USE_SKILL2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_USE_SKILL2*>(g_gameModePacketBuffer);
-      this->ReceiveSkillUse(packet->skillId, packet->level,
-                            packet->sourceId,
-                            packet->targetId, packet->result);
-      break;
-    }
-    case ID_ZC_ALL_ACH_LIST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_LIST*>(g_gameModePacketBuffer);
-      ReceiveAchievementList(packet->totalScore, packet->level,
-                 packet->exp, packet->nextExp,
-                 packet->count,
-                 reinterpret_cast<const AchievementRecordPacket*>(packet + 1));
-      break;
-    }
-    case ID_CR_NEW_EMBLEM_DOWNLOAD: {
-      const auto* packet = reinterpret_cast<const PACKET_CR_NEW_EMBLEM_DOWNLOAD*>(g_gameModePacketBuffer);
-      CGuildMgr::ReceiveEmblem(packet->result,
-                               packet->guildId,
-                               packet->version, reinterpret_cast<const unsigned char*>(packet + 1),
-                               packet->length - 14);
-      break;
-    }
-    case ID_ZC_SERVERMOVE_PRIVATE_AIRPLANE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SERVERMOVE_PRIVATE_AIRPLANE*>(g_gameModePacketBuffer);
-      this->ReceiveZoneServerChange(
-          packet->mapName, packet->x,
-          packet->y, packet->ip,
-          packet->port);
-      break;
-    }
-    case 0xC3B: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT2*>(g_gameModePacketBuffer);
-      this->ReceiveRefineStatusGraded(packet->name, packet->itemId,
-                                      packet->refine, packet->grade, packet->result);
-      break;
-    }
-    case 0xBC9: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY5*>(g_gameModePacketBuffer);
-      this->ReceiveFeedConfig4(packet->type, packet->flag, packet->value, packet->option,
-                               packet->remaining);
-      break;
-    }
-    case ID_ZC_REFINING_MATERIAL_LIST: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_REFINING_MATERIAL_LIST*>(g_gameModePacketBuffer);
-      this->ApplyRefiningMaterial(packet->index,
-                                  static_cast<unsigned int>(packet->length - 7) / 9,
-                                  reinterpret_cast<const RefiningMaterial*>(packet + 1), packet->blessing);
-      break;
-    }
-    case 0xBE3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NAMED_RESULT*>(g_gameModePacketBuffer);
-      this->ReceiveNamedResult(packet->aid, packet->name,
-                               packet->result);
-      break;
-    }
-    case ID_ZC_EF_WARNING_PLANE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_SCALE*>(g_gameModePacketBuffer);
-      this->SpawnSkillWarningPlanes(
-          packet->aid, packet->skillId,
-          packet->level, packet->x,
-          packet->y, packet->duration);
-      break;
-    }
-    case 0xBD1:
-    case 0xBD3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
-      this->ReceiveRuneGradeResult(packet->result, packet->slot, 0,
-                                   static_cast<std::uint32_t>(packet->runeId),
-                                   packet->requestId,
-                                   packet->requestType);
-      break;
-    }
-    case ID_ZC_WAIT_DIALOG2: {
-      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->isOnQuest = 1;
-      this->lastNaid = packet->value;
-      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_ENABLENEXTBUTTON, 0, 0, 0, 0);
-      break;
-    }
-    case 0xBEE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_PURCHASE_RESULT*>(g_gameModePacketBuffer);
-      switch (packet->result) {
-      case 0:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
-        break;
-      case 1:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
-        this->RefreshEmotionSaleSchedule();
-        break;
-      case 2:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
-        break;
-      case 3:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
-        break;
-      case 4:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
-                               0, 0);
-        break;
-      case 5:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
-        this->RefreshEmotionSaleSchedule();
-        break;
-      default:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_PLAY_NPC_BGM2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_PLAY_NPC_BGM2*>(g_gameModePacketBuffer);
-      const unsigned char type = packet->type;
-      this->PlayBgm(
-          type, std::string(packet->name, packet->length));
-      break;
-    }
-    case ID_ZC_ITEMLIST_FROM_ASSISTANT_VENDING: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEMLIST_FROM_ASSISTANT_VENDING*>(g_gameModePacketBuffer);
-      this->ReceiveVendingItemList2(packet->aid, packet->storeId,
-                                    packet->type,
-                                    static_cast<unsigned int>(packet->length - 0x11) / 63,
-                                    packet->zeny, reinterpret_cast<const unsigned char*>(packet + 1));
-      break;
-    }
-    case ID_ZC_ACH_UPDATE: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_UPDATE*>(g_gameModePacketBuffer);
-      this->ReceiveAchievementUpdate(packet->totalScore,
-                                     packet->level,
-                                     packet->exp, packet->nextExp,
-                                     packet->achievementId, packet->completed,
-                                     packet->objectives,
-                                     packet->completedAt, packet->rewarded);
-      break;
-    }
-    case ID_ZC_SKILLINFO_UPDATE3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE3*>(g_gameModePacketBuffer);
-      this->ReceiveSkillUpdate(
-          packet->id, packet->level,
-          packet->sp, packet->upFlag,
-          packet->range, packet->inf,
-          packet->level2);
-      break;
-    }
-    case ID_ZC_ADD_SKILL3: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_UPDATE3*>(g_gameModePacketBuffer);
-      this->ReceiveLearnedSkill(
-          packet->id, packet->level,
-          packet->inf, packet->upFlag,
-          packet->sp, packet->range,
-          packet->level2);
-      break;
-    }
-    case ID_ZC_ITEMLIST_FROM_ASSISTANT_BUYING: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEMLIST_FROM_ASSISTANT_BUYING*>(g_gameModePacketBuffer);
-      this->ReceiveVendingItemList(
-          packet->aid, packet->storeId, packet->type,
-          static_cast<unsigned int>(packet->length - 0x19) / 11,
-          packet->zeny, reinterpret_cast<const unsigned char*>(packet + 1),
-          packet->limit, packet->remaining);
-      break;
-    }
-    case 0xBF2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
-      g_runeSystemMgr->ClearCurRuneSet();
-      this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
-                                          packet->runeId,
-                                          packet->requestId,
-                                          packet->requestType);
-      break;
-    }
-    case ID_ZC_PROGRESS_ACTOR: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_PROGRESSBAR_UNIT*>(g_gameModePacketBuffer);
-      if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
-        actor->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(packet->time * 1000), 0, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case ID_ZC_PARTY_REQ_MASTER_TO_JOIN: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_PARTY_REQ_MASTER_TO_JOIN*>(g_gameModePacketBuffer);
-      char name[25];
-      strncpy(name, packet->name, 24);
-      name[24] = 0;
-      g_requestJoinPartyMgr->Add(
-          packet->cid, packet->aid, name,
-          packet->job, packet->level);
-      break;
-    }
-    case ID_ZC_CHANGE_ITEM_OPTION: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_ITEM_OPTION*>(g_gameModePacketBuffer);
-      this->ReceiveItemUpgrade(
-          packet->index, packet->refiningLevel,
-          packet->slot, packet->optionData);
-      break;
-    }
-    case ID_ZC_CHANGE_ITEM_OPTION2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_ITEM_OPTION2*>(g_gameModePacketBuffer);
-      this->RefreshInventoryOrEquipItem(packet->index, packet->isDamaged,
-                                        packet->refiningLevel,
-                                        packet->slot,
-                                        packet->optionData);
-      break;
-    }
-    case 0xBED: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_ACQUIRE*>(g_gameModePacketBuffer);
-      g_cashEmotionMgr->AcquirePack(packet->packId,
-                                    packet->hasExpireTime ? packet->expireTime : 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_BUY_SUCCESS")), 0xFFFF, 0, 0, 0);
-      this->RefreshEmotionPurchaseSchedule();
-      break;
-    }
-    case ID_ZC_BATTLEFIELD_NOTIFY_HP2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_HP_TO_GROUPM_R2*>(g_gameModePacketBuffer);
-      if (!g_session.IsCompanionAid(packet->aid)) {
-        if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
-          const int hp = packet->hp;
-          const int maxHp = packet->maxHp;
-          actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
-        }
-      }
-      break;
-    }
-    case ID_ZC_ITEM_PICKUP_ACK_V5: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_PICKUP_ACK_V5*>(g_gameModePacketBuffer);
-      this->ReceiveItemPickupAck5(
-          packet->index, packet->amount,
-          packet->itemId, packet->identified, packet->damaged, packet->refine,
-          packet->slot, packet->location,
-          packet->itemType, packet->result, packet->expireTime,
-          packet->bindOnEquip);
-      break;
-    }
-    case 0xC08:
-      this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
-      this->miniMapTooltipId = -1;
-      this->miniMapTooltipText.assign("", 0);
-      g_windowMgr.CloseWindow(WID_ILLUSTWND);
-      g_windowMgr.RestoreHiddenWindows();
-      this->miniMapTooltipWindows.clear();
-      break;
-    case 0xBEA: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION*>(g_gameModePacketBuffer);
-      CRenderObject *actor;
-      if (g_session.m_aid == packet->aid) {
-        actor = this->scene->player;
-      } else {
-        actor = this->scene->GetGameActorByAID(packet->aid);
-        if (!actor) {
-          this->isEmotionRequested = 0;
-          break;
-        }
-      }
-      const int first = packet->packId;
-      const int second = packet->emotionId;
-      actor->SendMsg(nullptr, AM_CASH_EMOTION, first, second, 0, 0, 0, 0);
-      break;
-    }
-    case 0xBEB: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_USE_RESULT*>(g_gameModePacketBuffer);
-      switch (packet->result) {
-      case 0:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
-        g_cashEmotionMgr->RemoveOwnedPack(packet->packId, true, true);
-        this->RefreshEmotionPurchaseSchedule();
-        break;
-      case 1:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
-        break;
-      case 2:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
-        break;
-      default:
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNKNOWN")), 0xFF, 0, 0, 0);
-        break;
-      }
-      this->isEmotionRequested = 0;
-      break;
-    }
-    case ID_ZC_SAY_DIALOG2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SAY_DIALOG2*>(g_gameModePacketBuffer);
-      this->isOnQuest = 1;
-      this->lastNaid = packet->npcId;
-      unsigned int length = packet->length - 9;
-      char text[0x803];
-      if (g_serviceType == ServiceGermany) {
-        sprintf(text, "|%02x", LanguageCharset(31));
-        memcpy(text + 3, packet->text, length);
-        length += 3;
-      } else {
-        memcpy(text, packet->text, length);
-      }
-      text[length] = 0;
-      g_windowMgr.EnsureWindow(WID_SAYDIALOGWND_OVERLAY)->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), packet->npcId, 0, 0);
-      break;
-    }
-    case 0xBF6: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_LIST*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 10) / 7;
-      CCashEmotionMgr *manager = g_cashEmotionMgr;
-      if (!manager) {
-        break;
-      }
-      manager->SetServerTime(packet->serverTime);
-      manager->SetServerTimeZone(packet->timeZone);
-      const auto* entry = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_LIST_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++entry) {
-        manager->SetOwnedPack(entry->packId, entry->hasExpireTime ? entry->expireTime : 0);
-      }
-      this->RefreshEmotionSaleSchedule();
-      this->RefreshEmotionPurchaseSchedule();
-      break;
-    }
-    case ID_ZC_STORE_ASSISTANT_ENTRY: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_STORE_ASSISTANT_ENTRY*>(g_gameModePacketBuffer);
-      this->SpawnStandingPc(
-          packet->aid, packet->job,
-          packet->x, packet->y,
-          packet->direction, packet->head,
-          packet->weapon, packet->shield,
-          packet->accessory, packet->accessory2,
-          packet->accessory3, packet->headPalette,
-          packet->bodyPalette, packet->sex,
-          packet->name);
-      break;
-    }
-    case ID_ZC_STORE_ASSISTANT_ENTRY_V2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_STORE_ASSISTANT_ENTRY_V2*>(g_gameModePacketBuffer);
-      this->SpawnStandingPc2(
-          packet->aid, packet->job,
-          packet->x, packet->y,
-          packet->direction, packet->head,
-          packet->weapon, packet->shield,
-          packet->accessory, packet->accessory2,
-          packet->accessory3, packet->headPalette,
-          packet->bodyPalette, packet->sex,
-          packet->name, packet->bodyStyle);
-      break;
-    }
-    case ID_ZC_SKILLINFO_LIST3: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      std::vector<SkillListEntry> skills;
-      const int count = (static_cast<std::uint16_t>(packet->length) - 4u) / sizeof(SkillListEntry);
-      const SkillListEntry *record = reinterpret_cast<const SkillListEntry*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        skills.push_back(*record);
-      }
-      this->ReceiveSkillList(static_cast<std::int16_t>(packet->packetType), skills);
-      break;
-    }
-    case ID_ZC_VIEW_CAMERAINFO: {
-      const auto* packet = reinterpret_cast<const CameraInfoPacket*>(g_gameModePacketBuffer);
-      if (packet->action == 1) {
-        UIWindow *window = g_windowMgr.LookupWindow(WID_VIEWCAMERAINFOWND);
-        if (!window) {
-          window = g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
-        }
-        g_session.showCameraInfo = !g_session.showCameraInfo;
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.showCameraInfo == true ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
-        window->Show(g_session.showCameraInfo);
-      } else if (CView *camera = this->camera) {
-        camera->camera.desiredDistance = packet->distance;
-        this->camera->camera.desiredYaw = packet->yaw;
-        this->camera->camera.desiredPitch = packet->pitch;
-      }
-      break;
-    }
-    case 0xBC8: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_ENTRY5*>(g_gameModePacketBuffer);
-      if (packet->job != UNT_GRAFFITI) {
-        this->SpawnGroundSkill(
-            packet->aid, packet->creatorId,
-            packet->skillId, packet->x,
-            packet->y, packet->job,
-            packet->visible, packet->level, packet->range);
-        break;
-      }
-      if (packet->length - 27 > 0) {
-        CGraffiSkill *skill = new CGraffiSkill;
-        skill->SendMsg(nullptr, AM_SETMASTERGID, packet->aid, 0, 0, 0, 0, 0);
-        const int address = reinterpret_cast<int>(packet->text);
-        const int x = static_cast<std::int16_t>(packet->x);
-        const int y = static_cast<std::int16_t>(packet->y);
-        skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
-        this->scene->objects.push_back(skill);
-        this->scene->skills.push_back(skill);
-      }
-      break;
-    }
-    case ID_ZC_DEBUGMSG: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_DEBUGMSG*>(g_gameModePacketBuffer);
-      std::string text(packet->text,
-                       packet->text + packet->length - 8);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), packet->color, 0, 0, 0);
-      break;
-    }
-    case ID_ZC_ACK_OPENSTORE2: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_OPENSTORE2*>(g_gameModePacketBuffer);
-      switch (packet->result) {
-      case OPENSTORE2_SUCCESS:
-        if (UIWindow *window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMMYSHOPWND)) {
-          window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-        }
-        if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND))) {
-          window->PrintSellList();
-        }
-        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
-        this->isOnQuest = 1;
-        break;
-      case OPENSTORE2_FAILED:
-        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
-        g_session.ClearItems1760And1748();
-        g_session.ClearMerchantPurchaseItems();
-        g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_MAKING_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
-        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
-        break;
-      case OPENSTORE2_NOVENDING:
-        this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMSHOPWND);
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
-        g_session.ClearItems1760And1748();
-        g_session.ClearMerchantPurchaseItems();
-        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MERCHANTSHOP_FAIL_POSITION)), 0xFF, 0, 0, 0);
-        break;
-      }
-      break;
-    }
-    case ID_ZC_NORMAL_SYSTEM_MSG: {
-      const auto* packet = reinterpret_cast<const PACKET_ZC_NORMAL_SYSTEM_MSG*>(g_gameModePacketBuffer);
-      std::string text(packet->text,
-                       packet->text + packet->length - 4);
-      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
-      break;
-    }
-    case ID_ZC_HUNTING_QUEST_INFO: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / 12;
-      const auto* entry = reinterpret_cast<const PACKET_ZC_QUEST_UPDATE_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++entry) {
-        const RenewQuestOngoingInfo &quest = g_renewQuestMgr->GetOngoingQuest(entry->questId);
-        if (quest.m_title.empty()) {
-          continue;
-        }
-
-        RenewQuestOngoingInfo info = quest;
-        for (int index = i; index < 3; ++index) {
-          if (entry->mobId == info.m_huntMobId[index]) {
-            info.m_huntKillCount[index] = entry->count;
-            info.m_huntMaxCount[index] = entry->maxCount;
-            g_renewQuestMgr->SetOngoingQuest(entry->questId, info);
-            break;
-          }
-        }
-      }
-      if (g_windowMgr.questDisplayWnd) {
-        g_windowMgr.questDisplayWnd->Invalidate();
-      }
-      g_renewQuestMgr->UpdateOngoingQuestInfo();
-      break;
-    }
-    case ID_ZC_INVENTORY_ITEMLIST_NORMAL: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_session.KeepEquipment();
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
-      for (int i = 0; i < count; ++i) {
-        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.damaged = 0;
-        item.identified = record->flags & 1;
-        item.refiningLevel = 0;
-        item.expireTime = record->expireTime;
-        item.placeEtcTab = (record->flags >> 1) & 1;
-        g_session.UpdateInventoryItem(item, 0);
-      }
-      RefreshItemWindows(&g_windowMgr);
-      break;
-    }
-    case ID_ZC_CART_ITEMLIST_NORMAL: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
-      for (int i = 0; i < count; ++i) {
-        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.damaged = 0;
-        item.identified = record->flags & 1;
-        item.refiningLevel = 0;
-        item.expireTime = record->expireTime;
-        item.placeEtcTab = (record->flags >> 1) & 1;
-        g_session.AddMerchantShopItem(item);
-      }
-      g_session.RefreshItem1740Window();
-      break;
-    }
-    case ID_ZC_STORE_ITEMLIST_NORMAL: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedItemRecord);
-      for (int i = 0; i < count; ++i) {
-        const FlaggedItemRecord *record = reinterpret_cast<const FlaggedItemRecord*>(packet + 1) + i;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = 0;
-        item.identity[1] = record->index;
-        item.identity[3] = record->location;
-        item.quantity = record->amount;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.damaged = 0;
-        item.identified = record->flags & 1;
-        item.refiningLevel = 0;
-        item.expireTime = record->expireTime;
-        item.placeEtcTab = (record->flags >> 1) & 1;
-        g_session.AddCartItem(item, 0);
-      }
-      g_session.RefreshItem1738Window();
-      break;
-    }
-    case ID_ZC_CART_ITEMLIST_EQUIP: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedEquipRecord);
-      for (int i = 0; i < count; ++i) {
-        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord*>(packet + 1) + i;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = record->location;
-        item.identity[1] = record->index;
-        item.identity[3] = record->wearState;
-        item.quantity = 1;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->flags & 1;
-        item.damaged = (record->flags >> 1) & 1;
-        item.refiningLevel = record->refine;
-        item.expireTime = record->expireTime;
-        item.bindOnEquip = record->bindOnEquip;
-        item.sprite = record->look;
-        item.placeEtcTab = (record->flags >> 2) & 1;
-        g_session.AddMerchantShopItem(item);
-      }
-      g_session.RefreshItem1740Window();
-      break;
-    }
-    case ID_ZC_STORE_ITEMLIST_EQUIP: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_windowMgr.EnsureWindow(WID_ITEMSTOREWND);
-      const int count = static_cast<unsigned int>(packet->length - 4) / sizeof(FlaggedEquipRecord);
-      for (int i = 0; i < count; ++i) {
-        const FlaggedEquipRecord *record = reinterpret_cast<const FlaggedEquipRecord*>(packet + 1) + i;
-        ITEM_INFO item;
-        item.identity[0] = record->type;
-        item.identity[2] = record->location;
-        item.identity[1] = record->index;
-        item.identity[3] = record->wearState;
-        item.quantity = 1;
-        for (int card = 0; card < 4; ++card) {
-          item.cards[card] = record->cards[card];
-        }
-        item.SetItemId(record->itemId);
-        item.identified = record->flags & 1;
-        item.damaged = (record->flags >> 1) & 1;
-        item.refiningLevel = record->refine;
-        item.expireTime = record->expireTime;
-        item.bindOnEquip = record->bindOnEquip;
-        item.sprite = record->look;
-        item.placeEtcTab = (record->flags >> 2) & 1;
-        g_session.AddCartItem(item, 0);
-      }
-      g_session.RefreshItem1738Window();
-      break;
-    }
     case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PROPERTY_HOMUN_NO_ACCESSORY2*>(g_gameModePacketBuffer);
       StringFormat(g_session.m_homunName, 32, static_cast<std::size_t>(-1), "%s",
@@ -28887,55 +27393,1589 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.m_homunAttackRange = packet->range;
       break;
     }
-    case ID_ZC_NPC_BARTER_MARKET_ITEMINFO: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_barterMarketItemMgr->Clear();
-      const int count = static_cast<unsigned int>(packet->length - 4) / 25;
-      const auto* record = reinterpret_cast<const PACKET_ZC_NPC_BARTER_MARKET_ITEMINFO_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        BarterMarketItem item;
-        char itemName[33] = {};
-        _itoa(record->nameId, itemName, 10);
-        item.name.assign(itemName, strlen(itemName));
-        item.itemType = record->type;
-        item.value = record->amount;
-        item.currencyItemId = record->currencyNameId;
-        item.currencyAmount = record->currencyAmount;
-        item.flag_24 = true;
-        item.amount = record->weight / 10;
-        item.flag_38 = record->amount == -1;
-        item.id = record->index;
-        g_barterMarketItemMgr->items.push_back(item);
-      }
-      g_windowMgr.EnsureWindow(WID_BARTERMARKETWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      g_windowMgr.EnsureWindow(WID_BARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    case ID_ZC_HO_PAR_CHANGE:
+      this->ReceiveHomunculusProperty(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PROPERTY_HOMUN_NO_ACCESSORY3:
+      this->ReceiveHomunculusInfo3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_HO_PAR_CHANGE2:
+      this->ReceiveHomunculusProperty64(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MER_INIT:
+      this->Zc_Mer_Init(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MER_PAR_CHANGE:
+      this->Zc_Mer_Par_Change(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_HUNTINGLIST:
+      this->ReceiveHuntingList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PCBANG_EFFECT:
+      this->ReceiveBroadcastBalloonNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_CASH_POINT_ITEMLIST:
+      this->ReceivePendingItem1718List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_CASH_POINT_UPDATE:
+      this->ReceivePendingResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BOSS_INFO:
+      this->ReceiveBossMonsterInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MSG:
+      this->Zc_Msg(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MSG_COLOR:
+      this->Zc_Msg_Color(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_READ_BOOK:
+      this->ReceiveBookOpen(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPMENT_ITEMLIST2:
+      this->ReceiveEquipItemList34(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_EQUIPMENT_ITEMLIST2:
+      this->ReceiveStorageEquipList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_EQUIPMENT_ITEMLIST2:
+      this->ReceiveItem1740BasicList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CASH_TIME_COUNTER:
+      this->ReceiveRentalItemTime(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CASH_ITEM_DELETE:
+      this->ReceiveItemDeletionNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_ACK2:
+      this->ReceiveItemPickupAck2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPMENT_ITEMLIST3:
+      this->ReceiveEquipItemList38(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_EQUIPMENT_ITEMLIST3:
+      this->ReceiveStorageEquipList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_EQUIPMENT_ITEMLIST3:
+      this->ReceiveItem1740BasicListBind(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_ACK3:
+      this->ReceiveItemPickupAck3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_PARTY:
+      this->ReceivePartyItemPickupNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPITEM_DAMAGED:
+      this->ReceiveEquipItemDamaged(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SHORTCUT_KEY_LIST_V4:
+      this->ReceiveShortcutPagePacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_CHAT:
+      this->ReceiveActorColorChat(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_FORMATSTRING_MSG:
+      this->ReceiveFormatStringMessage(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_CONFIG:
+      this->ReceiveToggleNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMORIALDUNGEON_SUBSCRIPTION_INFO:
+      this->ReceiveMemorialDungeonSubscriptionInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMORIALDUNGEON_SUBSCRIPTION_NOTIFY:
+      this->ReceiveMemorialDungeonSubscriptionNotify(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMORIALDUNGEON_INFO:
+      this->ReceiveMemorialDungeonInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMORIALDUNGEON_NOTIFY:
+      this->ReceiveMemorialDungeonNotify(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ISVR_DISCONNECT:
+      this->ReceiveMemorialDungeonError(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPWIN_MICROSCOPE:
+    case ID_ZC_EQUIPWIN_MICROSCOPE2:
+      this->ReceiveEquipWindowMicroscope2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CONFIG:
+      this->ReceiveFeedOption(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH31:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH31);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH32: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH32;
+      GetRagConnection().Send(sizeof(packet), packet);
       break;
     }
-    case ID_ZC_NPC_MARKET_OPEN: {
-      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
-      g_session.ClearTradeItems();
-      const int count = static_cast<unsigned int>(packet->length - 4) / 15;
-      const auto* record = reinterpret_cast<const PACKET_ZC_NPC_MARKET_OPEN_sub*>(packet + 1);
-      for (int i = 0; i < count; ++i, ++record) {
-        const PACKET_ZC_NPC_MARKET_OPEN_sub entry = *record;
-        RawItemBasic item = {};
-        _itoa(entry.nameId, item.itemId, 10);
-        item.price = entry.price;
-        item.realPrice = entry.price;
-        item.type = entry.type;
-        item.id = -1;
-        item.identified = 1;
-        g_session.AddShopItem(item, entry.qty,
-                              static_cast<std::uint16_t>(entry.weight / 10));
-      }
-      UIWindow *window = g_windowMgr.EnsureWindow(WID_PARAITEMSHOPWND);
-      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      window = g_windowMgr.EnsureWindow(WID_PARAITEMPURCHASEWND);
-      window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    case ID_ZC_REASSEMBLY_AUTH33: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH33;
+      GetRagConnection().Send(sizeof(packet), packet);
       break;
     }
+    case ID_ZC_REASSEMBLY_AUTH34:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH34);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH35: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH35;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_CONFIG_NOTIFY:
+      this->ReceiveEquipmentViewState(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MAPPROPERTY_R2:
+      this->ReceiveMapProperty(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH81: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH81;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_SKILLINFO_DELETE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILLINFO_DELETE*>(g_gameModePacketBuffer);
+      g_session.RemoveSkill(packet->skillId);
+      break;
+    }
+    case ID_ZC_QUEST_NOTIFY_EFFECT:
+      this->ReceiveMinimapMarker(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REQ_GROUPINFO_CHANGE_V2:
+      this->ReceiveServerRateNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MSG_VALUE:
+      this->ReceiveFormattedMessage(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEMLISTWIN_OPEN:
+      this->ReceiveTradeItemFilter(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EXP:
+      this->Zc_Notify_Exp(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_MOVEENTRY4:
+    case ID_ZC_NOTIFY_MOVEENTRY7:
+    case ID_ZC_NOTIFY_MOVEENTRY8:
+      this->ReceiveActorMoveEntryNamed(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_NEWENTRY5:
+    case ID_ZC_NOTIFY_NEWENTRY6:
+      this->ReceiveActorStandEntryNamedOld(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_STANDENTRY5:
+    case ID_ZC_NOTIFY_STANDENTRY7:
+      this->ReceiveActorStateEntryNamedOld(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DELETE_ITEM_FROM_BODY:
+      this->ReceiveItemConsumed(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_GROUP_MASTER:
+      this->ReceivePartyLeaderChange(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN:
+      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, false);
+      break;
+    case ID_ZC_PLAY_NPC_BGM:
+      this->ReceiveNpcBgm(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PLAY_NPC_BGM2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_PLAY_NPC_BGM2*>(g_gameModePacketBuffer);
+      const unsigned char type = packet->type;
+      this->PlayBgm(
+          type, std::string(packet->name, packet->length));
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH06:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH06);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH07: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH07;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH08:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH08);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH09: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH09;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH10:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH10);
+      break;
+    case ID_ZC_PARTY_BOOKING_ACK_REGISTER:
+      this->ReceivePartyBookingUpdateResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_BOOKING_NOTIFY_INSERT:
+      this->ReceivePartyBookingInsert(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_BOOKING_ACK_SEARCH:
+      this->ReceivePartyBookingSearchResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_BOOKING_ACK_DELETE:
+      this->ReceivePartyBookingRegisterResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_BOOKING_NOTIFY_DELETE:
+      this->ReceivePartyBookingDelete(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PARTY_BOOKING_NOTIFY_UPDATE:
+      this->ReceivePartyBookingUpdate(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EL_INIT:
+      this->ReceiveActorStatusBlock(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EL_PAR_CHANGE:
+      this->ReceiveActorStatusUpdate(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BROADCAST4:
+      this->ReceiveColoredNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_BUYING_STORE:
+      this->ReceiveOpenStore(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_FAILED_OPEN_BUYING_STORE_TO_BUYER:
+      this->ReceiveBuyingStoreOpenResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MYITEMLIST_BUYING_STORE:
+      this->ReceiveItem1758List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BUYING_STORE_ENTRY:
+      this->ReceiveActorText(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DISAPPEAR_BUYING_STORE_ENTRY:
+      this->ReceiveActorSignal(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ITEMLIST_BUYING_STORE:
+      this->ReceiveBuyingStoreItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_BUYER:
+      this->ReceiveBuyingStoreClose(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_FAILED_TRADE_BUYING_STORE_TO_SELLER:
+      this->ReceiveBuyingStoreSellResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE:
+      this->ReceiveVendingItemSoldNow(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_ITEM_FROM_BUYING_STORE2:
+      ReceiveBuyingStorePurchase(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_DELETE_BUYING_STORE:
+      this->ReceiveItemSellResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SEARCH_STORE_INFO_ACK:
+      this->ReceiveSearchStoreItemsOld(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SEARCH_STORE_INFO_FAILED:
+      this->ReceiveWindow181Message(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_SEARCH_STORE_INFO:
+      this->ReceiveSearchStoreOpen(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SSILIST_ITEM_CLICK_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SSILIST_ITEM_CLICK_ACK*>(g_gameModePacketBuffer);
+      g_session.storeSearchX = packet->x;
+      g_session.storeSearchY = packet->y;
+      break;
+    }
+    case ID_ZC_SEARCH_STORE_INFO_ACK2:
+      this->ReceiveSearchStoreItems(g_gameModePacketBuffer);
+      break;
+    case ID_CC_REPLAYPACKET:
+      this->ProcessUiMessage(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH58: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH58;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH59: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH59;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH41:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH41);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH42: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH42;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_MCSTORE_NOTMOVEITEM_LIST:
+      this->ReceiveItemNameListNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SHOWSCRIPT:
+      this->ReceiveActorMessage7(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH77: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH77;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_START_COLLECTION:
+      this->Zc_Start_Collection(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_TRYCOLLECTION:
+      this->Zc_Trycollection(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PERSONAL_INFOMATION:
+    case ID_ZC_PERSONAL_INFOMATION2:
+      this->ReceiveRateInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_FAILED_GET_ITEM_FROM_ZONEDA:
+      this->ReceiveZoneItemRetrievalFailure(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH64: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH64;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH65:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH65);
+      break;
+    case ID_ZC_FASTMOVE:
+      this->ReceiveFastMove(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SPIRITS_ATTRIBUTE:
+      this->ReceiveActorCharm(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CLEAR_DIALOG:
+      this->RefreshWindow16(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ENTRY_QUEUE_APPLY:
+      g_entryQueueMgr->OnApplyResult(reinterpret_cast<const EntryQueueApplyResult *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_NOTIFY_ENTRY_QUEUE_APPLY:
+      g_entryQueueMgr->OnStatus(reinterpret_cast<const EntryQueueStatus *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_ACK_ENTRY_QUEUE_CANCEL:
+      g_entryQueueMgr->OnCancelResult(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_NOTIFY_ENTRY_QUEUE_ADMISSION:
+      g_entryQueueMgr->IgnorePacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REPLY_ACK_ENTRY_QUEUE_ADMISSION:
+      g_entryQueueMgr->OnResultNotice(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_NOTIFY_LOBBY_ADMISSION:
+      g_entryQueueMgr->OnReady(reinterpret_cast<const EntryQueueReady *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_REPLY_ACK_LOBBY_ADMISSION:
+      g_entryQueueMgr->OnNotify(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_ENTRY_QUEUE_INIT:
+      g_entryQueueMgr->ResetCurrent(reinterpret_cast<int>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_NAVIGATION_ACTIVE:
+      ReceiveNavigation(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PRNPC_STATE:
+      this->ReceiveNavigationRouteResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_INVENTORY_TAB:
+      this->ReceiveInventoryItemUpdate(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH43:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH43);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH47:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH47);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH48:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH48);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH49: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH49;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH52: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH52;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH53:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH53);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH54: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH54;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH55: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH55;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH57:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH57);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH61: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH61;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH62: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH62;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH63:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH63);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH68: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH68;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH69:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH69);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH70: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH70;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH72:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH72);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH75: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH75;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH67:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH67);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH76: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH76;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH78:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH78);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH79:
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH79);
+      break;
+    case ID_ZC_REASSEMBLY_AUTH82: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH82;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH83: {
+      std::uint16_t packet[1];
+      packet[0] = ID_CZ_REASSEMBLY_AUTH83;
+      GetRagConnection().Send(sizeof(packet), packet);
+      break;
+    }
+    case ID_ZC_REASSEMBLY_AUTH71:
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH71);
+      break;
+    case ID_ZC_MERGE_ITEM_OPEN:
+      this->ReceiveWindow227Entries(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_MERGE_ITEM:
+      this->ReceiveWindow227Result(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_MOVEENTRY11:
+      this->ReceiveActorMoveEntryBody(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_NEWENTRY11:
+      this->ReceiveActorStandEntryNamedBody(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_STANDENTRY11:
+      this->ReceiveActorStateEntryNamedBody(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_MOVEENTRY10:
+      this->ReceiveActorMoveEntry(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_NEWENTRY10:
+      this->ReceiveActorStandEntryNamed(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_STANDENTRY10:
+      this->ReceiveActorStateEntryNamed(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_MOVEENTRY9:
+      this->ReceiveActorMoveEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_NEWENTRY7:
+      this->ReceiveActorStandEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_STANDENTRY8:
+      this->ReceiveActorStateEntryLegacy(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_HP_INFO:
+      this->ReceiveActorInt64Pair(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_HP_INFO_TINY:
+      this->ReceiveActorInt8(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SELECTCART:
+      this->ReceiveWindow95Data(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MSG_STATE_CHANGE3:
+      this->ReceiveStatusChangeEffect2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EFST_SET_ENTER2:
+      this->ReceiveStatusChangeEntry(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_CLAN_CONNECTINFO:
+      this->ReceiveClanMemberCount(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_CLAN_LEAVE:
+      this->ReceiveClanLeave(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CLANINFO:
+      this->ReceiveClanInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_CLAN_CHAT:
+      this->ReceiveClanChat(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPWIN_MICROSCOPE_V5:
+      this->ReceiveEquipWindowMicroscope3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_ACK_V5: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_PICKUP_ACK_V5*>(g_gameModePacketBuffer);
+      this->ReceiveItemPickupAck5(
+          packet->index, packet->amount,
+          packet->itemId, packet->identified, packet->damaged, packet->refine,
+          packet->slot, packet->location,
+          packet->itemType, packet->result, packet->expireTime,
+          packet->bindOnEquip);
+      break;
+    }
+    case ID_ZC_ITEM_PICKUP_ACK_V6:
+      this->ReceiveItemPickupAck7(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_ACK_V7:
+      this->ReceiveItemPickupAck8(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_INVENTORY_ITEMLIST_NORMAL_V5:
+      this->ReceiveItemInventoryList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V5:
+      this->ReceiveInventoryEquipList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V6:
+      this->ReceiveInventoryEquipList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_ITEMLIST_NORMAL_V5:
+      this->ReceiveItem1740List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_ITEMLIST_EQUIP_V5:
+      this->ReceiveItem1740EquipList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_ITEMLIST_NORMAL_V5:
+      this->ReceiveStorageNormalList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_ITEMLIST_EQUIP_V5:
+      this->ReceiveStorageEquipList4(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_STORE_ITEMLIST_EQUIP_V6:
+      this->ReceiveStorageEquipList5(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CART_ITEMLIST_EQUIP_V6:
+      this->ReceiveItem1740EquipListOptions(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILDSTORAGE_ITEMLIST_EQUIP_V6:
+      this->ReceiveItem1738EquipListOptions(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_WEAR_EQUIP_V5: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_WEAR_EQUIP_V5*>(g_gameModePacketBuffer);
+      this->ReceiveWearEquipAck(packet->result, packet->index,
+                                packet->itemSpriteNumber,
+                                packet->wearLocation);
+      break;
+    }
+    case ID_ZC_ACK_TAKEOFF_EQUIP_V5: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_TAKEOFF_EQUIP_V5*>(g_gameModePacketBuffer);
+      this->ReceiveTakeOffEquipResult(packet->flag, packet->wearLocation,
+                                      packet->index);
+      break;
+    }
+    case ID_ZC_EQUIPWIN_MICROSCOPE_V6:
+      this->ReceiveEquipWindowMicroscope4(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPWIN_MICROSCOPE_V7:
+      this->ReceiveEquipWindowMicroscope5(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPWIN_MICROSCOPE_V8:
+      this->ReceiveEquipWindowMicroscope6(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_INVENTORY_ITEMLIST_EQUIP_V8:
+      this->ReceiveInventoryEquipList3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_ACK_V8:
+      this->ReceiveItemPickupAck9(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UI_OPEN: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN*>(g_gameModePacketBuffer);
+      this->OpenServiceWindow(packet->uiType);
+      break;
+    }
+    case ID_ZC_BANKING_CHECK:
+      this->ReceiveBankCheck(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_BANKING_DEPOSIT:
+      this->ReceiveBankDepositAck(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_BANKING_WITHDRAW:
+      this->ReceiveBankWithdrawAck(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_C_MARKERINFO:
+      this->AddMiniMapEffectMarker(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_OPEN_GUILD_STORAGE:
+      ReceiveBuyingStoreResult(reinterpret_cast<const BuyingStoreResultPacket *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_GUILDSTORAGE_ITEMLIST_NORMAL_V5:
+      this->ReceiveItem1738NormalList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILDSTORAGE_ITEMLIST_EQUIP_V5:
+      this->ReceiveItem1738EquipList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_CLOSE_GUILD_STORAGE:
+      ReceiveStorageClose(reinterpret_cast<const AchievementStatePacket *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_ACK_GUILDSTORAGE_LOG:
+      this->ReceiveGuildStorageLog(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_GUILDSTORAGE_LOG2:
+      this->ReceiveGuildStorageLogItems(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PET_EVOLUTION_RESULT: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->NotifyPetEvolutionResult(packet->value);
+      break;
+    }
+    case ID_ZC_DRESSROOM_OPEN:
+      this->EnsureWindow259(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_UNREAD_RODEX:
+      this->ReceiveMailboxAvailability(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_SEND_RODEX:
+      this->ReceiveRodexComposeResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ITEM_FROM_RODEX:
+      this->ReceiveRodexItemReturn(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ZENY_FROM_RODEX:
+      this->ReceiveRodexMailReturn(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_RODEX_LIST:
+      this->ReceiveRodexMailListAppend(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_DELETE_RODEX:
+      this->ReceiveRodexMailDeleted(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ADD_ITEM_RODEX:
+      this->ReceiveItemReward(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_REMOVE_RODEX_ITEM:
+      this->ReceiveStackedItemReturn(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_OPEN_WRITE_RODEX:
+      this->ReceiveRodexOpen(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHECK_RECEIVE_CHARACTER_NAME2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CHECK_RECEIVE_CHARACTER_NAME2*>(g_gameModePacketBuffer);
+      this->ReceiveRodexRecipient(
+          packet->charId, packet->classId,
+          packet->level, packet->name);
+      break;
+    }
+    case ID_ZC_ACK_ADD_ITEM_RODEX2:
+      this->ReceiveItemReward2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_READ_RODEX2:
+      this->ReceiveRodexReadMail(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GOLDPCCAFE_POINT:
+      this->ReceiveMileageInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_DYNAMICNPC_CREATE_RESULT:
+      this->ReceiveDynamicNpcNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_OPEN_ROULETTE:
+      this->ReceiveRouletteOpen(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ROULEITTE_INFO:
+      this->ReceiveRouletteInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_CLOSE_ROULETTE:
+      this->ReceiveRouletteClose(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_GENERATE_ROULETTE:
+      this->ReceiveRouletteResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_RECV_ROULETTE_ITEM:
+      this->ReceiveRouletteSetResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_ROULETTE_COIN:
+      this->ReceiveRouletteBonusPoints(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REQ_AU_BOT: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveAntiBotChallenge(packet->value);
+      break;
+    }
+    case ID_ZC_ALL_ACH_LIST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_LIST*>(g_gameModePacketBuffer);
+      ReceiveAchievementList(packet->totalScore, packet->level,
+                 packet->exp, packet->nextExp,
+                 packet->count,
+                 reinterpret_cast<const AchievementRecordPacket*>(packet + 1));
+      break;
+    }
+    case ID_ZC_ACH_UPDATE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_UPDATE*>(g_gameModePacketBuffer);
+      this->ReceiveAchievementUpdate(packet->totalScore,
+                                     packet->level,
+                                     packet->exp, packet->nextExp,
+                                     packet->achievementId, packet->completed,
+                                     packet->objectives,
+                                     packet->completedAt, packet->rewarded);
+      break;
+    }
+    case ID_ZC_REQ_ACH_REWARD_ACK: {
+      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
+      this->ReceiveAchievementResult(packet->result, packet->itemId);
+      break;
+    }
+    case ID_ZC_ACK_CHANGE_TITLE: {
+      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
+      this->ReceiveJobTitle(packet->result, packet->itemId);
+      break;
+    }
+    case ID_ZC_ACK_REQNAMEALL2:
+      this->ReceiveActorNameCard(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_RESULT_PACKAGE_ITEM_TEST:
+      this->ReceivePackageItemTest(g_gameModePacketBuffer);
+      break;
+    case 0xC44:
+      this->ReceiveSimulationResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EQUIPMENT_EFFECT:
+      this->ReceiveStatusChangeList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UPDATE_CARDSLOT:
+      this->ReceiveEquipCardChange(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EF_WARNING_PLANE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_SCALE*>(g_gameModePacketBuffer);
+      this->SpawnSkillWarningPlanes(
+          packet->aid, packet->skillId,
+          packet->level, packet->x,
+          packet->y, packet->duration);
+      break;
+    }
+    case ID_ZC_ACK_BUY_STYLINGSHOP:
+      this->ReceiveCharacterRenameResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_UPLOAD_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_UPLOAD_MACRO_DETECTOR*>(g_gameModePacketBuffer);
+      this->ReceiveCaptchaUploadRequest(&packet->captchaKey,
+                                        packet->captchaFlag);
+      break;
+    }
+    case ID_ZC_COMPLETE_UPLOAD_MACRO_DETECTOR_CAPTCHA:
+      this->NotifyCaptchaRegistered();
+      break;
+    case ID_ZC_ACK_APPLY_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->NotifyCaptchaRegistrationResult(packet->value);
+      break;
+    }
+    case ID_ZC_APPLY_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR*>(g_gameModePacketBuffer);
+      this->BeginCaptchaImage(packet->imageSize,
+                              packet->captchaKey);
+      break;
+    }
+    case ID_ZC_APPLY_MACRO_DETECTOR_CAPTCHA: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR_CAPTCHA*>(g_gameModePacketBuffer);
+      this->ReceiveCaptchaImageData(packet->captchaKey, reinterpret_cast<const unsigned char*>(packet + 1),
+                                    static_cast<std::uint16_t>(packet->length - 8));
+      break;
+    }
+    case ID_ZC_REQ_ANSWER_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ANSWER_MACRO_DETECTOR*>(g_gameModePacketBuffer);
+      this->SetMacroDetectorCountdown(packet->retry, packet->timeout);
+      break;
+    }
+    case ID_ZC_CLOSE_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveMacroDetectorResult(packet->value);
+      break;
+    }
+    case ID_ZC_ACK_PREVIEW_MACRO_DETECTOR: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_PREVIEW_MACRO_DETECTOR*>(g_gameModePacketBuffer);
+      this->ReceiveCaptchaPreview(packet->captchaFlag,
+                                  packet->imageSize,
+                                  packet->captchaKey);
+      break;
+    }
+    case ID_ZC_PREVIEW_MACRO_DETECTOR_CAPTCHA: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_APPLY_MACRO_DETECTOR_CAPTCHA*>(g_gameModePacketBuffer);
+      this->ReceiveCaptchaPreviewImage(packet->captchaKey, reinterpret_cast<const unsigned char*>(packet + 1),
+                                       static_cast<std::uint16_t>(packet->length - 8));
+      break;
+    }
+    case ID_ZC_ACK_PLAYER_AID_IN_RANGE: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      ReceiveMacroReporterList((static_cast<unsigned int>(packet->length - 4) >> 2),
+                 reinterpret_cast<const int*>(packet + 1));
+      break;
+    }
+    case ID_ZC_RANDOM_COMBINE_ITEM_UI_OPEN: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveLapineBoxIngredient(packet->value);
+      break;
+    }
+    case ID_ZC_ACK_RANDOM_COMBINE_ITEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_RANDOM_COMBINE_ITEM*>(g_gameModePacketBuffer);
+      this->ReceiveLapineBoxResult(packet->result);
+      break;
+    }
+    case ID_ZC_MSG_VALUE_STRING: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MSG_VALUE_STRING*>(g_gameModePacketBuffer);
+      this->ShowFormattedNotice(packet->msgId,
+                                packet->value, reinterpret_cast<int>(packet->text));
+      break;
+    }
+    case ID_ZC_LATEST_RODEX_LIST:
+      this->ReceiveRodexMailListRefresh(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_UI_ASSISTANT_VENDING: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_OPEN_UI_ASSISTANT_VENDING*>(g_gameModePacketBuffer);
+      this->OpenVendingMake(packet->slots, static_cast<unsigned int>(packet->length - 5) >> 1,
+                            reinterpret_cast<const short*>(packet + 1));
+      break;
+    }
+    case ID_ZC_ACK_CREATE_ASSISTANT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_CREATE_ASSISTANT*>(g_gameModePacketBuffer);
+      this->ReceiveStoreResult(packet->result, packet->type);
+      break;
+    }
+    case ID_ZC_STORE_ASSISTANT_ENTRY: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_STORE_ASSISTANT_ENTRY*>(g_gameModePacketBuffer);
+      this->SpawnStandingPc(
+          packet->aid, packet->job,
+          packet->x, packet->y,
+          packet->direction, packet->head,
+          packet->weapon, packet->shield,
+          packet->accessory, packet->accessory2,
+          packet->accessory3, packet->headPalette,
+          packet->bodyPalette, packet->sex,
+          packet->name);
+      break;
+    }
+    case ID_ZC_STORE_ASSISTANT_ENTRY_V2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_STORE_ASSISTANT_ENTRY_V2*>(g_gameModePacketBuffer);
+      this->SpawnStandingPc2(
+          packet->aid, packet->job,
+          packet->x, packet->y,
+          packet->direction, packet->head,
+          packet->weapon, packet->shield,
+          packet->accessory, packet->accessory2,
+          packet->accessory3, packet->headPalette,
+          packet->bodyPalette, packet->sex,
+          packet->name, packet->bodyStyle);
+      break;
+    }
+    case ID_ZC_STORE_ASSISTANT_DISAPPEAR: {
+      const auto* packet = reinterpret_cast<const DispelPacket*>(g_gameModePacketBuffer);
+      this->ReceiveItemDisappear(packet->aid);
+      break;
+    }
+    case ID_ZC_ITEMLIST_FROM_ASSISTANT_VENDING: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEMLIST_FROM_ASSISTANT_VENDING*>(g_gameModePacketBuffer);
+      this->ReceiveVendingItemList2(packet->aid, packet->storeId,
+                                    packet->type,
+                                    static_cast<unsigned int>(packet->length - 0x11) / 63,
+                                    packet->zeny, reinterpret_cast<const unsigned char*>(packet + 1));
+      break;
+    }
+    case ID_ZC_ITEMLIST_FROM_ASSISTANT_VENDING4:
+      this->ReceiveShopItemListPacket(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_UI_ASSISTANT_BUYING: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_OPEN_UI_ASSISTANT_BUYING*>(g_gameModePacketBuffer);
+      this->OpenBuyingStoreMake(packet->slots);
+      break;
+    }
+    case ID_ZC_ITEMLIST_FROM_ASSISTANT_BUYING: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEMLIST_FROM_ASSISTANT_BUYING*>(g_gameModePacketBuffer);
+      this->ReceiveVendingItemList(
+          packet->aid, packet->storeId, packet->type,
+          static_cast<unsigned int>(packet->length - 0x19) / 11,
+          packet->zeny, reinterpret_cast<const unsigned char*>(packet + 1),
+          packet->limit, packet->remaining);
+      break;
+    }
+    case ID_ZC_BAN_LIST_NEW:
+      this->ReceiveGuildBanList3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILD_INFO_NEW:
+      this->ReceiveGuildInfo4(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMBER_ADD_NEW:
+      this->ReceiveGuildMemberAdd2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMBERMGR_INFO_NEW:
+      this->ReceiveGuildMemberList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BAN_LIST_DELNAME:
+      this->ReceiveGuildBanList2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMBER_ADD_DELNAME:
+      this->ReceiveGuildMemberAdd3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMBERMGR_INFO_DELNAME:
+      this->ReceiveGuildMemberList3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_LEAVE_GUILD_DELNAME:
+      this->ReceiveGuildLeave2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_BAN_GUILD_DELNAME:
+      this->ReceiveGuildExpulsion2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GUILD_INFO_DELNAME:
+      this->ReceiveGuildInfo3(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CONFIG_NOTIFY2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY2*>(g_gameModePacketBuffer);
+      this->ReceiveFeedConfig(packet->type, packet->flag);
+      break;
+    }
+    case ID_ZC_CONFIG_NOTIFY3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY3*>(g_gameModePacketBuffer);
+      this->ReceiveFeedConfig2(packet->type, packet->flag, packet->value);
+      break;
+    }
+    case ID_ZC_ADD_EXCHANGE_ITEM4:
+      this->ReceiveItemSlotAddOptions(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_REFINING_UI:
+      g_windowMgr.EnsureWindow(WID_REFININGWND);
+      break;
+    case ID_ZC_REFINING_MATERIAL_LIST: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REFINING_MATERIAL_LIST*>(g_gameModePacketBuffer);
+      this->ApplyRefiningMaterial(packet->index,
+                                  static_cast<unsigned int>(packet->length - 7) / 9,
+                                  reinterpret_cast<const RefiningMaterial*>(packet + 1), packet->blessing);
+      break;
+    }
+    case ID_ZC_MEMBER_ADD2:
+      this->ReceiveGuildMemberAdd4(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MEMBERMGR_INFO2:
+      this->ReceiveGuildMemberList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ADD_SWAP_EQUIPITEM:
+      this->ReceiveEquipItemResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_REMOVE_SWQP_EQUIPITEM:
+      this->ReceiveTakeOffEquipItemResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_DO_SWAP_EQUIPITEM:
+      this->ReceiveCharViewResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SEND_SWAP_EQUIPITEM_INFO:
+      this->ReceiveSwapEquipmentList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CLEAR_SWAP_EQUIPITEM_LIST:
+      this->ResetItemLists(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MOVE_ITEM_FAILED:
+      this->ClearItemLists(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NPC_MARKETGEAR_OPEN: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      ReceiveTradeItems(static_cast<unsigned int>(packet->length - 4) / sizeof(TradeItemRecord),
+                        reinterpret_cast<const TradeItemRecord*>(packet + 1));
+      break;
+    }
+    case ID_ZC_NPC_MARKETGEAR_PURCHASE_RESULT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
+      this->ReceiveParaItemResult(packet->type,
+                                  static_cast<unsigned int>(packet->length - 5) / 29,
+                                  reinterpret_cast<const unsigned char*>(packet + 1));
+      break;
+    }
+    case ID_ZC_ADD_MEMBER_TO_GROUP4:
+      this->ReceivePartyMemberInfoWithCharacterId(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GROUP_LIST3:
+      this->ReceivePartyRoster(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GROUP_LIST2:
+      this->ReceivePartyInfo2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_MEMBER_TO_GROUP3:
+      this->ReceivePartyMemberInfoWithoutCharacterId(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_DEATH_TO_GROUPM:
+      this->ReceivePartyDead(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_MEMBERINFO_TO_GROUPM:
+      this->ReceivePartyJobLevel(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SYNC_ATTACKED_POS:
+      this->ReceivePlayerRouteClear(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_RANDOM_UPGRADE_ITEM_UI_OPEN: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveLapineUpgradeBoxValue(packet->value);
+      break;
+    }
+    case ID_ZC_ACK_RANDOM_UPGRADE_ITEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_RANDOM_UPGRADE_ITEM*>(g_gameModePacketBuffer);
+      this->ReceiveLapineUpgradeResult(packet->result);
+      break;
+    }
+    case ID_ZC_CHANGE_ITEM_OPTION: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_ITEM_OPTION*>(g_gameModePacketBuffer);
+      this->ReceiveItemUpgrade(
+          packet->index, packet->refiningLevel,
+          packet->slot, packet->optionData);
+      break;
+    }
+    case ID_ZC_WARPLIST2:
+      this->ReceiveChatEntries(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SHOW_WARPLIST:
+      this->ReceiveWindow308TextEntries(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ALL_RODEX_LIST:
+      this->ReceiveRodexMailList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_FAILED_ALL_RODEX_LIST:
+      this->IgnoreRemovedPacket6();
+      break;
+    case ID_ZC_LONGLONGPAR_CHANGE:
+      this->ReceiveLongParChange(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_NOTIFY_EXP2:
+      this->ReceiveExpGainNotice(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BROADCAST_ITEMREFINING_RESULT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT*>(g_gameModePacketBuffer);
+      this->ReceiveRefineStatus(packet->name, packet->itemId,
+                                packet->refine, packet->result);
+      break;
+    }
+    case 0xC3B: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT2*>(g_gameModePacketBuffer);
+      this->ReceiveRefineStatusGraded(packet->name, packet->itemId,
+                                      packet->refine, packet->grade, packet->result);
+      break;
+    }
+    case ID_ZC_CONFIG_NOTIFY4: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY4*>(g_gameModePacketBuffer);
+      this->ReceiveFeedConfig3(packet->type, packet->flag, packet->value, packet->option);
+      break;
+    }
+    case ID_ZC_ITEM_FALL_ENTRY5:
+      this->ReceiveItemDropEntry(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_PRIVATE_AIRPLANE_CALL: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->NotifyPrivateAirplaneResult(packet->value);
+      break;
+    }
+    case ID_ZC_MAPMOVE_PRIVATE_AIRPLANE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MAPMOVE_PRIVATE_AIRPLANE*>(g_gameModePacketBuffer);
+      this->RequestLocalMapMove(packet->mapName,
+                                packet->x,
+                                packet->y);
+      break;
+    }
+    case ID_ZC_SERVERMOVE_PRIVATE_AIRPLANE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SERVERMOVE_PRIVATE_AIRPLANE*>(g_gameModePacketBuffer);
+      this->ReceiveZoneServerChange(
+          packet->mapName, packet->x,
+          packet->y, packet->ip,
+          packet->port);
+      break;
+    }
+    case ID_ZC_RECOVER_PENALTY_OVERWEIGHT:
+      this->ReceiveOverweightThreshold(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_UI_OPEN_V2: {
+      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
+      this->ReceiveServiceRequest(packet->result, packet->itemId);
+      break;
+    }
+    case ID_ZC_SET_CLAIRVOYANCE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SET_CLAIRVOYANCE*>(g_gameModePacketBuffer);
+      SetClairvoyance(packet->flag);
+      break;
+    }
+    case ID_ZC_ACK_CHECK_ATTENDANCE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_CHECK_ATTENDANCE*>(g_gameModePacketBuffer);
+      this->ReceiveWindow328Result(packet->result, packet->count);
+      break;
+    }
+    case ID_ZC_ACK_REQNAME_BYGID2:
+      this->ReceivePlayerNameUpdate(reinterpret_cast<const PlayerNameUpdatePacket *>(g_gameModePacketBuffer));
+      break;
+    case ID_ZC_ACK_RANKING2:
+      this->ReceiveShowRankingSchedule(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_AUTOSPELLLIST2: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      this->ReceiveWindow99Values((static_cast<unsigned int>(packet->length - 4) >> 2),
+                                  reinterpret_cast<const int*>(packet + 1));
+      break;
+    }
+    case ID_ZC_SPLIT_SEND_ITEMLIST_SET:
+      this->ReceiveInventoryStart(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SPLIT_SEND_ITEMLIST_NORMAL: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
+      this->ReceiveItemListPart(packet->type,
+                                static_cast<unsigned int>(packet->length - 5) / 34,
+                                reinterpret_cast<const unsigned char*>(packet + 1));
+      break;
+    }
+    case ID_ZC_SPLIT_SEND_ITEMLIST_EQUIP: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_NORMAL*>(g_gameModePacketBuffer);
+      this->ReceiveEquipListPart(packet->type,
+                                 static_cast<unsigned int>(packet->length - 5) / 67,
+                                 reinterpret_cast<const unsigned char*>(packet + 1));
+      break;
+    }
+    case ID_ZC_SPLIT_SEND_ITEMLIST_RESULT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SPLIT_SEND_ITEMLIST_RESULT*>(g_gameModePacketBuffer);
+      this->RefreshItemListWindow(packet->type, packet->result);
+      break;
+    }
+    case ID_ZC_SPLIT_SEND_ITEMLIST_EQUIPV8:
+      this->ReceiveEquipItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_ITEM_OPTION3:
+      this->RefreshInventoryOrEquipItem2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_ITEM_OPTION4:
+      this->ReceiveItemOptionsRefresh(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CLEAR_EFFECT:
+      this->ReceiveEffectRemove(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_ITEM_OPTION2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_ITEM_OPTION2*>(g_gameModePacketBuffer);
+      this->RefreshInventoryOrEquipItem(packet->index, packet->isDamaged,
+                                        packet->refiningLevel,
+                                        packet->slot,
+                                        packet->optionData);
+      break;
+    }
+    case ID_ZC_ACK_OPEN_MSGBOX_EXTEND_BODYITEM_SIZE:
+      this->ReceiveExtraInventoryResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_EXTEND_BODYITEM_SIZE:
+      this->NotifyInventoryExpansionResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_EXTEND_BODYITEM_SIZE:
+      this->ReceiveExtraInventorySlots(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ACK_ADD_NEW_EMBLEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_ADD_NEW_EMBLEM*>(g_gameModePacketBuffer);
+      this->ReceiveGuildEmblemVersion(packet->result,
+                                      packet->guildId,
+                                      packet->emblemVersion);
+      break;
+    }
+    case ID_CR_NEW_EMBLEM_DOWNLOAD: {
+      const auto* packet = reinterpret_cast<const PACKET_CR_NEW_EMBLEM_DOWNLOAD*>(g_gameModePacketBuffer);
+      CGuildMgr::ReceiveEmblem(packet->result,
+                               packet->guildId,
+                               packet->version, reinterpret_cast<const unsigned char*>(packet + 1),
+                               packet->length - 14);
+      break;
+    }
+    case ID_ZC_ADVANCED_STATUS_CHANGE_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ADVANCED_STATUS_CHANGE_ACK*>(g_gameModePacketBuffer);
+      this->ReceiveTraitStatusChangeAck(packet->result, packet->type,
+                                        packet->value);
+      break;
+    }
+    case ID_ZC_GUILD_AGIT_INFO:
+      this->ReceiveGuildAgitList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_CHANGE_AGIT_OWNER: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CHANGE_AGIT_OWNER*>(g_gameModePacketBuffer);
+      this->ReceiveGuildAgitOwnershipChange(packet->agitId, packet->guildId,
+                                          packet->emblemVersion);
+      break;
+    }
+    case ID_ZC_REQ_ACK_AGIT_INVESTMENT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ACK_AGIT_INVESTMENT*>(g_gameModePacketBuffer);
+      this->ReceiveAgitNotice(packet->castleId, packet->result,
+                              packet->money);
+      break;
+    }
+    case ID_ZC_REQ_ACK_MOVE_GUILD_AGIT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_ACK_MOVE_GUILD_AGIT*>(g_gameModePacketBuffer);
+      this->ReceiveGuildAgitMoveResult(packet->result);
+      break;
+    }
+    case ID_ZC_REMOVE_NEIGHBORHOOD_CHARACTERS: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      this->ReceiveObjectsDisappear((static_cast<unsigned int>(packet->length - 4) >> 2),
+                                    reinterpret_cast<const std::uint32_t*>(packet + 1));
+      break;
+    }
+    case ID_ZC_ADD_ACCOUNT_LIMTIED_SALE_ITEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ADD_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
+      this->ReceiveWindow154Result(packet->result);
+      break;
+    }
+    case ID_ZC_DEL_ACCOUNT_LIMTIED_SALE_ITEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DEL_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
+      this->ReceiveWindow154Close(packet->result);
+      break;
+    }
+    case ID_ZC_GET_ACCOUNT_LIMTIED_SALE_LIST:
+      this->ReceiveItem1784List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_OPEN_ACCOUNT_LIMTIED_SALE_TOOL:
+      this->OpenWindow154();
+      break;
+    case ID_ZC_CLOSE_ACCOUNT_LIMTIED_SALE_TOOL:
+      CloseAccountLimitedTool();
+      break;
+    case ID_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);
+      this->ReceiveAccountLimitedToolApplyResult(packet->result,
+                                 packet->itemId);
+      break;
+    }
+    case ID_ZC_ADD_EXCHANGE_ITEM5:
+      this->ReceiveItemSlotAddGrade(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_STORE4:
+      this->ReceiveItem1738AddGrade(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ADD_ITEM_TO_CART4:
+      this->ReceiveItem1740AddGrade(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GRADE_ENCHANT_MATERIAL_LIST:
+      this->ReceiveGradeEnchantInfo(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GRADE_ENCHANT_ACK:
+      this->ReceiveGradeEnchantResult(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_GRADE_ENCHANT_BROADCAST_RESULT:
+      this->ReceiveGradeEnchantBroadcast(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REPAIRITEMLIST2:
+      this->ReceiveWindow107List(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ITEM_PICKUP_PARTY2:
+      this->ReceivePartyItemPickup(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_PURCHASE_ITEMLIST_FROMMC4:
+      this->ReceiveItem1748List2(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_PC_PURCHASE_MYITEMLIST3:
+      this->ReceiveItem1758StoreList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ABR_INIT:
+      this->ReceiveSummonHpInit(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_ABR_PAR_CHANGE:
+      this->ReceiveSummonHpUpdate(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_TARGET_SPIRITS: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_TARGET_SPIRITS*>(g_gameModePacketBuffer);
+      this->ReceiveActorStateValue(packet->aid,
+                                   packet->targetId,
+                                   packet->amount);
+      break;
+    }
+    case ID_ZC_SE_CASHSHOP_OPEN_V2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SE_CASHSHOP_OPEN_V2*>(g_gameModePacketBuffer);
+      this->ReceiveCashShopBanner(packet->cashPoints, packet->kafraPoints,
+                                  packet->bannerId);
+      break;
+    }
+    case ID_ZC_SOULENERGY:
+      this->ReceiveSoulEnergy(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_REPUTE_INFO: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REPUTE_INFO*>(g_gameModePacketBuffer);
+      this->ReceiveReputeInfo(packet->success,
+                              static_cast<unsigned int>(packet->length - 5) >> 4,
+                              reinterpret_cast<const ReputePointEntry*>(packet + 1));
+      break;
+    }
+    case ID_ZC_UI_OPEN_REPUTE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN_REPUTE*>(g_gameModePacketBuffer);
+      this->ReceiveReputeOpen(packet->reputePoints,
+                              packet->reputeGrade);
+      break;
+    }
+    case ID_ZC_OPEN_REFORM_UI: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveItemReformOpen(packet->value);
+      break;
+    }
+    case ID_ZC_ITEM_REFORM_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ITEM_REFORM_ACK*>(g_gameModePacketBuffer);
+      this->ReceiveWindow348Result(packet->result, packet->index);
+      break;
+    }
+    case ID_ZC_SET_USERCONFIG_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_SET_USERCONFIG_ACK*>(g_gameModePacketBuffer);
+      this->ReceiveGameOptionResult(packet->configType, packet->value,
+                                    packet->result);
+      break;
+    }
+    case ID_ZC_GET_USERCONFIG_LIST: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      this->ReceiveGameOptions((static_cast<unsigned int>(packet->length - 4) >> 3),
+                               reinterpret_cast<const GameOptionEntry*>(packet + 1));
+      break;
+    }
+    case ID_ZC_RODEX_BLOCK_RECEIVE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RODEX_BLOCK_RECEIVE*>(g_gameModePacketBuffer);
+      this->ShowNoticeText(packet->name);
+      break;
+    }
+    case ID_ZC_RODEX_RETURN_ACK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RODEX_RETURN_ACK*>(g_gameModePacketBuffer);
+      this->ReceiveRodexMailDeleteResult(packet->mailId,
+                                         packet->result);
+      break;
+    }
+    case ID_ZC_UI_OPEN_V3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_UI_OPEN_V3*>(g_gameModePacketBuffer);
+      this->ReceiveUiOpen(packet->uiType, packet->data);
+      break;
+    }
+    case ID_ZC_RESPONSE_ENCHANT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RESPONSE_ENCHANT*>(g_gameModePacketBuffer);
+      this->ReceiveEnchantResult(packet->result, packet->itemId);
+      break;
+    }
+    case ID_ZC_DIALOG_TEXT_ALIGN: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_TEXT_ALIGN*>(g_gameModePacketBuffer);
+      this->SetWindow16Align(packet->align);
+      break;
+    }
+    case ID_ZC_DIALOG_WINDOW_SIZE: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_SIZE*>(g_gameModePacketBuffer);
+      this->ResizeWindow16(packet->height, packet->width);
+      break;
+    }
+    case ID_ZC_DIALOG_WINDOW_POS: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_POS*>(g_gameModePacketBuffer);
+      this->MoveWindow16(packet->x, packet->y);
+      break;
+    }
+    case ID_ZC_DIALOG_WINDOW_POS2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_DIALOG_WINDOW_POS2*>(g_gameModePacketBuffer);
+      this->PlaceWindow16(packet->x,
+                          packet->y);
+      break;
+    }
+    case ID_ZC_ACK_TAKEOFF_EQUIP_ALL: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_TAKEOFF_EQUIP_ALL*>(g_gameModePacketBuffer);
+      this->ReceiveBasicInfoResult(packet->result);
+      break;
+    }
+    case ID_ZC_RESULT_DDUKDDAKBOX_TEST:
+      this->ReceiveDdukddakBoxTest(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN_WITH_REFINE_LEVEL:
+      this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, 1);
+      break;
+    case 0xC38:
+      this->ReceiveItemBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xC39:
+      this->ReceiveTradeBroadcast(g_gameModePacketBuffer);
+      break;
+    case 0xC3A:
+      this->ReceiveRefineBroadcast(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_MACRO_CHECK_REMOVE_CHEAT: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MACRO_CHECK_REMOVE_CHEAT*>(g_gameModePacketBuffer);
+      this->NotifyMacroCheckRemovalResult(packet->result);
+      break;
+    }
+    case ID_ZC_REQ_LISTOFMODIFIED_ITEMNSKILL: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_LISTOFMODIFIED_ITEMNSKILL*>(g_gameModePacketBuffer);
+      this->ReceiveShopName(packet->name, packet->type);
+      break;
+    }
+    case ID_ZC_NOTIFY_LISTOFMODIFIED_ITEMNSKILL:
+      this->ReceiveShopItemList(g_gameModePacketBuffer);
+      break;
+    case ID_ZC_SPECIALPOPUP: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ShowSpecialPopup(packet->value);
+      break;
+    }
+    case ID_ZC_ACK_MACRO_BLACKLIST_USER_HUMAN_CHECK: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_MACRO_BLACKLIST_USER_HUMAN_CHECK*>(g_gameModePacketBuffer);
+      this->NotifyMacroBlacklistCheckResult(packet->result, packet->timeout);
+      break;
+    }
+    case 0xBDB: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_MACRO_BLACKLIST_CODE*>(g_gameModePacketBuffer);
+      this->ReceiveMacroBlackListCode(packet->result, packet->code);
+      break;
+    }
+    case ID_ZC_REQ_ANSWER_MACROBLUSER_HUMAN_CHECK: {
+      const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
+      this->ActivateMacroBlackListCheck(packet->result, packet->itemId);
+      break;
+    }
+    case ID_ZC_CLOSE_MACROBLUSER_HUMAN_CHECK: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveMacroBlackListResult(packet->value);
+      break;
+    }
+    case 0xBCC:
+      this->ReceiveRuneActivation(g_gameModePacketBuffer);
+      break;
+    case 0xBCD:
+      this->ReceiveRuneSetGrades(g_gameModePacketBuffer);
+      break;
+    case 0xBCF: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
+      this->ReceiveRuneGradeResult(packet->result, packet->slot, 1,
+                                   static_cast<std::uint32_t>(packet->runeId), 0, 0);
+      break;
+    }
+    case 0xBD1:
+    case 0xBD3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
+      this->ReceiveRuneGradeResult(packet->result, packet->slot, 0,
+                                   static_cast<std::uint32_t>(packet->runeId),
+                                   packet->requestId,
+                                   packet->requestType);
+      break;
+    }
+    case 0xBD5: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
+      this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
+                                          packet->runeId, -1, -1);
+      break;
+    }
+    case 0xBF2: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
+      g_runeSystemMgr->ClearCurRuneSet();
+      this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
+                                          packet->runeId,
+                                          packet->requestId,
+                                          packet->requestType);
+      break;
+    }
+    case 0xBD7: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
+      this->ApplyRuneSetResult(packet->result, packet->slot,
+                               packet->runeId);
+      break;
+    }
+    case 0xBD9:
+      this->ReceiveRuneRewardPacket(g_gameModePacketBuffer);
+      break;
+    case 0xBDF: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
+      this->ToggleWindow169(packet->result);
+      break;
+    }
+    case 0xBE1: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
+      this->RequestWindow169(packet->result);
+      break;
+    }
+    case 0xC15:
+      this->ReceiveRuneRewardSteps(g_gameModePacketBuffer);
+      break;
+    case 0xC17: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_REWARD_RESULT*>(g_gameModePacketBuffer);
+      this->ReceiveRuneRewardResult(packet->result, packet->slot,
+                                    packet->rewardId, packet->type);
+      break;
+    }
+    case 0xBC9: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY5*>(g_gameModePacketBuffer);
+      this->ReceiveFeedConfig4(packet->type, packet->flag, packet->value, packet->option,
+                               packet->remaining);
+      break;
+    }
+    case 0xC3C: {
+      const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
+      this->ReceiveToggle128(packet->value);
+      break;
+    }
+    case 0xBE3: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_NAMED_RESULT*>(g_gameModePacketBuffer);
+      this->ReceiveNamedResult(packet->aid, packet->name,
+                               packet->result);
+      break;
+    }
+    case 0xBF4: {
+      const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
+      this->ReceiveQuestStates(static_cast<unsigned int>(packet->length - 4) / 5,
+                               reinterpret_cast<const unsigned char*>(packet + 1));
+      break;
+    }
+    case 0xC06: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_RESULT_NOTICE*>(g_gameModePacketBuffer);
+      this->ReceiveResultNotice(packet->result);
+      break;
+    }
+    case ID_ZC_GM_CHECKER: {
+      const auto* packet = reinterpret_cast<const PACKET_ZC_GM_CHECKER*>(g_gameModePacketBuffer);
+      this->NotifyGmCheckerResult(packet->result);
+      break;
+    }
+    case 0xC14:
+      this->ReceiveMessageBox(g_gameModePacketBuffer);
+      break;
+    case 0xC10:
+      this->ReceiveStovePurchaseResult(g_gameModePacketBuffer);
+      break;
+    case 0xC2B:
+      this->ReceiveDebuffRemovalResult(g_gameModePacketBuffer);
+      break;
+    case 0xC2C:
+      this->ReceiveResultNotice4327(g_gameModePacketBuffer);
+      break;
     default:
       GetRagConnection().ResetQueue();
       break;

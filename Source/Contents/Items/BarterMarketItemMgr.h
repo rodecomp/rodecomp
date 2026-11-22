@@ -26,7 +26,7 @@ struct BarterMarketItem {
 
   // OFFSET: 0x00AE73A0
   // FUNCTION: fn_18072
-  BarterMarketItem() {}
+  __declspec(noinline) BarterMarketItem() {}
   __declspec(noinline) BarterMarketItem(const BarterMarketItem& other);
   __declspec(noinline) ~BarterMarketItem() = default;
   ITEM_INFO ToItemInfo() const;
