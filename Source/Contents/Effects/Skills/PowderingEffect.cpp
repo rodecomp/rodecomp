@@ -45,10 +45,9 @@ void CPowderingEffect::CreateSpriteParticles() {
     }
 
     particle->effectId = this->id;
-    int* indices = &particle->groupIndex;
-    indices[1] = i;
-    indices[2] = 0;
-    indices[0] = 1;
+    particle->columnIndex = i;
+    particle->rowIndex = 0;
+    particle->groupIndex = 1;
 
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
