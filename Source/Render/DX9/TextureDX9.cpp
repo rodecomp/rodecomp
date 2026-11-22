@@ -338,7 +338,7 @@ void CTextureDX9::ClearSurface(IDirect3DSurface9* surface, std::uint32_t color) 
 // OFFSET: 0x00573240
 // FUNCTION: fn_02490
 bool CTextureDX9::UploadSurface(
-  IDirect3DSurface9* surface, int x, int y, int width, int height, const std::uint32_t* pixels, std::uint8_t blackTransparent, int sourceWidth
+  IDirect3DSurface9* surface, int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth
 ) {
   D3DSURFACE_DESC description;
   if (FAILED(surface->GetDesc(&description))) {
@@ -375,7 +375,7 @@ bool CTextureDX9::UploadSurface(
   case D3DFMT_A1R5G5B5: {
     int row = 0;
     if (h > 0) {
-      volatile std::uint8_t transparent = blackTransparent;
+      volatile std::uint8_t transparent = static_cast<std::uint8_t>(option);
       const int sourceRowStride = sourceWidth * stepY;
       const std::uint32_t* inputRow = pixels;
       for (; row < h; ++row) {
@@ -417,7 +417,7 @@ bool CTextureDX9::UploadSurface(
         std::uint16_t value;
         if (rgb == 0xF0F) {
           value = 0;
-        } else if (blackTransparent && !rgb) {
+        } else if (static_cast<std::uint8_t>(option) && !rgb) {
           value = 0;
         } else {
           value = converted;
