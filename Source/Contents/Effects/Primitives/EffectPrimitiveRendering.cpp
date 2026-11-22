@@ -5752,9 +5752,15 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
   }
 
   int count = 0;
+  const float* rotation = this->state.rotTransform.values;
   for (int face = 0; face < 4; ++face) {
     for (int corner = 0; corner < 3; ++corner) {
-      TransformPrimitiveVertex(this->state.rotTransform.values, table[face * 3 + corner], corners[face * 3 + corner]);
+      const vector3d& vertex = table[face * 3 + corner];
+      corners[face * 3 + corner] = {
+        vertex.y * rotation[3] + vertex.x * rotation[0] + vertex.z * rotation[6] + rotation[9],
+        vertex.y * rotation[4] + vertex.x * rotation[1] + vertex.z * rotation[7] + rotation[10],
+        vertex.y * rotation[5] + vertex.x * rotation[2] + vertex.z * rotation[8] + rotation[11]
+      };
     }
 
     const vector3d& corner0 = corners[face * 3 + 0];
