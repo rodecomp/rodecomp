@@ -2503,11 +2503,27 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
 // OFFSET: 0x00DB1AE0
 // FUNCTION: fn_22640
 void CPc::SetSprJob(int job) {
-  if (job == JT_BARD || job == JT_BARD_H || job == JT_BARD_B) {
+  if (job == JT_BARD) {
     if (this->sex == 0) {
       this->sex = 1;
     }
-  } else if (job == JT_DANCER || job == JT_DANCER_H || job == JT_DANCER_B) {
+  } else if (job == JT_BARD_H) {
+    if (this->sex == 0) {
+      this->sex = 1;
+    }
+  } else if (job == JT_BARD_B) {
+    if (this->sex == 0) {
+      this->sex = 1;
+    }
+  } else if (job == JT_DANCER) {
+    if (this->sex == 1) {
+      this->sex = 0;
+    }
+  } else if (job == JT_DANCER_H) {
+    if (this->sex == 1) {
+      this->sex = 0;
+    }
+  } else if (job == JT_DANCER_B) {
     if (this->sex == 1) {
       this->sex = 0;
     }
