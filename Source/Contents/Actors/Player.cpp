@@ -4232,9 +4232,7 @@ void CGrannyPc::RenderModel(
         const GrannyPNT332Vertex& vertex = source[meshIndices[vertexCount]];
         RenderVertex& output = command->vertices[vertexCount];
         ++vertexCount;
-        position.x = vertex.position[0];
-        position.y = vertex.position[1];
-        position.z = vertex.position[2];
+        position = vector3d{vertex.position[0], vertex.position[1], vertex.position[2]};
         if (attached == true && mesh > 0) {
           const vector3d point = position;
           position.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
