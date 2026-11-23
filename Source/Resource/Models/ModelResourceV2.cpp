@@ -201,13 +201,14 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     this->meshes[node->name] = node->mesh;
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
     if (!node->parentName.empty()) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
         node->parent = parent;
-        parent->children.push_back(node);
+        parent->children.push_back(*it);
       }
     }
   }
