@@ -3172,58 +3172,59 @@ static __forceinline void WaveSlotHeightsFixed(EffectPrimitiveSlot& slot, int in
 // OFFSET: 0x00BB9FA0
 // FUNCTION: fn_19787
 bool CEffectPrim::PrimAcidDemon() {
-  FollowMaster(*this);
+  this->render.position = this->state.master->render.position;
 
-  for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
+  const int middle = (21 - 1) / 2;
+  const int m2 = 90 / middle;
 
-    if (slot.life != 1) {
-      continue;
-    }
+  for (int ec = 0; ec < 4; ++ec) {
+    if (this->state.slots[ec].life == 1) {
+      this->state.slots[ec].process += 1;
 
-    ++slot.process;
-
-    if (index == 3) {
-      const int step = std::rand() % 2;
-      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 2 + this->state.slots[index].rotStart);
-    } else {
-      const int step = std::rand() % 3;
-      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 4 + this->state.slots[index].rotStart);
-    }
-
-    if (slot.rotStart >= 360) {
-      slot.rotStart -= 360;
-    }
-
-    if (slot.process >= 40) {
-      slot.alphaB -= 15;
-
-      if (slot.alphaB < 0) {
-        slot.alphaB = 0;
-      }
-    } else if (slot.process < 20) {
-      slot.alphaB += 5;
-
-      if (slot.alphaB > 80) {
-        slot.alphaB = 80;
-      }
-    }
-
-    slot.maxHeight *= index == 3 ? 1.025f : 1.005f;
-
-    for (int value = 0; value < 21; ++value) {
-      if (slot.process <= 90) {
-        slot.height[value] = g_sinTable[value * 9] * slot.maxHeight * g_sinTable[slot.process];
+      if (ec == 3) {
+        this->state.slots[3].rotStart += 2 + ClampedRandom(2);
       } else {
-        slot.flag1[value] = 1;
+        this->state.slots[ec].rotStart += 4 + ClampedRandom(3);
       }
 
-      if (slot.height[value] > g_sinTable[value * 9] * slot.maxHeight) {
-        slot.flag1[value] = 1;
+      if (this->state.slots[ec].rotStart >= 360) {
+        this->state.slots[ec].rotStart -= 360;
       }
 
-      if (slot.height[value] < 0.0f) {
-        slot.height[value] = 0.0f;
+      if (this->state.slots[ec].process >= 40) {
+        this->state.slots[ec].alphaB -= 15;
+        if (this->state.slots[ec].alphaB < 0) {
+          this->state.slots[ec].alphaB = 0;
+        }
+      } else if (this->state.slots[ec].process < 20) {
+        this->state.slots[ec].alphaB += 5;
+        if (this->state.slots[ec].alphaB > 80) {
+          this->state.slots[ec].alphaB = 80;
+        }
+      }
+
+      if (ec == 3) {
+        this->state.slots[ec].maxHeight *= 1.025f;
+      } else {
+        this->state.slots[ec].maxHeight *= 1.005f;
+      }
+
+      for (int i = 0; i < 21; ++i) {
+        const int sinLimit = 90 + (i - middle) * m2;
+
+        if (this->state.slots[ec].process <= 90) {
+          this->state.slots[ec].height[i] = g_sinTable[sinLimit] * this->state.slots[ec].maxHeight * g_sinTable[this->state.slots[ec].process];
+        } else {
+          this->state.slots[ec].flag1[i] = 1;
+        }
+
+        if (this->state.slots[ec].height[i] > g_sinTable[sinLimit] * this->state.slots[ec].maxHeight) {
+          this->state.slots[ec].flag1[i] = 1;
+        }
+
+        if (this->state.slots[ec].height[i] < 0.0f) {
+          this->state.slots[ec].height[i] = 0.0f;
+        }
       }
     }
   }
