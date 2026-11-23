@@ -272,6 +272,101 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   return FAILED(status) ? E_OUTOFMEMORY : S_OK;
 }
 
+// INLINED
+static HRESULT CreateDirectDraw(DeviceOwnerDX7* owner, GUID* drawIdentity, DWORD flags) {
+  if (FAILED(DirectDrawCreateEx(drawIdentity, reinterpret_cast<void**>(&owner->draw), IID_IDirectDraw7, nullptr))) {
+    return DeviceError(1);
+  }
+
+  DDSURFACEDESC2 description{};
+  description.dwSize = sizeof(description);
+  owner->draw->GetDisplayMode(&description);
+  owner->desktopBitDepth = description.ddpfPixelFormat.dwRGBBitCount;
+  DWORD cooperative = DDSCL_NORMAL;
+
+  if (owner->fullscreen) {
+    cooperative = DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT | DDSCL_EXCLUSIVE;
+  }
+
+  if (0 == (flags & 16)) {
+    cooperative |= DDSCL_FPUSETUP;
+  }
+
+  if (FAILED(owner->draw->SetCooperativeLevel(owner->window, cooperative | DDSCL_MULTITHREADED))) {
+    return DeviceError(2);
+  }
+
+  return S_OK;
+}
+
+// INLINED
+static HRESULT CreateDirect3D(DeviceOwnerDX7* owner, const GUID* renderIdentity) {
+  if (FAILED(owner->draw->QueryInterface(IID_IDirect3D7, reinterpret_cast<void**>(&owner->direct3D)))) {
+    return DeviceError(3);
+  }
+
+  if (FAILED(owner->direct3D->CreateDevice(*renderIdentity, owner->renderTarget, &owner->device))) {
+    return DeviceError(4);
+  }
+
+  D3DVIEWPORT7 viewport{};
+  viewport.dwWidth = owner->width;
+  viewport.dwHeight = owner->height;
+  viewport.dvMinZ = 0.0f;
+  viewport.dvMaxZ = 1.0f;
+
+  if (FAILED(owner->device->SetViewport(&viewport))) {
+    return DeviceError(6);
+  }
+
+  return S_OK;
+}
+
+// INLINED
+static HRESULT CreateDepth(DeviceOwnerDX7* owner, const GUID* renderIdentity, DWORD flags) {
+  std::memset(&owner->depthFormat, 0, sizeof(owner->depthFormat));
+  if (flags & 8) {
+    owner->depthFormat.dwFlags = DDPF_ZBUFFER | DDPF_STENCILBUFFER;
+  } else {
+    owner->depthFormat.dwFlags = DDPF_ZBUFFER;
+  }
+  owner->direct3D->EnumZBufferFormats(*renderIdentity, SelectDepthFormat, &owner->depthFormat);
+
+  if (owner->depthFormat.dwSize != sizeof(owner->depthFormat)) {
+    return DeviceError(5);
+  }
+
+  owner->device->GetCaps(&owner->caps);
+
+  if (!(owner->caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR)) {
+    DDSURFACEDESC2 description;
+    SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
+    description.ddsCaps.dwCaps = owner->depthMemory | DDSCAPS_ZBUFFER;
+    description.dwWidth = owner->width;
+    description.dwHeight = owner->height;
+    description.ddpfPixelFormat = owner->depthFormat;
+    const HRESULT status = owner->draw->CreateSurface(&description, &owner->depthBuffer, nullptr);
+
+    if (FAILED(status)) {
+      if (status != DDERR_OUTOFVIDEOMEMORY) {
+        return DeviceError(5);
+      }
+
+      return DDERR_OUTOFVIDEOMEMORY;
+    }
+
+    if (FAILED(owner->renderTarget->AddAttachedSurface(owner->depthBuffer))) {
+      return DeviceError(5);
+    }
+
+    if (FAILED(owner->device->SetRenderTarget(owner->renderTarget, 0))) {
+      return DeviceError(5);
+    }
+  }
+
+  return S_OK;
+}
+
 // OFFSET: 0x0054A000
 // FUNCTION: fn_01895
 HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags) {
@@ -421,7 +516,7 @@ HRESULT DeviceOwnerDX7::Initialize(HWND value, GUID* drawIdentity, const GUID* r
     return E_INVALIDARG;
   }
 
-  if (!mode && (flags & 1)) {
+  if (!mode && static_cast<bool>(flags & 1)) {
     return E_INVALIDARG;
   }
 
