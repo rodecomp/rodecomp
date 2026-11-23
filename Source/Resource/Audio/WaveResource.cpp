@@ -52,7 +52,6 @@ bool CWave::Load(const char* name) {
 
   switch (type) {
   case 1:
-  default:
     this->data = raw;
     break;
 
@@ -68,6 +67,10 @@ bool CWave::Load(const char* name) {
     this->milesAllocated = 1;
     AIL_decompress_ASI(raw, size, name, &this->data, nullptr, nullptr);
     delete[] raw;
+    break;
+
+  default:
+    this->data = raw;
     break;
   }
 
