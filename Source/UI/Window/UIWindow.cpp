@@ -1785,27 +1785,20 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   std::string fitted(display);
   std::wstring remaining(ATL::CA2WEX<128>(display.c_str(), CP_THREAD_ACP));
 
-  int extent;
-  do {
-    if (remaining.size() <= 1) {
-      fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
-      break;
+  while (remaining.size() > 1) {
+    std::size_t length = remaining.size() - 1;
+    if ((remaining[length - 1] & 0x80) != 0 && (remaining[length] & 0x80) != 0) {
+      --length;
     }
-
-    if (remaining.size() >= 2) {
-      std::size_t length = remaining.size() - 1;
-
-      if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
-        --length;
-      }
-
-      remaining.resize(length);
-    }
+    remaining.resize(length);
 
     fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
-    extent = this->TextWidth(fitted.c_str(), 0, family, height, bold, 0);
-  } while (width < extent);
+    if (this->TextWidth(fitted.c_str(), 0, family, height, bold, 0) <= width) {
+      return fitted;
+    }
+  }
 
+  fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
   return fitted;
 }
 
