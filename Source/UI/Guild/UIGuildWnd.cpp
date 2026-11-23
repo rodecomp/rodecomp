@@ -1669,6 +1669,7 @@ void UIGuildTotalInfoWnd::Paint() {
   }
 
   const auto& entries = g_guildInfo.guildList;
+  auto row = this->m_rows;
   int drawn = 0;
   int index = 0;
   for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
@@ -1684,8 +1685,8 @@ void UIGuildTotalInfoWnd::Paint() {
     }
 
     char buffer[512];
-    this->m_rows[drawn]->SetTextFitted(entry->name.c_str());
-    this->m_rows[drawn]->Move(8, y);
+    (*row)->SetTextFitted(entry->name.c_str());
+    (*row)->Move(8, y);
     std::sprintf(buffer, "%d", entry->level);
     this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
     std::sprintf(buffer, "%d/%d", entry->memberCount, entry->maxMembers);
@@ -1697,6 +1698,7 @@ void UIGuildTotalInfoWnd::Paint() {
     if (++drawn == this->m_visibleRows * this->m_columns) {
       return;
     }
+    ++row;
   }
 }
 
@@ -1860,6 +1862,7 @@ void UIGuildBanishedMemberWnd::Paint() {
   }
 
   const auto& members = g_guildInfo.bannedMembers;
+  int row = 0;
   int drawn = 0;
   int index = 0;
   for (auto member = members.begin(); member != members.end(); ++index) {
@@ -1876,8 +1879,8 @@ void UIGuildBanishedMemberWnd::Paint() {
     }
 
     const std::string name = this->StripNamelessTag(member->name);
-    this->m_names[drawn]->SetTextFitted(name.c_str());
-    this->m_names[drawn]->Move(8, y);
+    this->m_names[row]->SetTextFitted(name.c_str());
+    this->m_names[row]->Move(8, y);
 
     char reason[260];
     memset(reason, 0, sizeof(reason));
@@ -1886,12 +1889,13 @@ void UIGuildBanishedMemberWnd::Paint() {
       std::string masked("");
       g_forbiddenWords.Mask(reason, &masked);
     }
-    this->m_reasons[drawn]->SetTextFitted(reason);
-    this->m_reasons[drawn]->Move(g_guildBanishedColumnWidths[0] + 9, y);
+    this->m_reasons[row]->SetTextFitted(reason);
+    this->m_reasons[row]->Move(g_guildBanishedColumnWidths[0] + 9, y);
     if (++drawn == this->m_visibleRows * this->m_columns) {
       break;
     }
     ++member;
+    ++row;
   }
 }
 
