@@ -3366,28 +3366,34 @@ void UITextViewEX::Paint() {
   }
 
   const int top = this->topLine;
+  auto it = this->lineLinks.begin();
+  const auto end = this->lineLinks.end();
   int y = 7;
   int line = 0;
-  for (auto it = this->lineLinks.begin(), end = this->lineLinks.end(); it != end; ++it, ++line) {
+  for (; it != end; ++it, ++line) {
     std::vector<UIString*> buttons = *it;
     if (line >= top) {
-      int x = 0;
-      for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
-        UIString* text = *buttonIt;
-        if (StringText(*text) != "\n") {
-          text->Show(1);
-          x = text->enabled == 0 ? x : x - 5;
-          if (x < 0) {
-            x = 0;
+      auto buttonIt = buttons.begin();
+      const auto buttonEnd = buttons.end();
+      if (buttonIt != buttonEnd) {
+        int x = 0;
+        do {
+          UIString* text = *buttonIt;
+          if (StringText(*text) != "\n") {
+            text->Show(1);
+            x = text->enabled == 0 ? x : x - 5;
+            if (x < 0) {
+              x = 0;
+            }
+            const bool hasImage = !StringImage(*text).empty();
+            if (hasImage) {
+              text->Move(x, y - 7);
+            } else {
+              text->Move(x, y);
+            }
+            x = x + 5 + text->geometry.width;
           }
-          const bool hasImage = !StringImage(*text).empty();
-          if (hasImage) {
-            text->Move(x, y - 7);
-          } else {
-            text->Move(x, y);
-          }
-          x = x + 5 + text->geometry.width;
-        }
+        } while (++buttonIt != buttonEnd);
       }
       y += 21;
     } else {
