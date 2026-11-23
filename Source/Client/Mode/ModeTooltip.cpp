@@ -26,6 +26,7 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
 
   const std::uint32_t blue = (color >> 16) & 255;
   const std::uint32_t red = color & 255;
+  const std::uint32_t green = color & 0xFF00;
 
   this->tooltipTick = timeGetTime();
 
@@ -42,7 +43,7 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
 
   this->tooltip->SetRichText(option);
   this->tooltip->SetText(text, 35);
-  this->tooltip->SetColors((red << 16) | (color & 0xFF00) | blue, 0);
+  this->tooltip->SetColors((red << 16) | green | blue, 0);
   this->tooltip->SetBackground(0x88000000u);
 
   const int left = x >= -3 ? x : -3;
