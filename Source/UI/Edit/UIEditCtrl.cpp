@@ -11340,21 +11340,20 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.currentMode;
-    if (a != ID_OK) {
-      if (a != ID_CANCEL) {
-        break;
-      }
-    } else {
+    switch (a) {
+    case ID_OK:
       if (g_session.HasRequiredItems()) {
         mode->SendMsg(MM_REQ_SELL, 0, 0, 0, 0);
       }
+      [[fallthrough]];
+    case ID_CANCEL:
+      g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+      g_windowMgr.CloseWindow(WID_ITEMSELLWND);
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+      g_session.ClearTradeItems();
+      return 0;
     }
-
-    g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
-    g_windowMgr.CloseWindow(WID_ITEMSELLWND);
-    mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    g_session.ClearTradeItems();
-    return 0;
+    break;
   }
   case UM_RESIZE:
     if (a == 3) {
@@ -11393,12 +11392,12 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     break;
   case UM_REFRESHITEM: {
-    this->items.erase(this->items.begin(), this->items.end());
     int totalPrice = 0;
+    this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetNumStorageItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetStorageItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         totalPrice += item.quantity * item.prices[1];
         this->items.push_back(item);
       }
