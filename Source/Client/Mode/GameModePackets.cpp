@@ -2417,6 +2417,8 @@ __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char
   const auto* p = reinterpret_cast<const PACKET_ZC_DYNAMICNPC_CREATE_RESULT*>(packet);
   char text[0x400];
   switch (p->result) {
+  case 0:
+    return;
   case DYNAMICNPC_RESULT_DUPLICATE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DYNAMICNPC_FAIL_DUPLICATENAME)), 0x64FFFF, 0, 0, 0);
     break;
