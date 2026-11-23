@@ -213,7 +213,8 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (offset + this->state.slots[ec].rotStart) % 360;
+      int angle = offset + this->state.slots[ec].rotStart;
+      angle %= 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
