@@ -17,13 +17,12 @@ XmlNode::~XmlNode() {
 // OFFSET: 0x00AFA590
 // FUNCTION: fn_18293
 XmlNode* XmlNode::AppendSibling(XmlNode* node) {
-  XmlNode* current = this;
-  while (current->sibling != nullptr) {
-    current = current->sibling;
+  if (this->sibling == nullptr) {
+    this->sibling = node;
+    return node;
   }
 
-  current->sibling = node;
-  return node;
+  return this->sibling->AppendSibling(node);
 }
 
 // OFFSET: 0x00AFA5C0
