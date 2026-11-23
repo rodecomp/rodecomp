@@ -1959,8 +1959,8 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
     world.Compose(local, view);
 
     const std::uint16_t* indices = this->meshIndices[layer][mesh];
-    RenderCommand* command = commands[mesh];
     int vertexCount = 0;
+    RenderCommand* command = commands[mesh];
     const int triangleCount = this->meshTriangleCounts[layer][mesh];
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       for (int corner = 0; corner < 3; ++corner) {
@@ -2872,11 +2872,10 @@ bool CPlayer::OnProcess() {
   this->PlayFrameSounds();
 
   if (this->isPlayHitWave != 0) {
-    const vector3d& player =
-      static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+    CGameMode* mode = g_modeMgr.GetGameMode();
     g_soundMgr->PlayWave(
-      this->hitWaveName, this->render.position.x - player.x, 0.0f,
-      this->render.position.z - player.z, 250, 40, 1.0f, 0
+      this->hitWaveName, this->render.position.x - mode->scene->player->render.position.x, 0.0f,
+      this->render.position.z - mode->scene->player->render.position.z, 250, 40, 1.0f, 0
     );
     this->isPlayHitWave = 0;
   }
