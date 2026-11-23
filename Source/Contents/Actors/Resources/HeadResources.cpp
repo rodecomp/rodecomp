@@ -219,32 +219,36 @@ void CSession::NormalizeHead(int* head, int job) {
     return;
   }
 
-  if (job <= JT_SUPERNOVICE) {
-    switch (job) {
-    case JT_SWORDMAN:
-      *head = 2;
-      return;
-    case JT_ACOLYTE:
-      *head = 5;
-      return;
-    case JT_MAGICIAN:
-      *head = 3;
-      return;
-    case JT_ARCHER:
-      *head = 4;
-      return;
-    case JT_MERCHANT:
-      *head = 6;
-      return;
-    case JT_THIEF:
-      *head = 7;
-      return;
-    case JT_NOVICE:
-    case JT_SUPERNOVICE:
-      break;
-    }
+  switch (job) {
+  case JT_NOVICE:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
+  case JT_SUPERNOVICE_B:
+    *head = 1;
+    break;
+  case JT_SWORDMAN:
+    *head = 2;
+    break;
+  case JT_ACOLYTE:
+    *head = 5;
+    break;
+  case JT_MAGICIAN:
+    *head = 3;
+    break;
+  case JT_ARCHER:
+    *head = 4;
+    break;
+  case JT_MERCHANT:
+    *head = 6;
+    break;
+  case JT_THIEF:
+    *head = 7;
+    break;
+  default:
+    *head = 1;
+    break;
   }
-  *head = 1;
 }
 
 // OFFSET: 0x00BAAB10
