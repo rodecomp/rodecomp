@@ -39,6 +39,16 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     }
 
     break;
+  case LINE_SEGMENT_TIPBOX:
+    if (button && button->GetLinesCount() != 0) {
+      const std::string& tip = button->GetLine(0);
+
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
+        static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
+      }
+    }
+
+    break;
   case LINE_SEGMENT_NAVI: {
     if (!button) {
       break;
@@ -59,7 +69,8 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
       int policy = std::atoi(button->GetLine(4).c_str());
 
       if (policy == -222) {
-        std::string name = "$$DB ";
+        std::string name;
+        name = "$$DB ";
 
         if (type != 3) {
           name.clear();
@@ -118,16 +129,6 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 
     break;
   }
-  case LINE_SEGMENT_TIPBOX:
-    if (button && button->GetLinesCount() != 0) {
-      const std::string& tip = button->GetLine(0);
-
-      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
-        static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
-      }
-    }
-
-    break;
   case LINE_SEGMENT_QUEST:
     if (button) {
       const int value = std::atoi(button->GetLine(0).c_str());
