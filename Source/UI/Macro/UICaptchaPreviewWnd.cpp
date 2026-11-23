@@ -145,8 +145,9 @@ void UIMacroDetectorWnd::Paint() {
     float width = (static_cast<float>(remaining) / static_cast<float>(this->totalDuration)) * 220.0f;
     this->FillRegion(60, 97, static_cast<int>(width), 30, 0xFF);
 
-    unsigned int seconds = remaining / 1000;
-    this->DrawRightAlignedText(280, 138, FormatOwnedString("%2d : %2d", seconds / 60, seconds).c_str(), 0, 0, 13, 0xFF2323, 1);
+    const unsigned int seconds = remaining / 1000;
+    const unsigned int minutes = seconds / 60;
+    this->DrawRightAlignedText(280, 138, FormatOwnedString("%2d : %2d", minutes, seconds).c_str(), 0, 0, 13, 0xFF2323, 1);
     this->DrawTextAt(60, 138, FormatOwnedString(LookupMessage(MSI_MACRO_DETECTOR_REMAIN_COUNT), this->remainingAttempts).c_str(), 0, 0, 13, 0x2323FF, 1, 0);
   }
 }
