@@ -100,23 +100,20 @@ void UIMerchantItemLogWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  int y = 17;
-  for (int i = 0; i < rows; ++i, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  y = 17;
-  for (int i = 0; i < rows; ++i, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
   int slots = (this->geometry.height - 38) / 32;
-  y = 17;
-  for (int i = 0; i < slots; ++i, y += 32) {
-    this->DrawItemSlotFrame(40, y);
+  for (int i = 0; i < slots; ++i) {
+    this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
   auto it = this->items.begin();
