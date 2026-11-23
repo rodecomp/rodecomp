@@ -1789,7 +1789,7 @@ int CPc::GetDualWieldWeaponType(int first, int second) {
   if (!first) {
     main = second;
     if (!main) {
-      return result;
+      goto done;
     }
 
     sub = 0;
@@ -1826,6 +1826,7 @@ int CPc::GetDualWieldWeaponType(int first, int second) {
     }
   }
 
+done:
   return result;
 }
 
@@ -2503,54 +2504,41 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
 // OFFSET: 0x00DB1AE0
 // FUNCTION: fn_22640
 void CPc::SetSprJob(int job) {
-  if (job == JT_BARD) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_BARD_H) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_BARD_B) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_DANCER) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
-  } else if (job == JT_DANCER_H) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
-  } else if (job == JT_DANCER_B) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
-  } else if (job == JT_MINSTREL) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_WANDERER) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
-  } else if (job == JT_MINSTREL_H) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_WANDERER_H) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
-  } else if (job == JT_TROUBADOUR) {
-    if (this->sex == 0) {
-      this->sex = 1;
-    }
-  } else if (job == JT_TROUVERE) {
-    if (this->sex == 1) {
-      this->sex = 0;
-    }
+  if (job == JT_BARD && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_BARD_H && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_BARD_B && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_DANCER && this->sex == 1) {
+    this->sex = 0;
+  }
+  if (job == JT_DANCER_H && this->sex == 1) {
+    this->sex = 0;
+  }
+  if (job == JT_DANCER_B && this->sex == 1) {
+    this->sex = 0;
+  }
+  if (job == JT_MINSTREL && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_WANDERER && this->sex == 1) {
+    this->sex = 0;
+  }
+  if (job == JT_MINSTREL_H && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_WANDERER_H && this->sex == 1) {
+    this->sex = 0;
+  }
+  if (job == JT_TROUBADOUR && this->sex == 0) {
+    this->sex = 1;
+  }
+  if (job == JT_TROUVERE && this->sex == 1) {
+    this->sex = 0;
   }
 
   this->render.shadowScale = g_session.GetNpcLocationRadius(job, this->isRiding == 1);
