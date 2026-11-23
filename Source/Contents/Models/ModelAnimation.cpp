@@ -267,7 +267,6 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       amount = (frame - static_cast<float>(a.frame)) / static_cast<float>((b.frame - a.frame));
     }
 
-    ModelRotationKey result{0, {0, 0, 0, 1}};
     float ax = a.rotation[0];
     float ay = a.rotation[1];
     float az = a.rotation[2];
@@ -285,6 +284,8 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       aw = -aw;
       dot = -dot;
     }
+
+    ModelRotationKey result{0, {0, 0, 0, 1}};
 
     float firstWeight;
     float secondWeight;
