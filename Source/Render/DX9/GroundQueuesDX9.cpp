@@ -49,7 +49,7 @@ void CRendererDX9::DrawGroundQueues() {
         return reinterpret_cast<std::uintptr_t>(left->lightmap) < reinterpret_cast<std::uintptr_t>(right->lightmap);
       });
 
-      for (LightmappedPrimitive* command : queue) {
+      for (LightmappedPrimitive*& command : queue) {
         if (command->vertexCount > 0) {
           this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
           this->device->SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
@@ -71,7 +71,7 @@ void CRendererDX9::DrawGroundQueues() {
         return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
       });
 
-      for (RenderCommand* command : this->queue_0174) {
+      for (RenderCommand*& command : this->queue_0174) {
         this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
         this->DrawPrimitive(command);
       }
