@@ -3925,10 +3925,10 @@ void CEffectPrim::RenderGroundBar(matrix& wtm) {
     const int front = angle + (angle < 270 ? 90 : -270);
     const float nearX = width * g_cosTable[front] + baseX;
     const float nearZ = width * g_sinTable[front] + baseZ;
-    vec1.Set(nearX + endX, -6.0f, nearZ + endZ);
-    vec2.Set(nearX + startX, -6.0f, nearZ + startZ);
-    vec3.Set(startX + farX, -6.0f, startZ + farZ);
-    vec4.Set(endX + farX, -6.0f, endZ + farZ);
+    vec1 = {nearX + endX, -6.0f, nearZ + endZ};
+    vec2 = {nearX + startX, -6.0f, nearZ + startZ};
+    vec3 = {startX + farX, -6.0f, startZ + farZ};
+    vec4 = {endX + farX, -6.0f, endZ + farZ};
 
     if (slot.flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 225, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
