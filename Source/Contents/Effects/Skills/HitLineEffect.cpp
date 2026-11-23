@@ -257,22 +257,7 @@ void CHitLineEffect::Render() {
 
     const float dz = points[0].z - points[1].z;
     const float dx = points[0].x - points[1].x;
-    const float length = SquareRoot(dz * dz + dx * dx);
-    const float cosine = dx / length;
-    const float sine = dz / length;
-    int index = 0;
-    for (; index < 180; ++index) {
-      if (cosine >= g_cosTable[index]) {
-        break;
-      }
-    }
-
-    short direction = static_cast<short>(index);
-    if (index < 180 && !(sine >= 0.0f)) {
-      direction = static_cast<short>(360 - index);
-    }
-
-    const int heading = (direction + 90) % 360;
+    const int heading = (this->LineDirection(dx, dz) + 90) % 360;
     int corner = 0;
     for (int degree = 0; degree <= 360; degree += 120) {
       const float size = particle->scale;
