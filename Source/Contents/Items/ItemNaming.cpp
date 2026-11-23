@@ -564,8 +564,11 @@ int ITEM_INFO::SlotCount() const {
 // FUNCTION: fn_06594
 int ITEM_INFO::UnidentifiedName(char* output, int& capacity, unsigned char consume) const {
   const int id = std::atoi(this->itemId.c_str());
-  const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
-  return CopyText(output, capacity, consume, name ? name : " ");
+  const ITEM_DESC& desc = FindItemDescription(id, g_itemDescriptions);
+  if (desc.unidentifiedName) {
+    return CopyText(output, capacity, consume, desc.unidentifiedName);
+  }
+  return CopyText(output, capacity, consume, " ");
 }
 
 // OFFSET: 0x006D3770
