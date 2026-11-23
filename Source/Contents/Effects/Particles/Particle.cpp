@@ -544,8 +544,8 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
-  float screenX;
   float screenY;
+  float screenX;
   float rhw;
   g_renderer->ProjectViewport(&this->position.x, view.values, &screenX, &screenY, &rhw);
   const float sine = ClientSin(ToRadians(static_cast<float>(transform->rz / 2.8444444444444)));
@@ -569,7 +569,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   for (int i = 0; i <= 3; ++i) {
-    const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
+    const float rotated = vertices[i].y * cosine + vertices[i].x * sine;
     vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->m_screen.x;
     if (g_session.IsScreenShakeActive()) {
       const float shake = screenY - this->m_screen.y;
@@ -630,9 +630,9 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   CTexture* texture = ClipTexture(clip, *transform, *this);
-  const float depth = static_cast<float>(index) * 1e-05f;
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+  const float depth = static_cast<float>(index) * 1e-05f;
   for (int i = 0; i < 4; ++i) {
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
