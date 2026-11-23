@@ -79,10 +79,10 @@ bool CSession::ToggleTrackedAchievement(int id) {
       return false;
     }
 
+    SessionRecord6178 entry;
     AchievementInfo info;
     g_achievementMgr->GetAchievement(info, id);
 
-    SessionRecord6178 entry;
     entry.id = id;
     entry.completed = progress->completed;
     entry.title = info.title;
