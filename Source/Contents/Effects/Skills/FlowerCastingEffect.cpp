@@ -96,17 +96,26 @@ void CFlowerCastingEffect::AddRing(int kind) {
   }
 }
 
-// OFFSET: 0x00B66AA0
-// FUNCTION: fn_46003
-__forceinline void CFlowerCastingEffect::UpdateSegmentVertices(CParticle* particle) {
+// INLINED
+template <bool framesFirst>
+static __forceinline void UpdateFlowerSegmentVertices(CFlowerCastingEffect* effect, CParticle* particle) {
   if (!particle) {
     return;
   }
 
   const int segment = particle->columnIndex;
-  float radius = g_sinTable[segment * 9] * particle->speedParameter;
-  if (particle->elapsedFrames <= 90) {
-    radius *= g_sinTable[particle->elapsedFrames];
+  float radius;
+  if (framesFirst) {
+    const int frames = particle->elapsedFrames;
+    radius = g_sinTable[segment * 9] * particle->speedParameter;
+    if (frames <= 90) {
+      radius *= g_sinTable[frames];
+    }
+  } else {
+    radius = g_sinTable[segment * 9] * particle->speedParameter;
+    if (particle->elapsedFrames <= 90) {
+      radius *= g_sinTable[particle->elapsedFrames];
+    }
   }
   radius = (std::max)(radius, 0.0f);
 
@@ -138,20 +147,26 @@ __forceinline void CFlowerCastingEffect::UpdateSegmentVertices(CParticle* partic
   particle->vertices[1].z = outer.z;
 
   if (segment != 0) {
-    particle->vertices[0].x = this->lastPoints[1].x;
-    particle->vertices[0].y = this->lastPoints[1].y;
-    particle->vertices[0].z = this->lastPoints[1].z;
-    particle->vertices[2].x = this->lastPoints[0].x;
-    particle->vertices[2].y = this->lastPoints[0].y;
-    particle->vertices[2].z = this->lastPoints[0].z;
+    particle->vertices[0].x = effect->lastPoints[1].x;
+    particle->vertices[0].y = effect->lastPoints[1].y;
+    particle->vertices[0].z = effect->lastPoints[1].z;
+    particle->vertices[2].x = effect->lastPoints[0].x;
+    particle->vertices[2].y = effect->lastPoints[0].y;
+    particle->vertices[2].z = effect->lastPoints[0].z;
   }
 
-  this->lastPoints[0].x = inner.x;
-  this->lastPoints[0].y = inner.y;
-  this->lastPoints[0].z = inner.z;
-  this->lastPoints[1].x = outer.x;
-  this->lastPoints[1].y = outer.y;
-  this->lastPoints[1].z = outer.z;
+  effect->lastPoints[0].x = inner.x;
+  effect->lastPoints[0].y = inner.y;
+  effect->lastPoints[0].z = inner.z;
+  effect->lastPoints[1].x = outer.x;
+  effect->lastPoints[1].y = outer.y;
+  effect->lastPoints[1].z = outer.z;
+}
+
+// OFFSET: 0x00B66AA0
+// FUNCTION: fn_46003
+void CFlowerCastingEffect::UpdateSegmentVertices(CParticle* particle) {
+  UpdateFlowerSegmentVertices<true>(this, particle);
 }
 
 // OFFSET: 0x00B66C60
@@ -206,7 +221,7 @@ __forceinline void CFlowerCastingEffect::UpdateSegment(CParticle* particle) {
     }
   }
   particle->alpha = alpha;
-  this->UpdateSegmentVertices(particle);
+  UpdateFlowerSegmentVertices<false>(this, particle);
 }
 
 // OFFSET: 0x00B66D30
