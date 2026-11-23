@@ -6407,7 +6407,8 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (CSkill* skill : this->scene->skills) {
+  for (auto it = this->scene->skills.begin(); it != this->scene->skills.end(); ++it) {
+    CSkill* const& skill = *it;
     SkillEntryPacket packet;
     packet.packetType = ID_ZC_SKILL_ENTRY;
     packet.aid = skill->skillAid;
@@ -6418,8 +6419,10 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     const C3dAttr* terrain = this->scene->terrain;
     const float column = static_cast<float>(std::floor(static_cast<float>(terrain->width / 2) + skill->render.position.x / static_cast<float>(terrain->cellSize)));
     const float row = static_cast<float>(std::floor(static_cast<float>(terrain->height / 2) + skill->render.position.z / static_cast<float>(terrain->cellSize)));
-    packet.x = static_cast<std::int16_t>(static_cast<int>(column));
-    packet.y = static_cast<std::int16_t>(static_cast<int>(row));
+    const int x = static_cast<int>(column);
+    const int y = static_cast<int>(row);
+    packet.x = static_cast<std::int16_t>(x);
+    packet.y = static_cast<std::int16_t>(y);
 
     const std::vector<unsigned char> chunk = MakeRecordChunk(0xCD, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
