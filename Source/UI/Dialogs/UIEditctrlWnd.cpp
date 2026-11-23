@@ -436,8 +436,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->UpdateQuestButtons();
       return 0;
     case 373:
-      this->Invalidate();
-      return 0;
+      break;
     default:
       if (argument1 >= 601 && argument1 < 621) {
         if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_11), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
@@ -487,6 +486,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
       return 0;
     }
+    break;
 
   case UM_SETINFO:
     this->m_saved = reinterpret_cast<MiniMapWndInfo*>(argument1);
@@ -560,11 +560,14 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
     this->questButtons.clear();
     this->questMarks.clear();
-    this->Invalidate();
-    return 0;
+    break;
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  this->Invalidate();
+  return 0;
 }
 
 // OFFSET: 0x0099D920
