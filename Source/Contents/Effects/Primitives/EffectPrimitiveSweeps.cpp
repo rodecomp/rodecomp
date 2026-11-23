@@ -444,16 +444,16 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
-      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
-      const float rise = this->state.slots[ec].height[i];
-      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      curB.x = baseX;
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      curB.x = cosine * this->state.slots[ec].distance;
+      curB.z = sine * this->state.slots[ec].distance;
       curB.y = 0.0f;
-      curB.z = baseZ;
-      curT.x = riseX * g_cosTable[angle] + baseX;
-      curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
-      curT.z = riseX * g_sinTable[angle] + baseZ;
+      const float riseX = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      const float riseY = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      curT.x = curB.x + cosine * riseX;
+      curT.z = curB.z + sine * riseX;
+      curT.y = -riseY;
       curB += this->state.slots[ec].vecBNow;
       curB += this->state.slots[ec].vecTPre;
       curT += this->state.slots[ec].vecBNow;
@@ -479,16 +479,16 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = this->state.slots[ec].distance * g_cosTable[angle] * 1.5f;
-      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle] * 1.5f;
-      const float rise = this->state.slots[ec].height[i];
-      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      curB.x = baseX;
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      curB.x = cosine * this->state.slots[ec].distance * 1.5f;
+      curB.z = sine * this->state.slots[ec].distance * 1.5f;
       curB.y = 0.0f;
-      curB.z = baseZ;
-      curT.x = riseX * g_cosTable[angle] + baseX;
-      curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
-      curT.z = riseX * g_sinTable[angle] + baseZ;
+      const float riseX = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      const float riseY = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      curT.x = curB.x + cosine * riseX;
+      curT.z = curB.z + sine * riseX;
+      curT.y = -riseY;
       curB += this->state.slots[ec].vecBNow;
       curB += this->state.slots[ec].vecTPre;
       curT += this->state.slots[ec].vecBNow;
