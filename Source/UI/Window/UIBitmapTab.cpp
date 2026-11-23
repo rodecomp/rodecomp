@@ -5,18 +5,23 @@
 #include "UI/Window/UIBitmapTab.h"
 #include "Utility/Text/FormatString.h"
 
+// INLINED
+static void DrawTabBitmap(UIWindow* window, int& y, const char* format, int suffix) {
+  const std::string name = FormatOwnedString(format, suffix);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+  if (bitmap) {
+    window->DrawBitmap(0, y, bitmap, false);
+    y += bitmap->image.height;
+  }
+}
+
 // OFFSET: 0x0085BBC0
 // FUNCTION: fn_10797
 void UIBitmapTab::Paint() {
   int y = 0;
 
   for (unsigned index = 0; index < this->tabs.size(); ++index) {
-    const std::string name = FormatOwnedString(this->tabs[index].name.c_str(), 'a' + (this->geometry.state == index));
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-    if (bitmap) {
-      this->DrawBitmap(0, y, bitmap, false);
-      y += bitmap->image.height;
-    }
+    DrawTabBitmap(this, y, this->tabs[index].name.c_str(), 'a' + (this->geometry.state == index));
   }
 }
 
