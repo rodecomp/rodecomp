@@ -329,13 +329,11 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
-      return 0;
     }
     break;
   case UM_DOWNPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
-      return 0;
     }
     break;
   case UM_SETTEXT:
@@ -353,11 +351,11 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       UITagButton* tag = this->m_tagWindows[index];
       if (tag) {
         const int line = tag->m_value;
-        if (line < this->topLine || line >= this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
-          tag->Enable(0);
-        } else {
+        if (line >= this->topLine && line < this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
           tag->Enable(1);
           tag->Move(tag->geometry.x - this->horizontalOffset + offset, (line - this->topLine) * this->lineHeight + 3);
+        } else {
+          tag->Enable(0);
         }
       }
     }
