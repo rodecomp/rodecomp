@@ -1041,9 +1041,11 @@ int CGameMode::GetSkillAttackRange(int id, int level) {
   }
 
   const int skillRange = skill.range;
-  int reduction = 0;
-  g_session.m_hotkeyScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
-  range += skillRange - reduction;
+  {
+    int reduction = 0;
+    g_session.m_hotkeyScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
+    range += skillRange - reduction;
+  }
   return range;
 }
 
