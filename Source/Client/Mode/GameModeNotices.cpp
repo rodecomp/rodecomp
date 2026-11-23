@@ -3807,22 +3807,18 @@ void CGameMode::ReceiveTypedItemList(const unsigned char* data) {
   }
 
   for (int i = 0; i < packet->count; ++i) {
-    const TypedItemEntry& entry = packet->entries[i];
-    const int itemId = entry.itemId;
+    const int itemId = packet->entries[i].itemId;
+    const std::uint32_t price = packet->entries[i].price;
     char name[256];
     ITEM_INFO item;
     item.identity[1] = -1;
-    item.prices[0] = entry.price;
-    item.prices[1] = entry.price;
+    item.prices[0] = price;
+    item.prices[1] = price;
     item.identity[0] = 4;
     item.identified = 1;
     item.damaged = 0;
     item.refiningLevel = 0;
-    std::uint16_t type = packet->type;
-    if (type == 8) {
-      type = 0xFFFF;
-    }
-    item.bindOnEquip = type;
+    item.bindOnEquip = packet->type == 8 ? 0xFFFF : packet->type;
     item.SetItemId(itemId);
     int capacity = sizeof(name);
     item.GetIdDisplayName(name, capacity, 0);
