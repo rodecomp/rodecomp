@@ -278,10 +278,11 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
 
-      if (packet.level < 0 || packet.level > g_session.m_maxLevel) {
+      const int maxLevel = g_session.m_maxLevel;
+      if (packet.level < 0 || packet.level > maxLevel) {
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
-        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), g_session.m_maxLevel);
+        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
