@@ -297,7 +297,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       } else {
         const float angle = static_cast<float>(std::acos(static_cast<double>(dot)));
         const float denominator = ClientSin(angle);
-        firstWeight = ClientSin((1.0f - amount) * angle) / denominator;
+        firstWeight = ClientSin(firstWeight * angle) / denominator;
         secondWeight = ClientSin(angle * amount) / denominator;
       }
     } else {
