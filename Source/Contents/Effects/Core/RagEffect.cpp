@@ -10572,9 +10572,7 @@ void CRagEffect::SkyCloud(char kind) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
-      const char* mapName = g_modeMgr.GetGameMode()->mapName;
-
-      if (std::string(mapName) == "ecl_fild01.rsw") {
+      if ((kind == 9 || kind == 15) && std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
         this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
         this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
       }
