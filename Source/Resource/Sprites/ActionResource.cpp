@@ -268,12 +268,7 @@ void CActRes::InitializeAnimations(unsigned animationCount) {
 void ActionFrame::InitializeCells(unsigned cellCount) {
   this->cellCount = cellCount;
   this->sound = -1;
-  const unsigned size = (std::min)(cellCount, 1000u);
-  if (this->cells.size() > size) {
-    this->cells.erase(this->cells.begin() + size, this->cells.end());
-  } else if (this->cells.size() < size) {
-    this->cells.resize(size, SpriteFrameCell{});
-  }
+  this->cells.resize((std::min)(cellCount, 1000u), SpriteFrameCell{});
   this->anchors.clear();
   this->anchorCount = 0;
 }
