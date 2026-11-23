@@ -9005,50 +9005,11 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case WID_ITEMSTORESUBWND_TAB_3:
     case WID_ITEMSTORESUBWND_TAB_4:
     case WID_ITEMSTORESUBWND_TAB_5:
-    case WID_ITEMSTORESUBWND_TAB_6: {
-      UICheckBox* tab = this->tabs[a - WID_ITEMSTORESUBWND_TAB_0];
-      const int index = a - WID_ITEMSTORESUBWND_TAB_0;
-      if (!tab) {
-        break;
-      }
-
-      if (tab->geometry.state != 0) {
-        this->m_tabWindows[index] = nullptr;
-        this->m_tabWindows[index] = g_windowMgr.EnsureWindow(a);
-        if (this->m_tabWindows[index]) {
-          this->m_tabWindows[index]->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-        }
-        this->saved->openTabs |= 1 << index;
-        break;
-      }
-
-      g_windowMgr.CloseWindow(a);
-      if (this->m_tabWindows[index]) {
-        this->saved->openTabs ^= 1 << index;
-        this->m_tabWindows[index] = nullptr;
-      }
+    case WID_ITEMSTORESUBWND_TAB_6:
+      ToggleItemStoreTab(*this, a - WID_ITEMSTORESUBWND_TAB_0, a);
       break;
-    }
     case WID_ITEMSTORESUBWND_TAB_7:
-      if (!this->tabs[7]) {
-        break;
-      }
-
-      if (this->tabs[7]->geometry.state != 0) {
-        this->m_tabWindows[7] = nullptr;
-        this->m_tabWindows[7] = g_windowMgr.EnsureWindow(WID_ITEMSTORESUBWND_TAB_7);
-        if (this->m_tabWindows[7]) {
-          this->m_tabWindows[7]->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-        }
-        this->saved->openTabs |= 0x80;
-        break;
-      }
-
-      g_windowMgr.CloseWindow(WID_ITEMSTORESUBWND_TAB_7);
-      if (this->m_tabWindows[7]) {
-        this->saved->openTabs ^= 0x80;
-        this->m_tabWindows[7] = nullptr;
-      }
+      ToggleItemStoreTab(*this, 7, a);
       break;
     case 133:
       if (!this->m_searchWindow) {
@@ -9113,68 +9074,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
-        item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
-        const int type = static_cast<int>(item.identity[0]);
-        bool matches = false;
-        if (item.saleData.costume != 0) {
-          if (this->m_sortMode == 4) {
-            matches = true;
-          }
-        } else {
-          switch (this->m_sortMode) {
-          case 0:
-            if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
-              matches = true;
-            }
-            break;
-          case 1:
-            if (type == TYPE_CASH_POINT_ITEM) {
-              matches = true;
-            }
-            break;
-          case 2:
-            switch (type) {
-            case TYPE_ARMOR:
-            case TYPE_ARMORTM:
-            case TYPE_ARMORTB:
-            case TYPE_ARMORMB:
-            case TYPE_ARMORTMB:
-              matches = true;
-              break;
-            }
-            break;
-          case 3:
-            switch (type) {
-            case TYPE_WEAPON:
-            case TYPE_BOW:
-            case TYPE_BOTHHAND:
-            case TYPE_GUN:
-              matches = true;
-              break;
-            }
-            break;
-          case 5:
-            if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-              matches = true;
-            }
-            break;
-          case 6:
-            if (type == TYPE_CARD) {
-              matches = true;
-            }
-            break;
-          case 7:
-            if (type == TYPE_EVENT || type == TYPE_PETEGG) {
-              matches = true;
-            }
-            break;
-          }
-        }
-
-        if (matches) {
-          this->items.push_back(item);
-        }
+      if (item.identity[1] > 0 && this->FilterItem(item)) {
+        this->items.push_back(item);
       }
     }
 
