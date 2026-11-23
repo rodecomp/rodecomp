@@ -3321,11 +3321,11 @@ void CGameMode::ReceiveStorageEquipList(const unsigned char* data) {
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
+    item.quantity = 1;
     item.cards[0] = record->card0;
     item.cards[1] = record->card1;
     item.cards[2] = record->card2;
     item.cards[3] = record->card3;
-    item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -3351,11 +3351,11 @@ void CGameMode::ReceiveStorageEquipList2(const unsigned char* data) {
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
+    item.quantity = 1;
     item.cards[0] = record->card0;
     item.cards[1] = record->card1;
     item.cards[2] = record->card2;
     item.cards[3] = record->card3;
-    item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
