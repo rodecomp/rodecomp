@@ -915,9 +915,12 @@ bool CNavigationManager::GetMobInfo(
     *sprite = static_cast<const std::string&>(FormatOwnedString("npc\\%s", g_session.GetJobName(mob->GetIndex(), -1)));
   }
 
-  NaviCell cell;
-  *cellX = mob->GetCell(&cell)->x;
-  const int packed = mob->GetCell(&cell)->y;
+  int packed;
+  {
+    NaviCell cell;
+    *cellX = mob->GetCell(&cell)->x;
+    packed = mob->GetCell(&cell)->y;
+  }
   const unsigned int elementValue = static_cast<unsigned char>(packed >> 16);
   *elementLevel = elementValue / 20;
   *element = elementValue % 10;
