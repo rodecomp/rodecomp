@@ -51,6 +51,11 @@ namespace {
   bool Digits(std::string text) {
     return !text.empty() && std::find_if(text.begin(), text.end(), [](char value) { return !std::isdigit(value); }) == text.end();
   }
+
+  // INLINED
+  std::string TextValue(UIEditCtrl* control) {
+    return control->Text();
+  }
 }
 
 // OFFSET: 0x007BAF30
@@ -932,13 +937,13 @@ void UIAdvenPartyBoardWnd::ResetSearch() {
 __forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
   this->searching = 1;
 
-  if (!Digits(this->minimum->Text())) {
+  if (!Digits(TextValue(this->minimum))) {
     char number[10] = {};
     StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
     this->minimum->SetText(number);
   }
 
-  if (!Digits(this->maximum->Text())) {
+  if (!Digits(TextValue(this->maximum))) {
     char number[10] = {};
     StringFormat(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
     this->maximum->SetText(number);
