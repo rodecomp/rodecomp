@@ -2693,7 +2693,7 @@ std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
     if (shop != this->m_shops.end() && shop->second.items.size() > index) {
       std::map<int, std::pair<int, int>>& entries = shop->second.items[index];
       auto entry = entries.find(key);
-      if (entry != entries.end()) {
+      if (entries.end() != entry) {
         return entry->second;
       }
     }
