@@ -87,28 +87,30 @@ void ConvertSpritePalette(std::uint32_t* output, const std::uint8_t* input, int 
 // OFFSET: 0x007612C0
 // FUNCTION: fn_45828
 std::uint8_t* CSprRes::DecodeSpriteRuns(const std::uint8_t* runs, int width, int height) {
-  auto* pixels = new std::uint8_t[width * height];
+  auto* pixels = new std::uint8_t[height * width];
+  std::uint8_t* line;
   std::uint16_t zeroCount = 0;
-
-  const auto next = [&]() -> std::uint8_t {
-    int value;
-    if (zeroCount == 0) {
-      value = *runs++;
-      if (value == 0) {
-        zeroCount = *runs++;
-      }
-    }
-
-    const std::uint16_t before = zeroCount;
-    zeroCount = before != 0 ? before - 1 : before;
-    return before == 0 ? value : 0;
-  };
+  int value;
+  const std::uint8_t* source = runs;
 
   for (int y = 0; y < height; ++y) {
-    std::uint8_t* line = pixels + y * width;
-    if (line != nullptr && width > 0) {
-      for (int remaining = width; remaining != 0; --remaining) {
-        *line++ = next();
+    line = pixels + width * y;
+
+    if (line) {
+      for (int x = 0; x < width; ++x) {
+        if (zeroCount == 0) {
+          value = *source++;
+          if (value == 0) {
+            zeroCount = *source++;
+          }
+        }
+
+        if (zeroCount) {
+          *line++ = 0;
+          --zeroCount;
+        } else {
+          *line++ = static_cast<std::uint8_t>(value);
+        }
       }
     }
   }
