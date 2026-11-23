@@ -70,19 +70,13 @@ void UIColoringTextViewer::Paint() {
 
   const int first = this->topLine;
   const int limit = this->geometry.height / spacing + first;
-  int end = static_cast<int>(std::min<unsigned>(limit, this->lines.size()));
-  if (this->lineLimit) {
+  unsigned int end = std::min<unsigned>(limit, this->lines.size());
+  if (this->lineLimit != 0) {
     end = this->lineLimit;
   }
 
-  if (first >= end) {
-    return;
-  }
-
-  const int visibleCount = end - first;
-  for (int row = 0; row < visibleCount; ++row) {
-    const auto& line = this->lines[first + row];
-    this->DrawColoredText(3, this->lineHeight * row + 4, line.c_str(), static_cast<unsigned>(line.size()), this->color, 0, 12, false);
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    this->DrawColoredText(3, this->lineHeight * (index - first) + 4, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), this->color, 0, 12, false);
   }
 }
 
