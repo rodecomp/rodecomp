@@ -255,7 +255,7 @@ struct CRagEffect : CRenderObject {
   void ShieldBoomerang3(const char* name);
   void ParticleTime(const char* name, char kind);
   void ThrowItem(const char* name, char kind);
-  void Bottom_Music(const char* name, char kind);
+  __declspec(noinline) void Bottom_Music(const char* name, char kind);
   void IceArrow();
   void Flasher();
   void SuperAngel(char type, int dummy = 0);

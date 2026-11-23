@@ -12292,45 +12292,45 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
-  const char* textureName = name;
   if (kind == 5) {
     const int pick = ClampedRandom(3);
     if (pick == 0) {
-      textureName = "effect\\레드젬스톤.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\레드젬스톤.bmp", 0, false, true, false);
     } else if (pick == 1) {
-      textureName = "effect\\블루젬스톤.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\블루젬스톤.bmp", 0, false, true, false);
     } else {
-      textureName = "effect\\옐로우젬스톤.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\옐로우젬스톤.bmp", 0, false, true, false);
     }
   } else if (kind == 2) {
     const int pick = ClampedRandom(2);
     if (pick == 0) {
-      textureName = "effect\\melody_a.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\melody_a.bmp", 0, false, true, false);
     } else {
-      textureName = "effect\\melody_b.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\melody_b.bmp", 0, false, true, false);
     }
   } else if (kind == 8) {
     const int pick = ClampedRandom(8);
     if (pick == 0) {
-      textureName = "effect\\spell_01.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_01.bmp", 0, false, true, false);
     } else if (pick == 1) {
-      textureName = "effect\\spell_02.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_02.bmp", 0, false, true, false);
     } else if (pick == 2) {
-      textureName = "effect\\spell_03.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_03.bmp", 0, false, true, false);
     } else if (pick == 3) {
-      textureName = "effect\\spell_04.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_04.bmp", 0, false, true, false);
     } else if (pick == 4) {
-      textureName = "effect\\spell_05.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_05.bmp", 0, false, true, false);
     } else if (pick == 5) {
-      textureName = "effect\\spell_06.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_06.bmp", 0, false, true, false);
     } else if (pick == 6) {
-      textureName = "effect\\spell_07.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_07.bmp", 0, false, true, false);
     } else {
-      textureName = "effect\\spell_08.bmp";
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\spell_08.bmp", 0, false, true, false);
     }
+  } else {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   }
 
-  this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.slots[0].life = 0;
   this->state.lastPrim->state.slots[1].life = 0;
