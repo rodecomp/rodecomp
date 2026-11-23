@@ -2241,7 +2241,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       int fieldResult = this->script.GetFieldStringArray(functions, "func");
       this->loadValid &= fieldResult == 0;
       if (fieldResult != 0) {
-        ShowErrorDialog(fmt::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, fieldResult), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, static_cast<int>(fieldResult)), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2270,7 +2270,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       const bool valid = condResult == 0 || condResult == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, condResult), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, static_cast<int>(condResult)), 0);
       }
       if (!this->loadValid) {
         break;
