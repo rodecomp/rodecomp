@@ -10259,7 +10259,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     const int count = g_session.GetNumInventoryItems();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetInventoryItemAt(i);
-      if (item.itemIndex == 0) {
+      if (item.itemIndex <= 0) {
         continue;
       }
       const unsigned type = item.itemType;
