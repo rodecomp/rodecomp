@@ -331,7 +331,6 @@ static HRESULT CreateDirect3D(DeviceOwnerDX7* owner, const GUID* renderIdentity)
   D3DVIEWPORT7 viewport{};
   viewport.dwWidth = owner->width;
   viewport.dwHeight = owner->height;
-  viewport.dvMinZ = 0.0f;
   viewport.dvMaxZ = 1.0f;
 
   if (FAILED(owner->device->SetViewport(&viewport))) {
