@@ -178,8 +178,7 @@ void CCloud::Drift() {
   particle->offsetY = offset.y;
   particle->offsetZ = offset.z;
 
-  const vector3d position = {offset.x + this->position[0], offset.y + this->position[1], offset.z + this->position[2]};
-  this->particle->position = position;
+  this->particle->position = Sum(this->positionVector, offset);
 }
 
 // OFFSET: 0x006FC300
