@@ -432,17 +432,17 @@ std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::strin
 std::string NavigationLinkParser::DisplayNavigationLink(std::string value) {
   std::string text = value;
   std::string output = text;
-  const auto begin = text.find(g_naviLinkTag);
+  const auto begin = text.find(g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
     output.clear();
     const std::string head = text.substr(0, begin);
     text = text.substr(begin);
-    const auto end = text.find(g_naviLinkCloseTag);
+    const auto end = text.find(g_parserNaviLinkCloseTag);
 
     if (end != std::string::npos) {
-      const std::string rest = text.substr(end + std::strlen(g_naviLinkCloseTag.c_str()));
-      text = text.substr(0, end + std::strlen(g_naviLinkCloseTag.c_str()));
+      const std::string rest = text.substr(end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
+      text = text.substr(0, end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
       NavigationLinkParser* parser = g_navigationLinkParser;
       const std::string link = parser->FormatNavigationLink(text, true);
       output += head;
