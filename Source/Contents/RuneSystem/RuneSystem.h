@@ -154,6 +154,14 @@ public:
   void InsertTag(int tagId, std::string name) { this->m_tags.push_back(new CTagData(tagId, name)); }
   // INLINED
   void InsertDecomItem(int itemId) { this->m_decomItems.push_back(itemId); }
+  void InsertGradeType(int gradeId, int index, int value);
+  void InsertGradeFailType(int gradeId, int index, int value);
+  void InsertItemList(int listId, int itemId, int count);
+  void InsertRuneDescription(int tagId, int runeSetId, int index, std::string description);
+  void InsertRuneGrade(int tagId, int runeSetId, int grade, int count);
+  void InsertRuneSlot(int tagId, int runeSetId, int runeId);
+  void SetRuneName(int tagId, int type, int runeId, const std::string& name);
+  void SetRuneUpGrade(int tagId, int runeSetId, int gradeType, int gradeFailType);
   int GetTagCount() const;
   int GetOwnedDecomItemCount() const;
   CTagData* GetTag(int tagId);
@@ -168,6 +176,7 @@ public:
   RuneData* GetCurrentRune(int type, int index);
   int GetGradeValue(RuneSetData* runeSet);
   RuneData* FindRune(int tagId, int type, std::int64_t id, unsigned int* index);
+  RuneSetData* GetRuneSet(int tagId, int runeSetId);
   int GetSelectTag() const;
   std::vector<Decom_ItemInfo>* GetDecomList(int itemId, int which);
   bool IsRequestPending() const;
