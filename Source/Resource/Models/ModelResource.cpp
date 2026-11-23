@@ -379,7 +379,6 @@ bool C3dModelResV1::Load(const char* name) {
     } else if (minor == 2) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
-        std::memset(volume, 0, 132);
         ModelVolumeRecordV1 record{};
         file.Read(&record, sizeof(record));
         volume->flag = 0;
