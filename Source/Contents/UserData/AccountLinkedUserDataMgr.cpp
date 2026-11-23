@@ -211,13 +211,16 @@ void CAccountLinkedUserDataMgr::Save() {
     this->ExportUserHotkey(data);
   }
 
-  if (data.isNull() != true) {
-    root["data"] = data;
-    Json::StyledWriter writer;
-    const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), response);
-    ++this->m_pendingLoads;
+  if (data.isNull() == true) {
+    return;
   }
+
+  root["data"] = data;
+  Json::StyledWriter writer;
+  const std::string response = writer.write(root);
+  CAsyncWorkMgr* asyncWorkMgr = g_asyncWorkMgr;
+  asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), response);
+  ++this->m_pendingLoads;
 }
 
 // OFFSET: 0x005BCD80
