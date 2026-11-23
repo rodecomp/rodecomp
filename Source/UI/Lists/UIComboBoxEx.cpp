@@ -168,10 +168,10 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     {
-      const int edge = ((this->bottomMargin - this->geometry.height / this->lineHeight) + this->selected);
+      const int visible = this->geometry.height / this->lineHeight;
 
-      if (this->topLine <= edge) {
-        this->topLine = (edge + 1);
+      if (this->topLine <= this->selected + this->bottomMargin - visible) {
+        this->topLine = this->selected + this->bottomMargin - visible + 1;
       }
     }
 
