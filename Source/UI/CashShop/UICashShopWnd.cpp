@@ -892,13 +892,15 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_COMMAND:
     switch (argument1) {
-    case ID_RESET_CART:
+    case ID_RESET_CART: {
       this->m_totalPrice = 0;
-      this->m_cart->m_cartItems.clear();
-      this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
-      this->m_cart->Invalidate();
+      UICashShopWnd_Cart* cart = this->m_cart;
+      cart->m_cartItems.clear();
+      cart->SendMsg(cart, UM_SCROLLVERT, 0, 0, 0, 0);
+      cart->Invalidate();
       this->Invalidate();
       return 0;
+    }
     case ID_CLOSE:
       if (g_session.m_launchPassCommandLine) {
         g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 5, 0, 0, 0);
