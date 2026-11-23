@@ -1090,8 +1090,14 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (a != 7) {
       break;
     }
-    int width = b > 512 ? 512 : b;
-    int height = c > 384 ? 384 : c;
+    int width = 512;
+    int height = 384;
+    if (b <= width) {
+      width = b;
+    }
+    if (c <= height) {
+      height = c;
+    }
     if (width < 280) {
       width = 280;
     }
