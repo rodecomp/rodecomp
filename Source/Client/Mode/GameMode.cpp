@@ -8181,7 +8181,8 @@ void CGameMode::ProcessRightButtonDrag() {
 
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (shortcuts->m_slots[8]->enabled && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[8]->itemId))) {
-      g_session.SetOption(automatic->CancelOption(static_cast<std::uint16_t>(shortcuts->m_slots[8]->itemId)), 1);
+      const int option = automatic->CancelOption(static_cast<std::uint16_t>(shortcuts->m_slots[8]->itemId));
+      g_session.SetOption(option, 1);
     } else {
       automatic->DisableAll();
     }
@@ -8222,11 +8223,12 @@ void CGameMode::ProcessRightButtonDrag() {
     }
 
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      const int delta = (g_mouse.y - this->oldMouseY) / 2;
       float range = 10.0f;
       if (this->canRotateView) {
         range = 20.0f;
       }
-      g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>((g_mouse.y - this->oldMouseY) / 2);
+      g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>(delta);
       float limit;
       if (this->hasViewParameters) {
         if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
