@@ -537,13 +537,8 @@ void CRagEffect::GrimTooth() {
     this->Face(this->state.deltaPos.x, this->state.deltaPos.z);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
-    const vector3d step = RotatedForward(rotation.values, 2.0f);
-    this->state.deltaPos2.x = step.x;
-    this->state.deltaPos2.y = step.y;
-    this->state.deltaPos2.z = step.z;
-    this->state.deltaPos3.x = this->state.deltaPos3.x - step.x;
-    this->state.deltaPos3.y = this->state.deltaPos3.y - step.y;
-    this->state.deltaPos3.z = this->state.deltaPos3.z - step.z;
+    MatrixMult(this->state.deltaPos2, vector3d{0.0f, 0.0f, 2.0f}, rotation.values);
+    this->state.deltaPos3 -= this->state.deltaPos2;
   }
 
   if (this->state.flag != 0) {
@@ -583,15 +578,10 @@ void CRagEffect::GrimTooth() {
     this->state.lastPrim->state.chCnt = 6;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
-    this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
-    this->state.lastPrim->state.textures[0] = texture;
-    this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
-    this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
+    this->state.deltaPos3 -= this->state.deltaPos2;
   } else {
-    this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
-    this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
-    this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
+    this->state.deltaPos3 -= this->state.deltaPos2;
   }
 }
 
