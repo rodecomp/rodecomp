@@ -89,7 +89,7 @@ namespace EquipmentProperties {
     /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
     /* 0084 */ std::multiset<unsigned long> activeItems;
     /* 008C */ std::map<unsigned int, EquipmentPropertyGroup> propertyGroups;
-    /* 0094 */ std::unordered_map<int, CEquipmentInfo> equipmentInfo;
+    /* 0094 */ std::unordered_map<unsigned int, CEquipmentInfo> equipmentInfo;
     /* 00B4 */ std::unordered_map<int, EquipmentValueA> statVariables;
     /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
     /* 00F4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_combinationItems;
@@ -111,7 +111,7 @@ namespace EquipmentProperties {
     const int& GetConstantValue(const int& key);
     CEquipment* GetCurrentEquipment();
     CEquipmentWearable* FindProperty1(const int& key);
-    CEquipmentInfo* FindEquipmentInfo(const int& key);
+    CEquipmentInfo* FindEquipmentInfo(const unsigned int& key);
     CLuaInstance& GetScript();
     EquipmentPropertyDefinition* FindRandomOptionDefinition(const int& key);
     std::list<unsigned int>* FindSkillGroup(const unsigned int& key);

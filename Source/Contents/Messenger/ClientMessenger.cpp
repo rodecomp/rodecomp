@@ -1213,7 +1213,7 @@ EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentProperti
 
 // OFFSET: 0x006AC440
 // FUNCTION: fn_06176
-__declspec(noinline) EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindEquipmentInfo(const int& key) {
+__declspec(noinline) EquipmentProperties::CEquipmentInfo* EquipmentProperties::CEquipmentPropertiesMgr::FindEquipmentInfo(const unsigned int& key) {
   auto found = this->equipmentInfo.find(key);
   if (this->equipmentInfo.end() == found) {
     return nullptr;
@@ -2058,8 +2058,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
   const char* name = "Combiitem";
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
-    lua_pushnil(state);
-    while (lua_next(state, -2) != 0) {
+    for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
       unsigned int key = 0;
       int result;
       const int type = lua_type(this->script.GetState(), -2);
@@ -2073,20 +2072,21 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
       if (result != 0) {
         ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
       }
-      if (this->loadValid) {
-        std::vector<unsigned int> items;
-        result = this->script.GetFieldUIntArray(items, "Item");
-        this->loadValid &= result == 0;
-        if (result != 0) {
-          ShowErrorDialog(fmt::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
-        }
-        if (this->loadValid) {
-          for (unsigned int item : items) {
-            this->m_combinationItems[key].push_back(item);
-          }
-        }
+      if (!this->loadValid) {
+        continue;
       }
-      lua_settop(state, -2);
+      std::vector<unsigned int> items;
+      result = this->script.GetFieldUIntArray(items, "Item");
+      this->loadValid &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(fmt::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+      for (const unsigned int& item : items) {
+        this->m_combinationItems[key].push_back(item);
+      }
     }
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
