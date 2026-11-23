@@ -983,9 +983,8 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
   g_session.ClearTradeItems();
 
   const int count = (value->packetLength - 4) / sizeof(Item1718IndexRecord);
-  const Item1718IndexRecord* records = value->items;
   for (int i = 0; i < count; ++i) {
-    const Item1718IndexRecord record = records[i];
+    const Item1718IndexRecord record = value->items[i];
     ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
     if (owned.identity[1] > 0 && (owned.placeEtcTab == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
       RawItemBasic item = {};
