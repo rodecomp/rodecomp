@@ -1484,7 +1484,8 @@ void UISpellListWnd::Paint() {
     skill.id = this->m_skills[position];
     char path[256];
     g_session.ItemBitmapPath(skill.IdName(), path);
-    this->DrawBitmap(8, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), 1);
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    this->DrawBitmap(8, y, bitmap, 1);
     this->DrawTextAt(40, y + 4, name, 0, 0, 12, 0, 0, 0);
 
     ++row;
