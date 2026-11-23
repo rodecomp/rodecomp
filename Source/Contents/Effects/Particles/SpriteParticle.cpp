@@ -299,8 +299,12 @@ void CSpriteParticle::Draw(char mode) {
     }
 
     primitive->sourceBlend = 5;
-    primitive->destinationBlend = (this->flags != 5) ? 6 : 2;
-    g_renderer->Submit(primitive, static_cast<std::uint16_t>(this->flags));
+    int destinationBlend = 2;
+    if (this->flags != 5) {
+      destinationBlend = 6;
+    }
+    primitive->destinationBlend = destinationBlend;
+    g_renderer->Submit(primitive, this->flags);
   }
 }
 
