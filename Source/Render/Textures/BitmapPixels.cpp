@@ -879,8 +879,8 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
   const float scaleX = static_cast<float>(drawWidth) / static_cast<float>(sourceWidth);
   const float scaleY = static_cast<float>(drawHeight) / static_cast<float>(sourceHeight);
   std::vector<std::uint32_t> scratch;
-  const int columns = scaleX < 1 ? sourceWidth : drawWidth;
   const int rows = scaleY < 1 ? sourceHeight : drawHeight;
+  const int columns = scaleX < 1 ? sourceWidth : drawWidth;
   scratch.resize(static_cast<std::uint32_t>(columns) * rows);
 
   if (scaleX == 1) {
