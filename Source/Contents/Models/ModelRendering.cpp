@@ -193,8 +193,8 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   combined.Compose(this->transform, camera);
   // GLOBAL: gl_24587
   static ProjectedVertex projected[30000];
-  const int vertexCount = this->mesh->vertexCount;
   const std::array<float, 3>* meshVertices = this->mesh->vertices;
+  const int vertexCount = this->mesh->vertexCount;
   float lightColor[3];
   std::memcpy(lightColor, g_weatherEffect.lightColor, sizeof(lightColor));
   float ambient[3];
