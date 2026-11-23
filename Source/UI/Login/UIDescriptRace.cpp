@@ -9,7 +9,11 @@
 // FUNCTION: fn_11041
 UIDescriptRace::UIDescriptRace(int race) : m_race(race), m_frameIndex(0) {
   this->m_createTime = timeGetTime();
-  this->m_noRace = race == 0;
+  if (race == 0) {
+    this->m_noRace = true;
+  } else {
+    this->m_noRace = false;
+  }
 }
 
 // OFFSET: 0x008861C0
