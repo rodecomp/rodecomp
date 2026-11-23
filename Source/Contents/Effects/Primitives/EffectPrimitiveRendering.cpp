@@ -5591,15 +5591,14 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
 // FUNCTION: fn_19853
 void CEffectPrim::RenderSizedSquare(matrix& wtm) {
   int rpCnt = 0;
-  int index = 0;
 
-  for (int ec = 0; ec < 4; ++ec, index += 23) {
+  for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     const float size = this->state.size;
-    int angle = index;
+    int angle = ec * 23;
     if (size == 100.0f || size >= 110.0f || (size == 4.0f && this->state.slots[ec].height[4] == 4.0f) || size == 10.0f || size == 0.0f) {
       angle = this->state.slots[ec].rotStart;
     }
@@ -5608,11 +5607,18 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     const int angle2 = angle + 90 >= 360 ? angle - 270 : angle + 90;
     const int angle3 = angle2 + 90 >= 360 ? angle2 - 270 : angle2 + 90;
     const int angle4 = angle3 + 90 >= 360 ? angle3 - 270 : angle3 + 90;
-    const float y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecBPre = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
-    this->state.slots[ec].vecBNow = {static_cast<float>(g_cosTable[angle2] * radius), y, static_cast<float>(g_sinTable[angle2] * radius)};
-    this->state.slots[ec].vecTNow = {static_cast<float>(g_cosTable[angle3] * radius), y, static_cast<float>(g_sinTable[angle3] * radius)};
-    this->state.slots[ec].vecTPre = {static_cast<float>(g_cosTable[angle4] * radius), y, static_cast<float>(g_sinTable[angle4] * radius)};
+    this->state.slots[ec].vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
+    this->state.slots[ec].vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBNow.x = static_cast<float>(g_cosTable[angle2] * radius);
+    this->state.slots[ec].vecBNow.z = static_cast<float>(g_sinTable[angle2] * radius);
+    this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTNow.x = static_cast<float>(g_cosTable[angle3] * radius);
+    this->state.slots[ec].vecTNow.z = static_cast<float>(g_sinTable[angle3] * radius);
+    this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTPre.x = static_cast<float>(g_cosTable[angle4] * radius);
+    this->state.slots[ec].vecTPre.z = static_cast<float>(g_sinTable[angle4] * radius);
+    this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
 
     const float mode = this->state.size;
     if (mode == 101.0f) {
