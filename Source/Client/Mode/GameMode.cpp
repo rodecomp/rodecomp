@@ -7055,7 +7055,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     packet.count = static_cast<std::int16_t>(std::atoi(text));
 
     packet.subY = static_cast<unsigned char>(subRow);
-    const std::vector<unsigned char> chunk = MakeRecordChunk(0xCF, packet);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0xCF, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
