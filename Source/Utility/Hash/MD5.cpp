@@ -68,8 +68,8 @@ int MD5::Initialize() {
 std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) {
   std::uint32_t a = state[0];
   std::uint32_t b = state[1];
-  std::uint32_t c = state[2];
   std::uint32_t d = state[3];
+  std::uint32_t c = state[2];
 
   MD5_STEP(MD5_F1, a, b, c, d, input[0], 7, 0xD76AA478);
   MD5_STEP(MD5_F1, d, a, b, c, input[1], 12, 0xE8C7B756);
