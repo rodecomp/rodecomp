@@ -1337,7 +1337,7 @@ void CGameMode::RecordChatRoomSettings() {
 
   GameModeTextRecord record;
   std::memset(record.buffer, 0, sizeof(record.buffer));
-  const std::uint16_t length = static_cast<std::uint16_t>(this->chatRoom.title.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoom.password.size());
+  const int length = static_cast<std::uint16_t>(this->chatRoom.title.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoom.password.size());
   const int titleLength = static_cast<int>(this->chatRoom.title.size());
   const int passwordLength = static_cast<int>(this->chatRoom.password.size());
   record.header = ReplayUiRecordHeader(REPLAY_UI_CHATROOM_SETTINGS);
