@@ -15427,8 +15427,8 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     entry.shieldAppearance = entry.guildVersion;
   }
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  entry.direction = packet->posDir[2] & 0x0F;
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
