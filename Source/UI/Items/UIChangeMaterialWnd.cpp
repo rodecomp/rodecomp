@@ -323,9 +323,7 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
       bool available = true;
       for (auto required = entry.materials.begin(); required != entry.materials.end(); ++required) {
         const ITEM_INFO item = g_session.LookupClientItem(required->id, 1);
-        if (item.quantity < required->quantity) {
-          available = false;
-        }
+        available &= item.quantity >= required->quantity;
       }
 
       entry.state = available;
