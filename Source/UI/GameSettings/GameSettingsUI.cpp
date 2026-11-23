@@ -3096,7 +3096,8 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
     this->m_effectSlider->SetButtonImages(text1, text2);
   }
   {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL));
+    std::string text1;
+    text1 = OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL);
     this->m_effectSlider->SetBackground(text1);
   }
   {
