@@ -5915,12 +5915,13 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (this->state.slots[ec].life != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    const float rx = this->state.slots[ec].distance;
+    const float rx = slot.distance;
     vec1.Set(rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]);
     vec2.Set(rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]);
     vec3.Set(rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]);
@@ -5931,35 +5932,31 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     const vector3d corner3{vec3.x, vec3.y, vec3.z};
     const vector3d corner4{vec4.x, vec4.y, vec4.z};
     int alpha;
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
-    bool render;
-    bool renderTwice;
 
-    vec1 = {this->state.slots[ec].vecBPre.x + corner1.x, this->state.slots[ec].vecBPre.y + corner1.y, this->state.slots[ec].vecBPre.z + corner1.z};
-    vec2 = {this->state.slots[ec].vecBPre.x + corner2.x, this->state.slots[ec].vecBPre.y + corner2.y, this->state.slots[ec].vecBPre.z + corner2.z};
-    vec3 = {this->state.slots[ec].vecBPre.x + corner3.x, this->state.slots[ec].vecBPre.y + corner3.y, this->state.slots[ec].vecBPre.z + corner3.z};
-    vec4 = {this->state.slots[ec].vecBPre.x + corner4.x, this->state.slots[ec].vecBPre.y + corner4.y, this->state.slots[ec].vecBPre.z + corner4.z};
-    if (this->state.slots[ec].flag1[0] <= 1) {
+    vec1.Set(slot.vecBPre.x + corner1.x, slot.vecBPre.y + corner1.y, slot.vecBPre.z + corner1.z);
+    vec2.Set(slot.vecBPre.x + corner2.x, slot.vecBPre.y + corner2.y, slot.vecBPre.z + corner2.z);
+    vec3.Set(slot.vecBPre.x + corner3.x, slot.vecBPre.y + corner3.y, slot.vecBPre.z + corner3.z);
+    vec4.Set(slot.vecBPre.x + corner4.x, slot.vecBPre.y + corner4.y, slot.vecBPre.z + corner4.z);
+
+    if (slot.flag1[0] <= 1) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (this->state.slots[ec].flag1[0] == 14 || this->state.slots[ec].flag1[0] == 16) {
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (this->state.slots[ec].flag1[0] == 11) {
+    } else if (slot.flag1[0] == 11) {
       alpha = 250;
       if (vec1.y < -40.0f) {
         alpha = static_cast<int>((vec1.y + 40.0f) * 25.0f + 250.0f);
       }
-    } else if (this->state.slots[ec].flag1[0] == 15) {
-      alpha = 255 - 2 * this->state.slots[ec].flag1[1];
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[1];
     } else {
       alpha = 50;
       if (vec1.y < -4.0f) {
@@ -5969,144 +5966,56 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
         alpha = static_cast<int>(vec1.y * -100.0f);
       }
     }
+
     if (alpha < 0) {
       alpha = 0;
     }
-    red = 70;
-    green = 120;
-    blue = 100;
-    render = false;
-    renderTwice = false;
-    if (this->state.slots[ec].flag1[0] == 15) {
-      if (this->state.slots[ec].flag1[5] == 7) {
-        red = 250;
-        green = 70;
-        blue = 100;
-      } else if (this->state.slots[ec].flag1[5] == 8) {
-        red = 250;
-        green = 250;
-        blue = 10;
-      }
-      render = true;
-    } else if (vec1.y <= 0.0f) {
-      if (this->state.slots[ec].flag1[0] == 0) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 1) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 3) {
-        red = 255;
-        green = 255;
-        blue = 55;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] == 10 || this->state.slots[ec].flag1[0] == 14) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] == 11) {
-        red = 155;
-        green = 155;
-        blue = 155;
-        render = true;
+
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
-        render = true;
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    }
-    if (render) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    }
-
-    vec1 = {this->state.slots[ec].vecBNow.x + corner1.x, this->state.slots[ec].vecBNow.y + corner1.y, this->state.slots[ec].vecBNow.z + corner1.z};
-    vec2 = {this->state.slots[ec].vecBNow.x + corner2.x, this->state.slots[ec].vecBNow.y + corner2.y, this->state.slots[ec].vecBNow.z + corner2.z};
-    vec3 = {this->state.slots[ec].vecBNow.x + corner3.x, this->state.slots[ec].vecBNow.y + corner3.y, this->state.slots[ec].vecBNow.z + corner3.z};
-    vec4 = {this->state.slots[ec].vecBNow.x + corner4.x, this->state.slots[ec].vecBNow.y + corner4.y, this->state.slots[ec].vecBNow.z + corner4.z};
-    if (this->state.slots[ec].flag1[0] <= 1 || this->state.slots[ec].flag1[0] == 11) {
-      alpha = 250;
-      if (vec1.y < -20.0f) {
-        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
-      }
-    } else if (this->state.slots[ec].flag1[0] == 14 || this->state.slots[ec].flag1[0] == 16) {
-      alpha = 100;
-      if (vec1.y > -10.0f) {
-        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
-      } else if (vec1.y < -40.0f) {
-        alpha = 0;
-      }
-    } else if (this->state.slots[ec].flag1[0] == 15) {
-      alpha = 255 - 2 * this->state.slots[ec].flag1[2];
-    } else {
-      alpha = 50;
-      if (vec1.y < -4.0f) {
-        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
-      }
-      if (vec1.y > -0.5f) {
-        alpha = static_cast<int>(vec1.y * -100.0f);
-      }
-    }
-    if (alpha < 0) {
-      alpha = 0;
-    }
-    red = 70;
-    green = 120;
-    blue = 100;
-    render = false;
-    renderTwice = false;
-    if (this->state.slots[ec].flag1[0] == 15) {
-      if (this->state.slots[ec].flag1[5] == 7) {
-        red = 250;
-        green = 70;
-        blue = 100;
-      } else if (this->state.slots[ec].flag1[5] == 8) {
-        red = 250;
-        green = 250;
-        blue = 10;
-      }
-      render = true;
     } else if (vec1.y <= 0.0f) {
-      if (this->state.slots[ec].flag1[0] == 0) {
+      if (slot.flag1[0] == 0) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 1) {
+      } else if (slot.flag1[0] == 1) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 3) {
-        red = 255;
-        green = 255;
-        blue = 55;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] == 10 || this->state.slots[ec].flag1[0] == 14) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] != 11) {
-        render = true;
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
-    if (render) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    }
 
-    vec1 = {this->state.slots[ec].vecTPre.x + corner1.x, this->state.slots[ec].vecTPre.y + corner1.y, this->state.slots[ec].vecTPre.z + corner1.z};
-    vec2 = {this->state.slots[ec].vecTPre.x + corner2.x, this->state.slots[ec].vecTPre.y + corner2.y, this->state.slots[ec].vecTPre.z + corner2.z};
-    vec3 = {this->state.slots[ec].vecTPre.x + corner3.x, this->state.slots[ec].vecTPre.y + corner3.y, this->state.slots[ec].vecTPre.z + corner3.z};
-    vec4 = {this->state.slots[ec].vecTPre.x + corner4.x, this->state.slots[ec].vecTPre.y + corner4.y, this->state.slots[ec].vecTPre.z + corner4.z};
-    if (this->state.slots[ec].flag1[0] <= 1 || this->state.slots[ec].flag1[0] == 11) {
+    vec1.Set(slot.vecBNow.x + corner1.x, slot.vecBNow.y + corner1.y, slot.vecBNow.z + corner1.z);
+    vec2.Set(slot.vecBNow.x + corner2.x, slot.vecBNow.y + corner2.y, slot.vecBNow.z + corner2.z);
+    vec3.Set(slot.vecBNow.x + corner3.x, slot.vecBNow.y + corner3.y, slot.vecBNow.z + corner3.z);
+    vec4.Set(slot.vecBNow.x + corner4.x, slot.vecBNow.y + corner4.y, slot.vecBNow.z + corner4.z);
+
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (this->state.slots[ec].flag1[0] == 14 || this->state.slots[ec].flag1[0] == 16) {
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (this->state.slots[ec].flag1[0] == 15) {
-      alpha = 255 - 2 * this->state.slots[ec].flag1[3];
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[2];
     } else {
       alpha = 50;
       if (vec1.y < -4.0f) {
@@ -6116,77 +6025,54 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
         alpha = static_cast<int>(vec1.y * -100.0f);
       }
     }
+
     if (alpha < 0) {
       alpha = 0;
     }
-    red = 70;
-    green = 120;
-    blue = 100;
-    render = false;
-    renderTwice = false;
-    if (this->state.slots[ec].flag1[0] == 15) {
-      if (this->state.slots[ec].flag1[5] == 7) {
-        red = 250;
-        green = 70;
-        blue = 100;
-      } else if (this->state.slots[ec].flag1[5] == 8) {
-        red = 250;
-        green = 250;
-        blue = 10;
+
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-      render = true;
     } else if (vec1.y <= 0.0f) {
-      if (this->state.slots[ec].flag1[0] == 0) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        renderTwice = true;
-      } else if (this->state.slots[ec].flag1[0] == 1) {
-        red = 80;
-        green = 80;
-        blue = 255;
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        renderTwice = true;
-      } else if (this->state.slots[ec].flag1[0] == 3) {
-        red = 255;
-        green = 255;
-        blue = 55;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] == 10 || this->state.slots[ec].flag1[0] == 14) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] != 11) {
-        render = true;
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    }
-    if (renderTwice) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    }
-    if (render) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
-    vec1 = {this->state.slots[ec].vecTNow.x + corner1.x, this->state.slots[ec].vecTNow.y + corner1.y, this->state.slots[ec].vecTNow.z + corner1.z};
-    vec2 = {this->state.slots[ec].vecTNow.x + corner2.x, this->state.slots[ec].vecTNow.y + corner2.y, this->state.slots[ec].vecTNow.z + corner2.z};
-    vec3 = {this->state.slots[ec].vecTNow.x + corner3.x, this->state.slots[ec].vecTNow.y + corner3.y, this->state.slots[ec].vecTNow.z + corner3.z};
-    vec4 = {this->state.slots[ec].vecTNow.x + corner4.x, this->state.slots[ec].vecTNow.y + corner4.y, this->state.slots[ec].vecTNow.z + corner4.z};
-    if (this->state.slots[ec].flag1[0] <= 1 || this->state.slots[ec].flag1[0] == 11) {
+    vec1.Set(slot.vecTPre.x + corner1.x, slot.vecTPre.y + corner1.y, slot.vecTPre.z + corner1.z);
+    vec2.Set(slot.vecTPre.x + corner2.x, slot.vecTPre.y + corner2.y, slot.vecTPre.z + corner2.z);
+    vec3.Set(slot.vecTPre.x + corner3.x, slot.vecTPre.y + corner3.y, slot.vecTPre.z + corner3.z);
+    vec4.Set(slot.vecTPre.x + corner4.x, slot.vecTPre.y + corner4.y, slot.vecTPre.z + corner4.z);
+
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (this->state.slots[ec].flag1[0] == 14 || this->state.slots[ec].flag1[0] == 16) {
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (this->state.slots[ec].flag1[0] == 15) {
-      alpha = 255 - 2 * this->state.slots[ec].flag1[4];
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[3];
     } else {
       alpha = 50;
       if (vec1.y < -4.0f) {
@@ -6196,57 +6082,90 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
         alpha = static_cast<int>(vec1.y * -100.0f);
       }
     }
+
     if (alpha < 0) {
       alpha = 0;
     }
-    red = 70;
-    green = 120;
-    blue = 100;
-    render = false;
-    renderTwice = false;
-    if (this->state.slots[ec].flag1[0] == 15) {
-      if (this->state.slots[ec].flag1[5] == 7) {
-        red = 250;
-        green = 70;
-        blue = 100;
-      } else if (this->state.slots[ec].flag1[5] == 8) {
-        red = 250;
-        green = 250;
-        blue = 10;
+
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-      render = true;
     } else if (vec1.y <= 0.0f) {
-      if (this->state.slots[ec].flag1[0] == 0) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        renderTwice = true;
-      } else if (this->state.slots[ec].flag1[0] == 1) {
-        red = 80;
-        green = 80;
-        blue = 255;
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        renderTwice = true;
-      } else if (this->state.slots[ec].flag1[0] == 3) {
-        red = 255;
-        green = 255;
-        blue = 55;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] == 10 || this->state.slots[ec].flag1[0] == 14) {
-        red = 255;
-        green = 255;
-        blue = 255;
-        render = true;
-      } else if (this->state.slots[ec].flag1[0] != 11) {
-        render = true;
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
-    if (renderTwice) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+
+    vec1.Set(slot.vecTNow.x + corner1.x, slot.vecTNow.y + corner1.y, slot.vecTNow.z + corner1.z);
+    vec2.Set(slot.vecTNow.x + corner2.x, slot.vecTNow.y + corner2.y, slot.vecTNow.z + corner2.z);
+    vec3.Set(slot.vecTNow.x + corner3.x, slot.vecTNow.y + corner3.y, slot.vecTNow.z + corner3.z);
+    vec4.Set(slot.vecTNow.x + corner4.x, slot.vecTNow.y + corner4.y, slot.vecTNow.z + corner4.z);
+
+    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+      alpha = 100;
+      if (vec1.y > -10.0f) {
+        alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
+      } else if (vec1.y < -40.0f) {
+        alpha = 0;
+      }
+    } else if (slot.flag1[0] == 15) {
+      alpha = 255 - 2 * slot.flag1[4];
+    } else {
+      alpha = 50;
+      if (vec1.y < -4.0f) {
+        alpha = static_cast<int>((vec1.y + 4.0f) * 15.0f + 50.0f);
+      }
+      if (vec1.y > -0.5f) {
+        alpha = static_cast<int>(vec1.y * -100.0f);
+      }
     }
-    if (render) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+
+    if (alpha < 0) {
+      alpha = 0;
+    }
+
+    if (slot.flag1[0] == 15) {
+      if (slot.flag1[5] == 7) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[5] == 8) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    } else if (vec1.y <= 0.0f) {
+      if (slot.flag1[0] == 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 1) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 3) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[0] != 11) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
     }
   }
 }
@@ -6567,59 +6486,59 @@ __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
 
     const float distance = slot.distance;
     const float outer = distance + 100.0f;
-    vec1.Set(0.0f, 0.0f, 0.0f);
-    vec2.Set(0.0f, 0.0f, distance);
-    vec3.Set(distance, 0.0f, distance);
-    vec4.Set(distance, 0.0f, 0.0f);
+    vec1 = {0.0f, 0.0f, 0.0f};
+    vec2 = {0.0f, 0.0f, distance};
+    vec3 = {distance, 0.0f, distance};
+    vec4 = {distance, 0.0f, 0.0f};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(0.0f, 0.0f, 0.0f);
-    vec2.Set(0.0f, 0.0f, -slot.distance);
-    vec3.Set(slot.distance, 0.0f, -slot.distance);
-    vec4.Set(slot.distance, 0.0f, 0.0f);
+    vec1 = {0.0f, 0.0f, 0.0f};
+    vec2 = {0.0f, 0.0f, -slot.distance};
+    vec3 = {slot.distance, 0.0f, -slot.distance};
+    vec4 = {slot.distance, 0.0f, 0.0f};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(0.0f, 0.0f, 0.0f);
-    vec2.Set(0.0f, 0.0f, slot.distance);
-    vec3.Set(-slot.distance, 0.0f, slot.distance);
-    vec4.Set(-slot.distance, 0.0f, 0.0f);
+    vec1 = {0.0f, 0.0f, 0.0f};
+    vec2 = {0.0f, 0.0f, slot.distance};
+    vec3 = {-slot.distance, 0.0f, slot.distance};
+    vec4 = {-slot.distance, 0.0f, 0.0f};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(0.0f, 0.0f, 0.0f);
-    vec2.Set(0.0f, 0.0f, -slot.distance);
-    vec3.Set(-slot.distance, 0.0f, -slot.distance);
-    vec4.Set(-slot.distance, 0.0f, 0.0f);
+    vec1 = {0.0f, 0.0f, 0.0f};
+    vec2 = {0.0f, 0.0f, -slot.distance};
+    vec3 = {-slot.distance, 0.0f, -slot.distance};
+    vec4 = {-slot.distance, 0.0f, 0.0f};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(slot.distance, 0.0f, -slot.distance);
-    vec2.Set(slot.distance + 100.0f, 0.0f, -slot.distance);
-    vec3.Set(slot.distance + 100.0f, 0.0f, slot.distance + 100.0f);
-    vec4.Set(slot.distance, 0.0f, slot.distance + 100.0f);
+    vec1 = {slot.distance, 0.0f, -slot.distance};
+    vec2 = {slot.distance + 100.0f, 0.0f, -slot.distance};
+    vec3 = {slot.distance + 100.0f, 0.0f, slot.distance + 100.0f};
+    vec4 = {slot.distance, 0.0f, slot.distance + 100.0f};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(slot.distance, 0.0f, slot.distance);
-    vec2.Set(slot.distance, 0.0f, slot.distance + 100.0f);
-    vec3.Set(-(slot.distance + 100.0f), 0.0f, slot.distance + 100.0f);
-    vec4.Set(-(slot.distance + 100.0f), 0.0f, slot.distance);
+    vec1 = {slot.distance, 0.0f, slot.distance};
+    vec2 = {slot.distance, 0.0f, slot.distance + 100.0f};
+    vec3 = {-(slot.distance + 100.0f), 0.0f, slot.distance + 100.0f};
+    vec4 = {-(slot.distance + 100.0f), 0.0f, slot.distance};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(-slot.distance, 0.0f, slot.distance);
-    vec2.Set(-(slot.distance + 100.0f), 0.0f, slot.distance);
-    vec3.Set(-(slot.distance + 100.0f), 0.0f, -(slot.distance + 100.0f));
-    vec4.Set(-slot.distance, 0.0f, -(slot.distance + 100.0f));
+    vec1 = {-slot.distance, 0.0f, slot.distance};
+    vec2 = {-(slot.distance + 100.0f), 0.0f, slot.distance};
+    vec3 = {-(slot.distance + 100.0f), 0.0f, -(slot.distance + 100.0f)};
+    vec4 = {-slot.distance, 0.0f, -(slot.distance + 100.0f)};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec1.Set(-slot.distance, 0.0f, -slot.distance);
-    vec2.Set(-slot.distance, 0.0f, -(slot.distance + 100.0f));
-    vec3.Set(slot.distance + 100.0f, 0.0f, -(slot.distance + 100.0f));
-    vec4.Set(slot.distance + 100.0f, 0.0f, -slot.distance);
+    vec1 = {-slot.distance, 0.0f, -slot.distance};
+    vec2 = {-slot.distance, 0.0f, -(slot.distance + 100.0f)};
+    vec3 = {slot.distance + 100.0f, 0.0f, -(slot.distance + 100.0f)};
+    vec4 = {slot.distance + 100.0f, 0.0f, -slot.distance};
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
