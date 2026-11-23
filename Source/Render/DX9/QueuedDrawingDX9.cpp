@@ -9,6 +9,19 @@
 #include <bit>
 #include <cstdint>
 
+namespace {
+
+// INLINED
+void BindQueueTexture(CRendererDX9& renderer, UINT stage, CTexture* texture) {
+  if (texture) {
+    renderer.device->SetTexture(stage, static_cast<CTextureDX9*>(texture)->NativeTexture());
+  } else {
+    renderer.device->SetTexture(stage, nullptr);
+  }
+}
+
+}
+
 // OFFSET: 0x00567180
 // FUNCTION: fn_02228
 void CRendererDX9::DrawAuxiliaryQueue() {
@@ -46,8 +59,8 @@ void CRendererDX9::DrawAuxiliaryQueue() {
 
   for (LightmappedCommand*& command : queue) {
     if (command->vertexCount > 0) {
-      this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
-      this->device->SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
+      BindQueueTexture(*this, 0, command->texture);
+      BindQueueTexture(*this, 1, command->lightmap);
       this->DrawAuxiliaryPrimitive(command);
     }
   }
@@ -71,7 +84,7 @@ void CRendererDX9::DrawQueues() {
   this->DrawAuxiliaryQueue();
 
   const auto drawCommand = [&](RenderCommand* const& command) {
-    this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+    BindQueueTexture(*this, 0, command->texture);
     this->SetTextureMode(command->textureMode);
     this->device->SetRenderState(D3DRS_SRCBLEND, command->sourceBlend);
     this->device->SetRenderState(D3DRS_DESTBLEND, command->destinationBlend);
@@ -169,7 +182,7 @@ void CRendererDX9::DrawQueues() {
     for (const DepthPrimitive& entry : this->queue_0234) {
       RenderCommand* command = entry.primitive;
       const float depth = entry.depth;
-      this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      BindQueueTexture(*this, 0, command->texture);
       this->SetTextureMode(command->textureMode);
 
       if (depth >= 0.99f) {
