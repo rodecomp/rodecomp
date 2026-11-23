@@ -314,7 +314,10 @@ void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03347
 void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("claw_wave", 0x17359BF953C367B3ULL, effectName)), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = OBFUSCATE_TEXT_NAMED("claw_wave", 0x17359BF953C367B3ULL, effectName);
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B0EA0
@@ -346,11 +349,21 @@ int CSkillAction_KR_EARTH_STAMP::GetSkillAttackMotion() {
 // OFFSET: 0x005B1250
 // FUNCTION: fn_03351
 void CSkillAction_KR_EARTH_STAMP::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp", 0x3FAF85D995034FD7ULL, effectName)), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = OBFUSCATE_TEXT_NAMED("earth_stamp", 0x3FAF85D995034FD7ULL, effectName);
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 
-  effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp_bottom", 0x490FFB43A12F0DB9ULL, bottomName)), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = OBFUSCATE_TEXT_NAMED("earth_stamp_bottom", 0x490FFB43A12F0DB9ULL, bottomName);
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x005B1590
