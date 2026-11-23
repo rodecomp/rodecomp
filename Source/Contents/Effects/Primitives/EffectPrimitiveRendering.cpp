@@ -2019,19 +2019,23 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
       }
 
       if (this->state.slots[ec].height[j] > 0.0f) {
-        speed += this->state.slots[ec].distance * radius * (this->state.slots[ec].height[j] / 90.0f);
+        float extra = this->state.slots[ec].height[j] / 90.0f;
+        extra *= this->state.slots[ec].distance * radius;
+        speed += extra;
       }
+
+      vector3d vecA;
+      vecA.y = -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * 1.5f;
 
       radius = 1.0f;
 
       for (int i = 0; i < this->state.slots[ec].flag1[j]; ++i) {
         radius *= 0.7f;
       }
+      vecA.y *= radius;
 
-      vector3d vecA{
-        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * 1.5f * radius,
-        speed * g_sinTable[this->state.slots[ec].riseAngle]
-      };
+      vecA.x = speed * g_cosTable[this->state.slots[ec].riseAngle];
+      vecA.z = speed * g_sinTable[this->state.slots[ec].riseAngle];
 
       speed = 0.0f;
       radius = 1.0f;
@@ -2042,19 +2046,23 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
       }
 
       if (this->state.slots[ec].height[j + 1] > 0.0f) {
-        speed += this->state.slots[ec].distance * radius * (this->state.slots[ec].height[j + 1] / 90.0f);
+        float extra = this->state.slots[ec].height[j + 1] / 90.0f;
+        extra *= this->state.slots[ec].distance * radius;
+        speed += extra;
       }
+
+      vector3d vecB;
+      vecB.y = -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * 1.5f;
 
       radius = 1.0f;
 
       for (int i = 0; i < this->state.slots[ec].flag1[j + 1]; ++i) {
         radius *= 0.7f;
       }
+      vecB.y *= radius;
 
-      vector3d vecB{
-        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * 1.5f * radius,
-        speed * g_sinTable[this->state.slots[ec].riseAngle]
-      };
+      vecB.x = speed * g_cosTable[this->state.slots[ec].riseAngle];
+      vecB.z = speed * g_sinTable[this->state.slots[ec].riseAngle];
 
       std::int16_t angle;
       {
