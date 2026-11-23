@@ -415,7 +415,7 @@ void CDCBitmap::DrawSurface(
     if (mirrored) {
       for (int row = 0; row < sourceHeight; ++row) {
         for (int column = sourceWidth - 1; column >= 0; --column) {
-          const int value = input[(sourceY + row) * stride + sourceX + column];
+          const std::uint32_t value = input[(sourceY + row) * stride + sourceX + column];
           if (!(value & 0xF000)) {
             continue;
           }
@@ -446,7 +446,7 @@ void CDCBitmap::DrawSurface(
     } else {
       for (int row = 0; row < sourceHeight; ++row) {
         for (int column = 0; column < sourceWidth; ++column) {
-          const int value = input[(sourceY + row) * stride + sourceX + column];
+          const std::uint32_t value = input[(sourceY + row) * stride + sourceX + column];
           if (!(value & 0xF000)) {
             continue;
           }
@@ -483,7 +483,7 @@ void CDCBitmap::DrawSurface(
     if (mirrored) {
       for (int row = 0; row < sourceHeight; ++row) {
         for (int column = sourceWidth - 1; column >= 0; --column) {
-          const int value = input[(sourceY + row) * stride + sourceX + column];
+          const std::uint32_t value = input[(sourceY + row) * stride + sourceX + column];
           if (!(value & 0x8000)) {
             continue;
           }
@@ -505,7 +505,7 @@ void CDCBitmap::DrawSurface(
     } else {
       for (int row = 0; row < sourceHeight; ++row) {
         for (int column = 0; column < sourceWidth; ++column) {
-          const int value = input[(sourceY + row) * stride + sourceX + column];
+          const std::uint32_t value = input[(sourceY + row) * stride + sourceX + column];
           if (!(value & 0x8000)) {
             continue;
           }
@@ -721,71 +721,92 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
       continue;
     }
 
-    const std::uint32_t bitmapWidth = this->m_bitmap.width;
     const SpriteRleImage* image = sprite.images[cell.imageType][cell.image];
-    const int imageWidth = image->width;
-    const int top = y - image->height / 2;
-    const int left = x - imageWidth / 2;
-    const int destinationX = std::max(left, 0);
-    const int copyWidth = static_cast<int>(std::min(bitmapWidth, static_cast<std::uint32_t>(left + imageWidth))) - destinationX;
-    const int destinationY = std::max(top, 0);
-    int copyHeight = static_cast<int>(std::min(this->m_bitmap.height, static_cast<std::uint32_t>(top + image->height))) - destinationY;
-    const int rowSkip = imageWidth - copyWidth;
-    const int skip = std::max(-top, 0) * imageWidth + std::max(-left, 0);
-    std::uint32_t* row = this->m_bitmap.pixels + destinationY * bitmapWidth + destinationX;
-    const std::uint8_t* runs = image->runs;
-    int remaining = 0;
-    auto next = [&]() -> std::uint8_t {
-      if (remaining) {
-        --remaining;
-        return 0;
+    const int left = x - image->width / 2;
+    const std::int16_t imageHeight = image->height;
+    const int top = y - imageHeight / 2;
+
+    const int copyWidth = static_cast<int>(std::min(static_cast<std::uint32_t>(left + image->width), this->m_bitmap.width)) - std::max(left, 0);
+    const int copyHeight = static_cast<int>(std::min(static_cast<std::uint32_t>(top + imageHeight), this->m_bitmap.height)) - std::max(top, 0);
+
+    const int rowSkip = image->width - copyWidth;
+    const int sourceSkip = std::max(-top, 0) * image->width + std::max(-left, 0);
+
+    int keyCount = 0;
+    const std::uint8_t* source = image->runs;
+    std::uint32_t* destination = this->m_bitmap.pixels + std::max(top, 0) * this->m_bitmap.width + std::max(left, 0);
+
+    int i;
+    int j;
+
+    for (i = 0; i < sourceSkip; ++i) {
+      if (keyCount) {
+        --keyCount;
+      } else {
+        if (!*source) {
+          keyCount = *++source - 1;
+        }
+        ++source;
       }
-
-      std::uint8_t value = *runs;
-      if (!value) {
-        remaining = *++runs - 1;
-      }
-      ++runs;
-
-      return value;
-    };
-
-    for (int index = 0; index < skip; ++index) {
-      next();
     }
 
     if (!cell.mirrored) {
-      for (; copyHeight > 0; --copyHeight) {
-        for (int column = 0; column < copyWidth; ++column) {
-          const std::uint8_t index = next();
-          if (index) {
-            const std::uint32_t color = palette[index];
-            row[column] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+      for (i = 0; i < copyHeight; ++i) {
+        for (j = 0; j < copyWidth; ++j) {
+          if (keyCount) {
+            --keyCount;
+          } else {
+            if (!*source) {
+              keyCount = *++source - 1;
+            } else {
+              const std::uint32_t color = palette[*source];
+              destination[j] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+            }
+            ++source;
           }
         }
 
-        for (int index = 0; index < rowSkip; ++index) {
-          next();
+        for (j = 0; j < rowSkip; ++j) {
+          if (keyCount) {
+            --keyCount;
+          } else {
+            if (!*source) {
+              keyCount = *++source - 1;
+            }
+            ++source;
+          }
         }
 
-        row += this->m_bitmap.width;
+        destination += this->m_bitmap.width;
       }
     } else {
-      for (; copyHeight >= 1; --copyHeight) {
-        std::uint32_t* pixel = row + copyWidth - 1;
-        for (int column = copyWidth; column >= 1; --column, --pixel) {
-          const std::uint8_t index = next();
-          if (index) {
-            const std::uint32_t color = palette[index];
-            *pixel = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+      for (i = 0; i < copyHeight; ++i) {
+        for (j = 0; j < copyWidth; ++j) {
+          if (keyCount) {
+            --keyCount;
+          } else {
+            if (!*source) {
+              keyCount = *++source - 1;
+            } else {
+              const std::uint32_t color = palette[*source];
+              destination[copyWidth - 1 - j] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
+            }
+            ++source;
           }
         }
 
-        for (int index = 0; index < rowSkip; ++index) {
-          next();
+        for (j = 0; j < rowSkip; ++j) {
+          if (keyCount) {
+            --keyCount;
+          } else {
+            if (!*source) {
+              keyCount = *++source - 1;
+            }
+            ++source;
+          }
         }
 
-        row += this->m_bitmap.width;
+        destination += this->m_bitmap.width;
       }
     }
   }
