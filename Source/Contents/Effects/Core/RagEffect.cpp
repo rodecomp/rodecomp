@@ -1413,152 +1413,158 @@ void CRagEffect::InitEZ2STRFrame() {
 // OFFSET: 0x00C36FC0
 // FUNCTION: fn_20095
 bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
-  RagEffectState& state = this->state;
-
-  if (state.resource == nullptr) {
+  if (this->state.resource == nullptr) {
     return false;
   }
 
-  if (state.currentLayer >= state.endLayer) {
-    ++state.loopCount;
+  if (this->state.currentLayer >= this->state.endLayer) {
+    ++this->state.loopCount;
 
-    if (state.loopCount > state.loopLimit) {
+    if (this->state.loopCount > this->state.loopLimit) {
       return false;
     }
 
     this->InitEZ2STRFrame();
   }
 
-  const RenderVertex vertex = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, state.parent->render.position);
-  state.tlvertX = vertex.x + x;
-  state.tlvertY = vertex.y + y;
-  state.tlvertZ = vertex.z + z;
-  state.defZ = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
+  const RenderVertex vertex = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, this->state.parent->render.position);
+  this->state.tlvertX = vertex.x + x;
+  this->state.tlvertY = vertex.y + y;
+  this->state.tlvertZ = vertex.z + z;
+  this->state.defZ = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
 
   float ratio;
 
-  for (int layer = 0; layer < state.resourceData->clipCount; ++layer) {
-    state.layerDrawn[layer] = false;
-    const EZeffectClip& clip = state.resourceData->clips[layer];
+  for (int layer = 0; layer < this->state.resourceData->clipCount; ++layer) {
+    this->state.layerDrawn[layer] = false;
 
-    if (clip.frameCount == 0 || state.currentKey[layer] == -1) {
+    const EZeffectClip* clip = &this->state.resourceData->clips[layer];
+
+    if (clip == nullptr) {
       continue;
     }
 
-    const EZeffectKeyFrame* key = &clip.frames[state.currentKey[layer]];
-    const int elapsed = state.stateCnt - key->frame;
+    if (clip->frameCount == 0) {
+      continue;
+    }
+
+    if (this->state.currentKey[layer] == -1) {
+      continue;
+    }
+
+    const int keyIndex = this->state.currentKey[layer];
+    const EZeffectKeyFrame* key = &clip->frames[keyIndex];
+    const int elapsed = this->state.stateCnt - key->frame;
 
     if (elapsed < 0) {
       continue;
     }
 
-    if (elapsed != 0 && key[1].frame == state.stateCnt) {
-      if (++state.currentKey[layer] >= clip.frameCount - 1) {
-        state.currentKey[layer] = -1;
-        ++state.currentLayer;
+    EZeffectTransform* current = &this->state.transforms[layer];
+
+    if (elapsed != 0 && (key + 1)->frame == this->state.stateCnt) {
+      ++this->state.currentKey[layer];
+
+      if (this->state.currentKey[layer] >= clip->frameCount - 1) {
+        this->state.currentKey[layer] = -1;
+        ++this->state.currentLayer;
       }
 
       ++key;
     }
 
-    EZeffectTransform& current = state.transforms[layer];
-    const EZeffectTransform& delta = key->transform;
-
     if (key->type == 0) {
-      std::memcpy(&current, &delta, sizeof(current));
+      std::memcpy(current, &key->transform, sizeof(EZeffectTransform));
 
-      if (state.currentKey[layer] != -1 && key[1].frame == key->frame) {
-        ++state.currentKey[layer];
+      if (this->state.currentKey[layer] != -1) {
+        if ((key + 1)->frame == key->frame) {
+          ++this->state.currentKey[layer];
+        }
       }
+    } else {
+      current->x += key->transform.x;
+      current->y += key->transform.y;
+      current->u += key->transform.u;
+      current->v += key->transform.v;
+      current->us += key->transform.us;
+      current->vs += key->transform.vs;
+      current->u2 += key->transform.u2;
+      current->v2 += key->transform.v2;
+      current->us2 += key->transform.us2;
+      current->vs2 += key->transform.vs2;
+      current->ax[0] += key->transform.ax[0];
+      current->ax[1] += key->transform.ax[1];
+      current->ax[2] += key->transform.ax[2];
+      current->ax[3] += key->transform.ax[3];
+      current->ay[0] += key->transform.ay[0];
+      current->ay[1] += key->transform.ay[1];
+      current->ay[2] += key->transform.ay[2];
+      current->ay[3] += key->transform.ay[3];
+      current->crR += key->transform.crR;
+      current->crG += key->transform.crG;
+      current->crB += key->transform.crB;
+      current->crA += key->transform.crA;
+      current->rz += key->transform.rz;
 
-      state.layerDrawn[layer] = true;
-      continue;
-    }
+      switch (key->transform.anitype) {
+      case 0:
+        break;
 
-    current.x += delta.x;
-    current.y += delta.y;
-    current.u += delta.u;
-    current.v += delta.v;
-    current.us += delta.us;
-    current.vs += delta.vs;
-    current.u2 += delta.u2;
-    current.v2 += delta.v2;
-    current.us2 += delta.us2;
-    current.vs2 += delta.vs2;
-    current.ax[0] += delta.ax[0];
-    current.ax[1] += delta.ax[1];
-    current.ax[2] += delta.ax[2];
-    current.ax[3] += delta.ax[3];
-    current.ay[0] += delta.ay[0];
-    current.ay[1] += delta.ay[1];
-    current.ay[2] += delta.ay[2];
-    current.ay[3] += delta.ay[3];
-    current.crR += delta.crR;
-    current.crG += delta.crG;
-    current.crB += delta.crB;
-    current.crA += delta.crA;
-    current.rz += delta.rz;
+      case 1:
+        current->aniframe += key->transform.aniframe;
+        break;
 
-    switch (delta.anitype) {
-    case 1:
-      current.aniframe += delta.aniframe;
-      break;
-
-    case 2:
-      current.aniframe += delta.anidelta;
-
-      if (current.aniframe >= static_cast<float>(clip.textureCount)) {
-        current.aniframe = static_cast<float>(clip.textureCount) - 1.0f;
-      }
-
-      break;
-
-    case 5: {
-      const int frame = static_cast<int>(static_cast<float>(elapsed) * delta.anidelta + current.aniframe);
-      const int count = clip.textureCount - 1;
-      const int turns = frame / count;
-
-      if ((turns & 1) != 0) {
-        current.aniframe = static_cast<float>(count - (frame - turns * count));
-      } else {
-        current.aniframe = static_cast<float>(frame - turns * count);
-      }
-
-      break;
-    }
-    case 3: {
-      const float frame = current.aniframe += delta.anidelta;
-      const float count = static_cast<float>(clip.textureCount);
-
-      if (frame >= count) {
-        ratio = static_cast<float>(static_cast<int>(frame / count));
-        current.aniframe = frame - ratio * count;
-      }
-
-      break;
-    }
-
-    case 4: {
-      float frame = current.aniframe -= delta.anidelta;
-
-      if (frame < 0.0f) {
-        const float count = static_cast<float>(clip.textureCount);
-        frame -= ratio * count;
-        ratio = static_cast<float>(static_cast<int>(frame / count));
-
-        if (frame < 0.0f) {
-          frame += count;
+      case 2:
+        current->aniframe += key->transform.anidelta;
+        if (current->aniframe >= static_cast<float>(clip->textureCount)) {
+          current->aniframe = static_cast<float>(clip->textureCount) - 1;
         }
 
-        current.aniframe = frame;
+        break;
+
+      case 5: {
+        int frame = static_cast<int>(current->aniframe + key->transform.anidelta * static_cast<float>(elapsed));
+        const int count = clip->textureCount - 1;
+        const int turns = frame / count;
+
+        if (turns & 1) {
+          frame = count - (frame - turns * count);
+        } else {
+          frame = frame - turns * count;
+        }
+
+        current->aniframe = static_cast<float>(frame);
+      } break;
+
+      case 3: {
+        float frame = current->aniframe += key->transform.anidelta;
+
+        if (current->aniframe >= static_cast<float>(clip->textureCount)) {
+          ratio = static_cast<float>(static_cast<int>(frame / static_cast<float>(clip->textureCount)));
+          frame -= ratio * static_cast<float>(clip->textureCount);
+
+          current->aniframe = frame;
+        }
+      } break;
+
+      case 4: {
+        float frame = current->aniframe -= key->transform.anidelta;
+
+        if (frame < 0.0f) {
+          frame -= ratio * static_cast<float>(clip->textureCount);
+          ratio = static_cast<float>(static_cast<int>(frame / static_cast<float>(clip->textureCount)));
+
+          if (frame < 0.0f) {
+            frame += static_cast<float>(clip->textureCount);
+          }
+
+          current->aniframe = frame;
+        }
+      } break;
       }
-
-      break;
     }
 
-    }
-
-    state.layerDrawn[layer] = true;
+    this->state.layerDrawn[layer] = true;
   }
 
   return true;
@@ -14680,7 +14686,7 @@ void CRagEffect::ForestLight(const char* name, char flag) {
 
 // INLINED
 static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffectTransform& transform) {
-  if (transform.ax[1] > transform.ax[0]) {
+  if (transform.ax[0] < transform.ax[1]) {
     vertices[1].x = transform.ax[0];
     vertices[1].u = transform.u;
     vertices[3].x = transform.ax[1];
@@ -14700,7 +14706,7 @@ static __forceinline void SetAniClipCorners(RenderVertex* vertices, const EZeffe
     vertices[2].u = transform.u;
   }
 
-  if (transform.ay[2] > transform.ay[1]) {
+  if (transform.ay[1] < transform.ay[2]) {
     vertices[3].y = transform.ay[1];
     vertices[3].v = transform.v;
     vertices[2].y = transform.ay[2];
@@ -14760,17 +14766,24 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
 
-  for (int i = 0; i < 4; ++i) {
-    vertices[i].u = scaleU * vertices[i].u;
-    vertices[i].v = scaleV * vertices[i].v;
-  }
+  vertices[0].u *= scaleU;
+  vertices[0].v *= scaleV;
+  vertices[1].u *= scaleU;
+  vertices[1].v *= scaleV;
+  vertices[2].u *= scaleU;
+  vertices[2].v *= scaleV;
+  vertices[3].u *= scaleU;
+  vertices[3].v *= scaleV;
 
   const float sine = ClientSin(static_cast<float>(transform->rz / 2.8444444444444) / 180.0f * 3.141592f);
   const float cosine = ClientCos(static_cast<float>(transform->rz / 2.8444444444444) / 180.0f * 3.141592f);
 
   for (int i = 0; i < 4; ++i) {
-    const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
-    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->state.tlvertX;
+    const float tx = vertices[i].x;
+    const float ty = vertices[i].y;
+    const float rx = tx * cosine - ty * sine;
+    const float rotated = tx * sine + ty * cosine;
+    vertices[i].x = ((transform->x - 320.0f) + rx) * scale + this->state.tlvertX;
 
     if (g_session.IsScreenShakeActive()) {
       const float shake = screenY - this->state.tlvertY;
