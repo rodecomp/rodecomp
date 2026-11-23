@@ -243,14 +243,16 @@ void CEffectPrim::RenderGroundArc2(matrix& wtm) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float rise = this->state.slots[ec].height[i];
-      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      curB.x = this->state.slots[ec].distance * g_cosTable[angle];
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
+      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
+      curB.x = this->state.slots[ec].distance * cosine;
       curB.y = 5.0f;
-      curB.z = this->state.slots[ec].distance * g_sinTable[angle];
-      curT.x = riseX * g_cosTable[angle] + curB.x;
-      curT.z = riseX * g_sinTable[angle] + curB.z;
-      curT.y = 5.0f - rise * g_sinTable[this->state.slots[ec].riseAngle];
+      curB.z = this->state.slots[ec].distance * sine;
+      curT.x = riseX * cosine + curB.x;
+      curT.z = riseX * sine + curB.z;
+      curT.y = 5.0f - riseY;
 
       if (i > 0) {
         this->RenderTeiRect(
