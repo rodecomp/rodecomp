@@ -1242,6 +1242,7 @@ bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
 }
 
 // OFFSET: 0x0059BED0
+// FUNCTION: fn_46475
 void CCashEmotionMgr::AddEmotionOrder(int packId, int emotionId) {
   auto it = this->emotionOrder.find(packId);
   if (this->emotionOrder.end() != it) {
