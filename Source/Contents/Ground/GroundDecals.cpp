@@ -207,14 +207,14 @@ void GroundGeometry::DrawTerrainOverlay(
   const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + (rowParity == 1 ? halfSize : 0.0f);
   vertices[0].x = x - margin;
   vertices[0].z = z - margin;
-  vertices[1].x = (x + halfSize) + margin;
   vertices[1].y = cell->heights[1];
+  vertices[1].x = (x + halfSize) + margin;
   vertices[1].z = z - margin;
-  vertices[2].x = x - margin;
   vertices[2].y = cell->heights[2];
+  vertices[2].x = x - margin;
   vertices[2].z = (z + halfSize) + margin;
-  vertices[3].x = (x + halfSize) + margin;
   vertices[3].y = cell->heights[3];
+  vertices[3].x = (x + halfSize) + margin;
   vertices[3].z = (z + halfSize) + margin;
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
