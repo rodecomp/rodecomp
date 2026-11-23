@@ -2209,13 +2209,16 @@ std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
 
   while (width < extent) {
     if (remaining.size() <= 1) {
-      return std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+      text = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
+      return text;
     }
 
     if (remaining.size() >= 2) {
-      std::size_t length = remaining.size() - 1;
+      std::size_t length;
       if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
         length = remaining.size() - 2;
+      } else {
+        length = remaining.size() - 1;
       }
 
       remaining.resize(length);
