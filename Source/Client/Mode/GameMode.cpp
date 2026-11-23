@@ -9678,7 +9678,7 @@ void CGameMode::ProcessInput() {
     const std::intptr_t mode = this->skillUseType;
     g_session.UpdateMonsterInfoEnabled(mode == 2 || mode == 4);
     if (pick) {
-      bool offset;
+      int offset;
       if (this->skillId == AM_POTIONPITCHER) {
         offset = g_session.IsCompanionJob(pick->job) && pick->kind == 4;
       } else {
@@ -9690,7 +9690,15 @@ void CGameMode::ProcessInput() {
         } else {
           eligible = 0;
         }
-        offset = pick->kind != 3 && pick->kind != 4 && eligible;
+        offset = 0;
+        switch (pick->kind) {
+        case 3:
+        case 4:
+          break;
+        default:
+          offset = eligible;
+          break;
+        }
       }
       if (offset) {
         this->cursorOffsetX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x - static_cast<float>(g_mouse.x);
