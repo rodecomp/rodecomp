@@ -26,7 +26,11 @@ jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::j
     return jsoncons::json::null();
   }
 
-  if (!node.is_object() || node.object_range().end() == node.find(key)) {
+  if (!node.is_object()) {
+    return jsoncons::json::null();
+  }
+
+  if (node.object_range().end() == node.find(key)) {
     return jsoncons::json::null();
   }
 
