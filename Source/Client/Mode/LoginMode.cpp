@@ -1505,7 +1505,7 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
 // OFFSET: 0x00D90740
 // FUNCTION: fn_22285
 __declspec(noinline) void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
-  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, "");
+  this->ConnectZoneServer(packet->gid, std::string(packet->mapName, packet->mapName + sizeof(packet->mapName)).c_str(), packet->ip, packet->port, "");
 }
 
 // OFFSET: 0x00D971E0
@@ -1515,7 +1515,7 @@ void CLoginMode::ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet)
   const std::uint32_t ip = packet->ip;
   const std::uint32_t gid = packet->gid;
   std::string host(std::begin(packet->host), std::end(packet->host));
-  this->ConnectZoneServer(gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), ip, port, host.c_str());
+  this->ConnectZoneServer(gid, std::string(packet->mapName, packet->mapName + sizeof(packet->mapName)).c_str(), ip, port, host.c_str());
 }
 
 #pragma pack(push, 1)
