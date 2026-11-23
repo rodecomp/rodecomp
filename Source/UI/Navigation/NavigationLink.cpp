@@ -344,14 +344,15 @@ int NavigationLinkParser::DecodeNavigationNumber(std::string value) {
 // FUNCTION: fn_10410
 std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  int number = value;
   std::vector<char> characters;
   int radix = 62;
 
   do {
-    characters.push_back(digits[value % radix]);
-    value /= radix;
-  } while (value >= radix);
-  characters.push_back(digits[value]);
+    characters.push_back(digits[number % radix]);
+    number /= radix;
+  } while (number >= radix);
+  characters.push_back(digits[number]);
 
   std::string result("");
   for (std::size_t i = 0; i < characters.size(); ++i) {
@@ -798,7 +799,7 @@ void CCreateLineInfo::AddWindow(UIWindow* window) {
   if (this->m_lines.empty()) {
     this->NewLine();
   }
-  this->m_lines.back().push_back(window);
+  this->m_lines.rbegin()->push_back(window);
 }
 
 // OFFSET: 0x00837BC0
@@ -1045,8 +1046,8 @@ std::size_t CCreateLineInfo::FindTag(std::string text, std::string keyword, bool
 // FUNCTION: fn_10458
 std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::string text, const LineTextStyle& style, int width) {
   std::vector<std::string> lines;
-  const int length = static_cast<int>(text.size());
   int position = 0;
+  const int length = static_cast<int>(text.size());
 
   while (position < length) {
     const std::string rest = text.substr(position, length - position);
@@ -1066,9 +1067,9 @@ std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::stri
 // OFFSET: 0x00839860
 // FUNCTION: fn_10459
 std::string CCreateLineInfo::FitText(UIWindow* window, const std::string text, const LineTextStyle& style, int width) {
-  const int length = static_cast<int>(text.size());
-  int position = 0;
   int total = 0;
+  int position = 0;
+  const int length = static_cast<int>(text.size());
 
   while (position < length) {
     const std::string rest = text.substr(position, text.size() - position);
@@ -1115,8 +1116,9 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
 // OFFSET: 0x00839FA0
 // FUNCTION: fn_10461
 tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const LineTextStyle& style) {
+  tagSIZE size = {};
   if (!window) {
-    return tagSIZE();
+    return size;
   }
 
   return window->TextSize(text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
