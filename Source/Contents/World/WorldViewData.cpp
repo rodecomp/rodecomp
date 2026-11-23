@@ -854,16 +854,13 @@ void CWorldViewMgr::Load(LuaScript& script) {
     this->searchColors[4] = static_cast<std::uint32_t>(fifth) << 24;
     this->searchColors[5] = static_cast<std::uint32_t>(sixth) << 24;
     this->searchColors[10] = static_cast<std::uint32_t>(alpha) << 24;
-    for (int index = 0; index < 16; ++index) {
+    std::uint32_t* searchColor = this->searchColors;
+    for (int index = 0; index < 16; ++index, ++searchColor) {
       if (script.Call("Get_Worldview_info_Sreach_Color", "d>ddd", index, &red, &green, &blue)) {
-        this->searchColors[index] += RGB(blue, green, red);
+        *searchColor += RGB(blue, green, red);
       }
     }
-    this->searchColors[11] = this->searchColors[1];
-    this->searchColors[12] = this->searchColors[2];
-    this->searchColors[13] = this->searchColors[3];
-    this->searchColors[14] = this->searchColors[4];
-    this->searchColors[15] = this->searchColors[5];
+    std::memcpy(this->searchColors + 11, this->searchColors + 1, 5 * sizeof(this->searchColors[0]));
   }
   if (script.Call("Get_Worldview_info_Run", ">dddd", &red, &green, &blue, &alpha)) {
     this->runColor = (static_cast<std::uint32_t>(alpha) << 24) + RGB(blue, green, red);
