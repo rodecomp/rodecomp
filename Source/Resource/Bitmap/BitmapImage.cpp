@@ -74,8 +74,7 @@ bool CBitmapRes::CreateAuxiliary(int mode) {
   std::memset(this->image.auxiliary, 255, 4u * this->image.width * this->image.height);
   for (int y = 0; y < this->image.height; ++y) {
     for (int x = 0; x < this->image.width; ++x) {
-      const int index = this->image.width * y + x;
-      const std::uint32_t value = this->image.pixels[index];
+      const std::uint32_t value = this->image.pixels[this->image.width * y + x];
       unsigned red = (value >> 16) & 255;
       unsigned green = (value >> 8) & 255;
       const unsigned alpha = value >> 24;
@@ -97,7 +96,7 @@ bool CBitmapRes::CreateAuxiliary(int mode) {
           blue = 200;
         }
       }
-      static_cast<std::uint32_t*>(this->image.auxiliary)[index] = Color(alpha, red, green, blue);
+      static_cast<std::uint32_t*>(this->image.auxiliary)[this->image.width * y + x] = Color(alpha, red, green, blue);
     }
   }
   return true;
