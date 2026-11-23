@@ -225,8 +225,8 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
       position = content;
     } else {
       std::string display = tail.substr(0, close);
-      std::string metadata;
       const int info = static_cast<int>(display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size()));
+      std::string metadata;
 
       if (info != -1) {
         display = tail.substr(0, info);
@@ -245,7 +245,7 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
       links.push_back(link);
       offset += static_cast<std::uint32_t>(display.size());
 
-      text = tail.substr(close + end.size());
+      text = std::string(tail, end.size() + close);
       position = static_cast<int>(text.find(begin));
 
       if (position != -1) {
