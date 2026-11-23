@@ -1641,8 +1641,8 @@ void CNpc::SetState(int state, int) {
     case JT_HIDDEN_WARP_NPC:
       break;
     default: {
-      CGameActor* actor = g_session.FindGameActor(this->render.accountId);
       bool isDisguised = false;
+      CGameActor* actor = g_session.FindGameActor(this->render.accountId);
       if (actor && actor->objectType == 12) {
         isDisguised = true;
       }
@@ -1664,8 +1664,8 @@ void CNpc::SetState(int state, int) {
           this->render.trackBounds = 1;
           this->SetAction(0, 4, 0);
           if (this->healthState != 0) {
+            int emotion;
             int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
-            int emotion = state;
             switch (this->healthState) {
               case 1:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 7, hungerLevel);
@@ -1692,7 +1692,6 @@ void CNpc::SetState(int state, int) {
             }
             this->healthState = 0;
             this->render.isMotionFinished = false;
-            this->RegisterPos();
           } else {
             if (this->render.state != 0) {
               this->petEmotionStartTick = timeGetTime();
@@ -1707,8 +1706,8 @@ void CNpc::SetState(int state, int) {
               g_session.mercenaryEnemyY = 0;
               g_session.moveMercenaryEnemy = 0;
             }
-            this->RegisterPos();
           }
+          this->RegisterPos();
           break;
         case ST_MOVE:
           if (this->bodyState != 1 && this->bodyState != 2) {
