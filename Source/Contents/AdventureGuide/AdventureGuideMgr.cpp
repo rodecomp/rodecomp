@@ -1219,22 +1219,21 @@ void CAdventureGuideMgr::GetEpisodeList(std::list<AdventureGuideEpisode>& out) {
 void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id) {
   out.clear();
 
-  std::map<int, std::map<int, AdventureGuideContents>>* table;
+  std::optional<std::map<int, AdventureGuideContents>*> contents;
   switch (type) {
   case 1:
-    table = &episodeContents;
+    contents = FindMapped(episodeContents, id);
     break;
   case 3:
-    table = &questContents;
+    contents = FindMapped(questContents, id);
     break;
   case 4:
-    table = &dungeonContents;
+    contents = FindMapped(dungeonContents, id);
     break;
   default:
     return;
   }
 
-  std::optional<std::map<int, AdventureGuideContents>*> contents = FindMapped(*table, id);
   if (!contents) {
     return;
   }
@@ -1254,19 +1253,18 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
 void CAdventureGuideMgr::GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id) {
   out.clear();
 
-  std::map<int, std::map<int, AdventureGuideEntry>>* table;
+  std::optional<std::map<int, AdventureGuideEntry>*> entries;
   switch (type) {
   case 5:
-    table = &itemEntries;
+    entries = FindMapped(itemEntries, id);
     break;
   case 6:
-    table = &equipmentEntries;
+    entries = FindMapped(equipmentEntries, id);
     break;
   default:
     return;
   }
 
-  std::optional<std::map<int, AdventureGuideEntry>*> entries = FindMapped(*table, id);
   if (!entries) {
     return;
   }
