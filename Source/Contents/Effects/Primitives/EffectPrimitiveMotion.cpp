@@ -2632,9 +2632,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
 // FUNCTION: fn_19786
 bool CEffectPrim::Prim3DTextureNoMaster() {
   EffectPrimitiveState& particle = this->state;
-  const vector3d origin{
-    particle.orgPos.x + particle.deltaPos2.x, particle.orgPos.y + particle.deltaPos2.y, particle.orgPos.z + particle.deltaPos2.z
-  };
+  vector3d origin = particle.orgPos + particle.deltaPos2;
 
   if (particle.changePoint == particle.stateCnt) {
     constexpr float sentinel = 0.0001f;
@@ -2689,31 +2687,29 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   particle.speed3d += particle.deltaPosAccel;
-  particle.speed = particle.accel + particle.speed;
-  particle.widthSpeed = particle.widthAccel + particle.widthSpeed;
-  particle.heightSpeed = particle.heightSpeed + particle.heightAccel;
-  particle.longSpeed = particle.longAccel + particle.longSpeed;
-  particle.latiSpeed = particle.latiAccel + particle.latiSpeed;
+
+  particle.widthSpeed += particle.widthAccel;
+  particle.heightSpeed += particle.heightAccel;
+  particle.longSpeed += particle.longAccel;
+  particle.latiSpeed += particle.latiAccel;
+
+  particle.speed += particle.accel;
 
   if ((particle.pattern & 0x400u) != 0) {
     particle.speed3d.x = 0;
     particle.speed3d.y = 0;
     particle.speed3d.z = 0;
     Forward(particle.speed3d, particle.speed, particle.transform.values);
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
+    particle.deltaPos += particle.speed3d;
   } else if ((particle.pattern & 0x100u) != 0) {
     particle.deltaPos += particle.speed3d;
   } else {
     Forward(particle.speed3d, particle.speed, particle.transform.values);
-    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
+    particle.deltaPos += particle.speed3d;
   }
 
   if ((particle.pattern & 0x400u) != 0) {
-    if (3.0f >= this->CalcDist(particle.master->state.deltaPos.x, particle.master->state.deltaPos.z)) {
+    if (this->CalcDist(particle.master->state.deltaPos.x, particle.master->state.deltaPos.z) <= 3.0f) {
       particle.masterReached = 1;
       return false;
     }
@@ -2721,13 +2717,12 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.longitude = this->render.angle;
   }
 
-  this->render.position.x = origin.x + particle.deltaPos.x;
-  this->render.position.y = origin.y + particle.deltaPos.y;
-  this->render.position.z = origin.z + particle.deltaPos.z;
-  particle.widthSize = particle.widthSize + particle.widthSpeed;
-  particle.heightSize = particle.heightSize + particle.heightSpeed;
-  particle.longitude = particle.longSpeed + particle.longitude;
-  particle.latitude = particle.latiSpeed + particle.latitude;
+  this->render.position = origin + particle.deltaPos;
+
+  particle.widthSize += particle.widthSpeed;
+  particle.heightSize += particle.heightSpeed;
+  particle.longitude += particle.longSpeed;
+  particle.latitude += particle.latiSpeed;
 
   if (particle.heightSize > particle.maxHeightSize) {
     particle.heightAccel = 0;
@@ -2760,21 +2755,18 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   rotation.AppendYRotation(yaw);
 
   if ((particle.pattern & 2u) != 0) {
-    const auto index = particle.chCnt;
-    particle.chCnt = index + 1u == 10u ? 0u : index + 1u;
-    const float offset = static_cast<float>(static_cast<int>(index)) / 10.0f;
-    particle.v1 = offset;
-    particle.v2 = offset + 1.0f;
+    particle.v1 = static_cast<float>(static_cast<int>(particle.chCnt)) / 10.0f;
+    particle.v2 = particle.v1 + 1.0f;
+
+    ++particle.chCnt;
+
+    if (particle.chCnt == 10) {
+      particle.chCnt = 0;
+    }
   }
 
   if ((particle.pattern & 0x10u) != 0) {
-    const float masterX = particle.deltaPos2.x + particle.deltaPos.x;
-    const float masterY = particle.deltaPos.y + particle.deltaPos2.y;
-    const float masterZ = particle.deltaPos.z + particle.deltaPos2.z;
-    CRagEffect* master = particle.master;
-    master->state.deltaPos.x = masterX;
-    master->state.deltaPos.y = masterY;
-    master->state.deltaPos.z = masterZ;
+    particle.master->state.deltaPos = particle.deltaPos2 + particle.deltaPos;
   }
 
   if ((particle.pattern & 4u) != 0) {
@@ -2850,15 +2842,15 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
-    const auto next = this->render.curMotion + 1u;
-    this->render.curMotion = next;
+    const int total = static_cast<int>(particle.totalTexture);
+    ++this->render.curMotion;
 
     if (particle.repeatAnim == 0) {
-      if (next == particle.totalTexture) {
+      if (this->render.curMotion == total) {
         return false;
       }
     } else {
-      this->render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
+      this->render.curMotion %= total;
     }
   }
 
@@ -2868,9 +2860,8 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 // OFFSET: 0x00BB78A0
 // FUNCTION: fn_19781
 bool CEffectPrim::Prim3DParticleNoMaster() {
-  float positionX = this->state.orgPos.x + this->state.deltaPos2.x;
-  const float positionY = this->state.orgPos.y + this->state.deltaPos2.y;
-  const float positionZ = this->state.orgPos.z + this->state.deltaPos2.z;
+  vector3d orgPos = this->state.orgPos + this->state.deltaPos2;
+
   const int frame = this->state.stateCnt;
 
   if (frame == this->state.changePoint) {
@@ -2878,85 +2869,79 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
-  float vertical = this->state.accel + this->state.speed;
-  float lateral = this->state.sizeAccel + this->state.sizeSpeed;
-  std::uint32_t flags = this->state.pattern;
-  this->state.speed = vertical;
-  this->state.sizeSpeed = lateral;
+  this->state.speed += this->state.accel;
+  this->state.sizeSpeed += this->state.sizeAccel;
 
-  if ((flags & 0x400u) != 0) {
-    const float x = this->state.deltaPosAccel.x + this->state.speed3d.x;
-    const float z = this->state.deltaPosAccel.z + this->state.speed3d.z;
-    const float y = this->state.deltaPosAccel.y + this->state.speed3d.y;
-    this->state.speed3d.z = z;
-    this->state.deltaPos.z = z + this->state.deltaPos.z;
-    this->state.speed3d.x = x;
-    this->state.deltaPos.x = x + this->state.deltaPos.x;
-    this->state.speed3d.y = y;
-    this->state.deltaPos.y = y + this->state.deltaPos.y;
-    this->state.roll = this->state.rollSpeed + this->state.roll;
-    this->state.size = lateral + this->state.size;
-  } else if ((flags & 1u) != 0 || frame > this->state.fadeInCnt) {
-    const float side = lateral + this->state.size;
-    Forward(this->state.speed3d, vertical, this->state.transform.values);
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-    this->state.size = side;
-    this->state.roll = this->state.rollSpeed + this->state.roll;
+  if ((this->state.pattern & 0x400u) != 0) {
+    this->state.speed3d.x += this->state.deltaPosAccel.x;
+    this->state.speed3d.y += this->state.deltaPosAccel.y;
+    this->state.speed3d.z += this->state.deltaPosAccel.z;
+
+    this->state.deltaPos += this->state.speed3d;
+    this->state.roll += this->state.rollSpeed;
+    this->state.size += this->state.sizeSpeed;
+  } else if ((this->state.pattern & 1u) != 0 || frame > this->state.fadeInCnt) {
+    Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
+
+    this->state.deltaPos += this->state.speed3d;
+    this->state.roll += this->state.rollSpeed;
+    this->state.size += this->state.sizeSpeed;
   }
 
-  flags = this->state.pattern;
-
-  if ((flags & 2u) != 0) {
+  if ((this->state.pattern & 2u) != 0) {
     if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
       this->state.chCnt = ClampedRandom(8) + 12;
       this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
       this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.x = this->state.deltaPos3.x * -1.0f;
+        this->state.deltaPos3.x *= -1.0f;
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.deltaPos3.z = this->state.deltaPos3.z * -1.0f;
+        this->state.deltaPos3.z *= -1.0f;
       }
     }
 
-    flags = this->state.pattern;
-    this->state.deltaPos.x = this->state.deltaPos3.x + this->state.deltaPos.x;
+    this->state.deltaPos.x += this->state.deltaPos3.x;
   }
 
-  if ((flags & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
-    this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
-    this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
-    this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
-    this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    this->state.chCnt = ClampedRandom(10) + 5;
-    flags = this->state.pattern;
+  if ((this->state.pattern & 4u) != 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+      this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
+      this->state.longitude = (this->state.longitude - 40.0f) + static_cast<float>(ClampedRandom(80));
+      this->state.latitude = (this->state.latitude - 40.0f) + static_cast<float>(ClampedRandom(80));
+      this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+      this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+      this->state.chCnt = ClampedRandom(10) + 5;
+    }
   }
 
-  if ((flags & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
-    this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
-    this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
-    this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    this->state.chCnt = ClampedRandom(15) + 5;
-    flags = this->state.pattern;
+  if ((this->state.pattern & 8u) != 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+      this->state.longitude = (this->state.longitude - 5.0f) + static_cast<float>(ClampedRandom(10));
+      this->state.latitude = (this->state.latitude - 5.0f) + static_cast<float>(ClampedRandom(10));
+      this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+      this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+      this->state.chCnt = ClampedRandom(15) + 5;
+    }
   }
 
-  this->render.position.x = positionX + this->state.deltaPos.x;
-  this->render.position.y = positionY + this->state.deltaPos.y;
-  this->render.position.z = positionZ + this->state.deltaPos.z;
+  this->render.position = orgPos + this->state.deltaPos;
 
-  if ((flags & 0x20u) != 0) {
-    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
+  if ((this->state.pattern & 0x20u) != 0) {
+    CGameMode* mode = g_modeMgr.GetGameMode();
+    this->state.roll = this->render.angle - mode->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
   this->ShiftSegment();
-  return this->AnimMotion();
+
+  if (!this->AnimMotion()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00BB7EC0
@@ -3016,38 +3001,29 @@ bool CEffectPrim::Prim3DParticleOrbit() {
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
 bool CEffectPrim::Prim3DParticleSpline() {
-  const CRagEffect* master = this->state.master;
-  this->state.orgPos = {
-    this->state.deltaPos2.x + master->render.position.x, master->render.position.y + this->state.deltaPos2.y,
-    master->render.position.z + this->state.deltaPos2.z
-  };
+  this->state.orgPos = this->state.master->render.position + this->state.deltaPos2;
 
-  const int angle = static_cast<int>(this->state.roll);
-  const float lateral = this->state.latiSpeed;
-  this->state.latiSpeed = lateral + this->state.latiAccel;
-  this->state.latitude = lateral + this->state.latitude;
-  this->state.speed = this->state.accel + this->state.speed;
-  this->state.gravSpeed = this->state.gravAccel + this->state.gravSpeed;
+  this->state.speed += this->state.accel;
+  this->state.latitude += this->state.latiSpeed;
+  this->state.latiSpeed += this->state.latiAccel;
+  this->state.gravSpeed += this->state.gravAccel;
 
-  const float distance = this->state.speed - this->state.gravSpeed;
-  Forward(this->state.speed3d, distance, this->state.transform.values);
-  this->state.rotTransform.MakeTransform(this->state.rotAxis, GetRadian(angle));
+  Forward(this->state.speed3d, this->state.speed - this->state.gravSpeed, this->state.transform.values);
+  this->state.rotTransform.MakeTransform(this->state.rotAxis, GetRadian(static_cast<int>(this->state.roll)));
+  Lift(this->state.deltaPos3, this->state.latitude, this->state.rotTransform.values);
 
-  const float move = this->state.latitude;
-  Lift(this->state.deltaPos3, move, this->state.rotTransform.values);
-  this->state.size = this->state.sizeSpeed + this->state.size;
-
-  this->state.deltaPos.x = this->state.deltaPos.x - this->state.speed3d.x;
-  this->state.deltaPos.y = this->state.deltaPos.y - this->state.speed3d.y;
-  this->state.deltaPos.z = this->state.deltaPos.z - this->state.speed3d.z;
-
-  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x + this->state.deltaPos3.x;
-  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y + this->state.deltaPos3.y;
-  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z + this->state.deltaPos3.z;
+  this->state.size += this->state.sizeSpeed;
+  this->state.deltaPos -= this->state.speed3d;
+  this->render.position = this->state.orgPos + this->state.deltaPos + this->state.deltaPos3;
 
   this->ProcessAlpha();
   this->ShiftSegment();
-  return this->AnimMotion();
+
+  if (!this->AnimMotion()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00BE6FE0
