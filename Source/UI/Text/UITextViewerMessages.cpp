@@ -196,6 +196,8 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     this->AddNaviLinks(text, static_cast<unsigned>(wrapped.size()));
     this->AddTipLinks(text, static_cast<unsigned>(wrapped.size()));
     this->AddQuestLinks(text, static_cast<unsigned>(wrapped.size()));
+    this->plainTextMode = 0;
+    return;
   } else {
     if (pixels) {
       int scrollWidth = 0;
