@@ -24,9 +24,8 @@ void CRenderer::Project(const float* position, const float* matrix, RenderVertex
   output.x = x + static_cast<float>(this->viewport.centerX);
 
   const float y = ((((matrix[4] * position[1] + matrix[1] * position[0]) + matrix[7] * position[2]) + matrix[10]) * inverseDepth) * this->viewport.scaleY;
-  const float centerY = static_cast<float>(this->viewport.centerY);
+  output.y = y + static_cast<float>(this->viewport.centerY);
   output.z = depth;
-  output.y = y + centerY;
 }
 
 // OFFSET: 0x0055D750
@@ -41,7 +40,6 @@ void CRenderer::Project(const float* position, const float* matrix, LightmappedV
   output.x = x + static_cast<float>(this->viewport.centerX);
 
   const float y = ((((matrix[4] * position[1] + matrix[1] * position[0]) + matrix[7] * position[2]) + matrix[10]) * inverseDepth) * this->viewport.scaleY;
-  const float centerY = static_cast<float>(this->viewport.centerY);
+  output.y = y + static_cast<float>(this->viewport.centerY);
   output.z = depth;
-  output.y = y + centerY;
 }
