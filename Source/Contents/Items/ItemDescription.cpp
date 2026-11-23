@@ -44,7 +44,8 @@ std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::
     return entry->second;
   }
 
-  return values.insert({id, std::vector<const char*>()}).first->second;
+  const auto inserted = values.insert(std::pair<int, std::vector<const char*>>(id, std::vector<const char*>()));
+  return inserted.first->second;
 }
 
 // OFFSET: 0x006D5890
