@@ -11,6 +11,11 @@
 #include <cmath>
 
 // INLINED
+static vector3d Subtract(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x - right.x, left.y - right.y, left.z - right.z};
+}
+
+// INLINED
 static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   vector3d result;
   result.x = point.x * transform.values[0] + point.y * transform.values[3] + point.z * transform.values[6] + transform.values[9];
@@ -88,10 +93,7 @@ void CBezierArcThrowEffect::OnProcess() {
   vector3d ctrlPt = TransformPoint(g_modeMgr.GetGameMode()->camera->frame.inverse, actorView);
   this->m_progress -= 0.07f;
 
-  vector3d delta;
-  delta.y = this->m_target.y - ctrlPt.y;
-  delta.x = this->m_target.x - ctrlPt.x;
-  delta.z = this->m_target.z - ctrlPt.z;
+  const vector3d delta = Subtract(this->m_target, ctrlPt);
 
   float distSq = delta.y * delta.y + delta.x * delta.x + delta.z * delta.z;
   float dist = SquareRoot(distSq);
