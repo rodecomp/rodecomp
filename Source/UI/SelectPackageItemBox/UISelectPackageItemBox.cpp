@@ -1078,6 +1078,11 @@ void CUISelectPackageItemBox::OnInit() {
   this->cancelButton->SetText(LookupMessage(MSI_CLOSE));
 }
 
+// INLINED
+static std::map<int, std::map<int, SelectPackageTab>>::iterator FindPackage(CSelectPackageItemMgr& manager, int packageId) {
+  return manager.m_packages.find(packageId);
+}
+
 // OFFSET: 0x00A705F0
 // FUNCTION: fn_16788
 void CUISelectPackageItemBox::Open(int sourceIndex) {
@@ -1085,19 +1090,18 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
   this->itemList->ClearData();
   this->title->SetTitle("");
   this->sourceIndex = sourceIndex;
-  const ITEM_INFO item = g_session.LookupClientItemByIdentity(sourceIndex);
+  const ITEM_INFO item = g_session.LookupClientItemByIdentity(this->sourceIndex);
   if (item.identity[1] <= 0) {
     return;
   }
 
   this->packageId = std::atoi(item.itemId.c_str());
-  const char* name = FindItemDescription(this->packageId).identifiedName;
-  this->title->SetTitle(name, std::strlen(name));
+  this->title->SetTitle(FindItemDescription(this->packageId).identifiedName);
   if (!Singleton<CSelectPackageItemMgr>::s_instance) {
     Singleton<CSelectPackageItemMgr>::s_instance = new (std::nothrow) CSelectPackageItemMgr;
   }
 
-  auto package = Singleton<CSelectPackageItemMgr>::s_instance->m_packages.find(this->packageId);
+  auto package = FindPackage(*Singleton<CSelectPackageItemMgr>::s_instance, this->packageId);
   if (package != Singleton<CSelectPackageItemMgr>::s_instance->m_packages.end()) {
     for (const auto& tab : package->second) {
       this->tabList->data.push_back(SelectPackageItemBox::CTabInfoData{this->packageId, tab.first, tab.second.name});
