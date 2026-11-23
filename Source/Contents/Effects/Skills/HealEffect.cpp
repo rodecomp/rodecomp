@@ -93,8 +93,9 @@ void CHealEffect::AddSparks(int kind) {
 // FUNCTION: fn_19068
 void CHealEffect::AddColumn(int kind) {
   const float randomHeight = static_cast<float>(ClampedRandom(20)) + 40.0f;
-  for (int row = 0, angle = 0; angle < 360; ++row, angle += 180) {
-    const int randomAngle = (std::max)(rand() % 360, 0);
+  for (int row = 0; row < 2; ++row) {
+    const int angle = row * 180;
+    const float randomAngle = static_cast<float>(ClampedRandom(360));
     for (int segment = 0; segment < 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -139,15 +140,15 @@ void CHealEffect::AddColumn(int kind) {
       case 3:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = randomHeight;
-        baseAngle = static_cast<float>(randomAngle);
+        baseAngle = randomAngle;
         particle->scale = static_cast<float>(ClampedRandom(100)) * 0.005f + 4.5f + static_cast<float>(row) * 0.2f;
         particle->SetColor(255, 255, 255);
         this->columnLifetime = 30;
         break;
       case 4:
         particle->SetTexture("effect\\alpha_down.tga");
-        particle->speedParameter = static_cast<float>((std::max)(rand() % 20, 0) * row) + 40.0f;
-        baseAngle = static_cast<float>(randomAngle);
+        particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
+        baseAngle = randomAngle;
         particle->scale = static_cast<float>(row) * 0.2f + 4.6f;
         particle->SetColor(140, 210, 140);
         this->columnLifetime = 60;
@@ -170,16 +171,16 @@ void CHealEffect::AddColumn(int kind) {
         break;
       case 7:
         particle->SetTexture("effect\\alpha_down.tga");
-        particle->speedParameter = static_cast<float>((std::max)(rand() % 20, 0) * row) + 40.0f;
-        baseAngle = static_cast<float>(randomAngle);
+        particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
+        baseAngle = randomAngle;
         particle->scale = static_cast<float>(row) * 0.2f + 4.6f;
         particle->SetColor(0, 255, 255);
         this->columnLifetime = 60;
         break;
       case 8:
         particle->SetTexture("effect\\alpha_down.tga");
-        particle->speedParameter = static_cast<float>((std::max)(rand() % 20, 0) * row) + 40.0f;
-        baseAngle = static_cast<float>(randomAngle);
+        particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
+        baseAngle = randomAngle;
         particle->scale = static_cast<float>(row) * 0.2f + 4.6f;
         particle->SetColor(255, 255, 0);
         this->columnLifetime = 60;
@@ -196,7 +197,7 @@ void CHealEffect::AddColumn(int kind) {
 // FUNCTION: fn_19069
 void CHealEffect::AddCone(int kind) {
   for (int row = 0, tilt = 50; tilt > 46; ++row, tilt -= 2) {
-    const int randomAngle = (std::max)(rand() % 360, 0);
+    const float randomAngle = static_cast<float>(ClampedRandom(360));
     for (int segment = 0; segment < 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -215,7 +216,7 @@ void CHealEffect::AddCone(int kind) {
       switch (kind) {
       case 0:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = static_cast<float>(randomAngle);
+        baseAngle = randomAngle;
         particle->speedParameter = 12.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -224,7 +225,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 1:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = static_cast<float>(randomAngle);
+        baseAngle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -233,7 +234,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 2:
         particle->SetTexture("effect\\alpha_down.tga");
-        baseAngle = static_cast<float>(randomAngle);
+        baseAngle = randomAngle;
         particle->speedParameter = 10.0f;
         particle->scale = static_cast<float>(row) * 0.1f + 5.3f;
         particle->phaseParameter = tilt - 4;
@@ -242,7 +243,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 5:
         particle->SetTexture("effect\\ring_blue.tga");
-        baseAngle = static_cast<float>(randomAngle);
+        baseAngle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
