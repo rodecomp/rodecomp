@@ -77,16 +77,18 @@ struct CashEmotionPack {
 
   // INLINED
   bool IsAvailable(unsigned int now) const {
-    if (this->startTime == 0 && this->endTime == 0) {
+    if (this->startTime == 0 && this->endTime <= 0) {
       return true;
     }
-    if (now >= this->startTime && this->endTime == 0) {
+
+    const unsigned int end = this->endTime;
+    if (now >= this->startTime && end == 0) {
       return true;
     }
-    if (this->startTime == 0 && now < this->endTime) {
+    if (this->startTime == 0 && now < end) {
       return true;
     }
-    return now >= this->startTime && now < this->endTime;
+    return now >= this->startTime && now < end;
   }
 
   /* 0000 */ std::string name;
@@ -226,6 +228,7 @@ public:
   bool AddEmotion(int packId, int emotionId, const char* name, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
   void LoadScripts();
   void InsertEmotion(int packId, int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
+  void AddEmotionOrder(int packId, int emotionId);
   void AddPack(int packId, const char* name, int price, unsigned int startTime, unsigned int endTime, int period, int limited);
   void AcquirePack(int packId, unsigned int expiry);
 

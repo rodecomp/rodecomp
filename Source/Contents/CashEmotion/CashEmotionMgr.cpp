@@ -1241,6 +1241,22 @@ bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
   return false;
 }
 
+// OFFSET: 0x0059BED0
+void CCashEmotionMgr::AddEmotionOrder(int packId, int emotionId) {
+  auto it = this->emotionOrder.find(packId);
+  if (this->emotionOrder.end() != it) {
+    std::vector<int>& order = it->second;
+    const auto found = std::find(order.begin(), order.end(), emotionId);
+    if (order.end() == found) {
+      order.push_back(emotionId);
+    }
+  } else {
+    std::vector<int> order;
+    order.push_back(emotionId);
+    this->emotionOrder.emplace(packId, std::move(order));
+  }
+}
+
 // OFFSET: 0x0059C020
 // FUNCTION: fn_46474
 void CCashEmotionMgr::AddPack(int packId, const char* name, int price, unsigned int startTime, unsigned int endTime, int period, int limited) {
@@ -1399,8 +1415,17 @@ CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
 
     const unsigned int startTime = pack->startTime;
     const unsigned int endTime = pack->endTime;
-    if (pack->IsAvailable(now) && owned.find(packId) == owned.end()) {
+    const bool available = (startTime == 0 && endTime == 0) || (endTime == 0 && startTime <= now) || (startTime == 0 && now < endTime) ||
+                           (now >= startTime && now < endTime);
+    if (available && !owned.contains(packId)) {
       packs.push_back(packId);
+    }
+
+    if (startTime == 0 && endTime == 0) {
+      continue;
+    }
+    if (endTime == 0 && startTime <= now) {
+      continue;
     }
 
     if (startTime > now && static_cast<int>(startTime) < nextTime) {
@@ -1412,7 +1437,7 @@ CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
   }
 
   for (int packId : packs) {
-    if (unowned.find(packId) == unowned.end()) {
+    if (!unowned.contains(packId)) {
       changed = true;
     }
   }
@@ -1647,26 +1672,7 @@ int CCashEmotionMgr::InsertOrderList(lua_State* state) {
   const int packId = luaL_checkinteger(state, 1);
   const int emotionId = luaL_checkinteger(state, 2);
 
-  CCashEmotionMgr* mgr = g_cashEmotionMgr;
-  auto it = mgr->emotionOrder.find(packId);
-  if (mgr->emotionOrder.end() != it) {
-    std::vector<int>& order = it->second;
-    auto found = order.begin();
-    for (; order.end() != found; ++found) {
-      if (*found == emotionId) {
-        break;
-      }
-    }
-
-    if (order.end() == found) {
-      order.push_back(emotionId);
-    }
-  } else {
-    std::vector<int> order;
-    order.push_back(emotionId);
-    mgr->emotionOrder.emplace(packId, std::move(order));
-  }
-
+  g_cashEmotionMgr->AddEmotionOrder(packId, emotionId);
   return 1;
 }
 
