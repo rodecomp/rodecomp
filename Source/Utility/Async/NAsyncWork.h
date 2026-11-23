@@ -9,7 +9,11 @@ public:
   __forceinline explicit NAsyncWork(std::string poolName) : NRecycleObject(poolName), m_group(0), m_key(0) {
   }
 
-  ~NAsyncWork() override;
+  // OFFSET: 0x005BA360
+  // FUNCTION: fn_46400
+  ~NAsyncWork() override {
+  }
+
   virtual bool Execute();
   virtual void Complete();
 

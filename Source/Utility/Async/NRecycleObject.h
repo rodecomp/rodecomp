@@ -19,7 +19,11 @@ public:
   }
 
   virtual void Reset() = 0;
-  virtual ~NRecycleObject();
+
+  // OFFSET: 0x005BA3C0
+  // FUNCTION: fn_46401
+  virtual ~NRecycleObject() {
+  }
 
   // OFFSET: 0x00731C60
   // FUNCTION: fn_07563
