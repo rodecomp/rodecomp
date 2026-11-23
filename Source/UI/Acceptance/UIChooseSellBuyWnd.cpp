@@ -2750,7 +2750,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->m_compositionState = static_cast<int>(a);
     if (a != 0) {
       ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->m_title = static_cast<const std::string&>(FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), item.DisplayName(0).c_str()));
       }
     }
@@ -2786,12 +2786,14 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
     if (0x574E == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
         case 0x574F:
-          return 0;
+          scanning = false;
+          break;
         case 0x5751: {
             std::vector<unsigned char> packet(header.length, 0);
             std::memcpy(packet.data(), records + position, header.length);
