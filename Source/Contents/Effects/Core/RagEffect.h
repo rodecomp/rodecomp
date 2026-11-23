@@ -258,7 +258,7 @@ struct CRagEffect : CRenderObject {
   void Bottom_Music(const char* name, char kind);
   void IceArrow();
   void Flasher();
-  int SuperAngel(char type, int dummy = 0);
+  void SuperAngel(char type, int dummy = 0);
   void WarpZone();
   void Enhance();
   void HealSP();

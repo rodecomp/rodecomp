@@ -193,6 +193,11 @@ static void CopyVector(vector3d& to, const vector3d& from) {
 }
 
 // INLINED
+static vector3d operator-(const vector3d& a, const vector3d& b) {
+  return vector3d{a.x - b.x, a.y - b.y, a.z - b.z};
+}
+
+// INLINED
 static std::list<CGameObject*>& WorldObjects() {
   return g_modeMgr.GetGameMode()->scene->objects;
 }
@@ -6638,12 +6643,12 @@ void CRagEffect::SnowFall(const char*, char kind) {
     this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(6)) * 0.1f + 1.5f;
     this->state.lastPrim->state.slots[index].height[8] = 0.0f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    const int radius = ClampedRandom(41);
+    const float radius = static_cast<float>(ClampedRandom(41));
     const std::int16_t angle = static_cast<std::int16_t>(ClampedRandom(360));
     this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
     this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
-    this->state.lastPrim->state.slots[index].vecBNow.x += static_cast<float>(radius) * g_cosTable[angle];
-    this->state.lastPrim->state.slots[index].vecBNow.z += static_cast<float>(radius) * g_sinTable[angle];
+    this->state.lastPrim->state.slots[index].vecBNow.x += radius * g_cosTable[angle];
+    this->state.lastPrim->state.slots[index].vecBNow.z += radius * g_sinTable[angle];
     this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y - 6.0f - static_cast<float>(ClampedRandom(31));
     this->state.lastPrim->state.slots[index].rotStart = 0;
     this->state.lastPrim->state.slots[index].height[1] = 0.0f;
@@ -6832,9 +6837,7 @@ void CRagEffect::TexturedSpread(const char* name, char kind) {
       this->state.lastPrim->state.slots[index].flag1[step] = 0;
     }
 
-    this->state.lastPrim->state.slots[index].vecTPre.x = this->state.deltaPos.x - this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecTPre.y = this->state.deltaPos.y - this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecTPre.z = this->state.deltaPos.z - this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecTPre = this->state.deltaPos - this->render.position;
   }
 }
 
@@ -12607,7 +12610,7 @@ __declspec(safebuffers) void CRagEffect::Flasher() {
 
 // OFFSET: 0x00C666B0
 // FUNCTION: fn_20275
-int CRagEffect::SuperAngel(char type, int dummy) {
+void CRagEffect::SuperAngel(char type, int dummy) {
   CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt == 0 || (this->state.stateCnt <= 18 && (type == 1 || type == 11) && this->state.stateCnt % 3 == 0)) {
     this->state.lastPrim = this->LaunchEffectPrim(85, vector3d{0.0f, 0.0f, 0.0f});
@@ -12705,8 +12708,6 @@ int CRagEffect::SuperAngel(char type, int dummy) {
       }
     }
   }
-
-  return this->state.stateCnt;
 }
 
 // OFFSET: 0x00C3EE10
@@ -16548,7 +16549,16 @@ __declspec(safebuffers) void CRagEffect::IncAgilityCenter(char kind) {
   this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWaveInline(*this, kind == 3 ? "effect\\소울 체인지.wav" : "effect\\EF_IncAgility.wav");
+    const vector3d& playerPosition = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+    if (kind == 3) {
+      g_soundMgr->PlayWave(
+        "effect\\소울 체인지.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z, 250, 40, 1.0f, 0
+      );
+    } else {
+      g_soundMgr->PlayWave(
+        "effect\\EF_IncAgility.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z, 250, 40, 1.0f, 0
+      );
+    }
   }
 
   if ((this->state.stateCnt & 1) != 0) {
@@ -18022,10 +18032,10 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[2].life = 1;
     this->state.lastPrim->state.slots[2].process = 0;
     this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
-    if (type != 0) {
-      this->state.lastPrim->state.slots[2].maxHeight = 18.0f;
-    } else {
+    if (type == 0) {
       this->state.lastPrim->state.slots[2].maxHeight = 12.0f;
+    } else {
+      this->state.lastPrim->state.slots[2].maxHeight = 18.0f;
     }
     this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[2].alphaB = 0;
