@@ -191,39 +191,44 @@ void UITextViewer::Paint() {
   }
 
   const int first = this->topLine;
-  int divisor = (this->lineHeight - this->bottomMargin);
-
+  int divisor = this->lineHeight - this->bottomMargin;
   if (divisor == 0) {
     divisor = 1;
   }
 
   std::uint32_t color = 0;
-  const int limit = (this->geometry.height / divisor + first);
+  const int limit = this->geometry.height / divisor + first;
   const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
 
   for (int index = 0; index < first; ++index) {
     const char* current = this->lines[index].c_str();
-    const char* end = current + this->lines[index].size();
+    const char* last = current + this->lines[index].size();
 
-    while (current < end) {
-      current = ParseColorCode(SegmentEnd(current, end), color);
+    while (current < last) {
+      current = ParseColorCode(SegmentEnd(current, last), color);
     }
   }
 
+  if (first >= end) {
+    return;
+  }
 
-  for (int index = first; index < end; ++index) {
-    const auto& line = this->lines[index];
-    const int y = (index - first) * this->lineHeight + 4;
-    const auto bytes = static_cast<unsigned>(line.size());
+  if (this->plainTextMode == 0) {
+    for (int index = first; index < end; ++index) {
+      const auto& line = this->lines[index];
+      const unsigned bytes = static_cast<unsigned>(line.size());
 
-    if (this->plainTextMode == 0) {
       if (this->outline != 0) {
-        this->DrawOutlinedColoredText(3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
+        this->DrawOutlinedColoredText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
       } else {
-        this->DrawColoredText(3, y, line.c_str(), bytes, color, 0, 12, false);
+        this->DrawColoredText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, color, 0, 12, false);
       }
-    } else {
-      this->DrawOutlinedText(3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
+    }
+  } else {
+    for (int index = first; index < end; ++index) {
+      const auto& line = this->lines[index];
+      const unsigned bytes = static_cast<unsigned>(line.size());
+      this->DrawOutlinedText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
     }
   }
 }
