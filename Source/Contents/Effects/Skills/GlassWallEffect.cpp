@@ -138,8 +138,9 @@ __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   }
 
   matrix translation;
-  translation.MakeTranslate(particle->position.x + particle->offsetX, particle->position.y + particle->offsetY,
-                            particle->position.z + particle->offsetZ);
+  const vector3d position = {particle->position.x + particle->offsetX, particle->position.y + particle->offsetY,
+                             particle->position.z + particle->offsetZ};
+  translation.MakeTranslate(position.x, position.y, position.z);
   matrix rotation;
   rotation.MakeYRotation(GetRadian(static_cast<int>(particle->angle)));
   matrix result;
