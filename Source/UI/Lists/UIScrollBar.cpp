@@ -1608,48 +1608,46 @@ bool UITreeView::DeleteChildNodes(UITreeNode* node) {
   }
 
   int remaining = static_cast<int>(node->children.size());
-  if (remaining <= 0) {
-    return deleted;
-  }
-
-  for (auto it = node->children.begin(); it != node->children.end(); ++it) {
-    deleted = true;
-    UITreeNode* child = *it;
-    if (child->children.size() > 0) {
-      this->DeleteChildNodes(child);
-    }
-
-    if ((*it)->collapseButton) {
-      (*it)->collapseButton->Move(-100, -100);
-      (*it)->collapseButton = nullptr;
-    }
-
-    if ((*it)->expandButton) {
-      (*it)->expandButton->Move(-100, -100);
-      (*it)->expandButton = nullptr;
-    }
-
-    (*it)->labelButton->Move(-100, -100);
-    --remaining;
-    (*it)->labelButton = nullptr;
-
-    if (node->children.size() == 0) {
-      if (node->collapseButton) {
-        node->collapseButton->Move(-100, -100);
-        node->collapseButton = nullptr;
+  if (remaining > 0) {
+    for (auto it = node->children.begin(); it != node->children.end(); ++it) {
+      deleted = true;
+      UITreeNode* child = *it;
+      if (child->children.size() > 0) {
+        this->DeleteChildNodes(child);
       }
 
-      if (node->expandButton) {
-        node->expandButton->Move(-100, -100);
-        node->expandButton = nullptr;
+      if ((*it)->collapseButton) {
+        (*it)->collapseButton->Move(-100, -100);
+        (*it)->collapseButton = nullptr;
       }
-    }
 
-    delete *it;
+      if ((*it)->expandButton) {
+        (*it)->expandButton->Move(-100, -100);
+        (*it)->expandButton = nullptr;
+      }
 
-    if (remaining == 0) {
-      node->children.clear();
-      return true;
+      (*it)->labelButton->Move(-100, -100);
+      --remaining;
+      (*it)->labelButton = nullptr;
+
+      if (node->children.size() == 0) {
+        if (node->collapseButton) {
+          node->collapseButton->Move(-100, -100);
+          node->collapseButton = nullptr;
+        }
+
+        if (node->expandButton) {
+          node->expandButton->Move(-100, -100);
+          node->expandButton = nullptr;
+        }
+      }
+
+      delete *it;
+
+      if (remaining == 0) {
+        node->children.clear();
+        return true;
+      }
     }
   }
 
