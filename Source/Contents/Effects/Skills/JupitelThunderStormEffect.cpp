@@ -81,8 +81,8 @@ void CJupitelThunderStormEffect::Open() {
 
   int corners[4][2] = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}};
   int index = 0;
-  const int rings = (this->effectLevel - 1) / 4;
   const int lastDelay = ((this->effectLevel - 1) / 2 + 6) * 150;
+  const int rings = (this->effectLevel - 1) / 4;
   for (int time = 80; time <= lastDelay; time += 80, ++index) {
     const int delay = time;
     CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
@@ -105,9 +105,9 @@ void CJupitelThunderStormEffect::Open() {
 
     const int variant = rand() % 3;
     LoadFormatted(bolt, "HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm\\jupitel_thunder_storm_%02d.str", variant >= 0 ? variant : 0);
-    bolt->position.z = offsetZ + target[2];
     bolt->position.y = target[1] - g_jupitelThunderStormHeightOffset;
     bolt->position.x = static_cast<float>(corners[corner][0]) * (static_cast<float>(offsetX) + g_depthAverageHalf) + target[0];
+    bolt->position.z = offsetZ + target[2];
     bolt->m_delay = delay;
     this->particles.push_back(bolt);
 
