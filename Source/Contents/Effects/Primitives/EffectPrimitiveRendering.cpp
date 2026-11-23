@@ -3757,23 +3757,25 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
       const float s0 = sn * t0 + jitterZ[segment];
       const float y0 = jitterY[segment] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[segment]))] * 15.0f * slot.vecTNow.x;
       const float c0 = cs * t0 + jitterX[segment];
-      const float t1 = static_cast<float>(next) / 5.0f * slot.distance + 0.0f;
-      const float s1 = sn * t1 + jitterZ[next];
+      const float t1 = next > 0 ? static_cast<float>(next) / 5.0f * slot.distance + 0.0f : 0.0f;
       const float c1 = cs * t1 + jitterX[next];
+      const float s1 = sn * t1 + jitterZ[next];
       const float y1 = jitterY[next] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[next]))] * 15.0f * slot.vecTNow.x;
       const float deltaC = c0 - c1;
       const float deltaS = s0 - s1;
       const float length = SquareRoot(deltaC * deltaC + deltaS * deltaS);
-      short heading = 0;
-      while (deltaC / length < g_cosTable[heading]) {
-        if (++heading > 180) {
+      const float sinHeading = deltaS / length;
+      const float cosHeading = deltaC / length;
+      short heading;
+      for (heading = 0; heading <= 180; ++heading) {
+        if (cosHeading >= g_cosTable[heading]) {
           break;
         }
       }
-      if (heading > 180) {
+      if (heading <= 180) {
+        heading = static_cast<short>(sinHeading >= 0.0f ? heading : 360 - heading);
+      } else {
         heading = 180;
-      } else if (deltaS / length < 0.0f) {
-        heading = static_cast<short>(360 - heading);
       }
       short side = static_cast<short>(heading + 90);
       if (side >= 360) {
@@ -3783,7 +3785,7 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
       const vector3d start{slot.vecBNow.x + c0, slot.vecBNow.y + y0, slot.vecBNow.z + s0};
       const vector3d end{slot.vecBNow.x + c1, slot.vecBNow.y + y1, slot.vecBNow.z + s1};
 
-      if (static_cast<unsigned>(next - 2) <= 17) {
+      if (next > 1 && next < 20) {
         int ring = 0;
         for (int angle = 0; angle <= 360; angle += 120) {
           const float across = slot.maxHeight * g_cosTable[angle];
