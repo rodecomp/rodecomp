@@ -584,10 +584,10 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
       mode = 3;
     } else if (key == 0x20 || key == 0x90) {
-      if (g_windowMgr.modifierKey != 0) {
-        mode = this->CheckHotkeyConflict();
-      } else {
+      if (g_windowMgr.modifierKey == 0) {
         mode = 2;
+      } else {
+        mode = this->CheckHotkeyConflict();
       }
     } else if (mode == 4) {
       if (key == 0x14) {
