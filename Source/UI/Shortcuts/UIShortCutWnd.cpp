@@ -1030,8 +1030,7 @@ void UINewChatWnd::SaveChatLogs() {
   }
 
   for (std::map<int, UIWindow*>::iterator it = g_windowMgr.retainedWindows.begin(); it != g_windowMgr.retainedWindows.end(); ++it) {
-    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(it->second);
-    name = window->Name();
+    name = static_cast<UISubChatHisWnd*>(it->second)->Name();
     sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
     int number = 0;
     while (_access(path, 0) == 0) {
@@ -1039,7 +1038,7 @@ void UINewChatWnd::SaveChatLogs() {
       sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
     }
 
-    if (window->ChatBox()->SaveChatLog(path)) {
+    if (static_cast<UISubChatHisWnd*>(it->second)->ChatBox()->SaveChatLog(path)) {
       std::string message(path);
       message += " is Saved.";
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
