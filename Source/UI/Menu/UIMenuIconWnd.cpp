@@ -448,13 +448,17 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       case MENUICON_MAIL:
         if (g_windowMgr.LookupWindow(WID_REFININGWND)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_REFINING)), 255, 0, 0, 0);
-        } else if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
-        } else if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_ENCHANT)), 255, 0, 0, 0);
-        } else {
-          this->ToggleWindow(WID_RODEXINBOXWND);
+          break;
         }
+        if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
+          break;
+        }
+        if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_ENCHANT)), 255, 0, 0, 0);
+          break;
+        }
+        this->ToggleWindow(WID_RODEXINBOXWND);
         break;
       case MENUICON_ACHIEVEMENT:
         this->ToggleWindow(WID_ACHIEVEMENTWND);
