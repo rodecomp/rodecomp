@@ -357,14 +357,12 @@ void UIAchListWnd::Paint() {
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_list.bmp"), false);
 
   for (int row = 0; row < this->rowCount; ++row) {
-    const unsigned index = this->firstRow + row;
-    if (index >= this->ids.size()) {
+    if (static_cast<unsigned>(this->firstRow + row) >= this->ids.size()) {
       continue;
     }
 
-    std::map<int, AchievementInfo>* achievements = this->achievementList;
-    const auto found = achievements->find(this->ids[index]);
-    if (found == achievements->end()) {
+    const auto found = this->achievementList->find(this->ids[this->firstRow + row]);
+    if (found == this->achievementList->end()) {
       continue;
     }
 
@@ -393,7 +391,7 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(8, this->rowHeight * row + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
     }
 
-    this->DrawTextAt(53, this->rowHeight * row + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(53, this->rowHeight * row + 14, found->second.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
     this->DrawCenteredText(258, this->rowHeight * row + 14, FormatOwnedString("%3d", info.points).c_str(), 40, 0, 12, 0xA55239, 1);
     this->DrawTextAt(10, this->rowHeight * row + 54, info.summaryText.c_str(), 0, 0, 12, 0xA55239, 0, 0);
     if (record.completed == 1) {
