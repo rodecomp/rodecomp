@@ -1743,14 +1743,14 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
 
   if (g_guildInfo.isMaster) {
     const std::string prefix("유저인터페이스\\basic_interface\\");
-    UIBitmapButton** button = this->m_rowButtons;
-    for (int y = 82; y < 298; y += 36, ++button) {
+    for (int index = 0; index < 6; ++index) {
+      UIBitmapButton** button = &this->m_rowButtons[index];
       *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
       (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(142, y);
+      (*button)->Move(142, index * 36 + 82);
       (*button)->SetId(ID_OPEN_MEMBER_POS_COMBO);
       this->AddChild(*button);
     }
@@ -2357,8 +2357,8 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
         {46, this->geometry.height - 24},
         {92, this->geometry.height - 24},
     };
-    UIBitmapButton** button = this->m_actionButtons;
-    for (int index = 0; index < 2; ++index, ++button) {
+    for (int index = 0; index < 2; ++index) {
+      UIBitmapButton** button = &this->m_actionButtons[index];
       *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
