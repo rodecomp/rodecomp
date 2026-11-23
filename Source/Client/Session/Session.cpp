@@ -1845,7 +1845,7 @@ static_assert(sizeof(PACKET_CZ_USE_SKILL_END) == 4);
 // OFFSET: 0x00E2ED90
 // FUNCTION: fn_24151
 void CSession::AddPendingActorName(std::uint32_t id) {
-  this->pendingActorNames.insert(id);
+  this->pendingActorNames.insert(static_cast<std::uint32_t>(id));
 }
 
 // OFFSET: 0x00E2F3B0
