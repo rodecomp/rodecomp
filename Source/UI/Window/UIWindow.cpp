@@ -1255,9 +1255,9 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
   context.SetColor(color);
+  SIZE size;
   while (current < end) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    SIZE size;
     context.Measure(current, static_cast<int>(next - current), &size);
     current = next;
     if (widest < size.cx) {
@@ -1271,7 +1271,6 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
 
   while (text < end) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
-    SIZE size;
     context.Measure(text, static_cast<int>(next - text), &size);
     context.Draw(x + (widest - size.cx) / 2, y, text, static_cast<int>(next - text));
     text = next;
@@ -3490,13 +3489,13 @@ int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
 void UINavigationRuideWnd::RefreshRoute() {
   char text[50];
   std::memset(text, 0, sizeof(text));
+  NaviCell first;
+  NaviCell second;
   this->routeList->Clear();
 
   for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
     CNavi_Link* node = g_navigationManager.GetNode(index);
-    NaviCell first;
-    NaviCell second;
-    std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), node->GetCell(&second)->x, node->GetCell(&first)->y);
+    std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), node->GetCell(&first)->x, node->GetCell(&second)->y);
 
     UIListBox_NaviSearch* list = this->routeList;
     int icon;
@@ -3511,10 +3510,7 @@ void UINavigationRuideWnd::RefreshRoute() {
     list->Invalidate();
   }
 
-  NaviCell cell;
-  if (g_navigationManager.GetDestinationCell(&cell)->x > 0) {
-    NaviCell first;
-    NaviCell second;
+  if (g_navigationManager.GetDestinationCell(&first)->x > 0) {
     std::sprintf(text, "%s (%d %d)", g_navigationManager.GetDestinationInfo()->GetName(), g_navigationManager.GetDestinationCell(&second)->x, g_navigationManager.GetDestinationCell(&first)->y);
   } else {
     std::sprintf(text, "%s", g_navigationManager.GetDestinationInfo()->GetName());
@@ -3592,7 +3588,7 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
       std::string text(LookupMessage(MSI_NAVIGATION_NUM5));
       if (level > 99) {
         text.assign(LookupMessage(MSI_NAVIGATION_NUM1));
-      } else if (level >= 50) {
+      } else if (level > 49 && level <= 99) {
         text = LookupMessage(MSI_NAVIGATION_NUM2);
       } else if (level >= 20 && level <= 49) {
         text = LookupMessage(MSI_NAVIGATION_NUM3);
