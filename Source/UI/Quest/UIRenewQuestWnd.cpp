@@ -210,28 +210,24 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
   for (int index = 0; index < quest.m_huntCount; ++index) {
     std::string text;
     if (quest.m_huntMobId[index] != 31999) {
-      const short minLevel = quest.m_huntMinLevel[index];
-      const short maxLevel = quest.m_huntMaxLevel[index];
       const char* name = quest.m_huntName[index];
-      if (-1 >= minLevel || -1 >= maxLevel || (0 == minLevel && 0 == maxLevel)) {
+      if (-1 >= quest.m_huntMinLevel[index] || -1 >= quest.m_huntMaxLevel[index] || (0 == quest.m_huntMinLevel[index] && 0 == quest.m_huntMaxLevel[index])) {
         text = static_cast<const std::string&>(FormatOwnedString("%s", name));
-      } else if (minLevel == 0) {
-        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-      } else if (0 == maxLevel) {
-        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+      } else if (0 == quest.m_huntMinLevel[index] && 0 != quest.m_huntMaxLevel[index]) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, quest.m_huntMaxLevel[index]));
+      } else if (0 != quest.m_huntMinLevel[index] && 0 == quest.m_huntMaxLevel[index]) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, quest.m_huntMinLevel[index]));
       } else {
-        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, quest.m_huntMinLevel[index], quest.m_huntMaxLevel[index]));
       }
     } else {
       text = static_cast<const std::string&>(
         g_renewQuestMgr->GetMonsterConditionText(quest.m_huntConditionFlags[index], quest.m_huntMinLevel[index], quest.m_huntMaxLevel[index]));
     }
 
-    const short goal = quest.m_huntMaxCount[index];
-    if (goal > 0) {
-      const short count = quest.m_huntKillCount[index];
-      if (count != goal) {
-        text = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", text.c_str(), count, goal));
+    if (quest.m_huntMaxCount[index] > 0) {
+      if (quest.m_huntKillCount[index] != quest.m_huntMaxCount[index]) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", text.c_str(), quest.m_huntKillCount[index], quest.m_huntMaxCount[index]));
       } else {
         text = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", text.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
       }
@@ -509,6 +505,12 @@ int UIRecommededQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intp
   }
 
   return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// INLINED
+static void SetViewerBackground(UITagTextViewer* viewer, std::uint32_t color) {
+  viewer->m_backgroundColor = color;
+  viewer->Invalidate();
 }
 
 // OFFSET: 0x007FB190
@@ -1044,12 +1046,12 @@ void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
 }
 
 // INLINED
-static void SetRecommendedQuestTitle(CRenewQuestMgr* mgr, unsigned int id, std::string title) {
+static void SetRecommendedQuestTitle(unsigned int id, CRenewQuestMgr* mgr, std::string title) {
   mgr->m_recommendedQuests[id].m_title = title;
 }
 
 // INLINED
-static void SetRecommendedQuestSummary(CRenewQuestMgr* mgr, unsigned int id, std::string summary) {
+static void SetRecommendedQuestSummary(unsigned int id, CRenewQuestMgr* mgr, std::string summary) {
   mgr->m_recommendedQuests[id].summary = summary;
 }
 
@@ -1122,7 +1124,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         std::vector<unsigned int>& recommended = this->m_questIds[1];
         auto it = recommended.begin();
         if (it != recommended.end()) {
-          for (; recommended.end() != it; ++it) {
+          for (; this->m_questIds[1].end() != it; it++) {
             if (!g_renewQuestMgr->GetRecommendedQuest(*it).m_state) {
               break;
             }
@@ -1139,13 +1141,13 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         CRenewQuestMgr* mgr = g_renewQuestMgr;
         if (!mgr->m_recommendedQuests.empty()) {
           auto quest = mgr->m_recommendedQuests.begin();
-          while (quest != mgr->m_recommendedQuests.end()) {
+          while (mgr->m_recommendedQuests.end() != quest) {
             std::string title = quest->second.m_title;
             title = this->FitDisplayText(250, title.c_str(), 0, 12, 1);
-            SetRecommendedQuestTitle(g_renewQuestMgr, quest->first, title);
+            SetRecommendedQuestTitle(quest->first, g_renewQuestMgr, title);
             std::string summary = quest->second.summary;
             summary = this->FitDisplayText(250, summary.c_str(), 0, 12, 0);
-            SetRecommendedQuestSummary(g_renewQuestMgr, quest->first, summary);
+            SetRecommendedQuestSummary(quest->first, g_renewQuestMgr, summary);
             ++quest;
           }
         }
@@ -1161,8 +1163,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     if (argument2 != 0) {
       bool found = false;
       for (int tab = 0; tab <= 2; ++tab) {
-        const std::vector<unsigned int>& ids = this->m_questIds[tab];
-        for (auto it = ids.begin(); ids.end() != it; ++it) {
+        for (auto it = this->m_questIds[tab].begin(); this->m_questIds[tab].end() != it; ++it) {
           if (static_cast<unsigned int>(argument2) == *it) {
             found = true;
             break;
