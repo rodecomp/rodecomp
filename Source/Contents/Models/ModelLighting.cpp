@@ -138,7 +138,6 @@ void C3dNode::SampleGroundColors(const CRenderer*, const float* matrix, const Gr
 void C3dNode::Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade) {
   struct matrix combined;
   combined.Compose(this->transform, *reinterpret_cast<const struct matrix*>(matrix));
-  const struct matrix rotation = combined;
 
   switch (shade) {
   case 2: {
@@ -150,7 +149,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       for (unsigned corner = 0; corner < 3; ++corner) {
         float light[3];
-        Light(&normals[index * 3 + corner].x, rotation.values, direction, diffuse, ambient, light);
+        Light(&normals[index * 3 + corner].x, combined.values, direction, diffuse, ambient, light);
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
       }
     }
@@ -164,7 +163,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       float light[3];
-      Light(&normals[index].x, rotation.values, direction, diffuse, ambient, light);
+      Light(&normals[index].x, combined.values, direction, diffuse, ambient, light);
 
       for (unsigned corner = 0; corner < 3; ++corner) {
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
