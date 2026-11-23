@@ -63,9 +63,9 @@ const char* UIWindow::ParseColorCode(const char* text, std::uint32_t& color) {
   }
 
   if (*text == '^') {
-    std::uint32_t value = static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]);
-    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]]);
-    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
+    std::uint32_t value = (static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]) << 8 |
+                           static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]])) << 8 |
+                          static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
     color = value;
     return text + 7;
   }

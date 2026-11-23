@@ -693,7 +693,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
       this->Invalidate();
     }
-    return 0;
+    break;
 
   case MAKECHAR_BUTTON_GENDER:
     for (int index = 0; index < 2; ++index) {
