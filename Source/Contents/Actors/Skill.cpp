@@ -329,6 +329,7 @@ void CSkill::ShowModel(const char* modelName) {
 // FUNCTION: fn_24302
 void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  ActorDamageMessage damageMessage;
 
   switch (message) {
   case AM_SKILL: {
@@ -422,7 +423,6 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
 
     if (target != nullptr) {
-      ActorDamageMessage damageMessage;
       damageMessage.targetAid = this->hitTargetAid;
       damageMessage.action = 26;
       damageMessage.damage = damage;
