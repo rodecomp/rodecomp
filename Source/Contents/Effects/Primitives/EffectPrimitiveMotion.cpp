@@ -6081,7 +6081,7 @@ bool CEffectPrim::PrimFieldFireflies() {
         } else {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
-          if (std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
+          if (g_modeMgr.GetGameMode()->MapName() == "ecl_fild01.rsw") {
             slot.vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
             slot.vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
           }
@@ -6100,22 +6100,21 @@ bool CEffectPrim::PrimFieldFireflies() {
       DriftSlotAngles(slot, 2);
 
       const float motion = slot.height[7];
-      const float driftX = g_sinTable[static_cast<int>(slot.height[0])];
       if (motion == 3.0f) {
-        slot.vecBNow.x += driftX * 0.015f;
+        slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.015f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.015f;
       } else if (motion == 4.0f) {
-        if (driftX > 0.0f) {
-          slot.vecBNow.x += driftX * 0.2f;
+        if (g_sinTable[static_cast<int>(slot.height[0])] > 0.0f) {
+          slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.2f;
         } else {
-          slot.vecBNow.x -= driftX * 0.2f;
+          slot.vecBNow.x -= g_sinTable[static_cast<int>(slot.height[0])] * 0.2f;
         }
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
       } else if (motion == 5.0f) {
-        slot.vecBNow.x += driftX * 0.035f;
+        slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.035f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.035f;
       } else {
-        slot.vecBNow.x += driftX * 0.05f;
+        slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.05f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
       }
     }
