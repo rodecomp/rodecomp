@@ -5323,7 +5323,11 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   const int cellY = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
-  if (hitCount <= 0 || hitCount > 36) {
+  if (hitCount > 0) {
+    if (hitCount > 36) {
+      hitCount = 1;
+    }
+  } else {
     hitCount = 1;
   }
 
