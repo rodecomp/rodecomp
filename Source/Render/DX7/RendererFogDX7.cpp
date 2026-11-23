@@ -32,40 +32,23 @@ float SquareRoot(volatile float value) {
 // OFFSET: 0x00548C30
 // FUNCTION: fn_01863
 HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float nearPlane, float farPlane) {
-  const float difference = farPlane - nearPlane;
-  constexpr float epsilon = 0.01f;
-
-  if (epsilon > std::fabs(difference)) {
+  if (std::fabs(farPlane - nearPlane) < 0.01f) {
+    return E_INVALIDARG;
+  }
+  if (std::fabs(ClientSin(fov / 2)) < 0.01f) {
     return E_INVALIDARG;
   }
 
-  const float half = fov * 0.5f;
+  const float width = aspect * (ClientCos(fov / 2) / ClientSin(fov / 2));
+  const float height = 1.0f * (ClientCos(fov / 2) / ClientSin(fov / 2));
+  const float depth = farPlane / (farPlane - nearPlane);
 
-  if (epsilon > std::fabs(ClientSin(half))) {
-    return E_INVALIDARG;
-  }
-
-  const float scaleX = ClientCos(half) / ClientSin(half) * aspect;
-  const float scaleY = ClientCos(half) / ClientSin(half);
-  const float depth = farPlane / difference;
-
-  matrix._12 = 0;
-  matrix._13 = 0;
-  matrix._14 = 0;
-  matrix._21 = 0;
-  matrix._23 = 0;
-  matrix._24 = 0;
-  matrix._31 = 0;
-  matrix._32 = 0;
-  matrix._41 = 0;
-  matrix._42 = 0;
-  matrix._44 = 0;
-  matrix._34 = 1;
+  ZeroMemory(&matrix, sizeof(D3DMATRIX));
+  matrix._11 = width;
+  matrix._22 = height;
   matrix._33 = depth;
-  const float translation = -depth * nearPlane;
-  matrix._11 = scaleX;
-  matrix._22 = scaleY;
-  matrix._43 = translation;
+  matrix._34 = 1.0f;
+  matrix._43 = -depth * nearPlane;
 
   return S_OK;
 }
