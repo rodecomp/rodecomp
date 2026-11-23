@@ -1579,7 +1579,11 @@ bool CSession::RemoveMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned c
       return true;
     }
   }
-  this->RefreshItem1768Window(alternate, 0);
+  if (alternate) {
+    this->RefreshItem1768Window(1, 0);
+  } else {
+    this->RefreshItem1768Window(0, 0);
+  }
   return false;
 }
 
