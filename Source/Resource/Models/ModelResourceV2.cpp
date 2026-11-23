@@ -192,7 +192,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     }
 
     node->mesh->faces = faces;
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
     node->mesh->CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
