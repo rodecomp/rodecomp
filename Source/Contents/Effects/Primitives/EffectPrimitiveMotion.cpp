@@ -2625,7 +2625,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   vector3d origin = particle.orgPos + particle.deltaPos2;
 
   if (particle.changePoint == particle.stateCnt) {
-    constexpr float sentinel = 0.0001f;
+    const float sentinel = g_changeEpsilon;
 
     if (particle.changeWidthSpeed != sentinel) {
       particle.widthSpeed = particle.changeWidthSpeed;
@@ -2699,7 +2699,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x400u) != 0) {
-    if (this->CalcDist(particle.master->state.deltaPos.x, particle.master->state.deltaPos.z) <= 3.0f) {
+    if (g_masterReachDistance >= this->CalcDist(particle.master->state.deltaPos.x, particle.master->state.deltaPos.z)) {
       particle.masterReached = 1;
       return false;
     }
@@ -2729,7 +2729,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   } else {
     if ((particle.pattern & 0x40u) != 0) {
       const CGameMode* mode = g_modeMgr.GetGameMode();
-      particle.longitude = mode->camera->camera.yaw + 90.0f;
+      particle.longitude = mode->camera->camera.yaw + g_cameraYawOffset;
       particle.roll = mode->camera->camera.pitch;
       rotation.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
       rotation.AppendZRotation(GetRadian(static_cast<int>(particle.roll)));
@@ -2745,14 +2745,11 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   rotation.AppendYRotation(yaw);
 
   if ((particle.pattern & 2u) != 0) {
-    particle.v1 = static_cast<float>(static_cast<int>(particle.chCnt)) / 10.0f;
-    particle.v2 = particle.v1 + 1.0f;
-
-    ++particle.chCnt;
-
-    if (particle.chCnt == 10) {
-      particle.chCnt = 0;
-    }
+    const auto index = particle.chCnt;
+    particle.chCnt = index + 1u == 10u ? 0u : index + 1u;
+    const float offset = static_cast<float>(static_cast<int>(index)) / g_projectionDepthOffset;
+    particle.v1 = offset;
+    particle.v2 = offset + g_projectionDepthNumerator;
   }
 
   if ((particle.pattern & 0x10u) != 0) {
@@ -2771,7 +2768,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x20u) != 0 && particle.stateCnt % static_cast<int>(particle.type) == 0) {
-    particle.heightSpeed *= -1.0f;
+    particle.heightSpeed *= g_heightSpeedSign;
   }
 
   if ((particle.pattern & 0x800u) != 0 && (particle.red == 254 || particle.blue == 254 || particle.green == 254)) {
@@ -2832,15 +2829,15 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
-    const int total = static_cast<int>(particle.totalTexture);
-    ++this->render.curMotion;
+    const auto next = this->render.curMotion + 1u;
+    this->render.curMotion = next;
 
     if (particle.repeatAnim == 0) {
-      if (this->render.curMotion == total) {
+      if (next == particle.totalTexture) {
         return false;
       }
     } else {
-      this->render.curMotion %= total;
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
     }
   }
 
