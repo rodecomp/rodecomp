@@ -47,3 +47,4 @@ std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::
 extern template std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
 using PersistentWindowTree = std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIWindow*>, false>>;
 extern template std::pair<std::_Tree_node<UIWindow*, void*>*, bool> PersistentWindowTree::_Emplace<UIWindow*>(UIWindow*&&);
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;

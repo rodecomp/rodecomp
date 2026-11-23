@@ -1227,6 +1227,11 @@ void UIWindowMgr::CycleWindowVisibilityTwice() {
   this->CycleWindowVisibility(4);
 }
 
+// INLINED
+static void PushRendered(UIWindowMgr* manager, UIWindow* window) {
+  manager->rendered.push_back(window);
+}
+
 // OFFSET: 0x00A8FDB0
 // FUNCTION: fn_17151
 int UIWindowMgr::RunEmailAddress() {
@@ -1237,7 +1242,7 @@ int UIWindowMgr::RunEmailAddress() {
   UIWindow* window = new UIEmailAddressWnd();
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
-  this->rendered.push_back(window);
+  PushRendered(this, window);
 
   if (this->inputWindow) {
     this->persistentWindows.insert(this->inputWindow->Root());
@@ -1247,7 +1252,6 @@ int UIWindowMgr::RunEmailAddress() {
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
   int response;
-  CMode* pump = g_modeMgr.currentMode;
 
   for (;;) {
     if (g_modalImmediate != 0) {
@@ -1283,12 +1287,11 @@ int UIWindowMgr::RunEmailAddress() {
       break;
     }
 
-    if (pump) {
-      pump->Update();
-      pump = g_modeMgr.currentMode;
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->Update();
     }
 
-    if (g_session.GetOption(20) > 0) {
+    if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
       this->activeWindowId = 0;
       this->modalResponse = 0;
 
