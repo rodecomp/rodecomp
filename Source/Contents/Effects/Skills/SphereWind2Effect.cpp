@@ -45,17 +45,16 @@ void CSphereWind2Effect::Close() {
 // OFFSET: 0x00B76F70
 // FUNCTION: fn_46043
 __forceinline void CSphereWind2Effect::CreateRings(int baseAngle) {
-  int angle = baseAngle;
-  const vector3d* origin = &this->positionVector;
   for (int ring = 0; ring < 4; ++ring) {
+    const int angle = ring * 45 + baseAngle;
     const int delay = -Random(20);
     const float radius = static_cast<float>(Random(11)) * 0.2f + 2.0f;
-    const int rotation = Random(360);
+    const float rotation = static_cast<float>(Random(360));
     const int step = Random(91) + 180;
-    const int speed = Random(4) + 3;
+    const float speed = static_cast<float>(Random(4) + 3);
 
     for (int part = 0; part < 21; ++part) {
-      CParticle* particle = CreateParticle(origin, 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         const int effectId = this->id;
         particle->columnIndex = part;
@@ -65,12 +64,12 @@ __forceinline void CSphereWind2Effect::CreateRings(int baseAngle) {
         particle->elapsedFrames = delay;
         particle->speedParameter = radius;
         particle->scale = 5.0f;
-        particle->angle = static_cast<float>(rotation);
+        particle->angle = rotation;
         particle->phaseParameter = angle;
         particle->alpha = 0;
         particle->angleParameter = step;
         particle->animationParameter = -10.0f;
-        particle->animationParameters[0] = static_cast<float>(speed);
+        particle->animationParameters[0] = speed;
         particle->SetTexture("effect\\fire_ivy.bmp");
         particle->SetColor(255, 89, 182);
         particle->InitParticleQuad(particle->vertices);
@@ -78,7 +77,6 @@ __forceinline void CSphereWind2Effect::CreateRings(int baseAngle) {
       }
     }
 
-    angle += 45;
   }
 }
 
@@ -101,54 +99,63 @@ bool CSphereWind2Effect::IsAlive() {
   return !this->IsFinished();
 }
 
+// INLINED
+static __forceinline void BuildSegmentPoints(const CParticle* particle, EffectPoint (&points)[4], int angle, int pitch, float scale) {
+  points[0].x = g_cosTable[angle] * scale * g_cosTable[pitch];
+  points[0].y = g_sinTable[angle] * scale * g_cosTable[pitch];
+  points[0].z = scale * g_sinTable[pitch];
+  const float radius = particle->speedParameter;
+  points[1].x = -g_sinTable[angle] * radius;
+  points[1].y = g_cosTable[angle] * radius;
+  points[1].z = 0.0f;
+  const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
+  points[3].x = points[0].x + points[1].x + offset.x;
+  points[3].y = points[0].y + points[1].y + offset.y;
+  points[3].z = points[0].z + points[1].z + offset.z;
+  points[2].x = points[0].x - points[1].x + offset.x;
+  points[2].y = points[0].y - points[1].y + offset.y;
+  points[2].z = points[0].z - points[1].z + offset.z;
+}
+
+// INLINED
+static __forceinline void StoreSegment(EffectPoint (&lastPoints)[2], CParticle* particle, int texPart, const EffectPoint (&points)[4]) {
+  particle->vertices[1].x = points[2].x;
+  particle->vertices[1].y = points[2].y;
+  particle->vertices[1].z = points[2].z;
+  particle->vertices[3].x = points[3].x;
+  particle->vertices[3].y = points[3].y;
+  particle->vertices[3].z = points[3].z;
+
+  if (texPart != 0) {
+    particle->vertices[0].x = lastPoints[1].x;
+    particle->vertices[0].y = lastPoints[1].y;
+    particle->vertices[0].z = lastPoints[1].z;
+    particle->vertices[2].x = lastPoints[0].x;
+    particle->vertices[2].y = lastPoints[0].y;
+    particle->vertices[2].z = lastPoints[0].z;
+  }
+
+  lastPoints[0].x = points[3].x;
+  lastPoints[0].y = points[3].y;
+  lastPoints[0].z = points[3].z;
+  lastPoints[1].x = points[2].x;
+  lastPoints[1].y = points[2].y;
+  lastPoints[1].z = points[2].z;
+}
+
 // OFFSET: 0x00B77140
 // FUNCTION: fn_46044
-__forceinline void CSphereWind2Effect::UpdateSegmentVertices(CParticle* particle) {
+void CSphereWind2Effect::UpdateSegmentVertices(CParticle* particle) {
   if (particle && particle->elapsedFrames > 0) {
-    const int angle = particle->phaseParameter;
     const int texPart = particle->columnIndex;
-    const float scale = particle->scale;
     const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
     const int pitch = static_cast<int>(static_cast<float>(step * texPart) + particle->angle) % 360;
 
-    const float radius = particle->speedParameter;
     EffectPoint points[4];
-    points[0].x = scale * g_cosTable[angle] * g_cosTable[pitch];
-    points[0].y = scale * g_sinTable[angle] * g_cosTable[pitch];
-    points[0].z = scale * g_sinTable[pitch];
-    points[1].x = -g_sinTable[angle] * radius;
-    points[1].y = radius * g_cosTable[angle];
-    points[1].z = 0.0f;
-    const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
-    points[2].x = points[0].x - points[1].x + offset.x;
-    points[2].y = points[0].y - points[1].y + offset.y;
-    points[2].z = points[0].z - points[1].z + offset.z;
-    points[3].x = points[0].x + points[1].x + offset.x;
-    points[3].y = points[0].y + points[1].y + offset.y;
-    points[3].z = points[0].z + points[1].z + offset.z;
-
-    particle->vertices[1].x = points[2].x;
-    particle->vertices[1].y = points[2].y;
-    particle->vertices[1].z = points[2].z;
-    particle->vertices[3].x = points[3].x;
-    particle->vertices[3].y = points[3].y;
-    particle->vertices[3].z = points[3].z;
-
-    if (texPart != 0) {
-      particle->vertices[0].x = this->lastPoints[1].x;
-      particle->vertices[0].y = this->lastPoints[1].y;
-      particle->vertices[0].z = this->lastPoints[1].z;
-      particle->vertices[2].x = this->lastPoints[0].x;
-      particle->vertices[2].y = this->lastPoints[0].y;
-      particle->vertices[2].z = this->lastPoints[0].z;
-    }
-
-    this->lastPoints[1].x = points[2].x;
-    this->lastPoints[1].y = points[2].y;
-    this->lastPoints[1].z = points[2].z;
-    this->lastPoints[0].x = points[3].x;
-    this->lastPoints[0].y = points[3].y;
-    this->lastPoints[0].z = points[3].z;
+    const int angle = particle->phaseParameter;
+    const float scale = particle->scale;
+    BuildSegmentPoints(particle, points, angle, pitch, scale);
+    StoreSegment(this->lastPoints, particle, texPart, points);
   }
 }
 
@@ -164,12 +171,13 @@ __forceinline void CSphereWind2Effect::UpdateSegment(CParticle* particle) {
         alpha -= 2;
       }
 
-      const float scale = particle->scale * 1.01f;
       particle->alpha = alpha >= 0 ? alpha : 0;
+      const float scale = particle->scale * 1.01f;
       particle->scale = scale;
 
       const int oldAngle = particle->phaseParameter;
       particle->phaseParameter = oldAngle + (oldAngle + 1 < 360 ? 1 : -359);
+      const int texPart = particle->columnIndex;
 
       float& spin = particle->angle;
       float rotation = particle->animationParameters[0] + spin;
@@ -178,7 +186,25 @@ __forceinline void CSphereWind2Effect::UpdateSegment(CParticle* particle) {
       }
       spin = rotation;
 
-      this->UpdateSegmentVertices(particle);
+      const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
+      const int pitch = static_cast<int>(static_cast<float>(step * texPart) + particle->angle) % 360;
+      const int angle = particle->phaseParameter;
+      EffectPoint points[4];
+      const float radius = particle->speedParameter;
+      points[0].z = scale * g_sinTable[pitch];
+      points[0].x = scale * g_cosTable[angle] * g_cosTable[pitch];
+      points[0].y = scale * g_sinTable[angle] * g_cosTable[pitch];
+      points[1].x = -g_sinTable[angle] * radius;
+      points[1].y = radius * g_cosTable[angle];
+      points[1].z = 0.0f;
+      const vector3d offset = {0.0f, particle->animationParameter, 0.0f};
+      points[3].x = points[0].x + points[1].x + offset.x;
+      points[3].y = points[0].y + points[1].y + offset.y;
+      points[3].z = points[0].z + points[1].z + offset.z;
+      points[2].x = points[0].x - points[1].x + offset.x;
+      points[2].y = points[0].y - points[1].y + offset.y;
+      points[2].z = points[0].z - points[1].z + offset.z;
+      StoreSegment(this->lastPoints, particle, texPart, points);
     }
   }
 }
