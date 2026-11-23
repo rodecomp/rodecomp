@@ -94,22 +94,12 @@ CPakFile* PakFileDeleter::Destroy(unsigned int flags) {
 
 template __declspec(noinline) std::pair<std::set<PakUsedBlock>::iterator, bool> std::set<PakUsedBlock>::_Mybase::insert<false, 0>(PakUsedBlock&&);
 
-// OFFSET: 0x005EF3F0
-// FUNCTION: fn_04004
-CPakFile::~CPakFile() = default;
 
 namespace myGPack {
   // OFFSET: 0x005F7790
   // FUNCTION: fn_04046
   CReadPakFile::CReadPakFile() : m_handle(INVALID_HANDLE_VALUE), m_size(0) {
   }
-
-  // INLINED
-  CReadPakFile::~CReadPakFile() {
-    this->Close();
-  }
-
-  CWritePakFile::~CWritePakFile() = default;
 
   // OFFSET: 0x005EF850
   // FUNCTION: fn_04013
