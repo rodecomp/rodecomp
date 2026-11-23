@@ -232,7 +232,7 @@ void CThrowItemEffect::Open() {
         }
         break;
       }
-      case EF_THROW_MULTIPLE_COIN:
+      case EF_THROW_MULTIPLE_COIN: {
         this->effectLifetime = 200;
         this->arcHeight = 10.0f;
         particle->SetTexture("effect\\coin_a.bmp");
@@ -241,11 +241,13 @@ void CThrowItemEffect::Open() {
         particle->angle = 330.0f;
         particle->speedParameter = 2.0f;
         particle->alpha = 255;
+        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
         particle->destinationBlend = 6;
-        particle->offsetZ = this->position[2];
-        particle->offsetY = this->position[1] - 8.0f;
-        particle->offsetX = this->position[0];
+        particle->offsetZ = offset.z;
+        particle->offsetY = offset.y;
+        particle->offsetX = offset.x;
         break;
+      }
       case EF_KAIHOU:
         if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
           if (owner->charmType == CHARM_TYPE_WATER) {
@@ -264,9 +266,10 @@ void CThrowItemEffect::Open() {
           particle->angle = 330.0f;
           particle->speedParameter = 1.5f;
           particle->alpha = 255;
-          particle->offsetZ = this->position[2];
-          particle->offsetY = this->position[1] - 15.0f;
-          particle->offsetX = this->position[0];
+          const vector3d offset = {this->position[0], this->position[1] - 15.0f, this->position[2]};
+          particle->offsetZ = offset.z;
+          particle->offsetY = offset.y;
+          particle->offsetX = offset.x;
         }
         break;
       }
