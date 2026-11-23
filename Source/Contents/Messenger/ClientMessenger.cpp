@@ -3843,8 +3843,9 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
   int value = 0x7FFFFFFF;
   int key = -1;
   std::string text = fmt::format("{0}", name);
-  for (int position = 1; position <= count; ++position) {
-    const int stackIndex = position - count - 1;
+  for (int argument = 0; argument < count; ++argument) {
+    const int position = argument + 1;
+    const int stackIndex = argument - count;
     if (!lua_isnumber(state, stackIndex)) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, fmt::format("arg{0} is must number", position).c_str());
@@ -4010,11 +4011,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
   }
 
   CEquipment* equipment = this->properties2.insert({key, new CEquipmentExpansion(itemId, kind)}).first->second;
-  if (kind == 1) {
-    notify = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND) != nullptr;
+  bool load = notify;
+  switch (kind) {
+  case 1:
+    load = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND) != nullptr;
+    break;
   }
-  equipment->Load(notify);
-  this->EquipItem(equipment->GetId(), notify);
+  equipment->Load(load);
+  this->EquipItem(equipment->GetId(), load);
 
   if (this->notifyWindow != nullptr) {
     this->notifyWindow->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -4646,12 +4650,17 @@ int GetLocation(lua_State* state) {
   return 1;
 }
 
+// INLINED
+static const std::string MapNameOf(const CGameMode* mode) {
+  return mode->mapName;
+}
+
 // OFFSET: 0x006BE3A0
 // FUNCTION: fn_06283
 int GetMapName(lua_State* state) {
   std::string mapName;
   if (g_modeMgr.GetGameMode() != nullptr) {
-    mapName = std::string(g_modeMgr.GetGameMode()->mapName);
+    mapName = MapNameOf(g_modeMgr.GetGameMode());
   }
   mapName = mapName.substr(0, mapName.find(".rsw"));
   lua_pushstring(state, mapName.c_str());
