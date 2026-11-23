@@ -39,6 +39,10 @@ struct EZ2STREffectRecord {
 
 class CEZ2STREffectMgr : public Singleton<CEZ2STREffectMgr> {
 public:
+// INLINED
+  __forceinline CEZ2STREffectMgr() {
+  }
+
   /* 0004 */ std::map<std::string, EZ2STREffectInfo> effects;
 
   struct InfoInserter {

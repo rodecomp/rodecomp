@@ -265,7 +265,13 @@ __declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {
 // OFFSET: 0x006FFA20
 // FUNCTION: fn_06968
 void CEZ2STREffectEx::Open() {
-  EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::s_instance;
+  if (!manager) {
+    manager = new (std::nothrow) CEZ2STREffectMgr;
+    CEZ2STREffectMgr::s_instance = manager;
+  }
+
+  EZ2STREffectInfo* info = manager->FindById(this->id);
   if (!info) {
     return;
   }
