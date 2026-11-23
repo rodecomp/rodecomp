@@ -198,18 +198,18 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     dist = this->state.slots[ec].distance;
     cs = g_cosTable[this->state.slots[ec].rotStart];
     sn = g_sinTable[this->state.slots[ec].rotStart];
-    vec1.x = cs * (dist * 0.47f) - sn * -1.0f;
+    vec1.x = cs * (dist * 0.47f) - sn * g_heightSpeedSign;
     vec1.y = dist * -0.0f;
-    vec1.z = sn * (dist * 0.47f) + cs * -1.0f;
-    vec2.x = cs * (dist * -0.47f) - sn * -1.0f;
+    vec1.z = sn * (dist * 0.47f) + cs * g_heightSpeedSign;
+    vec2.x = cs * (dist * -0.47f) - sn * g_heightSpeedSign;
     vec2.y = dist * -0.0f;
-    vec2.z = sn * (dist * -0.47f) + cs * -1.0f;
-    vec3.x = cs * (dist * -0.47f) - sn * -1.0f;
+    vec2.z = sn * (dist * -0.47f) + cs * g_heightSpeedSign;
+    vec3.x = cs * (dist * -0.47f) - sn * g_heightSpeedSign;
     vec3.y = dist * -0.6f;
-    vec3.z = sn * (dist * -0.47f) + cs * -1.0f;
-    vec4.x = cs * (dist * 0.47f) - sn * -1.0f;
+    vec3.z = sn * (dist * -0.47f) + cs * g_heightSpeedSign;
+    vec4.x = cs * (dist * 0.47f) - sn * g_heightSpeedSign;
     vec4.y = dist * -0.6f;
-    vec4.z = sn * (dist * 0.47f) + cs * -1.0f;
+    vec4.z = sn * (dist * 0.47f) + cs * g_heightSpeedSign;
     this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(this->state.slots[ec].process % 27) + 60, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
