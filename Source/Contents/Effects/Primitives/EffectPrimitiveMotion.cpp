@@ -5673,7 +5673,8 @@ void CEffectPrim::PrimWaveSpin() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
     slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (this->state.accel != 99.0f ? 5 : 3));
     if (slot.rotStart >= 360) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
@@ -5706,7 +5707,11 @@ void CEffectPrim::PrimWaveSpin() {
         slot.alphaB = 0;
       }
     } else {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (slot.alphaT == 1 ? 10 : 20));
+      if (slot.alphaT == 1) {
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
+      } else {
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 20);
+      }
     }
 
     const int phase = index * 90;
