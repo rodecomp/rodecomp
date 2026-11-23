@@ -211,19 +211,29 @@ void CRedLineEffect::OnProcess() {
   }
 }
 
-// OFFSET: 0x00B72180
-// FUNCTION: fn_46053
-__forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
+// INLINED
+template <bool zeroFirst>
+static __forceinline void RenderRedLineSegment(CParticle* particle) {
   if (particle && particle->columnIndex > 0) {
     int blend;
     short shade;
 
-    if (particle->animationParameter == 0.0f) {
-      shade = 10;
-      blend = 6;
+    if (zeroFirst) {
+      if (0.0f == particle->animationParameter) {
+        shade = 10;
+        blend = 6;
+      } else {
+        shade = 100;
+        blend = 2;
+      }
     } else {
-      shade = 100;
-      blend = 2;
+      if (particle->animationParameter == 0.0f) {
+        shade = 10;
+        blend = 6;
+      } else {
+        shade = 100;
+        blend = 2;
+      }
     }
 
     particle->destinationBlend = blend;
@@ -242,12 +252,18 @@ __forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
   }
 }
 
+// OFFSET: 0x00B72180
+// FUNCTION: fn_46053
+void CRedLineEffect::RenderSegment(CParticle* particle) {
+  RenderRedLineSegment<true>(particle);
+}
+
 // OFFSET: 0x00B72240
 // FUNCTION: fn_19139
 void CRedLineEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
 
-    this->RenderSegment(particle);
+    RenderRedLineSegment<false>(particle);
   }
 }
