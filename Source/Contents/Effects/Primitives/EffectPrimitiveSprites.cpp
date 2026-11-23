@@ -205,7 +205,7 @@ static __declspec(safebuffers) __forceinline void DrawTrailSpriteQuad(
 void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
   CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
-  const short alpha = static_cast<short>(this->state.alpha);
+  const std::uint32_t alpha = static_cast<unsigned short>(static_cast<short>(this->state.alpha));
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life <= 0 || !(this->state.alpha > 0.0f)) {
@@ -256,7 +256,8 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const std::uint32_t red = cell.colorChannels.red;
         const std::uint32_t green = cell.colorChannels.green;
         const std::uint32_t blue = cell.colorChannels.blue;
-        const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
+        const std::uint8_t alphaByte = static_cast<unsigned char>(alpha);
+        const std::uint32_t color = (((((alphaByte << 8) + red) << 8) + green) << 8) + blue;
         const float angle = static_cast<float>(cell.rotation) + this->state.roll;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
 
@@ -267,7 +268,8 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
           sprite->palette, 5, g_effectIconOuterRadius
         );
 
-        const std::uint32_t halfColor = (((((alpha / 2 << 8) + red) << 8) + green) << 8) + blue;
+        const std::uint8_t halfAlphaByte = static_cast<unsigned char>(alpha / 2);
+        const std::uint32_t halfColor = (((((halfAlphaByte << 8) + red) << 8) + green) << 8) + blue;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, angle, halfColor, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
