@@ -643,6 +643,12 @@ void GameSettings::ResetToDefaults() {
   }
 }
 
+// INLINED
+__forceinline bool GetServiceOptionInline(int id) {
+  const auto entry = g_serviceOptions.values.find(id);
+  return entry == g_serviceOptions.values.end() ? false : entry->second;
+}
+
 // OFFSET: 0x006C27D0
 // FUNCTION: fn_06323
 void GameSettings::ToggleOption(int id) {
@@ -652,7 +658,7 @@ void GameSettings::ToggleOption(int id) {
   }
 
   if ((*option)->type == 0) {
-    this->SetOption(id, g_serviceOptions.Get(id) == 0, true);
+    this->SetOption(id, GetServiceOptionInline(id) == 0, true);
     g_windowMgr.RefreshGameSettingOption(id);
   } else if ((*option)->type == 1) {
     this->RunFunction(id);
