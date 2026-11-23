@@ -6627,20 +6627,20 @@ __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
     angle = static_cast<int>(alpha * g_depthAverageHalf);
     this->RenderTeiRect(&rpCnt, static_cast<short>(angle), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    vec4 = {0.0f, 0.0f, 0.0f};
-    vec1 = {0.0f, 0.0f, 0.0f};
+    vec4.Set(0.0f, 0.0f, 0.0f);
+    vec1.Set(0.0f, 0.0f, 0.0f);
 
     angle = this->state.slots[ec].riseAngle - 5;
     if (angle < 0) {
       angle += 360;
     }
-    vec2 = {g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance};
+    vec2.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
 
     angle = this->state.slots[ec].riseAngle + 5;
     if (angle >= 360) {
       angle -= 360;
     }
-    vec3 = {g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance};
+    vec3.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
 
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
