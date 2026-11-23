@@ -151,6 +151,7 @@ public:
   int* LevelAreaAt(int& kind, unsigned int index, bool currentWorldOnly);
   int LevelCount();
   CWorldViewWorld* CurrentWorld();
+  bool IsMapDisplayNameTranslated(const char* mapName);
 
   /* 0000 */ std::vector<WorldViewRecord> marks;
   /* 000C */ std::vector<WorldViewRecord> levels;

@@ -407,14 +407,10 @@ bool CWorldViewMgr::ScaleToScreen() {
     const int textureHeight = (*it)->texture->Height();
     const auto mapEnd = (*it)->maps.end();
     for (auto mapIt = (*it)->maps.begin(); mapIt != mapEnd; ++mapIt) {
-      CWorldViewMap* map = *mapIt;
-      this->ScaleArea(&map->left, 17, textureWidth, textureHeight);
-      const auto fieldEnd = map->fields.end();
-      for (auto fieldIt = map->fields.begin(); fieldIt != fieldEnd; ++fieldIt) {
-        CWorldViewField* field = *fieldIt;
-        if (field) {
-          this->ScaleArea(&field->left, 17, textureWidth, textureHeight);
-        }
+      this->ScaleArea(&(*mapIt)->left, 17, textureWidth, textureHeight);
+      const auto fieldEnd = (*mapIt)->fields.end();
+      for (auto fieldIt = (*mapIt)->fields.begin(); fieldIt != fieldEnd; ++fieldIt) {
+        this->ScaleArea(&(*fieldIt)->left, 17, textureWidth, textureHeight);
       }
     }
   }
@@ -701,7 +697,7 @@ CWorldViewWorld* CWorldViewMgr::CurrentWorld() {
 
 // OFFSET: 0x00617950
 // FUNCTION: fn_04391
-bool __stdcall IsMapDisplayNameTranslated(const char* mapName) {
+bool CWorldViewMgr::IsMapDisplayNameTranslated(const char* mapName) {
   const std::string placeholder = LookupMessage(MSI_NOWHERE);
   const std::string displayName = g_session.GetMapDisplayName(mapName);
   return placeholder != displayName;
