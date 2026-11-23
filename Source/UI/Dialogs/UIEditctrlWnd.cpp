@@ -548,8 +548,8 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     button->Move(static_cast<int>(static_cast<float>(argument3) * this->scale - 6.0f + this->originX),
       static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + 6.0f)));
     this->AddChild(button);
-    this->questButtons.insert(std::make_pair(id, button));
-    this->questMarks.insert(std::make_pair(id, MiniMapMark{argument3, argument4}));
+    this->questButtons.try_emplace(id, button);
+    this->questMarks.try_emplace(id, MiniMapMark{argument3, argument4});
     this->Invalidate();
     return 0;
   }
