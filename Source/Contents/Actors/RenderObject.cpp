@@ -1107,7 +1107,9 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, 0x7C, EffectLifetime(0x7C) + 10, 0);
     break;
   }
-  case BS_HAMMERFALL: {
+  case BS_HAMMERFALL:
+  case NPC_MAGMA_ERUPTION:
+  case NC_MAGMA_ERUPTION: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
     break;
@@ -1188,14 +1190,14 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case CR_CULTIVATION:
-    this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
   case GS_GROUNDDRIFT:
     g_soundMgr->PlayWave("effect\\그라운드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NJ_SUITON:
     g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case CR_CULTIVATION:
+    this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_ICEEXPLO:
     this->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1204,12 +1206,6 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case NPC_MAXPAIN_ATK:
     this->LaunchEffect(EF_MAXPAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case NPC_MAGMA_ERUPTION:
-  case NC_MAGMA_ERUPTION: {
-    vector3d position{x, height, z};
-    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
-    break;
-  }
   case NPC_RAYOFGENESIS:
   case LG_RAYOFGENESIS: {
     vector3d position{x, height, z};
