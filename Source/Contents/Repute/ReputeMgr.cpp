@@ -128,13 +128,19 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
 // OFFSET: 0x0060DBF0
 // FUNCTION: fn_04293
 bool CReputeMgr::Load() {
-  if (this->LoadReputeInfoData(this->m_infos)) {
-    const bool loaded = this->LoadReputeGroupData(this->m_groups);
-    if (loaded) {
-      return loaded;
-    }
+  bool loaded = this->LoadReputeInfoData(this->m_infos);
+  if (!loaded) {
+    ShowErrorDialog("Failed : LoadReputeInfoData", 0);
+    return false;
   }
 
+  loaded = this->LoadReputeGroupData(this->m_groups);
+  if (!loaded) {
+    goto failed;
+  }
+  return true;
+
+failed:
   ShowErrorDialog("Failed : LoadReputeInfoData", 0);
   return false;
 }
