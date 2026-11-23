@@ -265,9 +265,10 @@ void CHealEffect::UpdateParticleVertices(CParticle* particle) {
     return;
   }
 
-  CGameMode* gameMode = g_modeMgr.GetGameMode();
-  if (std::string(gameMode->mapName) == "ecl_fild01.rsw" && particle->alpha > 100) {
-    particle->alpha = 100;
+  if (g_modeMgr.GetGameMode()->MapName() == "ecl_fild01.rsw") {
+    if (particle->alpha > 100) {
+      particle->alpha = 100;
+    }
   }
 
   const float scale = particle->scale;
@@ -282,25 +283,24 @@ void CHealEffect::UpdateParticleVertices(CParticle* particle) {
 
   this->RotateToCamera(points);
 
-  const float baseX = particle->offsetX;
-  const float baseY = particle->offsetY;
-  const float baseZ = particle->offsetZ;
+  const vector3d base = {particle->offsetX, particle->offsetY, particle->offsetZ};
+  const vector3d corner0 = {base.x + points[0].x, base.y + points[0].y, base.z + points[0].z};
+  const vector3d corner1 = {base.x + points[1].x, base.y + points[1].y, base.z + points[1].z};
+  const vector3d corner2 = {base.x + points[2].x, base.y + points[2].y, base.z + points[2].z};
+  const vector3d corner3 = {base.x + points[3].x, base.y + points[3].y, base.z + points[3].z};
 
-  particle->vertices[0].x = baseX + points[3].x;
-  particle->vertices[0].y = baseY + points[3].y;
-  particle->vertices[0].z = baseZ + points[3].z;
-
-  particle->vertices[1].x = baseX + points[0].x;
-  particle->vertices[1].y = baseY + points[0].y;
-  particle->vertices[1].z = baseZ + points[0].z;
-
-  particle->vertices[2].x = baseX + points[2].x;
-  particle->vertices[2].y = baseY + points[2].y;
-  particle->vertices[2].z = baseZ + points[2].z;
-
-  particle->vertices[3].x = baseX + points[1].x;
-  particle->vertices[3].y = baseY + points[1].y;
-  particle->vertices[3].z = baseZ + points[1].z;
+  particle->vertices[0].x = corner3.x;
+  particle->vertices[0].y = corner3.y;
+  particle->vertices[0].z = corner3.z;
+  particle->vertices[1].x = corner0.x;
+  particle->vertices[1].y = corner0.y;
+  particle->vertices[1].z = corner0.z;
+  particle->vertices[2].x = corner2.x;
+  particle->vertices[2].y = corner2.y;
+  particle->vertices[2].z = corner2.z;
+  particle->vertices[3].x = corner1.x;
+  particle->vertices[3].y = corner1.y;
+  particle->vertices[3].z = corner1.z;
 }
 
 // OFFSET: 0x00B686D0
