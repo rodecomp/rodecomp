@@ -20,8 +20,12 @@ void CRendererDX9::DrawBaseQueue() {
   });
 
   for (RenderCommand*& command : this->queue_0168) {
-    IDirect3DBaseTexture9* texture = command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr;
-    this->device->SetTexture(0, texture);
+    CTexture* texture = command->texture;
+    if (texture) {
+      this->device->SetTexture(0, static_cast<CTextureDX9*>(texture)->NativeTexture());
+    } else {
+      this->device->SetTexture(0, nullptr);
+    }
     this->DrawPrimitive(command);
   }
 }
@@ -29,6 +33,14 @@ void CRendererDX9::DrawBaseQueue() {
 // OFFSET: 0x005668B0
 // FUNCTION: fn_02226
 void CRendererDX9::DrawGroundQueues() {
+  const auto bindTexture = [this](UINT stage, CTexture* texture) {
+    if (texture) {
+      this->device->SetTexture(stage, static_cast<CTextureDX9*>(texture)->NativeTexture());
+    } else {
+      this->device->SetTexture(stage, nullptr);
+    }
+  };
+
   ScopedDeviceStateDX9 restore = this->device->SaveState();
   this->device->SetRenderState(D3DRS_AMBIENT, 0xFFFFFFFFu);
   this->device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
@@ -51,8 +63,8 @@ void CRendererDX9::DrawGroundQueues() {
 
       for (LightmappedPrimitive*& command : queue) {
         if (command->vertexCount > 0) {
-          this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
-          this->device->SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);
+          bindTexture(0, command->texture);
+          bindTexture(1, command->lightmap);
           this->DrawLightmappedPrimitive(command);
         }
       }
@@ -72,7 +84,7 @@ void CRendererDX9::DrawGroundQueues() {
       });
 
       for (RenderCommand*& command : this->queue_0174) {
-        this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+        bindTexture(0, command->texture);
         this->DrawPrimitive(command);
       }
     }
