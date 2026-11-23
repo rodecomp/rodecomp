@@ -5157,7 +5157,10 @@ struct ShopItemListEntry {
   /* 0009 */ int itemId;
   /* 000D */ unsigned char identified;
   /* 000E */ unsigned char damaged;
-  /* 000F */ std::uint32_t cards[4];
+  /* 000F */ std::uint32_t card0;
+  /* 0013 */ std::uint32_t card1;
+  /* 0017 */ std::uint32_t card2;
+  /* 001B */ std::uint32_t card3;
   /* 001F */ ItemSlotOption options[5];
   /* 0038 */ std::uint32_t location;
   /* 003C */ std::uint16_t sprite;
@@ -5182,24 +5185,25 @@ void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
   const auto* entries = reinterpret_cast<const ShopItemListEntry*>(data + sizeof(ShopItemListHeader));
   const unsigned int count = (header->length - sizeof(ShopItemListHeader)) / sizeof(ShopItemListEntry);
   std::vector<ITEM_INFO> items;
-  if (count != 0) {
-    items.reserve(count);
-  }
+  items.reserve(count);
 
   for (long long i = 0; i < count; ++i) {
     ITEM_INFO item;
     item.identity[1] = entries[i].index;
     item.prices[0] = entries[i].price;
+    item.prices[1] = entries[i].price;
     item.identity[0] = entries[i].type;
     item.quantity = entries[i].amount;
     item.identified = entries[i].identified;
     item.damaged = entries[i].damaged;
     item.refiningLevel = entries[i].refine;
-    item.prices[1] = entries[i].price;
     item.SetItemId(entries[i].itemId);
-    std::memcpy(item.cards, entries[i].cards, sizeof(entries[i].cards));
+    item.cards[0] = entries[i].card0;
+    item.cards[1] = entries[i].card1;
+    item.cards[2] = entries[i].card2;
+    item.cards[3] = entries[i].card3;
     item.optionCount = CountItemSlotOptions(entries[i].options);
-    for (long long option = 0; option < static_cast<unsigned int>(item.optionCount); ++option) {
+    for (long long option = 0; option < item.optionCount; ++option) {
       item.options[option] = entries[i].options[option];
     }
     item.identity[2] = entries[i].location;
