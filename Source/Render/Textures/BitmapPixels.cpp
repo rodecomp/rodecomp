@@ -24,26 +24,16 @@ BitmapPixels::BitmapPixels(int newWidth, int newHeight) : dc(CreateCompatibleDC(
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
 void CDCBitmap::UploadTexture(CTexture*& texture) {
-  auto& bitmap = this->m_bitmap;
-  auto height = bitmap.height;
-  auto* pixels = bitmap.pixels;
-  auto width = bitmap.width;
-  const auto size = static_cast<std::int32_t>(sizeof(*pixels) * width * height);
-
-  if (size > 0) {
-    auto* bytes = reinterpret_cast<unsigned char*>(pixels);
-    for (std::int32_t offset = 0; offset < size; offset += 4) {
-      bytes[offset + 3] = 255;
-    }
-    pixels = bitmap.pixels;
-    height = bitmap.height;
-    width = bitmap.width;
+  const std::int32_t count = static_cast<std::int32_t>(this->m_bitmap.width * this->m_bitmap.height * 4);
+  unsigned char* image = reinterpret_cast<unsigned char*>(this->m_bitmap.pixels) + 3;
+  for (std::int32_t i = 0; i < count; i += 4) {
+    image[i] = 255;
   }
 
   if (!texture) {
-    texture = g_texMgr.Upload(width, height, pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
+    texture = g_texMgr.Upload(this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, TextureFormat::A1R5G5B5, 0, true, false, false);
   } else {
-    texture->Upload(0, 0, width, height, pixels, 0, 0);
+    texture->Upload(0, 0, this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, 0, 0);
   }
 }
 
