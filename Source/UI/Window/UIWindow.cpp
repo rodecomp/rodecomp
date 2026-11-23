@@ -952,12 +952,14 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   const int bottom = bottomEdge <= g_renderer->viewport.height ? anchorBounds[3] - windowBounds[1] : 0;
 
   const int nearestHorizontal = left > 0 ? (right > 0 ? std::min(left, right) : left) : (right > 0 ? right : 999999);
-  const int nearestVertical = top > 0 ? (bottom > 0 ? std::min(top, bottom) : top) : (bottom > 0 ? bottom : 999999);
-  const auto moveRightAction = [this, &anchorBounds, &windowBounds] {
-    MoveWindowToScreenPosition(this, anchorBounds[2], windowBounds[1]);
-  };
+  const bool canMoveAbove = top > 0;
+  const bool canMoveBelow = bottom > 0;
+  const int nearestVertical = canMoveAbove ? (canMoveBelow ? std::min(top, bottom) : top) : (canMoveBelow ? bottom : 999999);
   const auto moveLeftAction = [this, &anchorBounds, &windowBounds] {
     MoveWindowToScreenPosition(this, static_cast<unsigned>(anchorBounds[0]) - this->geometry.width, windowBounds[1]);
+  };
+  const auto moveRightAction = [this, &anchorBounds, &windowBounds] {
+    MoveWindowToScreenPosition(this, anchorBounds[2], windowBounds[1]);
   };
   const auto moveAboveAction = [this, &windowBounds, &anchorBounds] {
     MoveWindowToScreenPosition(this, windowBounds[0], static_cast<unsigned>(anchorBounds[1]) - this->geometry.height);
@@ -967,23 +969,25 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   };
   const WindowActionRunner runWindowAction{};
   if (nearestHorizontal < nearestVertical) {
-    std::function<void()> moveRight = moveRightAction;
-    std::function<void()> moveLeft = moveLeftAction;
-    if (left > 0) {
-      if (right > 0 && left > right) {
-        moveRight();
-      } else {
-        moveLeft();
+    {
+      std::function<void()> moveRight = moveRightAction;
+      std::function<void()> moveLeft = moveLeftAction;
+      if (left > 0) {
+        if (right > 0 && left > right) {
+          moveRight();
+        } else {
+          moveLeft();
+        }
+        return true;
       }
-      return true;
+      if (right > 0) {
+        moveRight();
+        return true;
+      }
     }
-    if (right > 0) {
-      moveRight();
-      return true;
-    }
-    return runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction);
+    return runWindowAction(canMoveAbove, canMoveBelow, top, bottom, moveAboveAction, moveBelowAction);
   }
-  if (runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction)) {
+  if (runWindowAction(canMoveAbove, canMoveBelow, top, bottom, moveAboveAction, moveBelowAction)) {
     return true;
   }
   std::function<void()> moveRight = moveRightAction;
