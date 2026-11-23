@@ -342,9 +342,9 @@ void UIScrollWnd::UpdateScrollRange() {
     UIWindow* child = it->first;
     if (child->geometry.visible != 0) {
       const int childRight = child->geometry.width + it->second.x;
-      right = right < childRight ? childRight : right;
+      right = right >= childRight ? right : childRight;
       const int childBottom = it->second.y + child->geometry.height;
-      bottom = bottom < childBottom ? childBottom : bottom;
+      bottom = bottom >= childBottom ? bottom : childBottom;
     }
   }
 
@@ -353,41 +353,31 @@ void UIScrollWnd::UpdateScrollRange() {
   this->viewWidth = this->geometry.width;
   this->viewHeight = this->geometry.height;
 
-  int visibleHeight;
   if (right > this->geometry.width) {
-    visibleHeight = this->geometry.height - this->scrollBarHeight;
     this->horizontalScrollable = 1;
-    this->viewHeight = visibleHeight;
-  } else {
-    visibleHeight = this->geometry.height;
+    this->viewHeight = this->geometry.height - this->scrollBarHeight;
   }
 
-  int visibleWidth;
   if (bottom > this->geometry.height) {
-    visibleWidth = this->geometry.width - this->scrollBarWidth;
     this->wheelScroll = 1;
-    this->viewWidth = visibleWidth;
-  } else {
-    visibleWidth = this->geometry.width;
+    this->viewWidth = this->geometry.width - this->scrollBarWidth;
   }
 
-  if (this->horizontalScrollable == 0 && right > visibleWidth) {
+  if (this->horizontalScrollable == 0 && right > this->viewWidth) {
     this->horizontalScrollable = 1;
-    visibleHeight = this->geometry.height - this->scrollBarHeight;
-    this->viewHeight = visibleHeight;
+    this->viewHeight = this->geometry.height - this->scrollBarHeight;
   }
 
-  if (this->wheelScroll == 0 && bottom > visibleHeight) {
-    visibleWidth = this->geometry.width - this->scrollBarWidth;
+  if (this->wheelScroll == 0 && bottom > this->viewHeight) {
     this->wheelScroll = 1;
-    this->viewWidth = visibleWidth;
+    this->viewWidth = this->geometry.width - this->scrollBarWidth;
   }
 
-  this->contentWidth = right < visibleWidth ? visibleWidth : right;
-  this->contentHeight = bottom < visibleHeight ? visibleHeight : bottom;
+  this->contentWidth = (std::max)(right, this->viewWidth);
+  this->contentHeight = (std::max)(bottom, this->viewHeight);
 
   if (this->horizontalScrollable == 1) {
-    this->horizontalBar->Resize(visibleWidth, this->scrollBarHeight);
+    this->horizontalBar->Resize(this->viewWidth, this->scrollBarHeight);
     this->horizontalBar->SetRange(this->contentWidth - this->viewWidth, this->viewWidth, this->contentWidth);
     const int maximum = this->contentWidth - this->viewWidth;
     int position = this->horizontalScrollPosition;
