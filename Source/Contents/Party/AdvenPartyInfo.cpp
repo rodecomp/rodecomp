@@ -1,7 +1,1 @@
 #include "Contents/Party/AdvenPartyInfo.h"
-
-// OFFSET: 0x005CA660
-// FUNCTION: fn_03647
-CAdvenPartyInfo::CAdvenPartyInfo()
-    : tanker(false), healer(false), dealer(false), assist(false), minimumLevel(0), maximumLevel(999), type(0), accountId(0), characterId(0) {
-}
