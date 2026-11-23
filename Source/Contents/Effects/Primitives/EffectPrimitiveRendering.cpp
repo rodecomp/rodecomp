@@ -3215,8 +3215,8 @@ void CEffectPrim::RenderTube(matrix& wtm) {
   const EffectPrimitiveSlot& slot = this->state.slots[0];
   ZeroVector3d prevStart;
   ZeroVector3d start;
-  ZeroVector3d finish;
   ZeroVector3d prevEnd;
+  ZeroVector3d finish;
   int rpCnt = 0;
 
   if (slot.life == 1 && slot.alphaB > 0) {
