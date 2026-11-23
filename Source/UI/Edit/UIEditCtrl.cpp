@@ -5798,7 +5798,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
       CMode* mode = g_modeMgr.currentMode;
-      int level = 0;
+      int level;
       if (this->skillTab == 0) {
         level = g_session.HomunSkillLevel(skill->id);
       } else if (this->skillTab == 1) {
