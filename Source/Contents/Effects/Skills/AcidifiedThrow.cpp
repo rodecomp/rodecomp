@@ -157,45 +157,27 @@ void CAcidifiedThrow::OnProcess() {
     actorViewY -= g_projectionDepthOffset;
 
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-    float worldX = actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9];
-    float worldY = actorViewX * inverse.values[1] + actorViewY * inverse.values[4] + actorViewZ * inverse.values[7] + inverse.values[10];
-    float worldZ = actorViewX * inverse.values[2] + actorViewY * inverse.values[5] + actorViewZ * inverse.values[8] + inverse.values[11];
+    const vector3d world{
+        actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9],
+        actorViewX * inverse.values[1] + actorViewY * inverse.values[4] + actorViewZ * inverse.values[7] + inverse.values[10],
+        actorViewX * inverse.values[2] + actorViewY * inverse.values[5] + actorViewZ * inverse.values[8] + inverse.values[11]};
 
     this->trajectoryTime -= 0.07f;
 
-    const float dx = this->impactPosition.x - worldX;
-    const float dy = this->impactPosition.y - worldY;
-    const float dz = this->impactPosition.z - worldZ;
-    const float distSq = dy * dy + dx * dx + dz * dz;
+    const vector3d delta{this->impactPosition.x - world.x, this->impactPosition.y - world.y, this->impactPosition.z - world.z};
+    const float distSq = delta.y * delta.y + delta.x * delta.x + delta.z * delta.z;
     const float length = SquareRoot(distSq);
     const float inverseDist = 1.0f / SquareRoot(distSq);
+    const vector3d offset{delta.x * inverseDist * length, delta.y * inverseDist * length, delta.z * inverseDist * length};
+    const vector3d rotated{
+        offset.x * rotation.values[0] + offset.y * rotation.values[3] + offset.z * rotation.values[6] + rotation.values[9],
+        offset.x * rotation.values[1] + offset.y * rotation.values[4] + offset.z * rotation.values[7] + rotation.values[10],
+        offset.x * rotation.values[2] + offset.y * rotation.values[5] + offset.z * rotation.values[8] + rotation.values[11]};
+    const vector3d control{this->impactPosition.x + rotated.x, this->impactPosition.y + rotated.y, this->impactPosition.z + rotated.z};
 
-    vector3d offset;
-    offset.x = dx * inverseDist * length;
-    offset.y = dy * inverseDist * length;
-    offset.z = dz * inverseDist * length;
+    this->projectileEmitter->position = this->PointOnCurve(this->impactPosition, control, world, this->trajectoryTime);
 
-    float rotX = offset.x * rotation.values[0] + offset.y * rotation.values[3] + offset.z * rotation.values[6] + rotation.values[9];
-    float rotY = offset.x * rotation.values[1] + offset.y * rotation.values[4] + offset.z * rotation.values[7] + rotation.values[10];
-    float rotZ = offset.x * rotation.values[2] + offset.y * rotation.values[5] + offset.z * rotation.values[8] + rotation.values[11];
-
-    float p1X = this->impactPosition.x + rotX;
-    float p1Y = this->impactPosition.y + rotY;
-    float p1Z = this->impactPosition.z + rotZ;
-
-    float t = this->trajectoryTime;
-    const vector3d start = this->impactPosition;
-    float oneMinusT = g_projectionDepthNumerator - t;
-    float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
-    float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
-    float term1 = (t + t) * oneMinusT;
-
-    CEZ2STRParticle* emitter = this->projectileEmitter;
-    emitter->position.x = term1 * p1X + term2 * worldX + term0 * start.x;
-    emitter->position.y = term1 * p1Y + term2 * worldY + term0 * start.y;
-    emitter->position.z = term1 * p1Z + term2 * worldZ + term0 * start.z;
-
-    emitter->Process(0.0f, 0.0f, 0.0f);
+    this->projectileEmitter->Process(0.0f, 0.0f, 0.0f);
 
     if (!(this->trajectoryTime <= 0.0f)) {
       return;
