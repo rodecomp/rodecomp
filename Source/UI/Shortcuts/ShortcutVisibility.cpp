@@ -39,7 +39,7 @@ namespace {
       const auto it = std::find_if(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), [companion](UIWindow* entry) { return entry->geometry.id == companion; });
 
       if (it != g_windowMgr.rendered.end()) {
-        UIWindow* value = *it;
+        UIWindow* const value = *it;
         g_windowMgr.rendered.erase(it);
         g_windowMgr.rendered.emplace_back(value);
       }
