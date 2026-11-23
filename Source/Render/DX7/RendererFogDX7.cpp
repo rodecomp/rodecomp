@@ -53,11 +53,19 @@ HRESULT PerspectiveMatrixDX7(D3DMATRIX& matrix, float fov, float aspect, float n
   return S_OK;
 }
 
+// INLINED
+static D3DDEVICEDESC7 SelectFogCaps(const D3DDEVICEDESC7& empty) {
+  if (g_deviceOwnerDX7) {
+    return g_deviceOwnerDX7->caps;
+  }
+  return empty;
+}
+
 // OFFSET: 0x0055CF10
 // FUNCTION: fn_02094
 void CRendererDX7::SetFog(int enabled) {
-  const D3DDEVICEDESC7 empty = g_emptyCapabilitiesDX7;
-  const D3DDEVICEDESC7 caps = g_deviceOwnerDX7 ? g_deviceOwnerDX7->caps : empty;
+  D3DDEVICEDESC7 empty = g_emptyCapabilitiesDX7;
+  const D3DDEVICEDESC7 caps = SelectFogCaps(empty);
   this->fog.supported = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
   this->fog.enabled = enabled;
   this->device->SetRenderState(D3DRENDERSTATE_FOGENABLE, enabled);
