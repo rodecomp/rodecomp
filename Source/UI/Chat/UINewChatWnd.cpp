@@ -63,8 +63,11 @@ void UINewChatWnd::SetStickOn(unsigned char enabled) {
 // OFFSET: 0x00936360
 // FUNCTION: fn_12750
 int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (g_replayAnimationScaling != 0 && Replay::Instance().header.options.recordRestricted == 0) {
-    return 1;
+  if (g_replayAnimationScaling != 0) {
+    const unsigned char restricted = Replay::Instance().header.options.recordRestricted;
+    if (restricted == 0) {
+      return 1;
+    }
   }
 
   switch (message) {
@@ -97,14 +100,14 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     this->m_tabControl->RemoveTab(this->m_currentTab);
     this->m_tabWidth = this->m_tabControl->geometry.width / names.size();
-    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0));
+    UIWindow* window = g_windowMgr.OpenSubChatWindow(static_cast<int>(g_windowMgr.retainedWindows.size()), -1, -1, 0, 0);
     if (window == nullptr) {
       return 0;
     }
 
     std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin() + this->m_currentTab;
     if (tab != this->m_tabs.end()) {
-      window->ChatBox()->CopyHistory(*static_cast<UIChatHisBox*>(*tab));
+      static_cast<UISubChatHisWnd*>(window)->ChatBox()->CopyHistory(*static_cast<UIChatHisBox*>(*tab));
       this->RemoveChild(*tab, 1);
       this->m_tabs.erase(tab);
     }
@@ -469,24 +472,27 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       UIChatEditCtrl* edit = this->m_chatEdit;
-      bool rejected = edit->HasItemLinkTag(std::string(edit->Text())) == 1;
-      if (!rejected) {
-        UIItemTagOnChat* tags = this->m_chatEdit->itemTags;
-        if (tags != nullptr && tags->linkedText.size() != 0) {
-          text = std::string(tags->linkedText);
-          this->m_chatEdit->itemTags->linkedText.clear();
-          this->m_chatEdit->itemTags->ClearTags();
-          rejected = this->m_chatEdit->LinkedText().size() != 0;
-        }
-      }
-      if (rejected) {
+      if (edit->HasItemLinkTag(std::string(edit->Text())) == 1) {
         this->m_chatEdit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
         return 0;
       }
 
+      UIItemTagOnChat* tags = this->m_chatEdit->itemTags;
+      if (tags != nullptr && tags->linkedText.size() != 0) {
+        text = std::string(tags->linkedText);
+        this->m_chatEdit->itemTags->linkedText = "";
+        this->m_chatEdit->itemTags->ClearTags();
+        if (this->m_chatEdit->LinkedText().size() != 0) {
+          this->m_chatEdit->SetText("");
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
+          return 0;
+        }
+      }
+
       if (this->m_chatEdit->LinkedText().size() != 0) {
-        text = this->m_chatEdit->LinkedText();
+        const std::string& linked = this->m_chatEdit->LinkedText();
+        text = linked;
       }
       edit = this->m_chatEdit;
       if (edit->HasNaviLinkTag(std::string(edit->Text())) == 1) {
@@ -499,7 +505,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_chatEdit->PushHistory();
       this->m_inputEdit = this->m_chatEdit;
       g_windowMgr.SetFocus(this->m_chatEdit);
-      this->m_chatEdit->linkedText.clear();
+      this->m_chatEdit->linkedText = "";
       if (std::strlen(buffer) == 0) {
         return 0;
       }
