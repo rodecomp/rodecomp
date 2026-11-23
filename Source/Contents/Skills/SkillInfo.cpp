@@ -3261,9 +3261,8 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
     }
 
     effects = g_effectMgr;
-    const int variant = std::rand() % 3;
     if (CEffect* effect = effects->Spawn(
-          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", variant >= 0 ? variant : 0)), source->render.position, 0, -1, 0, 0
+          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", std::max(std::rand() % 3, 0))), source->render.position, 0, -1, 0, 0
         )) {
       const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
       effect->position[0] = position.x;
