@@ -146,7 +146,7 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     }
 
     const int rowY = 33 * (y / 33);
-    if (static_cast<float>(originY) > static_cast<float>(static_cast<unsigned int>(g_configuredScreenHeight)) * g_depthAverageHalf) {
+    if (static_cast<float>(static_cast<unsigned int>(g_configuredScreenHeight)) * g_depthAverageHalf < static_cast<float>(originY)) {
       detail->Move(originX - adjustment + x, rowY - detail->geometry.height + originY);
     } else {
       detail->Move(originX - adjustment + x, originY + 33 + rowY);
