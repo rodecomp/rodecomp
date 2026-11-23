@@ -396,6 +396,7 @@ EquipmentPropertyStore::~EquipmentPropertyStore() {
     }
   }
   this->properties.clear();
+  this->names.clear();
 }
 
 // OFFSET: 0x00699040
@@ -442,30 +443,35 @@ EquipmentProperties::CEquipmentPropertiesMgr::CEquipmentPropertiesMgr()
     : loadValid(1), unknown_0010(-1), shopId(-1), store(new EquipmentPropertyStore), currentEquipment(0), notifyWindow(0) {
 }
 
+// INLINED
+static __forceinline void ClearEquipment(EquipmentProperties::CEquipmentPropertiesMgr* manager) {
+  manager->currentEquipment = 0;
+  manager->activeItems.clear();
+  for (auto& property : manager->properties1) {
+    delete property.second;
+  }
+  manager->properties1.clear();
+  for (auto& property : manager->properties2) {
+    delete property.second;
+  }
+  manager->properties2.clear();
+  for (auto& property : manager->properties3) {
+    delete property.second;
+  }
+  manager->properties3.clear();
+  manager->store->Clear();
+}
+
 // OFFSET: 0x006ABE90
 // FUNCTION: fn_06170
-void EquipmentProperties::CEquipmentPropertiesMgr::Clear() {
-  this->currentEquipment = 0;
-  this->activeItems.clear();
-  for (auto& property : this->properties1) {
-    delete property.second;
-  }
-  this->properties1.clear();
-  for (auto& property : this->properties2) {
-    delete property.second;
-  }
-  this->properties2.clear();
-  for (auto& property : this->properties3) {
-    delete property.second;
-  }
-  this->properties3.clear();
-  this->store->Clear();
+__declspec(noinline) void EquipmentProperties::CEquipmentPropertiesMgr::Clear() {
+  ClearEquipment(this);
 }
 
 // OFFSET: 0x006A56C0
 // FUNCTION: fn_06044
 EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
-  this->Clear();
+  ClearEquipment(this);
   this->store->Clear();
   delete this->store;
 }
@@ -501,7 +507,7 @@ int EquipmentProperties::CEquipment::GetValue(const int& key) {
   }
 
   const auto found = this->m_info->values.find(key);
-  return found != this->m_info->values.end() ? found->second : 0;
+  return this->m_info->values.end() != found ? found->second : 0;
 }
 
 // OFFSET: 0x0068C0F0
@@ -978,10 +984,11 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
     return text;
   }
 
-  int value = this->m_value;
-  if (value == 0) {
+  if (this->m_value == 0) {
     return text;
   }
+
+  int value = this->m_value;
 
   if (detailed == false) {
     auto minimum = this->m_definition->formatOptions.find(0);
@@ -1005,10 +1012,11 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
     precision = digits->second;
   }
 
-  const double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
+  double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
   const double scale = std::pow(10.0, precision);
   const double rounded = std::floor(result * scale) / scale;
-  std::string number = fmt::format("{:.{}f}", sign * rounded, precision);
+  sign *= rounded;
+  std::string number = fmt::format("{:.{}f}", sign, precision);
   if (0.0 != rounded) {
     const int nonPositive = !(rounded > 0.0);
     switch (this->m_definition->signLabels.size()) {
@@ -2010,21 +2018,21 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
   if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
-      unsigned int key = 0;
+      int key = 0;
       int result;
       int type = lua_type(this->script.GetState(), -2);
-      if (type != LUA_TNUMBER) {
-        result = (type != LUA_TNIL) + 1;
-      } else {
+      if (type == LUA_TNUMBER) {
         key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
         result = 0;
+      } else {
+        result = (type != LUA_TNIL) + 1;
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid key({1})", name, static_cast<int>(result)), 0);
       }
       if (this->loadValid) {
-        unsigned int value = 0;
+        int value = 0;
         type = lua_type(this->script.GetState(), -1);
         if (type == LUA_TNUMBER) {
           value = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -1));
@@ -2034,10 +2042,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("{0} table has invalid value({1})", name, result), 0);
+          ShowErrorDialog(fmt::format("{0} table has invalid value({1})", name, static_cast<int>(result)), 0);
         }
         if (this->loadValid) {
-          this->constantValues.try_emplace(key, EquipmentValueA{static_cast<int>(value)});
+          this->constantValues.emplace(key, value);
         }
       }
       lua_settop(state, -2);
@@ -2073,7 +2081,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -2082,7 +2090,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
       result = this->script.GetFieldUIntArray(items, "Item");
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Combiitem[{0}] has invalid 'Item' table({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -2100,6 +2108,19 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
   }
 }
 
+// INLINED
+static int ReadString(const CLuaInstance& script, std::string& value, int index) {
+  int result;
+  const int type = lua_type(script.GetState(), index);
+  if (type == LUA_TSTRING) {
+    result = 0;
+    value = lua_tolstring(script.GetState(), index, nullptr);
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  return result;
+}
+
 // OFFSET: 0x006B09F0
 // FUNCTION: fn_06193
 void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
@@ -2111,17 +2132,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
     for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
-      std::string key;
-      int result = 0;
-      int type = lua_type(this->script.GetState(), -2);
-      if (type == LUA_TSTRING) {
-        key = lua_tolstring(this->script.GetState(), -2, nullptr);
-      } else {
-        result = (type != LUA_TNIL) + 1;
-      }
+      std::string key = "";
+      int result = ReadString(this->script, key, -2);
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -2302,16 +2317,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
         continue;
       }
       std::string key;
-      int type = lua_type(this->script.GetState(), -2);
-      int result = 0;
-      if (type == LUA_TSTRING) {
-        key = lua_tolstring(this->script.GetState(), -2, nullptr);
-      } else {
-        result = (type != LUA_TNIL) + 1;
-      }
+      int result = ReadString(this->script, key, -2);
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
+        ShowErrorDialog(fmt::format("invalid key({0}): {1}", static_cast<int>(result), name), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -2354,16 +2363,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
           continue;
         }
         std::string category;
-        type = lua_type(this->script.GetState(), -2);
-        result = 0;
-        if (type == LUA_TSTRING) {
-          category = lua_tolstring(this->script.GetState(), -2, nullptr);
-        } else {
-          result = (type != LUA_TNIL) + 1;
-        }
+        result = ReadString(this->script, category, -2);
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+          ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", static_cast<int>(result), name, key), 0);
         }
         if (!this->loadValid) {
           continue;
@@ -2417,17 +2420,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
             continue;
           }
           std::string field;
-          type = lua_type(this->script.GetState(), -2);
-          result = 0;
-          if (type == LUA_TSTRING) {
-            field = lua_tolstring(this->script.GetState(), -2, nullptr);
-          } else {
-            result = (type != LUA_TNIL) + 1;
-          }
+          result = ReadString(this->script, field, -2);
           valid = result == 0;
           this->loadValid &= valid;
           if (result != 0) {
-            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, category), 0);
+            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", static_cast<int>(result), name, key, category), 0);
           }
           if (!this->loadValid) {
             continue;
@@ -2452,7 +2449,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
             continue;
           }
           int value;
-          type = lua_type(this->script.GetState(), -1);
+          const int type = lua_type(this->script.GetState(), -1);
           if (type == LUA_TNUMBER) {
             value = static_cast<int>(lua_tonumber(this->script.GetState(), -1));
             result = 0;
@@ -2494,17 +2491,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
         continue;
       }
       std::string key;
-      int result;
-      int type = lua_type(this->script.GetState(), -2);
-      if (type == LUA_TSTRING) {
-        result = 0;
-        key = lua_tolstring(this->script.GetState(), -2, nullptr);
-      } else {
-        result = (type != LUA_TNIL) + 1;
-      }
+      int result = ReadString(this->script, key, -2);
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
+        ShowErrorDialog(fmt::format("invalid key({0}): {1}", static_cast<int>(result), name), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -2547,16 +2537,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
           continue;
         }
         int level;
-        type = lua_type(this->script.GetState(), -2);
+        int type = lua_type(this->script.GetState(), -2);
         if (type == LUA_TNUMBER) {
-          level = static_cast<int>(lua_tonumber(this->script.GetState(), -2));
+          level = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
           result = 0;
         } else {
           result = (type != LUA_TNIL) + 1;
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+          ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", static_cast<int>(result), name, key), 0);
         }
         if (!this->loadValid) {
           continue;
@@ -2583,7 +2573,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
           }
           this->loadValid &= result == 0;
           if (result != 0) {
-            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
+            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", static_cast<int>(result), name, key, level), 0);
           }
           if (!this->loadValid) {
             continue;
@@ -2598,7 +2588,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
           }
           this->loadValid &= result == 0;
           if (result != 0) {
-            ShowErrorDialog(fmt::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
+            ShowErrorDialog(fmt::format("invalid value({0}): {1}.{2}.{3}.{4}", static_cast<int>(result), name, key, level, index), 0);
           }
           if (!this->loadValid) {
             continue;
@@ -2640,7 +2630,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
       const bool keyValid = keyResult == 0;
       this->loadValid &= keyValid;
       if (keyResult != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, keyResult), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(keyResult)), 0);
       }
       if (this->loadValid && lua_type(state, -1) == LUA_TTABLE) {
         lua_pushnil(state);
@@ -2656,7 +2646,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
           }
           this->loadValid &= keyValid;
           if (keyResult != 0) {
-            ShowErrorDialog(fmt::format("SkillGroup[{0}] has invalid 'Skill' table({1})", key, result), 0);
+            ShowErrorDialog(fmt::format("SkillGroup[{0}] has invalid 'Skill' table({1})", key, static_cast<int>(result)), 0);
           }
           if (this->loadValid) {
             this->skillGroups[key].push_back(skill);
@@ -3839,8 +3829,8 @@ int __stdcall AddDamage_Size(lua_State* state) {
 // FUNCTION: fn_06168
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
                                                                const int& indexPosition, const int& keyPosition) {
-  int index = -1;
   int value = 0x7FFFFFFF;
+  int index = -1;
   int key = -1;
   std::string text = fmt::format("{0}", name);
   for (int argument = 0; argument < count; ++argument) {
