@@ -2289,8 +2289,9 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         UIRune_Info* info = this->m_runeInfo;
         if (rune) {
           info->m_rune = rune;
-          info->m_activeWnd->m_listId = rune->GetActiveType();
-          info->m_activeWnd->Invalidate();
+          auto* activeWnd = info->m_activeWnd;
+          activeWnd->m_listId = rune->GetActiveType();
+          activeWnd->Invalidate();
           info->UpdateActivation();
           info->Invalidate();
         }
