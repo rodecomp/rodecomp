@@ -526,15 +526,13 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   viewers[0] = new UITagTextViewer();
   viewers[0]->SetSize(306, 121);
   viewers[0]->Move(18, 12);
-  viewers[0]->m_backgroundColor = 0xFFFF00FF;
-  viewers[0]->Invalidate();
+  SetViewerBackground(viewers[0], 0xFFFF00FF);
   this->AddScrollChild(viewers[0]);
 
   viewers[1] = new UITagTextViewer();
   viewers[1]->SetSize(213, 60);
   viewers[1]->Move(16, 157);
-  viewers[1]->m_backgroundColor = 0xFFFF00FF;
-  viewers[1]->Invalidate();
+  SetViewerBackground(viewers[1], 0xFFFF00FF);
   viewers[1]->m_font = {0x2A2A2A, 12, true, false};
   viewers[1]->m_outlined = 1;
   viewers[1]->m_outlineColor = 0xFFFFFF;
@@ -544,8 +542,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   viewers[2] = new UITagTextViewer();
   viewers[2]->SetSize(199, 83);
   viewers[2]->Move(18, 225);
-  viewers[2]->m_backgroundColor = 0xFFFF00FF;
-  viewers[2]->Invalidate();
+  SetViewerBackground(viewers[2], 0xFFFF00FF);
   this->AddScrollChild(viewers[2]);
 
   for (int index = 0; index < 3; ++index) {
@@ -557,7 +554,8 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   if (!quest.npcSprite.empty()) {
     UINpcSprWnd* npc = new UINpcSprWnd();
     npc->SetSprite(75, 145, quest.npcSprite);
-    npc->Move(this->geometry.width - npc->geometry.width - 40, this->geometry.height - npc->geometry.height - 10);
+    const int y = this->geometry.height - npc->geometry.height - 10;
+    npc->Move(this->geometry.width - npc->geometry.width - 40, y);
     if (!quest.destinationMap.empty()) {
       npc->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
     }
@@ -753,8 +751,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
   this->AddChild(this->m_scrollBar);
 
   for (int index = 0; index < 9; ++index) {
-    const int y = 46 + index * 46;
-    UICheckBox* check = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
+    UICheckBox* check = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 14, 14, nullptr, 350, index * 46 + 27, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
       "유저인터페이스\\renew_questui\\bt_check_off.bmp"
     );
     this->m_rows.checkBoxes[index] = check;
@@ -762,7 +759,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
     this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM));
     this->m_rows.checkBoxes[index]->SetHidden(true);
 
-    UICheckBox* lock = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
+    UICheckBox* lock = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 20, 17, nullptr, 344, index * 46 + 46, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
       "유저인터페이스\\renew_questui\\bt_lock.bmp"
     );
     this->m_rows.lockBoxes[index] = lock;
@@ -772,7 +769,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
     this->m_rows.icons[index] = new UIStaticBitmap();
     this->m_rows.icons[index]->SetBitmap("유저인터페이스\\renew_questui\\ico_nq.bmp");
     this->m_rows.icons[index]->SetSize(this->m_rows.icons[index]->geometry.width, this->m_rows.icons[index]->geometry.height);
-    this->m_rows.icons[index]->Move(46, y - 15);
+    this->m_rows.icons[index]->Move(46, index * 46 + 31);
     this->m_rows.icons[index]->Show(0);
     this->AddChild(this->m_rows.icons[index]);
   }
@@ -924,12 +921,14 @@ void UIRenewQuestWnd::RefreshRows() {
           this->m_rows.checkBoxes[i]->SetHidden(true);
           this->m_rows.lockBoxes[i]->SetHidden(true);
         } else {
-          this->m_rows.lockBoxes[i]->geometry.state = quest.m_state;
-          this->m_rows.lockBoxes[i]->Invalidate();
+          UICheckBox* lock = this->m_rows.lockBoxes[i];
+          lock->geometry.state = quest.m_state;
+          lock->Invalidate();
           this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM));
           this->m_rows.lockBoxes[i]->SetHidden(false);
-          this->m_rows.checkBoxes[i]->geometry.state = quest.m_simpleView;
-          this->m_rows.checkBoxes[i]->Invalidate();
+          UICheckBox* check = this->m_rows.checkBoxes[i];
+          check->geometry.state = quest.m_simpleView;
+          check->Invalidate();
           this->m_rows.checkBoxes[i]->SetHidden(false);
         }
         std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
