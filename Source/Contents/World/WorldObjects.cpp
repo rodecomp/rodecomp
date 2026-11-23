@@ -52,7 +52,6 @@
 #include "UI/Text/UINameBalloonText.h"
 
 #include <algorithm>
-#include <atomic>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -153,8 +152,7 @@ void CWorld::OnProcess() {
     this->movies->Update();
   }
 
-  std::atomic_ref<long> pending(this->pending);
-  const int ready = pending.load(std::memory_order_acquire);
+  const int ready = this->pending;
   if (ready != 0) {
     const int end = this->published + ready;
     WorldSpatialTree& root = this->spatial;
