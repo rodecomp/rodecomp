@@ -72,17 +72,14 @@ void CView::Apply() {
   // GLOBAL: gl_24565
   static float horizontal = this->shake.horizontal;
   this->camera.target.x += (Jitter(10.0f) + horizontal) * ClientCosine(static_cast<int>(this->camera.yaw));
-  const float offsetZ = (Jitter(10.0f) + horizontal) * -ClientSine(static_cast<int>(this->camera.yaw));
+  this->camera.target.z += (Jitter(10.0f) + horizontal) * -ClientSine(static_cast<int>(this->camera.yaw));
   horizontal = -horizontal;
-  this->camera.target.z += offsetZ;
   // GLOBAL: gl_24566
   static float distance = this->shake.distance;
-  const float distanceDelta = Jitter(10.0f) + distance;
+  this->camera.distance += Jitter(10.0f) + distance;
   distance = -distance;
-  this->camera.distance = distanceDelta + this->camera.distance;
   // GLOBAL: gl_24567
   static float pitch = this->shake.pitch;
-  const float pitchDelta = Jitter(15.0f) + pitch;
+  this->camera.pitch += Jitter(15.0f) + pitch;
   pitch = -pitch;
-  this->camera.pitch = pitchDelta + this->camera.pitch;
 }
