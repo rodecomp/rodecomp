@@ -1833,7 +1833,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned c
   const int state = p->expirationTime != 0 ? 1 : 2;
   const int previous = g_session.memorialDungeonState;
   g_session.memorialDungeonState = state;
-  if (previous != state || state != 2 || g_session.memorialWindowOpen != 0) {
+  if (previous != state || previous != 2 || g_session.memorialWindowOpen != 0) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
       window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
