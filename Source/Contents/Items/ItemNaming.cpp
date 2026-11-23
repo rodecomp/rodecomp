@@ -57,6 +57,9 @@ bool ITEM_INFO::IsEquipment() const {
 }
 
 namespace {
+  // GLOBAL: gl_25966
+  const char* const s_unknownItemName = "Unknown Item";
+
   // INLINED
   int CardId(const ITEM_INFO& item, int index) {
     int id;
@@ -649,7 +652,7 @@ __declspec(noinline) void LoadItemNameTables() {
       ITEM_DESC& desc = EnsureItemDescription(std::atoi(*cursor), g_itemDescriptions);
       cursor += 2;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
       char* name = *cursor;
@@ -660,7 +663,7 @@ __declspec(noinline) void LoadItemNameTables() {
       desc.identifiedName = name;
       cursor += 2;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
       while (*cursor != nullptr) {
@@ -670,7 +673,7 @@ __declspec(noinline) void LoadItemNameTables() {
 
       ++cursor;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
       char* unidentified = *cursor;
@@ -684,7 +687,7 @@ __declspec(noinline) void LoadItemNameTables() {
         cursor += 2;
         desc.unidentifiedName = unidentified;
         if (cursor >= tokens.end()) {
-          ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+          ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
         }
 
         if (*cursor == nullptr) {
@@ -723,7 +726,7 @@ __declspec(noinline) void LoadItemNameTables() {
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(*token);
         } else {
           id = std::atoi(text);
         }
@@ -750,7 +753,7 @@ __declspec(noinline) void LoadItemNameTables() {
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(*token);
         } else {
           id = std::atoi(text);
         }
@@ -763,20 +766,23 @@ __declspec(noinline) void LoadItemNameTables() {
   if (ResourceExists("EventNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventNum2ItemResNameTable.txt", 0);
     for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unidentifiedResource = token[1];
+      ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+      desc.unidentifiedResource = token[1];
     }
   }
 
   if (ResourceExists("EventIdNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventIdNum2ItemResNameTable.txt", 0);
     for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).identifiedResource = token[1];
+      ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+      desc.identifiedResource = token[1];
     }
   }
 
   g_tableStorage.LoadTokens(tokens, "itemSlotTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemDescription(std::atoi(*token), g_itemDescriptions).descriptionFlags = std::atoi(token[1]);
+    ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+    desc.descriptionFlags = std::atoi(token[1]);
   }
 
   g_tableStorage.LoadTokens(tokens, "itemParamTable.txt", 0);
@@ -793,12 +799,14 @@ __declspec(noinline) void LoadItemNameTables() {
 
   g_tableStorage.LoadTokens(tokens, "Num2CardIllustNameTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemCardName(std::atoi(*token), g_itemCardNames).name = token[1];
+    ItemCardName& card = EnsureItemCardName(std::atoi(*token), g_itemCardNames);
+    card.name = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPrefixNameTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemCardName(std::atoi(*token), g_itemCardNames).prefix = token[1];
+    ItemCardName& card = EnsureItemCardName(std::atoi(*token), g_itemCardNames);
+    card.prefix = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPostfixNameTable.txt", 0);
@@ -824,17 +832,17 @@ __declspec(noinline) void LoadItemNameTables() {
     if (IsNumericText(text)) {
       metalId = std::atoi(text);
     } else if (std::strlen(text) != 0) {
-      EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(text);
+      EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(*token);
     }
   }
 
   ITEM_DESC& unknownItemDesc = FindItemDescription(0, g_itemDescriptions);
-  unknownItemDesc.identifiedName = "Unknown Item";
-  unknownItemDesc.identifiedResource = "\xbb\xe7\xb0\xfa";
-  unknownItemDesc.identifiedDescription.push_back("Unknown Item");
-  unknownItemDesc.unidentifiedName = "Unknown Item";
-  unknownItemDesc.unidentifiedResource = "\xbb\xe7\xb0\xfa";
-  unknownItemDesc.unidentifiedDescription.push_back("Unknown Item");
+  unknownItemDesc.identifiedName = s_unknownItemName;
+  unknownItemDesc.identifiedResource = "사과";
+  unknownItemDesc.identifiedDescription.push_back(s_unknownItemName);
+  unknownItemDesc.unidentifiedName = s_unknownItemName;
+  unknownItemDesc.unidentifiedResource = "사과";
+  unknownItemDesc.unidentifiedDescription.push_back(s_unknownItemName);
   FindItemDescription(-1, g_itemDescriptions) = unknownItemDesc;
 
   ItemCardName& sorry = FindItemCardName(0, g_itemCardNames);
