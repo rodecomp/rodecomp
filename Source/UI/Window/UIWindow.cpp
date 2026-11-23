@@ -1810,7 +1810,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
   const int ellipsisWidth = this->TextWidth("...", 3, family, height, bold, 0);
 
-  if (textWidth <= width) {
+  if (width >= textWidth) {
     return display;
   }
 
