@@ -47,7 +47,7 @@ namespace {
 }
 
 // INLINED
-__forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
+__forceinline void C3dActor::FinishBounds(const float* bounds, bool) {
   for (unsigned axis = 0; axis < 3; ++axis) {
     this->minimum[axis] = 100000;
   }
@@ -88,11 +88,11 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   for (unsigned axis = 0; axis < 3; ++axis) {
     const float low = Coordinate(bounds, this->transform.values, axis);
     const float high = Coordinate(bounds + 3, this->transform.values, axis);
-    this->oriented.center[axis] = (modern || axis == 2 ? high + low : low + high) * 0.5f;
+    this->oriented.center[axis] = (low + high) * g_depthAverageHalf;
   }
 
   for (unsigned axis = 0; axis < 3; ++axis) {
-    this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&this->scale.x)[axis]) * 0.5f;
+    this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&this->scale.x)[axis]) * g_depthAverageHalf;
   }
 
   matrix axes;
@@ -219,9 +219,9 @@ void C3dActorV1::UpdateBounds() {
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
   this->root->AccumulateBounds(bounds.data(), identity);
-  this->offset.x = -(bounds[3] + bounds[0]) * 0.5f;
+  this->offset.x = -(bounds[3] + bounds[0]) * g_depthAverageHalf;
   this->offset.y = -bounds[4];
-  this->offset.z = -(bounds[5] + bounds[2]) * 0.5f;
+  this->offset.z = -(bounds[5] + bounds[2]) * g_depthAverageHalf;
   this->transform.MakeTranslate(this->offset.x, this->offset.y, this->offset.z);
   this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
   this->transform.AppendYRotation(Radians(this->rotation.y));
