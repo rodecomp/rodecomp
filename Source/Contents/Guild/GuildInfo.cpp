@@ -127,11 +127,10 @@ void GuildInfo::Init() {
   this->masterCharacterId = 0;
   this->requestState = 0;
   this->guildTabBitmask = -1;
-  this->infoRequested = 0;
-  this->membersRequested = 0;
-  this->positionsRequested = 0;
-  this->skillsRequested = 0;
-  this->bansRequested = 0;
+  int* requested = &this->infoRequested;
+  for (int index = 0; index < 5; ++index) {
+    requested[index] = 0;
+  }
   this->guildName = "";
   this->masterName = "";
   this->subject = "";
