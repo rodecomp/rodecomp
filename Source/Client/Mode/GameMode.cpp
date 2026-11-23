@@ -10839,14 +10839,14 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         case NPC_ABR_TYPE:
         case NPC_BIONIC_TYPE: {
           CGameActor* summoner = scene->GetGameActorByAID(actor->emblemVersion);
-          if (summoner) {
-            if (g_session.IsLocalPlayerAid(summoner->GetGdid()) || guildInfo->HasRelatedGuild(summoner->GetGdid())) {
+          if (!summoner) {
+            if (this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->emblemVersion)) {
               friendly = true;
-            } else {
-              attack = 1;
             }
-          } else if (this->scene->player->render.accountId == static_cast<std::uint32_t>(actor->emblemVersion)) {
+          } else if (g_session.IsLocalPlayerAid(summoner->GetGdid()) || guildInfo->HasRelatedGuild(summoner->GetGdid())) {
             friendly = true;
+          } else {
+            attack = 1;
           }
           break;
         }
