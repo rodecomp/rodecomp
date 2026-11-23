@@ -11,6 +11,11 @@
 #include <cstdlib>
 #include <cstring>
 
+// INLINED
+static void SetParticleOffset(CParticle& particle, vector3d offset) {
+  particle.offset = offset;
+}
+
 // OFFSET: 0x00B7A8C0
 // FUNCTION: fn_46034
 CStormGustEffect::CStormGustEffect() : CEffect(EF_STORMGUST) {
@@ -42,11 +47,9 @@ __forceinline void CStormGustEffect::SetupParticle(CParticle* particle) {
     const float speed = static_cast<float>((speedRoll >= 0 ? speedRoll : 0) + 3);
     const int angleRoll = rand() % 360;
     const float angle = static_cast<float>(angleRoll >= 0 ? angleRoll : 0);
-    vector3d velocity;
-    velocity.z = ClientCosine(static_cast<int>(angle)) * -speed;
-    velocity.x = ClientSine(static_cast<int>(angle)) * speed;
-    velocity.y = 20.0f;
-    particle->offset = velocity;
+    const float z = ClientCosine(static_cast<int>(angle)) * -speed;
+    const float x = ClientSine(static_cast<int>(angle)) * speed;
+    SetParticleOffset(*particle, vector3d{x, 20.0f, z});
 
     const int scaleRoll = rand() % 100;
     particle->speedParameter = 1.5f;
