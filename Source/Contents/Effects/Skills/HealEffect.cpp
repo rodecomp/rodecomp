@@ -102,8 +102,9 @@ void CHealEffect::AddColumn(int kind) {
         continue;
       }
 
-      particle->effectId = this->id;
+      const int effectId = this->id;
       particle->columnIndex = segment;
+      particle->effectId = effectId;
       particle->rowIndex = row;
       particle->groupIndex = 1;
       particle->angleParameter = 360;
@@ -204,9 +205,10 @@ void CHealEffect::AddCone(int kind) {
         continue;
       }
 
-      particle->effectId = this->id;
-      particle->columnIndex = segment;
+      const int effectId = this->id;
       particle->rowIndex = row;
+      particle->effectId = effectId;
+      particle->columnIndex = segment;
       particle->groupIndex = 1;
       particle->angleParameter = 360;
       particle->alpha = 0;
