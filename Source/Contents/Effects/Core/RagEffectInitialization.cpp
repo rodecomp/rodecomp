@@ -24,14 +24,15 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   this->SetStateDuration(EffectLifetime(this->state.type));
   this->state.deltaPos = deltaPos;
   char name[64];
+  const char* minName;
   std::sprintf(name, "");
   switch (this->state.type) {
   case EF_WINDHIT:
     std::sprintf(name, "WindHit%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_COIN:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "memor_min.str" : "Maemor.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "memor_min.str" : "Maemor.str";
+    goto selectName;
   case EF_FIREWALL:
     std::sprintf(name, "Firewall%d.str", std::ranges::max(std::rand() % 2, 0) + 1);
     break;
@@ -51,8 +52,8 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "Invenom.str");
     break;
   case EF_CURE:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "cure_min.str" : "Cure.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "cure_min.str" : "Cure.str";
+    goto selectName;
   case EF_PROVOKE:
     std::sprintf(name, "Provoke.str");
     break;
@@ -63,14 +64,14 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "SkidTrap.str");
     break;
   case EF_GLORIA:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "gloria_min.str" : "Gloria.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "gloria_min.str" : "Gloria.str";
+    goto selectName;
   case EF_MAGNIFICAT:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "magnificat_min.str" : "Magnificat.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "magnificat_min.str" : "Magnificat.str";
+    goto selectName;
   case EF_RESURRECTION:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "resurrection_min.str" : "Resurrection.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "resurrection_min.str" : "Resurrection.str";
+    goto selectName;
   case EF_RECOVERY:
     std::sprintf(name, "Recovery.str");
     break;
@@ -81,8 +82,8 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "Impositio.str");
     break;
   case EF_LEXAETERNA:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "lexaeterna_min.str" : "LexAeterna.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "lexaeterna_min.str" : "LexAeterna.str";
+    goto selectName;
   case EF_ASPERSIO:
     std::sprintf(name, "Aspersio.str");
     break;
@@ -90,8 +91,8 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "LexDivina.str");
     break;
   case EF_SUFFRAGIUM:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "suffragium_min.str" : "Suffragium.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "suffragium_min.str" : "Suffragium.str";
+    goto selectName;
   case EF_STORMGUST:
     std::sprintf(name, "StormGust.str");
     break;
@@ -120,11 +121,11 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "CrashEarth.str");
     break;
   case EF_PERFECTION:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "WeaponPerfection_min.str" : "WeaponPerfection.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "WeaponPerfection_min.str" : "WeaponPerfection.str";
+    goto selectName;
   case EF_MAXPOWER:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "maximize_min.str" : "MaximizePower.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "maximize_min.str" : "MaximizePower.str";
+    goto selectName;
   case EF_BLASTMINEBOMB:
     std::sprintf(name, "BlastMine.str");
     break;
@@ -144,8 +145,8 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     std::sprintf(name, "GasPush.str");
     break;
   case EF_KYRIE:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "kyrie_min.str" : "Kyrie.str");
-    break;
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "kyrie_min.str" : "Kyrie.str";
+    goto selectName;
   case EF_MAGNUS:
     std::sprintf(name, "Magnus.str");
     break;
@@ -479,8 +480,12 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
     break;
   case EF_ANGELUS:
   case EF_WEWISH:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "jong_mini.str" : "Angelus.str");
+    minName = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "jong_mini.str" : "Angelus.str";
+    goto selectName;
+  selectName:
+    std::sprintf(name, minName);
     break;
+
   case EF_CRASHAXE:
     std::sprintf(name, "powerswing.str");
     break;
