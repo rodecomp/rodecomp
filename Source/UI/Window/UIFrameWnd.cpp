@@ -884,47 +884,45 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
 
-    {
-      const std::string self = g_session.DecodePlayerName();
-      const std::map<std::string, int>::iterator found = this->memberRoles.find(self);
-      if (found == this->memberRoles.end()) {
-        break;
-      }
-      const int rank = this->memberRoles[self];
-      if (rank == -1) {
-        break;
-      }
+    const std::string self = g_session.DecodePlayerName();
+    const std::map<std::string, int>::iterator found = this->memberRoles.find(self);
+    if (found == this->memberRoles.end()) {
+      break;
+    }
+    const int rank = this->memberRoles[self];
+    if (rank == -1) {
+      break;
+    }
 
-      if (this->memberList->selected != -1) {
-        const std::string target = this->memberList->lines[this->memberList->selected];
-        if (this->memberRoles.find(target) == this->memberRoles.end() || this->memberRoles[target] == -1) {
-          break;
-        }
-        switch (rank) {
-        case 0:
-          if (!(target == self)) {
-            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_BAN)).c_str(), 0));
-            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)).c_str(), 1));
-          }
-          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
-          if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
-            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
-          }
-          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
-          break;
-        case 1:
-          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
-          if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
-            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
-          }
-          break;
-        }
-      } else {
-        if (rank == 0) {
-          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
-        }
-        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)).c_str(), 11));
+    if (this->memberList->selected != -1) {
+      const std::string target = this->memberList->lines[this->memberList->selected];
+      if (this->memberRoles.find(target) == this->memberRoles.end() || this->memberRoles[target] == -1) {
+        break;
       }
+      switch (rank) {
+      case 0:
+        if (!(target == self)) {
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_BAN)).c_str(), 0));
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)).c_str(), 1));
+        }
+        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
+        if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
+        }
+        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
+        break;
+      case 1:
+        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
+        if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
+        }
+        break;
+      }
+    } else {
+      if (rank == 0) {
+        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
+      }
+      this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)).c_str(), 11));
     }
 
     if (this->menuCommands.size() != 0) {
@@ -1112,7 +1110,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->memberList->Resize(this->geometry.width * 56 / 280, this->geometry.height - 38, false);
       this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
       this->closeButton->Move(this->geometry.width - 14, 3);
-      const std::string title = this->titleText->text;
+      const std::string title = this->titleText->text.c_str();
       this->titleText->Resize(this->geometry.width - 30, 12);
       this->titleText->SetTextFitted(title.c_str());
     }
