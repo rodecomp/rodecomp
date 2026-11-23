@@ -683,10 +683,10 @@ int SetWindEffectInfo(lua_State* state) {
     const int red = static_cast<int>(luaL_checknumber(state, 4));
     const int green = static_cast<int>(luaL_checknumber(state, 5));
     const int blue = static_cast<int>(luaL_checknumber(state, 6));
-    effect->green = static_cast<unsigned char>(green);
     effect->maxAlpha = static_cast<unsigned char>(alpha);
-    effect->blue = static_cast<unsigned char>(blue);
     effect->red = static_cast<unsigned char>(red);
+    effect->green = static_cast<unsigned char>(green);
+    effect->blue = static_cast<unsigned char>(blue);
     break;
   }
   case MSG_SET_SIZE:
@@ -713,10 +713,10 @@ int SetWindEffectInfo(lua_State* state) {
     break;
   }
   case MSG_SET_SRCMODE:
-    effect->sourceBlend = static_cast<int>(luaL_checknumber(state, 3));
+    effect->sourceBlend = static_cast<unsigned int>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_DESTMODE:
-    effect->destinationBlend = static_cast<int>(luaL_checknumber(state, 3));
+    effect->destinationBlend = static_cast<unsigned int>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_TEXTURE: {
     std::string texture = luaL_checkstring(state, 3);
