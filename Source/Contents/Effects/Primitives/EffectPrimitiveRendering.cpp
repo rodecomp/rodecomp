@@ -3030,10 +3030,10 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
   this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p2, p3, p4, glowTm, 0, 0, 0, 180, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
   rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
-  vec1 = {g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx};
-  vec2 = {g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx};
-  vec3 = {g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx};
-  vec4 = {g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx};
+  vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
+  vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
+  vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
+  vec4.Set(g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
   this->Tei_TowardScreen(vec1, vec2, vec3, vec4, slot.alphaT, this->state.slots[1].alphaT);
   const vector3d q1{slot.vecBNow.x + vec1.x, slot.vecBNow.y + vec1.y, slot.vecBNow.z + vec1.z};
   const vector3d q2{slot.vecBNow.x + vec2.x, slot.vecBNow.y + vec2.y, slot.vecBNow.z + vec2.z};
