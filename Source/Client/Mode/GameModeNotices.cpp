@@ -4152,9 +4152,9 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         matrix rotation;
         rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
         vector3d position;
-        position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x;
-        position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y;
-        position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
+        position = vector3d{rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x,
+                            rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y,
+                            rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z};
         CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_EARTHGRAVE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetScale(0.5f);
