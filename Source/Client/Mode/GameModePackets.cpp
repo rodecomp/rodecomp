@@ -15132,6 +15132,10 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
   } else {
     const short job = packet->job;
     if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
@@ -15165,11 +15169,10 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         actor->SetGuildInfo(emblem, packet->shield);
       }
     }
-  }
-
-  if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-      (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-    this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
+        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
+      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    }
   }
 
   this->ApplyActorStatusEffects(packet->aid, packet->effectState, packet->level, packet->virtue);
