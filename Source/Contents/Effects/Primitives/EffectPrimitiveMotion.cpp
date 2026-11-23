@@ -2606,28 +2606,23 @@ bool CEffectPrim::Prim3DParticle() {
 // FUNCTION: fn_19780
 bool CEffectPrim::Prim3DParticleGravity() {
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const CRagEffect* master = this->state.master;
-  this->state.orgPos.z = master->render.position.z + this->state.deltaPos2.z;
-  this->state.orgPos.y = master->render.position.y + this->state.deltaPos2.y;
-  this->state.orgPos.x = master->render.position.x + this->state.deltaPos2.x;
-  this->state.gravSpeed = this->state.gravAccel + this->state.gravSpeed;
 
-  const float speed = this->state.accel + this->state.speed;
-  this->state.speed = speed < 0.0f ? 0.0f : speed;
+  this->state.orgPos = this->state.master->render.position + this->state.deltaPos2;
+
+  this->state.speed += this->state.accel;
+  this->state.gravSpeed += this->state.gravAccel;
+  this->state.speed = this->state.speed < 0.0f ? 0.0f : this->state.speed;
+
   Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
+  this->state.deltaPos.x += this->state.speed3d.x;
+  this->state.deltaPos.y += this->state.gravSpeed;
+  this->state.deltaPos.z += this->state.speed3d.z;
 
-  this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-  this->state.deltaPos.y = this->state.deltaPos.y + this->state.gravSpeed;
-  this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
+  this->render.position = this->state.orgPos + this->state.deltaPos;
+  this->state.size += this->state.sizeSpeed;
 
-  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
-  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
-  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
-  this->state.size = this->state.sizeSpeed + this->state.size;
-
-  const float gravSpeed = this->state.gravSpeed;
-  if (gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
-    this->state.gravSpeed = gravSpeed / -1.5f;
+  if (this->state.gravSpeed > 0.0f && this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
+    this->state.gravSpeed /= -1.5f;
 
     if (this->state.playWaveType == 1) {
       char name[52];
@@ -2641,7 +2636,12 @@ bool CEffectPrim::Prim3DParticleGravity() {
 
   this->ProcessAlpha();
   this->ShiftSegment();
-  return this->AnimMotion();
+
+  if (!this->AnimMotion()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00BB9610
