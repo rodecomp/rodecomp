@@ -75,7 +75,8 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
   }
 
   const jsoncons::json& document = this->document;
-  if (document.object_range().end() == document.find("EZ2STREffect")) {
+  const auto end = document.object_range().end();
+  if (end == document.find("EZ2STREffect")) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "EZ2STREffect");
     return false;
   }
