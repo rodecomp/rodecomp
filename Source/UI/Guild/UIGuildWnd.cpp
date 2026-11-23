@@ -1055,28 +1055,32 @@ void UIGuildInfoManageWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  if (y > 157 && y < 205) {
+  int top = 157;
+  if (y > top && y < top + 3 * 16) {
     const int count = g_guildInfo.CountRelatedGuilds(0);
     this->m_allyRow = -1;
     this->m_hostileRow = -1;
     if (count != 0) {
-      this->m_allyRow = (y - 157) / 16;
+      this->m_allyRow = (y - top) / 16;
       if (count > this->m_allyRow) {
         this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
       }
     }
-  } else if (y > 231 && y < 279) {
+  } else {
+    top += 74;
+    if (y <= top || y >= top + 3 * 16) {
+      return;
+    }
+
     const int count = g_guildInfo.CountRelatedGuilds(1);
     this->m_allyRow = -1;
     this->m_hostileRow = -1;
     if (count != 0) {
-      this->m_hostileRow = (y - 231) / 16;
+      this->m_hostileRow = (y - top) / 16;
       if (count > this->m_hostileRow) {
         this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
       }
     }
-  } else {
-    return;
   }
 
   this->Invalidate();
