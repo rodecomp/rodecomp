@@ -8,10 +8,6 @@
 
 // INLINED
 std::uint32_t CAdventurerAgencyMgr::Id(double value) {
-  if (!(value < 4294967296.0) || value <= -1.0) {
-    return 0xFFFFFFFFu;
-  }
-
   return static_cast<std::uint32_t>(value);
 }
 
