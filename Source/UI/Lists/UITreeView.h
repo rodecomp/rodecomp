@@ -13,6 +13,9 @@ class UITVBitmapButton;
 class UITVTextButton;
 
 struct UITreeNode {
+#ifdef UITREEVIEW_NODE_DESTRUCTOR
+  __declspec(noinline) ~UITreeNode() = default;
+#endif
   /* 0000 */ int id;
   /* 0004 */ int expanded;
   /* 0008 */ int icon;
