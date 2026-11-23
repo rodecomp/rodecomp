@@ -131,7 +131,9 @@ class C3dModelRes : public CRes {
   friend class ModelNode;
 public:
   C3dModelRes();
-  ~C3dModelRes() override;
+  // OFFSET: 0x007567B0
+  // FUNCTION: fn_07995
+  ~C3dModelRes() override = default;
   bool Load(const char* name) override;
   void Unload() override;
   ModelNode* FindNode(const char* name) const;

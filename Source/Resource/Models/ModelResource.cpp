@@ -135,10 +135,6 @@ __declspec(noinline) ModelNodeV2::~ModelNodeV2() = default;
 __declspec(noinline) C3dModelRes::C3dModelRes() : major(0), shade(0), alpha(255) {
 }
 
-// OFFSET: 0x007567B0
-// FUNCTION: fn_07995
-C3dModelRes::~C3dModelRes() = default;
-
 // OFFSET: 0x00755560
 // FUNCTION: fn_07983
 C3dModelResV1::C3dModelResV1() : animationLength(0) {
