@@ -37,7 +37,6 @@ ActorHealth CWorld::GetActorHealth(std::uint32_t aid) const {
   return {maximum, current, true};
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x00AC8470
 // FUNCTION: fn_17672
 void CWorld::CreatePlayer() {
@@ -45,4 +44,3 @@ void CWorld::CreatePlayer() {
   this->player = player;
   this->objects.push_back(player);
 }
-#pragma inline_depth()

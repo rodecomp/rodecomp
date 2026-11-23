@@ -301,6 +301,10 @@ Never use `/utf-8`, and never save sources as CP949/EUC-KR.
   used them; an optimized SIMD instruction alone is not evidence. Scalar data is not `__m128i`.
 - Do not use `#pragma optimize` (including `#pragma optimize("y", off)`) to alter compiler optimization or frame-pointer settings.
   Use the configured project compiler settings; byte matching does not justify source-level optimization overrides.
+- Do not steer inlining from source: no `#pragma inline_depth`, `#pragma inline_recursion`, `[[msvc::noinline_calls]]`,
+  `[[msvc::forceinline_calls]]` or `[[msvc::flatten]]`. Write the plain call; a lower score is accepted.
+- Call virtual functions through the declared virtual (`this->effect->GetDuration()`), never through a function
+  pointer read from the vtable by offset, even when the original loads the target into a register first.
 - Explicit template instantiations and declarations that only steer linkage or inlining
   (`template __declspec(noinline) ...;`, `extern template ...;`) go in the unit's linkage prelude
   `Source/Linkage/<unit path>.h` (e.g. `Source/Linkage/Source/UI/Window/WindowDialogs.cpp.h`), never in the game

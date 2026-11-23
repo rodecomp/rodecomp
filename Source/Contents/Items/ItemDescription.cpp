@@ -17,11 +17,9 @@ ITEM_DESC::ITEM_DESC()
       viewId(0) {
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006D46A0
 // FUNCTION: fn_06560
 ITEM_DESC::ITEM_DESC(const ITEM_DESC&) = default;
-#pragma inline_depth()
 
 // OFFSET: 0x006D5160
 // FUNCTION: fn_06568
