@@ -725,47 +725,49 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   button->m_hoverColor = 0x00FF7864;
   button->SetId(tag.type);
 
-  std::string data = tag.data;
-  if (!data.empty()) {
-    switch (tag.type) {
-    case LINE_SEGMENT_NAVI: {
-      std::string remaining = data;
-      std::size_t separator = remaining.find(",");
-      while (separator != std::string::npos) {
-        const std::string field = remaining.substr(0, separator);
-        button->AddString(field);
-        remaining = remaining.substr(separator + 1);
-        separator = remaining.find(",");
+  {
+    std::string data = tag.data;
+    if (!data.empty()) {
+      switch (tag.type) {
+      case LINE_SEGMENT_NAVI: {
+        std::string remaining = data;
+        std::size_t separator = remaining.find(",");
+        while (separator != std::string::npos) {
+          const std::string field = remaining.substr(0, separator);
+          button->AddString(field);
+          remaining = remaining.substr(separator + 1);
+          separator = remaining.find(",");
+        }
+        button->AddString(remaining);
+        break;
       }
-      button->AddString(remaining);
-      break;
-    }
-    case LINE_SEGMENT_ITEM: {
-      std::string remaining = data;
-      std::size_t separator = remaining.find(",");
-      while (separator != std::string::npos) {
-        const std::string field = remaining.substr(0, separator);
-        button->AddString(field);
-        remaining = remaining.substr(separator + 1);
-        separator = remaining.find(",");
+      case LINE_SEGMENT_ITEM: {
+        std::string remaining = data;
+        std::size_t separator = remaining.find(",");
+        while (separator != std::string::npos) {
+          const std::string field = remaining.substr(0, separator);
+          button->AddString(field);
+          remaining = remaining.substr(separator + 1);
+          separator = remaining.find(",");
+        }
+        button->AddString(remaining);
+        int id = 0;
+        if (!button->GetString(1).empty()) {
+          id = std::atoi(button->GetString(1).c_str());
+        }
+        button->item.identity[0] = id;
+        button->item.identified = 1;
+        button->item.refiningLevel = 0;
+        button->item.itemId = button->GetString(0);
+        break;
       }
-      button->AddString(remaining);
-      int id = 0;
-      if (!button->GetString(1).empty()) {
-        id = std::atoi(button->GetString(1).c_str());
+      case LINE_SEGMENT_ITEM_LINK: {
+        std::vector<int> fields;
+        this->DecodeItemFields(data, fields);
+        this->ItemFromFields(fields, button->item);
+        break;
       }
-      button->item.identity[0] = id;
-      button->item.identified = 1;
-      button->item.refiningLevel = 0;
-      button->item.itemId = button->GetString(0);
-      break;
-    }
-    case LINE_SEGMENT_ITEM_LINK: {
-      std::vector<int> fields;
-      this->DecodeItemFields(data, fields);
-      this->ItemFromFields(fields, button->item);
-      break;
-    }
+      }
     }
   }
 
