@@ -140,7 +140,6 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   std::memset(message, 0, sizeof(message));
   this->data.ClearAll();
 
-  int index = 1;
   const char* mapName;
   const char* name;
   const char* title;
@@ -153,6 +152,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int linkedY = 0;
   int targetId = -1;
   int cost = 0;
+  int index = 1;
   for (; index < 9999; ++index) {
     mapName = nullptr;
     name = nullptr;
