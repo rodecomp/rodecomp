@@ -1119,10 +1119,11 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
       precision = digits->second;
     }
 
-    const double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
+    double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
     const double scale = std::pow(10.0, precision);
     const double rounded = std::floor(result * scale) / scale;
-    std::string number = fmt::format("{:.{}f}", sign * rounded, precision);
+    sign *= rounded;
+    std::string number = fmt::format("{:.{}f}", sign, precision);
     if (0.0 != rounded) {
       if (text.size() != 0) {
         text += "\n";
