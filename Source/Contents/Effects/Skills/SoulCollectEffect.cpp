@@ -5,6 +5,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Textures/Texture.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -74,7 +75,8 @@ void CSoulCollectEffect::Open() {
     for (int index = 0; index < current - this->effectLevel; ++index) {
       if (this->particles.size() != 0) {
         for (int layer = 0; layer < 2; ++layer) {
-          const auto last = std::prev(this->particles.end());
+          auto last = this->particles.end();
+          --last;
           FreeParticle(*last);
           this->particles.erase(last);
         }
@@ -160,14 +162,9 @@ void CSoulCollectEffect::OnProcess() {
 
       const int step = 360 / std::min(5u, pairs);
       const float angle = (static_cast<float>(step * (index - group * 5)) + rotation) / 180.0f * 3.141592f;
-      const float cosine = ClientCos(angle) * 10.0f;
-      const float sine = ClientSin(angle) * 10.0f;
-      const float y = this->position[1] - 10.0f;
-      const float x = sine + this->position[0];
-      const float z = cosine + this->position[2];
-      particle->position.y = y;
-      particle->position.z = z;
-      particle->position.x = x;
+      const float cosine = ClientCos(angle) * g_projectionDepthOffset;
+      const float sine = ClientSin(angle) * g_projectionDepthOffset;
+      particle->position = vector3d{sine + this->position[0], this->position[1] - g_projectionDepthOffset, cosine + this->position[2]};
     } else {
       particle->alpha = 0;
     }
