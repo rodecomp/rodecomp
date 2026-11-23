@@ -150,7 +150,7 @@ int UIMiniMapWnd::LoadMemos() {
         text += tokens[index];
       }
 
-      tokens.clear();
+      tokens.erase(tokens.begin(), tokens.end());
       this->memoButtons[count]->Move(x, y);
       this->memoButtons[count]->SetTooltip(text.c_str());
       ++count;
