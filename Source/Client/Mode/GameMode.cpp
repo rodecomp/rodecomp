@@ -6062,7 +6062,7 @@ std::vector<unsigned char> CGameMode::SaveQuestState() {
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeRecordChunk(14011, this->isOnQuest);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(14011, this->isOnQuest);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
