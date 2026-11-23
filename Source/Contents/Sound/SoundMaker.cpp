@@ -108,9 +108,7 @@ CHalluPlant::CHalluPlant() {
   this->SetActorJob(JT_BLUE_PLANT);
   this->isRiding = 0;
   this->SetMonsterTransformJob(-1);
-  this->render.position.x = 0.0f;
-  this->render.position.y = 0.0f;
-  this->render.position.z = 0.0f;
+  this->render.position = vector3d{0.0f, 0.0f, 0.0f};
   this->render.distanceScale = 1.0f;
   this->render.spriteOffsetX = 0;
   this->render.scale = 1.0f;
