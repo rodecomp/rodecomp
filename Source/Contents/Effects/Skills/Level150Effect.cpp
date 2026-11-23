@@ -397,9 +397,7 @@ void CLevel150SubEffect::SetColor(int red, int green, int blue) {
 // OFFSET: 0x00B47850
 // FUNCTION: fn_18921
 void CLevel150SubEffect::Init() {
-  const int red[4][3] = {{255, 105, 105}, {255, 5, 5}, {255, 55, 55}, {255, 155, 155}};
-  const int yellow[4][3] = {{255, 255, 105}, {255, 255, 5}, {255, 255, 55}, {255, 255, 155}};
-  const int blue[4][3] = {{105, 105, 255}, {5, 5, 255}, {55, 55, 255}, {155, 155, 255}};
+  const int colors[12][3] = {{105, 105, 255}, {5, 5, 255}, {55, 55, 255}, {155, 155, 255}, {255, 255, 105}, {255, 255, 5}, {255, 255, 55}, {255, 255, 155}, {255, 105, 105}, {255, 5, 5}, {255, 55, 55}, {255, 155, 155}};
   const int effectId = this->id;
   for (int ring = 0; ring < 4; ++ring) {
     for (int index = 0; index < 2; ++index) {
@@ -421,11 +419,11 @@ void CLevel150SubEffect::Init() {
       this->particles.push_back(particle);
 
       if (effectId == EF_LEVEL150_SUB) {
-        particle->SetColor(blue[ring][0], blue[ring][1], blue[ring][2]);
+        particle->SetColor(colors[ring][0], colors[ring][1], colors[ring][2]);
       } else if (effectId == EF_LEVEL160_SUB) {
-        particle->SetColor(yellow[ring][0], yellow[ring][1], yellow[ring][2]);
+        particle->SetColor(colors[ring + 4][0], colors[ring + 4][1], colors[ring + 4][2]);
       } else if (effectId == EF_LEVEL185_SUB) {
-        particle->SetColor(red[ring][0], red[ring][1], red[ring][2]);
+        particle->SetColor(colors[ring + 8][0], colors[ring + 8][1], colors[ring + 8][2]);
       } else if (effectId == EF_LEVEL4TH_SUB) {
         particle->SetColor(255, 155, 0);
       }
