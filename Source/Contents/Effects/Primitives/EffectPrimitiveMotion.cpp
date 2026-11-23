@@ -5060,8 +5060,8 @@ __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
   FollowMaster(*this);
 
   EffectPrimitiveSlot& first = this->state.slots[0];
-  first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
   const int firstProcess = first.process + 1;
+  first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
   first.process = firstProcess;
   if (first.riseAngle >= 360) {
     first.riseAngle = static_cast<std::int16_t>(first.riseAngle - 360);
@@ -5076,8 +5076,8 @@ __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
   }
 
   EffectPrimitiveSlot& second = this->state.slots[1];
-  second.riseAngle = static_cast<std::int16_t>(second.riseAngle + 3);
   const int secondProcess = second.process + 1;
+  second.riseAngle = static_cast<std::int16_t>(second.riseAngle + 3);
   second.process = secondProcess;
   if (second.riseAngle >= 360) {
     second.riseAngle = static_cast<std::int16_t>(second.riseAngle - 360);
