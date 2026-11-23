@@ -1228,8 +1228,8 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
 
     const int index = argument1 + this->m_scrollIndex;
-    if (index >= 0 && index <= maximum) {
-      this->m_scrollIndex = index;
+    if (index >= 0) {
+      this->m_scrollIndex = index > maximum ? maximum : index;
     } else if (index > maximum) {
       this->m_scrollIndex = maximum;
     } else {
