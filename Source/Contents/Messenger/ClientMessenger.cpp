@@ -4061,8 +4061,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
   this->m_dirty |= found->second->IsPretend();
   auto combinations = this->m_itemCombinations.find(found->second->GetId());
   if (this->m_itemCombinations.end() != combinations) {
-    auto& properties = this->properties3;
     for (const unsigned int& combinationId : combinations->second) {
+      auto& properties = this->properties3;
       if (properties.end() != properties.find(combinationId)) {
         properties[combinationId]->IsPretend();
       }
@@ -6219,8 +6219,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const std::ui
   found->second->IsPretend();
   auto combinations = this->m_itemCombinations.find(found->second->GetId());
   if (this->m_itemCombinations.end() != combinations) {
-    auto& properties = this->properties3;
     for (const unsigned int& combinationId : combinations->second) {
+      auto& properties = this->properties3;
       if (properties.end() != properties.find(combinationId)) {
         properties[combinationId]->IsPretend();
       }
