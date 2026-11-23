@@ -25,8 +25,8 @@ void ResourceFailures::Report(std::string requested, std::string resolved) {
 
   {
     CSyncObject lock(&this->m_lock);
-    const auto it = this->m_reported.find(resolved);
-    if (it != this->m_reported.end()) {
+    const auto entry = this->m_reported.find(resolved);
+    if (entry != this->m_reported.end()) {
       return;
     }
     this->m_reported.insert(resolved);
