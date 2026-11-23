@@ -15,67 +15,6 @@
 #include <cstring>
 #include <utility>
 
-// OFFSET: 0x0050AE30
-// FUNCTION: fn_00894
-bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
-  if (!this->loaded) {
-    this->Fail("초기화가 되어야 합니다.");
-    return false;
-  }
-
-  if (this->document.object_range().end() == this->document.find("ReputeGroup")) {
-    this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
-    return false;
-  }
-
-  for (const auto& member : this->document["ReputeGroup"].object_range()) {
-    const std::string name = member.key();
-    const jsoncons::json node = member.value();
-    ReputeGroupRecord record;
-    this->GetStringValue(node, "ID", &record.id);
-    this->GetStringValue(node, "Name", &record.name);
-    this->GetIntVectorValue(node, "ReputeList", &record.reputes);
-
-    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
-      this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
-      return false;
-    }
-  }
-
-  return this->succeeded;
-}
-
-// OFFSET: 0x0050B830
-// FUNCTION: fn_00895
-bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
-  if (!this->loaded) {
-    this->Fail("초기화가 되어야 합니다.");
-    return false;
-  }
-
-  if (this->document.object_range().end() == this->document.find("reputeInfo")) {
-    this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "reputeInfo");
-    return false;
-  }
-
-  for (const auto& member : this->document["reputeInfo"].object_range()) {
-    const std::string name = member.key();
-    const jsoncons::json node = member.value();
-    ReputeInfoRecord record;
-    this->GetStringValue(node, "Name", &record.name);
-    this->GetIntValue(node, "MaxPoint_Positive", &record.maxPointPositive);
-    this->GetIntValue(node, "MaxPoint_Negative", &record.maxPointNegative);
-    this->GetStringValue(node, "Invisible", &record.invisible);
-
-    if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
-      this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
-      return false;
-    }
-  }
-
-  return this->succeeded;
-}
-
 // OFFSET: 0x0060DC70
 // FUNCTION: fn_04294
 bool CReputeMgr::LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& groups) {

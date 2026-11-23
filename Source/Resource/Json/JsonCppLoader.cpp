@@ -320,7 +320,7 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
 
 // OFFSET: 0x00509D40
 // FUNCTION: fn_00892
-bool JsonCppLoader::GetIntVectorValue(const jsoncons::json& node, const std::string& key, std::vector<int>* out) {
+__declspec(noinline) bool JsonCppLoader::GetIntVectorValue(const jsoncons::json& node, const std::string& key, std::vector<int>* out) {
   const jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::array_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
@@ -350,4 +350,65 @@ bool JsonCppLoader::GetBoolValue(const jsoncons::json& node, const std::string& 
 
   *out = value.as_bool();
   return true;
+}
+
+// OFFSET: 0x0050AE30
+// FUNCTION: fn_00894
+bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
+  if (!this->loaded) {
+    this->Fail("초기화가 되어야 합니다.");
+    return false;
+  }
+
+  if (this->document.object_range().end() == this->document.find("ReputeGroup")) {
+    this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
+    return false;
+  }
+
+  for (const auto& member : this->document["ReputeGroup"].object_range()) {
+    const std::string name = member.key();
+    const jsoncons::json node = member.value();
+    ReputeGroupRecord record;
+    this->GetStringValue(node, "ID", &record.id);
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntVectorValue(node, "ReputeList", &record.reputes);
+
+    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
+      return false;
+    }
+  }
+
+  return this->succeeded;
+}
+
+// OFFSET: 0x0050B830
+// FUNCTION: fn_00895
+bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
+  if (!this->loaded) {
+    this->Fail("초기화가 되어야 합니다.");
+    return false;
+  }
+
+  if (this->document.object_range().end() == this->document.find("reputeInfo")) {
+    this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "reputeInfo");
+    return false;
+  }
+
+  for (const auto& member : this->document["reputeInfo"].object_range()) {
+    const std::string name = member.key();
+    const jsoncons::json node = member.value();
+    ReputeInfoRecord record;
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntValue(node, "MaxPoint_Positive", &record.maxPointPositive);
+    this->GetIntValue(node, "MaxPoint_Negative", &record.maxPointNegative);
+    this->GetStringValue(node, "Invisible", &record.invisible);
+
+    if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
+      return false;
+    }
+  }
+
+  return this->succeeded;
 }
