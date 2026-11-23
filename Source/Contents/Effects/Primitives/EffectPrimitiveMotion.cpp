@@ -7651,11 +7651,10 @@ namespace {
 // OFFSET: 0x00BEB4D0
 // FUNCTION: fn_19970
 void CEffectPrim::PrimFallingPetals2() {
-  EffectPrimitiveSlot* slots = this->state.slots;
-  FaceCamera(slots);
+  FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = slots[index];
+    EffectPrimitiveSlot& slot = this->state.slots[index];
 
     if (slot.life != 1) {
       continue;
