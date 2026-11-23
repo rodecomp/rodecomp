@@ -252,13 +252,15 @@ bool UIEntryQueueStandByWnd::Create() {
   this->SetSize(280, 120);
   this->OnCreate(280, 120);
   this->OnSize(280, 120);
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  int top = (g_renderer->viewport.height - 480) / 2 + 180;
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, top);
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 260, 65, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  this->m_viewer->backgroundColor = ((blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF)) | 0xFF000000u;
+  this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
   const std::string path = "유저인터페이스\\";
