@@ -1427,7 +1427,11 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   switch (message) {
   case UM_SETTITLE: {
     char text[200];
-    std::sprintf(text, "%s : %s", LookupMessage(this->buyingShop != 0 ? MSI_BUYINGSTORE_MYSHOPWND_TITLE : MSI_ITEM_MY_STORE), g_session.storeTitle.c_str());
+    int titleId = MSI_BUYINGSTORE_MYSHOPWND_TITLE;
+    if (this->buyingShop == 0) {
+      titleId = MSI_ITEM_MY_STORE;
+    }
+    std::sprintf(text, "%s : %s", LookupMessage(titleId), g_session.storeTitle.c_str());
     this->title->SetTextFitted(text);
     return 0;
   }
@@ -1460,7 +1464,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
         this->scrollBar->Move(this->geometry.width - 15, 14);
         this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->footerHeight - 17);
-        this->saleAlarm->Move(12, this->buyingShop != 0 ? this->geometry.height - 12 : this->geometry.height - 18);
+        this->saleAlarm->Move(12, this->geometry.height + (this->buyingShop != 0 ? -12 : -18));
         this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
         if (this->actionButton) {
           this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
@@ -9684,7 +9688,7 @@ void UIItemShopWnd::Paint() {
       if (g_serviceType == 6) {
         sprintf(currency, "K");
       } else if (g_serviceType == 0) {
-        sprintf(currency, g_session.m_channelCopId != 1 ? "C" : "H");
+        sprintf(currency, g_session.m_channelCopId == 1 ? "H" : "C");
       } else {
         sprintf(currency, "P");
       }
