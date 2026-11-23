@@ -442,11 +442,12 @@ void CSkillAction_DamageWereRaptorForm::SpawnDirectionalEffect(CGameActor* sourc
     return;
   }
 
-  const bool flipped = direction == 1 || direction == 2;
+  const bool flipped = direction == 1 ? true : direction == 2;
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name.data()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetFlipX(flipped);
-    effect->SetAngle(static_cast<float>((static_cast<int>(angle + (flipped ? -180.0f : 0.0f)) + 360) % 360));
+    const float offset = flipped ? -180.0f : 0.0f;
+    effect->SetAngle(static_cast<float>((static_cast<int>(angle + offset) + 360) % 360));
   }
 }
 
