@@ -219,17 +219,17 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   int vertexCount = 0;
   file.Read(&vertexCount, 4);
   mesh.vertexCount = vertexCount;
-  auto* vertices = new std::array<float, 3>[vertexCount]{};
+  ShadeVector* vertices = new ShadeVector[vertexCount];
   file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-  mesh.vertices = vertices;
+  mesh.vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
 
   for (int index = 0; index < vertexCount; ++index) {
-    std::array<float, 3>& vertex = vertices[index];
-    const float y = ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + matrix[7] * vertex[2]) + matrix[10];
-    const float z = ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + matrix[8] * vertex[2]) + matrix[11];
-    vertex[0] = ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9];
-    vertex[1] = y;
-    vertex[2] = z;
+    ShadeVector& vertex = vertices[index];
+    const float y = ((vertex.x * matrix[1] + vertex.y * matrix[4]) + matrix[7] * vertex.z) + matrix[10];
+    const float z = ((vertex.x * matrix[2] + vertex.y * matrix[5]) + matrix[8] * vertex.z) + matrix[11];
+    vertex.x = ((vertex.x * matrix[0] + vertex.y * matrix[3]) + vertex.z * matrix[6]) + matrix[9];
+    vertex.y = y;
+    vertex.z = z;
   }
 
   int textureVertexCount = 0;
@@ -371,7 +371,7 @@ bool C3dModelResV1::Load(const char* name) {
         ModelVolumeRecord record{};
         file.Read(&record, sizeof(record));
         volume->flag = record.flag;
-        std::memcpy(volume, &record, sizeof(ModelVolumeRecordV1));
+        record.CopyTo(*volume);
 
         if (volume->flag == 0) {
           volume->size[0] = volume->size[0] + 3.0f;
@@ -387,7 +387,7 @@ bool C3dModelResV1::Load(const char* name) {
         ModelVolumeRecordV1 record{};
         file.Read(&record, sizeof(record));
         volume->flag = 0;
-        std::memcpy(volume, &record, sizeof(record));
+        record.CopyTo(*volume);
         this->volumes.push_back(volume);
       }
     }
