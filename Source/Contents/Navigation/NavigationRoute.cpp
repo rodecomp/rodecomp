@@ -1790,8 +1790,12 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
   offset += 6;
   if (8000 != header.tag) {
     offset = static_cast<unsigned>(-1);
-  } else if (data.size() > 6) {
-    do {
+    return static_cast<int>(offset);
+  }
+  if (data.size() <= 6) {
+    return static_cast<int>(offset);
+  }
+  do {
       header.Read(data.data() + offset);
       offset += 6;
 
@@ -1960,8 +1964,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       }
-    } while (data.size() > offset);
-  }
+  } while (data.size() > offset);
   return static_cast<int>(offset);
 }
 
