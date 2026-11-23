@@ -571,10 +571,10 @@ void CDCBitmap::DrawScaledSurface(
   const float greenScale = static_cast<float>((color >> 8) & 0xFF) * alpha / 255.0f;
   const float blueScale = static_cast<float>(color & 0xFF) * alpha / 255.0f;
   const float inverse = 1.0f - alpha;
-  const float inverseX = 1.0f / scaleX;
-  const int scaledHeight = static_cast<int>(static_cast<float>(sourceHeight) * scaleY);
-  const float inverseY = 1.0f / scaleY;
   const int scaledWidth = static_cast<int>(static_cast<float>(sourceWidth) * scaleX);
+  const int scaledHeight = static_cast<int>(static_cast<float>(sourceHeight) * scaleY);
+  const float inverseX = 1.0f / scaleX;
+  const float inverseY = 1.0f / scaleY;
   const int limit = sourceHeight * stride;
 
   if (format == TextureFormat::A4R4G4B4) {
