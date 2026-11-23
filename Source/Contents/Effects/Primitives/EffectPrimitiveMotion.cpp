@@ -1223,32 +1223,32 @@ void CEffectPrim::PrimEffectTexture_Ani() {
 // FUNCTION: fn_19805
 void CEffectPrim::PrimFirstAid() {
   FaceCamera(this->state.slots);
+  FollowMaster(*this);
 
-  const CRagEffect* master = this->state.master;
-  this->render.position = master->render.position;
+  for (int ec = 0; ec < 1; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-  EffectPrimitiveSlot& slot = this->state.slots[0];
+    if (slot.life != 1) {
+      continue;
+    }
 
-  if (slot.life != 1) {
-    return;
-  }
+    ++slot.process;
+    slot.height[8] += 3.0f;
 
-  ++slot.process;
-  slot.height[8] += 3.0f;
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
 
-  if (slot.height[8] >= 360.0f) {
-    slot.height[8] -= 360.0f;
-  }
+    if (slot.process <= 20) {
+      slot.alphaB += 4;
+    }
 
-  if (slot.process <= 20) {
-    slot.alphaB += 4;
-  }
+    if (slot.process > 100) {
+      --slot.alphaB;
 
-  if (slot.process > 100) {
-    --slot.alphaB;
-
-    if (slot.alphaB < 0) {
-      slot.alphaB = 0;
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
     }
   }
 }
