@@ -67,7 +67,6 @@ CTipBoxMgr::CTipBoxMgr()
       m_entries{},
       m_randomList{},
       m_currentEntry{},
-      m_imagePath{},
       paragraphIndex(0),
       m_missing{} {
   this->m_initialized = true;
@@ -202,9 +201,9 @@ void CTipBoxMgr::Sub7ACF50() {
   this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(row) * cellHeight;
 
   if (found != std::string::npos) {
-    this->m_imagePath = this->m_currentEntry.bitmapName + ".bmp";
+    this->m_image.path = this->m_currentEntry.bitmapName + ".bmp";
 
-    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_imagePath.c_str())));
+    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_image.path.c_str())));
     if (!bitmap) {
       return;
     }
@@ -233,9 +232,9 @@ void CTipBoxMgr::Sub7ACF50() {
     this->m_image.scale = scale;
     this->m_image.height = static_cast<float>(bitmap->image.height) * scale;
   } else {
-    this->m_imagePath = "sprite\\" + this->m_currentEntry.bitmapName;
+    this->m_image.path = "sprite\\" + this->m_currentEntry.bitmapName;
 
-    const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_imagePath + ".spr"));
+    const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_image.path + ".spr"));
     if (!sprite) {
       return;
     }

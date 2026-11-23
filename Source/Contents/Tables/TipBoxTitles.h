@@ -38,6 +38,7 @@ struct TipBoxLayout {
   /* 0014 */ int clipX;
   /* 0018 */ int clipY;
   /* 001C */ float scale;
+  /* 0020 */ std::string path;
 };
 
 class CTipBoxMgr {
@@ -84,7 +85,6 @@ public:
   std::vector<int> m_randomList;
   TipBoxEntry m_currentEntry;
   TipBoxLayout m_image;
-  std::string m_imagePath;
   int paragraphIndex;
   bool m_initialized;
   TipBoxEntry m_missing;
@@ -104,7 +104,8 @@ static_assert(offsetof(CTipBoxMgr, m_randomList) == 0x18);
 static_assert(offsetof(CTipBoxMgr, m_currentEntry) == 0x24);
 static_assert(offsetof(CTipBoxMgr, paragraphIndex) == 0xB4);
 static_assert(offsetof(CTipBoxMgr, m_image) == 0x7C);
-static_assert(offsetof(CTipBoxMgr, m_imagePath) == 0x9C);
+static_assert(sizeof(TipBoxLayout) == 56);
+static_assert(offsetof(TipBoxLayout, path) == 0x20);
 static_assert(offsetof(CTipBoxMgr, currentTipId) == 0x114);
 #endif
 

@@ -10541,7 +10541,7 @@ void UITipboxWnd::Paint() {
       if (manager->m_currentEntry.imageCell == 5 && manager->m_currentEntry.imageScalePercent == 100) {
         this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((manager->m_currentEntry.bitmapName + ".bmp").c_str()))), false);
       } else {
-        CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
+        CTexture* texture = g_texMgr.Load(manager->m_image.path.c_str(), 0, false, true, false);
         this->geometry.surface->DrawScaledSurface(
           static_cast<int>(manager->m_image.x), static_cast<int>(manager->m_image.y), static_cast<int>(manager->m_image.width),
           static_cast<int>(manager->m_image.height), texture, texture->Width(), texture->Height(), manager->m_image.scale, manager->m_image.scale, 0xFFFFFFFF,
@@ -10550,8 +10550,8 @@ void UITipboxWnd::Paint() {
       }
       break;
     case 1: {
-      auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".act"));
-      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".spr"));
+      auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".act"));
+      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".spr"));
       if (!action || !sprite) {
         return;
       }
