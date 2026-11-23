@@ -107,23 +107,23 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
 
   for (std::list<ModelVolume*>::iterator it = this->volumes.begin(); it != this->volumes.end(); ++it) {
     ModelVolume* volume = *it;
-    volume->transform.MakeXRotation(Radians(volume->rotation[0]));
-    volume->transform.AppendYRotation(Radians(volume->rotation[1]));
-    volume->transform.AppendZRotation(Radians(volume->rotation[2]));
-    volume->transform.AppendTranslate(volume->position);
+    volume->transform.MakeXRotation(Radians(volume->rotation.values[0]));
+    volume->transform.AppendYRotation(Radians(volume->rotation.values[1]));
+    volume->transform.AppendZRotation(Radians(volume->rotation.values[2]));
+    volume->transform.AppendTranslate(volume->position.values);
     volume->inverseTransform.MakeInverse(volume->transform);
     matrix combined;
     combined.Compose(volume->transform, this->transform);
 
-    const float* size = volume->size;
-    TransformCorner(volume->corners[0], -size[0], -size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[1], size[0], -size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[2], size[0], size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[3], -size[0], size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[4], -size[0], -size[1], size[2], combined.values);
-    TransformCorner(volume->corners[5], size[0], -size[1], size[2], combined.values);
-    TransformCorner(volume->corners[6], size[0], size[1], size[2], combined.values);
-    TransformCorner(volume->corners[7], -size[0], size[1], size[2], combined.values);
+    const float* size = volume->size.values;
+    TransformCorner(volume->corners[0].values, -size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[1].values, size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[2].values, size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[3].values, -size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[4].values, -size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[5].values, size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[6].values, size[0], size[1], size[2], combined.values);
+    TransformCorner(volume->corners[7].values, -size[0], size[1], size[2], combined.values);
   }
 
   this->dirty = 1;
@@ -190,23 +190,23 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
 
   for (std::list<ModelVolume*>::iterator it = actor->volumes.begin(); it != actor->volumes.end(); ++it) {
     ModelVolume* volume = *it;
-    volume->transform.MakeXRotation(Radians(volume->rotation[0]));
-    volume->transform.AppendYRotation(Radians(volume->rotation[1]));
-    volume->transform.AppendZRotation(Radians(volume->rotation[2]));
-    volume->transform.AppendTranslate(volume->position);
+    volume->transform.MakeXRotation(Radians(volume->rotation.values[0]));
+    volume->transform.AppendYRotation(Radians(volume->rotation.values[1]));
+    volume->transform.AppendZRotation(Radians(volume->rotation.values[2]));
+    volume->transform.AppendTranslate(volume->position.values);
     volume->inverseTransform.MakeInverse(volume->transform);
     matrix combined;
     combined.Compose(volume->transform, actor->transform);
 
-    const float* size = volume->size;
-    TransformCorner(volume->corners[0], -size[0], -size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[1], size[0], -size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[2], size[0], size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[3], -size[0], size[1], -size[2], combined.values);
-    TransformCorner(volume->corners[4], -size[0], -size[1], size[2], combined.values);
-    TransformCorner(volume->corners[5], size[0], -size[1], size[2], combined.values);
-    TransformCorner(volume->corners[6], size[0], size[1], size[2], combined.values);
-    TransformCorner(volume->corners[7], -size[0], size[1], size[2], combined.values);
+    const float* size = volume->size.values;
+    TransformCorner(volume->corners[0].values, -size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[1].values, size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[2].values, size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[3].values, -size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[4].values, -size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[5].values, size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[6].values, size[0], size[1], size[2], combined.values);
+    TransformCorner(volume->corners[7].values, -size[0], size[1], size[2], combined.values);
   }
 
   actor->dirty = 1;

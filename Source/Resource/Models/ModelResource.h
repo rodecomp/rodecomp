@@ -42,11 +42,12 @@ struct ModelTextureKey {
   /* 0004 */ float value;
 };
 
+class CFile;
+
 struct ModelTextureChannels : std::map<int, std::vector<ModelTextureKey>> {
   void Sample(float frame, ModelTextureTransform& output);
+  void Read(CFile& file);
 };
-
-class CFile;
 
 struct ModelKeyList1 : std::vector<ModelRotationKey> {
   void Read(CFile& file);
@@ -66,17 +67,23 @@ struct ModelKeyList4 : std::vector<ModelRotationKey> {
 
 struct ModelPositionKeyList : std::vector<ModelPositionKey> {};
 
-struct ModelTextureChannelMap : ModelTextureChannels {
-  void Read(CFile& file);
-};
-
 static_assert(sizeof(ModelTextureKey) == 8);
 
+struct ModelVolumeVector {
+  ModelVolumeVector() {
+    this->values[0] = 0.0f;
+    this->values[1] = 0.0f;
+    this->values[2] = 0.0f;
+  }
+
+  /* 0000 */ float values[3];
+};
+
 struct ModelVolume {
-  /* 0000 */ float size[3];
-  /* 000C */ float position[3];
-  /* 0018 */ float rotation[3];
-  /* 0024 */ float corners[8][3];
+  /* 0000 */ ModelVolumeVector size;
+  /* 000C */ ModelVolumeVector position;
+  /* 0018 */ ModelVolumeVector rotation;
+  /* 0024 */ ModelVolumeVector corners[8];
   /* 0084 */ matrix transform;
   /* 00B4 */ matrix inverseTransform;
   /* 00E4 */ int flag;

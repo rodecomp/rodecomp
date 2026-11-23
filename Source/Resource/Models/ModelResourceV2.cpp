@@ -19,6 +19,14 @@ struct ModelFaceRecord {
   /* 0014 */ std::uint32_t smoothing;
 };
 
+struct ModelFaceHeader {
+  /* 0000 */ std::uint16_t vertices[3];
+  /* 0006 */ std::uint16_t textureVertices[3];
+  /* 000C */ std::uint16_t texture;
+  /* 000E */ std::uint16_t padding_000E;
+  /* 0010 */ std::uint32_t twoSided;
+};
+
 // OFFSET: 0x007555C0
 // FUNCTION: fn_07984
 C3dModelResV2::C3dModelResV2() : framesPerSecond(0.0f), animationLength(0) {
@@ -115,31 +123,35 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     auto* node = new ModelNodeV2;
     node->model = this;
     node->mesh = new ModelMesh;
-    int bytes = 0;
-    input.Read(&bytes, 4);
-    char name[40]{};
-    input.Read(name, bytes);
-    node->name = name;
-    bytes = 0;
-    input.Read(&bytes, 4);
+    {
+      int bytes = 0;
+      input.Read(&bytes, 4);
+      char name[40]{};
+      input.Read(name, bytes);
+      node->name = name;
+      bytes = 0;
+      input.Read(&bytes, 4);
 
-    if (bytes > 0) {
-      char parentName[40]{};
-      input.Read(parentName, bytes);
-      node->parentName = parentName;
+      if (bytes > 0) {
+        char parentName[40]{};
+        input.Read(parentName, bytes);
+        node->parentName = parentName;
+      }
     }
 
-    int nodeTextureCount = 0;
-    input.Read(&nodeTextureCount, 4);
+    {
+      int nodeTextureCount = 0;
+      input.Read(&nodeTextureCount, 4);
 
-    for (int texture = 0; texture < nodeTextureCount; ++texture) {
-      int textureIndex = 0;
-      input.Read(&textureIndex, 4);
-      CTexture* loaded = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
-      node->textures.push_back(loaded);
+      for (int texture = 0; texture < nodeTextureCount; ++texture) {
+        int textureIndex = 0;
+        input.Read(&textureIndex, 4);
+        CTexture* loaded = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+        node->textures.push_back(loaded);
 
-      if (loaded) {
-        loaded->Retain();
+        if (loaded) {
+          loaded->Retain();
+        }
       }
     }
 
@@ -206,7 +218,6 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
 
     for (int index = 0; index < volumeCount; ++index) {
       auto* volume = new ModelVolume;
-      std::memset(volume, 0, sizeof(ModelVolume));
       input.Read(volume, sizeof(ModelVolume));
       this->volumes.push_back(volume);
     }
@@ -346,7 +357,6 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
 
   for (int index = 0; index < volumeCount; ++index) {
     auto* volume = new ModelVolume;
-    std::memset(volume, 0, sizeof(ModelVolume));
     input.Read(volume, sizeof(ModelVolume));
     this->volumes.push_back(volume);
   }
@@ -434,14 +444,10 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
       std::vector<unsigned char> buffer;
       buffer.resize(size);
       input.Read(buffer.data(), size);
-      ModelFaceRecord record;
-      std::memcpy(&record, buffer.data(), 20);
-      for (int corner = 0; corner < 3; ++corner) {
-        target.vertices[corner] = record.vertices[corner];
-      }
-      for (int corner = 0; corner < 3; ++corner) {
-        target.textureVertices[corner] = record.textureVertices[corner];
-      }
+      ModelFaceHeader record;
+      std::memcpy(&record, buffer.data(), sizeof(record));
+      std::memcpy(target.vertices, record.vertices, sizeof(target.vertices));
+      std::memcpy(target.textureVertices, record.textureVertices, sizeof(target.textureVertices));
       target.texture = record.texture;
       target.twoSided = record.twoSided;
       const unsigned groups = (buffer.size() - 20u) / 4u;
@@ -461,7 +467,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     for (int animation = 0; animation < textureAnimations; ++animation) {
       int texture = 0;
       input.Read(&texture, 4);
-      ModelTextureChannelMap channels;
+      ModelTextureChannels channels;
       channels.Read(input);
 
       node->textureKeys[texture] = channels;
@@ -484,14 +490,15 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     }
   }
 
-  int volumeCount = 0;
-  input.Read(&volumeCount, 4);
+  {
+    int volumeCount = 0;
+    input.Read(&volumeCount, 4);
 
-  for (int index = 0; index < volumeCount; ++index) {
-    auto* volume = new ModelVolume;
-    std::memset(volume, 0, sizeof(ModelVolume));
-    input.Read(volume, sizeof(ModelVolume));
-    this->volumes.push_back(volume);
+    for (int index = 0; index < volumeCount; ++index) {
+      auto* volume = new ModelVolume;
+      input.Read(volume, sizeof(ModelVolume));
+      this->volumes.push_back(volume);
+    }
   }
 }
 

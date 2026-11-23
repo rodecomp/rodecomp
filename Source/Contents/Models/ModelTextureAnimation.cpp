@@ -84,7 +84,7 @@ __declspec(safebuffers) void ModelKeyList4::Read(CFile& file) {
 
 // OFFSET: 0x005413D0
 // FUNCTION: fn_01732
-void ModelTextureChannelMap::Read(CFile& file) {
+void ModelTextureChannels::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {

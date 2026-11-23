@@ -62,15 +62,15 @@ struct ModelVolumeRecordV1 {
   // INLINED
   void CopyTo(ModelVolume& volume) const {
     for (int index = 0; index < 3; ++index) {
-      volume.position[index] = this->position[index];
+      volume.position.values[index] = this->position[index];
     }
 
     for (int index = 0; index < 3; ++index) {
-      volume.rotation[index] = this->rotation[index];
+      volume.rotation.values[index] = this->rotation[index];
     }
 
     for (int index = 0; index < 3; ++index) {
-      volume.size[index] = this->size[index];
+      volume.size.values[index] = this->size[index];
     }
   }
 
@@ -362,15 +362,14 @@ bool C3dModelResV1::Load(const char* name) {
     if (minor >= 3) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
-        std::memset(volume, 0, 132);
         ModelVolumeRecord record{};
         file.Read(&record, sizeof(record));
         volume->flag = record.flag;
         record.CopyTo(*volume);
 
         if (volume->flag == 0) {
-          volume->size[0] = volume->size[0] + 3.0f;
-          volume->size[2] = volume->size[2] + 3.0f;
+          volume->size.values[0] = volume->size.values[0] + 3.0f;
+          volume->size.values[2] = volume->size.values[2] + 3.0f;
         }
 
         this->volumes.push_back(volume);
