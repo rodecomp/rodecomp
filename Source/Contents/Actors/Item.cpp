@@ -42,6 +42,11 @@ struct ItemFallEntry {
   /* 0042 */ std::uint16_t grade;
 };
 
+// INLINED
+static float TerrainHeight(const CGameMode* mode, float x, float z) {
+  return mode->scene->terrain->Height(x, z);
+}
+
 // OFFSET: 0x00D8BE00
 // FUNCTION: fn_22253
 void CItem::SetRenderInfo(const float* bounds, float x, float y) {
@@ -106,15 +111,17 @@ void CItem::SubD8B5B0() {
 // FUNCTION: fn_22250
 bool CItem::OnProcess() {
   const float elapsed = static_cast<float>((timeGetTime() - this->render.motionStartTime) / 24.0);
-  this->render.isSingleColor = static_cast<int>(elapsed) % 92 >= 90;
+  if (static_cast<int>(elapsed) % 92 < 90) {
+    this->render.isSingleColor = 0;
+  } else {
+    this->render.isSingleColor = 1;
+  }
 
   if (this->isFalling) {
     this->render.position.y = (elapsed * 0.083f + this->fallVelocity) * elapsed + this->fallOrigin;
     CGameMode* mode = g_modeMgr.GetGameMode();
-    const float z = this->render.position.z;
-    const float x = this->render.position.x;
-    if (this->render.position.y > mode->scene->terrain->Height(x, z)) {
-      this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+    if (this->render.position.y > TerrainHeight(mode, this->render.position.x, this->render.position.z)) {
+      this->render.position.y = TerrainHeight(mode, this->render.position.x, this->render.position.z);
       this->isFalling = 0;
     }
   }
