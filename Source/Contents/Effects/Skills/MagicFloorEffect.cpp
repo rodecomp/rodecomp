@@ -98,20 +98,25 @@ void CMagicFloorEffect::UpdateRingVertices(CParticle* particle) {
     return;
   }
 
-  const int segment = particle->columnIndex;
+  const float* motion = particle->animationParameters;
   const float depth = -particle->animationParameter;
-  const float height = static_cast<float>(segment) * particle->animationParameters[0] + depth - g_projectionDepthNumerator;
-  int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle) % 360;
+  const int segment = particle->columnIndex;
   float radius = particle->speedParameter;
-  for (int step = 1; step <= segment; ++step) {
-    radius -= (2.2f - static_cast<float>(step) * 0.2f) * particle->scale;
+  const float height = segment * motion[0] + depth;
+  int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle);
+  angle = angle % 360;
+  if (segment > 0) {
+    for (int step = 1; step <= segment; ++step) {
+      radius -= (2.2f - step * 0.2f) * particle->scale;
+    }
   }
 
   EffectPoint corners[4];
   for (int i = 0; i < 4; ++i) {
-    angle = (angle + 90) % 360;
+    angle += 90;
+    angle = angle % 360;
     corners[i].x = radius * g_cosTable[angle];
-    corners[i].y = height;
+    corners[i].y = height - 1.0f;
     corners[i].z = radius * g_sinTable[angle];
   }
 
