@@ -6785,7 +6785,7 @@ struct GameModeUiNavigationMessage {
   /* 0006 */ char name[0x1E];
   /* 0024 */ int kind;
   /* 0028 */ unsigned char mode;
-  /* 0029 */ unsigned char flag;
+  /* 0029 */ bool flag;
   /* 002A */ int x;
   /* 002E */ int y;
   /* 0032 */ int id;
@@ -6871,10 +6871,10 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     char buffer[200];
     std::memset(buffer, 0, sizeof(buffer));
     std::memcpy(buffer, values->text, values->values[0]);
-    this->chatRoom.title = buffer;
+    this->chatRoom.title.assign(buffer, std::strlen(buffer));
     std::memset(buffer, 0, sizeof(buffer));
     std::memcpy(buffer, values->text + values->values[0], values->values[1]);
-    this->chatRoom.password = buffer;
+    this->chatRoom.password.assign(buffer, std::strlen(buffer));
     this->chatRoom.type = values->values[2];
     this->chatRoom.memberCount = values->values[3];
     this->chatRoom.memberLimit = values->values[4];
@@ -6887,16 +6887,16 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     break;
   case REPLAY_UI_WHISPER: {
     const GameModeUiWhisperMessage* whisper = reinterpret_cast<const GameModeUiWhisperMessage*>(message);
-    this->lastWhisperName = whisper->target;
-    this->lastWhisper = whisper->text;
+    this->lastWhisperName.assign(whisper->target, std::strlen(whisper->target));
+    this->lastWhisper.assign(whisper->text, std::strlen(whisper->text));
     break;
   }
   case REPLAY_UI_STORE_TITLE: {
     const GameModeUiKindTextMessage* text = reinterpret_cast<const GameModeUiKindTextMessage*>(message);
     if (text->kind == WID_MERCHANTSHOPMAKEWND) {
-      g_session.storeTitle = text->text;
+      g_session.storeTitle.assign(text->text, std::strlen(text->text));
     } else if (text->kind == WID_MERCHANTSHOPMAKEWND_MODE_1) {
-      g_session.storeTitle = text->text;
+      g_session.storeTitle.assign(text->text, std::strlen(text->text));
     }
     break;
   }
@@ -6911,7 +6911,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
   case REPLAY_UI_START_NAVIGATION: {
     const GameModeUiNavigationMessage* navigation = reinterpret_cast<const GameModeUiNavigationMessage*>(message);
     g_navigationManager.StartNavigation(
-      std::string(navigation->name), navigation->kind, navigation->mode, navigation->flag != 0, navigation->x, navigation->y, navigation->id
+      std::string(navigation->name), navigation->kind, navigation->mode, navigation->flag, navigation->x, navigation->y, navigation->id
     );
     break;
   }
