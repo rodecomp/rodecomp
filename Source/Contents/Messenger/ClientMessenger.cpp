@@ -6396,11 +6396,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 for (const auto& condition : conditions) {
                   text = fmt::format("{0} arg{1}:{2}", text, condition.first, condition.second);
                 }
-                unsigned int hash = 5381;
-                for (const char* character = text.c_str(); *character != '\0'; ++character) {
-                  hash = hash * 33 + *character;
-                }
-                const std::uint64_t nameKey = hash;
+                const std::uint64_t nameKey = HashName(text.c_str());
                 valid = this->m_definitionsByName.find(nameKey) == this->m_definitionsByName.end();
                 this->loadValid &= valid;
                 if (!valid) {
@@ -6480,7 +6476,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                                   0);
                 }
                 if (!this->loadValid) {
-                  break;
+                  lua_settop(state, -2);
+                  continue;
                 }
                 this->randomOptionDefinitions[randomOption] = definition;
               }
