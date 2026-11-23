@@ -441,7 +441,6 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
 
     if (huntCount > 0) {
       RenewQuestHuntRecord* huntDestination = reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset);
-      offset += static_cast<int>(huntCount) * sizeof(RenewQuestHuntRecord);
       for (int index = 0; index < huntCount; ++index) {
         RenewQuestHuntRecord hunt;
         SecureZeroMemory(&hunt, sizeof(hunt));
@@ -455,6 +454,7 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
         strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
         *huntDestination++ = hunt;
       }
+      offset += static_cast<int>(huntCount) * sizeof(RenewQuestHuntRecord);
     }
   }
 }
