@@ -6,13 +6,15 @@
 std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
   std::string result = "";
 
-  for (std::uint32_t divisor = 1000000000; divisor; divisor /= 10) {
+  std::uint32_t divisor = 1000000000;
+  do {
     if (!result.empty() && divisor == 100) {
       result += '-';
     }
 
     std::uint32_t digit = identifier / divisor;
     identifier %= divisor;
+    divisor /= 10;
     switch (digit) {
     case 0:
       if (!result.empty()) {
@@ -38,16 +40,16 @@ std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
       result += '2';
       break;
     case 7:
-      result += '4';
+      result.push_back('4');
       break;
     case 8:
-      result += '9';
+      result.push_back('9');
       break;
     case 9:
-      result += '5';
+      result.push_back('5');
       break;
     }
-  }
+  } while (divisor);
 
   return result;
 }
