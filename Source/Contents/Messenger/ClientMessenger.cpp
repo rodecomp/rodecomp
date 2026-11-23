@@ -2489,119 +2489,123 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
   const char* name = "RefiningBonus";
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
-    lua_pushnil(state);
-    while (lua_next(state, -2) != 0) {
-      if (this->loadValid) {
-        std::string key;
-        int result;
-        int type = lua_type(this->script.GetState(), -2);
-        if (type == LUA_TSTRING) {
+    for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
+      if (!this->loadValid) {
+        continue;
+      }
+      std::string key;
+      int result;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TSTRING) {
+        result = 0;
+        key = lua_tolstring(this->script.GetState(), -2, nullptr);
+      } else {
+        result = (type != LUA_TNIL) + 1;
+      }
+      this->loadValid &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+      bool valid = lua_type(state, -1) == LUA_TTABLE;
+      this->loadValid &= valid;
+      if (!valid) {
+        ShowErrorDialog(fmt::format("invalid data type: {0}.{1}", name, key), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+      int kind = 0;
+      switch (HashName(key.c_str())) {
+      case 0xC3B9E8CE:
+        kind = 1;
+        break;
+      case 0x48A75AE8:
+        kind = 2;
+        break;
+      case 0x18585774:
+        kind = 3;
+        break;
+      case 0x1858930F:
+        kind = 4;
+        break;
+      default:
+        valid = false;
+        break;
+      }
+      this->loadValid &= valid;
+      if (!valid) {
+        ShowErrorDialog(fmt::format("invalid value: {0}.{1}", name, key), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+      for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
+        if (!this->loadValid) {
+          continue;
+        }
+        int level;
+        type = lua_type(this->script.GetState(), -2);
+        if (type == LUA_TNUMBER) {
+          level = static_cast<int>(lua_tonumber(this->script.GetState(), -2));
           result = 0;
-          key = lua_tolstring(this->script.GetState(), -2, nullptr);
         } else {
           result = (type != LUA_TNIL) + 1;
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
+          ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
         }
-        if (this->loadValid) {
-          bool valid = lua_type(state, -1) == LUA_TTABLE;
-          this->loadValid &= valid;
-          if (!valid) {
-            ShowErrorDialog(fmt::format("invalid data type: {0}.{1}", name, key), 0);
+        if (!this->loadValid) {
+          continue;
+        }
+        valid = lua_type(state, -1) == LUA_TTABLE;
+        this->loadValid &= valid;
+        if (!valid) {
+          ShowErrorDialog(fmt::format("invalid data type: {0}.{1}.{2}", name, key, level), 0);
+        }
+        if (!this->loadValid) {
+          continue;
+        }
+        for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
+          if (!this->loadValid) {
+            continue;
           }
-          if (this->loadValid) {
-            int kind = 0;
-            switch (HashName(key.c_str())) {
-            case 0xC3B9E8CE:
-              kind = 1;
-              break;
-            case 0x48A75AE8:
-              kind = 2;
-              break;
-            case 0x18585774:
-              kind = 3;
-              break;
-            case 0x1858930F:
-              kind = 4;
-              break;
-            default:
-              valid = false;
-              break;
-            }
-            this->loadValid &= valid;
-            if (!valid) {
-              ShowErrorDialog(fmt::format("invalid value: {0}.{1}", name, key), 0);
-            }
-            if (this->loadValid) {
-              lua_pushnil(state);
-              while (lua_next(state, -2) != 0) {
-                if (this->loadValid) {
-                  unsigned int level;
-                  type = lua_type(this->script.GetState(), -2);
-                  if (type == LUA_TNUMBER) {
-                    level = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
-                    result = 0;
-                  } else {
-                    result = (type != LUA_TNIL) + 1;
-                  }
-                  this->loadValid &= result == 0;
-                  if (result != 0) {
-                    ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
-                  }
-                  if (this->loadValid) {
-                    valid = lua_type(state, -1) == LUA_TTABLE;
-                    this->loadValid &= valid;
-                    if (!valid) {
-                      ShowErrorDialog(fmt::format("invalid data type: {0}.{1}.{2}", name, key, level), 0);
-                    }
-                    if (this->loadValid) {
-                      lua_pushnil(state);
-                      while (lua_next(state, -2) != 0) {
-                        if (this->loadValid) {
-                          unsigned int index = -1;
-                          type = lua_type(this->script.GetState(), -2);
-                          if (type == LUA_TNUMBER) {
-                            index = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
-                            result = 0;
-                          } else {
-                            result = (type != LUA_TNIL) + 1;
-                          }
-                          this->loadValid &= result == 0;
-                          if (result != 0) {
-                            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
-                          }
-                          if (this->loadValid) {
-                            int value = -1;
-                            type = lua_type(this->script.GetState(), -1);
-                            if (type == LUA_TNUMBER) {
-                              value = static_cast<int>(lua_tonumber(this->script.GetState(), -1));
-                              result = 0;
-                            } else {
-                              result = (type != LUA_TNIL) + 1;
-                            }
-                            this->loadValid &= result == 0;
-                            if (result != 0) {
-                              ShowErrorDialog(fmt::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
-                            }
-                            if (this->loadValid) {
-                              this->levelRates[kind][level][index] = static_cast<float>(value);
-                            }
-                          }
-                        }
-                        lua_settop(state, -2);
-                      }
-                    }
-                  }
-                }
-                lua_settop(state, -2);
-              }
-            }
+          unsigned int index = -1;
+          type = lua_type(this->script.GetState(), -2);
+          if (type == LUA_TNUMBER) {
+            index = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+            result = 0;
+          } else {
+            result = (type != LUA_TNIL) + 1;
           }
+          this->loadValid &= result == 0;
+          if (result != 0) {
+            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
+          }
+          if (!this->loadValid) {
+            continue;
+          }
+          int value = -1;
+          type = lua_type(this->script.GetState(), -1);
+          if (type == LUA_TNUMBER) {
+            value = static_cast<int>(lua_tonumber(this->script.GetState(), -1));
+            result = 0;
+          } else {
+            result = (type != LUA_TNIL) + 1;
+          }
+          this->loadValid &= result == 0;
+          if (result != 0) {
+            ShowErrorDialog(fmt::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
+          }
+          if (!this->loadValid) {
+            continue;
+          }
+          this->levelRates[kind][level][index] = static_cast<float>(value);
         }
       }
-      lua_settop(state, -2);
     }
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
