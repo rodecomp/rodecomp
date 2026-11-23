@@ -2311,27 +2311,27 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->mode = 1;
         g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
         this->ApplyMode();
-        return 0;
+        break;
       }
 
       this->mode = 3;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_STOP_REPLAY_RECORDING:
       this->mode = 0;
       this->ApplyMode();
       g_modeMgr.currentMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       if (this->filenameEdit->Length() <= 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
         g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
       ReplayFileList::Instance().SetPath(this->filenameEdit->Text());
@@ -2339,37 +2339,35 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->filenameEdit->SetText("");
       g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
 
-      if (Replay::Instance().state == 1) {
-        return 0;
+      if (Replay::Instance().state != 1) {
+        this->mode = 1;
+        this->ApplyMode();
       }
-
-      this->mode = 1;
-      this->ApplyMode();
-      return 0;
+      break;
     }
     case ID_REPLAY_RECORDING_OPTIONS:
       this->mode = 2;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_CANCEL_REPLAY_RECORDING_OPTIONS:
       this->mode = 0;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_CLOSE_REPLAY_RECORDING:
       this->mode = 0;
       g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
-      return 0;
+      break;
     case ID_CHECK:
       if (sender == this->userFilenameCheckBox) {
         ReplayFileList::Instance().pathEnabled = b != 0;
         this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
-        return 0;
+        break;
       }
 
       if (sender == this->rejectExistingNameCheckBox) {
         ReplayFileList::Instance().rejectExistingName = b != 0;
         this->replayOption119 = ReplayFileList::Instance().rejectExistingName;
-        return 0;
+        break;
       }
 
       if (sender == this->options[9]) {
@@ -2411,10 +2409,9 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
 
       Replay::Instance().SetOptions(this->recordOptions, 10);
-      return 0;
-    default:
-      return 0;
+      break;
     }
+    break;
   case UM_UPDATE_RECORD_TIME:
     this->UpdateRecordTime();
     return 0;
@@ -2425,12 +2422,14 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_REFRESH:
     this->Invalidate();
     this->InvalidateChildren();
+    break;
   case UM_REPLAY_FRAMED_DATA:
   case 251:
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x008BA820
