@@ -563,7 +563,8 @@ void UIEquipWnd::Paint() {
     return;
   }
 
-  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp")))) {
+  const int viewOther = this->m_viewOther;
+  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp")))) {
     this->DrawBitmap(0, this->m_contentTop + 17, bitmap, false);
   }
 
@@ -592,18 +593,25 @@ void UIEquipWnd::Paint() {
 
     this->DrawEquipSlots();
     this->RefreshLook();
+    const short job = static_cast<short>(this->appearance[0]);
+    const unsigned char sex = static_cast<unsigned char>(this->appearance[1]);
+    const short costumeJob = static_cast<short>(this->costumeJob);
+    const short head = static_cast<short>(this->appearance[2]);
+    const short weapon = static_cast<short>(this->appearance[3]);
+    const short shield = static_cast<short>(this->appearance[4]);
+    const short accessory = static_cast<short>(this->appearance[5]);
     FuncDrawWNDChar(
       this,
       this->geometry.width / 2 + 1,
       149,
-      static_cast<unsigned char>(this->appearance[1]),
-      static_cast<short>(this->appearance[0]),
+      sex,
+      job,
       this->appearance[0],
-      static_cast<short>(this->costumeJob),
-      static_cast<short>(this->appearance[2]),
-      static_cast<short>(this->appearance[3]),
-      static_cast<short>(this->appearance[4]),
-      static_cast<short>(this->appearance[5]),
+      costumeJob,
+      head,
+      weapon,
+      shield,
+      accessory,
       this->robeId,
       0,
       g_session.madogearType,
