@@ -23,10 +23,15 @@ CSchedule::CSchedule(const std::uint64_t& timestamp, const std::int64_t& interva
 // FUNCTION: fn_19726
 CSchedulerIDAlocator::~CSchedulerIDAlocator() = default;
 
+// INLINED
+static bool IsEmptyInterval(std::int64_t interval) {
+  return 0 == interval || interval <= 0;
+}
+
 // OFFSET: 0x00BA8990
 // FUNCTION: fn_19727
 bool CSchedule::CheckTime(const std::uint64_t& now) {
-  if (0 == this->interval || this->interval <= 0) {
+  if (IsEmptyInterval(this->interval)) {
     return false;
   }
   const std::int64_t current = now;
