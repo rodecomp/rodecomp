@@ -59,8 +59,8 @@ void UIShortCutWnd::Paint() {
   }
 
   if (grid.row != -1 && grid.hovered != -1) {
-    const int y = 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage);
     const int x = ((grid.hovered * 29) + 16);
+    const int y = 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage);
     const SkinPaletteCell cell{2, 2};
     window.FillRegion(x, y, 24, 24, g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
   }
