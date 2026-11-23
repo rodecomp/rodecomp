@@ -142,24 +142,20 @@ unsigned char GroundLegacyLightmap::GetSample(int index) const {
   const int bit = index * 5;
   const int shift = bit % 8;
   const unsigned char* packed = this->bits + bit / 8;
-  const unsigned char mask = static_cast<unsigned char>(0xF8 >> shift);
-  unsigned char value;
 
   if (shift < 4) {
-    value = static_cast<unsigned char>((packed[0] & mask) << shift);
-  } else {
-    value = static_cast<unsigned char>(((packed[0] & mask) << shift) + (((0xF8 << (8 - shift)) & packed[1]) >> (8 - shift)));
+    return static_cast<unsigned char>((packed[0] & (0xF8 >> shift)) << shift);
   }
 
-  return value;
+  return static_cast<unsigned char>(((packed[0] & (0xF8 >> shift)) << shift) + ((packed[1] & (0xF8 << (8 - shift))) >> (8 - shift)));
 }
 
 // OFFSET: 0x0074E4B0
 // FUNCTION: fn_07909
 void GroundLegacyLightmap::Decode(unsigned char* output) const {
   for (int index = 0; index < 64; ++index) {
-    const unsigned char value = this->GetSample(index);
-    output[index] = value;
+    const int value = this->GetSample(index);
+    output[index] = static_cast<unsigned char>(value);
   }
 }
 
