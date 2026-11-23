@@ -313,16 +313,14 @@ bool C3dWorldRes::Load(const char* name) {
     }
 
     case 3: {
-      WorldSoundRecord* record;
-
       if (major >= 2) {
-        record = new WorldSoundRecord;
+        auto* record = new WorldSoundRecord;
         input.Read(record, sizeof(*record));
         this->sounds.push_back(record);
       } else {
         WorldLegacySoundFileRecord wire;
         input.Read(&wire, sizeof(wire));
-        record = new WorldSoundRecord;
+        auto* record = new WorldSoundRecord;
         std::strncpy(record->name, wire.name, 79);
         std::strncpy(record->file, wire.file, 79);
         record->position[0] = wire.position.x;
