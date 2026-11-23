@@ -88,9 +88,8 @@ void CAMachineEffect::OnProcess() {
   const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
   vector3d viewPos = TransformPoint(view, source);
   const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-  viewPos.x += 0.0f;
-  viewPos.y -= 8.0f;
-  viewPos.z += 0.0f;
+  const vector3d offset{0.0f, -8.0f, 0.0f};
+  viewPos += offset;
   particle->position = TransformPoint(inverse, viewPos);
   if (!particle->Process(0.0f, 0.0f, 0.0f)) {
     this->SetState(2);
