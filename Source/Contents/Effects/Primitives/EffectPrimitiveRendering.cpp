@@ -5125,29 +5125,27 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
     vec4 = {vec4.x + vecA.x, vec4.y + vecA.y, vec4.z + vecA.z};
     const int alpha = static_cast<int>(this->state.slots[ec].height[13]);
 
-    if (vec1.y > 0.0f) {
-      continue;
-    }
+    if (vec1.y <= 0.0f) {
+      if (this->state.slots[ec].process < 180) {
+        if (static_cast<float>(g_session.m_aid) == this->state.slots[ec].height[10]) {
+          CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
-    if (this->state.slots[ec].process < 180) {
-      if (static_cast<float>(g_session.m_aid) == this->state.slots[ec].height[10]) {
-        CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+          if (effect) {
+            vector3d position = vecA;
+            effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          }
+        } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.slots[ec].height[10]))) {
+          CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
-        if (effect) {
-          vector3d position = vecA;
-          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-        }
-      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.slots[ec].height[10]))) {
-        CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-
-        if (effect) {
-          vector3d position = vecA;
-          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          if (effect) {
+            vector3d position = vecA;
+            effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+          }
         }
       }
-    }
 
-    this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 125, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 125, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    }
   }
 }
 
