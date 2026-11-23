@@ -128,8 +128,8 @@ __forceinline void CStormGustEffect::UpdateParticle(CParticle* particle) {
     const float offsetX = particle->offsetX + moveX;
     const float offsetY = particle->offsetY + moveY;
     const float offsetZ = particle->offsetZ + moveZ;
-    particle->offsetX = offsetX;
     particle->offsetY = offsetY;
+    particle->offsetX = offsetX;
     particle->offsetZ = offsetZ;
 
     matrix translation;
