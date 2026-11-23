@@ -159,7 +159,8 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   }
 
   effect->Init(this, effectId, deltaPos);
-  g_modeMgr.GetGameMode()->scene->objects.push_back(effect);
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  mode->scene->objects.push_back(effect);
   this->effectList.push_back(effect);
   return effect;
 }
