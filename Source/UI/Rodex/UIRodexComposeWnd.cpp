@@ -89,14 +89,12 @@ ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
   }
 
   this->m_itemIndex = 0;
-  int index = 0;
-  int left = 30;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    const int left = this->m_itemIndex * 34 + 30;
     if (x > left && x < left + 24) {
       return *item;
     }
-    left += 34;
-    this->m_itemIndex = ++index;
+    ++this->m_itemIndex;
   }
   return ITEM_INFO(0);
 }
