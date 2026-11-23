@@ -44,36 +44,38 @@ void DrawFormattedBitmap(UIWindow* window, int x, int y, bool flag, const char* 
   );
 }
 
+// INLINED
+static void DrawIcon(UIWindow* window, int x, int y, const std::vector<std::string>& names, int index) {
+  window->DrawBitmap(
+    x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("%s.bmp", names[index].c_str()).c_str()))), true
+  );
+}
+
 // OFFSET: 0x008D0F30
 // FUNCTION: fn_12092
 void UIEquipWnd::DrawDamageSkinPage() {
-  this->DrawBitmap(
-    0, this->m_contentTop + 14,
-    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ShowDamage\\bg_damage.bmp"))),
-    false
-  );
-  int slot = 0;
-  for (int x = 6; x < 0x116; x += 0x44) {
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ShowDamage\\bg_damage.bmp")));
+  this->DrawBitmap(0, this->m_contentTop + 14, background, false);
+  for (int slot = 0; slot < 4; ++slot) {
     int index = this->m_firstSlot + slot;
     if (index >= g_session.damageSkinCount) {
       break;
     }
     if (g_session.m_damageSkinIndex == index) {
-      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_pick.bmp");
+      DrawFormattedBitmap(this, slot * 0x44 + 6, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_pick.bmp");
     } else if (this->m_hoverSlot == index) {
-      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_press.bmp");
+      DrawFormattedBitmap(this, slot * 0x44 + 6, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage_press.bmp");
     } else {
-      DrawFormattedBitmap(this, x, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage.bmp");
+      DrawFormattedBitmap(this, slot * 0x44 + 6, 0x3A, true, "유저인터페이스\\showdamage\\btn_damage.bmp");
     }
     if (g_session.m_damageSkinIndex == index) {
-      this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0xBABABA, 1);
-      this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0x323232, 1);
+      this->DrawCenteredText(slot * 0x44 + 7, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0xBABABA, 1);
+      this->DrawCenteredText(slot * 0x44 + 6, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 14, 0x323232, 1);
     } else {
-      this->DrawCenteredText(x + 1, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0xBABABA, 0);
-      this->DrawCenteredText(x, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0x323232, 0);
+      this->DrawCenteredText(slot * 0x44 + 7, 0x45, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0xBABABA, 0);
+      this->DrawCenteredText(slot * 0x44 + 6, 0x44, this->m_damageSkinNames[index].c_str(), 0x40, 0, 12, 0x323232, 0);
     }
-    DrawFormattedBitmap(this, x + 14, 0x5A, true, "%s.bmp", this->m_damageSkinIcons[index].c_str());
-    ++slot;
+    DrawIcon(this, slot * 0x44 + 20, 0x5A, this->m_damageSkinIcons, index);
   }
 }
 
