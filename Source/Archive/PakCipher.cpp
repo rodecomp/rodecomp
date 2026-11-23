@@ -76,39 +76,42 @@ namespace myGPack {
     };
 
     // INLINED
-    std::uint8_t SubstituteLastByte(std::uint8_t value) {
-      switch (value) {
-      case 0x00:
-        return 0x2B;
-      case 0x2B:
-        return 0x00;
-      case 0xB9:
-        return 0xC0;
-      case 0xC0:
-        return 0xB9;
-      case 0xEB:
-        return 0xFE;
-      case 0x6C:
-        return 0x80;
-      case 0x80:
-        return 0x6C;
-      case 0x01:
-        return 0x68;
-      case 0x68:
-        return 0x01;
-      case 0x77:
-        return 0x48;
-      case 0x48:
-        return 0x77;
-      case 0x60:
-        return 0xFF;
-      case 0xFE:
-        return 0xEB;
-      case 0xFF:
-        return 0x60;
-      default:
-        return value;
+    void RoundFunction(Block64 key, Block64* text) {
+      Block64 permuted;
+      permuted.words[0] = permuted.words[1] = 0;
+
+      for (std::uint8_t i = 0; i < 48; ++i) {
+        const std::uint8_t bit = s_expansion[i] + 31;
+        if (text->bytes[bit >> 3] & s_bitMasks[bit & 7]) {
+          permuted.bytes[i / 6] |= s_bitMasks[i % 6];
+        }
       }
+
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        permuted.bytes[i] ^= key.bytes[i];
+      }
+
+      Block64 substituted;
+      substituted.words[0] = substituted.words[1] = 0;
+
+      for (std::uint8_t i = 0; i < 8; ++i) {
+        if (0 == i % 2) {
+          substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
+        } else {
+          substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
+        }
+      }
+
+      permuted.words[0] = permuted.words[1] = 0;
+
+      for (std::uint8_t i = 0; i < 32; ++i) {
+        const std::uint8_t bit = s_roundPermutation[i] - 1;
+        if (substituted.bytes[bit >> 3] & s_bitMasks[bit & 7]) {
+          permuted.bytes[i >> 3] |= s_bitMasks[i & 7];
+        }
+      }
+
+      text->words[0] ^= permuted.words[0];
     }
   }
 
@@ -143,33 +146,43 @@ namespace myGPack {
       }
     }
 
-    for (unsigned round = 0; round < 16; ++round) {
+    for (std::uint8_t round = 0; round < 16; ++round) {
       for (std::uint8_t shift = 0; shift < s_keyRotations[round]; ++shift) {
-        const std::uint8_t topCarry = halves.bytes[0] & 0x80;
+        std::uint8_t carry = halves.bytes[0] & 0x80;
 
-        for (unsigned byte = 0; byte < 3; ++byte) {
-          halves.bytes[byte] <<= 1;
-          if (halves.bytes[byte + 1] & 0x80) {
-            ++halves.bytes[byte];
-          }
+        halves.bytes[0] <<= 1;
+        if (halves.bytes[1] & 0x80) {
+          halves.bytes[0] += 1;
         }
-
+        halves.bytes[1] <<= 1;
+        if (halves.bytes[2] & 0x80) {
+          halves.bytes[1] += 1;
+        }
+        halves.bytes[2] <<= 1;
+        if (halves.bytes[3] & 0x80) {
+          halves.bytes[2] += 1;
+        }
         halves.bytes[3] <<= 1;
-        if (topCarry) {
+        if (carry) {
           halves.bytes[3] += 0x10;
         }
 
-        const std::uint8_t bottomCarry = halves.bytes[4] & 0x80;
+        carry = halves.bytes[4] & 0x80;
 
-        for (unsigned byte = 4; byte < 7; ++byte) {
-          halves.bytes[byte] <<= 1;
-          if (halves.bytes[byte + 1] & 0x80) {
-            ++halves.bytes[byte];
-          }
+        halves.bytes[4] <<= 1;
+        if (halves.bytes[5] & 0x80) {
+          halves.bytes[4] += 1;
         }
-
+        halves.bytes[5] <<= 1;
+        if (halves.bytes[6] & 0x80) {
+          halves.bytes[5] += 1;
+        }
+        halves.bytes[6] <<= 1;
+        if (halves.bytes[7] & 0x80) {
+          halves.bytes[6] += 1;
+        }
         halves.bytes[7] <<= 1;
-        if (bottomCarry) {
+        if (carry) {
           halves.bytes[7] += 0x10;
         }
       }
@@ -177,19 +190,17 @@ namespace myGPack {
       this->m_roundKeys[round].words[0] = 0;
       this->m_roundKeys[round].words[1] = 0;
 
-      unsigned bitsPerGroup = 6;
       for (std::uint8_t i = 0; i < 48; ++i) {
         std::uint8_t bit = s_keyCompression[i] - 1;
-        unsigned byte;
         if (bit < 28) {
-          byte = bit >> 3;
+          if (halves.bytes[bit >> 3] & s_bitMasks[bit & 7]) {
+            this->m_roundKeys[round].bytes[i / 6] |= s_bitMasks[i % 6];
+          }
         } else {
-          bit -= 28;
-          byte = bit >> 7;
-        }
-
-        if (halves.bytes[byte] & s_bitMasks[bit & 7]) {
-          this->m_roundKeys[round].bytes[i / bitsPerGroup] |= s_bitMasks[i % bitsPerGroup];
+          bit = bit - 28;
+          if (halves.bytes[bit >> 7] & s_bitMasks[bit & 7]) {
+            this->m_roundKeys[round].bytes[i / 6] |= s_bitMasks[i % 6];
+          }
         }
       }
     }
@@ -208,46 +219,11 @@ namespace myGPack {
     InitialPermutation(output->bytes);
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
-      Block64 key;
-      std::memcpy(&key, &roundKeys[15 - round], sizeof(key));
-
-      Block64 permuted;
-      permuted.words[0] = permuted.words[1] = 0;
-
-      for (std::uint8_t i = 0; i < 48; ++i) {
-        const std::uint8_t bit = s_expansion[i] + 31;
-        if (output->bytes[bit >> 3] & s_bitMasks[bit & 7]) {
-          permuted.bytes[i / 6] |= s_bitMasks[i % 6];
-        }
-      }
-
-      for (std::uint8_t i = 0; i < 8; ++i) {
-        permuted.bytes[i] ^= key.bytes[i];
-      }
-
-      Block64 substituted;
-      substituted.words[0] = substituted.words[1] = 0;
-
-      for (std::uint8_t i = 0; i < 8; ++i) {
-        if (0 == i % 2) {
-          substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
-        } else {
-          substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
-        }
-      }
-
-      permuted.words[0] = permuted.words[1] = 0;
-
-      for (std::uint8_t i = 0; i < 32; ++i) {
-        const std::uint8_t bit = s_roundPermutation[i] - 1;
-        if (substituted.bytes[bit >> 3] & s_bitMasks[bit & 7]) {
-          permuted.bytes[i >> 3] |= s_bitMasks[i & 7];
-        }
-      }
+      RoundFunction(roundKeys[15 - round], output);
 
       const std::uint32_t left = output->words[0];
       output->words[0] = output->words[1];
-      output->words[1] = left ^ permuted.words[0];
+      output->words[1] = left;
     }
 
     const std::uint32_t low = output->words[0];
@@ -276,49 +252,89 @@ namespace myGPack {
       cycle += 15;
     }
 
-    int shuffled = 0;
+    Block64 blockInput;
+    Block64 blockOutput;
     int block = 0;
-    int offset = 0;
+    int i = 0;
+    int shuffled = 0;
 
-    do {
+    while (true) {
       if (block < 20 || block % cycle == 0) {
-        Block64 blockInput;
-        Block64 blockOutput;
-        for (int i = 0; i < 8; ++i) {
-          blockInput.bytes[i] = input[offset + i];
+        for (i = 0; i < 8; ++i) {
+          blockInput.bytes[i] = input[block * 8 + i];
         }
 
         this->DecodeBlock(1, this->m_roundKeys, blockInput, &blockOutput);
-        for (int i = 0; i < 8; ++i) {
-          output[offset + i] = blockOutput.bytes[i];
+        for (i = 0; i < 8; ++i) {
+          output[block * 8 + i] = blockOutput.bytes[i];
         }
       } else {
         if (shuffled != 7) {
-          std::uint32_t low;
-          std::uint32_t high;
-          std::memcpy(&low, input + offset, sizeof(low));
-          std::memcpy(&high, input + offset + 4, sizeof(high));
-          std::memcpy(output + offset, &low, sizeof(low));
-          std::memcpy(output + offset + 4, &high, sizeof(high));
+          std::memcpy(output + block * 8, input + block * 8, 8);
         } else {
-          std::uint16_t pair;
-          std::memcpy(&pair, input + offset + 3, 2);
-          std::memcpy(output + offset, &pair, 2);
-          std::memcpy(&pair, input + offset, 2);
-          std::memcpy(output + offset + 3, &pair, 2);
-          output[offset + 5] = input[offset + 2];
-          output[offset + 2] = input[offset + 6];
-          output[offset + 6] = input[offset + 5];
-          output[offset + 7] = SubstituteLastByte(input[offset + 7]);
+          std::memcpy(output + block * 8, input + 3 + block * 8, 2);
+          std::memcpy(output + 3 + block * 8, input + block * 8, 3);
+          output[2 + block * 8] = input[6 + block * 8];
+          output[6 + block * 8] = input[5 + block * 8];
+          std::uint8_t last = input[7 + block * 8];
+          switch (last) {
+          case 0:
+            last = 43;
+            break;
+          case 43:
+            last = 0;
+            break;
+          case 185:
+            last = 192;
+            break;
+          case 192:
+            last = 185;
+            break;
+          case 254:
+            last = 235;
+            break;
+          case 235:
+            last = 254;
+            break;
+          case 108:
+            last = 128;
+            break;
+          case 128:
+            last = 108;
+            break;
+          case 1:
+            last = 104;
+            break;
+          case 104:
+            last = 1;
+            break;
+          case 119:
+            last = 72;
+            break;
+          case 72:
+            last = 119;
+            break;
+          case 96:
+            last = 255;
+            break;
+          case 255:
+            last = 96;
+            break;
+          }
+
+          output[7 + block * 8] = last;
           shuffled = 0;
         }
 
         ++shuffled;
       }
 
-      offset += 8;
+      if ((block + 1) * 8 >= length) {
+        break;
+      }
+
       ++block;
-    } while (offset < length);
+    }
 
     return 1;
   }
@@ -327,21 +343,28 @@ namespace myGPack {
   // FUNCTION: fn_18100
   int PakCipher::DecodePrefix(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength) const {
     *outputLength = length;
-    std::memcpy(output, input, static_cast<std::uint32_t>(length));
 
-    for (int block = 0; block < 20; ++block) {
-      Block64 blockInput;
-      Block64 decoded;
-      for (int i = 0; i < 8; ++i) {
-        blockInput.bytes[i] = input[8 * block + i];
+    std::memcpy(output, input, *outputLength);
+    Block64 blockInput;
+    Block64 decoded;
+    int block = 0;
+    int i = 0;
+
+    while (block < 20) {
+      for (i = 0; i < 8; ++i) {
+        blockInput.bytes[i] = input[block * 8 + i];
       }
+
       this->DecodeBlock(1, this->m_roundKeys, blockInput, &decoded);
-      for (int i = 0; i < 8; ++i) {
-        output[8 * block + i] = decoded.bytes[i];
+      for (i = 0; i < 8; ++i) {
+        output[block * 8 + i] = decoded.bytes[i];
       }
-      if (8 * (block + 1) >= length) {
+
+      if ((block + 1) * 8 >= length) {
         break;
       }
+
+      ++block;
     }
 
     return 1;
