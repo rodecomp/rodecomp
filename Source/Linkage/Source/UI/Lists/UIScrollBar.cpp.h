@@ -58,5 +58,3 @@
 
 template __declspec(noinline) std::string std::operator+(const char* const, const std::string&);
 template __declspec(noinline) std::_List_node<UITreeNode*, void*>* std::list<UITreeNode*>::_Emplace<UITreeNode* const&>(std::_List_node<UITreeNode*, void*>* const, UITreeNode* const&);
-template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(
-    const char* const, std::size_t, std::size_t, const char* const, std::size_t) noexcept;

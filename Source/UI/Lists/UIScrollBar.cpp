@@ -2135,31 +2135,34 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
     remaining = wrapped[line];
     unsigned int offset = 0;
-    std::size_t position;
-    for (position = remaining.find('>'); position != std::string::npos; position = remaining.find('>')) {
+    std::size_t position = remaining.find(close);
+    while (position != std::string::npos) {
       ++position;
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
+      position = remaining.find(close);
     }
 
-    position = remaining.find('<');
+    position = remaining.find(open);
     if (position != std::string::npos) {
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
       std::string tail = remaining.substr(1);
-      position = tail.find('<');
+      position = tail.find(open);
       while (position != std::string::npos) {
         offset += static_cast<unsigned int>(position);
         remaining = tail;
         tail = remaining.substr(1);
-        position = tail.find('<');
+        position = tail.find(open);
       }
 
-      if (line + 1 < wrapped.size() && wrapped[line + 1].find('>') != std::string::npos) {
-        remaining.append(wrapped[line + 1]);
-        wrapped[line + 1].swap(remaining);
-        std::string truncated = wrapped[line].substr(0, offset);
-        wrapped[line] = truncated;
+      if (line + 1 < wrapped.size()) {
+        std::string& next = wrapped[line + 1];
+        if (next.find(close) != std::string::npos) {
+          remaining.append(next);
+          next.swap(remaining);
+          wrapped[line] = wrapped[line].substr(0, offset);
+        }
       }
     }
   }
