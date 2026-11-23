@@ -405,6 +405,28 @@ bool Replay::Cipher(std::uint32_t bytes, void* data) {
   return true;
 }
 
+// INLINED
+static bool Decipher(Replay& replay, std::uint32_t bytes, void* data) {
+  if (!data || !bytes) {
+    return false;
+  }
+
+  auto* words = static_cast<std::uint32_t*>(data);
+  const std::uint32_t key = replay.header.key1 >> 3;
+  const int count = bytes / 4;
+  const std::uint32_t base = replay.header.key0 >> 5;
+  replay.cipherKey = key;
+  replay.cipherIndex = 0;
+  replay.cipherBase = base;
+
+  for (int index = 0; index < count; ++index) {
+    ++replay.cipherIndex;
+    words[index] ^= (replay.cipherBase + replay.cipherIndex) * replay.cipherKey;
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00B83F20
 // FUNCTION: fn_19312
 void Replay::CloseFile() {
@@ -620,14 +642,14 @@ bool Replay::ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force) {
     return false;
   }
 
-  ReplayRecordHeader record;
   bool result = false;
+  ReplayRecordHeader record;
   std::fseek(this->file, static_cast<long>(this->fileOffset), SEEK_SET);
   std::fread(&record, sizeof(record), 1, this->file);
 
   if (this->header.records > this->records && this->elapsed >= record.tick) {
     std::fread(buffer, record.bytes, 1, this->file);
-    this->Cipher(record.bytes, buffer);
+    Decipher(*this, record.bytes, buffer);
     std::memcpy(&id, buffer, sizeof(id));
     this->fileOffset += record.bytes + sizeof(record);
     result = true;
