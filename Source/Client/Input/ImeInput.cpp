@@ -36,7 +36,7 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
     if (flags & GCS_CURSORPOS) {
       HIMC context = ImmGetContext(hWnd);
       if (!context) {
-        this->candidate.clear();
+        this->candidate.resize(0);
       } else {
         ImmGetCompositionStringA(context, GCS_CURSORPOS, &this->compositionCursor, sizeof(this->compositionCursor));
         ImmReleaseContext(hWnd, context);
@@ -46,7 +46,7 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
     if (flags & GCS_RESULTSTR) {
       HIMC context = ImmGetContext(hWnd);
       if (!context) {
-        this->candidate.clear();
+        this->candidate.resize(0);
       } else {
         WCHAR wide[256];
         char converted[256];
