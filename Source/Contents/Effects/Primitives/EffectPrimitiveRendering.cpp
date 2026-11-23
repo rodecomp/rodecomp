@@ -5125,7 +5125,7 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
       }
 
       vec4.Set(rx * g_cosTable[angle2], this->state.slots[ec].height[0], rx * g_sinTable[angle2]);
-      const float rz = i < 5 ? this->state.slots[ec].maxHeight : this->state.slots[ec].maxHeight + (0.5f * g_sinTable[this->state.slots[ec].riseAngle] + 0.5f);
+      const float rz = i < 5 ? this->state.slots[ec].maxHeight : g_sinTable[this->state.slots[ec].riseAngle] * 0.5f + 0.5f + this->state.slots[ec].maxHeight;
 
       angle = this->state.slots[ec].rotStart;
 
@@ -5139,12 +5139,15 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 
       const float sn1 = g_sinTable[angle];
       const float cs1 = g_cosTable[angle];
-      const int add = i < 5 ? (i - i % 5) * 9 + i % 5 * 3 + this->state.slots[ec].fullDisplayAngle : (i - i % 5) * 9 + i % 5 * 3;
-      const float lx = g_cosTable[add] * rz;
-      const float ly = g_sinTable[add] * rz;
+      int add = i / 5 * 45 + i % 5 * 3;
 
-      this->state.slots[ec].vecBNow.z = sn1 * lx;
-      this->state.slots[ec].vecBNow.x = cs1 * lx;
+      if (i < 5) {
+        add += this->state.slots[ec].fullDisplayAngle;
+      }
+
+      this->state.slots[ec].vecBNow.x = cs1 * rz * g_cosTable[add];
+      this->state.slots[ec].vecBNow.z = sn1 * rz * g_cosTable[add];
+      const float ly = rz * g_sinTable[add];
       vec2.Set(vec1.x + this->state.slots[ec].vecBNow.x, vec1.y - ly, vec1.z + this->state.slots[ec].vecBNow.z);
       vec3.Set(vec4.x + this->state.slots[ec].vecBNow.x, vec4.y - ly, vec4.z + this->state.slots[ec].vecBNow.z);
 
