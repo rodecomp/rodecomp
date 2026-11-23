@@ -4166,17 +4166,13 @@ void CCrimsonArrowEffect::Open() {
   switch (this->id) {
   case EF_CRIMSONARROW:
     arrow->Load("crimsonarrow\\crimsonarrow\\crimsonarrow.str");
-    emitter->offset.x = 0.0f;
-    emitter->offset.y = -13.0f;
-    emitter->offset.z = 0.0f;
+    emitter->offset = vector3d{0.0f, -13.0f, 0.0f};
     arrow->m_angle = static_cast<float>(angle);
     this->AddEvent(0, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
     break;
   case EF_RHYTHMSHOOTING_SHOT:
     arrow->Load("rhythmshooting\\rhythmshooting_shot\\rhythmshooting_shot.str");
-    emitter->offset.x = 0.0f;
-    emitter->offset.y = -8.0f;
-    emitter->offset.z = 0.0f;
+    emitter->offset = vector3d{0.0f, -8.0f, 0.0f};
     arrow->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
     break;
