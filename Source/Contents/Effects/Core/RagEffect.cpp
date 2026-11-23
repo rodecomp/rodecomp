@@ -1057,13 +1057,14 @@ void CRagEffect::SoulStrike(char F1) {
     break;
   }
 
-  const int frame = this->state.stateCnt + 5;
+  int dist = 11;
+  int delay = 5;
 
-  if (frame % 11 != 0 || frame / 11 > total) {
+  if ((this->state.stateCnt + delay) % dist != 0 || (this->state.stateCnt + delay) / dist > total) {
     return;
   }
 
-  const int index = frame / 11;
+  const int angle = base + (this->state.stateCnt + delay) / dist * step;
   PlayEffectWaveInline(*this, "effect\\EF_SoulStrike.wav");
   this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
@@ -1078,7 +1079,7 @@ void CRagEffect::SoulStrike(char F1) {
   this->state.lastPrim->state.latiSpeed = -2.0f;
   const float spread = -(this->state.lastPrim->state.latiSpeed / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.latiAccel = spread + spread;
-  this->state.lastPrim->state.roll = static_cast<float>(base + step * index);
+  this->state.lastPrim->state.roll = static_cast<float>(angle);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   const vector3d forward{0.0f, 0.0f, 1.0f};
   MatrixMult(this->state.lastPrim->state.deltaPos3, forward, this->state.lastPrim->state.transform.values);
@@ -1086,10 +1087,14 @@ void CRagEffect::SoulStrike(char F1) {
   this->state.lastPrim->state.rotAxis[1] = this->state.lastPrim->state.deltaPos3.y;
   this->state.lastPrim->state.rotAxis[2] = this->state.lastPrim->state.deltaPos3.z;
   this->state.lastPrim->state.size = 2.75f;
-  const char* action = F1 != 0 ? "이팩트\\particle5.act" : "이팩트\\particle1.act";
-  const char* sprite = F1 != 0 ? "이팩트\\particle5.spr" : "이팩트\\particle1.spr";
-  this->state.lastPrim->SetSpriteName(sprite);
-  this->state.lastPrim->SetActionName(action);
+  if (F1 == 0) {
+    this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle1.act");
+  } else {
+    this->state.lastPrim->SetSpriteName("이팩트\\particle5.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle5.act");
+  }
+
   this->state.lastPrim->state.numSegment = 12;
   this->state.lastPrim->InitSegment();
 }
@@ -1708,8 +1713,8 @@ void CRagEffect::Blessing() {
     this->state.lastPrim->state.duration = 80;
     this->state.lastPrim->state.pattern |= 0x80u;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const vector3d offset{0.0f, -25.0f, static_cast<float>(ClampedRandom(7) + 2)};
-    MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
+    EffectPrimitiveState& launched = this->state.lastPrim->state;
+    MatrixMult(launched.deltaPos2, vector3d{0.0f, -25.0f, static_cast<float>(ClampedRandom(7) + 2)}, launched.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(-90));
     this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(20) + 20) / 100.0f;
     this->state.lastPrim->state.accel = -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * 0.5f;
@@ -1726,54 +1731,50 @@ void CRagEffect::Blessing() {
 // OFFSET: 0x00C0D630
 // FUNCTION: fn_20022
 void CRagEffect::Bottom2() {
-  if (this->state.stateCnt != 0) {
-    return;
-  }
+  if (this->state.stateCnt == 0) {
+    int angle = static_cast<int>(180.0f - this->state.parent->render.angle);
+    matrix yaw;
 
-  int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
+    if (angle < 0) {
+      angle += 360;
+    }
 
-  if (facing < 0) {
-    facing += 360;
-  }
+    yaw.MakeYRotation(GetRadian(angle));
 
-  matrix yaw;
-  yaw.MakeYRotation(GetRadian(facing));
-  const float* axis = yaw.values;
-  this->state.duration = 9999;
+    this->state.duration = 9999;
+    const float widthSize = 2.5f;
 
-  for (int sign = 1; sign >= -1; sign -= 2) {
-    const float offset = static_cast<float>(sign) * 2.5f;
+    for (int i = 1; i >= -1; i -= 2) {
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 9999;
+      this->state.lastPrim->state.commonPattern = 1;
+      this->state.lastPrim->state.pattern = 40;
+      this->state.lastPrim->state.type = 50;
+      MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, widthSize * static_cast<float>(i)}, yaw.values);
+      this->state.lastPrim->state.longitude = static_cast<float>(angle + 90);
+      this->state.lastPrim->state.widthSize = widthSize;
+      this->state.lastPrim->state.heightSize = 15.0f;
+      this->state.lastPrim->state.heightSpeed = 0.25f;
+      this->state.lastPrim->state.alpha = 180.0f;
+      this->state.lastPrim->state.fadeOutCnt = 9999 - 35;
+      this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.duration = 9999;
-    this->state.lastPrim->state.commonPattern = 1;
-    this->state.lastPrim->state.pattern = 40;
-    this->state.lastPrim->state.type = 50;
-    const vector3d forward{0.0f, 0.0f, offset};
-    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, axis);
-    this->state.lastPrim->state.longitude = static_cast<float>(facing + 90);
-    this->state.lastPrim->state.widthSize = 2.5f;
-    this->state.lastPrim->state.heightSize = 15.0f;
-    this->state.lastPrim->state.heightSpeed = 0.25f;
-    this->state.lastPrim->state.alpha = 180.0f;
-    this->state.lastPrim->state.fadeOutCnt = 9964;
-    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
-
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.duration = 9999;
-    this->state.lastPrim->state.commonPattern = 1;
-    this->state.lastPrim->state.pattern = 40;
-    this->state.lastPrim->state.type = 50;
-    MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{offset, 0.0f, 0.0f}, axis);
-    this->state.lastPrim->state.longitude = static_cast<float>(facing);
-    this->state.lastPrim->state.widthSize = 2.5f;
-    this->state.lastPrim->state.heightSize = 15.0f;
-    this->state.lastPrim->state.heightSpeed = 0.25f;
-    this->state.lastPrim->state.alpha = 180.0f;
-    this->state.lastPrim->state.fadeOutCnt = 9964;
-    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 9999;
+      this->state.lastPrim->state.commonPattern = 1;
+      this->state.lastPrim->state.pattern = 40;
+      this->state.lastPrim->state.type = 50;
+      MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{widthSize * static_cast<float>(i), 0.0f, 0.0f}, yaw.values);
+      this->state.lastPrim->state.longitude = static_cast<float>(angle);
+      this->state.lastPrim->state.widthSize = widthSize;
+      this->state.lastPrim->state.heightSize = 15.0f;
+      this->state.lastPrim->state.heightSpeed = 0.25f;
+      this->state.lastPrim->state.alpha = 180.0f;
+      this->state.lastPrim->state.fadeOutCnt = 9999 - 35;
+      this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
+    }
   }
 }
 
@@ -2175,31 +2176,28 @@ void CRagEffect::Snow() {
   const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
   this->render.position = player;
 
-  if (this->GetDuration() - this->state.stateCnt <= 160) {
-    return;
-  }
-
-  for (int count = 2; count != 0; --count) {
-    this->state.lastPrim = this->LaunchEffectPrim(21, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.orgPos = this->render.position;
-    this->state.lastPrim->state.duration = 320;
-    this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const float z = static_cast<float>(ClampedRandom(300) - 300);
-    const float y = world->terrain->Height(this->render.position.x, this->render.position.z) - 100.0f;
-    const vector3d offset{0.0f, y, z};
-    MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
-    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
-    this->state.lastPrim->state.speed = -0.5f;
-    this->state.lastPrim->state.accel = 0.0f;
-    this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(15) + 25) / 50.0f;
-    this->state.lastPrim->state.rollSpeed = 0.0f;
-    this->state.lastPrim->state.alpha = 0.0f;
-    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
-    const int duration = this->state.lastPrim->state.duration;
-    this->state.lastPrim->state.fadeOutCnt = duration - duration / 5;
-    this->state.lastPrim->SetSpriteName("이팩트\\ef_snow.spr");
-    this->state.lastPrim->SetActionName("이팩트\\ef_snow.act");
-    this->state.lastPrim->InitSegment();
+  if (this->GetDuration() - this->state.stateCnt > 160) {
+    for (int i = 0; i < 2; ++i) {
+      this->state.lastPrim = this->LaunchEffectPrim(21, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.orgPos = this->render.position;
+      this->state.lastPrim->state.duration = 320;
+      this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
+      EffectPrimitiveState& launched = this->state.lastPrim->state;
+      const float z = static_cast<float>(ClampedRandom(300) - 300);
+      const float y = world->terrain->Height(this->render.position.x, this->render.position.z) - 100.0f;
+      MatrixMult(launched.deltaPos2, vector3d{0.0f, y, z}, launched.transform.values);
+      this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
+      this->state.lastPrim->state.speed = -0.5f;
+      this->state.lastPrim->state.accel = 0.0f;
+      this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(15) + 25) / 50.0f;
+      this->state.lastPrim->state.rollSpeed = 0.0f;
+      this->state.lastPrim->state.alpha = 0.0f;
+      this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+      this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
+      this->state.lastPrim->SetSpriteName("이팩트\\ef_snow.spr");
+      this->state.lastPrim->SetActionName("이팩트\\ef_snow.act");
+      this->state.lastPrim->InitSegment();
+    }
   }
 }
 
@@ -13172,52 +13170,55 @@ void CRagEffect::ShadedFireballVolley() {
 // OFFSET: 0x00C10180
 // FUNCTION: fn_20033
 void CRagEffect::Detoxication() {
-  const unsigned char enabled = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF);
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0) {
+    if (this->state.stateCnt % 5 == 0) {
+      if (this->state.stateCnt == 0) {
+        PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
+      }
 
-  if (enabled == 0) {
-    if (this->state.stateCnt % 5 != 0) {
-      return;
+      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.alpha = 0.0f;
+      this->state.lastPrim->state.duration = 40;
+      this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
+      EffectPrimitiveState& launched = this->state.lastPrim->state;
+      MatrixMult(launched.deltaPos2, vector3d{0.0f, 0.0f, static_cast<float>(ClampedRandom(6) + 2)}, launched.transform.values);
+      this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
+      this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(30) + 30) / 100.0f;
+      this->state.lastPrim->state.accel =
+        -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * g_depthAverageHalf;
+      this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(50) + 40) / 100.0f;
+      this->state.lastPrim->state.rollSpeed = 3.0f;
+      this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+      this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
+      this->state.lastPrim->SetSpriteName("이팩트\\particle2.spr");
+      this->state.lastPrim->SetActionName("이팩트\\particle2.act");
+      this->state.lastPrim->InitSegment();
     }
-
-    if (this->state.stateCnt == 0) {
-      PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
-    }
-
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.alpha = 0.0f;
-    this->state.lastPrim->state.duration = 40;
-    this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    EffectPrimitiveState& launched = this->state.lastPrim->state;
-    MatrixMult(launched.deltaPos2, vector3d{0.0f, 0.0f, static_cast<float>(ClampedRandom(6) + 2)}, launched.transform.values);
-    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   } else {
-    if (this->state.stateCnt % 15 != 0) {
-      return;
-    }
+    if (this->state.stateCnt % 15 == 0) {
+      if (this->state.stateCnt == 0) {
+        PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
+      }
 
-    if (this->state.stateCnt == 0) {
-      PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
+      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 40;
+      this->state.lastPrim->state.alpha = 0.0f;
+      this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
+      EffectPrimitiveState& launched = this->state.lastPrim->state;
+      MatrixMult(launched.deltaPos2, vector3d{0.0f, 0.0f, static_cast<float>(ClampedRandom(6) + 2)}, launched.transform.values);
+      this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
+      this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(30) + 30) / 100.0f;
+      this->state.lastPrim->state.accel =
+        -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * g_depthAverageHalf;
+      this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(50) + 40) / 100.0f;
+      this->state.lastPrim->state.rollSpeed = 3.0f;
+      this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+      this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
+      this->state.lastPrim->SetSpriteName("이팩트\\particle2.spr");
+      this->state.lastPrim->SetActionName("이팩트\\particle2.act");
+      this->state.lastPrim->InitSegment();
     }
-
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.duration = 40;
-    this->state.lastPrim->state.alpha = 0.0f;
-    this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, static_cast<float>(ClampedRandom(6) + 2)}, this->state.lastPrim->state.transform.values);
-    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   }
-
-  this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(30) + 30) / 100.0f;
-  this->state.lastPrim->state.accel =
-    -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * g_depthAverageHalf;
-  this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(50) + 40) / 100.0f;
-  this->state.lastPrim->state.rollSpeed = 3.0f;
-  this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
-  this->state.lastPrim->state.fadeOutCnt =
-    this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
-  this->state.lastPrim->SetSpriteName("이팩트\\particle2.spr");
-  this->state.lastPrim->SetActionName("이팩트\\particle2.act");
-  this->state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C112D0
@@ -14534,25 +14535,26 @@ void CRagEffect::Gravitation() {
 
   g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
 
+  const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int z = -10; z < 15; z += 5) {
     for (int x = -10; x < 15; x += 5) {
       for (int i = 0; i < 4; ++i) {
-        this->state.lastPrim = this->LaunchEffectPrim(117, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(117, origin);
         this->state.lastPrim->state.pattern = 1;
         const int angle = ClampedRandom(360);
         rand();
         ClientSine(angle);
         ClientCosine(angle);
-        this->state.lastPrim->state.deltaPos2.y = 10.0f;
-        this->state.lastPrim->state.deltaPos2.x = static_cast<float>(x);
-        this->state.lastPrim->state.deltaPos2.z = static_cast<float>(z);
+        vector3d& drift = this->state.lastPrim->state.deltaPos2;
+        drift.x = static_cast<float>(x);
+        drift.y = 10.0f;
+        drift.z = static_cast<float>(z);
         this->state.lastPrim->state.duration = 250;
         this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(50) + 300) / 100.0f;
         this->state.lastPrim->state.heightSize = 18.0f;
         this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
         this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(40) + 60);
-        EffectPrimitiveState& tilt = this->state.lastPrim->state;
-        tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+        this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
         this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
         EffectPrimitiveState& center = this->state.lastPrim->state;
         center.rotTransform = center.transform;
@@ -14946,12 +14948,14 @@ __declspec(safebuffers) void CRagEffect::Sight() {
   const float sine = ClientSine(angle);
   const float cosine = ClientCosine(angle);
   GetRadian(angle);
+  const float radius = 15.0f;
 
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
-  this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
-  this->state.lastPrim->state.deltaPos2.y = -20.0f;
-  this->state.lastPrim->state.deltaPos2.z = cosine * -15.0f;
+  vector3d& upper = this->state.lastPrim->state.deltaPos2;
+  upper.x = radius * sine;
+  upper.y = -20.0f;
+  upper.z = -radius * cosine;
   this->state.lastPrim->state.deltaPosAccel.y = 0.1f;
   this->state.lastPrim->state.animSpeed = 3;
   this->state.lastPrim->state.size = 2.5f;
@@ -14964,9 +14968,10 @@ __declspec(safebuffers) void CRagEffect::Sight() {
 
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
-  this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
-  this->state.lastPrim->state.deltaPos2.y = 0.0f;
-  this->state.lastPrim->state.deltaPos2.z = cosine * -15.0f;
+  vector3d& shadow = this->state.lastPrim->state.deltaPos2;
+  shadow.x = radius * sine;
+  shadow.y = 0.0f;
+  shadow.z = -radius * cosine;
   this->state.lastPrim->state.animSpeed = 2;
   this->state.lastPrim->state.size = 1.5f;
   this->state.lastPrim->state.sizeSpeed = -0.06f;
@@ -15151,25 +15156,25 @@ bool CRagEffect::StormGust() {
     PlayEffectWaveInline(*this, "effect\\wizard_stormgust.wav");
   }
 
-  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt % 29 == 0 &&
-      static_cast<unsigned int>(this->state.stateCnt - 31) <= 119u) {
-    const vector3d origin{0.0f, 0.0f, 0.0f};
-    for (int count = 2; count != 0; --count) {
-      const int longitudeAngle = rand() % 360;
-      const int radius = ClampedRandom(25) + 3;
-      this->state.lastPrim = this->LaunchEffectPrim(9, origin);
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt % 29 == 0 && this->state.stateCnt > 30 &&
+      this->state.stateCnt <= 150) {
+    for (int count = 0; count < 2; ++count) {
+      const float degree = static_cast<float>(ClampedRandom(360));
+      const float radius = static_cast<float>(ClampedRandom(25) + 3);
+      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 215 - this->state.stateCnt;
       this->state.lastPrim->state.pattern |= 1u;
 
-      const int angle = static_cast<int>(static_cast<float>(ClampedRandom(360)));
-      const float sine = ClientSine(angle);
-      const float cosine = ClientCosine(angle);
-      this->state.lastPrim->state.deltaPos2.x = sine * static_cast<float>(radius);
-      this->state.lastPrim->state.deltaPos2.y = 20.0f;
-      this->state.lastPrim->state.deltaPos2.z = -static_cast<float>(radius) * cosine;
+      const float angle = static_cast<float>(ClampedRandom(360));
+      const float sine = ClientSine(static_cast<int>(angle));
+      const float cosine = ClientCosine(static_cast<int>(angle));
+      vector3d& drift = this->state.lastPrim->state.deltaPos2;
+      drift.x = radius * sine;
+      drift.y = 20.0f;
+      drift.z = -radius * cosine;
       this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(100) + 400) / 100.0f;
       this->state.lastPrim->state.heightSize = 20.0f;
-      this->state.lastPrim->state.longitude = static_cast<float>(std::max(longitudeAngle, 0));
+      this->state.lastPrim->state.longitude = degree;
       this->state.lastPrim->state.latitude = 100.0f;
 
       this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
