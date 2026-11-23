@@ -4986,33 +4986,69 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (!IsHiding(this->stateFlags) && !IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags)) {
     if (HasFalconChanged(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, HasFalcon(this->stateFlags) ? AM_MAKE_BIRD : AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+      if (HasFalcon(this->stateFlags)) {
+        this->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
+      } else {
+        this->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+      }
     }
     if (HasWargChanged(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, HasWarg(this->stateFlags) ? AM_MAKE_WOLF : AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+      if (HasWarg(this->stateFlags)) {
+        this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
+      } else {
+        this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+      }
     }
   }
 
   if (IsRidingGreenDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingGreenDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingGreenDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingBrownDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingBrownDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingBrownDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingGrayDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingGrayDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingGrayDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingBlueDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingBlueDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingBlueDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingRedDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingRedDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingRedDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingWargChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingWarg(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingWarg(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingPecoChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingPeco(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingPeco(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsStarUnionChanged(this->stateFlags, previousFlags)) {
     this->SendMsg(nullptr, IsStarUnion(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
@@ -5023,16 +5059,16 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     if (IsInvisible(this->stateFlags)) {
       const int admin = g_session.IsAdminSubMode(8);
       this->render.shadowVisible = 0;
-      if (admin == 0) {
-        this->render.visible = 0;
+      if (admin != 0) {
+        this->render.visible = 1;
+      } else {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
+        this->render.visible = 0;
         if (this->msgEffectList.size() != 0) {
           for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
             static_cast<CMsgEffect*>(*it)->m_visible = this->render.accountId == g_session.m_aid;
           }
         }
-      } else {
-        this->render.visible = 1;
       }
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
@@ -5082,14 +5118,6 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (previousBodyState != this->bodyState) {
     switch (previousBodyState) {
-    case OPT1_STONE: {
-      const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
-      g_soundMgr->PlayWave(
-        "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
-      );
-      g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
-      break;
-    }
     case OPT1_FREEZE: {
       this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
       this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
@@ -5103,6 +5131,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       color.green = 0xFF;
       color.red = 0xFF;
       color.blue = 0xFF;
+      g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
+      break;
+    }
+    case OPT1_STONE: {
+      const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
       g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
       break;
     }
@@ -5127,14 +5163,6 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
 
     switch (this->bodyState) {
-    case OPT1_STONE:
-      this->render.isMotionFinished = true;
-      this->render.isMotionFreezed = true;
-      this->render.colorLocked = 1;
-      color.green = 0x40;
-      color.red = 0x40;
-      color.blue = 0x40;
-      break;
     case OPT1_FREEZE:
       this->SendMsg(nullptr, AM_MAKE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
       this->render.isMotionFinished = true;
@@ -5150,6 +5178,20 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
+    case OPT1_STONE:
+      this->render.isMotionFinished = true;
+      this->render.isMotionFreezed = true;
+      this->render.colorLocked = 1;
+      color.green = 0x40;
+      color.red = 0x40;
+      color.blue = 0x40;
+      break;
+    case OPT1_STONEWAIT:
+      this->render.colorLocked = 1;
+      color.green = 0x80;
+      color.red = 0x80;
+      color.blue = 0x80;
+      break;
     case OPT1_STUN:
       this->SendMsg(nullptr, AM_MAKE_STUN_EFFECT, 0, 0, 0, 0, 0, 0);
       if (notify) {
@@ -5159,17 +5201,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
-    case OPT1_SLEEP:
-      this->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
-      break;
-    case OPT1_STONEWAIT:
-      this->render.colorLocked = 1;
-      color.green = 0x80;
-      color.red = 0x80;
-      color.blue = 0x80;
-      break;
     case OPT1_BURNING:
       this->SendMsg(nullptr, AM_MAKE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
+      break;
+    case OPT1_SLEEP:
+      this->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_IMPRISON:
       if (!this->HasId(EF_BOTTOM_BASILICA2)) {
