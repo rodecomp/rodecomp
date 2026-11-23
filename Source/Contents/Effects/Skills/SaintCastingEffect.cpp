@@ -277,9 +277,7 @@ void CSaintCastingEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     vector3d& position = (*it)->position;
-    position.x = this->position[0];
-    position.y = this->position[1];
-    position.z = this->position[2];
+    position = vector3d{this->position[0], this->position[1], this->position[2]};
     this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
