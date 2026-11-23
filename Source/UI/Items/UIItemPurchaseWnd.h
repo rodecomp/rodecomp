@@ -13,6 +13,7 @@ class UIItemPurchaseWnd : public UIItemBaseWnd {
 public:
   std::vector<unsigned char> GetReplayData() override;
   UIItemPurchaseWnd();
+  ~UIItemPurchaseWnd() override;
   void DragAndDrop(int x, int y, std::intptr_t value) override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;

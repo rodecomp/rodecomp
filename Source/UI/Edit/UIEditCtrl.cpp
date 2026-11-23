@@ -8515,6 +8515,14 @@ UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem() : UIFrameWnd(
   this->duration = 2000;
 }
 
+// OFFSET: 0x0096F790
+// FUNCTION: fn_13236
+UIItemPurchaseWnd::~UIItemPurchaseWnd() = default;
+
+// OFFSET: 0x0096F990
+// FUNCTION: fn_13237
+UIItemShopWnd::~UIItemShopWnd() = default;
+
 // OFFSET: 0x0096FB70
 // FUNCTION: fn_13238
 UIItemStoreWnd::~UIItemStoreWnd() {

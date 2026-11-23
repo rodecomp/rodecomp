@@ -14,6 +14,7 @@ class UIStaticText;
 class UIItemShopWnd : public UIItemBaseWnd {
 public:
   UIItemShopWnd();
+  ~UIItemShopWnd() override;
   void StoreInfo() override;
   void DragAndDrop(int x, int y, std::intptr_t value) override;
   void OnLBtnDown(int x, int y) override;
