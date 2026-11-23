@@ -690,15 +690,12 @@ __declspec(noinline) void LoadItemNameTables() {
           ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
         }
 
-        if (*cursor == nullptr) {
-          ++cursor;
-        } else {
-          do {
-            desc.unidentifiedDescription.push_back(*cursor);
-            ++cursor;
-          } while (*cursor != nullptr);
+        while (*cursor != nullptr) {
+          desc.unidentifiedDescription.push_back(*cursor);
           ++cursor;
         }
+
+        ++cursor;
       }
     }
 
