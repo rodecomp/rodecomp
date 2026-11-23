@@ -306,17 +306,17 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
         curB.y = 0.0f;
       }
 
-      const float rise = this->state.slots[ec].height[i];
-      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      float riseY = rise * g_sinTable[this->state.slots[ec].riseAngle];
+      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
+      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
       curT.x = riseX * g_cosTable[angle] + curB.x;
       curT.z = riseX * g_sinTable[angle] + curB.z;
       if (this->state.slots[ec].maxHeight == 6.001f) {
-        riseY += 2.0f;
+        curT.y = -(2.0f + riseY);
       } else if (this->state.slots[ec].maxHeight == 24.001f) {
-        riseY += 1.0f;
+        curT.y = -(1.0f + riseY);
+      } else {
+        curT.y = -riseY;
       }
-      curT.y = -riseY;
 
       if (i > 0) {
         this->RenderTeiRect(
