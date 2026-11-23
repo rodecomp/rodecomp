@@ -5807,7 +5807,10 @@ bool CEffectPrim::PrimDriftingRings() {
 
     if (process < 10) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 25);
-      const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 125 : 250;
+      int limit = 250;
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+        limit = 125;
+      }
       if (slot.alphaB > limit) {
         slot.alphaB = static_cast<std::int16_t>(limit);
       }
@@ -5819,8 +5822,8 @@ bool CEffectPrim::PrimDriftingRings() {
         slot.process = 0;
         slot.distance -= 0.4f;
         if (slot.riseAngle <= 40) {
-          slot.life = 0;
           slot.riseAngle = 40;
+          slot.life = 0;
         }
       }
     }
@@ -5833,13 +5836,11 @@ bool CEffectPrim::PrimDriftingRings() {
         }
       }
 
-      float value = scale * slot.maxHeight;
-      slot.height[point] = value;
+      slot.height[point] = scale * slot.maxHeight;
       if (slot.process <= 15) {
-        value *= g_sinTable[6 * slot.process];
-        slot.height[point] = value;
+        slot.height[point] *= g_sinTable[6 * slot.process];
       }
-      if (value < 0.0f) {
+      if (slot.height[point] < 0.0f) {
         slot.height[point] = 0.0f;
       }
     }
