@@ -853,9 +853,7 @@ void CVolcanoEffect::OnProcess() {
       this->lastInner.x = corners[0].x;
       this->lastInner.y = corners[0].y;
       this->lastInner.z = corners[0].z;
-      this->lastOuter.x = corners[1].x;
-      this->lastOuter.y = corners[1].y;
-      this->lastOuter.z = corners[1].z;
+      this->lastOuter = vector3d{corners[1].x, corners[1].y, corners[1].z};
     }
 
     ++particle->elapsedFrames;
