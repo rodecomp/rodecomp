@@ -1300,11 +1300,10 @@ void CUIQuestInfo::OnCreate(int width, int height) {
 // OFFSET: 0x009DCE10
 // FUNCTION: fn_14330
 void CUICharacterInfo::OnInit() {
-  this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", g_session.m_job));
+  this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", static_cast<int>(g_session.m_job)));
   const int level = g_session.m_level;
   this->level->SetText(std::format("Lv. {}", level));
-  const int jobLevel = g_session.m_jobLevel;
-  this->jobLevel->SetText(std::format("Jv. {}", jobLevel));
+  this->jobLevel->SetText(std::format("Jv. {}", static_cast<int>(g_session.m_jobLevel)));
   this->name->SetText(g_session.DecodePlayerName());
 }
 
