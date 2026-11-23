@@ -4077,13 +4077,14 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         const float radius = static_cast<float>(std::ranges::max(std::rand() % 10, 0)) + 5.0f;
         matrix rotation;
         rotation.MakeYRotation(static_cast<float>(index) * step / 180.0f * 3.141592f);
-        vector3d position;
-        position.x = radius * rotation.values[0] + rotation.values[3] * origin.x + rotation.values[6] * origin.x
-                   + rotation.values[9] + target->render.position.x;
-        position.y = radius * rotation.values[1] + rotation.values[4] * origin.x + rotation.values[7] * origin.x
-                   + rotation.values[10] + target->render.position.y;
-        position.z = radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x
-                   + rotation.values[11] + target->render.position.z;
+        const auto makePosition = [&]() -> vector3d {
+          return {
+            radius * rotation.values[0] + rotation.values[3] * origin.x + rotation.values[6] * origin.x + rotation.values[9] + target->render.position.x,
+            radius * rotation.values[1] + rotation.values[4] * origin.x + rotation.values[7] * origin.x + rotation.values[10] + target->render.position.y,
+            radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x + rotation.values[11] + target->render.position.z,
+          };
+        };
+        const vector3d position = makePosition();
         const int kind = std::ranges::max(std::rand() % 3, 0);
         int id;
         if (kind == 0) {
