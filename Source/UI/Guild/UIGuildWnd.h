@@ -155,7 +155,7 @@ protected:
   /* 0178 */ std::list<GuildInfo::Member> m_members;
   /* 0180 */ std::map<int, GuildMemberManageEntry> membersByCharacterId;
   /* 0188 */ int m_sortColumn;
-  /* 018C */ std::map<int, int> m_sortOrders;
+  /* 018C */ std::map<int, unsigned long> m_sortOrders;
   /* 0194 */ UICheckBox* m_onlineCheck;
   /* 0198 */ std::uint32_t m_buttonTime;
 };
