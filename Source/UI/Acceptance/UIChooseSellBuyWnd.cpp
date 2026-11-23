@@ -1515,8 +1515,9 @@ void UITipOfTheDayWnd::Paint() {
   }
 
   rows = (this->geometry.width - 60) % 32;
+  unsigned blue;
   {
-    unsigned red, green, blue;
+    unsigned red, green;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(20, 17, rows, this->geometry.height - 38, RGB(red, green, blue));
     this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
@@ -1529,7 +1530,7 @@ void UITipOfTheDayWnd::Paint() {
     this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
-  unsigned red, green, blue;
+  unsigned red, green;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
 }
