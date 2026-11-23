@@ -283,8 +283,8 @@ void CUIAdventureGuide::OnButtonClick() {
 
 // OFFSET: 0x009DBFD0
 // FUNCTION: fn_14313
-void CRenewQuestMgr::AddStatusRequest(unsigned int id) {
-  this->m_statusRequests.insert(id);
+inline void CRenewQuestMgr::AddStatusRequest(unsigned int id) {
+  this->m_statusRequests.insert(static_cast<unsigned int>(id));
 }
 
 namespace AdventureGuide {
