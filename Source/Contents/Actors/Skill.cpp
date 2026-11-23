@@ -423,11 +423,13 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
 
     if (target != nullptr) {
-      damageMessage.targetAid = this->hitTargetAid;
+      const std::uint32_t attackerAid = this->skillAid;
+      const std::uint32_t targetAidValue = this->hitTargetAid;
+      damageMessage.targetAid = targetAidValue;
       damageMessage.action = 26;
       damageMessage.damage = damage;
       damageMessage.time = timeGetTime();
-      damageMessage.attackerAid = this->skillAid;
+      damageMessage.attackerAid = attackerAid;
       damageMessage.cellX = cellX;
       damageMessage.cellY = cellY;
       damageMessage.hitEffect = effectId;
