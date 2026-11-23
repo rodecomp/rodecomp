@@ -5604,7 +5604,10 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
 
         if (this->state.slots[index].process < 30) {
           this->state.slots[index].alphaB += 5;
-          const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 80 : 150;
+          int limit = 150;
+          if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+            limit = 80;
+          }
 
           if (this->state.slots[index].alphaB > limit) {
             this->state.slots[index].alphaB = static_cast<std::int16_t>(limit);
