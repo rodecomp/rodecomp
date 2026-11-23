@@ -175,7 +175,7 @@ struct SessionParameterNameLess {
 
 struct SearchStoreResult {
   SearchStoreResult() : item() {}
-  SearchStoreResult(const SearchStoreResult& other) {
+  __declspec(noinline) SearchStoreResult(const SearchStoreResult& other) {
     this->storeId = other.storeId;
     this->accountId = other.accountId;
     std::memcpy(this->storeName, other.storeName, sizeof(this->storeName));
