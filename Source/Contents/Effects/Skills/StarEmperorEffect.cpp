@@ -212,9 +212,7 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
     }
   }
 
-  particle->position.x = this->position[0];
-  particle->position.y = this->position[1];
-  particle->position.z = this->position[2];
+  particle->position = vector3d{this->position[0], this->position[1], this->position[2]};
 }
 
 // OFFSET: 0x0072C830
