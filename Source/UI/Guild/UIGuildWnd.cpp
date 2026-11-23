@@ -1264,8 +1264,8 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
 // FUNCTION: fn_13086
 void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   UIGuildWnd::OnLBtnDown(x, y);
-  if (x > 5 && x < 382 && y > 46 && y < 67) {
-    int left = 6;
+  int left = 6;
+  if (x >= left && x <= 381 && y >= 47 && y <= 66) {
     for (int column = 0; column < 6; ++column) {
       const int right = g_guildMemberColumnWidths[column] + left;
       if (left <= x && x <= right) {
