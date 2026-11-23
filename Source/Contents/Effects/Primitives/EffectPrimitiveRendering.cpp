@@ -5547,7 +5547,6 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
         tm[2] * vert4.x + tm[5] * vert4.y + tm[8] * 0.0f + tm[11] + record.position.z
       };
 
-      const float uNext = uInc + 0.25f;
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
 
       g_renderer->Project(&point1.x, wtm.values, projected);
@@ -5559,7 +5558,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       g_renderer->Project(&point2.x, wtm.values, projected);
       this->state.triangles[rpCnt].vertices[1] = projected;
       this->state.triangles[rpCnt].vertices[1].diffuse = record.color;
-      this->state.triangles[rpCnt].vertices[1].u = uNext;
+      this->state.triangles[rpCnt].vertices[1].u = uInc + 0.25f;
       this->state.triangles[rpCnt].vertices[1].v = 1.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->Project(&point3.x, wtm.values, projected);
@@ -5576,7 +5575,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       g_renderer->Project(&point4.x, wtm.values, projected);
       this->state.triangles[rpCnt].vertices[0] = projected;
       this->state.triangles[rpCnt].vertices[0].diffuse = record.color;
-      this->state.triangles[rpCnt].vertices[0].u = uNext;
+      this->state.triangles[rpCnt].vertices[0].u = uInc + 0.25f;
       this->state.triangles[rpCnt].vertices[0].v = 0.0f;
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->Project(&point3.x, wtm.values, projected);
@@ -5588,14 +5587,14 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       g_renderer->Project(&point2.x, wtm.values, projected);
       this->state.triangles[rpCnt].vertices[2] = projected;
       this->state.triangles[rpCnt].vertices[2].diffuse = record.color;
-      this->state.triangles[rpCnt].vertices[2].u = uNext;
+      this->state.triangles[rpCnt].vertices[2].u = uInc + 0.25f;
       this->state.triangles[rpCnt].vertices[2].v = 1.0f;
       this->state.triangles[rpCnt].texture = this->state.textures[0];
       if (this->state.triangles[rpCnt].Visible()) {
         g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag));
       }
 
-      uInc = uNext;
+      uInc += 0.25f;
       if (uInc >= 1.0f) {
         uInc = 0.0f;
       }
