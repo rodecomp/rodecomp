@@ -585,7 +585,7 @@ SessionShop* CSession::GetShop(int shopId) {
     return &found->second;
   }
 
-  this->m_shops[shopId] = SessionShop{0, {}};
+  this->m_shops[shopId] = SessionShop();
   return &this->m_shops[shopId];
 }
 

@@ -160,6 +160,9 @@ struct SessionRecord0734 {
 };
 
 struct SessionShop {
+  // INLINED
+  SessionShop() : flag(0) {}
+
   /* 0000 */ unsigned char flag;
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> items;
 };
