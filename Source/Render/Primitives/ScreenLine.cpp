@@ -204,6 +204,8 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   }
 
   SpriteAtlasRecord record{};
+  record.u0 = 0.0f;
+  record.v0 = 0.0f;
   CTexture* texture;
   if (cell->imageType == 0) {
     texture = g_renderer->atlas.Find(image, palette, record);
@@ -218,30 +220,19 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   const int halfWidth = static_cast<int>(static_cast<float>(image->width) * scale * g_depthAverageHalf);
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
-  const float left = x - static_cast<float>(halfWidth);
-  const float right = static_cast<float>(halfWidth) + x;
-  const float upper = y - static_cast<float>(height) - static_cast<float>(lift);
-  const float lower = y - static_cast<float>(lift);
-  vertices[0].x = left;
-  vertices[0].y = upper;
-  vertices[1].y = upper;
-  vertices[2].x = left;
-  vertices[1].x = right;
-  vertices[3].x = right;
-  vertices[3].z = 0.8f;
-  vertices[2].z = 0.8f;
-  vertices[1].z = 0.8f;
-  vertices[0].z = 0.8f;
-  vertices[2].y = lower;
-  vertices[3].y = lower;
-  vertices[3].rhw = 1.0f;
-  vertices[2].rhw = 1.0f;
-  vertices[1].rhw = 1.0f;
-  vertices[0].rhw = 1.0f;
-  vertices[3].diffuse = 0xFFFFFFFF;
-  vertices[2].diffuse = 0xFFFFFFFF;
-  vertices[1].diffuse = 0xFFFFFFFF;
-  vertices[0].diffuse = 0xFFFFFFFF;
+  vertices[0].x = x - static_cast<float>(halfWidth);
+  vertices[0].y = y - static_cast<float>(height) - static_cast<float>(lift);
+  vertices[1].x = static_cast<float>(halfWidth) + x;
+  vertices[1].y = y - static_cast<float>(height) - static_cast<float>(lift);
+  vertices[2].x = x - static_cast<float>(halfWidth);
+  vertices[2].y = y - static_cast<float>(lift);
+  vertices[3].x = static_cast<float>(halfWidth) + x;
+  vertices[3].y = y - static_cast<float>(lift);
+  for (int index = 0; index < 4; ++index) {
+    vertices[index].z = 0.8f;
+    vertices[index].rhw = 1.0f;
+    vertices[index].diffuse = 0xFFFFFFFF;
+  }
   vertices[0].u = record.u0;
   vertices[0].v = record.v0;
   vertices[1].u = record.u1;
