@@ -1285,9 +1285,10 @@ void ShowPlayerLocation() {
     return;
   }
 
+  const float z = player->render.position.z;
   int column = 0;
   int row = 0;
-  mode->WorldCell(player->render.position.x, player->render.position.z, column, row);
+  mode->WorldCell(player->render.position.x, z, column, row);
 
   std::string name = mode->MapName();
   if (name.size() > 4) {
