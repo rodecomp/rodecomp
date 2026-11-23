@@ -7210,7 +7210,8 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     if (this->connectionReady) {
       g_nProtectGameGuardMgr->IncrementCounter();
       g_packetReassembler->Notify(1);
-      GetRagConnection().SendDeadline() = timeGetTime() + 1000;
+      CRagConnection& connection = GetRagConnection();
+      connection.SendDeadline() = timeGetTime() + 1000;
 
       ZoneEnterPacket packet;
       packet.packetType = ID_CZ_ENTER2;
@@ -7231,7 +7232,8 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     }
   }
 
-  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+  UIWaitWnd* waitWindow = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+  waitWindow->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
   g_windowMgr.modalResponse = ID_CANCEL;
 }
 
