@@ -271,7 +271,9 @@ void UIAchUpperWnd::OnCreate(int, int) {
   gauge->value = 0;
   gauge->maximum = 100;
   this->levelGauge->Move(47, 24);
-  this->levelGauge->text.assign(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE));
+  gauge = this->levelGauge;
+  const char* nextGrade = LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE);
+  gauge->text = nextGrade;
   this->AddChild(this->levelGauge);
 
   gauge = new (std::nothrow) UICustomGageBar();
