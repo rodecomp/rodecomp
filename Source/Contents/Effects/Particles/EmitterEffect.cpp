@@ -189,17 +189,12 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
         }
       }
 
-      const float step = this->timeScale;
-      const float speed = particle->speedParameter;
-      particle->offsetY += particle->motionVelocity.y * speed * step;
-      particle->offsetZ += particle->motionVelocity.z * speed * step;
-      particle->offsetX += particle->motionVelocity.x * speed * step;
-      particle->position.y += particle->offsetY;
-      particle->position.z += particle->offsetZ;
-      particle->position.x += particle->offsetX;
-      particle->motionVelocity.x += this->timeScale * this->acceleration.x;
-      particle->motionVelocity.y += this->timeScale * this->acceleration.y;
-      particle->motionVelocity.z += this->timeScale * this->acceleration.z;
+      const vector3d travel{particle->motionVelocity.x * particle->speedParameter * this->timeScale,
+                            particle->motionVelocity.y * particle->speedParameter * this->timeScale,
+                            particle->motionVelocity.z * particle->speedParameter * this->timeScale};
+      particle->offset += travel;
+      particle->position += particle->offset;
+      particle->motionVelocity += this->acceleration * this->timeScale;
 
       if (this->billboard == 1) {
         matrix transform;
