@@ -308,15 +308,16 @@ void UIMakeCharWnd::Paint() {
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[i].c_str()));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
     const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
-    POINT offset;
-    offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    const POINT point = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    int offsetX = point.x;
+    int offsetY = point.y;
 
     if (i == 1) {
       CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
       const ActionFrame& bodyFrame = body->Frame(this->m_view.action, this->m_view.frame);
       if (frame.anchorCount != 0 && bodyFrame.anchorCount != 0 && frame.anchors[0].attachmentId == bodyFrame.anchors[0].attachmentId) {
-        offset.x += bodyFrame.anchors[0].x - frame.anchors[0].x;
-        offset.y += bodyFrame.anchors[0].y - frame.anchors[0].y;
+        offsetX += bodyFrame.anchors[0].x - frame.anchors[0].x;
+        offsetY += bodyFrame.anchors[0].y - frame.anchors[0].y;
       }
     }
 
@@ -351,7 +352,7 @@ void UIMakeCharWnd::Paint() {
     }
 
     this->geometry.surface->DrawSurface(
-      this->m_view.x + cell.x + offset.x, this->m_view.y + cell.y + offset.y, texture, static_cast<int>(record.u0 * 256.0f),
+      this->m_view.x + cell.x + offsetX, this->m_view.y + cell.y + offsetY, texture, static_cast<int>(record.u0 * 256.0f),
       static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
