@@ -465,12 +465,11 @@ std::optional<GameSettingsOption*> GameSettings::FindOption(int id) {
 // FUNCTION: fn_06316
 std::list<int> GameSettings::GetOptionIds(int tab) {
   std::list<int> ids;
-  for (auto optionIt = this->options.begin(), optionEnd = this->options.end(); optionIt != optionEnd; ++optionIt) {
-    const GameSettingsOption& option = *optionIt;
+  std::for_each(this->options.begin(), this->options.end(), [&](const GameSettingsOption& option) {
     if (option.tab == tab) {
       ids.push_back(option.id);
     }
-  }
+  });
   return ids;
 }
 
