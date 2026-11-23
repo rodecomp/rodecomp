@@ -102,11 +102,10 @@ void CAdventurerAgencyMgr::RequestStop() {
   }
 
   this->masterAccountId = g_session.m_aid;
-  const std::uint32_t account = g_session.m_aid;
   CAsyncWorkMgr* manager = g_asyncWorkMgr;
   manager->StopRecruiting(
-    account, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
-    std::string(g_session.m_webAuthToken, 16), account
+    g_session.m_aid, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
+    std::string(g_session.m_webAuthToken, 16), g_session.m_aid
   );
   ++this->pending;
 }
