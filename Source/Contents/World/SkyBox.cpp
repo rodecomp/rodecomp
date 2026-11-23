@@ -127,7 +127,9 @@ CSkyBox::CSkyBox() {
 
 // OFFSET: 0x0075DFB0
 // FUNCTION: fn_08046
-FlareElement::FlareElement() : position{0.0f, 0.0f, 0.0f} {
+FlareElement::FlareElement() {
+  vector3d zero = {0.0f, 0.0f, 0.0f};
+  this->position = zero;
 }
 
 // OFFSET: 0x0075DFD0

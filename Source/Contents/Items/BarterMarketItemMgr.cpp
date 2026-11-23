@@ -758,8 +758,8 @@ BarterTriple* CopyTriples(BarterTriple* first, BarterTriple* last, BarterTriple*
   while (src != last) {
     const int secondValue = src->second;
     const int firstValue = src->first;
-    dst->second = secondValue;
     dst->first = firstValue;
+    dst->second = secondValue;
     dst->third = src->third;
     ++src;
     ++dst;
