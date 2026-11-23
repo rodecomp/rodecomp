@@ -262,7 +262,10 @@ namespace {
     /* 000A */ std::uint16_t wearState;
     /* 000C */ unsigned char damaged;
     /* 000D */ unsigned char refine;
-    /* 000E */ std::uint32_t cards[4];
+    /* 000E */ std::uint32_t card0;
+    /* 0012 */ std::uint32_t card1;
+    /* 0016 */ std::uint32_t card2;
+    /* 001A */ std::uint32_t card3;
     /* 001E */ std::uint32_t expireTime;
   };
 
@@ -275,7 +278,10 @@ namespace {
     /* 000A */ std::uint16_t wearState;
     /* 000C */ unsigned char damaged;
     /* 000D */ unsigned char refine;
-    /* 000E */ std::uint32_t cards[4];
+    /* 000E */ std::uint32_t card0;
+    /* 0012 */ std::uint32_t card1;
+    /* 0016 */ std::uint32_t card2;
+    /* 001A */ std::uint32_t card3;
     /* 001E */ std::uint32_t expireTime;
     /* 0022 */ std::uint16_t bindOnEquip;
     /* 0024 */ std::uint16_t sprite;
@@ -2630,7 +2636,10 @@ __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned cha
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -2647,15 +2656,19 @@ __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned cha
 __declspec(noinline) void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740EquipRecord);
-  const Item1740EquipRecord* record = reinterpret_cast<const Item1740EquipRecord*>(packet + 1);
-  for (int i = 0; i < count; ++i, ++record) {
+  const Item1740EquipRecord* records = reinterpret_cast<const Item1740EquipRecord*>(packet + 1);
+  for (int i = 0; i < count; ++i) {
+    const Item1740EquipRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    item.identity[1] = record->index;
     item.identity[2] = record->location;
+    item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -8604,8 +8617,7 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 45) / 38u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE)) / sizeof(Item1740EquipRecord);
   const auto* entries = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const auto* entry = &entries[index];
@@ -8615,7 +8627,10 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
     item.identity[1] = entry->index;
     item.identity[3] = entry->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry->cards, sizeof(item.cards));
+    item.cards[0] = entry->card0;
+    item.cards[1] = entry->card1;
+    item.cards[2] = entry->card2;
+    item.cards[3] = entry->card3;
     item.SetItemId(entry->itemId);
     item.identified = entry->identified;
     item.damaged = entry->damaged;
@@ -13200,7 +13215,10 @@ __declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char*
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(item.cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -13241,7 +13259,10 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(item.cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
