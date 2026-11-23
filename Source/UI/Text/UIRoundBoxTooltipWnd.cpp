@@ -107,15 +107,17 @@ int UIColoringTextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // OFFSET: 0x0099A5E0
 // FUNCTION: fn_13544
 int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_ROUNDBOXTOOLTIPWND);
     }
-  } else if (message == UM_SET_ITEM_MOVE_TOOLTIP) {
+    break;
+  case UM_SET_ITEM_MOVE_TOOLTIP:
     if (argument1 != 0) {
-      std::string text;
-      std::string longest;
+      std::string text = "";
       int lines = 0;
+      std::string longest = "";
 
       this->viewer->Clear();
       const ItemMoveInfo info = FindItemMoveInfo(static_cast<int>(argument1));
@@ -206,7 +208,8 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->Move(g_mouse.x + 26, g_mouse.y);
       this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
     }
-  } else {
+    break;
+  default:
     return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
