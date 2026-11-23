@@ -2675,7 +2675,7 @@ void CRandomHitEffect::Render() {
 
 // OFFSET: 0x00720970
 // FUNCTION: fn_07364
-CRandomOptEffect::CRandomOptEffect() : CEffect(-1), offsets{} {
+CRandomOptEffect::CRandomOptEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x00720AF0
@@ -2974,11 +2974,6 @@ void CSavageImpactEffect::Render() {
 // OFFSET: 0x007226A0
 // FUNCTION: fn_07389
 CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1) {
-  for (vector3d& offset : this->offsets) {
-    offset.x = 0.0f;
-    offset.y = 0.0f;
-    offset.z = 0.0f;
-  }
 }
 
 // OFFSET: 0x00722730
