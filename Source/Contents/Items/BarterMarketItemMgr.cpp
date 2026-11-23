@@ -479,13 +479,16 @@ void CExpandedBarterMarketItemMgr::RemoveEntry(const BarterMarketEntry& entry)
 // FUNCTION: fn_03762
 void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
 {
-  std::vector<BarterMarketEntry>::iterator found = std::find_if(this->entries.begin(), this->entries.end(), [&entry](const BarterMarketEntry& item) {
-    return item.id == entry.id;
-  });
-  if (found != this->entries.end()) {
-    found->value += entry.value;
-  } else {
+  std::vector<BarterMarketEntry>::iterator found = this->entries.begin();
+  for (; found != this->entries.end(); ++found) {
+    if (found->id == entry.id) {
+      break;
+    }
+  }
+  if (found == this->entries.end()) {
     this->entries.push_back(entry);
+  } else {
+    found->value += entry.value;
   }
   for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
     if (it->id == entry.id && !it->flag_30) {
@@ -499,18 +502,21 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
   for (std::vector<BarterChunk16>::const_iterator it = entry.chunks.begin(); it != entry.chunks.end(); ++it) {
     int count = entry.value;
     BarterChunk16 chunk = *it;
-    std::vector<BarterChunk16>::iterator target = std::find_if(this->chunks.begin(), this->chunks.end(), [&chunk](const BarterChunk16& other) {
-      return other.field_0 == chunk.field_0 && other.field_4 == chunk.field_4;
-    });
-    if (target != this->chunks.end()) {
-      target->amount += chunk.amount * count;
-    } else {
+    std::vector<BarterChunk16>::iterator target = this->chunks.begin();
+    for (; target != this->chunks.end(); ++target) {
+      if (target->field_0 == chunk.field_0 && target->field_4 == chunk.field_4) {
+        break;
+      }
+    }
+    if (target == this->chunks.end()) {
       alignas(16) BarterChunk16 added;
       added.field_0 = chunk.field_0;
       added.field_4 = chunk.field_4;
       added.amount = chunk.amount * count;
       added.field_c = chunk.field_c;
       this->chunks.push_back(added);
+    } else {
+      target->amount += chunk.amount * count;
     }
   }
   this->total = 0;
