@@ -143,11 +143,10 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
     const int segment = particle->columnIndex;
     HitLineVector3d points[2];
     const int phase = particle->phaseParameter;
-    const float lift = -particle->speedParameter;
-    const float* turns = &particle->animationParameter + segment;
-    const signed char* halfTurns = &particle->animationState + segment;
+    const float* turns = &particle->animationParameter;
+    const signed char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
-      const int count = halfTurns[index];
+      const int count = halfTurns[segment + index];
       float distance = 0.0f;
       float factor = 1.0f;
       for (int step = 0; step < count; ++step) {
@@ -155,12 +154,12 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
         factor *= 0.7f;
       }
 
-      const float turn = turns[index];
+      const float turn = turns[segment + index];
       if (turn > 0.0f) {
         distance += particle->speedParameter * factor * (turn / 90.0f);
       }
 
-      const float height = lift * g_sinTable[static_cast<int>(turn)] * 1.5f;
+      const float height = -particle->speedParameter * g_sinTable[static_cast<int>(turn)] * 1.5f;
       float scale = 1.0f;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
