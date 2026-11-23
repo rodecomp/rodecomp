@@ -2531,25 +2531,27 @@ void UIGuildMemberManageWnd::Paint() {
   }
 
   const int spacing = this->m_rowSpacing * 6;
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-  this->DrawRectOutline(5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
-  this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
-  const int rows = 6 - spacing / 36;
-  for (int row = 1; row <= rows; ++row) {
-    this->FillRegion(5, (this->m_rowSpacing + 36) * row + 66, 377, 1, RGB(red, green, blue));
-  }
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(14, 6, red, green, blue);
+    this->DrawRectOutline(5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
+    this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
+    const int rows = 6 - spacing / 36;
+    for (int row = 1; row <= rows; ++row) {
+      this->FillRegion(5, (this->m_rowSpacing + 36) * row + 66, 377, 1, RGB(red, green, blue));
+    }
 
-  if (this->m_sortColumn == 0) {
-    this->FillRegion(6, 47, g_guildMemberColumnWidths[0], 19, 0xEBD8CE);
-  }
+    if (this->m_sortColumn == 0) {
+      this->FillRegion(6, 47, g_guildMemberColumnWidths[0], 19, 0xEBD8CE);
+    }
 
-  int x = 0;
-  for (int column = 1; column < 6; ++column) {
-    x += g_guildMemberColumnWidths[column - 1] + 1;
-    this->FillRegion(x + 5, 46, 1, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
-    if (column == this->m_sortColumn) {
-      this->FillRegion(x + 6, 47, g_guildMemberColumnWidths[this->m_sortColumn], 19, 0xEBD8CE);
+    int x = 0;
+    for (int column = 1; column < 6; ++column) {
+      x += g_guildMemberColumnWidths[column - 1] + 1;
+      this->FillRegion(x + 5, 46, 1, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
+      if (column == this->m_sortColumn) {
+        this->FillRegion(x + 6, 47, g_guildMemberColumnWidths[this->m_sortColumn], 19, 0xEBD8CE);
+      }
     }
   }
 
