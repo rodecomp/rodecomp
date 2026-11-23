@@ -65,9 +65,9 @@ void CCartCannon::Open() {
   this->stepDelta.z = target.z - current.z;
 
   const float length = SquareRoot(
-    this->stepDelta.x * this->stepDelta.x +
+    this->stepDelta.z * this->stepDelta.z +
     this->stepDelta.y * this->stepDelta.y +
-    this->stepDelta.z * this->stepDelta.z
+    this->stepDelta.x * this->stepDelta.x
   );
 
   this->stepDelta.x /= 10.0f;

@@ -64,8 +64,8 @@ void CTriangleShotArrow::Open() {
   this->direction.x = target.x - pos.x;
   this->direction.y = target.y - pos.y;
   this->direction.z = target.z - pos.z;
-  const float length = SquareRoot(this->direction.x * this->direction.x + this->direction.y * this->direction.y +
-                                  this->direction.z * this->direction.z);
+  const float length = SquareRoot(this->direction.z * this->direction.z + this->direction.y * this->direction.y +
+                                  this->direction.x * this->direction.x);
   this->direction.x *= 0.125f;
   this->direction.y *= 0.125f;
   this->direction.z *= 0.125f;
