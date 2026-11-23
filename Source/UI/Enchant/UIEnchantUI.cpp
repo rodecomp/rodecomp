@@ -843,6 +843,15 @@ ITEM_INFO* CUITargetItem::GetItemInfo() {
   return this->itemIcon->GetItemInfo();
 }
 
+// INLINED
+static std::optional<EnchantOptionInfo*> FindOptionInfo(std::map<std::uint32_t, EnchantOptionInfo>& options, std::uint32_t key) {
+  auto it = options.find(key);
+  if (it == options.end()) {
+    return std::nullopt;
+  }
+  return &it->second;
+}
+
 // OFFSET: 0x00A053E0
 // FUNCTION: fn_14974
 std::optional<EnchantOptionInfo*> CUIEnchantPage::FindOption(uint32_t key) {
@@ -850,12 +859,7 @@ std::optional<EnchantOptionInfo*> CUIEnchantPage::FindOption(uint32_t key) {
     return std::nullopt;
   }
 
-  auto& options = this->enchantInfo->options;
-  auto it = options.find(key);
-  if (it == options.end()) {
-    return std::nullopt;
-  }
-  return &it->second;
+  return FindOptionInfo(this->enchantInfo->options, key);
 }
 
 // OFFSET: 0x00A05CE0
@@ -1083,7 +1087,7 @@ void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
   this->textViewer->AddLine(this->enchantInfo->caution);
   for (int itemId : this->enchantInfo->targetItems) {
     const std::vector<int> indices = g_session.FindInventoryIndicesByItemId(itemId, 1);
-    for (int index : indices) {
+    for (const int& index : indices) {
       if (g_session.HasSwapEquipmentItem(index)) {
         continue;
       }
