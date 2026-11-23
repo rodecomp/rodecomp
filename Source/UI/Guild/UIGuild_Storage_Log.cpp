@@ -35,9 +35,24 @@ UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
   this->m_pageCounts[2] = (third + 9) / 10;
 }
 
+// INLINED
+static unsigned PreviousOffset(int state, const unsigned& offset) {
+  if (state == 11) {
+    return std::max(0u, offset - 20);
+  }
+  return std::max(0u, offset - offset % 10 - 10);
+}
+
 // OFFSET: 0x00950450
 // FUNCTION: fn_12941
 int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  const auto select = [this](int category) {
+    this->m_category = category;
+    this->m_page = 1;
+    this->m_state = 1;
+    this->m_logTextHeight = 0;
+    this->m_offset = 0;
+  };
   switch (message) {
   case UM_COMMAND:
     switch (a) {
@@ -74,14 +89,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->m_state = 1;
         this->m_logTextHeight = 0;
 
-        unsigned offset;
-        if (state == 11) {
-          offset = this->m_offset - 20;
-        } else {
-          offset = this->m_offset - this->m_offset % 10 - 10;
-        }
-
-        this->m_offset = std::max(0u, offset);
+        this->m_offset = PreviousOffset(state, this->m_offset);
         this->m_page = std::max(1u, page - 1);
         this->m_rowFlags.clear();
         this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
@@ -94,11 +102,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     return 0;
 
   case UM_TAB:
-    this->m_category = static_cast<int>(a);
-    this->m_page = 1;
-    this->m_state = 1;
-    this->m_logTextHeight = 0;
-    this->m_offset = 0;
+    select(static_cast<int>(a));
     this->m_rowFlags.clear();
     this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
     return 0;
