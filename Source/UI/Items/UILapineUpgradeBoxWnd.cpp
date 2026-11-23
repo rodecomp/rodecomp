@@ -369,15 +369,15 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     break;
 
   case UM_SETPOS: {
-    int y = 7;
+    int row = 0;
     for (auto it = this->items.begin(); it != this->items.end();) {
       if ((*it)->geometry.visible == 0) {
         (*it)->Invalidate();
         it = this->items.erase(it);
       } else {
-        this->MoveScrollChild(*it, 0, y);
+        this->MoveScrollChild(*it, 0, row * 0x1E + 7);
         (*it)->Invalidate();
-        y += 0x1E;
+        ++row;
         ++it;
       }
     }
@@ -411,7 +411,8 @@ void UILapineUpgradeBox_IngredientListWnd::OnWheel(int argument) {
 // OFFSET: 0x00605980
 // FUNCTION: fn_04223
 UILapineUpgradeBox_IngredientInfoWnd* UILapineUpgradeBox_IngredientListWnd::FindSelected() {
-  for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
+  for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+    UILapineUpgradeBox_IngredientInfoWnd* entry = *it;
     if (entry->selected == 1) {
       return entry;
     }
@@ -524,11 +525,11 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   if (material == this->materials.end()) {
     return false;
   }
-  for (auto entryIt = this->items.begin(); entryIt != this->items.end(); ++entryIt) {
-    UILapineUpgradeBox_IngredientInfoWnd* entry = *entryIt;
-    if (identity == entry->item.identity[1]) {
-      return true;
-    }
+  const auto found = std::find_if(this->items.begin(), this->items.end(), [identity](UILapineUpgradeBox_IngredientInfoWnd* entry) {
+    return identity == entry->item.identity[1];
+  });
+  if (found != this->items.end()) {
+    return true;
   }
   auto* owner = static_cast<UILapineUpgradeBoxWnd*>(this->parent);
   auto* entry = new UILapineUpgradeBox_IngredientInfoWnd();
