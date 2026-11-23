@@ -527,12 +527,11 @@ void CThrowItemEffect::OnProcess() {
       if (progress > 1.05f) {
         target->alpha = std::ranges::max(target->alpha - 20, 0);
       } else {
-        const int index = target->phaseParameter;
         const float radius = angle / target->animationParameter;
-        const vector3d moved{angle * g_cosTable[index] + offsetX, radius * this->heightDelta + offsetY, angle * g_sinTable[index] + offsetZ};
-        offsetX = moved.x;
-        offsetY = moved.y;
-        offsetZ = moved.z;
+        const int index = target->phaseParameter;
+        const vector3d delta{angle * g_cosTable[index], radius * this->heightDelta, angle * g_sinTable[index]};
+        const vector3d moved{delta.x + offsetX, delta.y + offsetY, delta.z + offsetZ};
+        target->offset = moved;
         height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->arcHeight;
       }
 
