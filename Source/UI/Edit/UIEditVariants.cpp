@@ -55,16 +55,14 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x00863C70
 // FUNCTION: fn_10912
 int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
-
   switch (message) {
   case UM_DEFPUSH:
     if (this->multiline == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || this->multiline == 0) {
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
-    } else {
-      this->UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
+      return 0;
     }
+    this->UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
     return 0;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -102,97 +100,99 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->caretAtLineEnd = 0;
 
     const unsigned count = this->wrappedLines.size();
-    if (count <= 1 && (count != 1 || !this->lineBreaks[0])) {
-      return 0;
-    }
+    if (count > 1 || (count == 1 && this->lineBreaks[0])) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      if (this->verticalCursorStep > 0 && this->previousCursor == this->cursor && this->movingUp == 0) {
+        g_serverLanguage->RetreatCursor(this->verticalCursorStep);
+      } else {
+        const char* current = this->previousLineText;
+        this->movingDown = 0;
+        int bytes = 0;
+        int width = 0;
+        const char* const end = current + std::strlen(current);
 
-    g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingUp != 0) {
-      const char* current = this->previousLineText;
-      this->movingDown = 0;
-      int bytes = 0;
-      int width = 0;
-      const char* const end = current + std::strlen(current);
+        if (this->previousLineLength != 0) {
+          while (current < end) {
+            const int previousBytes = bytes;
+            const char* const start = current;
+            current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
+            const int length = static_cast<int>(current - start);
+            const int previousWidth = width;
+            width += this->TextWidth(start, length, 0, 12, 0, 0);
+            bytes += length;
 
-      if (this->previousLineLength != 0) {
-        while (current < end) {
-          const int previousBytes = bytes;
-          const int previousWidth = width;
-          const char* const start = current;
-          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
-          const int length = static_cast<int>(current - start);
-          width += this->TextWidth(start, length, 0, 12, 0, 0);
-          bytes += length;
-
-          if (length == 1 && *start == '\n') {
-            --bytes;
-            break;
-          }
-
-          if (width > this->caretPixelX) {
-            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              bytes = previousBytes;
+            if (length == 1 && *start == '\n') {
+              --bytes;
+              break;
             }
-            break;
+
+            if (width > this->caretPixelX) {
+              if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
+                bytes = previousBytes;
+              }
+              break;
+            }
           }
         }
+
+        this->verticalCursorStep = this->previousLineLength - bytes + static_cast<int>(std::strlen(this->previousLineText));
+        g_serverLanguage->RetreatCursor(this->verticalCursorStep);
       }
 
-      this->verticalCursorStep = this->previousLineLength - bytes + static_cast<int>(std::strlen(this->previousLineText));
+      this->movingUp = 1;
+      this->caretAtLineEnd = 1;
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      this->previousCursor = this->cursor;
     }
-
-    g_serverLanguage->RetreatCursor(this->verticalCursorStep);
-    this->movingUp = 1;
-    this->caretAtLineEnd = 1;
     break;
   }
   case UM_DOWNPUSH: {
     this->caretAtLineEnd = 0;
 
-    const unsigned count = this->wrappedLines.size();
-    if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->lineBreaks[0] || this->nextLineLength <= 0)) {
-      return 0;
-    }
+    if ((this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) ||
+        (this->wrappedLines.size() == 1 && this->lineBreaks[0] && this->nextLineLength > 0)) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      if (this->verticalCursorStep > 0 && this->previousCursor == this->cursor && this->movingDown == 0) {
+        g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
+      } else {
+        this->movingUp = 0;
+        int bytes = 0;
+        int width = 0;
+        if (this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) {
+          const char* current = this->nextLineText;
+          const char* const end = current + std::strlen(current);
 
-    g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingDown != 0) {
-      this->movingUp = 0;
-      int bytes = 0;
-      int width = 0;
-      const unsigned lines = this->wrappedLines.size();
+          while (current < end) {
+            const int previousBytes = bytes;
+            const char* const start = current;
+            current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
+            const int length = static_cast<int>(current - start);
+            const int previousWidth = width;
+            width += this->TextWidth(start, length, 0, 12, 0, 0);
+            bytes += length;
 
-      if (lines > 1 && static_cast<unsigned>(this->textY) < lines - 1) {
-        const char* current = this->nextLineText;
-        const char* const end = current + std::strlen(current);
-
-        while (current < end) {
-          const int previousBytes = bytes;
-          const int previousWidth = width;
-          const char* const start = current;
-          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
-          const int length = static_cast<int>(current - start);
-          width += this->TextWidth(start, length, 0, 12, 0, 0);
-          bytes += length;
-
-          if (length == 1 && *start == '\n') {
-            --bytes;
-            break;
-          }
-
-          if (width > this->caretPixelX) {
-            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              bytes = previousBytes;
+            if (length == 1 && *start == '\n') {
+              --bytes;
+              break;
             }
-            break;
+
+            if (width > this->caretPixelX) {
+              if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
+                bytes = previousBytes;
+              }
+              break;
+            }
           }
         }
+
+        this->verticalCursorStep = this->nextLineLength + bytes;
+        g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
       }
 
-      this->verticalCursorStep = this->nextLineLength + bytes;
+      this->movingDown = 1;
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      this->previousCursor = this->cursor;
     }
-
-    g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
-    this->movingDown = 1;
     break;
   }
   case WM_KEYDOWN:
@@ -201,11 +201,9 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 3;
   default:
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
-    return 0;
+    break;
   }
 
-  g_serverLanguage->Selection(this->anchor, this->cursor);
-  this->previousCursor = this->cursor;
   return 0;
 }
 
