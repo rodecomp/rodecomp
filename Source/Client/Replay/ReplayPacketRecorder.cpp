@@ -177,10 +177,13 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
 
   auto* words = reinterpret_cast<ReplayCipherWord*>(record.data() + 10);
   if (words) {
-    this->cipherKey = this->header.key1 >> 3;
+    const std::uint32_t key = this->header.key1 >> 3;
+    const int count = bytes / 4;
+    const std::uint32_t base = this->header.key0 >> 5;
+    this->cipherKey = key;
     this->cipherIndex = 0;
-    this->cipherBase = this->header.key0 >> 5;
-    for (int index = 0; index < bytes / 4; ++index) {
+    this->cipherBase = base;
+    for (int index = 0; index < count; ++index) {
       words[index].value ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
     }
   }
