@@ -21,7 +21,10 @@ CooldownOwner::~CooldownOwner() {
 // OFFSET: 0x00CA61A0
 // FUNCTION: fn_20957
 void CooldownOwner::Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed) {
-  this->Remove(id);
+  const auto previous = this->m_values.find(id);
+  if (previous != this->m_values.end()) {
+    this->m_values.erase(previous);
+  }
   this->m_values.insert(std::make_pair(id, CooldownState(0, 0, 0, duration, start, elapsed, 1)));
 }
 
