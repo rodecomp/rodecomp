@@ -3069,9 +3069,10 @@ void UIPetInfoWnd::Paint() {
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
 
-  auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  const char* cornerNames[3] = {"유저인터페이스\\sysboxs_ld.bmp", "유저인터페이스\\sysboxs_rd.bmp"};
+  auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[0])));
   this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, leftCorner, false);
-  auto* rightCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  auto* rightCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[1])));
   this->DrawBitmap(this->geometry.width - rightCorner->image.width, this->geometry.height - rightCorner->image.height, rightCorner, false);
 
   char title[32];
@@ -3105,24 +3106,30 @@ void UIPetInfoWnd::Paint() {
 
   const int job = g_session.petJob;
 
-  if (job != -1 && ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || (job >= JT_EXTENDED_JOB_NAME_START && job <= 31999))) {
-    char illust[260];
-    std::memset(illust, 0, sizeof(illust));
-    g_session.GetPetIllustName(job, g_session.petAccessory, illust);
+  if (job == -1 || !((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || (job >= JT_EXTENDED_JOB_NAME_START && job <= 31999))) {
+    return;
+  }
 
-    if (auto* image = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(illust)))) {
-      this->DrawBitmap(5, 21, image, false);
-    }
+  char illust[260];
+  std::memset(illust, 0, sizeof(illust));
+  g_session.GetPetIllustName(job, g_session.petAccessory, illust);
 
-    char command[] = "< Command >";
-    this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
-    this->DrawTextAt(206 - this->TextWidth(command, 0, 0, 12, 0, 0) / 2, 48, command, 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(100, 119, LookupMessage(MSI_PET_ACCESSARY), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(100, 139, LookupMessage(g_session.petAccessory == 0 ? MSI_ITEM_UNEQUIPED : MSI_ITEM_EQUIPED), 0, 0, 12, 0, 0, 0);
+  if (auto* image = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(illust)))) {
+    this->DrawBitmap(5, 21, image, false);
+  }
 
-    if (this->autoFeedAvailable == 1) {
-      this->DrawTextAt(100, 159, LookupMessage(MSI_PET_AUTO_FEEDING), 0, 0, 12, 0, 0, 0);
-    }
+  char command[] = "< Command >";
+  this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
+  this->DrawTextAt(206 - this->TextWidth(command, 0, 0, 12, 0, 0) / 2, 48, command, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(100, 119, LookupMessage(MSI_PET_ACCESSARY), 0, 0, 12, 0, 0, 0);
+  if (g_session.petAccessory == 0) {
+    this->DrawTextAt(100, 139, LookupMessage(MSI_ITEM_UNEQUIPED), 0, 0, 12, 0, 0, 0);
+  } else {
+    this->DrawTextAt(100, 139, LookupMessage(MSI_ITEM_EQUIPED), 0, 0, 12, 0, 0, 0);
+  }
+
+  if (this->autoFeedAvailable == 1) {
+    this->DrawTextAt(100, 159, LookupMessage(MSI_PET_AUTO_FEEDING), 0, 0, 12, 0, 0, 0);
   }
 }
 
