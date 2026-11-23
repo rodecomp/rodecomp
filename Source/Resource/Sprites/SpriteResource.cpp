@@ -174,7 +174,7 @@ bool CSprRes::Load(const char* name) {
   }
 
   if (header.version >= 0x0200) {
-    for (unsigned index = 0; index < trueColorCount; ++index) {
+    for (int index = 0; index < trueColorCount; ++index) {
       file.Read(dimensions, sizeof(dimensions));
       auto* image = new SpriteRleImage();
       image->width = static_cast<std::int16_t>(dimensions[0]);
