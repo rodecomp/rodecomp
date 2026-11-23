@@ -234,6 +234,17 @@ void UITextViewEX::OnCreate(int width, int height) {
   UIListBox::OnCreate(width, height);
 }
 
+// INLINED
+static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+
 // OFFSET: 0x00896100
 // FUNCTION: fn_11515
 void UITextViewEX::Refresh() {
@@ -242,19 +253,10 @@ void UITextViewEX::Refresh() {
   const int overflow = excess >= 0 ? excess : 0;
 
   this->verticalOverflow = overflow != 0;
-  UIScrollBar* bar = this->verticalBar;
   if (overflow != 0) {
-    bar->maximum = this->bottomMargin + overflow;
-    bar->total = static_cast<int>(this->lineLinks.size());
+    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, static_cast<int>(this->lineLinks.size()));
   } else {
-    bar->maximum = 0;
-    bar->total = static_cast<int>(this->lineLinks.size());
-  }
-  bar->visible = visible;
-  bar->Invalidate();
-
-  if (bar->position > bar->maximum) {
-    bar->position = bar->maximum;
+    SetScrollRange(this->verticalBar, 0, visible, static_cast<int>(this->lineLinks.size()));
   }
 
   this->verticalBar->Invalidate();
