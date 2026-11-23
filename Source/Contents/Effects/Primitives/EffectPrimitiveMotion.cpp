@@ -7364,14 +7364,14 @@ bool CEffectPrim::PrimWanderingFlames() {
     ++slot.process;
 
     for (int pair = 0; pair < 2; ++pair) {
-      float* values = &slot.height[pair * 5];
+      float* values = &slot.height[pair * 5 + 1];
 
-      StepTowardAngle(values[2], values[1], 2.0f, [values] {
-        values[1] = values[0] - 45.0f + static_cast<float>(rand() % 91);
+      StepTowardAngle(values[1], values[0], 2.0f, [values] {
+        values[0] = values[-1] - 45.0f + static_cast<float>(rand() % 91);
       });
 
-      StepTowardAngle(values[4], values[3], 1.0f, [values] {
-        values[3] = static_cast<float>(rand() % 11 + 175);
+      StepTowardAngle(values[3], values[2], 1.0f, [values] {
+        values[2] = static_cast<float>(rand() % 11 + 175);
       });
     }
 
@@ -7418,14 +7418,14 @@ bool CEffectPrim::PrimWanderingFlames2() {
     ++slot.process;
 
     for (int pair = 0; pair < 2; ++pair) {
-      float* values = &slot.height[pair * 5];
+      float* values = &slot.height[pair * 5 + 1];
 
-      StepTowardAngle(values[2], values[1], 2.0f, [values] {
-        values[1] = static_cast<float>(rand() % 360) + values[0];
+      StepTowardAngle(values[1], values[0], 2.0f, [values] {
+        values[0] = static_cast<float>(rand() % 360) + values[-1];
       });
 
-      StepTowardAngle(values[4], values[3], 1.0f, [values] {
-        values[3] = static_cast<float>(rand() % 11 + 175);
+      StepTowardAngle(values[3], values[2], 1.0f, [values] {
+        values[2] = static_cast<float>(rand() % 11 + 175);
       });
     }
 
