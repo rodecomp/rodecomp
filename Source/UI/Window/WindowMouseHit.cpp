@@ -287,7 +287,15 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (g_mouse.buttons[0] == 1) {
-      ::SetPressedWindowRoot(this->keyboardCommandRootWnd, window);
+      if (window) {
+        UIWindow* root = window;
+        while (root->parent) {
+          root = root->parent;
+        }
+        this->keyboardCommandRootWnd = root;
+      } else {
+        this->keyboardCommandRootWnd = nullptr;
+      }
     }
 
     if (window) {
