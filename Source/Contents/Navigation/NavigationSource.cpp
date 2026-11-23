@@ -409,10 +409,11 @@ NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
   std::vector<char> buffer(size - 3, '\0');
   if (target.type == 1 || target.type == 0) {
     std::memcpy(buffer.data(), data + 4, size - 4);
-    target.object = this->FindObject(buffer.data());
-    if (target.object == nullptr) {
+    void* object = this->FindObject(buffer.data());
+    if (object == nullptr) {
       return NavigationTarget(0, nullptr);
     }
+    target.object = object;
   } else {
     target.object = this->ReadTargetObject(data + 4);
   }
