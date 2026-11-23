@@ -7716,27 +7716,24 @@ bool CEffectPrim::Move2DPrimitive() {
 
   if (slot.life == 98) {
     slot.process = 999;
-    auto effect = g_activeSkillEffects.begin();
-
-    for (; effect != g_activeSkillEffects.end(); ++effect) {
-      if (effect->id == static_cast<std::uint32_t>(slot.rotStart)) {
-        break;
-      }
-    }
+    const auto effect = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [&slot](const ActiveSkillEffect& entry) {
+      return entry.id == static_cast<std::uint32_t>(slot.rotStart);
+    });
 
     if (effect != g_activeSkillEffects.end()) {
       const std::uint32_t expiration = effect->expiration;
+      const std::int64_t deadline = expiration;
       const DWORD now = timeGetTime();
 
-      if (expiration > now || g_replayAnimationScaling != 0) {
+      if (deadline > now || g_replayAnimationScaling != 0) {
         if (expiration == 0 || expiration == 999999) {
           slot.process = 999;
         } else {
           if (g_replayAnimationScaling != 0) {
             const int elapsed = static_cast<int>(Replay::Instance().elapsed);
-            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - elapsed) / 1000);
+            slot.process = static_cast<int>((deadline - elapsed) / 1000);
           } else {
-            slot.process = static_cast<int>((static_cast<std::int64_t>(expiration) - static_cast<std::int64_t>(now)) / 1000);
+            slot.process = static_cast<int>((deadline - now) / 1000);
           }
         }
       }
@@ -7773,18 +7770,18 @@ bool CEffectPrim::Move2DPrimitive() {
     }
   }
 
-  if ((particle.pattern & 4u) != 0) {
-    this->render.position.x = particle.deltaPos2.x;
-    this->render.position.y = particle.deltaPos2.y;
+  if ((this->state.pattern & 4u) != 0) {
+    this->render.position.x = this->state.deltaPos2.x;
+    this->render.position.y = this->state.deltaPos2.y;
   } else {
-    this->render.position.x = particle.master->state.tlvertX + particle.deltaPos2.x;
-    this->render.position.y = particle.master->state.tlvertY + particle.deltaPos2.y;
+    this->render.position.x = this->state.master->state.tlvertX + this->state.deltaPos2.x;
+    this->render.position.y = this->state.master->state.tlvertY + this->state.deltaPos2.y;
   }
 
-  particle.rollSpeed = particle.rollAccel + particle.rollSpeed;
-  particle.widthSpeed = particle.widthSpeed + particle.widthAccel;
-  particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
   particle.speed = particle.accel + particle.speed;
+  particle.rollSpeed = particle.rollAccel + particle.rollSpeed;
+  particle.widthSpeed += particle.widthAccel;
+  particle.heightSpeed = particle.heightAccel + particle.heightSpeed;
 
   if ((particle.pattern & 2u) != 0 && particle.stateCnt >= static_cast<int>(particle.chCnt)) {
     particle.widthAccel = 0.0f;
@@ -7794,41 +7791,47 @@ bool CEffectPrim::Move2DPrimitive() {
   }
 
   if ((particle.pattern & 0x80u) != 0) {
-    const bool inside = particle.alphaSpeed >= 0.0f ? particle.alpha < particle.maxAlpha : particle.minAlpha < particle.alpha;
-
-    if (!inside) {
-      particle.alphaSpeed *= -1.0f;
+    if (particle.alphaSpeed < 0.0f) {
+      if (particle.alpha <= particle.minAlpha) {
+        particle.alphaSpeed *= g_heightSpeedSign;
+      }
+    } else if (particle.alpha >= particle.maxAlpha) {
+      particle.alphaSpeed *= g_heightSpeedSign;
     }
   }
 
-  particle.roll = particle.rollSpeed + particle.roll;
-  particle.widthSize = particle.widthSpeed + particle.widthSize;
-  particle.heightSize = particle.heightSpeed + particle.heightSize;
-  particle.deltaPos.x = ClientSine(static_cast<int>(particle.longitude)) * particle.speed + particle.deltaPos.x;
-  const float cosine = ClientCosine(static_cast<int>(particle.longitude));
-  particle.red += particle.redSpeed;
-  particle.green += particle.greenSpeed;
-  particle.blue += particle.blueSpeed;
-  this->render.position.x = particle.deltaPos.x + this->render.position.x;
-  particle.deltaPos.y = particle.deltaPos.y - cosine * particle.speed;
-  this->render.position.y = particle.deltaPos.y + this->render.position.y;
+  const int directionX = static_cast<int>(this->state.longitude);
+  this->state.roll = this->state.rollSpeed + this->state.roll;
+  this->state.widthSize = this->state.widthSpeed + this->state.widthSize;
+  this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
+  const float nextX = ClientSine(directionX) * this->state.speed + this->state.deltaPos.x;
+  const int direction = static_cast<int>(this->state.longitude);
+  this->state.deltaPos.x = nextX;
+  const float stepY = ClientCosine(direction) * this->state.speed;
+  const float nextY = this->state.deltaPos.y - stepY;
+  this->state.red += static_cast<unsigned>(this->state.redSpeed);
+  this->render.position.x = this->state.deltaPos.x + this->render.position.x;
+  this->state.green += static_cast<unsigned>(this->state.greenSpeed);
+  this->state.blue += static_cast<unsigned>(this->state.blueSpeed);
+  this->state.deltaPos.y = nextY;
+  this->render.position.y = nextY + this->render.position.y;
 
-  if (particle.red > 255) {
-    particle.red = 0;
-  } else if (particle.red < 0) {
-    particle.red = 255;
+  if (this->state.red > 255) {
+    this->state.red = 0;
+  } else if (this->state.red < 0) {
+    this->state.red = 255;
   }
 
-  if (particle.green > 255) {
-    particle.green = 255;
-  } else if (particle.green < 0) {
-    particle.green = 0;
+  if (this->state.green > 255) {
+    this->state.green = 255;
+  } else if (this->state.green < 0) {
+    this->state.green = 0;
   }
 
-  if (particle.blue > 255) {
-    particle.blue = 255;
-  } else if (particle.blue < 0) {
-    particle.blue = 0;
+  if (this->state.blue > 255) {
+    this->state.blue = 255;
+  } else if (this->state.blue < 0) {
+    this->state.blue = 0;
   }
 
   if ((particle.pattern & 8u) != 0 && particle.stateCnt % static_cast<int>(particle.chCnt) == 0) {
@@ -7839,14 +7842,16 @@ bool CEffectPrim::Move2DPrimitive() {
   this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
-    ++this->render.curMotion;
+    const auto next = this->render.curMotion + 1u;
+    const int total = static_cast<int>(particle.totalTexture);
+    this->render.curMotion = next;
 
     if (particle.repeatAnim == 0) {
-      if (this->render.curMotion == static_cast<int>(particle.totalTexture)) {
+      if (next == particle.totalTexture) {
         return false;
       }
     } else {
-      this->render.curMotion = this->render.curMotion % static_cast<int>(particle.totalTexture);
+      this->render.curMotion = static_cast<int>(next) % total;
     }
   }
 
