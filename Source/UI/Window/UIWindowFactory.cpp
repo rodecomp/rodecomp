@@ -14,6 +14,11 @@
 
 #include <string>
 
+// INLINED
+static void PushRendered(UIWindowMgr* manager, UIWindow* window) {
+  manager->rendered.push_back(window);
+}
+
 // OFFSET: 0x00AA1350
 // FUNCTION: fn_17208
 UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
@@ -71,7 +76,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     }
 
     window->Move(x, y);
-    this->rendered.push_back(static_cast<UIWindow*>(window));
+    PushRendered(this, window);
     if (id == 0x9F) {
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->quickSlotWndInfo), 0, 0, 0);
     } else if (id == 0x9D) {
