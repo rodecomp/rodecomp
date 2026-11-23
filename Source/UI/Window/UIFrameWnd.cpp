@@ -192,26 +192,25 @@ void UIFrameWnd::OnMouseMove(int x, int y) {
 
   if (!g_snapMgr.Contains(this)) {
     this->Move(this->m_originX + dx, this->m_originY + dy);
-    return;
+  } else {
+    this->MoveFromOrigin(dx, dy);
+    int ownX, ownY;
+    g_windowMgr.ConstrainSnap(this, ownX, ownY, 0);
+    int groupX = dx, groupY = dy;
+    g_snapMgr.ConstrainGroup(this, groupX, groupY);
+
+    if (std::abs(groupX) < std::abs(ownX)) {
+      groupX = ownX;
+    }
+
+    if (std::abs(groupY) < std::abs(ownY)) {
+      groupY = ownY;
+    }
+
+    this->MoveFromOrigin(dx + groupX, dy + groupY);
+    g_windowMgr.StoreSnapRectangle(this);
+    g_snapMgr.MoveConnected(this, dx + groupX, dy + groupY);
   }
-
-  this->MoveFromOrigin(dx, dy);
-  int ownX, ownY;
-  g_windowMgr.ConstrainSnap(this, ownX, ownY, 0);
-  int groupX = dx, groupY = dy;
-  g_snapMgr.ConstrainGroup(this, groupX, groupY);
-
-  if (std::abs(groupX) < std::abs(ownX)) {
-    groupX = ownX;
-  }
-
-  if (std::abs(groupY) < std::abs(ownY)) {
-    groupY = ownY;
-  }
-
-  this->MoveFromOrigin(dx + groupX, dy + groupY);
-  g_windowMgr.StoreSnapRectangle(this);
-  g_snapMgr.MoveConnected(this, dx + groupX, dy + groupY);
 }
 
 // OFFSET: 0x008BA3C0
