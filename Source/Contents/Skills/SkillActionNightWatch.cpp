@@ -198,16 +198,16 @@ void CSkillAction_NW_INTENSIVE_AIM::OnSkillEffect(int level, CGameActor* source,
 void CEfstAction_INTENSIVE_AIM_COUNT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
-      EffectLists* effects = g_effectMgr;
-      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
+      EffectLists* effectLists = g_effectMgr;
+      effectLists->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
     }
-    EffectLists* effects = g_effectMgr;
-    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
-    effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", value)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effectLists = g_effectMgr;
+    effectLists->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
+    effectLists = g_effectMgr;
+    effectLists->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", value)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (value == 10) {
-      effects = g_effectMgr;
-      effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effectLists = g_effectMgr;
+      effectLists->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
   }
 }
@@ -223,11 +223,11 @@ void CEfstAction_INTENSIVE_AIM_COUNT::OnEfstUpdate(int efstId, int value, int ar
 void CEfstAction_INTENSIVE_AIM::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
     for (int index = 0; index <= 10; ++index) {
-      EffectLists* effects = g_effectMgr;
-      effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
+      EffectLists* effectLists = g_effectMgr;
+      effectLists->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("intensive_aim_%02d", index)));
     }
-    EffectLists* effects = g_effectMgr;
-    effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
+    EffectLists* effectLists = g_effectMgr;
+    effectLists->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("intensiveaim_full"));
   }
 }
 
@@ -238,35 +238,35 @@ void CSkillAction_NW_GRENADE_FRAGMENT::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  EffectLists* effects;
+  EffectLists* effectLists;
   switch (level) {
   case 1:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_water"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_water"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 2:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_wind"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_wind"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 3:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 4:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 5:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_darkness"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_darkness"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 6:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_saint"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_saint"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case 7:
-    effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_reset"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effectLists = g_effectMgr;
+    effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_reset"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   }
 }
