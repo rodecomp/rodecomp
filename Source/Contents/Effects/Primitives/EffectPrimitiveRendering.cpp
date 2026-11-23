@@ -3810,13 +3810,18 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
     const int tilt = static_cast<int>(slot.height[2]);
     const float sn = g_sinTable[tilt];
     const float cs = g_cosTable[tilt];
-    const int angle2 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
+    const int angle2 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
     const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
     const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
     const char kind = slot.flag1[0];
 
-    if (kind == 2 || kind == 8 || kind == 9) {
-      const int face1 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
+    vec1.Set(cs * (radius * g_cosTable[angle1]) - sn * 0.0f, radius * g_sinTable[angle1], sn * (radius * g_cosTable[angle1]) + cs * 0.0f);
+    vec2.Set(cs * (radius * g_cosTable[angle2]) - sn * 0.0f, radius * g_sinTable[angle2], sn * (radius * g_cosTable[angle2]) + cs * 0.0f);
+    vec3.Set(cs * (radius * g_cosTable[angle3]) - sn * 0.0f, radius * g_sinTable[angle3], sn * (radius * g_cosTable[angle3]) + cs * 0.0f);
+    vec4.Set(cs * (radius * g_cosTable[angle4]) - sn * 0.0f, radius * g_sinTable[angle4], sn * (radius * g_cosTable[angle4]) + cs * 0.0f);
+
+    if (kind == 2) {
+      const int face1 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
       const int face2 = face1 + (face1 + 90 < 360 ? 90 : -270);
       const int face3 = face2 + (face2 + 90 < 360 ? 90 : -270);
       vec1.Set(radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
@@ -3824,11 +3829,15 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
       vec3.Set(radius * g_cosTable[face2], 0.0f, radius * g_sinTable[face2]);
       vec4.Set(radius * g_cosTable[face3], 0.0f, radius * g_sinTable[face3]);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    } else {
-      vec1.Set(cs * (radius * g_cosTable[angle1]) - sn * 0.0f, radius * g_sinTable[angle1], sn * (radius * g_cosTable[angle1]) + cs * 0.0f);
-      vec2.Set(cs * (radius * g_cosTable[angle2]) - sn * 0.0f, radius * g_sinTable[angle2], sn * (radius * g_cosTable[angle2]) + cs * 0.0f);
-      vec3.Set(cs * (radius * g_cosTable[angle3]) - sn * 0.0f, radius * g_sinTable[angle3], sn * (radius * g_cosTable[angle3]) + cs * 0.0f);
-      vec4.Set(cs * (radius * g_cosTable[angle4]) - sn * 0.0f, radius * g_sinTable[angle4], sn * (radius * g_cosTable[angle4]) + cs * 0.0f);
+    } else if (kind == 8 || kind == 9) {
+      const int face1 = angle1 + (angle1 < 270 ? 90 : -270);
+      const int face2 = face1 + (face1 + 90 < 360 ? 90 : -270);
+      const int face3 = face2 + (face2 + 90 < 360 ? 90 : -270);
+      vec1.Set(radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
+      vec2.Set(radius * g_cosTable[face1], 0.0f, radius * g_sinTable[face1]);
+      vec3.Set(radius * g_cosTable[face2], 0.0f, radius * g_sinTable[face2]);
+      vec4.Set(radius * g_cosTable[face3], 0.0f, radius * g_sinTable[face3]);
+      this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     }
 
     const vector3d& position = slot.vecBNow;
