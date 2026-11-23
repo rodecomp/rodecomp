@@ -368,17 +368,17 @@ void UIAchListWnd::Paint() {
 
     const AchievementInfo& info = found->second;
     const SessionRecord6144 record = g_session.FindAchievementRecord(found->first);
-    if (this->selectedIndex != this->firstRow + row) {
-      if (record.completed != 1) {
-        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
-      } else {
-        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
-      }
-    } else {
+    if (this->selectedIndex == this->firstRow + row) {
       if (record.completed == 1) {
         this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_press.bmp"), false);
       } else {
         this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_press.bmp"), false);
+      }
+    } else {
+      if (record.completed == 1) {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
+      } else {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
       }
     }
 
