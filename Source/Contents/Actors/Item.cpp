@@ -152,7 +152,7 @@ void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, s
   this->name = entry->itemId;
   std::string itemName = this->name;
   mode->SubcellPosition(entry->column, entry->row, entry->subColumn, entry->subRow, this->render.position.x, this->render.position.z);
-  this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  this->render.position.y = TerrainHeight(mode, this->render.position.x, this->render.position.z);
   if (entry->falling) {
     this->fallVelocity = -0.6f;
     this->render.position.y -= 15.0f;
@@ -182,9 +182,9 @@ void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, s
   this->render.motionStartTime = timeGetTime();
 
   if (entry->showEffect == 1) {
+    const float height = TerrainHeight(mode, this->render.position.x, this->render.position.z);
     const float x = this->render.position.x;
     const float z = this->render.position.z;
-    const float height = mode->scene->terrain->Height(x, z);
     const vector3d position{x, height, z};
     const int effectId = g_itemInfoMgr->GetEffectId(this->itemIndex);
     if (effectId >= 0 && !g_effectMgr->Spawn(entry->aid, effectId, position, 0, -1, 0, 0)) {
