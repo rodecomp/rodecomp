@@ -2,16 +2,24 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_FRAMETEXTCACHE_H
 
 #include <cstddef>
+#include <cstring>
 #include <cstdint>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
+struct FrameTextKeyView {
+  /* 0000 */ std::uint32_t word0;
+  /* 0004 */ std::uint32_t word1;
+  /* 0008 */ const char* text;
+};
+
 struct FrameTextKey {
   /* 0000 */ std::uint32_t word0;
   /* 0004 */ std::uint32_t word1;
   /* 0008 */ std::string text;
+  FrameTextKey(const FrameTextKeyView& key) : word0(key.word0), word1(key.word1), text(key.text, std::strlen(key.text)) {}
   bool operator==(const FrameTextKey& other) const;
 };
 struct FrameTextHash {

@@ -12492,32 +12492,27 @@ void UIFrameWnd::DrawItemNameText(
   };
   const ItemNameTextInfo* position = static_cast<const ItemNameTextInfo*>(info);
 
-  FrameTextCache::iterator cached;
-  {
-    const FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
-    cached = this->m_textCache.find(key);
-  }
-  if (cached == this->m_textCache.end()) {
-    std::vector<std::pair<int, std::string>> segments;
-    const int highlightValue = static_cast<int>(highlightColor);
-    const int colorValue = static_cast<int>(color);
-    this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
-
-    FrameTextLines lines(2);
-    this->WrapTextSegments(width, 2, segments, lines);
-
-    if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
-      this->FitLastTextLine(width, 2, position->family, position->height, lines);
-    }
-
-    {
-      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text)};
-      this->m_textCache[std::move(key)] = lines;
-    }
-    this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
-  } else {
+  const FrameTextKeyView key{color, static_cast<std::uint32_t>(width), text};
+  const auto cached = this->m_textCache.find(key);
+  if (cached != this->m_textCache.end()) {
     this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
+    return;
   }
+
+  std::vector<std::pair<int, std::string>> segments;
+  const int highlightValue = static_cast<int>(highlightColor);
+  const int colorValue = static_cast<int>(color);
+  this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
+
+  FrameTextLines lines(2);
+  this->WrapTextSegments(width, 2, segments, lines);
+
+  if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+    this->FitLastTextLine(width, 2, position->family, position->height, lines);
+  }
+
+  this->m_textCache[key] = lines;
+  this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
 }
 
 // OFFSET: 0x00900D90
