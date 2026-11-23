@@ -93,7 +93,7 @@ void CMapInfoMgr::AddMapDisplayName(std::string map, std::string name, bool show
 // OFFSET: 0x006CE8C0
 // FUNCTION: fn_06485
 void CMapInfoMgr::AddMapSignName(std::string map, std::string name, std::string subName) {
-  this->m_maps.try_emplace(map).first->second.m_sign = std::make_pair(name, subName);
+  this->m_maps[map].m_sign = std::make_pair(name, subName);
 }
 
 // OFFSET: 0x006CEAA0
