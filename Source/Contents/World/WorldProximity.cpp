@@ -99,26 +99,25 @@ __declspec(noinline) bool CWorld::FindActorInCell(const float* position, std::fu
   return std::find_if(ids.begin(), ids.end(), predicate) != ids.end();
 }
 
+// INLINED
+__forceinline static bool IsGuildMasterActor(const std::list<CGameActor*>& actors, std::uint32_t aid) {
+  for (auto it = actors.begin(); it != actors.end(); ++it) {
+    if ((*it)->render.accountId == aid) {
+      CGameActor* actor = *it;
+      if (actor && static_cast<int>(g_guildInfo.masterCharacterId) == actor->GetPkState()) {
+        return true;
+      }
+      break;
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00AC8BA0
 // FUNCTION: fn_17679
 __declspec(noinline) bool CWorld::IsGuildMaster(std::uint32_t aid) {
-  auto it = std::find_if(this->actors.begin(), this->actors.end(), [aid](CGameActor* actor) {
-    return actor->render.accountId == aid;
-  });
-  if (it == this->actors.end()) {
-    return false;
-  }
-
-  CGameActor* actor = *it;
-  if (!actor) {
-    return false;
-  }
-
-  if (static_cast<int>(g_guildInfo.masterCharacterId) != actor->GetPkState()) {
-    return false;
-  }
-
-  return true;
+  return IsGuildMasterActor(this->actors, aid);
 }
 
 // OFFSET: 0x00AC8750
@@ -140,21 +139,20 @@ bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
   }
 
   for (std::uint32_t aid : this->unindexedActorIds) {
-    if (!this->IsGuildMaster(aid)) {
+    if (!IsGuildMasterActor(this->actors, aid)) {
       continue;
     }
 
     CRenderObject* actor = g_session.FindGameActor(aid);
     if (actor->render.state == 1) {
-      float centerX = 0.0f;
-      float centerZ = 0.0f;
+      float center[2] = {0.0f, 0.0f};
       int column = 0;
       int row = 0;
       CGameMode* mode = g_modeMgr.GetGameMode();
       mode->WorldCell(actor->render.position.x + 0.5f, actor->render.position.z + 0.5f, column, row);
       mode = g_modeMgr.GetGameMode();
-      mode->CellCenter(column, row, centerX, centerZ);
-      return std::fabs(centerX - x) <= static_cast<float>(this->nearbyRange) && std::fabs(centerZ - z) <= static_cast<float>(this->nearbyRange);
+      mode->CellCenter(column, row, center[0], center[1]);
+      return std::fabs(center[0] - x) <= static_cast<float>(this->nearbyRange) && std::fabs(center[1] - z) <= static_cast<float>(this->nearbyRange);
     }
 
     return std::fabs(actor->render.position.x - x) <= static_cast<float>(this->nearbyRange) &&
@@ -235,24 +233,7 @@ bool WorldProximityRejectB() {
 // OFFSET: 0x00ACBA30
 // FUNCTION: fn_17719
 bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
-  const std::uint32_t aid = aidRef;
-  auto it = std::find_if(this->world->actors.begin(), this->world->actors.end(), [aid](CGameActor* actor) {
-    return actor->render.accountId == aid;
-  });
-  if (it == this->world->actors.end()) {
-    return false;
-  }
-
-  CGameActor* gameActor = *it;
-  if (!gameActor) {
-    return false;
-  }
-
-  if (static_cast<int>(g_guildInfo.masterCharacterId) != gameActor->GetPkState()) {
-    return false;
-  }
-
-  return true;
+  return IsGuildMasterActor(this->world->actors, aidRef);
 }
 
 struct WorldProximityRangeCallback {
