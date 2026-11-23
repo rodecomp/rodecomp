@@ -139,37 +139,36 @@ void UIAchTab::DrawGroup(int group) {
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
 
     int index = 0;
-    int row = 0;
     std::map<int, std::string>& subs = this->groups[group].subs;
+    int row = 0;
     for (auto it = subs.begin(); it != subs.end(); ++it, ++index) {
       if (row >= this->visibleSubs) {
         break;
       }
 
       if (index >= this->scrollPos) {
-        const int rowY = (group + 1) * this->groupHeight + this->subHeight * row;
+        y = (group + 1) * this->groupHeight + this->subHeight * row;
         ++row;
         name = this->groups[group].subs[it->first];
         const int height = this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0);
-        const int rowHeight = this->subHeight;
-        std::uint32_t color;
+        const int rowTextY = (this->subHeight - height) / 2 + y;
 
         if (it->first == this->selectedSub) {
-          this->DrawBitmap(0, rowY, AchievementBitmap("유저인터페이스\\achievement_re\\tab_sub_press.bmp"), false);
-          this->DrawBitmap(12, rowY + 7, AchievementBitmap("유저인터페이스\\achievement_re\\tab_subarrow.bmp"), true);
-          color = this->selectedSubColor;
+          this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_sub_press.bmp"), false);
+          this->DrawBitmap(12, y + 7, AchievementBitmap("유저인터페이스\\achievement_re\\tab_subarrow.bmp"), true);
+          this->DrawTextAt(26, rowTextY, name.c_str(), 0, 0, this->fontHeight, this->selectedSubColor, 0, 0);
         } else {
           const char* bitmap = it->first == this->hoverSub ? "유저인터페이스\\achievement_re\\tab_sub_over.bmp" : "유저인터페이스\\achievement_re\\tab_sub_out.bmp";
-          this->DrawBitmap(0, rowY, AchievementBitmap(bitmap), false);
-          color = this->subColor;
+          CBitmapRes* background = AchievementBitmap(bitmap);
+          this->DrawBitmap(0, y, background, false);
+          this->DrawTextAt(26, rowTextY, name.c_str(), 0, 0, this->fontHeight, this->subColor, 0, 0);
         }
-
-        this->DrawTextAt(26, (rowHeight - height) / 2 + rowY, name.c_str(), 0, 0, this->fontHeight, color, 0, 0);
       }
     }
   } else {
     const char* bitmap = group == this->hoverGroup ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
-    this->DrawBitmap(0, y, AchievementBitmap(bitmap), false);
+    CBitmapRes* background = AchievementBitmap(bitmap);
+    this->DrawBitmap(0, y, background, false);
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
   }
 }
@@ -1107,8 +1106,7 @@ void UIAchTracingWnd::Paint() {
   }
 
   for (int pass = 0; pass < 2; ++pass) {
-    UITextButton** buttons = this->toggleButtons;
-    for (unsigned int index = 0; index < g_achievementTracking.size(); ++index, ++buttons) {
+    for (unsigned int index = 0; index < g_achievementTracking.size(); ++index) {
       if (pass == 0) {
         if (g_achievementTracking[index].pinned == 1) {
           continue;
@@ -1117,36 +1115,30 @@ void UIAchTracingWnd::Paint() {
         continue;
       }
 
-      buttons[0]->Enable(1);
-      buttons[3]->Enable(1);
-      UITextButton* toggle = buttons[0];
-      toggle->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
-      toggle->ResizeToText();
-      buttons[0]->Move(10, y);
-      buttons[0]->m_value = g_achievementTracking[index].id;
-      buttons[3]->Move(this->geometry.width - 20, y);
-      buttons[3]->m_value = g_achievementTracking[index].id;
+      this->toggleButtons[index]->Enable(1);
+      this->openButtons[index]->Enable(1);
+      this->toggleButtons[index]->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
+      this->toggleButtons[index]->ResizeToText();
+      this->toggleButtons[index]->Move(10, y);
+      this->toggleButtons[index]->m_value = g_achievementTracking[index].id;
+      this->openButtons[index]->Move(this->geometry.width - 20, y);
+      this->openButtons[index]->m_value = g_achievementTracking[index].id;
 
       if (!g_achievementTracking[index].expanded) {
-        this->DrawTextAt(buttons[0]->geometry.width + 16, y + 1,
+        this->DrawTextAt(this->toggleButtons[index]->geometry.width + 16, y + 1,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
         );
-        this->DrawTextAt(buttons[0]->geometry.width + 15, y,
+        this->DrawTextAt(this->toggleButtons[index]->geometry.width + 15, y,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0, 1, 0
         );
       }
 
-      AchTracingEntry& entry = g_achievementTracking[index];
       y += 15;
-      if (entry.expanded == 1) {
-        for (auto conditionIt = entry.conditions.begin(); conditionIt != entry.conditions.end(); ++conditionIt) {
-          const AchTracingCondition& condition = *conditionIt;
-          this->DrawTextAt(21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
-          std::uint32_t color = 0xFFFFFF;
-          if (condition.completed) {
-            color = 0xDFF6F;
-          }
-          this->DrawTextAt(20, y, condition.text.c_str(), 0, 0, 12, color, 0, 0);
+      if (g_achievementTracking[index].expanded == 1) {
+        for (auto conditionIt = g_achievementTracking[index].conditions.begin(); conditionIt != g_achievementTracking[index].conditions.end(); ++conditionIt) {
+          this->DrawTextAt(21, y + 1, conditionIt->text.c_str(), 0, 0, 12, 0, 0, 0);
+          const std::uint32_t color = conditionIt->completed ? 0xDFF6F : 0xFFFFFF;
+          this->DrawTextAt(20, y, conditionIt->text.c_str(), 0, 0, 12, color, 0, 0);
           y += 15;
         }
       }
