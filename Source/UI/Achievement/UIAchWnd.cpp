@@ -139,8 +139,8 @@ void UIAchTab::DrawGroup(int group) {
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
 
     int index = 0;
-    std::map<int, std::string>& subs = this->groups[group].subs;
     int row = 0;
+    std::map<int, std::string>& subs = this->groups[group].subs;
     for (auto it = subs.begin(); it != subs.end(); ++it, ++index) {
       if (row >= this->visibleSubs) {
         break;
@@ -375,10 +375,11 @@ void UIAchListWnd::Paint() {
         this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
       }
     } else {
-      this->DrawBitmap(
-        0, this->rowHeight * row,
-        AchievementBitmap(record.completed == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
-      );
+      if (record.completed == 1) {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_press.bmp"), false);
+      } else {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_press.bmp"), false);
+      }
     }
 
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\achievement_re\\icon_" + info.iconName + ".bmp").c_str())));
@@ -1321,7 +1322,8 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case UM_LIST_SELECTION:
     if (this->achievements.find(argument1) != this->achievements.end()) {
-      this->view->SetAchievement(argument1, &this->achievements[argument1]);
+      AchievementInfo* info = &this->achievements[argument1];
+      this->view->SetAchievement(argument1, info);
       this->Invalidate();
       return 0;
     }
