@@ -812,12 +812,14 @@ void CVolcanoEffect::OnProcess() {
         break;
       }
 
+      int alpha = particle->alpha;
       if (particle->elapsedFrames > 10) {
-        const int alpha = particle->alpha - fadeOut;
-        particle->alpha = alpha > 0 ? alpha : 0;
+        alpha -= fadeOut;
+        alpha = alpha > 0 ? alpha : 0;
       } else {
-        particle->alpha += fadeIn;
+        alpha += fadeIn;
       }
+      particle->alpha = alpha;
 
       const int segment = particle->columnIndex;
       const float radius = g_sinTable[segment * 9] * particle->speedParameter;
@@ -827,14 +829,16 @@ void CVolcanoEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
       const float height = radius * g_sinTable[tilt];
+      const float spreadX = spread * cosine;
+      const float spreadZ = spread * sine;
 
       EffectPoint corners[2];
       corners[0].x = scale * cosine;
       corners[0].y = 0.0f;
       corners[0].z = scale * sine;
-      corners[1].x = corners[0].x + spread * cosine;
+      corners[1].x = corners[0].x + spreadX;
       corners[1].y = 0.0f - height;
-      corners[1].z = corners[0].z + spread * sine;
+      corners[1].z = corners[0].z + spreadZ;
 
       particle->vertices[3].x = corners[0].x;
       particle->vertices[3].y = corners[0].y;
