@@ -1615,27 +1615,26 @@ void CEffectPrim::RenderRiseArc(matrix& wtm) {
 
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      float* v = &this->state.slots[ec].vecBNow.z;
-      v[-1] = -this->state.slots[ec].maxHeight;
-      v[-2] = this->state.slots[ec].distance * cosine;
-      v[0] = this->state.slots[ec].distance * sine;
+      this->state.slots[ec].vecBNow.x = cosine * this->state.slots[ec].distance;
+      this->state.slots[ec].vecBNow.z = sine * this->state.slots[ec].distance;
+      this->state.slots[ec].vecBNow.y = -this->state.slots[ec].maxHeight;
 
-      const float rise = this->state.slots[ec].height[i];
-      const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
-      v[2] = -(this->state.slots[ec].maxHeight + rise * g_sinTable[this->state.slots[ec].riseAngle]);
-      v[3] = riseX * sine + v[0];
-      v[1] = riseX * cosine + v[-2];
+      const float riseX = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      const float riseY = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[i];
+      this->state.slots[ec].vecTNow.x = this->state.slots[ec].vecBNow.x + cosine * riseX;
+      this->state.slots[ec].vecTNow.z = this->state.slots[ec].vecBNow.z + sine * riseX;
+      this->state.slots[ec].vecTNow.y = -(riseY + this->state.slots[ec].maxHeight);
 
       if (i > 0) {
         this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0);
       }
 
       ++i;
-      this->state.slots[ec].vecBPre = this->state.slots[ec].vecBNow;
-      this->state.slots[ec].vecTPre = this->state.slots[ec].vecTNow;
       if (i >= 21) {
         i = 20;
       }
+      this->state.slots[ec].vecBPre = this->state.slots[ec].vecBNow;
+      this->state.slots[ec].vecTPre = this->state.slots[ec].vecTNow;
     }
   }
 }
