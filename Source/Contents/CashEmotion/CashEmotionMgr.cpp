@@ -512,18 +512,24 @@ CashEmotionData::CashEmotionData(int id, int subId, const char* name, int action
 // OFFSET: 0x00592820
 // FUNCTION: fn_02860
 bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
-  const char* leftTitle = this->mgr->GetPackTitle(left);
+  const int rightId = right;
+  const int leftId = left;
+  const char* leftTitle = this->mgr->GetPackTitle(leftId);
   if (!leftTitle) {
     return false;
   }
 
-  const char* rightTitle = this->mgr->GetPackTitle(right);
+  const char* rightTitle = this->mgr->GetPackTitle(rightId);
   if (!rightTitle) {
     return true;
   }
 
   int result = _stricmp(leftTitle, rightTitle);
-  return this->ascending ? result < 0 : result > 0;
+  if (this->ascending) {
+    return result < 0;
+  }
+
+  return result > 0;
 }
 
 // OFFSET: 0x00596430
