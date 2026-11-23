@@ -1175,8 +1175,8 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   }
   case HW_GANBANTEIN: {
-    vector3d position{x, height, z};
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xDF, EffectLifetime(0xDF) + 10, 0);
     break;
   }
@@ -1244,8 +1244,8 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   }
   case SO_DIAMONDDUST: {
-    vector3d position{x, height, z};
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    vector3d position{x, height, z};
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST, position, 0, level, 0, 0);
       g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_BOTTOM, position, 0, level, 0, 0);
@@ -1292,14 +1292,13 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
     break;
   case ABC_ABYSS_STRIKE: {
-    vector3d position{x, height, z};
-    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, position, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, position, 0, -1, 0, 0);
-    CEffect* effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND, position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, vector3d{x, height, z}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, vector3d{x, height, z}, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND, vector3d{x, height, z}, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
-    effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND_BOTTOM, position, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND_BOTTOM, vector3d{x, height, z}, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
