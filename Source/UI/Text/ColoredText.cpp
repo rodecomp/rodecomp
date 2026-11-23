@@ -164,11 +164,11 @@ void UIWindow::DrawRightColoredText(
     const char* segmentEnd = this->SegmentEnd(segmentStart, end);
     if (segmentEnd < end) {
       segment.text.insert(segment.text.end(), segmentStart, segmentEnd);
+      segment.prefix.insert(segment.prefix.end(), segmentStart, segmentEnd);
     } else {
       segment.text.insert(segment.text.end(), segmentStart, end);
-      segmentEnd = end;
+      segment.prefix.insert(segment.prefix.end(), segmentStart, end);
     }
-    segment.prefix.insert(segment.prefix.end(), segmentStart, segmentEnd);
     segments.push_back(segment);
     current = segmentStart;
   }
