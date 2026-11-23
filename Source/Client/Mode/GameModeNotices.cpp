@@ -3419,12 +3419,12 @@ static __forceinline void AddStorageEquipItem(
   item.identity[2] = location;
   item.identity[1] = index;
   item.identity[3] = wearState;
+  item.quantity = 1;
   std::uint32_t* cards = item.cards;
   cards[0] = card0;
   cards[1] = card1;
   cards[2] = card2;
   cards[3] = card3;
-  item.quantity = 1;
   item.SetItemId(itemId);
   item.identified = identified;
   item.damaged = damaged;
