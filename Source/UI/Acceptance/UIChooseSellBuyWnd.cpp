@@ -5569,8 +5569,9 @@ bool UITipboxWnd::BuildAnimations() {
 
       for (int step = 0; step < count; ++step) {
         TipBoxDot dot;
-        dot.x = static_cast<float>(step) * dx / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromX);
-        dot.y = static_cast<float>(step) * dy / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromY);
+        const float position = static_cast<float>(step);
+        dot.x = position * dx / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromX);
+        dot.y = position * dy / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromY);
         dot.visible = false;
         this->m_dots.push_back(dot);
       }
