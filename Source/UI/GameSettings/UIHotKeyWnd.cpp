@@ -307,7 +307,7 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
     }
   }
 
-  return HotkeyEntry{index, info};
+  return EntryOf(index, info);
 }
 
 // OFFSET: 0x009317E0
@@ -501,8 +501,8 @@ void UIHotKeyWnd::ReloadHotkeys() {
     for (int row = 0; row < count; ++row) {
       const int index = g_session.HotkeyIndex(tab, row);
       if (index != -1) {
-        std::string text;
-        std::string description;
+        std::string text = "";
+        std::string description = "";
         int key1 = 0;
         int key2 = 0;
         const char* textValue = nullptr;
