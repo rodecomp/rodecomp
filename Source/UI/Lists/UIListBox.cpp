@@ -395,7 +395,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_UPPUSH:
     this->selected = (this->selected - 1);
@@ -410,7 +410,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     this->selected = (this->selected + 1);
@@ -424,7 +424,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -495,11 +495,13 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
       }
     }
 
-    return 0;
+    break;
 
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00880D90
