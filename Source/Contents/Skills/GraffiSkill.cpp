@@ -113,13 +113,15 @@ void CGraffiSkill::Render(int argument) {
   const float sine = ClientSin(this->m_angle / 180.0f * 3.141592f);
   const float cosine = ClientCos(this->m_angle / 180.0f * 3.141592f);
 
-
   for (int row = 0; row < 18; ++row) {
+    const int tileY = cellY - 9 + row;
+    const float row0 = static_cast<float>(row) - 9.0f;
+    const float row1 = static_cast<float>(row + 1) - 9.0f;
+
     for (int column = 0; column < 18; ++column) {
-      const float row0 = static_cast<float>(row) - 9.0f;
-      const float row1 = static_cast<float>(row + 1) - 9.0f;
-      const float column1 = static_cast<float>(column + 1) - 9.0f;
+      const int tileX = cellX - 9 + column;
       const float column0 = static_cast<float>(column) - 9.0f;
+      const float column1 = static_cast<float>(column + 1) - 9.0f;
       float uv[8];
       uv[0] = 1.0f - (row0 * sine + column0 * cosine + 9.0f) / 18.0f;
       uv[1] = (row0 * cosine - column0 * sine + 9.0f) / 18.0f;
@@ -129,8 +131,7 @@ void CGraffiSkill::Render(int argument) {
       uv[5] = (row1 * cosine - column0 * sine + 9.0f) / 18.0f;
       uv[6] = 1.0f - (row1 * sine + column1 * cosine + 9.0f) / 18.0f;
       uv[7] = (row1 * cosine - column1 * sine + 9.0f) / 18.0f;
-      ground->DrawGridDecal(
-        reinterpret_cast<const float*>(argument), cellX - 9 + column, cellY - 9 + row, 0xFFFFFFFF, *this->m_canvas, uv);
+      ground->DrawGridDecal(reinterpret_cast<const float*>(argument), tileX, tileY, 0xFFFFFFFF, *this->m_canvas, uv);
     }
   }
 }
