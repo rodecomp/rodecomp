@@ -543,13 +543,11 @@ int UIRuneSetReWard::SendMsg(
     this->SetDisabled(1);
     if (argument2 == 0) {
       this->m_state = 0;
-      this->Invalidate();
-      return 0;
-    }
-
-    this->m_state = argument1;
-    if (argument1 == 2) {
-      this->SetDisabled(0);
+    } else {
+      this->m_state = argument1;
+      if (argument1 == 2) {
+        this->SetDisabled(0);
+      }
     }
     this->Invalidate();
     break;
