@@ -42,12 +42,16 @@ CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
 // FUNCTION: fn_46464
 __declspec(noinline) CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
 
-struct WhisperNameAppender {
-  /* 0000 */ Json::Value* values;
+class WhisperNameAppender {
+  /* 0000 */ Json::Value& values;
+
+public:
+  // INLINED
+  explicit WhisperNameAppender(Json::Value& output) : values(output) {}
 
   // INLINED
   void operator()(std::string name) const {
-    this->values->append(ToUtf8(name, g_textCodePage));
+    this->values.append(ToUtf8(name, g_textCodePage));
   }
 };
 
@@ -64,7 +68,7 @@ __declspec(noinline) WhisperNameAppender std::for_each(std::set<std::string>::co
 
 // INLINED
 void CWhisperBlockMgr::Export(Json::Value& values) const {
-  std::for_each(this->m_names.begin(), this->m_names.end(), WhisperNameAppender{&values});
+  std::for_each(this->m_names.begin(), this->m_names.end(), WhisperNameAppender{values});
 }
 
 // OFFSET: 0x005BBF50
