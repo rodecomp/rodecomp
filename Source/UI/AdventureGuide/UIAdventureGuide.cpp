@@ -234,7 +234,7 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   this->tabs->SetOnSelect([this](AdventureGuide::CUITab* tab) { this->OnSelectTab(tab); });
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x79DF094DD9616575ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_press.bmp", 0x11CB35636377DD07ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_over.bmp", 0x4755C1355575FD37ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x9BE3EF737387AD79ULL)));
+    tabs->SetImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x79DF094DD9616575ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_press.bmp", 0x11CB35636377DD07ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_over.bmp", 0x4755C1355575FD37ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x9BE3EF737387AD79ULL));
   }
 
   this->tabs->itemWidth = 98;
@@ -246,15 +246,15 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   this->tabs->scrollBar->step = 20;
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xB96B77B7255F8569ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x875FCDF1E7A1795FULL)));
+    tabs->SetScrollBarButtonImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xB96B77B7255F8569ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x875FCDF1E7A1795FULL));
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x072D2D872D259D5BULL)));
+    tabs->SetScrollBarBackground(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x072D2D872D259D5BULL));
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xF535E561137F138DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD3E5516F89F161D1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x5FFD7FABB5D1EF57ULL)));
+    tabs->SetScrollBarThumbImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xF535E561137F138DULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD3E5516F89F161D1ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x5FFD7FABB5D1EF57ULL));
   }
   this->AddChild(this->tabs);
 }
