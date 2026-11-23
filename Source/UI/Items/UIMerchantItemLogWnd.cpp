@@ -266,11 +266,12 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     ITEM_INFO item(*reinterpret_cast<const ITEM_INFO*>(a));
     this->items.push_back(item);
 
+    const int characterId = static_cast<int>(b);
     lcData data;
-    data.name = LookupPlayerName(b);
+    data.name = LookupPlayerName(characterId);
     data.time = c;
     data.itemName = item.DisplayName(0);
-    data.characterId = b;
+    data.characterId = characterId;
     this->logs.push_back(data);
     this->Invalidate();
     this->UpdateScrollBar();
