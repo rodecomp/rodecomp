@@ -428,7 +428,7 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprName));
     CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
     if (sprite && act) {
-      std::pair<CSprRes*, CActRes*>& entry = this->m_resources[layer];
+      std::pair<CSprRes*, CActRes*>& entry = this->m_resources.try_emplace(layer).first->second;
       entry.first = sprite;
       entry.second = act;
     }
