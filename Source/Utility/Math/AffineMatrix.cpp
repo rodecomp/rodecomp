@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <xmmintrin.h>
 
 // STATIC: 0x01312438
 // GLOBAL: gl_21913
@@ -32,6 +33,11 @@ namespace {
     values[9] += rotation[9];
     values[10] += rotation[10];
     values[11] += rotation[11];
+  }
+
+  // INLINED
+  __forceinline float FastSquareRoot(float value) {
+    return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(value)));
   }
 }
 
@@ -316,26 +322,26 @@ void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation) {
   const float wz = z > w ? z : w;
   const float wyz = y > wz ? y : wz;
   const float largest = x > wyz ? x : wyz;
-  const float divisor = std::sqrt(largest) * 2.0f;
+  const float divisor = FastSquareRoot(largest) * 2.0f;
 
   if (x == largest) {
     result.x = largest / divisor;
     result.y = (m[3] + m[1]) / divisor;
     result.z = (m[6] + m[2]) / divisor;
     result.w = (m[7] - m[5]) / divisor;
-  } else if (largest == y) {
+  } else if (y == largest) {
     const float xValue = (m[3] + m[1]) / divisor;
     result.y = largest / divisor;
     result.x = xValue;
     result.z = (m[7] + m[5]) / divisor;
     result.w = (m[2] - m[6]) / divisor;
-  } else if (largest == z) {
+  } else if (z == largest) {
     result.x = (m[6] + m[2]) / divisor;
     const float yValue = m[7] + m[5];
     result.z = largest / divisor;
     result.y = yValue / divisor;
     result.w = (m[3] - m[1]) / divisor;
-  } else if (largest == w) {
+  } else if (w == largest) {
     result.x = (m[7] - m[5]) / divisor;
     result.y = (m[2] - m[6]) / divisor;
     const float zValue = m[3] - m[1];
