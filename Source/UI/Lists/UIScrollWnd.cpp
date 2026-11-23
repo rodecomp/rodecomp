@@ -342,8 +342,8 @@ void UIScrollWnd::UpdateScrollRange() {
     UIWindow* child = it->first;
     if (child->geometry.visible != 0) {
       const int childRight = child->geometry.width + it->second.x;
-      right = right >= childRight ? right : childRight;
       const int childBottom = it->second.y + child->geometry.height;
+      right = right >= childRight ? right : childRight;
       bottom = bottom >= childBottom ? bottom : childBottom;
     }
   }
