@@ -4786,17 +4786,17 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
 
     const float rx = scale * slot.distance;
     const int angle0 = static_cast<int>(slot.height[3]);
-    slot.vecBPre.x = g_cosTable[angle0] * 4.0f;
-    slot.vecBPre.z = g_sinTable[angle0] * 4.0f;
+    slot.vecBPre.x = g_cosTable[angle0] * g_effectIconRadius;
+    slot.vecBPre.z = g_sinTable[angle0] * g_effectIconRadius;
     const int angle1 = static_cast<int>(slot.height[7]);
-    slot.vecBNow.x = g_cosTable[angle1] * 4.0f;
-    slot.vecBNow.z = g_sinTable[angle1] * 4.0f;
+    slot.vecBNow.x = g_cosTable[angle1] * g_effectIconRadius;
+    slot.vecBNow.z = g_sinTable[angle1] * g_effectIconRadius;
     const int angle2 = static_cast<int>(slot.height[11]);
-    slot.vecTPre.x = g_cosTable[angle2] * 4.0f;
-    slot.vecTPre.z = g_sinTable[angle2] * 4.0f;
+    slot.vecTPre.x = g_cosTable[angle2] * g_effectIconRadius;
+    slot.vecTPre.z = g_sinTable[angle2] * g_effectIconRadius;
     const int angle3 = static_cast<int>(slot.height[15]);
-    slot.vecTNow.x = g_cosTable[angle3] * 4.0f;
-    slot.vecTNow.z = g_sinTable[angle3] * 4.0f;
+    slot.vecTNow.x = g_cosTable[angle3] * g_effectIconRadius;
+    slot.vecTNow.z = g_sinTable[angle3] * g_effectIconRadius;
 
     vec1.Set(rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]);
     vec2.Set(rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]);
@@ -4813,30 +4813,16 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
     int dif;
 
     dif = static_cast<int>(slot.height[3] - rot0);
-    if (slot.height[2] == 0.0f || slot.height[2] == 2.0f) {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-        vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-        vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-        vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-      } else {
-        vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-        vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-        vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-        vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-      }
+    if ((slot.height[2] == 0.0f || slot.height[2] == g_effectIconOuterRadius) == ((dif < 70 && dif > -80) || dif < -270 || dif > 270)) {
+      vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+      vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+      vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
+      vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
     } else {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-        vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-        vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-        vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-      } else {
-        vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
-        vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
-        vec3 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
-        vec4 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
-      }
+      vec1 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
+      vec2 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
+      vec3 = {vec8.x + slot.vecBPre.x, vec8.y + slot.vecBPre.y, vec8.z + slot.vecBPre.z};
+      vec4 = {vec7.x + slot.vecBPre.x, vec7.y + slot.vecBPre.y, vec7.z + slot.vecBPre.z};
     }
     vec1.y -= slot.height[20];
     vec2.y -= slot.height[20];
@@ -4847,31 +4833,17 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
       0.0f, 1.0f, 0.0f, 1.0f, 2
     );
 
-    dif = static_cast<int>(slot.height[7] - rot0);
-    if (slot.height[6] == 0.0f || slot.height[6] == 2.0f) {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-        vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-        vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-        vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-      } else {
-        vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-        vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-        vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-        vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-      }
+    dif = static_cast<int>(slot.height[7] - this->state.slots[0].alphaT);
+    if ((slot.height[6] == 0.0f || slot.height[6] == g_effectIconOuterRadius) == ((dif < 70 && dif > -80) || dif < -270 || dif > 270)) {
+      vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+      vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+      vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
+      vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
     } else {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-        vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-        vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-        vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-      } else {
-        vec1 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
-        vec2 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
-        vec3 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
-        vec4 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
-      }
+      vec1 = {vec6.x + slot.vecBNow.x, vec6.y + slot.vecBNow.y, vec6.z + slot.vecBNow.z};
+      vec2 = {vec5.x + slot.vecBNow.x, vec5.y + slot.vecBNow.y, vec5.z + slot.vecBNow.z};
+      vec3 = {vec8.x + slot.vecBNow.x, vec8.y + slot.vecBNow.y, vec8.z + slot.vecBNow.z};
+      vec4 = {vec7.x + slot.vecBNow.x, vec7.y + slot.vecBNow.y, vec7.z + slot.vecBNow.z};
     }
     vec1.y -= slot.height[20];
     vec2.y -= slot.height[20];
@@ -4882,31 +4854,17 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
       0.0f, 1.0f, 0.0f, 1.0f, 2
     );
 
-    dif = static_cast<int>(slot.height[11] - rot0);
-    if (slot.height[10] == 0.0f || slot.height[10] == 2.0f) {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-        vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-        vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-        vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-      } else {
-        vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-        vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-        vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-        vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-      }
+    dif = static_cast<int>(slot.height[11] - this->state.slots[0].alphaT);
+    if ((slot.height[10] == 0.0f || slot.height[10] == g_effectIconOuterRadius) == ((dif < 70 && dif > -80) || dif < -270 || dif > 270)) {
+      vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+      vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+      vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
+      vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
     } else {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-        vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-        vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-        vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-      } else {
-        vec1 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
-        vec2 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
-        vec3 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
-        vec4 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
-      }
+      vec1 = {vec6.x + slot.vecTPre.x, vec6.y + slot.vecTPre.y, vec6.z + slot.vecTPre.z};
+      vec2 = {vec5.x + slot.vecTPre.x, vec5.y + slot.vecTPre.y, vec5.z + slot.vecTPre.z};
+      vec3 = {vec8.x + slot.vecTPre.x, vec8.y + slot.vecTPre.y, vec8.z + slot.vecTPre.z};
+      vec4 = {vec7.x + slot.vecTPre.x, vec7.y + slot.vecTPre.y, vec7.z + slot.vecTPre.z};
     }
     vec1.y -= slot.height[20];
     vec2.y -= slot.height[20];
@@ -4917,31 +4875,17 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
       0.0f, 1.0f, 0.0f, 1.0f, 2
     );
 
-    dif = static_cast<int>(slot.height[15] - rot0);
-    if (slot.height[14] == 0.0f || slot.height[14] == 2.0f) {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-        vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-        vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-        vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-      } else {
-        vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-        vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-        vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-        vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-      }
+    dif = static_cast<int>(slot.height[15] - this->state.slots[0].alphaT);
+    if ((slot.height[14] == 0.0f || slot.height[14] == g_effectIconOuterRadius) == ((dif < 70 && dif > -80) || dif < -270 || dif > 270)) {
+      vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+      vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+      vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
+      vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
     } else {
-      if ((dif < 70 && dif > -80) || dif < -270 || dif > 270) {
-        vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-        vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-        vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-        vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-      } else {
-        vec1 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
-        vec2 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
-        vec3 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
-        vec4 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
-      }
+      vec1 = {vec6.x + slot.vecTNow.x, vec6.y + slot.vecTNow.y, vec6.z + slot.vecTNow.z};
+      vec2 = {vec5.x + slot.vecTNow.x, vec5.y + slot.vecTNow.y, vec5.z + slot.vecTNow.z};
+      vec3 = {vec8.x + slot.vecTNow.x, vec8.y + slot.vecTNow.y, vec8.z + slot.vecTNow.z};
+      vec4 = {vec7.x + slot.vecTNow.x, vec7.y + slot.vecTNow.y, vec7.z + slot.vecTNow.z};
     }
     vec1.y -= slot.height[20];
     vec2.y -= slot.height[20];
