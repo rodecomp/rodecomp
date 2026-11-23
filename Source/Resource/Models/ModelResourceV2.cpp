@@ -485,7 +485,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
-        node->parent = parent;
+        (*it)->parent = parent;
         parent->children.push_back(*it);
       }
     }
