@@ -16,6 +16,14 @@
 #include <cstring>
 #include <string>
 
+// INLINED
+static void SetParticleIndices(CParticle& particle, int effectId, int group, int column, int row) {
+  particle.effectId = effectId;
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
 // OFFSET: 0x00B43050
 // FUNCTION: fn_18874
 CCellRangeEffect::CCellRangeEffect() : CEffect(-1), cellSize(5.0f) {
@@ -85,10 +93,7 @@ void CCellRangeEffect::Open() {
     for (int column = -range; column <= range; ++column) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
-        particle->effectId = this->id;
-        particle->columnIndex = column;
-        particle->rowIndex = row;
-        particle->groupIndex = 1;
+        SetParticleIndices(*particle, this->id, 1, column, row);
         particle->alpha = 255;
         particle->SetColor(255, 255, 255);
         particle->SetTexture("effect\\torch_violet08.bmp");
