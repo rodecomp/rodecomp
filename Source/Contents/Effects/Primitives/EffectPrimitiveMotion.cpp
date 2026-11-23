@@ -343,46 +343,37 @@ bool CEffectPrim::MoveEffectPrimitive() {
 // OFFSET: 0x00BB6180
 // FUNCTION: fn_19773
 bool CEffectPrim::Prim3DCasting4() {
-  const float resetHeight = g_projectionDepthOffset;
-  const vector3d& parent = this->state.master->render.position;
-  this->render.position = parent;
+  this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
+    if (this->state.slots[index].life == 1) {
+      this->state.slots[index].process += 1;
 
-    if (slot.life != 1) {
-      continue;
-    }
-
-    float height = slot.distance - 0.05f;
-    ++slot.process;
-    slot.distance = height;
-
-    if (height <= 0.0f) {
-      slot.distance = 10.0f;
-      slot.alphaB = 0;
-      height = resetHeight;
-    }
-
-    slot.maxHeight = height;
-    slot.riseAngle = static_cast<std::int16_t>(static_cast<int>(90.0f - height * 9.0f));
-
-    if (slot.process >= this->state.duration - 40) {
-      slot.alphaB -= 3;
-
-      if (slot.alphaB < 0) {
-        slot.alphaB = 0;
+      this->state.slots[index].distance -= 0.05f;
+      if (this->state.slots[index].distance <= 0.0f) {
+        this->state.slots[index].distance = 10.0f;
+        this->state.slots[index].alphaB = 0;
       }
-    } else if (slot.alphaB < 70) {
-      ++slot.alphaB;
-    }
 
-    for (int value = 0; value < 21; ++value) {
-      if (slot.flag1[value] == 0) {
-        this->state.slots[index].height[value] = slot.maxHeight;
+      this->state.slots[index].riseAngle = static_cast<std::int16_t>(90.0f - this->state.slots[index].distance * 9.0f);
+      this->state.slots[index].maxHeight = this->state.slots[index].distance;
 
-        if (this->state.slots[index].height[value] < 0.0f) {
-          this->state.slots[index].height[value] = 0;
+      if (this->state.slots[index].process >= this->state.duration - 40) {
+        this->state.slots[index].alphaB -= 3;
+        if (this->state.slots[index].alphaB < 0) {
+          this->state.slots[index].alphaB = 0;
+        }
+      } else if (this->state.slots[index].alphaB < 70) {
+        this->state.slots[index].alphaB += 1;
+      }
+
+      for (int i = 0; i < 21; ++i) {
+        if (this->state.slots[index].flag1[i] == 0) {
+          this->state.slots[index].height[i] = this->state.slots[index].maxHeight;
+
+          if (this->state.slots[index].height[i] < 0.0f) {
+            this->state.slots[index].height[i] = 0.0f;
+          }
         }
       }
     }
@@ -8067,7 +8058,11 @@ bool CEffectPrim::OnProcess() {
     case 171:
     case 173:
       this->render.position = this->state.master->render.position;
-      [[fallthrough]];
+
+      if (g_updateTick == 0) {
+        return true;
+      }
+      break;
     default:
       if (g_updateTick == 0) {
         return true;
@@ -8425,73 +8420,57 @@ bool CEffectPrim::OnProcess() {
       break;
     case PP_HITLINE: {
       for (int index = 0; index < 4; ++index) {
-        EffectPrimitiveSlot& slot = this->state.slots[index];
+        if (this->state.slots[index].life == 1) {
+          this->state.slots[index].process += 1;
 
-        if (slot.life != 1) {
-          continue;
-        }
+          if (this->state.slots[index].process > 0) {
+            if (this->state.slots[index].process > 35) {
+              this->state.slots[index].alphaB -= 5;
+            }
+            if (this->state.slots[index].alphaB < 0) {
+              this->state.slots[index].alphaB = 0;
+            }
 
-        ++slot.process;
+            this->state.slots[index].height[0] += 8.0f;
+            if (this->state.slots[index].height[0] > 180.0f) {
+              this->state.slots[index].height[0] -= 180.0f;
+              this->state.slots[index].flag1[0]++;
+            }
 
-        if (slot.process <= 0) {
-          continue;
-        }
-
-        if (slot.process > 35) {
-          slot.alphaB -= 5;
-        }
-
-        if (slot.alphaB < 0) {
-          slot.alphaB = 0;
-        }
-
-        slot.height[0] += 8.0f;
-
-        if (slot.height[0] > 180.0f) {
-          slot.height[0] -= 180.0f;
-          ++slot.flag1[0];
-        }
-
-        for (int value = 20; value > 0; --value) {
-          slot.height[value] = slot.height[value - 1];
-          slot.flag1[value] = slot.flag1[value - 1];
+            for (int value = 20; value >= 1; value--) {
+              this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
+              this->state.slots[index].flag1[value] = this->state.slots[index].flag1[value - 1];
+            }
+          }
         }
       }
     } break;
     case PP_HITLINE3: {
       for (int index = 0; index < 4; ++index) {
-        EffectPrimitiveSlot& slot = this->state.slots[index];
+        if (this->state.slots[index].life == 1) {
+          this->state.slots[index].process += 1;
 
-        if (slot.life != 1) {
-          continue;
+          if (this->state.slots[index].process > 0) {
+            if (this->state.slots[index].process > 35) {
+              this->state.slots[index].alphaB -= 5;
+            }
+            if (this->state.slots[index].alphaB < 0) {
+              this->state.slots[index].alphaB = 0;
+            }
+
+            this->state.slots[index].height[0] += 6.0f;
+            if (this->state.slots[index].height[0] > 180.0f) {
+              this->state.slots[index].height[0] = 180.0f;
+            }
+
+            for (int value = static_cast<int>(this->state.slots[index].vecTNow.y); value >= 1; value--) {
+              this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
+              this->state.slots[index].flag1[value] = this->state.slots[index].flag1[value - 1];
+            }
+
+            this->state.slots[index].vecBNow = this->state.master->render.position;
+          }
         }
-
-        ++slot.process;
-
-        if (slot.process <= 0) {
-          continue;
-        }
-
-        if (slot.process > 35) {
-          slot.alphaB -= 5;
-        }
-
-        if (slot.alphaB < 0) {
-          slot.alphaB = 0;
-        }
-
-        slot.height[0] += 6.0f;
-
-        if (slot.height[0] > 180.0f) {
-          slot.height[0] = 180.0f;
-        }
-
-        for (int value = static_cast<int>(slot.vecTNow.y); value > 0; --value) {
-          this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
-          slot.flag1[value] = slot.flag1[value - 1];
-        }
-
-        slot.vecBNow = this->state.master->render.position;
       }
     } break;
     case 103:
@@ -8533,7 +8512,7 @@ bool CEffectPrim::OnProcess() {
             if (slot.height[0] > 180.0f) {
               this->state.slots[index].height[0] = 180.0f;
             } else {
-              for (int value = static_cast<int>(this->state.slots[index].vecTNow.y); value > 0; --value) {
+              for (int value = static_cast<int>(this->state.slots[index].vecTNow.y); value >= 1; value--) {
                 this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
                 this->state.slots[index].flag1[value] = this->state.slots[index].flag1[value - 1];
               }
@@ -8568,8 +8547,8 @@ bool CEffectPrim::OnProcess() {
           continue;
         }
 
-        const int process = ++slot.process;
-        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+        slot.process++;
+        slot.rotStart = static_cast<std::int16_t>(this->state.master->state.parent->render.angle + 180.0f);
 
         if (slot.rotStart >= 360) {
           slot.rotStart -= 360;
@@ -8579,7 +8558,7 @@ bool CEffectPrim::OnProcess() {
         slot.vecTNow.x = g_cosTable[angle] * 5.0f;
         slot.vecTNow.z = g_sinTable[angle] * 5.0f;
 
-        if (process <= 50 && slot.alphaB < 120) {
+        if (slot.process <= 50 && slot.alphaB < 120) {
           slot.alphaB += 5;
         }
       }
@@ -8602,7 +8581,7 @@ bool CEffectPrim::OnProcess() {
           slot.riseAngle -= 360;
         }
 
-        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+        slot.rotStart = static_cast<std::int16_t>(this->state.master->state.parent->render.angle + 180.0f);
 
         if (slot.rotStart >= 360) {
           slot.rotStart -= 360;
@@ -8627,19 +8606,19 @@ bool CEffectPrim::OnProcess() {
           continue;
         }
 
-        if (slot.height[1] >= 90.0f) {
-          slot.alphaB = 10;
-          slot.height[1] = 0;
-        } else {
+        if (slot.height[1] < 90.0f) {
           slot.height[1] += 1.0f;
           slot.alphaB += 10;
 
           if (slot.alphaB > 60) {
             slot.alphaB = 60;
           }
+        } else {
+          slot.alphaB = 10;
+          slot.height[1] = 0;
         }
 
-        if (slot.process > 30 && (45 - slot.process) * 4 <= slot.alphaB) {
+        if (slot.process > 30 && slot.alphaB >= (45 - slot.process) * 4) {
           slot.alphaB = static_cast<std::int16_t>((45 - slot.process) * 4);
 
           if (slot.alphaB < 0) {
@@ -8651,7 +8630,7 @@ bool CEffectPrim::OnProcess() {
           slot.riseAngle -= 360;
         }
 
-        slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 180.0f));
+        slot.rotStart = static_cast<std::int16_t>(this->state.master->state.parent->render.angle + 180.0f);
 
         if (slot.rotStart >= 360) {
           slot.rotStart -= 360;
@@ -9760,7 +9739,8 @@ bool CEffectPrim::OnProcess() {
       this->render.position = this->state.deltaPos;
 
       if ((this->state.pattern & 0x20u) != 0) {
-        this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
+        CGameMode* mode = g_modeMgr.GetGameMode();
+        this->state.roll = this->render.angle - mode->camera->camera.yaw;
       }
 
       this->ProcessAlpha();
@@ -10112,7 +10092,8 @@ bool CEffectPrim::OnProcess() {
       }
 
       if ((this->state.pattern & 0x20) != 0) {
-        this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
+        CGameMode* mode = g_modeMgr.GetGameMode();
+        this->state.roll = this->render.angle - mode->camera->camera.yaw;
       }
 
       this->ProcessAlpha();
@@ -10163,5 +10144,10 @@ bool CEffectPrim::OnProcess() {
   }
 
   ++this->state.stateCnt;
-  return this->state.stateCnt <= this->state.duration;
+
+  if (this->state.stateCnt > this->state.duration) {
+    return false;
+  }
+
+  return true;
 }
