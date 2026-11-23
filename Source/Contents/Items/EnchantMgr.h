@@ -67,10 +67,24 @@ public:
   __declspec(noinline) void AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost, const std::map<std::string, int>& materials);
   void AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName, uint64_t cost,
                                 const std::map<std::string, int>& materials);
+  void AddRandomUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName, uint64_t rate);
+  void AddTargetItem(uint64_t group, const std::string& itemName);
+  void AddUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName, uint64_t cost,
+                         const std::map<std::string, int>& materials);
+  void ApproveRandomOption(uint64_t group, bool approve);
   bool CallScript(const std::string& name);
   EnchantInfo* GetEnchantInfo(uint64_t group);
   std::map<int, int> ConvertMaterials(std::map<std::string, int> materials);
   bool Init();
+  void SetCaution(uint64_t group, const std::string& caution);
+  void SetCondition(uint64_t group, uint32_t condition1, uint32_t condition2);
+  void SetGradeBonus(uint64_t group, uint32_t optionKey, const std::map<uint32_t, uint64_t>& gradeBonus);
+  void SetRandomUpgradeRequire(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
+                               const std::map<std::string, int>& materials);
+  void SetRequire(uint64_t group, uint32_t optionKey, uint64_t cost, const std::map<std::string, int>& materials);
+  void SetReset(uint64_t group, bool enabled, uint64_t rate, uint64_t cost, const std::map<std::string, int>& materials);
+  void SetSlotOrder(uint64_t group, const std::vector<int>& slots);
+  void SetSuccessRate(uint64_t group, uint32_t optionKey, uint64_t rate);
   void SetEnchant(uint64_t group, uint32_t optionKey, uint32_t slot, const std::map<std::string, uint64_t>& enchants);
   void SendCloseEnchant();
   void OpenEnchant(uint64_t group);

@@ -286,6 +286,88 @@ void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int
   m_request = EnchantRequest{ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT, group, index, slot};
 }
 
+// INLINED
+inline void CEnchantMgr::AddRandomUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
+                                                 uint64_t rate) {
+  int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
+  if (baseItemId != 0) {
+    int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+    if (itemId != ITEMID_NONE) {
+      m_enchants[group].options[optionKey].randomUpgrades[baseItemId].rates[itemId] = rate;
+    }
+  }
+}
+
+// INLINED
+inline void CEnchantMgr::AddTargetItem(uint64_t group, const std::string& itemName) {
+  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+  if (itemId != ITEMID_NONE) {
+    m_enchants[group].targetItems.push_back(itemId);
+  }
+}
+
+// INLINED
+inline void CEnchantMgr::AddUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
+                                           uint64_t cost, const std::map<std::string, int>& materials) {
+  m_enchants[group].options[optionKey].isUpgrade = true;
+  AddPerfectUpgradeEnchant(group, optionKey, baseItemName, itemName, cost, materials);
+}
+
+// INLINED
+inline void CEnchantMgr::ApproveRandomOption(uint64_t group, bool approve) {
+  m_enchants[group].approveRandomOption = approve;
+}
+
+// INLINED
+inline void CEnchantMgr::SetCaution(uint64_t group, const std::string& caution) {
+  m_enchants[group].caution = caution;
+}
+
+// INLINED
+inline void CEnchantMgr::SetCondition(uint64_t group, uint32_t condition1, uint32_t condition2) {
+  m_enchants[group].condition1 = condition1;
+  m_enchants[group].condition2 = condition2;
+}
+
+// INLINED
+inline void CEnchantMgr::SetGradeBonus(uint64_t group, uint32_t optionKey, const std::map<uint32_t, uint64_t>& gradeBonus) {
+  m_enchants[group].options[optionKey].gradeBonus = gradeBonus;
+}
+
+// INLINED
+inline void CEnchantMgr::SetRandomUpgradeRequire(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
+                                                 const std::map<std::string, int>& materials) {
+  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+  if (itemId != ITEMID_NONE) {
+    m_enchants[group].options[optionKey].randomUpgrades[itemId].cost = cost;
+    m_enchants[group].options[optionKey].randomUpgrades[itemId].materials = ConvertMaterials(materials);
+  }
+}
+
+// INLINED
+inline void CEnchantMgr::SetRequire(uint64_t group, uint32_t optionKey, uint64_t cost, const std::map<std::string, int>& materials) {
+  m_enchants[group].options[optionKey].require.cost = cost;
+  m_enchants[group].options[optionKey].require.materials = ConvertMaterials(materials);
+}
+
+// INLINED
+inline void CEnchantMgr::SetReset(uint64_t group, bool enabled, uint64_t rate, uint64_t cost, const std::map<std::string, int>& materials) {
+  m_enchants[group].resetEnabled = enabled;
+  m_enchants[group].resetRate = rate;
+  m_enchants[group].reset.cost = cost;
+  m_enchants[group].reset.materials = ConvertMaterials(materials);
+}
+
+// INLINED
+inline void CEnchantMgr::SetSlotOrder(uint64_t group, const std::vector<int>& slots) {
+  m_enchants[group].slots = slots;
+}
+
+// INLINED
+inline void CEnchantMgr::SetSuccessRate(uint64_t group, uint32_t optionKey, uint64_t rate) {
+  m_enchants[group].options[optionKey].successRate = rate;
+}
+
 // OFFSET: 0x00686BF0
 // FUNCTION: fn_05568
 int L_AddRandomUpgradeEnchant(lua_State* L) {
@@ -446,10 +528,7 @@ int L_SetCondition(lua_State* L) {
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -3));
   uint32_t condition1 = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint32_t condition2 = static_cast<uint32_t>(lua_tonumber(L, -1));
-  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  const uint64_t key = id;
-  mgr->m_enchants[key].condition1 = condition1;
-  mgr->m_enchants[key].condition2 = condition2;
+  CEnchantMgr::GetInstance()->SetCondition(id, condition1, condition2);
   return 2;
 }
 
@@ -485,7 +564,7 @@ int L_SetGradeBonus(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr::GetInstance()->m_enchants[id].options[optionKey].gradeBonus = gradeBonus;
+  CEnchantMgr::GetInstance()->SetGradeBonus(id, optionKey, gradeBonus);
   return 2;
 }
 
@@ -512,7 +591,7 @@ int L_SetSlotOrder(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr::GetInstance()->m_enchants[static_cast<uint64_t>(id)].slots = slots;
+  CEnchantMgr::GetInstance()->SetSlotOrder(id, slots);
   return 2;
 }
 
@@ -540,9 +619,7 @@ int L_SetSuccessRate(lua_State* L) {
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -3));
   uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -2));
   uint64_t rate = static_cast<uint64_t>(lua_tonumber(L, -1));
-  const uint64_t key = id;
-  const uint32_t option = optionKey;
-  CEnchantMgr::GetInstance()->m_enchants[key].options[option].successRate = rate;
+  CEnchantMgr::GetInstance()->SetSuccessRate(id, optionKey, rate);
   return 2;
 }
 
@@ -934,12 +1011,7 @@ int L_SetRandomUpgradeRequire(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-  if (itemId != ITEMID_NONE) {
-    mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].cost = cost;
-    mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].materials = mgr->ConvertMaterials(materials);
-  }
+  CEnchantMgr::GetInstance()->SetRandomUpgradeRequire(id, optionKey, itemName, cost, materials);
   return 2;
 }
 
@@ -981,11 +1053,7 @@ int L_SetRequire(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  const uint64_t key = id;
-  const uint32_t option = optionKey;
-  mgr->m_enchants[key].options[option].require.cost = cost;
-  mgr->m_enchants[key].options[option].require.materials = mgr->ConvertMaterials(materials);
+  CEnchantMgr::GetInstance()->SetRequire(id, optionKey, cost, materials);
   return 2;
 }
 
@@ -1034,11 +1102,6 @@ int L_SetReset(lua_State* L) {
     lua_pop(L, 1);
   }
 
-  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  const uint64_t key = id;
-  mgr->m_enchants[key].resetEnabled = enabled;
-  mgr->m_enchants[key].resetRate = rate;
-  mgr->m_enchants[key].reset.cost = cost;
-  mgr->m_enchants[key].reset.materials = mgr->ConvertMaterials(materials);
+  CEnchantMgr::GetInstance()->SetReset(id, enabled, rate, cost, materials);
   return 2;
 }
