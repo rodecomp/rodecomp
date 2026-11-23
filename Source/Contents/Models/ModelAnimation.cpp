@@ -37,14 +37,17 @@ void LegacyPositionTrack::Sample(int frame, matrix& output) const {
     return;
   }
 
+  bool found = false;
   unsigned next = 1;
+
   for (; next < count; ++next) {
     if (keys[next].frame > frame) {
+      found = true;
       break;
     }
   }
 
-  if (next >= count) {
+  if (!found) {
     return;
   }
 
@@ -52,9 +55,8 @@ void LegacyPositionTrack::Sample(int frame, matrix& output) const {
   const auto& b = keys[next];
   const float amount = static_cast<float>(frame - a.frame) / static_cast<float>(b.frame - a.frame);
   const float previous = static_cast<float>(1.0 - static_cast<double>(amount));
-  output.MakeTranslate(
-    previous * a.position[0] + amount * b.position[0], previous * a.position[1] + amount * b.position[1], previous * a.position[2] + amount * b.position[2]
-  );
+  const vector3d position{previous * a.position[0] + amount * b.position[0], previous * a.position[1] + amount * b.position[1], previous * a.position[2] + amount * b.position[2]};
+  output.MakeTranslate(position.x, position.y, position.z);
 }
 
 // OFFSET: 0x00540670
@@ -73,15 +75,17 @@ __declspec(safebuffers) void LegacyRotationTrack::Sample(int frame, matrix& outp
     return;
   }
 
+  bool found = false;
   unsigned next = 1;
 
   for (; next < count; ++next) {
     if (keys[next].frame > frame) {
+      found = true;
       break;
     }
   }
 
-  if (next >= count) {
+  if (!found) {
     return;
   }
 
