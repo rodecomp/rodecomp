@@ -139,17 +139,18 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     int originX = 0;
     int originY = 0;
     this->ToScreen(originX, originY);
-    const int targetX = originX + x;
-    int adjustment = 0;
-    if (static_cast<unsigned int>(g_configuredScreenWidth - targetX) < static_cast<unsigned int>(detail->geometry.width)) {
-      adjustment = detail->geometry.width - g_configuredScreenWidth + targetX;
+    unsigned adjustment = 0;
+    const unsigned screenWidth = g_configuredScreenWidth;
+    const unsigned screenHeight = g_configuredScreenHeight;
+    const unsigned targetX = static_cast<unsigned>(x) + originX;
+    if (screenWidth - targetX < static_cast<unsigned>(detail->geometry.width)) {
+      adjustment = detail->geometry.width - (screenWidth - targetX);
     }
 
-    const int rowY = 33 * (y / 33);
-    if (static_cast<float>(static_cast<unsigned int>(g_configuredScreenHeight)) * g_depthAverageHalf < static_cast<float>(originY)) {
-      detail->Move(originX - adjustment + x, rowY - detail->geometry.height + originY);
+    if (originY > screenHeight * 0.5f) {
+      detail->Move(originX - adjustment + x, static_cast<unsigned>(y / 33) * 33 - detail->geometry.height + originY);
     } else {
-      detail->Move(originX - adjustment + x, originY + 33 + rowY);
+      detail->Move(originX - adjustment + x, originY + 33u + static_cast<unsigned>(y / 33) * 33);
     }
   } else if (id != 0) {
     ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(id), 1);
