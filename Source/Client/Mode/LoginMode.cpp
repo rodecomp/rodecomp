@@ -536,21 +536,23 @@ int GetClientType() {
 // FUNCTION: fn_22271
 std::string GetMacAddress() {
   ULONG size = 0;
+  IP_ADAPTER_INFO* adapter = nullptr;
   if (GetAdaptersInfo(nullptr, &size) == ERROR_BUFFER_OVERFLOW) {
-    IP_ADAPTER_INFO* adapter = reinterpret_cast<IP_ADAPTER_INFO*>(new (std::nothrow) char[size]);
+    adapter = reinterpret_cast<IP_ADAPTER_INFO*>(new (std::nothrow) char[size]);
     memset(adapter, 0, size);
     GetAdaptersInfo(adapter, &size);
-    if (adapter != nullptr) {
-      char text[100];
-      memset(text, 0, sizeof(text));
-      _snprintf(text, sizeof(text), OBFUSCATE_ARRAY_TEXT("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL, char), adapter->Address[0], adapter->Address[1], adapter->Address[2],
-        adapter->Address[3], adapter->Address[4], adapter->Address[5]);
-      delete[] reinterpret_cast<char*>(adapter);
-      return text;
-    }
   }
 
-  return OBFUSCATE_ARRAY_TEXT("11-22-33-44-55-66", 0xFBD599E117C547C1ULL, char);
+  if (adapter == nullptr) {
+    return OBFUSCATE_ARRAY_TEXT("11-22-33-44-55-66", 0xFBD599E117C547C1ULL, char);
+  }
+
+  char text[100];
+  memset(text, 0, sizeof(text));
+  _snprintf(text, sizeof(text), OBFUSCATE_ARRAY_TEXT("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL, char), adapter->Address[0], adapter->Address[1], adapter->Address[2],
+    adapter->Address[3], adapter->Address[4], adapter->Address[5]);
+  delete[] reinterpret_cast<char*>(adapter);
+  return text;
 }
 
 // OFFSET: 0x00D8E700
@@ -883,7 +885,7 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
 // OFFSET: 0x00D904B0
 // FUNCTION: fn_22284
 void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
-  const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
+  const int count = (packet->length - 4) / sizeof(MapStateInfo);
   if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
     constexpr std::array<char, 34> source = OBFUSCATE_SOURCE("mismatch MapState size(size = %d)", 0x792FFD1325418FB5ULL);
     char text[256];
@@ -893,19 +895,19 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
     return;
   }
 
-  std::vector<MapStateEntry>& states = this->mapStates;
-  states.clear();
+  this->mapStates.clear();
   MapStateEntry entry;
   entry.index = -1;
-  for (int i = 0; i < static_cast<int>(count); ++i) {
-    if (packet->states[i].state == 0) {
+  const MapStateInfo* state = packet->states;
+  for (int i = 0; i < count; ++i, ++state) {
+    if (state->state == 0) {
       entry.index = i;
       entry.data = packet->states[i].data;
-      states.push_back(entry);
+      this->mapStates.push_back(entry);
     }
   }
 
-  if (states.size() == 0) {
+  if (this->mapStates.size() == 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_EXIST_ENTRYMAP), 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
@@ -1168,16 +1170,13 @@ void CLoginMode::OpenAccountRegistration() {
   case ServiceJapan:
     break;
   case ServiceChina: {
-    constexpr std::array<char, 54> urlSource = OBFUSCATE_SOURCE("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL);
-    const char* file = OBFUSCATE_DECRYPT(0x9949BFD527532943ULL, urlSource);
-    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xCD8F077123FB7D6FULL);
-    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xCD8F077123FB7D6FULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
+    const char* file = OBFUSCATE_ARRAY_TEXT("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL, char);
+    ShellExecuteA(hWnd, OBFUSCATE_ARRAY_TEXT("open", 0xCD8F077123FB7D6FULL, char), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   default: {
     const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xC517FB932D95BB6DULL);
-    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xC517FB932D95BB6DULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);
+    ShellExecuteA(hWnd, OBFUSCATE_ARRAY_TEXT("open", 0xC517FB932D95BB6DULL, char), url, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   }
@@ -1439,7 +1438,7 @@ int CLoginMode::Run() {
       }
     }
 
-    if (g_nProtectGameGuardMgr->HasError()) {
+    if (static_cast<unsigned char>(g_nProtectGameGuardMgr->HasError())) {
       GetRagConnection().Close();
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
