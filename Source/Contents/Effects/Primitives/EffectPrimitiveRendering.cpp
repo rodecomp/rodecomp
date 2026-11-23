@@ -2395,7 +2395,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
       if (effect) {
         vector3d position = slot.vecBNow;
         float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
-        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), static_cast<int>(static_cast<std::int64_t>(reinterpret_cast<int>(extra)) >> 32), 0, 0);
       }
     }
   } else if (slot.flag1[0] == 1) {
@@ -2412,7 +2412,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
       if (effect) {
         vector3d position = slot.vecBNow;
         float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
-        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), static_cast<int>(static_cast<std::int64_t>(reinterpret_cast<int>(extra)) >> 32), 0, 0);
       }
     }
   }
@@ -6603,8 +6603,8 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
   float sn1;
   ZeroVector3d vec1;
   ZeroVector3d vec3;
-  ZeroVector3d vec4;
   ZeroVector3d vec2;
+  ZeroVector3d vec4;
   int rpCnt = 0;
   int order;
   int angle;

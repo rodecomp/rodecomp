@@ -1801,6 +1801,8 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
     const float dist = this->state.slots[ec].distance;
     const int angle = this->state.slots[ec].fullDisplayAngle;
     const float inner = dist - this->state.slots[ec].rotStart * dist / 50.0f;
+    const float cosA = g_cosTable[angle];
+    const float sinA = g_sinTable[angle];
     int angle1 = angle - 90;
     if (0 > angle1) {
       angle1 += 360;
@@ -1810,12 +1812,12 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
       angle2 += 360;
     }
 
-    vec1.x = dist * g_cosTable[angle1] * 0.5f + g_cosTable[angle] * inner;
+    vec1.x = dist * g_cosTable[angle1] * 0.5f + cosA * inner;
     vec1.y = 0.0f;
-    vec1.z = dist * g_sinTable[angle1] * 0.5f + g_sinTable[angle] * inner;
-    vec2.x = dist * g_cosTable[angle2] * 0.5f + g_cosTable[angle] * inner;
+    vec1.z = dist * g_sinTable[angle1] * 0.5f + sinA * inner;
+    vec2.x = dist * g_cosTable[angle2] * 0.5f + cosA * inner;
     vec2.y = 0.0f;
-    vec2.z = dist * g_sinTable[angle2] * 0.5f + g_sinTable[angle] * inner;
+    vec2.z = dist * g_sinTable[angle2] * 0.5f + sinA * inner;
 
     int angle4 = angle - 90;
     if (angle < 90) {
@@ -1825,12 +1827,12 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
     if (angle3 < 0) {
       angle3 += 360;
     }
-    vec4.x = dist * g_cosTable[angle4] * 0.5f + g_cosTable[angle] * dist;
+    vec4.x = dist * g_cosTable[angle4] * 0.5f + cosA * dist;
     vec4.y = 0.0f;
-    vec4.z = dist * g_sinTable[angle4] * 0.5f + g_sinTable[angle] * dist;
-    vec3.x = dist * g_cosTable[angle3] * 0.5f + g_cosTable[angle] * dist;
+    vec4.z = dist * g_sinTable[angle4] * 0.5f + sinA * dist;
+    vec3.x = dist * g_cosTable[angle3] * 0.5f + cosA * dist;
     vec3.y = 0.0f;
-    vec3.z = dist * g_sinTable[angle3] * 0.5f + g_sinTable[angle] * dist;
+    vec3.z = dist * g_sinTable[angle3] * 0.5f + sinA * dist;
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vec1 += this->state.slots[ec].vecBNow;
