@@ -50,14 +50,6 @@
 
 // INLINED
 inline RagEffectState::RagEffectState() : deltaPos(), deltaPos2(), deltaPos3() {
-  for (unsigned index = 0; index < 20; ++index) {
-    this->objSeg[index].header[0] = 0;
-    this->objSeg[index].header[1] = 0;
-    this->objSeg[index].header[2] = 0;
-    this->objSeg[index].header[3] = 0;
-    this->objSeg[index].header[4] = 0;
-    this->objSeg[index].header[5] = 0;
-  }
 }
 
 // INLINED

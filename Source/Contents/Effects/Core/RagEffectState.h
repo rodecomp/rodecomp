@@ -13,8 +13,51 @@ struct CEffectPrim;
 struct EffectActor;
 
 struct RagEffectSegment {
+  RagEffectSegment() {
+    this->header[0] = 0;
+    this->header[1] = 0;
+    this->header[2] = 0;
+    this->header[3] = 0;
+    this->header[4] = 0;
+    this->header[5] = 0;
+  }
+
   /* 0000 */ std::uint32_t header[6];
   /* 0018 */ unsigned char unknown_0018[56];
+};
+
+class CTexture;
+
+struct RagEffectFaceVertex {
+  __declspec(noinline) RagEffectFaceVertex() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+    this->rhw = 0.0f;
+    this->diffuse = 0;
+    this->specular = 0xFF000000u;
+    this->u = 0.0f;
+    this->v = 0.0f;
+  }
+
+  /* 0000 */ float x;
+  /* 0004 */ float y;
+  /* 0008 */ float z;
+  /* 000C */ float rhw;
+  /* 0010 */ std::uint32_t diffuse;
+  /* 0014 */ std::uint32_t specular;
+  /* 0018 */ float u;
+  /* 001C */ float v;
+};
+
+struct RagEffectFace {
+  RagEffectFace() {
+  }
+
+  /* 0000 */ RagEffectFaceVertex verts[3];
+  /* 0060 */ CTexture* tex;
+  /* 0064 */ unsigned long srcAlphaMode;
+  /* 0068 */ unsigned long destAlphaMode;
 };
 
 struct RagEffectState {
@@ -44,7 +87,7 @@ struct RagEffectState {
   /* 006B4 */ CRes* resource;
   /* 006B8 */ EZeffectData* resourceData;
   /* 006BC */ EZeffectTransform transforms[128];
-  /* 040BC */ unsigned char vertices[55296];
+  /* 040BC */ RagEffectFace vertices[512];
   /* 118BC */ int currentLayer;
   /* 118C0 */ int endLayer;
   /* 118C4 */ bool layerDrawn[128];
@@ -65,6 +108,7 @@ struct RagEffectState {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RagEffectSegment) == 0x50);
+static_assert(sizeof(RagEffectFace) == 0x6C);
 static_assert(sizeof(RagEffectState) == 0x11B70);
 static_assert(offsetof(RagEffectState, transforms) == 0x6BC);
 static_assert(offsetof(RagEffectState, currentLayer) == 0x118BC);
