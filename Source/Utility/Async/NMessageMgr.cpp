@@ -49,7 +49,8 @@ void NMessageMgr::Shutdown() {
 // FUNCTION: fn_07612
 bool NMessageMgr::Register(std::uint32_t objectId, NInter* object) {
   NSyncObject held(&this->m_criticalSection);
-  return this->m_objects.insert(std::make_pair(objectId, object)).second;
+  const auto result = this->m_objects.insert(std::make_pair(objectId, object));
+  return result.second;
 }
 
 // OFFSET: 0x00735BC0
