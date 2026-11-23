@@ -1944,7 +1944,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
         break;
       }
     }
-    result += prefix;
+    result.append(prefix.data(), prefix.size());
 
     if (encoded.substr(0, 6) == "00000T") {
       const int titleId = g_navigationLinkParser->ItemLinkMessageId(encoded);
@@ -1957,7 +1957,8 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
             buttons.push_back(button);
             button->line = static_cast<int>(this->lines.size());
             button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-            result += std::string(button->label);
+            const std::string buttonLabel(button->label);
+            result.append(buttonLabel.data(), buttonLabel.size());
           }
         }
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
@@ -1982,9 +1983,9 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;
       button->SetId(ID_ITEM_TAG);
-      button->ResizeToTextClipped(
-          this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
-          button->geometry.height);
+      const int buttonHeight = button->geometry.height;
+      const int buttonWidth = this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1;
+      button->ResizeToTextClipped(buttonWidth, buttonHeight);
 
       const std::string namelessUserName = LookupMessage(MSI_NAMELESS_USER);
       if (label.find(namelessUserName) != std::string::npos) {
@@ -1998,7 +1999,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       buttons.push_back(button);
       button->line = static_cast<int>(this->lines.size());
       button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-      result += label;
+      result.append(label.data(), label.size());
       position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
     }
     previous = position;
@@ -2007,7 +2008,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   if (result.size() < std::strlen(lineText)) {
     const int available = static_cast<int>(std::strlen(lineText) - result.size());
     if (available > 0 && remaining.size() >= static_cast<unsigned>(available)) {
-      result += remaining.substr(0, available);
+      result.append(remaining.substr(0, available));
       previous += available;
     }
   }
