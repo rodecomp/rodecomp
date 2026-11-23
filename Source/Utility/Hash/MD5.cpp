@@ -139,9 +139,9 @@ std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) 
   MD5_STEP(MD5_F4, c, d, a, b, input[2], 15, 0x2AD7D2BB);
   MD5_STEP(MD5_F4, b, c, d, a, input[9], 21, 0xEB86D391);
 
-  state[0] += a;
   state[1] += b;
   state[2] += c;
+  state[0] += a;
   state[3] += d;
   return state;
 }
