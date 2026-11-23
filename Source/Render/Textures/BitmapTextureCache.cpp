@@ -75,7 +75,7 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
     auto texture = this->m_textures.begin();
     for (int row = 0; row < height; row += 256) {
       for (int column = 0; column < width; column += 256) {
-        (*texture)->Draw(x + column, y + row, std::min(width - column, 256), std::min(height - row, 256), color);
+        (*texture)->Draw(x + column, y + row, width - column > 256 ? 256 : width - column, height - row > 256 ? 256 : height - row, color);
         ++texture;
       }
     }
