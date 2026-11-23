@@ -40,24 +40,6 @@ namespace {
     direction[2] = inverse * direction[2];
   }
 
-  struct BoundsCorner {
-    float values[3];
-
-    // INLINED
-    BoundsCorner() {
-      values[0] = 0.0f;
-      values[1] = 0.0f;
-      values[2] = 0.0f;
-    }
-
-    // INLINED
-    __forceinline void Set(float x, float y, float z) {
-      values[0] = x;
-      values[1] = y;
-      values[2] = z;
-    }
-  };
-
   // INLINED
   float Coordinate(const float* point, const float* matrix, unsigned axis) {
     return ((point[0] * matrix[axis] + point[1] * matrix[axis + 3]) + point[2] * matrix[axis + 6]) + matrix[axis + 9];
@@ -85,7 +67,7 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   points[7].Set(bounds[3], bounds[4], bounds[5]);
 
   for (unsigned corner = 0; corner < 8; ++corner) {
-    float* stored = this->corners[corner];
+    float* stored = this->corners[corner].values;
     stored[0] = Coordinate(points[corner].values, this->transform.values, 0);
     stored[1] = Coordinate(points[corner].values, this->transform.values, 1);
     stored[2] = Coordinate(points[corner].values, this->transform.values, 2);
@@ -168,7 +150,7 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
   points[7].Set(bounds[3], bounds[4], bounds[5]);
 
   for (unsigned corner = 0; corner < 8; ++corner) {
-    float* stored = actor->corners[corner];
+    float* stored = actor->corners[corner].values;
     stored[0] = Coordinate(points[corner].values, actor->transform.values, 0);
     stored[1] = Coordinate(points[corner].values, actor->transform.values, 1);
     stored[2] = Coordinate(points[corner].values, actor->transform.values, 2);

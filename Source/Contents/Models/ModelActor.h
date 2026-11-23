@@ -57,7 +57,7 @@ public:
   /* 0094 */ unsigned char dirty;
   /* 0095 */ unsigned char padding_0095[3];
   /* 0098 */ OrientedBounds oriented;
-  /* 00D4 */ float corners[8][3];
+  /* 00D4 */ BoundsCorner corners[8];
   /* 0134 */ float minimum[3];
   /* 0140 */ float maximum[3];
   /* 014C */ unsigned char enabled;
