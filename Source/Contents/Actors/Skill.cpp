@@ -355,10 +355,9 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       CRenderObject* skill = mode->scene->GetSkillByAID(targetAid);
       if (actor != nullptr) {
         target = actor;
+        static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
       } else if (skill != nullptr) {
         target = skill;
-      }
-      if (target != nullptr) {
         static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
       }
     }
@@ -430,11 +429,11 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       damageMessage.damage = damage;
       damageMessage.time = timeGetTime();
       damageMessage.attackerAid = attackerAid;
+      damageMessage.monsterValue = monsterValue;
       damageMessage.cellX = cellX;
       damageMessage.cellY = cellY;
-      damageMessage.hitEffect = effectId;
       damageMessage.effectId = -1;
-      damageMessage.monsterValue = monsterValue;
+      damageMessage.hitEffect = effectId;
       damageMessage.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
       damageMessage.blueDamage = 0;
       damageMessage.skillId = skillId;
