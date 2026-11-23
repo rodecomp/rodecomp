@@ -203,7 +203,9 @@ void CMergeItemWnd::OnMouseHover(int x, int y) {
     this->ToScreen(screenX, screenY);
     const int quantity = item.quantity;
     std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), quantity);
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+    const auto color = g_session.GetItemNameColor(item);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
   }
 }
 
