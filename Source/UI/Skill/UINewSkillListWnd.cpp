@@ -1196,7 +1196,8 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
           }
         }
         skill.entries[i].requiredLevel = level;
-        this->m_values.emplace_front(skill.entries[i].skillId, skill.entries[i].requiredLevel);
+        SkillInfoEntry& entry = skill.entries[i];
+        this->m_values.emplace_front(entry.skillId, entry.requiredLevel);
       }
       return;
     }
@@ -1476,18 +1477,16 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_session.m_skillBundle.extraIds.clear();
       }
     }
+  }
+  refreshUi:
     this->UpdateScrollBar();
     this->LayoutButtons();
     this->Invalidate();
     return 0;
-  }
   case UM_REFRESHITEM:
     this->ResetLists();
     g_session.m_skillBundle.NumberExtra();
-    this->UpdateScrollBar();
-    this->LayoutButtons();
-    this->Invalidate();
-    return 0;
+    goto refreshUi;
   case UM_REFRESH:
     this->InitTabs();
     return 0;
@@ -1532,7 +1531,6 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
   return 0;
 }
 
