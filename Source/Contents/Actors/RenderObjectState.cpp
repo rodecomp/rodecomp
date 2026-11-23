@@ -29,7 +29,8 @@ void CRenderObject::Reset() {
   this->render.enabled = 1;
   this->render.color = 0xFFFFFFFFu;
   this->render.flatDepth = 0;
-  this->render.visibilityState = 0;
+  this->render.shadowVisible = 0;
+  this->render.trackBounds = 0;
   this->render.isMotionFinished = 0;
   this->render.isMotionFreezed = 0;
   this->render.spriteOffsetX = 0;
