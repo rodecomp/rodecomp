@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
@@ -17,7 +18,7 @@ float g_depthEnd;
 // FUNCTION: fn_17826
 void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  RenderVertex* vertices = primitive->vertices;
+  volatile RenderVertex* vertices = primitive->vertices;
   primitive->texture = texture;
   const float bottomZ = RhwToDepth(rhw);
   const float topZ = RhwToDepth(rhw);
@@ -27,11 +28,11 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
     const float sine = ClientSine(angle);
     const float width = static_cast<float>(rect.right - rect.left);
     const float height = static_cast<float>(rect.bottom - rect.top);
-    const float right = width * 0.5f;
-    const float bottom = height * 0.5f;
+    const float right = width * g_depthAverageHalf;
+    const float bottom = height * g_depthAverageHalf;
     const float centerX = static_cast<float>(rect.left) + right;
-    const float left = -width * 0.5f;
-    const float top = -height * 0.5f;
+    const float left = -width * g_depthAverageHalf;
+    const float top = -height * g_depthAverageHalf;
     const float centerY = static_cast<float>(rect.top) + bottom;
 
     vertices[0].x = left * cosine - top * sine + centerX;
