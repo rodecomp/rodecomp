@@ -401,9 +401,7 @@ __declspec(noinline) void CLensFlare::Update(float unused, vector3d eye, vector3
 
   const vector3d origin = eye;
   vector3d view;
-  view.x = target.x - eye.x;
-  view.y = target.y - eye.y;
-  view.z = target.z - eye.z;
+  view = vector3d{target.x - eye.x, target.y - eye.y, target.z - eye.z};
   float inverse = 1.0f / SquareRoot(view.y * view.y + view.x * view.x + view.z * view.z);
   view *= inverse;
 
