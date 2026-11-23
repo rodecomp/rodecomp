@@ -6831,13 +6831,7 @@ void CEffectPrim::PrimFadingColumns() {
 // FUNCTION: fn_19801
 void CEffectPrim::PrimAuraGlow() {
   EffectPrimitiveSlot* slots = this->state.slots;
-  const CView* view = g_modeMgr.GetGameMode()->camera;
-  slots[0].alphaT = static_cast<short>(360 - static_cast<int>(view->camera.yaw));
-  const short anglePitch = static_cast<short>(450 - static_cast<int>(view->camera.pitch));
-  slots[1].alphaT = anglePitch;
-  if (anglePitch >= 360) {
-    slots[1].alphaT = static_cast<short>(anglePitch - 360);
-  }
+  FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
   this->render.position = master->render.position;
@@ -6848,9 +6842,7 @@ void CEffectPrim::PrimAuraGlow() {
     return;
   }
 
-  ++slot.process;
-
-  if (slot.process < 300) {
+  if (++slot.process < 300) {
     const char kind = slot.flag1[4];
 
     if (kind == 1 || kind == 3) {
