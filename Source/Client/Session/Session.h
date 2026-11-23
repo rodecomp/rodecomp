@@ -120,12 +120,8 @@ static_assert(sizeof(MapObjectLightEntry) == 8);
 static_assert(offsetof(MapObjectLightEntry, enabled) == 4);
 
 struct SessionRecord6178Entry {
-  // INLINED
-  SessionRecord6178Entry(const std::string& text, bool completed) : text(text), completed(completed) {
-  }
-
   /* 0000 */ std::string text;
-  /* 0018 */ bool completed;
+  /* 0018 */ bool completed = false;
 };
 
 struct SessionRecord6178 {
@@ -134,6 +130,8 @@ struct SessionRecord6178 {
   /* 0004 */ int id = -1;
   /* 0008 */ std::string title;
   /* 0020 */ std::vector<SessionRecord6178Entry> objectives;
+
+  SessionRecord6178& operator=(const SessionRecord6178&) = default;
 };
 
 struct RobeAlpha {

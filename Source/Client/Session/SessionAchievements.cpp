@@ -54,7 +54,7 @@ static SessionRecord6144* FindOrRegisterAchievement(std::map<int, SessionRecord6
     return &record->second;
   }
 
-  SessionRecord6144 initial = SessionRecord6144();
+  SessionRecord6144 initial;
   achievements.insert(std::make_pair(id, initial));
   achievements[id].registered = 1;
   return &achievements[id];
@@ -63,8 +63,7 @@ static SessionRecord6144* FindOrRegisterAchievement(std::map<int, SessionRecord6
 // OFFSET: 0x00E06580
 // FUNCTION: fn_23737
 bool CSession::ToggleTrackedAchievement(int id) {
-  std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
-  auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
+  auto found = std::find_if(this->trackedAchievements.begin(), this->trackedAchievements.end(), [id](SessionRecord6178 record) { return id == record.id; });
 
   SessionRecord6144* progress = FindOrRegisterAchievement(this->achievements, id);
 
@@ -72,11 +71,10 @@ bool CSession::ToggleTrackedAchievement(int id) {
     return false;
   }
 
-  if (found != tracked.end()) {
-    std::copy(found + 1, tracked.end(), found);
-    tracked.pop_back();
+  if (found != this->trackedAchievements.end()) {
+    this->trackedAchievements.erase(found);
   } else {
-    if (tracked.size() >= 3) {
+    if (this->trackedAchievements.size() >= 3) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_ADD_ACHIEVEMENT_TRACING)), 0x64FFFF, 0, 0, 0);
       return false;
     }
@@ -90,36 +88,35 @@ bool CSession::ToggleTrackedAchievement(int id) {
     entry.title = info.title;
 
     for (unsigned int i = 0; i < info.rewards.size(); ++i) {
-      const AchievementReward& reward = info.rewards[i];
-      std::string text;
-      bool completed = false;
+      SessionRecord6178Entry objective;
 
       if (info.progressMode == 0) {
-        if (reward.text.size() > 40) {
-          text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
+        if (info.rewards[i].text.size() > 40) {
+          objective.text = static_cast<const std::string&>(FormatOwnedString("- %s...", info.rewards[i].text.substr(0, 40).c_str()));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
+          objective.text = static_cast<const std::string&>(FormatOwnedString("- %s", info.rewards[i].text.c_str()));
         }
 
-        completed = static_cast<int>(progress->objectives[i]) > 0;
+        objective.completed = static_cast<int>(progress->objectives[i]) > 0;
       } else if (info.progressMode == 1) {
-        std::string count = FormatOwnedString("(%d/%d)", progress->objectives[i], reward.targetCount);
-        if (reward.text.size() + count.size() > 40) {
-          text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
+        std::string count = FormatOwnedString("(%d/%d)", progress->objectives[i], info.rewards[i].targetCount);
+        if (info.rewards[i].text.size() + count.size() > 40) {
+          objective.text = static_cast<const std::string&>(
+              FormatOwnedString("- %s...%s", info.rewards[i].text.substr(0, 40 - count.size()).c_str(), count.c_str()));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
+          objective.text = static_cast<const std::string&>(FormatOwnedString("- %s %s", info.rewards[i].text.c_str(), count.c_str()));
         }
 
-        completed = static_cast<int>(progress->objectives[i]) == reward.targetCount;
+        objective.completed = static_cast<int>(progress->objectives[i]) == info.rewards[i].targetCount;
       }
 
-      entry.objectives.emplace_back(text, completed);
+      entry.objectives.push_back(objective);
     }
 
-    tracked.push_back(entry);
+    this->trackedAchievements.push_back(entry);
   }
 
-  if (tracked.size() == 0) {
+  if (this->trackedAchievements.size() == 0) {
     g_windowMgr.CloseWindow(WID_ACHTRACINGWND);
     return false;
   }
