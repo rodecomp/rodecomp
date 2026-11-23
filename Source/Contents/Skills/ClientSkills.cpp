@@ -602,12 +602,11 @@ static __forceinline void SplitDate(__time32_t time, std::int16_t& year, std::in
 void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   auto found = this->achievements.find(packet.id);
   if (found != this->achievements.end()) {
-    SessionRecord6144& record = found->second;
-    record.completed = packet.completed;
-    std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
-    record.completedAt = packet.completedAt;
-    record.rewarded = packet.rewarded;
-    record.SplitDate(packet.completedAt, record.year, record.month, record.day);
+    found->second.completed = packet.completed;
+    std::memcpy(found->second.objectives, packet.objectives, sizeof(found->second.objectives));
+    found->second.completedAt = packet.completedAt;
+    found->second.rewarded = packet.rewarded;
+    found->second.SplitDate(packet.completedAt, found->second.year, found->second.month, found->second.day);
     return;
   }
 
