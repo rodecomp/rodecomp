@@ -13,6 +13,13 @@
 
 namespace {
 // INLINED
+void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
+// INLINED
 __forceinline int RandomSpan(int range) {
   if (range == 0) {
     return 0;
@@ -45,9 +52,7 @@ void CPowderingEffect::CreateSpriteParticles() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetParticleIndices(*particle, 1, i, 0);
 
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
