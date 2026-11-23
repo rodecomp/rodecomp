@@ -1467,7 +1467,9 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
 // OFFSET: 0x00666860
 // FUNCTION: fn_05251
 AdventureGuideResult CAdventureGuideMgr::InsertMonsterContents(std::string_view name, int minLevel, int maxLevel) {
-  AdventureGuideEpisodeInfo info{minLevel, maxLevel};
+  AdventureGuideEpisodeInfo info;
+  info.order = minLevel;
+  info.maxLevel = maxLevel;
   m_episodes.emplace_back(AdventureGuideEpisodeSource{name.data(), std::move(info)});
   return AdventureGuideResult(true, "good");
 }
