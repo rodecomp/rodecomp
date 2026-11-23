@@ -393,16 +393,16 @@ void CGameMode::DrawMiniMapMarker(
   // GLOBAL: gl_24933
   static int s_lastPlayerY;
 
+  const float xF = static_cast<float>(x);
   const int width = this->scene->terrain->width;
   const int height = this->scene->terrain->height;
   const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
   const int longest = width >= height ? width : height;
-  const float widthF = static_cast<float>(width);
   const float longestF = static_cast<float>(longest);
-  const double mapWidth = widthF * 128.0f / longestF;
-  const float heightF = static_cast<float>(height);
-  const double mapHeight = heightF * 128.0f / longestF;
-  if (static_cast<float>(x) < 0.0f || static_cast<float>(y) < 0.0f) {
+  const double mapWidth = static_cast<float>(width) * 128.0f / longestF;
+  const double mapHeight = static_cast<float>(height) * 128.0f / longestF;
+  const float yF = static_cast<float>(y);
+  if (xF < 0.0f || yF < 0.0f) {
     return;
   }
 
@@ -410,11 +410,12 @@ void CGameMode::DrawMiniMapMarker(
   const float viewWidth = view.right - view.left;
   const double marginY = (128.0f - static_cast<float>(mapHeight)) * g_depthAverageHalf;
   const float viewLeft = view.left * 128.0f / viewWidth;
-  const double offsetX = (static_cast<float>(x) * static_cast<float>(mapWidth) / widthF + marginX) / viewWidth;
+  const double offsetX = (xF * static_cast<float>(mapWidth) / static_cast<float>(width) + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
   const float viewTop = view.top * 128.0f / viewHeight;
-  const double offsetY = (mapHeight - static_cast<double>(static_cast<float>(y) * static_cast<float>(mapHeight) / heightF) + marginY) / viewHeight;
+  const double offsetY = (mapHeight - static_cast<double>(yF * static_cast<float>(mapHeight) / static_cast<float>(height)) + marginY) / viewHeight;
   const double left = originX - 64.0;
+  const double right = originX + 64.0;
   double drawX = (left - viewLeft) + offsetX;
   double drawY = (16.0 - viewTop) + offsetY;
 
@@ -423,9 +424,9 @@ void CGameMode::DrawMiniMapMarker(
     if (drawX - size < left) {
       direction = 1;
       drawX = size + left;
-    } else if (drawX + size > originX + 64.0) {
+    } else if (drawX + size > right) {
       direction = 2;
-      drawX = (originX + 64.0) - size;
+      drawX = right - size;
     }
     if (drawY - size < 16.0) {
       drawY = size + 16.0;
@@ -443,7 +444,7 @@ void CGameMode::DrawMiniMapMarker(
       texture = arrow;
     }
   } else if (kind != 4) {
-    if (drawX - size < left || drawX + size > originX + 64.0 || drawY - size < 16.0 || drawY + size > 144.0) {
+    if (drawX - size < left || drawX + size > right || drawY - size < 16.0 || drawY + size > 144.0) {
       return;
     }
   }
