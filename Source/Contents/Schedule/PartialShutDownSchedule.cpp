@@ -55,7 +55,9 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
     return;
   }
 
-  this->seconds = static_cast<int>(_difftime32(this->endTime->seconds, this->startTime->seconds));
+  const __time32_t start = this->startTime->seconds;
+  const __time32_t end = this->endTime->seconds;
+  this->seconds = static_cast<int>(_difftime32(end, start));
   if (this->seconds < 3600) {
     this->UpdateNotice();
     return;
@@ -72,7 +74,8 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
 void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
   const std::int64_t currentTime = static_cast<std::int64_t>(now) / 10000000;
-  this->seconds = static_cast<unsigned int>(_difftime32(this->endTime->seconds, static_cast<__time32_t>(currentTime)));
+  const __time32_t end = this->endTime->seconds;
+  this->seconds = static_cast<int>(_difftime32(end, static_cast<__time32_t>(currentTime)));
   const int seconds = this->seconds;
 
   if (seconds >= 3600) {
