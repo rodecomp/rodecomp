@@ -3017,15 +3017,13 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
   data.y = packet.y;
   data.visible = packet.visible;
   data.level = packet.level;
-  if (data.owner != g_session.m_aid) {
-    if (!data.visible) {
-      const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
-      if (found != this->m_skillUnitIds.end()) {
-        this->m_skillUnitIds.erase(found);
+  if (data.owner != g_session.m_aid && !data.visible) {
+    for (auto it = this->m_skillUnitIds.begin(); it != this->m_skillUnitIds.end(); ++it) {
+      if (packet.aid == *it) {
+        this->m_skillUnitIds.erase(it);
         data.visible = 0;
+        break;
       }
-    } else {
-      this->m_skillUnitIds.push_back(packet.aid);
     }
   } else if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
@@ -3076,14 +3074,12 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   data.y = packet.y;
   data.visible = packet.visible;
   data.level = packet.level;
-  if (data.owner != g_session.m_aid) {
-    if (data.visible) {
-      this->m_skillUnitIds.push_back(packet.aid);
-    } else {
-      const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&data](std::uint32_t id) { return data.aid == id; });
-      if (found != this->m_skillUnitIds.end()) {
-        this->m_skillUnitIds.erase(found);
+  if (data.owner != g_session.m_aid && !data.visible) {
+    for (auto it = this->m_skillUnitIds.begin(); it != this->m_skillUnitIds.end(); ++it) {
+      if (packet.aid == *it) {
+        this->m_skillUnitIds.erase(it);
         data.visible = 0;
+        break;
       }
     }
   } else if (data.visible) {
