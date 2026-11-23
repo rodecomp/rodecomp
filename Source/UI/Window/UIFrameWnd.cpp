@@ -35,6 +35,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Mouse.h"
 #include "UI/Replay/UIReplayListBox.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
 #include "UI/Dialogs/UINoticeWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -98,6 +99,13 @@ UIPetInfoWnd::~UIPetInfoWnd() {
   if (this->feedConfirmationWnd) {
     g_windowMgr.Schedule(this->feedConfirmationWnd);
   }
+}
+
+// OFFSET: 0x008A56B0
+// FUNCTION: fn_46403
+__declspec(noinline) UIReplayRECControlWnd::~UIReplayRECControlWnd() {
+  this->recordStart = 0;
+  this->mode = 0;
 }
 
 // OFFSET: 0x005C4640
