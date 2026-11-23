@@ -513,13 +513,13 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
 // OFFSET: 0x00700A10
 // FUNCTION: fn_06988
 EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
-  auto it = this->effects.begin();
-  const auto end = this->effects.end();
+  auto it = this->effects.cbegin();
+  const auto end = this->effects.cend();
   while (it != end && id != it->second.id + 10000) {
     ++it;
   }
 
-  return it != end ? &it->second : nullptr;
+  return it != end ? const_cast<EZ2STREffectInfo*>(&it->second) : nullptr;
 }
 
 // OFFSET: 0x00700A90
@@ -540,7 +540,8 @@ int CEZ2STREffectMgr::EffectId(const std::string& name) {
 // FUNCTION: fn_06990
 std::vector<int> CEZ2STREffectMgr::EffectIds() {
   std::vector<int> ids;
-  for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
+  const auto end = this->effects.end();
+  for (auto it = this->effects.begin(); it != end; it++) {
     ids.push_back(it->second.id + 10000);
   }
   return ids;
