@@ -268,7 +268,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           return 0;
         }
       } else if (d == 1) {
-        return 0;
+        break;
       }
 
       this->chatWindowIndex = b;
@@ -283,14 +283,15 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             this->allChecked = 0;
           }
         }
-        this->m_allCheckBox->geometry.state = this->allChecked;
-        this->m_allCheckBox->Invalidate();
+        UICheckBox* allCheckBox = this->m_allCheckBox;
+        allCheckBox->geometry.state = this->allChecked;
+        allCheckBox->Invalidate();
         this->text = info.name;
         this->text += LookupMessage(MSI_SET_CHATINFO);
         this->Invalidate();
       }
       this->UpdateScrollBar();
-      return 0;
+      break;
     }
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
@@ -306,6 +307,8 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
       this->Invalidate();
       return 0;
+    default:
+      break;
     }
     return 0;
 
@@ -316,7 +319,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (message == UM_SCROLLVERTPAGEUP) {
       this->scrollPosition = previous - this->m_visibleRows + 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->scrollPosition = previous + this->m_visibleRows - 1;
+      this->scrollPosition = previous + (this->m_visibleRows - 1);
     } else {
       this->scrollPosition = previous + static_cast<int>(a);
     }
@@ -326,7 +329,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     return this->scrollPosition - previous;
   }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
