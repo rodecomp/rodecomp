@@ -3431,10 +3431,10 @@ void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
   const int angle = ClampedRandom(360);
   const float x = g_cosTable[angle] * 18.0f;
   const float z = g_sinTable[angle] * 18.0f;
-  particle->offsetZ = z;
-  particle->offsetX = x;
   particle->offsetY = 0.0f;
   particle->alpha = 0xFF;
+  particle->offsetX = x;
+  particle->offsetZ = z;
   particle->scale = static_cast<float>(ClampedRandom(31)) * 0.1f + 2.0f;
   particle->speedParameter = static_cast<float>(ClampedRandom(31)) * 0.01f + 0.05f;
   particle->animationState = 0;

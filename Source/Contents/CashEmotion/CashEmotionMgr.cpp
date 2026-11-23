@@ -1161,8 +1161,7 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
     return;
   }
 
-  CashEmotionCommand* shortcut = new (std::nothrow) CashEmotionCommand(name, packId, emotionId);
-  if (shortcut) {
+  if (CashEmotionCommand* shortcut = new (std::nothrow) CashEmotionCommand(name, packId, emotionId)) {
     this->m_shortcuts.try_emplace(name, shortcut);
   }
 }
@@ -2655,19 +2654,17 @@ void UICashEmotionListWnd::SetTab(char tab) {
     return;
   }
 
-  UICashEmotionListChildWnd_Abstract* list;
   if (tab == 1) {
-    list = this->m_basicList;
+    this->m_currentList = this->m_basicList;
   } else if (tab == 2) {
-    list = this->m_purchaseList;
+    this->m_currentList = this->m_purchaseList;
   } else if (tab == 3) {
-    list = this->m_unpurchasedList;
+    this->m_currentList = this->m_unpurchasedList;
   } else if (tab == 4) {
-    list = this->m_searchList;
+    this->m_currentList = this->m_searchList;
   } else {
-    list = nullptr;
+    this->m_currentList = nullptr;
   }
-  this->m_currentList = list;
 
   if (this->m_basicList) {
     this->m_basicList->Show(tab == 1);
@@ -2724,7 +2721,11 @@ void UICashEmotionListWnd::SetTab(char tab) {
   if (this->m_currentList) {
     const char* filter = this->m_currentList->Filter();
     if (this->m_searchEdit) {
-      this->m_searchEdit->SetText(filter ? filter : "");
+      const char* text = "";
+      if (filter) {
+        text = filter;
+      }
+      this->m_searchEdit->SetText(text);
     }
   }
 }
