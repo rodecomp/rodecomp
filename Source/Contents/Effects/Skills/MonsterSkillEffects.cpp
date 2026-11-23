@@ -10,6 +10,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Skills/GravityControlEffect.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -4275,8 +4276,9 @@ void CSvgSpiritEffect::Open() {
   this->emitter->SetAction("몬스터\\svg_spirit.act");
   this->emitter->velocity = {0.0f, 0.0f, 0.0f};
   this->effectLifetime = 16;
-  const float deltaX = this->sourcePosition[0] - this->position[0];
-  const float deltaZ = this->sourcePosition[2] - this->position[2];
+  const vector3d& position = this->positionVector;
+  const float deltaX = this->sourcePosition[0] - position.x;
+  const float deltaZ = this->sourcePosition[2] - position.z;
   float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;
   if (angle < 0.0f) {
     angle += 360.0f;
@@ -4286,8 +4288,9 @@ void CSvgSpiritEffect::Open() {
     angle += 360.0f;
   }
   this->emitter->angleParameter = static_cast<int>(angle);
+  CSpriteParticle* emitter = this->emitter;
   const float distance = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
-  this->emitter->frameDelay = distance / static_cast<float>(this->effectLifetime);
+  emitter->frameDelay = distance / static_cast<float>(this->effectLifetime);
   this->emitter->elapsedFrames = 0;
 }
 
