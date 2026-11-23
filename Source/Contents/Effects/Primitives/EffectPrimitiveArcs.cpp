@@ -1673,7 +1673,8 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
 __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
   CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
-  const short alpha = static_cast<short>(this->state.alpha);
+  const int opacity = static_cast<int>(this->state.alpha);
+  const std::int16_t alpha = static_cast<std::int16_t>(opacity);
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life <= 0 || !(this->state.alpha > 0.0f)) {
@@ -1681,16 +1682,37 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
     }
 
     for (int seg = 0; seg < this->state.numSegment; ++seg) {
-      EffectPrimitiveRecord& record = this->state.records[seg];
-      const float depth = record.position.y * wtm.values[5] + record.position.x * wtm.values[2] + record.position.z * wtm.values[8] + wtm.values[11];
+      const vector3d& position = this->state.records[seg].position;
+      float xDepth = position.x;
+      float yDepth = position.y;
+      yDepth *= wtm.values[5];
+      xDepth *= wtm.values[2];
+      const float depth = yDepth + xDepth + position.z * wtm.values[8] + wtm.values[11];
 
       float screenX;
       float screenY;
       float reciprocalDepth;
-      g_renderer->ProjectViewport(&record.position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
+      g_renderer->ProjectViewport(&position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
       const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
 
       const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+      const auto drawGlow = [&](const RenderBounds& bounds, const SpriteFrameCell& cell, const SpriteRleImage* image, std::uint32_t color) {
+        SpriteQuad glow;
+        float topY = bounds.top;
+        glow.top = topY - 1.0f;
+        glow.bottom = bounds.bottom + 1.0f;
+        glow.left = bounds.left - 1.0f;
+        glow.right = bounds.right + 1.0f;
+        const float centerY = screenY;
+        topY -= centerY;
+        glow.bottomRhw = 1.0f / ((bounds.bottom - centerY) * g_tangent + depth) + 0.0001f;
+        glow.image = image;
+        glow.topRhw = 1.0f / (topY * g_tangent + depth) + 0.0001f;
+        glow.color = color;
+        glow.angle = static_cast<float>(cell.rotation) + this->state.roll;
+        this->DrawQuad(glow, sprite->palette, 5, 0.0f, 0.0f, 0);
+      };
+
       for (int index = 0; index < frame.cellCount; ++index) {
         const SpriteFrameCell& cell = frame.Cell(index);
         if (cell.image == -1) {
@@ -1698,58 +1720,57 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         }
 
         const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-        const double scale = record.scale;
-        const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
-        const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
-        if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
+        const double distance = distanceScale;
+        const float scale = this->state.records[seg].scale;
+        const double scaledTop = static_cast<double>(cell.y) * scale * cell.scaleY;
+        RenderBounds bounds;
+        bounds.top = static_cast<float>(scaledTop * distance + screenY);
+        const int imageHeight = (image->doubleHeight + 1) * image->height;
+        const auto cellBottom = static_cast<std::int32_t>(static_cast<std::uint32_t>(cell.y) + imageHeight);
+        const double scaledBottom = static_cast<double>(cellBottom) * scale * cell.scaleY;
+        bounds.bottom = static_cast<float>(scaledBottom * distance + screenY);
+        if (bounds.top >= static_cast<float>(g_renderer->viewport.height) || bounds.bottom <= 0.0f) {
           continue;
         }
 
-        float left;
-        float right;
+        const double horizontalScale = scale;
+        const double scaleX = cell.scaleX;
         if ((cell.mirrored & 1) != 0) {
-          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
+          const auto cellRight = static_cast<std::int32_t>((image->doubleWidth + 1) * image->width + static_cast<std::uint32_t>(cell.x));
+          bounds.left = static_cast<float>(cellRight * horizontalScale * scaleX * distance + screenX);
+          bounds.right = static_cast<float>(cell.x * horizontalScale * scaleX * distance + screenX);
+          if (bounds.right >= static_cast<float>(g_renderer->viewport.width) || bounds.left <= 0.0f) {
             continue;
           }
         } else {
-          left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
-          if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
+          bounds.left = static_cast<float>(cell.x * horizontalScale * scaleX * distance + screenX);
+          const auto cellRight = static_cast<std::int32_t>((image->doubleWidth + 1) * image->width + static_cast<std::uint32_t>(cell.x));
+          bounds.right = static_cast<float>(cellRight * horizontalScale * scaleX * distance + screenX);
+          if (bounds.left >= static_cast<float>(g_renderer->viewport.width) || bounds.right <= 0.0f) {
             continue;
           }
         }
 
         SpriteQuad quad;
-        quad.top = top;
-        quad.left = left;
-        quad.bottom = bottom;
-        quad.right = right;
-        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth);
-        quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth);
+        quad.top = bounds.top;
+        quad.bottom = bounds.bottom;
+        quad.left = bounds.left;
+        quad.right = bounds.right;
+        quad.image = image;
+        quad.bottomRhw = 1.0f / ((bounds.bottom - screenY) * g_tangent + depth);
+        quad.topRhw = 1.0f / ((bounds.top - screenY) * g_tangent + depth);
         quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
 
         unsigned char red = cell.colorChannels.red;
         unsigned char green = cell.colorChannels.green;
         unsigned char blue = cell.colorChannels.blue;
-        quad.image = image;
         this->GetColorOverride(&red, &green, &blue);
-        const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
+        const std::uint32_t alphaChannel = alpha;
+        const std::uint32_t color = (((((alphaChannel << 8) + red) << 8) + green) << 8) + blue;
         quad.color = color;
         this->DrawQuad(quad, sprite->palette, this->state.slots[ec].flag1[2] != 1 ? 0x101 : 5, 0.0f, 0.0f, 0);
 
-        SpriteQuad glow;
-        glow.top = top - 1.0f;
-        glow.bottom = bottom + 1.0f;
-        glow.left = left - 1.0f;
-        glow.right = right + 1.0f;
-        glow.image = image;
-        glow.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
-        glow.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
-        glow.color = color;
-        glow.angle = static_cast<float>(cell.rotation) + this->state.roll;
-        this->DrawQuad(glow, sprite->palette, 5, 0.0f, 0.0f, 0);
+        drawGlow(bounds, cell, image, color);
       }
     }
   }
