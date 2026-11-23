@@ -66,9 +66,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
     const float baseX = slot.vecBPre.x;
     const float baseY = slot.vecBPre.y;
     const float baseZ = slot.vecBPre.z;
-    vec1.x = baseX + vec1.x;
-    vec1.y = baseY + vec1.y;
-    vec1.z = baseZ + vec1.z;
+    vec1 = vector3d{baseX + vec1.x, baseY + vec1.y, baseZ + vec1.z};
     vec2.x = baseX + vec2.x;
     vec2.y = baseY + vec2.y;
     vec2.z = baseZ + vec2.z;
