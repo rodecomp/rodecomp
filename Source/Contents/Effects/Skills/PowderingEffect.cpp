@@ -211,15 +211,15 @@ void CPowderingEffect::Open() {
 void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
-  const int r1Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
+  const float xVal = static_cast<float>(RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1);
 
   const float yVal = static_cast<float>(RandomSpan(7) + 7);
 
-  const int r2Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
+  const float zVal = static_cast<float>(RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1);
 
+  spriteParticle->velocity.x = xVal;
   spriteParticle->velocity.y = -yVal;
-  spriteParticle->velocity.x = static_cast<float>(r1Final);
-  spriteParticle->velocity.z = static_cast<float>(r2Final);
+  spriteParticle->velocity.z = zVal;
 
   const int r3 = RandomSpan(3) + 1;
 
