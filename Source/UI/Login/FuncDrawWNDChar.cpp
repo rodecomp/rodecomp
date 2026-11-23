@@ -121,13 +121,13 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const std::uint32_t* palette = sprite->palette;
-    switch (layer) {
-      case 1:
+    switch (layer - 1) {
+      case 0:
         if (this->m_bodyStyle > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
         }
         break;
-      case 2:
+      case 1:
         if (this->m_headPalette > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
         }
