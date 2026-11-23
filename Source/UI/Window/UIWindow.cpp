@@ -1758,30 +1758,6 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
   return total;
 }
 
-// OFFSET: 0x00A7F510
-// FUNCTION: fn_16963
-const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
-}
-
-// OFFSET: 0x00A7F580
-// FUNCTION: fn_16964
-const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
-}
-
-// OFFSET: 0x00A7F5F0
-// FUNCTION: fn_16965
-const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
-}
-
-// OFFSET: 0x00A7FE50
-// FUNCTION: fn_16967
-const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
-}
-
 // OFFSET: 0x00A80880
 // FUNCTION: fn_16977
 std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
