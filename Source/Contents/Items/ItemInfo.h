@@ -93,7 +93,15 @@ struct ITEM_INFO {
   const std::vector<const char*>& Description() const;
   std::vector<unsigned char> Serialize() const;
   std::uint32_t Deserialize(const std::vector<unsigned char>& data);
-  /* 0000 */ std::uint32_t identity[4];
+  union {
+    /* 0000 */ std::uint32_t identity[4];
+    struct {
+      /* 0000 */ std::uint32_t itemType;
+      /* 0004 */ std::uint32_t itemIndex;
+      /* 0008 */ std::uint32_t location;
+      /* 000C */ std::uint32_t wearLocation;
+    };
+  };
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t prices[2];
   /* 001C */ std::uint32_t cards[4];
