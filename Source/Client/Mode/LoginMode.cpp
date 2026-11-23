@@ -2017,9 +2017,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         url.assign("https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=", 121);
       }
       url.append(g_stoveMgr->GetAccessToken());
-      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
-      ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
-      message.assign("", 0);
+      ShellExecuteA(nullptr, OBFUSCATE_BYTES_TEXT("OPEN", 0xD98F5345098D630DULL), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      message.assign("");
       g_modeMgr.Quit();
       return;
     }
