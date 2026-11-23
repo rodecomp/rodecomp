@@ -11843,7 +11843,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         if (owned.identity[1] != 0) {
           index = 0;
           for (const ITEM_INFO& old : this->items) {
-            if (old.identity[1] == owned.identity[1]) {
+            if (owned.identity[1] == old.identity[1]) {
               fresh = false;
               price = this->priceEdits[index]->Text();
               break;
@@ -11864,11 +11864,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
               g_windowMgr.SetFocus(this->priceEdits[index]);
               this->priceEdits[index]->SelectAll();
             }
-          } else if (!full) {
+          } else {
+            if (full == true) {
+              break;
+            }
             this->priceEdits[index]->Background(232, 232, 232);
-            this->priceEdits[index]->disabled = 0;
-            this->priceEdits[index]->Invalidate();
-            if (fresh) {
+            SetEditDisabled(*this->priceEdits[index], 0);
+            if (fresh == true) {
               this->priceEdits[index]->SetText("0");
             } else {
               this->priceEdits[index]->SetText(price.c_str());
@@ -11907,8 +11909,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SetFocus(this->priceEdits[index]);
       }
       this->priceEdits[this->items.size()]->Background(182, 182, 182);
-      this->priceEdits[this->items.size()]->disabled = 1;
-      this->priceEdits[this->items.size()]->Invalidate();
+      SetEditDisabled(*this->priceEdits[this->items.size()], 1);
       char text[24] = {};
       for (; index < this->slotCount - 1; ++index) {
         this->priceEdits[index]->SetText(this->priceEdits[index + 1]->Text());
@@ -12057,7 +12058,24 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           goto showError;
         }
         const std::int64_t price = std::max(std::min(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), static_cast<std::int64_t>(0));
-        if (this->mode == 0) {
+        if (this->mode != 0) {
+          if (static_cast<unsigned>(i) >= this->items.size()) {
+            break;
+          }
+          if (price == 0) {
+            const std::string name = current->DisplayName(0);
+            const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_INPUTPRICE), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          if (price > 99990000) {
+            const std::string name = current->DisplayName(0);
+            const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_REINPUTPRICE), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          ++current;
+        } else {
           if (this->items.empty()) {
             error = MSI_BUYINGSTORE_MAKEWND_ADD_GOODS;
             goto showError;
@@ -12078,23 +12096,6 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           if (!g_session.m_skipPriceWarning && static_cast<unsigned>(i) < this->items.size() && price > 1000000000) {
             highPrice = TRUE;
           }
-        } else {
-          if (static_cast<unsigned>(i) >= this->items.size()) {
-            break;
-          }
-          if (price == 0) {
-            const std::string name = current->DisplayName(0);
-            const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_INPUTPRICE), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
-            return 0;
-          }
-          if (price > 99990000) {
-            const std::string name = current->DisplayName(0);
-            const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_REINPUTPRICE), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
-            return 0;
-          }
-          ++current;
         }
       }
       if (this->mode == 0) {
