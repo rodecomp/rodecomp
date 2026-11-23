@@ -155,8 +155,8 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
       if (i >= 21) {
         i = 20;
       }
-      prevT = curT;
       prevB = curB;
+      prevT = curT;
     }
   }
 }
