@@ -1220,31 +1220,29 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   const RagEffectState& master = this->state.master->state;
+  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
   const unsigned char finalRed = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : red;
   const unsigned char finalGreen = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : green;
   const unsigned char finalBlue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : blue;
-  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
-  const std::uint32_t color = static_cast<std::uint32_t>(((((alphaB << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
+  const std::uint32_t color = (((((static_cast<std::uint32_t>(alphaB) << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
 
   float left;
   float right;
-  if (texPart >= 100) {
-    if (texPart == 100) {
-      left = 0.35f;
-      right = 0.45f;
-    } else if (texPart == 101) {
-      left = 0.45f;
-      right = 0.55f;
-    } else {
-      left = 0.55f;
-      right = 0.65f;
-    }
-  } else {
+  if (texPart < 100) {
     left = static_cast<float>(texPart) / 21.0f;
     if (texPart == 0) {
       left = 0.0f;
     }
     right = static_cast<float>(texPart + 1) / 21.0f;
+  } else if (texPart == 100) {
+    left = 0.35f;
+    right = 0.45f;
+  } else if (texPart == 101) {
+    left = 0.45f;
+    right = 0.55f;
+  } else {
+    left = 0.55f;
+    right = 0.65f;
   }
 
   const vector3d& position = this->render.position;
