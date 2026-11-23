@@ -188,7 +188,10 @@ struct TradeItemRecord {
   /* 0009 */ int quantity;
   /* 000D */ std::uint16_t weight;
   /* 000F */ unsigned char refine;
-  /* 0010 */ std::uint32_t cards[4];
+  /* 0010 */ std::uint32_t card0;
+  /* 0014 */ std::uint32_t card1;
+  /* 0018 */ std::uint32_t card2;
+  /* 001C */ std::uint32_t card3;
   /* 0020 */ std::uint16_t index;
 };
 #pragma pack(pop)
@@ -4737,7 +4740,10 @@ void CGameMode::ReceiveTradeItems(int count, const TradeItemRecord* records) {
     item.prices[0] = record.price;
     item.prices[1] = record.price;
     item.refiningLevel = record.refine;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
+    item.cards[0] = record.card0;
+    item.cards[1] = record.card1;
+    item.cards[2] = record.card2;
+    item.cards[3] = record.card3;
     item.identity[1] = record.index;
     item.identified = 1;
     item.uniqueItem = 1;
@@ -7644,7 +7650,10 @@ struct ParaResultEntry {
   /* 0004 */ std::int16_t quantity;
   /* 0006 */ int location;
   /* 000A */ unsigned char refine;
-  /* 000B */ int cards[4];
+  /* 000B */ int card0;
+  /* 000F */ int card1;
+  /* 0013 */ int card2;
+  /* 0017 */ int card3;
   /* 001B */ std::uint16_t index;
 };
 #pragma pack(pop)
@@ -7665,7 +7674,10 @@ __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success
     item.prices[0] = entry->location;
     item.prices[1] = entry->location;
     item.refiningLevel = entry->refine;
-    std::memcpy(item.cards, entry->cards, sizeof(entry->cards));
+    item.cards[0] = entry->card0;
+    item.cards[1] = entry->card1;
+    item.cards[2] = entry->card2;
+    item.cards[3] = entry->card3;
     item.identity[1] = entry->index;
     item.identified = 1;
     window->AddItem(item);
@@ -8733,7 +8745,7 @@ void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
   guildInfo->AddMember(member);
 
   CPlayerNameDictionary* names = g_playerNameDictionary;
-  names->Set(p->member.characterId, std::string(name, 25).c_str());
+  names->Set(p->member.characterId, std::string(name, name + 25).c_str());
   guildInfo->UpdateMemberExpRatios();
   g_windowMgr.RefreshGuildWindows();
 }
@@ -17424,9 +17436,9 @@ void CGameMode::ReceivePartyMemberList(const unsigned char* data) {
 // FUNCTION: fn_21960
 void CGameMode::SetPartyMemberList(const char* value, std::vector<PartyRosterEntry>* members) {
   g_session.ClearPartyMembers();
-  char partyName[25];
-  partyName[24] = '\0';
+  char partyName[25] = "";
   std::memcpy(partyName, value, 24);
+  partyName[24] = '\0';
   if (g_forbiddenWords.Contains(partyName)) {
     std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
@@ -17435,12 +17447,12 @@ void CGameMode::SetPartyMemberList(const char* value, std::vector<PartyRosterEnt
 
   for (auto iter = members->begin(); iter != members->end(); ++iter) {
     const PartyRosterEntry& entry = *iter;
-    char name[25];
-    name[24] = '\0';
+    char name[25] = "";
+    char map[17] = "";
     std::memcpy(name, entry.name, sizeof(entry.name));
-    char map[17];
-    map[16] = '\0';
+    name[24] = '\0';
     std::memcpy(map, entry.mapName, sizeof(entry.mapName));
+    map[16] = '\0';
     MessengerMember member;
     member.accountId = entry.accountId;
     member.characterId = entry.characterId;
