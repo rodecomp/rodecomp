@@ -6,16 +6,6 @@
 #include <algorithm>
 #include <cstdlib>
 
-namespace {
-struct ZeroVector3d : vector3d {
-  // INLINED
-  ZeroVector3d() {
-    this->x = 0.0f;
-    this->y = 0.0f;
-    this->z = 0.0f;
-  }
-};
-}
 
 // INLINED
 static int Random(int range) {

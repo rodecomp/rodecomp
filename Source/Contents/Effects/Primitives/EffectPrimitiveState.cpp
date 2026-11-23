@@ -8,25 +8,14 @@
 #include <cstdlib>
 #include <cstring>
 
-// OFFSET: 0x00BAE170
-// FUNCTION: fn_19762
-EffectPrimitiveSlot::EffectPrimitiveSlot() {
-  for (int i = 0; i < 4; ++i) {
-    this->vectors[i].x = 0.0f;
-    this->vectors[i].y = 0.0f;
-    this->vectors[i].z = 0.0f;
-  }
-}
-
-// INLINED
-EffectPrimitiveState::~EffectPrimitiveState() {
-  std::free(this->textures);
-}
-
 // INLINED
 CEffectPrim::~CEffectPrim() {
   if (this->state.master) {
     this->state.master->SendMsg(this, AM_CHILD_DEAD, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (this->state.textures) {
+    delete[] this->state.textures;
   }
 }
 

@@ -4,6 +4,7 @@
 #include "Render/Drawing/SpriteGeometry.h"
 
 #include <cstddef>
+#include <new>
 #include <cstdint>
 
 class CTexture;
@@ -24,7 +25,24 @@ struct RenderVertex {
   RenderVertex* Reset();
 };
 
+struct RenderTriangleVertex : RenderVertex {
+  RenderTriangleVertex() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
+    this->rhw = 0;
+    this->diffuse = 0;
+    this->specular = 0xFF000000;
+    this->u = 0;
+    this->v = 0;
+  }
+};
+
 struct RenderTriangle {
+  RenderTriangle() {
+    ::new (static_cast<void*>(this->vertices)) RenderTriangleVertex[3];
+  }
+
   /* 0000 */ RenderVertex vertices[3];
   /* 0060 */ CTexture* texture;
   /* 0064 */ std::uint32_t sourceBlend;

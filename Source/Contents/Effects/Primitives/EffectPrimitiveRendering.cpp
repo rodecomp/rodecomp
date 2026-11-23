@@ -77,24 +77,6 @@ static __forceinline void TransformPrimitiveVertex(const float* matrix, const ve
   out.z = in.z * matrix[8] + (in.y * matrix[5] + in.x * matrix[2]) + matrix[11];
 }
 
-struct ZeroVector3d : vector3d {
-  // INLINED
-  ZeroVector3d() {
-    this->x = 0.0f;
-    this->y = 0.0f;
-    this->z = 0.0f;
-  }
-
-  using vector3d::operator=;
-
-  // INLINED
-  void Set(float x, float y, float z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
-};
-
 // INLINED
 static __forceinline vector3d operator+(const vector3d& a, const vector3d& b) {
   vector3d result;

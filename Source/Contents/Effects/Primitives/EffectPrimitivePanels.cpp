@@ -3,24 +3,6 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
-struct ZeroVector3d : vector3d {
-  // INLINED
-  ZeroVector3d() {
-    this->x = 0.0f;
-    this->y = 0.0f;
-    this->z = 0.0f;
-  }
-
-  using vector3d::operator=;
-
-  // INLINED
-  void Set(float x, float y, float z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
-};
-
 // OFFSET: 0x00BF4630
 // FUNCTION: fn_19995
 void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
