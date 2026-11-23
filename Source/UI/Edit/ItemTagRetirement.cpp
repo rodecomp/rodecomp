@@ -390,7 +390,13 @@ void UIItemTagCtrl::UpdateItemTags() {
             visible = prefix.substr(firstVisible);
           }
 
-          x = (firstVisible != 0 && prefix.size() <= firstVisible) ? 1000 : 0;
+          x = 0;
+          if (firstVisible != 0) {
+            x = 1000;
+            if (prefix.size() > firstVisible) {
+              x = 0;
+            }
+          }
         }
 
         this->PlaceTagButton(current->child, visible, x, 0);
