@@ -20,6 +20,13 @@ struct EmptyElectricEffectDestructor {
 };
 
 // INLINED
+static void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
+// INLINED
 static short HeadingOf(float nx, float nz) {
   for (short step = 0; step <= 180; ++step) {
     if (nx >= g_cosTable[step]) {
@@ -42,7 +49,8 @@ __declspec(noinline) CElectricEffect::~CElectricEffect() {
 // OFFSET: 0x00B4E890
 // FUNCTION: fn_19002
 void CElectricEffect::AddBolt(int tilt) {
-  for (int row = 0; row < 4; ++row, tilt += 45) {
+  int phase = tilt;
+  for (int row = 0; row < 4; ++row, phase += 45) {
     const int roll = rand() % 11;
     const float spin = static_cast<float>(roll >= 0 ? roll : 0) * 0.01f;
 
@@ -54,13 +62,11 @@ void CElectricEffect::AddBolt(int tilt) {
         }
 
         particle->effectId = this->id;
-        particle->columnIndex = segment;
-        particle->rowIndex = row;
-        particle->groupIndex = strand;
+        SetParticleIndices(*particle, strand, segment, row);
         particle->SetTexture("effect\\elec1.tga");
         particle->speedParameter = 0.1f;
         particle->alpha = 0;
-        particle->phaseParameter = tilt;
+        particle->phaseParameter = phase;
         particle->scale = 0.0f;
         particle->angle = spin;
         particle->angleParameter = 0;
