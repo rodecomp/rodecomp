@@ -50,8 +50,7 @@ int MD5::Initialize() {
   m_state[1] = 0xEFCDAB89;
   m_state[2] = 0x98BADCFE;
   m_state[3] = 0x10325476;
-  m_byteCount[0] = 0;
-  m_byteCount[1] = 0;
+  std::memset(m_byteCount, 0, sizeof(m_byteCount));
   return 0;
 }
 
