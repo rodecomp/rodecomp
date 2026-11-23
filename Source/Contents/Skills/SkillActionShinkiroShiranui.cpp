@@ -690,7 +690,10 @@ void CSkillAction_SS_SHINKIROU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08756
 void CSkillAction_SS_KAGEGARI::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagegari"), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = "kagegari";
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00793A50
@@ -776,7 +779,10 @@ void CSkillAction_SS_FUUMAKOUCHIKU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08768
 void CSkillAction_SS_FUUMAKOUCHIKU::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_fuumakouchiku"), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = "new_fuumakouchiku";
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00794350
