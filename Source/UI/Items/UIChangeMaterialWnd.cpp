@@ -580,8 +580,8 @@ void UIChangeMaterialWnd_List::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   for (int row = 0; row < this->m_pageSize; ++row) {
+    const MaterialListEntry* entry = this->GetEntry(row + this->m_scrollOffset);
     const int index = row + this->m_scrollOffset;
-    const MaterialListEntry* entry = this->GetEntry(index);
     if (entry) {
       const char* bitmap;
       if (index == this->m_selectedIndex) {
