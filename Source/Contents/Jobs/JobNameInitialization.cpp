@@ -23,7 +23,7 @@ void CSession::InitJobNameTable() {
   for (int id = JT_RUNE_KNIGHT_2ND; id < JT_SECOND_JOB_END; ++id) {
     jobs.push_back(id);
   }
-  for (int id = JT_DRUID; id < JT_2004_JOB_LAST; ++id) {
+  for (int id = JT_DRUID; id <= JT_ALITEA_RIDING; ++id) {
     jobs.push_back(id);
   }
 
@@ -44,7 +44,7 @@ void CSession::InitJobNameTable() {
     }
   }
 
-  for (int id = JT_WARPNPC; id < JT_SAFETYWALL; ++id) {
+  for (int id = JT_WARPNPC; id <= JT_4_M_TELEPORTER; ++id) {
     g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
   }
   for (int id = JT_NEW_NPC_START; id < JT_MON_BEGIN; ++id) {
