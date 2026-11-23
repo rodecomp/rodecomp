@@ -3612,7 +3612,9 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   basicButton->SetFitText(0);
   basicButton->SetAlign(6, 6);
   {
-    basicButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL)));
+    std::string font;
+    font = OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL);
+    basicButton->SetFont(font);
   }
   basicButton->SetFontHeight(12);
   basicButton->SetBold(0);
