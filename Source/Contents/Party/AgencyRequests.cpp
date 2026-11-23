@@ -3,6 +3,45 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x005CAA50
+// FUNCTION: fn_03655
+std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
+  std::string url = g_session.ResolveAccountServiceBase();
+
+  if (url.empty()) {
+    return "";
+  }
+
+  switch (operation) {
+  case 1:
+    url += "/party/list";
+    break;
+  case 0:
+  case 2:
+    url += "/party/add";
+    break;
+  case 3:
+    url += "/party/search";
+    break;
+  case 4:
+    url += "/party/del";
+    break;
+  case 5:
+    url += "/party/get";
+    break;
+  case 6:
+    url += "/party/change";
+    break;
+  case 7:
+    url += "/party/info";
+    break;
+  default:
+    break;
+  }
+
+  return url;
+}
+
 // OFFSET: 0x005CB3B0
 // FUNCTION: fn_03657
 void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, std::uint32_t targetCharacterId, std::string targetName) {
@@ -11,7 +50,7 @@ void CAdventurerAgencyMgr::RequestChangeMaster(std::uint32_t targetAccountId, st
   const std::uint32_t account = g_session.m_aid;
   manager->ChangePartyMaster(
     account, character, std::string(g_session.DecodePlayerName()), targetAccountId, targetCharacterId, targetName, std::string(g_session.m_accountName.c_str()),
-    this->ServiceUrl(6), std::string(g_session.m_webAuthToken, 16)
+    this->ServiceUrl(6), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16)
   );
   ++this->pending;
 }
@@ -24,7 +63,7 @@ void CAdventurerAgencyMgr::RequestMyParty() {
   const std::uint32_t account = g_session.m_aid;
   manager->LoadMyParty(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(5),
-    std::string(g_session.m_webAuthToken, 16)
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16)
   );
   ++this->pending;
 }
@@ -37,7 +76,7 @@ void CAdventurerAgencyMgr::RequestList(int page) {
   const std::uint32_t account = g_session.m_aid;
   manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(1),
-    std::string(g_session.m_webAuthToken, 16), 0, CAdvenPartyInfo(), page
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), 0, CAdvenPartyInfo(), page
   );
   ++this->pending;
 }
@@ -50,7 +89,7 @@ void CAdventurerAgencyMgr::RequestInfo(std::uint32_t queryAccountId) {
   const std::uint32_t account = g_session.m_aid;
   manager->LoadPartyInfo(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(7),
-    std::string(g_session.m_webAuthToken, 16), queryAccountId
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), queryAccountId
   );
   ++this->pending;
 }
@@ -63,7 +102,7 @@ void CAdventurerAgencyMgr::RequestRegistration(const CAdvenPartyInfo& info) {
   const std::uint32_t account = g_session.m_aid;
   manager->RegisterParty(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(0),
-    std::string(g_session.m_webAuthToken, 16), info
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), info
   );
   ++this->pending;
 }
@@ -76,7 +115,7 @@ void CAdventurerAgencyMgr::RequestSearch(const CAdvenPartyInfo& filter, int page
   const std::uint32_t account = g_session.m_aid;
   manager->LoadPartyList(
     account, character, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(3),
-    std::string(g_session.m_webAuthToken, 16), 1, filter, page
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), 1, filter, page
   );
   ++this->pending;
 }
@@ -89,7 +128,7 @@ void CAdventurerAgencyMgr::RequestStop(std::uint32_t masterAccountId) {
   const std::uint32_t account = g_session.m_aid;
   manager->StopRecruiting(
     account, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
-    std::string(g_session.m_webAuthToken, 16), masterAccountId
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), masterAccountId
   );
   ++this->pending;
 }
@@ -105,7 +144,7 @@ void CAdventurerAgencyMgr::RequestStop() {
   CAsyncWorkMgr* manager = g_asyncWorkMgr;
   manager->StopRecruiting(
     g_session.m_aid, std::string(g_session.m_accountName.c_str()), this->ServiceUrl(4),
-    std::string(g_session.m_webAuthToken, 16), g_session.m_aid
+    std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), g_session.m_aid
   );
   ++this->pending;
 }

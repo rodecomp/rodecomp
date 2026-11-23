@@ -68,45 +68,6 @@ const std::vector<CAdvenPartyInfo>& CAdventurerAgencyMgr::Entries() const {
   return this->entries;
 }
 
-// OFFSET: 0x005CAA50
-// FUNCTION: fn_03655
-std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
-  std::string url = g_session.ResolveAccountServiceBase();
-
-  if (url.empty()) {
-    return "";
-  }
-
-  switch (operation) {
-  case 1:
-    url += "/party/list";
-    break;
-  case 0:
-  case 2:
-    url += "/party/add";
-    break;
-  case 3:
-    url += "/party/search";
-    break;
-  case 4:
-    url += "/party/del";
-    break;
-  case 5:
-    url += "/party/get";
-    break;
-  case 6:
-    url += "/party/change";
-    break;
-  case 7:
-    url += "/party/info";
-    break;
-  default:
-    break;
-  }
-
-  return url;
-}
-
 // OFFSET: 0x005CAC00
 // FUNCTION: fn_03656
 void CAdventurerAgencyMgr::LoadList(Json::Value& value) {
