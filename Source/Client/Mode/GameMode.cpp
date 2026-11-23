@@ -5813,11 +5813,9 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
         record.resize(header.size, 0);
       }
 
-      if (header.type == 10001) {
-        break;
-      }
-
       switch (header.type) {
+      case 10001:
+        return offset;
       case 0xD0:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
