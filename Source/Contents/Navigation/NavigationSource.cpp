@@ -630,8 +630,8 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
   }
 
   bool matched = true;
-  for (const std::wstring& keyword : wideKeywords) {
-    matched &= StrStrIW(wideText.c_str(), keyword.c_str()) != nullptr;
+  for (std::vector<std::wstring>::iterator it = wideKeywords.begin(); it != wideKeywords.end(); ++it) {
+    matched &= StrStrIW(wideText.c_str(), it->c_str()) != nullptr;
   }
   if (!matched) {
     return;
