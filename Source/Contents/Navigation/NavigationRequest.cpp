@@ -324,7 +324,9 @@ std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
 
 // INLINED
 static CNavi_Link* FindSameLink(const std::vector<CNavi_Link*>& links, CNavi_Link target) {
-  for (CNavi_Link* candidate : links) {
+  const auto end = links.end();
+  for (auto it = links.begin(); it != end; ++it) {
+    CNavi_Link* candidate = *it;
     if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->linkedCellX == target.linkedCellX &&
         candidate->linkedCellY == target.linkedCellY && candidate->info != nullptr &&
         std::strcmp(candidate->info->name.c_str(), target.info->name.c_str()) == 0 && candidate->linkedInfo != nullptr &&
