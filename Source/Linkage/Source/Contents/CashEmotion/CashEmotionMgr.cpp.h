@@ -85,3 +85,5 @@ std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Try_emplace<cons
 template __declspec(noinline) std::string fmt::format<int&, int&, int&, int&, int&>(
   fmt::format_string<int&, int&, int&, int&, int&>, int&, int&, int&, int&, int&
 );
+template __forceinline std::vector<CashEmotionEntry>::~vector();
+template __forceinline void std::vector<CashEmotionEntry>::_Tidy() noexcept;
