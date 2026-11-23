@@ -6025,10 +6025,11 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         menu->SendMsg(nullptr, UM_SET_CALLER_WID, 0x7E, 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-      menu->Move(
-        std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-        std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
-      );
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      x = std::min(std::max(x, 1), g_renderer->viewport.width - menu->geometry.width);
+      y = std::min(std::max(y, 1), g_renderer->viewport.height - menu->geometry.height);
+      menu->Move(x, y);
       return 0;
     }
     break;
