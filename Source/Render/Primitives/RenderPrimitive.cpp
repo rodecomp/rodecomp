@@ -63,10 +63,18 @@ namespace {
 
 // OFFSET: 0x005691D0
 // FUNCTION: fn_02250
-RenderPrimitive::RenderPrimitive() : RenderCommand() {
-  new (this->quad) QuadVertex[4];
-  this->vertices = this->quad;
+RenderPrimitive::RenderPrimitive() : RenderCommand(0) {
   this->vertexCount = 4;
+  this->vertices = this->quad;
+  this->texture = nullptr;
+  this->indices = nullptr;
+  this->indexCount = 0;
+  this->depthTest = 1;
+  this->commandMode = 0;
+  this->sourceBlend = 0;
+  this->destinationBlend = 0;
+  this->textureMode = 0;
+  new (this->quad) QuadVertex[4];
   this->primitiveType = D3DPT_TRIANGLESTRIP;
 }
 
