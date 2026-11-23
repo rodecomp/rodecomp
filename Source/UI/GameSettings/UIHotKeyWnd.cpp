@@ -284,6 +284,11 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
   this->Invalidate();
 }
 
+// INLINED
+static UIHotKeyWnd::HotkeyEntry EntryOf(int index, const HotkeyInfo& info) {
+  return UIHotKeyWnd::HotkeyEntry{index, info};
+}
+
 // OFFSET: 0x0091C720
 // FUNCTION: fn_12617
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
@@ -662,30 +667,30 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       }
 
       StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
-      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != ID_YES) {
-        return 1;
-      }
+      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        info.key1 = 0;
+        info.key2 = 0;
+        info.text = "";
+        this->SetHotkey(tab, entry.index, info);
 
-      info.key1 = 0;
-      info.key2 = 0;
-      info.text = "";
-      this->SetHotkey(tab, entry.index, info);
-
-      if (tab == 0 && this->m_tab != 0) {
-        const int shortcutCount = g_session.HotkeyCount(3);
-        for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
-          const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
-          HotkeyInfo otherInfo = other.info;
-          if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
-            otherInfo.key1 = 0;
-            otherInfo.key2 = 0;
-            otherInfo.text = "";
-            this->SetHotkey(3, other.index, otherInfo);
+        if (tab == 0 && this->m_tab != 0) {
+          const int shortcutCount = g_session.HotkeyCount(3);
+          for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
+            const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
+            HotkeyInfo otherInfo = other.info;
+            if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
+              otherInfo.key1 = 0;
+              otherInfo.key2 = 0;
+              otherInfo.text = "";
+              this->SetHotkey(3, other.index, otherInfo);
+            }
           }
         }
+
+        return 0;
       }
 
-      return 0;
+      return 1;
     }
   }
 
