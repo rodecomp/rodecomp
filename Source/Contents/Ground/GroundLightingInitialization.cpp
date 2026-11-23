@@ -14,8 +14,9 @@ void GroundGeometry::InitializeLighting() {
 
   for (int row = 0; row < 2 * this->height; ++row) {
     for (int column = 0; column < 2 * this->width; ++column) {
-      float average = 0.0f;
       const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
+
+      float average = 0.0f;
 
       if (cell) {
         average = ((cell->heights[1] + cell->heights[0]) + cell->heights[2] + cell->heights[3]) * 0.25f;
@@ -34,12 +35,12 @@ void GroundGeometry::InitializeLighting() {
         int greenSum = 0;
         int blueSum = 0;
 
-        for (const auto& offset : offsets) {
+        for (int i = 0; i < 5; ++i) {
           unsigned char alpha;
           unsigned char sampleRed;
           unsigned char sampleGreen;
           unsigned char sampleBlue;
-          this->LightmapSample(column + offset[0], row + offset[1], alpha, sampleRed, sampleGreen, sampleBlue);
+          this->LightmapSample(column + offsets[i][0], row + offsets[i][1], alpha, sampleRed, sampleGreen, sampleBlue);
           alphaSum += alpha;
           redSum += sampleRed;
           greenSum += sampleGreen;
