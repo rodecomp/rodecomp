@@ -6091,15 +6091,14 @@ void UISkillListWnd::OnCreate(int width, int height) {
     std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
     int row = 0;
     for (int y = 21; y < 245; y += 32, ++row) {
-      UIBitmapButton* button = new UIBitmapButton();
-      this->upgradeButtons[row] = button;
-      button->SetBitmap(normal.c_str(), 0, 0);
-      button->SetBitmap(over.c_str(), 1, 0);
-      button->SetBitmap(pressed.c_str(), 2, 0);
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(78, y);
-      button->SetId(upgradeIds[row]);
-      this->AddChild(button);
+      this->upgradeButtons[row] = new UIBitmapButton();
+      this->upgradeButtons[row]->SetBitmap(normal.c_str(), 0, 0);
+      this->upgradeButtons[row]->SetBitmap(over.c_str(), 1, 0);
+      this->upgradeButtons[row]->SetBitmap(pressed.c_str(), 2, 0);
+      this->upgradeButtons[row]->SetSize(this->upgradeButtons[row]->BitmapWidth(), this->upgradeButtons[row]->BitmapHeight());
+      this->upgradeButtons[row]->Move(78, y);
+      this->upgradeButtons[row]->SetId(upgradeIds[row]);
+      this->AddChild(this->upgradeButtons[row]);
     }
   }
 
@@ -6108,15 +6107,14 @@ void UISkillListWnd::OnCreate(int width, int height) {
     std::string left("유저인터페이스\\basic_interface\\arw_left.bmp");
     int row = 0;
     for (int y = 34; y < 258; y += 32, ++row) {
-      UIBitmapButton* button = new UIBitmapButton();
-      this->levelButtons[row] = button;
-      button->SetBitmap(left.c_str(), 0, 0);
-      button->SetBitmap(left.c_str(), 1, 0);
-      button->SetBitmap(left.c_str(), 2, 0);
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(112, y);
-      button->SetId(levelDownIds[row]);
-      this->AddChild(button);
+      this->levelButtons[row] = new UIBitmapButton();
+      this->levelButtons[row]->SetBitmap(left.c_str(), 0, 0);
+      this->levelButtons[row]->SetBitmap(left.c_str(), 1, 0);
+      this->levelButtons[row]->SetBitmap(left.c_str(), 2, 0);
+      this->levelButtons[row]->SetSize(this->levelButtons[row]->BitmapWidth(), this->levelButtons[row]->BitmapHeight());
+      this->levelButtons[row]->Move(112, y);
+      this->levelButtons[row]->SetId(levelDownIds[row]);
+      this->AddChild(this->levelButtons[row]);
     }
   }
 
@@ -6125,15 +6123,14 @@ void UISkillListWnd::OnCreate(int width, int height) {
     std::string right("유저인터페이스\\basic_interface\\arw_right.bmp");
     int row = 0;
     for (int y = 34; y < 258; y += 32, ++row) {
-      UIBitmapButton* button = new UIBitmapButton();
-      this->levelLabels[row] = button;
-      button->SetBitmap(right.c_str(), 0, 0);
-      button->SetBitmap(right.c_str(), 1, 0);
-      button->SetBitmap(right.c_str(), 2, 0);
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(192, y);
-      button->SetId(levelUpIds[row]);
-      this->AddChild(button);
+      this->levelLabels[row] = new UIBitmapButton();
+      this->levelLabels[row]->SetBitmap(right.c_str(), 0, 0);
+      this->levelLabels[row]->SetBitmap(right.c_str(), 1, 0);
+      this->levelLabels[row]->SetBitmap(right.c_str(), 2, 0);
+      this->levelLabels[row]->SetSize(this->levelLabels[row]->BitmapWidth(), this->levelLabels[row]->BitmapHeight());
+      this->levelLabels[row]->Move(192, y);
+      this->levelLabels[row]->SetId(levelUpIds[row]);
+      this->AddChild(this->levelLabels[row]);
     }
   }
 
