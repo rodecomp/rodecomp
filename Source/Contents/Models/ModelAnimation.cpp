@@ -152,16 +152,23 @@ void ModelScaleTrack::Sample(float frame, matrix& output) const {
 
   for (unsigned next = 0; next < count; ++next) {
     if (static_cast<float>(keys[next].frame) > frame) {
-      if (next != 0) {
+      if (next == 0) {
+        second = keys[0];
+      } else {
         first = keys[next - 1];
+        second = keys[next];
       }
 
-      second = keys[next];
       break;
     }
   }
 
-  const float amount = second.frame != first.frame ? (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame)) : 0.0f;
+  float amount = 0.0f;
+
+  if (second.frame != first.frame) {
+    amount = (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame));
+  }
+
   scale.SetScale(
     (1.0f - amount) * first.rotation[0] + second.rotation[0] * amount, (1.0f - amount) * first.rotation[1] + second.rotation[1] * amount,
     first.rotation[2] * (1.0f - amount) + second.rotation[2] * amount
@@ -203,11 +210,12 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
     if (static_cast<float>(keys[next].frame) > frame) {
       if (next == 0) {
         first = ModelPositionKey{0, {base.values[9], base.values[10], base.values[11]}};
+        std::memcpy(&second, &keys[0], sizeof(second));
       } else {
         std::memcpy(&first, &keys[next - 1], sizeof(first));
+        std::memcpy(&second, &keys[next], sizeof(second));
       }
 
-      std::memcpy(&second, &keys[next], sizeof(second));
       break;
     }
   }
@@ -243,11 +251,12 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
         if (next == 0) {
           a = base.GetRotation();
           a.frame = 0;
+          b = keys[0];
         } else {
           a = keys[next - 1];
+          b = keys[next];
         }
 
-        b = keys[next];
         break;
       }
     }
