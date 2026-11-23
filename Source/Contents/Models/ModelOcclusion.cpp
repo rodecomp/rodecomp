@@ -9,8 +9,8 @@ namespace {
   }
 
   // INLINED
-  __forceinline int ClipSlab(const float* ray, const float* delta, const float* direction, float radius, float& near, float& far) {
-    const float distance = (delta[1] * direction[1] + delta[0] * direction[0]) + delta[2] * direction[2];
+  __forceinline int ClipSlab(const float* ray, float deltaX, float deltaY, float deltaZ, const float* direction, float radius, float& near, float& far) {
+    const float distance = (deltaY * direction[1] + deltaX * direction[0]) + deltaZ * direction[2];
     const float along = (ray[3] * direction[0] + ray[4] * direction[1]) + ray[5] * direction[2];
 
     if (Absolute(along) > 0.00001f) {
@@ -40,19 +40,21 @@ namespace {
 // OFFSET: 0x00553850
 // FUNCTION: fn_02019
 __declspec(noinline) int Intersects(const float* ray, const OrientedBounds& bounds) {
-  const float delta[3] = {bounds.center[0] - ray[0], bounds.center[1] - ray[1], bounds.center[2] - ray[2]};
+  const float deltaX = bounds.center[0] - ray[0];
+  const float deltaY = bounds.center[1] - ray[1];
+  const float deltaZ = bounds.center[2] - ray[2];
   float near = -999999.0f;
   float far = 999999.0f;
 
-  if (!ClipSlab(ray, delta, bounds.axes[0], bounds.halfSize[0], near, far)) {
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[0], bounds.halfSize[0], near, far)) {
     return 0;
   }
 
-  if (!ClipSlab(ray, delta, bounds.axes[1], bounds.halfSize[1], near, far)) {
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[1], bounds.halfSize[1], near, far)) {
     return 0;
   }
 
-  if (!ClipSlab(ray, delta, bounds.axes[2], bounds.halfSize[2], near, far)) {
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[2], bounds.halfSize[2], near, far)) {
     return 0;
   }
 
