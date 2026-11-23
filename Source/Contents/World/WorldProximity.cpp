@@ -96,7 +96,7 @@ __declspec(noinline) bool CWorld::FindActorInCell(const float* position, std::fu
   }
 
   const std::list<std::uint32_t>& ids = found->second;
-  return std::find_if(ids.begin(), ids.end(), predicate) != ids.end();
+  return std::find_if(ids.begin(), ids.end(), [predicate](std::uint32_t id) { return predicate(id); }) != ids.end();
 }
 
 // INLINED
