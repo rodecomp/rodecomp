@@ -24,7 +24,10 @@ struct ExtendedListLine {
 class UIListBoxEx : public UIWindow {
 public:
   UIListBoxEx();
-  ~UIListBoxEx() override;
+  // OFFSET: 0x00873710
+  // FUNCTION: fn_11157
+  ~UIListBoxEx() override {
+  }
   void Resize(int width, int height) override;
   void OnCreate(int width, int height) override;
   void Paint() override;

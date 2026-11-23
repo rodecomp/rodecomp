@@ -32,10 +32,6 @@ UIListBoxEx::UIListBoxEx()
   this->selectionColor = g_skinInfo.PaletteColor({2, 2}, g_skinInfo.Selected());
 }
 
-// OFFSET: 0x00873710
-// FUNCTION: fn_11157
-UIListBoxEx::~UIListBoxEx() = default;
-
 // OFFSET: 0x0087B690
 // FUNCTION: fn_11246
 void UIListBoxEx::Configure(int x, int y, int width, int height, unsigned char value) {
