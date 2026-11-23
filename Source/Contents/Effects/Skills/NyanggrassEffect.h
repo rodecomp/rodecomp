@@ -38,13 +38,13 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00CC */ std::vector<CEZ2STRParticle*> particles;
   /* 00D8 */ int gridSize;
 
 private:
   void Init();
-  void UpdateParticle(CParticle* particle);
-  void RenderParticle(CParticle* particle);
+  void UpdateParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

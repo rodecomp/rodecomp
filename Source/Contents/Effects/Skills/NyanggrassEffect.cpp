@@ -139,9 +139,8 @@ __declspec(noinline) CNyanggrassEffect::~CNyanggrassEffect() {
 __forceinline void CNyanggrassEffect::Init() {
   for (int row = 0; row < this->gridSize; ++row) {
     for (int column = 0; column < this->gridSize; ++column) {
-      CParticle* particle = CreateEZ2STRParticle(&this->positionVector, 1);
-      if (particle) {
-        CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
+      CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 1));
+      if (effect) {
         effect->effectId = this->id;
         effect->columnIndex = 0;
         effect->rowIndex = 0;
@@ -156,7 +155,7 @@ __forceinline void CNyanggrassEffect::Init() {
         effect->position.z = z;
         effect->InitParticleQuad(effect->vertices);
         effect->Open("su_nyanggrass\\su_nyanggrass.str");
-        this->particles.push_back(particle);
+        this->particles.push_back(effect);
       }
     }
   }
@@ -202,7 +201,7 @@ bool CNyanggrassEffect::IsAlive() {
 // FUNCTION: fn_07075
 void CNyanggrassEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
+    CEZ2STRParticle* particle = *it;
     this->UpdateParticle(particle);
 
     ++particle->elapsedFrames;
@@ -211,8 +210,8 @@ void CNyanggrassEffect::OnProcess() {
 
 // OFFSET: 0x00708880
 // FUNCTION: fn_46101
-__forceinline void CNyanggrassEffect::UpdateParticle(CParticle* particle) {
+__forceinline void CNyanggrassEffect::UpdateParticle(CEZ2STRParticle* particle) {
   if (particle) {
-    static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
+    particle->Process(0.0f, 0.0f, 0.0f);
   }
 }

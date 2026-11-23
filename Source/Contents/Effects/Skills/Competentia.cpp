@@ -30,10 +30,10 @@ void CNyanggrassEffect::Render() {
 
 // OFFSET: 0x00708900
 // FUNCTION: fn_46133
-__forceinline void CNyanggrassEffect::RenderParticle(CParticle* particle) {
+__forceinline void CNyanggrassEffect::RenderParticle(CEZ2STRParticle* particle) {
   if (particle != nullptr) {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
+    particle->DrawScreen(mode->camera->frame.view);
   }
 }
 
@@ -68,10 +68,10 @@ void CCompetentia::Open() {
     CGameMode* mode = g_modeMgr.GetGameMode();
     pos.y = mode->scene->terrain->Height(pos.x, pos.z);
 
-    CParticle* particle = CreateEZ2STRParticle(&pos, 5);
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&pos, 5));
     if (particle != nullptr) {
-      static_cast<CEZ2STRParticle*>(particle)->Open("competentia\\competentia_cast_particle\\competentia_cast_particle.str");
-      static_cast<CEZ2STRParticle*>(particle)->m_loop = true;
+      particle->Open("competentia\\competentia_cast_particle\\competentia_cast_particle.str");
+      particle->m_loop = true;
       this->particles.push_back(particle);
     }
   }
@@ -101,9 +101,9 @@ void CCompetentia::OnProcess() {
 
 // OFFSET: 0x00708D80
 // FUNCTION: fn_46135
-__forceinline void CCompetentia::UpdateParticle(CParticle* particle) {
+__forceinline void CCompetentia::UpdateParticle(CEZ2STRParticle* particle) {
   if (particle) {
-    static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, -80.0f, 0.0f);
+    particle->Process(0.0f, -80.0f, 0.0f);
   }
 }
 
@@ -117,10 +117,10 @@ void CCompetentia::Render() {
 
 // OFFSET: 0x00708E00
 // FUNCTION: fn_46136
-__forceinline void CCompetentia::RenderParticle(CParticle* particle) {
+__forceinline void CCompetentia::RenderParticle(CEZ2STRParticle* particle) {
   if (particle) {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
+    particle->DrawScreen(mode->camera->frame.view);
   }
 }
 
@@ -128,9 +128,9 @@ __forceinline void CCompetentia::RenderParticle(CParticle* particle) {
 // FUNCTION: fn_07084
 void CCompetentia::SetLifeTime(int argument) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
+    CEZ2STRParticle* particle = *it;
     if (particle) {
-      static_cast<CEZ2STRParticle*>(particle)->m_lifeTime = argument;
+      particle->m_lifeTime = argument;
     }
   }
 }

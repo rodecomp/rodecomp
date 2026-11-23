@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <vector>
 
-class CParticle;
+class CEZ2STRParticle;
 
 class CCompetentia : public CEffect {
 public:
@@ -20,11 +20,11 @@ public:
   bool IsAlive() override;
   void SetLifeTime(int argument) override;
 
-  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00CC */ std::vector<CEZ2STRParticle*> particles;
 
 private:
-  void UpdateParticle(CParticle* particle);
-  void RenderParticle(CParticle* particle);
+  void UpdateParticle(CEZ2STRParticle* particle);
+  void RenderParticle(CEZ2STRParticle* particle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
