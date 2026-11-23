@@ -207,7 +207,9 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
 
   const vector3d center = this->positionVector;
   const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  const vector3d viewPos = TransformPoint(view, center);
+  const vector3d viewPos = {center.x * view.values[0] + center.y * view.values[3] + center.z * view.values[6] + view.values[9],
+                            center.x * view.values[1] + center.y * view.values[4] + center.z * view.values[7] + view.values[10],
+                            center.x * view.values[2] + center.y * view.values[5] + center.z * view.values[8] + view.values[11]};
 
   const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   int angle = particle->phaseParameter;
