@@ -5972,7 +5972,7 @@ void WriteMyLog(const char* file, int line, const char* format, ...) {
     file = std::strrchr(file, '\\');
   }
 
-  std::string path = FormatString("mylog(%s).txt", "");
+  std::string path = FormatString("mylog(%s).txt", "Feb 11 2026");
   std::FILE* output = std::fopen(path.c_str(), "a");
   if (output != nullptr) {
     SYSTEMTIME time;
