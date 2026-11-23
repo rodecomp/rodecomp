@@ -1076,7 +1076,7 @@ std::string CCreateLineInfo::FitText(UIWindow* window, const std::string text, c
   int total = 0;
 
   while (position < length) {
-    const std::string rest = text.substr(position, length - position);
+    const std::string rest = text.substr(position, text.size() - position);
     const std::string character = NextCharacter(rest);
     if (character.empty()) {
       continue;
