@@ -389,78 +389,37 @@ static HRESULT CreateDepth(DeviceOwnerDX7* owner, const GUID* renderIdentity, DW
 // OFFSET: 0x0054A000
 // FUNCTION: fn_01895
 HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags) {
-  this->depthMemory =
-    std::memcmp(renderIdentity, &IID_IDirect3DHALDevice, sizeof(GUID)) == 0 || std::memcmp(renderIdentity, &IID_IDirect3DTnLHalDevice, sizeof(GUID)) == 0
-      ? DDSCAPS_VIDEOMEMORY
-      : DDSCAPS_SYSTEMMEMORY;
-
-  if (FAILED(DirectDrawCreateEx(drawIdentity, reinterpret_cast<void**>(&this->draw), IID_IDirectDraw7, nullptr))) {
-    return DeviceError(1);
+  if (IsEqualIID(*renderIdentity, IID_IDirect3DHALDevice)) {
+    this->depthMemory = DDSCAPS_VIDEOMEMORY;
+  } else if (IsEqualIID(*renderIdentity, IID_IDirect3DTnLHalDevice)) {
+    this->depthMemory = DDSCAPS_VIDEOMEMORY;
+  } else {
+    this->depthMemory = DDSCAPS_SYSTEMMEMORY;
   }
 
-  DDSURFACEDESC2 description{sizeof(description)};
-  this->draw->GetDisplayMode(&description);
-  this->desktopBitDepth = description.ddpfPixelFormat.dwRGBBitCount;
-  DWORD cooperative = this->fullscreen ? DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT | DDSCL_EXCLUSIVE : DDSCL_NORMAL;
-
-  if (!(flags & 16)) {
-    cooperative |= DDSCL_FPUSETUP;
-  }
-
-  if (FAILED(this->draw->SetCooperativeLevel(this->window, cooperative | DDSCL_MULTITHREADED))) {
-    return DeviceError(2);
-  }
-
-  const HRESULT status = this->CreateSurfaces(mode, flags);
+  HRESULT status = CreateDirectDraw(this, drawIdentity, flags);
 
   if (FAILED(status)) {
     return status;
   }
 
-  if (renderIdentity) {
-    if (FAILED(this->draw->QueryInterface(IID_IDirect3D7, reinterpret_cast<void**>(&this->direct3D)))) {
-      return DeviceError(3);
-    }
+  status = this->CreateSurfaces(mode, flags);
 
-    if (FAILED(this->direct3D->CreateDevice(*renderIdentity, this->renderTarget, &this->device))) {
-      return DeviceError(4);
-    }
-
-    D3DVIEWPORT7 viewport{0, 0, this->width, this->height, 0.0f, 1.0f};
-
-    if (FAILED(this->device->SetViewport(&viewport))) {
-      return DeviceError(6);
-    }
-
-    this->depthFormat = {};
-    this->depthFormat.dwFlags = DDPF_ZBUFFER | ((flags & 8) ? DDPF_STENCILBUFFER : 0);
-    this->direct3D->EnumZBufferFormats(*renderIdentity, SelectDepthFormat, &this->depthFormat);
-
-    if (this->depthFormat.dwSize != sizeof(this->depthFormat)) {
-      return DeviceError(5);
-    }
-
-    this->device->GetCaps(&this->caps);
-
-    if (!(this->caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR)) {
-      SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
-      description.ddsCaps.dwCaps = this->depthMemory | DDSCAPS_ZBUFFER;
-      description.dwWidth = this->width;
-      description.dwHeight = this->height;
-      description.ddpfPixelFormat = this->depthFormat;
-      const HRESULT depthStatus = this->draw->CreateSurface(&description, &this->depthBuffer, nullptr);
-
-      if (FAILED(depthStatus)) {
-        return SurfaceError(depthStatus, 5);
-      }
-
-      if (FAILED(this->renderTarget->AddAttachedSurface(this->depthBuffer)) || FAILED(this->device->SetRenderTarget(this->renderTarget, 0))) {
-        return DeviceError(5);
-      }
-    }
+  if (FAILED(status)) {
+    return status;
   }
 
-  return S_OK;
+  if (!renderIdentity) {
+    return S_OK;
+  }
+
+  status = CreateDirect3D(this, renderIdentity);
+
+  if (FAILED(status)) {
+    return status;
+  }
+
+  return CreateDepth(this, renderIdentity, flags);
 }
 
 // OFFSET: 0x0054A7D0
