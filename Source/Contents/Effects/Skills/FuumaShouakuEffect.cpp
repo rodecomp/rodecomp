@@ -97,7 +97,12 @@ void CFuumaShouakuEffect::OnProcess() {
     }
   } else if (this->first) {
     CEZ2STRParticle* particle = this->first;
-    particle->position = {particle->position.x + this->velocityX, particle->position.y + this->velocityY, particle->position.z + this->velocityZ};
+    const float x = particle->position.x + this->velocityX;
+    const float z = particle->position.z + this->velocityZ;
+    const float y = particle->position.y + this->velocityY;
+    particle->position.x = x;
+    particle->position.z = z;
+    particle->position.y = y;
   }
 
   if (this->first) {
