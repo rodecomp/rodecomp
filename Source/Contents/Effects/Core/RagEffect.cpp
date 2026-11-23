@@ -3957,10 +3957,10 @@ void CRagEffect::TrackCloud(char kind) {
   this->state.lastPrim->state.slots[0].maxHeight = 0.4f;
 
   if (kind == 2) {
-    scale = 4.0f;
+    this->state.lastPrim->state.slots[0].height[4] = 4.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].height[4] = scale;
   }
-
-  this->state.lastPrim->state.slots[0].height[4] = scale;
   this->state.lastPrim->state.slots[0].vecTNow = this->render.position;
   this->state.lastPrim->state.slots[0].height[0] = this->state.deltaPos.y;
 
