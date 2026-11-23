@@ -16,8 +16,7 @@ std::vector<int> g_monsterJobs;
 // OFFSET: 0x00AD1C50
 // FUNCTION: fn_17815
 __declspec(noinline) void TraceSelectionRange(int first, int last) {
-  volatile char buffer[8] = {};
-  buffer[0] = 0;
+  volatile int dummy = 0;
 }
 
 // OFFSET: 0x00AD1C70
