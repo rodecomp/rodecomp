@@ -3145,10 +3145,8 @@ void UIComboBoxID::Paint() {
   this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
-  }
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first),
+    static_cast<unsigned>(this->lines.size()));
 
   for (int index = first; index < static_cast<int>(end); ++index) {
     if (index == this->selected) {
@@ -3172,32 +3170,28 @@ void UIComboBoxID::Paint() {
 // OFFSET: 0x0088B120
 // FUNCTION: fn_11362
 void UIItemStoreComboBox::Paint() {
+  char path[260];
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first),
+    static_cast<unsigned>(this->lines.size()));
+
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    if (index == this->selected) {
+      if (!this->pink) {
+        std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_blue%d.bmp", this->selected);
+      } else if (this->pink == true) {
+        std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_pink%d.bmp", this->selected);
+      }
+
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      this->DrawBitmap(0, 0, bitmap, false);
+    }
   }
 
-  if (first < static_cast<int>(end)) {
-    char path[260];
-    for (int index = first; index < static_cast<int>(end); ++index) {
-      if (index == this->selected) {
-        if (!this->pink) {
-          std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_blue%d.bmp", this->selected);
-        } else if (this->pink == true) {
-          std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_pink%d.bmp", this->selected);
-        }
-
-        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-        this->DrawBitmap(0, 0, bitmap, false);
-      }
-    }
-
-    for (int index = first; index < static_cast<int>(end); ++index) {
-      this->DrawTextAt(3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0,
-        0, 12, this->lines[index].color, 0, 0
-      );
-    }
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    this->DrawTextAt(3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0,
+      0, 12, this->lines[index].color, 0, 0
+    );
   }
 
   this->Invalidate();
