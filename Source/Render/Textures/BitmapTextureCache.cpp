@@ -35,18 +35,19 @@ void CDCBitmap::UpdateCache() {
       }
     }
 
-    const std::int32_t bytes = static_cast<std::int32_t>(4u * this->m_bitmap.width * this->m_bitmap.height);
-    auto* pixels = reinterpret_cast<unsigned char*>(this->m_bitmap.pixels);
-
-    for (std::int32_t offset = 0; offset < bytes; offset += 4) {
-      pixels[offset + 3] = 255;
+    const std::int32_t count = static_cast<std::int32_t>(this->m_bitmap.width * this->m_bitmap.height * 4);
+    unsigned char* image = reinterpret_cast<unsigned char*>(this->m_bitmap.pixels) + 3;
+    for (std::int32_t i = 0; i < count; i += 4) {
+      image[i] = 255;
     }
 
     auto texture = this->m_textures.begin();
-
     for (unsigned y = 0; y < this->m_bitmap.height; y += 256) {
       for (unsigned x = 0; x < this->m_bitmap.width; x += 256) {
-        (*texture)->Upload(0, 0, std::min(this->m_bitmap.width - x, 256u), std::min(this->m_bitmap.height - y, 256u), this->m_bitmap.pixels + x + y * this->m_bitmap.width, 0, this->m_bitmap.width);
+        (*texture)->Upload(
+          0, 0, this->m_bitmap.width - x > 256 ? 256 : this->m_bitmap.width - x, this->m_bitmap.height - y > 256 ? 256 : this->m_bitmap.height - y,
+          this->m_bitmap.pixels + this->m_bitmap.width * y + x, 0, this->m_bitmap.width
+        );
         ++texture;
       }
     }
