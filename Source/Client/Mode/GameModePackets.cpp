@@ -13191,8 +13191,9 @@ __declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char*
   g_session.RemoveEquipment();
   g_session.ResetEquipment();
   const int count = static_cast<unsigned int>(p->length - 4) / 0x22;
-  const auto* record = reinterpret_cast<const Item1740Record*>(p + 1);
+  const auto* records = reinterpret_cast<const Item1740Record*>(p + 1);
   for (int i = 0; i < count; ++i) {
+    const Item1740Record* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
@@ -13218,7 +13219,6 @@ __declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char*
       g_session.AddInventoryItem(item, 0);
       g_session.UpdateInventoryItem(item, 0);
     }
-    ++record;
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -13232,8 +13232,9 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
   const int count = static_cast<unsigned int>(p->length - 4) / 0x26;
-  const auto* record = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
+  const auto* records = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
+    const Item1740EquipRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
@@ -13255,17 +13256,17 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
     }
 
     if (item.identity[3] != 0) {
-      char equipped = 1;
       if (g_session.IsCostumeLocation(item.identity[3])) {
+        char equipped = 1;
         g_session.EquipCostumeItem(item, &equipped);
       } else {
+        char equipped = 1;
         g_session.EquipInventoryItem(item, &equipped);
       }
     } else {
       g_session.AddInventoryItem(item, 0);
       g_session.UpdateInventoryItem(item, 0);
     }
-    ++record;
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -13947,8 +13948,8 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  entry.direction = packet->posDir[2] & 0x0F;
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
@@ -14040,8 +14041,8 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  entry.direction = packet->posDir[2] & 0x0F;
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
@@ -14137,8 +14138,8 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  entry.direction = packet->posDir[2] & 0x0F;
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
@@ -14240,8 +14241,8 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   entry.bodyPalette = packet->bodyPalette;
   entry.headDirection = packet->headDir;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
+  entry.direction = packet->posDir[2] & 0x0F;
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
