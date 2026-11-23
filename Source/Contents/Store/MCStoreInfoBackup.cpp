@@ -41,18 +41,19 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
 
     if (!found.first) {
       saved = this->items.erase(saved);
-    } else {
-      if (wholeItem == 0) {
-        found.second.quantity = std::min(found.second.quantity, saved->quantity);
-      }
-
-      if (found.second.identity[1] != 0) {
-        lists.AddMerchantPurchaseSavedItem(found.second, wholeItem, 0);
-        lists.RemoveMerchantMyShopItem(found.second, wholeItem, 0);
-      }
-
-      ++saved;
+      continue;
     }
+
+    if (wholeItem == 0) {
+      found.second.quantity = found.second.quantity > saved->quantity ? saved->quantity : found.second.quantity;
+    }
+
+    if (found.second.identity[1] != 0) {
+      lists.AddMerchantPurchaseSavedItem(found.second, wholeItem, 0);
+      lists.RemoveMerchantMyShopItem(found.second, wholeItem, 0);
+    }
+
+    ++saved;
   }
 
   return examined;
