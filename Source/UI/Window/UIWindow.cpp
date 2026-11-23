@@ -4093,6 +4093,8 @@ UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const s
 // OFFSET: 0x005C34B0
 // FUNCTION: fn_03558
 void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, const CBitmapRes* background) {
+  UINavigationV4Wnd* const owner = this;
+
   if (!g_navigationManager.GetCurrentTarget().object) {
     return;
   }
@@ -4101,7 +4103,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   NavigationTargetLook look;
   std::memcpy(&look, &target->look, sizeof(look));
   if (!look.job) {
-    this->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, x, y, width, height, 1500, true, background);
+    owner->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, x, y, width, height, 1500, true, background);
     return;
   }
 
@@ -4121,7 +4123,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     return;
   }
 
-  if (!this->FitSprite(&(*fitFrames)[0], sprites[0], width, height, &offsetX, &offsetY, &scale)) {
+  if (!owner->FitSprite(&(*fitFrames)[0], sprites[0], width, height, &offsetX, &offsetY, &scale)) {
     return;
   }
 
@@ -4129,7 +4131,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   scale = 1.0f;
   if (background) {
     const BitmapImage& image = background->image;
-    this->geometry.surface->Copy(offsetX - image.width / 2 + x, offsetY - image.height / 2 + y, image.width, image.height, image.pixels, true);
+    owner->geometry.surface->Copy(offsetX - image.width / 2 + x, offsetY - image.height / 2 + y, image.width, image.height, image.pixels, true);
   }
 
   const std::vector<ActionFrame>* bodyFrames = &actions[0]->Animation(0);
@@ -4157,7 +4159,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
   bodyFrame = 0;
   const int bodyCount = static_cast<int>(bodyFrames->size());
-  if (static_cast<int>(now - bodyTime) / (this->animationDuration / bodyCount) >= bodyCount) {
+  if (static_cast<int>(now - bodyTime) / (owner->animationDuration / bodyCount) >= bodyCount) {
     bodyTime = now;
   }
 
@@ -4169,7 +4171,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       if (robeFrames && !robeFrames->empty()) {
         const ActionFrame* robeFrame = &(*robeFrames)[bodyFrame];
         if (robeFrame) {
-          this->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[8], robeFrame, offsetX, offsetY, scale, nullptr);
+          owner->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[8], robeFrame, offsetX, offsetY, scale, nullptr);
         }
       }
     }
@@ -4186,7 +4188,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 
   const ActionFrame* body = &(*bodyFrames)[bodyFrame];
-  this->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[0], body, offsetX, offsetY, 1.0f, bodyPalette);
+  owner->geometry.surface->DrawScaledSprite(x, y, width, height, sprites[0], body, offsetX, offsetY, 1.0f, bodyPalette);
 
   actions[1] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(look.job, look.sex, &look.head)));
   sprites[1] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(look.job, look.sex, &look.head)));
@@ -4202,7 +4204,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         headPalette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(paletteName.c_str()))->palette;
       }
 
-      this->geometry.surface->DrawScaledSprite(x + headX, y + headY, width, height, sprites[1], headFrame, offsetX, offsetY, scale, headPalette);
+      owner->geometry.surface->DrawScaledSprite(x + headX, y + headY, width, height, sprites[1], headFrame, offsetX, offsetY, scale, headPalette);
     }
   }
 
@@ -4213,7 +4215,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       const std::vector<ActionFrame>* accessoryFrames = &actions[2]->Animation(0);
       if (accessoryFrames) {
         const int count = static_cast<int>(accessoryFrames->size());
-        if (static_cast<int>(now - accessoryTime0) / (this->animationDuration / count) >= count) {
+        if (static_cast<int>(now - accessoryTime0) / (owner->animationDuration / count) >= count) {
           accessoryTime0 = now;
         }
 
@@ -4221,7 +4223,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame0];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[2], frame, offsetX, offsetY, scale, nullptr);
+        owner->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[2], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }
@@ -4233,7 +4235,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       const std::vector<ActionFrame>* accessoryFrames = &actions[3]->Animation(0);
       if (accessoryFrames) {
         const int count = static_cast<int>(accessoryFrames->size());
-        if (static_cast<int>(now - accessoryTime1) / (this->animationDuration / count) >= count) {
+        if (static_cast<int>(now - accessoryTime1) / (owner->animationDuration / count) >= count) {
           accessoryTime1 = now;
         }
 
@@ -4241,7 +4243,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame1];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[3], frame, offsetX, offsetY, scale, nullptr);
+        owner->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[3], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }
@@ -4253,7 +4255,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
       const std::vector<ActionFrame>* accessoryFrames = &actions[4]->Animation(0);
       if (accessoryFrames) {
         const int count = static_cast<int>(accessoryFrames->size());
-        if (static_cast<int>(now - accessoryTime2) / (this->animationDuration / count) >= count) {
+        if (static_cast<int>(now - accessoryTime2) / (owner->animationDuration / count) >= count) {
           accessoryTime2 = now;
         }
 
@@ -4261,7 +4263,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame2];
         const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
-        this->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[4], frame, offsetX, offsetY, scale, nullptr);
+        owner->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[4], frame, offsetX, offsetY, scale, nullptr);
       }
     }
   }
