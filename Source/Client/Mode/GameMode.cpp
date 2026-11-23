@@ -10025,7 +10025,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       std::sprintf(text, "[ To Friends ] : (Hi) *^_^*");
     } else {
       char* message = const_cast<char*>(g_windowMgr.chatInputText.c_str());
-      std::string copy(message);
+      std::string copy;
+      copy = message;
       g_session.HiFriends(message);
       if (g_serviceType == ServiceKorea) {
         std::sprintf(text, "[ To Friends ] : (Hi) %s", copy.c_str());
