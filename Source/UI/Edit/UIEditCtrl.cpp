@@ -8099,8 +8099,8 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
       const int base = cardCount + 9 + (i - 1) * 3;
       ItemOption option;
       option.id = static_cast<std::int16_t>(values[base]);
-      option.value = static_cast<std::int16_t>(values[base + 2]);
       option.parameter = static_cast<unsigned char>(values[base + 1]);
+      option.value = static_cast<std::int16_t>(values[base + 2]);
       int index = i - 1;
       item.SetOption(option, index);
     }
