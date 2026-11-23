@@ -771,8 +771,8 @@ static __forceinline UIBitmapButton* AddNumberedButtonInline(UIFrameWnd* frame, 
 // OFFSET: 0x008E3340
 // FUNCTION: fn_12182
 void UIMinimapZoomWnd::OnCreate(int, int) {
-  const int ys[5] = {128, 128, 128, 128, 128};
   const int xs[5] = {1, this->geometry.width - 55, this->geometry.width - 41, this->geometry.width - 27, this->geometry.width - 13};
+  const int ys[5] = {128, 128, 128, 128, 128};
   const int ids[5] = {452, 216, 217, 189, 454};
   const char* tooltips[5] = {LookupMessage(MSI_MINIMAP_TIP_POS_ON), LookupMessage(MSI_MINIMAP_TIP_ZOOM_IN), LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), LookupMessage(MSI_MINIMAP_TIP_MAP_VIEW), LookupMessage(MSI_MINIMAP_TIP_WORLD_VIEW)};
   const char* names[5] = {"object", "plus", "minus", "mini", "viewon"};
@@ -780,8 +780,9 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
 
   this->m_buttons.clear();
   for (int i = 0; i < 5; ++i) {
+    const char* tooltip = tooltips[i];
     const std::string name = prefix + names[i];
-    UIBitmapButton* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
+    UIBitmapButton* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltip, true);
     this->m_buttons.push_back(button);
   }
 
@@ -3997,7 +3998,12 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  {
+    UITextViewer* viewer = this->m_viewer;
+    const COLORREF rgb = RGB(red, green, blue);
+    viewer->backgroundColor = rgb | 0xFF000000u;
+    viewer->Invalidate();
+  }
   this->AddChild(this->m_viewer);
 
   this->m_closeButton = this->AddCloseButton("ESC", 0);
@@ -7655,9 +7661,9 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
 
   {
     const std::string prefix("유저인터페이스\\");
-    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
+    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
 
     for (int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
