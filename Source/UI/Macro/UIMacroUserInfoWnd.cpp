@@ -615,10 +615,12 @@ int UIMacroReporterWnd::SendMsg(
         if (sender == it->first) {
           it->first->SetDisabled(1);
           it->first->Invalidate();
-          this->m_removedRows.push_back(it->first);
+          UIButton* first = it->first;
+          this->m_removedRows.push_back(first);
           it->second->SetDisabled(1);
           it->second->Invalidate();
-          this->m_removedRows.push_back(it->second);
+          UIButton* second = it->second;
+          this->m_removedRows.push_back(second);
           this->m_rows.erase(it);
           break;
         }
@@ -694,10 +696,12 @@ int UIMacroReporterWnd::SendMsg(
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
           it->first->SetDisabled(1);
           it->first->Invalidate();
-          this->m_removedRows.push_back(it->first);
+          UIButton* first = it->first;
+          this->m_removedRows.emplace_back(first);
           it->second->SetDisabled(1);
           it->second->Invalidate();
-          this->m_removedRows.push_back(it->second);
+          UIButton* second = it->second;
+          this->m_removedRows.emplace_back(second);
         }
         this->m_rows.clear();
       }
@@ -828,7 +832,7 @@ int UIMacroReporterWnd::SendMsg(
     if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
       UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
-      const int job = entry->reportValue;
+      const unsigned short job = entry->reportValue;
       std::string name = entry->name;
       info->m_name = name;
       info->m_message = g_session.GetJobName(job, -1);

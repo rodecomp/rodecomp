@@ -37,7 +37,7 @@ struct MacroReporterEntry {
   MacroReporterEntry(std::string name, int id, short padding_001C);
 
   /* 0000 */ std::string name;
-  /* 0018 */ int id;
+  /* 0018 */ unsigned int id;
   /* 001C */ short reportValue;
 };
 
