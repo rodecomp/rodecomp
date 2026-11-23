@@ -3442,14 +3442,6 @@ UITVTextButton::UITVTextButton() : UIButton() {
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/TipOfTheDay.h"
 
-// OFFSET: 0x0086DE10
-// FUNCTION: fn_11060
-UIMemberListBox::UIMemberListBox() : UIChatHisBox2() {
-  this->backgroundRed = 255;
-  this->backgroundGreen = 255;
-  this->backgroundBlue = 255;
-}
-
 // OFFSET: 0x008894B0
 // FUNCTION: fn_11347
 void UIChatHisBox2::Paint() {

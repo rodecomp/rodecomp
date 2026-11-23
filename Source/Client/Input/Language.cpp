@@ -406,6 +406,11 @@ UIChatHisBox2::UIChatHisBox2()
 UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), autoScroll(1), fontHeight(12) {
 }
 
+// OFFSET: 0x0086DE10
+// FUNCTION: fn_11060
+UIMemberListBox::UIMemberListBox() : UIChatHisBox2() {
+}
+
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
 UIMacroDetectorWnd::UIMacroDetectorWnd()
