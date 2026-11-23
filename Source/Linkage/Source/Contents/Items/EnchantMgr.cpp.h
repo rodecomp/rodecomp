@@ -20,3 +20,4 @@
 #include <new>
 
 template CEnchantMgr* Singleton<CEnchantMgr>::GetInstance();
+template __declspec(noinline) EnchantInfo& std::map<uint64_t, EnchantInfo>::operator[](uint64_t&&);

@@ -434,12 +434,7 @@ int L_AddTargetItem(lua_State* L) {
   }
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
-  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  std::string itemName(lua_tostring(L, -1));
-  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-  if (itemId != ITEMID_NONE) {
-    mgr->m_enchants[id].targetItems.push_back(itemId);
-  }
+  CEnchantMgr::GetInstance()->AddTargetItem(id, lua_tostring(L, -1));
   return 2;
 }
 
@@ -460,8 +455,7 @@ int L_ApproveRandomOption(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   bool approve = lua_toboolean(L, -1) != 0;
-  const uint64_t key = id;
-  CEnchantMgr::GetInstance()->m_enchants[key].approveRandomOption = approve;
+  CEnchantMgr::GetInstance()->ApproveRandomOption(id, approve);
   return 2;
 }
 
@@ -499,8 +493,7 @@ int L_SetCaution(lua_State* L) {
 
   uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -2));
   std::string caution(lua_tostring(L, -1));
-  auto& enchants = CEnchantMgr::GetInstance()->m_enchants;
-  enchants[static_cast<uint64_t>(id)].caution = caution;
+  CEnchantMgr::GetInstance()->SetCaution(id, caution);
   return 2;
 }
 
