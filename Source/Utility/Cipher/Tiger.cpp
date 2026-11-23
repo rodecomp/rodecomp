@@ -293,10 +293,30 @@ static __forceinline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::ui
   c ^= x;
   const std::uint32_t cLow = static_cast<std::uint32_t>(c);
   const std::uint32_t cHigh = static_cast<std::uint32_t>(c >> 32);
-  a -= g_tigerTable[cLow & 0xff] ^ g_tigerTable1[(cLow >> 16) & 0xff]
-    ^ g_tigerTable2[cHigh & 0xff] ^ g_tigerTable3[(cHigh >> 16) & 0xff];
-  b += g_tigerTable3[(cLow >> 8) & 0xff] ^ g_tigerTable2[(cLow >> 24) & 0xff]
-    ^ g_tigerTable1[(cHigh >> 8) & 0xff] ^ g_tigerTable[(cHigh >> 24) & 0xff];
+  const std::uint32_t subLow = static_cast<std::uint32_t>(g_tigerTable[cLow & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable2[cHigh & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable1[(cLow >> 16) & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable3[(cHigh >> 16) & 0xff]);
+  const std::uint32_t subHigh = static_cast<std::uint32_t>(g_tigerTable2[cHigh & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable[cLow & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable3[(cHigh >> 16) & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable1[(cLow >> 16) & 0xff] >> 32);
+  const std::uint32_t aLow = static_cast<std::uint32_t>(a);
+  const std::uint32_t newLow = aLow - subLow;
+  const std::uint32_t newHigh = static_cast<std::uint32_t>(a >> 32) - subHigh - (aLow < subLow);
+  a = (static_cast<std::uint64_t>(newHigh) << 32) | newLow;
+  const std::uint32_t addLow = static_cast<std::uint32_t>(g_tigerTable3[(cLow >> 8) & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable1[(cHigh >> 8) & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable2[(cLow >> 24) & 0xff])
+    ^ static_cast<std::uint32_t>(g_tigerTable[(cHigh >> 24) & 0xff]);
+  const std::uint32_t addHigh = static_cast<std::uint32_t>(g_tigerTable1[(cHigh >> 8) & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable3[(cLow >> 8) & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable[(cHigh >> 24) & 0xff] >> 32)
+    ^ static_cast<std::uint32_t>(g_tigerTable2[(cLow >> 24) & 0xff] >> 32);
+  const std::uint32_t bLow = static_cast<std::uint32_t>(b);
+  const std::uint32_t resultLow = bLow + addLow;
+  const std::uint32_t resultHigh = static_cast<std::uint32_t>(b >> 32) + addHigh + (resultLow < addLow);
+  b = (static_cast<std::uint64_t>(resultHigh) << 32) | resultLow;
   if (pass == 0) {
     b *= 5;
   } else if (pass == 1) {
