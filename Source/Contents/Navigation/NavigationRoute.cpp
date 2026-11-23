@@ -240,7 +240,7 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
 
 #pragma pack(push, 1)
 struct PrivateAirshipRequestPacket {
-  /* 0000 */ std::uint16_t id;
+  /* 0000 */ short id;
   /* 0002 */ char mapName[16];
   /* 0012 */ int itemId;
 };
