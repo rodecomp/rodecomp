@@ -14,6 +14,11 @@ namespace {
 
     commands.clear();
   }
+
+  // INLINED
+  static void QueueReverse(CooldownOwner& owner, RenderCommand* command) {
+    owner.m_reverse.push_back(command);
+  }
 }
 
 // OFFSET: 0x00CA66B0
@@ -30,90 +35,88 @@ void CooldownOwner::Draw(
     return;
   }
 
-  RenderVertex* vertices = value.vertices;
   const float top = static_cast<float>((centerY - radiusY));
   const float bottom = static_cast<float>((centerY + radiusY));
 
-  vertices[1].x = static_cast<float>(centerX);
-  vertices[23].x = static_cast<float>(centerX);
-  vertices[1].y = top;
-  vertices[23].y = top;
-  vertices[11].x = static_cast<float>(centerX);
-  vertices[13].x = static_cast<float>(centerX);
-  vertices[11].y = bottom;
-  vertices[13].y = bottom;
+  value.vertices[1].x = static_cast<float>(centerX);
+  value.vertices[23].x = static_cast<float>(centerX);
+  value.vertices[1].y = top;
+  value.vertices[23].y = top;
+  value.vertices[11].x = static_cast<float>(centerX);
+  value.vertices[13].x = static_cast<float>(centerX);
+  value.vertices[11].y = bottom;
+  value.vertices[13].y = bottom;
 
   for (int i = 0; i < 24; ++i) {
-    RenderVertex& vertex = vertices[i];
     if (i % 3 == 0) {
-      vertex.x = static_cast<float>(centerX);
-      vertex.y = static_cast<float>(centerY);
+      value.vertices[i].x = static_cast<float>(centerX);
+      value.vertices[i].y = static_cast<float>(centerY);
     }
 
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.u = 0;
-    vertex.v = 0;
-    vertex.diffuse = color;
+    value.vertices[i].z = 0.000001f;
+    value.vertices[i].rhw = 0.999999f;
+    value.vertices[i].u = 0;
+    value.vertices[i].v = 0;
+    value.vertices[i].diffuse = color;
   }
 
   const int reverse = value.reverse;
-  vertices[5].y = static_cast<float>(centerY);
-  vertices[7].y = static_cast<float>(centerY);
-  vertices[2].y = top;
-  vertices[4].y = top;
-  vertices[8].y = bottom;
-  vertices[10].y = bottom;
-  vertices[14].y = bottom;
-  vertices[16].y = bottom;
-  vertices[17].y = static_cast<float>(centerY);
-  vertices[19].y = static_cast<float>(centerY);
-  vertices[20].y = top;
-  vertices[22].y = top;
   const float right = static_cast<float>((centerX + radiusX));
   const float left = static_cast<float>((centerX - radiusX));
+  value.vertices[5].y = static_cast<float>(centerY);
+  value.vertices[7].y = static_cast<float>(centerY);
+  value.vertices[2].y = top;
+  value.vertices[4].y = top;
+  value.vertices[8].y = bottom;
+  value.vertices[10].y = bottom;
+  value.vertices[14].y = bottom;
+  value.vertices[16].y = bottom;
+  value.vertices[17].y = static_cast<float>(centerY);
+  value.vertices[19].y = static_cast<float>(centerY);
+  value.vertices[20].y = top;
+  value.vertices[22].y = top;
   if (reverse == 0) {
-    vertices[2].x = left;
-    vertices[4].x = left;
-    vertices[5].x = left;
-    vertices[7].x = left;
-    vertices[8].x = left;
-    vertices[10].x = left;
-    vertices[14].x = right;
-    vertices[16].x = right;
-    vertices[17].x = right;
-    vertices[19].x = right;
-    vertices[20].x = right;
-    vertices[22].x = right;
-    value.AddEdge(0, vertices[23].x, radiusX, 1);
-    value.AddEdge(1, vertices[20].y, radiusY, 1);
-    value.AddEdge(2, vertices[17].y, radiusY, 1);
-    value.AddEdge(3, vertices[14].x, radiusX, 0);
-    value.AddEdge(4, vertices[11].x, radiusX, 0);
-    value.AddEdge(5, vertices[8].y, radiusY, 0);
-    value.AddEdge(6, vertices[5].y, radiusY, 0);
-    value.AddEdge(7, vertices[2].x, radiusX, 1);
+    value.vertices[2].x = left;
+    value.vertices[4].x = left;
+    value.vertices[5].x = left;
+    value.vertices[7].x = left;
+    value.vertices[8].x = left;
+    value.vertices[10].x = left;
+    value.vertices[14].x = right;
+    value.vertices[16].x = right;
+    value.vertices[17].x = right;
+    value.vertices[19].x = right;
+    value.vertices[20].x = right;
+    value.vertices[22].x = right;
+    value.AddEdge(0, value.vertices[23].x, radiusX, 1);
+    value.AddEdge(1, value.vertices[20].y, radiusY, 1);
+    value.AddEdge(2, value.vertices[17].y, radiusY, 1);
+    value.AddEdge(3, value.vertices[14].x, radiusX, 0);
+    value.AddEdge(4, value.vertices[11].x, radiusX, 0);
+    value.AddEdge(5, value.vertices[8].y, radiusY, 0);
+    value.AddEdge(6, value.vertices[5].y, radiusY, 0);
+    value.AddEdge(7, value.vertices[2].x, radiusX, 1);
   } else {
-    vertices[2].x = right;
-    vertices[4].x = right;
-    vertices[5].x = right;
-    vertices[7].x = right;
-    vertices[8].x = right;
-    vertices[10].x = right;
-    vertices[14].x = left;
-    vertices[16].x = left;
-    vertices[17].x = left;
-    vertices[19].x = left;
-    vertices[20].x = left;
-    vertices[22].x = left;
-    value.AddEdge(0, vertices[1].x, radiusX, 1);
-    value.AddEdge(1, vertices[4].y, radiusY, 1);
-    value.AddEdge(2, vertices[7].y, radiusY, 1);
-    value.AddEdge(3, vertices[10].x, radiusX, 0);
-    value.AddEdge(4, vertices[13].x, radiusX, 0);
-    value.AddEdge(5, vertices[16].y, radiusY, 0);
-    value.AddEdge(6, vertices[19].y, radiusY, 0);
-    value.AddEdge(7, vertices[22].x, radiusX, 1);
+    value.vertices[2].x = right;
+    value.vertices[4].x = right;
+    value.vertices[5].x = right;
+    value.vertices[7].x = right;
+    value.vertices[8].x = right;
+    value.vertices[10].x = right;
+    value.vertices[14].x = left;
+    value.vertices[16].x = left;
+    value.vertices[17].x = left;
+    value.vertices[19].x = left;
+    value.vertices[20].x = left;
+    value.vertices[22].x = left;
+    value.AddEdge(0, value.vertices[1].x, radiusX, 1);
+    value.AddEdge(1, value.vertices[4].y, radiusY, 1);
+    value.AddEdge(2, value.vertices[7].y, radiusY, 1);
+    value.AddEdge(3, value.vertices[10].x, radiusX, 0);
+    value.AddEdge(4, value.vertices[13].x, radiusX, 0);
+    value.AddEdge(5, value.vertices[16].y, radiusY, 0);
+    value.AddEdge(6, value.vertices[19].y, radiusY, 0);
+    value.AddEdge(7, value.vertices[22].x, radiusX, 1);
     this->DrawReverse(value);
     return;
   }
@@ -124,28 +127,28 @@ void CooldownOwner::Draw(
 
   switch (value.segment) {
   case 0:
-    vertices[23].x = value.Update();
+    value.vertices[23].x = value.Update();
     break;
   case 1:
-    vertices[20].y = value.Update();
+    value.vertices[20].y = value.Update();
     break;
   case 2:
-    vertices[17].y = value.Update();
+    value.vertices[17].y = value.Update();
     break;
   case 3:
-    vertices[14].x = value.Update();
+    value.vertices[14].x = value.Update();
     break;
   case 4:
-    vertices[11].x = value.Update();
+    value.vertices[11].x = value.Update();
     break;
   case 5:
-    vertices[8].y = value.Update();
+    value.vertices[8].y = value.Update();
     break;
   case 6:
-    vertices[5].y = value.Update();
+    value.vertices[5].y = value.Update();
     break;
   case 7:
-    vertices[2].x = value.Update();
+    value.vertices[2].x = value.Update();
     break;
   }
 
@@ -155,12 +158,12 @@ void CooldownOwner::Draw(
 
   RenderCommand* command = g_renderer->AcquireCommand();
   command->texture = g_texMgr.Default();
-  command->vertices = vertices;
+  command->vertices = value.vertices;
   command->vertexCount = value.vertexCount;
 
   for (int i = 0; i < 24; ++i) {
-    vertices[i].x += static_cast<float>(value.x + 12 + offsetX);
-    vertices[i].y += static_cast<float>(value.y + 12 + offsetY);
+    value.vertices[i].x += static_cast<float>(value.x + 12 + offsetX);
+    value.vertices[i].y += static_cast<float>(value.y + 12 + offsetY);
   }
 
   this->m_normal.push_back(command);
@@ -239,7 +242,7 @@ void CooldownOwner::DrawReverse(CooldownState& value) {
     value.vertices[i].y += static_cast<float>(value.y);
   }
 
-  this->m_reverse.push_back(command);
+  QueueReverse(*this, command);
 }
 
 // OFFSET: 0x00CA6670
