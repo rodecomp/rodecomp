@@ -480,7 +480,7 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
 // OFFSET: 0x00592290
 // FUNCTION: fn_02849
 CashEmotionCommand::CashEmotionCommand(const std::string& name, int packId, int emotionId) : name(name) {
-  this->Add(packId, emotionId);
+  this->Append(packId, emotionId);
 }
 
 // OFFSET: 0x005923D0
@@ -495,9 +495,9 @@ void CashEmotionCommand::Add(int packId, int emotionId) {
 
 // OFFSET: 0x00592420
 // FUNCTION: fn_02851
-__declspec(noinline) std::pair<int, int> CashEmotionCommand::Get(int index) const {
+__declspec(noinline) CashEmotionEntry CashEmotionCommand::Get(int index) const {
   if (index < 0 || static_cast<std::size_t>(index) >= this->entries.size()) {
-    return std::pair<int, int>(-1, -1);
+    return CashEmotionEntry(-1, -1);
   }
 
   return this->entries[index];
@@ -653,15 +653,15 @@ void CCashEmotionMgr::RefreshCommands() {
 
   const unsigned int now = this->ToServerTime(_time32(nullptr));
   for (auto& shortcut : this->m_shortcuts) {
-    for (const std::pair<int, int>& entry : shortcut.second->entries) {
-      const int packId = entry.first;
-      const int emotionId = entry.second;
-      if (packId != this->basePackId && !this->IsOwnedPack(packId) && !this->IsPackAvailable(now, packId)) {
+    for (const CashEmotionEntry& entry : shortcut.second->entries) {
+      const int packId = entry.packId;
+      const int emotionId = entry.emotionId;
+      if (this->basePackId != packId && !this->IsOwnedPack(packId) && !this->IsPackAvailable(now, packId)) {
         continue;
       }
 
       auto it = std::as_const(this->m_commands).find(shortcut.first);
-      if (it == this->m_commands.end()) {
+      if (this->m_commands.end() == it) {
         CashEmotionCommand* command = new CashEmotionCommand(shortcut.first, packId, emotionId);
         this->m_commands.try_emplace(shortcut.first, std::move(command));
       } else {
@@ -2823,9 +2823,9 @@ void UICashEmotionMiniWnd::Previous() {
 void UICashEmotionMiniWnd::Refresh(int first) {
   if (this->m_pieces[0]) {
     if (this->m_selected) {
-      std::pair<int, int> entry = this->m_selected->Get(first);
-      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_pieces[0]->Set(entry.first, entry.second, false, false, !owned);
+      CashEmotionEntry entry = this->m_selected->Get(first);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.packId ? true : g_cashEmotionMgr->IsOwnedPack(entry.packId);
+      this->m_pieces[0]->Set(entry.packId, entry.emotionId, false, false, !owned);
     } else {
       this->m_pieces[0]->Set(-1, -1, false, false, false);
     }
@@ -2833,9 +2833,9 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 
   if (this->m_pieces[1]) {
     if (this->m_selected) {
-      std::pair<int, int> entry = this->m_selected->Get(first + 1);
-      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_pieces[1]->Set(entry.first, entry.second, false, false, !owned);
+      CashEmotionEntry entry = this->m_selected->Get(first + 1);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.packId ? true : g_cashEmotionMgr->IsOwnedPack(entry.packId);
+      this->m_pieces[1]->Set(entry.packId, entry.emotionId, false, false, !owned);
     } else {
       this->m_pieces[1]->Set(-1, -1, false, false, false);
     }
@@ -2843,9 +2843,9 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 
   if (this->m_pieces[2]) {
     if (this->m_selected) {
-      std::pair<int, int> entry = this->m_selected->Get(first + 2);
-      const bool owned = g_cashEmotionMgr->BasePackId() == entry.first ? true : g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_pieces[2]->Set(entry.first, entry.second, false, false, !owned);
+      CashEmotionEntry entry = this->m_selected->Get(first + 2);
+      const bool owned = g_cashEmotionMgr->BasePackId() == entry.packId ? true : g_cashEmotionMgr->IsOwnedPack(entry.packId);
+      this->m_pieces[2]->Set(entry.packId, entry.emotionId, false, false, !owned);
     } else {
       this->m_pieces[2]->Set(-1, -1, false, false, false);
     }
@@ -2996,8 +2996,8 @@ int UICashEmotionMiniWnd::SendMsg(
         return 0;
       }
       {
-        std::pair<int, int> entry = this->m_selected->Get(this->m_selectedIndex);
-        data = g_cashEmotionMgr->GetEmotionData(entry.first, entry.second);
+        CashEmotionEntry entry = this->m_selected->Get(this->m_selectedIndex);
+        data = g_cashEmotionMgr->GetEmotionData(entry.packId, entry.emotionId);
       }
       break;
     case 37:

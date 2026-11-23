@@ -23,19 +23,37 @@ struct CashEmotionKeyHash {
   }
 };
 
+struct CashEmotionEntry {
+  // INLINED
+  CashEmotionEntry(int packId, int emotionId) : packId(packId), emotionId(emotionId) {
+  }
+
+  /* 0000 */ int packId;
+  /* 0004 */ int emotionId;
+};
+
 class CashEmotionCommand {
 public:
   __declspec(noinline) CashEmotionCommand(const std::string& name, int packId, int emotionId);
 
-  void Add(int packId, int emotionId);
-  std::pair<int, int> Get(int index) const;
+  // INLINED
+  void Append(int packId, int emotionId) {
+    if (packId < 0 || emotionId < 0) {
+      return;
+    }
+
+    this->entries.emplace_back(packId, emotionId);
+  }
+
+  __declspec(noinline) void Add(int packId, int emotionId);
+  CashEmotionEntry Get(int index) const;
   // INLINED
   int Count() const {
     return static_cast<int>(this->entries.size());
   }
 
   /* 0000 */ std::string name;
-  /* 0018 */ std::vector<std::pair<int, int>> entries;
+  /* 0018 */ std::vector<CashEmotionEntry> entries;
 };
 
 struct CashEmotionData {
