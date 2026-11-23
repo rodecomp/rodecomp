@@ -3080,11 +3080,9 @@ void UIListBoxTitle::Paint() {
   }
 
   const int first = this->topLine;
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first),
+    static_cast<unsigned>(this->lines.size()));
   std::uint32_t color = 0;
-  if (this->lines.size() < end) {
-    end = static_cast<unsigned>(this->lines.size());
-  }
 
   for (int index = first; index < static_cast<int>(end); ++index) {
     if (index == this->selected) {
