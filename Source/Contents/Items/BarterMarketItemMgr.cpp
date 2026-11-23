@@ -135,9 +135,8 @@ void CBarterMarketItemMgr::AddItem(const BarterMarketItem& item)
     this->allItems.push_back(item);
   }
   const auto itemsEnd = this->items.end();
-  const int itemId = item.id;
-  std::list<BarterMarketItem>::iterator it = std::find_if(this->items.begin(), itemsEnd, [itemId](const BarterMarketItem& entry) {
-    return entry.id == itemId;
+  std::list<BarterMarketItem>::iterator it = std::find_if(this->items.begin(), itemsEnd, [&item](const BarterMarketItem& entry) {
+    return entry.id == item.id;
   });
   if (it != itemsEnd && !it->flag_38) {
     it->value -= item.value;
@@ -436,7 +435,7 @@ void CExpandedBarterMarketItemMgr::DestroyInstance()
 void CExpandedBarterMarketItemMgr::RemoveEntry(const BarterMarketEntry& entry)
 {
   for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
-    if (it->id == entry.id) {
+    if (entry.id == it->id) {
       it->value -= entry.value;
       if (it->value <= 0) {
         this->entries.erase(it);
@@ -444,9 +443,12 @@ void CExpandedBarterMarketItemMgr::RemoveEntry(const BarterMarketEntry& entry)
       break;
     }
   }
-  std::vector<BarterMarketEntry>::iterator found = std::find_if(this->items.begin(), this->items.end(), [&entry](const BarterMarketEntry& item) {
-    return item.id == entry.id;
-  });
+  std::vector<BarterMarketEntry>::iterator found = this->items.begin();
+  for (; found != this->items.end(); ++found) {
+    if (entry.id == found->id) {
+      break;
+    }
+  }
   if (found != this->items.end()) {
     if (!found->flag_30) {
       found->value += entry.value;
