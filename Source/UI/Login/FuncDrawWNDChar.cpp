@@ -383,12 +383,12 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 // OFFSET: 0x007E5A30
 // FUNCTION: fn_09733
 void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
-  __declspec(align(8)) volatile __int64 aligned = 0;
-  (void)aligned;
   for (auto it = layers.begin(); it != layers.end(); ++it) {
     const int& layer = *it;
     std::string sprName;
     std::string actName;
+    __declspec(align(8)) volatile __int64 aligned = 0;
+    (void)aligned;
     switch (layer) {
       case 1: {
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
