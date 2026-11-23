@@ -275,131 +275,125 @@ void CTextureDX7::ReleaseDC(HDC dc) {
 // FUNCTION: fn_01826
 void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  std::uint8_t& transparent = this->transparent;
-  transparent = static_cast<std::uint8_t>(option);
-
-  if (!this->m_surface || !pixels) {
+  this->transparent = static_cast<std::uint8_t>(option);
+  if (!this->m_surface) {
+    return;
+  }
+  if (pixels == nullptr) {
     return;
   }
 
-  const unsigned stride = sourceWidth ? sourceWidth : width;
-  DDSURFACEDESC2 description{};
-  description.dwSize = sizeof(description);
+  if (sourceWidth == 0) {
+    sourceWidth = width;
+  }
 
+  DDSURFACEDESC2 description = {sizeof(DDSURFACEDESC2), 0};
   if (FAILED(this->m_surface->GetSurfaceDesc(&description))) {
     return;
   }
 
-  int stepX = 1;
-  int stepY = 1;
-
-  while (static_cast<unsigned>(width / stepX) > description.dwWidth) {
-    ++stepX;
+  int stepX;
+  int stepY;
+  for (stepX = 1; static_cast<unsigned>(width / stepX) > description.dwWidth; ++stepX) {
+  }
+  for (stepY = 1; static_cast<unsigned>(height / stepY) > description.dwHeight; ++stepY) {
   }
 
-  while (static_cast<unsigned>(height / stepY) > description.dwHeight) {
-    ++stepY;
-  }
+  x = x / stepX;
+  y = y / stepY;
+  width = width / stepX;
+  height = height / stepY;
 
-  const int left = x / stepX;
-  const int top = y / stepY;
-  const int columns = width / stepX;
-  const int rows = height / stepY;
-
-  if (!columns || !rows) {
+  if (width == 0 || height == 0) {
     return;
   }
 
-  const RECT rectangle = Rectangle(left, top, columns, rows);
-
-  if (FAILED(this->m_surface->Lock(const_cast<RECT*>(&rectangle), &description, DDLOCK_WAIT | DDLOCK_WRITEONLY, nullptr))) {
+  RECT rectangle = {x, y, x + width, y + height};
+  if (FAILED(this->m_surface->Lock(&rectangle, &description, DDLOCK_WAIT | DDLOCK_WRITEONLY, nullptr))) {
     return;
   }
 
+  std::uint32_t color;
+  std::uint16_t* surface;
+  std::uint32_t* surface32;
+  int row;
+  int column;
+  int source;
   switch (this->m_format) {
-  case TextureFormat::A1R5G5B5: {
-    auto* output = static_cast<unsigned char*>(description.lpSurface);
-    for (int row = 0; row < rows; ++row) {
-      for (int column = 0; column < columns; ++column) {
-        const std::uint32_t color = pixels[column * stepX];
-        const unsigned packed = ((color >> 9) & 0x7C00) + ((color >> 6) & 0x3E0) + ((color >> 3) & 0x1F) + ((color >> 16) & 0x8000);
-        std::uint16_t value;
+  case TextureFormat::A1R5G5B5:
+    surface = static_cast<std::uint16_t*>(description.lpSurface);
+    for (row = 0; row < height; ++row) {
+      for (column = 0, source = 0; column < width; ++column, source += stepX) {
+        color = pixels[source];
+        color = ((color >> 9) & 0x7C00) + ((color >> 6) & 0x03E0) + ((color >> 3) & 0x001F) + ((color >> 16) & 0x8000);
 
-        if (packed == 0xFC1F) {
-          value = 0;
-        } else if (transparent && !(packed & 0x7FFF)) {
-          value = 0;
+        if (color == 0xFC1F) {
+          surface[column] = 0;
+        } else if (this->transparent && (color & 0x7FFF) == 0) {
+          surface[column] = 0;
         } else {
-          value = static_cast<std::uint16_t>(packed);
+          surface[column] = static_cast<std::uint16_t>(color);
         }
-
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
-
-      output += description.lPitch;
-      pixels += static_cast<unsigned>(stepY) * stride;
+      surface = reinterpret_cast<std::uint16_t*>(reinterpret_cast<unsigned char*>(surface) + description.lPitch);
+      pixels += sourceWidth * stepY;
     }
     break;
-  }
-  case TextureFormat::A4R4G4B4: {
-    auto* output = static_cast<unsigned char*>(description.lpSurface);
-    for (int row = 0; row < rows; ++row) {
-      for (int column = 0; column < columns; ++column) {
-        const std::uint32_t color = pixels[column * stepX];
-        const unsigned packed = ((color >> 16) & 0xF000) + ((color >> 12) & 0xF00) + ((color >> 8) & 0xF0) + ((color >> 4) & 0xF);
-        std::uint16_t value;
+  case TextureFormat::A4R4G4B4:
+    surface = static_cast<std::uint16_t*>(description.lpSurface);
+    for (row = 0; row < height; ++row) {
+      for (column = 0, source = 0; column < width; ++column, source += stepX) {
+        color = ((pixels[source] >> 16) & 0xF000) + ((pixels[source] >> 12) & 0x0F00) + ((pixels[source] >> 8) & 0x00F0) +
+                ((pixels[source] >> 4) & 0x000F);
 
-        if ((packed & 0xFFF) == 0xF0F) {
-          value = 0;
-        } else if (transparent && !(packed & 0xFFF)) {
-          value = 0;
+        if ((color & 0x0FFF) == 0x0F0F) {
+          surface[column] = 0;
+        } else if (this->transparent && (color & 0x0FFF) == 0) {
+          surface[column] = 0;
         } else {
-          value = static_cast<std::uint16_t>(packed);
-        }
-
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
-      }
-
-      output += description.lPitch;
-      pixels += static_cast<unsigned>(stepY) * stride;
-    }
-    break;
-  }
-  case TextureFormat::R5G6B5: {
-    auto* output = static_cast<unsigned char*>(description.lpSurface);
-    for (int row = 0; row < rows; ++row) {
-      for (int column = 0; column < columns; ++column) {
-        const std::uint32_t color = pixels[column * stepX];
-        const unsigned packed = ((color >> 5) & 0x7E0) + ((color >> 3) & 0x1F) + ((color >> 8) & 0xF800);
-
-        if (!transparent || packed != 0xF81F) {
-          const std::uint16_t value = static_cast<std::uint16_t>(packed);
-          std::memcpy(output + column * sizeof(value), &value, sizeof(value));
+          surface[column] = static_cast<std::uint16_t>(color);
         }
       }
-
-      output += description.lPitch;
-      pixels += static_cast<unsigned>(stepY) * stride;
+      surface = reinterpret_cast<std::uint16_t*>(reinterpret_cast<unsigned char*>(surface) + description.lPitch);
+      pixels += sourceWidth * stepY;
     }
     break;
-  }
-  case TextureFormat::A8R8G8B8: {
-    auto* output = static_cast<unsigned char*>(description.lpSurface);
-    for (int row = 0; row < rows; ++row) {
-      for (int column = 0; column < columns; ++column) {
-        const std::uint32_t color = transparent && !pixels[column * stepX] ? 0 : pixels[column * stepX];
-        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
+  case TextureFormat::R5G6B5:
+    surface = static_cast<std::uint16_t*>(description.lpSurface);
+    for (row = 0; row < height; ++row) {
+      for (column = 0, source = 0; column < width; ++column, source += stepX) {
+        color = pixels[source];
+        color = ((color >> 5) & 0x07E0) + ((color >> 3) & 0x001F) + ((color >> 8) & 0xF800);
+
+        if (!this->transparent) {
+          surface[column] = static_cast<std::uint16_t>(color);
+        } else if (color != 0xF81F) {
+          surface[column] = static_cast<std::uint16_t>(color);
+        }
       }
-
-      output += description.lPitch;
-      pixels += static_cast<unsigned>(stepY) * stride;
+      surface = reinterpret_cast<std::uint16_t*>(reinterpret_cast<unsigned char*>(surface) + description.lPitch);
+      pixels += sourceWidth * stepY;
     }
     break;
-  }
+  case TextureFormat::A8R8G8B8:
+    surface32 = static_cast<std::uint32_t*>(description.lpSurface);
+    for (row = 0; row < height; ++row) {
+      for (column = 0, source = 0; column < width; ++column, source += stepX) {
+        if (this->transparent && pixels[source] == 0) {
+          surface32[column] = 0;
+        } else {
+          surface32[column] = pixels[source];
+        }
+      }
+      surface32 = reinterpret_cast<std::uint32_t*>(reinterpret_cast<unsigned char*>(surface32) + description.lPitch);
+      pixels += sourceWidth * stepY;
+    }
+    break;
   }
 
   this->m_surface->Unlock(nullptr);
-  RECT update{0, 0, static_cast<LONG>(this->m_textureWidth), static_cast<LONG>(this->m_textureHeight)};
+
+  RECT update = {0, 0, static_cast<LONG>(this->m_textureWidth), static_cast<LONG>(this->m_textureHeight)};
   this->Update(&update);
 }
 
