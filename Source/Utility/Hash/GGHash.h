@@ -26,7 +26,7 @@ protected:
     this->m_error = 0;
     this->m_size = 0;
     if (this->m_data) {
-      std::free(this->m_data);
+      ::operator delete(this->m_data);
       this->m_data = nullptr;
     }
   }
