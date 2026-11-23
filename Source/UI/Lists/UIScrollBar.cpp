@@ -2098,7 +2098,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
 void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode) {
   const std::string open = "<";
   const std::string close = ">";
-  std::string remaining = "";
+  std::string remaining;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     if (wrapped.size() > 23) {
       break;
@@ -2117,16 +2117,18 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
         } else if (part != 0) {
           std::vector<std::string> rebuilt;
           for (unsigned int index = 0; index < wrapped.size(); ++index) {
-            if (!wrapped[index].empty()) {
-              rebuilt.push_back(wrapped[index]);
+            const std::string& entry = wrapped[index];
+            if (!entry.empty()) {
+              rebuilt.push_back(entry);
             }
           }
           if (!split[part].empty()) {
             rebuilt.push_back(split[part]);
           }
           for (unsigned int next = line + 1; next < wrapped.size(); ++next) {
-            if (!wrapped[next].empty()) {
-              rebuilt.push_back(wrapped[next]);
+            const std::string& entry = wrapped[next];
+            if (!entry.empty()) {
+              rebuilt.push_back(entry);
             }
           }
           wrapped.swap(rebuilt);
