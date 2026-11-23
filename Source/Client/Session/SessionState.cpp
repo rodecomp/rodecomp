@@ -341,7 +341,8 @@ void CSession::ResolvePendingActorName(std::uint32_t id, const char* name) {
     return;
   }
 
-  if (this->pendingActorNames.end() == this->pendingActorNames.find(static_cast<std::uint32_t>(id))) {
+  std::uint32_t key = id;
+  if (this->pendingActorNames.end() == this->pendingActorNames.find(key)) {
     return;
   }
 
