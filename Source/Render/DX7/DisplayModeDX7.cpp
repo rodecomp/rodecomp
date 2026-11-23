@@ -21,10 +21,9 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
   const auto& record = DirectDrawEnumeration::Devices()[deviceIndex];
 
   for (unsigned index = 0; index < record.modeCount; ++index) {
-    const auto& mode = record.modes[index];
-    const unsigned width = mode.dwWidth;
-    const unsigned height = mode.dwHeight;
-    const unsigned bits = mode.ddpfPixelFormat.dwRGBBitCount;
+    const unsigned width = record.modes[index].dwWidth;
+    const unsigned height = record.modes[index].dwHeight;
+    const unsigned bits = record.modes[index].ddpfPixelFormat.dwRGBBitCount;
 
     if (height < 664 || width > 2048 || height > 1440) {
       continue;
