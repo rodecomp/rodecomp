@@ -700,7 +700,9 @@ CWorldViewWorld* CWorldViewMgr::CurrentWorld() {
 bool CWorldViewMgr::IsMapDisplayNameTranslated(const char* mapName) {
   const std::string placeholder = LookupMessage(MSI_NOWHERE);
   const std::string displayName = g_session.GetMapDisplayName(mapName);
-  return placeholder != displayName;
+  const char* translated = displayName.c_str();
+  const char* untranslated = placeholder.c_str();
+  return placeholder.size() != displayName.size() || std::memcmp(untranslated, translated, placeholder.size()) != 0;
 }
 
 // OFFSET: 0x00615450

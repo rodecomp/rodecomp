@@ -15,6 +15,10 @@ struct HotkeyInfo {
   /* 0020 */ std::string description;
   HotkeyInfo();
 
+  // INLINED
+  HotkeyInfo(int key1, int key2) : key1(key1), key2(key2) {
+  }
+
   // OFFSET: 0x00910960
   // FUNCTION: fn_12505
   HotkeyInfo(const HotkeyInfo& other) = default;

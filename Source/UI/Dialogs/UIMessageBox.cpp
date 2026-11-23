@@ -4012,7 +4012,7 @@ void UIReplayControlWnd::OnCreate(int, int) {
   this->m_pauseButton->SetId(ids[5]);
   this->AddChild(this->m_pauseButton);
 
-  HotkeyInfo hotkey;
+  HotkeyInfo hotkey(0, 0);
   hotkey = g_session.GetHotkeyInfo(1, 39);
   this->m_playButton->SetTooltip(hotkey.text.c_str());
   this->m_pauseButton->SetTooltip(hotkey.text.c_str());
