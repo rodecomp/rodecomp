@@ -23,7 +23,9 @@ public:
   /* 018C */ std::vector<CParticle*> particles;
 
 private:
-  __forceinline void UpdateParticle(CParticle* particle);
+  __declspec(noinline) void UpdateParticle(CParticle* particle);
+  // INLINED
+  __forceinline void UpdateParticleForProcess(CParticle* particle);
   __forceinline void RenderParticle(CParticle* particle);
 };
 

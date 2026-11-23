@@ -88,7 +88,7 @@ void CLevel99Orb1Effect::OnProcess() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    this->UpdateParticle(particle);
+    this->UpdateParticleForProcess(particle);
 
     ++particle->elapsedFrames;
   }
@@ -96,7 +96,73 @@ void CLevel99Orb1Effect::OnProcess() {
 
 // OFFSET: 0x00B6B960
 // FUNCTION: fn_46230
-__forceinline void CLevel99Orb1Effect::UpdateParticle(CParticle* particle) {
+__declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle) {
+  if (particle) {
+    const int index = particle->columnIndex + particle->rowIndex * 4;
+    const float speed = particle->speedParameter;
+    const float heightBeforeUpdate = this->offsets[index].y;
+    if (heightBeforeUpdate < 0.0f) {
+      if (heightBeforeUpdate < -30.0f) {
+        const float height = static_cast<float>(Random(100));
+        this->offsets[index].x = 0.0f;
+        this->offsets[index].y = height;
+        this->offsets[index].z = 0.0f;
+
+        for (int i = 0; i < 4; ++i) {
+          particle->animationValues[i] = static_cast<float>(Random(360));
+        }
+
+        particle->alpha = 0;
+      } else {
+        for (int i = 0; i < 2; ++i) {
+          const int current = static_cast<int>(particle->animationValues[i]);
+          const int delta = static_cast<int>(particle->animationValues[i + 2]) - current;
+          particle->animationValues[i] = static_cast<float>(current + (delta > 0 ? 3 : -2));
+          if (std::abs(delta) < 3) {
+            if (delta > 0) {
+              particle->animationValues[i + 2] = static_cast<float>(Random(current));
+            } else {
+              particle->animationValues[i + 2] = static_cast<float>(359 - Random(current));
+            }
+          }
+        }
+
+        this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationValues[0])];
+        this->offsets[index].z += speed * g_sinTable[static_cast<int>(particle->animationValues[1])];
+        if (this->offsets[index].y < -20.0f) {
+          const int alpha = particle->alpha - 4;
+          particle->alpha = alpha >= 0 ? alpha : 0;
+        } else if (particle->alpha != 255) {
+          particle->alpha = 255;
+        }
+      }
+    }
+
+    EffectPoint& offset = this->offsets[index];
+    offset.y -= speed;
+
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+
+    matrix translation;
+    std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
+    translation.MakeTranslate(offset.x, offset.y, offset.z);
+
+    matrix scale;
+    std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+    scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+    matrix scaled;
+    scaled.Compose(scale, rotation);
+    matrix result;
+    result.Compose(scaled, translation);
+    particle->transform = result;
+  }
+}
+
+// INLINED
+void CLevel99Orb1Effect::UpdateParticleForProcess(CParticle* particle) {
   if (particle) {
     const int index = particle->columnIndex + particle->rowIndex * 4;
     const float speed = particle->speedParameter;
