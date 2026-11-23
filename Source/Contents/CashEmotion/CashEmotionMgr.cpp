@@ -1824,7 +1824,7 @@ UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(int width, int 
     : UICashEmotionListChildWnd_Abstract(width, height, cached) {
   this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play();
   this->m_playAction = new (std::nothrow) CCashEmotionAction_Register();
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C4100
@@ -1934,7 +1934,7 @@ int UICashEmotionListChildWnd_Basic::SendMsg(UIWindow* sender, int message, std:
 UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->playAction = new (std::nothrow) CCashEmotionAction_Play();
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C4AD0
@@ -2058,7 +2058,7 @@ void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* exp
 UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
   this->m_action = new (std::nothrow) CCashEmotionAction_Play();
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C5720
@@ -2161,7 +2161,7 @@ int UICashEmotionListChildWnd_Search::SendMsg(UIWindow* sender, int message, std
 // FUNCTION: fn_09389
 UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(int width, int height)
     : UICashEmotionListChildWnd_Abstract(width, height, 0) {
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x007C6520
@@ -3490,7 +3490,7 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
 UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase() : UICashEmotionPack(), m_pressed(false) {
   this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
   this->m_pressed = false;
-  this->Invalidate();
+  static_cast<UIWindow*>(this)->Invalidate();
 }
 
 // OFFSET: 0x007CB790
