@@ -96,11 +96,16 @@ public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
+// INLINED
+static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
+  return effects->Spawn(0, id, position, 0, -1, 0, 0);
+}
+
 // OFFSET: 0x007950C0
 // FUNCTION: fn_08785
 void CSkillAction_SS_REIKETSUHOU::OnGroundSkillEffect(vector3d position, int level, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position);
 
   const int counts[] = {5, 5, 5, 5, 5, 6, 6, 6, 7, 7};
   const int count = counts[std::min<unsigned int>(level, 10) - 1];
