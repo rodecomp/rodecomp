@@ -3557,7 +3557,7 @@ std::string UINavigationV4Wnd::MobName(CNavi_Object* mob) {
     std::string text(LookupMessage(MSI_NAVIGATION_NUM5));
     if (level > 99) {
       text.assign(LookupMessage(MSI_NAVIGATION_NUM1));
-    } else if (level > 49) {
+    } else if (level > 49 && level <= 99) {
       text.assign(LookupMessage(MSI_NAVIGATION_NUM2));
     } else if (level >= 20 && level <= 49) {
       text.assign(LookupMessage(MSI_NAVIGATION_NUM3));
@@ -4054,8 +4054,9 @@ int UIPrivateAirplaneWnd::SendMsg(
     break;
   case UM_REFRESHBUTTON:
     for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
-      (*it)->SetDisabled(1);
-      (*it)->Invalidate();
+      UIBasicButton* const button = *it;
+      button->SetDisabled(1);
+      button->Invalidate();
     }
 
     this->Invalidate();
@@ -4063,8 +4064,8 @@ int UIPrivateAirplaneWnd::SendMsg(
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE:
-      if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
-        g_windowMgr.modalResponse = ID_NO;
+      if (!g_windowMgr.modalWindows.empty()) {
+        g_windowMgr.modalResponse = g_windowMgr.modalWindows.back() ? ID_NO : g_windowMgr.modalResponse;
       }
       break;
     case AIRPLANE_BUTTON_DESTINATION: {
