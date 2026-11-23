@@ -14,6 +14,13 @@
 
 namespace {
 // INLINED
+void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
+// INLINED
 __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   if (0.0f == particle->life) {
     return true;
@@ -118,9 +125,7 @@ void CTalismanMarkEffect::Open() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetParticleIndices(*particle, 1, i, 0);
     particle->InitParticleQuad(particle->vertices);
     particle->m_actorId = this->actor;
     particle->Load(s_talismanStartEffects.at(i));
