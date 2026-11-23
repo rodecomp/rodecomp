@@ -242,6 +242,19 @@ static int CountItemOptions(const ItemRandomOption* options) {
 }
 
 // INLINED
+static int CountLeadingItemOptions(const ItemRandomOption* options) {
+  int count = 0;
+  for (int index = 0; index < 5; ++index) {
+    if (0 == options[index].id) {
+      break;
+    }
+    ++count;
+  }
+  return count;
+}
+
+// INLINED
+template <bool stopAtEmpty>
 static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int itemId, unsigned char type,
                                             unsigned char identified, unsigned char damaged, unsigned char refine,
                                             std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
@@ -259,7 +272,7 @@ static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int 
   cards[1] = card2;
   cards[2] = card3;
   cards[3] = card4;
-  item.optionCount = CountItemOptions(options.values);
+  item.optionCount = stopAtEmpty ? CountLeadingItemOptions(options.values) : CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.values[index];
   }
@@ -268,6 +281,7 @@ static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int 
 }
 
 // INLINED
+template <bool stopAtEmpty>
 static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amount, int itemId, unsigned char type,
                                                     unsigned char identified, unsigned char damaged,
                                                     unsigned char refine, std::uint32_t card1, std::uint32_t card2,
@@ -286,7 +300,7 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
   cards[1] = card2;
   cards[2] = card3;
   cards[3] = card4;
-  item.optionCount = CountItemOptions(options.values);
+  item.optionCount = stopAtEmpty ? CountLeadingItemOptions(options.values) : CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.values[index];
   }
@@ -299,8 +313,9 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
 void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddPacket*>(data);
   ItemRandomOptions options = {};
-  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
-                    packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3], options, 0);
+  AddCartPacketItem<true>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+                          packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
+                          options, 0);
 }
 
 #pragma pack(push, 1)
@@ -329,6 +344,7 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
 #pragma pack(pop)
 
 // INLINED
+template <bool stopAtEmpty>
 static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, int slot, unsigned char identified,
                                                 unsigned char damaged, unsigned char refine, std::uint32_t card1,
                                                 std::uint32_t card2, std::uint32_t card3, std::uint32_t card4,
@@ -355,7 +371,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
   cards[3] = card4;
   item.identity[1] = 0xFFFFFFFF;
   item.quantity = slot;
-  item.optionCount = CountItemOptions(options.values);
+  item.optionCount = stopAtEmpty ? CountLeadingItemOptions(options.values) : CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.values[index];
   }
@@ -367,7 +383,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
 void CGameMode::ReceiveItemSlot(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
   ItemRandomOptions options = {};
-  AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
+  AddExchangePacketItem<true>(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
                         packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
                         options);
 }
@@ -376,7 +392,7 @@ void CGameMode::ReceiveItemSlot(const unsigned char* data) {
 // FUNCTION: fn_21642
 void CGameMode::ReceiveItemSlotOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
-  AddExchangePacketItem(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
+  AddExchangePacketItem<false>(packet->itemId, packet->type, packet->slot, packet->identified, packet->damaged,
                         packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
                         packet->options);
 }
@@ -441,7 +457,7 @@ void CGameMode::ReceiveFriendAddResult(const unsigned char* data) {
 void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddPacket*>(data);
   ItemRandomOptions options = {};
-  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+  AddMerchantShopPacketItem<true>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
                             packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
                             packet->cards[3], options, 0);
 }
@@ -450,7 +466,7 @@ void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
 // FUNCTION: fn_21645
 void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddOptionsPacket*>(data);
-  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+  AddMerchantShopPacketItem<false>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
                             packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
                             packet->cards[3], packet->options, 0);
 }
@@ -459,7 +475,7 @@ void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
 // FUNCTION: fn_21646
 void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddGradePacket*>(data);
-  AddMerchantShopPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
+  AddMerchantShopPacketItem<false>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified,
                             packet->damaged, packet->refine, packet->cards[0], packet->cards[1], packet->cards[2],
                             packet->cards[3], packet->options, packet->grade);
 }
@@ -468,7 +484,7 @@ void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
 // FUNCTION: fn_21647
 void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddOptionsPacket*>(data);
-  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+  AddCartPacketItem<false>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
                     packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
                     packet->options, 0);
 }
@@ -477,7 +493,7 @@ void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
 // FUNCTION: fn_21648
 void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemAddGradePacket*>(data);
-  AddCartPacketItem(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
+  AddCartPacketItem<false>(packet->index, packet->amount, packet->itemId, packet->type, packet->identified, packet->damaged,
                     packet->refine, packet->cards[0], packet->cards[1], packet->cards[2], packet->cards[3],
                     packet->options, packet->grade);
 }
