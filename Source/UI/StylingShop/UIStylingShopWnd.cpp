@@ -1643,25 +1643,21 @@ void UIDisplayCharacter::Paint() {
 // FUNCTION: fn_10364
 void UIShowInfoWnd::DrawPayments() {
   int positions[8][2];
-  if (dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->primaryTabVisible == true ||
-      dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->accessoryTabVisible == true) {
+  const bool primary = dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->primaryTabVisible;
+  if (primary == true || dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->accessoryTabVisible == true) {
     for (int i = 0; i < 8; ++i) {
       positions[i][0] = this->m_paymentLayout.textX + 3;
       positions[i][1] = this->m_paymentLayout.textYOffset + this->geometry.height / 8 * i;
     }
   } else {
     for (int i = 0; i < 4; ++i) {
-      const int left = this->m_paymentLayout.textX - 4;
-      const int right = this->m_paymentLayout.textX + 101;
+      positions[i * 2][0] = this->m_paymentLayout.textX - 4;
+      positions[i * 2 + 1][0] = this->m_paymentLayout.textX + 101;
       if (i == 0) {
-        positions[i * 2][0] = left;
         positions[i * 2][1] = this->m_paymentLayout.textYOffset;
-        positions[i * 2 + 1][0] = right;
         positions[i * 2 + 1][1] = this->m_paymentLayout.textYOffset;
       } else {
-        positions[i * 2][0] = left;
         positions[i * 2][1] = this->geometry.height / 8 * i + this->m_paymentLayout.textYOffset;
-        positions[i * 2 + 1][0] = right;
         positions[i * 2 + 1][1] = this->geometry.height / 8 * i + this->m_paymentLayout.textYOffset;
       }
     }
@@ -1787,29 +1783,30 @@ void UIShowInfoWnd::DrawPayments() {
     return;
   }
 
+  bool favoriteVisible = false;
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
     if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
-      if (it->second->geometry.visible != 0) {
-        for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator tab = shop->m_tabs.begin(); tab != shop->m_tabs.end(); ++tab) {
-          if (tab->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
-            UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
-            bool buyable;
-            if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
-              buyable = myStyle->m_slots[myStyle->m_selectedSlot]->m_showInfo->m_buyable;
-            } else {
-              buyable = false;
-            }
-            shop->SetBuyEnabled(buyable);
-          }
-        }
-        shop->Invalidate();
-        return;
-      }
+      favoriteVisible = it->second->geometry.visible != 0;
       break;
     }
   }
 
-  shop->SetBuyEnabled(this->m_buyable);
+  if (!favoriteVisible) {
+    shop->SetBuyEnabled(this->m_buyable);
+  } else {
+    for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator tab = shop->m_tabs.begin(); tab != shop->m_tabs.end(); ++tab) {
+      if (tab->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
+        UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
+        bool buyable;
+        if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
+          buyable = myStyle->m_slots[myStyle->m_selectedSlot]->m_showInfo->m_buyable;
+        } else {
+          buyable = false;
+        }
+        shop->SetBuyEnabled(buyable);
+      }
+    }
+  }
   shop->Invalidate();
 }
 
