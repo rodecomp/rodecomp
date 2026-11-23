@@ -957,12 +957,13 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
 // OFFSET: 0x00E488C0
 // FUNCTION: fn_24221
 void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
-  if (style >= 2 || this->IsSecondJob(renderJob)) {
+  if (style >= 2 || (renderJob >= JT_RUNE_KNIGHT_2ND && renderJob < JT_SECOND_JOB_END)) {
     this->m_bodyStyle = style;
-  } else if (static_cast<unsigned>(job - 4001) <= 21) {
+  } else if (job >= JT_NOVICE_H && job <= JT_CHICKEN2_H) {
     this->m_bodyStyle = job <= JT_THIEF_H;
   } else {
-    this->m_bodyStyle = static_cast<unsigned>(g_session.GetBodyStyleJob(job) - 4001) <= 6;
+    const int bodyJob = g_session.GetBodyStyleJob(job);
+    this->m_bodyStyle = bodyJob >= JT_NOVICE_H && bodyJob <= JT_THIEF_H;
   }
 }
 
