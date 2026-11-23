@@ -58,13 +58,14 @@ public:
   virtual ~CGPak();
 
   bool Open(CPakFile* file);
-  void Reset();
+  __declspec(noinline) void Reset();
   bool Find(const myGPack::PakName& name, myGPack::PakEntry* entry) const;
   bool Extract(const myGPack::PakEntry* entry, void* buffer);
   void ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* identifier = nullptr);
   void ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
 
 protected:
+  void Clear();
   bool ReadTableV1();
   bool ReadTableV2();
   bool ReadTableV3();
