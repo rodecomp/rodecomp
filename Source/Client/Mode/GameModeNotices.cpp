@@ -2838,7 +2838,10 @@ struct StorageEquipRecord {
   /* 000A */ std::uint16_t wearState;
   /* 000C */ unsigned char damaged;
   /* 000D */ unsigned char refine;
-  /* 000E */ std::uint32_t cards[4];
+  /* 000E */ std::uint32_t card0;
+  /* 0012 */ std::uint32_t card1;
+  /* 0016 */ std::uint32_t card2;
+  /* 001A */ std::uint32_t card3;
   /* 001E */ int expireTime;
 };
 
@@ -2851,7 +2854,10 @@ struct StorageEquipRecord2 {
   /* 000A */ std::uint16_t wearState;
   /* 000C */ unsigned char damaged;
   /* 000D */ unsigned char refine;
-  /* 000E */ std::uint32_t cards[4];
+  /* 000E */ std::uint32_t card0;
+  /* 0012 */ std::uint32_t card1;
+  /* 0016 */ std::uint32_t card2;
+  /* 001A */ std::uint32_t card3;
   /* 001E */ int expireTime;
   /* 0022 */ std::uint16_t bindOnEquip;
   /* 0024 */ std::uint16_t sprite;
@@ -3189,7 +3195,10 @@ struct GuildStorageLogPacketEntry {
   /* 0011 */ unsigned char uniqueId[8];
   /* 0019 */ unsigned char identified;
   /* 001A */ std::int16_t count;
-  /* 001C */ std::uint32_t cards[4];
+  /* 001C */ std::uint32_t card0;
+  /* 0020 */ std::uint32_t card1;
+  /* 0024 */ std::uint32_t card2;
+  /* 0028 */ std::uint32_t card3;
   /* 002C */ char name[24];
   /* 0044 */ char date[24];
   /* 005C */ unsigned char highlighted;
@@ -3223,9 +3232,10 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       item.identified = record.identified;
       item.identity[0] = record.count;
       item.refiningLevel = record.refine;
-      for (int card = 0; card < 4; ++card) {
-        item.cards[card] = record.cards[card];
-      }
+      item.cards[0] = record.card0;
+      item.cards[1] = record.card1;
+      item.cards[2] = record.card2;
+      item.cards[3] = record.card3;
       GuildStorageLogEntry entry;
       entry.logId = item.recordIds[0];
       entry.quantity = item.recordIds[1];
@@ -3254,9 +3264,10 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       item.identified = record.identified;
       item.identity[0] = record.count;
       item.refiningLevel = record.refine;
-      for (int card = 0; card < 4; ++card) {
-        item.cards[card] = record.cards[card];
-      }
+      item.cards[0] = record.card0;
+      item.cards[1] = record.card1;
+      item.cards[2] = record.card2;
+      item.cards[3] = record.card3;
       GuildStorageLogEntry entry;
       entry.logId = item.recordIds[0];
       entry.quantity = item.recordIds[1];
@@ -3273,10 +3284,10 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
     }
     std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), GuildStorageLogEntry());
     for (auto it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
-      if (it->operation == 1) {
-        g_session.guildStorageLogs[1].push_back(*it);
-      } else {
+      if (it->operation != 1) {
         g_session.guildStorageLogs[2].push_back(*it);
+      } else {
+        g_session.guildStorageLogs[1].push_back(*it);
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
@@ -3310,7 +3321,10 @@ void CGameMode::ReceiveStorageEquipList(const unsigned char* data) {
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
@@ -3337,7 +3351,10 @@ void CGameMode::ReceiveStorageEquipList2(const unsigned char* data) {
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.quantity = 1;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
@@ -7561,7 +7578,10 @@ struct GuildStorageLogItemRecord {
   /* 000D */ unsigned char uniqueId[8];
   /* 0015 */ unsigned char identified;
   /* 0016 */ std::int16_t type;
-  /* 0018 */ std::uint32_t cards[4];
+  /* 0018 */ std::uint32_t card0;
+  /* 001C */ std::uint32_t card1;
+  /* 0020 */ std::uint32_t card2;
+  /* 0024 */ std::uint32_t card3;
   /* 0028 */ char name[24];
   /* 0040 */ char characterName[24];
   /* 0058 */ unsigned char highlighted;
@@ -7599,7 +7619,10 @@ void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
       item.identified = record.identified;
       item.identity[0] = record.type;
       item.refiningLevel = record.refine;
-      std::memcpy(item.cards, record.cards, sizeof(record.cards));
+      item.cards[0] = record.card0;
+      item.cards[1] = record.card1;
+      item.cards[2] = record.card2;
+      item.cards[3] = record.card3;
       item.grade = record.grade;
       items.push_back({item, record.highlighted});
     }
