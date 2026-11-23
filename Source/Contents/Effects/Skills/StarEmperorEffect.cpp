@@ -8,6 +8,13 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 
+// INLINED
+static void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
 // OFFSET: 0x0072BBE0
 // FUNCTION: fn_07474
 CStarEmperorEffect::CStarEmperorEffect() : CEffect(-1), sphere(), rings() {
@@ -33,9 +40,7 @@ __forceinline void CStarEmperorEffect::BuildRings() {
   for (int i = 0; i < 10; ++i) {
     CParticle* particle = CreateParticle(&this->positionVector, 0x201);
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetParticleIndices(*particle, 1, i, 0);
     particle->SetTexture("effect\\star_emperor\\ring_white.tga");
     particle->phaseParameter = 36;
     this->rings.push_back(particle);
