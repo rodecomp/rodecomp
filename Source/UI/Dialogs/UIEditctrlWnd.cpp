@@ -281,7 +281,7 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       FILE* file = std::fopen(text.c_str(), "ab");
       if (file) {
         std::fseek(file, 0, SEEK_END);
-        text = FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapWndInfo.x, g_windowMgr.miniMapWndInfo.y, this->edit->Text());
+        text = static_cast<const std::string&>(FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapWndInfo.x, g_windowMgr.miniMapWndInfo.y, this->edit->Text()));
         std::fwrite(text.c_str(), text.size(), 1, file);
         std::fclose(file);
         if (g_windowMgr.miniMapWnd) {
