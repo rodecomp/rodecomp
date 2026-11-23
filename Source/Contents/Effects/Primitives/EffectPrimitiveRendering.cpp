@@ -1729,47 +1729,78 @@ void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
 // OFFSET: 0x00BDAC40
 // FUNCTION: fn_19894
 void CEffectPrim::RenderHalfSphere(matrix& wtm) {
+  float cs1;
+  float sn1;
+  float cs2;
+  float sn2;
   ZeroVector3d vec1;
   ZeroVector3d vec3;
   ZeroVector3d vec2;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  int angle;
+  int basicAngle;
+  const int basicAngle2 = 18;
+  float dist;
 
   for (int ec = 0; ec < 4; ++ec) {
+    if (this->state.slots[ec].life == 1) {
+      basicAngle = this->state.slots[ec].fullDisplayAngle;
+      basicAngle /= 10;
 
-    if (this->state.slots[ec].life != 1) {
-      continue;
-    }
+      for (int angle2 = 0; angle2 < 180; angle2 += basicAngle2) {
+        for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
+          angle = count + this->state.slots[ec].rotStart;
+          if (angle >= 360) {
+            angle -= 360;
+          }
 
-    const int step = this->state.slots[ec].fullDisplayAngle / 10;
+          if (this->state.slots[ec].fullDisplayAngle == 360) {
+            if (count == this->state.slots[ec].fullDisplayAngle) {
+              angle = this->state.slots[ec].rotStart;
+            }
+          }
 
-    for (int angle2 = 0; angle2 < 180; angle2 += 18) {
-      for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += step) {
-        int angle = this->state.slots[ec].rotStart + count;
+          cs1 = g_cosTable[angle];
+          sn1 = g_sinTable[angle];
 
-        if (angle >= 360) {
-          angle -= 360;
+          cs2 = g_cosTable[angle2];
+          sn2 = g_sinTable[angle2];
+
+          dist = this->state.slots[ec].distance;
+
+          vec2.y = cs2 * dist;
+          dist = sn2 * dist;
+
+          vec2.x = cs1 * dist;
+          vec2.z = sn1 * dist;
+          vec2.y -= this->state.slots[ec].maxHeight;
+
+          vec2.x += this->state.slots[ec].vecTNow.x;
+          vec2.z += this->state.slots[ec].vecTNow.z;
+
+          cs2 = g_cosTable[angle2 + basicAngle2];
+          sn2 = g_sinTable[angle2 + basicAngle2];
+
+          dist = this->state.slots[ec].distance;
+
+          vec4.y = cs2 * dist;
+          dist = sn2 * dist;
+
+          vec4.x = cs1 * dist;
+          vec4.z = sn1 * dist;
+          vec4.y -= this->state.slots[ec].maxHeight;
+
+          vec4.x += this->state.slots[ec].vecTNow.x;
+          vec4.z += this->state.slots[ec].vecTNow.z;
+
+          if (count > 0) {
+            this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 1, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          }
+
+          vec1 = vec2;
+          vec3 = vec4;
         }
-
-        if (this->state.slots[ec].fullDisplayAngle == 360 && count == 360) {
-          angle = this->state.slots[ec].rotStart;
-        }
-
-        const float cs1 = g_cosTable[angle];
-        const float sn1 = g_sinTable[angle];
-        const float dist = this->state.slots[ec].distance;
-
-        float ring = g_sinTable[angle2] * dist;
-        vec2.Set(cs1 * ring + this->state.slots[ec].vecTNow.x, g_cosTable[angle2] * dist - this->state.slots[ec].maxHeight, sn1 * ring + this->state.slots[ec].vecTNow.z);
-        ring = g_sinTable[angle2 + 18] * dist;
-        vec4.Set(cs1 * ring + this->state.slots[ec].vecTNow.x, g_cosTable[angle2 + 18] * dist - this->state.slots[ec].maxHeight, sn1 * ring + this->state.slots[ec].vecTNow.z);
-
-        if (count > 0) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 1, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        }
-
-        vec1 = vec2;
-        vec3 = vec4;
       }
     }
   }
@@ -4646,67 +4677,99 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  int basicAngle;
+  int angle;
+  int order;
+  float cs1;
+  float sn1;
+  float cs2;
+  float sn2;
+  float dist;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+    if (this->state.slots[ec].life == 1 && this->state.slots[ec].alphaB > 0) {
+      basicAngle = this->state.slots[ec].fullDisplayAngle;
+      basicAngle /= 20;
 
-    if (slot.life != 1 || slot.alphaB <= 0) {
-      continue;
-    }
+      for (int rcolor = 0; rcolor < 7; ++rcolor) {
+        order = 0;
+        for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
+          angle = count + this->state.slots[ec].rotStart;
+          if (angle >= 360) {
+            angle -= 360;
+          }
 
-    const int step = slot.fullDisplayAngle / 20;
+          cs1 = g_cosTable[angle];
+          sn1 = g_sinTable[angle];
 
-    for (int rcolor = 0; rcolor < 7; ++rcolor) {
-      int order = 0;
+          vec1.x = static_cast<float>(cs1 * this->state.slots[ec].distance * (1.0 - rcolor * 0.05f));
+          vec1.y = static_cast<float>(sn1 * this->state.slots[ec].distance * (1.0 - rcolor * 0.05f) * 2);
+          vec1.z = 0.0f;
 
-      for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-        const double inner = 1.0 - rcolor * 0.05f;
-        const double outer = 1.0 - (rcolor + 1) * 0.05f;
-        int angle = slot.rotStart + count;
+          vec4.x = static_cast<float>(cs1 * this->state.slots[ec].distance * (1.0 - (rcolor + 1) * 0.05f));
+          vec4.y = static_cast<float>(sn1 * this->state.slots[ec].distance * (1.0 - (rcolor + 1) * 0.05f) * 2);
+          vec4.z = 0.0f;
 
-        if (angle >= 360) {
-          angle -= 360;
-        }
+          cs1 = g_cosTable[this->state.slots[ec].riseAngle];
+          sn1 = g_sinTable[this->state.slots[ec].riseAngle];
+          dist = vec1.x;
 
-        const float dist = slot.distance;
-        const float cs = g_cosTable[slot.riseAngle];
-        const float sn = g_sinTable[slot.riseAngle];
-        const float x1 = static_cast<float>(inner * (dist * g_cosTable[angle]));
-        vec1.Set(x1 * cs, static_cast<float>(inner * (dist * g_sinTable[angle]) * 2.0), x1 * sn);
-        const float x4 = static_cast<float>(outer * (dist * g_cosTable[angle]));
-        vec4.Set(x4 * cs, static_cast<float>(outer * (dist * g_sinTable[angle]) * 2.0), x4 * sn);
+          vec1.x = cs1 * dist;
+          vec1.z = sn1 * dist;
 
-        int next = angle + step;
+          dist = vec4.x;
 
-        if (next >= 360) {
-          next -= 360;
-        }
+          vec4.x = cs1 * dist;
+          vec4.z = sn1 * dist;
 
-        const float x2 = static_cast<float>(inner * (dist * g_cosTable[next]));
-        vec2.Set(x2 * cs, static_cast<float>(inner * (dist * g_sinTable[next]) * 2.0), x2 * sn);
-        const float x3 = static_cast<float>(outer * (dist * g_cosTable[next]));
-        vec3.Set(x3 * cs, static_cast<float>(outer * (dist * g_sinTable[next]) * 2.0), x3 * sn);
+          angle = count + this->state.slots[ec].rotStart + basicAngle;
+          if (angle >= 360) {
+            angle -= 360;
+          }
 
-        if (rcolor == 0) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 0);
-        } else if (rcolor == 1) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 126, 0);
-        } else if (rcolor == 2) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 255, 0);
-        } else if (rcolor == 3) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 255, 0);
-        } else if (rcolor == 4) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 0, 255);
-        } else if (rcolor == 5) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 115, 50, 200);
-        } else if (rcolor == 6) {
-          this->RenderTeiRect(&rpCnt, order, slot.alphaB, slot.alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 255);
-        }
+          cs2 = g_cosTable[angle];
+          sn2 = g_sinTable[angle];
 
-        ++order;
+          vec2.x = static_cast<float>(cs2 * this->state.slots[ec].distance * (1.0 - rcolor * 0.05f));
+          vec2.y = static_cast<float>(sn2 * this->state.slots[ec].distance * (1.0 - rcolor * 0.05f) * 2);
+          vec2.z = 0.0f;
 
-        if (order >= 21) {
-          order = 20;
+          vec3.x = static_cast<float>(cs2 * this->state.slots[ec].distance * (1.0 - (rcolor + 1) * 0.05f));
+          vec3.y = static_cast<float>(sn2 * this->state.slots[ec].distance * (1.0 - (rcolor + 1) * 0.05f) * 2);
+          vec3.z = 0.0f;
+
+          cs1 = g_cosTable[this->state.slots[ec].riseAngle];
+          sn1 = g_sinTable[this->state.slots[ec].riseAngle];
+          dist = vec2.x;
+
+          vec2.x = cs1 * dist;
+          vec2.z = sn1 * dist;
+
+          dist = vec3.x;
+
+          vec3.z = sn1 * dist;
+          vec3.x = cs1 * dist;
+
+          if (rcolor == 0) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 0);
+          } else if (rcolor == 1) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 126, 0);
+          } else if (rcolor == 2) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 255, 0);
+          } else if (rcolor == 3) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 255, 0);
+          } else if (rcolor == 4) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 0, 0, 255);
+          } else if (rcolor == 5) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 115, 50, 200);
+          } else if (rcolor == 6) {
+            this->RenderTeiRect(&rpCnt, order, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec2, vec3, vec4, vec1, wtm, 0, 255, 0, 255);
+          }
+
+          order++;
+          if (order >= 21) {
+            order = 20;
+          }
         }
       }
     }
@@ -4945,57 +5008,81 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
 // OFFSET: 0x00BE0680
 // FUNCTION: fn_19911
 void CEffectPrim::RenderSMA2(matrix& wtm) {
+  float cs1;
+  float sn1;
   ZeroVector3d vec1;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   ZeroVector3d vec2;
   int rpCnt = 0;
+  int order;
+  int angle;
+  int basicAngle;
+  float rx;
+  float ry;
+  float rz;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+    if (this->state.slots[ec].life == 1) {
+      basicAngle = this->state.slots[ec].fullDisplayAngle;
+      basicAngle /= 20;
 
-    if (slot.life != 1) {
-      continue;
-    }
+      order = 0;
 
-    const int step = slot.fullDisplayAngle / 20;
-    int order = 0;
+      for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
+        angle = count + this->state.slots[ec].rotStart;
+        angle %= 360;
 
-    for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-      int angle = slot.rotStart + count;
-      angle %= 360;
-
-      if (slot.fullDisplayAngle == 360 && order == 20) {
-        angle = slot.rotStart;
-      }
-
-      const float cs1 = g_cosTable[angle];
-      const float sn1 = g_sinTable[angle];
-      const float rx = g_cosTable[slot.riseAngle] * slot.height[order];
-      const float ry = g_sinTable[slot.riseAngle] * slot.height[order];
-      const vector3d& delta = this->state.deltaPos;
-      vec2.Set(cs1 * slot.distance + delta.x, delta.y + 0.0f, sn1 * slot.distance + delta.z);
-      vec4.Set(cs1 * rx + cs1 * slot.distance + delta.x, delta.y - ry, sn1 * rx + sn1 * slot.distance + delta.z);
-
-      if (order > 0) {
-        const float tx1 = static_cast<float>(order - 1) / 21.0f;
-        const float tx2 = static_cast<float>(order) / 21.0f;
-
-        if (99 == slot.alphaT) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 99, 0, 1, 70, 70, 70, 0.0f, 1.0f, tx1, tx2, 0);
-        } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 90, 90, 255, 0.0f, 1.0f, tx1, tx2, 0);
+        if (this->state.slots[ec].fullDisplayAngle == 360) {
+          if (order == 20) {
+            angle = this->state.slots[ec].rotStart;
+          }
         }
+
+        cs1 = g_cosTable[angle];
+        sn1 = g_sinTable[angle];
+
+        vec2.x = cs1 * this->state.slots[ec].distance;
+        vec2.z = sn1 * this->state.slots[ec].distance;
+        vec2.y = 0.0f;
+
+        rx = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
+        ry = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
+
+        rz = sn1 * rx;
+        rx = cs1 * rx;
+
+        vec4.x = vec2.x + rx;
+        vec4.z = vec2.z + rz;
+        vec4.y = -ry;
+
+        vec2 += this->state.deltaPos;
+        vec4 += this->state.deltaPos;
+        if (order > 0) {
+          float tx1;
+          float tx2;
+
+          tx1 = static_cast<float>(order - 1);
+          tx1 /= 21.0f;
+
+          tx2 = static_cast<float>(order);
+          tx2 /= 21.0f;
+
+          if (99 == this->state.slots[ec].alphaT) {
+            this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 99, 0, 1, 70, 70, 70, 0.0f, 1.0f, tx1, tx2, 0);
+          } else {
+            this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 90, 90, 255, 0.0f, 1.0f, tx1, tx2, 0);
+          }
+        }
+
+        order++;
+        if (order >= 21) {
+          order = 20;
+        }
+
+        vec1 = vec2;
+        vec3 = vec4;
       }
-
-      ++order;
-
-      if (order >= 21) {
-        order = 20;
-      }
-
-      vec1 = vec2;
-      vec3 = vec4;
     }
   }
 }
@@ -5093,38 +5180,66 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
 // OFFSET: 0x00BE1820
 // FUNCTION: fn_19916
 void CEffectPrim::RenderSlash1(matrix& wtm) {
+  float cs1;
+  float sn1;
   ZeroVector3d vec1;
   ZeroVector3d vec3;
   ZeroVector3d vec2;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  int alpha;
+  int angle;
+  float rx;
 
   for (int ec = 0; ec < 4; ++ec) {
+    if (this->state.slots[ec].life == 1 && this->state.slots[ec].alphaB > 0) {
+      for (int i = 0; i <= 2; ++i) {
+        angle = this->state.slots[ec].rotStart - 1 + i;
+        if (angle < 0) {
+          angle += 360;
+        } else if (angle >= 360) {
+          angle -= 360;
+        }
 
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
-      continue;
-    }
+        cs1 = g_cosTable[angle];
+        sn1 = g_sinTable[angle];
 
-    for (int i = 0; i <= 2; ++i) {
-      int angle = this->state.slots[ec].rotStart - 1 + i;
+        rx = this->state.slots[ec].height[0];
 
-      if (angle < 0) {
-        angle += 360;
-      } else if (angle >= 360) {
-        angle -= 360;
+        vec1.x = cs1 * rx;
+        vec1.z = sn1 * rx;
+        vec1.y = -0.0f;
+
+        vec2.x = vec1.x;
+        vec2.z = vec1.z;
+        if (i == 1) {
+          vec2.y = vec1.y - this->state.slots[ec].maxHeight * 0.2f;
+        } else {
+          vec2.y = vec1.y - this->state.slots[ec].maxHeight * 0.1f;
+        }
+
+        rx = this->state.slots[ec].height[0] + this->state.slots[ec].distance;
+
+        vec3.x = cs1 * rx;
+        vec3.z = sn1 * rx;
+        vec3.y = -0.0f;
+
+        vec4.x = vec3.x;
+        vec4.z = vec3.z;
+        if (i == 1) {
+          vec4.y = vec3.y - this->state.slots[ec].maxHeight;
+        } else {
+          vec4.y = vec3.y - this->state.slots[ec].maxHeight * 0.4f;
+        }
+
+        if (i == 1) {
+          alpha = this->state.slots[ec].alphaB;
+        } else {
+          alpha = this->state.slots[ec].alphaB / 3;
+        }
+
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec3, vec4, vec2, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-
-      const float cs1 = g_cosTable[angle];
-      const float sn1 = g_sinTable[angle];
-      float rx = this->state.slots[ec].height[0];
-      vec1.Set(cs1 * rx, -0.0f, sn1 * rx);
-      vec2.Set(vec1.x, i == 1 ? vec1.y - this->state.slots[ec].maxHeight * 0.2f : vec1.y - this->state.slots[ec].maxHeight * 0.1f, vec1.z);
-      rx = this->state.slots[ec].height[0] + this->state.slots[ec].distance;
-      vec3.Set(cs1 * rx, -0.0f, sn1 * rx);
-      vec4.Set(vec3.x, i == 1 ? vec3.y - this->state.slots[ec].maxHeight : vec3.y - this->state.slots[ec].maxHeight * 0.4f, vec3.z);
-      const int alpha = i == 1 ? this->state.slots[ec].alphaB : this->state.slots[ec].alphaB / 3;
-
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec3, vec4, vec2, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }
@@ -6256,65 +6371,78 @@ void CEffectPrim::Render3DCasting2(matrix& wtm) {
 // OFFSET: 0x00BC91D0
 // FUNCTION: fn_19856
 void CEffectPrim::Render3DCasting(matrix& wtm) {
+  float cs1;
+  float sn1;
   ZeroVector3d vec1;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   ZeroVector3d vec2;
   int rpCnt = 0;
+  int order;
+  int angle;
+  int basicAngle;
+  float rx;
+  float ry;
+  float rz;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life != 1) {
-      continue;
-    }
+    if (this->state.slots[ec].life == 1) {
+      basicAngle = this->state.slots[ec].fullDisplayAngle;
+      basicAngle /= 20;
 
-    const int basicAngle = this->state.slots[ec].fullDisplayAngle / 20;
-    int order = 0;
+      order = 0;
 
-    for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
-      int angle = this->state.slots[ec].rotStart + count;
-      angle %= 360;
-      if (this->state.slots[ec].fullDisplayAngle == 360 && order == 20) {
-        angle = this->state.slots[ec].rotStart;
+      for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += basicAngle) {
+        angle = count + this->state.slots[ec].rotStart;
+        angle %= 360;
+
+        if (this->state.slots[ec].fullDisplayAngle == 360) {
+          if (order == 20) {
+            angle = this->state.slots[ec].rotStart;
+          }
+        }
+
+        cs1 = g_cosTable[angle];
+        sn1 = g_sinTable[angle];
+
+        vec2.x = cs1 * this->state.slots[ec].distance;
+        vec2.z = sn1 * this->state.slots[ec].distance;
+        if (this->state.slots[ec].maxHeight == 6.001f) {
+          vec2.y = -2.0f;
+        } else if (this->state.slots[ec].maxHeight == 24.001f) {
+          vec2.y = -1.0f;
+        } else {
+          vec2.y = 0.0f;
+        }
+
+        rx = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
+        ry = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
+
+        rz = sn1 * rx;
+        rx = cs1 * rx;
+
+        vec4.x = vec2.x + rx;
+        vec4.z = vec2.z + rz;
+        if (this->state.slots[ec].maxHeight == 6.001f) {
+          vec4.y = -(2.0f + ry);
+        } else if (this->state.slots[ec].maxHeight == 24.001f) {
+          vec4.y = -(1.0f + ry);
+        } else {
+          vec4.y = -ry;
+        }
+
+        if (order > 0) {
+          this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
+        }
+
+        order++;
+        if (order >= 21) {
+          order = 20;
+        }
+
+        vec1 = vec2;
+        vec3 = vec4;
       }
-
-      const float cs1 = g_cosTable[angle];
-      const float sn1 = g_sinTable[angle];
-
-      vec2.x = cs1 * this->state.slots[ec].distance;
-      vec2.z = sn1 * this->state.slots[ec].distance;
-      if (this->state.slots[ec].maxHeight == 6.001f) {
-        vec2.y = -2.0f;
-      } else if (this->state.slots[ec].maxHeight == 24.001f) {
-        vec2.y = -1.0f;
-      } else {
-        vec2.y = 0.0f;
-      }
-
-      float rx = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
-      float ry = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].height[order];
-      const float rz = sn1 * rx;
-      rx = cs1 * rx;
-
-      vec4.x = vec2.x + rx;
-      vec4.z = vec2.z + rz;
-      if (this->state.slots[ec].maxHeight == 6.001f) {
-        ry += 2.0f;
-      } else if (this->state.slots[ec].maxHeight == 24.001f) {
-        ry += 1.0f;
-      }
-      vec4.y = -ry;
-
-      if (order > 0) {
-        this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
-      }
-
-      ++order;
-      if (order >= 21) {
-        order = 20;
-      }
-
-      vec1 = vec2;
-      vec3 = vec4;
     }
   }
 }
@@ -6553,101 +6681,200 @@ __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
 // OFFSET: 0x00BD37B0
 // FUNCTION: fn_19878
 __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
+  float cs1;
+  float sn1;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  int angle;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
-      continue;
+    if (this->state.slots[ec].life == 1 && this->state.slots[ec].alphaB > 0) {
+      vec4.x = 0.0f;
+      vec4.z = 0.0f;
+      vec4.y = 0.0f;
+
+      vec1.x = 0.0f;
+      vec1.z = 0.0f;
+      vec1.y = 0.0f;
+
+      angle = this->state.slots[ec].riseAngle - 3;
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+      vec2.x = cs1 * this->state.slots[ec].distance;
+      vec2.z = sn1 * this->state.slots[ec].distance;
+      vec2.y = 0.0f;
+
+      angle = this->state.slots[ec].riseAngle + 3;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+      vec3.x = cs1 * this->state.slots[ec].distance;
+      vec3.z = sn1 * this->state.slots[ec].distance;
+      vec3.y = 0.0f;
+
+      this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+      angle = static_cast<int>(this->state.slots[ec].alphaB * g_depthAverageHalf);
+
+      this->RenderTeiRect(&rpCnt, static_cast<short>(angle), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+
+      vec4.x = 0.0f;
+      vec4.z = 0.0f;
+      vec4.y = 0.0f;
+
+      vec1.x = 0.0f;
+      vec1.z = 0.0f;
+      vec1.y = 0.0f;
+
+      angle = this->state.slots[ec].riseAngle - 5;
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+      vec2.x = cs1 * this->state.slots[ec].distance;
+      vec2.z = sn1 * this->state.slots[ec].distance;
+      vec2.y = 0.0f;
+
+      angle = this->state.slots[ec].riseAngle + 5;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+      vec3.x = cs1 * this->state.slots[ec].distance;
+      vec3.z = sn1 * this->state.slots[ec].distance;
+      vec3.y = 0.0f;
+
+      this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
-
-    const short alpha = this->state.slots[ec].alphaB;
-    vec1.Set(0.0f, 0.0f, 0.0f);
-    vec4.Set(0.0f, 0.0f, 0.0f);
-
-    int angle = this->state.slots[ec].riseAngle - 3;
-    if (angle < 0) {
-      angle += 360;
-    }
-    vec2.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
-
-    angle = this->state.slots[ec].riseAngle + 3;
-    if (angle >= 360) {
-      angle -= 360;
-    }
-    vec3.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
-
-    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    angle = static_cast<int>(alpha * g_depthAverageHalf);
-    this->RenderTeiRect(&rpCnt, static_cast<short>(angle), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-
-    vec4.Set(0.0f, 0.0f, 0.0f);
-    vec1.Set(0.0f, 0.0f, 0.0f);
-
-    angle = this->state.slots[ec].riseAngle - 5;
-    if (angle < 0) {
-      angle += 360;
-    }
-    vec2.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
-
-    angle = this->state.slots[ec].riseAngle + 5;
-    if (angle >= 360) {
-      angle -= 360;
-    }
-    vec3.Set(g_cosTable[angle] * this->state.slots[ec].distance, 0.0f, g_sinTable[angle] * this->state.slots[ec].distance);
-
-    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
-}
-
-// INLINED
-static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, float rx, float cs2, float sn2) {
-  if (angle >= 360) {
-    angle -= 360;
-  }
-  if (angle < 0) {
-    angle += 360;
-  }
-
-  const float ry = rx * g_sinTable[angle];
-  corner.Set(rx * g_cosTable[angle], ry * cs2, ry * sn2);
 }
 
 // OFFSET: 0x00BD53E0
 // FUNCTION: fn_19882
 void CEffectPrim::RenderColorPaper(matrix& wtm) {
+  float cs1;
+  float sn1;
+  float cs2;
+  float sn2;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  int angle;
+  float rx;
+  float ry;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life != 1) {
-      continue;
+    if (this->state.slots[ec].life == 1) {
+      rx = this->state.slots[ec].maxHeight;
+
+      cs2 = g_cosTable[this->state.slots[ec].riseAngle];
+      sn2 = g_sinTable[this->state.slots[ec].riseAngle];
+
+      angle = this->state.slots[ec].rotStart;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+
+      vec1.x = rx * cs1;
+      vec1.y = rx * sn1;
+      vec1.z = 0.0f;
+
+      ry = vec1.y;
+      vec1.y = ry * cs2;
+      vec1.z = ry * sn2;
+
+      angle = this->state.slots[ec].rotStart + 90;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+
+      vec2.x = rx * cs1;
+      vec2.y = rx * sn1;
+      vec2.z = 0.0f;
+
+      ry = vec2.y;
+      vec2.y = ry * cs2;
+      vec2.z = ry * sn2;
+
+      angle = this->state.slots[ec].rotStart + 180;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+
+      vec3.x = rx * cs1;
+      vec3.y = rx * sn1;
+      vec3.z = 0.0f;
+
+      ry = vec3.y;
+      vec3.y = ry * cs2;
+      vec3.z = ry * sn2;
+
+      angle = this->state.slots[ec].rotStart + 270;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+      if (angle < 0) {
+        angle += 360;
+      }
+
+      cs1 = g_cosTable[angle];
+      sn1 = g_sinTable[angle];
+
+      vec4.x = rx * cs1;
+      vec4.y = rx * sn1;
+      vec4.z = 0.0f;
+
+      ry = vec4.y;
+      vec4.y = ry * cs2;
+      vec4.z = ry * sn2;
+
+      vec3 += this->state.slots[ec].vecBNow;
+      vec4 += this->state.slots[ec].vecBNow;
+      vec1 += this->state.slots[ec].vecBNow;
+      vec2 += this->state.slots[ec].vecBNow;
+
+      this->RenderTeiRect(
+        &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[0])),
+        static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[2])), 0.0f, 1.0f, 0.0f,
+        1.0f, 0
+      );
     }
-
-    const float rx = this->state.slots[ec].maxHeight;
-    const float cs2 = g_cosTable[this->state.slots[ec].riseAngle];
-    const float sn2 = g_sinTable[this->state.slots[ec].riseAngle];
-    SetColorPaperCorner(vec1, this->state.slots[ec].rotStart, rx, cs2, sn2);
-    SetColorPaperCorner(vec2, this->state.slots[ec].rotStart + 90, rx, cs2, sn2);
-    SetColorPaperCorner(vec3, this->state.slots[ec].rotStart + 180, rx, cs2, sn2);
-    SetColorPaperCorner(vec4, this->state.slots[ec].rotStart + 270, rx, cs2, sn2);
-    vec1 += this->state.slots[ec].vecBNow;
-    vec2 += this->state.slots[ec].vecBNow;
-    vec3 += this->state.slots[ec].vecBNow;
-    vec4 += this->state.slots[ec].vecBNow;
-
-    this->RenderTeiRect(
-      &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[0])),
-      static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[2])), 0.0f, 1.0f, 0.0f,
-      1.0f, 0
-    );
   }
 }
 
