@@ -176,7 +176,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      return SurfaceError(status, 7);
+      if (status == DDERR_OUTOFVIDEOMEMORY) {
+        return status;
+      }
+      return DeviceError(7);
     }
 
     if (flags & 2) {
@@ -184,7 +187,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       status = this->primary->GetAttachedSurface(&caps, &this->backBuffer);
 
       if (FAILED(status)) {
-        return SurfaceError(status, 10);
+        if (status == DDERR_OUTOFVIDEOMEMORY) {
+          return status;
+        }
+        return DeviceError(10);
       }
     }
 
@@ -207,11 +213,17 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     this->height = this->source.bottom;
     this->destination = ClientRectangle(this->window);
     SurfaceDescription(&description, DDSD_CAPS, 0);
-    description.ddsCaps.dwCaps = (flags & 2) ? DDSCAPS_PRIMARYSURFACE : DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
+    description.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+    if (!(flags & 2)) {
+      description.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
+    }
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      return SurfaceError(status, 7);
+      if (status == DDERR_OUTOFVIDEOMEMORY) {
+        return status;
+      }
+      return DeviceError(7);
     }
 
     IDirectDrawClipper* clipper;
@@ -236,7 +248,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       status = this->draw->CreateSurface(&description, &this->backBuffer, nullptr);
 
       if (FAILED(status)) {
-        return SurfaceError(status, 10);
+        if (status == DDERR_OUTOFVIDEOMEMORY) {
+          return status;
+        }
+        return DeviceError(10);
       }
     } else {
       ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->source.left));
@@ -260,7 +275,11 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   ChannelMask(this->green, format.dwGBitMask);
   ChannelMask(this->blue, format.dwBBitMask);
   ChannelMask(this->alpha, format.dwRGBAlphaBitMask);
-  this->renderTarget = (flags & 2) ? this->backBuffer : this->primary;
+  if (flags & 2) {
+    this->renderTarget = this->backBuffer;
+  } else {
+    this->renderTarget = this->primary;
+  }
   this->renderTarget->AddRef();
   SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
   description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
