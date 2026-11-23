@@ -200,12 +200,8 @@ bool C3dWorldRes::Load(const char* name) {
     this->latitude = 45;
     this->longitude = 45;
 
-    this->diffuse.x = 1.0f;
-    this->diffuse.y = 1.0f;
-    this->diffuse.z = 1.0f;
-    this->ambient.x = 0.3f;
-    this->ambient.y = 0.3f;
-    this->ambient.z = 0.3f;
+    this->diffuse = vector3d{1.0f, 1.0f, 1.0f};
+    this->ambient = vector3d{0.3f, 0.3f, 0.3f};
   }
 
   constexpr float pi = 3.141592f;
