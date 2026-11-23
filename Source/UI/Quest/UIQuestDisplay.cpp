@@ -148,9 +148,41 @@ void UIQuestDisplay::Paint() {
   }
 }
 
+// INLINED
+static __forceinline int FindDisplayQuestAt(int y) {
+  int multiple = 0;
+  int none = 0;
+  int single = 0;
+  int index = 0;
+  const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
+  for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); end != it; ++it, ++index) {
+    if (single + multiple + none >= 5) {
+      break;
+    }
+
+    const int top = single * 50 + (none + multiple * 2) * 40;
+    const RenewQuestOngoingInfo& info = it->second;
+    if (info.m_active && info.m_simpleView) {
+      if (y >= top && y <= top + 10) {
+        return index;
+      }
+
+      if (info.m_huntCount == 0) {
+        ++none;
+      } else if (info.m_huntCount > 1) {
+        ++multiple;
+      } else {
+        ++single;
+      }
+    }
+  }
+
+  return -1;
+}
+
 // OFFSET: 0x00949AB0
 // FUNCTION: fn_45700
-__forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
+void UIQuestDisplay::SelectQuestAt(int x, int y) {
   int none = 0;
   int multiple = 0;
   int single = 0;
