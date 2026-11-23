@@ -297,7 +297,9 @@ namespace {
     /* 0020 */ std::uint32_t expireTime;
     /* 0024 */ std::uint16_t bindOnEquip;
     /* 0026 */ std::uint16_t sprite;
-    /* 0028 */ unsigned char flags;
+    /* 0028 */ unsigned char identified : 1;
+    /* 0028 */ unsigned char damaged : 1;
+    /* 0028 */ unsigned char placeEtcTab : 1;
   };
 
   struct StoreEquipOptionRecord {
@@ -511,9 +513,9 @@ namespace {
     entry.expireTime = record.expireTime;
     entry.bindOnEquip = record.bindOnEquip;
     entry.sprite = record.sprite;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.placeEtcTab = (record.flags >> 2) & 1;
+    entry.identified = record.identified;
+    entry.damaged = record.damaged;
+    entry.placeEtcTab = record.placeEtcTab;
   }
 
   // INLINED
@@ -8654,9 +8656,8 @@ void CGameMode::ReceiveEquipWindowMicroscope3(const unsigned char* packet) {
     std::memcpy(item.cards, entry->cards, sizeof(item.cards));
     item.SetItemId(entry->itemId);
 
-    const unsigned char flags = entry->flags;
-    item.identified = flags & 1;
-    item.damaged = (flags >> 1) & 1;
+    item.identified = entry->identified;
+    item.damaged = entry->damaged;
     item.refiningLevel = entry->refine;
     item.expireTime = entry->expireTime;
     item.bindOnEquip = entry->bindOnEquip;
@@ -8757,17 +8758,18 @@ namespace {
 void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   GuildInfo* guildInfo = &g_guildInfo;
-  const unsigned int count = static_cast<unsigned>(p->length - 4) >> 4;
+  const int count = static_cast<unsigned>(p->length - 4) >> 4;
   guildInfo->positions.clear();
 
-  const auto* entry = reinterpret_cast<const PACKET_ZC_POSITION_INFO_sub*>(p + 1);
-  for (unsigned int index = 0; index < count; ++index, ++entry) {
+  for (int index = 0; index < count; ++index) {
+    const auto* entry = &reinterpret_cast<const PACKET_ZC_POSITION_INFO_sub*>(p + 1)[index];
     GuildPositionEntry position;
     position.positionId = entry->positionId;
     position.name = guildInfo->m_positions[position.positionId];
 
     position.tax = entry->payRate;
     position.id = entry->ranking;
+    position.tax = entry->payRate;
     const unsigned int mode = entry->right;
     position.canInvite = mode & 1;
     position.canExpel = (mode >> 4) & 1;
@@ -13112,7 +13114,9 @@ namespace {
     /* 001C */ std::uint32_t expireTime;
     /* 0020 */ std::uint16_t bindOnEquip;
     /* 0022 */ std::uint16_t sprite;
-    /* 0024 */ unsigned char flags;
+    /* 0024 */ unsigned char identified : 1;
+    /* 0024 */ unsigned char damaged : 1;
+    /* 0024 */ unsigned char placeEtcTab : 1;
   };
 #pragma pack(pop)
 
@@ -13129,8 +13133,9 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
   const int count = static_cast<unsigned int>(p->length - 4) / 0x25;
-  const auto* record = reinterpret_cast<const InventoryEquipFlagRecord*>(p + 1);
+  const auto* records = reinterpret_cast<const InventoryEquipFlagRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
+    const InventoryEquipFlagRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
@@ -13139,10 +13144,9 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
     item.quantity = 1;
     std::memcpy(item.cards, record->cards, sizeof(item.cards));
     item.SetItemId(record->itemId);
-    const unsigned char flags = record->flags;
-    item.identified = flags & 1;
-    item.damaged = (flags >> 1) & 1;
-    item.placeEtcTab = (flags >> 2) & 1;
+    item.identified = record->identified;
+    item.damaged = record->damaged;
+    item.placeEtcTab = record->placeEtcTab;
     item.refiningLevel = record->refine;
     item.expireTime = record->expireTime;
     item.bindOnEquip = record->bindOnEquip;
@@ -13152,17 +13156,17 @@ void CGameMode::ReceiveEquipItemListFlags(const unsigned char* packet) {
     }
 
     if (item.identity[3] != 0) {
-      char equipped = 1;
       if (g_session.IsCostumeLocation(item.identity[3])) {
+        char equipped = 1;
         g_session.EquipCostumeItem(item, &equipped);
       } else {
+        char equipped = 1;
         g_session.EquipInventoryItem(item, &equipped);
       }
     } else {
       g_session.AddInventoryItem(item, 0);
       g_session.UpdateInventoryItem(item, 0);
     }
-    ++record;
   }
 
   RefreshItemWindows(&g_windowMgr);
