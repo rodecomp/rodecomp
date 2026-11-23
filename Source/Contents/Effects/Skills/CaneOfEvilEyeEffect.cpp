@@ -157,10 +157,15 @@ void CCaneOfEvilEyeEffect::Finish() {
 
   for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     CEZ2STRParticle* light = *it;
-    if (light && light->animationState != 3) {
-      *it = this->CreateLight(3, &light->originX);
-      FreeParticle(light);
+    if (!light) {
+      continue;
     }
+    const signed char state = light->animationState;
+    if (state == 3) {
+      continue;
+    }
+    *it = this->CreateLight(3, &light->originX);
+    FreeParticle(light);
   }
 }
 
