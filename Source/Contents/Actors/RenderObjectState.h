@@ -3,6 +3,8 @@
 
 #include "Contents/InstantVar.h"
 #include "Render/Drawing/SpriteGeometry.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -149,6 +151,21 @@ struct RenderObjectState {
   /* 0128 */ std::int64_t hoverOffset;
   /* 0130 */ unsigned char translucentOther[8];
 };
+
+// INLINED
+inline RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
+}
+
+// INLINED
+__forceinline RenderObjectState::~RenderObjectState() {
+  if (this->sprite) {
+    this->sprite->Unlock();
+  }
+
+  if (this->action) {
+    this->action->Unlock();
+  }
+}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderObjectState) == 296);

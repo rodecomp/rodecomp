@@ -123,6 +123,12 @@ struct PrimitivePoolAccess : RenderPrimitivePool {
 CGameObject::CGameObject() : identity(++s_nextIdentity) {
 }
 
+// OFFSET: 0x00CA8730
+// FUNCTION: fn_20991
+CRenderObject::CRenderObject() {
+  this->Reset();
+}
+
 // OFFSET: 0x00CA8EC0
 // FUNCTION: fn_20995
 CGameObject::~CGameObject() = default;
@@ -131,6 +137,14 @@ CGameObject::~CGameObject() = default;
 // FUNCTION: fn_20996
 CGameObjectIDGenerator::~CGameObjectIDGenerator() {
 }
+
+// OFFSET: 0x00CA8EE0
+// FUNCTION: fn_20997
+CInstantVar::~CInstantVar() = default;
+
+// OFFSET: 0x00CA8F90
+// FUNCTION: fn_20998
+__declspec(noinline) CRenderObject::~CRenderObject() = default;
 
 // OFFSET: 0x00CAFD20
 // FUNCTION: fn_21087

@@ -147,31 +147,6 @@ static_assert(offsetof(CGrannyCorpse3d, startClock) == 0x128);
 static_assert(sizeof(CGrannyCorpse3d) == 0x258);
 #endif
 
-// INLINED
-RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
-}
-
-// INLINED
-RenderObjectState::~RenderObjectState() {
-  if (this->sprite) {
-    this->sprite->Unlock();
-  }
-
-  if (this->action) {
-    this->action->Unlock();
-  }
-}
-
-// OFFSET: 0x00CA8730
-// FUNCTION: fn_20991
-CRenderObject::CRenderObject() {
-  this->Reset();
-}
-
-// OFFSET: 0x00CA8F90
-// FUNCTION: fn_20998
-__declspec(noinline) CRenderObject::~CRenderObject() = default;
-
 // OFFSET: 0x00CAFDC0
 // FUNCTION: fn_21089
 bool CRenderObject::OnProcess() {
