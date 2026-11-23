@@ -2029,8 +2029,7 @@ void UIScrollBar3::Paint() {
   }
 
   std::string path = "유저인터페이스\\basic_interface\\";
-  switch (this->vertical) {
-  case 1: {
+  if (this->vertical == 1) {
     this->FillRegion(0, 10, 9, this->geometry.height - 20, 0xF1F1F1);
     if (this->state == 1) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str()))), false);
@@ -2046,7 +2045,7 @@ void UIScrollBar3::Paint() {
     }
 
     int length = this->ThumbLength();
-    if (this->geometry.height - 20 < length) {
+    if (length > this->geometry.height - 20) {
       length = 1;
     }
 
@@ -2058,8 +2057,6 @@ void UIScrollBar3::Paint() {
     } else {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_down1.bmp").c_str()))), false);
     }
-    break;
-  }
   }
 
   this->minimumThumb = 0;
