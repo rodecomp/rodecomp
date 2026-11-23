@@ -4765,7 +4765,8 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_replayAnimationScaling ? Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) : 1);
     if (this->savedWindowIds.size() != 0) {
-      for (int savedId : this->savedWindowIds) {
+      for (auto entry = this->savedWindowIds.begin(); entry != this->savedWindowIds.end(); ++entry) {
+        int savedId = *entry;
         if (savedId == WID_MINIPARTYWND) {
           this->RebuildMiniPartyWindows();
         } else {
