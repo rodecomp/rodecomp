@@ -129,7 +129,10 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
   vec4.y = 0.0f;
 
   const float radius = distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + distance * scale;
-  const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
+  int angle2 = angle1 - 270;
+  if (angle1 < 270) {
+    angle2 = angle1 + 90;
+  }
   vec1.x = radius * g_cosTable[angle1];
   vec1.z = radius * g_sinTable[angle1];
   const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
