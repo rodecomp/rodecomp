@@ -61,7 +61,7 @@ inline bool operator<(const DeferredWorldModel& left, const DeferredWorldModel& 
 
 namespace {
   // INLINED
-  inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
+  inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, bool deferred) {
     resource.RegisterMovies(placement.position);
 
     if (!resource.FindNode(placement.node) && resource.nodes.front() == nullptr) {
@@ -77,7 +77,9 @@ namespace {
     }
 
     actor->CopyVolumes(resource.volumes);
-    actor->occlusionEnabled = 0;
+    if (deferred) {
+      actor->occlusionEnabled = 0;
+    }
     actor->SetSpeed(placement.animationSpeed);
     actor->playback = placement.animation;
     actor->SetPosition(placement.position);
@@ -86,6 +88,9 @@ namespace {
     actor->commandMode = placement.flag;
     actor->color = static_cast<std::uint32_t>(placement.index);
     actor->Assign(resource);
+    if (!deferred) {
+      actor->occlusionEnabled = 0;
+    }
     actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
 
     return actor;
@@ -107,7 +112,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
       continue;
     }
 
-    C3dActor* model = CreateWorldModel(placement, *resource, *world->movies);
+    C3dActor* model = CreateWorldModel(placement, *resource, true);
 
     if (!model) {
       continue;
@@ -209,6 +214,7 @@ void CWorld::InitWorld() {
   ResourceMgr::Instance().Remove(groundRes);
 
   const int modelCount = static_cast<int>(worldRes->models.size());
+  auto placementIt = worldRes->models.begin();
   this->models.clear();
   this->models.reserve(modelCount);
 
@@ -216,8 +222,7 @@ void CWorld::InitWorld() {
   int lastPercent = -1;
   int progress = 0;
 
-  for (auto placementIt = worldRes->models.begin(); placementIt != worldRes->models.end(); ++placementIt) {
-    const WorldModelRecord* placement = *placementIt;
+  for (; placementIt != worldRes->models.end(); ++placementIt) {
     progress += 100;
     DWORD now = timeGetTime();
     int percent = static_cast<int>(progress / modelCount);
@@ -233,6 +238,7 @@ void CWorld::InitWorld() {
       PumpApplicationMessages();
     }
 
+    const WorldModelRecord* placement = *placementIt;
     g_modeMgr.GetGameMode()
       ->CellCenter(g_session.m_playerX, g_session.m_playerY, g_worldLoadCenter[0], g_worldLoadCenter[2]);
 
@@ -247,7 +253,7 @@ void CWorld::InitWorld() {
     } else {
       auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
       if (modelRes) {
-        if (C3dActor* actor = CreateWorldModel(*placement, *modelRes, *this->movies)) {
+        if (C3dActor* actor = CreateWorldModel(*placement, *modelRes, false)) {
           this->models.push_back(actor);
         }
       }
