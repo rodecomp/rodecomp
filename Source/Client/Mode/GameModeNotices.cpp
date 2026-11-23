@@ -3369,14 +3369,18 @@ void CGameMode::ReceiveStorageEquipList2(const unsigned char* data) {
   g_session.RefreshItem1738Window();
 }
 
+// INLINED
+static __forceinline void SetItemStoreTitle(UIItemStoreWnd* window, std::string title) {
+  window->title->SetTextFitted(title.c_str());
+}
+
 // OFFSET: 0x00D46460
 // FUNCTION: fn_21845
 void CGameMode::ReceiveStorageEquipList3(const unsigned char* data) {
   const auto* header = reinterpret_cast<const NamedStorageListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (header->title[0] != '\0') {
-    std::string title(header->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, header->title);
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord3);
@@ -3447,8 +3451,7 @@ void CGameMode::ReceiveStorageEquipList4(const unsigned char* data) {
   const auto* header = reinterpret_cast<const NamedStorageListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (header->title[0] != '\0') {
-    std::string title(header->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, header->title);
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord4);
@@ -3472,8 +3475,7 @@ void CGameMode::ReceiveStorageEquipList5(const unsigned char* data) {
   const auto* header = reinterpret_cast<const NamedStorageListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (header->title[0] != '\0') {
-    std::string title(header->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, header->title);
   }
 
   const int count = (static_cast<std::uint16_t>(header->length) - sizeof(NamedStorageListHeader)) / sizeof(StorageEquipRecord5);
@@ -3496,8 +3498,7 @@ void CGameMode::ReceiveStorageNormalList(const unsigned char* data) {
   const auto* header = reinterpret_cast<const NamedStorageListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (header->title[0] != '\0') {
-    std::string title(header->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, header->title);
   }
 
   const unsigned int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageNormalRecord);
@@ -3529,8 +3530,7 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
   const auto* header = reinterpret_cast<const NamedStorageListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (header->title[0] != '\0') {
-    std::string title(header->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, header->title);
   }
 
   const int count = (header->length - sizeof(NamedStorageListHeader)) / sizeof(StorageNormalRecord2);

@@ -1080,6 +1080,11 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
   }
 }
 
+// INLINED
+static __forceinline void SetItemStoreTitle(UIItemStoreWnd* window, std::string title) {
+  window->title->SetTextFitted(title.c_str());
+}
+
 // OFFSET: 0x00D2B710
 // FUNCTION: fn_21710
 void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
@@ -1177,8 +1182,7 @@ void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
-    std::string title(packet->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, packet->title);
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreNormalRecord);
