@@ -6017,7 +6017,9 @@ bool CEffectPrim::Prim3DSlotParticle() {
 // FUNCTION: fn_19799
 bool CEffectPrim::PrimFieldFireflies() {
   FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
