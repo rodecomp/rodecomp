@@ -126,6 +126,14 @@ void UIWindow::DrawColoredText(
 }
 
 struct ColoredTextSegment {
+  // INLINED
+  ColoredTextSegment(const char* begin, const char* end, std::uint32_t color) : prefix(begin, end), color(color), text(begin, end) {
+  }
+
+  // INLINED
+  explicit ColoredTextSegment(std::uint32_t color) : color(color) {
+  }
+
   std::vector<unsigned char> prefix;
   std::uint32_t color;
   std::vector<unsigned char> text;
@@ -146,7 +154,7 @@ void UIWindow::DrawRightColoredText(
   const char* const end = text + bytes;
   const char* next = this->SegmentEnd(current, end);
   std::uint32_t segmentColor = color;
-  const ColoredTextSegment first{std::vector<unsigned char>(current, next), segmentColor, std::vector<unsigned char>(current, next)};
+  const ColoredTextSegment first(current, next, segmentColor);
   std::vector<ColoredTextSegment> segments(1, first);
   std::vector<unsigned char> prefix;
 
@@ -159,7 +167,7 @@ void UIWindow::DrawRightColoredText(
 
     segmentColor = 0;
     const char* segmentStart = this->ParseColorCode(next, segmentColor);
-    ColoredTextSegment segment{{}, segmentColor, {}};
+    ColoredTextSegment segment(segmentColor);
     segment.prefix.insert(segment.prefix.end(), prefix.begin(), prefix.end());
     const char* segmentEnd = this->SegmentEnd(segmentStart, end);
     if (segmentEnd < end) {
