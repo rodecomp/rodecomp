@@ -843,9 +843,9 @@ int KeyedBoxFeistel(const unsigned char* input, unsigned char* output, int lengt
     unsigned char left = context->boxes[round++][right] ^ input[0];
     output[0] = left;
     right = context->boxes[round++][left] ^ right;
+    g_keyedBoxRound = round + 1;
     output[1] = right;
-    output[0] = context->boxes[round++][right] ^ left;
-    g_keyedBoxRound = round;
+    output[0] = context->boxes[round][right] ^ left;
     return 0;
   }
 
