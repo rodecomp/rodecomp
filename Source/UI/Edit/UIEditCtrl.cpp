@@ -11848,10 +11848,10 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::string price("");
         bool fresh = true;
         ITEM_INFO owned = g_session.FindMerchantPurchaseSavedItem(drag.id);
-        if (owned.identity[1] != 0) {
+        if (owned.itemIndex != 0) {
           index = 0;
           for (const ITEM_INFO& old : this->items) {
-            if (owned.identity[1] == old.identity[1]) {
+            if (owned.itemIndex == old.itemIndex) {
               fresh = false;
               price = this->priceEdits[index]->Text();
               break;
@@ -11899,7 +11899,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     const int count = g_session.GetNumMerchantPurchaseSavedItems();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(i);
-      if (item.identity[1] > 0) {
+      if (item.itemIndex > 0) {
         this->items.push_back(item);
       }
     }
@@ -12090,7 +12090,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           }
           ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(i);
           if (static_cast<unsigned>(i) < this->items.size()) {
-            if (item.identity[1] == 0) {
+            if (item.itemIndex == 0) {
               return 0;
             }
             if (item.identified == 0) {
