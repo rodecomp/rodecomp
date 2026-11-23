@@ -4085,10 +4085,10 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
 // OFFSET: 0x00BCFE80
 // FUNCTION: fn_19868
 __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
-  ZeroVector3d vec4;
-  ZeroVector3d vec3;
-  ZeroVector3d vec2;
   ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
