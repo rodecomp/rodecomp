@@ -13,7 +13,7 @@ UIComboBoxV2Wnd::UIComboBoxV2Wnd() : UIWindow(0), selected(-1), auxiliaryWindow(
 void UIComboBoxV2Wnd::Initialize(int width, int height, std::string prefix) {
   this->auxiliaryWindow = new UIBitmapButton();
   const char* states[4] = {"normal", "mouseon", "pressed", "disabled"};
-  for (int state = 0; state < 4; ++state) {
+  for (int state = 0; state <= 3; ++state) {
     this->auxiliaryWindow->SetBitmap((prefix + states[state] + ".bmp").c_str(), state, 0);
   }
 
