@@ -80,51 +80,73 @@ void CRenderer::DrawBattleFieldIcon() {
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.act"));
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.spr"));
 
+  int score = g_session.m_score1;
+  if (score < 0) {
+    score = 0;
+  }
+
+  int count = 1;
+  if (score > 9) {
+    count = 2;
+  }
+
   int digits[2];
-  int score = g_session.m_score1 >= 0 ? g_session.m_score1 : 0;
-  int count = (score > 9) + 1;
   digits[0] = score % 10;
-  digits[1] = (score /= 10) % 10;
-  if (width > 1) {
-    int x = this->viewport.width - 175;
-    for (int i = 0; i < count; ++i) {
-      g_modeMgr.GetGameMode()->DrawActionSprite(x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-      x -= 32;
-    }
-  } else {
-    int x = this->viewport.width - 207;
-    for (int i = 0; i < count; ++i) {
-      g_modeMgr.GetGameMode()->DrawActionSprite(x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-      x -= 32;
+  score /= 10;
+  digits[1] = score % 10;
+
+  int x = this->viewport.width - 150;
+  for (int i = 0; i < count; ++i) {
+    if (width > 1) {
+      g_modeMgr.GetGameMode()->DrawActionSprite(x - i * 32 - 25, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    } else {
+      g_modeMgr.GetGameMode()->DrawActionSprite(x - i * 32 - 25 - 32, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
     }
   }
 
-  score = g_session.m_score2 >= 0 ? g_session.m_score2 : 0;
-  count = (score > 9) + 1;
+  score = g_session.m_score2;
+  if (score < 0) {
+    score = 0;
+  }
+
+  count = 1;
+  if (score > 9) {
+    count = 2;
+  }
+
   digits[0] = score % 10;
-  digits[1] = (score /= 10) % 10;
-  if (width > 1) {
-    int x = this->viewport.width - 175;
-    for (int i = 0; i < count; ++i) {
-      g_modeMgr.GetGameMode()->DrawActionSprite(x, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-      x -= 32;
-    }
-  } else {
-    int x = this->viewport.width - 207;
-    for (int i = 0; i < count; ++i) {
-      g_modeMgr.GetGameMode()->DrawActionSprite(x, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-      x -= 32;
+  score /= 10;
+  digits[1] = score % 10;
+
+  x = this->viewport.width - 150;
+  for (int i = 0; i < count; ++i) {
+    if (width > 1) {
+      g_modeMgr.GetGameMode()->DrawActionSprite(x - i * 32 - 25, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    } else {
+      g_modeMgr.GetGameMode()->DrawActionSprite(x - i * 32 - 25 - 32, 108, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
     }
   }
 }
 
-// INLINED
-static __forceinline void DrawActiveHourlyBanner(CRenderer& renderer) {
+// OFFSET: 0x0055A7E0
+// FUNCTION: fn_46353
+void CRenderer::DrawHourlyBanner() {
+  SYSTEMTIME now;
+  GetLocalTime(&now);
+  if (now.wMinute == 0 && now.wSecond == 0 && s_hourlyBannerState == 0) {
+    s_hourlyBannerState = 1;
+    s_hourlyBannerAlpha = 0;
+  } else if (now.wMinute == 0 && now.wSecond >= 10 && s_hourlyBannerState == 1) {
+    s_hourlyBannerState = 2;
+  } else if (s_hourlyBannerState < 1) {
+    return;
+  }
+
   CTexture* texture = g_texMgr.Load("유저인터페이스\\", 0, false, true, false);
   if (texture != nullptr) {
     RECT rect;
     rect.bottom = texture->Height() + 45;
-    const int width = renderer.viewport.width;
+    const int width = this->viewport.width;
     rect.left = width - texture->Width() - 140;
     rect.top = 45;
     rect.right = width - 140;
@@ -145,35 +167,13 @@ static __forceinline void DrawActiveHourlyBanner(CRenderer& renderer) {
   }
 }
 
-// OFFSET: 0x0055A7E0
-// FUNCTION: fn_46353
-void CRenderer::DrawHourlyBanner() {
-  SYSTEMTIME now;
-  GetLocalTime(&now);
-  if (s_hourlyBannerState >= 1) {
-    DrawActiveHourlyBanner(*this);
-  }
-}
-
 // OFFSET: 0x0055E840
 // FUNCTION: fn_02112
 void CRenderer::DrawOverlays() {
   if (g_serviceType == 0) {
-    SYSTEMTIME now;
-    GetLocalTime(&now);
-    if (now.wMinute == 0 && now.wSecond == 0 && s_hourlyBannerState == 0) {
-      s_hourlyBannerState = 1;
-      s_hourlyBannerAlpha = 0;
-    } else if (now.wMinute == 0 && now.wSecond >= 10 && s_hourlyBannerState == 1) {
-      s_hourlyBannerState = 2;
-    } else if (s_hourlyBannerState < 1) {
-      goto timer;
-    }
-
-    DrawActiveHourlyBanner(*this);
+    this->DrawHourlyBanner();
   }
 
-timer:
   if (g_session.showTimer != 0) {
     const int scale = this->viewport.height / 700;
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
