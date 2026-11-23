@@ -4018,31 +4018,34 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
       const float s0 = sn * r0 + jitterZ[segment];
       const float a1 = slot.height[segment + 1];
       const float r1 = a1 > 0.0f ? a1 / 90.0f * slot.distance + 0.0f : 0.0f;
+      const float c1 = cs * r1 + jitterX[segment + 1];
       const float s1 = sn * r1 + jitterZ[segment + 1];
       const float y1 = -slot.distance * g_sinTable[static_cast<short>(static_cast<int>(a1))] * slot.vecTNow.x + (jitterY[segment + 1] - 2.0f);
-      const float c1 = cs * r1 + jitterX[segment + 1];
       const float deltaS = s0 - s1;
       const float deltaC = c0 - c1;
       const float length = SquareRoot(deltaC * deltaC + deltaS * deltaS);
       const float sinHeading = deltaS / length;
       const float cosHeading = deltaC / length;
-      short heading = 0;
-      for (short angle = 0; angle <= 180; ++angle) {
-        heading = angle;
-        if (cosHeading >= g_cosTable[angle]) {
-          heading = sinHeading < 0.0f ? static_cast<short>(360 - angle) : angle;
+      short heading;
+      for (heading = 0; heading <= 180; ++heading) {
+        if (cosHeading >= g_cosTable[heading]) {
           break;
         }
+      }
+      if (heading <= 180) {
+        heading = static_cast<short>(sinHeading >= 0.0f ? heading : 360 - heading);
+      } else {
+        heading = 180;
       }
       short side = static_cast<short>(heading + 90);
       if (side >= 360) {
         side = static_cast<short>(side - 360);
       }
 
-      const vector3d start{slot.vecBNow.x + c0, slot.vecBNow.y + y0, slot.vecBNow.z + s0};
-      const vector3d end{slot.vecBNow.x + c1, slot.vecBNow.y + y1, slot.vecBNow.z + s1};
+      const vector3d start{slot.vecBNow.x + c0, y0 + slot.vecBNow.y, s0 + slot.vecBNow.z};
+      const vector3d end{slot.vecBNow.x + c1, y1 + slot.vecBNow.y, s1 + slot.vecBNow.z};
 
-      if (static_cast<unsigned>(segment - 1) <= 17) {
+      if (segment > 0 && segment < 19) {
         int ring = 0;
         for (int angle = 0; angle <= 360; angle += 120) {
           const float across = slot.maxHeight * g_cosTable[angle];
