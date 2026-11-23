@@ -477,8 +477,11 @@ void UINewSelectCharWnd::Paint() {
         .Draw(true);
     }
 
+    int buttonIndex = slot;
     const int page = slot / this->m_slotsPerPage;
-    const int buttonIndex = page != 0 ? slot % (page * this->m_slotsPerPage) : slot;
+    if (page != 0) {
+      buttonIndex %= page * this->m_slotsPerPage;
+    }
     if (buttonIndex < this->m_slotsPerPage) {
       if (slot >= this->m_totalSlots) {
         continue;
