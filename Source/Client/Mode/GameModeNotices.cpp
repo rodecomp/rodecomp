@@ -1254,9 +1254,9 @@ void CGameMode::ReceiveGuildAgitList(const unsigned char* packet) {
   guildInfo->ClearAgitIds();
   const int count = header->length - 4;
   for (int i = 0; i < count; ++i) {
-    unsigned char value;
-    memcpy_s(&value, sizeof(value), packet + sizeof(VariablePacketHeader) + i, sizeof(value));
-    guildInfo->AddAgitId(value);
+    unsigned char value[1];
+    memcpy_s(value, sizeof(value), packet + sizeof(VariablePacketHeader) + i, sizeof(value));
+    guildInfo->AddAgitId(value[0]);
   }
 }
 
