@@ -4996,17 +4996,15 @@ __declspec(noinline) void CEffectPrim::PrimHeightRamp() {
     }
 
     for (int i = 0; i < 21; ++i) {
-      float value;
       if (this->state.slots[index].process < 100) {
-        value = 0.0f;
+        this->state.slots[index].height[i] = 0.0f;
       } else if (this->state.slots[index].process <= 115) {
-        value = g_sinTable[6 * this->state.slots[index].process - 600] * this->state.slots[index].maxHeight;
+        this->state.slots[index].height[i] = g_sinTable[6 * this->state.slots[index].process - 600] * this->state.slots[index].maxHeight;
       } else {
-        value = this->state.slots[index].maxHeight;
+        this->state.slots[index].height[i] = this->state.slots[index].maxHeight;
       }
 
-      this->state.slots[index].height[i] = value;
-      if (value < 0.0f) {
+      if (this->state.slots[index].height[i] < 0.0f) {
         this->state.slots[index].height[i] = 0.0f;
       }
     }
