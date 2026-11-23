@@ -1224,9 +1224,9 @@ CParticle* CFootprintEffect::SpawnFootprint() {
 
   particle->alpha = this->baseAlpha;
   particle->life = static_cast<float>(this->effectLifetime);
+  particle->speedParameter = static_cast<float>(this->baseAlpha) / static_cast<float>(this->effectLifetime * 60);
   particle->sourceBlend = 5;
   particle->destinationBlend = 6;
-  particle->speedParameter = static_cast<float>(this->baseAlpha) / static_cast<float>(this->effectLifetime * 60);
   particle->SetTexture(texture);
   particle->InitParticleQuad(particle->vertices);
 
@@ -2760,15 +2760,20 @@ void CRandomOptEffect::Init() {
         const float lift = height * g_sinTable[particle->phaseParameter];
         const float cosine = g_cosTable[angle];
         const float sine = g_sinTable[angle];
-        const float innerX = particle->scale * cosine;
-        const float innerZ = particle->scale * sine;
+        EffectPoint points[2];
+        points[0].x = particle->scale * cosine;
+        points[0].y = 0.0f;
+        points[0].z = particle->scale * sine;
+        points[1].x = points[0].x + spread * cosine;
+        points[1].y = points[0].y - lift;
+        points[1].z = points[0].z + spread * sine;
 
-        particle->vertices[3].x = innerX;
-        particle->vertices[3].y = 0.0f;
-        particle->vertices[3].z = innerZ;
-        particle->vertices[1].x = innerX + spread * cosine;
-        particle->vertices[1].y = 0.0f - lift;
-        particle->vertices[1].z = innerZ + spread * sine;
+        particle->vertices[3].x = points[0].x;
+        particle->vertices[3].y = points[0].y;
+        particle->vertices[3].z = points[0].z;
+        particle->vertices[1].x = points[1].x;
+        particle->vertices[1].y = points[1].y;
+        particle->vertices[1].z = points[1].z;
 
         if (segment != 0) {
           particle->vertices[0].x = this->offsets[1].x;
@@ -2779,10 +2784,12 @@ void CRandomOptEffect::Init() {
           particle->vertices[2].z = this->offsets[0].z;
         }
 
-        this->offsets[0].x = innerX;
-        this->offsets[0].y = 0.0f;
-        this->offsets[0].z = innerZ;
-        this->offsets[1] = vector3d{particle->vertices[1].x, particle->vertices[1].y, particle->vertices[1].z};
+        this->offsets[0].x = points[0].x;
+        this->offsets[0].y = points[0].y;
+        this->offsets[0].z = points[0].z;
+        this->offsets[1].x = points[1].x;
+        this->offsets[1].y = points[1].y;
+        this->offsets[1].z = points[1].z;
       }
     }
 
