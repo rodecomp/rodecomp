@@ -5817,7 +5817,7 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
 
       switch (header.type) {
       case 10001:
-        return offset;
+        goto finished;
       case 0xD0:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -5899,6 +5899,7 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
         break;
       }
     }
+  finished:;
   }
 
   return offset;
@@ -8768,21 +8769,23 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
     return;
   }
 
+  CWorld* scene = this->scene;
   if (id == g_session.m_aid) {
     placed = 0;
-    this->UpdateNameBalloon(static_cast<CGameActor*>(this->scene->player));
+    this->UpdateNameBalloon(static_cast<CGameActor*>(scene->player));
     return;
   }
 
-  CItem* item = this->scene->GetItemByAID(id);
+  CItem* item = scene->GetItemByAID(id);
   if (item) {
     std::string name(item->name.c_str());
     placed = 0;
     this->EnsureNameBalloon(this->nameBalloon);
     this->nameBalloon->AddNameLine(name.c_str());
     this->nameBalloon->SetIcon("", 0);
-    this->nameBalloon->m_textColor = 0x95EFFF;
-    this->nameBalloon->m_outlineColor = 0;
+    UINameBalloonText* balloon = this->nameBalloon;
+    balloon->m_textColor = 0x95EFFF;
+    balloon->m_outlineColor = 0;
     this->nameBalloonWidth = this->nameBalloon->geometry.width;
     this->nameBalloonHeight = this->nameBalloon->geometry.height;
     this->PlaceWindowAtActor(this->nameBalloon, item);
