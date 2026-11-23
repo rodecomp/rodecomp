@@ -8,8 +8,17 @@
 
 namespace {
   // INLINED
-  bool SnapEdge(int edge, int value, int& offset) {
+  bool SnapLeadingEdge(int edge, int value, int& offset) {
     if (value < edge - 10 || value > edge + 10) {
+      return false;
+    }
+    offset = edge - value;
+    return true;
+  }
+
+  // INLINED
+  bool SnapTrailingEdge(int edge, int value, int& offset) {
+    if (value > edge + 10 || value < edge - 10) {
       return false;
     }
     offset = edge - value;
@@ -58,17 +67,22 @@ void SnapRectangle::Snap(const SnapRectangle& other, int& dx, int& dy) const {
   dx = 0;
   dy = 0;
   if (this->Overlaps(this->left.begin, this->left.end, other.right.begin, other.right.end)) {
-    if (SnapEdge(this->left.position, other.right.position, dx) || SnapEdge(this->right.position, other.left.position, dx)) {
-      if (!SnapEdge(this->top.position, other.top.position, dy)) {
-        SnapEdge(this->bottom.position, other.bottom.position, dy);
+    if (SnapLeadingEdge(this->left.position, other.right.position, dx) || SnapTrailingEdge(this->right.position, other.left.position, dx)) {
+      if (!SnapLeadingEdge(this->top.position, other.top.position, dy)) {
+        SnapTrailingEdge(this->bottom.position, other.bottom.position, dy);
       }
     }
   }
 
   if (this->Overlaps(this->top.begin, this->top.end, other.bottom.begin, other.bottom.end)) {
-    if (SnapEdge(this->top.position, other.bottom.position, dy) || SnapEdge(this->bottom.position, other.top.position, dy)) {
-      if (!SnapEdge(this->left.position, other.left.position, dx)) {
-        SnapEdge(this->right.position, other.right.position, dx);
+    if (SnapLeadingEdge(this->top.position, other.bottom.position, dy) || SnapTrailingEdge(this->bottom.position, other.top.position, dy)) {
+      if (SnapLeadingEdge(this->left.position, other.left.position, dx)) {
+        return;
+      }
+      const int right = this->right.position;
+      const int otherRight = other.right.position;
+      if (otherRight <= right + 10 && otherRight >= right - 10) {
+        dx = right - otherRight;
       }
     }
   }
