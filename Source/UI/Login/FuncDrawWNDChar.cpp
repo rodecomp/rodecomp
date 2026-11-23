@@ -174,8 +174,12 @@ void FuncDrawWNDChar::Draw(bool option) {
 
       int x = this->m_x + cell.x + offset.x;
       int y = cell.y + this->m_y + offset.y;
-      int clip = y >= 0 ? 0 : y;
-      int top = y >= 0 ? y : 0;
+      int clip = y;
+      int top = 0;
+      if (y >= 0) {
+        clip = 0;
+        top = y;
+      }
       if (clip <= top) {
         this->m_window->geometry.surface->DrawSurface(
           x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
