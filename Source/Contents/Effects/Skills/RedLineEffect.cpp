@@ -16,6 +16,13 @@ __forceinline int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
 }
+
+// INLINED
+void SetSegment(CParticle* particle, int effectId, int row, int segment) {
+  particle->rowIndex = row;
+  particle->effectId = effectId;
+  particle->columnIndex = segment;
+}
 }
 
 // OFFSET: 0x00B715F0
@@ -42,9 +49,7 @@ void CRedLineEffect::CreateLines(int layer) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_red.tga");
-        particle->effectId = this->id;
-        particle->rowIndex = row;
-        particle->columnIndex = segment;
+        SetSegment(particle, this->id, row, segment);
         particle->groupIndex = 3;
         particle->angleParameter = 360;
         particle->angle = static_cast<float>(row * 90);
