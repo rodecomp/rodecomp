@@ -12663,12 +12663,11 @@ void UIExchangeWnd::Paint() {
     if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
       continue;
     }
-    const ITEM_INFO& item = *it;
     const int y = this->m_rowHeight * row;
-    this->DrawItemAndQuantity(16, y + 21, item, 0, 0);
-    this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
-    if (0 < item.grade) {
-      this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
+    this->DrawItemAndQuantity(16, y + 21, *it, 0, 0);
+    this->DrawFittedItemName(48, y + 29, &*it, 0, 0, 12, 1);
+    if (0 < it->grade) {
+      this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), true);
     }
     if (row == 9) {
       break;
@@ -12684,12 +12683,11 @@ void UIExchangeWnd::Paint() {
     if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
       continue;
     }
-    const ITEM_INFO& item = *it;
     const int y = this->m_rowHeight * otherRow;
-    this->DrawItemAndQuantity(295, y + 21, item, 0, 0);
-    this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
-    if (0 < item.grade) {
-      this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
+    this->DrawItemAndQuantity(295, y + 21, *it, 0, 0);
+    this->DrawFittedItemName(327, y + 29, &*it, 0, 0, 12, 1);
+    if (0 < it->grade) {
+      this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), true);
     }
     if (otherRow == 9) {
       break;
