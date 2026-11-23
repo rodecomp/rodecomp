@@ -955,12 +955,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_SETINFO: {
     const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
-    this->info.title = settings->title;
-    this->info.password = settings->password;
-    this->info.type = settings->type;
-    this->info.memberCount = settings->memberCount;
-    this->info.memberLimit = settings->memberLimit;
-    this->info.id = settings->id;
+    this->info = *settings;
 
     const std::size_t end = this->info.title.find('\r');
     if (end != std::string::npos) {
@@ -1090,14 +1085,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (a != 7) {
       break;
     }
-    int width = 512;
-    int height = 384;
-    if (b <= width) {
-      width = b;
-    }
-    if (c <= height) {
-      height = c;
-    }
+    int width = b <= 512 ? b : 512;
+    int height = c <= 384 ? c : 384;
     if (width < 280) {
       width = 280;
     }
@@ -1116,7 +1105,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->memberList->Resize(this->geometry.width * 56 / 280, this->geometry.height - 38, false);
       this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
       this->closeButton->Move(this->geometry.width - 14, 3);
-      const std::string title = this->titleText->text.c_str();
+      const std::string title(this->titleText->tooltip.c_str());
       this->titleText->Resize(this->geometry.width - 30, 12);
       this->titleText->SetTextFitted(title.c_str());
     }
