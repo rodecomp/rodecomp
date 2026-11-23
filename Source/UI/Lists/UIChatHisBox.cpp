@@ -48,12 +48,15 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           const std::size_t start = tail.find(opening);
           std::string head = result.substr(0, position + start);
           position += start + std::strlen(opening.c_str()) + 1;
-          (*row)[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          UIItemTagButton* const button = (*row)[index];
+          button->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
           std::string bracket = this->BracketName((*row)[index]->item.DisplayName(0));
           (*row)[index]->SetTooltip(bracket.c_str());
           (*row)[index]->SetLabel(bracket.c_str());
-          (*row)[index]->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, (*row)[index]->geometry.height);
+          UIItemTagButton* const resizedButton = (*row)[index];
+          const int height = resizedButton->geometry.height;
+          resizedButton->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, height);
           this->lines[line] = result;
         }
       } else {
@@ -62,7 +65,8 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
         const std::size_t found = tail.find(bracket);
         std::string head = result.substr(0, position + found);
         position += found + std::strlen(bracket.c_str());
-        (*row)[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+        UIItemTagButton* const button = (*row)[index];
+        button->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
       }
     }
   }
