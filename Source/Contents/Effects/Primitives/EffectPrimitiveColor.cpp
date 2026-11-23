@@ -2,6 +2,25 @@
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Utility/Math/ScalarConversion.h"
 
+// INLINED
+static __forceinline void LimitAlpha(CEffectPrim& primitive) {
+  if ((primitive.state.pattern & 0x80u) != 0) {
+    if (primitive.state.alphaSpeed < 0.0f) {
+      if (primitive.state.alpha <= primitive.state.minAlpha) {
+        primitive.state.alphaSpeed *= -1.0f;
+      }
+    } else if (primitive.state.alpha >= primitive.state.maxAlpha) {
+      primitive.state.alphaSpeed *= -1.0f;
+    }
+  }
+
+  if (primitive.state.isDisappear == 0 && primitive.state.duration - primitive.state.stateCnt > primitive.state.master->state.duration - primitive.state.master->state.stateCnt + 1) {
+    primitive.state.isDisappear = 1;
+    primitive.state.pattern &= ~0x80u;
+    primitive.state.alphaSpeed = -(primitive.state.alpha / static_cast<float>(primitive.state.master->state.duration - primitive.state.master->state.stateCnt));
+  }
+}
+
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
 void CEffectPrim::ProcessAlpha() {
@@ -18,30 +37,24 @@ void CEffectPrim::ProcessAlpha() {
       this->state.maxAlpha = this->state.chVal2[index];
       this->state.colorCycleIndex = index + 1;
     }
-  } else if (this->state.alphaSpeedCycle != 0) {
-    int index = this->state.colorCycleIndex;
 
-    if (index < 0 || static_cast<std::uint32_t>(index) >= this->state.chPoint.size()) {
-      this->state.colorCycleIndex = 0;
-      index = 0;
+    LimitAlpha(*this);
+  } else {
+    if (this->state.alphaSpeedCycle != 0) {
+      int index = this->state.colorCycleIndex;
+
+      if (index < 0 || static_cast<std::uint32_t>(index) >= this->state.chPoint.size()) {
+        this->state.colorCycleIndex = 0;
+        index = 0;
+      }
+
+      if (static_cast<float>(this->state.stateCnt) == this->state.chPoint[index]) {
+        this->state.alphaSpeed = this->state.chVal1[index];
+        this->state.colorCycleIndex = index + 1;
+      }
     }
 
-    if (static_cast<float>(this->state.stateCnt) == this->state.chPoint[index]) {
-      this->state.alphaSpeed = this->state.chVal1[index];
-      this->state.colorCycleIndex = index + 1;
-    }
-  }
-
-  if ((this->state.pattern & 0x80u) != 0) {
-    if (this->state.alphaSpeed < 0.0f ? this->state.alpha <= this->state.minAlpha : this->state.alpha >= this->state.maxAlpha) {
-      this->state.alphaSpeed *= -1.0f;
-    }
-  }
-
-  if (this->state.isDisappear == 0 && this->state.duration - this->state.stateCnt > this->state.master->state.duration - this->state.master->state.stateCnt + 1) {
-    this->state.isDisappear = 1;
-    this->state.pattern &= ~0x80u;
-    this->state.alphaSpeed = -(this->state.alpha / static_cast<float>(this->state.master->state.duration - this->state.master->state.stateCnt));
+    LimitAlpha(*this);
   }
 
   if (this->state.stateCnt == this->state.fadeOutCnt) {
