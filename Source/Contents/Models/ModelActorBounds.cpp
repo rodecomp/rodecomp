@@ -150,7 +150,8 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
   points[7].Set(bounds[3], bounds[4], bounds[5]);
 
   BoundsCorner* output = actor->corners;
-  for (const BoundsCorner& point : points) {
+  for (unsigned corner = 0; corner < 8; ++corner) {
+    const BoundsCorner& point = points[corner];
     float* stored = output->values;
     stored[0] = Coordinate(point.values, actor->transform.values, 0);
     stored[1] = Coordinate(point.values, actor->transform.values, 1);
