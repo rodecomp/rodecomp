@@ -123,8 +123,8 @@ bool CEffectPrim::MoveEffectPrimitive() {
   };
 
   if (this->state.changePoint == this->state.stateCnt) {
-    this->state.changePointReached = 1;
     const float sentinel = g_changeEpsilon;
+    this->state.changePointReached = 1;
     constexpr float resetValue = 0.0001f;
 
     if (this->state.changeWidthSpeed != sentinel) {
@@ -198,7 +198,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   if ((this->state.pattern & 0x400u) != 0) {
-    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
+    if (g_masterReachDistance >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
       this->state.masterReached = 1;
       return false;
     }
