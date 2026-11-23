@@ -301,10 +301,11 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
     const auto it = this->hotkeys[tab].find(index);
     if (it != this->hotkeys[tab].end()) {
       info = it->second;
+      if (!info.description.empty()) {
+        return EntryOf(index, info);
+      }
     }
-    if (info.description.empty()) {
-      info = g_session.GetHotkeyInfo(tab, index);
-    }
+    info = g_session.GetHotkeyInfo(tab, index);
   }
 
   return EntryOf(index, info);
