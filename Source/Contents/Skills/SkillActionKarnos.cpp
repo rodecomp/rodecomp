@@ -473,11 +473,12 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  EffectLists* effects = g_effectMgr;
+  effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_g", 0x2D394DBD0F332733ULL, effectName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
@@ -496,11 +497,12 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  EffectLists* effects = g_effectMgr;
+  effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_y", 0x69FD1D9733D3CFC1ULL, effectName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
