@@ -38,23 +38,22 @@ float Replay::DelayScale() const {
 bool CGameActor::FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed) {
   float scaledSpeed = 0.0f;
   MovementRouteInterpolation& route = this->route;
-  int stepSpeed;
+  bool found;
   if (g_replayAnimationScaling != 0) {
     scaledSpeed = Replay::Instance().DelayScale() * static_cast<float>(speed);
-    stepSpeed = static_cast<int>(scaledSpeed);
+    found = g_pathFinder.FindPath(this->routeStartTick, startX, startY, fractionX, fractionY, destX, destY, static_cast<int>(scaledSpeed), route, this->objectType);
   } else {
-    stepSpeed = speed;
+    found = g_pathFinder.FindPath(this->routeStartTick, startX, startY, fractionX, fractionY, destX, destY, speed, route, this->objectType);
   }
 
-  bool found = g_pathFinder.FindPath(this->routeStartTick, startX, startY, fractionX, fractionY, destX, destY, stepSpeed, route, this->objectType);
   if (found) {
     std::uint32_t endTick;
     route.EndTick(&endTick);
     const std::uint32_t now = g_session.GetServerTime();
     if (endTick <= now) {
-      const int baseSpeed = g_replayAnimationScaling != 0 ? static_cast<int>(scaledSpeed) : speed;
+      const int retrySpeed = g_replayAnimationScaling != 0 ? static_cast<int>(scaledSpeed) * 10 / 13 : speed * 10 / 13;
       this->routeStartTick = now;
-      found = g_pathFinder.FindPath(now, startX, startY, fractionX, fractionY, destX, destY, baseSpeed * 10 / 13, route, this->objectType);
+      found = g_pathFinder.FindPath(now, startX, startY, fractionX, fractionY, destX, destY, retrySpeed, route, this->objectType);
     }
   }
 
