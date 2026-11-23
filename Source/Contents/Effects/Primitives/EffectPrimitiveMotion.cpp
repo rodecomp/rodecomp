@@ -31,6 +31,7 @@
 #include "Render/Renderer.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Projection/RenderProjection.h"
 
 #include <algorithm>
 #include <cmath>
@@ -40,6 +41,12 @@
 #include <string>
 
 #include <timeapi.h>
+
+// GLOBAL: gl_25974
+float g_changeEpsilon = 0.0001f;
+
+// GLOBAL: gl_25988
+float g_cameraYawOffset = 90.0f;
 
 namespace {
   // INLINED
@@ -128,7 +135,8 @@ bool CEffectPrim::MoveEffectPrimitive() {
 
   if (this->state.changePoint == this->state.stateCnt) {
     this->state.changePointReached = 1;
-    constexpr float sentinel = 0.0001f;
+    const float sentinel = g_changeEpsilon;
+    constexpr float resetValue = 0.0001f;
 
     if (this->state.changeWidthSpeed != sentinel) {
       this->state.widthSpeed = this->state.changeWidthSpeed;
@@ -172,8 +180,8 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.changeWidthAccel = sentinel;
     this->state.changeHeightAccel = sentinel;
     this->state.changeAccel = sentinel;
-    this->state.changeSpeed3d = {sentinel, sentinel, sentinel};
-    this->state.changeAccel3d = {sentinel, sentinel, sentinel};
+    this->state.changeSpeed3d = {resetValue, resetValue, resetValue};
+    this->state.changeAccel3d = {resetValue, resetValue, resetValue};
   }
 
   this->state.speed3d += this->state.deltaPosAccel;
@@ -230,7 +238,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   } else {
     if ((this->state.pattern & 0x40u) != 0) {
       CGameMode* const mode = g_modeMgr.GetGameMode();
-      this->state.longitude = mode->camera->camera.yaw + 90.0f;
+      this->state.longitude = mode->camera->camera.yaw + g_cameraYawOffset;
       this->state.roll = mode->camera->camera.pitch;
       matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
       matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
@@ -245,9 +253,9 @@ bool CEffectPrim::MoveEffectPrimitive() {
   if ((this->state.pattern & 2u) != 0) {
     const auto index = this->state.chCnt;
     this->state.chCnt = index + 1u == 10u ? 0u : index + 1u;
-    const float offset = static_cast<float>(static_cast<int>(index)) / 10.0f;
+    const float offset = static_cast<float>(static_cast<int>(index)) / g_projectionDepthOffset;
     this->state.v1 = offset;
-    this->state.v2 = offset + 1.0f;
+    this->state.v2 = offset + g_projectionDepthNumerator;
   }
 
   if ((this->state.pattern & 0x10u) != 0) {
@@ -267,7 +275,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   const int frame = this->state.stateCnt;
 
   if ((this->state.pattern & 0x20u) != 0 && frame % static_cast<int>(this->state.type) == 0) {
-    this->state.heightSpeed *= -1.0f;
+    this->state.heightSpeed *= g_heightSpeedSign;
   }
 
   if ((this->state.pattern & 0x800u) != 0 && (this->state.red == 254 || this->state.blue == 254 || this->state.green == 254)) {
