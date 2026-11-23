@@ -145,9 +145,10 @@ void UIReputeWnd::Paint() {
 
     const int left = (i & 1) * 316;
     const int top = (i >> 1) * 86;
+    const int y = top + 50;
     const char* background = info->updated == true ? "유저인터페이스\\Reputation\\bg_highlight.bmp" : "유저인터페이스\\Reputation\\bg_info.bmp";
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
-    this->DrawBitmap(left + 7, top + 50, bitmap, false);
+    this->DrawBitmap(left + 7, y, bitmap, false);
     this->DrawTextAt(left + 12, top + 56, info->name.c_str(), 0, 0, 12, 0, 1, 0);
 
     const std::int64_t point = info->point;
