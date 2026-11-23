@@ -1017,9 +1017,8 @@ CFallenAngelEffect::CFallenAngelEffect() : CEffect(EF_FALLEN_ANGEL), emitter(nul
 // FUNCTION: fn_07223
 void CFallenAngelEffect::Open() {
   if (!this->emitter) {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
-    this->emitter = particle;
-    particle->Open("RL_fallen_angel\\Penne.str");
+    this->emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+    this->emitter->Open("RL_fallen_angel\\Penne.str");
   } else {
     this->emitter->Restart();
   }
@@ -1084,9 +1083,8 @@ CFloralFlareRoad::CFloralFlareRoad() : CEffect(EF_FLORAL_FLARE_ROAD) {
 // OFFSET: 0x00711A70
 // FUNCTION: fn_07231
 void CFloralFlareRoad::Open() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
-  this->emitter = bottom;
-  bottom->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
+  this->emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
+  this->emitter->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
 
   for (int delay = 0; delay < 4500; delay += 300) {
     vector3d position = *&this->positionVector;
