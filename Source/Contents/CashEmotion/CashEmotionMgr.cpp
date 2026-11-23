@@ -1251,7 +1251,8 @@ void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
   }
 
   std::vector<int>& owned = this->m_ownedPacks;
-  if (owned.end() == std::find(owned.begin(), owned.end(), packId)) {
+  auto found = std::find(owned.begin(), owned.end(), packId);
+  if (owned.end() == found) {
     owned.push_back(packId);
 
     auto unowned = std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId);
