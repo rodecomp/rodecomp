@@ -724,10 +724,10 @@ void CWorldViewMgr::Load(LuaScript& script) {
   const char* fieldName;
   const char* description;
   for (int worldIndex = 1; worldIndex < 400; ++worldIndex) {
-    const char* worldName = nullptr;
-    const char* mapTable = nullptr;
-    const char* fieldTable = nullptr;
     const char* imageName = nullptr;
+    const char* fieldTable = nullptr;
+    const char* mapTable = nullptr;
+    const char* worldName = nullptr;
     if (!script.Call("queryWorld_List", "d>ssss", worldIndex, &worldName, &mapTable, &fieldTable, &imageName)) {
       char error[260] = {};
       std::sprintf(error, "queryWorld_List // Line %d 읽기 실패", worldIndex);
@@ -744,9 +744,9 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(mapTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          mapName = nullptr;
-          fieldName = nullptr;
           description = nullptr;
+          fieldName = nullptr;
+          mapName = nullptr;
           mapId = -1;
           area.bottom = -1;
           area.right = -1;
@@ -774,8 +774,8 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(fieldTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          mapName = nullptr;
           description = nullptr;
+          mapName = nullptr;
           mapId = -1;
           area.bottom = -1;
           area.right = -1;
