@@ -156,6 +156,7 @@ void ITEM_INFO::Reset() {
   this->itemId = "";
   this->displayName = "";
   this->identified = this->damaged = 0;
+  this->refiningLevel = 0;
   this->bindOnEquip = 0;
   this->durationInHours = 0;
   this->expireTime = 0;
@@ -166,7 +167,6 @@ void ITEM_INFO::Reset() {
   this->flagged = 0;
   this->optionCount = 0;
   SecureZeroMemory(this->options, sizeof(this->options));
-  this->refiningLevel = 0;
   this->uniqueItem = 0;
   this->saleData.costume = 0;
   this->saleData.startTime = 0;
@@ -232,26 +232,30 @@ bool ITEM_INFO::operator<(const ITEM_INFO& other) const {
   return this->displayName < other.displayName;
 }
 
+// INLINED
+static bool HasItemCardName(int id) {
+  return g_itemCardNames.find(id) != g_itemCardNames.end();
+}
+
 // OFFSET: 0x006D8B60
 // FUNCTION: fn_06607
 std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial) {
   std::list<int> result;
   for (auto entryIt = g_itemDescriptions.begin(); entryIt != g_itemDescriptions.end(); ++entryIt) {
     const auto& entry = *entryIt;
-    if (cardsOnly == 1 && g_itemCardNames.find(entry.first) == g_itemCardNames.end()) {
+    if (cardsOnly == 1 && !HasItemCardName(entry.first)) {
       continue;
     }
 
-    const char* name = entry.second.identifiedName;
-    if (name == nullptr || *name == '\0') {
+    if (entry.second.identifiedName == nullptr || *entry.second.identifiedName == '\0') {
       continue;
     }
 
-    if (MatchItemName(name, query, partial, &result, entry.first)) {
+    if (MatchItemName(entry.second.identifiedName, query, partial, &result, entry.first)) {
       continue;
     }
 
-    if (g_itemCardNames.find(entry.first) == g_itemCardNames.end()) {
+    if (!HasItemCardName(entry.first)) {
       continue;
     }
 
@@ -615,6 +619,12 @@ bool LoadItemIntegerTable(std::vector<int>& values, const char* name) {
   return true;
 }
 
+// INLINED
+static void ReadBytes(std::vector<unsigned char>& buffer, const std::vector<unsigned char>& data, int& offset, int size) {
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  offset += size;
+}
+
 // OFFSET: 0x00E48E90
 // FUNCTION: fn_24229
 int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::vector<unsigned char>& data) {
@@ -623,8 +633,7 @@ int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::v
   }
 
   std::vector<unsigned char> buffer(size, 0);
-  std::memcpy(buffer.data(), data.data() + offset, size);
-  offset += size;
+  ReadBytes(buffer, data, offset, size);
   std::uint32_t consumed = 0;
   std::vector<unsigned char> remaining(buffer);
   while (consumed < buffer.size()) {
@@ -648,8 +657,7 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
   }
 
   std::vector<unsigned char> buffer(size, 0);
-  std::memcpy(buffer.data(), data.data() + offset, size);
-  offset += size;
+  ReadBytes(buffer, data, offset, size);
   std::uint32_t consumed = 0;
   ITEM_INFO item;
   std::vector<unsigned char> remaining(buffer);
@@ -715,13 +723,14 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
 // FUNCTION: fn_23348
 void CSession::RemovePurchaseItem(const ITEM_INFO& item) {
   for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
-    bool same = it->identity[1] == item.identity[1];
+    ITEM_INFO& owned = *it;
+    bool same = owned.identity[1] == item.identity[1];
     if (item.uniqueItem == 0) {
-      same = it->itemId == item.itemId;
+      same = owned.itemId == item.itemId;
     }
     if (same == true) {
-      it->quantity -= item.quantity;
-      if (it->quantity <= 0) {
+      owned.quantity -= item.quantity;
+      if (owned.quantity <= 0) {
         this->m_purchaseItems.erase(it);
       }
       return;
