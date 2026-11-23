@@ -159,16 +159,6 @@ inline WindowGeometry::WindowGeometry()
 }
 
 // INLINED
-inline void WindowGeometry::Show(int state) {
-  this->visible = state;
-}
-
-// INLINED
-inline void WindowGeometry::SetId(int value) {
-  this->id = value;
-}
-
-// INLINED
 inline std::uint32_t WindowGeometry::Color() {
   if (this->currentAlpha < this->targetAlpha) {
     this->currentAlpha = std::min<std::uint32_t>(this->targetAlpha, this->currentAlpha + ((timeGetTime() - this->alphaStart) >> 4));
@@ -752,12 +742,6 @@ void UIWindow::DrawTransBox() {
 // FUNCTION: fn_03560
 std::vector<unsigned char> UIWindow::GetReplayData() {
   return std::vector<unsigned char>();
-}
-
-// OFFSET: 0x005C8F60
-// FUNCTION: fn_03629
-void UIWindow::SetId(int value) {
-  this->geometry.SetId(value);
 }
 
 // OFFSET: 0x005C4500

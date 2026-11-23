@@ -2402,6 +2402,7 @@ void UIBasicStylingWnd::OnCreate(int, int) {
     sprintf_s(pressed, sizeof(pressed), "유저인터페이스\\styleshop\\color%02d_on.bmp", i + 1);
 
     UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton();
+    UIButton* paletteButton = button;
     button->SetBitmap(normal, 0, 0);
     button->SetBitmap(hover, 1, 0);
     button->SetBitmap(pressed, 2, 0);
@@ -2409,7 +2410,7 @@ void UIBasicStylingWnd::OnCreate(int, int) {
     button->Move((button->BitmapWidth() + 4) * (i % 4) + 108, (button->BitmapHeight() + 4) * (i / 4) + 237);
     button->SetId(STYLINGSHOP_BUTTON_PALETTE);
     this->AddChild(button);
-    this->m_paletteButtons.push_back(button);
+    this->m_paletteButtons.push_back(paletteButton);
   }
 
   UIStylingShopButton* defaultButton = new (std::nothrow) UIStylingShopButton();
