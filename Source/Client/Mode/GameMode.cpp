@@ -7147,7 +7147,7 @@ void CGameMode::ShowNoticeBalloon(const std::vector<std::string>* lines) {
     }
   }
 
-  BroadcastBalloonMessage message;
+  BroadcastBalloonMessage message(20);
   for (std::vector<std::string>::const_iterator it = lines->begin(); it != lines->end(); ++it) {
     message.lines.emplace_back(*it, 0xFFFF, 0);
   }
