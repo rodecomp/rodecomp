@@ -47,7 +47,7 @@ struct CharacterRenderDrawItem {
 // OFFSET: 0x0080D2A0
 // FUNCTION: fn_10099
 CCharacterRender::CCharacterRender(int width, int renderHeight)
-    : position{0.0f, 0.0f, 0.0f}, headJob(0), lowerHeadgear(0), upperHeadgear(0), middleHeadgear(0), lowerHeadgearLocation(0),
+    : position(), headJob(0), lowerHeadgear(0), upperHeadgear(0), middleHeadgear(0), lowerHeadgearLocation(0),
       upperHeadgearLocation(0), middleHeadgearLocation(0), madogearType(0), riding(0), bodyCostume(0), viewportOffsetX(0), viewportOffsetY(80.0f), bodyBlend(-1),
       bodyCellX(-1), bodyCellY(-1), viewportWidth(width), viewportHeight(renderHeight), cameraDistance(400.0f), cameraPitch(-45.0f),
       cameraYaw(0.0f), unknown_007C(0.0f), unknown_0080(0.0f), unknown_0084(0.0f), cameraUp{0.0f, 1.0f, 0.0f},
