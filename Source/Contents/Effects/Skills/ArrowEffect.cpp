@@ -63,13 +63,11 @@ __declspec(safebuffers) bool CArrowEffect::OnProcess() {
 
     this->Face(target.x, target.z);
 
-    float dy = target.y - this->render.position.y;
-    float dx = target.x - this->render.position.x;
-    float dz = target.z - this->render.position.z;
-    float inverse = 1.0f / SquareRoot(dy * dy + dx * dx + dz * dz);
-    this->render.position.x += inverse * dx * 2.5f;
-    this->render.position.y += inverse * dy * 2.5f;
-    this->render.position.z += inverse * dz * 2.5f;
+    const vector3d direction{target.x - this->render.position.x, target.y - this->render.position.y, target.z - this->render.position.z};
+    float inverse = 1.0f / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
+    this->render.position.x += inverse * direction.x * 2.5f;
+    this->render.position.y += inverse * direction.y * 2.5f;
+    this->render.position.z += inverse * direction.z * 2.5f;
   }
 
   frame -= this->startFrame;
