@@ -434,8 +434,7 @@ int UIChangeMaterialWnd::SendMsg(
 
       if (entry->results.size() > 1) {
         int total = 0;
-        for (auto resultIt = entry->results.begin(); resultIt != entry->results.end(); ++resultIt) {
-          const MaterialResult& result = *resultIt;
+        for (const MaterialResult& result : entry->results) {
           total += result.amount;
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
@@ -448,8 +447,9 @@ int UIChangeMaterialWnd::SendMsg(
         this->m_resultText = "";
       }
 
-      this->m_button->SetDisabled(entry->state != 1);
-      this->m_button->Invalidate();
+      UIButton* button = this->m_button;
+      button->SetDisabled(entry->state != 1);
+      button->Invalidate();
       this->Invalidate();
     }
     break;
