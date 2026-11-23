@@ -102,10 +102,11 @@ void CHealEffect::AddColumn(int kind) {
         continue;
       }
 
+      CParticle& column = *particle;
       const int effectId = this->id;
-      particle->columnIndex = segment;
-      particle->effectId = effectId;
-      particle->rowIndex = row;
+      column.columnIndex = segment;
+      column.rowIndex = row;
+      column.effectId = effectId;
       particle->groupIndex = 1;
       particle->angleParameter = 360;
       particle->alpha = 0;
