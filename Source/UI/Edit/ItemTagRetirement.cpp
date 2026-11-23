@@ -48,6 +48,13 @@ void UIItemTagOnChat::RemoveTagChild(UIWindow* child) {
   }
 }
 
+// OFFSET: 0x0086D5F0
+// FUNCTION: fn_11049
+UIItemTagButton::UIItemTagButton() {
+  this->textY = 1;
+  this->tipId = 0;
+}
+
 // OFFSET: 0x0086D670
 // FUNCTION: fn_11050
 UIItemTagCtrl::UIItemTagCtrl() : previousTagCount(0), tagWidth(0) {
@@ -209,22 +216,14 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
 // FUNCTION: fn_11597
 void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   std::string tag = "<";
-  {
-    const std::string name = item.DisplayName(0);
-    tag.append(name.data(), name.size());
-  }
-  tag.append(">", 1);
+  tag += item.DisplayName(0);
+  tag += ">";
 
   UIItemTagButton* button = new UIItemTagButton();
 
   std::string label = "<";
-  {
-    const int width = this->tagWidth;
-    const std::string name = item.DisplayName(0);
-    const std::string fitted = this->FitTextToWidth(name, width / 2);
-    label.append(fitted.data(), fitted.size());
-  }
-  label.append(">", 1);
+  label += this->FitTextToWidth(item.DisplayName(0), this->tagWidth / 2);
+  label += ">";
 
   button->Configure(label.c_str(), color, 0, 12, 0, 0);
   button->SetTooltip(tag.c_str());
@@ -233,7 +232,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   button->item = item;
   this->AddTagButton(button);
 
-  std::string link;
+  std::string link = "";
   char delimiters[] = "!#$%&'()*+,-/";
   if (this->ItemLinkNumberText(item.identity[2]).size() <= 5) {
     for (unsigned int index = 0; index < 5 - this->ItemLinkNumberText(item.identity[2]).size(); ++index) {
@@ -274,7 +273,8 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   }
 
   const ItemOptionRecord* options = item.options;
-  for (int index = 0; index < item.optionCount; ++index) {
+  const int optionCount = item.optionCount;
+  for (int index = 0; index < optionCount; ++index) {
     link += delimiters[9];
     link += this->ItemLinkNumberText(options[index].id);
     link += delimiters[10];

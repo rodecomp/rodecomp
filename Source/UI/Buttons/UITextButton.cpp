@@ -3671,10 +3671,3 @@ void UISlotBmpButton::Paint() {
   }
 }
 
-// OFFSET: 0x0086D5F0
-// FUNCTION: fn_11049
-UIItemTagButton::UIItemTagButton() {
-  this->textY = 1;
-  this->tipId = 0;
-}
-
