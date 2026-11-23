@@ -373,101 +373,59 @@ bool CTextureDX9::UploadSurface(
 
   switch (description.Format) {
   case D3DFMT_A1R5G5B5: {
-    int row = 0;
-    if (h > 0) {
-      volatile std::uint8_t transparent = static_cast<std::uint8_t>(option);
-      const int sourceRowStride = sourceWidth * stepY;
-      const std::uint32_t* inputRow = pixels;
-      for (; row < h; ++row) {
-        auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-        const std::uint32_t* input = inputRow;
-
-        for (int column = 0; column < w; ++column) {
-          const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
-          const std::uint16_t rgb = converted & 0x7FFF;
-          std::uint16_t value;
-          if (rgb == 0x7C1F) {
-            value = 0;
-          } else if (transparent && !rgb) {
-            value = 0;
-          } else {
-            value = converted;
-          }
-
-          std::memcpy(output + column * sizeof(value), &value, sizeof(value));
-        }
-
-        if (row + 1 < h) {
-          inputRow += sourceRowStride;
+    const std::uint8_t transparent = static_cast<std::uint8_t>(option);
+    for (int row = 0; row < h; ++row) {
+      std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+        const std::uint16_t color = Convert16(pixels[source], D3DFMT_A1R5G5B5);
+        if ((color & 0x7FFF) == 0x7C1F) {
+          output[column] = 0;
+        } else if (transparent && (color & 0x7FFF) == 0) {
+          output[column] = 0;
+        } else {
+          output[column] = color;
         }
       }
+      pixels += sourceWidth * stepY;
     }
     break;
   }
   case D3DFMT_A4R4G4B4: {
-    const int sourceRowStride = sourceWidth * stepY;
-    const std::uint32_t* inputRow = pixels;
+    const std::uint8_t transparent = static_cast<std::uint8_t>(option);
     for (int row = 0; row < h; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = inputRow;
-
-      for (int column = 0; column < w; ++column) {
-        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
-        const std::uint16_t rgb = converted & 0x0FFF;
-        std::uint16_t value;
-        if (rgb == 0xF0F) {
-          value = 0;
-        } else if (static_cast<std::uint8_t>(option) && !rgb) {
-          value = 0;
+      std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+        const std::uint16_t color = Convert16(pixels[source], D3DFMT_A4R4G4B4);
+        if ((color & 0x0FFF) == 0x0F0F) {
+          output[column] = 0;
+        } else if (transparent && (color & 0x0FFF) == 0) {
+          output[column] = 0;
         } else {
-          value = converted;
+          output[column] = color;
         }
-
-        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
-
-      if (row + 1 < h) {
-        inputRow += sourceRowStride;
-      }
+      pixels += sourceWidth * stepY;
     }
     break;
   }
-  case D3DFMT_R5G6B5: {
-    const int sourceRowStride = sourceWidth * stepY;
-    const std::uint32_t* inputRow = pixels;
+  case D3DFMT_R5G6B5:
     for (int row = 0; row < h; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = inputRow;
-
-      for (int column = 0; column < w; ++column) {
-        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_R5G6B5);
-        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
+      std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+        output[column] = Convert16(pixels[source], D3DFMT_R5G6B5);
       }
-
-      if (row + 1 < h) {
-        inputRow += sourceRowStride;
-      }
+      pixels += sourceWidth * stepY;
     }
     break;
-  }
-  case D3DFMT_A8R8G8B8: {
-    const int sourceRowStride = sourceWidth * stepY;
-    const std::uint32_t* inputRow = pixels;
+  case D3DFMT_A8R8G8B8:
     for (int row = 0; row < h; ++row) {
-      auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = inputRow;
-
-      for (int column = 0; column < w; ++column) {
-        const std::uint32_t color = input[column * stepX];
-        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
+      std::uint32_t* output = reinterpret_cast<std::uint32_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
+      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+        output[column] = pixels[source];
       }
-
-      if (row + 1 < h) {
-        inputRow += sourceRowStride;
-      }
+      pixels += sourceWidth * stepY;
     }
     break;
-  }
   default:
     break;
   }
