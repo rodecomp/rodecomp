@@ -1862,27 +1862,29 @@ __declspec(safebuffers) bool CSession::AddExchangeItem(ITEM_INFO item) {
 
   this->RemoveInventoryItem(item.identity[1], item.quantity);
 
-  ITEM_INFO added = item;
-  bool merged = false;
-  for (int index = 0; index < 10; ++index) {
-    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].identity[1] == added.identity[1]) {
-      this->m_exchangeItems[index].quantity += added.quantity;
-      merged = true;
-      break;
-    }
-  }
-
-  if (!merged) {
-    for (int i = 0; i < 10; ++i) {
-      if (this->m_exchangeItems[i].quantity == 0) {
-        this->m_exchangeItems[i] = added;
+  {
+    ITEM_INFO added = item;
+    bool merged = false;
+    for (int index = 0; index < 10; ++index) {
+      if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].identity[1] == added.identity[1]) {
+        this->m_exchangeItems[index].quantity += added.quantity;
+        merged = true;
         break;
       }
     }
-  }
 
-  if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
-    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    if (!merged) {
+      for (int i = 0; i < 10; ++i) {
+        if (this->m_exchangeItems[i].quantity == 0) {
+          this->m_exchangeItems[i] = added;
+          break;
+        }
+      }
+    }
+
+    if (UIWindow* window = g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    }
   }
 
   return true;
