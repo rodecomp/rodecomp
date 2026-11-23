@@ -950,12 +950,9 @@ int CCreateLineInfo::LayoutText(int x, std::string text, LineTextStyle style) {
 
     const std::string rest = text.substr(first.size(), text.size() - first.size());
     const std::vector<std::string> lines = SplitLines(this->m_parent, rest, measureStyle, this->m_width);
-    if (!lines.empty()) {
-      position = 0;
-    }
-
     for (auto line = lines.begin(); line != lines.end(); ++line) {
       this->NewLine();
+      position = 0;
       last = this->CreateTextWindow(*line, measureStyle);
       if (last) {
         this->AddWindow(last);
@@ -966,7 +963,7 @@ int CCreateLineInfo::LayoutText(int x, std::string text, LineTextStyle style) {
       position += last->geometry.width;
     }
   } else {
-    if (this->m_width < position + width) {
+    if (position + width > this->m_width) {
       this->NewLine();
       position = 0;
     }
