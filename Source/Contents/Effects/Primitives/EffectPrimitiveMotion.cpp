@@ -5597,46 +5597,54 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
 // OFFSET: 0x00BE7970
 // FUNCTION: fn_19939
 __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
-  const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  FollowMaster(*this);
 
-  int steps = 360;
-  int phase = 0;
-  for (int index = 0; index < 4; ++index, phase += 90) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
+  const int middle = (21 - 1) / 2;
+  const int m2 = 90 / middle;
 
-    if (slot.life != 1 || ++slot.process <= 0) {
-      continue;
-    }
+  for (int index = 0; index < 4; ++index) {
+    if (this->state.slots[index].life == 1) {
+      ++this->state.slots[index].process;
 
-    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
-    if (slot.rotStart >= steps) {
-      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
-    }
+      if (this->state.slots[index].process > 0) {
+        this->state.slots[index].rotStart += 1;
 
-    if (slot.process < 30) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 5);
-      const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 80 : 150;
-      if (slot.alphaB > limit) {
-        slot.alphaB = static_cast<std::int16_t>(limit);
+        if (this->state.slots[index].rotStart >= 360) {
+          this->state.slots[index].rotStart -= 360;
+        }
+
+        if (this->state.slots[index].process < 30) {
+          this->state.slots[index].alphaB += 5;
+          const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 80 : 150;
+
+          if (this->state.slots[index].alphaB > limit) {
+            this->state.slots[index].alphaB = static_cast<std::int16_t>(limit);
+          }
+        }
+
+        if (this->state.slots[index].process > this->state.duration - 46) {
+          this->state.slots[index].alphaB -= 4;
+
+          if (this->state.slots[index].alphaB < 0) {
+            this->state.slots[index].alphaB = 0;
+          }
+        }
+
+        for (int value = 0; value < 21; ++value) {
+          int pr;
+
+          if (index < 2) {
+            pr = (this->state.slots[index].process + index * 90) % 360;
+          } else {
+            pr = (this->state.slots[index].process * 2 + index * 90) % 360;
+          }
+
+          const int sinLimit = 90 + (value - middle) * m2;
+
+          this->state.slots[index].height[value] = this->state.slots[index].maxHeight;
+          this->state.slots[index].height[value] += g_sinTable[sinLimit] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[pr];
+        }
       }
-    }
-
-    if (slot.process > this->state.duration - 46) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 4);
-      if (slot.alphaB < 0) {
-        slot.alphaB = 0;
-      }
-    }
-
-    const int offset = index * 45;
-    for (int point = 0; point < 21; ++point) {
-      const int angle = (offset < 90 ? slot.process + phase : (slot.process + offset) * 2) % steps;
-      const float base = slot.maxHeight;
-      slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
