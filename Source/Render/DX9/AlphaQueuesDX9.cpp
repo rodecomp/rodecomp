@@ -17,7 +17,7 @@ namespace {
 // OFFSET: 0x00565DA0
 // FUNCTION: fn_02224
 void CRendererDX9::DrawAlphaQueues() {
-  ScopedDeviceStateDX9 restore = this->device->SaveState();
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
   std::sort(this->queue_018C.begin(), this->queue_018C.end());
   std::sort(this->queue_01BC.begin(), this->queue_01BC.end());
   this->device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);

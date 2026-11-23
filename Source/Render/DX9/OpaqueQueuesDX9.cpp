@@ -18,7 +18,7 @@ void CRendererDX9::DrawOpaqueQueues() {
     }
   };
 
-  ScopedDeviceStateDX9 restore = this->device->SaveState();
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
   this->device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   this->device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
   std::sort(this->queue_015C.begin(), this->queue_015C.end(), [](const RenderCommand* left, const RenderCommand* right) {
