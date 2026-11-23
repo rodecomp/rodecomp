@@ -2760,6 +2760,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (item.identity[1] > 0) {
         this->m_title = static_cast<const std::string&>(FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), item.DisplayName(0).c_str()));
       }
+      return 0;
     }
     return 0;
   case UM_COMMAND: {
@@ -8105,16 +8106,20 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->SumEquippedStats();
     this->equippedParam = 0;
     this->equippedSecondParam = 0;
-    const ITEM_DESC& description = FindItemDescription(std::atoi(this->m_label.c_str()));
-    ITEM_INFO equipped = this->FindEquippedItem(description.descriptionFlags);
-    if (equipped.identity[1] > 0) {
-      const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
-      if (equippedDescription.descriptionValues.size() == 2) {
-        this->equippedParam = equippedDescription.descriptionValues[0];
-        this->equippedSecondParam = equippedDescription.descriptionValues[1];
+    {
+      ITEM_INFO equipped = this->FindEquippedItem(FindItemDescription(std::atoi(this->m_label.c_str())).descriptionFlags);
+      if (equipped.identity[1] > 0) {
+        const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
+        if (equippedDescription.descriptionValues.size() == 2) {
+          this->equippedParam = equippedDescription.descriptionValues[0];
+          this->equippedSecondParam = equippedDescription.descriptionValues[1];
+        }
       }
     }
-    break;
+    this->m_after = this->itemParam + this->m_before - this->equippedParam;
+    this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
+    this->Invalidate();
+    return 0;
   }
   case UM_PARAM: {
     this->SumEquippedStats();
@@ -8127,25 +8132,24 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     }
     this->equippedParam = 0;
     this->equippedSecondParam = 0;
-    const ITEM_DESC& slot = FindItemDescription(std::atoi(this->m_label.c_str()));
-    ITEM_INFO equipped = this->FindEquippedItem(slot.descriptionFlags);
-    if (equipped.identity[1] > 0) {
-      const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
-      if (equippedDescription.descriptionValues.size() == 2) {
-        this->equippedParam = equippedDescription.descriptionValues[0];
-        this->equippedSecondParam = equippedDescription.descriptionValues[1];
+    {
+      ITEM_INFO equipped = this->FindEquippedItem(FindItemDescription(std::atoi(this->m_label.c_str())).descriptionFlags);
+      if (equipped.identity[1] > 0) {
+        const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
+        if (equippedDescription.descriptionValues.size() == 2) {
+          this->equippedParam = equippedDescription.descriptionValues[0];
+          this->equippedSecondParam = equippedDescription.descriptionValues[1];
+        }
       }
     }
-    break;
+    this->m_after = this->itemParam + this->m_before - this->equippedParam;
+    this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
+    this->Invalidate();
+    return 0;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  this->m_after = this->itemParam + this->m_before - this->equippedParam;
-  this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
-  this->Invalidate();
-  return 0;
 }
 
 // OFFSET: 0x008FE0E0
