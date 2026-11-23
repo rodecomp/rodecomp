@@ -7049,13 +7049,13 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     const int length = static_cast<int>(item->name.size());
     std::size_t digits = 0;
     for (int index = length - 4; index >= 0; --index) {
-      if (item->name[index] == ' ') {
+      if (static_cast<CItem*>(*it)->name[index] == ' ') {
         break;
       }
       ++digits;
     }
     char text[6] = {};
-    std::memcpy(text, item->name.c_str() + (length - 3) - digits, digits);
+    std::memcpy(text, static_cast<CItem*>(*it)->name.c_str() + (length - 3) - digits, digits);
     packet.count = static_cast<std::int16_t>(std::atoi(text));
 
     packet.subY = static_cast<unsigned char>(subRow);
