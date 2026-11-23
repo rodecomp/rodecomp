@@ -101,16 +101,14 @@ void CNavigationManager::DrawRoute(const float* matrix) {
   const int blink = static_cast<int>(timeGetTime() % 1000 / 100);
   auto& points = this->movementRoute.points;
 
-  if (points.size() - 1 != 0) {
-    for (unsigned index = 0; index < points.size() - 1; index += 2) {
-      const int x = points[index].x;
-      const int y = points[index].y;
-      if (minX < x && maxX > x && minY < y && maxY > y) {
-        ++visible;
-        CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
-        const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
-        this->ground->DrawCellDecal(matrix, x, y, color, *texture, g_groundGridUV);
-      }
+  for (unsigned index = 0; index < points.size() - 1; index += 2) {
+    const int x = points[index].x;
+    const int y = points[index].y;
+    if (minX < x && maxX > x && minY < y && maxY > y) {
+      ++visible;
+      CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
+      const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
+      this->ground->DrawCellDecal(matrix, x, y, color, *texture, g_groundGridUV);
     }
   }
 
