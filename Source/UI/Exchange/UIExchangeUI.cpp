@@ -312,10 +312,7 @@ void ExchangeUI::CUIItem::Paint() {
 void CUIExchangeUI::OnInit() {
   this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
 
-  {
-    const std::string title = std::format("{} : ", LookupMessage(MSI_EXCHANGE));
-    this->titleBar->SetTitle(title);
-  }
+  this->titleBar->SetTitle(std::format("{} : ", LookupMessage(MSI_EXCHANGE)));
 
   this->screenshotLabel->SetText(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE));
 
