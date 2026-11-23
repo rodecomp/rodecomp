@@ -4197,7 +4197,7 @@ void UIStatusWnd::OnCreate(int, int) {
   this->AddMinimizeButton("Ctrl+A", 0);
 
   {
-    const int ids[6] = {205, 206, 207, 208, 209, 210};
+    const int ids[12] = {205, 206, 207, 208, 209, 210};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
       this->m_statButtons[i] = new UIBitmapButton();
@@ -4212,7 +4212,7 @@ void UIStatusWnd::OnCreate(int, int) {
   }
 
   {
-    const int ids[6] = {551, 552, 553, 554, 555, 556};
+    const int ids[12] = {551, 552, 553, 554, 555, 556};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
       this->m_extendedButtons[i] = new UIBitmapButton();
