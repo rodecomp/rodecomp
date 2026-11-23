@@ -649,39 +649,37 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
     for (int index = 0; index < count; ++index) {
       const HotkeyEntry entry = this->GetHotkey(tab, index, true);
       HotkeyInfo info = entry.info;
-      if (info.key1 != g_windowMgr.keyCode || info.key2 != g_windowMgr.modifierKey) {
-        continue;
-      }
-
-      if (index == this->m_selectedRow && tab == this->m_tab) {
-        return 1;
-      }
-
-      StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
-      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        info.key1 = 0;
-        info.key2 = 0;
-        info.text = "";
-        this->SetHotkey(tab, entry.index, info);
-
-        if (tab == 0 && this->m_tab != 0) {
-          const int shortcutCount = g_session.HotkeyCount(3);
-          for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
-            const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
-            HotkeyInfo otherInfo = other.info;
-            if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
-              otherInfo.key1 = 0;
-              otherInfo.key2 = 0;
-              otherInfo.text = "";
-              this->SetHotkey(3, other.index, otherInfo);
-            }
-          }
+      if (info.key1 == g_windowMgr.keyCode && info.key2 == g_windowMgr.modifierKey) {
+        if (index == this->m_selectedRow && tab == this->m_tab) {
+          return 1;
         }
 
-        return 0;
-      }
+        StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
+        if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+          info.key1 = 0;
+          info.key2 = 0;
+          info.text = "";
+          this->SetHotkey(tab, entry.index, info);
 
-      return 1;
+          if (tab == 0 && this->m_tab != 0) {
+            const int shortcutCount = g_session.HotkeyCount(3);
+            for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
+              const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
+              HotkeyInfo otherInfo = other.info;
+              if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
+                otherInfo.key1 = 0;
+                otherInfo.key2 = 0;
+                otherInfo.text = "";
+                this->SetHotkey(3, other.index, otherInfo);
+              }
+            }
+          }
+
+          return 0;
+        }
+
+        return 1;
+      }
     }
   }
 
