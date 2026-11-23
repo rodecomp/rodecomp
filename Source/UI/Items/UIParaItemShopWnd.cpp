@@ -199,22 +199,25 @@ void UIParaResultWnd::OnLBtnDown(int x, int y) {
 void UIParaResultWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    std::string text;
+    std::string text = "";
     char price[64];
     std::memset(price, 0, sizeof(price));
-    if (item.prices[0] != item.prices[1]) {
+    if (item.prices[1] != item.prices[0]) {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
       text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0], amount));
     } else {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
-      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount);
+      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount));
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 

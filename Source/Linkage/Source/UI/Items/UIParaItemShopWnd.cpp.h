@@ -47,3 +47,5 @@
 #include <string>
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
+template std::basic_string<char>& std::basic_string<char>::operator=(std::basic_string<char>&&) noexcept;
