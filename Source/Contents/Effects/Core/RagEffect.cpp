@@ -10656,13 +10656,12 @@ void CRagEffect::SkyCloud(char kind) {
 // OFFSET: 0x00C49E60
 // FUNCTION: fn_20167
 void CRagEffect::SnowDrift(char flag) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
-
+  CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt != 0) {
     return;
   }
 
+  CopyVector(this->render.position, this->state.parent->render.position);
   this->state.lastPrim = this->LaunchEffectPrim(134, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -10687,7 +10686,7 @@ void CRagEffect::SnowDrift(char flag) {
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.deltaPos = this->state.deltaPos;
     this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &this->state.lastPrim->state.slots[index].riseAngle);
-    this->state.lastPrim->state.slots[index].riseAngle += static_cast<std::int16_t>(rand() % 41 + 160);
+    this->state.lastPrim->state.slots[index].riseAngle += rand() % 41 + 160;
 
     if (this->state.lastPrim->state.slots[index].riseAngle >= 360) {
       this->state.lastPrim->state.slots[index].riseAngle -= 360;
