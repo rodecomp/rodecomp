@@ -11,7 +11,9 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/SpriteParticle.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/World/World.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstdint>
@@ -463,8 +465,7 @@ void CSpriteEffect::OnProcess() {
     }
     case EF_POPCORN:
     case EF_RANDOM_OPT_YELLOW: {
-      const vector3d offset = {0.0f, -10.0f, 0.0f};
-      SetOffsetPosition(particle->position, this->position, offset);
+      particle->position = vector3d{this->position[0] + 0.0f, this->position[1] - g_projectionDepthOffset, this->position[2] + 0.0f};
       break;
     }
     case EF_IMMUNE_PROPERTY_NOTHING:
@@ -505,7 +506,7 @@ void CSpriteEffect::OnProcess() {
         break;
       }
 
-      const int height = static_cast<int>(actor->GetNameOffset() + 3.0f);
+      const int height = static_cast<int>(actor->GetNameOffset() + g_masterReachDistance);
       const vector3d offset = {0.0f, static_cast<float>(-height), 0.0f};
       SetOffsetPosition(particle->position, this->position, offset);
       break;
