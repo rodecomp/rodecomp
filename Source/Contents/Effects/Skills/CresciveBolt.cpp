@@ -76,19 +76,23 @@ bool CCresciveBolt::IsAlive() {
 // OFFSET: 0x0070AED0
 // FUNCTION: fn_07111
 void CCresciveBolt::OnProcess() {
-  if (!this->particle) {
+  CEZ2STRParticle* particle = this->particle;
+  if (!particle) {
     return;
   }
 
-  this->particle->position = vector3d(this->position[0] + 0.0f, this->position[1] - 3.0f, this->position[2] + 0.0f);
+  particle->position.x = this->position[0] + 0.0f;
+  particle->position.y = this->position[1] - 3.0f;
+  particle->position.z = this->position[2] + 0.0f;
 
-  const float angle = static_cast<float>(static_cast<double>(this->particle->m_angle));
+  particle = this->particle;
+  const float angle = static_cast<float>(static_cast<double>(particle->m_angle));
   if (angle <= 90.0f || angle >= 270.0f) {
-    this->particle->Process(0.0f, -40.0f, 0.0f);
+    particle->Process(0.0f, -40.0f, 0.0f);
     return;
   }
 
-  this->particle->Process(0.0f, 0.0f, 0.0f);
+  particle->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x0070AF80
