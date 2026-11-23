@@ -9421,8 +9421,7 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 45) / 67u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
@@ -9483,8 +9482,7 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 47) / 67u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE_BODY)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
@@ -9522,8 +9520,7 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 47) / 68u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE_BODY)) / sizeof(EquipWindowGradeRecord);
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
@@ -9601,8 +9598,7 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 41u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipRecord* record = &records[index];
@@ -9625,8 +9621,7 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 67u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
@@ -9650,8 +9645,7 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 68u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(EquipWindowGradeRecord);
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
