@@ -9082,7 +9082,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] > 0 && this->FilterItem(item)) {
+      if (item.itemIndex > 0 && this->FilterItem(item)) {
         this->items.push_back(item);
       }
     }
