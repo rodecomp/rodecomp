@@ -5174,12 +5174,6 @@ void CPc::SendMsg(
 
     int effectId;
     switch (this->bodyStyle) {
-    case JT_RANGER:
-    case JT_RANGER_H:
-    case JT_WOLF_RANGER:
-    case JT_WOLF_RANGER_H:
-      effectId = MAKETYPE_WARG_EFFECT;
-      break;
     case JT_RANGER_B:
     case JT_WOLF_RANGER_B:
       effectId = MAKETYPE_BABY_WARG_EFFECT;
@@ -5189,7 +5183,16 @@ void CPc::SendMsg(
       effectId = MAKETYPE_WINDHAWK_WOLF_EFFECT;
       break;
     case JT_RANGER_2ND:
-      effectId = g_session.IsBabyJob(this->GetEffectiveJob(-1)) == true ? 0x2A : 0x23;
+      if (g_session.IsBabyJob(this->GetEffectiveJob(-1)) == true) {
+        effectId = MAKETYPE_BABY_WARG_EFFECT;
+        break;
+      }
+      [[fallthrough]];
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_WOLF_RANGER:
+    case JT_WOLF_RANGER_H:
+      effectId = MAKETYPE_WARG_EFFECT;
       break;
     default:
       return;
