@@ -224,8 +224,8 @@ int UIWindowMgr::ProcessMouse() {
       if (left > x || right < x || top > y || bottom < y) {
         outside = true;
       }
-      WindowScreenBounds(this->cashEmotionListWnd, left, top, right, bottom);
       bool outsideCompanion = false;
+      WindowScreenBounds(this->cashEmotionListWnd, left, top, right, bottom);
       if (left > x || right < x || top > y || bottom < y) {
         outsideCompanion = true;
       }
@@ -287,14 +287,18 @@ int UIWindowMgr::ProcessMouse() {
     }
 
     if (g_mouse.buttons[0] == 1) {
-      if (window) {
+      if (!window) {
+        this->keyboardCommandRootWnd = window;
+      } else {
         UIWindow* root = window;
-        while (root->parent) {
-          root = root->parent;
+        for (;;) {
+          UIWindow* next = root->parent;
+          if (!next) {
+            break;
+          }
+          root = next;
         }
         this->keyboardCommandRootWnd = root;
-      } else {
-        this->keyboardCommandRootWnd = nullptr;
       }
     }
 
@@ -364,14 +368,17 @@ int UIWindowMgr::ProcessMouse() {
       }
 
       if (this->comboBoxIDWnd) {
-        if (!window) {
-          this->CloseWindow(WID_COMBOBOXIDWND);
-          this->CloseDropDown();
-        } else if (window != this->comboBoxIDWnd && !window->IsDescendantOf(this->comboBoxIDWnd)) {
+        if (window) {
+          if (window != this->comboBoxIDWnd && !window->IsDescendantOf(this->comboBoxIDWnd)) {
+            this->CloseWindow(WID_COMBOBOXIDWND);
+          }
+        } else {
           this->CloseWindow(WID_COMBOBOXIDWND);
         }
-      } else if (!window) {
-        this->CloseDropDown();
+      }
+      if (!window && this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible != 0) {
+        this->dropDownBoxWnd->Detach();
+        this->dropDownBoxWnd->Show(0);
       }
     }
 
