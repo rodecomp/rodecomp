@@ -36,18 +36,6 @@ ITEM_DESC& FindItemDescription(int id, std::map<int, ITEM_DESC>& values) {
   return entry == values.end() ? missing : entry->second;
 }
 
-// OFFSET: 0x006D3AE0
-// FUNCTION: fn_06546
-ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
-  const auto entry = values.find(id);
-  if (entry != values.end()) {
-    return entry->second;
-  }
-
-  const auto inserted = values.insert({id, ItemCardName{nullptr, nullptr, nullptr}});
-  return inserted.first->second;
-}
-
 // OFFSET: 0x006D3C10
 // FUNCTION: fn_06547
 std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values) {

@@ -502,6 +502,18 @@ __declspec(noinline) ItemCardName& FindItemCardName(int id, std::map<int, ItemCa
   return entry == values.end() ? missing : entry->second;
 }
 
+// OFFSET: 0x006D3AE0
+// FUNCTION: fn_06546
+ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  const auto inserted = values.insert({id, ItemCardName{nullptr, nullptr, nullptr}});
+  return inserted.first->second;
+}
+
 // OFFSET: 0x006D3850
 // FUNCTION: fn_45456
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values) {
