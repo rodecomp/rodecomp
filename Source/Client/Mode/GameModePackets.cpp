@@ -7698,7 +7698,7 @@ __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success
     window->AddItem(item);
   }
 
-  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 > 0 ? count : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 <= 0 ? 0 : count) * 32 + 120, 0, 0, 0);
   window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   if (!success) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_FAIL2)), 0xFF, 0, 0, 0);
