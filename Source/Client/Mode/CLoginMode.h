@@ -154,7 +154,7 @@ public:
   /* 6F18 */ int passwordRetryCount;
   /* 6F1C */ std::vector<int> noticeCommands;
   /* 6F28 */ int authChallengeId;
-  /* 6F2C */ std::vector<int> padding_6F2C;
+  /* 6F2C */ std::vector<LoginStringRecord> padding_6F2C;
   /* 6F38 */ std::vector<LoginStringRecord> accountInfo;
   /* 6F44 */ unsigned char savedInlineCharset;
   /* 6F45 */ unsigned char padding_6F45[0x3];
