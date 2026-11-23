@@ -1903,13 +1903,15 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     return false;
   }
 
+  const std::string* name;
   if (g_modeMgr.GetGameMode()) {
-    member.name = LookupPlayerName(member.characterId);
+    name = &(member.name = LookupPlayerName(member.characterId));
+  } else {
+    name = &member.name;
   }
   if (member.name.size() == 0) {
     member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildNamelessTag;
   }
-  const std::string& name = member.name;
 
   if (member.online == 1) {
     this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, 0xE4FFE2);
@@ -1956,34 +1958,39 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     );
   }
 
-  const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
-  this->m_rowTexts[1][row]->SetTextFittedCodePage(this->StripNamelessTag(name).c_str());
-  this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
-  this->m_rowTexts[2][row]->SetTextFittedCodePage(member.positionName.c_str());
-  this->m_rowTexts[2][row]->Move(g_guildMemberColumnWidths[0] + 11, y);
-  if (this->m_rowButtons[row]) {
-    this->m_rowButtons[row]->Move(150, y - 4);
-  }
+  {
+    const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
+    const std::string displayName = this->StripNamelessTag(*name);
+    this->m_rowTexts[1][row]->SetTextFittedCodePage(displayName.c_str());
+    this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
+    int x = g_guildMemberColumnWidths[0];
+    this->m_rowTexts[2][row]->SetTextFittedCodePage(member.positionName.c_str());
+    this->m_rowTexts[2][row]->Move(x + 11, y);
+    if (this->m_rowButtons[row]) {
+      this->m_rowButtons[row]->Move(150, y - 4);
+    }
 
-  int x = g_guildMemberColumnWidths[0] + g_guildMemberColumnWidths[1] + 8;
-  const std::string job(g_session.GetJobName(member.job, member.sex));
-  this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
-  this->m_rowTexts[3][row]->Move(x + 4, y);
-  x += g_guildMemberColumnWidths[2] + 1;
-  this->DrawRightAlignedText(g_guildMemberColumnWidths[3] + x - 4, y, FormatOwnedString("%d", member.level).c_str(), 0, 0, 12, 0, 0);
-  x += g_guildMemberColumnWidths[3] + 1;
-  this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
-  x += g_guildMemberColumnWidths[4] + 1;
-  if (member.exp >= 0x7FFFFFFF) {
-    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
-  } else {
-    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
-  }
+    x += g_guildMemberColumnWidths[1] + 8;
+    const std::string job(g_session.GetJobName(member.job, member.sex));
+    this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
+    this->m_rowTexts[3][row]->Move(x + 4, y);
+    x += g_guildMemberColumnWidths[2] + 1;
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[3] + x - 4, y, FormatOwnedString("%d", member.level).c_str(), 0, 0, 12, 0, 0);
+    x += g_guildMemberColumnWidths[3] + 1;
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
+    x += g_guildMemberColumnWidths[4] + 1;
+    if (member.exp >= 0x7FFFFFFF) {
+      this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
+    } else {
+      this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
+    }
 
-  char lastLogin[128];
-  strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), _localtime32(&member.lastOfflineTime));
-  this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
-  return true;
+    char lastLogin[128];
+    const tm* lastOffline = _localtime32(&member.lastOfflineTime);
+    strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), lastOffline);
+    this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
+    return true;
+  }
 }
 
 // OFFSET: 0x0095ACC0
