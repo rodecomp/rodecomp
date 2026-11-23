@@ -608,7 +608,8 @@ int g_charViewOffsetY;
 void UISelCharForUServerWnd::Paint() {
   const char* background =
     g_session.characterCount > 12 ? "유저인터페이스\\login_interface\\selCharForIntergration2.bmp" : "유저인터페이스\\login_interface\\selCharForIntergration.bmp";
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), false);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
+  this->DrawBitmap(0, 0, bitmap, false);
 
   for (int index = 0; index < g_session.characterCount; ++index) {
     if (this->m_slotEnabled[index] != 0) {
@@ -643,18 +644,20 @@ void UISelCharForUServerWnd::Paint() {
           item = info->accessory3;
         }
 
-        int turn = 0;
+        int direction = 0;
         if (this->m_slots[index].frame == 2) {
-          turn = -1;
+          direction = -1;
         } else if (this->m_slots[index].frame == 1) {
-          turn = 1;
+          direction = 1;
         }
 
-        int direction = turn - this->m_slots[index].actionBase + this->m_slots[index].action;
+        direction += this->m_slots[index].action - this->m_slots[index].actionBase;
         if (direction < 0) {
           direction = 7;
         }
-        direction = direction > 7 ? 0 : direction;
+        if (direction > 7) {
+          direction = 0;
+        }
 
         g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.GetCurrentSex(), &x, &y);
         offsetX = x;
@@ -666,7 +669,7 @@ void UISelCharForUServerWnd::Paint() {
         if (frame->anchorCount != 0 && body->anchorCount != 0) {
           const ActionAnchor* head = frame->anchors.data();
           const ActionAnchor* base = body->anchors.data();
-          if (head->attachmentId == base->attachmentId) {
+          if (base->attachmentId == head->attachmentId) {
             offsetX += base->x - head->x;
             g_charViewOffsetX = offsetX;
             offsetY += base->y - head->y;
@@ -687,7 +690,7 @@ void UISelCharForUServerWnd::Paint() {
         if (frame->anchorCount != 0 && head->anchorCount != 0) {
           const ActionAnchor* anchor = frame->anchors.data();
           const ActionAnchor* base = head->anchors.data();
-          if (base->attachmentId == anchor->attachmentId) {
+          if (anchor->attachmentId == base->attachmentId) {
             offsetX += base->x - anchor->x;
             offsetY += base->y - anchor->y;
           }
@@ -695,20 +698,28 @@ void UISelCharForUServerWnd::Paint() {
 
         offsetX += g_charViewOffsetX;
         offsetY += g_charViewOffsetY;
-        if (layer == 3 && (this->accessory2[index] == ACCESSORY_TIGER_MASK || this->accessory2[index] == ACCESSORY_BANANA_HAT)) {
-          offsetY -= 7;
+        if (layer == 3) {
+          switch (this->accessory2[index]) {
+          case ACCESSORY_TIGER_MASK:
+          case ACCESSORY_BANANA_HAT:
+            offsetY -= 7;
+            break;
+          }
         }
       }
 
       const std::uint32_t* palette = sprite->palette;
-      if (layer == 0) {
+      switch (layer) {
+      case 0:
         if (this->m_slots[index].bodyPalette != 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].bodyPaletteName.c_str()))->palette;
         }
-      } else if (layer == 1) {
+        break;
+      case 1:
         if (this->m_slots[index].headPalette != 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].headPaletteName.c_str()))->palette;
         }
+        break;
       }
 
       const SpriteFrameCell& cell = frame->Cell(layer <= 1 ? layer : 0);
@@ -728,7 +739,7 @@ void UISelCharForUServerWnd::Paint() {
       }
 
       this->geometry.surface->DrawSurface(
-        cell.x + offsetX + this->m_slots[index].x, cell.y + offsetY + this->m_slots[index].y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
+        this->m_slots[index].x + (cell.x + offsetX), this->m_slots[index].y + (cell.y + offsetY), texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
         image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
