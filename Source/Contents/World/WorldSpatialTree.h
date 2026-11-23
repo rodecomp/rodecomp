@@ -22,6 +22,7 @@ struct WorldSpatialTree {
   void RefreshBounds(int depth);
   void RefreshModelBounds(int depth);
   void InsertModel(C3dActor* model, int depth);
+  void InsertModelAfter(C3dActor* model, int depth);
   void RemoveModel(C3dActor* model, int depth);
   std::vector<C3dActor*>& ModelsAt(float x, float z, int depth);
 

@@ -264,9 +264,27 @@ void WorldSpatialTree::RefreshBounds(int depth) {
 
 // OFFSET: 0x00AC84F0
 // FUNCTION: fn_17673
+void WorldSpatialTree::InsertModel(C3dActor* model, int depth) {
+  if (depth == 5) {
+    this->objects.push_back(model);
+
+    for (WorldSpatialTree* node = this; node; node = node->parent) {
+      node->dirty = 1;
+    }
+
+    return;
+  }
+
+  for (int index = 0; index < 4; ++index) {
+    if (IntersectsBounds(model->oriented, this->children[index]->minimum)) {
+      this->children[index]->InsertModel(model, depth + 1);
+    }
+  }
+}
+
 // OFFSET: 0x00AC86B0
 // FUNCTION: fn_17676
-void WorldSpatialTree::InsertModel(C3dActor* model, int depth) {
+void WorldSpatialTree::InsertModelAfter(C3dActor* model, int depth) {
   if (depth == 5) {
     this->objects.push_back(model);
 

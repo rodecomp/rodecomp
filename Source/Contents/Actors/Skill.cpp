@@ -316,7 +316,7 @@ static __forceinline void ShowModelImpl(CSkill* skill, const char* modelName) {
   skill->m_model->occlusionEnabled = 0;
   skill->m_model->playback = 0;
   skill->m_model->Prepare(&diffuse.x, &white.x, &ambient.x);
-  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(skill->m_model, 0);
+  g_modeMgr.GetGameMode()->scene->spatial.InsertModelAfter(skill->m_model, 0);
 }
 
 // OFFSET: 0x00E55320
