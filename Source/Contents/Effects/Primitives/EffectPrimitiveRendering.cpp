@@ -2745,24 +2745,26 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
     float shrink = 0.0f;
     unsigned char red;
     unsigned char green;
     unsigned char blue;
 
-    if (this->state.slots[ec].flag1[0] == 0) {
+    if (slot.flag1[0] == 0) {
       red = 70;
       green = 70;
       blue = 255;
-    } else if (this->state.slots[ec].flag1[0] == 1) {
+    } else if (slot.flag1[0] == 1) {
       red = 255;
       green = 70;
       blue = 70;
-    } else if (this->state.slots[ec].flag1[0] == 2) {
+    } else if (slot.flag1[0] == 2) {
       red = 70;
       green = 255;
       blue = 70;
-    } else if (this->state.slots[ec].flag1[0] == 3) {
+    } else if (slot.flag1[0] == 3) {
       red = 255;
       green = 255;
       blue = 90;
@@ -2772,14 +2774,14 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
       blue = 255;
     }
 
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
+    if (slot.life != 1 || slot.alphaB <= 0) {
       continue;
     }
 
     int index = 0;
     do {
-      const int angle1 = this->state.slots[ec].rotStart;
-      const float radius = this->state.slots[ec].maxHeight - shrink;
+      const int angle1 = slot.rotStart;
+      const float radius = slot.maxHeight - shrink;
       const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
       const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
       const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
@@ -2790,18 +2792,18 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
       const int step = index;
-      const vector3d& offset = index == 0 ? this->state.slots[ec].vecBNow : index == 1 ? this->state.slots[ec].vecBPre : this->state.slots[ec].vecTPre;
+      const vector3d& offset = index == 0 ? slot.vecBNow : index == 1 ? slot.vecBPre : slot.vecTPre;
       ++index;
-      const int alpha = this->state.slots[ec].alphaB / index;
+      const int alpha = slot.alphaB / index;
       vec1.Set(offset.x + vec1.x, offset.y + vec1.y, offset.z + vec1.z);
       vec2.Set(offset.x + vec2.x, offset.y + vec2.y, offset.z + vec2.z);
       vec3.Set(offset.x + vec3.x, offset.y + vec3.y, offset.z + vec3.z);
       vec4.Set(offset.x + vec4.x, offset.y + vec4.y, offset.z + vec4.z);
 
-      if (this->state.slots[ec].flag1[3] == 0) {
+      if (slot.flag1[3] == 0) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 1, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, this->state.slots[ec].flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, slot.flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
       shrink += step != 0 ? 0.25f : 0.5f;
