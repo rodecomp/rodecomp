@@ -274,7 +274,7 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->chatWindowIndex = b;
       this->useMainChatOptions = c != 0;
       SubChatWndInfo info;
-      info = (this->useMainChatOptions ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->chatWindowIndex];
+      info = (!this->useMainChatOptions ? g_session.m_subChatWnds : g_session.m_noSubChatWnds)[this->chatWindowIndex];
       if (info.name.size() > 0) {
         this->allChecked = 1;
         for (int i = 0; i < 25; ++i) {
@@ -283,11 +283,8 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             this->allChecked = 0;
           }
         }
-        {
-          auto* allCheckBox = this->m_allCheckBox;
-          allCheckBox->geometry.state = this->allChecked;
-          allCheckBox->Invalidate();
-        }
+        this->m_allCheckBox->geometry.state = this->allChecked;
+        this->m_allCheckBox->Invalidate();
         this->text = info.name;
         this->text += LookupMessage(MSI_SET_CHATINFO);
         this->Invalidate();
