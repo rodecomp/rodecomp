@@ -1051,7 +1051,7 @@ void CFallenAngelEffect::OnProcess() {
   CEZ2STRParticle* emitter = this->emitter;
   emitter->position = vector3d{start.x + dx * speed * 0.09f, start.y + speed * 0.0f, start.z + dz * speed * 0.09f};
 
-  this->emitter->Process(0.0f, -80.0f, 0.0f);
+  emitter->Process(0.0f, -80.0f, 0.0f);
   this->emitter->elapsedFrames++;
 }
 
