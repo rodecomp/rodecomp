@@ -19,8 +19,7 @@ namespace {
       return 0;
     }
 
-    const int value = rand() % range;
-    return value >= 0 ? value : 0;
+    return (std::ranges::max)(rand() % range, 0);
   }
 
   // INLINED
@@ -38,6 +37,18 @@ namespace {
       }
     }
     target = goal;
+  }
+
+  // INLINED
+  __forceinline vector3d Sum(const vector3d& left, const vector3d& right) {
+    return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+  }
+
+  // INLINED
+  __forceinline void SetOffset(CParticle* particle, float x, float y, float z) {
+    particle->offsetX = x;
+    particle->offsetY = y;
+    particle->offsetZ = z;
   }
 }
 
@@ -99,15 +110,7 @@ void CCloud::ResetParticles() {
 
   this->particle->elapsedFrames = 0;
   CParticle* particle = this->particle;
-  const int rangeZ = static_cast<int>(this->offsetRangeZ);
-  const int offsetZ = Random(rangeZ);
-  const int rangeY = static_cast<int>(this->offsetRangeY);
-  const int offsetY = Random(rangeY);
-  const int rangeX = static_cast<int>(this->offsetRangeX);
-  const int offsetX = Random(rangeX);
-  particle->offsetX = static_cast<float>(offsetX);
-  particle->offsetY = static_cast<float>(offsetY);
-  particle->offsetZ = static_cast<float>(offsetZ);
+  SetOffset(particle, static_cast<float>(Random(static_cast<int>(this->offsetRangeX))), static_cast<float>(Random(static_cast<int>(this->offsetRangeY))), static_cast<float>(Random(static_cast<int>(this->offsetRangeZ))));
 
   this->particle->SetColor(this->red, this->green, this->blue);
   this->particle->alpha = 0;
