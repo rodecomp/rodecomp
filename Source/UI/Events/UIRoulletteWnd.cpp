@@ -437,19 +437,21 @@ void UIRoulletteWnd::UpdateButtons() {
 // FUNCTION: fn_10094
 int UIRoulletteWnd::CoinType() const {
   const RouletteMgr* roulette = g_rouletteMgr;
+  int type = 0;
 
   if (roulette->m_resultShown == 1) {
     if (roulette->m_stage + 1 < 7 && roulette->m_bonus == 0) {
-      return 1;
+      type = 1;
+    } else {
+      type = 0;
     }
-    return 0;
+  } else if (roulette->m_bronzePoint > 0) {
+    type = 0;
+  } else if (roulette->m_silverPoint >= 10) {
+    type = 2;
+  } else if (roulette->m_goldPoint >= 10) {
+    type = 4;
   }
 
-  if (roulette->m_bronzePoint > 0) {
-    return 0;
-  }
-  if (roulette->m_silverPoint >= 10) {
-    return 2;
-  }
-  return roulette->m_goldPoint >= 10 ? 4 : 0;
+  return type;
 }
