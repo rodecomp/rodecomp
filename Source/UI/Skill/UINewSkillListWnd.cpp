@@ -282,7 +282,9 @@ void UINewSkillListWnd::DrawSkillList() {
   int drawn = 0;
   int index = 0;
 
-  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+  std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
+  for (auto it = skills.begin(); it != skills.end(); ++it) {
+    const CSkillInfo& skill = *it;
     if (index >= this->m_firstRow * this->m_columns) {
       const int level = skill.level;
       const int y = drawn / this->m_columns * 32;
@@ -316,16 +318,16 @@ void UINewSkillListWnd::DrawSkillList() {
         }
       }
 
-      const int maxLevel = this->SkillAt(index, true).level;
-      const int red = level > maxLevel ? 255 : shade;
-      const int green = level > maxLevel ? 0 : shade;
+      const bool raised = skill.level > this->SkillAt(index, true).level;
+      const int red = raised ? 255 : shade;
+      const int green = raised ? 0 : shade;
       const int textX = x + 112;
       const int textY = y + 47;
       const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
       if (level != 0) {
         std::sprintf(text, g_serviceType == ServiceBrazil ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
-        const std::uint32_t gray = RGB(shade, shade, shade);
+        const std::uint32_t gray = (shade << 8 | shade) << 8 | shade;
         this->DrawTextAt(labelX, textY, text, 0, 0, 12, gray, 0, 0);
 
         int levelX;
@@ -345,7 +347,7 @@ void UINewSkillListWnd::DrawSkillList() {
           std::sprintf(text, "%d", skill.level);
           levelX = textX + 25;
         }
-        this->DrawTextAt(levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
+        this->DrawTextAt(levelX, textY, text, 0, 0, 12, (red << 8 | green) << 8 | green, 0, 0);
 
         if (skill.type == 0) {
           std::sprintf(text, LookupMessage(MSI_PASSIVE));
@@ -386,7 +388,7 @@ void UINewSkillListWnd::DrawSkillList() {
         this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
       }
 
-      this->DrawTextAt(textX, y + 35, skill.DisplayName(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+      this->DrawTextAt(textX, y + 35, skill.DisplayName(), 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
       if (++drawn == this->m_visibleRows * this->m_columns) {
         break;
       }
