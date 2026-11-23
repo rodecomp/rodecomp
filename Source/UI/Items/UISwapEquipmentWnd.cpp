@@ -295,7 +295,7 @@ ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
       }
     }
 
-    if (x > 112 && x < 170 && y >= 28 && y <= 52) {
+    if (x < 170 && x > 112 && y >= 28 && y <= 52) {
       slot = 15;
     }
   }
