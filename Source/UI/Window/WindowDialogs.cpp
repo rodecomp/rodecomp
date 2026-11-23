@@ -176,7 +176,7 @@ void UIWindowMgr::RestoreInput() {
 // OFFSET: 0x00A901E0
 // FUNCTION: fn_17153
 int UIWindowMgr::Confirm(
-  const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
+  const char* text, int type, int defaultAccept, int replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing == 1) {
