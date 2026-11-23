@@ -386,7 +386,7 @@ void Replay::ResetPlayback() {
 
 // OFFSET: 0x00B83E40
 // FUNCTION: fn_19310
-bool Replay::Cipher(std::uint32_t bytes, void* data) {
+__declspec(noinline) bool Replay::Cipher(std::uint32_t bytes, void* data) {
   if (!data || !bytes) {
     return false;
   }
