@@ -3488,26 +3488,26 @@ void UIEquipWnd::OnCreate(int width, int height) {
   if (this->m_viewOther == 0) {
     this->m_tabs->AddTab(LookupMessage(MSI_DAMAGE_EQUIPMENT), LookupMessage(MSI_DAMAGE_EQUIPMENT_TOOLTIP));
 
-    UIBitmapButton* apply = new UIBitmapButton();
-    this->damageSkinButtons[0] = apply;
-    apply->SetBitmap("유저인터페이스\\btn_apply.bmp", 0, 0);
-    apply->SetBitmap("유저인터페이스\\btn_apply_a.bmp", 1, 0);
-    apply->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
-    apply->SetSize(apply->BitmapWidth(), apply->BitmapHeight());
+    UIWindow*& apply = this->damageSkinButtons[0];
+    apply = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply.bmp", 0, 0);
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply_a.bmp", 1, 0);
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
+    apply->SetSize(static_cast<UIBitmapButton*>(apply)->BitmapWidth(), static_cast<UIBitmapButton*>(apply)->BitmapHeight());
     apply->Move(160, 167);
     apply->SetId(ID_APPLY);
-    apply->Enable(0);
+    static_cast<UIBitmapButton*>(apply)->Enable(0);
     this->AddChild(apply);
 
-    UIBitmapButton* close = new UIBitmapButton();
-    this->damageSkinButtons[1] = close;
-    close->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
-    close->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
-    close->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
-    close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+    UIWindow*& close = this->damageSkinButtons[1];
+    close = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
+    close->SetSize(static_cast<UIBitmapButton*>(close)->BitmapWidth(), static_cast<UIBitmapButton*>(close)->BitmapHeight());
     close->Move(220, 167);
     close->SetId(ID_CLOSE);
-    close->Enable(0);
+    static_cast<UIBitmapButton*>(close)->Enable(0);
     this->AddChild(close);
 
     const int count = g_session.damageSkinCount;
@@ -3523,17 +3523,16 @@ void UIEquipWnd::OnCreate(int width, int height) {
       }
     }
 
-    UIScrollBar* scrollBar = new UIScrollBar();
-    this->m_scrollBar = scrollBar;
-    scrollBar->Configure(1, 153, 0, width);
-    scrollBar->Show(0);
-    scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
+    this->m_scrollBar = new UIScrollBar();
+    this->m_scrollBar->Configure(1, 153, 0, width);
+    this->m_scrollBar->Show(0);
+    this->m_scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
     this->AddChild(this->m_scrollBar);
 
     const char* labels[4] = {LookupMessage(MSI_DAMAGE_DIR_DEFAULT), LookupMessage(MSI_DAMAGE_DIR_RIGHT), LookupMessage(MSI_DAMAGE_DIR_CENTER), LookupMessage(MSI_DAMAGE_DIR_LEFT)};
     for (int index = 0; index < 4; ++index) {
-      UIRadioBtn* radio = new UIRadioBtn();
-      this->damageSkinButtons[index + 2] = radio;
+      UIWindow*& radio = this->damageSkinButtons[index + 2];
+      radio = new UIRadioBtn();
       radio->SetSize(60, 12);
       if (index == 0) {
         radio->Move(8, this->m_contentTop + 20);
@@ -3541,12 +3540,15 @@ void UIEquipWnd::OnCreate(int width, int height) {
         radio->Move(index * 60 + 28, this->m_contentTop + 20);
       }
       radio->SendMsg(this, UM_SETSTATE, index == this->damageSkinMode, 0, 0, 0);
-      radio->SetText(labels[index]);
-      const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
-      const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
-      radio->checkedBitmap = checked;
-      radio->uncheckedBitmap = unchecked;
-      radio->Invalidate();
+      static_cast<UIRadioBtn*>(radio)->SetText(labels[index]);
+      {
+        UIRadioBtn* button = static_cast<UIRadioBtn*>(radio);
+        const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
+        const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
+        button->checkedBitmap = checked;
+        button->uncheckedBitmap = unchecked;
+        button->Invalidate();
+      }
       radio->Show(0);
       this->AddChild(radio);
     }
