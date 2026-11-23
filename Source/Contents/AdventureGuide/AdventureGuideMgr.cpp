@@ -1238,10 +1238,14 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
     return;
   }
 
-  std::copy_if((*contents)->begin(), (*contents)->end(), std::back_inserter(out),
-               [](const std::pair<const int, AdventureGuideContents>& entry) {
-                 return entry.second.minLevel <= g_session.m_level && g_session.m_level <= entry.second.maxLevel;
-               });
+  std::for_each((*contents)->begin(), (*contents)->end(), [&out](const std::pair<const int, AdventureGuideContents>& entry) {
+    const auto inLevelRange = [](const AdventureGuideContents& contents) {
+      return contents.minLevel <= g_session.m_level && g_session.m_level <= contents.maxLevel;
+    };
+    if (inLevelRange(entry.second)) {
+      out.push_back(std::make_pair(entry.first, entry.second));
+    }
+  });
 
   out.sort([](const std::pair<int, AdventureGuideContents>& lhs, const std::pair<int, AdventureGuideContents>& rhs) {
     return lhs.second.minLevel < rhs.second.minLevel;
