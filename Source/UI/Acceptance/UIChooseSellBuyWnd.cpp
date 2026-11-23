@@ -1295,12 +1295,13 @@ void UIProhibitListWnd::Paint() {
 
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_PROHIBIT_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
-  int y = 0;
-  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  const char* cornerNames[3] = {"유저인터페이스\\sysboxs_ld.bmp", "유저인터페이스\\sysboxs_rd.bmp"};
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[0])));
   this->DrawBitmap(0, this->geometry.height - left->image.height, left, false);
-  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[1])));
   this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, right, false);
 
+  int y = 0;
   const int count = static_cast<int>(g_session.m_prohibitionLog.size());
   for (int index = 0; index < count; ++index) {
     const ProhibitionLogEntry& entry = g_session.m_prohibitionLog[index];
@@ -1352,9 +1353,10 @@ void UISayDialogWnd::Paint() {
 void UISelectCartWnd::Paint() {
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_CART_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
-  CBitmapRes* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  const char* cornerNames[3] = {"유저인터페이스\\sysboxs_ld.bmp", "유저인터페이스\\sysboxs_rd.bmp"};
+  CBitmapRes* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[0])));
   this->DrawBitmap(0, this->geometry.height - left->image.height, left, false);
-  CBitmapRes* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  CBitmapRes* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(cornerNames[1])));
   this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, right, false);
 }
 
