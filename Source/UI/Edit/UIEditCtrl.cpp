@@ -2646,8 +2646,8 @@ void UIItemBaseWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
   for (int row = 0; row < rows; ++row) {
-    for (int column = 0, x = 40; column < columns; ++column, x += 32) {
-      this->DrawItemSlotFrame(x, row * 32 + 17);
+    for (int column = 0; column < columns; ++column) {
+      this->DrawItemSlotFrame(column * 32 + 40, row * 32 + 17);
     }
   }
 
@@ -2663,18 +2663,18 @@ void UIItemBaseWnd::Paint() {
       continue;
     }
 
-    const int top = visible / this->columns * 32;
-    const int x = visible % this->columns * 32 + 44;
+    const int itemX = visible % this->columns * 32 + 40;
+    const int itemY = visible / this->columns * 32 + 17;
 
     if (this->showQuantity != 0) {
-      this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
+      this->DrawItemAndQuantity(itemX + 4, itemY + 4, *it, 0, 0);
     } else {
-      this->DrawItemIcon(x, top + 21, *it, 0);
+      this->DrawItemIcon(itemX + 4, itemY + 4, *it, 0);
     }
 
     if (0 < it->grade) {
       this->DrawBitmap(
-        x, top + 33,
+        itemX + 4, itemY + 16,
         static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
         ),
