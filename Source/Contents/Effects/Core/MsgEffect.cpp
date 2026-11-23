@@ -1518,8 +1518,8 @@ void CMsgEffect::FollowOwner() {
           direction.y = this->render.position.z - owner->render.position.z;
           direction.Normalize();
           this->render.position.x += (owner->render.position.x - this->render.position.x) / 25.0f;
-          this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
           this->render.curMotion = 8;
+          this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
           this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
