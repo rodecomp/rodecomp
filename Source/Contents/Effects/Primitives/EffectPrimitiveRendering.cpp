@@ -5630,8 +5630,12 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
       const float sn1 = g_sinTable[angle];
       const vector3d vecM{cs1 * (g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), cs1 * (g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), sn1 * this->state.slots[ec].distance};
       const vector3d vecA{-(this->state.slots[ec].maxHeight * g_sinTable[this->state.slots[ec].riseAngle]), this->state.slots[ec].maxHeight * g_cosTable[this->state.slots[ec].riseAngle], 0.0f};
-      vec2.Set(vecM.x + vecA.x, vecM.y + vecA.y + this->state.slots[ec].height[0], vecM.z + vecA.z);
-      vec4.Set(vecM.x - vecA.x, vecM.y - vecA.y + this->state.slots[ec].height[0], vecM.z - vecA.z);
+      vec2.x = vecM.x + vecA.x;
+      vec2.z = vecM.z + vecA.z;
+      vec2.y = vecM.y + vecA.y + this->state.slots[ec].height[0];
+      vec4.x = vecM.x - vecA.x;
+      vec4.z = vecM.z - vecA.z;
+      vec4.y = vecM.y - vecA.y + this->state.slots[ec].height[0];
 
       if (order > 0) {
         this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
