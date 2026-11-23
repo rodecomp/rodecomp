@@ -494,8 +494,9 @@ void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_
   CComPtr<IDirect3DSurface9> surface;
 
   if (this->m_renderTarget) {
+    const UINT levels = !this->m_owner->dynamicTextures;
     if (FAILED(device->CreateTexture(
-          this->m_textureWidth, this->m_textureHeight, !this->m_owner->dynamicTextures, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM,
+          this->m_textureWidth, this->m_textureHeight, levels, 0, this->m_description.Format, D3DPOOL_SYSTEMMEM,
           &temporary, nullptr
         ))) {
       return;
