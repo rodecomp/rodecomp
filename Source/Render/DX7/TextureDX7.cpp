@@ -197,9 +197,9 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
   description.dwWidth = this->m_textureWidth;
   description.dwFlags = (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
                         DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
+  description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.dwHeight = this->m_textureHeight;
   description.dwTextureStage = 0;
-  description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.ddpfPixelFormat = formats[selected];
   description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwBBitMask | description.ddpfPixelFormat.dwRBitMask;
   description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
