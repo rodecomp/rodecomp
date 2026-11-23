@@ -1058,8 +1058,8 @@ void MacroReporterWndInfo::Reset() {
 // OFFSET: 0x009A6E00
 // FUNCTION: fn_13736
 void PreviewEquipWndInfo::Reset() {
-  this->x = static_cast<int>(static_cast<float>(g_renderer->viewport.width - 280) * g_depthAverageHalf);
-  this->y = static_cast<int>(static_cast<float>(g_renderer->viewport.height - 260) * g_depthAverageHalf);
+  this->x = static_cast<int>(static_cast<float>(g_renderer->viewport.width - 280) * 0.5f);
+  this->y = static_cast<int>(static_cast<float>(g_renderer->viewport.height - 260) * 0.5f);
 }
 
 // OFFSET: 0x009A6E90
