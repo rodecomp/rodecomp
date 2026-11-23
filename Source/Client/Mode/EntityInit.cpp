@@ -254,9 +254,9 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
 namespace {
   // INLINED
   template <typename Entry>
-  void FillLegacyActorEntry(Entry& entry, CGameActor* actor, std::uint16_t packetType, std::size_t nameLength) {
+  void FillLegacyActorEntry(Entry& entry, CGameActor* actor, std::uint16_t packetType, const std::string& name) {
     entry.packetType = packetType;
-    entry.packetLength = static_cast<short>(sizeof(Entry) + nameLength);
+    entry.packetLength = static_cast<short>(sizeof(Entry) + name.size());
     entry.objectType = actor->objectType;
     entry.aid = actor->render.accountId;
     entry.speed = static_cast<short>(actor->moveSpeed);
@@ -285,9 +285,9 @@ namespace {
     entry.honor = static_cast<short>(pc->honor);
     entry.virtue = pc->virtue;
     entry.headDir = static_cast<short>(pc->headDir);
-    const std::int64_t equipment = pc->virtue;
-    entry.weapon = static_cast<int>(equipment);
-    entry.shield = static_cast<int>(equipment >> 32);
+    const int equipment = pc->virtue;
+    entry.weapon = equipment;
+    entry.shield = static_cast<int>(static_cast<std::int64_t>(equipment) >> 32);
     entry.accessory = static_cast<short>(pc->accessory);
     entry.accessory2 = static_cast<short>(pc->accessory2);
     entry.accessory3 = static_cast<short>(pc->accessory3);
@@ -316,12 +316,13 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
   if (actor->render.state == 1) {
     packet.resize(sizeof(ActorMoveEntryNamedPacket), 0);
     ActorMoveEntryNamedPacket& entry = *reinterpret_cast<ActorMoveEntryNamedPacket*>(packet.data());
-    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_MOVEENTRY8, name.size());
+    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_MOVEENTRY8, name);
     entry.moveStartTime = actor->routeStartTick;
     int metadata = 0;
     float x = 0.0f;
     float y = 0.0f;
-    actor->route.Sample(timeGetTime(), &x, &y, &metadata);
+    const DWORD now = timeGetTime();
+    actor->route.Sample(now, &x, &y, &metadata);
 
     int cellX, cellY, subX, subY;
     SplitMovementCoordinate(x, cellX, subX);
@@ -337,10 +338,12 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     if (actor->objectType == 0) {
       FillLegacyPcAppearance(entry, static_cast<const CPc*>(actor));
     }
+
+    packet.insert(packet.end(), name.begin(), name.end());
   } else {
     packet.resize(sizeof(ActorStateEntryNamedOldPacket), 0);
     ActorStateEntryNamedOldPacket& entry = *reinterpret_cast<ActorStateEntryNamedOldPacket*>(packet.data());
-    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_STANDENTRY7, name.size());
+    FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_STANDENTRY7, name);
     const int direction = (static_cast<int>(actor->render.angle) + 180) / 45 % 8;
     const int cellX = actor->movementState[5];
     const int cellY = actor->destCellY;
@@ -357,8 +360,9 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     if (actor->objectType == 0) {
       FillLegacyPcAppearance(entry, static_cast<const CPc*>(actor));
     }
+
+    packet.insert(packet.end(), name.begin(), name.end());
   }
 
-  packet.insert(packet.end(), name.begin(), name.end());
   return packet;
 }
