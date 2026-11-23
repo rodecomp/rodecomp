@@ -218,7 +218,7 @@ void UIQuestDisplay::SelectQuestAt(int x, int y) {
 // FUNCTION: fn_12934
 void UIQuestDisplay::OnRBtnUp(int x, int y) {
   const int previous = this->m_selectedIndex;
-  this->SelectQuestAt(x, y);
+  this->m_selectedIndex = FindDisplayQuestAt(y);
   if (previous != this->m_selectedIndex) {
     this->Invalidate();
   }
