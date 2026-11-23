@@ -311,6 +311,79 @@ namespace {
     }
     return CopyText(output, capacity, consume, " ");
   }
+
+  // INLINED
+  __forceinline int InlineRefine(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    const int bytes = StringFormat(output, capacity, _TRUNCATE, "+%d ", item.refiningLevel);
+    if (bytes > 0) {
+      if (consume) {
+        capacity -= bytes;
+      }
+      return bytes;
+    }
+    return 0;
+  }
+
+  // INLINED
+  __forceinline int InlineApprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    return CopyText(output, capacity, consume, LookupMessage(MSI_NAMED_PET));
+  }
+
+  // INLINED
+  __forceinline int InlineElement(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    switch (reinterpret_cast<const unsigned char*>(item.cards)[4]) {
+    case ELE_NEUTRAL: {
+      const int id = std::atoi(item.itemId.c_str());
+      if (id == 2634 || id == 2635) {
+        return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM));
+      }
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_NORMAL_ITEM));
+    }
+    case ELE_WATER:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_ICE_ITEM));
+    case ELE_EARTH:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_EARTH_ITEM));
+    case ELE_FIRE:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_FIRE_ITEM));
+    case ELE_WIND:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_WIND_ITEM));
+    default:
+      return 0;
+    }
+  }
+
+  // INLINED
+  __forceinline int InlineStar(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    switch (reinterpret_cast<const unsigned char*>(item.cards)[5]) {
+    case 5:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_ONE_STARPIECE));
+    case 10:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_TWO_STARPIECE));
+    case 15:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_THREE_STARPIECE));
+    default:
+      return 0;
+    }
+  }
+
+  // INLINED
+  __forceinline int InlineSlots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    const int id = std::atoi(item.itemId.c_str());
+    const int slots = FindItemDescription(id, g_itemDescriptions).slots;
+    if (slots == 0) {
+      return 0;
+    }
+
+    const int bytes = StringFormat(output, capacity, _TRUNCATE, " [%d]", slots);
+    if (bytes <= 0) {
+      return 0;
+    }
+
+    if (consume) {
+      capacity -= bytes;
+    }
+    return bytes;
+  }
 }
 
 // OFFSET: 0x006D59A0
@@ -324,11 +397,11 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   if (this->identified == 1) {
     const int id = std::atoi(this->itemId.c_str());
     if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && CardId(*this, 3) == 1) {
-      result.append(this->Apprentice(text, capacity, 0) > 0 ? text : "");
+      result.append(InlineApprentice(*this, text, capacity, 0) > 0 ? text : "");
       result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
     } else if (CardId(*this, 0) == 254 && CardId(*this, 1) == 0) {
       if (this->refiningLevel > 0) {
-        result.append(this->Refine(text, capacity, 0) > 0 ? text : "");
+        result.append(InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
       }
 
       if (this->grade > 0) {
@@ -337,11 +410,11 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
 
       if (g_serviceType == ServiceBrazil || g_serviceType == ServiceRussia) {
         result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-        result.append(this->Element(text, capacity, 0) > 0 ? text : "");
+        result.append(InlineElement(*this, text, capacity, 0) > 0 ? text : "");
         result.append(this->Creator(text, capacity, 0) > 0 ? text : "");
       } else {
         result += this->Creator(text, capacity, 0) > 0 ? text : "";
-        result += this->Element(text, capacity, 0) > 0 ? text : "";
+        result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
         result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
       }
     } else {
@@ -349,7 +422,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
       } else {
         if (this->refiningLevel > 0) {
-          result.append(this->Refine(text, capacity, 0) > 0 ? text : "");
+          result.append(InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
         }
 
         if (this->grade > 0) {
@@ -360,30 +433,32 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
           result.append(this->Prefixes(text, capacity, 0) > 0 ? text : "");
           result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
           result.append(this->Suffixes(text, capacity, 0) > 0 ? text : "");
-          result.append(this->Slots(text, capacity, 0) > 0 ? text : "");
+          result.append(InlineSlots(*this, text, capacity, 0) > 0 ? text : "");
         } else if (CardId(*this, 0) != 254 && CardId(*this, 0) != 255) {
           result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
           result.append(this->Slots(text, capacity, 0) > 0 ? text : "");
         } else if (g_serviceType == ServiceBrazil) {
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
         } else if (g_serviceType == ServiceRussia) {
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
         } else {
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
         }
       }
     }
   } else {
-    result.append(this->UnidentifiedName(text, capacity, 0) > 0 ? text : "");
+    const int id = std::atoi(this->itemId.c_str());
+    const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
+    result.append(CopyText(text, capacity, 0, name ? name : " ") > 0 ? text : "");
   }
 
   return result;
