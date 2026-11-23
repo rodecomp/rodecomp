@@ -119,19 +119,17 @@ __forceinline void CStormGustEffect::UpdateParticle(CParticle* particle) {
     const float speed = particle->speedParameter;
     const matrix& rotation = particle->rotation;
     const float* values = rotation.values;
-    const float moveX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-    const float moveY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-    const float moveZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
-    const float offsetX = particle->offsetX + moveX;
-    const float offsetY = particle->offsetY + moveY;
-    const float offsetZ = particle->offsetZ + moveZ;
-    particle->offsetY = offsetY;
-    particle->offsetX = offsetX;
-    particle->offsetZ = offsetZ;
+    vector3d offset{
+      values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9],
+      values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10],
+      values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11],
+    };
+    offset += particle->offset;
+    particle->offset = offset;
 
     matrix translation;
     std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-    translation.MakeTranslate(offsetX, offsetY, offsetZ);
+    translation.MakeTranslate(offset.x, offset.y, offset.z);
     matrix scale;
     std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
     scale.SetScale(particle->scale, particle->scale, 1.0f);
