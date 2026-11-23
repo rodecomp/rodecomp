@@ -1389,16 +1389,18 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->ResetLists();
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       return 0;
-    case ID_MINI:
+    case ID_MINI: {
       this->StoreInfo();
       this->m_needsRedraw = 1;
-      gate = !gate;
-      if (gate) {
+      const bool simplified = gate == 0;
+      gate = simplified;
+      if (simplified) {
         this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
       }
       return 0;
+    }
     case ID_CHECK: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
@@ -1441,7 +1443,10 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + slot, false);
       if (skill.available != 0) {
         const int current = g_session.UseLevel(skill.id);
-        int level = offset > 41 ? current - 1 : current + 1;
+        int level = current + 1;
+        if (offset > 41) {
+          level = current - 1;
+        }
         if (level <= 0) {
           level = 1;
         }
