@@ -6011,7 +6011,9 @@ int SetEquipTempValue(lua_State* state) {
   }
 
   std::unordered_map<int, EquipmentValueC>& displayValues = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDisplayValues();
-  displayValues[args[0]].value = args[1];
+  const int key = args[0];
+  const int value = args[1];
+  displayValues[key].value = value;
   return 0;
 }
 
