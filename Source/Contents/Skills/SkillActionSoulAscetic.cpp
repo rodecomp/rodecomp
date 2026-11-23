@@ -371,10 +371,20 @@ void CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::OnSkillCast(int level, CGameAc
 // OFFSET: 0x0079C920
 // FUNCTION: fn_08898
 void CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_black_tortoise_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
-  effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_black_tortoise"), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "talisman_of_black_tortoise_bottom";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "talisman_of_black_tortoise";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x0079CB60
