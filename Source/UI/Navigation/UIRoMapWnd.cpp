@@ -384,6 +384,10 @@ void UIRoMapWnd::DrawDungeonLinks() {
 // FUNCTION: fn_12603
 void UIRoMapWnd::DrawMarks() {
   const int count = g_worldViewMgr.MarkCount();
+  if (count <= 0) {
+    return;
+  }
+
   for (int index = 0; index < count; ++index) {
     const int* area = g_worldViewMgr.MarkAreaAt(index, true);
     if (area == nullptr) {
