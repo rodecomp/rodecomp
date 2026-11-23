@@ -2084,7 +2084,7 @@ void UIMyStyleWnd::LoadLikeList() {
         }
 
         UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd();
-        int width = static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.5f));
+        int width = static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.5f));
         slot->SetSize(width, this->geometry.height + 25);
         slot->Move(width * style.slotNum, 0);
         slot->m_display->CopyStyle(display);
