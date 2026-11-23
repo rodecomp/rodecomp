@@ -459,7 +459,8 @@ void UIRoMapWnd::DrawRecordFaces(int) {
       image = "유저인터페이스\\worldview_interface\\wv_face.bmp";
     }
 
-    DrawTexturedRectangle(x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF, g_texMgr.Load(image.c_str(), 0, false, true, false));
+    CTexture* texture = g_texMgr.Load(image.c_str(), 0, false, true, false);
+    DrawTexturedRectangle(x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF, texture);
   }
 }
 
