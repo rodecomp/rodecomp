@@ -665,9 +665,10 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
         frame = &action->Frame(this->render.previousAnimation, 0);
       }
 
-      if (frame->anchorCount != 0 && headFrame->anchorCount != 0 && headFrame->anchors[0].attachmentId == frame->anchors[0].attachmentId) {
-        accessoryOffsetX = headFrame->anchors[0].x - frame->anchors[0].x;
-        accessoryOffsetY = headFrame->anchors[0].y - frame->anchors[0].y;
+      const ActionFrame* current = frame;
+      if (current->anchorCount != 0 && headFrame->anchorCount != 0 && current->anchors[0].attachmentId == headFrame->anchors[0].attachmentId) {
+        accessoryOffsetX = headFrame->anchors[0].x - current->anchors[0].x;
+        accessoryOffsetY = headFrame->anchors[0].y - current->anchors[0].y;
       }
       offsetX = headOffsetX + accessoryOffsetX;
       offsetY = headOffsetY + accessoryOffsetY;
@@ -757,6 +758,12 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
   this->render.flagsResetPending = 1;
 }
 
+// INLINED
+static float PulsedScale(CRenderObject* object, float scale) {
+  object->ScaleByPulse(scale);
+  return scale;
+}
+
 // OFFSET: 0x00CB35F0
 // FUNCTION: fn_21105
 void CRenderObject::DrawShadow(int argument, float scale) {
@@ -783,9 +790,8 @@ void CRenderObject::DrawShadow(int argument, float scale) {
     return;
   }
 
-  float pulse = 1.0f;
   const SpriteRleImage* image = sprite->images[cell.imageType][0];
-  this->ScaleByPulse(pulse);
+  const float pulse = PulsedScale(this, 1.0f);
   const double factor = distanceScale;
   const double size = pulse * scale * this->render.shadowScale;
 
