@@ -939,10 +939,10 @@ void UIRuneSystem_ActiveWnd::OnRBtnDown(int x, int y) {
     return;
   }
 
-  const int itemId = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, index).first;
-  if (itemId) {
+  const std::pair<int, int> entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, index);
+  if (entry.first) {
     ITEM_INFO item;
-    item.SetItemId(itemId);
+    item.SetItemId(entry.first);
     item.identified = 1;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
@@ -1134,10 +1134,8 @@ void UIGage_Circle::Paint() {
   );
 
   const std::string text = FormatOwnedString("%.2f%%", static_cast<double>(static_cast<float>(this->m_value) * 0.001f));
-  const int space = this->geometry.width - this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
-  this->DrawTextAt(static_cast<int>(static_cast<float>(space) * 0.5f), this->m_textY, text.c_str(), 0,
-    0, 12, 0xFFFFFF, 1, 0
-  );
+  const int x = static_cast<int>(static_cast<float>(this->geometry.width - this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0)) * 0.5f);
+  this->DrawTextAt(x, this->m_textY, text.c_str(), 0, 0, 12, 0xFFFFFF, 1, 0);
 }
 
 // OFFSET: 0x00819090
@@ -1242,16 +1240,19 @@ void UIRuneSystem_ActiveWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  const int itemId = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, index).first;
-  if (!itemId) {
+  const std::pair<int, int> entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, index);
+  if (!entry.first) {
     return;
   }
 
   ITEM_INFO item;
-  item.SetItemId(itemId);
+  item.SetItemId(entry.first);
   item.identified = 1;
   int tipX = index % 4 * 54 + 14;
-  int tipY = index > 3 ? 44 : -10;
+  int tipY = -10;
+  if (index > 3) {
+    tipY = 44;
+  }
   this->ToScreen(tipX, tipY);
   CMode* tooltip = g_modeMgr.currentMode;
   if (tooltip) {
