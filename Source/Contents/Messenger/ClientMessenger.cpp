@@ -6817,7 +6817,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6848,7 +6848,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       bool valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6859,7 +6859,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       const bool hasType = result == 0;
       this->loadValid &= hasType;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6893,7 +6893,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       valid = count == stats.size();
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, static_cast<int>(count)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6964,7 +6964,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }
@@ -7033,7 +7033,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }
@@ -7050,7 +7050,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             const int variable = 41;
             auto found = this->statVariables.find(variable);
             if (found == this->statVariables.end()) {
-              ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+              ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
             } else {
               info.statProperties.try_emplace(found->second.value, stats[index]);
             }
@@ -7114,7 +7114,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }
@@ -7131,7 +7131,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
