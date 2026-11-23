@@ -3168,9 +3168,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
   }
 
   const int count = (value->packetLength - 12) / sizeof(Item1718PendingRecord);
-  const Item1718PendingRecord* record = value->items;
   for (int i = 0; i < count; ++i) {
-    const Item1718PendingRecord entry = *record;
+    const Item1718PendingRecord entry = value->items[i];
     RawItemBasic item = {};
     _itoa(entry.itemId, item.itemId, 10);
     item.price = entry.price;
@@ -3179,7 +3178,6 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.id = -1;
     item.identified = 1;
     g_session.AddShopItem(item, 0);
-    ++record;
   }
 
   g_session.m_pendingAid = value->cashPoints;
