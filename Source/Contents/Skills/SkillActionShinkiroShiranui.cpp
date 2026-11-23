@@ -626,7 +626,12 @@ void CSkillObjectAction_SS_KUNAITRAP::OnSkillObjectRemove(CRenderObject* object)
 void CSkillAction_SS_TOKEDASU::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   CGameActor* shadow = reinterpret_cast<CGameActor*>(argument3);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu"), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "tokedasu";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
   if (shadow) {
     effects = g_effectMgr;
     effects->Spawn(shadow->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu_shadow"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
