@@ -396,7 +396,7 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   unsigned int green;
   unsigned int blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_textViewer->SetBackgroundColor(0xFF000000 | RGB(red, green, blue));
+  this->m_textViewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000);
   this->AddChild(this->m_textViewer);
 
   if (!g_guildTip.m_bTryLoading) {
