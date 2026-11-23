@@ -3823,7 +3823,10 @@ void CPlayer::ReapplySkillEffects() {
         this->ApplyEffectState(value + 0x9B5, true);
         break;
       default:
-        CSkillActionMgr::GetInstance()->OnEfstUpdate(type, value, argument3, argument4, this);
+        if (!g_skillActionMgr) {
+          g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
+        }
+        g_skillActionMgr->OnEfstUpdate(type, value, argument3, argument4, this);
         break;
       }
       break;
