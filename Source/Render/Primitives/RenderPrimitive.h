@@ -39,7 +39,13 @@ struct RenderCommand {
   /* 0008 */ CTexture* texture;
   /* 000C */ std::uint16_t* indices;
   /* 0010 */ std::uint32_t indexCount;
-  /* 0014 */ std::uint16_t depthFlags;
+  union {
+    /* 0014 */ std::uint16_t depthFlags;
+    struct {
+      /* 0014 */ unsigned char depthTest;
+      /* 0015 */ unsigned char commandMode;
+    };
+  };
   /* 0016 */ std::uint16_t padding_0016;
   /* 0018 */ std::uint32_t sourceBlend;
   /* 001C */ std::uint32_t destinationBlend;

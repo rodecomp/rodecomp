@@ -23,7 +23,8 @@ ModelRenderCommand::ModelRenderCommand() : RenderCommand(0) {
   this->texture = nullptr;
   this->indices = nullptr;
   this->indexCount = 0;
-  this->depthFlags = 1;
+  this->depthTest = 1;
+  this->commandMode = 0;
   this->sourceBlend = 0;
   this->destinationBlend = 0;
   this->textureMode = 0;

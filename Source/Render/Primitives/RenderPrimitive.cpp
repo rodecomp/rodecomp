@@ -38,9 +38,18 @@ bool RenderTriangle::Visible() const {
 
 // OFFSET: 0x00568F40
 // FUNCTION: fn_02244
-RenderCommand::RenderCommand()
-    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), depthFlags(1), sourceBlend(0), destinationBlend(0), textureMode(0),
-      primitiveType(D3DPT_TRIANGLELIST) {
+RenderCommand::RenderCommand() {
+  this->vertices = nullptr;
+  this->vertexCount = 0;
+  this->texture = nullptr;
+  this->indices = nullptr;
+  this->indexCount = 0;
+  this->depthTest = 1;
+  this->commandMode = 0;
+  this->sourceBlend = 0;
+  this->destinationBlend = 0;
+  this->textureMode = 0;
+  this->primitiveType = D3DPT_TRIANGLELIST;
 }
 
 namespace {
