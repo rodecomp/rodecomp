@@ -67,21 +67,28 @@ int CSession::HotkeyIndex(int tab, int index) const {
   return index >= count ? -1 : index;
 }
 
+// INLINED
+static int HiddenHotkeyCount(int tab, int count) {
+  if (tab != 1) {
+    return 0;
+  }
+
+  int hidden = 0;
+  for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
+    if (HiddenInterfaceIndex(index) == true) {
+      ++hidden;
+    }
+  }
+
+  return hidden;
+}
+
 // OFFSET: 0x00E0A4C0
 // FUNCTION: fn_23797
 int CSession::HotkeyCount(int tab) const {
   int count = 0;
   if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
-    int hidden = 0;
-    if (tab == 1) {
-      for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
-        if (HiddenInterfaceIndex(index) == true) {
-          ++hidden;
-        }
-      }
-    }
-
-    return count - hidden;
+    return count - HiddenHotkeyCount(tab, count);
   }
 
   return count;
