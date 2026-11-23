@@ -1642,13 +1642,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   if (g_restartClient) {
     const std::array<char, 4> devServerSource = OBFUSCATE_SOURCE_ARRAY_CHAR("Dev", 0x4B755DB19953E311ULL);
     EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL>& devServer = OBFUSCATE_DECRYPT_NAME(0x4B755DB19953E311ULL, devServerSource);
-    if (!std::strstr(g_launchServerName, devServer.Text())) {
-      const char* parameters = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
-      const char* file = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
-      const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0xD7A749EB27D5BF6DULL);
-      EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = OBFUSCATE_DECRYPT_NAME(0xD7A749EB27D5BF6DULL, openSource);
-      ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
-    } else if (g_serviceMode == 0) {
+    if (std::strstr(g_launchServerName, devServer.Text())) {
+      if (g_serviceMode == 0) {
       const std::array<char, 62> parametersSource = OBFUSCATE_SOURCE_ARRAY_CHAR("http://admtools.gnjoy.com/gamestarter/devro.asp?GameCode=4011", 0xFD69A9B3F311818DULL);
       EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL>& parameters = OBFUSCATE_DECRYPT_NAME(0xFD69A9B3F311818DULL, parametersSource);
       const char* arguments = parameters.Text();
@@ -1668,6 +1663,13 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0x9B0F234DEFDF7593ULL);
       EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL>& open = OBFUSCATE_DECRYPT_NAME(0x9B0F234DEFDF7593ULL, openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
+      }
+    } else {
+      const char* parameters = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
+      const char* file = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
+      const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0xD7A749EB27D5BF6DULL);
+      EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = OBFUSCATE_DECRYPT_NAME(0xD7A749EB27D5BF6DULL, openSource);
+      ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
     }
   }
 
