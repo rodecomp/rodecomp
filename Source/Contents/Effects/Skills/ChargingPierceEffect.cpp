@@ -66,9 +66,7 @@ void CChargingPierceNewEffect::SetCount(int count) {
     }
 
     particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
-    particle->offsetX = s_chargingPierceNewOffsets[index].x;
-    particle->offsetY = s_chargingPierceNewOffsets[index].y;
-    particle->offsetZ = s_chargingPierceNewOffsets[index].z;
+    particle->offset = s_chargingPierceNewOffsets[index];
     particle->m_hold = true;
     particle->m_scale = 0.75f;
     this->emitters.push_back(particle);
