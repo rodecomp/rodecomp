@@ -6670,26 +6670,25 @@ void CEffectPrim::RenderColorPaper(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const float rx = slot.maxHeight;
-    const float cs2 = g_cosTable[slot.riseAngle];
-    const float sn2 = g_sinTable[slot.riseAngle];
-    SetColorPaperCorner(vec1, slot.rotStart, rx, cs2, sn2);
-    SetColorPaperCorner(vec2, slot.rotStart + 90, rx, cs2, sn2);
-    SetColorPaperCorner(vec3, slot.rotStart + 180, rx, cs2, sn2);
-    SetColorPaperCorner(vec4, slot.rotStart + 270, rx, cs2, sn2);
-    vec1 += slot.vecBNow;
-    vec2 += slot.vecBNow;
-    vec3 += slot.vecBNow;
-    vec4 += slot.vecBNow;
+    const float rx = this->state.slots[ec].maxHeight;
+    const float cs2 = g_cosTable[this->state.slots[ec].riseAngle];
+    const float sn2 = g_sinTable[this->state.slots[ec].riseAngle];
+    SetColorPaperCorner(vec1, this->state.slots[ec].rotStart, rx, cs2, sn2);
+    SetColorPaperCorner(vec2, this->state.slots[ec].rotStart + 90, rx, cs2, sn2);
+    SetColorPaperCorner(vec3, this->state.slots[ec].rotStart + 180, rx, cs2, sn2);
+    SetColorPaperCorner(vec4, this->state.slots[ec].rotStart + 270, rx, cs2, sn2);
+    vec1 += this->state.slots[ec].vecBNow;
+    vec2 += this->state.slots[ec].vecBNow;
+    vec3 += this->state.slots[ec].vecBNow;
+    vec4 += this->state.slots[ec].vecBNow;
 
     this->RenderTeiRect(
-      &rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(slot.height[0])),
-      static_cast<unsigned char>(static_cast<int>(slot.height[1])), static_cast<unsigned char>(static_cast<int>(slot.height[2])), 0.0f, 1.0f, 0.0f,
+      &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[0])),
+      static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[2])), 0.0f, 1.0f, 0.0f,
       1.0f, 0
     );
   }
