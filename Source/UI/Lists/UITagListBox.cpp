@@ -259,13 +259,12 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
     const int optionCount = fields[cardCount + 8];
     item.optionCount = optionCount;
     for (int option = 1; option < optionCount + 1; ++option) {
-      const int* record = &fields[cardCount + 9 + (option - 1) * 3];
       ItemOption value;
-      value.id = static_cast<std::int16_t>(record[0]);
-      value.value = static_cast<std::int16_t>(record[2]);
-      value.parameter = static_cast<unsigned char>(record[1]);
-      const int index = option - 1;
-      item.SetOption(value, index);
+      value.id = static_cast<std::int16_t>(fields[cardCount + 9 + (option - 1) * 3]);
+      const unsigned char parameter = static_cast<unsigned char>(fields[cardCount + 10 + (option - 1) * 3]);
+      value.value = static_cast<std::int16_t>(fields[cardCount + 11 + (option - 1) * 3]);
+      value.parameter = parameter;
+      item.SetOption(value, option - 1);
     }
   }
 
