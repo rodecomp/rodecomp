@@ -56,15 +56,16 @@ bool JsonCppLoader::GetMapStringBoolValue(const jsoncons::json& node, const std:
     return false;
   }
 
-  for (const auto& member : value.object_range()) {
-    std::string name = member.key();
-    const jsoncons::json element = member.value();
+  auto&& members = value.object_range();
+  for (auto it = members.begin(); it != members.end(); ++it) {
+    std::string name = it->key();
+    const jsoncons::json element = it->value();
     if (this->GetValueType(element) != jsoncons::json_type::bool_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. boolValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    const auto inserted = out->insert(std::pair<std::string, bool>(name, element.as_bool()));
+    const auto inserted = out->insert(std::pair<std::string, bool>(name, element.as<bool>()));
     if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
