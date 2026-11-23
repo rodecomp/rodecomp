@@ -3985,7 +3985,8 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       CEffect* effect;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8D;
-        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+        auto* effectMgr = g_effectMgr;
+        if (effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(200);
@@ -4037,7 +4038,8 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       CEffect* effect;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8B;
-        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+        auto* effectMgr = g_effectMgr;
+        if (effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(200);
@@ -4278,11 +4280,12 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   }
 
   {
-    int action;
     int loopType;
+    int action;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
     if (action != -1 && gameActor != nullptr) {
-      gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+      loopType = (loopType == 0);
+      gameActor->SetAction(action * 8 - 8, 1, loopType != 0);
     }
   }
 }
