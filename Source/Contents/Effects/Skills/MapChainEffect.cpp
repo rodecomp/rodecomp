@@ -28,8 +28,9 @@ void CMapChainEffect::CreateChainParticles(int param) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->effectId = this->id;
+        const int effectId = this->id;
         particle->rowIndex = row;
+        particle->effectId = effectId;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
@@ -54,8 +55,9 @@ void CMapChainEffect::CreateChainParticles(int param) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->effectId = this->id;
+        const int effectId = this->id;
         particle->rowIndex = row;
+        particle->effectId = effectId;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
