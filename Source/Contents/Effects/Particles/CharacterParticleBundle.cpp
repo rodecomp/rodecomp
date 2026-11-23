@@ -198,8 +198,7 @@ void CharacterParticleBundle::OnProcess() {
     return false;
   }), last);
 
-  for (auto particleIt = this->particles.begin(); particleIt != this->particles.end(); ++particleIt) {
-    CEZ2STRParticle*& particle = *particleIt;
+  for (CEZ2STRParticle*& particle : this->particles) {
     this->UpdateParticlePosition(particle);
     this->ProcessParticle(particle);
   }
