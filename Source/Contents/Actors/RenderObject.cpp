@@ -198,13 +198,14 @@ void CRenderObject::ProcessMotion() {
       ++this->render.sequenceIndex;
     }
     if (this->render.sequenceIndex > this->render.sequenceLast) {
-      if (this->render.sequenceLoop != 0) {
+      if (this->render.sequenceLoop == 0) {
+        this->render.sequenceIndex = this->render.sequenceLast;
+        this->render.sequenceFinished = 1;
+      } else {
         ++this->render.sequenceTick;
         this->render.sequenceIndex = 0;
         return;
       }
-      this->render.sequenceIndex = this->render.sequenceLast;
-      this->render.sequenceFinished = 1;
     }
     ++this->render.sequenceTick;
     return;
