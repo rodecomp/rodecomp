@@ -341,9 +341,9 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
     }
 
-    const int combined = existing + item.quantity;
-    if (combined > 30000) {
-      item.quantity += 30000 - combined;
+    existing += item.quantity;
+    if (existing > 30000) {
+      item.quantity += 30000 - existing;
       char text[200];
       std::memset(text, 0, sizeof(text));
       sprintf_s(text, sizeof(text), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
