@@ -157,7 +157,7 @@ void CAcidifiedThrow::OnProcess() {
       rotation.MakeYRotation(2.0943947f);
     }
 
-    actorViewY -= 10.0f;
+    actorViewY -= g_projectionDepthOffset;
 
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
     float worldX = actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9];
@@ -188,10 +188,10 @@ void CAcidifiedThrow::OnProcess() {
 
     float t = this->trajectoryTime;
     const vector3d start = this->impactPosition;
-    float oneMinusT = 1.0f - t;
+    float oneMinusT = g_projectionDepthNumerator - t;
     float term0 = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
-    float term1 = (t + t) * oneMinusT;
     float term2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+    float term1 = (t + t) * oneMinusT;
 
     CEZ2STRParticle* emitter = this->projectileEmitter;
     emitter->position.x = term1 * p1X + term2 * worldX + term0 * start.x;
@@ -241,7 +241,7 @@ void CAcidifiedThrow::OnProcess() {
         this->impactEmitters[i] = nullptr;
       } else {
         const vector3d position = this->impactPosition;
-        emitter->position = vector3d{position.x - 1.0f, position.y - 14.0f, position.z};
+        this->impactEmitters[i]->position = vector3d{position.x - g_projectionDepthNumerator, position.y - 14.0f, position.z};
         this->impactEmitters[i]->Process(0.0f, 0.0f, 0.0f);
         ++activeCount;
       }
