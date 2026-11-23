@@ -8801,68 +8801,8 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
-        item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
-        const int type = static_cast<int>(item.identity[0]);
-        bool matches = false;
-        if (item.saleData.costume != 0) {
-          if (this->tabIndex == 4) {
-            matches = true;
-          }
-        } else {
-          switch (this->tabIndex) {
-          case 0:
-            if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
-              matches = true;
-            }
-            break;
-          case 1:
-            if (type == TYPE_CASH_POINT_ITEM) {
-              matches = true;
-            }
-            break;
-          case 2:
-            switch (type) {
-            case TYPE_ARMOR:
-            case TYPE_ARMORTM:
-            case TYPE_ARMORTB:
-            case TYPE_ARMORMB:
-            case TYPE_ARMORTMB:
-              matches = true;
-              break;
-            }
-            break;
-          case 3:
-            switch (type) {
-            case TYPE_WEAPON:
-            case TYPE_BOW:
-            case TYPE_BOTHHAND:
-            case TYPE_GUN:
-              matches = true;
-              break;
-            }
-            break;
-          case 5:
-            if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-              matches = true;
-            }
-            break;
-          case 6:
-            if (type == TYPE_CARD) {
-              matches = true;
-            }
-            break;
-          case 7:
-            if (type == TYPE_EVENT || type == TYPE_PETEGG) {
-              matches = true;
-            }
-            break;
-          }
-        }
-
-        if (matches) {
-          this->items.push_back(item);
-        }
+      if (item.identity[1] > 0 && this->FilterItem(item)) {
+        this->items.push_back(item);
       }
     }
 
@@ -8941,6 +8881,30 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// INLINED
+static __forceinline void ToggleItemStoreTab(UIItemStoreWnd& wnd, int index, int windowId) {
+  UICheckBox* tab = wnd.tabs[index];
+  if (!tab) {
+    return;
+  }
+
+  if (tab->geometry.state != 0) {
+    wnd.m_tabWindows[index] = nullptr;
+    wnd.m_tabWindows[index] = g_windowMgr.EnsureWindow(windowId);
+    if (wnd.m_tabWindows[index]) {
+      wnd.m_tabWindows[index]->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    }
+    wnd.saved->openTabs |= 1 << index;
+    return;
+  }
+
+  g_windowMgr.CloseWindow(windowId);
+  if (wnd.m_tabWindows[index]) {
+    wnd.saved->openTabs ^= 1 << index;
+    wnd.m_tabWindows[index] = nullptr;
   }
 }
 
