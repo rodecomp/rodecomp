@@ -1321,14 +1321,16 @@ void UINoticeWnd::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, 8 * index + 17, right, false);
   }
 
-  unsigned red;
-  unsigned green;
-  unsigned blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 38, RGB(red, green, blue));
-  this->FillRegion(
-    20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue)
-  );
+  {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 38, RGB(red, green, blue));
+    this->FillRegion(
+      20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue)
+    );
+  }
   this->DrawButtonBar(2, 0, 1);
 }
 
