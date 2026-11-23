@@ -843,36 +843,33 @@ int InitApp(HINSTANCE instance, int showCommand) {
   int y = 0;
   if (!g_configuredFullscreen) {
     GetSystemMetrics(SM_CXSCREEN);
-    int posX;
-    int posY;
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      posX = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_XPos", 0x9B17C9EFDBB39F2FULL), defaultX);
+      x = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_XPos", 0x9B17C9EFDBB39F2FULL), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
-      posY = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_YPos", 0x69D345DB950F336DULL), defaultY);
+      y = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_YPos", 0x69D345DB950F336DULL), defaultY);
     } else {
-      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
 
-    if (posX > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
-      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+    if (x > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
     }
-    x = posX < 0 ? 0 : posX;
-    if (posY > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
-      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+    if (x < 0) {
+      x = 0;
     }
-    if (posY < 0) {
-      posY = 0;
+    if (y > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
-    y = posY;
+    if (y < 0) {
+      y = 0;
+    }
   }
 
-  const __int64 width = rect.right - rect.left;
-  const __int64 height = rect.bottom - rect.top;
-  int windowWidth = static_cast<int>(width);
-  int windowHeight = static_cast<int>(height);
+  __int64 width = rect.right - rect.left;
+  __int64 height = rect.bottom - rect.top;
   if (!g_configuredFullscreen) {
     RECT trayRect;
     HWND tray = FindWindowA(OBFUSCATE_BYTES_TEXT("Shell_TrayWnd", 0xC7912587FFF31B71ULL), nullptr);
@@ -886,17 +883,17 @@ int InitApp(HINSTANCE instance, int showCommand) {
       const __int64 trayWidth = trayRect.right - trayRect.left;
       const __int64 trayHeight = trayRect.bottom - trayRect.top;
       if (trayWidth < trayHeight) {
-        windowWidth = static_cast<int>(screenWidth - trayWidth);
-      } else if (trayHeight < trayWidth) {
-        windowHeight = static_cast<int>(screenHeight - trayHeight);
+        width = screenWidth - trayWidth;
+      } else if (trayWidth > trayHeight) {
+        height = screenHeight - trayHeight;
       }
     }
   }
 
-  hWnd = CreateWindowExA(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
+  hWnd = CreateWindowExA(0, windowClass.lpszClassName, g_windowName, style, x, y, static_cast<int>(width), static_cast<int>(height), nullptr, nullptr, instance, nullptr);
   if (!hWnd) {
     const char* caption = OBFUSCATE_BYTES_TEXT("ERROR", 0x078333BB9725B7C9ULL);
-    MessageBoxA(nullptr, OBFUSCATE_BYTES_TEXT("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL), caption, MB_OK);
+    MessageBoxA(nullptr, OBFUSCATE_TEXT("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL), caption, MB_OK);
     return 0;
   }
 
