@@ -34,13 +34,13 @@ __declspec(noinline) CAxeBoomerang::~CAxeBoomerang() {
 // FUNCTION: fn_46150
 __forceinline vector3d CAxeBoomerang::EvaluateTrajectory(vector3d start, vector3d control, vector3d end, float t) {
   const float oneMinusT = 1.0f - t;
-  const float startWeight = static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
-  const float endWeight = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
-  const float controlWeight = (t + t) * oneMinusT;
+  const vector3d first = start * static_cast<float>(std::pow(static_cast<double>(oneMinusT), 2.0));
+  const vector3d third = end * static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+  const vector3d second = control * ((t + t) * oneMinusT);
   return vector3d{
-      controlWeight * control.x + endWeight * end.x + startWeight * start.x,
-      controlWeight * control.y + endWeight * end.y + startWeight * start.y,
-      controlWeight * control.z + endWeight * end.z + startWeight * start.z};
+      second.x + third.x + first.x,
+      second.y + third.y + first.y,
+      second.z + third.z + first.z};
 }
 
 // OFFSET: 0x006F5A60
@@ -119,22 +119,16 @@ __forceinline void CAxeBoomerang::UpdateParticle(CEZ2STRParticle* emitter) {
   matrix rotation;
   rotation.MakeYRotation(angle);
 
-  const float deltaX = this->launchPosition.x - actor->render.position.x;
-  const float deltaY = this->launchPosition.y - actor->render.position.y;
-  const float deltaZ = this->launchPosition.z - actor->render.position.z;
-  const float invDist = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
+  const vector3d delta{this->launchPosition.x - actor->render.position.x, this->launchPosition.y - actor->render.position.y, this->launchPosition.z - actor->render.position.z};
+  const float invDist = 1.0f / SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
   const vector3d target = actor->render.position;
   const vector3d launch = this->launchPosition;
 
-  vector3d offset;
-  offset.x = invDist * deltaX * scale;
-  offset.y = invDist * deltaY * scale;
-  offset.z = invDist * deltaZ * scale;
-
+  vector3d offset{invDist * delta.x * scale, invDist * delta.y * scale, invDist * delta.z * scale};
   const vector3d control{
-      offset.y * rotation.values[3] + offset.x * rotation.values[0] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x,
-      offset.y * rotation.values[4] + offset.x * rotation.values[1] + offset.z * rotation.values[7] + rotation.values[10] + this->launchPosition.y,
-      offset.y * rotation.values[5] + offset.x * rotation.values[2] + offset.z * rotation.values[8] + rotation.values[11] + this->launchPosition.z};
+      offset.x * rotation.values[0] + offset.y * rotation.values[3] + offset.z * rotation.values[6] + rotation.values[9] + this->launchPosition.x,
+      offset.x * rotation.values[1] + offset.y * rotation.values[4] + offset.z * rotation.values[7] + rotation.values[10] + this->launchPosition.y,
+      offset.x * rotation.values[2] + offset.y * rotation.values[5] + offset.z * rotation.values[8] + rotation.values[11] + this->launchPosition.z};
   this->particlePosition = this->EvaluateTrajectory(launch, control, target, this->trajectoryTime);
 
   if (1.0f <= this->trajectoryTime) {
