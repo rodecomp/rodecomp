@@ -2425,7 +2425,7 @@ void CGameMode::ReceiveAchievementUpdate(
       g_windowMgr.AddRenderedFront(this->achievementBalloon);
     }
 
-    AchievementInfo info;
+    AchievementInfo info(id);
     g_achievementMgr->GetAchievement(info, id);
     const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_COMPLETE_ACHIEVEMENT), info.title.c_str());
     this->achievementBalloon->WrapText(text.c_str(), 72);
