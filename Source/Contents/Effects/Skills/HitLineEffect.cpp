@@ -219,7 +219,6 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
 // OFFSET: 0x00705510
 // FUNCTION: fn_07039
 void CHitLineEffect::Render() {
-  const float attenuationBase = g_projectionDepthNumerator;
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->effectParameter <= 0 || particle->elapsedFrames <= 0) {
@@ -230,24 +229,24 @@ void CHitLineEffect::Render() {
     HitLineVector3d points[2];
     const int phase = particle->phaseParameter;
     const float radius = particle->speedParameter;
-    const float* turns = &particle->animationParameter + segment;
-    const signed char* halfTurns = &particle->animationState + segment;
+    const float* turns = &particle->animationParameter;
+    const signed char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
-      const int count = halfTurns[index];
+      const int count = halfTurns[segment + index];
       float distance = 0.0f;
-      float factor = attenuationBase;
+      float factor = 1.0f;
       for (int step = 0; step < count; ++step) {
         distance += particle->speedParameter * 2.0f * factor;
         factor *= 0.7f;
       }
 
-      const float turn = turns[index];
+      const float turn = turns[segment + index];
       if (turn > 0.0f) {
         distance += radius * factor * (turn / 90.0f);
       }
 
       float height = -radius * g_sinTable[static_cast<int>(turn)] * 1.5f;
-      float scale = attenuationBase;
+      float scale = 1.0f;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
       }
