@@ -170,9 +170,10 @@ void CCloudKillEffect::UpdateParticle(CSpriteParticle* particle) {
   float& angle = particle->angle;
   const float speed = particle->acceleration + particle->frameDelay;
   particle->frameDelay = speed;
-  const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
-                             values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
-                             values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
+  vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9],
+                             values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10],
+                             values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11]};
+  velocity += particle->velocity;
   particle->velocity = velocity;
   particle->position = vector3d{velocity.x + this->position[0], velocity.y + this->position[1], velocity.z + this->position[2]};
   angle = particle->spin + angle;
