@@ -270,11 +270,13 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       PACKET_CZ_PARTY_BOOKING_REQ_SEARCH packet;
       packet.packetType = ID_CZ_PARTY_BOOKING_REQ_SEARCH;
       packet.level = static_cast<short>(std::atoi(this->m_searchEdit->Text()));
-      std::string text(this->m_searchEdit->Text());
-      for (std::size_t i = 0; i < text.size(); ++i) {
-        if (text[i] < '/' || text[i] > '9') {
-          g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
+      {
+        std::string text(this->m_searchEdit->Text());
+        for (std::size_t i = 0; i < text.size(); ++i) {
+          if (text[i] < '/' || text[i] > '9') {
+            g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
         }
       }
 
