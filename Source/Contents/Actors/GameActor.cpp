@@ -446,9 +446,7 @@ void CGameActor::ResetState() {
   this->statusEffects[8] = 0;
   this->statusEffects[10] = 0;
   this->statusEffects[12] = 0;
-  this->render.position.x = 0.0f;
-  this->render.position.y = 0.0f;
-  this->render.position.z = 0.0f;
+  this->render.position = vector3d{0.0f, 0.0f, 0.0f};
   this->render.angle = 0.0f;
   this->render.animation = 0;
   this->render.previousAnimation = 0;
@@ -457,9 +455,7 @@ void CGameActor::ResetState() {
   this->render.motionType = 0;
   this->render.speed = 1.0f;
   this->render.shadowVisible = 1;
-  this->accel.x = 0.0f;
-  this->accel.y = 0.0f;
-  this->accel.z = 0.0f;
+  this->accel = vector3d{0.0f, 0.0f, 0.0f};
   this->dist = 0;
   this->render.accountId = INVALID_AID;
   this->lastServerTime = g_session.GetServerTime();
