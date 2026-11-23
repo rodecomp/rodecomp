@@ -16,6 +16,7 @@ struct SHA3 {
   void Add(const unsigned char* data, unsigned int length);
   std::string GetHash();
   void ProcessBlock(const unsigned char* data);
+  void ProcessBuffer();
 };
 
 static_assert(offsetof(SHA3, processedBytes) == 0xC8);

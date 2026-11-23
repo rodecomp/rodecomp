@@ -66,6 +66,17 @@ void SHA3::Add(const unsigned char* data, unsigned int length) {
   }
 }
 
+// INLINED
+void SHA3::ProcessBuffer() {
+  std::size_t offset = this->bufferedBytes;
+  this->buffer[offset++] = 6;
+  while (offset < this->blockSize) {
+    this->buffer[offset++] = 0;
+  }
+  this->buffer[offset - 1] |= 0x80;
+  this->ProcessBlock(this->buffer);
+}
+
 // OFFSET: 0x0061B820
 // FUNCTION: fn_04424
 std::string SHA3::GetHash() {
@@ -74,13 +85,7 @@ std::string SHA3::GetHash() {
     oldHash[i] = this->state[i];
   }
 
-  unsigned int offset = this->bufferedBytes;
-  this->buffer[offset++] = 6;
-  while (offset < this->blockSize) {
-    this->buffer[offset++] = 0;
-  }
-  this->buffer[offset - 1] |= 0x80;
-  this->ProcessBlock(this->buffer);
+  this->ProcessBuffer();
 
   const unsigned int hashLength = this->digestBits / 64;
   std::string result;
