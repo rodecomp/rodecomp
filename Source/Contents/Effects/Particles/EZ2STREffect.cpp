@@ -34,11 +34,14 @@ CEZ2STRScreenEffect::CEZ2STRScreenEffect()
 // OFFSET: 0x00B51D60
 // FUNCTION: fn_19036
 float GetHatEffectOffsetX(int id, const char* name) {
-  float offset = 0.0f;
   float result = 0.0f;
+  float offset = 0.0f;
 
   switch (id) {
   case EF_STRANGELIGHTS:
+    offset = 5.0f;
+    result = offset;
+    break;
   case EF_SUPER_STAR:
     offset = 5.0f;
     result = offset;
