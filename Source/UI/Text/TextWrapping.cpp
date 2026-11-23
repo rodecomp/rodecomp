@@ -28,18 +28,18 @@ void AppendLine(std::vector<std::string>& lines, const char* text) {
 }
 
 // INLINED
-inline bool HexColorToken(const char* text, const char* end) {
+inline int HexColorToken(const char* text, const char* end) {
   if (*text != '^' || end - text <= 6) {
-    return false;
+    return 0;
   }
 
   for (int index = 1; index <= 6; ++index) {
     if (g_colorHexDigit[static_cast<signed char>(text[index])] == 0) {
-      return false;
+      return 0;
     }
   }
 
-  return true;
+  return 1;
 }
 
 // OFFSET: 0x009B4220
@@ -169,13 +169,19 @@ void WrapRichText(
       breakAt = split;
 
       if (split > begin) {
-        const std::string line(begin, split);
-        lines.push_back(line);
+        {
+          const std::string line(begin, split);
+          lines.push_back(line);
+        }
+
         begin = split;
         limit = split + width;
       } else {
-        const std::string line(begin, current);
-        lines.push_back(line);
+        {
+          const std::string line(begin, current);
+          lines.push_back(line);
+        }
+
         begin = current;
         limit = current + width;
       }
@@ -189,8 +195,8 @@ void WrapRichText(
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
-      const unsigned position = HexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0;
-      lines[index].insert(position, marker, 3);
+      const char* where = lines[index].data() + (HexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0);
+      lines[index].insert(where - lines[index].data(), marker, 3);
     }
   }
 }
