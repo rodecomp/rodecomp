@@ -211,7 +211,7 @@ void CAccountLinkedUserDataMgr::Save() {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, 16), response);
+    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), response);
     ++this->m_pendingLoads;
   }
 }
