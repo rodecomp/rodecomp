@@ -267,9 +267,9 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
     }
   }
 
-  for (int index = 0; index < slots; ++index) {
+  for (int index = 0; index < slots; ++index, ++cards) {
     link += delimiters[7];
-    link += this->ItemLinkNumberText(index < 4 ? cards[index] : 0);
+    link += this->ItemLinkNumberText(index < 4 ? *cards : 0);
   }
 
   const ItemOptionRecord* options = item.options;
