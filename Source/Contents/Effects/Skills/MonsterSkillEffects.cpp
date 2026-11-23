@@ -2090,8 +2090,8 @@ bool CJupitelThunderHit::IsAlive() {
 void CJupitelThunderHit::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     ++(*it)->elapsedFrames;
-    CParticle* particle = *it;
-    if (particle && particle->elapsedFrames >= 0) {
+    if ((*it)->elapsedFrames >= 0 && *it) {
+      CParticle* particle = *it;
       if (particle->elapsedFrames == 10) {
         particle->elapsedFrames = -10;
       } else {
@@ -2112,12 +2112,11 @@ void CJupitelThunderHit::OnProcess() {
 
   for (auto it = this->hitEmitters.begin(); it != this->hitEmitters.end(); ++it) {
     ++(*it)->elapsedFrames;
-    CParticle* particle = *it;
-    if (particle && particle->elapsedFrames >= 0) {
-      std::size_t index = particle->animationState + 1;
-      if (index >= this->textures.size()) {
-        index = 0;
-      }
+    if ((*it)->elapsedFrames >= 0 && *it) {
+      CParticle* particle = *it;
+      const signed char state = particle->animationState;
+      const std::size_t nextIndex = state + 1;
+      const std::size_t index = nextIndex < this->textures.size() ? nextIndex : 0;
 
       particle->SetTexture(this->textures[index]);
       particle->animationState = static_cast<signed char>(index);
