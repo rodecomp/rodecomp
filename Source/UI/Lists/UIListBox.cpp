@@ -255,28 +255,29 @@ void UIListBox::Clear() {
   this->Invalidate();
 }
 
+// INLINED
+static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+
 // OFFSET: 0x00895ED0
 // FUNCTION: fn_11512
 void UIListBox::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int overflow = std::ranges::max(static_cast<int>(this->lines.size()) - visible, 0);
+  const int hidden = static_cast<int>(this->lines.size()) - visible;
+  const int overflow = hidden >= 0 ? hidden : 0;
 
   this->verticalOverflow = overflow != 0;
-  UIScrollBar* bar = this->verticalBar;
   if (overflow != 0) {
-    const int total = static_cast<int>(this->lines.size());
-    bar->maximum = this->bottomMargin + overflow;
-    bar->total = total;
+    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, static_cast<int>(this->lines.size()));
   } else {
-    const int total = static_cast<int>(this->lines.size());
-    bar->maximum = 0;
-    bar->total = total;
-  }
-  bar->visible = visible;
-  bar->Invalidate();
-
-  if (bar->position > bar->maximum) {
-    bar->position = bar->maximum;
+    SetScrollRange(this->verticalBar, 0, visible, static_cast<int>(this->lines.size()));
   }
 
   this->verticalBar->Invalidate();
