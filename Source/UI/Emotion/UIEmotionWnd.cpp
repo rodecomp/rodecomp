@@ -54,11 +54,11 @@ __declspec(noinline) UIEmotionWnd::~UIEmotionWnd() = default;
 void UIEmotionWnd::OnCreate(int, int) {
   auto* emotions = &g_session.m_emotionHotkeys;
   char buffer[16];
-  int index = 0;
   int number = 0;
   UIStaticText** labels = this->m_labels;
 
-  for (int y = 23; y < 233; y += 21) {
+  for (int index = 0; index < 10; ++index) {
+    const int y = index * 21 + 23;
     this->m_edits[index] = new UIEditCtrl2();
     this->m_edits[index]->SetSize(270, 16);
     this->m_edits[index]->Move(83, y - 3);
@@ -74,7 +74,6 @@ void UIEmotionWnd::OnCreate(int, int) {
     this->m_labels[index]->Move(20, y);
     this->m_labels[index]->SetText(buffer, 0);
     this->AddChild(this->m_labels[index]);
-    ++index;
   }
 
   this->m_labels[9]->SetText("Alt + 0", 0);
