@@ -1611,7 +1611,8 @@ void CRagEffect::Bash() {
     return;
   }
 
-  const RenderVertex screen = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, this->state.parent->render.position);
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  const RenderVertex screen = TransformVert(mode->camera->frame.view, this->state.parent->render.position);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
