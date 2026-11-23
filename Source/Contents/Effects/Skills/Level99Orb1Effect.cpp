@@ -103,10 +103,9 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
     const float heightBeforeUpdate = this->offsets[index].y;
     if (heightBeforeUpdate < 0.0f) {
       if (heightBeforeUpdate < -30.0f) {
-        const float height = static_cast<float>(Random(100));
-        this->offsets[index].x = 0.0f;
-        this->offsets[index].y = height;
-        this->offsets[index].z = 0.0f;
+        EffectPoint offset;
+        offset.y = static_cast<float>(Random(100));
+        this->offsets[index] = offset;
 
         for (int i = 0; i < 4; ++i) {
           particle->animationValues[i] = static_cast<float>(Random(360));
@@ -130,8 +129,7 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
         this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationValues[0])];
         this->offsets[index].z += speed * g_sinTable[static_cast<int>(particle->animationValues[1])];
         if (this->offsets[index].y < -20.0f) {
-          const int alpha = particle->alpha - 4;
-          particle->alpha = alpha >= 0 ? alpha : 0;
+          particle->alpha = std::max(particle->alpha - 4, 0);
         } else if (particle->alpha != 255) {
           particle->alpha = 255;
         }
