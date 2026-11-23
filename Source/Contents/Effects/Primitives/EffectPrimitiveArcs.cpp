@@ -265,8 +265,8 @@ void CEffectPrim::RenderGroundArc2(matrix& wtm) {
       if (i >= 21) {
         i = 20;
       }
-      prevT = curT;
       prevB = curB;
+      prevT = curT;
     }
   }
 }
