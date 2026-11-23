@@ -7681,7 +7681,7 @@ UIPartySettingWnd::UIPartySettingWnd()
 
 // OFFSET: 0x008CB5B0
 // FUNCTION: fn_46449
-__declspec(noinline) UIPartySettingWnd::~UIPartySettingWnd() = default;
+UIPartySettingWnd::~UIPartySettingWnd() = default;
 
 // OFFSET: 0x008C8AB0
 // FUNCTION: fn_11967
