@@ -471,13 +471,13 @@ void UINavigationWnd::ApplyMinimized() {
     }
     this->Resize(this->m_saved->width, this->m_saved->height);
 
-    int x = g_renderer->viewport.width - this->m_saved->width;
-    if (x > this->geometry.x) {
-      x = this->geometry.x;
+    int x = this->geometry.x;
+    int y = this->geometry.y;
+    if (g_renderer->viewport.width - this->m_saved->width <= x) {
+      x = g_renderer->viewport.width - this->m_saved->width;
     }
-    int y = g_renderer->viewport.height - this->m_saved->height;
-    if (y > this->geometry.y) {
-      y = this->geometry.y;
+    if (g_renderer->viewport.height - this->m_saved->height <= y) {
+      y = g_renderer->viewport.height - this->m_saved->height;
     }
     this->Move(std::ranges::max(x, 0), std::ranges::max(y, 0));
 
