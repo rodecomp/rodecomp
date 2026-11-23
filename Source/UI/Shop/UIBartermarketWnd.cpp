@@ -1779,15 +1779,17 @@ void UIBartermarketWnd::Paint() {
     this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
-  unsigned red;
-  unsigned green;
-  unsigned blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const int rightRemainder = (this->geometry.width - 60) % 32;
-  this->FillRegion(20, 17, rightRemainder, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
-  const int bottomRemainder = (this->geometry.height - this->bottomPadding - 17) % 32;
-  const int bottomY = (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17;
-  this->FillRegion(20, bottomY, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
+  {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int rightRemainder = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, rightRemainder, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
+    const int bottomRemainder = (this->geometry.height - this->bottomPadding - 17) % 32;
+    const int bottomY = (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17;
+    this->FillRegion(20, bottomY, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
+  }
   this->DrawButtonBar(2, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -1795,6 +1797,9 @@ void UIBartermarketWnd::Paint() {
   for (int row = 0; row < rows; ++row) {
     this->DrawItemSlotFrame(40, row * 32 + 17);
   }
+  unsigned red;
+  unsigned green;
+  unsigned blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(red, green, blue));
 
