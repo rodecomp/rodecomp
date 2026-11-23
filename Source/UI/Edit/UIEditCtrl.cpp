@@ -6964,7 +6964,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 21150 || header.type == 21100) {
+    if (21150 == header.type || 21100 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
