@@ -1673,8 +1673,9 @@ void CUIGroupSound::Refresh() {
   this->m_bgmSlider->SetVisible(this->m_bgmSlider->PositionFromOffset(8));
   this->m_bgmSlider->SetPosition(g_soundMgr->Volume());
   this->m_bgmSlider->SetThumbTooltip(std::to_string(g_soundMgr->Volume()));
-  const bool bgmMuted = !g_serviceOptions.Get(TT_MUSIC_ON_OFF);
-  this->m_bgmSlider->SetTransparent(bgmMuted);
+  const bool bgmOn = g_serviceOptions.Get(TT_MUSIC_ON_OFF);
+  const bool bgmMuted = !bgmOn;
+  this->m_bgmSlider->SetTransparent(!bgmOn);
   CUIVScrollBar* const bgmSlider = this->m_bgmSlider;
   bgmSlider->dragging = bgmMuted;
   bgmSlider->Invalidate();
@@ -1686,8 +1687,9 @@ void CUIGroupSound::Refresh() {
   this->m_effectSlider->SetVisible(this->m_effectSlider->PositionFromOffset(8));
   this->m_effectSlider->SetPosition(g_soundMgr->sampleVolume);
   this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
-  const bool effectMuted = !g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
-  this->m_effectSlider->SetTransparent(effectMuted);
+  const bool effectOn = g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
+  const bool effectMuted = !effectOn;
+  this->m_effectSlider->SetTransparent(!effectOn);
   CUIVScrollBar* const effectSlider = this->m_effectSlider;
   effectSlider->dragging = effectMuted;
   effectSlider->Invalidate();
