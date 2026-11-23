@@ -12476,10 +12476,10 @@ void UIFrameWnd::DrawItemNameText(
   const std::vector<const char*>* breaks
 ) {
   struct ItemNameTextInfo {
-    int x;
-    int y;
-    int height;
-    int family;
+    /* 0000 */ int x;
+    /* 0004 */ int y;
+    /* 0008 */ int height;
+    /* 000C */ int family;
   };
   const ItemNameTextInfo* position = static_cast<const ItemNameTextInfo*>(info);
 
@@ -12497,13 +12497,12 @@ void UIFrameWnd::DrawItemNameText(
     FrameTextLines lines(2);
     this->WrapTextSegments(width, 2, segments, lines);
 
-    const std::size_t textLength = std::strlen(text);
-    if (this->TextWidth(text, textLength, position->family, position->height, 0, 0) > width * 2) {
+    if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
       this->FitLastTextLine(width, 2, position->family, position->height, lines);
     }
 
     {
-      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, textLength)};
+      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text)};
       this->m_textCache[std::move(key)] = lines;
     }
     this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
