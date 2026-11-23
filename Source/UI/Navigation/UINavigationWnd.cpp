@@ -491,16 +491,16 @@ void UINavigationWnd::ApplyMinimized() {
 
     int buttonX[6];
     int buttonY[6];
-    buttonX[0] = this->geometry.width - 66;
-    buttonY[0] = 18;
-    buttonX[1] = this->geometry.width - 77;
-    buttonY[1] = this->geometry.height - 37;
     buttonX[2] = -1000;
-    buttonY[2] = -1000;
     buttonX[3] = -1000;
-    buttonY[3] = -1000;
+    buttonX[1] = this->geometry.width - 77;
+    buttonY[0] = 18;
     buttonX[4] = this->geometry.width - 224;
+    buttonY[1] = this->geometry.height - 37;
     buttonY[4] = this->geometry.height - 22;
+    buttonX[0] = this->geometry.width - 66;
+    buttonY[2] = -1000;
+    buttonY[3] = -1000;
     buttonX[5] = this->geometry.width - 31;
     buttonY[5] = 18;
     for (int index = 0; index < 6; ++index) {
@@ -650,6 +650,11 @@ void UINavigationWnd::Paint() {
   this->DrawRouteLabels(g_navigationManager.previewType);
 }
 
+// INLINED
+static int NavigateTo(const NavigationTarget& target) {
+  return g_navigationManager.Navigate(target.x, target.y);
+}
+
 // OFFSET: 0x00935A00
 // FUNCTION: fn_12749
 int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
@@ -671,10 +676,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
       int result = g_navigationManager.SaveCurrentTarget();
       if (result == 0) {
-        {
-          NavigationTarget target = g_navigationManager.GetSavedTarget();
-          result = g_navigationManager.Navigate(target.x, target.y);
-        }
+        result = NavigateTo(g_navigationManager.GetSavedTarget());
         if (result >= 0) {
           this->SendMsg(this, UM_COMMAND, ID_BUTTON1, 0, 0, 0);
           this->RefreshRouteList();
