@@ -884,32 +884,29 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         return false;
       }
       return true;
-    case 0:
+    case 0: {
+      std::vector<std::string> route;
       if (name == "izlude.rsw") {
-        std::vector<std::string> route;
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
-        this->BuildRoute(route);
       } else if (name == "ra_fild12.rsw") {
-        std::vector<std::string> route;
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
-        this->BuildRoute(route);
       } else if (name == "yuno.rsw") {
-        std::vector<std::string> route;
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
-        this->BuildRoute(route);
       } else {
         return false;
       }
+      this->BuildRoute(route);
       return true;
+    }
     }
 
     return false;
