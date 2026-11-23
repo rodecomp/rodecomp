@@ -147,8 +147,9 @@ void UIEditCtrl::UpdateLinks() {
   }
 
   bool hasLink = false;
-  for (auto it = this->links.begin(); it != this->links.end(); ++it) {
+  for (auto it = this->links.begin(); it != this->links.end();) {
     UIWindow* window = *it;
+    ++it;
     if (window->geometry.id == 438) {
       hasLink = true;
     }
@@ -182,16 +183,21 @@ void UIEditCtrl::UpdateLinks() {
       prefix += head;
       std::string visible = head;
 
-      if (prefix.size() - 1 < static_cast<unsigned>(this->firstVisible)) {
+      const int visibleOffset = this->firstVisible;
+      if (prefix.size() - 1 < static_cast<unsigned>(visibleOffset)) {
         visible = prefix.substr(prefix.size() - 1);
       } else {
-        visible = prefix.substr(this->firstVisible);
+        visible = prefix.substr(visibleOffset);
       }
 
-      if (this->firstVisible != 0 && prefix.size() <= static_cast<unsigned>(this->firstVisible)) {
+      const int firstVisible = this->firstVisible;
+      if (firstVisible != 0 && prefix.size() <= static_cast<unsigned>(firstVisible)) {
         (*entry)->Move(1000, this->textY - 1);
       } else {
-        (*entry)->Move(this->TextWidth(visible.c_str(), 0, 0, 12, 0, 0) + 2, this->textY - 1);
+        UIWindow* const window = *entry;
+        const int y = this->textY - 1;
+        const int x = this->TextWidth(visible.c_str(), 0, 0, 12, 0, 0) + 2;
+        window->Move(x, y);
       }
 
       this->SnapLinkSelection(prefix, static_cast<int>(std::strlen(fitted.c_str())));
