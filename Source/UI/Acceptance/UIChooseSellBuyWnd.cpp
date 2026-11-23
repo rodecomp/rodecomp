@@ -9568,8 +9568,8 @@ void UISecondPasswordInputWnd::Paint() {
   std::uint32_t shadowColor;
   if (!g_session.m_passwordInputAlternate) {
     boxColor = 0xFAC8AA;
-    shadowColor = 0;
     textColor = 0xE6E6E6;
+    shadowColor = 0;
   } else {
     boxColor = 0xE6E6E6;
     textColor = 0xF0F0F0;
