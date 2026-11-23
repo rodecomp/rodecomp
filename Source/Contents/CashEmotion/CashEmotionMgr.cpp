@@ -514,12 +514,12 @@ CashEmotionData::CashEmotionData(int id, int subId, const char* name, int action
 bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
   const int rightId = right;
   const int leftId = left;
-  const char* leftTitle = this->mgr->GetPackTitle(leftId);
+  const char* leftTitle = this->mgr->GetPackTitleInline(leftId);
   if (!leftTitle) {
     return false;
   }
 
-  const char* rightTitle = this->mgr->GetPackTitle(rightId);
+  const char* rightTitle = this->mgr->GetPackTitleInline(rightId);
   if (!rightTitle) {
     return true;
   }
@@ -1022,7 +1022,7 @@ std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const
     others.reserve(count);
 
     for (int packId : packs) {
-      const char* title = this->GetPackTitle(packId);
+      const char* title = this->GetPackTitleInline(packId);
       if (title) {
         if (std::strstr(title, filter)) {
           matched.push_back(packId);
@@ -1207,7 +1207,7 @@ static __forceinline void AddSearchKey(std::unordered_map<std::string, std::pair
 // OFFSET: 0x0059BC30
 // FUNCTION: fn_02971
 void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile) {
-  const char* packName = this->GetPackTitle(packId);
+  const char* packName = this->GetPackTitleInline(packId);
   if (!packName) {
     return;
   }
@@ -1552,7 +1552,7 @@ int CCashEmotionMgr::InsertEmotionGroup(lua_State* state) {
   const int emotionId = luaL_checkinteger(state, 2);
 
   CCashEmotionMgr* mgr = g_cashEmotionMgr;
-  const char* title = mgr->GetPackTitle(packId);
+  const char* title = mgr->GetPackTitleInline(packId);
   if (title) {
     mgr->AddShortcut(title, packId, emotionId);
   }

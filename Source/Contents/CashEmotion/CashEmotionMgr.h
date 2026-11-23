@@ -169,7 +169,16 @@ public:
   int GetEarliestExpiry();
   CashEmotionTable* GetPackEmotionTable(int packId);
   CashEmotionPack* GetPack(int packId);
-  const char* GetPackTitle(int packId);
+  __declspec(noinline) const char* GetPackTitle(int packId);
+  // INLINED
+  __forceinline const char* GetPackTitleInline(int packId) {
+    auto it = this->packs.find(packId);
+    if (this->packs.end() == it) {
+      return nullptr;
+    }
+
+    return it->second.name.c_str();
+  }
   int GetPackPrice(int packId);
   __declspec(noinline) Timestamp* FindExpiry(int packId);
   __declspec(noinline) std::vector<int> SortOwnedPacks(const char* filter);
