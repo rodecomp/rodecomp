@@ -415,26 +415,16 @@ void UIHotKeyWnd::Paint() {
       const int keyColumnWidth = this->m_keyColumnWidth;
       const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
       const int textX = (keyColumnWidth - textWidth) / 2;
-      const int halfWidth = this->geometry.width / 2;
       const int column = visibleRow / this->m_rowsPerPage;
       const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
                        (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
+      const int halfWidth = this->geometry.width / 2;
 
       const int backgroundX = column ? this->geometry.width - keyColumnWidth - this->m_horizontalMargin
                                      : halfWidth - keyColumnWidth;
       const int keyX = column ? halfWidth : this->m_horizontalMargin;
 
-      std::uint32_t color = 0xDFFFFE;
-      switch (this->m_tab) {
-      case 0:
-        color = 0xFFEFD6;
-        break;
-      case 3:
-        color = 0xEFD6FF;
-        break;
-      default:
-        break;
-      }
+      const std::uint32_t color = this->m_tab != 0 ? (this->m_tab != 3 ? 0xDFFFFE : 0xEFD6FF) : 0xFFEFD6;
 
       this->FillRegion(backgroundX, rowY, keyColumnWidth, this->m_rowHeight - 1, color);
 
