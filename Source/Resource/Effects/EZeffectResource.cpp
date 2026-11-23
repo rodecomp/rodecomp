@@ -38,10 +38,6 @@ CEZeffectRes::CEZeffectRes() {
   this->loadState = 0;
 }
 
-// OFFSET: 0x0074D6F0
-// FUNCTION: fn_07895
-CEZeffectRes::~CEZeffectRes() = default;
-
 // OFFSET: 0x0074CEE0
 // FUNCTION: fn_07889
 CEZeffectRes* CEZeffectRes::Create() {
