@@ -515,8 +515,17 @@ void CWorldViewMgr::Draw(int unused, int x, int y, int width, int height) {
 
 // OFFSET: 0x00617090
 // FUNCTION: fn_46321
-__forceinline WorldViewRecord* CWorldViewMgr::FindMark(const char* name) {
-  return FindRecord(this->marks, name);
+WorldViewRecord* CWorldViewMgr::FindMark(const char* name) {
+  const std::string key(name);
+  WorldViewRecord* found = nullptr;
+  for (std::vector<WorldViewRecord>::iterator it = this->marks.begin(); it != this->marks.end(); ++it) {
+    if (it->name == key) {
+      found = &*it;
+      break;
+    }
+  }
+
+  return found;
 }
 
 // OFFSET: 0x00616DD0
@@ -526,7 +535,7 @@ bool CWorldViewMgr::AddMark(const char* name) {
     return false;
   }
 
-  if (this->FindMark(name)) {
+  if (FindRecord(this->marks, name)) {
     return true;
   }
 
@@ -596,8 +605,17 @@ int CWorldViewMgr::SelectCurrentWorld() {
 
 // OFFSET: 0x006175F0
 // FUNCTION: fn_46322
-__forceinline WorldViewRecord* CWorldViewMgr::FindLevel(const char* name) {
-  return FindRecord(this->levels, name);
+WorldViewRecord* CWorldViewMgr::FindLevel(const char* name) {
+  const std::string key(name);
+  WorldViewRecord* found = nullptr;
+  for (std::vector<WorldViewRecord>::iterator it = this->levels.begin(); it != this->levels.end(); ++it) {
+    if (it->name == key) {
+      found = &*it;
+      break;
+    }
+  }
+
+  return found;
 }
 
 // OFFSET: 0x006172E0
@@ -607,7 +625,7 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
     return false;
   }
 
-  if (WorldViewRecord* found = this->FindLevel(name)) {
+  if (WorldViewRecord* found = FindRecord(this->levels, name)) {
     if (level != 0) {
       const int current = found->level;
       if (level == 10000) {
