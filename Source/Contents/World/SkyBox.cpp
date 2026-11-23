@@ -447,7 +447,7 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
     view.x = target.x - eye.x;
     view.y = target.y - eye.y;
     view.z = target.z - eye.z;
-    const float inversePosition = 1.0f / SquareRoot(position.x * position.x + position.y * position.y + position.z * position.z);
+    const float inversePosition = 1.0f / SquareRoot(position.y * position.y + position.x * position.x + position.z * position.z);
     const float inverseView = 1.0f / SquareRoot(view.y * view.y + view.x * view.x + view.z * view.z);
     const float dot = inverseView * view.y * (position.y * inversePosition) + inverseView * view.x * (position.x * inversePosition) +
                       inverseView * view.z * (position.z * inversePosition);
