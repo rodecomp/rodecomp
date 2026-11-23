@@ -19,9 +19,12 @@ RouletteMgr* g_rouletteMgr = nullptr;
 // FUNCTION: fn_10070
 RouletteMgr::RouletteMgr() {
   this->m_valid = 0;
-  std::memset(&this->m_quads.current, 0, sizeof(this->m_quads.current));
-  std::memset(&this->m_quads.start, 0, sizeof(this->m_quads.start));
-  std::memset(&this->m_quads.target, 0, sizeof(this->m_quads.target));
+  RouletteVertex* current = this->m_quads.current.vertices;
+  std::memset(current, 0, sizeof(RouletteVertex) * 6);
+  RouletteVertex* start = this->m_quads.start.vertices;
+  std::memset(start, 0, sizeof(RouletteVertex) * 6);
+  RouletteVertex* target = this->m_quads.target.vertices;
+  std::memset(target, 0, sizeof(RouletteVertex) * 6);
   this->m_serial = 0;
   this->m_frame = 0;
   this->m_cycle = 0;
