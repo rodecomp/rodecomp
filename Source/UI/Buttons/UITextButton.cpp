@@ -1356,27 +1356,29 @@ void UIComboBoxID::Resize(int width, int height) {
   }
 }
 
-// OFFSET: 0x00896060
-// FUNCTION: fn_11514
-void UIListBoxID::Refresh() {
-  const int visible = this->geometry.height / this->lineHeight;
-  const int count = static_cast<int>(this->lines.size());
-  const int overflow = count - visible > 0 ? count - visible : 0;
-  this->verticalOverflow = overflow != 0;
-  auto* bar = this->verticalBar;
-
-  if (overflow == 0) {
-    bar->maximum = 0;
-  } else {
-    bar->maximum = this->bottomMargin + overflow;
-  }
-
-  bar->total = count;
+// INLINED
+static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->total = total;
   bar->visible = visible;
   bar->Invalidate();
 
   if (bar->position > bar->maximum) {
     bar->position = bar->maximum;
+  }
+}
+
+// OFFSET: 0x00896060
+// FUNCTION: fn_11514
+void UIListBoxID::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int count = static_cast<int>(this->lines.size());
+  const int overflow = count - visible >= 0 ? count - visible : 0;
+  this->verticalOverflow = overflow != 0;
+  if (overflow != 0) {
+    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
+  } else {
+    SetScrollRange(this->verticalBar, 0, visible, count);
   }
 
   this->verticalBar->Invalidate();
@@ -1390,15 +1392,8 @@ void UIComboBoxID::Refresh() {
   const int overflow = 0 > count - visible ? 0 : count - visible;
 
   this->verticalOverflow = overflow != 0;
-  UIScrollBar* bar = this->verticalBar;
   if (overflow != 0) {
-    bar->visible = visible;
-    bar->maximum = this->bottomMargin + overflow;
-    bar->total = count;
-    bar->Invalidate();
-    if (bar->position > bar->maximum) {
-      bar->position = bar->maximum;
-    }
+    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
@@ -1413,13 +1408,7 @@ void UIComboBoxID::Refresh() {
     }
     this->verticalBar->position = this->topLine;
   } else {
-    bar->total = count;
-    bar->visible = visible;
-    bar->maximum = 0;
-    bar->Invalidate();
-    if (bar->position > bar->maximum) {
-      bar->position = bar->maximum;
-    }
+    SetScrollRange(this->verticalBar, 0, visible, count);
   }
 
   this->verticalBar->Invalidate();
@@ -1473,28 +1462,15 @@ void UITreeView::Resize(int width, int height) {
 void UITreeView::UpdateScrollBar() {
   const int visible = this->geometry.height / this->itemHeight;
   const int count = this->itemCount;
-  const int overflow = 0 > count - visible ? 0 : count - visible;
+  const int overflow = std::max(0, count - visible);
   this->verticalOverflow = overflow != 0;
-  UIScrollBar* bar = this->verticalBar;
-  bar->total = count;
-  bar->visible = visible;
   if (overflow != 0) {
-    bar->maximum = overflow;
-    bar->Invalidate();
-    const int maximum = bar->maximum;
-    if (bar->position > maximum) {
-      bar->position = maximum;
-    }
+    SetScrollRange(this->verticalBar, overflow, visible, count);
     this->verticalBar->Invalidate();
     return;
   }
 
-  bar->maximum = 0;
-  bar->Invalidate();
-  const int maximum = bar->maximum;
-  if (bar->position > maximum) {
-    bar->position = maximum;
-  }
+  SetScrollRange(this->verticalBar, 0, visible, count);
   this->scrollRow = 0;
   this->itemCount = 0;
   this->verticalBar->Invalidate();
