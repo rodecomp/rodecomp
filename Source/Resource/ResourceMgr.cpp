@@ -245,7 +245,7 @@ CRes* ResourceMgr::Load(const char* name) {
     delete resource;
   }
 
-  if (resolved.find("\\map\\") == std::string::npos) {
+  if (resolved.find("\\map\\", 0, sizeof("\\map\\") - 1) == std::string::npos) {
     g_resourceFailures.Report(name, resolved);
   }
 
