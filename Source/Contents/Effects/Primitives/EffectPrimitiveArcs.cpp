@@ -882,7 +882,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       }
       const int high = angle + 15;
       const int low = angle - 15;
-      const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
+      const int backRightAngle = high < 180 ? high + 180 : high - 180;
       const int backLeftAngle = low + 180 >= 360 ? low + 180 - 360 : low + 180;
       const float base = this->state.slots[ec].height[0];
       vector3d left;
@@ -1034,7 +1034,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       }
       const int high = angle + 25;
       const int low = angle - 25;
-      const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
+      const int backRightAngle = high < 180 ? high + 180 : high - 180;
       const int backLeftAngle = low + 180 >= 360 ? low + 180 - 360 : low + 180;
       const float base = this->state.slots[ec].height[0];
       vector3d left;
