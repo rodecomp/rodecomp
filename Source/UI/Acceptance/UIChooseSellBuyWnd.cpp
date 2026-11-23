@@ -7093,8 +7093,9 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
   }
 
   const int row = (y - 17) / this->m_rowHeight;
+  std::list<ITEM_INFO>::iterator it;
   if (x < 280) {
-    std::list<ITEM_INFO>::iterator it = this->m_myItems.begin();
+    it = this->m_myItems.begin();
     if (row != 0) {
       for (int index = 0; index < row; ++index) {
         if (it == this->m_myItems.end()) {
@@ -7106,9 +7107,8 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
     if (it == this->m_myItems.end()) {
       return ITEM_INFO(0);
     }
-    return *it;
   } else {
-    std::list<ITEM_INFO>::iterator it = this->m_otherItems.begin();
+    it = this->m_otherItems.begin();
     if (row != 0) {
       for (int index = 0; index < row; ++index) {
         if (it == this->m_otherItems.end()) {
@@ -7120,8 +7120,8 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
     if (it == this->m_otherItems.end()) {
       return ITEM_INFO(0);
     }
-    return *it;
   }
+  return *it;
 }
 
 // OFFSET: 0x008F4300
