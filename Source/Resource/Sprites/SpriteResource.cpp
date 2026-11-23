@@ -118,18 +118,20 @@ bool CSprRes::Load(const char* name) {
 
         for (unsigned y = height; y != 0; --y) {
           std::uint8_t* pixel = row;
-          for (unsigned x = width; x != 0; --x) {
-            if (zeroCount == 0) {
-              value = *current++;
+          if (pixel) {
+            for (unsigned x = width; x != 0; --x) {
+              if (zeroCount == 0) {
+                value = *current++;
 
-              if (value == 0) {
-                zeroCount = *current++;
+                if (value == 0) {
+                  zeroCount = *current++;
+                }
               }
-            }
 
-            const std::uint16_t before = zeroCount;
-            zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
-            *pixel++ = before == 0 ? value : 0;
+              const std::uint16_t before = zeroCount;
+              zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
+              *pixel++ = before == 0 ? value : 0;
+            }
           }
           row += width;
         }
