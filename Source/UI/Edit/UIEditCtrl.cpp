@@ -11598,17 +11598,19 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   this->itemTitle->SetText(name.c_str(), 0);
   this->AddChild(this->itemTitle);
 
-  const std::string prefix("유저인터페이스\\");
-  const int x = this->geometry.width - 55;
-  const int y = this->geometry.height - 32;
-  auto* button = new UIBitmapButton();
-  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->Move(x, y);
-  button->SetId(ID_OK);
-  this->AddChild(button);
+  {
+    const std::string prefix("유저인터페이스\\");
+    const int x = this->geometry.width - 55;
+    const int y = this->geometry.height - 32;
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x, y);
+    button->SetId(ID_OK);
+    this->AddChild(button);
+  }
   this->m_message0 = ID_OK;
   this->geometry.state = 0;
 }
