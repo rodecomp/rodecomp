@@ -203,17 +203,18 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
     return;
   }
 
-  ModelPositionKey first;
-  ModelPositionKey second;
+  ModelRotationKey first;
+  ModelRotationKey second;
 
   for (unsigned next = 0; next < count; ++next) {
     if (static_cast<float>(keys[next].frame) > frame) {
       if (next == 0) {
-        first = ModelPositionKey{0, {base.values[9], base.values[10], base.values[11]}};
-        std::memcpy(&second, &keys[0], sizeof(second));
+        const ModelPositionKey start{0, {base.values[9], base.values[10], base.values[11]}};
+        std::memcpy(&first, &start, sizeof(start));
+        std::memcpy(&second, &keys[0], sizeof(ModelPositionKey));
       } else {
-        std::memcpy(&first, &keys[next - 1], sizeof(first));
-        std::memcpy(&second, &keys[next], sizeof(second));
+        std::memcpy(&first, &keys[next - 1], sizeof(ModelPositionKey));
+        std::memcpy(&second, &keys[next], sizeof(ModelPositionKey));
       }
 
       break;
@@ -223,9 +224,9 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   const float amount = (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame));
   const float previous = 1.0f - amount;
 
-  output.values[9] = first.position[0] * previous + second.position[0] * amount;
-  output.values[10] = first.position[1] * previous + second.position[1] * amount;
-  output.values[11] = first.position[2] * previous + second.position[2] * amount;
+  output.values[9] = first.rotation[0] * previous + second.rotation[0] * amount;
+  output.values[10] = first.rotation[1] * previous + second.rotation[1] * amount;
+  output.values[11] = first.rotation[2] * previous + second.rotation[2] * amount;
 }
 
 // OFFSET: 0x005407A0
