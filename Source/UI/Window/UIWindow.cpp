@@ -4098,10 +4098,8 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 
   CNavi_Object* target = static_cast<CNavi_Object*>(g_navigationManager.GetCurrentTarget().object);
-  NavigationTargetLook look = {
-    target->look.job, target->look.sex, target->look.bodyPalette, target->look.head, target->look.headPalette,
-    target->look.accessory0, target->look.accessory1, target->look.accessory2, target->look.robe,
-  };
+  NavigationTargetLook look;
+  std::memcpy(&look, &target->look, sizeof(look));
   if (!look.job) {
     this->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, x, y, width, height, 1500, true, background);
     return;
@@ -4163,7 +4161,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     bodyTime = now;
   }
 
-  if (look.robe) {
+  if (target->look.robe) {
     actions[8] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetRobeActName(look.job, look.job, look.sex, look.robe, 0, look.job)));
     sprites[8] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetRobeSprName(look.job, look.job, look.sex, look.robe, 0, look.job)));
     if (sprites[8] && actions[8]) {
@@ -4208,7 +4206,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     }
   }
 
-  if (look.accessory0) {
+  if (target->look.accessory0) {
     actions[2] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory0)));
     sprites[2] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory0)));
     if (sprites[2] && actions[2]) {
@@ -4228,7 +4226,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     }
   }
 
-  if (look.accessory1) {
+  if (target->look.accessory1) {
     actions[3] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory1)));
     sprites[3] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory1)));
     if (sprites[3] && actions[3]) {
@@ -4248,7 +4246,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
     }
   }
 
-  if (look.accessory2) {
+  if (target->look.accessory2) {
     actions[4] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetAccessoryActName(look.job, look.sex, look.head, look.accessory2)));
     sprites[4] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetAccessorySprName(look.job, look.sex, look.head, look.accessory2)));
     if (sprites[4] && actions[4]) {
