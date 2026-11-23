@@ -823,7 +823,11 @@ void UIEditCtrl4::PaintText() {
     }
     if (this->secondColor == 0xFFFFFFFF) {
       if (this->placeholderEnabled == 1) {
-        this->DrawTextAt(x, this->textY, std::strcmp(display.c_str(), "") == 0 ? this->placeholder.c_str() : display.c_str(), 0, 0, 12, this->placeholderColor, 0, 0);
+        const char* shown = display.c_str();
+        if (std::strcmp(shown, "") == 0) {
+          shown = this->placeholder.c_str();
+        }
+        this->DrawTextAt(x, this->textY, shown, 0, 0, 12, this->placeholderColor, 0, 0);
       } else {
         this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
       }
