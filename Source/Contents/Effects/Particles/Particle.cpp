@@ -434,9 +434,9 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
 // OFFSET: 0x00B3E010
 // FUNCTION: fn_18822
 __declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
-  CGameMode* mode = g_modeMgr.GetGameMode();
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen = {0, 0, 0, 0, 0, 0xFF000000, 0, 0};
-  g_renderer->Project(&this->position.x, mode->camera->frame.view.values, screen);
+  g_renderer->Project(&this->position.x, view, screen);
   this->m_screen.x = screen.x + x;
   this->m_screen.y = screen.y + y;
   this->m_screen.z = screen.z + z;
