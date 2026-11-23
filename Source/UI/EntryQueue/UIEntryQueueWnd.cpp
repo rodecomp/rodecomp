@@ -77,7 +77,8 @@ __declspec(noinline) UIEntryQueueListBox::~UIEntryQueueListBox() {
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
-  if (this->m_entries.insert(std::map<std::string, int>::value_type(name, value)).second) {
+  const auto result = this->m_entries.insert(std::map<std::string, int>::value_type(name, value));
+  if (result.second) {
     this->AddLine(name);
   }
 }
@@ -479,7 +480,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         }
         return 0;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     case 1:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
@@ -497,7 +502,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         }
         return 0;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     case 2: {
       GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() != 1) {
@@ -518,7 +527,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       } else {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     }
     case 3:
       if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUEHELPWND)) {
@@ -651,7 +664,8 @@ void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   {
     auto* viewer = this->m_viewer;
-    viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+    const COLORREF rgb = RGB(red, green, blue);
+    viewer->backgroundColor = rgb | 0xFF000000u;
     viewer->Invalidate();
   }
   this->AddChild(this->m_viewer);
