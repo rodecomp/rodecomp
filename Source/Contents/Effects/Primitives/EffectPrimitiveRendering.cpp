@@ -3530,19 +3530,19 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
     float lift = this->state.slots[ec].height[0];
     float rotCos = g_cosTable[this->state.slots[ec].rotStart];
     float rotSin = g_sinTable[this->state.slots[ec].rotStart];
-    vec3.Set(0.0f, lift, 0.0f);
-    vec4.Set(0.0f, lift, 0.0f);
+    vec3 = {0.0f, lift, 0.0f};
+    vec4 = {0.0f, lift, 0.0f};
 
     int left = this->state.slots[ec].riseAngle - (mode == 2.0f ? 1 : 2);
     if (left < 0) {
       left += 360;
     }
-    vec1.Set(rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]);
+    vec1 = {rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
     int right = this->state.slots[ec].riseAngle + (mode == 2.0f ? 1 : 2);
     if (right >= 360) {
       right -= 360;
     }
-    vec2.Set(length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]);
+    vec2 = {length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
 
     if (mode == 2.0f) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -3563,18 +3563,18 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
     lift = this->state.slots[ec].height[0];
     rotCos = g_cosTable[this->state.slots[ec].rotStart];
     rotSin = g_sinTable[this->state.slots[ec].rotStart];
-    vec3.Set(0.0f, lift, 0.0f);
-    vec4.Set(0.0f, lift, 0.0f);
+    vec3 = {0.0f, lift, 0.0f};
+    vec4 = {0.0f, lift, 0.0f};
     left = this->state.slots[ec].riseAngle - (mode == 2.0f ? 2 : 5);
     if (left < 0) {
       left += 360;
     }
-    vec1.Set(rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]);
+    vec1 = {rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
     right = this->state.slots[ec].riseAngle + (mode == 2.0f ? 2 : 5);
     if (right >= 360) {
       right -= 360;
     }
-    vec2.Set(length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]);
+    vec2 = {length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
 
     if (mode == 2.0f) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
