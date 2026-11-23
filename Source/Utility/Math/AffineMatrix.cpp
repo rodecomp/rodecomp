@@ -235,12 +235,12 @@ void matrix::MakeTransform(const float* position, const float* rotaxis, float ro
 // OFFSET: 0x00554F70
 // FUNCTION: fn_02031
 void matrix::MakeTransform(const float* rotaxis, float rotangle) {
-  const float omega = rotangle / 2.0f;
-  const float s = static_cast<float>(sin(static_cast<double>(omega)));
-  const float qx = rotaxis[0] * s;
-  const float qy = rotaxis[1] * s;
-  const float qz = rotaxis[2] * s;
-  const float qw = static_cast<float>(cos(static_cast<double>(omega)));
+  const float omega = rotangle * g_depthAverageHalf;
+  const float s = sinf(omega);
+  const float qx = s * rotaxis[0];
+  const float qy = s * rotaxis[1];
+  const float qz = s * rotaxis[2];
+  const float qw = cosf(omega);
 
   const float x2 = qx + qx;
   const float y2 = qy + qy;
@@ -255,24 +255,25 @@ void matrix::MakeTransform(const float* rotaxis, float rotangle) {
   const float yz = qy * z2;
   const float zz = qz * z2;
 
-  this->values[0] = 1.0f - (yy + zz);
-  this->values[1] = xy + wz;
-  this->values[2] = xz - wy;
-  this->values[3] = xy - wz;
-  this->values[4] = 1.0f - (xx + zz);
-  this->values[5] = yz + wx;
-  this->values[6] = xz + wy;
-  this->values[7] = yz - wx;
-  this->values[8] = 1.0f - (xx + yy);
   this->values[9] = 0.0f;
   this->values[10] = 0.0f;
   this->values[11] = 0.0f;
+  const float projectionDepthNumerator = g_projectionDepthNumerator;
+  this->values[0] = projectionDepthNumerator - (yy + zz);
+  this->values[1] = xy + wz;
+  this->values[3] = xy - wz;
+  this->values[2] = xz - wy;
+  this->values[6] = xz + wy;
+  this->values[4] = projectionDepthNumerator - (xx + zz);
+  this->values[5] = yz + wx;
+  this->values[7] = yz - wx;
+  this->values[8] = projectionDepthNumerator - (xx + yy);
 }
 
 // OFFSET: 0x005544C0
 // FUNCTION: fn_46340
 void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQuaternion& first, const RotationQuaternion& second) {
-  double dot = second.x * first.x + second.w * first.w + second.y * first.y + second.z * first.z;
+  double dot = second.w * first.w + second.x * first.x + second.y * first.y + second.z * first.z;
   RotationQuaternion end;
   if (0.0 > dot) {
     dot = -dot;
@@ -285,26 +286,36 @@ void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQu
   double secondWeight = amount;
   if (1.0 - dot > 0.00001f) {
     const double angle = std::acos(dot);
-    const double denominator = sinf(static_cast<float>(angle));
-    firstWeight = sinf(static_cast<float>(firstWeight * angle)) / denominator;
-    secondWeight = sinf(static_cast<float>(amount * angle)) / denominator;
+    const float sine = sinf(static_cast<float>(angle));
+    const float firstSine = sinf(static_cast<float>(firstWeight * angle));
+    const float secondSine = sinf(static_cast<float>(amount * angle));
+    firstWeight = static_cast<double>(firstSine) / sine;
+    secondWeight = static_cast<double>(secondSine) / sine;
   }
 
-  result.w = static_cast<float>(firstWeight) * first.w + static_cast<float>(secondWeight) * end.w;
-  result.x = static_cast<float>(firstWeight) * first.x + static_cast<float>(secondWeight) * end.x;
-  result.y = static_cast<float>(firstWeight) * first.y + static_cast<float>(secondWeight) * end.y;
-  result.z = static_cast<float>(firstWeight) * first.z + static_cast<float>(secondWeight) * end.z;
+  const float firstScale = static_cast<float>(firstWeight);
+  const float secondScale = static_cast<float>(secondWeight);
+  float start[4];
+  float finish[4];
+  std::memcpy(start, &first, sizeof(start));
+  std::memcpy(finish, &end, sizeof(finish));
+  for (int component = 0; component < 4; ++component) {
+    start[component] = firstScale * start[component] + secondScale * finish[component];
+  }
+  std::memcpy(&result, start, sizeof(result));
 }
 
 // OFFSET: 0x005546F0
 // FUNCTION: fn_46341
 void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation) {
   const float* m = rotation.values;
-  const float w = m[4] + m[0] + m[8] + 1.0f;
-  const float x = m[0] - m[4] - m[8] + 1.0f;
-  const float y = m[4] - m[0] - m[8] + 1.0f;
-  const float z = -m[0] - m[4] + m[8] + 1.0f;
-  const float largest = (std::max)((std::max)((std::max)(w, z), y), x);
+  const float z = -m[0] - m[4] + m[8] + g_projectionDepthNumerator;
+  const float x = m[0] - m[4] - m[8] + g_projectionDepthNumerator;
+  const float w = m[4] + m[0] + m[8] + g_projectionDepthNumerator;
+  const float y = m[4] - m[0] - m[8] + g_projectionDepthNumerator;
+  const float wz = z > w ? z : w;
+  const float wyz = y > wz ? y : wz;
+  const float largest = x > wyz ? x : wyz;
   const float divisor = std::sqrt(largest) * 2.0f;
 
   if (x == largest) {
