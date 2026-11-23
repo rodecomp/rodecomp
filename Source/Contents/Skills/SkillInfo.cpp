@@ -2025,6 +2025,16 @@ void CSkillAction_BO_DUST_EXPLOSION::OnSkillDamage(CGameActor* source, CGameActo
   }
 }
 
+// INLINED
+static int RandomInRange(int low, int high) {
+  if (high == 0) {
+    return 0;
+  }
+
+  const int value = std::rand() % high;
+  return value >= low ? value : low;
+}
+
 // OFFSET: 0x0077DC70
 // FUNCTION: fn_08449
 CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position) const {
@@ -2035,11 +2045,7 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
 
   const int start = quadrant * 90;
   const int end = start + 90;
-  int angle = 0;
-  if (end != 0) {
-    const int random = std::rand() % end;
-    angle = random >= start ? random : start;
-  }
+  int angle = RandomInRange(start, end);
   const float offsetX = ClientSin((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
 
   distance = std::rand() % 20;
@@ -2047,11 +2053,7 @@ CEffect* DustExplosionSpawner::operator()(int quadrant, const vector3d& position
     distance = 10;
   }
 
-  angle = 0;
-  if (end != 0) {
-    const int random = std::rand() % end;
-    angle = random >= start ? random : start;
-  }
+  angle = RandomInRange(start, end);
   const float offsetZ = ClientCos((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
 
   const auto at = [&](float dx, float dz) { return vector3d{dx + position.x, position.y + 0.0f, dz + position.z}; };
@@ -3083,17 +3085,22 @@ void CSkillAction_HN_METEOR_STORM_BUSTER::OnSkillCast(int level, CGameActor* sou
   }
 }
 
+// INLINED
+static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
+  return effects->Spawn(0, id, position, 0, -1, 0, 0);
+}
+
 // OFFSET: 0x00783CD0
 // FUNCTION: fn_08539
 void CSkillAction_HN_METEOR_STORM_BUSTER::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position.x, position.y, position.z, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position.x, position.y, position.z, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position);
 }
 
 // OFFSET: 0x00784100
@@ -3255,19 +3262,19 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
         )) {
       const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
       effect->position[0] = position.x;
-      effect->position[2] = position.z;
       effect->position[1] = position.y;
+      effect->position[2] = position.z;
       effect->SetDelay(index * 32);
     }
 
     effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(
-          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", std::max(std::rand() % 3, 0))), source->render.position, 0, -1, 0, 0
+          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", RandomInRange(0, 3))), source->render.position, 0, -1, 0, 0
         )) {
       const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
       effect->position[0] = position.x;
-      effect->position[2] = position.z;
       effect->position[1] = position.y;
+      effect->position[2] = position.z;
       effect->SetDelay(index * 32);
     }
   }
