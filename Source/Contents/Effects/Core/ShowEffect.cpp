@@ -50,7 +50,7 @@ void CShowEffect::Add(int tag, int effectId) {
     }
 
     CWorld* world = g_modeMgr.GetGameMode()->scene;
-    if (actorId == g_session.m_aid) {
+    if (g_session.m_aid == actorId) {
       EffectActor* player = world->player;
       if (!player || !player->LaunchTaggedEffect(effectId, tag)) {
         return;
