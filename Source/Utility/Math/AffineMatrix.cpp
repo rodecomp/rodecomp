@@ -311,8 +311,8 @@ void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation) {
   const float* m = rotation.values;
   const float z = -m[0] - m[4] + m[8] + g_projectionDepthNumerator;
   const float x = m[0] - m[4] - m[8] + g_projectionDepthNumerator;
-  const float w = m[4] + m[0] + m[8] + g_projectionDepthNumerator;
   const float y = m[4] - m[0] - m[8] + g_projectionDepthNumerator;
+  const float w = m[4] + m[0] + m[8] + g_projectionDepthNumerator;
   const float wz = z > w ? z : w;
   const float wyz = y > wz ? y : wz;
   const float largest = x > wyz ? x : wyz;
