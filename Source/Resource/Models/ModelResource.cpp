@@ -220,12 +220,11 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   mesh.vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
 
   for (int index = 0; index < vertexCount; ++index) {
-    ShadeVector& vertex = vertices[index];
-    const float y = ((vertex.x * matrix[1] + vertex.y * matrix[4]) + matrix[7] * vertex.z) + matrix[10];
-    const float z = ((vertex.x * matrix[2] + vertex.y * matrix[5]) + matrix[8] * vertex.z) + matrix[11];
-    vertex.x = ((vertex.x * matrix[0] + vertex.y * matrix[3]) + vertex.z * matrix[6]) + matrix[9];
-    vertex.y = y;
-    vertex.z = z;
+    ShadeVector transformed;
+    transformed.x = vertices[index].x * matrix[0] + vertices[index].y * matrix[3] + vertices[index].z * matrix[6] + matrix[9];
+    transformed.y = vertices[index].x * matrix[1] + vertices[index].y * matrix[4] + vertices[index].z * matrix[7] + matrix[10];
+    transformed.z = vertices[index].x * matrix[2] + vertices[index].y * matrix[5] + vertices[index].z * matrix[8] + matrix[11];
+    vertices[index] = transformed;
   }
 
   int textureVertexCount = 0;
@@ -488,20 +487,25 @@ CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
   unsigned char* pixels = new unsigned char[height * width * 4];
   GrannyCopyTextureImage(texture, 0, 0, GrannyRGBA8888PixelFormat, width, height, width * 4, source);
 
+  unsigned char red;
+  unsigned char green;
+  unsigned char blue;
+  unsigned char alpha;
+  int sourceIndex = 0;
+  int pixelIndex = 0;
   int format;
-  int offset = 0;
   if (hasAlpha) {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
-        const unsigned char red = source[offset + 0];
-        const unsigned char green = source[offset + 1];
-        const unsigned char blue = source[offset + 2];
-        const unsigned char alpha = source[offset + 3];
-        pixels[offset + 0] = blue;
-        pixels[offset + 1] = green;
-        pixels[offset + 2] = red;
-        pixels[offset + 3] = alpha;
-        offset += 4;
+        red = source[sourceIndex + 0];
+        green = source[sourceIndex + 1];
+        blue = source[sourceIndex + 2];
+        alpha = source[sourceIndex + 3];
+        pixels[pixelIndex + 0] = blue;
+        pixels[pixelIndex + 1] = green;
+        pixels[pixelIndex + 2] = red;
+        pixels[pixelIndex + 3] = alpha;
+        pixelIndex += 4, sourceIndex += 4;
       }
     }
 
@@ -509,14 +513,15 @@ CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
   } else {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
-        const unsigned char red = source[offset + 0];
-        const unsigned char green = source[offset + 1];
-        const unsigned char blue = source[offset + 2];
-        pixels[offset + 0] = blue;
-        pixels[offset + 1] = green;
-        pixels[offset + 2] = red;
-        pixels[offset + 3] = 0xFF;
-        offset += 4;
+        red = source[sourceIndex + 0];
+        green = source[sourceIndex + 1];
+        blue = source[sourceIndex + 2];
+        alpha = source[sourceIndex + 3];
+        pixels[pixelIndex + 0] = blue;
+        pixels[pixelIndex + 1] = green;
+        pixels[pixelIndex + 2] = red;
+        pixels[pixelIndex + 3] = 0xFF;
+        pixelIndex += 4, sourceIndex += 4;
       }
     }
 
