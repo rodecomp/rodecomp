@@ -72,13 +72,13 @@ void CView::Smooth() {
   this->camera.target.y = next[1];
   this->camera.target.x = next[0];
 
-  const float tangent = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientCosine(static_cast<int>(-this->camera.pitch));
-  const float cotangent = ClientCosine(static_cast<int>(-this->camera.pitch)) / ClientSine(static_cast<int>(-this->camera.pitch));
+  float tangent = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientCosine(static_cast<int>(-this->camera.pitch));
+  float cotangent = ClientCosine(static_cast<int>(-this->camera.pitch)) / ClientSine(static_cast<int>(-this->camera.pitch));
 
-  const float scaledTangent = tangent * g_projectionScale;
-  g_tangent = scaledTangent / g_renderer->UiScaleY();
-  const float scaledCotangent = cotangent * g_projectionScale;
-  g_cotangent = scaledCotangent / g_renderer->UiScaleY();
+  tangent *= g_projectionScale;
+  g_tangent = tangent / g_renderer->UiScaleY();
+  cotangent *= g_projectionScale;
+  g_cotangent = cotangent / g_renderer->UiScaleY();
 
   const float relativeSine = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientSine(45) * 0.000009f;
   g_cameraScaleY = (g_cameraBaseDistance / this->camera.distance) * relativeSine;
