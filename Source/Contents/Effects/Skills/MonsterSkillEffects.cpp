@@ -2208,9 +2208,7 @@ void CNewCloudKillEffect::OnProcess() {
     }
 
     if (CParticle* particle = (*it)) {
-      if (particle->elapsedFrames == 0) {
-        particle->animationState = 1;
-      } else {
+      if (particle->elapsedFrames != 0) {
         int angle = static_cast<int>(particle->angle + g_projectionDepthNumerator);
         angle %= 360;
         particle->alpha = static_cast<int>(static_cast<float>(particle->elapsedFrames) * 4.25f);
@@ -2230,6 +2228,8 @@ void CNewCloudKillEffect::OnProcess() {
         particle->position.x = this->position[0];
         particle->position.y = this->position[1];
         particle->position.z = this->position[2];
+      } else {
+        particle->animationState = 1;
       }
     }
 
