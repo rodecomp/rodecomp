@@ -1443,15 +1443,16 @@ void CSession::CopyItems1760To1770() {
 // OFFSET: 0x00DD8EA0
 // FUNCTION: fn_23332
 std::pair<bool, ITEM_INFO> CSession::FindMerchantMyShopItem(const ITEM_INFO& item, unsigned char) {
-  auto found = this->m_merchantMyShopItems.begin();
+  const ITEM_INFO* found = nullptr;
 
-  for (; found != this->m_merchantMyShopItems.end(); ++found) {
-    if (IsSameItem(*found, item)) {
+  for (const ITEM_INFO& value : this->m_merchantMyShopItems) {
+    if (IsSameItem(value, item)) {
+      found = &value;
       break;
     }
   }
 
-  return found != this->m_merchantMyShopItems.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
+  return found != nullptr ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
 }
 
 // OFFSET: 0x00DD91C0
