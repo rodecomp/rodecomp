@@ -55,10 +55,22 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
     for (int i = 0; i < 5; ++i) {
       this->actionButtons[i] = new UIBitmapButton();
-      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
-      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
-      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][2] + ".bmp").c_str(), 2, 0);
-      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][3] + ".bmp").c_str(), 3, 0);
+      {
+        std::string fileName = prefix + commandNames[i][0] + ".bmp";
+        this->actionButtons[i]->SetBitmap(fileName.c_str(), 0, 0);
+      }
+      {
+        std::string fileName = prefix + commandNames[i][1] + ".bmp";
+        this->actionButtons[i]->SetBitmap(fileName.c_str(), 1, 0);
+      }
+      {
+        std::string fileName = prefix + commandNames[i][2] + ".bmp";
+        this->actionButtons[i]->SetBitmap(fileName.c_str(), 2, 0);
+      }
+      {
+        std::string fileName = prefix + commandNames[i][3] + ".bmp";
+        this->actionButtons[i]->SetBitmap(fileName.c_str(), 3, 0);
+      }
       this->actionButtons[i]->SetSize(this->actionButtons[i]->BitmapWidth(), this->actionButtons[i]->BitmapHeight());
       this->actionButtons[i]->Move(commandPositions[i][0], commandPositions[i][1]);
       this->actionButtons[i]->SetId(commandIds[i]);
