@@ -194,7 +194,11 @@ bool UIAchTab::HitTestTab(int x, int y, int* a, int* b) {
 
   const int top = (this->selectedGroup + 1) * this->groupHeight;
   const int extent = std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
-  if (y >= top) {
+  if (y < top) {
+    *a = y / this->groupHeight;
+    *b = -1;
+    return true;
+  } else {
     if (y > top && y < extent + top) {
       *a = this->selectedGroup;
       *b = (y - top) / this->subHeight + this->scrollPos;
