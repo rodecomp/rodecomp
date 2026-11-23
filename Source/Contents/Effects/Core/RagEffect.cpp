@@ -2099,11 +2099,8 @@ void CRagEffect::GrimToothAtk() {
     this->state.lastPrim->state.chCnt = 10;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
-    this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
-    this->state.lastPrim->state.textures[0] = texture;
-    this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
-    this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
+    this->state.deltaPos3 -= this->state.deltaPos2;
   }
 }
 
@@ -4876,36 +4873,33 @@ void CRagEffect::TexturedHalo(const char* name, char kind) {
 
   if (kind == 2) {
     this->state.lastPrim->state.slots[0].distance = 12.0f;
-    this->state.lastPrim->state.slots[0].rotStart = 0;
-    this->state.lastPrim->state.slots[0].alphaB = 100;
-    this->state.lastPrim->state.size = 5.0f;
   } else if (kind == 3) {
     this->state.lastPrim->state.slots[0].distance = 10.0f;
+  } else if (kind == 4) {
+    this->state.lastPrim->state.slots[0].distance = 12.0f;
+  } else if (kind == 10) {
+    this->state.lastPrim->state.slots[0].distance = 30.0f;
+  } else if (kind == 11) {
+    this->state.lastPrim->state.slots[0].distance = 28.0f;
+  } else if (kind == 12) {
+    this->state.lastPrim->state.slots[0].distance = 20.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].distance = 7.0f;
+  }
+
+  if (kind == 3) {
     this->state.lastPrim->state.slots[0].rotStart = 225;
     this->state.lastPrim->state.slots[0].alphaB = 250;
     this->state.lastPrim->state.size = 111.0f;
   } else if (kind == 4) {
-    this->state.lastPrim->state.slots[0].distance = 12.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 200;
     this->state.lastPrim->state.size = 4.0f;
-  } else if (kind == 10) {
-    this->state.lastPrim->state.slots[0].distance = 30.0f;
-    this->state.lastPrim->state.slots[0].rotStart = 0;
-    this->state.lastPrim->state.slots[0].alphaB = 200;
-    this->state.lastPrim->state.size = 10.0f;
-  } else if (kind == 11) {
-    this->state.lastPrim->state.slots[0].distance = 28.0f;
-    this->state.lastPrim->state.slots[0].rotStart = 0;
-    this->state.lastPrim->state.slots[0].alphaB = 200;
-    this->state.lastPrim->state.size = 10.0f;
-  } else if (kind == 12) {
-    this->state.lastPrim->state.slots[0].distance = 20.0f;
+  } else if (kind == 10 || kind == 11 || kind == 12) {
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 200;
     this->state.lastPrim->state.size = 10.0f;
   } else {
-    this->state.lastPrim->state.slots[0].distance = 7.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 100;
     this->state.lastPrim->state.size = 5.0f;
@@ -12890,9 +12884,9 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
 void CRagEffect::HealSP() {
   this->render.position = this->state.parent->render.position;
   if (this->state.stateCnt == 0) {
-    this->state.duration = 100;
     this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
-    this->state.lastPrim->state.duration = 100;
+    this->state.duration = 100;
+    this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = 5.0f;
     this->state.lastPrim->state.outerSize = 2.5f;
     this->state.lastPrim->state.innerSize = 2.5f;
