@@ -347,10 +347,12 @@ bool C3dModelResV1::Load(const char* name) {
     this->ReadNode(file, minor, textureNames);
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
     if (!node->parentName.empty()) {
-      node->parent = this->FindNode(node->parentName.c_str());
-      node->parent->children.push_back(node);
+      ModelNode* parent = this->FindNode(node->parentName.c_str());
+      node->parent = parent;
+      parent->children.push_back(*it);
     }
   }
 
