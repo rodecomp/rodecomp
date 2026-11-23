@@ -153,44 +153,46 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
   const float height = segment * motion[0] + depth;
   int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle);
   angle = angle % 360;
-  for (int step = 1; step <= segment; ++step) {
-    radius -= (2.2f - step * 0.2f) * particle->scale;
+  if (segment > 0) {
+    for (int step = 1; step <= segment; ++step) {
+      radius -= (2.2f - step * 0.2f) * particle->scale;
+    }
   }
 
   EffectPoint corners[4];
   angle += 90;
   angle = angle % 360;
-  float corner0X = radius * g_cosTable[angle];
-  float corner0Y = height - 1.0f;
-  float corner0Z = radius * g_sinTable[angle];
+  corners[0].x = radius * g_cosTable[angle];
+  corners[0].y = height - 1.0f;
+  corners[0].z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  float corner1X = radius * g_cosTable[angle];
-  float corner1Y = height - 1.0f;
-  float corner1Z = radius * g_sinTable[angle];
+  corners[1].x = radius * g_cosTable[angle];
+  corners[1].y = height - 1.0f;
+  corners[1].z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  float corner2X = radius * g_cosTable[angle];
-  float corner2Y = height - 1.0f;
-  float corner2Z = radius * g_sinTable[angle];
+  corners[2].x = radius * g_cosTable[angle];
+  corners[2].y = height - 1.0f;
+  corners[2].z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
-  float corner3X = radius * g_cosTable[angle];
-  float corner3Y = height - 1.0f;
-  float corner3Z = radius * g_sinTable[angle];
+  corners[3].x = radius * g_cosTable[angle];
+  corners[3].y = height - 1.0f;
+  corners[3].z = radius * g_sinTable[angle];
 
-  particle->vertices[0].x = corner2X;
-  particle->vertices[0].y = corner2Y;
-  particle->vertices[0].z = corner2Z;
-  particle->vertices[1].x = corner1X;
-  particle->vertices[1].y = corner1Y;
-  particle->vertices[1].z = corner1Z;
-  particle->vertices[2].x = corner3X;
-  particle->vertices[2].y = corner3Y;
-  particle->vertices[2].z = corner3Z;
-  particle->vertices[3].x = corner0X;
-  particle->vertices[3].y = corner0Y;
-  particle->vertices[3].z = corner0Z;
+  particle->vertices[0].x = corners[2].x;
+  particle->vertices[0].y = corners[2].y;
+  particle->vertices[0].z = corners[2].z;
+  particle->vertices[1].x = corners[1].x;
+  particle->vertices[1].y = corners[1].y;
+  particle->vertices[1].z = corners[1].z;
+  particle->vertices[2].x = corners[3].x;
+  particle->vertices[2].y = corners[3].y;
+  particle->vertices[2].z = corners[3].z;
+  particle->vertices[3].x = corners[0].x;
+  particle->vertices[3].y = corners[0].y;
+  particle->vertices[3].z = corners[0].z;
 }
 
 // OFFSET: 0x00B7BC20
