@@ -111,7 +111,7 @@ NAsyncWorkResponseQueue::~NAsyncWorkResponseQueue() {
 // FUNCTION: fn_07575
 void NAsyncWorkResponseQueue::Push(NAsyncWorkPtr& work) {
   NSyncObject held(&this->m_criticalSection);
-  this->m_pending.emplace_back(work);
+  this->m_pending.push_back(work);
 }
 
 // OFFSET: 0x00732740
@@ -119,8 +119,7 @@ void NAsyncWorkResponseQueue::Push(NAsyncWorkPtr& work) {
 NAsyncWorkResponse NAsyncWorkResponseQueue::Pop() {
   NSyncObject held(&this->m_criticalSection);
   if (this->m_pending.empty()) {
-    NAsyncWorkPtr empty(nullptr, "");
-    return std::make_pair(false, empty);
+    return std::make_pair(false, NAsyncWorkPtr(nullptr, ""));
   }
 
   NAsyncWorkPtr work(this->m_pending.front());
