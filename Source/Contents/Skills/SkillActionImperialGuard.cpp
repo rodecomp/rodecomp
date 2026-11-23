@@ -839,6 +839,21 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillCast(int level, CGameActor* source)
   }
 }
 
+// INLINED
+static int RandomInRange(int low, int high) {
+  if (high == 0) {
+    return 0;
+  }
+
+  const int value = rand() % high;
+  return value >= low ? value : low;
+}
+
+// INLINED
+static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
+  return effects->Spawn(0, id, position, 0, -1, 0, 0);
+}
+
 // OFFSET: 0x007871F0
 // FUNCTION: fn_08584
 void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
@@ -853,27 +868,18 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
   const int subEffectId = CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_sub");
   for (int index = 0; index < 8; ++index) {
     vector3d position = {target->render.position.x, target->render.position.y, target->render.position.z};
-    const float originX = position.x;
-    const float originZ = position.z;
-    int roll;
     const int quadrant = index & 3;
     if (quadrant == 1) {
-      roll = rand() % 8;
-      position.x = originX + static_cast<float>(roll >= 0 ? roll : 0);
-      roll = rand() % 8;
-      position.z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
+      position.x += static_cast<float>(RandomInRange(0, 8));
+      position.z += static_cast<float>(RandomInRange(0, 8));
     } else if (quadrant == 2) {
-      roll = rand() % 8;
-      position.x = originX + static_cast<float>(roll >= 0 ? roll : 0);
-      roll = rand() % 8;
-      position.z = originZ - static_cast<float>(roll >= 0 ? roll : 0);
+      position.x += static_cast<float>(RandomInRange(0, 8));
+      position.z -= static_cast<float>(RandomInRange(0, 8));
     } else if (quadrant == 3) {
-      roll = rand() % 8;
-      position.x = originX - static_cast<float>(roll >= 0 ? roll : 0);
-      roll = rand() % 8;
-      position.z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
+      position.x -= static_cast<float>(RandomInRange(0, 8));
+      position.z += static_cast<float>(RandomInRange(0, 8));
     }
-    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, position, 0, -1, 0, 0);
+    CEffect* effect = SpawnAt(g_effectMgr, subEffectId, position);
     if (effect) {
       effect->SetDelay(140 * (index + 1));
     }
