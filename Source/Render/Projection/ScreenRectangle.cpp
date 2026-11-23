@@ -84,8 +84,8 @@ void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t co
   primitive->quad[2].u = 0.0f;
   primitive->quad[2].v = 1.0f;
   primitive->quad[2].diffuse = color;
-  primitive->quad[3].x = right;
   primitive->quad[3].y = bottom;
+  primitive->quad[3].x = right;
   primitive->quad[3].z = 0.000001f;
   primitive->quad[3].rhw = 0.999999f;
   primitive->quad[3].u = 1.0f;
