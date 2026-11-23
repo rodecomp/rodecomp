@@ -14659,12 +14659,12 @@ void CRagEffect::ForestLight(const char* name, char flag) {
     this->state.deltaPos = this->render.position;
 
     if (flag == 10) {
-      this->state.deltaPos.x -= 15.0f;
       this->state.deltaPos.y -= 60.0f;
+      this->state.deltaPos.x -= 15.0f;
       this->state.deltaPos.z -= 15.0f;
     } else {
-      this->state.deltaPos.x -= 70.0f;
       this->state.deltaPos.y -= 300.0f;
+      this->state.deltaPos.x -= 70.0f;
       this->state.deltaPos.z -= 70.0f;
     }
 
