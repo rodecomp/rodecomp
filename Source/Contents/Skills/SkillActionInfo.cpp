@@ -780,11 +780,17 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WL_SUMMONFB:
   case WL_SUMMONBL:
   case WL_SUMMONWB:
-  case WL_SUMMONSTONE:
-    effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_TETRA_CAST : EF_TETRA_VORTEX_CAST;
-    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  case WL_SUMMONSTONE: {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      effectId = EF_MINEFFECT_TETRA_CAST;
+    } else {
+      effectId = EF_TETRA_VORTEX_CAST;
+    }
+    CSoundMgr* sound = g_soundMgr;
+    sound->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     motion = 7;
     break;
+  }
   case SC_TRIANGLESHOT:
     effectId = EF_BLUECASTING;
     motion = 18;
