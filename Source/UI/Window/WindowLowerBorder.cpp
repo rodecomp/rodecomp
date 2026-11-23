@@ -64,13 +64,14 @@ int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
 // OFFSET: 0x008D7570
 // FUNCTION: fn_12120
 CBitmapRes* UIWindow::LoadStyledBitmap(int style, const char* format, const char* name) {
+  CBitmapRes* bitmap = nullptr;
   if (style > 0) {
     if (format && std::strlen(format) != 0) {
       std::string filename = FormatOwnedString(format, style);
-      return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(filename.c_str())));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(filename.c_str())));
     }
   } else if (name && std::strlen(name) != 0) {
-    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   }
-  return nullptr;
+  return bitmap;
 }
