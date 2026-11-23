@@ -6,8 +6,8 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // INLINED
-static bool ContainsCell(const RECT& bounds, int x, int y) {
-  return bounds.left <= x && x + g_miniPartyCellWidth <= bounds.right && bounds.top <= y && y + g_miniPartyCellHeight <= bounds.bottom;
+static bool ContainsCell(const RECT& bounds, const MiniPartyGridPoint& position) {
+  return bounds.left <= position.x && position.x + g_miniPartyCellWidth <= bounds.right && bounds.top <= position.y && position.y + g_miniPartyCellHeight <= bounds.bottom;
 }
 
 // OFFSET: 0x00737680
@@ -19,9 +19,10 @@ __forceinline CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
 
   const RECT target = bounds;
   for (int index = 0; index < this->columns * this->rows; ++index) {
-    const int x = this->area.left + g_miniPartyCellWidth * (index / this->rows);
-    const int y = this->area.top + g_miniPartyCellHeight * (index % this->rows);
-    if (ContainsCell(target, x, y)) {
+    MiniPartyGridPoint position;
+    position.x = this->area.left + g_miniPartyCellWidth * (index / this->rows);
+    position.y = this->area.top + g_miniPartyCellHeight * (index % this->rows);
+    if (ContainsCell(target, position)) {
       this->cells.push_back(index);
     }
   }
