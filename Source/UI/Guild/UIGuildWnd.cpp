@@ -1264,9 +1264,10 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
 // FUNCTION: fn_13086
 void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   UIGuildWnd::OnLBtnDown(x, y);
-  int left = 6;
-  if (x >= left && x <= 381 && y >= 47 && y <= 66) {
-    for (int column = 0; column < 6; ++column) {
+  int left = 5;
+  if (x >= left + 1 && x <= left + 376 && y >= 47 && y <= 66) {
+    int column = 0;
+    for (++left; column < 6; ++column) {
       const int right = g_guildMemberColumnWidths[column] + left;
       if (left <= x && x <= right) {
         this->SortMembers(column);
@@ -1278,10 +1279,8 @@ void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->m_hoverRow;
-  const int row = this->MemberIndexAt(x, y);
-
-  this->m_hoverRow = row;
-  if (previous != row) {
+  this->m_hoverRow = this->MemberIndexAt(x, y);
+  if (previous != this->m_hoverRow) {
     this->Invalidate();
   }
 }
