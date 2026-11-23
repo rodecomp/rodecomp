@@ -361,7 +361,8 @@ void UIItemTagCtrl::UpdateItemTags() {
         break;
       }
 
-      const std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
+      auto current = entry;
+      const std::string fitted = this->FitTextToWidth(current->name, this->tagWidth / 2);
       std::string display = "<";
       display += fitted;
       display += ">";
@@ -392,7 +393,7 @@ void UIItemTagCtrl::UpdateItemTags() {
           x = (firstVisible != 0 && prefix.size() <= firstVisible) ? 1000 : 0;
         }
 
-        this->PlaceTagButton(entry->child, visible, x, 0);
+        this->PlaceTagButton(current->child, visible, x, 0);
 
         const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
         if (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) {
@@ -410,15 +411,16 @@ void UIItemTagCtrl::UpdateItemTags() {
 
         this->linkedText += head;
         this->linkedText += g_itemLinkTagBegin;
-        this->linkedText += entry->link;
+        this->linkedText += current->link;
         this->linkedText += g_itemLinkTagEnd;
         remaining = remaining.substr(found + display.size());
         prefix += display;
-        if (++entry == this->tags.end()) {
+        entry = ++current;
+        if (entry == this->tags.end()) {
           break;
         }
       } else {
-        ++entry;
+        entry = ++current;
       }
     }
   }
