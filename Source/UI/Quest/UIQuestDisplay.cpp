@@ -52,7 +52,7 @@ void UIQuestDisplay::Paint() {
   int none = 0;
   int multiple = 0;
   int single = 0;
-  for (auto it = manager->m_ongoingQuests.begin(); it != manager->m_ongoingQuests.end(); ++it) {
+  for (auto it = manager->m_ongoingQuests.begin(); manager->m_ongoingQuests.end() != it; ++it) {
     const unsigned int questId = it->first;
     const RenewQuestOngoingInfo& info = it->second;
     if (info.m_active != true || info.m_simpleView != true) {
@@ -94,17 +94,15 @@ void UIQuestDisplay::Paint() {
       for (int index = 0; index < info.m_huntCount; ++index) {
         std::string hunt;
         if (info.m_huntMobId[index] != 31999) {
-          const short minLevel = info.m_huntMinLevel[index];
-          const short maxLevel = info.m_huntMaxLevel[index];
           const char* name = info.m_huntName[index];
-          if (-1 >= minLevel || -1 >= maxLevel || (0 == minLevel && 0 == maxLevel)) {
+          if (-1 >= info.m_huntMinLevel[index] || -1 >= info.m_huntMaxLevel[index] || (0 == info.m_huntMinLevel[index] && 0 == info.m_huntMaxLevel[index])) {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
-          } else if (0 == minLevel) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-          } else if (0 == maxLevel) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+          } else if (0 == info.m_huntMinLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, info.m_huntMaxLevel[index]));
+          } else if (0 == info.m_huntMaxLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, info.m_huntMinLevel[index]));
           } else {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
           }
         } else {
           hunt = static_cast<const std::string&>(
@@ -125,18 +123,15 @@ void UIQuestDisplay::Paint() {
         description = parser->DisplayNavigationLink(description);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
-        const short goal = info.m_huntMaxCount[index];
-        if (goal > 0) {
-          const short count = info.m_huntKillCount[index];
-          if (count != goal) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", hunt.c_str(), count, goal));
+        if (info.m_huntMaxCount[index] > 0) {
+          if (info.m_huntKillCount[index] != info.m_huntMaxCount[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", hunt.c_str(), info.m_huntKillCount[index], info.m_huntMaxCount[index]));
           } else {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
           }
 
-          const int y = index * 13 + top;
-          this->DrawTextAt(11, y + 29, hunt.c_str(), 0, 0, 12, 0, 0, 0);
-          this->DrawTextAt(10, y + 28, hunt.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+          this->DrawTextAt(11, index * 13 + top + 29, hunt.c_str(), 0, 0, 12, 0, 0, 0);
+          this->DrawTextAt(10, index * 13 + top + 28, hunt.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
         }
       }
 
