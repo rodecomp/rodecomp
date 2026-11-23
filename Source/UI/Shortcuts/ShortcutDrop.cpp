@@ -139,85 +139,82 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
-  } else {
-    if (value.source == 6 || value.source == 9) {
-    g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return;
   }
 
-  ITEM_INFO item = g_session.LookupClientItemByIdentity(value.id);
-  if (item.identity[1] <= 0 || item.identified == 0) {
-    g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return;
-  }
-
-  switch (item.identity[0]) {
-  case TYPE_EVENT:
-  case TYPE_ARROW:
-  case TYPE_AMMO:
-  case TYPE_THROWWEAPON:
-  case TYPE_CANNONBALL: {
-    const int column = this->HitTestSlot(x, y);
-    if (column != -1 && 9 * grid.rows <= 9 * g_session.m_hotkeyPage + column) {
-      if (g_session.ItemSlotActive()) {
-        g_session.AssignItemShortcut(static_cast<std::uint32_t>(item.GetItemId()), column);
-        Refresh(window);
-      }
-
-      if (g_modeMgr.currentMode) {
-        g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      }
-
+  if (value.source != 6 && value.source != 9) {
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(value.id);
+    if (item.identity[1] <= 0 || item.identified == 0) {
+      g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return;
     }
-  }
-  }
 
-  switch (item.identity[0]) {
-  case TYPE_ARMOR:
-  case TYPE_WEAPON:
-  case TYPE_BOW:
-  case TYPE_BOTHHAND:
-  case TYPE_ARMORTM:
-  case TYPE_ARMORTB:
-  case TYPE_ARMORMB:
-  case TYPE_ARMORTMB:
-  case TYPE_GUN:
-    if (item.identity[2] == 0) {
-      break;
-    }
-  case TYPE_HEAL:
-  case TYPE_SCHANGE:
-  case TYPE_SPECIAL:
-  case TYPE_ARROW:
-  case TYPE_AMMO:
-  case TYPE_THROWWEAPON:
-  case TYPE_CANNONBALL: {
-    const int column = this->HitTestSlot(x, y);
-    if (column != -1) {
-      const int index = 9 * g_session.m_hotkeyPage + column;
-      if (grid.rows <= g_session.m_hotkeyPage) {
+    switch (item.identity[0]) {
+    case TYPE_EVENT:
+    case TYPE_ARROW:
+    case TYPE_AMMO:
+    case TYPE_THROWWEAPON:
+    case TYPE_CANNONBALL: {
+      const int column = this->HitTestSlot(x, y);
+      if (column != -1 && 9 * grid.rows <= 9 * g_session.m_hotkeyPage + column) {
+        if (g_session.ItemSlotActive()) {
+          g_session.AssignItemShortcut(static_cast<std::uint32_t>(item.GetItemId()), column);
+          Refresh(window);
+        }
+
         if (g_modeMgr.currentMode) {
           g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         }
 
         return;
       }
-
-      g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, static_cast<int>(bank));
-      if (value.slot != index) {
-        RemoveFirst(g_session.m_requestTimers, index);
-      }
-
-      Refresh(window);
+    }
     }
 
-    break;
-  }
+    switch (item.identity[0]) {
+    case TYPE_ARMOR:
+    case TYPE_WEAPON:
+    case TYPE_BOW:
+    case TYPE_BOTHHAND:
+    case TYPE_ARMORTM:
+    case TYPE_ARMORTB:
+    case TYPE_ARMORMB:
+    case TYPE_ARMORTMB:
+    case TYPE_GUN:
+      if (item.identity[2] == 0) {
+        break;
+      }
+    case TYPE_HEAL:
+    case TYPE_SCHANGE:
+    case TYPE_SPECIAL:
+    case TYPE_ARROW:
+    case TYPE_AMMO:
+    case TYPE_THROWWEAPON:
+    case TYPE_CANNONBALL: {
+      const int column = this->HitTestSlot(x, y);
+      if (column != -1) {
+        const int index = 9 * g_session.m_hotkeyPage + column;
+        if (grid.rows <= g_session.m_hotkeyPage) {
+          if (g_modeMgr.currentMode) {
+            g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+          }
+
+          return;
+        }
+
+        g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, static_cast<int>(bank));
+        if (value.slot != index) {
+          RemoveFirst(g_session.m_requestTimers, index);
+        }
+
+        Refresh(window);
+      }
+
+      break;
+    }
+    }
   }
 
   g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-  }
 }
 
 namespace {
