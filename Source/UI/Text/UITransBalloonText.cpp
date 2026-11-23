@@ -215,8 +215,10 @@ void UIAchBalloonText::Paint() {
     const std::string& line = this->m_lines[index];
     const int width = this->TextWidth(line.c_str(), static_cast<unsigned>(line.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
     );
-    int y = top;
-    if (index != 0) {
+    int y;
+    if (index == 0) {
+      y = top;
+    } else {
       y = top - 4 + lineHeight * index;
     }
     this->DrawShadowedText(
