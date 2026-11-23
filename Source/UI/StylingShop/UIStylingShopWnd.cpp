@@ -88,6 +88,16 @@ void UICostumeChangeWnd::Paint() {
   this->DrawCenteredText(43, 248, g_session.GetJobName(this->m_display->job, -1), 161, 0, 11, 0, 0);
 }
 
+// INLINED
+static void ClearChangedStyles(bool (&changed)[6]) {
+  changed[STYLE_TABLE_HEAD_PALETTE - 1] = false;
+  changed[STYLE_TABLE_HEAD_STYLE - 1] = false;
+  changed[STYLE_TABLE_BODY_PALETTE - 1] = false;
+  changed[STYLE_TABLE_TOP_ACCESSORY - 1] = false;
+  changed[STYLE_TABLE_MID_ACCESSORY - 1] = false;
+  changed[STYLE_TABLE_BOTTOM_ACCESSORY - 1] = false;
+}
+
 // OFFSET: 0x00827670
 // FUNCTION: fn_10328
 void UIShowInfoWnd::ResetCheckBoxes() {
@@ -96,7 +106,7 @@ void UIShowInfoWnd::ResetCheckBoxes() {
     this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
   }
 
-  std::memset(this->m_changed, 0, sizeof(this->m_changed));
+  ClearChangedStyles(this->m_changed);
   this->costumeChanged = 0;
   for (unsigned int i = 0; i < this->m_list.size(); ++i) {
     this->m_list.clear();
@@ -725,7 +735,7 @@ void UIShowInfoWnd::CheckColoringGoods(bool* coloring) {
     this->m_checks[i]->SetChecked(0);
   }
   this->m_list.clear();
-  std::memset(this->m_changed, 0, sizeof(this->m_changed));
+  ClearChangedStyles(this->m_changed);
   this->costumeChanged = 0;
 }
 
@@ -2322,16 +2332,7 @@ void UIShowInfoWnd::OnCreate(int, int) {
     this->AddChild(this->m_checks[i]);
   }
 
-  for (int i = 0; i < 8; ++i) {
-    this->m_checks[i]->SetChecked(0);
-    this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
-  }
-
-  std::memset(this->m_changed, 0, sizeof(this->m_changed));
-  this->costumeChanged = 0;
-  for (unsigned int i = 0; i < this->m_list.size(); ++i) {
-    this->m_list.clear();
-  }
+  this->ResetCheckBoxes();
 }
 
 // OFFSET: 0x00827D00
