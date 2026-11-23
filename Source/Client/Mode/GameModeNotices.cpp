@@ -4118,6 +4118,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       int count = message.level + 2;
       if (count > 7) {
         count = 7;
+      } else if (count < 1) {
+        return;
       }
       for (int index = 0; index < count; ++index) {
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
@@ -4314,6 +4316,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       int count = message.level + 2;
       if (count > 7) {
         count = 7;
+      } else if (count < 1) {
+        return;
       }
       for (int index = 0; index < count; ++index) {
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
