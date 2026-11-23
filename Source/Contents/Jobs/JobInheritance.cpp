@@ -1273,7 +1273,7 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
     main = second;
 
     if (second == 0) {
-      return result;
+      goto finished;
     }
 
     sub = 0;
@@ -1312,6 +1312,7 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
     }
   }
 
+finished:
   return result;
 }
 
