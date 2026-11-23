@@ -1218,22 +1218,22 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     names[1] = "이팩트\\emotion.act";
     if (effectId == 36) {
       animation = 80;
-      type = 28;
+      type = effectId - 8;
     } else if (effectId == 37) {
       animation = 81;
-      type = 28;
+      type = effectId - 9;
     } else if (effectId == 38) {
       animation = 82;
-      type = 29;
+      type = effectId - 9;
     } else if (effectId == 39) {
       animation = 83;
-      type = 29;
+      type = effectId - 10;
     } else if (effectId == 40) {
       animation = 84;
-      type = 30;
+      type = effectId - 10;
     } else if (effectId == 41) {
       animation = 85;
-      type = 30;
+      type = effectId - 11;
     }
     break;
   case 60:
