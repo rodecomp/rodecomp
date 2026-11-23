@@ -1,16 +1,13 @@
+#include <algorithm>
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/RayTriangle.h"
 
 // OFFSET: 0x00749300
 // FUNCTION: fn_07842
 float C3dAttr::RayDistance(const float* ray, int column, int row) const {
-  constexpr float noIntersectionDistance = 999999.0f;
-  float firstDistance = noIntersectionDistance;
-  float nearest = noIntersectionDistance;
-  const TerrainHeightCell* cell;
-
-  cell = this->CellAt(column, row);
-
+  float firstDistance = 999999.0f;
+  float nearest = firstDistance;
+  const TerrainHeightCell* cell = this->CellAt(column, row);
   if (!cell) {
     return 0.0f;
   }
@@ -45,12 +42,12 @@ float C3dAttr::RayDistance(const float* ray, int column, int row) const {
   float distance;
 
   if (IntersectRayTriangle(ray, &corners[0].x, &corners[1].x, &corners[2].x, u, v, distance)) {
-    firstDistance = distance < noIntersectionDistance ? distance : noIntersectionDistance;
+    firstDistance = std::min(distance, 999999.0f);
     nearest = firstDistance;
   }
 
   if (IntersectRayTriangle(ray, &corners[1].x, &corners[3].x, &corners[2].x, u, v, distance)) {
-    nearest = distance < firstDistance ? distance : firstDistance;
+    nearest = std::min(distance, firstDistance);
   }
 
   return nearest;
