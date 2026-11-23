@@ -149,11 +149,12 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
   points[6].Set(bounds[0], bounds[4], bounds[5]);
   points[7].Set(bounds[3], bounds[4], bounds[5]);
 
-  for (unsigned corner = 0; corner < 8; ++corner) {
-    float* stored = actor->corners[corner].values;
-    stored[0] = Coordinate(points[corner].values, actor->transform.values, 0);
-    stored[1] = Coordinate(points[corner].values, actor->transform.values, 1);
-    stored[2] = Coordinate(points[corner].values, actor->transform.values, 2);
+  BoundsCorner* output = actor->corners;
+  for (const BoundsCorner& point : points) {
+    float* stored = output->values;
+    stored[0] = Coordinate(point.values, actor->transform.values, 0);
+    stored[1] = Coordinate(point.values, actor->transform.values, 1);
+    stored[2] = Coordinate(point.values, actor->transform.values, 2);
 
     for (unsigned axis = 0; axis < 3; ++axis) {
       if (actor->minimum[axis] > stored[axis]) {
@@ -166,6 +167,7 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
         actor->maximum[axis] = stored[axis];
       }
     }
+    ++output;
   }
 
   for (unsigned axis = 0; axis < 3; ++axis) {
