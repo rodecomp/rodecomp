@@ -45,11 +45,22 @@ namespace {
     return std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& entry) { return entry.id == group; });
   }
 
+  struct SlotMatches {
+    const int& slot;
+
+    bool operator()(const CooldownState& state) const {
+      return state.slot == slot;
+    }
+  };
+
   // INLINED
   __forceinline std::list<CooldownState>::iterator FindCooldownState(std::list<CooldownState>& states, const int& slot) {
-    return std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == slot; });
+    return std::find_if(states.begin(), states.end(), SlotMatches{slot});
   }
 }
+
+template __declspec(noinline) std::list<CooldownState>::iterator std::find_if<std::list<CooldownState>::iterator, SlotMatches>(std::list<CooldownState>::iterator, std::list<CooldownState>::iterator, SlotMatches);
+template __declspec(noinline) std::list<CooldownState>::iterator std::list<CooldownState>::erase(std::list<CooldownState>::const_iterator) noexcept;
 
 // OFFSET: 0x0091C4D0
 // FUNCTION: fn_12614
