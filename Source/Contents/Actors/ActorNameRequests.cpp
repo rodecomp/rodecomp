@@ -50,7 +50,7 @@ void CActorNameCardHolder::ExpireRequests() {
 std::uint32_t CActorNameCardHolder::PopNextRequest() {
   while (!this->pending.empty()) {
     const int id = this->pending.front();
-    const auto found = this->cards.find(id);
+    const std::map<std::uint32_t, CActorNameCard>::const_iterator found = this->cards.find(id);
     if (found == this->cards.end() || found->second.received != 1) {
       const auto end = this->requests.end();
       const auto requested = std::find_if(this->requests.begin(), end, [id](const Request& request) { return id == request.id; });
