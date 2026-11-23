@@ -46,7 +46,7 @@ UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
     : UIWindow(cached), viewWidth(0), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
       scrollBarWidth(13), scrollBarHeight(13), horizontalScrollPosition(0), scrollPosition(0), horizontalScrollable(0), wheelScroll(0) {
   this->UIWindow::Resize(width, height);
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x009AC830
@@ -308,7 +308,7 @@ RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sour
 
 // OFFSET: 0x009AD3A0
 // FUNCTION: fn_13783
-__declspec(noinline) void UIScrollWnd::OnCreate(int width, int height) {
+void UIScrollWnd::OnCreate(int width, int height) {
   this->horizontalBar = new UIScrollBar();
   this->horizontalBar->Configure(0, height - this->scrollBarHeight, 0, width - this->scrollBarWidth);
   this->AddChild(this->horizontalBar);
