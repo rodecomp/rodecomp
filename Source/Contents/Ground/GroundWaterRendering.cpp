@@ -77,15 +77,21 @@ static __forceinline RenderPrimitive* BuildWaterPrimitive(
 
 // INLINED
 static __forceinline void SetWaterTextureCoordinates(RenderPrimitive& primitive, int column, int row, float unit) {
-  const float left = static_cast<float>(static_cast<unsigned>(column) & 3u) * 0.25f;
-  const float right = (static_cast<float>(static_cast<unsigned>(column) & 3u) + unit) * 0.25f;
-  const float top = static_cast<float>(static_cast<unsigned>(row) & 3u) * 0.25f;
-  const float bottom = (static_cast<float>(static_cast<unsigned>(row) & 3u) + unit) * 0.25f;
+  const float x = static_cast<float>(static_cast<unsigned>(column) & 3u);
+  const float y = static_cast<float>(static_cast<unsigned>(row) & 3u);
+  const float left = x * 0.25f;
+  const float right = (x + 1.0f) * 0.25f;
+  const float top = y * 0.25f;
+  const float bottom = (y + 1.0f) * 0.25f;
 
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    primitive.vertices[corner].u = (corner & 1) ? right : left;
-    primitive.vertices[corner].v = (corner & 2) ? bottom : top;
-  }
+  primitive.vertices[0].u = left;
+  primitive.vertices[0].v = top;
+  primitive.vertices[1].u = right;
+  primitive.vertices[1].v = top;
+  primitive.vertices[2].u = left;
+  primitive.vertices[2].v = bottom;
+  primitive.vertices[3].u = right;
+  primitive.vertices[3].v = bottom;
 }
 
 // OFFSET: 0x00AC1540
