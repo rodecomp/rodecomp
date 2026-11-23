@@ -543,6 +543,8 @@ void NavigationLinkParser::SplitMessageArguments(const char* text, std::vector<s
   }
 }
 
+using MessageArgumentSubstring = std::string (std::string::*)(std::size_t, std::size_t) const;
+
 // OFFSET: 0x00834C30
 // FUNCTION: fn_10418
 std::string NavigationLinkParser::FormatMessageArguments(std::string value, int messageId) {
@@ -579,10 +581,9 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
           if (arguments[index].find("MsgStr(") != std::string::npos) {
-            std::string stripped = arguments[index].substr(7);
-            arguments[index] = std::move(stripped);
-            std::string trimmed = arguments[index].substr(0, arguments[index].size() - 1);
-            arguments[index] = std::move(trimmed);
+            const MessageArgumentSubstring substring = &std::string::substr;
+            arguments[index] = (arguments[index].*substring)(7, std::string::npos);
+            arguments[index] = (arguments[index].*substring)(0, arguments[index].size() - 1);
             const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
           } else {
