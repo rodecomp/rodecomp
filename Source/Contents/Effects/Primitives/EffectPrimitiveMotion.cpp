@@ -5450,9 +5450,9 @@ __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
 
   this->state.slots[0].vecBNow.x = this->render.position.x;
   this->state.slots[0].vecBNow.z = this->render.position.z;
-  const float base = this->render.position.y - 6.0f;
+  const float base = this->render.position.y - g_effectPrimitiveOuterSpan;
   this->state.slots[0].vecBPre.y = base;
-  this->state.slots[0].vecBNow.y = g_sinTable[this->state.slots[0].rotStart] * 3.0f + base;
+  this->state.slots[0].vecBNow.y = g_sinTable[this->state.slots[0].rotStart] * g_masterReachDistance + base;
 }
 
 // OFFSET: 0x00BE9690
