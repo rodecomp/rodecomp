@@ -8395,7 +8395,8 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_COMMAND:
     if (a == ID_OK) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
-        g_modeMgr.currentMode->SendMsg(MM_CHANGE_SKILL_NAME, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
+        CMode* mode = g_modeMgr.currentMode;
+        mode->SendMsg(MM_CHANGE_SKILL_NAME, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
       g_windowMgr.CloseWindow(WID_SKILLNAMECHANGEWND);
     }
