@@ -1,4 +1,3 @@
-#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include <new>
 #include "Contents/Effects/Particles/SpriteParticle.h"
@@ -221,11 +220,11 @@ void CSpriteParticle::Draw(char mode) {
     cellMatrix.Compose(temp, cellTranslate);
 
     vector3d cellVertices[4];
-    volatile float* cellZero = reinterpret_cast<volatile float*>(cellVertices);
     for (int v = 0; v < 4; ++v) {
-      cellZero[v * 3] = 0.0f;
-      cellZero[v * 3 + 1] = 0.0f;
-      cellZero[v * 3 + 2] = 0.0f;
+      volatile vector3d& vertex = cellVertices[v];
+      vertex.x = 0.0f;
+      vertex.y = 0.0f;
+      vertex.z = 0.0f;
     }
     for (int v = 0; v < 4; ++v) {
       const float vx = primitive->vertices[v].x;
@@ -252,11 +251,11 @@ void CSpriteParticle::Draw(char mode) {
     finalTransform.Compose(world, this->transform);
 
     vector3d worldVertices[4];
-    volatile float* worldZero = reinterpret_cast<volatile float*>(worldVertices);
     for (int v = 0; v < 4; ++v) {
-      worldZero[v * 3] = 0.0f;
-      worldZero[v * 3 + 1] = 0.0f;
-      worldZero[v * 3 + 2] = 0.0f;
+      volatile vector3d& vertex = worldVertices[v];
+      vertex.x = 0.0f;
+      vertex.y = 0.0f;
+      vertex.z = 0.0f;
     }
     for (int v = 0; v < 4; ++v) {
       const float vx = cellVertices[v].x;
@@ -301,7 +300,7 @@ void CSpriteParticle::Draw(char mode) {
 
     primitive->sourceBlend = 5;
     primitive->destinationBlend = (this->flags != 5) ? 6 : 2;
-    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, static_cast<std::uint16_t>(this->flags));
+    g_renderer->Submit(primitive, static_cast<std::uint16_t>(this->flags));
   }
 }
 
