@@ -203,83 +203,182 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
   }
 
   if (family == 20) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 21) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixLoveangel_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 22) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 23) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixDiary_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 24) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixMiniHeart_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 25) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixFreshman_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 26) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixKid_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 27) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixMagic_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
   } else if (family == 28) {
-    LOGFONTA description = {};
+    LOGFONTA description;
+    description.lfHeight = 0;
+    description.lfWidth = 0;
+    description.lfEscapement = description.lfOrientation = 0;
     description.lfWeight = FW_NORMAL;
+    description.lfItalic = 0;
+    description.lfUnderline = 0;
+    description.lfStrikeOut = 0;
     description.lfCharSet = DEFAULT_CHARSET;
     description.lfOutPrecision = OUT_RASTER_PRECIS;
+    description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
     description.lfQuality = PROOF_QUALITY;
+    description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+    for (char& character : description.lfFaceName) {
+      character = 0;
+    }
     std::strcpy(description.lfFaceName, "RixJJangu_10.eot");
     description.lfHeight = -MulDiv(13, 72, 72);
     entry.font = CreateFontIndirectA(&description);
