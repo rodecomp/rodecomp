@@ -783,12 +783,14 @@ int AiTraceAI(lua_State* state) {
   }
   std::strcat(path, "\\TraceAI.txt");
 
-  char* buffer = const_cast<char*>(text);
+  char* buffer;
   if (file.Open(path, 0, true, false)) {
     size = file.GetSize();
     buffer = new char[size];
     file.Read(buffer, size);
     file.Close();
+  } else {
+    buffer = const_cast<char*>(text);
   }
 
   file.Open(path, 0x1001, true, false);
@@ -797,7 +799,13 @@ int AiTraceAI(lua_State* state) {
   }
 
   char stamp[256];
-  sprintf(stamp, "%d/%d/%d - %d:%d:%d", date >> 16, (date >> 8) & 0xFF, date & 0xFF, (time >> 16) & 0xFF, (time >> 8) & 0xFF, time & 0xFF);
+  const int year = date >> 16;
+  const int month = (date >> 8) & 0xFF;
+  const int day = date & 0xFF;
+  const int hour = (time >> 16) & 0xFF;
+  const int minute = (time >> 8) & 0xFF;
+  const int second = time & 0xFF;
+  sprintf(stamp, "%d/%d/%d - %d:%d:%d", year, month, day, hour, minute, second);
   file.Write(stamp, std::strlen(stamp));
   file.Write(text, std::strlen(text));
   file.Write("\r\n", 2);
