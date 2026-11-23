@@ -19453,7 +19453,7 @@ bool CRagEffect::OnProcess3() {
   case EF_RG_COIN7:
     if (this->state.stateCnt == 26) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\LG_PINPOINTATTACK.wav");
+      PlayEffectWaveInline(*this, "effect\\LG_PINPOINTATTACK.wav");
     }
     if (this->state.stateCnt % 4 <= 1) {
       if ((this->state.parent->render.flags & 2) == 0) {
