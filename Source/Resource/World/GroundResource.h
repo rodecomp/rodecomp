@@ -51,7 +51,9 @@ class CGndRes : public CRes {
 public:
   CGndRes();
   CGndRes(const char* extension, const char* prefix);
-  ~CGndRes() override;
+  // OFFSET: 0x0074E390
+  // FUNCTION: fn_07908
+  ~CGndRes() override = default;
   CGndRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;

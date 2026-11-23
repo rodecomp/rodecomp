@@ -12,10 +12,6 @@ CGndRes::CGndRes() {
   this->loaded = 0;
 }
 
-// OFFSET: 0x0074E390
-// FUNCTION: fn_07908
-CGndRes::~CGndRes() = default;
-
 // OFFSET: 0x0074DB10
 // FUNCTION: fn_07899
 CGndRes* CGndRes::Create() {
