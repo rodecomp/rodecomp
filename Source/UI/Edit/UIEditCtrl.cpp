@@ -7181,7 +7181,7 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
 
   this->title = new UIStaticText();
   this->title->SetSize(240, 15);
-  this->title->SetText(LookupMessage(this->buyingShop ? MSI_BUYINGSTORE_MYSHOPWND_TITLE : MSI_SALESTORE_MYSHOPWND_TITLE), 0);
+  this->title->SetText(LookupMessage(this->buyingShop == 0 ? MSI_SALESTORE_MYSHOPWND_TITLE : MSI_BUYINGSTORE_MYSHOPWND_TITLE), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
@@ -7201,30 +7201,25 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
 
   this->saleAlarm = new UICheckBox();
   this->saleAlarm->SetSize(240, 12);
-  this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->buyingShop ? MSI_SOUNDEFFECT_ITEMBUYWND : MSI_SOUNDEFFECT_ITEMSELLWND));
+  this->saleAlarm->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(this->buyingShop == 0 ? MSI_SOUNDEFFECT_ITEMSELLWND : MSI_SOUNDEFFECT_ITEMBUYWND));
   this->saleAlarm->FitToText();
-  this->saleAlarm->Move(12, this->geometry.height - (this->buyingShop ? 12 : 18));
+  if (this->buyingShop) {
+    this->saleAlarm->Move(12, this->geometry.height - 12);
+  } else {
+    this->saleAlarm->Move(12, this->geometry.height - 18);
+  }
   this->saleAlarm->SetChecked(g_session.m_muteSellSound);
   this->AddChild(this->saleAlarm);
 
   const std::string prefix("유저인터페이스\\");
-  int ids[1] = {201};
   const char* names[1][3] = {{"btn_close", "btn_close_a", "btn_close_b"}};
+  int ids[1] = {201};
   int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 1; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    {
-      const std::string filename = prefix + names[index][0] + ".bmp";
-      this->buttons[index]->SetBitmap(filename.c_str(), 0, 0);
-    }
-    {
-      const std::string filename = prefix + names[index][1] + ".bmp";
-      this->buttons[index]->SetBitmap(filename.c_str(), 1, 0);
-    }
-    {
-      const std::string filename = prefix + names[index][2] + ".bmp";
-      this->buttons[index]->SetBitmap(filename.c_str(), 2, 0);
-    }
+    this->buttons[index]->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
     this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
     this->buttons[index]->Move(positions[index][0], positions[index][1]);
     this->buttons[index]->SetId(ids[index]);
