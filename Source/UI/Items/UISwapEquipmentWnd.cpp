@@ -497,7 +497,7 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == DRAG_ITEM_INVENTORY) {
     const int id = mode->drag.id;
-    if (!((x >= 6 && x < 30) || (x >= 251 && x < 275))) {
+    if (x < 6 || (x >= 30 && (x < 251 || x >= 275))) {
       return;
     }
 
