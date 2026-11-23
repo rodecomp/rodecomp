@@ -5063,18 +5063,9 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    if (slot.height[4] < 10.0f) {
-      r = 150;
-      g = 250;
-      b = 150;
-    } else {
-      r = 50;
-      g = 50;
-      b = 250;
-    }
+    unsigned char r = g_projectionDepthOffset <= slot.height[4] ? 50 : 150;
+    unsigned char g = g_projectionDepthOffset <= slot.height[4] ? 50 : 250;
+    unsigned char b = g_projectionDepthOffset <= slot.height[4] ? 250 : 150;
 
     slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
     slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
