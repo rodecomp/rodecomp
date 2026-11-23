@@ -65,7 +65,7 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
     this->scaleKeys.Add(0, resource.scale[0], resource.scale[1], resource.scale[2], 1.0f, 0.0f, 0.0f, 0.0f);
   }
 
-  this->rotationKeys = resource.rotationKeys;
+  this->rotationKeys.assign(resource.rotationKeys.data(), resource.rotationKeys.data() + resource.rotationKeys.size());
 
   if (this->rotationKeys.size() == 0) {
     this->rotationKeys.Add(0, resource.axis[0], resource.axis[1], resource.axis[2], resource.angle);
