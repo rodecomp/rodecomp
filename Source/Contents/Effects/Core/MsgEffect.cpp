@@ -1511,8 +1511,9 @@ void CMsgEffect::FollowOwner() {
           this->motionInitialized = 1;
           approach = true;
         }
+        vector3d oldPosition;
         if (approach) {
-          const vector3d oldPosition = this->render.position;
+          oldPosition = this->render.position;
           vector2d direction;
           direction.x = this->render.position.x - owner->render.position.x;
           direction.y = this->render.position.z - owner->render.position.z;
@@ -1520,28 +1521,24 @@ void CMsgEffect::FollowOwner() {
           this->render.position.x += (owner->render.position.x - this->render.position.x) / 25.0f;
           this->render.curMotion = 8;
           this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
-          const float movedX = this->render.position.x - oldPosition.x;
-          const float movedZ = this->render.position.z - oldPosition.z;
-          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
         } else if (dist > 12.0f && this->activeMotion == 0) {
-          const vector3d oldPosition = this->render.position;
+          oldPosition = this->render.position;
           vector2d direction;
           direction.x = this->render.position.x - owner->render.position.x;
           direction.y = this->render.position.z - owner->render.position.z;
           direction.Normalize();
           this->render.position.x += (owner->render.position.x - this->render.position.x) / dist;
           this->render.position.z += (owner->render.position.z - this->render.position.z) / dist;
-          const float movedX = this->render.position.x - oldPosition.x;
-          const float movedZ = this->render.position.z - oldPosition.z;
-          this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
         } else if (dist > 3.0f) {
-          const vector3d oldPosition = this->render.position;
+          oldPosition = this->render.position;
           vector2d direction;
           direction.x = this->render.position.x - owner->render.position.x;
           direction.y = this->render.position.z - owner->render.position.z;
           direction.Normalize();
           this->render.position.x += (owner->render.position.x - this->render.position.x) / 20.0f;
           this->render.position.z += (owner->render.position.z - this->render.position.z) / 20.0f;
+        }
+        if (approach || dist > 3.0f) {
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
           this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
