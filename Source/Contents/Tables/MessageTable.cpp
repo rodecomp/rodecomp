@@ -4857,7 +4857,8 @@ bool CCommonObject::LoadCsv(const char* name, std::vector<std::string> (*transfo
       fields.reserve(row.size());
       const int count = static_cast<int>(row.size());
       for (int i = 0; i < count; ++i) {
-        fields.push_back(row[i].c_str());
+        const char* text = row[i].c_str();
+        fields.push_back(text);
       }
       insert(fields);
     }
@@ -4886,7 +4887,8 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
       std::vector<const char*> fields;
       fields.reserve(row.size());
       for (const std::string& field : row) {
-        fields.push_back(field.c_str());
+        const char* text = field.c_str();
+        fields.push_back(text);
       }
       insert(fields, context);
     }
@@ -4917,7 +4919,7 @@ MessageMap::_Mybase::emplace<int&, const char*&>(int& id, const char*& text) {
   }
 
   this->_Check_max_size();
-  std::_List_node_emplace_op2<_Alnode> node(this->_List._Getal(), id, text);
+  std::_List_node_emplace_op2<_Alnode> node(this->_List._Getal(), std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(text));
   if (this->_Check_rehash_required_1()) {
     this->_Rehash_for_1();
     target = this->_Find_last(node._Ptr->_Myval.first, hash);
