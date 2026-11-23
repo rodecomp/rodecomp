@@ -5266,11 +5266,9 @@ int CLuaInstance::GetFieldStringMap(std::map<unsigned int, std::string>& values,
   lua_pushstring(this->m_state, name);
   lua_gettable(this->m_state, -2);
   int type = lua_type(this->m_state, -1);
-  int result;
+  int result = 0;
   if (type == LUA_TTABLE) {
-    lua_pushnil(this->m_state);
-    result = 0;
-    while (lua_next(this->m_state, -2) != 0) {
+    for (lua_pushnil(this->m_state); lua_next(this->m_state, -2) != 0; lua_settop(this->m_state, -2)) {
       type = lua_type(this->m_state, -2);
       if (type != LUA_TNUMBER) {
         result = (type != LUA_TNIL) + 1;
@@ -5285,7 +5283,6 @@ int CLuaInstance::GetFieldStringMap(std::map<unsigned int, std::string>& values,
       }
       value = lua_tostring(this->m_state, -1);
       values[key] = value;
-      lua_settop(this->m_state, -2);
     }
   } else {
     result = (type != LUA_TNIL) + 1;
