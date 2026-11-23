@@ -60,15 +60,14 @@ void CCartCannon::Open() {
   this->currentStep = 0;
   target.y -= 10.0f;
 
-  this->stepDelta.x = target.x - current.x;
-  this->stepDelta.y = target.y - current.y;
-  this->stepDelta.z = target.z - current.z;
+  const float deltaX = target.x - current.x;
+  const float deltaY = target.y - current.y;
+  const float deltaZ = target.z - current.z;
+  this->stepDelta.x = deltaX;
+  this->stepDelta.y = deltaY;
+  this->stepDelta.z = deltaZ;
 
-  const float length = SquareRoot(
-    this->stepDelta.z * this->stepDelta.z +
-    this->stepDelta.y * this->stepDelta.y +
-    this->stepDelta.x * this->stepDelta.x
-  );
+  const float length = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
 
   this->stepDelta.x /= 10.0f;
   this->stepDelta.y /= 10.0f;

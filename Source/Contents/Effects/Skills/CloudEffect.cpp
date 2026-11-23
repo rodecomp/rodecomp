@@ -115,7 +115,10 @@ void CCloud::ResetParticles() {
   this->particle->SetColor(this->red, this->green, this->blue);
   this->particle->alpha = 0;
   this->particle->scale = this->baseScale;
-  this->particle->SetTexture(FormatOwnedString("effect\\cloud%d.tga", Random(4) + 1).c_str());
+  CParticle* cloud = this->particle;
+  int index = Random(4);
+  ++index;
+  cloud->SetTexture(FormatOwnedString("effect\\cloud%d.tga", index).c_str());
   this->particle->SetRenderFlag(this->renderFlag);
 }
 
