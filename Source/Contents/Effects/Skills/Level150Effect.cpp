@@ -486,9 +486,9 @@ __forceinline void CLevel150SubEffect::UpdateParticle(CParticle* particle) {
     if (size > 20.0f) {
       int alpha = particle->alpha - 3;
       if (alpha <= 0) {
-        size = g_projectionDepthOffset;
-        particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
         alpha = 200;
+        size = 10.0f;
+        particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
       }
       particle->alpha = alpha;
     }
