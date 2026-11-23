@@ -1463,8 +1463,9 @@ void UISpellListWnd::Paint() {
 
   int row = 0;
   int index = 0;
+  unsigned position = 0;
   CSkillInfo skill;
-  for (unsigned position = 0; position < this->m_skills.size(); ++position) {
+  for (; position < this->m_skills.size(); ++position) {
     char name[64];
     std::strcpy(name, CSkillInfo::DisplayName(static_cast<int>(this->m_skills[position])));
     if (index < this->m_scroll * this->m_columns) {
