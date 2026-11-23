@@ -53,7 +53,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
 
           std::string bracket = this->BracketName((*row)[index]->item.DisplayName(0));
           (*row)[index]->SetTooltip(bracket.c_str());
-          (*row)[index]->SetLabel(bracket.c_str());
+          (*row)[index]->SetLabel(bracket);
           UIItemTagButton* const resizedButton = (*row)[index];
           const int height = resizedButton->geometry.height;
           resizedButton->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, height);
