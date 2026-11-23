@@ -123,8 +123,8 @@ void CMode::DrawCursor() {
 
     const float scaleX = cell.scaleX;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-    float left = static_cast<float>(cell.x);
-    float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
+    const float left = static_cast<float>(cell.x);
+    const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
     const float top = static_cast<float>(cell.y) * cell.scaleY;
     const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * cell.scaleY;
 
@@ -139,15 +139,19 @@ void CMode::DrawCursor() {
     }
     primitive->texture = texture;
 
+    float scaledLeft;
+    float scaledRight;
     if (cell.mirrored & 1) {
-      const float swap = left;
-      left = right;
-      right = swap;
+      scaledLeft = scaleX * right;
+      scaledRight = scaleX * left;
+    } else {
+      scaledLeft = scaleX * left;
+      scaledRight = scaleX * right;
     }
 
-    const float x0 = static_cast<float>(x) + scaleX * left + 0.5f;
+    const float x0 = static_cast<float>(x) + scaledLeft + 0.5f;
     const float y0 = static_cast<float>(y) + top + 0.5f;
-    const float x1 = scaleX * right + static_cast<float>(x) + 0.5f;
+    const float x1 = scaledRight + static_cast<float>(x) + 0.5f;
     const float y1 = static_cast<float>(y) + bottom + 0.5f;
 
     RenderVertex* quad = primitive->quad;
