@@ -78,8 +78,7 @@ void CMapMagicZoneEffect::Close() {
 // OFFSET: 0x00B6DDA0
 // FUNCTION: fn_46225
 __forceinline void CMapMagicZoneEffect::AddPetals() {
-  int index = 0;
-  for (int angle = 0; angle < 360; angle += 180) {
+  for (int index = 0; index < 2; ++index) {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->effectId = this->id;
@@ -89,24 +88,20 @@ __forceinline void CMapMagicZoneEffect::AddPetals() {
       indices[0] = 1;
       particle->SetTexture("effect\\pikapika2.bmp");
       particle->scale = 46.0f;
-      particle->phaseParameter = angle;
+      particle->phaseParameter = index * 180;
       particle->angle = 0.0f;
       particle->alpha = 25;
       particle->animationParameter = -1.0f;
       particle->InitParticleQuad(particle->vertices);
       this->petals.push_back(particle);
     }
-
-    ++index;
   }
 }
 
 // OFFSET: 0x00B6DE70
 // FUNCTION: fn_46226
 __forceinline void CMapMagicZoneEffect::AddRibbon() {
-  int row = 0;
-  int angle = 0;
-  for (int height = 55; height > 40; height -= 5) {
+  for (int row = 0; row < 3; ++row) {
     for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
@@ -117,19 +112,16 @@ __forceinline void CMapMagicZoneEffect::AddRibbon() {
         particle->columnIndex = segment;
         particle->groupIndex = 3;
         particle->alpha = 50;
-        particle->angle = static_cast<float>(angle);
+        particle->angle = static_cast<float>(row * 90);
         particle->angleParameter = 315;
         particle->speedParameter = 15.0f - (static_cast<float>(row) + static_cast<float>(row));
         particle->scale = static_cast<float>(row) * 0.2f + 12.9f;
-        particle->phaseParameter = height;
+        particle->phaseParameter = 55 - row * 5;
         particle->animationParameter = 0.0f;
         particle->InitParticleQuad(particle->vertices);
         this->ribbon.push_back(particle);
       }
     }
-
-    ++row;
-    angle += 90;
   }
 }
 
@@ -153,15 +145,14 @@ bool CMapMagicZoneEffect::IsAlive() {
 __forceinline void CMapMagicZoneEffect::UpdatePetal(CParticle* particle) {
   if (particle) {
     ZoneVector3d corners[4];
-    particle->phaseParameter = (particle->phaseParameter + 3) % 360;
-    const float height = particle->animationParameter;
     const int angle = particle->columnIndex * 23;
-    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+    particle->phaseParameter = (particle->phaseParameter + 3) % 360;
 
     for (int corner = 0; corner < 4; ++corner) {
       const int index = (angle + corner * 90) % 360;
+      const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
       corners[corner].x = radius * g_cosTable[index];
-      corners[corner].y = height;
+      corners[corner].y = particle->animationParameter;
       corners[corner].z = radius * g_sinTable[index];
     }
 
@@ -226,10 +217,12 @@ void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
     float& spinAngle = particle->angle;
     const int angle = static_cast<int>(spinAngle + 1.0f);
     spinAngle = static_cast<float>(angle % 360);
-    const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;
+    const float scale = particle->scale;
+    const int phase = particle->phaseParameter;
 
     for (int corner = 0; corner < 4; ++corner) {
       const int index = (angle + corner * 90) % 360;
+      const float radius = (g_sinTable[phase] + 1.0f) * (scale * 0.1f) + scale * 0.8f;
       corners[corner].x = radius * g_cosTable[index];
       corners[corner].y = particle->animationParameter;
       corners[corner].z = radius * g_sinTable[index];
