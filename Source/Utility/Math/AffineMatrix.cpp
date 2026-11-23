@@ -313,20 +313,23 @@ void MatrixToQuaternion(RotationQuaternion& result, const matrix& rotation) {
     result.z = (m[6] + m[2]) / divisor;
     result.w = (m[7] - m[5]) / divisor;
   } else if (largest == y) {
+    const float xValue = (m[3] + m[1]) / divisor;
     result.y = largest / divisor;
-    result.x = (m[3] + m[1]) / divisor;
+    result.x = xValue;
     result.z = (m[7] + m[5]) / divisor;
     result.w = (m[2] - m[6]) / divisor;
   } else if (largest == z) {
     result.x = (m[6] + m[2]) / divisor;
+    const float yValue = m[7] + m[5];
     result.z = largest / divisor;
-    result.y = (m[7] + m[5]) / divisor;
+    result.y = yValue / divisor;
     result.w = (m[3] - m[1]) / divisor;
   } else if (largest == w) {
     result.x = (m[7] - m[5]) / divisor;
     result.y = (m[2] - m[6]) / divisor;
+    const float zValue = m[3] - m[1];
     result.w = largest / divisor;
-    result.z = (m[3] - m[1]) / divisor;
+    result.z = zValue / divisor;
   }
 
   if (result.w < 0.0f) {
