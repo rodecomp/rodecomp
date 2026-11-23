@@ -401,13 +401,20 @@ std::uint32_t CRenderer::BlendColor(std::uint32_t base, std::uint32_t overlay) {
 // OFFSET: 0x0055ADA0
 // FUNCTION: fn_02085
 bool CRendererDX7::Draw() {
+  DWORD alphaReference = 0;
+  DWORD alphaTestEnable = 0;
+
   this->screenWidth = g_deviceOwnerDX7 ? g_deviceOwnerDX7->width : 0;
   this->screenHeight = g_deviceOwnerDX7 ? g_deviceOwnerDX7->height : 0;
 
   if (SUCCEEDED(this->device->BeginScene())) {
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &alphaReference);
+    this->device->GetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, &alphaTestEnable);
     this->FlushRenderList();
     this->ClearFrame();
     this->device->EndScene();
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, alphaReference);
+    this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, alphaTestEnable);
     return true;
   } else {
     this->ClearFrame();
