@@ -11629,38 +11629,33 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
     if (attack && g_mouse.buttons[0] == 1) {
       int index = 0;
-      CGameActor* companion;
+      CGameActor* companion = nullptr;
       if (g_session.IsHomunculusSkill(this->skillId) && g_session.homunAlive) {
         companion = this->scene->GetGameActorByAID(homunAid);
-        if (companion != nullptr && companion->HasActiveHomunculusAI()) {
-          AiMessage message;
-          message.type = 7;
-          message.x = 0;
-          message.y = 0;
-          message.level = this->skillUseLevel;
-          message.skill = this->skillId;
-          message.target = pick->accountId;
-          companion->SetMsg2AI(&message, index);
-          return result;
+        if (companion != nullptr && !companion->HasActiveHomunculusAI()) {
+          companion = nullptr;
         }
       } else if (g_session.IsMercenarySkill(this->skillId) && g_session.mercenaryAlive) {
         companion = this->scene->GetGameActorByAID(mercenaryAid);
-        if (companion != nullptr && companion->HasActiveMercenaryAI()) {
-          index = 1;
-          AiMessage message;
-          message.type = 7;
-          message.x = 0;
-          message.y = 0;
-          message.level = this->skillUseLevel;
-          message.skill = this->skillId;
-          message.target = pick->accountId;
-          companion->SetMsg2AI(&message, index);
-          return result;
+        index = 1;
+        if (companion != nullptr && !companion->HasActiveMercenaryAI()) {
+          companion = nullptr;
         }
+      }
+      if (companion != nullptr) {
+        AiMessage message;
+        message.type = 7;
+        message.x = 0;
+        message.y = 0;
+        message.level = this->skillUseLevel;
+        message.skill = this->skillId;
+        message.target = pick->accountId;
+        companion->SetMsg2AI(&message, index);
+        return result;
       }
     }
 
-    const bool allowed = pick->accountId != g_session.m_aid || mode == 4;
+    const bool allowed = pick->accountId != g_session.m_aid || this->skillUseType == 4;
     if (!allowed || !attack) {
       return result;
     }
@@ -11752,7 +11747,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       attack = 1;
     }
 
-    const bool allowed = pick->accountId != mercenaryAid || mode == 4;
+    const bool allowed = pick->accountId != mercenaryAid || this->skillUseType == 4;
     if (allowed && attack) {
       this->RequestPlayerAction(pick->accountId, 1);
     }
