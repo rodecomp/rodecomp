@@ -124,8 +124,9 @@ bool CJupitelThunderStormEffect::IsAlive() {
     return true;
   }
 
-  return std::find_if(this->particles.begin(), this->particles.end(),
-                      [](const CParticle* particle) { return particle && ParticleAlive(particle); }) != this->particles.end();
+  const auto alive = std::find_if(this->particles.begin(), this->particles.end(),
+                                  [](const CParticle* particle) { return particle && ParticleAlive(particle); });
+  return this->particles.end() != alive;
 }
 
 // OFFSET: 0x00706690
