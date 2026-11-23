@@ -7018,9 +7018,8 @@ void CEffectPrim::RenderGrandCross2(matrix& wtm) {
 void CEffectPrim::RenderMagicTarget(matrix& wtm) {
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
@@ -7032,8 +7031,8 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
     column -= 3;
     row -= 3;
 
-    const float sn = g_sinTable[slot.rotStart];
-    const float cs = g_cosTable[slot.rotStart];
+    const float sn = g_sinTable[this->state.slots[ec].rotStart];
+    const float cs = g_cosTable[this->state.slots[ec].rotStart];
 
     for (int z = 0; z < 7; ++z) {
       const float z0 = static_cast<float>(z) - 3.5f;
@@ -7052,7 +7051,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
         const float u11 = z1 * sn + x1 * cs;
         const float v11 = z1 * cs - x1 * sn;
 
-        float scale = slot.maxHeight;
+        float scale = this->state.slots[ec].maxHeight;
         float uv[8] = {
           (u00 * scale + 3.5f) / 7.0f, (v00 * scale + 3.5f) / 7.0f, (u10 * scale + 3.5f) / 7.0f, (v10 * scale + 3.5f) / 7.0f,
           (u01 * scale + 3.5f) / 7.0f, (v01 * scale + 3.5f) / 7.0f, (u11 * scale + 3.5f) / 7.0f, (v11 * scale + 3.5f) / 7.0f,
@@ -7060,7 +7059,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
         ground->DrawGridDecal(
           wtm.values, cellX, cellZ, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
 
-        scale = slot.maxHeight + 0.1f;
+        scale = this->state.slots[ec].maxHeight + 0.1f;
         uv[0] = (scale * u00 + 3.5f) / 7.0f;
         uv[1] = (scale * v00 + 3.5f) / 7.0f;
         uv[2] = (scale * u10 + 3.5f) / 7.0f;
