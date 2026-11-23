@@ -7216,11 +7216,19 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
   int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 1; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = this->buttons[index];
-    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    {
+      const std::string filename = prefix + names[index][0] + ".bmp";
+      this->buttons[index]->SetBitmap(filename.c_str(), 0, 0);
+    }
+    {
+      const std::string filename = prefix + names[index][1] + ".bmp";
+      this->buttons[index]->SetBitmap(filename.c_str(), 1, 0);
+    }
+    {
+      const std::string filename = prefix + names[index][2] + ".bmp";
+      this->buttons[index]->SetBitmap(filename.c_str(), 2, 0);
+    }
+    this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
     this->buttons[index]->Move(positions[index][0], positions[index][1]);
     this->buttons[index]->SetId(ids[index]);
     this->AddChild(this->buttons[index]);
