@@ -3025,7 +3025,8 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
         break;
       }
     }
-  } else if (data.visible) {
+  }
+  if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -3082,7 +3083,8 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
         break;
       }
     }
-  } else if (data.visible) {
+  }
+  if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
