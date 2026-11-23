@@ -12437,9 +12437,9 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 void UIFrameWnd::WrapTextSegments(
   int width, int maxLines, const std::vector<std::pair<int, std::string>>& segments, FrameTextLines& lines
 ) {
-  auto* line = &lines[0];
   int lineCount = 1;
   int lineWidth = 0;
+  auto* line = &lines[0];
   for (const auto& segment : segments) {
     const char* begin = segment.second.c_str();
     const char* lineStart = begin;
