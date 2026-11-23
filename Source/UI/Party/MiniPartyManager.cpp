@@ -58,7 +58,8 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
     top = window->geometry.height;
   }
 
-  CMiniPartyWndSortArea area(RECT{0, top, this->screenWidth, height - g_miniPartyCellHeight * 3});
+  const int bottom = height - g_miniPartyCellHeight * 3;
+  CMiniPartyWndSortArea area(RECT{0, top, this->screenWidth, bottom});
   const std::list<int> cells = area.GetCells();
 
   auto cell = cells.begin();
@@ -66,7 +67,8 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
   for (; cell != cells.end() && entry != this->snapExcluded.end(); ++cell, ++entry) {
     const MiniPartyGridPoint position = area.GetWindowPosition(*cell);
     (*entry)->Move(position.x, position.y);
-    static_cast<UIMiniPartyWnd*>(*entry)->m_cell = *cell;
+    UIMiniPartyWnd* window = static_cast<UIMiniPartyWnd*>(*entry);
+    window->m_cell = *cell;
 
     const int index = *cell;
     g_session.SetRecord0734Value(static_cast<UIMiniPartyWnd*>(*entry)->GetMember().accountId, index);
