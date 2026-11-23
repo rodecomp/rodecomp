@@ -1809,7 +1809,8 @@ bool CSession::IsIndoorMapName(const char* name) const {
 // OFFSET: 0x00DDB580
 // FUNCTION: fn_23354
 void CSession::RemovePartyMemberByName(const char* name) {
-  for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
+  using PartyList = std::list<MessengerMember>;
+  for (PartyList::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
     if (it->name != name) {
       continue;
     }
@@ -1824,7 +1825,8 @@ void CSession::RemovePartyMemberByName(const char* name) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PARTY, 0, 0, 0, 0, 0);
     }
 
-    this->m_partyMembers.erase(it);
+    PartyList::iterator (PartyList::*erase)(PartyList::const_iterator) = &PartyList::erase;
+    (this->m_partyMembers.*erase)(it);
     return;
   }
 }
