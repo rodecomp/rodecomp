@@ -115,14 +115,19 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     const auto end = g_partyBookingJobs.end();
     for (auto it = g_partyBookingJobs.begin(); it != end; ++it, ++index) {
       UIWindow* check = this->m_jobChecks[index];
-      std::int16_t job = -1;
-      bool enabled = false;
+      int job = -1;
+      bool enabled;
       if (check != nullptr) {
         if (check->geometry.state != 0) {
           ++selected;
           enabled = true;
-          job = static_cast<std::int16_t>(it->first);
+          job = static_cast<std::uint16_t>(it->first);
+        } else {
+          enabled = false;
+          job = -1;
         }
+      } else {
+        enabled = false;
       }
       packet.jobs[index] = job;
       it->second = enabled;
