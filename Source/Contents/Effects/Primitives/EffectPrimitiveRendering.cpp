@@ -4782,7 +4782,8 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
     }
 
     const float rx = scale * slot.distance;
-    const int angle0 = static_cast<int>(slot.height[3]);
+    const float firstAngle = slot.height[3];
+    const int angle0 = static_cast<int>(firstAngle);
     slot.vecBPre.x = g_cosTable[angle0] * g_effectIconRadius;
     slot.vecBPre.z = g_sinTable[angle0] * g_effectIconRadius;
     const int angle1 = static_cast<int>(slot.height[7]);
@@ -4809,7 +4810,7 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
     const vector3d vec8{vec4.x, vec4.y, vec4.z};
     int dif;
 
-    dif = static_cast<int>(slot.height[3] - rot0);
+    dif = static_cast<int>(firstAngle - rot0);
     if ((slot.height[2] == 0.0f || slot.height[2] == g_effectIconOuterRadius) == ((dif < 70 && dif > -80) || dif < -270 || dif > 270)) {
       vec1 = {vec5.x + slot.vecBPre.x, vec5.y + slot.vecBPre.y, vec5.z + slot.vecBPre.z};
       vec2 = {vec6.x + slot.vecBPre.x, vec6.y + slot.vecBPre.y, vec6.z + slot.vecBPre.z};
