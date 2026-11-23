@@ -19,6 +19,7 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/MousePointer.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
@@ -5984,4 +5985,31 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
     target->SendMsg(this, kind, address, total, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00CA8630
+// FUNCTION: fn_20990
+CMousePointer::CMousePointer() {
+  this->m_remainingFrames = 0;
+  this->render.flatDepth = 1;
+  this->render.visible = 0;
+  this->render.motionStartTime = timeGetTime();
+
+  if (this->render.sprite) {
+    this->render.sprite->Unlock();
+  }
+  this->render.sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("cursors.spr"));
+  if (this->render.sprite) {
+    this->render.sprite->Lock();
+  }
+
+  if (this->render.action) {
+    this->render.action->Unlock();
+  }
+  this->render.action = static_cast<CActRes*>(ResourceMgr::Instance().Load("cursors.act"));
+  if (this->render.action) {
+    this->render.action->Lock();
+  }
+
+  static_cast<CRenderObject*>(this)->SetAction(3, 2, 0);
 }
