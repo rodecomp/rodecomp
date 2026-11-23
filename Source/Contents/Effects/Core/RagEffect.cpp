@@ -11152,7 +11152,6 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
 
-  bool pulsing = true;
   if (kind == 0) {
     this->state.lastPrim->state.slots[0].maxHeight = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10.0f : 50.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
@@ -11171,34 +11170,26 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
       this->state.lastPrim->state.slots[0].rotStart = 0;
       this->state.lastPrim->state.slots[0].alphaB = 30;
       this->state.lastPrim->state.slots[0].alphaT = 29999;
+    } else if (kind == 3) {
+      this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
+      this->state.lastPrim->state.slots[0].rotStart = 0;
     } else if (kind == 4) {
       this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
       this->state.lastPrim->state.slots[0].rotStart = 0;
       this->state.lastPrim->state.slots[0].alphaB = 120;
       this->state.lastPrim->state.slots[0].alphaT = 1880;
-      this->state.lastPrim->state.slots[0].height[0] = 2.5f;
-      this->state.lastPrim->state.slots[0].height[1] = 2.5f;
-      this->state.lastPrim->state.slots[0].height[2] = 0.0f;
-      this->state.lastPrim->state.slots[0].height[3] = 4.0f;
-      this->state.lastPrim->state.slots[0].height[4] = static_cast<float>(ClampedRandom(50));
-      pulsing = false;
     } else {
-      if (kind == 3) {
-        this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
-      }
-
       this->state.lastPrim->state.slots[0].rotStart = 0;
     }
 
-    if (pulsing) {
-      this->state.lastPrim->state.slots[0].height[0] = 2.5f;
-      this->state.lastPrim->state.slots[0].height[1] = 2.5f;
-    }
+    this->state.lastPrim->state.slots[0].height[0] = 2.5f;
+    this->state.lastPrim->state.slots[0].height[1] = 2.5f;
   }
 
-  if (pulsing) {
-    this->state.lastPrim->state.slots[0].height[2] = 0.0f;
-    this->state.lastPrim->state.slots[0].height[3] = static_cast<float>(kind);
+  this->state.lastPrim->state.slots[0].height[2] = 0.0f;
+  this->state.lastPrim->state.slots[0].height[3] = static_cast<float>(kind);
+  if (kind == 4) {
+    this->state.lastPrim->state.slots[0].height[4] = static_cast<float>(ClampedRandom(50));
   }
 
   this->state.lastPrim->state.slots[0].height[5] = 0.0f;
