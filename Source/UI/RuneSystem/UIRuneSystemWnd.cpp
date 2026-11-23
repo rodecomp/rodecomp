@@ -708,7 +708,7 @@ void UIRuneSet_Info::RefreshDescription() {
   }
 
   UIRuneSetinfoList* list = this->m_infoList;
-  const int visible = (list->geometry.height - 60) / 30;
+  const int visible = (list->geometry.height - 60) / 15;
   const int total = static_cast<int>(list->m_lines.size());
   list->SetRange(std::max(total - visible, 0), visible, total);
   list->SetPosition(0);
