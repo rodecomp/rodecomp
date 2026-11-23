@@ -1,3 +1,4 @@
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/DX7/SurfaceDX7.h"
@@ -70,8 +71,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
       const float offsetY = static_cast<float>(candidate / 256) * (1.0f / 256.0f);
       const float u0 = (offsetX + 0.0f) / static_cast<float>(texture.TextureWidth());
       const float v0 = (offsetY + 0.0f) / static_cast<float>(texture.TextureHeight());
-      const float u1 = (offsetX + 4.0f) / static_cast<float>(texture.TextureWidth());
-      const float v1 = (offsetY + 4.0f) / static_cast<float>(texture.TextureHeight());
+      const float u1 = (offsetX + g_effectIconRadius) / static_cast<float>(texture.TextureWidth());
+      const float v1 = (offsetY + g_effectIconRadius) / static_cast<float>(texture.TextureHeight());
       constexpr float z = 0.00001f;
       constexpr float rhw = 0.99999f;
       RenderVertex vertices[4] = {
