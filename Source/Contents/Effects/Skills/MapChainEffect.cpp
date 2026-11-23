@@ -23,18 +23,18 @@ __declspec(noinline) CMapChainEffect::~CMapChainEffect() {
 // OFFSET: 0x00B4AB90
 // FUNCTION: fn_18947
 void CMapChainEffect::CreateChainParticles(int param) {
-  int local8 = 0;
-  for (int localC = 0; localC < 360; localC += 60, ++local8) {
+  int row = 0;
+  for (int angle = 0; angle < 360; angle += 60) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
         particle->effectId = this->id;
-        particle->rowIndex = local8;
+        particle->rowIndex = row;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        particle->angle = static_cast<float>(localC);
+        particle->angle = static_cast<float>(angle);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -46,20 +46,21 @@ void CMapChainEffect::CreateChainParticles(int param) {
         this->particles.push_back(particle);
       }
     }
+    ++row;
   }
 
-  int localC2 = 6;
-  for (int local82 = 0; local82 < 360; local82 += 60, ++localC2) {
+  row = 6;
+  for (int angle = 0; angle < 360; angle += 60) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
         particle->effectId = this->id;
-        particle->rowIndex = localC2;
+        particle->rowIndex = row;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        particle->angle = static_cast<float>(local82);
+        particle->angle = static_cast<float>(angle);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -72,6 +73,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         this->particles.push_back(particle);
       }
     }
+    ++row;
   }
 }
 
@@ -92,9 +94,9 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
   const float cosTilt = g_cosTable[tilt];
 
   const float centerY = particle->scale * sinIndex;
-  const float centerZ = (particle->scale * cosTilt) * cosIndex;
+  const float centerZ = (cosTilt * particle->scale) * cosIndex;
   const float centerX = (sinTilt * particle->scale) * cosIndex;
-  const float sideX = particle->speedParameter * cosTilt;
+  const float sideX = cosTilt * particle->speedParameter;
   const float sideZ = -sinTilt * particle->speedParameter;
 
   const float v3x = (sideX + centerX) + 0.0f;
