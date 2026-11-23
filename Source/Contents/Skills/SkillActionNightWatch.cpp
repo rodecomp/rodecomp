@@ -448,10 +448,20 @@ void CSkillAction_NW_WILD_FIRE::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00790070
 // FUNCTION: fn_08698
 void CSkillAction_NW_WILD_FIRE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire"), position.x, position.y, position.z, 0, -1, 0, 0);
-  effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "wild_fire";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "wild_fire_bottom";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x00790280
@@ -477,10 +487,20 @@ void CSkillAction_NW_BASIC_GRENADE::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x007902D0
 // FUNCTION: fn_08702
 void CSkillAction_NW_BASIC_GRENADE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade"), position.x, position.y, position.z, 0, -1, 0, 0);
-  effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("basic_grenade_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "basic_grenade";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "basic_grenade_bottom";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x007904F0
