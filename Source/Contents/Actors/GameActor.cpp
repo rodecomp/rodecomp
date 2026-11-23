@@ -545,6 +545,9 @@ void CGameActor::UpdateGaugePositions() {
     if (timeGetTime() < this->chatTick + 5000) {
       UIWindow* window = this->actorWindows[0];
       int x = this->render.screenX - this->chatWidth / 2;
+      int y = static_cast<int>(
+        static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - static_cast<float>(this->chatHeight)
+      );
       if (x < -3) {
         x = -3;
       }
@@ -552,9 +555,6 @@ void CGameActor::UpdateGaugePositions() {
       if (x > maximumX) {
         x = maximumX;
       }
-      int y = static_cast<int>(
-        static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - static_cast<float>(this->chatHeight)
-      );
       if (y < -3) {
         y = -3;
       }
