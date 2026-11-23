@@ -570,9 +570,7 @@ void CSpriteEffect::OnProcess() {
       particle->applyActorLift = 1;
       particle->screenOffsetY = -105.0f;
       particle->screenOffsetX = 0.0f;
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1];
-      particle->position.z = this->position[2];
+      particle->position = vector3d{this->position[0], this->position[1], this->position[2]};
       break;
     case EF_C_2025ROSFESTA:
       particle->applyActorExtent = 1;
