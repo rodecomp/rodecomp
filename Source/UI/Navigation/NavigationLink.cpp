@@ -365,23 +365,21 @@ std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
 bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
   const auto end = value.find(g_parserNaviLinkCloseTag);
 
-  if (end == std::string::npos) {
-    return true;
-  }
+  if (end != std::string::npos) {
+    const auto coordinates = end - 4;
+    const std::string tail = value.substr(coordinates);
+    x = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(0, 2));
+    y = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(2, 2));
+    const std::string head = value.substr(0, coordinates);
+    const auto begin = head.find(g_parserNaviLinkTag);
 
-  const auto coordinates = end - 4;
-  const std::string tail = value.substr(coordinates);
-  x = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(0, 2));
-  y = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(2, 2));
-  const std::string head = value.substr(0, coordinates);
-  const auto begin = head.find(g_parserNaviLinkTag);
+    if (begin != std::string::npos) {
+      name = head.substr(begin + std::strlen(g_parserNaviLinkTag.c_str()));
+    }
 
-  if (begin != std::string::npos) {
-    name = head.substr(begin + std::strlen(g_parserNaviLinkTag.c_str()));
-  }
-
-  if (name.empty()) {
-    return false;
+    if (name.empty()) {
+      return false;
+    }
   }
 
   return true;
