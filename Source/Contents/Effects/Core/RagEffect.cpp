@@ -5202,18 +5202,23 @@ void CRagEffect::GRANDCROSS2(char flag) {
 // FUNCTION: fn_20223
 void CRagEffect::Magnum2(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
+
   if (this->state.stateCnt == 0) {
     this->state.flag = 0;
-  } else if (this->state.stateCnt == 20) {
+  }
+
+  if (this->state.stateCnt == 20) {
     PlayEffectWaveInline(*this, "permeter_attack.wav");
   } else if (this->state.stateCnt == 30) {
     PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
   }
 
-  const int frame = this->state.stateCnt;
-  const int elapsed = frame - 25;
-  if (static_cast<unsigned int>(elapsed) <= 30) {
-    if (this->state.stateCnt % 3 == 0 && static_cast<int>(++this->state.flag) < 11) {
+  if (this->state.stateCnt >= 25 && this->state.stateCnt <= 55 && this->state.stateCnt % 3 == 0) {
+    ++this->state.flag;
+
+    if (static_cast<int>(this->state.flag) < 11) {
+      const int time = this->state.stateCnt - 25;
+
       this->state.lastPrim = this->LaunchEffectPrim(73, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       this->state.lastPrim->state.duration = this->state.duration;
@@ -5221,21 +5226,21 @@ void CRagEffect::Magnum2(const char* name) {
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
       this->state.lastPrim->state.size = 5.0f;
+
       int i;
       for (i = 0; i < 4; ++i) {
         this->state.lastPrim->state.slots[i].life = 0;
       }
-      const float maxHeight = 20.0f - static_cast<float>(elapsed) * 0.7f;
-      const float distance = static_cast<float>(elapsed) * 0.2f + 5.0f;
+
       for (i = 0; i < 2; ++i) {
         this->state.lastPrim->state.slots[i].life = 1;
         this->state.lastPrim->state.slots[i].process = 0;
         this->state.lastPrim->state.slots[i].fullDisplayAngle = 360;
-        this->state.lastPrim->state.slots[i].maxHeight = maxHeight;
-        this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(elapsed * 6 + i * 9);
+        this->state.lastPrim->state.slots[i].maxHeight = 20.0f - static_cast<float>(time) * 0.7f;
+        this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(i * 9 + time * 6);
         this->state.lastPrim->state.slots[i].alphaB = 0;
-        this->state.lastPrim->state.slots[i].distance = distance;
-        this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(((35 - i * 4) - static_cast<std::uint16_t>(frame - 25)) * 2);
+        this->state.lastPrim->state.slots[i].distance = static_cast<float>(time) * 0.2f + 5.0f;
+        this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(70 - i * 8 - time * 2);
         this->state.lastPrim->state.slots[i].alphaT = static_cast<std::int16_t>(i);
       }
     }
