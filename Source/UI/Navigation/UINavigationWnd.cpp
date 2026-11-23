@@ -572,10 +572,11 @@ bool UINavigationWnd::DrawPlayerMarker(int x, int y, float size) {
 void UINavigationWnd::DrawRouteLabels(int activeLabel) {
   const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
   for (int index = 0; index < labelCount; ++index) {
-    if (activeLabel == g_navigationManager.routeLines[index].kind) {
-      const int x = g_navigationManager.routeLines[index].x;
-      const int y = g_navigationManager.routeLines[index].y;
-      this->DrawTextAt(x + 1, y + 1, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
+    const auto& line = g_navigationManager.routeLines[index];
+    if (activeLabel == line.kind) {
+      const int x = line.x;
+      const int y = line.y;
+      this->DrawTextAt(x + 1, y + 1, line.text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
       this->DrawTextAt(x, y, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
     }
   }
