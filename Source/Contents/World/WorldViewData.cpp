@@ -758,7 +758,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
           if (!mapName) {
             break;
           }
-          if (IsMapDisplayNameTranslated(mapName)) {
+          if (this->IsMapDisplayNameTranslated(mapName)) {
             CWorldViewField* field = new CWorldViewField(area, mapName, fieldName, description);
             world->AddField(mapId, mapName, field);
           }
