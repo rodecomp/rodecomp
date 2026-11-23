@@ -675,10 +675,13 @@ bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
     return changed;
   }
 
-  bool active = true;
-  if (shop->items.size() >= 1) {
-    active = shop->items[0].end() != shop->items[0].find(this->m_id);
+  if (shop->items.size() < 1) {
+    const bool changed = this->m_active != true;
+    this->m_active = true;
+    return changed;
   }
+
+  const bool active = shop->items[0].end() != shop->items[0].find(this->m_id);
   const bool changed = this->m_active != active;
   this->m_active = active;
   return changed;
