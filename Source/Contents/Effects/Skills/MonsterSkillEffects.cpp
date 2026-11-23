@@ -1049,9 +1049,7 @@ void CFallenAngelEffect::OnProcess() {
   const float speed = 1.0f / SquareRoot(dx * dx + 0.0f + dz * dz);
 
   CEZ2STRParticle* emitter = this->emitter;
-  emitter->position.x = start.x + dx * speed * 0.09f;
-  emitter->position.y = start.y + speed * 0.0f;
-  emitter->position.z = start.z + dz * speed * 0.09f;
+  emitter->position = vector3d{start.x + dx * speed * 0.09f, start.y + speed * 0.0f, start.z + dz * speed * 0.09f};
 
   this->emitter->Process(0.0f, -80.0f, 0.0f);
   this->emitter->elapsedFrames++;
@@ -2786,9 +2784,7 @@ void CRandomOptEffect::Init() {
         this->offsets[0].x = innerX;
         this->offsets[0].y = 0.0f;
         this->offsets[0].z = innerZ;
-        this->offsets[1].x = particle->vertices[1].x;
-        this->offsets[1].y = particle->vertices[1].y;
-        this->offsets[1].z = particle->vertices[1].z;
+        this->offsets[1] = vector3d{particle->vertices[1].x, particle->vertices[1].y, particle->vertices[1].z};
       }
     }
 
@@ -4088,9 +4084,9 @@ void CSevereRainStorm::OnProcess() {
         const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
                          emitter->offset.z;
 
-        emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-        emitter->position.y = vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10];
-        emitter->position.z = vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11];
+        emitter->position = vector3d{vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9],
+                                     vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10],
+                                     vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11]};
         emitter->Process(0.0f, 0.0f, 0.0f);
       }
 
@@ -4871,9 +4867,7 @@ void CGravityControlEffect::Open() {
 // FUNCTION: fn_07298
 void CHawkVumerangEffect::Open() {
   this->startTime = timeGetTime();
-  this->targetPosition.x = this->position[0];
-  this->targetPosition.y = this->position[1];
-  this->targetPosition.z = this->position[2];
+  this->targetPosition = vector3d{this->position[0], this->position[1], this->position[2]};
   this->originPosition.x = this->sourcePosition[0];
   this->originPosition.y = this->sourcePosition[1];
   this->originPosition.z = this->sourcePosition[2];
