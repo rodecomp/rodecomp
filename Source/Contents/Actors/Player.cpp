@@ -2965,8 +2965,9 @@ void CPlayer::UpdatePendingAction() {
     if (this->isAttackRequest != 0 || timeGetTime() <= this->attackReqTime + 1200) {
       return;
     }
+    const std::uint32_t now = timeGetTime();
     ++this->totalAttackReqCnt;
-    this->attackReqTime = timeGetTime();
+    this->attackReqTime = now;
     this->isAttackRequest = 1;
     if (this->attackMode != 2) {
       this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0);
