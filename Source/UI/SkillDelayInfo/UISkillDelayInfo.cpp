@@ -603,9 +603,9 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   this->titleBar->SetSize(345, 17);
   this->titleBar->Move(0, 0);
   this->titleBar->SetImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xF15F8785CDE369BFULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x792FFD1325418FB5ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x49D33529F1556333ULL))
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xF15F8785CDE369BFULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x792FFD1325418FB5ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x49D33529F1556333ULL)
   );
   this->AddChild(this->titleBar);
 
@@ -632,10 +632,10 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   menuButton->disabled = 0;
   menuButton->Invalidate();
   menuButton->SetImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xC1BB8111EDD183E1ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x1767DDE18D779D8BULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x0B23D10F2F49D72BULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x136F2F9915D1DBCFULL))
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xC1BB8111EDD183E1ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x1767DDE18D779D8BULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x0B23D10F2F49D72BULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x136F2F9915D1DBCFULL)
   );
   this->titleBar->AddChild(menuButton);
 
@@ -646,10 +646,10 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   closeButton->SetImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0x6BDF334F2BFDAD51ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x674D9F3975573D41ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x79E915E9AF6F55DDULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xB7AFBD2FD9FD7501ULL))
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0x6BDF334F2BFDAD51ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x674D9F3975573D41ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x79E915E9AF6F55DDULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xB7AFBD2FD9FD7501ULL)
   );
   this->titleBar->SetSecondButton(closeButton);
 
@@ -772,20 +772,21 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   this->delayList->SetOnSelect([this](SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) { this->OnSelectItem(item, data); });
   this->delayList->SetBinder([this](SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) { this->OnUpdateItem(item, data); });
   this->delayList->SetImages("", "", "", "");
-  this->delayList->itemX = 0;
-  this->delayList->itemY = 0;
+  auto* delayList = this->delayList;
+  delayList->itemX = 0;
+  delayList->itemY = 0;
   this->delayList->scrollBar->SetSize(13, 100);
   this->delayList->scrollBar->Move(422, 0);
   this->delayList->scrollBar->step = 10;
   this->delayList->SetScrollBarButtonImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xB195637DAFCB0D59ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0xADADEB4DF7813B55ULL))
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xB195637DAFCB0D59ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0xADADEB4DF7813B55ULL)
   );
-  this->delayList->SetScrollBarBackground(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xD9452D81E5CD99C1ULL)));
+  this->delayList->SetScrollBarBackground(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xD9452D81E5CD99C1ULL));
   this->delayList->SetScrollBarThumbImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xFD69A9B3F311818DULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x7F2DFFC1ABE91F2BULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xD98F5345098D630DULL))
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xFD69A9B3F311818DULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x7F2DFFC1ABE91F2BULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xD98F5345098D630DULL)
   );
   this->delayList->AddNewItem();
   this->AddChild(this->delayList);
@@ -805,14 +806,14 @@ void CUISkillDelayInfo::OnCreate(int width, int height) {
   this->description->SetScrollBarSize(13, 35);
   this->description->SetScrollStep(1);
   this->description->SetScrollBarButtonImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xC9712D676B5B3943ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0xED15938D333D2DB9ULL))
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xC9712D676B5B3943ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0xED15938D333D2DB9ULL)
   );
-  this->description->SetScrollBarBackground(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xBD2BA1C11B01E73BULL)));
+  this->description->SetScrollBarBackground(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xBD2BA1C11B01E73BULL));
   this->description->SetScrollBarThumbImages(
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0x4B755DB19953E311ULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x4331A17F33095FEBULL)),
-    std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xD1056FF94D4D2773ULL))
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0x4B755DB19953E311ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x4331A17F33095FEBULL),
+    OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xD1056FF94D4D2773ULL)
   );
   this->AddChild(this->description);
 }
