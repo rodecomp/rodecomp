@@ -14,16 +14,10 @@ const char* CSession::GetHitWaveName(int job) {
     const std::vector<std::string>& jobWaves = this->m_jobHitWaves;
     if (job > 3950) {
       const std::string* wave = jobWaves.data() + job - 3950;
-      if (wave->capacity() > 15) {
-        return wave->c_str();
-      }
-      return reinterpret_cast<const char*>(wave);
-    }
-    const std::string* wave = jobWaves.data() + job;
-    if (wave->capacity() > 15) {
       return wave->c_str();
     }
-    return reinterpret_cast<const char*>(wave);
+    const std::string* wave = jobWaves.data() + job;
+    return wave->c_str();
   }
 
   return this->GetWeaponHitWaveName(-1);
