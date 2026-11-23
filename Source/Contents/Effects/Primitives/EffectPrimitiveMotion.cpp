@@ -48,6 +48,9 @@ float g_changeEpsilon = 0.0001f;
 // GLOBAL: gl_25988
 float g_cameraYawOffset = 90.0f;
 
+// GLOBAL: gl_26027
+float g_effectPrimitiveOuterSpan = 6.0f;
+
 namespace {
   // INLINED
   inline vector3d operator+(const vector3d& a, const vector3d& b) {
@@ -550,12 +553,8 @@ __declspec(noinline) void CEffectPrim::AdvanceEffectPrimitive() {
 
   this->state.speed = this->state.accel + this->state.speed;
   Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
-  this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-  this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
-  this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-  this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
-  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
-  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
+  this->state.deltaPos += this->state.speed3d;
+  this->render.position = this->state.deltaPos + this->state.orgPos;
 
   if ((this->state.pattern & 1u) != 0 && this->state.stateCnt == static_cast<int>(this->state.chCnt)) {
     this->state.accel = 0;
@@ -5350,7 +5349,11 @@ void CEffectPrim::PrimExpandPulse() {
       if (slot.flag1[1] == 16) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       } else if (slot.flag1[1] == 24) {
-        slot.alphaB += g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 8 : 15;
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+          slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 8);
+        } else {
+          slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
+        }
       } else {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       }
@@ -5634,7 +5637,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
           const int sinLimit = 90 + (value - middle) * m2;
 
           this->state.slots[index].height[value] = this->state.slots[index].maxHeight;
-          this->state.slots[index].height[value] += g_sinTable[sinLimit] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[pr];
+          this->state.slots[index].height[value] += this->state.slots[index].maxHeight * g_sinTable[sinLimit] * 0.3f * g_sinTable[pr];
         }
       }
     }
