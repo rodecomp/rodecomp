@@ -210,8 +210,8 @@ void CEffectPrim::RenderGroundArc(matrix& wtm) {
       if (i >= 21) {
         i = 20;
       }
-      prevT = curT;
       prevB = curB;
+      prevT = curT;
     }
   }
 }
@@ -1364,12 +1364,10 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
     this->state.slots[ec].vecTPre += slot.vecBNow;
     this->state.slots[ec].vecTNow += slot.vecBNow;
 
-    vec2.x = this->state.slots[ec].vecTNow.x;
-    vec2.y = this->state.slots[ec].vecTNow.y - this->state.slots[ec].height[12];
-    vec2.z = this->state.slots[ec].vecTNow.z;
-    vec1.x = this->state.slots[ec].vecTPre.x;
-    vec1.y = this->state.slots[ec].vecTPre.y - this->state.slots[ec].height[12];
-    vec1.z = this->state.slots[ec].vecTPre.z;
+    vec2 = this->state.slots[ec].vecTNow;
+    vec1 = this->state.slots[ec].vecTPre;
+    vec2.y -= this->state.slots[ec].height[12];
+    vec1.y -= this->state.slots[ec].height[12];
 
     unsigned char shade;
     if (ec == 0) {
