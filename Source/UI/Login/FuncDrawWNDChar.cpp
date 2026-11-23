@@ -136,6 +136,8 @@ void FuncDrawWNDChar::Draw(bool option) {
 
     const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
     SpriteAtlasRecord record{};
+    record.u0 = 0.0f;
+    record.v0 = 0.0f;
     if (option == true) {
       if (cell.image == -1) {
         continue;
