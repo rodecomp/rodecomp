@@ -179,10 +179,7 @@ void CUIEditCtrlEx::UpdateScrollBar() {
   this->visibleLines = std::max(1, (this->geometry.height - this->verticalPadding) / this->lineHeight);
   this->scrollMaximum = std::max(0, total - this->visibleLines);
 
-  position = std::min(position, this->line);
-  if (this->line >= this->visibleLines + position) {
-    position = this->line - this->visibleLines + 1;
-  }
+  position = EnsureVisible(position, this->line, this->visibleLines);
   this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
 
   this->scrollBar->SetRange(this->scrollMaximum, this->visibleLines, total);
