@@ -47,13 +47,12 @@ namespace {
 }
 
 // INLINED
-inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
-  const float angle = transform.values[4];
-  const float cosineU = ClientCos(angle) * (u - g_depthAverageHalf);
-  const float rotatedU = cosineU - ClientSin(angle) * (v - g_depthAverageHalf);
+__forceinline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
+  const float cosineU = ClientCos(transform.values[4]) * (u - g_depthAverageHalf);
+  const float rotatedU = cosineU - ClientSin(transform.values[4]) * (v - g_depthAverageHalf);
   const float resultU = rotatedU * transform.values[2] + g_depthAverageHalf + transform.values[0];
-  const float cosineV = ClientCos(angle) * (v - g_depthAverageHalf);
-  const float rotatedV = ClientSin(angle) * (u - g_depthAverageHalf) + cosineV;
+  const float cosineV = ClientCos(transform.values[4]) * (v - g_depthAverageHalf);
+  const float rotatedV = ClientSin(transform.values[4]) * (u - g_depthAverageHalf) + cosineV;
   const float resultV = rotatedV * transform.values[3] + g_depthAverageHalf;
   const float offsetV = transform.values[1];
 
@@ -221,7 +220,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     const std::uint16_t texture = face->texture;
     std::uint16_t flags = 0;
 
-    while (face != faceEnd && face->texture == texture) {
+    while (face != faceEnd && face && face->texture == texture) {
       const RenderVertex& a = projected[face->vertices[0]];
       const RenderVertex& b = projected[face->vertices[1]];
       const RenderVertex& c = projected[face->vertices[2]];
@@ -252,9 +251,9 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
-              color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
-              color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
+              color.red = static_cast<int>(color.red * ambient[0]);
+              color.green = static_cast<int>(color.green * ambient[1]);
+              color.blue = static_cast<int>(color.blue * ambient[2]);
               output[corner].diffuseChannels = color;
             }
           } else if (this->overrideColors) {
@@ -270,18 +269,18 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               const int* values = &this->faceValues[faceIndex * 9 + corner * 3];
               SpriteColor color;
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
-              color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
-              color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
+              color.red = static_cast<int>(values[0] * lightColor[0]);
+              color.green = static_cast<int>(values[1] * lightColor[1]);
+              color.blue = static_cast<int>(values[2] * lightColor[2]);
               output[corner].diffuseChannels = color;
             }
           } else {
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
-              color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
-              color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
+              color.red = static_cast<int>(color.red * lightColor[0]);
+              color.green = static_cast<int>(color.green * lightColor[1]);
+              color.blue = static_cast<int>(color.blue * lightColor[2]);
               output[corner].diffuseChannels = color;
             }
           }
