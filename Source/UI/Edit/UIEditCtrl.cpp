@@ -11496,8 +11496,8 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   if (dragName) {
     ITEM_INFO item;
     item.itemId = dragName;
-    item.refiningLevel = 0;
     item.identified = gameMode->drag.identified;
+    item.refiningLevel = 0;
     name = item.DisplayName(0);
   }
 
