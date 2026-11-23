@@ -782,8 +782,12 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
+  auto inRect = [&](int left, int top, int right, int bottom) {
+    return x >= left && x <= right && y >= top && y <= bottom;
+  };
+
   if (this->state == REFINING_STATE_READY) {
-    if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+    if (this->selectedMaterial != -1 && inRect(81, 150, 105, 174)) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
@@ -793,7 +797,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       return;
     }
 
-    if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+    if (this->catalystEnabled == 1 && inRect(161, 150, 185, 174)) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
