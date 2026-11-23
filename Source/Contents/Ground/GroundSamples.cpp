@@ -105,24 +105,21 @@ void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, u
   blue = 255;
 }
 
+#pragma inline_depth(0)
 // OFFSET: 0x00AC0C40
 // FUNCTION: fn_17570
 bool GroundGeometry::TerrainCellCorners(int column, int row, float* vertices) const {
-  const int columns = 2 * this->width;
-  const int rows = 2 * this->height;
-
-  if (column < 0 || columns < column || row < 0 || rows < row) {
+  if (column < 0 || 2 * this->width < column || row < 0 || 2 * this->height < row) {
     return false;
   }
 
   const float size = this->cellSize * 0.5f;
-  const int dx = column - this->width;
-  const int dz = row - this->height;
-  const float left = static_cast<float>(dx) * size;
-  const float right = static_cast<float>(dx + 1) * size;
-  const float top = static_cast<float>(dz) * size;
-  const float bottom = static_cast<float>(dz + 1) * size;
-
+  int coordinate = column - this->width;
+  const float left = static_cast<float>(coordinate++) * size;
+  const float right = static_cast<float>(coordinate) * size;
+  coordinate = row - this->height;
+  const float top = static_cast<float>(coordinate++) * size;
+  const float bottom = static_cast<float>(coordinate) * size;
   vertices[1] = 0.0f;
   vertices[4] = 0.0f;
   vertices[7] = 0.0f;
@@ -148,3 +145,4 @@ bool GroundGeometry::TerrainCellCorners(int column, int row, float* vertices) co
 
   return true;
 }
+#pragma inline_depth()
