@@ -570,6 +570,11 @@ namespace {
     /* 0002 */ std::uint32_t accountId;
   };
 #pragma pack(pop)
+
+  struct MacroReportScratch {
+    /* 0000 */ char name[16];
+    /* 0010 */ PACKET_CZ_MACRO_REPORT_HEADER header;
+  };
 }
 
 // OFFSET: 0x007F1420
@@ -577,7 +582,7 @@ namespace {
 int UIMacroReporterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  PACKET_CZ_MACRO_REPORT_HEADER header;
+  MacroReportScratch report;
   switch (message) {
   case UM_SETINFO: {
     this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
@@ -653,23 +658,22 @@ int UIMacroReporterWnd::SendMsg(
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
         if (this->m_namesValid == true && this->m_targetValid == true) {
-          header.packetType = ID_CZ_MACRO_REPORT_USER;
-          strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
-          header.count = static_cast<std::uint8_t>(this->m_nameCount);
-          const int length = this->m_nameCount * 16 + sizeof(header);
-          header.type = 6;
+          report.header.packetType = ID_CZ_MACRO_REPORT_USER;
+          strncpy_s(report.header.target, sizeof(report.header.target), this->m_target.c_str(), _TRUNCATE);
+          report.header.count = static_cast<std::uint8_t>(this->m_nameCount);
+          const int length = this->m_nameCount * 16 + sizeof(report.header);
+          report.header.type = 6;
           char buffer[2048];
-          std::memset(buffer + sizeof(header), 0, sizeof(buffer) - sizeof(header));
+          std::memset(buffer + sizeof(report.header), 0, sizeof(buffer) - sizeof(report.header));
           if (length > sizeof(buffer)) {
             break;
           }
-          header.packetLength = static_cast<std::uint16_t>(length);
-          std::memcpy(buffer, &header, sizeof(header));
+          report.header.packetLength = static_cast<std::uint16_t>(length);
+          std::memcpy(buffer, &report.header, sizeof(report.header));
           for (int index = 0; index < this->m_nameCount; ++index) {
             if (!this->m_names[index].empty()) {
-              char name[16];
-              strncpy_s(name, sizeof(name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
-              memcpy_s(buffer + sizeof(header) + index * 16, 16, name, sizeof(name));
+              strncpy_s(report.name, sizeof(report.name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
+              memcpy_s(buffer + sizeof(report.header) + index * 16, 16, report.name, sizeof(report.name));
             }
           }
           GetRagConnection().Send(length, buffer);
