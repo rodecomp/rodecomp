@@ -1589,7 +1589,7 @@ void CCreateLineInfo::ArrangeLines() {
     unsigned lineHeight = 0;
     for (UIWindow* window : line) {
       const unsigned height = static_cast<unsigned>(window->geometry.height);
-      if (lineHeight < height) {
+      if (height > lineHeight) {
         lineHeight = height;
       }
     }
