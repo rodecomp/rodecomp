@@ -210,9 +210,8 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   switch (message) {
   case UM_SETINFO: {
     this->m_info = reinterpret_cast<QuestDisplayInfo*>(argument1);
-    QuestDisplayInfo* info = reinterpret_cast<QuestDisplayInfo*>(argument1);
-    if (!info->IsValid()) {
-      info->Reset();
+    if (!this->m_info->IsValid()) {
+      this->m_info->Reset();
     }
     this->Show(this->m_info->visible);
     break;
@@ -220,7 +219,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_MENU_SELECTED: {
     int index = 0;
     const auto end = g_renewQuestMgr->m_ongoingQuests.end();
-    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
+    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); end != it; ++it, ++index) {
       if (index == this->m_selectedIndex) {
         switch (this->m_menuItems[argument1].value) {
         case MENUID_TOGGLE_QUEST_ACTIVE: {
@@ -258,12 +257,18 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 204, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(g_mouse.x + 1, 1);
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      if (x < 1) {
+        x = 1;
+      }
       int maxX = g_renderer->viewport.width - menu->geometry.width;
       if (x > maxX) {
         x = maxX;
       }
-      int y = std::max(g_mouse.y + 1, 1);
+      if (y < 1) {
+        y = 1;
+      }
       int maxY = g_renderer->viewport.height - menu->geometry.height;
       if (y > maxY) {
         y = maxY;
