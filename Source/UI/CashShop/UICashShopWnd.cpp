@@ -688,9 +688,12 @@ void UICashShopWnd::OnProcess() {
 // OFFSET: 0x007D14C0
 // FUNCTION: fn_09552
 void UICashShopWnd_Banner::OnProcess() {
-  if (!this->m_entries.empty() && this->m_lastTick + 5000 < timeGetTime()) {
-    const unsigned int next = this->m_index + 1;
-    this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
+  if (!this->m_entries.empty()) {
+    const DWORD now = timeGetTime();
+    if (this->m_lastTick + 5000 < now) {
+      const unsigned int next = this->m_index + 1;
+      this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
+    }
   }
 }
 
