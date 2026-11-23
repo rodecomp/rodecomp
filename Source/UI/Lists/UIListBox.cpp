@@ -54,10 +54,6 @@ UIListBox::UIListBox() : UIWindow(0) {
 UIServerListBox::UIServerListBox() : UIListBox(), balloon(nullptr) {
 }
 
-// OFFSET: 0x00871040
-// FUNCTION: fn_11105
-UIListBox::~UIListBox() = default;
-
 // OFFSET: 0x0087BB00
 // FUNCTION: fn_11251
 void UIScrollBar::Configure(int x, int y, int length, int vertical, int arrowLength, int thickness) {

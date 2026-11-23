@@ -29,3 +29,7 @@ UICaptchaImage::~UICaptchaImage() {
 // FUNCTION: fn_11101
 UIChatHisBox::~UIChatHisBox() {
 }
+
+// OFFSET: 0x00871040
+// FUNCTION: fn_11105
+UIListBox::~UIListBox() = default;
