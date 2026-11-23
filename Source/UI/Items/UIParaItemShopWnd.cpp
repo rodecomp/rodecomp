@@ -708,7 +708,8 @@ void UIParaItemShopWnd::Paint() {
       this->DrawBitmap(0, left->image.height * i + titleHeight, left, false);
     }
     if (height % left->image.height > 0) {
-      this->DrawBitmap(0, this->geometry.height - barHeight - left->image.height, left, false);
+      const int bottom = this->geometry.height - barHeight;
+      this->DrawBitmap(0, bottom - left->image.height, left, false);
     }
   }
 
@@ -718,7 +719,8 @@ void UIParaItemShopWnd::Paint() {
       this->DrawBitmap(this->geometry.width - right->image.width, right->image.height * i + titleHeight, right, false);
     }
     if (height % right->image.height > 0) {
-      this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - barHeight - right->image.height, right, false);
+      const int bottom = this->geometry.height - barHeight;
+      this->DrawBitmap(this->geometry.width - right->image.width, bottom - right->image.height, right, false);
     }
   }
 
