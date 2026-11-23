@@ -55,17 +55,15 @@ int CMiniPartyWndAreaMgr::FindFreeCell() {
   CMiniPartyWndSortArea area(g_windowMgr.GetMiniPartyUsableArea());
   const std::list<int>& cells = area.GetCells();
 
-  for (const int& cell : this->available) {
-    if (std::find(cells.begin(), cells.end(), cell) == cells.end()) {
-      continue;
-    }
-
-    if (g_windowMgr.FindSnapExcludedWindow(cell) == nullptr) {
-      return cell;
+  const auto end = this->available.end();
+  auto it = this->available.begin();
+  for (; it != end; ++it) {
+    if (std::find(cells.begin(), cells.end(), *it) != cells.end() && g_windowMgr.FindSnapExcludedWindow(*it) == nullptr) {
+      break;
     }
   }
 
-  return -1;
+  return it != end ? *it : -1;
 }
 
 // OFFSET: 0x00737D40
