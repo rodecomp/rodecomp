@@ -31,14 +31,16 @@ private:
 
 // INLINED
 inline RenderCommand* RenderCommandPool::Acquire() {
-  if (this->m_current == this->m_commands.end()) {
+  if (this->m_commands.end() == this->m_current) {
     this->m_commands.emplace_back();
     this->m_current = this->m_commands.end();
     return &this->m_commands.back();
   }
 
-  RenderCommand* command = &*this->m_current++;
-  return new (command) RenderCommand;
+  RenderCommand* command = &(*this->m_current);
+  this->m_current++;
+  new (command) RenderCommand;
+  return command;
 }
 
 // INLINED

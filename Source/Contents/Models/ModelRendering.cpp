@@ -239,7 +239,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
           }
 
           for (int corner = 0; corner < 3; ++corner) {
-            const auto found = this->textureTransforms.find(face->texture);
+            const auto found = this->textureTransforms.find(texture);
 
             if (found != this->textureTransforms.end()) {
               TransformModelUV(output[corner].u, output[corner].v, found->second);
@@ -300,7 +300,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
-      command->depthFlags = static_cast<std::uint16_t>((command->depthFlags & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+      command->commandMode = commandMode;
 
       if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;
