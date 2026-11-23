@@ -121,8 +121,9 @@ void CharacterParticleBundle::Close() {
 // OFFSET: 0x005A3A10
 // FUNCTION: fn_03134
 const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
+  const auto end = g_clawMarkRings.end();
   const auto found = g_clawMarkRings.find(radius);
-  if (found != g_clawMarkRings.end()) {
+  if (found != end) {
     return found->second;
   }
 
