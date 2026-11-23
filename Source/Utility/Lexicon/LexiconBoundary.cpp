@@ -211,9 +211,7 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 bool LexiconSerializer::Load(const char* path) {
   bool result = false;
   CFile file;
-  if (!file.Open(path, 0, true, false)) {
-    result = false;
-  } else {
+  if (file.Open(path, 0, true, false)) {
     if (file.Read(&this->header, sizeof(this->header)) && this->header.total == this->header.nodeCount + this->header.wordCount * 2) {
       this->buffer = new unsigned char[this->header.size];
       if (this->buffer && file.Read(this->buffer, this->header.size)) {
@@ -233,6 +231,8 @@ bool LexiconSerializer::Load(const char* path) {
 
       this->header.loaded = result;
     }
+  } else {
+    result = false;
   }
 
   return result;
