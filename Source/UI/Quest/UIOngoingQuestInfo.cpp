@@ -353,28 +353,32 @@ void CUIRewards::OnInit() {
 
 }
 
-// OFFSET: 0x00A55B70
-// FUNCTION: fn_16313
-void CUIOngoingQuestInfo::UpdateHuntInfo() {
-  OngoingQuestInfo::CUIScrollWindow* window = this->scrollWindow;
-  const unsigned int questId = this->questId;
-  window->secondContents->textViewer->Clear();
+// OFFSET: 0x00A55CC0
+// FUNCTION: fn_46603
+void OngoingQuestInfo::CUIScrollWindow::UpdateHuntInfo(unsigned int questId) {
+  this->secondContents->textViewer->Clear();
   auto& quests = g_renewQuestMgr->m_ongoingQuests;
   const auto found = quests.find(questId);
   if (found != quests.end()) {
     RenewQuestOngoingInfo& quest = found->second;
     for (int index = 0; index < quest.m_huntCount; ++index) {
-      window->secondContents->textViewer->AddLine(quest.GetHuntText(index));
+      this->secondContents->textViewer->AddLine(quest.GetHuntText(index));
     }
   }
 
-  window->firstContents->UpdateHeight();
-  window->secondContents->UpdateHeight();
-  window->rewards->UpdateHeight();
+  this->firstContents->UpdateHeight();
+  this->secondContents->UpdateHeight();
+  this->rewards->UpdateHeight();
 
-  const int total = window->ContentHeight();
-  window->scrollBar->SetTotal((std::max)(window->geometry.height, total));
-  window->scrollBar->SetPosition(0);
+  const int total = this->ContentHeight();
+  this->scrollBar->SetTotal((std::max)(this->geometry.height, total));
+  this->scrollBar->SetPosition(0);
+}
+
+// OFFSET: 0x00A55B70
+// FUNCTION: fn_16313
+void CUIOngoingQuestInfo::UpdateHuntInfo() {
+  this->scrollWindow->UpdateHuntInfo(this->questId);
 }
 
 // OFFSET: 0x00A56050

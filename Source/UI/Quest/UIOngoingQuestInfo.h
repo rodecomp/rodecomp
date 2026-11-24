@@ -113,6 +113,7 @@ public:
   void OnWheel(int value) override;
 
   void OnScroll(int position);
+  void UpdateHuntInfo(unsigned int questId);
   void SetQuest(unsigned int id);
 
   // INLINED
