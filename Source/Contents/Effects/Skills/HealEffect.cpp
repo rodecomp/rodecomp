@@ -580,28 +580,36 @@ void CHealEffect::ProcessCone(CParticle* particle) {
   }
 }
 
+// INLINED
+template <bool kCacheFrames>
+static __forceinline void UpdateSparkParticle(CParticle* particle, int effectId) {
+  const int cachedFrames = particle->elapsedFrames;
+  particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
+
+  int alpha = particle->alpha;
+  if ((kCacheFrames ? cachedFrames : particle->elapsedFrames) <= 10) {
+    alpha += 15;
+  } else if (effectId != 312) {
+    const int segment = particle->columnIndex;
+    if ((5 - segment) * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames) ||
+        36 - segment * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames)) {
+      particle->SetTexture("effect\\pok3.tga");
+    } else {
+      particle->SetTexture("effect\\pok1.tga");
+    }
+  }
+  alpha -= 3;
+  particle->alpha = alpha >= 0 ? alpha : 0;
+
+  const vector3d offset = {particle->offsetX - 0.0f, particle->offsetY - particle->animationParameter, particle->offsetZ - 0.0f};
+  particle->offset = offset;
+}
+
 // OFFSET: 0x00B69060
 // FUNCTION: fn_46260
-__forceinline void CHealEffect::ProcessSpark(CParticle* particle) {
+void CHealEffect::ProcessSpark(CParticle* particle) {
   if (particle) {
-    particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
-
-    int alpha = particle->alpha;
-    if (particle->elapsedFrames <= 10) {
-      alpha += 15;
-    } else if (this->id != 312) {
-      const int segment = particle->columnIndex;
-      if ((5 - segment) * 7 == particle->elapsedFrames || 36 - segment * 7 == particle->elapsedFrames) {
-        particle->SetTexture("effect\\pok3.tga");
-      } else {
-        particle->SetTexture("effect\\pok1.tga");
-      }
-    }
-    alpha -= 3;
-    particle->alpha = alpha >= 0 ? alpha : 0;
-
-    const vector3d offset = {particle->offsetX - 0.0f, particle->offsetY - particle->animationParameter, particle->offsetZ - 0.0f};
-    particle->offset = offset;
+    UpdateSparkParticle<true>(particle, this->id);
   }
   this->UpdateParticleVertices(particle);
 }
@@ -757,7 +765,10 @@ void CHealEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    this->ProcessSpark(particle);
+    if (particle) {
+      UpdateSparkParticle<false>(particle, this->id);
+    }
+    this->UpdateParticleVertices(particle);
     ++particle->elapsedFrames;
   }
 }
