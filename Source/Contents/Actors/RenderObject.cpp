@@ -473,7 +473,10 @@ void CRenderObject::SetTlvert(float x, float y) {
 // OFFSET: 0x00CACEA0
 // FUNCTION: fn_46350
 float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const {
-  if (this->render.action == nullptr || scale <= 0.0f) {
+  if (this->render.action == nullptr) {
+    return 1.0f;
+  }
+  if (scale <= 0.0f) {
     return 1.0f;
   }
   const float speed = this->render.action->Speed(animation);
@@ -483,9 +486,6 @@ float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const
 // OFFSET: 0x00CACE40
 // FUNCTION: fn_46349
 float CRenderObject::GetMotionActionSpeed(unsigned animation) const {
-  if (this->render.action == nullptr) {
-    return 1.0f;
-  }
   return this->GetScaledActionSpeed(animation, this->render.motionSpeedScale);
 }
 
