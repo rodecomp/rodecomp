@@ -218,8 +218,8 @@ __declspec(noinline) unsigned char* MD5::Finalize() {
 
   std::memset(padding, 0, remaining - 8);
   Decode(m_words, m_buffer, 14);
-  m_words[14] = m_byteCount[0] << 3;
   m_words[15] = (m_byteCount[1] << 3) | (m_byteCount[0] >> 29);
+  m_words[14] = m_byteCount[0] << 3;
 
   std::uint32_t* state = m_state;
   Transform(state, m_words);
