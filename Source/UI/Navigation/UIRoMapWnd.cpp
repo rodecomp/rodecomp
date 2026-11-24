@@ -656,12 +656,13 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
       to.center[1] = static_cast<float>(to.area.top);
     }
 
+    const float blend = this->m_kafraMarkers.blend;
     CTexture* head = g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false);
     CTexture* body = g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false);
     this->DrawArrow(
       from.center[0], from.center[1], to.center[0], to.center[1], static_cast<float>(from.area.left), static_cast<float>(from.area.top),
       static_cast<float>(from.area.right), static_cast<float>(from.area.bottom), static_cast<float>(to.area.left), static_cast<float>(to.area.top),
-      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, this->m_kafraMarkers.blend, 0xAAFFFFFF
+      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, blend, 0xAAFFFFFF
     );
   }
 
