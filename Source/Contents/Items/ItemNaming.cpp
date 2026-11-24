@@ -73,21 +73,6 @@ namespace {
   }
 
   // INLINED
-  ItemMoveInfo MakeEmptyItemMoveInfo() {
-    ItemMoveInfo info;
-    info.itemId = ITEMID_NONE;
-    info.drop = false;
-    info.trade = false;
-    info.storage = false;
-    info.cart = false;
-    info.sellToNpc = false;
-    info.mail = false;
-    info.auction = false;
-    info.guildStorage = false;
-    return info;
-  }
-
-  // INLINED
   __forceinline int CopyText(char* output, int& capacity, unsigned char consume, const char* text) {
     const int error = strncpy_s(output, capacity, text, _TRUNCATE);
     if (error != 0 && error != 80) {
@@ -615,7 +600,7 @@ ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
 // FUNCTION: fn_45456
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values) {
   // GLOBAL: gl_24789
-  static ItemMoveInfo missingMoveInfo = MakeEmptyItemMoveInfo();
+  static ItemMoveInfo missingMoveInfo;
   const auto entry = values.find(id);
   return entry == values.end() ? missingMoveInfo : entry->second;
 }
@@ -870,14 +855,30 @@ __declspec(noinline) void LoadItemNameTables() {
     for (std::vector<int>::iterator value = moveInfo.begin(); value != moveInfo.end(); value += 9) {
       ItemMoveInfo flags;
       flags.itemId = value[0];
-      flags.drop = value[1] != 0;
-      flags.trade = value[2] != 0;
-      flags.storage = value[3] != 0;
-      flags.cart = value[4] != 0;
-      flags.sellToNpc = value[5] != 0;
-      flags.mail = value[6] != 0;
-      flags.auction = value[7] != 0;
-      flags.guildStorage = value[8] != 0;
+      if (value[1] != 0) {
+        flags.drop = true;
+      }
+      if (value[2] != 0) {
+        flags.trade = true;
+      }
+      if (value[3] != 0) {
+        flags.storage = true;
+      }
+      if (value[4] != 0) {
+        flags.cart = true;
+      }
+      if (value[5] != 0) {
+        flags.sellToNpc = true;
+      }
+      if (value[6] != 0) {
+        flags.mail = true;
+      }
+      if (value[7] != 0) {
+        flags.auction = true;
+      }
+      if (value[8] != 0) {
+        flags.guildStorage = true;
+      }
       g_itemMoveInfo.insert(std::make_pair(flags.itemId, flags));
     }
   }
