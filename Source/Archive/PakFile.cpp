@@ -6,6 +6,9 @@
 #include <cstring>
 #include <zlib.h>
 
+// GLOBAL: gl_26045
+const char gl_obsoleteName000[44] = "data\\texture\\유저인터페이스\\map\\1@20cn1.bmp";
+
 namespace {
 #pragma pack(push, 1)
 
@@ -118,7 +121,7 @@ namespace myGPack {
   // FUNCTION: fn_04014
   bool CGPakUpdate::RemoveObsoleteEntries() {
     std::list<std::string> names;
-    names.push_back("data\\texture\\유저인터페이스\\map\\1@20cn1.bmp");
+    names.push_back(std::string(gl_obsoleteName000, 43));
     names.push_back("data\\texture\\유저인터페이스\\map\\1@20cn2.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\1@4cdn.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\1@4drk.bmp");
