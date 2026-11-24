@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -243,7 +244,7 @@ void CHitLineEffect::Render() {
 
       const float turn = turns[segment + index];
       if (turn > 0.0f) {
-        distance += radius * factor * (turn / 90.0f);
+        distance += radius * factor * (turn / g_cameraYawOffset);
       }
 
       float height = -radius * g_sinTable[static_cast<int>(turn)] * 1.5f;
