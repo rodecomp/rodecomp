@@ -208,7 +208,7 @@ void UIParaResultWnd::OnMouseHover(int x, int y) {
     std::string text = "";
     char price[64];
     std::memset(price, 0, sizeof(price));
-    if (item.prices[1] != item.prices[0]) {
+    if (item.prices[0] != item.prices[1]) {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
       text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0], amount));
     } else {
