@@ -5374,28 +5374,25 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   mail.zeny = zeny;
   mail.isRead = 1;
 
-  RodexMailItem* mailItems = mail.attachments.items;
-  const auto* packetItems = reinterpret_cast<const RodexMailItem*>(packet->text + packet->textLength);
   for (long long i = 0; i < packet->itemCount; ++i) {
-    RodexMailItem& record = mailItems[i];
-    memcpy_s(&record, sizeof(RodexMailItem), &packetItems[i], sizeof(RodexMailItem));
+    memcpy_s(&mail.attachments.items[i], sizeof(RodexMailItem), &reinterpret_cast<const RodexMailItem*>(packet->text + packet->textLength)[i], sizeof(RodexMailItem));
 
     ITEM_INFO item;
-    item.identity[0] = record.type;
-    item.identity[2] = record.expireTime;
-    item.quantity = record.quantity;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.bindOnEquip = record.wearState;
-    item.sprite = record.bindType;
-    item.optionCount = CountItemSlotOptions(record.options);
+    item.identity[0] = mail.attachments.items[i].type;
+    item.identity[2] = mail.attachments.items[i].expireTime;
+    item.quantity = mail.attachments.items[i].quantity;
+    std::memcpy(item.cards, mail.attachments.items[i].cards, sizeof(mail.attachments.items[i].cards));
+    item.SetItemId(mail.attachments.items[i].itemId);
+    item.identified = mail.attachments.items[i].identified;
+    item.damaged = mail.attachments.items[i].damaged;
+    item.refiningLevel = mail.attachments.items[i].refine;
+    item.bindOnEquip = mail.attachments.items[i].wearState;
+    item.sprite = mail.attachments.items[i].bindType;
+    item.optionCount = CountItemSlotOptions(mail.attachments.items[i].options);
     for (long long option = 0; option < item.optionCount; ++option) {
-      item.options[option] = record.options[option];
+      item.options[option] = mail.attachments.items[i].options[option];
     }
-    item.grade = record.grade;
+    item.grade = mail.attachments.items[i].grade;
     g_session.AddItemToFreeSlot(item);
   }
 
