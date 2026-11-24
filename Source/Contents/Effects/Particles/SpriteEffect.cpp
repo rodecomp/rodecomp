@@ -578,10 +578,7 @@ void CSpriteEffect::OnProcess() {
       particle->applyActorLift = 1;
       particle->screenOffsetY = 0.0f;
       particle->screenOffsetX = 0.0f;
-      particle->position.x = this->position[0];
-      particle->position.y = this->position[1];
-      particle->position.z = this->position[2];
-      break;
+      [[fallthrough]];
     default:
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];
