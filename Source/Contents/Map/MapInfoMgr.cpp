@@ -225,39 +225,40 @@ bool CMapInfoMgr::LoadScript() {
   return true;
 }
 
-// OFFSET: 0x006CF290
-// FUNCTION: fn_06493
-void CMapInfoMgr::DrawMapName() {
-  MapNameDisplay* display = this->m_display;
-  if (display == nullptr) {
-    return;
-  }
-
-  if (display->m_texture == nullptr) {
-    delete this->m_display;
-    this->m_display = nullptr;
-    return;
+// OFFSET: 0x006CF160
+// FUNCTION: fn_46654
+inline bool MapNameDisplay::Draw() {
+  if (this->m_texture == nullptr) {
+    return false;
   }
 
   int alpha = 255;
-  const DWORD elapsed = timeGetTime() - display->m_startTime;
+  const DWORD elapsed = timeGetTime() - this->m_startTime;
   if (elapsed > 5000) {
     alpha = 5255 - elapsed;
     if (alpha <= 0) {
-      delete this->m_display;
-      this->m_display = nullptr;
-      return;
+      return false;
     }
   }
 
   const std::uint32_t color = (alpha << 24) | 0xFFFFFF;
-  const float scale = static_cast<float>(display->m_height) / static_cast<float>(display->m_texture->Height());
-  const int width = static_cast<int>(static_cast<float>(display->m_texture->Width()) * scale);
-  display->m_texture->StretchTintedTo(
-    static_cast<int>(static_cast<float>(display->m_width - width) * 0.5f), static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), width,
-    display->m_height, color
+  const float scale = static_cast<float>(this->m_height) / static_cast<float>(this->m_texture->Height());
+  const int width = static_cast<int>(static_cast<float>(this->m_texture->Width()) * scale);
+  this->m_texture->StretchTintedTo(
+    static_cast<int>(static_cast<float>(this->m_width - width) * 0.5f), static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), width,
+    this->m_height, color
   );
-  display->m_dc->Draw(0, static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), display->m_width, display->m_height, color);
+  this->m_dc->Draw(0, static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), this->m_width, this->m_height, color);
+  return true;
+}
+
+// OFFSET: 0x006CF290
+// FUNCTION: fn_06493
+void CMapInfoMgr::DrawMapName() {
+  if (this->m_display != nullptr && !this->m_display->Draw()) {
+    delete this->m_display;
+    this->m_display = nullptr;
+  }
 }
 
 // OFFSET: 0x006CF600

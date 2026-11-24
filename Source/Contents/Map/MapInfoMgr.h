@@ -29,6 +29,7 @@ struct MapNameDisplay {
   /* 000A */ unsigned short m_height;
   /* 000C */ DWORD m_startTime;
 
+  bool Draw();
   MapNameDisplay(std::string name, std::string subName, std::string bmp);
   // INLINED
   ~MapNameDisplay() {
