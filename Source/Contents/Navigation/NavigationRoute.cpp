@@ -1702,8 +1702,8 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
       return false;
     }
 
-    MovementRouteInterpolation route;
     int cost = 0;
+    MovementRouteInterpolation route;
     for (auto it = links.begin(); it != links.end(); ++it) {
       if (this->savedTarget.type == 0) {
         this->pathFinder.Reset();
@@ -1755,11 +1755,11 @@ void CNavigationManager::CancelRoute() {
 // OFFSET: 0x00B97B90
 // FUNCTION: fn_19602
 __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
-  int x = cellX;
   int y = cellY;
   if (this->savedTarget.object != nullptr) {
     const int type = this->savedTarget.type;
     CNaviInfo* info;
+    int x = cellX;
     if (type == 2) {
       CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
       info = object->GetInfo();
