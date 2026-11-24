@@ -228,12 +228,13 @@ void CHitLineEffect::Render() {
     HitLineVector3d points[2];
     const int phase = particle->phaseParameter;
     const float radius = particle->speedParameter;
+    const float initialScale = g_projectionDepthNumerator;
     const float* turns = &particle->animationParameter;
     const signed char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
       const int count = halfTurns[segment + index];
       float distance = 0.0f;
-      float factor = 1.0f;
+      float factor = initialScale;
       for (int step = 0; step < count; ++step) {
         distance += particle->speedParameter * 2.0f * factor;
         factor *= 0.7f;
@@ -245,7 +246,7 @@ void CHitLineEffect::Render() {
       }
 
       float height = -radius * g_sinTable[static_cast<int>(turn)] * 1.5f;
-      float scale = 1.0f;
+      float scale = initialScale;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
       }
