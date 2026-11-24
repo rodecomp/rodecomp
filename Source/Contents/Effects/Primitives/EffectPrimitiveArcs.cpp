@@ -790,27 +790,30 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
     side[0] = angle - 20;
     side[1] = angle + 20;
     const int leftAngle = side[0] < 0 ? side[0] + 360 : side[0];
-    const int rightAngle = side[1] >= 360 ? side[1] - 360 : side[1];
-    const int backRightAngle = side[1] - 180 < 0 ? side[1] - 180 + 360 : side[1] - 180;
-    const int backLeftAngle = side[0] + 180 >= 360 ? side[0] + 180 - 360 : side[0] + 180;
 
-    const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
-    const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
     vector3d left;
     const float leftX = size * g_cosTable[leftAngle];
     left.z = size * g_sinTable[leftAngle];
+    const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
+    const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
     left.x = leftX * rotCos;
     left.y = leftX * rotSin + this->state.slots[ec].height[0];
+
+    const int rightAngle = side[1] >= 360 ? side[1] - 360 : side[1];
     vector3d right;
-    const float rightX = size * g_cosTable[rightAngle];
     right.z = size * g_sinTable[rightAngle];
+    const float rightX = size * g_cosTable[rightAngle];
     right.x = rightX * rotCos;
     right.y = rightX * rotSin + this->state.slots[ec].height[0];
+
+    const int backRightAngle = side[1] - 180 < 0 ? side[1] - 180 + 360 : side[1] - 180;
     vector3d backRight;
-    const float backRightX = size * g_cosTable[backRightAngle];
     backRight.z = size * g_sinTable[backRightAngle];
+    const float backRightX = size * g_cosTable[backRightAngle];
     backRight.x = backRightX * rotCos;
     backRight.y = backRightX * rotSin + this->state.slots[ec].height[0];
+
+    const int backLeftAngle = side[0] + 180 >= 360 ? side[0] + 180 - 360 : side[0] + 180;
     vector3d backLeft;
     const float backLeftX = size * g_cosTable[backLeftAngle];
     backLeft.z = size * g_sinTable[backLeftAngle];
@@ -826,7 +829,7 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
       offset.x = dist * dirCos;
       offset.y = 0.0f;
       offset.z = dist * dirSin;
-      if (dist > 100.0f) {
+      if (dist > g_fireflyArcLength) {
         break;
       }
 
