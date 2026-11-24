@@ -89,13 +89,12 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
 void WrapRichText(
   const char* text, std::vector<std::string>& lines, int width, bool carriageReturns
 ) {
-  const char* current = text;
   const char* begin = text;
-  const char* breakAt = text;
-  const unsigned bytes = static_cast<unsigned>(std::strlen(text));
-  const char* end = text + bytes;
+  const char* current = text;
+  const char* end = text + std::strlen(text);
   const char* limit = text + width;
-  const char* marker = text + TextContext::Marker(text, bytes);
+  const char* breakAt = text;
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
 
   while (current < end) {
     if (carriageReturns && *current == '\r') {
