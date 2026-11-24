@@ -297,12 +297,12 @@ void UITagListBox::DecodeValues(std::vector<unsigned int>& values, const char* t
 int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& end, int index) {
   std::string value = "";
   int count = 1;
-  std::vector<unsigned int> cards;
+  std::vector<std::int32_t> cards;
 
   while (++position < end + 1) {
     const char byte = text[position];
     if (byte >= '0') {
-      value += byte;
+      value.push_back(byte);
     } else if (byte == separator) {
       ++count;
       cards.push_back(this->DecodeNumber(value));
