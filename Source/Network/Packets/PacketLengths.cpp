@@ -42,9 +42,12 @@ namespace {
 // OFFSET: 0x00B02260
 // FUNCTION: fn_18387
 __declspec(noinline) void PacketLengths::Initialize() {
-  for (const PacketRegistration& value : registrations) {
-    this->Register(value.id, value.length, value.variable, value.record);
-  }
+  const PacketRegistration* value = registrations - 1;
+  int count = sizeof(registrations) / sizeof(registrations[0]);
+  do {
+    ++value;
+    this->Register(value->id, value->length, value->variable, value->record);
+  } while (--count != 0);
 }
 
 // OFFSET: 0x00B01E70
