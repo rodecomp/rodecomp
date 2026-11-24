@@ -5460,38 +5460,39 @@ __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
 // OFFSET: 0x00BE9690
 // FUNCTION: fn_19954
 __declspec(noinline) void CEffectPrim::PrimGlowFollow() {
-  FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  auto& stateRef = this->state;
+  FaceCamera(stateRef.slots);
+  this->render.position = stateRef.master->render.position;
 
-  if (this->state.slots[0].life != 1) {
+  if (stateRef.slots[0].life != 1) {
     return;
   }
 
-  if (++this->state.slots[0].process < 30) {
-    if (this->state.slots[0].flag1[4] == 31) {
-      this->state.slots[0].alphaB = static_cast<std::int16_t>(this->state.slots[0].alphaB + 8);
+  if (++stateRef.slots[0].process < 30) {
+    if (stateRef.slots[0].flag1[4] == 31) {
+      stateRef.slots[0].alphaB = static_cast<std::int16_t>(stateRef.slots[0].alphaB + 8);
     } else {
-      this->state.slots[0].alphaB = static_cast<std::int16_t>(this->state.slots[0].alphaB + 3);
-      if (this->state.slots[0].alphaB >= 60) {
-        this->state.slots[0].alphaB = 60;
+      stateRef.slots[0].alphaB = static_cast<std::int16_t>(stateRef.slots[0].alphaB + 3);
+      if (stateRef.slots[0].alphaB >= 60) {
+        stateRef.slots[0].alphaB = 60;
       }
     }
   }
 
-  if (this->state.slots[0].alphaB >= 255) {
-    this->state.slots[0].alphaB = 255;
-  } else if (this->state.slots[0].alphaB < 0) {
-    this->state.slots[0].alphaB = 0;
+  if (stateRef.slots[0].alphaB >= 255) {
+    stateRef.slots[0].alphaB = 255;
+  } else if (stateRef.slots[0].alphaB < 0) {
+    stateRef.slots[0].alphaB = 0;
   }
 
-  this->state.slots[0].height[8] += 1.0f;
-  if (this->state.slots[0].height[8] >= 360.0f) {
-    this->state.slots[0].height[8] -= 360.0f;
+  stateRef.slots[0].height[8] += 1.0f;
+  if (stateRef.slots[0].height[8] >= 360.0f) {
+    stateRef.slots[0].height[8] -= 360.0f;
   }
 
-  this->state.slots[0].vecBNow.y = this->state.slots[0].vecBPre.y;
-  this->state.slots[0].vecBNow.x = this->render.position.x;
-  this->state.slots[0].vecBNow.z = this->render.position.z;
+  stateRef.slots[0].vecBNow.y = stateRef.slots[0].vecBPre.y;
+  stateRef.slots[0].vecBNow.x = this->render.position.x;
+  stateRef.slots[0].vecBNow.z = this->render.position.z;
 }
 
 // OFFSET: 0x00BEA100

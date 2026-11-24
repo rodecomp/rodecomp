@@ -63,7 +63,8 @@ void CEffectPrim::ProcessAlpha() {
   }
 
   const float sum = this->state.alphaSpeed + this->state.alpha;
-  const float minimum = this->state.minAlpha > sum ? this->state.minAlpha : sum;
+  auto& minAlphaRef = this->state.minAlpha;
+  const float minimum = minAlphaRef > sum ? minAlphaRef : sum;
   const float bounded = this->state.maxAlpha < minimum ? this->state.maxAlpha : minimum;
   this->state.alpha = bounded;
   const int alpha = static_cast<int>(bounded);
