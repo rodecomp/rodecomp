@@ -24,6 +24,14 @@ public:
   virtual ~Decom_ItemInfo();
 };
 
+struct DecomTypes {
+  // INLINED
+  DecomTypes() : first(0), second(0) {}
+
+  /* 0000 */ int first;
+  /* 0004 */ int second;
+};
+
 // VTABLE: vt_00499
 class RuneData {
 public:
@@ -142,7 +150,7 @@ public:
   /* 0038 */ std::map<int, std::vector<std::pair<int, int>>> m_itemLists;
   /* 0040 */ std::vector<int> m_decomItems;
   /* 004C */ std::map<int, std::vector<Decom_ItemInfo>> m_decomTypes;
-  /* 0054 */ std::map<int, std::pair<int, int>> m_itemDecoms;
+  /* 0054 */ std::map<int, DecomTypes> m_itemDecoms;
   /* 005C */ std::vector<int> m_ownedDecomItems;
 
   CRuneSystemMgr();

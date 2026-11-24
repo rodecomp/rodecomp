@@ -425,7 +425,7 @@ int RuneSetData::GetGradeValue() const {
 // FUNCTION: fn_08143
 std::vector<Decom_ItemInfo>* CRuneSystemMgr::GetDecomList(int itemId, int which) {
   const auto decom = this->m_itemDecoms.find(static_cast<int>(itemId));
-  const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
+  const DecomTypes* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
   if (!types) {
     return nullptr;
   }
@@ -718,7 +718,7 @@ int CRuneSystemMgr::UpdateOwnedDecomItems() {
   for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     const auto decom = this->m_itemDecoms.find(std::atoi(item.itemId.c_str()));
-    const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
+    const DecomTypes* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
     if (types) {
       this->m_ownedDecomItems.emplace_back(static_cast<unsigned int>(std::atoi(item.itemId.c_str())));
     }
@@ -1290,7 +1290,7 @@ int AddItemDecom(lua_State* state) {
     return 2;
   }
 
-  std::pair<int, int>& types = g_runeSystemMgr->m_itemDecoms[static_cast<int>(itemId)];
+  DecomTypes& types = g_runeSystemMgr->m_itemDecoms[static_cast<int>(itemId)];
   types.first = firstType;
   types.second = secondType;
   lua_pushboolean(state, 1);
