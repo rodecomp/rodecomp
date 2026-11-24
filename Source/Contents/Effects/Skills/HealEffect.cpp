@@ -215,11 +215,10 @@ void CHealEffect::AddCone(int kind) {
       particle->alpha = 0;
       particle->animationParameter = 0.0f;
 
-      float& baseAngle = particle->angle;
       switch (kind) {
       case 0:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 12.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -228,7 +227,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 1:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -237,7 +236,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 2:
         particle->SetTexture("effect\\alpha_down.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 10.0f;
         particle->scale = static_cast<float>(row) * 0.1f + 5.3f;
         particle->phaseParameter = tilt - 4;
@@ -246,7 +245,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 5:
         particle->SetTexture("effect\\ring_blue.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
