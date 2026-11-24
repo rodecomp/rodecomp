@@ -849,13 +849,13 @@ void UIParaResultWnd::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 1 ? 0 : 2, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slots = (this->geometry.height - this->headerHeight - this->footerHeight - 17) / 32;
-  for (int row = 0; row < slots; ++row) {
-    this->DrawItemSlotFrame(40, row * 32 + 17);
-  }
-
   {
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slots = (this->geometry.height - this->headerHeight - this->footerHeight - 17) / 32;
+    for (int row = 0; row < slots; ++row) {
+      this->DrawItemSlotFrame(40, row * 32 + 17);
+    }
+
     unsigned red = 0, green = 0, blue = 0;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
