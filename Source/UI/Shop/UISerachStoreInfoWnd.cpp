@@ -69,9 +69,8 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
   if (x > 5 && x < this->geometry.width - 10 && y > 100 && y < (this->m_rowHeight + 10) * 10) {
     const int row = (y - 100) / this->m_rowHeight;
     this->m_hoverRow = row;
-    const auto count = g_session.storeSearchResults.size();
     const int page = this->m_page;
-    if (static_cast<unsigned int>(row + (page - 1) * 10) >= count) {
+    if (static_cast<unsigned int>(row + (page - 1) * 10) >= g_session.storeSearchResults.size()) {
       return item;
     }
 
@@ -428,8 +427,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  const unsigned int index = this->m_hoverRow + 10 * this->m_page - 10;
-  std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + index;
+  std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + (this->m_page - 1) * 10 + this->m_hoverRow;
   if (it == g_session.storeSearchResults.end()) {
     return;
   }
