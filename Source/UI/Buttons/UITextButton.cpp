@@ -1389,12 +1389,27 @@ __forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int t
 void UIListBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = count - visible >= 0 ? count - visible : 0;
+  int overflow = count - visible;
+
+  if (overflow < 0) {
+    overflow = 0;
+  }
+
   this->verticalOverflow = overflow != 0;
   if (overflow != 0) {
-    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
+    this->verticalBar->maximum = this->bottomMargin + overflow;
   } else {
-    SetScrollRange(this->verticalBar, 0, visible, count);
+    this->verticalBar->maximum = 0;
+  }
+
+  auto* bar = this->verticalBar;
+
+  bar->total = count;
+  bar->visible = visible;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
   }
 
   this->verticalBar->Invalidate();
