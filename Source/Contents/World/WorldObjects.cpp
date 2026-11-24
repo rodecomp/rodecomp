@@ -477,7 +477,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   } else if (actor->objectType == 7 || actor->objectType == 8) {
     CActorNameCard masked = card;
     char name[24] = {};
-    strncpy_s(name, sizeof(name), masked.name.c_str(), masked.name.size());
+    strncpy_s(name, sizeof(name), card.name.c_str(), card.name.size());
     if (g_forbiddenWords.Contains(name) == true) {
       {
         std::string unused = "";
