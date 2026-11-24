@@ -6214,7 +6214,7 @@ void CRagEffect::TexturedOrbitDust(const char* name, char rise, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  const float lift = -static_cast<float>(rise * 2);
+  const float lift = static_cast<float>(rise) * -2.0f;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
