@@ -81,9 +81,8 @@ __forceinline void CCherryBlossomEffect::UpdatePetal(CParticle* particle) {
     const float speed = particle->speedParameter;
     if (this->offsets[index].y < 0.0f) {
       if (this->offsets[index].y < -30.0f) {
-        const float height = static_cast<float>(Random(100));
         this->offsets[index].x = 0.0f;
-        this->offsets[index].y = height;
+        this->offsets[index].y = static_cast<float>(Random(100));
         this->offsets[index].z = 0.0f;
 
         for (int i = 0; i < 4; ++i) {
