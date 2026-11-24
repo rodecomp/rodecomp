@@ -100,12 +100,13 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
     return -1;
   }
 
-  const int localX = x - 26;
-  const int localY = y - top;
-  if (localX % 62 > 58 || localY % 64 > 60) {
+  if ((x - 26) % 62 > 58) {
     return -1;
   }
-  return (localY / 64) % 4 * 5 + (localX / 62) % 5;
+  if ((y - top) % 64 > 60) {
+    return -1;
+  }
+  return ((y - top) / 64) % 4 * 5 + ((x - 26) / 62) % 5;
 }
 
 // OFFSET: 0x007DC750
@@ -160,6 +161,13 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   this->m_banner->SetSize(441, 41);
   this->m_banner->Move(this->geometry.width / 2 - this->m_banner->geometry.width / 2, 85);
   this->AddChild(this->m_banner);
+}
+
+namespace {
+// INLINED
+inline void DrawDayLabel(UIWindow* window, int x, int y, int day) {
+  window->DrawCenteredText(x, y, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_COUNT), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
+}
 }
 
 // OFFSET: 0x007DD2E0
