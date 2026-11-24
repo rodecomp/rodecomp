@@ -1527,23 +1527,53 @@ void CUIGroupSound::OnEffectMute(bool muted) {
   g_serviceOptions.Set(TT_EFFECT_SOUND_ON_OFF, enabled);
 }
 
+// OFFSET: 0x00A400F0
+// FUNCTION: fn_46606
+inline bool CUIGroupFullscreen::IsModified() {
+  return this->m_onButton->checked != static_cast<bool>(g_configuredFullscreen);
+}
+
+// OFFSET: 0x00A40110
+// FUNCTION: fn_46612
+inline bool CUIGroupGraphics::IsModified() {
+  return !this->m_adapter.Matches(this->m_pendingAdapter) || !this->m_mode.Matches(this->m_pendingMode);
+}
+
+// OFFSET: 0x00A40150
+// FUNCTION: fn_46613
+inline bool CUIGroupGraphicsAPI::IsModified() {
+  return this->m_backend != this->m_pendingBackend;
+}
+
+// OFFSET: 0x00A40160
+// FUNCTION: fn_46614
+inline bool CUIGroupSpriteDetailLevel::IsModified() {
+  return this->m_slider->position != g_effectDetailLevel;
+}
+
+// OFFSET: 0x00A40180
+// FUNCTION: fn_46615
+inline bool CUIGroupTextureDetailLevel::IsModified() {
+  return this->m_slider->position != g_textureDetailLevel;
+}
+
+// OFFSET: 0x00A401A0
+// FUNCTION: fn_46617
+inline bool CUIGroupTrilinear::IsModified() {
+  return this->m_onButton->checked != static_cast<bool>(g_textureFiltering);
+}
+
+// OFFSET: 0x00A40080
+// FUNCTION: fn_46605
+inline bool CUIGraphicsPage::HasPendingChanges() {
+  return this->IsModified() || this->m_spriteDetailLevel->IsModified() ||
+         this->m_textureDetailLevel->IsModified() || this->m_trilinear->IsModified();
+}
+
 // OFFSET: 0x00A401C0
 // FUNCTION: fn_15966
 bool CUIGraphicsPage::IsModified() {
-  if (this->m_graphicsApi->m_backend != this->m_graphicsApi->m_pendingBackend) {
-    return true;
-  }
-  CUIGroupGraphics* graphics = this->m_graphics;
-  if (!graphics->m_adapter.Matches(graphics->m_pendingAdapter)) {
-    return true;
-  }
-  if (!graphics->m_mode.Matches(graphics->m_pendingMode)) {
-    return true;
-  }
-  if (this->m_fullscreen->m_onButton->checked != static_cast<bool>(g_configuredFullscreen)) {
-    return true;
-  }
-  return false;
+  return this->m_graphicsApi->IsModified() || this->m_graphics->IsModified() || this->m_fullscreen->IsModified();
 }
 
 // OFFSET: 0x00A40270
@@ -1845,10 +1875,7 @@ void GameSettingsUI::CUIGroupProcessPriority::Apply() {
 // FUNCTION: fn_16013
 void CUIGameSettingsUI::UpdateApplyButton() {
   GameSettingsUI::CUIGraphicsPage* page = this->m_graphicsPage;
-  const bool visible = this->m_tab->current && this->m_tab->current->geometry.id == 3 &&
-                       (page->IsModified() || page->m_spriteDetailLevel->m_slider->position != g_effectDetailLevel ||
-                        page->m_textureDetailLevel->m_slider->position != g_textureDetailLevel ||
-                        page->m_trilinear->m_onButton->checked != static_cast<bool>(g_textureFiltering));
+  const bool visible = this->m_tab->current && this->m_tab->current->geometry.id == 3 && page->HasPendingChanges();
   this->m_applyButton->Show(visible);
 }
 

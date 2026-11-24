@@ -100,6 +100,7 @@ public:
 class CUIGroupFullscreen : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupFullscreen();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Refresh() override;
@@ -113,6 +114,7 @@ public:
 class CUIGroupGraphics : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupGraphics();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Refresh() override;
@@ -136,6 +138,7 @@ public:
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupGraphicsAPI();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Apply() override;
@@ -239,6 +242,7 @@ public:
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupSpriteDetailLevel();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
@@ -250,6 +254,7 @@ public:
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupTextureDetailLevel();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
@@ -261,6 +266,7 @@ public:
 class CUIGroupTrilinear : public CUIGroup {
 public:
   __declspec(noinline) CUIGroupTrilinear();
+  bool IsModified();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Refresh() override;
@@ -299,6 +305,7 @@ public:
 class CUIGraphicsPage : public CUIPage {
 public:
   __declspec(noinline) CUIGraphicsPage();
+  bool HasPendingChanges();
   void OnCreate(int width, int height) override;
   __declspec(noinline) bool IsModified();
   void ApplySettings();
