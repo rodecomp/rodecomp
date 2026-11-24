@@ -1465,8 +1465,8 @@ bool CNavigationManager::LoadTargetPreview() {
           viewX = static_cast<int>(cellColumn * scale + offsetX);
           viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
         }
-        this->previewY = viewY;
         this->previewX = viewX;
+        this->previewY = viewY;
       } else if (targetType == 0) {
         if (this->currentTarget.x < 0) {
           NaviCell cellY;
