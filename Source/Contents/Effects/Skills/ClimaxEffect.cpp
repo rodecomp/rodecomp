@@ -57,8 +57,6 @@ void CClimaxEffect::Open() {
     case 5:
       static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_5.str");
       break;
-    default:
-      break;
   }
 
   static_cast<CEZ2STRParticle*>(bottom)->m_loop = true;
