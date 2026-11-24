@@ -45,10 +45,10 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
     radius += radius * g_sinTable[static_cast<int>(tilt)] * g_fireflyNormalDrift;
     vec1.x = radius * g_cosTable[angle1];
     vec1.z = radius * g_sinTable[angle1];
-    const int angle3 = angle2 + (angle2 + 90 >= 360 ? -270 : 90);
+    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
     vec2.x = radius * g_cosTable[angle2];
     vec2.z = radius * g_sinTable[angle2];
-    const int angle4 = angle3 + (angle3 + 90 >= 360 ? -270 : 90);
+    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
     vec3.x = radius * g_cosTable[angle3];
     vec3.z = radius * g_sinTable[angle3];
     vec4.x = radius * g_cosTable[angle4];
