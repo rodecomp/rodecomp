@@ -30,6 +30,13 @@ namespace {
   }
 
   // INLINED
+  void SetComponents(float* vector, float x, float y, float z) {
+    vector[0] = x;
+    vector[1] = y;
+    vector[2] = z;
+  }
+
+  // INLINED
   __forceinline void SetAxis(float* direction, const float* row) {
     direction[0] = row[0];
     direction[1] = row[1];
@@ -88,15 +95,19 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool) {
     ++output;
   }
 
+  BoundsCorner high;
+  TransformCorner(high.values, bounds[3], bounds[4], bounds[5], this->transform.values);
+  BoundsCorner low;
+  TransformCorner(low.values, bounds[0], bounds[1], bounds[2], this->transform.values);
+
   for (unsigned axis = 0; axis < 3; ++axis) {
-    const float high = Coordinate(bounds + 3, this->transform.values, axis);
-    const float low = Coordinate(bounds, this->transform.values, axis);
-    this->oriented.center[axis] = (high + low) * g_depthAverageHalf;
+    this->oriented.center[axis] = (high.values[axis] + low.values[axis]) * 0.5f;
   }
 
-  this->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * this->scale.z) * g_depthAverageHalf;
-  this->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * this->scale.y) * g_depthAverageHalf;
-  this->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * this->scale.x) * g_depthAverageHalf;
+  SetComponents(
+    this->oriented.halfSize, Absolute((bounds[3] - bounds[0]) * this->scale.x) * 0.5f, Absolute((bounds[4] - bounds[1]) * this->scale.y) * 0.5f,
+    Absolute((bounds[5] - bounds[2]) * this->scale.z) * 0.5f
+  );
 
   matrix axes;
   axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
