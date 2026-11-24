@@ -22,7 +22,7 @@ void CRenderer::ClearFrame() {
 // OFFSET: 0x00565970
 // FUNCTION: fn_02222
 bool CRendererDX9::Draw() {
-  this->device->Begin();
+  volatile bool started = this->device->Begin();
   this->DrawQueues();
   this->ClearFrame();
   this->device->End();
