@@ -1246,10 +1246,9 @@ bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
 void CCashEmotionMgr::AddEmotionOrder(int packId, int emotionId) {
   auto it = this->emotionOrder.find(packId);
   if (this->emotionOrder.end() != it) {
-    std::vector<int>& order = it->second;
-    const auto found = std::find(order.begin(), order.end(), emotionId);
-    if (order.end() == found) {
-      order.push_back(emotionId);
+    const auto found = std::find(it->second.begin(), it->second.end(), emotionId);
+    if (it->second.end() == found) {
+      it->second.push_back(emotionId);
     }
   } else {
     std::vector<int> order;
