@@ -115,11 +115,19 @@ __declspec(noinline) void FontEntry::CreateSystemFont() {
 // OFFSET: 0x0054DD70
 // FUNCTION: fn_01948
 __declspec(noinline) HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
-  LOGFONTA description = {};
+  LOGFONTA description;
+  description.lfWidth = 0;
+  description.lfEscapement = description.lfOrientation = 0;
   description.lfWeight = FW_NORMAL;
+  description.lfItalic = 0;
+  description.lfUnderline = 0;
+  description.lfStrikeOut = 0;
   description.lfCharSet = DEFAULT_CHARSET;
   description.lfOutPrecision = OUT_RASTER_PRECIS;
+  description.lfClipPrecision = CLIP_DEFAULT_PRECIS;
   description.lfQuality = PROOF_QUALITY;
+  description.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+  std::fill(description.lfFaceName + sizeof("RixKid_10.eot"), std::end(description.lfFaceName), '\0');
 
   if (family == 20) {
     std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
