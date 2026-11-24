@@ -328,14 +328,18 @@ __declspec(noinline) void CElectricEffect::UpdateParticleState(CParticle* partic
   particle->scale = scale;
   particle->alpha = alpha >= 0 ? alpha : 0;
 
-  matrix rotation;
-  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-  rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
-  particle->transform = rotation;
+  {
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+    particle->transform = rotation;
+  }
 
   const int segment = particle->columnIndex;
   const int strand = particle->groupIndex;
-  EffectPoint points[2];
+  {
+    EffectPoint points[2];
+  }
   if (strand == 0) {
     const float* arc = &particle->animationParameter;
     for (int index = 0; index < 2; ++index) {
