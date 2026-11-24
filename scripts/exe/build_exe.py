@@ -32,9 +32,9 @@ Pipeline, in this order:
   1. compile   every unit of data/compile.json (+ EXE_ONLY_UNITS)
   2. link      Ragexe.exe, Ragexe.pdb, Ragexe.map
   3. patch     scripts/exe/postprocess.py applies scripts/exe/patches/NNNN_*.py in order: byte edits the
-               shipped exe received after it was compiled, which no C++ source reproduces. There are none
-               at present (the target is Gravity's unpatched build, which the source reproduces). Skipped
-               with --no-postprocess (gives the exe exactly as the source compiles).
+               shipped exe received after it was compiled, which no C++ source reproduces: at present the
+               protector's regions (0001_protected_regions.py). Skipped with --no-postprocess (gives the
+               exe exactly as the source compiles).
 
     python scripts/exe/build_exe.py                     # compile + link + patch, fail on any error
     python scripts/exe/build_exe.py --force-multiple    # accept duplicate definitions
@@ -720,9 +720,12 @@ def link(tc, objects, out_dir, extra_args):
     outputs = (exe, exe.with_suffix(".pdb"), exe.with_suffix(".map"))
     for stale in outputs:
         stale.unlink(missing_ok=True)
+    # /OPT:NOICF: the target was linked without identical-code folding. With /OPT:ICF this tree's link
+    # puts functions the target has at different addresses on one address 452 times, 128 of them
+    # template instantiations, and two functions with protected regions cannot share one body.
     args = ["/nologo", "/MACHINE:X86", "/SUBSYSTEM:WINDOWS", "/LARGEADDRESSAWARE",
             "/DEBUG:FULL", f"/PDB:{tc.path(exe.with_suffix('.pdb'))}", f"/MAP:{tc.path(exe.with_suffix('.map'))}",
-            "/INCREMENTAL:NO", "/OPT:REF", "/OPT:ICF",
+            "/INCREMENTAL:NO", "/OPT:REF", "/OPT:NOICF",
             "/ERRORLIMIT:0", f"/OUT:{tc.path(exe)}", f"@{tc.path(rsp)}", *SYSTEM_LIBS]
     result = tc.run("link.exe", args)
     if result.returncode != 0:
