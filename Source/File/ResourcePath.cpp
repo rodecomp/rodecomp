@@ -40,7 +40,7 @@ void* PakRegistry::ReadLooseResource(const char* filename, std::uint32_t* size) 
     LARGE_INTEGER fileSize;
     GetFileSizeEx(file, &fileSize);
     *size = fileSize.LowPart;
-    if (size) {
+    if (size > 0) {
       void* data = VirtualAlloc(nullptr, *size, MEM_COMMIT, PAGE_READWRITE);
       if (data) {
         ReadFile(file, data, *size, &read, nullptr);
