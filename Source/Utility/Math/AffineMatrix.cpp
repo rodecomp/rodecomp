@@ -211,17 +211,17 @@ int matrix::IsIdentity() const {
 void matrix::MakeTransform(const float* position, const float* rotaxis, float rotangle) {
   const float omega = rotangle * g_depthAverageHalf;
   const float s = static_cast<float>(sin(static_cast<double>(omega)));
-  const float qx = rotaxis[0] * s;
   const float qy = rotaxis[1] * s;
+  const float qx = rotaxis[0] * s;
   const float qz = rotaxis[2] * s;
   const float qw = static_cast<float>(cos(static_cast<double>(omega)));
 
-  const float x2 = qx + qx;
   const float y2 = qy + qy;
+  const float x2 = qx + qx;
   const float z2 = qz + qz;
+  const float wz = qw * z2;
   const float wx = qw * x2;
   const float wy = qw * y2;
-  const float wz = qw * z2;
   const float xx = qx * x2;
   const float xy = qx * y2;
   const float xz = qx * z2;
@@ -249,20 +249,20 @@ void matrix::MakeTransform(const float* position, const float* rotaxis, float ro
 void matrix::MakeTransform(const float* rotaxis, float rotangle) {
   const float omega = rotangle * g_depthAverageHalf;
   const float s = sinf(omega);
-  const float qx = s * rotaxis[0];
   const float qy = s * rotaxis[1];
+  const float qx = s * rotaxis[0];
   const float qz = s * rotaxis[2];
   const float qw = cosf(omega);
 
-  const float x2 = qx + qx;
   const float y2 = qy + qy;
+  const float x2 = qx + qx;
   const float z2 = qz + qz;
   const float wx = qw * x2;
   const float wy = qw * y2;
   const float wz = qw * z2;
   const float xx = qx * x2;
-  const float xy = qx * y2;
   const float xz = qx * z2;
+  const float xy = qx * y2;
   const float yy = qy * y2;
   const float yz = qy * z2;
   const float zz = qz * z2;
