@@ -46,10 +46,14 @@ static __forceinline RenderPrimitive* BuildWaterPrimitive(
     g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
-  const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);
-  const float secondArea = (vertices[1].x - vertices[0].x) * (vertices[2].y - vertices[0].y);
+  const float dx1 = vertices[1].x - vertices[0].x;
+  const float dy2 = vertices[2].y - vertices[0].y;
+  const float dx2 = vertices[2].x - vertices[0].x;
+  const float dy1 = vertices[1].y - vertices[0].y;
 
-  if (!(firstArea > secondArea)) {
+  const float clockwiseArea = dx1 * dy2;
+  const float counterclockwiseArea = dx2 * dy1;
+  if (!(counterclockwiseArea > clockwiseArea)) {
     return nullptr;
   }
 
