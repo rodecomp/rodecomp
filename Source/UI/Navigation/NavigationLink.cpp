@@ -1325,7 +1325,8 @@ int CCreateLineInfo::ParseEmotion(int index) {
   return index;
 }
 
-// INLINED
+// OFFSET: 0x0083A100
+// FUNCTION: fn_46488
 inline void CCreateLineInfo::CloseFont(std::string tag) {
   if (!this->m_fontStack.empty()) {
     this->m_fontStack.pop_back();
@@ -1340,7 +1341,8 @@ inline void CCreateLineInfo::CloseFont(std::string tag) {
   }
 }
 
-// INLINED
+// OFFSET: 0x0083A0A0
+// FUNCTION: fn_46487
 inline void CCreateLineInfo::OpenBold(std::string tag) {
   if (this->m_bold == 0) {
     this->m_newSegment = true;
@@ -1348,14 +1350,16 @@ inline void CCreateLineInfo::OpenBold(std::string tag) {
   ++this->m_bold;
 }
 
-// INLINED
+// OFFSET: 0x0083A040
+// FUNCTION: fn_46486
 inline void CCreateLineInfo::CloseBold(std::string tag) {
   if (--this->m_bold == 0) {
     this->m_newSegment = true;
   }
 }
 
-// INLINED
+// OFFSET: 0x0083A430
+// FUNCTION: fn_46490
 inline void CCreateLineInfo::OpenItalic(std::string tag) {
   if (this->m_italic == 0) {
     this->m_newSegment = true;
@@ -1363,7 +1367,8 @@ inline void CCreateLineInfo::OpenItalic(std::string tag) {
   ++this->m_italic;
 }
 
-// INLINED
+// OFFSET: 0x0083A3D0
+// FUNCTION: fn_46489
 inline void CCreateLineInfo::CloseItalic(std::string tag) {
   if (--this->m_italic == 0) {
     this->m_newSegment = true;
