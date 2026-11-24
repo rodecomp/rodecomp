@@ -250,23 +250,31 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
       continue;
     }
 
-    int angle = slot.riseAngle;
-    int angle1 = angle + (angle < 2 ? 358 : -2);
-    int angle2 = angle + (angle < 358 ? 2 : -358);
-    int angle3 = angle + (angle < 182 ? 178 : -182);
-    int angle4 = angle + (angle < 178 ? 182 : -178);
-    vec1.x = slot.distance * g_cosTable[angle1] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec1.y = slot.distance * g_cosTable[angle1] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec1.z = slot.distance * g_sinTable[angle1] + slot.vecBNow.z;
-    vec2.x = slot.distance * g_cosTable[angle2] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec2.y = slot.distance * g_cosTable[angle2] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec2.z = slot.distance * g_sinTable[angle2] + slot.vecBNow.z;
-    vec3.x = slot.distance * g_cosTable[angle3] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec3.y = slot.distance * g_cosTable[angle3] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec3.z = slot.distance * g_sinTable[angle3] + slot.vecBNow.z;
-    vec4.x = slot.distance * g_cosTable[angle4] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec4.y = slot.distance * g_cosTable[angle4] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec4.z = slot.distance * g_sinTable[angle4] + slot.vecBNow.z;
+    const int angle = slot.riseAngle;
+    const int angle1 = angle + (angle >= 2 ? -2 : 358);
+    const int angle2 = angle + (angle < 358 ? 2 : -358);
+    const int angle3 = angle + (angle >= 182 ? -182 : 178);
+    const int angle4 = angle + (angle >= 178 ? -178 : 182);
+    const float distance = slot.distance;
+    const float height = slot.height[0];
+    const float cosRot = g_cosTable[slot.rotStart];
+    const float sinRot = g_sinTable[slot.rotStart];
+    const float baseX = slot.vecBNow.x;
+    const float baseY = slot.vecBNow.y;
+    const float baseZ = slot.vecBNow.z;
+
+    vec1.x = distance * g_cosTable[angle1] * cosRot + baseX;
+    vec1.y = distance * g_cosTable[angle1] * sinRot + height + baseY;
+    vec1.z = distance * g_sinTable[angle1] + baseZ;
+    vec2.x = distance * g_cosTable[angle2] * cosRot + baseX;
+    vec2.y = distance * g_cosTable[angle2] * sinRot + height + baseY;
+    vec2.z = distance * g_sinTable[angle2] + baseZ;
+    vec3.x = distance * g_cosTable[angle3] * cosRot + baseX;
+    vec3.y = distance * g_cosTable[angle3] * sinRot + height + baseY;
+    vec3.z = distance * g_sinTable[angle3] + baseZ;
+    vec4.x = distance * g_cosTable[angle4] * cosRot + baseX;
+    vec4.y = distance * g_cosTable[angle4] * sinRot + height + baseY;
+    vec4.z = distance * g_sinTable[angle4] + baseZ;
 
     switch (slot.flag1[2]) {
     case 0:
@@ -283,23 +291,31 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
       break;
     }
 
-    angle = slot.riseAngle;
-    angle1 = angle + (angle < 8 ? 352 : -8);
-    angle2 = angle + (angle < 352 ? 8 : -352);
-    angle3 = angle + (angle < 188 ? 172 : -188);
-    angle4 = angle + (angle < 172 ? 188 : -172);
-    vec1.x = slot.distance * g_cosTable[angle1] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec1.y = slot.distance * g_cosTable[angle1] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec1.z = slot.distance * g_sinTable[angle1] + slot.vecBNow.z;
-    vec2.x = slot.distance * g_cosTable[angle2] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec2.y = slot.distance * g_cosTable[angle2] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec2.z = slot.distance * g_sinTable[angle2] + slot.vecBNow.z;
-    vec3.x = slot.distance * g_cosTable[angle3] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec3.y = slot.distance * g_cosTable[angle3] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec3.z = slot.distance * g_sinTable[angle3] + slot.vecBNow.z;
-    vec4.x = slot.distance * g_cosTable[angle4] * g_cosTable[slot.rotStart] + slot.vecBNow.x;
-    vec4.y = slot.distance * g_cosTable[angle4] * g_sinTable[slot.rotStart] + slot.height[0] + slot.vecBNow.y;
-    vec4.z = slot.distance * g_sinTable[angle4] + slot.vecBNow.z;
+    const int angleB = slot.riseAngle;
+    const int angleB1 = angleB + (angleB >= 8 ? -8 : 352);
+    const int angleB2 = angleB + (angleB < 352 ? 8 : -352);
+    const int angleB3 = angleB + (angleB >= 188 ? -188 : 172);
+    const int angleB4 = angleB + (angleB >= 172 ? -172 : 188);
+    const float distanceB = slot.distance;
+    const float heightB = slot.height[0];
+    const float cosRotB = g_cosTable[slot.rotStart];
+    const float sinRotB = g_sinTable[slot.rotStart];
+    const float baseXB = slot.vecBNow.x;
+    const float baseYB = slot.vecBNow.y;
+    const float baseZB = slot.vecBNow.z;
+
+    vec1.x = distanceB * g_cosTable[angleB1] * cosRotB + baseXB;
+    vec1.y = distanceB * g_cosTable[angleB1] * sinRotB + heightB + baseYB;
+    vec1.z = distanceB * g_sinTable[angleB1] + baseZB;
+    vec2.x = distanceB * g_cosTable[angleB2] * cosRotB + baseXB;
+    vec2.y = distanceB * g_cosTable[angleB2] * sinRotB + heightB + baseYB;
+    vec2.z = distanceB * g_sinTable[angleB2] + baseZB;
+    vec3.x = distanceB * g_cosTable[angleB3] * cosRotB + baseXB;
+    vec3.y = distanceB * g_cosTable[angleB3] * sinRotB + heightB + baseYB;
+    vec3.z = distanceB * g_sinTable[angleB3] + baseZB;
+    vec4.x = distanceB * g_cosTable[angleB4] * cosRotB + baseXB;
+    vec4.y = distanceB * g_cosTable[angleB4] * sinRotB + heightB + baseYB;
+    vec4.z = distanceB * g_sinTable[angleB4] + baseZB;
 
     switch (slot.flag1[2]) {
     case 0:
