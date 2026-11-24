@@ -1177,8 +1177,9 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
     const int key = static_cast<int>(skill.treePosition);
     if (key != -1 && key >= this->m_firstRow * this->m_columns && key == this->m_selectedSkill) {
       this->m_values.push_front({static_cast<int>(skill.id), 0});
-      for (std::size_t i = 0; i < skill.entries.size(); ++i) {
-        const int id = static_cast<int>(skill.entries[i].skillId);
+      auto& entriesRef = skill.entries;
+      for (std::size_t i = 0; i < entriesRef.size(); ++i) {
+        const int id = static_cast<int>(entriesRef[i].skillId);
         const int tab = SkillTabOf(id);
         if (tab != this->m_tab) {
           UITabControl* tabs = this->m_tabs;
@@ -1188,7 +1189,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
           }
         }
 
-        int level = static_cast<int>(skill.entries[i].requiredLevel);
+        int level = static_cast<int>(entriesRef[i].requiredLevel);
         for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
           if (it->id == id) {
             level = (std::max)(level, it->value);
@@ -1196,8 +1197,8 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
             break;
           }
         }
-        skill.entries[i].requiredLevel = level;
-        SkillInfoEntry& entry = skill.entries[i];
+        entriesRef[i].requiredLevel = level;
+        SkillInfoEntry& entry = entriesRef[i];
         this->m_values.emplace_front(entry.skillId, entry.requiredLevel);
       }
       return;

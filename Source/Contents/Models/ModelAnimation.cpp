@@ -320,10 +320,11 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       secondWeight = ClientSin(amount * 3.141592f);
     }
 
-    result.rotation[0] = bx * secondWeight + firstWeight * ax;
-    result.rotation[1] = by * secondWeight + firstWeight * ay;
-    result.rotation[2] = bz * secondWeight + az * firstWeight;
-    result.rotation[3] = bw * secondWeight + aw * firstWeight;
+    auto& rotationRef = result.rotation;
+    rotationRef[0] = bx * secondWeight + firstWeight * ax;
+    rotationRef[1] = by * secondWeight + firstWeight * ay;
+    rotationRef[2] = bz * secondWeight + az * firstWeight;
+    rotationRef[3] = bw * secondWeight + aw * firstWeight;
     rotation.MakeRotation(result);
   }
 

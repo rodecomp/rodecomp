@@ -189,9 +189,10 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
         }
       }
 
-      const vector3d travel{particle->motionVelocity.x * particle->speedParameter * this->timeScale,
-                            particle->motionVelocity.y * particle->speedParameter * this->timeScale,
-                            particle->motionVelocity.z * particle->speedParameter * this->timeScale};
+      auto& speedParameterRef = particle->speedParameter;
+      const vector3d travel{particle->motionVelocity.x * speedParameterRef * this->timeScale,
+                            particle->motionVelocity.y * speedParameterRef * this->timeScale,
+                            particle->motionVelocity.z * speedParameterRef * this->timeScale};
       particle->offset += travel;
       particle->position += particle->offset;
       particle->motionVelocity += this->acceleration * this->timeScale;

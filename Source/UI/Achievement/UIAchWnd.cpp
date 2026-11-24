@@ -129,12 +129,13 @@ void UIAchTab::DrawGroup(int group) {
   std::string name = this->groups[group].name;
   int textY = (this->groupHeight - this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
 
-  if (group > this->selectedGroup) {
-    y += std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
-    textY += std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
+  auto& selectedGroupRef = this->selectedGroup;
+  if (group > selectedGroupRef) {
+    y += std::min(this->SubCount(selectedGroupRef), this->visibleSubs) * this->subHeight;
+    textY += std::min(this->SubCount(selectedGroupRef), this->visibleSubs) * this->subHeight;
   }
 
-  if (group == this->selectedGroup) {
+  if (group == selectedGroupRef) {
     this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_press.bmp"), false);
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
 
