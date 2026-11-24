@@ -10472,8 +10472,7 @@ __declspec(safebuffers) void CRagEffect::StoneCurseRing() {
 // OFFSET: 0x00C49300
 // FUNCTION: fn_20166
 void CRagEffect::SkyCloud(char kind) {
-  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  this->render.position = player->render.position;
+  this->render.position = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -10557,10 +10556,10 @@ void CRagEffect::SkyCloud(char kind) {
       const CGameMode* mode = g_modeMgr.GetGameMode();
       const EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
       this->state.lastPrim->state.slots[index].vecBNow.y =
-        mode->scene->terrain->Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - 20.0f -
+        mode->scene->terrain->Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - g_fireflyGroundOffset -
         static_cast<float>(ClampedRandom(5));
     } else if (kind == 5) {
-      this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + 20.0f;
+      this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + g_fireflyGroundOffset;
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
     } else if (kind == 9 || kind == 15) {
@@ -10574,24 +10573,24 @@ void CRagEffect::SkyCloud(char kind) {
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * -1.0f;
+        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * g_heightSpeedSign;
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * -1.0f;
+        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * g_heightSpeedSign;
       }
     } else {
       this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + 40.0f;
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * -1.0f;
+        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * g_heightSpeedSign;
       }
 
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * -1.0f;
+        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * g_heightSpeedSign;
       }
     }
 
