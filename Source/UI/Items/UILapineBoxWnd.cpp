@@ -140,10 +140,9 @@ void UILapineBoxWnd::OnMouseHover(int x, int y) {
     int tipY = -20;
     for (unsigned int index = 0; index < this->items.size(); ++index) {
       if (item.identity[1] == this->items[index].identity[1]) {
-        int position[2];
-        this->MaterialPosition(position, index);
-        tipX = position[0];
-        tipY = position[1] - 0x14;
+        const auto position = this->MaterialPosition(index);
+        tipX = position.first;
+        tipY = position.second - 0x14;
         break;
       }
     }
@@ -189,7 +188,7 @@ void UIIngredientInfoWnd::OnRBtnDown(int, int) {
 
 // OFFSET: 0x006024F0
 // FUNCTION: fn_04181
-__declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) {
+__declspec(noinline) std::pair<int, int> UILapineBoxWnd::MaterialPosition(int index) {
   if (index >= 0) {
     const unsigned int count = this->items.size();
     if (count >= static_cast<unsigned int>(index)) {
@@ -200,14 +199,11 @@ __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) 
         left = 0x2A;
         top = 0xB7;
       }
-      out[1] = top;
-      out[0] = left + static_cast<unsigned int>(index) % columns * 0x22;
-      return;
+      return {left + static_cast<int>(static_cast<unsigned int>(index) % columns) * 0x22, top};
     }
   }
 
-  out[0] = 0;
-  out[1] = 0;
+  return {};
 }
 
 // OFFSET: 0x00602410
@@ -215,9 +211,8 @@ __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) 
 __declspec(noinline) ITEM_INFO UILapineBoxWnd::ReadMaterial(int x, int y) {
   const ITEM_INFO* first = &this->items[0];
   for (unsigned int index = 0, count = this->items.size(); index < count; ++index) {
-    int position[2];
-    this->MaterialPosition(position, index);
-    if (x >= position[0] && x <= position[0] + 0x18 && y >= position[1] && y <= position[1] + 0x18) {
+    const auto position = this->MaterialPosition(index);
+    if (x >= position.first && x <= position.first + 0x18 && y >= position.second && y <= position.second + 0x18) {
       return first[index];
     }
   }

@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 class UIBitmapButton;
@@ -100,7 +101,7 @@ public:
   void SetIngredient(int id);
   void AddMaterial(int id, int quantity);
   __declspec(noinline) ITEM_INFO ReadMaterial(int x, int y);
-  __declspec(noinline) void MaterialPosition(int* out, int index);
+  __declspec(noinline) std::pair<int, int> MaterialPosition(int index);
   void SetWaiting(unsigned char waiting);
   // INLINED
 

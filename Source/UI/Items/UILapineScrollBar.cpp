@@ -261,11 +261,10 @@ void UILapineBoxWnd::Paint() {
   this->DrawCenteredText(115, 76, FormatOwnedString("%d", this->maxItems).c_str(), 14, 0, 11, 0xFFFFFF, 0);
 
   for (unsigned index = 0; index < this->items.size(); ++index) {
-    int position[2];
-    this->MaterialPosition(position, index);
+    const auto position = this->MaterialPosition(index);
     auto* shadow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
-    const int x = position[0];
-    const int y = position[1];
+    const int x = position.first;
+    const int y = position.second;
     this->DrawBitmap(x - 4, y + 11, shadow, true);
     this->DrawItemAndQuantity(x, y, this->items[index], 0, 0);
   }
