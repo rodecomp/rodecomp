@@ -341,6 +341,7 @@ void UINavigationWnd::RefreshRouteList() {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), map->GetTitle(), map->GetName());
+    std::string kind;
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 4;
   } else if (target.type == 0) {
