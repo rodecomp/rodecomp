@@ -25,6 +25,11 @@ struct AdventureGuideIntro {
   /* 0004 */ std::string title;
   /* 001C */ std::string text;
   /* 0034 */ std::map<int, AdventureGuideDetail> details;
+
+  // OFFSET: 0x00662E00
+  // FUNCTION: fn_46571
+  ~AdventureGuideIntro() {
+  }
 };
 
 namespace Guide_Intro {
@@ -76,6 +81,11 @@ struct AdventureGuideContents {
   /* 0010 */ std::string first;
   /* 0028 */ std::string second;
   /* 0040 */ std::vector<std::string> values;
+
+  // OFFSET: 0x00662D20
+  // FUNCTION: fn_46570
+  ~AdventureGuideContents() {
+  }
 };
 
 struct AdventureGuideEntry {
