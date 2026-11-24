@@ -2180,14 +2180,16 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
     if (mail != store->m_mails0.end()) {
       if (!mail->second.isRead) {
         --store->unreadCount;
-        if (g_rodexMailStore->unreadCount == 0) {
+        store = g_rodexMailStore;
+        if (store->unreadCount == 0) {
           if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
             window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
           }
+          store = g_rodexMailStore;
         }
       }
 
-      g_rodexMailStore->m_mails0.erase(mail);
+      store->m_mails0.erase(mail);
       if (g_windowMgr.rodexInboxWnd) {
         g_windowMgr.rodexInboxWnd->RemoveInboxMail(mailId);
       }
