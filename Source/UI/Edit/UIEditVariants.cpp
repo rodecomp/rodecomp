@@ -210,8 +210,6 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085E420
 // FUNCTION: fn_10829
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
-  UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
-
   this->verticalCursorStep = 0;
   this->previousCursor = 0;
 
@@ -266,6 +264,14 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
     }
     this->caretAtLineEnd = 1;
     return;
+  case VK_INSERT:
+  case VK_DELETE:
+  case 'A':
+  case 'C':
+  case 'V':
+  case 'X':
+    g_serverLanguage->KeyDown(key, data);
+    break;
   case VK_BACK:
     if (this->wrappedLines.size() != 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
@@ -277,14 +283,6 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
         g_serverLanguage->Character(VK_BACK, data);
       }
     }
-    break;
-  case VK_INSERT:
-  case VK_DELETE:
-  case 'A':
-  case 'C':
-  case 'V':
-  case 'X':
-    g_serverLanguage->KeyDown(key, data);
     break;
   }
 }
