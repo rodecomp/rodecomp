@@ -1600,10 +1600,11 @@ bool CAdventureGuideMgr::Load() {
   m_lua.SetGlobal("InsertArmorContents", ::InsertArmorContents);
   m_lua.SetGlobal("InsertArmorObtainGuide", ::InsertArmorObtainGuide);
 
-  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\AdventureGuide_F.lub")) {
-    return false;
+  bool loaded = m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\AdventureGuide_F.lub");
+  if (loaded) {
+    loaded = m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Intro.lub");
   }
-  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Intro.lub")) {
+  if (!loaded) {
     return false;
   }
   if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Episode.lub")) {
