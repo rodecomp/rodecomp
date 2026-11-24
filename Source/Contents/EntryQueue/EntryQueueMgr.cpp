@@ -39,7 +39,9 @@ CEntryQueueMgr* g_entryQueueMgr;
 // GLOBAL: gl_24869
 std::map<unsigned int, EntryQueueInfo*> g_entryQueueList;
 
-CEntryQueueMgr::~CEntryQueueMgr() {
+// OFFSET: 0x00BA1CD0
+// FUNCTION: fn_46480
+__declspec(noinline) CEntryQueueMgr::~CEntryQueueMgr() {
   for (std::map<unsigned int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
     if (it->second) {
       delete it->second;
