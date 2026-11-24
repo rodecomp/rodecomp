@@ -340,7 +340,10 @@ void WorldSpatialTree::RefreshModelBounds(int depth) {
     float& minimum = this->minimum[1];
     float& maximum = this->maximum[1];
     maximum = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
-    minimum = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
+    minimum = groundMinimum;
+    if (terrainMinimum < groundMinimum) {
+      minimum = terrainMinimum;
+    }
     const auto expand = [&minimum, &maximum](C3dActor* const& object) {
       if (minimum > object->minimum[1]) {
         minimum = object->minimum[1];
