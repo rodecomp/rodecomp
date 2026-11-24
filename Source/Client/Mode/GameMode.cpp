@@ -8471,6 +8471,96 @@ struct ContactNpcPacket {
 };
 #pragma pack(pop)
 
+struct CashItemSchedulePacket {
+  /* 0000 */ std::int16_t packetType;
+};
+
+static_assert(sizeof(CashItemSchedulePacket) == 2);
+
+// INLINED
+static unsigned ReadReplaySkillEffects(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  GameModeChunkHeader header;
+  g_activeSkillEffects.erase(g_activeSkillEffects.begin(), g_activeSkillEffects.end());
+  unsigned offset = 6;
+  header.Clear();
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  if (header.type != 19000) {
+    return 0xFFFFFFFFu;
+  }
+
+  while (data.size() > offset) {
+    header.Clear();
+    header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+    offset += 6;
+
+    switch (header.type) {
+    case 19001:
+      g_statusRefreshSuppressed = 1;
+      return offset;
+    case 19011: {
+      ActiveSkillEffect effect;
+      std::memcpy(&effect, data.data() + offset, header.size);
+      offset += header.size;
+      if (effect.expiration != 999999) {
+        g_cooldownOwner->Register(effect.id, effect.totalDuration, effect.expiration - effect.remainingDuration, effect.totalDuration - effect.remainingDuration);
+      }
+      g_activeSkillEffects.push_back(effect);
+      break;
+    }
+    default:
+      offset += header.size;
+      break;
+    }
+  }
+
+  g_statusRefreshSuppressed = 1;
+  return offset;
+}
+
+// INLINED
+static unsigned ReadReplayQuestState(CGameMode* mode, const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  GameModeChunkHeader header;
+  header.Clear();
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  unsigned offset = 6;
+  if (header.type != 14000) {
+    return 0xFFFFFFFFu;
+  }
+
+  while (data.size() > offset) {
+    header.Clear();
+    header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+    offset += 6;
+
+    switch (header.type) {
+    case 14001:
+      return offset;
+    case 14011:
+      std::memcpy(&mode->isOnQuest, data.data() + offset, header.size);
+      offset += header.size;
+      break;
+    default:
+      offset += header.size;
+      break;
+    }
+  }
+
+  return offset;
+}
+
+// INLINED
+static std::string MapFileName(const char* name) {
+  return std::string(name);
+}
+
 // OFFSET: 0x00CDDA50
 // FUNCTION: fn_21320
 void CGameMode::Initialize(const char* name) {
@@ -8485,37 +8575,7 @@ void CGameMode::Initialize(const char* name) {
   this->bossAlarmAndCopyNameFlags[1] = 0;
 
   if (Replay::Instance().state == 6) {
-    const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x12);
-    if (data.begin() != data.end()) {
-      GameModeChunkHeader header;
-      g_activeSkillEffects.erase(g_activeSkillEffects.begin(), g_activeSkillEffects.end());
-      unsigned offset = 6;
-      header.Clear();
-      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-      if (header.type == 19000) {
-        while (offset < data.size()) {
-          header.Clear();
-          header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
-          offset += 6;
-          if (header.type == 19001) {
-            break;
-          }
-
-          if (header.type == 19011) {
-            ActiveSkillEffect effect;
-            std::memcpy(&effect, data.data() + offset, header.size);
-            offset += header.size;
-            if (effect.expiration != 999999) {
-              g_cooldownOwner->Register(effect.id, effect.totalDuration, effect.expiration - effect.remainingDuration, effect.totalDuration - effect.remainingDuration);
-            }
-            g_activeSkillEffects.push_back(effect);
-          } else {
-            offset += header.size;
-          }
-        }
-        g_statusRefreshSuppressed = 1;
-      }
-    }
+    ReadReplaySkillEffects(Replay::Instance().ReadSection(0x12));
   }
 
   g_session.ClearPairValues(1, 0, 0);
@@ -8559,7 +8619,7 @@ void CGameMode::Initialize(const char* name) {
   this->mousePointer = new CMousePointer();
   this->scene->objects.push_back(this->mousePointer);
   CSoundMgr* soundMgr = g_soundMgr;
-  soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+  soundMgr->SetDefaultName(g_session.GetBgmFileName(MapFileName(this->mapName).c_str()));
 
   g_weatherEffect.enabled = g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) == 0;
   if (g_serviceOptions.Get(TT_FOG_ON_OFF)) {
@@ -8598,10 +8658,8 @@ void CGameMode::Initialize(const char* name) {
 
   if (g_replayAnimationScaling == 0) {
     std::uint64_t now = _Xtime_get_ticks();
-    std::int64_t interval = 60000;
-    g_timeScheduler->AddSchedule(new CCheckGDISchedule(now, interval, 2));
-    interval = 5000;
-    CPingLiveSchedule* ping = new CPingLiveSchedule(now, interval);
+    g_timeScheduler->AddSchedule(new CCheckGDISchedule(now, 60000, 2));
+    CPingLiveSchedule* ping = new CPingLiveSchedule(now, 5000);
     g_session.m_pingLiveSchedule = ping->serial;
     g_timeScheduler->AddSchedule(ping);
   }
@@ -8611,8 +8669,9 @@ void CGameMode::Initialize(const char* name) {
       this->SendMsg(MM_STOVE_AUTHENTICATION, 1, 0, 0, 0);
       g_stoveMgr->FetchAllProducts();
     } else {
-      std::int16_t packet = ID_CZ_REQ_SCHEDULER_CASHITEM;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
+      CashItemSchedulePacket packet;
+      packet.packetType = ID_CZ_REQ_SCHEDULER_CASHITEM;
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     }
   }
 
@@ -8633,28 +8692,7 @@ void CGameMode::Initialize(const char* name) {
     this->ReadReplayGroundItems(Replay::Instance().ReadSection(0x10));
     this->ReadReplayGroundSkills(Replay::Instance().ReadSection(0x11));
 
-    const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x17);
-    if (data.begin() != data.end()) {
-      GameModeChunkHeader header;
-      unsigned offset = 6;
-      header.Clear();
-      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-      if (header.type == 14000) {
-        while (offset < data.size()) {
-          header.Clear();
-          header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
-          offset += 6;
-          if (header.type == 14001) {
-            break;
-          }
-
-          if (header.type == 14011) {
-            std::memcpy(&this->isOnQuest, data.data() + offset, header.size);
-          }
-          offset += header.size;
-        }
-      }
-    }
+    ReadReplayQuestState(this, Replay::Instance().ReadSection(0x17));
 
     g_navigationManager.LoadReplayState(Replay::Instance().ReadSection(0x18));
     g_windowMgr.LoadReplaySettings(Replay::Instance().ReadSection(0x14));
