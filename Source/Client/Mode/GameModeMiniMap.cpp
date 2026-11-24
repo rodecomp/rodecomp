@@ -580,14 +580,15 @@ void CGameMode::DrawMiniMapCoordinates() {
   digits[2] = remaining % 10;
   digits[3] = remaining / 10;
 
-  const int y = g_renderer->viewport.height - 30;
+  auto& viewportRef = g_renderer->viewport;
+  const int y = viewportRef.height - 30;
   int offset = count * 25;
   for (int index = 0; index < count; ++index, offset -= 25) {
-    this->DrawActionSprite(g_renderer->viewport.width - 80 + offset, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    this->DrawActionSprite(viewportRef.width - 80 + offset, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 
   this->DrawActionSprite(
-    g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+    viewportRef.width - 80, viewportRef.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
   );
 
   value = coordinateX;
@@ -608,8 +609,8 @@ void CGameMode::DrawMiniMapCoordinates() {
   digits[2] = remaining % 10;
   digits[3] = remaining / 10;
 
-  int x = g_renderer->viewport.width - 105;
-  const int secondY = g_renderer->viewport.height - 50;
+  int x = viewportRef.width - 105;
+  const int secondY = viewportRef.height - 50;
   for (int index = 0; index < count; ++index, x -= 25) {
     this->DrawActionSprite(x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
