@@ -3364,7 +3364,39 @@ void CLoginMode::OnChangeState(int value) {
 
   switch (value) {
   case 0:
-  case 1:
+    if (g_serviceType == ServiceKorea) {
+      constexpr std::array<char, 44> source = OBFUSCATE_SOURCE("유저인터페이스\\login_interface\\warning2.bmp", 0xF3CB6F7711A71B6DULL);
+      this->wallpaperName = std::string(OBFUSCATE_DECRYPT(0xF3CB6F7711A71B6DULL, source));
+    } else {
+      constexpr std::array<char, 43> source = OBFUSCATE_SOURCE("유저인터페이스\\login_interface\\warning.bmp", 0x839B27DF8F5967B3ULL);
+      this->wallpaperName = std::string(OBFUSCATE_DECRYPT(0x839B27DF8F5967B3ULL, source));
+    }
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    if (g_replayMode) {
+      ReplayFileList::Instance().SetReplay(&Replay::Instance());
+      g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, LMM_SELECT_REPLAY_DATA, 0, 0, 0);
+    } else {
+      g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, LMM_GOTOSELECTACCOUNT, 0, 0, 0);
+    }
+    break;
+  case 1: {
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    this->wallpaperName = g_loginWallpaperName;
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_SAYDIALOGWND);
+    window->Resize(400, 300);
+    window->Move((g_renderer->viewport.width - 640) / 2 + 120, (g_renderer->viewport.height - 480) / 2 + 90);
+    constexpr std::array<char, 13> disagreeSource = OBFUSCATE_SOURCE("btn_disagree", 0x9FED7DA189490D5DULL);
+    window->SendMsg(nullptr, UM_ADD_BUTTON, 201, reinterpret_cast<std::intptr_t>(OBFUSCATE_DECRYPT(0x9FED7DA189490D5DULL, disagreeSource)), 0, 0);
+    constexpr std::array<char, 10> agreeSource = OBFUSCATE_SOURCE("btn_agree", 0x452FEF0D7FC95565ULL);
+    window->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>(OBFUSCATE_DECRYPT(0x452FEF0D7FC95565ULL, agreeSource)), 0, 0);
+    if (g_serviceType == ServiceIndonesia) {
+      window->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(GetLicenceText()), 0, 53, 0);
+    } else {
+      window->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(GetLicenceText()), 0, 58, 0);
+    }
+    window->SendMsg(nullptr, UM_SET_TARGET, LMM_GOTOSELECTACCOUNT, 0, 0, 0);
+    break;
+  }
   case 13:
     this->SendMsg(LMM_RESET_TO_LOGIN, 0, 0, 0, 0);
     break;
@@ -3373,41 +3405,38 @@ void CLoginMode::OnChangeState(int value) {
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       const int port = rand() % 3 + 6951;
-      alignas(16) const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
-      thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
-      const char* hostText = host.Text();
+      alignas(16) constexpr std::array<char, 26> hostSource = OBFUSCATE_SOURCE("kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
+      const char* hostText = OBFUSCATE_DECRYPT(0x7941D76335CFA14FULL, hostSource);
       StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
     } else {
-      const std::array<std::uint8_t, 34> hostSource = OBFUSCATE_SOURCE_BYTES(34, "kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
-      thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
-      const char* hostText = host.Text();
+      constexpr std::array<char, 34> hostSource = OBFUSCATE_SOURCE("kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
+      const char* hostText = OBFUSCATE_DECRYPT(0x7115D9F973F913C9ULL, hostSource);
       StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xCB1D253B7FE1F563ULL), hostText);
     }
 
     this->connectionReady = GetRagConnection().Connect(endpoint);
-    if (!this->connectionReady) {
+    if (this->connectionReady) {
+      ZoneLoginPacket packet;
+      std::memset(&packet, 0, sizeof(packet));
+      packet.id = ID_CT_AUTH;
+      const std::array<std::uint8_t, 5> codeSource = OBFUSCATE_SOURCE_BYTES(5, "0011", 0x793F370985ED674FULL);
+      thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
+      std::memcpy(packet.code, code.Text(), sizeof(packet.code));
+      StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), this->m_accountId);
+      char password[33] = {};
+      StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), this->m_password);
+      DecryptRijndael256(password, packet.password);
+      StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), this->loginExtra);
+      GetRagConnection().Send(sizeof(packet), &packet);
+      this->otpStarted = timeGetTime();
+      this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+      this->waitWnd->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    } else {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->pendingCursorType = 3;
       }
-      break;
     }
-
-    ZoneLoginPacket packet;
-    std::memset(&packet, 0, sizeof(packet));
-    packet.id = ID_CT_AUTH;
-    const std::array<std::uint8_t, 5> codeSource = OBFUSCATE_SOURCE_BYTES(5, "0011", 0x793F370985ED674FULL);
-    thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
-    std::memcpy(packet.code, code.Text(), sizeof(packet.code));
-    StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), this->m_accountId);
-    char password[33] = {};
-    StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), this->m_password);
-    DecryptRijndael256(password, packet.password);
-    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), this->loginExtra);
-    GetRagConnection().Send(sizeof(packet), &packet);
-    this->otpStarted = timeGetTime();
-    this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
-    this->waitWnd->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 2:
@@ -3436,11 +3465,12 @@ void CLoginMode::OnChangeState(int value) {
         break;
       }
 
-      if (g_session.m_launchAccountEnabled != true) {
+      if (g_session.m_launchAccountEnabled == true) {
+        g_session.m_launchAccountEnabled = false;
+      } else {
         g_modeMgr.Quit();
         break;
       }
-      g_session.m_launchAccountEnabled = false;
     }
     this->pendingCursorType = 4;
     break;
@@ -3537,12 +3567,6 @@ void CLoginMode::OnChangeState(int value) {
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       break;
-    case 3:
-      g_session.m_passwordInputAlternate = false;
-      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
-      g_windowMgr.secondPasswordInputWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
-      break;
     case 4:
       g_session.m_passwordInputAlternate = true;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
@@ -3554,6 +3578,12 @@ void CLoginMode::OnChangeState(int value) {
       g_session.m_passwordInputAlternate = true;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
+      break;
+    case 3:
+      g_session.m_passwordInputAlternate = false;
+      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
+      g_windowMgr.secondPasswordInputWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       break;
     }
     break;
