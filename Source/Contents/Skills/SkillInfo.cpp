@@ -2376,7 +2376,8 @@ void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillEffect(int level, CGameActor* sourc
   const float scale = source->attackMotion * source->render.speed * 16.0f;
   const bool flip = direction != 1 && direction != 2;
   const bool horizontal = (direction & 1) != 0;
-  std::string name = horizontal ? "dragonic_pierce_horizon" : "dragonic_pierce_vertical";
+  std::string name;
+  name.assign(horizontal ? "dragonic_pierce_horizon" : "dragonic_pierce_vertical");
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
