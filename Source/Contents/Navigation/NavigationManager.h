@@ -135,7 +135,7 @@ public:
   virtual void AddLink(const NaviLink& link);
   virtual void EraseLink(std::vector<NaviLink>::iterator& it);
   virtual void ClearLinks();
-  virtual CNavi_Link* FindLinkAt(int x, int y);
+  virtual CNavi_Link* FindLinkAt(std::pair<int, int> target);
   virtual CNavi_Link* FindLinkTo(int x, int y);
 
   bool HasId(const unsigned int& id) const;
@@ -181,7 +181,7 @@ public:
   void AddLink(const NaviLink& link) override;
   void EraseLink(std::vector<NaviLink>::iterator& it) override;
   void ClearLinks() override;
-  CNavi_Link* FindLinkAt(int x, int y) override;
+  CNavi_Link* FindLinkAt(std::pair<int, int> target) override;
   CNavi_Link* FindLinkTo(int x, int y) override;
 };
 
