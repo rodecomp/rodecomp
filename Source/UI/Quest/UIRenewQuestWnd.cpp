@@ -658,11 +658,6 @@ int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
 }
 
-// INLINED
-static std::string RenewQuestImagePath(const std::string& name) {
-  return "유저인터페이스\\renew_questui\\" + name;
-}
-
 // OFFSET: 0x007FBB70
 // FUNCTION: fn_09963
 void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended) {
@@ -679,7 +674,7 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
     this->m_recommendedWnd->SetQuest(this->m_questId);
     this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).backgroundImage;
     if (!this->m_imageName.empty()) {
-      this->m_imageName = RenewQuestImagePath(this->m_imageName);
+      this->m_imageName = "유저인터페이스\\renew_questui\\" + this->m_imageName;
     }
   } else {
     const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(questId);
@@ -693,7 +688,7 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
     this->m_ongoingWnd->SetQuest(this->m_questId);
     if (quest.m_year > 1970) {
       this->m_timeText = static_cast<const std::string&>(
-        FormatOwnedString("%s [%02d/%02d/%02d %02d:%02d]", LookupMessage(MSI_QUESTUI_CLOSINGTIME), quest.m_year, quest.m_month, quest.m_day, quest.m_hour, quest.m_minute));
+        FormatOwnedString("%s [%02d/%02d/%02d %02d:%02d]", LookupMessage(MSI_QUESTUI_CLOSINGTIME), quest.m_year, quest.m_month, quest.m_day, quest.m_hour, static_cast<short>(quest.m_minute)));
     }
   }
 

@@ -45,3 +45,4 @@
 extern template std::string::basic_string(std::_String_constructor_concat_tag, const std::string&, const char*, std::size_t, const char*, std::size_t);
 extern template std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>&
 std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const unsigned int, RenewQuestOngoingInfo>>>, std::_Iterator_base0>::operator++() noexcept;
+template __forceinline std::string std::operator+(const char* const, const std::string&);
