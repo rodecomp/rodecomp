@@ -2213,7 +2213,7 @@ void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color,
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     wrapped[line] = this->RenderNavigationLinks(wrapped[line].c_str(), source);
-    if (line != 0) {
+    if (line > 0) {
       this->lineColors.push_back(color);
     }
     this->UIListBox::AddLine(wrapped[line].c_str());
