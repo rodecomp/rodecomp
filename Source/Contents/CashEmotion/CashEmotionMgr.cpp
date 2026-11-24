@@ -2343,7 +2343,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
     const char id = static_cast<char>(index + 1);
     tab->SendMsg(this, UM_SETSTATE, id == 1, 0, 0, 0);
     this->AddChild(tab);
-    this->m_tabs.insert(std::make_pair(id, static_cast<UIWindow*>(tab)));
+    this->m_tabs.insert({id, tab});
 
     if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(normal.c_str())))) {
       x += bitmap->image.height;
