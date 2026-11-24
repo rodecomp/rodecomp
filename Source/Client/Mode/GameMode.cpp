@@ -10912,10 +10912,10 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   const std::intptr_t mode = this->skillUseType;
 
   int skillMode;
-  int shiftHeld;
+  unsigned int support;
   bool optionalSelf;
-  int support;
-  int attack;
+  unsigned int shiftHeld;
+  unsigned int attack;
   if (mode == 2 || mode == 4) {
     skillMode = 1;
     shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
@@ -10982,7 +10982,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
           attack = 0;
           if (skillMode) {
             attack = support;
-            if ((selfTargetOption || shiftHeld) && optionalSelf == true) {
+            if ((selfTargetOption || shiftHeld) && optionalSelf) {
               attack = 1;
             }
           }
