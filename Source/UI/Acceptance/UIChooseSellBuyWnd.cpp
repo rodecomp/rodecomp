@@ -12887,8 +12887,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         } else {
           const char* name = nullptr;
           if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", static_cast<int>(option.id), &name) && name) {
-            std::string text = FormatOwnedString(name, static_cast<int>(option.value), option.parameter);
             std::list<std::string> lines;
+            std::string text = FormatOwnedString(name, static_cast<int>(option.value), option.parameter);
             this->WrapText(text, 254, lines);
             this->m_cardTexts.insert(std::make_pair(index, lines));
           }
@@ -12948,8 +12948,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         }
       }
       if (this->m_item.durationInHours) {
-        const int hours = static_cast<int>(this->m_item.expireTime);
-        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_PACKAGEITEM_TIME), hours / 24, hours % 24);
+        const std::div_t duration = std::div(static_cast<int>(this->m_item.expireTime), 24);
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_PACKAGEITEM_TIME), duration.quot, duration.rem);
       }
       this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), color, 0, 0);
     }
