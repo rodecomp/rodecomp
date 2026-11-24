@@ -2939,6 +2939,17 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, address, 0, 0, 0, 0, 0);
 }
 
+// INLINED
+static bool FindSkillUnit(std::list<std::uint32_t>& ids, const GroundSkillPacket& packet, std::list<std::uint32_t>::iterator& found) {
+  for (auto it = ids.begin(); it != ids.end(); ++it) {
+    if (packet.aid == *it) {
+      found = it;
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x00D40730
 // FUNCTION: fn_21819
 void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
@@ -2968,8 +2979,8 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
 
   CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
-    const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&packet](std::uint32_t id) { return packet.aid == id; });
-    if (found != this->m_skillUnitIds.end()) {
+    std::list<std::uint32_t>::iterator found;
+    if (FindSkillUnit(this->m_skillUnitIds, packet, found)) {
       this->m_skillUnitIds.erase(found);
       packet.visible = 0;
       data.visible = false;
