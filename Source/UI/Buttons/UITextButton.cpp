@@ -1372,6 +1372,18 @@ static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total
   }
 }
 
+// INLINED
+__forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+
 // OFFSET: 0x00896060
 // FUNCTION: fn_11514
 void UIListBoxID::Refresh() {
@@ -1392,30 +1404,40 @@ void UIListBoxID::Refresh() {
 // FUNCTION: fn_11511
 void UIComboBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int count = static_cast<int>(this->lines.size());
-  const int overflow = 0 > count - visible ? 0 : count - visible;
+  int overflow = static_cast<int>(this->lines.size()) - visible;
+
+  if (overflow < 0) {
+    overflow = 0;
+  }
 
   this->verticalOverflow = overflow != 0;
+  auto& verticalBarRef = this->verticalBar;
+  auto* bar = verticalBarRef;
+
   if (overflow != 0) {
-    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
+    SetBarRange(bar, (this->bottomMargin + overflow), visible, static_cast<int>(this->lines.size()));
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
-    } else if (this->topLine + visible <= this->selected) {
-      this->topLine = this->selected - visible + 1;
+    } else if ((this->topLine + visible) <= this->selected) {
+      this->topLine = ((this->selected - visible) + 1);
     }
+
     if (this->topLine < 0) {
       this->topLine = 0;
     }
+
     if (this->topLine > overflow) {
       this->topLine = overflow;
     }
+
     this->verticalBar->position = this->topLine;
   } else {
-    SetScrollRange(this->verticalBar, 0, visible, count);
+    SetBarRange(bar, 0, visible, static_cast<int>(this->lines.size()));
   }
 
   this->verticalBar->Invalidate();
+
   if (this->Root()) {
     this->Root()->Invalidate();
   }
