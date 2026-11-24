@@ -75,12 +75,13 @@ __forceinline void CSmokeEffect::UpdateParticle(CSpriteParticle* particle) {
     if (elapsed < 50) {
       const float speed = particle->frameDelay;
       const float* values = rotation.values;
-      const float deltaX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-      const float deltaY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-      const float deltaZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
-      velocity.z += deltaZ;
-      velocity.y += deltaY;
-      velocity.x += deltaX;
+      vector3d delta{
+        values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9],
+        values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10],
+        values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11],
+      };
+      delta += particle->velocity;
+      particle->velocity = delta;
       angle += spin;
       if (elapsed > 34) {
         particle->alpha = std::ranges::max(particle->alpha - 15, 0);
