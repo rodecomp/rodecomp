@@ -162,15 +162,14 @@ void GroundLegacyLightmap::Decode(unsigned char* output) const {
 // OFFSET: 0x0074EB60
 // FUNCTION: fn_45817
 void GroundLegacyLightmap::SetSample(int index, unsigned char value) {
-  const int bit = index * 5;
-  const int shift = bit % 8;
-  unsigned char* packed = this->bits + bit / 8;
-  value &= 0xF8;
-  packed[0] = static_cast<unsigned char>((packed[0] & (~0xF8u >> shift)) | (value >> shift));
+  const int shift = (index * 5) % 8;
+  const int offset = (index * 5) / 8;
 
-  if (shift >= 4) {
-    const int remaining = 8 - shift;
-    packed[1] = static_cast<unsigned char>((packed[1] & (0x07 << remaining)) | (value << remaining));
+  if (shift < 4) {
+    this->bits[offset] = static_cast<unsigned char>((this->bits[offset] & (0xFFFFFF07 >> shift)) | ((value & 0xF8) >> shift));
+  } else {
+    this->bits[offset] = static_cast<unsigned char>((this->bits[offset] & (0xFFFFFF07 >> shift)) | ((value & 0xF8) >> shift));
+    this->bits[offset + 1] = static_cast<unsigned char>((this->bits[offset + 1] & (0xFFFFFF07 << (8 - shift))) | ((value & 0xF8) << (8 - shift)));
   }
 }
 

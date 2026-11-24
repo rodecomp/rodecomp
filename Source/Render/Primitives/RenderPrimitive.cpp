@@ -128,8 +128,8 @@ void RenderCommand::ApplyDepthAlpha() {
 // OFFSET: 0x00569580
 // FUNCTION: fn_02264
 void RenderCommand::SetPosition(std::uint32_t index, const float* position) {
-  this->vertices[index].x = position[0];
-  this->vertices[index].y = position[1];
-  this->vertices[index].z = position[2];
-  this->vertices[index].rhw = position[3];
+  this->vertices[static_cast<int>(index)].x = position[0];
+  this->vertices[static_cast<int>(index)].y = position[1];
+  this->vertices[static_cast<int>(index)].z = position[2];
+  this->vertices[static_cast<int>(index)].rhw = position[3];
 }
