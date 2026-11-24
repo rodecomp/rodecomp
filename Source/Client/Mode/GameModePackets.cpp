@@ -4944,9 +4944,16 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   }
 
-  if (effect && (effect->state.type == 228 || effect->state.type == 504 || effect->state.type == 629)) {
-    vector3d value{static_cast<float>(count), 0.0f, 0.0f};
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
+  if (effect) {
+    switch (effect->state.type) {
+    case EF_CHOOKGI:
+    case EF_CHOOKGI2:
+    case EF_CHOOKGI3: {
+      vector3d value{static_cast<float>(count), 0.0f, 0.0f};
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
+      break;
+    }
+    }
   }
 }
 
