@@ -91,12 +91,14 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
       }
 
       this->m_column = column;
-      for (auto it = g_rouletteMgr->m_items.begin(); it != g_rouletteMgr->m_items.end(); ++it) {
+      for (auto it = g_rouletteMgr->m_items.begin();; ++it) {
+        if (it == g_rouletteMgr->m_items.end()) {
+          return ITEM_INFO(0);
+        }
         if (row == it->first.row && column == it->first.column) {
           return it->second;
         }
       }
-      return ITEM_INFO(0);
     }
     break;
   }
