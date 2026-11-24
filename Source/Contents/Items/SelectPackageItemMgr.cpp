@@ -214,8 +214,14 @@ bool CSelectPackageItemMgr::OpenItem(unsigned int itemIndex) {
   const ITEM_INFO item = g_session.LookupClientItemByIdentity(itemIndex);
   if (item.identity[1] > 0) {
     const int packageId = std::atoi(item.itemId.c_str());
-    if (this->m_packages.find(packageId) != this->m_packages.end()) {
-      if (g_windowMgr.LookupWindow(WID_SELECTPACKAGEITEMBOX) == nullptr || g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX)) {
+    std::map<int, std::map<int, SelectPackageTab>>::iterator package = this->m_packages.find(packageId);
+    if (this->m_packages.end() != package) {
+      if (g_windowMgr.LookupWindow(WID_SELECTPACKAGEITEMBOX) == nullptr) {
+        CUISelectPackageItemBox* box = static_cast<CUISelectPackageItemBox*>(g_windowMgr.EnsureWindow(WID_SELECTPACKAGEITEMBOX));
+        if (box != nullptr) {
+          box->Open(itemIndex);
+        }
+      } else if (g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX)) {
         CUISelectPackageItemBox* box = static_cast<CUISelectPackageItemBox*>(g_windowMgr.EnsureWindow(WID_SELECTPACKAGEITEMBOX));
         if (box != nullptr) {
           box->Open(itemIndex);
