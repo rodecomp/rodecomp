@@ -2882,22 +2882,25 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 // OFFSET: 0x00884C40
 // FUNCTION: fn_11312
 void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
-  UINpcTextEditDialogWnd* owner = g_windowMgr.npcTextEditDialogWnd;
-  if (!owner || owner->edit->geometry.id != 492) {
+  if (!g_windowMgr.npcTextEditDialogWnd || g_windowMgr.npcTextEditDialogWnd->edit->geometry.id != 492) {
     return;
   }
 
-  const int left = owner->edit->geometry.x;
-  const int top = owner->edit->geometry.y;
+  const int left = g_windowMgr.npcTextEditDialogWnd->edit->geometry.x;
+  const int top = g_windowMgr.npcTextEditDialogWnd->edit->geometry.y;
   int position = x;
+  UINpcTextEditDialogWnd* owner = g_windowMgr.npcTextEditDialogWnd;
   unsigned bytes = 0;
   const int width = owner->MeasureText(name.c_str(), bytes);
   if (this->textWidth + width > g_windowMgr.npcTextEditDialogWnd->edit->geometry.width) {
     position = 1000;
-  } else if (position == 0) {
-    position = left + 2 + width;
   }
-  button->Move(position, top + 1);
+
+  if (position != 0) {
+    button->Move(position, top + 1);
+  } else {
+    button->Move(left + 2 + width, top + 1);
+  }
 }
 
 // OFFSET: 0x0088AC80
