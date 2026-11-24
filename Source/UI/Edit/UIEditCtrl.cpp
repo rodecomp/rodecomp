@@ -1618,7 +1618,6 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   char priceText[80];
   char titleText[16];
   char priceGrouped[64];
-  char applyText[4];
 
   switch (message) {
   case UM_SETTITLE: {
@@ -1780,7 +1779,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
       g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
       break;
-    case ID_APPLY:
+    case ID_APPLY: {
+      char applyText[12];
       if (this->cashShopMode) {
         int amount = std::atoi(this->quantityEdit->Text());
         if (amount < 0) {
@@ -1795,6 +1795,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.SetFocus(nullptr);
       }
       return 0;
+    }
     default:
       return 0;
     }
