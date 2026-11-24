@@ -1634,8 +1634,8 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       if (skill.level >= static_cast<int>(skill.maxLevel)) {
         return false;
       }
-      ++skill.level;
       --this->m_skillPoints;
+      ++skill.level;
       return true;
     }
   }
