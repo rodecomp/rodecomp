@@ -44,6 +44,7 @@ public:
   std::vector<const ReputeInfo*> GetGroupReputes(const std::string& groupName) const;
   std::vector<const ReputeInfo*> GetAllReputes() const;
   bool Load();
+  bool Load(std::map<std::uint64_t, ReputeInfo>& infos, std::map<std::uint64_t, ReputeGroup>& groups);
   bool LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& groups);
   bool LoadReputeInfoData(std::map<std::uint64_t, ReputeInfo>& infos);
   void OpenRepute(std::uint64_t groupId, std::uint64_t reputeId);

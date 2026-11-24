@@ -125,24 +125,24 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
   return reputes;
 }
 
-// OFFSET: 0x0060DBF0
-// FUNCTION: fn_04293
-bool CReputeMgr::Load() {
-  bool loaded = this->LoadReputeInfoData(this->m_infos);
-  if (!loaded) {
+// OFFSET: 0x0060DC30
+// FUNCTION: fn_46721
+bool CReputeMgr::Load(std::map<std::uint64_t, ReputeInfo>& infos, std::map<std::uint64_t, ReputeGroup>& groups) {
+  if (!this->LoadReputeInfoData(infos)) {
     ShowErrorDialog("Failed : LoadReputeInfoData", 0);
     return false;
   }
-
-  loaded = this->LoadReputeGroupData(this->m_groups);
-  if (!loaded) {
-    goto failed;
+  if (!this->LoadReputeGroupData(groups)) {
+    ShowErrorDialog("Failed : LoadReputeInfoData", 0);
+    return false;
   }
   return true;
+}
 
-failed:
-  ShowErrorDialog("Failed : LoadReputeInfoData", 0);
-  return false;
+// OFFSET: 0x0060DBF0
+// FUNCTION: fn_04293
+bool CReputeMgr::Load() {
+  return this->Load(this->m_infos, this->m_groups);
 }
 
 // OFFSET: 0x0060E4A0
