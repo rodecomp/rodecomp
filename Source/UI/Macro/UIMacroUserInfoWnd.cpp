@@ -578,6 +578,18 @@ namespace {
   };
 }
 
+// INLINED
+static void SetDisabledState(UIButton* button, int disabled) {
+  button->SetDisabled(disabled);
+  button->Invalidate();
+}
+
+// INLINED
+static void SetDisabledState(UIEditCtrl* edit, int disabled) {
+  edit->disabled = disabled;
+  edit->Invalidate();
+}
+
 // OFFSET: 0x007F1420
 // FUNCTION: fn_09856
 int UIMacroReporterWnd::SendMsg(
@@ -619,12 +631,10 @@ int UIMacroReporterWnd::SendMsg(
       }
       for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
         if (sender == it->first) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
+          SetDisabledState(it->first, 1);
           UIButton* first = it->first;
           this->m_removedRows.push_back(first);
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
+          SetDisabledState(it->second, 1);
           UIButton* second = it->second;
           this->m_removedRows.push_back(second);
           this->m_rows.erase(it);
@@ -673,7 +683,8 @@ int UIMacroReporterWnd::SendMsg(
           std::memcpy(buffer, &report.header, sizeof(report.header));
           for (int index = 0; index < this->m_nameCount; ++index) {
             if (!this->m_names[index].empty()) {
-              strncpy_s(report.name, sizeof(report.name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
+              const std::string mapName = this->m_names[index] + ".gat";
+              strncpy_s(report.name, sizeof(report.name), mapName.c_str(), _TRUNCATE);
               memcpy_s(buffer + sizeof(report.header) + index * 16, 16, report.name, sizeof(report.name));
             }
           }
@@ -699,12 +710,10 @@ int UIMacroReporterWnd::SendMsg(
         }
         this->m_entries.clear();
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
+          SetDisabledState(it->first, 1);
           UIButton* first = it->first;
           this->m_removedRows.emplace_back(first);
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
+          SetDisabledState(it->second, 1);
           UIButton* second = it->second;
           this->m_removedRows.emplace_back(second);
         }
@@ -738,42 +747,36 @@ int UIMacroReporterWnd::SendMsg(
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
       if (sender == this->m_tabs[1]) {
-        UIEditCtrl* edit = this->m_edit;
-        edit->disabled = 0;
-        edit->Invalidate();
+        SetDisabledState(this->m_edit, 0);
       } else {
-        UIEditCtrl* edit = this->m_edit;
-        edit->disabled = 1;
-        edit->Invalidate();
+        SetDisabledState(this->m_edit, 1);
       }
 
       if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
         g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          this->m_fields[index]->disabled = 1;
-          this->m_fields[index]->Invalidate();
+          SetDisabledState(this->m_fields[index], 1);
           this->m_fields[index]->SetText("");
         }
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(0);
-          it->first->Invalidate();
-          it->second->SetDisabled(0);
-          it->second->Invalidate();
-          it->first->Enable(1);
-          it->second->Enable(1);
+          if (it != this->m_rows.end()) {
+            SetDisabledState(it->first, 0);
+            SetDisabledState(it->second, 0);
+            it->first->Enable(1);
+            it->second->Enable(1);
+          }
         }
       } else {
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
-          it->first->Enable(0);
-          it->second->Enable(0);
+          if (it != this->m_rows.end()) {
+            SetDisabledState(it->first, 1);
+            SetDisabledState(it->second, 1);
+            it->first->Enable(0);
+            it->second->Enable(0);
+          }
         }
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          this->m_fields[index]->disabled = 0;
-          this->m_fields[index]->Invalidate();
+          SetDisabledState(this->m_fields[index], 0);
           if (sender == this->m_tabs[2]) {
             this->m_fields[index]->SetText(this->m_names[index].c_str());
           } else if (sender == this->m_tabs[3]) {
@@ -804,14 +807,17 @@ int UIMacroReporterWnd::SendMsg(
       std::string text = this->m_edit->Text();
       if (text.size() > 1) {
         this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
-      } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
+        break;
+      }
+
+      if (text.c_str()[0] < '0' || text.c_str()[0] > '9') {
+        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
+      } else {
         this->reportCount = std::atoi(text.c_str());
         if (this->reportCount > this->maxReportCount) {
           this->reportCount = this->maxReportCount;
           this->m_edit->SetText(IntToString(this->maxReportCount, 0).c_str());
         }
-      } else {
-        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
       }
     }
     break;
