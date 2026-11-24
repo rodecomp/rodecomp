@@ -629,7 +629,11 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
   char name[260];
   std::memset(name, 0, sizeof(name));
 
-  if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+  auto inRect = [&](int left, int top, int right, int bottom) {
+    return x >= left && x <= right && y >= top && y <= bottom;
+  };
+
+  if (this->selectedMaterial != -1 && inRect(81, 150, 105, 174)) {
     ITEM_INFO info;
     info.SetItemId(this->materials[this->selectedMaterial].itemId);
     int capacity = 260;
@@ -641,7 +645,7 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+  if (this->catalystEnabled == 1 && inRect(161, 150, 185, 174)) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
