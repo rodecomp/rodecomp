@@ -37,6 +37,16 @@ struct Contents {
 struct AdventureGuideIntroPage {
   /* 0000 */ std::string title;
   /* 0018 */ std::map<int, Guide_Intro::Contents> texts;
+
+  AdventureGuideIntroPage() = default;
+  AdventureGuideIntroPage(const AdventureGuideIntroPage&) = default;
+  AdventureGuideIntroPage(AdventureGuideIntroPage&&) = default;
+  AdventureGuideIntroPage& operator=(const AdventureGuideIntroPage&) = default;
+  AdventureGuideIntroPage& operator=(AdventureGuideIntroPage&&) = default;
+
+  // OFFSET: 0x00662EE0
+  // FUNCTION: fn_46572
+  ~AdventureGuideIntroPage() = default;
 };
 
 struct AdventureGuideEpisodeInfo {
@@ -88,7 +98,18 @@ struct AdventureGuideResult {
   /* 0004 */ std::string message;
 };
 
-class AdventureGuideEpisodeList : public std::list<AdventureGuideEpisode> {};
+class AdventureGuideEpisodeList : public std::list<AdventureGuideEpisode> {
+public:
+  AdventureGuideEpisodeList() = default;
+  AdventureGuideEpisodeList(const AdventureGuideEpisodeList&) = default;
+  AdventureGuideEpisodeList(AdventureGuideEpisodeList&&) = default;
+  AdventureGuideEpisodeList& operator=(const AdventureGuideEpisodeList&) = default;
+  AdventureGuideEpisodeList& operator=(AdventureGuideEpisodeList&&) = default;
+
+  // OFFSET: 0x00662F60
+  // FUNCTION: fn_46573
+  ~AdventureGuideEpisodeList() = default;
+};
 
 // VTABLE: vt_00350
 class CAdventureGuideMgr {
