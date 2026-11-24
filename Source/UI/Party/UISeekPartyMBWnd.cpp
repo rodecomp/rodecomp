@@ -32,6 +32,21 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_REGISTER {
 #pragma pack(pop)
 }
 
+// OFFSET: 0x00945E60
+// FUNCTION: fn_46632
+void UISeekPartyMBWnd::LoadSubTypeOptions(int type) {
+  this->m_subTypeCombo->Clear();
+
+  const auto& subTypes = this->m_subTypes;
+  auto found = subTypes.find(type);
+  if (found != subTypes.end()) {
+    const std::vector<std::pair<std::string, int>> entries = found->second;
+    for (const std::pair<std::string, int> entry : entries) {
+      this->m_subTypeCombo->AddOption(entry.first.c_str(), entry.second);
+    }
+  }
+}
+
 // OFFSET: 0x00939EE0
 // FUNCTION: fn_12756
 int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

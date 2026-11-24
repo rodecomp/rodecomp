@@ -35,6 +35,7 @@ public:
   void CreateJobChecks();
   void InitJobCategoryCombo();
   void LoadRegionMaps();
+  void LoadSubTypeOptions(int type);
   void ShowJobCategory(int category);
 
 protected:
