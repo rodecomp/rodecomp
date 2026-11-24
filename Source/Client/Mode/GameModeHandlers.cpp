@@ -2948,10 +2948,10 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
   data.x = packet.x;
   data.y = packet.y;
   data.aid = packet.aid;
+  packet.visible = 1;
   data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
-  packet.visible = 1;
 
   if (packet.graffiti == 1) {
     CGraffiSkill* skill = new CGraffiSkill;
