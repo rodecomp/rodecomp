@@ -23145,6 +23145,177 @@ static __forceinline void PlayEffectWaveAt(const CRagEffect& effect, const char*
   );
 }
 
+// OFFSET: 0x00C0C400
+// FUNCTION: fn_46666
+inline bool CRagEffect::Benedictio() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_benedictio.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0C4B0
+// FUNCTION: fn_46667
+inline bool CRagEffect::BlastMineExplosion() {
+  if (this->state.stateCnt == 20) {
+    PlayEffectWaveInline(*this, "effect\\hunter_blastmine.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C14EA0
+// FUNCTION: fn_46668
+inline bool CRagEffect::FirePillar() {
+  if (this->state.stateCnt == 75) {
+    PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_a.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C14F40
+// FUNCTION: fn_46669
+inline bool CRagEffect::FirePillarImpact() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_b.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C16B30
+// FUNCTION: fn_46670
+inline bool CRagEffect::Gloria() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveAt(*this, "effect\\priest_gloria.wav", 1.0f);
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1B810
+// FUNCTION: fn_46671
+inline bool CRagEffect::Impositio() {
+  if (this->state.stateCnt == 60) {
+    PlayEffectWaveInline(*this, "effect\\priest_impositio.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1DCD0
+// FUNCTION: fn_46673
+inline bool CRagEffect::Envenom() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\thief_invenom.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1DD70
+// FUNCTION: fn_46676
+inline bool CRagEffect::KyrieEleison() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_kyrie_eleison_b.wav");
+  }
+  if (this->state.stateCnt == 15) {
+    PlayEffectWaveInline(*this, "effect\\priest_kyrie_eleison_a.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1DFB0
+// FUNCTION: fn_46677
+inline bool CRagEffect::LexAeterna() {
+  if (this->state.stateCnt == 15) {
+    PlayEffectWaveInline(*this, "effect\\priest_lexaeterna.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1F090
+// FUNCTION: fn_46679
+inline bool CRagEffect::Magnus() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveAt(*this, "effect\\priest_magnus.wav", 1.0f);
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1FB50
+// FUNCTION: fn_46680
+inline bool CRagEffect::MaximizePower() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\black_maximize_power_circle.wav");
+  }
+  if (this->state.stateCnt == 40) {
+    PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword.wav");
+  }
+  if (this->state.stateCnt == 47) {
+    PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword.wav");
+  }
+  if (this->state.stateCnt == 65) {
+    PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword_bic.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1FD20
+// FUNCTION: fn_46681
+inline bool CRagEffect::MeteorStorm() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\wizard_meteor.wav");
+  }
+  if (this->state.stateCnt == 40) {
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C374D0
+// FUNCTION: fn_46682
+inline bool CRagEffect::Provoke() {
+  if (this->state.stateCnt == 5) {
+    PlayEffectWaveInline(*this, "effect\\swordman_provoke.wav");
+  }
+  if (this->state.stateCnt == 30) {
+    PlayEffectWaveInline(*this, "effect\\swordman_provoke.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C37920
+// FUNCTION: fn_46683
+inline bool CRagEffect::RefineFailed() {
+  if (this->state.stateCnt == 5) {
+    PlayEffectWaveInline(*this, "effect\\bs_refinefailed.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C379C0
+// FUNCTION: fn_46684
+inline bool CRagEffect::RefineSuccess() {
+  if (this->state.stateCnt == 15) {
+    PlayEffectWaveInline(*this, "effect\\bs_refinesuccess.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3A360
+// FUNCTION: fn_46685
+inline bool CRagEffect::SkidTrap() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\hunter_skidtrap.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3CFF0
+// FUNCTION: fn_46686
+inline bool CRagEffect::Suffragium() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_suffragium.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
 bool CRagEffect::OnProcess() {
@@ -24947,10 +25118,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_INVENOM:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\thief_invenom.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Envenom()) {
         return false;
       }
       break;
@@ -24960,13 +25128,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_PROVOKE:
-      if (this->state.stateCnt == 5) {
-        PlayEffectWaveInline(*this, "effect\\swordman_provoke.wav");
-      }
-      if (this->state.stateCnt == 30) {
-        PlayEffectWaveInline(*this, "effect\\swordman_provoke.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Provoke()) {
         return false;
       }
       break;
@@ -24976,18 +25138,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_SKIDTRAP:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\hunter_skidtrap.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->SkidTrap()) {
         return false;
       }
       break;
     case EF_GLORIA:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveAt(*this, "effect\\priest_gloria.wav", 1.0f);
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Gloria()) {
         return false;
       }
       break;
@@ -25012,18 +25168,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_IMPOSITIO:
-      if (this->state.stateCnt == 60) {
-        PlayEffectWaveInline(*this, "effect\\priest_impositio.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Impositio()) {
         return false;
       }
       break;
     case EF_LEXAETERNA:
-      if (this->state.stateCnt == 15) {
-        PlayEffectWaveInline(*this, "effect\\priest_lexaeterna.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->LexAeterna()) {
         return false;
       }
       break;
@@ -25038,10 +25188,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_SUFFRAGIUM:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_suffragium.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Suffragium()) {
         return false;
       }
       break;
@@ -25088,21 +25235,12 @@ bool CRagEffect::OnProcess() {
       break;
     }
     case EF_BENEDICTIO:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_benedictio.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Benedictio()) {
         return false;
       }
       break;
     case EF_METEORSTORM:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\wizard_meteor.wav");
-      }
-      if (this->state.stateCnt == 40) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->MeteorStorm()) {
         return false;
       }
       break;
@@ -25115,18 +25253,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_FIREPILLAR:
-      if (this->state.stateCnt == 75) {
-        PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_a.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->FirePillar()) {
         return false;
       }
       break;
     case EF_FIREPILLARBOMB:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_b.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->FirePillarImpact()) {
         return false;
       }
       break;
@@ -25152,27 +25284,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_MAXPOWER:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\black_maximize_power_circle.wav");
-      }
-      if (this->state.stateCnt == 40) {
-        PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword.wav");
-      }
-      if (this->state.stateCnt == 47) {
-        PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword.wav");
-      }
-      if (this->state.stateCnt == 65) {
-        PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword_bic.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->MaximizePower()) {
         return false;
       }
       break;
     case EF_BLASTMINEBOMB:
-      if (this->state.stateCnt == 20) {
-        PlayEffectWaveInline(*this, "effect\\hunter_blastmine.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->BlastMineExplosion()) {
         return false;
       }
       break;
@@ -25192,21 +25309,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_KYRIE:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_kyrie_eleison_b.wav");
-      }
-      if (this->state.stateCnt == 15) {
-        PlayEffectWaveInline(*this, "effect\\priest_kyrie_eleison_a.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->KyrieEleison()) {
         return false;
       }
       break;
     case EF_MAGNUS:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveAt(*this, "effect\\priest_magnus.wav", 1.0f);
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Magnus()) {
         return false;
       }
       break;
@@ -25262,18 +25370,12 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_REFINEOK:
-      if (this->state.stateCnt == 15) {
-        PlayEffectWaveInline(*this, "effect\\bs_refinesuccess.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->RefineSuccess()) {
         return false;
       }
       break;
     case EF_REFINEFAIL:
-      if (this->state.stateCnt == 5) {
-        PlayEffectWaveInline(*this, "effect\\bs_refinefailed.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->RefineFailed()) {
         return false;
       }
       break;
