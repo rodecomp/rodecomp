@@ -14,6 +14,20 @@
 #include <cstdio>
 
 namespace {
+struct SkyLightVector : vector3d {
+  // INLINED
+  SkyLightVector(float x, float y, float z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+
+  // INLINED
+  operator const float*() const {
+    return &this->x;
+  }
+};
+
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
@@ -117,10 +131,7 @@ CSkyBox::CSkyBox() {
   this->m_actor->SetSpeed(0.1f);
   this->m_actor->Assign(*static_cast<C3dModelRes*>(this->m_model));
 
-  const vector3d direction{0.0f, 1.0f, 0.0f};
-  const vector3d diffuse{1.0f, 1.0f, 1.0f};
-  const vector3d ambient{1.0f, 1.0f, 1.0f};
-  this->m_actor->Prepare(&direction.x, &diffuse.x, &ambient.x);
+  this->m_actor->Prepare(SkyLightVector(0.0f, 1.0f, 0.0f), SkyLightVector(1.0f, 1.0f, 1.0f), SkyLightVector(1.0f, 1.0f, 1.0f));
   this->m_actor->Animate(0.0);
   this->m_flare.Init();
 }
