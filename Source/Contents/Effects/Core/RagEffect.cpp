@@ -11141,52 +11141,55 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 1.0f;
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
-  this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
+  for (int ec = 0; ec < 1; ++ec) {
+    this->state.lastPrim->state.slots[ec].life = 1;
+    this->state.lastPrim->state.slots[ec].process = 0;
+    this->state.lastPrim->state.slots[ec].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
 
-  if (kind == 0) {
-    this->state.lastPrim->state.slots[0].maxHeight = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10.0f : 50.0f;
-    this->state.lastPrim->state.slots[0].rotStart = 0;
-    this->state.lastPrim->state.slots[0].alphaB = 30;
-    this->state.lastPrim->state.slots[0].alphaT = 864;
-    this->state.lastPrim->state.slots[0].height[0] = 5.0f;
-    this->state.lastPrim->state.slots[0].height[1] = 5.0f;
-  } else {
-    if (kind == 1) {
-      this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
-      this->state.lastPrim->state.slots[0].rotStart = 0;
-      this->state.lastPrim->state.slots[0].alphaB = 120;
-      this->state.lastPrim->state.slots[0].alphaT = 1880;
-    } else if (kind == 2) {
-      this->state.lastPrim->state.slots[0].maxHeight = 32.0f;
-      this->state.lastPrim->state.slots[0].rotStart = 0;
-      this->state.lastPrim->state.slots[0].alphaB = 30;
-      this->state.lastPrim->state.slots[0].alphaT = 29999;
-    } else if (kind == 3) {
-      this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
-      this->state.lastPrim->state.slots[0].rotStart = 0;
-    } else if (kind == 4) {
-      this->state.lastPrim->state.slots[0].maxHeight = 16.0f;
-      this->state.lastPrim->state.slots[0].rotStart = 0;
-      this->state.lastPrim->state.slots[0].alphaB = 120;
-      this->state.lastPrim->state.slots[0].alphaT = 1880;
+    if (kind == 0) {
+      this->state.lastPrim->state.slots[ec].maxHeight = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10.0f : 50.0f;
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].alphaB = 30;
+      this->state.lastPrim->state.slots[ec].alphaT = 864;
+      this->state.lastPrim->state.slots[ec].height[0] = 5.0f;
+      this->state.lastPrim->state.slots[ec].height[1] = 5.0f;
     } else {
-      this->state.lastPrim->state.slots[0].rotStart = 0;
+      if (kind == 1) {
+        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+        this->state.lastPrim->state.slots[ec].rotStart = 0;
+        this->state.lastPrim->state.slots[ec].alphaB = 120;
+        this->state.lastPrim->state.slots[ec].alphaT = 1880;
+      } else if (kind == 2) {
+        this->state.lastPrim->state.slots[ec].maxHeight = 32.0f;
+        this->state.lastPrim->state.slots[ec].rotStart = 0;
+        this->state.lastPrim->state.slots[ec].alphaB = 30;
+        this->state.lastPrim->state.slots[ec].alphaT = 29999;
+      } else if (kind == 3) {
+        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+        this->state.lastPrim->state.slots[ec].rotStart = 0;
+      } else if (kind == 4) {
+        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+        this->state.lastPrim->state.slots[ec].rotStart = 0;
+        this->state.lastPrim->state.slots[ec].alphaB = 120;
+        this->state.lastPrim->state.slots[ec].alphaT = 1880;
+      } else {
+        this->state.lastPrim->state.slots[ec].rotStart = 0;
+      }
+
+      this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
+      this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
     }
 
-    this->state.lastPrim->state.slots[0].height[0] = 2.5f;
-    this->state.lastPrim->state.slots[0].height[1] = 2.5f;
+    this->state.lastPrim->state.slots[ec].height[2] = 0.0f;
+    this->state.lastPrim->state.slots[ec].height[3] = static_cast<float>(kind);
+    if (kind == 4) {
+      this->state.lastPrim->state.slots[ec].height[4] = static_cast<float>(ClampedRandom(50));
+    }
+
+    this->state.lastPrim->state.slots[ec].height[5] = 0.0f;
+    this->state.lastPrim->state.slots[ec].height[6] = 0.0f;
   }
 
-  this->state.lastPrim->state.slots[0].height[2] = 0.0f;
-  this->state.lastPrim->state.slots[0].height[3] = static_cast<float>(kind);
-  if (kind == 4) {
-    this->state.lastPrim->state.slots[0].height[4] = static_cast<float>(ClampedRandom(50));
-  }
-
-  this->state.lastPrim->state.slots[0].height[5] = 0.0f;
-  this->state.lastPrim->state.slots[0].height[6] = 0.0f;
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
