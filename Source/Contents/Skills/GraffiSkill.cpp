@@ -41,25 +41,24 @@ void CGraffiSkill::BuildTexture() {
 
   int width;
   for (int i = 0; i < length; ++i) {
-    char letter = this->m_text[i];
-    unsigned char glyph;
+    unsigned char glyph = static_cast<unsigned char>(this->m_text[i]);
     int x = this->m_penX;
-    if (static_cast<unsigned char>(letter - 'a') <= 25) {
-      glyph = static_cast<unsigned char>(letter - 'a') + 26;
+    if (static_cast<unsigned char>(glyph - 'a') <= 25) {
+      glyph += 26 - 'a';
       width = 32;
-    } else if (static_cast<unsigned char>(letter - 'A') <= 25) {
-      glyph = static_cast<unsigned char>(letter - 'A');
+    } else if (static_cast<unsigned char>(glyph - 'A') <= 25) {
+      glyph -= 'A';
       width = 32;
-    } else if (static_cast<unsigned char>(letter - '0') <= 9) {
-      glyph = static_cast<unsigned char>(letter - '0') + 54;
+    } else if (static_cast<unsigned char>(glyph - '0') <= 9) {
+      glyph += 54 - '0';
       width = 32;
-    } else if (letter == '?') {
+    } else if (glyph == '?') {
       glyph = 53;
       width = 16;
-    } else if (letter == '!') {
+    } else if (glyph == '!') {
       glyph = 54;
       width = 16;
-    } else if (letter == ' ') {
+    } else if (glyph == ' ') {
       for (int next = i + 1; this->m_text[next] != ' ' && this->m_text[next] != '\0'; ++next) {
         x += 32;
       }
