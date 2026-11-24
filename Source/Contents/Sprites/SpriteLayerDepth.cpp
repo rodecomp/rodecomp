@@ -33,14 +33,17 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float botto
       quad.topRhw = 0.000045f + topDepth;
     }
     break;
-  case 4:
+  case 4: {
+    float& bottom = quad.bottomRhw;
+    float& top = quad.topRhw;
     if (g_cameraDistance < robeTopLayerThreshold) {
       topDepth += 0.00003f;
       bottomDepth += 0.00003f;
     }
-    quad.bottomRhw = bottomDepth;
-    quad.topRhw = topDepth;
+    bottom = bottomDepth;
+    top = topDepth;
     break;
+  }
   }
 }
 
