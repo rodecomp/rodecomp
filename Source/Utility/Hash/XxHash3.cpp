@@ -218,7 +218,8 @@ namespace {
     return Avalanche64b3(acc);
   }
 
-  // INLINED
+  // OFFSET: 0x004DBD20
+  // FUNCTION: fn_46512
   __forceinline void Accumulate512(void* acc, const void* input, const void* secret) {
     __m128i* const xacc = static_cast<__m128i*>(acc);
     const __m128i* const xinput = static_cast<const __m128i*>(input);
@@ -238,7 +239,8 @@ namespace {
     }
   }
 
-  // INLINED
+  // OFFSET: 0x004DECF0
+  // FUNCTION: fn_46513
   __forceinline void ScrambleAcc(void* acc, const void* secret) {
     __m128i* const xacc = static_cast<__m128i*>(acc);
     const __m128i* const xsecret = static_cast<const __m128i*>(secret);
@@ -258,7 +260,8 @@ namespace {
     }
   }
 
-  // INLINED
+  // OFFSET: 0x004DE210
+  // FUNCTION: fn_46514
   __forceinline void InitCustomSecret(void* customSecret, std::uint64_t seed64) {
     int const nbRounds = XXH_SECRET_DEFAULT_SIZE / sizeof(__m128i);
     __m128i const seed = _mm_set_epi64x(static_cast<long long>(0U - seed64), static_cast<long long>(seed64));
@@ -328,7 +331,8 @@ namespace {
                           static_cast<std::uint64_t>(length) * XXH_PRIME64_1);
   }
 
-  // INLINED
+  // OFFSET: 0x004DD5D0
+  // FUNCTION: fn_46515
   __forceinline std::uint64_t HashLong64bWithSecret(const void* input, std::size_t length, std::uint64_t seed,
                                                     const void* secret, std::size_t secretSize) {
     (void)seed;
