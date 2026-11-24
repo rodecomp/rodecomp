@@ -313,7 +313,8 @@ public:
   __declspec(noinline) void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);
-  // INLINED
+  // OFFSET: 0x007C87A0
+  // FUNCTION: fn_46535
   void SelectTab(char tab) {
     auto found = this->m_tabs.find(tab);
     if (this->m_tabs.end() != found) {
