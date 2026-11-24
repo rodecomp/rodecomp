@@ -175,8 +175,8 @@ void CRenderer::DrawOverlays() {
   }
 
   if (g_session.showTimer != 0) {
-    const int scale = this->viewport.height / 700;
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
+    const int scale = this->viewport.height / 700;
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
     g_modeMgr.GetGameMode()->DrawActionSprite(100, 100, action, sprite, 0, 0, static_cast<float>(scale) * 0.5f, 0.0f, 0xFFFFFFFF, 0x201);
     g_modeMgr.GetGameMode()->DrawActionSprite(100, 200, action, sprite, 1, 0, static_cast<float>(scale), 0.0f, 0xFFFFFFFF, 0x201);
