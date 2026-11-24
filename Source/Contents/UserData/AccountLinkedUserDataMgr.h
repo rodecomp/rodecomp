@@ -40,6 +40,10 @@ public:
   void ExportUserHotkey(Json::Value& data);
 
 protected:
+  void LoadEmotionHotkeys(Json::Value& data);
+  void LoadUserHotkeysV2(Json::Value& data);
+  void LoadUserHotkeyTab(Json::Value& values, int tab);
+
   /* 0004 */ bool m_enabled;
   /* 0008 */ std::uint32_t m_accountId;
   /* 000C */ std::string m_accountName;

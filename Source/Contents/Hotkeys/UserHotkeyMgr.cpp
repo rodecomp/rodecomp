@@ -170,7 +170,7 @@ void CUserHotkeyMgr::Reset() {
 
 // OFFSET: 0x005BC420
 // FUNCTION: fn_03464
-void CUserHotkeyMgr::LoadV2(Json::Value& data) {
+void CAccountLinkedUserDataMgr::LoadUserHotkeysV2(Json::Value& data) {
   Json::Value values = data["UserHotkey_V2"];
   Json::Value::iterator it = values.begin();
   if (values.empty()) {

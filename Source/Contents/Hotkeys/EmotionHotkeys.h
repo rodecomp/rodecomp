@@ -14,7 +14,6 @@ struct EmotionHotkeys {
   /* 0FF8 */ std::vector<std::string> current;
   /* 1004 */ std::vector<std::string> saved;
 
-  void Load(Json::Value& data);
   void Export(Json::Value& data) const;
 };
 

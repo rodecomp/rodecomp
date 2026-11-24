@@ -1,4 +1,5 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
@@ -13,7 +14,7 @@
 
 // OFFSET: 0x005BC230
 // FUNCTION: fn_03463
-void EmotionHotkeys::Load(Json::Value& data) {
+void CAccountLinkedUserDataMgr::LoadEmotionHotkeys(Json::Value& data) {
   Json::Value values = data["EmotionHotkey"];
   EmotionHotkeys& hotkeys = g_session.m_emotionHotkeys;
   hotkeys.saved.clear();
