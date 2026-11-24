@@ -6,6 +6,7 @@
 #include "Render/Renderer.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -1176,7 +1177,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   vec3.y = 0.0f;
   vec4.y = 0.0f;
 
-  float radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
+  float radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * g_fireflyNormalDrift + slot.distance;
   int angle = slot.process * 2;
   angle = angle % 360;
   vec1.x = radius * g_cosTable[angle];
@@ -1221,12 +1222,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   }
 
   vec1.y = 0.0f;
-  vec2.y = 0.0f;
-  vec3.y = 0.0f;
-  vec4.y = 0.0f;
   int pulse = slot.process * 5;
   pulse = pulse % 90;
-  radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + (g_sinTable[pulse] * 2.0f + 1.0f) * slot.distance;
+  radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * g_fireflyNormalDrift +
+           (g_sinTable[pulse] * 2.0f + g_projectionDepthNumerator) * slot.distance;
   angle = slot.process * 2;
   angle = angle % 360;
   vec1.x = radius * g_cosTable[angle];
@@ -1234,14 +1233,17 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   angle += 90;
   angle = angle % 360;
   vec2.x = radius * g_cosTable[angle];
+  vec2.y = 0.0f;
   vec2.z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
   vec3.x = radius * g_cosTable[angle];
+  vec3.y = 0.0f;
   vec3.z = radius * g_sinTable[angle];
   angle += 90;
   angle = angle % 360;
   vec4.x = radius * g_cosTable[angle];
+  vec4.y = 0.0f;
   vec4.z = radius * g_sinTable[angle];
   this->Tei_TowardScreen(vec1, vec2, vec3, vec4, slot.alphaT, this->state.slots[1].alphaT);
 
