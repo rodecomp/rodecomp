@@ -1123,10 +1123,14 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return -1;
     }
 
-    std::vector<ITEM_INFO>::iterator it = std::find_if(this->m_cartItems.begin(), this->m_cartItems.end(), [&item](const ITEM_INFO& entry) {
-      const int itemId = atoi(entry.itemId.c_str());
-      return itemId == atoi(item.itemId.c_str());
-    });
+    auto it = this->m_cartItems.begin();
+    const auto end = this->m_cartItems.end();
+    for (; it != end; ++it) {
+      const int itemId = atoi(it->itemId.c_str());
+      if (itemId == atoi(item.itemId.c_str())) {
+        break;
+      }
+    }
 
     if (this->m_cartItems.end() == it) {
       if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
