@@ -9,6 +9,13 @@
 #include <cstdlib>
 #include <cstring>
 
+// INLINED
+static inline void SetIndices(CParticle* particle, int group, int column, int row) {
+  particle->columnIndex = column;
+  particle->rowIndex = row;
+  particle->groupIndex = group;
+}
+
 // OFFSET: 0x00B72330
 // FUNCTION: fn_46060
 CRotateBgEffect::CRotateBgEffect()
@@ -30,10 +37,7 @@ __forceinline void CRotateBgEffect::CreateRings() {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
-        int* indices = &particle->groupIndex;
-        indices[1] = index;
-        indices[2] = ring;
-        indices[0] = 1;
+        SetIndices(particle, 1, index, ring);
         particle->SetTexture("effect\\storm2.tga");
         particle->alpha = 0;
         particle->scale = 2.0f;
@@ -60,10 +64,7 @@ __forceinline void CRotateBgEffect::CreateSegments() {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
-        int* indices2 = &particle->groupIndex;
-        indices2[1] = index;
-        indices2[2] = layer;
-        indices2[0] = 2;
+        SetIndices(particle, 2, index, layer);
         particle->SetTexture("effect\\cloud11.tga");
         particle->angleParameter = 30;
         particle->angle = static_cast<float>(angle);
