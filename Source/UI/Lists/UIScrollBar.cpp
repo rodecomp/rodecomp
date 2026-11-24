@@ -802,12 +802,13 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
     if (compact) {
       this->DrawTextAt(x + 16, y + 20, count.c_str(), 0, 0, 11, 0, 0, 0);
     } else {
-      const int offset = this->m_item.quantity < 1000 ? 14 : 0;
-      this->DrawTextAt(x + offset + 1, y + 15, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x + offset - 1, y + 15, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x + offset, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x + offset, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x + offset, y + 15, count.c_str(), 0, 0, 11, 0, 0, 0);
+      const int textY = y + 15;
+      const int textX = x + (this->m_item.quantity < 1000 ? 14 : 0);
+      this->DrawTextAt(textX + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
     }
   }
 }
@@ -2241,18 +2242,20 @@ void UIString::SetText(int width, int height, std::string text) {
   this->SetSize(width, height);
   const char* chars = text.c_str();
   if (text.size() == 1 && chars[0] == '\n') {
+    std::string& label = this->text;
     this->Resize(5, 5);
-    this->text = text;
+    label = text;
     return;
   }
 
+  std::string& label = this->text;
   this->ParseTags(text);
   if (this->image.size() != 0) {
-    this->Resize(this->TextWidth(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0) + 24, 24);
+    this->Resize(this->TextWidth(label.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0) + 24, 24);
   } else {
     this->Resize(
       this->TextWidth(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0),
-      this->TextHeight(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0)
+      this->TextHeight(label.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0)
     );
   }
 }
