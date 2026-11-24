@@ -62,6 +62,12 @@ public:
   /* 0008 */ std::list<BarterMarketItem> items;
   /* 0010 */ std::list<BarterMarketItem> allItems;
   /* 0018 */ std::map<int, int> totals;
+
+private:
+  void AddPurchaseQuantity(const BarterMarketItem& item);
+  void TakeStockQuantity(const BarterMarketItem& item);
+  void RemovePurchaseQuantity(const BarterMarketItem& item);
+  void RestoreStockQuantity(const BarterMarketItem& item);
 };
 
 static_assert(sizeof(CBarterMarketItemMgr) == 0x20);
@@ -139,6 +145,13 @@ public:
   /* 0024 */ std::vector<BarterChunk16> chunks;
   /* 0030 */ std::multimap<int, ITEM_INFO> itemInfos;
   /* 0038 */ __int64 total;
+
+private:
+  void RemoveEntryQuantity(const BarterMarketEntry& entry);
+  void TakeItemQuantity(const BarterMarketEntry& entry);
+  void RemoveChunkQuantity(BarterChunk16 chunk, int count);
+  void AddChunkQuantity(BarterChunk16 chunk, int count);
+  void RecalculateTotal();
 };
 
 static_assert(sizeof(CExpandedBarterMarketItemMgr) == 0x40);
