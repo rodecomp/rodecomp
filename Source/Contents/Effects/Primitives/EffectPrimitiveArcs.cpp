@@ -394,7 +394,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
         if ((this->state.pattern & 0x200) != 0) {
           if (this->state.slots[ec].flag1[0] == 0) {
-            quad.color = (((((alpha << 8) + (cell.color & 0xFF)) << 8) + (cell.color >> 8 & 0xFF)) << 8) + (cell.color >> 16 & 0xFF);
+            quad.color = (((((alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
           } else if (this->state.slots[ec].flag1[0] == 1) {
             quad.color = (alpha << 24) + 0x3737FF;
           }
@@ -414,7 +414,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0002f;
         if ((this->state.pattern & 0x200) != 0) {
           if (this->state.slots[ec].flag1[0] == 0) {
-            quad.color = (((alpha << 8) + (cell.color & 0xFF)) << 16) + 0x3737;
+            quad.color = (((alpha << 8) + cell.colorChannels.red) << 16) + 0x3737;
           } else if (this->state.slots[ec].flag1[0] == 1) {
             quad.color = (alpha << 24) + 0x3737FF;
           }
