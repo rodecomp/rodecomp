@@ -1064,7 +1064,7 @@ void UIMessengerGroupWnd::Paint() {
 
       char nameText[80];
       memset(nameText, 0, sizeof(nameText));
-      std::string display = entry.name;
+      std::string display(entry.name, entry.name.get_allocator());
       const std::size_t position = entry.name.find(g_messengerNamelessTag);
       if (position != std::string::npos) {
         display.clear();
