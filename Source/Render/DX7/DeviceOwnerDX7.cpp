@@ -176,21 +176,21 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      if (status == DDERR_OUTOFVIDEOMEMORY) {
-        return status;
+      if (status != DDERR_OUTOFVIDEOMEMORY) {
+        return DeviceError(7);
       }
-      return DeviceError(7);
+      return DDERR_OUTOFVIDEOMEMORY;
     }
 
     if (flags & 2) {
-      DDSCAPS2 caps{DDSCAPS_BACKBUFFER};
+      DDSCAPS2 caps = {DDSCAPS_BACKBUFFER, 0, 0, 0};
       status = this->primary->GetAttachedSurface(&caps, &this->backBuffer);
 
       if (FAILED(status)) {
-        if (status == DDERR_OUTOFVIDEOMEMORY) {
-          return status;
+        if (status != DDERR_OUTOFVIDEOMEMORY) {
+          return DeviceError(10);
         }
-        return DeviceError(10);
+        return DDERR_OUTOFVIDEOMEMORY;
       }
     }
 
@@ -220,10 +220,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      if (status == DDERR_OUTOFVIDEOMEMORY) {
-        return status;
+      if (status != DDERR_OUTOFVIDEOMEMORY) {
+        return DeviceError(7);
       }
-      return DeviceError(7);
+      return DDERR_OUTOFVIDEOMEMORY;
     }
 
     IDirectDrawClipper* clipper;
@@ -248,10 +248,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       status = this->draw->CreateSurface(&description, &this->backBuffer, nullptr);
 
       if (FAILED(status)) {
-        if (status == DDERR_OUTOFVIDEOMEMORY) {
-          return status;
+        if (status != DDERR_OUTOFVIDEOMEMORY) {
+          return DeviceError(10);
         }
-        return DeviceError(10);
+        return DDERR_OUTOFVIDEOMEMORY;
       }
     } else {
       ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->source.left));
