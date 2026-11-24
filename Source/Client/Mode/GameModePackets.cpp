@@ -11533,8 +11533,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
 
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), p + 1, length);
-  const std::uint32_t& aid = p->gid;
-  CGameActor* speaker = this->scene->GetGameActorByAID(aid);
+  CGameActor* speaker = this->scene->GetGameActorByAID(p->gid);
   if (speaker && !speaker->objectType && g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
@@ -11543,16 +11542,16 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   if (g_windowMgr.chatRoomWnd) {
     g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
   } else {
-    if (IsMonsterJob(aid)) {
+    if (IsMonsterJob(p->gid)) {
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == ServiceThai ? 0xFFFF00 : (g_serviceType == ServiceGermany ? 0x1D8DFF : 0xFFFF), 1, 0, 0
       );
-    } else if (MonsterJobColor(aid)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+    } else if (MonsterJobColor(p->gid)) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(p->gid), 0, 0, 0);
     } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
     }
-    if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(p->gid)) {
       actor->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text.data()), 0, 0, 0, 0, 0);
     }
   }
