@@ -1148,7 +1148,10 @@ void CCreateLineInfo::ApplyFont(std::string tag) {
     const unsigned long color = std::strtol(digits, &end, 16);
     if (end > digits && end - digits == 6) {
       changed = true;
-      this->m_color = RGB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+      const unsigned char red = static_cast<unsigned char>(color >> 16);
+      const unsigned char green = static_cast<unsigned char>(color >> 8);
+      const unsigned char blue = static_cast<unsigned char>(color);
+      this->m_color = (((blue << 8) | green) << 8) | red;
     }
   }
 
@@ -1549,7 +1552,10 @@ static int ParseColorCode(CCreateLineInfo& info, int index) {
     return index;
   }
 
-  const std::uint32_t color = RGB((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+  const unsigned char red = static_cast<unsigned char>(value >> 16);
+  const unsigned char green = static_cast<unsigned char>(value >> 8);
+  const unsigned char blue = static_cast<unsigned char>(value);
+  const std::uint32_t color = (((blue << 8) | green) << 8) | red;
   info.m_newSegment = true;
   info.m_defaultColor = color;
   info.m_color = color;
