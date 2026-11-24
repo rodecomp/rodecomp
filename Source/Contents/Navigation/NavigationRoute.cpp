@@ -1932,8 +1932,8 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         const int* route = reinterpret_cast<const int*>(buffer.data());
-        int x = -1;
         int y = -1;
+        int x = -1;
         if (this->savedTarget.object != nullptr) {
           const int type = this->savedTarget.type;
           CNaviInfo* info;
