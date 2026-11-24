@@ -1142,7 +1142,7 @@ void CPc::ApplyLayerEffects(
 
   if ((this->render.flags & 0x80800) != 0 && (this->render.flags & 0x20000) == 0) {
     const float scale = this->render.scale;
-    for (int step = 1, depth = 3; depth <= 6; ++step, depth += 3) {
+    for (int depth = 3, step = 1; depth <= 6; depth += 3, ++step) {
       const unsigned char alpha = this->render.outlineAlpha;
       const float distanceScale = g_renderer->ScaleDistance(distance);
       const float factor = g_session.GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
