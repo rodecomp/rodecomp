@@ -677,16 +677,14 @@ __declspec(noinline) void LoadItemNameTables() {
         ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
-      char* unidentified = *cursor;
-      if (unidentified == nullptr || std::strstr(unidentified, "idenitfied equal unidentified") != nullptr) {
+      if (*cursor == nullptr || std::strstr(*cursor, "idenitfied equal unidentified") != nullptr) {
         desc.unidentifiedName = desc.identifiedName;
         desc.unidentifiedDescription = desc.identifiedDescription;
-        cursor += 2;
+        ++cursor;
       } else {
-        g_session.ConvertTooltipText(unidentified, unidentified);
-        unidentified = *cursor;
+        g_session.ConvertTooltipText(*cursor, *cursor);
+        desc.unidentifiedName = *cursor;
         cursor += 2;
-        desc.unidentifiedName = unidentified;
         if (cursor >= tokens.end()) {
           ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
         }
@@ -695,9 +693,9 @@ __declspec(noinline) void LoadItemNameTables() {
           desc.unidentifiedDescription.push_back(*cursor);
           ++cursor;
         }
-
-        ++cursor;
       }
+
+      ++cursor;
     }
 
     loaded = 1;
@@ -827,10 +825,12 @@ __declspec(noinline) void LoadItemNameTables() {
       continue;
     }
 
-    if (IsNumericText(text)) {
+    if (!IsNumericText(text)) {
+      if (std::strlen(text) != 0) {
+        EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(*token);
+      }
+    } else {
       metalId = std::atoi(text);
-    } else if (std::strlen(text) != 0) {
-      EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(*token);
     }
   }
 
