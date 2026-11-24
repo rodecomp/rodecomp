@@ -37,6 +37,16 @@ void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, c
   group.items.emplace_back(itemId, name, probability);
 }
 
+// INLINED
+static std::optional<std::map<int, PackageGroup>*> FindGroups(std::map<int, std::map<int, PackageGroup>>& packages, int packageId) {
+  std::map<int, std::map<int, PackageGroup>>::iterator package = packages.find(packageId);
+  if (package != packages.end()) {
+    return &package->second;
+  }
+
+  return std::nullopt;
+}
+
 // OFFSET: 0x006D2140
 // FUNCTION: fn_06524
 __declspec(noinline) std::optional<std::map<int, PackageGroup>*> CNeoPackageItemMgr::FindPackage(int itemId) {
@@ -45,12 +55,7 @@ __declspec(noinline) std::optional<std::map<int, PackageGroup>*> CNeoPackageItem
     packageId = itemId;
   }
 
-  std::map<int, std::map<int, PackageGroup>>::iterator package = this->m_packages.find(packageId);
-  if (package != this->m_packages.end()) {
-    return &package->second;
-  }
-
-  return std::nullopt;
+  return FindGroups(this->m_packages, packageId);
 }
 
 // OFFSET: 0x006D21B0
