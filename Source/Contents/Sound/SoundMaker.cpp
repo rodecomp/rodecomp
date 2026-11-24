@@ -1101,7 +1101,13 @@ void CNpc::Render(int argument) {
           if (effect.id == EFST_CLAIRVOYANCE) {
             if (this->objectType == NPC_MOB_TYPE && (!this->render.visible || !this->render.enabled)) {
               this->SetColor(-1, 0, 0, 0);
-              const bool monster = g_session.IsMonsterClass(this->GetEffectiveJob(-1));
+              const int job = this->GetEffectiveJob(-1);
+              bool monster;
+              if ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978) {
+                monster = true;
+              } else {
+                monster = false;
+              }
               this->DrawSprite(argument, monster, 0.0f);
               return;
             }
