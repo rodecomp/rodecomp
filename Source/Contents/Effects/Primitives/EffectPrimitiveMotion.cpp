@@ -5638,8 +5638,9 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
 
           const int sinLimit = 90 + (value - middle) * m2;
 
-          this->state.slots[index].height[value] = this->state.slots[index].maxHeight;
-          this->state.slots[index].height[value] += this->state.slots[index].maxHeight * g_sinTable[sinLimit] * 0.3f * g_sinTable[pr];
+          const float base = this->state.slots[index].maxHeight;
+          this->state.slots[index].height[value] = base;
+          this->state.slots[index].height[value] = g_sinTable[sinLimit] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[pr] + base;
         }
       }
     }
