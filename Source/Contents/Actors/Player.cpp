@@ -2105,8 +2105,8 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   bounds.offset = reciprocalDepth;
 
   ResourceMgr::Instance().Load(this->imfName.c_str());
-  int count = 0;
   int drawn = 0;
+  int count = 0;
   if (std::strlen(this->equipActions[0] ? this->equipActions[0]->GetName() : "") == 0) {
     return;
   }
