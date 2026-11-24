@@ -372,6 +372,7 @@ namespace {
     }
     return bytes;
   }
+
 }
 
 namespace {
@@ -399,7 +400,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
       }
 
-      if (this->grade > 0) {
+      if (0 < this->grade) {
         AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
       }
 
@@ -409,7 +410,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         AppendText(result, this->Creator(text, capacity, 0) > 0 ? text : "");
       } else {
         result += this->Creator(text, capacity, 0) > 0 ? text : "";
-        result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+        AppendText(result, InlineElement(*this, text, capacity, 0) > 0 ? text : "");
         result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
       }
     } else {
@@ -420,7 +421,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
           AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
         }
 
-        if (this->grade > 0) {
+        if (0 < this->grade) {
           AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
         }
 
