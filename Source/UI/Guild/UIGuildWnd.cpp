@@ -1911,13 +1911,8 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     return false;
   }
 
-  const std::string* name;
   if (g_modeMgr.GetGameMode()) {
-    auto playerName = LookupPlayerName(member.characterId);
-    name = &member.name;
-    member.name = std::move(playerName);
-  } else {
-    name = &member.name;
+    member.name = LookupPlayerName(member.characterId);
   }
   if (member.name.size() == 0) {
     member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildNamelessTag;
@@ -1970,7 +1965,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 
   {
     const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
-    const std::string displayName = this->StripNamelessTag(*name);
+    const std::string displayName = this->StripNamelessTag(member.name);
     this->m_rowTexts[1][row]->SetTextFittedCodePage(displayName.c_str());
     this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
     int x = g_guildMemberColumnWidths[0];
