@@ -5803,8 +5803,6 @@ void CEffectPrim::PrimBreathingWave() {
 // OFFSET: 0x00BE9AA0
 // FUNCTION: fn_19957
 bool CEffectPrim::PrimDriftingRings() {
-  const float profile[6] = {0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f};
-
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -5855,7 +5853,7 @@ bool CEffectPrim::PrimDriftingRings() {
       float scale = 1.0f;
       for (int step = 0; step < 6; ++step) {
         if (point == step || point == 20 - step) {
-          scale = profile[step];
+          scale = 0.4f + 0.1f * step;
         }
       }
 
