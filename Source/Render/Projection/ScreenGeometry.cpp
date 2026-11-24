@@ -63,16 +63,16 @@ void DrawDashedScreenLine(
   const float dashY = dash * directionY;
   const float dashX = dash * directionX;
   float currentX = startX;
-  float currentY = startY;
   float nextX = dashX + currentX;
+  float currentY = startY;
   float nextY = dashY + currentY;
   float distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
   if (!(length > distance)) {
     return;
   }
 
-  const float halfDashX = dashX * g_depthAverageHalf;
   const float halfDashY = dashY * g_depthAverageHalf;
+  const float halfDashX = dashX * g_depthAverageHalf;
   do {
     DrawScreenQuad(currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, texture, color);
 
