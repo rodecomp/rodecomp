@@ -4756,7 +4756,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
   if (result.size() < std::strlen(line)) {
     const int room = static_cast<int>(std::strlen(line) - result.size());
     if (room > 0 && remaining.size() >= static_cast<unsigned>(room)) {
-      result += remaining.substr(0, room);
+      result += text.substr(0, room);
       start += room;
     }
   }
