@@ -2892,27 +2892,26 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
   unsigned char blue;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].process <= 0) {
       continue;
     }
 
-    const int angle = slot.rotStart;
-    const float size = slot.height[2];
+    const int angle = this->state.slots[ec].rotStart;
+    const float size = this->state.slots[ec].height[2];
     const float half = size * g_depthAverageHalf;
     const int opposite = angle >= 180 ? angle - 180 : angle + 180;
-    slot.vecBPre.x = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
-    slot.vecBPre.z = half * g_sinTable[angle] + g_cosTable[angle] * 0.0f;
-    slot.vecBPre.y = half - slot.height[4];
-    slot.vecBNow.y = slot.vecBPre.y;
-    slot.vecBNow.x = half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f;
-    slot.vecBNow.z = half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f;
-    vec3.Set(slot.vecBNow.x, slot.vecBNow.y - size, slot.vecBNow.z);
-    vec4.Set(slot.vecBPre.x, slot.vecBPre.y - size, slot.vecBPre.z);
+    this->state.slots[ec].vecBPre.x = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
+    this->state.slots[ec].vecBPre.z = half * g_sinTable[angle] + g_cosTable[angle] * 0.0f;
+    this->state.slots[ec].vecBPre.y = half - this->state.slots[ec].height[4];
+    this->state.slots[ec].vecBNow.y = this->state.slots[ec].vecBPre.y;
+    this->state.slots[ec].vecBNow.x = half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f;
+    this->state.slots[ec].vecBNow.z = half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f;
+    vec3.Set(this->state.slots[ec].vecBNow.x, this->state.slots[ec].vecBNow.y - size, this->state.slots[ec].vecBNow.z);
+    vec4.Set(this->state.slots[ec].vecBPre.x, this->state.slots[ec].vecBPre.y - size, this->state.slots[ec].vecBPre.z);
 
-    const float mode = slot.height[5];
-    const float level = slot.height[3];
+    const float mode = this->state.slots[ec].height[5];
+    const float level = this->state.slots[ec].height[3];
     if (mode == 2.0f) {
       if (level == 0.0f) {
         red = 105;
@@ -2932,7 +2931,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         green = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 3.0f) {
       if (level == 0.0f) {
@@ -2953,7 +2952,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         blue = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 4.0f) {
       if (level == 0.0f) {
@@ -2974,7 +2973,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         green = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 5.0f) {
       if (level == 0.0f) {
@@ -2995,7 +2994,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         red = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 6.0f) {
       if (level == 0.0f) {
@@ -3016,7 +3015,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         red = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 7.0f) {
       if (level == 0.0f) {
@@ -3037,7 +3036,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         green = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else if (mode == 8.0f) {
       if (level == 0.0f) {
@@ -3058,7 +3057,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         green = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
     } else {
       if (level == 0.0f) {
@@ -3079,7 +3078,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         blue = 255;
       }
       if (size > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
   }
