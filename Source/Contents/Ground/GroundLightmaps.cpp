@@ -45,14 +45,18 @@ void GroundLightmapSet::Build(CGndRes& resource) {
         }
       }
 
-      map.uv[0][0] = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
-      map.uv[0][1] = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
-      map.uv[1][0] = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
-      map.uv[1][1] = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
-      map.uv[2][0] = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
-      map.uv[2][1] = std::clamp(static_cast<float>(8 * row + 7) / 256.0f, 0.0f, 1.0f);
-      map.uv[3][0] = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
-      map.uv[3][1] = std::clamp(static_cast<float>(8 * row + 7) / 256.0f, 0.0f, 1.0f);
+      const float left = static_cast<float>(8 * column + 1) / 256.0f;
+      const float top = static_cast<float>(8 * row + 1) / 256.0f;
+      map.uv[0][0] = std::clamp(left, 0.0f, 1.0f);
+      map.uv[0][1] = std::clamp(top, 0.0f, 1.0f);
+      const float right = static_cast<float>(8 * column + 7) / 256.0f;
+      map.uv[1][0] = std::clamp(right, 0.0f, 1.0f);
+      map.uv[1][1] = std::clamp(top, 0.0f, 1.0f);
+      const float bottom = static_cast<float>(8 * row + 7) / 256.0f;
+      map.uv[2][0] = std::clamp(left, 0.0f, 1.0f);
+      map.uv[2][1] = std::clamp(bottom, 0.0f, 1.0f);
+      map.uv[3][0] = std::clamp(right, 0.0f, 1.0f);
+      map.uv[3][1] = std::clamp(bottom, 0.0f, 1.0f);
       map.color[0] = decoded[172];
       map.color[1] = decoded[173];
       map.color[2] = decoded[174];
