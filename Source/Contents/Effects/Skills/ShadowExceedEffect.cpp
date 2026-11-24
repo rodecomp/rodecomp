@@ -12,6 +12,7 @@
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <string>
 
 namespace {
@@ -118,7 +119,7 @@ bool CShadowExceed::IsAlive() {
 // FUNCTION: fn_07435
 void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    if (IsParticleActive(*it)) {
+    if (IsParticleActive(*it) == true) {
       this->UpdateEmitter(*it);
       ++it;
     } else {
