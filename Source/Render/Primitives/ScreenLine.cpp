@@ -228,13 +228,13 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   vertices[0].x = x - static_cast<float>(halfWidth);
-  vertices[0].y = y - static_cast<float>(height) - static_cast<float>(lift);
   vertices[1].x = static_cast<float>(halfWidth) + x;
-  vertices[1].y = y - static_cast<float>(height) - static_cast<float>(lift);
+  vertices[0].y = y - static_cast<float>(height) - static_cast<float>(lift);
   vertices[2].x = x - static_cast<float>(halfWidth);
+  vertices[1].y = y - static_cast<float>(height) - static_cast<float>(lift);
   vertices[2].y = y - static_cast<float>(lift);
-  vertices[3].x = static_cast<float>(halfWidth) + x;
   vertices[3].y = y - static_cast<float>(lift);
+  vertices[3].x = static_cast<float>(halfWidth) + x;
   for (int index = 0; index < 4; ++index) {
     vertices[index].z = 0.8f;
     vertices[index].rhw = 1.0f;
@@ -278,8 +278,8 @@ void UIRoMapWnd::DrawArrow(
   const float cosine = ClientCos(angle);
   const float normal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
   const float normalX = normal * cosine;
-  const float normalY = normal * sine;
   const float offsetX = static_cast<float>(bodyWidth) * normalX;
+  const float normalY = normal * sine;
   const float offsetY = static_cast<float>(bodyWidth) * normalY;
   ScreenPoint sideStart = {offsetX + x0, offsetY + y0};
   ScreenPoint sideEnd = {offsetX + x1, offsetY + y1};
@@ -308,8 +308,8 @@ void UIRoMapWnd::DrawArrow(
   mid.y = (end.y - start.y) * progress + start.y;
   ScreenPoint corner;
   if (progress != g_projectionDepthNumerator) {
-    corner.x = mid.x + offsetX;
     corner.y = mid.y + offsetY;
+    corner.x = mid.x + offsetX;
   } else {
     corner.x = (sideEnd.x - sideStart.x) + sideStart.x;
     corner.y = (sideEnd.y - sideStart.y) + sideStart.y;
