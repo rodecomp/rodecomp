@@ -1513,8 +1513,8 @@ void CLoginMode::ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet)
   const int port = packet->port;
   const std::uint32_t ip = packet->ip;
   const std::uint32_t gid = packet->gid;
-  std::string host(std::begin(packet->host), std::end(packet->host));
-  this->ConnectZoneServer(gid, std::string(packet->mapName, packet->mapName + sizeof(packet->mapName)).c_str(), ip, port, host.c_str());
+  this->ConnectZoneServer(gid, std::string(packet->mapName, packet->mapName + sizeof(packet->mapName)).c_str(), ip, port,
+      std::string(std::begin(packet->host), std::end(packet->host)).c_str());
 }
 
 #pragma pack(push, 1)
