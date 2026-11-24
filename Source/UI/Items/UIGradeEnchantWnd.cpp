@@ -166,6 +166,34 @@ int UIGradeEnchantWnd::SuccessRate() {
   return rate;
 }
 
+// OFFSET: 0x007E7400
+// FUNCTION: fn_46576
+inline void UIGradeEnchant_BtnEnhancedDown::InitializeBitmaps() {
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
+  this->Resize(this->BitmapWidth(), this->BitmapHeight());
+}
+
+// OFFSET: 0x007E7450
+// FUNCTION: fn_46577
+inline void UIGradeEnchant_BtnEnhancedUp::InitializeBitmaps() {
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
+  this->Resize(this->BitmapWidth(), this->BitmapHeight());
+}
+
+// OFFSET: 0x007E74A0
+// FUNCTION: fn_46578
+inline void UIGradeEnchant_BtnStart::InitializeBitmaps() {
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
+  this->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
+  this->Resize(this->BitmapWidth(), this->BitmapHeight());
+}
+
 // OFFSET: 0x007E7780
 // FUNCTION: fn_09753
 void UIGradeEnchantWnd::OnCreate(int, int) {
@@ -181,11 +209,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
 
   UIGradeEnchant_BtnStart* start = new UIGradeEnchant_BtnStart();
   this->startButton = start;
-  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start.bmp", 0, 0);
-  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_over.bmp", 1, 0);
-  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_press.bmp", 2, 0);
-  start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
-  start->Resize(start->BitmapWidth(), start->BitmapHeight());
+  start->InitializeBitmaps();
   this->startButton->Move(0x23, 0x123);
   this->startButton->SetId(ID_OK);
   {
@@ -197,10 +221,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
 
   UIGradeEnchant_BtnEnhancedUp* enhancedUp = new UIGradeEnchant_BtnEnhancedUp();
   this->enhancedUpButton = enhancedUp;
-  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up.bmp", 0, 0);
-  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_over.bmp", 1, 0);
-  enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
-  enhancedUp->Resize(enhancedUp->BitmapWidth(), enhancedUp->BitmapHeight());
+  enhancedUp->InitializeBitmaps();
   this->enhancedUpButton->Move(0x9E, 0xE1);
   this->enhancedUpButton->SetId(ID_UP);
   {
@@ -212,10 +233,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
 
   UIGradeEnchant_BtnEnhancedDown* enhancedDown = new UIGradeEnchant_BtnEnhancedDown();
   this->enhancedDownButton = enhancedDown;
-  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down.bmp", 0, 0);
-  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_over.bmp", 1, 0);
-  enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
-  enhancedDown->Resize(enhancedDown->BitmapWidth(), enhancedDown->BitmapHeight());
+  enhancedDown->InitializeBitmaps();
   this->enhancedDownButton->Move(0x9E, 0xF0);
   this->enhancedDownButton->SetId(ID_DOWN);
   {

@@ -43,6 +43,7 @@ static_assert(sizeof(GradeEnchantInfo) == 16);
 class UIGradeEnchant_BtnStart : public UIBitmapButton {
 public:
   UIGradeEnchant_BtnStart();
+  void InitializeBitmaps();
   void Paint() override;
   void Enable(unsigned char value) override;
 };
@@ -50,6 +51,7 @@ public:
 class UIGradeEnchant_BtnEnhancedUp : public UIBitmapButton {
 public:
   UIGradeEnchant_BtnEnhancedUp();
+  void InitializeBitmaps();
   void Paint() override;
   void OnMouseHover(int x, int y) override;
   void Enable(unsigned char value) override;
@@ -61,6 +63,7 @@ public:
 class UIGradeEnchant_BtnEnhancedDown : public UIBitmapButton {
 public:
   UIGradeEnchant_BtnEnhancedDown();
+  void InitializeBitmaps();
   void Paint() override;
   void Enable(unsigned char value) override;
 };
