@@ -233,3 +233,27 @@ bool IsStarUnionChanged(std::uint32_t previous, std::uint32_t current) {
 bool IsRidingWargChanged(std::uint32_t previous, std::uint32_t current) {
   return ((previous >> 21) ^ (current >> 21)) & 1;
 }
+
+// OFFSET: 0x00DF98C0
+// FUNCTION: fn_46704
+bool IsRidingMadogearChanged(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 22) ^ (current >> 22)) & 1;
+}
+
+// OFFSET: 0x00DF9920
+// FUNCTION: fn_46705
+bool IsOrcishChanged(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 11) ^ (current >> 11)) & 1;
+}
+
+// OFFSET: 0x00DF9A40
+// FUNCTION: fn_46706
+bool IsTransformed(std::uint32_t flags) {
+  return (flags >> 17) & 1;
+}
+
+// OFFSET: 0x00DF9A50
+// FUNCTION: fn_46707
+bool IsTransformedChanged(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 17) ^ (current >> 17)) & 1;
+}

@@ -41,6 +41,10 @@ bool IsRidingBrownDragonChanged(std::uint32_t previous, std::uint32_t current);
 bool IsRidingGrayDragonChanged(std::uint32_t previous, std::uint32_t current);
 bool IsRidingBlueDragonChanged(std::uint32_t previous, std::uint32_t current);
 bool IsRidingRedDragonChanged(std::uint32_t previous, std::uint32_t current);
+bool IsRidingMadogearChanged(std::uint32_t previous, std::uint32_t current);
+bool IsOrcishChanged(std::uint32_t previous, std::uint32_t current);
+bool IsTransformed(std::uint32_t flags);
+bool IsTransformedChanged(std::uint32_t previous, std::uint32_t current);
 bool StateFlagsClear(std::uint32_t flags);
 
 #endif
