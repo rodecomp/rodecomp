@@ -49,7 +49,7 @@ void CGuildEmblemReqBundle::Update() {
     this->m_pending.pop_front();
     if (guildId != 0) {
       g_emblemDataMgr->Download(guildId, version);
-      this->m_recent.emplace_back(guildId, version, timeGetTime());
+      this->m_recent.push_back(Recent(guildId, version, timeGetTime()));
     }
 
     return;
