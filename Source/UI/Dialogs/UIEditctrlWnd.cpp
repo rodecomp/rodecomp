@@ -469,7 +469,6 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           mapName = mapName.substr(0, extension);
         }
         g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, mark->second.x, mark->second.y, 1002);
-        return 0;
       }
       return 0;
     }
