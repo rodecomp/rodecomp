@@ -271,7 +271,7 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
   Json::Value interfaceTab;
   Json::Value emotionTab;
 
-  for (; it != snapshot.end(); ++it) {
+  while (it != snapshot.end()) {
     const CUserHotkeyMgr::Hotkey& hotkey = *it;
     Json::Value value;
     value["index"] = hotkey.index;
@@ -293,6 +293,8 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
       emotionTab.append(value);
       break;
     }
+
+    ++it;
   }
 
   version2["SkillBar_1Tab"] = skillBar1;
