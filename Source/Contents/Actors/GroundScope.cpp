@@ -161,14 +161,19 @@ void CGroundScope::Render(int argument) {
       uv[7] = (row1 * cosine - column1 * sine + center) / size;
 
       const char* name;
-      std::uint32_t tint = color;
+      std::uint32_t tint;
       switch (this->m_skillId) {
         case GC_POISONSMOKE:
-          name = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? "effect\\mineffect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga"
-                                             : "effect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga";
+          if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+            name = "effect\\mineffect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga";
+          } else {
+            name = "effect\\new_poisonsmoke\\new_poisonsmoke_cast\\poi_magic_circle_1.tga";
+          }
+          tint = color;
           break;
         case WL_COMET:
           name = "effect\\new_comet\\new_comet_cast_magicrune\\new_comet_cast_magicrune.tga";
+          tint = color;
           break;
         case CD_COMPETENTIA:
           name = "effect\\competentia\\competentia_cast_bottom\\com_rune_01.tga";
@@ -176,6 +181,7 @@ void CGroundScope::Render(int argument) {
           break;
         default:
           name = "effect\\magic_target.tga";
+          tint = color;
           break;
       }
 
