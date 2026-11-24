@@ -11,6 +11,8 @@ struct ImfData {
   /* 0000 */ std::vector<int> priority;
   /* 000C */ std::vector<int> cx;
   /* 0018 */ std::vector<int> cy;
+
+  ~ImfData();
 };
 
 class CImfRes : public CRes {

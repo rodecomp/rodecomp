@@ -81,3 +81,8 @@ CImfRes::CImfRes(const char* extension, const char* prefix) {
 
 // GLOBAL: gl_25557
 CImfRes g_imfPrototype("imf", "imf\\");
+
+// OFFSET: 0x00750360
+// FUNCTION: fn_46566
+ImfData::~ImfData() {
+}
