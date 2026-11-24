@@ -46,14 +46,7 @@ static __forceinline RenderPrimitive* BuildWaterPrimitive(
     g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
-  const float dx1 = vertices[1].x - vertices[0].x;
-  const float dy2 = vertices[2].y - vertices[0].y;
-  const float dx2 = vertices[2].x - vertices[0].x;
-  const float dy1 = vertices[1].y - vertices[0].y;
-
-  const float clockwiseArea = dx1 * dy2;
-  const float counterclockwiseArea = dx2 * dy1;
-  if (!(counterclockwiseArea > clockwiseArea)) {
+  if (!((vertices[2].y - vertices[0].y) * (vertices[1].x - vertices[0].x) < (vertices[1].y - vertices[0].y) * (vertices[2].x - vertices[0].x))) {
     return nullptr;
   }
 
@@ -83,19 +76,14 @@ static __forceinline RenderPrimitive* BuildWaterPrimitive(
 static __forceinline void SetWaterTextureCoordinates(RenderPrimitive& primitive, int column, int row, float unit) {
   const float x = static_cast<float>(static_cast<unsigned>(column) & 3u);
   const float y = static_cast<float>(static_cast<unsigned>(row) & 3u);
-  const float left = x * 0.25f;
-  const float right = (x + 1.0f) * 0.25f;
-  const float top = y * 0.25f;
-  const float bottom = (y + 1.0f) * 0.25f;
-
-  primitive.vertices[0].u = left;
-  primitive.vertices[0].v = top;
-  primitive.vertices[1].u = right;
-  primitive.vertices[1].v = top;
-  primitive.vertices[2].u = left;
-  primitive.vertices[2].v = bottom;
-  primitive.vertices[3].u = right;
-  primitive.vertices[3].v = bottom;
+  primitive.vertices[0].u = x * 0.25f;
+  primitive.vertices[0].v = y * 0.25f;
+  primitive.vertices[1].u = (x + 1.0f) * 0.25f;
+  primitive.vertices[1].v = y * 0.25f;
+  primitive.vertices[2].u = x * 0.25f;
+  primitive.vertices[2].v = (y + 1.0f) * 0.25f;
+  primitive.vertices[3].u = (x + 1.0f) * 0.25f;
+  primitive.vertices[3].v = (y + 1.0f) * 0.25f;
 }
 
 // OFFSET: 0x00AC1540
@@ -136,9 +124,7 @@ void GroundGeometry::DrawWaterCell(
     first = waveHeight(diagonal - 1);
     last = waveHeight(diagonal + 1);
   } else {
-    middle = level;
-    first = level;
-    last = level;
+    middle = first = last = level;
   }
 
   RenderPrimitive* primitive = BuildWaterPrimitive(*this, cell, matrix, ambient, middle, first, last);
