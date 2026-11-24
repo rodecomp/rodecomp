@@ -13,6 +13,9 @@
 struct CRagEffect;
 class CTexture;
 
+extern float g_fullCircleAngle;
+extern float g_fireflyNormalDrift;
+
 struct ZeroVector3d : vector3d {
   // INLINED
   ZeroVector3d() {

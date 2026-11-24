@@ -25,7 +25,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 
     EffectPrimitiveSlot& slot = this->state.slots[static_cast<short>(ec)];
     float tilt = slot.height[8];
-    if (tilt >= 360.0f || tilt < 0.0f) {
+    const int angle1 = slot.fullDisplayAngle;
+    float radius = slot.distance;
+    if (tilt >= g_fullCircleAngle || tilt < 0.0f) {
       slot.height[8] = 0.0f;
       tilt = 0.0f;
     }
@@ -39,9 +41,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
     vec3.y = 0.0f;
     vec4.y = 0.0f;
 
-    const int angle1 = slot.fullDisplayAngle;
     const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
-    const float radius = slot.distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + slot.distance;
+    radius += radius * g_sinTable[static_cast<int>(tilt)] * g_fireflyNormalDrift;
     vec1.x = radius * g_cosTable[angle1];
     vec1.z = radius * g_sinTable[angle1];
     const int angle3 = angle2 + (angle2 + 90 >= 360 ? -270 : 90);
