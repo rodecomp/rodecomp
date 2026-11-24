@@ -36,7 +36,8 @@ public:
   FuncDrawOffset LayerAnchorOffset(int layer, const ActionFrame** frame, CActRes* act);
   void LoadResources(const std::list<int>& layers);
 
-  // INLINED
+  // OFFSET: 0x007E5710
+  // FUNCTION: fn_46548
   std::pair<CSprRes*, CActRes*> Resource(int layer) {
     if (this->m_resources.end() != this->m_resources.find(layer)) {
       return this->m_resources[layer];
