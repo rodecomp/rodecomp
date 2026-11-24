@@ -162,7 +162,7 @@ void CUIEditCtrlEx::Paint() {
 }
 
 // INLINED
-static int EnsureVisible(int position, int line, int visible) {
+static int EnsureVisible(int position, int line, const int& visible) {
   int first = std::min(position, line);
   if (line >= visible + first) {
     first = line - visible + 1;
