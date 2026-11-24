@@ -1000,12 +1000,13 @@ void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
 // FUNCTION: fn_23295
 void CSession::MergePurchaseItem(const ITEM_INFO& item) {
   for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
-    bool same = it->identity[1] == item.identity[1];
+    ITEM_INFO& value = *it;
+    bool same = value.identity[1] == item.identity[1];
     if (!item.uniqueItem) {
-      same = it->itemId == item.itemId;
+      same = value.itemId == item.itemId;
     }
     if (same == true) {
-      it->quantity += item.quantity;
+      value.quantity += item.quantity;
       return;
     }
   }
