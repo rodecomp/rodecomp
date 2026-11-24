@@ -122,44 +122,40 @@ void UIRune_Info::OnCreate(int, int) {
   this->m_activateButton->SetId(RUNE_BUTTON_ACTIVATE);
 }
 
-// INLINED
-static __forceinline void DrawRewardBitmap(UIRuneSetReWard* reward, const std::string& name) {
-  if (!name.empty()) {
-    const char* bitmapName = name.c_str();
-    reward->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmapName))), true);
-  }
-}
-
 // OFFSET: 0x00819610
 // FUNCTION: fn_10181
 void UIRuneSetReWard::Paint() {
   this->ClearSurface(0xFFFF00FF);
+  std::string_view name;
   if (this->m_state == 3) {
-    DrawRewardBitmap(this, this->m_texts[1]);
+    name = this->m_texts[1];
   } else if (this->m_state == 0) {
-    DrawRewardBitmap(this, this->m_texts[0]);
+    name = this->m_texts[0];
   } else if (this->m_state == 1) {
     switch (this->geometry.state) {
     case 0:
-      DrawRewardBitmap(this, this->m_disabledName);
+      name = this->m_disabledName;
       break;
     case 1:
     case 2:
-      DrawRewardBitmap(this, this->m_texts[2]);
+      name = this->m_texts[2];
       break;
     }
   } else {
     switch (this->geometry.state) {
     case 0:
-      DrawRewardBitmap(this, this->m_normalName);
+      name = this->m_normalName;
       break;
     case 1:
-      DrawRewardBitmap(this, this->m_hoverName);
+      name = this->m_hoverName;
       break;
     case 2:
-      DrawRewardBitmap(this, this->m_pressedName);
+      name = this->m_pressedName;
       break;
     }
+  }
+  if (!name.empty()) {
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.data()))), true);
   }
   if (this->parent) {
     this->parent->Invalidate();
