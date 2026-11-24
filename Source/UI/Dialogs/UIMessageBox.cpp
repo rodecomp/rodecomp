@@ -1798,13 +1798,17 @@ void UINoticeWnd::OnCreate(int, int) {
   }
 
   for (int i = 0, y = 22; y < 364; ++i, y += 18) {
-    this->m_texts[i]->SetSize(540, 16);
-    this->m_texts[i]->SetFont(0, 16, 0, 0);
+    const char* text;
     if (i < lineCount) {
-      this->m_texts[i]->SetText(patchText + lines[i], 1);
+      this->m_texts[i]->SetSize(540, 16);
+      this->m_texts[i]->SetFont(0, 16, 0, 0);
+      text = patchText + lines[i];
     } else {
-      this->m_texts[i]->SetText("", 1);
+      this->m_texts[i]->SetSize(540, 16);
+      this->m_texts[i]->SetFont(0, 16, 0, 0);
+      text = "";
     }
+    this->m_texts[i]->SetText(text, 1);
     this->m_texts[i]->Move(30, y);
     this->AddChild(this->m_texts[i]);
   }
