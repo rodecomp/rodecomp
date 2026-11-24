@@ -161,8 +161,11 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   title->SetColor(0);
   title->SetShadow(1, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->titleBar->titleText = title;
-  this->titleBar->AddChild(title);
+  {
+    CUITitleBar* titleBar = this->titleBar;
+    titleBar->titleText = title;
+    titleBar->AddChild(title);
+  }
 
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
@@ -237,10 +240,16 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
     tabs->SetImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x79DF094DD9616575ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_press.bmp", 0x11CB35636377DD07ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_over.bmp", 0x4755C1355575FD37ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x9BE3EF737387AD79ULL));
   }
 
-  this->tabs->itemWidth = 98;
-  this->tabs->rowHeight = 40;
-  this->tabs->itemX = 8;
-  this->tabs->itemY = 0;
+  {
+    CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
+    tabs->itemWidth = 98;
+    tabs->rowHeight = 40;
+  }
+  {
+    CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
+    tabs->itemX = 8;
+    tabs->itemY = 0;
+  }
   this->tabs->scrollBar->SetSize(8, 372);
   this->tabs->scrollBar->Move(0, 0);
   this->tabs->scrollBar->step = 20;
