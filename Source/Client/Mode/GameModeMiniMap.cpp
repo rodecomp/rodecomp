@@ -636,20 +636,17 @@ void CGameMode::DrawMiniMapNumber() {
     int value = number;
     if (value > 9999) {
       value = 9999;
+    }
+    if (value < 0) {
+      value = 0;
+    }
+    g_minimapCoordinateDigits = 1;
+    if (value > 999) {
       g_minimapCoordinateDigits = 4;
-    } else {
-      if (value < 0) {
-        value = 0;
-      }
-      int digits = 1;
-      if (value > 999) {
-        digits = 4;
-      } else if (value > 99) {
-        digits = 3;
-      } else if (value > 9) {
-        digits = 2;
-      }
-      g_minimapCoordinateDigits = digits;
+    } else if (value > 99) {
+      g_minimapCoordinateDigits = 3;
+    } else if (value > 9) {
+      g_minimapCoordinateDigits = 2;
     }
 
     g_minimapCoordinateDigitValues[0] = value % 10;
