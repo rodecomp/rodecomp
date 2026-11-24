@@ -237,7 +237,6 @@ __forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
   const float cosine = g_cosTable[angle];
   const float sine = g_sinTable[angle];
   const float outerX = spread * cosine;
-  const float outerZ = spread * sine;
 
   EffectPoint points[2];
   points[0].x = cosine * particle->scale;
@@ -245,7 +244,7 @@ __forceinline void CSaintCastingEffect::UpdateParticle(CParticle* particle) {
   points[0].z = sine * particle->scale;
   points[1].x = points[0].x + outerX;
   points[1].y = points[0].y - height;
-  points[1].z = points[0].z + outerZ;
+  points[1].z = points[0].z + spread * sine;
 
   particle->vertices[3].x = points[0].x;
   particle->vertices[3].y = points[0].y;
