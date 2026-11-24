@@ -509,26 +509,47 @@ namespace {
 
   // INLINED
   __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipRecord& record) {
-    entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    entry.card0 = record.cards[0];
-    entry.card1 = record.cards[1];
-    entry.card2 = record.cards[2];
-    entry.card3 = record.cards[3];
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.sprite = record.sprite;
-    entry.identified = record.identified;
-    entry.damaged = record.damaged;
     entry.placeEtcTab = record.placeEtcTab;
+    entry.index = record.index;
+    entry.location = record.location;
+    entry.sprite = record.sprite;
+    entry.bindOnEquip = record.bindOnEquip;
+    entry.expireTime = record.expireTime;
+    entry.refine = record.refine;
+    entry.damaged = record.damaged;
+    entry.identified = record.identified;
+    entry.itemId = record.itemId;
+    entry.card3 = record.cards[3];
+    entry.card2 = record.cards[2];
+    entry.card1 = record.cards[1];
+    entry.card0 = record.cards[0];
+    entry.wearState = record.wearState;
+    entry.type = record.type;
   }
 
   // INLINED
   __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
+    entry.placeEtcTab = (record.flags >> 2) & 1;
+    entry.index = record.index;
+    entry.sprite = record.sprite;
+    entry.bindOnEquip = record.bindOnEquip;
+    std::memcpy(entry.options, record.options, sizeof(entry.options));
+    entry.expireTime = record.expireTime;
+    entry.refine = record.refine;
+    entry.location = record.location;
+    entry.identified = record.flags & 1;
+    entry.damaged = (record.flags >> 1) & 1;
+    entry.itemId = record.itemId;
+    entry.card3 = record.cards[3];
+    entry.card2 = record.cards[2];
+    entry.card1 = record.cards[1];
+    entry.card0 = record.cards[0];
+    entry.wearState = record.wearState;
+    entry.type = record.type;
+  }
+
+  // INLINED
+  __forceinline void ReadStoreEquipOptionEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
     entry.index = record.index;
     entry.itemId = record.itemId;
     entry.type = record.type;
@@ -9322,20 +9343,20 @@ namespace {
 
   // INLINED
   __forceinline void ReadStoreEquipEntry(StoreEquipGradeEntry& entry, const EquipWindowGradeRecord& record) {
+    entry.placeEtcTab = (record.flags >> 2) & 1;
     entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
     entry.sprite = record.sprite;
+    entry.bindOnEquip = record.bindOnEquip;
+    std::memcpy(entry.options, record.options, sizeof(entry.options));
+    entry.expireTime = record.expireTime;
+    entry.refine = record.refine;
+    entry.location = record.location;
     entry.identified = record.flags & 1;
     entry.damaged = (record.flags >> 1) & 1;
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
+    entry.itemId = record.itemId;
+    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.wearState = record.wearState;
+    entry.type = record.type;
     entry.grade = record.grade;
   }
 
@@ -9433,7 +9454,7 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
+    ReadStoreEquipOptionEntry(entry, *record);
     StoreItemOption options[5];
     std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
@@ -9494,7 +9515,7 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
+    ReadStoreEquipOptionEntry(entry, *record);
     StoreItemOption options[5];
     std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
@@ -9633,7 +9654,7 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
+    ReadStoreEquipOptionEntry(entry, *record);
     StoreItemOption options[5];
     std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
