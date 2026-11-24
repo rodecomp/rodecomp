@@ -88,4 +88,3 @@ template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::ope
 template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>::operator++() noexcept;
 template __declspec(noinline) std::map<int, UIWindow*>::map(const std::map<int, UIWindow*>&);
 template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() noexcept;
-template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>::operator++() noexcept;
