@@ -1176,12 +1176,10 @@ void CUITabButton::SetSelected(bool selected) {
 // OFFSET: 0x009F1740
 // FUNCTION: fn_14696
 void CUITabButton::SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow) {
-  this->normalCell = SkinPaletteCell{normalColumn, normalRow};
-  this->selectedCell.column = selectedColumn;
-  this->selectedCell.row = selectedRow;
-  this->borderCell.column = borderColumn;
-  this->borderCell.row = borderRow;
   this->useSkinColors = 1;
+  this->normalCell = SkinPaletteCell{normalColumn, normalRow};
+  this->selectedCell = SkinPaletteCell{selectedColumn, selectedRow};
+  this->borderCell = SkinPaletteCell{borderColumn, borderRow};
   this->LoadSkin(0);
   this->Invalidate();
 }
@@ -3495,7 +3493,8 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblPos = \r\n";
     data += "{\r\n";
     for (const auto& position : this->windowPositions) {
-      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.x, position.second.y);
+      const int key = position.first;
+      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", key, position.second.x, position.second.y);
     }
     data += "}\r\n";
   }
@@ -3504,21 +3503,26 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblSize = \r\n";
     data += "{\r\n";
     for (const auto& size : this->windowSizes) {
-      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.cx, size.second.cy);
+      const int key = size.first;
+      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", key, size.second.cx, size.second.cy);
     }
     data += "}\r\n";
   }
 
-  bool saved = false;
+  bool saved;
   if (data.size() != 0) {
-    NSyncObject sync(&this->lock);
-    CFile file;
-    if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
-      data = EncodeBase64(data, false);
-      file.Write(data.c_str(), data.size());
-      file.Close();
+    {
+      NSyncObject sync(&this->lock);
+      CFile file;
+      if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
+        data = EncodeBase64(data, false);
+        file.Write(data.c_str(), data.size());
+        file.Close();
+      }
     }
     saved = true;
+  } else {
+    saved = false;
   }
   return saved;
 }
