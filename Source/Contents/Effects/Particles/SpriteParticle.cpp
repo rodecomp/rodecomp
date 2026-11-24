@@ -130,6 +130,24 @@ void CSpriteParticle::UpdateFrame() {
   }
 }
 
+namespace {
+struct QuadPoint : vector3d {
+  // INLINED
+  QuadPoint() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+};
+
+// INLINED
+void TransformPoint(const matrix& transform, float x, float y, float z, vector3d& result) {
+  result.x = transform.values[0] * x + transform.values[3] * y + transform.values[6] * z + transform.values[9];
+  result.y = transform.values[1] * x + transform.values[4] * y + transform.values[7] * z + transform.values[10];
+  result.z = transform.values[2] * x + transform.values[5] * y + transform.values[8] * z + transform.values[11];
+}
+}
+
 // OFFSET: 0x00B40F30
 // FUNCTION: fn_18865
 void CSpriteParticle::Draw(char mode) {
@@ -219,20 +237,9 @@ void CSpriteParticle::Draw(char mode) {
     matrix cellMatrix;
     cellMatrix.Compose(temp, cellTranslate);
 
-    vector3d cellVertices[4];
+    QuadPoint cellVertices[4];
     for (int v = 0; v < 4; ++v) {
-      volatile vector3d& vertex = cellVertices[v];
-      vertex.x = 0.0f;
-      vertex.y = 0.0f;
-      vertex.z = 0.0f;
-    }
-    for (int v = 0; v < 4; ++v) {
-      const float vx = primitive->vertices[v].x;
-      const float vy = primitive->vertices[v].y;
-      const float vz = primitive->vertices[v].z;
-      cellVertices[v].x = cellMatrix.values[0] * vx + cellMatrix.values[3] * vy + cellMatrix.values[6] * vz + cellMatrix.values[9];
-      cellVertices[v].y = cellMatrix.values[1] * vx + cellMatrix.values[4] * vy + cellMatrix.values[7] * vz + cellMatrix.values[10];
-      cellVertices[v].z = cellMatrix.values[2] * vx + cellMatrix.values[5] * vy + cellMatrix.values[8] * vz + cellMatrix.values[11];
+      TransformPoint(cellMatrix, primitive->vertices[v].x, primitive->vertices[v].y, primitive->vertices[v].z, cellVertices[v]);
     }
 
     matrix worldScale;
@@ -250,21 +257,16 @@ void CSpriteParticle::Draw(char mode) {
     matrix finalTransform;
     finalTransform.Compose(world, this->transform);
 
-    vector3d worldVertices[4];
+    QuadPoint worldVertices[4];
     for (int v = 0; v < 4; ++v) {
-      volatile vector3d& vertex = worldVertices[v];
-      vertex.x = 0.0f;
-      vertex.y = 0.0f;
-      vertex.z = 0.0f;
-    }
-    for (int v = 0; v < 4; ++v) {
-      const float vx = cellVertices[v].x;
-      const float vy = cellVertices[v].y;
-      const float vz = cellVertices[v].z;
-      worldVertices[v] = vector3d{finalTransform.values[0] * vx + finalTransform.values[3] * vy + finalTransform.values[6] * vz + finalTransform.values[9],
-                                  finalTransform.values[1] * vx + finalTransform.values[4] * vy + finalTransform.values[7] * vz + finalTransform.values[10],
-                                  finalTransform.values[2] * vx + finalTransform.values[5] * vy + finalTransform.values[8] * vz + finalTransform.values[11]};
-      g_renderer->Project(&worldVertices[v].x, view, primitive->vertices[v]);
+      vector3d& worldVertex = worldVertices[v];
+      const vector3d& point = cellVertices[v];
+      worldVertex = vector3d{
+          point.y * finalTransform.values[3] + point.x * finalTransform.values[0] + point.z * finalTransform.values[6] + finalTransform.values[9],
+          point.y * finalTransform.values[4] + point.x * finalTransform.values[1] + point.z * finalTransform.values[7] + finalTransform.values[10],
+          point.y * finalTransform.values[5] + point.x * finalTransform.values[2] + point.z * finalTransform.values[8] + finalTransform.values[11]
+      };
+      g_renderer->Project(&worldVertex.x, view, primitive->vertices[v]);
     }
 
     if (CRenderObject* renderObject = FindRenderObject(this->actorId)) {
