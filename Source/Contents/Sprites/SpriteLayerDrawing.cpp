@@ -446,12 +446,8 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
     }
 
     int direction = pc->render.previousAnimation - pc->render.animation + turn;
-    if (direction < 0) {
-      direction = 7;
-    }
-    if (direction > 7) {
-      direction = 0;
-    }
+    direction = direction < 0 ? 7 : direction;
+    direction = direction > 7 ? 0 : direction;
 
     int x = 0;
     int y = 0;
@@ -572,8 +568,8 @@ void SpriteLayerRenderer::DrawLayer(
       CPc* pc = this->pc;
       const float right = static_cast<float>(resolved.cell->x + this->swingX);
       const float bottom = static_cast<float>(resolved.cell->y + this->swingY);
-      pc->extentRight = right;
       pc->extentBottom = bottom;
+      pc->extentRight = right;
       if (this->hideHeadLayer == true) {
         continue;
       }
