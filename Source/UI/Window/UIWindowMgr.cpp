@@ -1980,15 +1980,15 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
       this->loadingWnd->SendMsg(nullptr, UM_LOADINGPERCENT, a, 0, 0, 0);
     }
     break;
+  case UIM_CHANGECHATWNDSTATUS:
+    if (this->chatWnd != nullptr) {
+      this->chatWnd->SendMsg(nullptr, UM_CHANGESTATUS, a, 0, 0, 0);
+    }
+    break;
   case UIM_OPENCHATWND:
     this->ShowWindowById(WID_CHATWND, 1);
     if (this->chatWnd != nullptr) {
       this->chatWnd->SendMsg(nullptr, UM_OPENCHATWND, 0, 0, 0, 0);
-    }
-    break;
-  case UIM_CHANGECHATWNDSTATUS:
-    if (this->chatWnd != nullptr) {
-      this->chatWnd->SendMsg(nullptr, UM_CHANGESTATUS, a, 0, 0, 0);
     }
     break;
   case UIM_IME_OPENCANDIDATE:
