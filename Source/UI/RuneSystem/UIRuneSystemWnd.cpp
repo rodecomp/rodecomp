@@ -1177,19 +1177,23 @@ void UIRuneSetList::Paint() {
       continue;
     }
 
+    const int active = runeSet->IsActive();
+    const bool selected = index == this->m_selected;
     const int y = this->m_itemHeight * row + 1;
-    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_runeset_item_%d_%d.bmp", runeSet->IsActive(), index == this->m_selected);
+    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_runeset_item_%d_%d.bmp", active, selected);
     this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
     for (unsigned int slot = 0; slot < runeSet->m_slots.size(); ++slot) {
       if (runeSet->m_slots[slot]) {
-        this->DrawRuneIcon(this->m_slotSpacing * slot + 20, y + 25, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
+        const int iconX = this->m_slotSpacing * slot + 20;
+        const int iconY = y + 25;
+        this->DrawRuneIcon(iconX, iconY, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
       }
     }
 
     const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE), runeSet->GetName());
     const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 12, 0, 0);
-    std::string grade;
     int gradeWidth = 0;
+    std::string grade;
     if (runeSet->m_grade) {
       grade = static_cast<const std::string&>(FormatOwnedString("+%d", runeSet->m_grade));
       gradeWidth = this->TextWidth(grade.c_str(), grade.size(), 0, 12, 0, 0);
@@ -2181,9 +2185,8 @@ void UIRune_Decom::Paint() {
 
       text = static_cast<const std::string&>(FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount));
       width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
-      this->DrawTextAt(x - static_cast<int>(static_cast<float>(width) * g_depthAverageHalf) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
-        0x875F51, 0, 0
-      );
+      const int halfWidth = static_cast<int>(static_cast<float>(width) * 0.5f);
+      this->DrawTextAt(x - halfWidth + 0x13, y + 0x23, text.c_str(), 0, 0, 11, 0x875F51, 0, 0);
     }
   }
 }
