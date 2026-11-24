@@ -991,11 +991,8 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
       this->m_checks[index]->SetTooltip("");
     } else {
       enough = false;
-      if (g_session.m_zeny + g_session.m_bankBalance >= zeny) {
-        this->m_checks[index]->SetTooltip(LookupMessage(MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK));
-      } else {
-        this->m_checks[index]->SetTooltip(LookupMessage(MSI_BANK_0_MINI));
-      }
+      this->m_checks[index]->SetTooltip(
+          LookupMessage(g_session.m_zeny + g_session.m_bankBalance >= zeny ? MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK : MSI_BANK_0_MINI));
     }
     return enough;
   }
