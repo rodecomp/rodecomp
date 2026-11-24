@@ -273,22 +273,6 @@ std::uint64_t g_tigerTable3[256] = {
 };
 
 // INLINED
-static __forceinline std::uint64_t ShiftLeft19(std::uint64_t value) {
-  const std::uint32_t lo = static_cast<std::uint32_t>(value);
-  const std::uint32_t hi = static_cast<std::uint32_t>(value >> 32);
-  return static_cast<std::uint64_t>(static_cast<std::uint32_t>(lo << 19))
-    | (static_cast<std::uint64_t>(static_cast<std::uint32_t>((hi << 19) | (lo >> 13))) << 32);
-}
-
-// INLINED
-static __forceinline std::uint64_t ShiftRight23(std::uint64_t value) {
-  const std::uint32_t lo = static_cast<std::uint32_t>(value);
-  const std::uint32_t hi = static_cast<std::uint32_t>(value >> 32);
-  return static_cast<std::uint64_t>(static_cast<std::uint32_t>((lo >> 23) | (hi << 9)))
-    | (static_cast<std::uint64_t>(static_cast<std::uint32_t>(hi >> 23)) << 32);
-}
-
-// INLINED
 static __forceinline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::uint64_t& c, std::uint64_t x, int pass) {
   c ^= x;
   const std::uint32_t cLow = static_cast<std::uint32_t>(c);
@@ -351,16 +335,16 @@ void TigerCompress(const std::uint64_t* block, std::uint64_t* state) {
       x0 -= x7 ^ 0xA5A5A5A5A5A5A5A5ULL;
       x1 ^= x0;
       x2 += x1;
-      x3 -= x2 ^ (ShiftLeft19(~x1));
+      x3 -= x2 ^ (~x1 << 19);
       x4 ^= x3;
       x5 += x4;
-      x6 -= x5 ^ (ShiftRight23(~x4));
+      x6 -= x5 ^ (~x4 >> 23);
       x7 ^= x6;
       x0 += x7;
-      x1 -= x0 ^ (ShiftLeft19(~x7));
+      x1 -= x0 ^ (~x7 << 19);
       x2 ^= x1;
       x3 += x2;
-      x4 -= x3 ^ (ShiftRight23(~x2));
+      x4 -= x3 ^ (~x2 >> 23);
       x5 ^= x4;
       x6 += x5;
       x7 -= x6 ^ 0x0123456789ABCDEFULL;
