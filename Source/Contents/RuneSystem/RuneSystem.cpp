@@ -354,7 +354,8 @@ int CRuneSystemMgr::GetGradeValue(RuneSetData* runeSet) {
   if (runeSet) {
     const auto found = this->m_gradeTypes.find(runeSet->m_gradeType);
     if (this->m_gradeTypes.end() != found && found->second.size() > static_cast<unsigned int>(runeSet->m_grade)) {
-      return runeSet->m_gradeLevel * this->GetGradeFailValue(runeSet) + found->second[runeSet->m_grade];
+      const std::vector<int>& grades = found->second;
+      return runeSet->m_gradeLevel * this->GetGradeFailValue(runeSet) + grades[runeSet->m_grade];
     }
   }
 
