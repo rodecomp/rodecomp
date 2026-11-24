@@ -8,7 +8,8 @@ extern "C" long long _Xtime_get_ticks();
 // GLOBAL: gl_24852
 CTimeScheduler* g_timeScheduler;
 
-// INLINED
+// OFFSET: 0x00BA8E60
+// FUNCTION: fn_46538
 CTimeScheduler::CTimeScheduler() {
   this->m_initialized = this->Init();
   this->m_processingStopped = false;
