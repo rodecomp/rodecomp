@@ -798,7 +798,7 @@ void CCreateLineInfo::AppendText(const std::string& text) {
   if (this->m_segments.empty()) {
     this->AddSegment(LINE_SEGMENT_TEXT);
   }
-  this->m_segments.back().text += text;
+  this->m_segments.rbegin()->text += text;
 }
 
 // OFFSET: 0x00837B80
