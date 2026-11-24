@@ -100,7 +100,13 @@ void matrix::AppendYRotation(float radians) {
 // FUNCTION: fn_02018
 void matrix::AppendZRotation(float radians) {
   matrix rotation;
-  rotation.MakeZRotation(radians);
+  rotation.Identity();
+  const float sine = sinf(radians);
+  const float cosine = cosf(radians);
+  rotation.values[0] = cosine;
+  rotation.values[4] = cosine;
+  rotation.values[3] = -sine;
+  rotation.values[1] = sine;
   Rotate(this->values, rotation.values);
 }
 
