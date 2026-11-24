@@ -462,17 +462,20 @@ void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
 
   std::string label;
   unsigned int left = static_cast<unsigned int>(x);
+  const auto between = [&](unsigned int first, unsigned int last) {
+    return left > first && left < last;
+  };
 
-  if (left > 60 && left < 76) {
+  if (between(60, 76)) {
     left = 60;
     label = LookupMessage(MSI_ADVEN_TANKER);
-  } else if (left > 78 && left < 94) {
+  } else if (between(78, 94)) {
     left = 78;
     label = LookupMessage(MSI_ADVEN_HEALER);
-  } else if (left > 96 && left < 112) {
+  } else if (between(96, 112)) {
     left = 96;
     label = LookupMessage(MSI_ADVEN_DEARER);
-  } else if (left > 114 && left < 130) {
+  } else if (between(114, 130)) {
     left = 114;
     label = LookupMessage(MSI_ADVEN_ASSIST);
   }
