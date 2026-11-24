@@ -1191,8 +1191,8 @@ const char* g_newWhisperWave = "..\\..\\BGM\\Msg_NewMsg.wav";
 // OFFSET: 0x00A8B3D0
 // FUNCTION: fn_17123
 int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId) {
-  int shown = 0;
   const int isFriend = g_session.IsFriendName(name) != 0;
+  int shown = 0;
   if ((g_session.m_autoOpenWhisperWindow != 0 && !isFriend) || (g_session.m_autoOpenFriendWhisperWindow != 0 && isFriend)) {
     const char* label = nullptr;
     if (isFriend) {
@@ -1223,15 +1223,14 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
     g_windowMgr.AddWhisperName(name);
   }
 
-  const auto entry = this->namedWindows.find(std::string(name));
-  if (entry == this->namedWindows.end()) {
-    return 0;
+  const auto entry = this->namedWindows.find(name);
+  if (entry != this->namedWindows.end()) {
+    UIWindow* window = entry->second;
+    window->SendMsg(nullptr, UM_ADDCHAT, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
+    PromoteWindow(this, window);
+    return 1;
   }
-
-  UIWindow* window = entry->second;
-  window->SendMsg(nullptr, UM_ADDCHAT, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
-  PromoteWindow(this, window);
-  return 1;
+  return 0;
 }
 
 // OFFSET: 0x00A8B240
