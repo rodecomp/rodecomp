@@ -299,16 +299,14 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
-      return 0;
     }
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
-      return 0;
     }
-    return 0;
+    break;
 
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -351,12 +349,13 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     this->lineLinks.clear();
     this->SetText(text);
     this->Invalidate();
-    return 0;
+    break;
   }
 
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+  return 0;
 }
 
 // OFFSET: 0x00874A40
