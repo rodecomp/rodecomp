@@ -2,6 +2,7 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CMode.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
@@ -149,10 +150,10 @@ void CMode::DrawCursor() {
       scaledRight = scaleX * right;
     }
 
-    const float x0 = static_cast<float>(x) + scaledLeft + 0.5f;
-    const float y0 = static_cast<float>(y) + top + 0.5f;
-    const float x1 = scaledRight + static_cast<float>(x) + 0.5f;
-    const float y1 = static_cast<float>(y) + bottom + 0.5f;
+    const float x0 = static_cast<float>(x) + scaledLeft + g_depthAverageHalf;
+    const float y0 = static_cast<float>(y) + top + g_depthAverageHalf;
+    const float x1 = scaledRight + static_cast<float>(x) + g_depthAverageHalf;
+    const float y1 = static_cast<float>(y) + bottom + g_depthAverageHalf;
 
     RenderVertex* quad = primitive->quad;
     quad[0].x = x0;
