@@ -44,6 +44,7 @@ public:
   void Init();
   void InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability);
   std::optional<std::map<int, PackageGroup>*> FindPackage(int itemId);
+  int ResolvePackageId(int itemId);
   bool HasPackage(int itemId);
 
   /* 0004 */ std::map<int, std::map<int, PackageGroup>> m_packages;

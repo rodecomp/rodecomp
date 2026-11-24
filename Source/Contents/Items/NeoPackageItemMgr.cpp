@@ -46,13 +46,17 @@ static std::optional<std::map<int, PackageGroup>*> FindGroups(std::map<int, std:
   return std::nullopt;
 }
 
+// OFFSET: 0x006D2120
+// FUNCTION: fn_46618
+inline int CNeoPackageItemMgr::ResolvePackageId(int itemId) {
+  int packageId = g_itemInfoMgr->GetPackageId(itemId);
+  return packageId == 0 ? itemId : packageId;
+}
+
 // OFFSET: 0x006D2140
 // FUNCTION: fn_06524
 __declspec(noinline) std::optional<std::map<int, PackageGroup>*> CNeoPackageItemMgr::FindPackage(int itemId) {
-  int packageId = g_itemInfoMgr->GetPackageId(itemId);
-  if (packageId == 0) {
-    packageId = itemId;
-  }
+  int packageId = this->ResolvePackageId(itemId);
 
   return FindGroups(this->m_packages, packageId);
 }
@@ -103,10 +107,7 @@ bool CNeoPackageItemMgr::LoadScript() {
 // FUNCTION: fn_06526
 __declspec(noinline) bool CNeoPackageItemMgr::HasPackage(int itemId) {
   const auto end = this->m_packages.end();
-  int packageId = g_itemInfoMgr->GetPackageId(itemId);
-  if (packageId == 0) {
-    packageId = itemId;
-  }
+  int packageId = this->ResolvePackageId(itemId);
 
   return end != this->m_packages.find(packageId);
 }
