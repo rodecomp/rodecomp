@@ -343,10 +343,14 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
     text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntConditionFlags[index], minLevel, maxLevel));
   } else {
     const char* name = this->m_huntName[index];
-    if (-1 < this->m_huntMinLevel[index] && -1 < this->m_huntMaxLevel[index] && (0 != minLevel || 0 != this->m_huntMaxLevel[index])) {
+    if (-1 < minLevel && -1 < maxLevel) {
       if (0 == minLevel) {
-        text = std::format("{} Lv.{}▼", name, maxLevel);
-      } else if (0 == this->m_huntMaxLevel[index]) {
+        if (0 == maxLevel) {
+          text = name;
+        } else {
+          text = std::format("{} Lv.{}▼", name, maxLevel);
+        }
+      } else if (0 == maxLevel) {
         text = std::format("{} Lv.{}▲", name, minLevel);
       } else {
         text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
