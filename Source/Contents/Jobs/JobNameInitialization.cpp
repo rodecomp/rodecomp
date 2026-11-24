@@ -31,15 +31,15 @@ void CSession::InitJobNameTable() {
   for (std::list<int>::iterator job = jobs.begin(); job != jobs.end(); ++job) {
     int id = *job;
     LuaScript* script = this->m_hotkeyScript;
-    if (script->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (script->Call("ReqPCJobName", "d>s", id, &name) && name[0] != 0) {
       this->m_jobNameTable[id] = name;
     }
 
-    if (script->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (script->Call("ReqPCJobNameMan", "d>s", id, &name) && name[0] != 0) {
       this->m_jobNameTableMan[id] = name;
     }
 
-    if (script->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (script->Call("ReqPCJobNameWoman", "d>s", id, &name) && name[0] != 0) {
       this->m_jobNameTableWoman[id] = name;
     }
   }
