@@ -1690,7 +1690,6 @@ void UIShowInfoWnd::DrawPayments() {
       this->DrawBitmap(this->m_checks[row]->geometry.x, this->m_checks[row]->geometry.y, off, false);
     }
 
-    std::uint32_t color = 0xBFBFBF;
     int zeny = 0;
     int itemId = 0;
     int costumeItemId = 0;
@@ -1706,6 +1705,7 @@ void UIShowInfoWnd::DrawPayments() {
       payable = this->CheckPayment(row, zeny, itemId, none);
     }
 
+    std::uint32_t color = 0xBFBFBF;
     if (payable == true) {
       color = 0x5A5A84;
       if (this->m_checks[row]->geometry.state != 0) {
@@ -1755,8 +1755,8 @@ void UIShowInfoWnd::DrawPayments() {
       }
     } else {
       char text[260];
-      CBitmapRes* icon = nullptr;
       std::memset(text, 0, sizeof(text));
+      CBitmapRes* icon = nullptr;
       if (*it == 1) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_color_off.bmp")));
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_STYLINGSHOP_COLOR_RESET));
