@@ -12,11 +12,13 @@
 #include <cmath>
 #include <new>
 
-// INLINED
+// OFFSET: 0x007AFAC0
+// FUNCTION: fn_46531
 NamedBinkMovie::NamedBinkMovie() : decoder(nullptr), radius(150.0f) {
 }
 
-// INLINED
+// OFFSET: 0x007AFE20
+// FUNCTION: fn_46532
 NamedBinkMovie::~NamedBinkMovie() {
   if (this->decoder) {
     delete this->decoder;
