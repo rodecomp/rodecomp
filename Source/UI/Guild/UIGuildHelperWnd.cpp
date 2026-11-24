@@ -320,13 +320,13 @@ void UIGuildHelperWnd::OnCreate(int width, int height) {
   const char* names[3][3] = {{"btn_help", "btn_help_a", "btn_help_b"}, {"create_guild", "create_guild_a", "create_guild_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}};
   const int ids[3] = {343, 448, 184};
 
-  for (int i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     this->m_button = new UIBitmapButton();
     this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
     this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
-    if (i < 2) {
+    if (static_cast<int>(i) < 2) {
       this->m_button->Move(i * 62 + 8, height - 24);
     } else {
       this->m_button->Move(width - 52, height - 24);
