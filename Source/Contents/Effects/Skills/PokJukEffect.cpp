@@ -199,14 +199,15 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
         this->trails[index][0].y += 0.02f;
         particle->scale = speed * 0.98f;
 
-        const int alpha = particle->alpha;
+        int alpha = particle->alpha;
         if (ClampedRandom(2) == 0) {
           const int faded = alpha - 2;
-          particle->alpha = faded < 0 ? 0 : faded;
+          alpha = faded < 0 ? 0 : faded;
         } else {
           const int faded = alpha - 1;
-          particle->alpha = faded < 0 ? 0 : faded;
+          alpha = faded < 0 ? 0 : faded;
         }
+        particle->alpha = alpha;
       }
 
       if (age > 2000) {
