@@ -2142,7 +2142,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
       if (!this->loadValid) {
         continue;
       }
-      std::vector<int> values;
+      std::vector<unsigned int> values;
       if (lua_type(state, -1) == LUA_TTABLE) {
         lua_pushnil(state);
         while (lua_next(state, -2) != 0) {
@@ -4585,7 +4585,7 @@ int GetCategoryJob(lua_State* state) {
 // OFFSET: 0x006BD3C0
 // FUNCTION: fn_06277
 int GetEquipArmorLv(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4608,7 +4608,7 @@ int GetEquipArmorLv(lua_State* state) {
 // OFFSET: 0x006BDCE0
 // FUNCTION: fn_06280
 int GetEquipWeaponLv(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4681,7 +4681,7 @@ __declspec(noinline) CSkillInfo* CSession::FindGroupedSkill(std::uint32_t id) {
 // OFFSET: 0x006BEA40
 // FUNCTION: fn_06287
 int GetSkillLevel(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4701,7 +4701,7 @@ int GetSkillLevel(lua_State* state) {
 // OFFSET: 0x006BEC30
 // FUNCTION: fn_06288
 int GetPlayerValue(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
