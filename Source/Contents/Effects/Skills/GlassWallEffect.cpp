@@ -119,15 +119,15 @@ __forceinline void CGlassWall::UpdateScreenEffect() {
 // FUNCTION: fn_45943
 __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   const int maxAlpha = static_cast<int>(particle->animationValues[3]);
+  const int previousAlpha = particle->alpha;
   const int frame = this->frame;
-  float speed = particle->speedParameter;
   float fade = particle->animationValues[1];
+  float speed = particle->speedParameter;
   const float angle = speed + particle->animationValues[0];
   if (frame % static_cast<int>(particle->animationValues[4]) == 0) {
     speed *= g_heightSpeedSign;
   }
 
-  const int previousAlpha = particle->alpha;
   if (frame == static_cast<int>(particle->animationValues[2])) {
     fade = static_cast<float>(-(previousAlpha / (this->effectLifetime - frame)));
   }
