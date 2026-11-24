@@ -22,7 +22,7 @@ public:
   bool IsAlive() override;
   ~CMeteorEffect() override;
 
-  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00CC */ std::vector<CSpriteParticle*> particles;
   /* 00D8 */ long long quakeFrame;
 
 private:

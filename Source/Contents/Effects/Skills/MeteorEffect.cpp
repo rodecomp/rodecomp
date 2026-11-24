@@ -43,12 +43,12 @@ void CMeteorEffect::Close() {
 // OFFSET: 0x007074E0
 // FUNCTION: fn_46197
 __forceinline void CMeteorEffect::CreateMeteor() {
-  CParticle* particle = CreateSpriteParticle(&this->positionVector, 1);
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
   if (!particle) {
     return;
   }
 
-  CSpriteParticle* sprite = static_cast<CSpriteParticle*>(particle);
+  CSpriteParticle* sprite = particle;
 
   sprite->effectId = this->id;
   sprite->columnIndex = 0;
@@ -81,12 +81,12 @@ __forceinline void CMeteorEffect::CreateMeteorShower() {
     pos.x = static_cast<float>(RandomIndex(range)) - halfSpan + pos.x;
     pos.z = static_cast<float>(RandomIndex(range)) - halfSpan + pos.z;
 
-    CParticle* particle = CreateSpriteParticle(&pos, 1);
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&pos, 1));
     if (!particle) {
       break;
     }
 
-    CSpriteParticle* sprite = static_cast<CSpriteParticle*>(particle);
+    CSpriteParticle* sprite = particle;
 
     sprite->effectId = this->id;
     sprite->columnIndex = static_cast<int>(i);
@@ -144,7 +144,7 @@ __forceinline void CMeteorEffect::UpdateParticle(CSpriteParticle* particle) {
 void CMeteorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ) {
     if (IsParticleAlive(*it) == true) {
-      this->UpdateParticle(static_cast<CSpriteParticle*>(*it));
+      this->UpdateParticle(*it);
       it++;
     } else {
       FreeParticle(*it);
@@ -165,9 +165,9 @@ __forceinline void CMeteorEffect::RenderParticle(CSpriteParticle* particle) {
 // FUNCTION: fn_07059
 void CMeteorEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
+    CSpriteParticle* particle = *it;
     if (IsParticleAlive(*it) == true) {
-      this->RenderParticle(static_cast<CSpriteParticle*>(particle));
+      this->RenderParticle(particle);
     }
   }
 }
