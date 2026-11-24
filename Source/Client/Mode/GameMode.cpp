@@ -8443,8 +8443,8 @@ struct ContactNpcPacket {
 // OFFSET: 0x00CDDA50
 // FUNCTION: fn_21320
 void CGameMode::Initialize(const char* name) {
-  this->isInitializing = 1;
   this->recordChatCount = 0;
+  this->isInitializing = 1;
   this->nameCard.SetName(g_session.m_aid, g_session.DecodePlayerName());
   CPlayerNameDictionary* names = g_playerNameDictionary;
   names->Set(g_session.m_gid, g_session.DecodePlayerName());
