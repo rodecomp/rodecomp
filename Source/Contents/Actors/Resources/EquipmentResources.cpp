@@ -22,6 +22,12 @@ static const std::string AccessoryNameOf(int accessory) {
   return g_session.GetAccessoryName(accessory);
 }
 
+// OFFSET: 0x00BA96D0
+// FUNCTION: fn_46529
+EquipmentResourceMgr::EquipmentResourceMgr() {
+  this->m_initialized = this->Init();
+}
+
 // OFFSET: 0x00BA9950
 // FUNCTION: fn_19742
 bool EquipmentResourceMgr::Init() {

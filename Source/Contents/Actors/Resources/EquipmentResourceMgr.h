@@ -15,10 +15,7 @@ public:
   /* 0014 */ std::vector<std::string> resourceNamesB;
   /* 0020 */ std::vector<std::string> resourceNamesC;
 
-  // INLINED
-  EquipmentResourceMgr() {
-    this->m_initialized = this->Init();
-  }
+  EquipmentResourceMgr();
 
   // INLINED
   virtual ~EquipmentResourceMgr() {
