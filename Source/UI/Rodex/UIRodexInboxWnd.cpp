@@ -1139,10 +1139,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case RODEX_BUTTON_DELETE_SELECTED: {
       if (this->searchActive == 1) {
         std::vector<RodexMailEntry> selected;
+        const int firstRow = this->page * 6;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
-            selected.push_back(RodexMailEntry(this->searchResults[this->page * 6 + i]));
+            selected.push_back(RodexMailEntry(this->searchResults[firstRow + i]));
           }
         }
 
