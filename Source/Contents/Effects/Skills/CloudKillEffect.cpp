@@ -144,9 +144,10 @@ void CCloudKillEffect::UpdateSprite(CSpriteParticle* particle) {
 
   const vector3d center = this->positionVector;
   AdvanceSpriteVelocity(particle);
-  particle->position.y = center.y + particle->originY + particle->velocity.y;
-  particle->position.x = center.x + particle->originX + particle->velocity.x;
-  particle->position.z = center.z + particle->originZ + particle->velocity.z;
+  auto& positionRef = particle->position;
+  positionRef.y = center.y + particle->originY + particle->velocity.y;
+  positionRef.x = center.x + particle->originX + particle->velocity.x;
+  positionRef.z = center.z + particle->originZ + particle->velocity.z;
   particle->angle = particle->spin + particle->angle;
   const float alpha = static_cast<float>(particle->alpha);
   float fade = particle->animationParameter;
