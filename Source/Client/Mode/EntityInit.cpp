@@ -317,9 +317,9 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     ActorMoveEntryNamedPacket& entry = *reinterpret_cast<ActorMoveEntryNamedPacket*>(packet.data());
     FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_MOVEENTRY8, name);
     entry.moveStartTime = actor->routeStartTick;
-    int metadata = 0;
     float x = 0.0f;
     float y = 0.0f;
+    int metadata = 0;
     const DWORD now = timeGetTime();
     actor->route.Sample(now, &x, &y, &metadata);
 
