@@ -125,11 +125,7 @@ bool CActRes::Load(const char* name) {
       int cellCount;
       file.Read(&cellCount, sizeof(cellCount));
       ActionFrame& frame = animation[frameIndex];
-      frame.sound = -1;
-      frame.cellCount = cellCount;
-      frame.cells.resize(std::min(static_cast<unsigned>(cellCount), 1000u));
-      frame.anchors.clear();
-      frame.anchorCount = 0;
+      frame.InitializeCells(cellCount);
       std::memcpy(frame.rangeBounds, range1, sizeof(range1));
       std::memcpy(frame.rangeBounds + 4, range2, sizeof(range2));
       if (this->maximumCells < cellCount) {
@@ -273,7 +269,7 @@ void CActRes::InitializeAnimations(unsigned animationCount) {
 void ActionFrame::InitializeCells(unsigned cellCount) {
   this->cellCount = cellCount;
   this->sound = -1;
-  this->cells.resize((std::min)(1000u, cellCount), SpriteFrameCell{});
+  this->cells.resize((std::min)(cellCount, 1000u));
   this->anchors.clear();
   this->anchorCount = 0;
 }
