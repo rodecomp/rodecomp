@@ -603,7 +603,8 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
   }
 
   this->activeTabIndex = 0;
-  this->colors.push_back(0xFFFFFFFFu);
+  const std::uint32_t defaultColor = 0xFFFFFFFFu;
+  this->colors.push_back(defaultColor);
 
   int width;
   if (this->layout == 0 || this->layout == 2) {
