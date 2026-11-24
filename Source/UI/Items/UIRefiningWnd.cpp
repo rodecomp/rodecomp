@@ -583,9 +583,6 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case ITEMID_HD_ETEL_CARNIUM:
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR), 0, 0);
         break;
-      default:
-        this->Invalidate();
-        return;
       }
     }
   } else {
