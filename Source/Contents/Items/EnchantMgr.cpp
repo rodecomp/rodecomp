@@ -630,13 +630,17 @@ void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const st
 void CEnchantMgr::AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
                                            uint64_t cost, const std::map<std::string, int>& materials) {
   int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
-  if (baseItemId != 0) {
-    int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-    if (itemId != ITEMID_NONE) {
-      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
-      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
-    }
+  if (baseItemId == 0) {
+    return;
   }
+
+  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+  if (itemId == ITEMID_NONE) {
+    return;
+  }
+
+  m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
+  m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
 }
 
 // OFFSET: 0x006827B0
