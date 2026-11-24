@@ -33,6 +33,9 @@ float g_fireflyArcStep84 = 84.0f;
 // GLOBAL: gl_26010
 float g_fireflyArcLength = 100.0f;
 
+// GLOBAL: gl_25995
+float g_fireflyModeFive = 5.0f;
+
 // GLOBAL: gl_25998
 float g_fireflyModeThirteen = 13.0f;
 
@@ -190,14 +193,12 @@ void CEffectPrim::RenderGroundArc(matrix& wtm) {
 
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
-      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
       curB.x = this->state.slots[ec].distance * cosine;
       curB.y = 5.0f;
       curB.z = this->state.slots[ec].distance * sine;
-      curT.x = riseX * cosine + curB.x;
-      curT.z = riseX * sine + curB.z;
-      curT.y = 5.0f - riseY;
+      curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + curB.x;
+      curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + curB.z;
+      curT.y = g_fireflyModeFive - this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
 
       if (i > 0) {
         this->RenderTeiRect(
@@ -245,14 +246,12 @@ void CEffectPrim::RenderGroundArc2(matrix& wtm) {
 
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
-      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
       curB.x = this->state.slots[ec].distance * cosine;
       curB.y = 5.0f;
       curB.z = this->state.slots[ec].distance * sine;
-      curT.x = riseX * cosine + curB.x;
-      curT.z = riseX * sine + curB.z;
-      curT.y = 5.0f - riseY;
+      curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + curB.x;
+      curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + curB.z;
+      curT.y = g_fireflyModeFive - this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
 
       if (i > 0) {
         this->RenderTeiRect(
