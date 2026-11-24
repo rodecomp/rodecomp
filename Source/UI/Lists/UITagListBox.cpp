@@ -306,7 +306,7 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
     } else if (byte == separator) {
       ++count;
       cards.push_back(this->DecodeNumber(value));
-      value.clear();
+      value = "";
     } else {
       --position;
       cards.push_back(this->DecodeNumber(value));
