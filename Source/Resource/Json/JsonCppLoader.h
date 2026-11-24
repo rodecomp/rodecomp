@@ -26,7 +26,7 @@ public:
   bool GetStringValue(const jsoncons::json& node, const std::string& key, std::string* out);
   bool GetMapStringIntValue(const jsoncons::json& node, const std::string& key, std::map<std::string, int>* out);
   bool GetMapStringStringValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::string>* out);
-  bool GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<int> >* out);
+  bool GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<unsigned int> >* out);
   bool GetMapStringBoolValue(const jsoncons::json& node, const std::string& key, std::map<std::string, bool>* out);
   bool GetIntVectorValue(const jsoncons::json& node, const std::string& key, std::vector<int>* out);
   bool GetBoolValue(const jsoncons::json& node, const std::string& key, bool* out);

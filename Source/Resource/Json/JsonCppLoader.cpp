@@ -283,7 +283,7 @@ bool JsonCppLoader::GetMapStringStringValue(const jsoncons::json& node, const st
 
 // OFFSET: 0x00509130
 // FUNCTION: fn_00890
-bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<int> >* out) {
+bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<unsigned int> >* out) {
   jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
@@ -298,7 +298,7 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
       return false;
     }
 
-    std::vector<int> values;
+    std::vector<unsigned int> values;
     for (const jsoncons::json& item : element.array_range()) {
       if (this->GetValueType(item) != jsoncons::json_type::int64_value) {
         this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
@@ -308,7 +308,7 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
       values.push_back(item.as<int>());
     }
 
-    const auto inserted = out->insert(std::pair<std::string, std::vector<int> >(name, values));
+    const auto inserted = out->insert(std::pair<std::string, std::vector<unsigned int> >(name, values));
     if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
