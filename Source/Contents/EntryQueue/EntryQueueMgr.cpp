@@ -288,7 +288,8 @@ void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
   }
 }
 
-// INLINED
+// OFFSET: 0x00BA1A90
+// FUNCTION: fn_46482
 CEntryQueueMgr::CEntryQueueMgr() : current(nullptr), ready(0) {
   std::memset(&this->queueName, 0, sizeof(this->queueName) + sizeof(this->characterName));
   g_session.m_hotkeyScript->Call("ReadEntryQueueList", "");
