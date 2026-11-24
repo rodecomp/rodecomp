@@ -16,6 +16,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/ScreenGeometry.h"
 #include "Render/Projection/ScreenRectangle.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Script/LuaScript.h"
@@ -5809,10 +5810,6 @@ void CEZ2STRScreenEffect::Open() {
 // FUNCTION: fn_19040
 void CEZ2STRScreenEffect::InitEvents() {
   const int id = this->id;
-  float fromX;
-  float fromY;
-  float toX;
-  float toY;
   switch (id) {
   case EF_POTION1:
   case EF_POTION2:
@@ -6278,15 +6275,17 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_SHADOW_STAB: {
+    ScreenPoint from;
+    ScreenPoint to;
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &from.x, &from.y, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &to.x, &to.y, &toReciprocalDepth);
 
-    const float dx = toX - fromX;
-    const float dy = toY - fromY;
+    const float dx = to.x - from.x;
+    const float dy = to.y - from.y;
     double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
-    if (fromY > toY) {
+    if (from.y > to.y) {
       angle = 360.0 - angle;
     }
 
@@ -6311,15 +6310,17 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_CHAIN_REACTION_SHOT: {
+    ScreenPoint from;
+    ScreenPoint to;
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &from.x, &from.y, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &to.x, &to.y, &toReciprocalDepth);
 
-    const float dx = toX - fromX;
-    const float dy = toY - fromY;
+    const float dx = to.x - from.x;
+    const float dy = to.y - from.y;
     double angle = static_cast<float>(std::acos(static_cast<double>(-dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
-    if (toY > fromY) {
+    if (to.y > from.y) {
       angle = 360.0 - angle;
     }
 
@@ -6420,15 +6421,17 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_ROSEBLOSSOM_SHOT: {
+    ScreenPoint from;
+    ScreenPoint to;
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &from.x, &from.y, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &to.x, &to.y, &toReciprocalDepth);
 
-    const float dx = toX - fromX;
-    const float dy = toY - fromY;
+    const float dx = to.x - from.x;
+    const float dy = to.y - from.y;
     double angle = static_cast<float>(std::acos(static_cast<double>(-dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
-    if (toY > fromY) {
+    if (to.y > from.y) {
       angle = 360.0 - angle;
     }
 
