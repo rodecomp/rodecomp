@@ -730,7 +730,9 @@ void UIRuneSet_Info::UpdateRewards() {
           this->m_rewards[0]->SendMsg(this, UM_SETID, this->m_runeSet->GetActiveState() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
         } else {
           int state = 2;
-          if ((index != 6 && this->m_runeSet->CountActiveSlots() <= index) || this->m_runeSet->FindLastReward(index + 1) > this->m_runeSet->m_rewardStep) {
+          if (index != 6 && this->m_runeSet->CountActiveSlots() <= index) {
+            state = 1;
+          } else if (this->m_runeSet->FindLastReward(index + 1) > this->m_runeSet->m_rewardStep) {
             state = 1;
           }
           this->m_rewards[index]->SendMsg(this, UM_SETID, state, static_cast<std::intptr_t>(this->m_runeSet->m_reward.values[index + 1]), 0, 0);
