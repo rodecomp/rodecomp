@@ -772,9 +772,9 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       std::string text = this->edit->Text();
       if (!this->edit->links.empty()) {
-        const std::string linked = this->edit->LinkedText();
-        text = linked;
-      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->edit->Text()), reinterpret_cast<const unsigned char*>("<"))) {
+        text = static_cast<const std::string&>(this->edit->LinkedText());
+      } else if (const char* editText = this->edit->Text();
+                 _mbsstr(reinterpret_cast<const unsigned char*>(editText), reinterpret_cast<const unsigned char*>("<"))) {
         UIItemTagOnChat* tags = this->edit->itemTags;
         if (tags != nullptr && !tags->linkedText.empty()) {
           text = tags->linkedText;
