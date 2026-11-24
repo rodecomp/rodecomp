@@ -4716,6 +4716,8 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
 
   return true;
 }
+extern "C" int* sub_A87E80(int** head, int count, int unused);
+
 // OFFSET: 0x00A978D0
 // FUNCTION: fn_17207
 UIWindow* UIWindowMgr::EnsureWindow(int id) {
@@ -4933,7 +4935,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->questDisplayWnd->Move(this->screenWidth - 320, 150);
       this->questDisplayWnd->renderLayer = 5;
       this->AddRendered(this->questDisplayWnd);
-      this->rendered.sort(layerGreater);
+      sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
       this->questDisplayWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->questDisplayInfo.visible), 0, 0, 0);
     }
     break;
@@ -5426,7 +5428,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
       this->rendered.insert(this->rendered.begin(), window);
       this->illustWnd->renderLayer = 2;
-      this->rendered.sort(layerGreater);
+      sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
     } else {
       this->illustWnd->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
     }
@@ -5668,7 +5670,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(1);
     this->sayDialogWnd->renderLayer = 1;
-    this->rendered.sort(layerGreater);
+    sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
     break;
   case WID_SAYDIALOGWND_OVERLAY:
     window = this->sayDialogOverlayWnd;
@@ -6334,7 +6336,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(197, 138);
       window->Move(ScaleToViewportWidth(640) - 197, ScaleByScreenHeight(480) - 138);
       window->renderLayer = 0;
-      this->rendered.sort(layerGreater);
+      sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
       this->AddRendered(window);
     }
     break;
@@ -6946,7 +6948,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Show(1);
       window->renderLayer = 5;
       this->AddRendered(window);
-      this->rendered.sort(layerGreater);
+      sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->achTracingWndInfo), 0, 0, 0);
     }
     break;
@@ -7058,7 +7060,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Move(x, y);
       window->renderLayer = 1;
       this->AddRendered(window);
-      this->rendered.sort(layerGreater);
+      sub_A87E80(*reinterpret_cast<int***>(&this->rendered), *reinterpret_cast<int*>(reinterpret_cast<char*>(&this->rendered) + 4), id);
     }
     window->Show(g_session.showCameraInfo);
     break;
