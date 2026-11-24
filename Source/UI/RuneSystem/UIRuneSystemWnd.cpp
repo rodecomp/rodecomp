@@ -1085,8 +1085,8 @@ void UIEquipRuneSetWnd::Paint() {
   }
 
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp"))), false);
-  int x = 25;
-  for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index, x += 40) {
+  for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index) {
+    const int x = index * 40 + 25;
     RuneData* rune = runeSet->m_slots[index];
     if (!rune) {
       continue;
@@ -1294,21 +1294,19 @@ void UIRuneSystem_ActiveWnd::Paint() {
 
   CBitmapRes* blue = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_blue.bmp")));
   CBitmapRes* red = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_red.bmp")));
-  int y = 11;
-  for (int row = 0; row < this->m_rows; ++row, y += 54) {
-    int x = 18;
-    for (int column = 0; column < this->m_columns; ++column, x += 54) {
+  for (int row = 0; row < this->m_rows; ++row) {
+    for (int column = 0; column < this->m_columns; ++column) {
+      const int x = column * 54 + 18;
+      const int y = row * 54 + 11;
       this->DrawBitmap(x, y, blue, true);
-      const std::pair<int, int>& entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, this->m_columns * row + column);
-      const int itemId = entry.first;
-      const int required = entry.second;
-      if (!itemId) {
+      const std::pair<int, int> entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, this->m_columns * row + column);
+      if (!entry.first) {
         continue;
       }
 
       ITEM_INFO item;
       item.identified = 1;
-      item.SetItemId(itemId);
+      item.SetItemId(entry.first);
       char path[128];
       std::memset(path, 0, sizeof(path));
       g_session.IconPath(item.itemId.c_str(), path, 1);
@@ -1317,14 +1315,14 @@ void UIRuneSystem_ActiveWnd::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
 
-      ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
-      const bool lacking = required > owned.quantity;
+      ITEM_INFO owned = g_session.LookupClientItem(entry.first, 0);
+      const bool lacking = entry.second > owned.quantity;
       owned.identified = 1;
       this->DrawBitmap(x, y, lacking ? red : blue, true);
       if (icon) {
         this->DrawBitmap(x + 8, y + 4, icon, true);
       }
-      this->DrawCount(x + 18, y + 39, owned.quantity > required ? required : owned.quantity, required, lacking ? 0xFF : 0x875F51, 10);
+      this->DrawCount(x + 18, y + 39, std::min(owned.quantity, entry.second), entry.second, lacking ? 0xFF : 0x875F51, 10);
     }
   }
 }
@@ -1338,19 +1336,17 @@ void UIRuneSystem_DecomItemWnd::Paint() {
   }
 
   for (int row = 0; row < this->m_rows; ++row) {
-    int y = 51 + row * 69;
     for (int column = 0; column < this->m_columns; ++column) {
-      int x = 35 + column * 52;
-      const std::pair<int, int>& entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, this->m_columns * row + column);
-      const int itemId = entry.first;
-      const int required = entry.second;
-      if (!itemId) {
+      const int x = column * 52 + 35;
+      const int y = row * 69 + 51;
+      const std::pair<int, int> entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, this->m_columns * row + column);
+      if (!entry.first) {
         break;
       }
 
       ITEM_INFO item;
       item.identified = 1;
-      item.SetItemId(itemId);
+      item.SetItemId(entry.first);
       char path[128];
       std::memset(path, 0, sizeof(path));
       g_session.IconPath(item.itemId.c_str(), path, 1);
@@ -1359,13 +1355,13 @@ void UIRuneSystem_DecomItemWnd::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
 
-      ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
-      const bool lacking = required > owned.quantity;
+      ITEM_INFO owned = g_session.LookupClientItem(entry.first, 0);
+      const bool lacking = entry.second > owned.quantity;
       owned.identified = 1;
       if (icon) {
         this->DrawBitmap(x - 9, y - 36, icon, true);
       }
-      this->DrawCount(x, y, required, owned.quantity, lacking ? 0xB4B4B4 : 0, 10);
+      this->DrawCount(x, y, entry.second, owned.quantity, lacking ? 0xB4B4B4 : 0, 10);
     }
   }
 }
@@ -1382,9 +1378,11 @@ void UIRuneSystem_DecomResultWnd::Paint() {
     return;
   }
 
-  int index = 0;
-  for (int y = 77; y < 185; y += 54) {
-    for (int x = 19; x < 235; x += 54, ++index) {
+  for (int row = 0; row < 2; ++row) {
+    for (int column = 0; column < 4; ++column) {
+      const int index = row * 4 + column;
+      const int x = column * 54 + 19;
+      const int y = row * 54 + 77;
       if (!this->m_itemIds[index]) {
         continue;
       }
@@ -1405,7 +1403,8 @@ void UIRuneSystem_DecomResultWnd::Paint() {
 
       const std::string count = FormatOwnedString("%d", this->m_counts[index]);
       const int width = this->TextWidth(count.c_str(), count.size(), 0, 12, 0, 0);
-      this->DrawTextAt(x - static_cast<int>(width * 0.5f) + 19, y, count.c_str(), 0, 0, 12, 0, 0, 0);
+      const int halfWidth = static_cast<int>(width * 0.5f);
+      this->DrawTextAt(x - halfWidth + 19, y, count.c_str(), 0, 0, 12, 0, 0, 0);
     }
   }
 }
@@ -1914,7 +1913,8 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_gradeText->SetText(gradeTitle.c_str(), 1);
   this->m_gradeText->SetColor(0xFF, 0xFF, 0xFF);
   const int titleWidth = this->TextWidth(gradeTitle.c_str(), 0, 0, 12, 0, 0);
-  this->m_gradeText->Move(static_cast<int>(500.0f - static_cast<float>(titleWidth) * 0.5f), 0x82);
+  const int titleX = static_cast<int>(500.0f - static_cast<float>(titleWidth) * 0.5f);
+  this->m_gradeText->Move(titleX, 0x82);
 
   this->m_gradeItems = new UIRuneSystem_ActiveWnd();
   this->AddChild(this->m_gradeItems);
@@ -2038,10 +2038,10 @@ void UIRuneSet_Info::Paint() {
     if (1 == this->m_runeSet->m_reward.values[0]) {
       const int rewardX[7] = {0, 417, 505, 559, 559, 505, 417};
       const int rewardY[7] = {0, 116, 141, 216, 309, 384, 410};
-      const int count = std::min(this->m_runeSet->CountSlots(), 6);
+      const int count = this->m_runeSet->CountSlots();
       ITEM_INFO item;
       item.identified = 1;
-      for (int index = 1; index <= count; ++index) {
+      for (int index = 1; index <= std::min(count, 6); ++index) {
         const std::int64_t itemId = this->m_runeSet->m_reward.values[index];
         if (0 == itemId) {
           continue;
@@ -2071,13 +2071,14 @@ void UIRuneSet_Info::Paint() {
       0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
     );
     if (this->m_runeSet->m_grade < 15) {
-      path = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), static_cast<double>(static_cast<float>(CRuneSystemMgr::GetInstance()->GetGradeFailValue(this->m_runeSet)) * 0.001f)));
+      const int failValue = CRuneSystemMgr::GetInstance()->GetGradeFailValue(this->m_runeSet);
+      path = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), static_cast<float>(failValue) * 0.001f));
     } else {
       path = LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEMAXDESC);
     }
     const int width = this->TextWidth(path.c_str(), path.size(), 0, 12, 0, 0);
-    this->DrawTextAt(0x1F5 - static_cast<int>(static_cast<float>(width) * 0.5f), 0x103, path.c_str(), 0, 0, 12, 0, 0, 0
-    );
+    const int halfWidth = static_cast<int>(static_cast<float>(width) * 0.5f);
+    this->DrawTextAt(0x1F5 - halfWidth, 0x103, path.c_str(), 0, 0, 12, 0, 0, 0);
   }
 
   const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE), this->m_runeSet->GetName());
