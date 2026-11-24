@@ -339,9 +339,8 @@ void BitmapPixels::CopyRegion(
         continue;
       }
 
-      std::uint32_t& destination = this->pixels[destinationX + destinationY * this->width];
       if (alpha) {
-        const std::uint32_t target = destination;
+        const std::uint32_t target = this->pixels[destinationX + destinationY * this->width];
         const std::int64_t targetAlpha = target >> 24;
         const std::int64_t targetChannels[3] = {GetBValue(target), GetGValue(target), GetRValue(target)};
         const std::int64_t sourceAlpha = input >> 24;
@@ -356,7 +355,7 @@ void BitmapPixels::CopyRegion(
         this->pixels[destinationX + destinationY * this->width] =
           (outputAlpha << 24) + (static_cast<BYTE>(channels[0]) << 16) + (static_cast<BYTE>(channels[1]) << 8) + static_cast<BYTE>(channels[2]);
       } else {
-        destination = input;
+        this->pixels[destinationX + destinationY * this->width] = input;
       }
     }
   }

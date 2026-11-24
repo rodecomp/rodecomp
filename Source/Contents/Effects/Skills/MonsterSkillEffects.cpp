@@ -1233,18 +1233,17 @@ CParticle* CFootprintEffect::SpawnFootprint() {
   world.AppendTranslate(this->position);
 
   for (int i = 0; i < 4; ++i) {
-    RenderVertex& vertex = particle->vertices[i];
-    const float x = vertex.x * world.values[0] + vertex.y * world.values[3] + 0.0f * world.values[6] + world.values[9];
-    const float z = vertex.x * world.values[2] + vertex.y * world.values[5] + 0.0f * world.values[8] + world.values[11];
+    const float x = particle->vertices[i].x * world.values[0] + particle->vertices[i].y * world.values[3] + 0.0f * world.values[6] + world.values[9];
+    const float z = particle->vertices[i].x * world.values[2] + particle->vertices[i].y * world.values[5] + 0.0f * world.values[8] + world.values[11];
     CGameMode* mode = g_modeMgr.GetGameMode();
     float y = mode->scene->terrain->PlaneHeight(x, z) - 2.0f;
     if (-1000.0f != this->lastGroundHeight && y - this->lastGroundHeight > 5.0f) {
       y = this->lastGroundHeight;
     }
     this->lastGroundHeight = y;
-    vertex.x = x;
-    vertex.y = y;
-    vertex.z = z;
+    particle->vertices[i].x = x;
+    particle->vertices[i].y = y;
+    particle->vertices[i].z = z;
   }
 
   this->leftFoot = this->leftFoot == 0;
@@ -1537,9 +1536,8 @@ void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> par
   case 3:
     if (IsEmitterAlive(emitter) != true) {
       FreeParticle(emitter);
-      AbyssParticle& entry = this->particles[id];
-      entry.kind = 0;
-      entry.emitter = nullptr;
+      this->particles[id].kind = 0;
+      this->particles[id].emitter = nullptr;
       return;
     }
     FollowAbyssOwner(this, emitter);
@@ -1631,9 +1629,8 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
           emitter->offset.z = offset.z;
         }
 
-        AbyssParticle& entry = this->particles[i];
-        entry.kind = 3;
-        entry.emitter = emitter;
+        this->particles[i].kind = 3;
+        this->particles[i].emitter = emitter;
       }
     }
   }
