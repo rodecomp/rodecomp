@@ -335,7 +335,7 @@ __declspec(noinline) bool JsonCppLoader::GetIntVectorValue(const jsoncons::json&
       return false;
     }
 
-    out->push_back(item.as<int>());
+    out->emplace_back(static_cast<unsigned int>(item.as<int>()));
   }
 
   return true;
