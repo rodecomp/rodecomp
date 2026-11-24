@@ -10,6 +10,7 @@ class CBlowEffect : public CRenderObject {
 public:
   CBlowEffect();
   ~CBlowEffect() override;
+  void LoadSpriteAndAction();
   bool OnProcess() override;
   void SendMsg(
     CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g

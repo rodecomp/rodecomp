@@ -51,12 +51,18 @@ CCorpse::CCorpse() {
   this->render.motionStartTime = timeGetTime();
 }
 
-// OFFSET: 0x00DA0DE0
-// FUNCTION: fn_22352
-CBlowEffect::CBlowEffect() {
+// OFFSET: 0x00DA2CF0
+// FUNCTION: fn_46665
+inline void CBlowEffect::LoadSpriteAndAction() {
   this->SetSpriteName("이팩트\\이팩트.spr");
   this->SetActionName("이팩트\\이팩트.act");
   this->render.animation = 0;
+}
+
+// OFFSET: 0x00DA0DE0
+// FUNCTION: fn_22352
+CBlowEffect::CBlowEffect() {
+  this->LoadSpriteAndAction();
 }
 
 // OFFSET: 0x00DA1210
@@ -169,9 +175,9 @@ CSoundMaker::CSoundMaker() {
   this->lastTick = timeGetTime() - 4000u;
 }
 
-// OFFSET: 0x00DA2220
-// FUNCTION: fn_22364
-CNpc::~CNpc() {
+// OFFSET: 0x00DA2C80
+// FUNCTION: fn_46664
+inline void CNpc::CloseGaugeWindows() {
   if (this->playerGaugeWindow) {
     g_windowMgr.Schedule(this->playerGaugeWindow);
     this->playerGaugeWindow = nullptr;
@@ -181,6 +187,12 @@ CNpc::~CNpc() {
     g_windowMgr.Schedule(this->pcGaugeWindow);
     this->pcGaugeWindow = nullptr;
   }
+}
+
+// OFFSET: 0x00DA2220
+// FUNCTION: fn_22364
+CNpc::~CNpc() {
+  this->CloseGaugeWindows();
 }
 
 CBlowEffect::~CBlowEffect() = default;

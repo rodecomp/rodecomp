@@ -29,6 +29,7 @@ public:
   void SetImfFileName() override;
 
   void UpdateBubblePositions();
+  void CloseGaugeWindows();
   void UpdateMinimapMarker();
 
   /* 0410 */ float boundsLeft;
