@@ -83,6 +83,7 @@ public:
   void OnInit() override;
   void Paint() override;
 
+  void SetRewardNpc(const std::string& sprite, const std::string& map, int x, int y);
   void OnPrepareItem(CUIRewardItem* item, const CRewardItemData& data);
   void OnBindItem(CUIRewardItem* item, const CRewardItemData& data);
   __declspec(noinline) void UpdateHeight();

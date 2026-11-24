@@ -396,19 +396,20 @@ void CUIOngoingQuestInfo::SetQuest(unsigned int id) {
 
 namespace OngoingQuestInfo {
 
-// INLINED
-static void SetRewardNpc(CUIRewards* rewards, const std::string& sprite, const std::string& map, int x, int y) {
+// OFFSET: 0x00A55F70
+// FUNCTION: fn_46620
+inline void CUIRewards::SetRewardNpc(const std::string& sprite, const std::string& map, int x, int y) {
   if (sprite.empty()) {
-    rewards->npcSprite->Show(0);
+    this->npcSprite->Show(0);
     return;
   }
 
-  rewards->npcSprite->SetSprite(75, 145, sprite);
+  this->npcSprite->SetSprite(75, 145, sprite);
   if (!map.empty()) {
-    rewards->npcSprite->SetDestination(map, x, y);
+    this->npcSprite->SetDestination(map, x, y);
   }
-  rewards->npcSprite->Move(rewards->geometry.width - rewards->npcSprite->geometry.width - 23, 9);
-  rewards->npcSprite->Show(1);
+  this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 23, 9);
+  this->npcSprite->Show(1);
 }
 
 // OFFSET: 0x00A56150
@@ -435,7 +436,7 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
     }
     this->rewards->rewardList->UpdateScrollBar();
 
-    SetRewardNpc(this->rewards, quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
+    this->rewards->SetRewardNpc(quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
   } else {
     g_windowMgr.Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
