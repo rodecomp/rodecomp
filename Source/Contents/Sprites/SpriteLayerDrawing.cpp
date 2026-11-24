@@ -65,7 +65,8 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
 
   this->DrawRobe(false);
   this->imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->pc->imfName));
-  this->bounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, this->rhw);
+  auto& viewportRef = g_renderer->viewport;
+  this->bounds.Set(static_cast<float>(viewportRef.width), static_cast<float>(viewportRef.height), 0.0f, 0.0f, this->rhw);
 
   bool bodyDrawn = false;
   bool swapped = false;
