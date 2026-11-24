@@ -234,11 +234,13 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
     for (int column = 0; column < copyWidth; ++column) {
       if (source.m_alpha == true) {
         const std::uint32_t target = destination[column];
+        const WORD targetLow = static_cast<WORD>(target);
+        const WORD sourceLow = static_cast<WORD>(input[column]);
         const WORD targetAlpha = static_cast<WORD>(target >> 24);
         const WORD sourceAlpha = static_cast<WORD>(input[column] >> 24);
         const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(input[column]) * sourceAlpha / 255;
-        const BYTE green = GetGValue(target) * (255 - sourceAlpha) / 255 + GetGValue(input[column]) * sourceAlpha / 255;
-        const BYTE red = GetRValue(target) * (255 - sourceAlpha) / 255 + GetRValue(input[column]) * sourceAlpha / 255;
+        const BYTE green = static_cast<BYTE>(targetLow >> 8) * (255 - sourceAlpha) / 255 + static_cast<BYTE>(sourceLow >> 8) * sourceAlpha / 255;
+        const BYTE red = static_cast<BYTE>(targetLow) * (255 - sourceAlpha) / 255 + static_cast<BYTE>(sourceLow) * sourceAlpha / 255;
         destination[column] = (std::max(sourceAlpha, targetAlpha) << 24) + (blue << 16) + (green << 8) + red;
       } else if (input[column] != 0xFFFF00FF) {
         destination[column] = input[column] - 0x01000000;
