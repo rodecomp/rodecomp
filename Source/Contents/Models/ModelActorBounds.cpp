@@ -311,10 +311,9 @@ void C3dActorV2::UpdateBounds() {
     this->oriented.center[axis] = (high.values[axis] + low.values[axis]) * 0.5f;
   }
 
-  SetComponents(
-    this->oriented.halfSize, Absolute((bounds[3] - bounds[0]) * this->scale.x) * 0.5f, Absolute((bounds[4] - bounds[1]) * this->scale.y) * 0.5f,
-    Absolute((bounds[5] - bounds[2]) * this->scale.z) * 0.5f
-  );
+  this->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * this->scale.z) * 0.5f;
+  this->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * this->scale.y) * 0.5f;
+  this->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * this->scale.x) * 0.5f;
 
   matrix axes;
   axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
