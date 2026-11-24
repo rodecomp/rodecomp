@@ -1193,9 +1193,9 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   std::map<std::string, int> totals;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
 
-  int count = g_session.GetNumInventoryItems();
-  count += g_session.CountDistinctEquippedItems();
-  count += g_session.CountDistinctCostumeItems();
+  const int inventoryCount = g_session.GetNumInventoryItems();
+  const int equippedCount = g_session.CountDistinctEquippedItems();
+  int count = inventoryCount + equippedCount + g_session.CountDistinctCostumeItems();
 
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
