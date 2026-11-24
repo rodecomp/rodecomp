@@ -156,10 +156,11 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     return;
   }
 
-  if (HasTextLinks(text)) {
-    const std::string expanded = ExpandTextEscapes(text);
+  if (HasTextLinks(std::string(text))) {
+    const std::string source(text);
+    const std::string expanded = ExpandTextEscapes(source);
     strcpy_s(text, std::strlen(text) + 1, expanded.c_str());
-    std::string display = DisplayUrlTextTag(text);
+    std::string display = DisplayUrlTextTag(std::string(text));
     display = DisplayNavigationTextTag(display);
     display = DisplayTipBoxTextTag(display);
     display = DisplayItemTextTag(display);
@@ -229,16 +230,18 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
+      return 0;
     }
 
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
+      return 0;
     }
 
-    return 0;
+    break;
 
   case UM_SETTEXT:
     this->AppendText(reinterpret_cast<char*>(argument1), static_cast<int>(argument2), static_cast<int>(argument3), static_cast<int>(argument4));
@@ -281,4 +284,6 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+
+  return 0;
 }
