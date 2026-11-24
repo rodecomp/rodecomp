@@ -58,6 +58,11 @@ namespace {
 TipBoxEntry::TipBoxEntry() {
 }
 
+// OFFSET: 0x007AC380
+// FUNCTION: fn_46589
+TipBoxEntry::~TipBoxEntry() {
+}
+
 // OFFSET: 0x007ABD90
 // FUNCTION: fn_46455
 CTipBoxMgr::CTipBoxMgr()

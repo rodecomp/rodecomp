@@ -19,6 +19,7 @@ struct TipBoxImage {
 
 struct TipBoxEntry {
   TipBoxEntry();
+  ~TipBoxEntry();
   /* 0000 */ std::string title;
   /* 0018 */ unsigned char randomEligible;
   /* 001C */ std::string bitmapName;
