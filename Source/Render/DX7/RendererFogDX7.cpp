@@ -1,3 +1,5 @@
+#define D3D_OVERLOADS
+
 #include "Client/Application/ErrorDialog.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/DX7/RendererFogDX7.h"
@@ -83,7 +85,7 @@ void CRendererDX7::ApplyFog() {
 
   if (this->fog.enabled) {
     D3DDEVICEDESC7 empty = g_emptyCapabilitiesDX7;
-    const D3DDEVICEDESC7 caps = SelectFogCaps(empty);
+    const D3DDEVICEDESC7 caps = g_deviceOwnerDX7 ? g_deviceOwnerDX7->caps : empty;
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
     const int vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
