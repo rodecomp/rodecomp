@@ -521,7 +521,8 @@ std::vector<unsigned char> Replay::ReadSection(int id) {
 
   const int index = this->FindSection(id);
   if (index != -1 && this->sections[index].fileOffset != 0 && this->sections[index].bytes != 0) {
-    data.resize(this->sections[index].bytes, 0);
+    const int bytes = static_cast<int>(this->sections[index].bytes);
+    data.resize(bytes, 0);
     std::fseek(this->file, static_cast<long>(this->sections[index].fileOffset), SEEK_SET);
     std::fread(data.data(), this->sections[index].bytes, 1, this->file);
     this->Cipher(this->sections[index].bytes, data.data());
@@ -1234,6 +1235,10 @@ struct ReplayShopNameRecord {
 #pragma pack(pop)
 
 struct ReplayShopItemRecord {
+  // INLINED
+  ReplayShopItemRecord(int shopId, unsigned int index, int itemId, int first, int second)
+      : shopId(shopId), index(index), itemId(itemId), first(first), second(second) {}
+
   /* 0000 */ int shopId;
   /* 0004 */ unsigned int index;
   /* 0008 */ int itemId;
@@ -1380,22 +1385,17 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
     std::memcpy(value.name, it->first.c_str(), length);
     AppendRecord(records, MakeReplayRecord(7502, &value, sizeof(value)));
   }
-  for (auto shop = this->m_shops.begin(); shop != this->m_shops.end(); ++shop) {
-    for (unsigned int index = 0; index < shop->second.items.size(); ++index) {
-      const std::map<int, std::pair<int, int>>& items = shop->second.items[index];
-      for (auto item = items.begin(); item != items.end(); ++item) {
-        ReplayShopItemRecord value;
-        value.shopId = shop->first;
-        value.index = index;
-        value.itemId = item->first;
-        value.first = item->second.first;
-        value.second = item->second.second;
+  for (const auto& shop : this->m_shops) {
+    for (unsigned int index = 0; index < shop.second.items.size(); ++index) {
+      const std::map<int, std::pair<int, int>>& items = shop.second.items[index];
+      for (const auto& item : items) {
+        const ReplayShopItemRecord value(shop.first, index, item.first, item.second.first, item.second.second);
         AppendRecord(records, MakeReplayRecord(7504, &value, sizeof(value)));
       }
     }
     ReplayShopFlagRecord value;
-    value.shopId = shop->first;
-    value.flag = shop->second.flag;
+    value.shopId = shop.first;
+    value.flag = shop.second.flag;
     AppendRecord(records, MakeReplayRecord(7505, &value, sizeof(value)));
   }
   AppendRecord(records, MakeReplayRecord(7501, nullptr, 0));
