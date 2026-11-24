@@ -75,6 +75,15 @@ std::pair<int, int> CCheckAttendanceMgr::GetReward(int day) {
   return std::pair<int, int>(0, 0);
 }
 
+// OFFSET: 0x006711E0
+// FUNCTION: fn_46712
+bool CCheckAttendanceMgr::IsInAttendancePeriod(int date) const {
+  if (date >= this->m_config0 && date <= this->m_config1) {
+    return true;
+  }
+  return false;
+}
+
 // OFFSET: 0x00671200
 // FUNCTION: fn_05352
 bool CCheckAttendanceMgr::Load() {
@@ -151,6 +160,18 @@ bool CCheckAttendanceMgr::LoadLocal(std::string suffix) {
   return true;
 }
 
+// OFFSET: 0x006715D0
+// FUNCTION: fn_46713
+void CCheckAttendanceMgr::SetEndDate(int date) {
+  this->m_config1 = date;
+}
+
+// OFFSET: 0x00671740
+// FUNCTION: fn_46714
+void CCheckAttendanceMgr::SetStartDate(int date) {
+  this->m_config0 = date;
+}
+
 // OFFSET: 0x00671960
 // FUNCTION: fn_05355
 int CCheckAttendanceMgr::L_InsertCheckAttendanceConfig(lua_State* state) {
@@ -167,8 +188,8 @@ int CCheckAttendanceMgr::L_InsertCheckAttendanceConfig(lua_State* state) {
 
   const int config0 = static_cast<int>(lua_tonumber(state, -2));
   const int config1 = static_cast<int>(lua_tonumber(state, -1));
-  g_checkAttendanceMgr->m_config0 = config0;
-  g_checkAttendanceMgr->m_config1 = config1;
+  g_checkAttendanceMgr->SetStartDate(config0);
+  g_checkAttendanceMgr->SetEndDate(config1);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;

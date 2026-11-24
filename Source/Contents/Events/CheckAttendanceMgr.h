@@ -33,6 +33,9 @@ public:
   static int L_InsertCheckAttendanceReward(lua_State* state);
 
   std::pair<int, int> GetReward(int day);
+  bool IsInAttendancePeriod(int date) const;
+  void SetStartDate(int date);
+  void SetEndDate(int date);
   bool Load();
   bool LoadLocal(std::string suffix);
 
