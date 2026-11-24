@@ -131,9 +131,10 @@ void CMode::DrawCursor() {
 
     CTexture* texture;
     if (cell.imageType == 0) {
-      texture = g_renderer->atlas.Find(image, sprite->palette, record);
+      auto& atlasRef = g_renderer->atlas;
+      texture = atlasRef.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
+        texture = atlasRef.Insert(image, sprite->palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
