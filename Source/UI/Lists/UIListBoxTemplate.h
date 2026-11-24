@@ -90,6 +90,7 @@ public:
   void OnRBtnDown(int x, int y) override;
 
   void SetDescription(int type, const std::vector<const char*>& description);
+  void SetSourceLines(const std::vector<std::string>& lines);
   void SetStatusLines(unsigned char first, unsigned char second, unsigned char third);
 
   /* 00E8 */ CUIStaticImage* image;
@@ -125,6 +126,7 @@ public:
   void OnInit() override;
   void SetTitle(int id);
   void SetTip(int id);
+  void SetStatusLine(const std::string& line);
   void SetViewerLines(const std::vector<std::string>& lines);
 
   /* 00E8 */ CUIStaticImage* stampImage;

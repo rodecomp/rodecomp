@@ -342,6 +342,22 @@ void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
   this->navigationButton->Show(selected);
 }
 
+// OFFSET: 0x009E02E0
+// FUNCTION: fn_46590
+inline void CUIItemInfo::SetSourceLines(const std::vector<std::string>& lines) {
+  this->sourcesViewer->Clear();
+  for (const std::string& line : lines) {
+    this->sourcesViewer->AddLine(line);
+  }
+}
+
+// OFFSET: 0x009E0320
+// FUNCTION: fn_46591
+inline void CUIQuestInfo::SetStatusLine(const std::string& line) {
+  this->statusViewer->Clear();
+  this->statusViewer->AddLine(line);
+}
+
 // OFFSET: 0x009DC320
 // FUNCTION: fn_14321
 void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
@@ -359,10 +375,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->image->SetImage(image);
   item->SetStatusLines(data.entry.firstFlag, data.entry.secondFlag, data.entry.thirdFlag);
   item->SetDescription(data.type, info.Description());
-  item->sourcesViewer->Clear();
-  for (const std::string& value : data.entry.values) {
-    item->sourcesViewer->AddLine(value);
-  }
+  item->SetSourceLines(data.entry.values);
   item->description = data.entry.text;
 }
 
@@ -374,8 +387,7 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
-    owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.contents.second);
+    owner->SetStatusLine(data.contents.second);
     owner->questId = data.contents.questId;
     {
       const bool isNew = g_renewQuestMgr->IsNewQuest(data.contents.questId);
@@ -386,16 +398,14 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
-    owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.contents.second);
+    owner->SetStatusLine(data.contents.second);
     owner->stampImage->Show(0);
     return;
   case 4:
     owner->SetTip(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
-    owner->statusViewer->Clear();
-    owner->statusViewer->AddLine(data.contents.second);
+    owner->SetStatusLine(data.contents.second);
     owner->stampImage->Show(0);
     return;
   }
