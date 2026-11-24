@@ -1466,7 +1466,8 @@ static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
-  std::vector<unsigned char> chunk(state.size() + 6, 0);
+  std::vector<unsigned char> chunk;
+  chunk.resize(state.size() + 6);
   ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
   header->tag = static_cast<std::int16_t>(tag);
   header->size = static_cast<int>(state.size());
