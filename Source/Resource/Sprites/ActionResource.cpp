@@ -76,10 +76,12 @@ __forceinline void CActRes::AdjustCellPosition(SpriteFrameCell* cell, int width,
 // FUNCTION: fn_07750
 bool CActRes::Load(const char* name) {
   CFile file;
+  bool loaded;
+
   if (!file.Open(name, 0, true, false)) {
+    loaded = false;
     ShowErrorDialog((std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
-    return false;
-  }
+  } else {
 
   struct Header {
     std::uint16_t magic;
@@ -245,7 +247,10 @@ bool CActRes::Load(const char* name) {
   }
 
   file.Close();
-  return true;
+  loaded = true;
+  }
+
+  return loaded;
 }
 
 // OFFSET: 0x007445A0
