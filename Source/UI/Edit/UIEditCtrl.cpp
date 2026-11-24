@@ -1280,7 +1280,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
           } packet;
           packet.packetType = ID_CZ_REQ_ONECLICK_ITEMIDENTIFY;
           packet.index = static_cast<unsigned short>(item.itemIndex);
-          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(ID_CZ_REQ_ONECLICK_ITEMIDENTIFY), &packet);
         }
       }
     } else {
