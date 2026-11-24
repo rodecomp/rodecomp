@@ -1113,7 +1113,7 @@ using AdventureGuideContentsTable = std::map<int, std::map<int, AdventureGuideCo
 // OFFSET: 0x0065F5C0
 // FUNCTION: fn_05188
 AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
-    : name(source.name), info(std::move(source.info)) {
+    : name(source.first), info(std::move(source.second)) {
 }
 
 // INLINED
@@ -1465,18 +1465,13 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
   return AdventureGuideResult(true, "good");
 }
 
-// INLINED
-static AdventureGuideEpisodeSource MakeEpisodeSource(const char* name, const AdventureGuideEpisodeInfo& info) {
-  return AdventureGuideEpisodeSource{name, info};
-}
-
 // OFFSET: 0x00666860
 // FUNCTION: fn_05251
 AdventureGuideResult CAdventureGuideMgr::InsertMonsterContents(std::string_view name, int minLevel, int maxLevel) {
   AdventureGuideEpisodeInfo info;
   info.order = minLevel;
   info.maxLevel = maxLevel;
-  m_episodes.emplace_back(MakeEpisodeSource(name.data(), info));
+  m_episodes.emplace_back(std::make_pair(name.data(), info));
   return AdventureGuideResult(true, "good");
 }
 

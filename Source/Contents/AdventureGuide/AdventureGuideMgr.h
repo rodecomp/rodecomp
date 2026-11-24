@@ -45,10 +45,7 @@ struct AdventureGuideEpisodeInfo {
   /* 0008 */ std::vector<std::string> values;
 };
 
-struct AdventureGuideEpisodeSource {
-  /* 0000 */ const char* name;
-  /* 0004 */ AdventureGuideEpisodeInfo info;
-};
+using AdventureGuideEpisodeSource = std::pair<const char*, AdventureGuideEpisodeInfo>;
 
 struct AdventureGuideEpisode {
   AdventureGuideEpisode(AdventureGuideEpisodeSource&& source);
