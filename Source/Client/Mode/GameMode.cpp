@@ -11139,13 +11139,12 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     return;
   }
 
-  int& hoveredId = this->hoveredStatusIconId;
   const int count = static_cast<int>(g_activeSkillEffects.end() - g_activeSkillEffects.begin());
   const int rows = (g_renderer->viewport.height - 169) / 35;
   const int columns = count / rows + (count % rows != 0 ? 1 : 0);
   const int right = g_renderer->viewport.width - 18;
   if (right - columns * 45 + 15 > x || x > right || y < 168 || y > rows * 35 + 168) {
-    hoveredId = -1;
+    this->hoveredStatusIconId = -1;
     return;
   }
 
@@ -11170,7 +11169,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 
   const int id = g_session.m_statusIconIds[slot];
   if (id == -1) {
-    hoveredId = -1;
+    this->hoveredStatusIconId = -1;
     if (this->statusIconTooltip) {
       this->statusIconTooltip->SetText(" ", 35);
     }
@@ -11187,7 +11186,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     timeText = this->GetActiveSkillEffectTimeText(id, &activeId);
   }
 
-  if (hoveredId != id || !this->statusIconTooltip || id == 0x175 || id == 0x2B7) {
+  if (this->hoveredStatusIconId != id || !this->statusIconTooltip || id == 0x175 || id == 0x2B7) {
     if (!this->statusIconTooltip) {
       this->statusIconTooltip = new UITransBalloonText();
       this->statusIconTooltip->SetSize(50, 50);
@@ -11271,7 +11270,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       this->statusIconTooltip->Move(left, windowY);
     }
 
-    hoveredId = id;
+    this->hoveredStatusIconId = id;
   } else {
     if (this->statusIconTooltip->GetLine(0).size() != 0) {
       this->statusIconTooltip->Show(1);
