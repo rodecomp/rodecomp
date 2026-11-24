@@ -104,6 +104,16 @@ UIRefining_BtnRefining::UIRefining_BtnRefining() : UIBitmapButton(), cost(0) {
 UIRefining_BtnReturn::UIRefining_BtnReturn() : UIBitmapButton(), highlighted(1) {
 }
 
+// OFFSET: 0x007F5200
+// FUNCTION: fn_46579
+inline void UIRefining_BtnRefining::InitializeBitmaps() {
+  this->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
+  this->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
+  this->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
+  this->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
+  this->Resize(this->BitmapWidth(), this->BitmapHeight());
+}
+
 // OFFSET: 0x007F5E30
 // FUNCTION: fn_09907
 void UIRefiningWnd::OnCreate(int width, int height) {
@@ -119,11 +129,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
 
   UIRefining_BtnRefining* refining = new UIRefining_BtnRefining();
   this->refiningButton = refining;
-  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
-  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
-  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
-  refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
-  refining->Resize(refining->BitmapWidth(), refining->BitmapHeight());
+  refining->InitializeBitmaps();
   this->refiningButton->Move(84, 262);
   this->refiningButton->SetId(ID_OK);
   {

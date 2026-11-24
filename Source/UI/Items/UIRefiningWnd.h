@@ -54,6 +54,7 @@ public:
 class UIRefining_BtnRefining : public UIBitmapButton {
 public:
   UIRefining_BtnRefining();
+  void InitializeBitmaps();
   void Paint() override;
   void Enable(unsigned char value) override;
 
