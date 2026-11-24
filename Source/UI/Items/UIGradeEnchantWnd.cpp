@@ -421,7 +421,7 @@ void UIGradeEnchant_BtnEnhancedUp::OnMouseHover(int x, int y) {
     return;
   }
 
-  this->m_tooltip = FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ENHANCED_UP), this->tooltipValue);
+  this->m_tooltip = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ENHANCED_UP), this->tooltipValue));
 
   int screenX = 0;
   int screenY = -20;
