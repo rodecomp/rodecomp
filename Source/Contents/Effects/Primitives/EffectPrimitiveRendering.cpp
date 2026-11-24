@@ -3146,10 +3146,10 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
 // OFFSET: 0x00BD8080
 // FUNCTION: fn_19887
 __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
+  ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
-  ZeroVector3d vec1;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
