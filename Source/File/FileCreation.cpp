@@ -62,7 +62,7 @@ static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const jsoncons::
     return false;
   }
 
-  *out = value.as_double();
+  *out = value.as<double>();
   return true;
 }
 
@@ -81,7 +81,7 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
     return false;
   }
 
-  for (const auto& member : document.at("EZ2STREffect").object_range()) {
+  for (const auto& member : this->document["EZ2STREffect"].object_range()) {
     const std::string name = member.key();
     const jsoncons::json node = member.value();
     EZ2STREffectRecord record;
