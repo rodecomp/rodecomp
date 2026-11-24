@@ -3557,7 +3557,6 @@ void UIHomunInfoWnd::Paint() {
   this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
   const int* const stats = g_session.m_homunStats;
   int bytes;
-  {
   char number[12];
   bytes = std::sprintf(number, "%d", stats[0]);
   this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
@@ -3575,17 +3574,13 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
   this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
-  }
-  {
   char level[8];
   _itoa(g_session.m_homunLevel, level, 10);
   this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
-  }
   if (g_session.m_homunJob == -1) {
     return;
   }
 
-  {
   char text[24];
   bytes = std::sprintf(text, "%lld", g_session.m_homunMaxExp);
   this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
@@ -3609,7 +3604,6 @@ void UIHomunInfoWnd::Paint() {
     std::strcpy(text, LookupMessage(MSI_UNKNOWN));
   }
   this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
-  }
   this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING)), 0, 0, 0, 0, 12, 0, 0);
   this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING_EXP_INFORMATION)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
