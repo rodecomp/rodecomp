@@ -1,3 +1,4 @@
+#define RAGNAROK_DEVICESTATEDX9_OUT_OF_LINE_DESTRUCTOR
 #include "Render/DX9/DeviceOwnerDX9.h"
 
 #include <cstring>
@@ -196,4 +197,10 @@ void ScopedDeviceStateDX9::Restore() {
       }
     }
   }
+}
+
+// OFFSET: 0x00565030
+// FUNCTION: fn_46703
+ScopedDeviceStateDX9::~ScopedDeviceStateDX9() {
+  this->Restore();
 }

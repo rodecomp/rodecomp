@@ -30,16 +30,24 @@ public:
     this->Save();
   }
 
+#ifdef RAGNAROK_DEVICESTATEDX9_OUT_OF_LINE_DESTRUCTOR
+  ~ScopedDeviceStateDX9();
+#else
   // INLINED
   ~ScopedDeviceStateDX9() {
     this->Restore();
   }
+#endif
 
   ScopedDeviceStateDX9(const ScopedDeviceStateDX9&) = delete;
   ScopedDeviceStateDX9& operator=(const ScopedDeviceStateDX9&) = delete;
 
   void Save();
+#ifdef RAGNAROK_DEVICESTATEDX9_OUT_OF_LINE_DESTRUCTOR
+  __declspec(noinline) void Restore();
+#else
   void Restore();
+#endif
 
 private:
   /* 0000 */ DeviceStateDX9* m_state;
