@@ -87,6 +87,9 @@ unsigned char g_statusRefreshSuppressed;
 // GLOBAL: gl_25150
 static std::uint32_t g_groundShadowPixels[35 * 35];
 
+// GLOBAL: gl_24556
+float terrainSubcellFraction = 0.0625f;
+
 // OFFSET: 0x00DA7700
 // FUNCTION: fn_22558
 CPc::CPc() : footprintPosition({0.0f, 0.0f, 0.0f}) {
@@ -5376,8 +5379,8 @@ void CGrannyPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
-    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
-    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
+    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubX - 8);
+    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
@@ -5410,8 +5413,8 @@ void CGrannyPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
-    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
-    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
+    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubX - 8);
+    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
