@@ -66,7 +66,8 @@ __declspec(noinline) unsigned char IsValidIdentChar(char value) {
 namespace LineCutter {
   class UIText : public UIWindow {
   public:
-    // INLINED
+    // OFFSET: 0x00836F30
+    // FUNCTION: fn_46552
     explicit UIText()
         : UIWindow(0), m_style{0, 12, false, false}, m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0), m_shadowColor(0xFFFFFF) {
     }
