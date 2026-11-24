@@ -548,8 +548,8 @@ int UIGradeEnchantWnd::SendMsg(
     switch (argument1) {
     case ID_OK:
       if (this->requestPending != 1 && this->item.identity[1] > 0 && this->selectedMaterial != -1) {
-        const int quantity = g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity;
-        if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
+        if (this->materials[this->selectedMaterial].amount <= g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity &&
+            this->SelectedMaterialZeny() <= g_session.m_zeny) {
           if (this->protect != 0 || this->blessingAmount != 0 ||
               g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
             this->requestPending = 1;
