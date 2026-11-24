@@ -865,22 +865,25 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].vertices[2].v = ty1;
   this->state.triangles[*rpCnt].texture = this->state.textures[tn];
 
-  if (extra == 2) {
+  if (extra == 1) {
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].z = 1e-09f;
+      this->state.triangles[*rpCnt].vertices[index].rhw = 1.0f;
+    }
+  } else if (extra == 2) {
     for (int index = 0; index < 3; ++index) {
       this->state.triangles[*rpCnt].vertices[index].rhw += 0.000045f;
       this->state.triangles[*rpCnt].vertices[index].z = RhwToDepth(this->state.triangles[*rpCnt].vertices[index].rhw);
     }
-  } else if (extra == 1 || extra == 3) {
-    if (extra == 3) {
-      vertex = TransformVert(wtm, this->render.position);
-      const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
-      this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
-      this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
-      this->state.triangles[*rpCnt].vertices[2].x = vertex.x - width;
+  } else if (extra == 3) {
+    vertex = TransformVert(wtm, this->render.position);
+    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+    this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
+    this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
+    this->state.triangles[*rpCnt].vertices[2].x = vertex.x - width;
 
-      for (int index = 0; index < 3; ++index) {
-        this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
-      }
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
     }
 
     for (int index = 0; index < 3; ++index) {
@@ -925,22 +928,25 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].vertices[2].v = ty2;
   this->state.triangles[*rpCnt].texture = this->state.textures[tn];
 
-  if (extra == 2) {
+  if (extra == 1) {
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].z = 1e-09f;
+      this->state.triangles[*rpCnt].vertices[index].rhw = 1.0f;
+    }
+  } else if (extra == 2) {
     for (int index = 0; index < 3; ++index) {
       this->state.triangles[*rpCnt].vertices[index].rhw += 0.000045f;
       this->state.triangles[*rpCnt].vertices[index].z = RhwToDepth(this->state.triangles[*rpCnt].vertices[index].rhw);
     }
-  } else if (extra == 1 || extra == 3) {
-    if (extra == 3) {
-      vertex = TransformVert(wtm, this->render.position);
-      const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
-      this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
-      this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
-      this->state.triangles[*rpCnt].vertices[2].x = vertex.x + width;
+  } else if (extra == 3) {
+    vertex = TransformVert(wtm, this->render.position);
+    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+    this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
+    this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
+    this->state.triangles[*rpCnt].vertices[2].x = vertex.x + width;
 
-      for (int index = 0; index < 3; ++index) {
-        this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
-      }
+    for (int index = 0; index < 3; ++index) {
+      this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
     }
 
     for (int index = 0; index < 3; ++index) {
