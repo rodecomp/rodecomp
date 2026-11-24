@@ -45,9 +45,9 @@ public:
 
   /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;
-  /* 0050 */ vector3d backupCurrentTarget;
+  /* 0050 */ vector3d backupCurrentTarget{0.0f, 0.0f, 0.0f};
   /* 005C */ unsigned char backupCurrentAnglesAndDistance[0xC];
-  /* 0068 */ vector3d backupDesiredTarget;
+  /* 0068 */ vector3d backupDesiredTarget{0.0f, 0.0f, 0.0f};
   /* 0074 */ unsigned char backupDesiredAnglesAndDistance[0xC];
   /* 0080 */ CameraFrame frame;
   /* 00F8 */ WorldViewSpatial spatial;

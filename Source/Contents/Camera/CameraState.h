@@ -5,11 +5,11 @@
 struct ServiceOptions;
 
 struct CameraState {
-  /* 0020 */ vector3d target;
+  /* 0020 */ vector3d target{0.0f, 0.0f, 0.0f};
   /* 002C */ float pitch;
   /* 0030 */ float yaw;
   /* 0034 */ float distance;
-  /* 0038 */ vector3d desiredTarget;
+  /* 0038 */ vector3d desiredTarget{0.0f, 0.0f, 0.0f};
   /* 0044 */ float desiredPitch;
   /* 0048 */ float desiredYaw;
   /* 004C */ float desiredDistance;

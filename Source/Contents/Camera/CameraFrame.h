@@ -10,8 +10,8 @@
 class CRenderer;
 
 struct CameraFrame {
-  /* 0080 */ vector3d eye;
-  /* 008C */ vector3d up;
+  /* 0080 */ vector3d eye{0.0f, 0.0f, 0.0f};
+  /* 008C */ vector3d up{0.0f, 0.0f, 0.0f};
   /* 0098 */ matrix view;
   /* 00C8 */ matrix inverse;
 
