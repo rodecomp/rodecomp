@@ -696,9 +696,9 @@ void SortMedianOfThree(BarterEntryPair* first, BarterEntryPair* mid, BarterEntry
     saved.value = last->value;
     *last = *mid;
     *mid = saved;
-    if (lastId < first->id) {
+    if (mid->id < first->id) {
       BarterEntryPair saved2;
-      saved2.id = lastId;
+      saved2.id = mid->id;
       saved2.value = mid->value;
       *mid = *first;
       *first = saved2;
