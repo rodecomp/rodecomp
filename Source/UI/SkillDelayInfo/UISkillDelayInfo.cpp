@@ -524,7 +524,7 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
   }
 
   int skillFlag = 0;
-  std::vector<std::map<int, int>> delays;
+  std::vector<std::map<int, long>> delays;
   g_session.LoadSkillDelayList(skillId, delays, skillFlag);
   for (unsigned int index = 0; index < delays.size(); ++index) {
     auto* list = this->delayList;

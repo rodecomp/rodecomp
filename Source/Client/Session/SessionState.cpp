@@ -96,7 +96,7 @@ const char* CSession::GetPlayerMapDisplayName() {
 
 // OFFSET: 0x00E31650
 // FUNCTION: fn_24173
-void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& delays, int& skillFlag) {
+void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, long>>& delays, int& skillFlag) {
   delays.clear();
   int maxLevel = 0;
   skillFlag = 0;

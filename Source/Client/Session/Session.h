@@ -1396,7 +1396,7 @@ public:
   void SetOtherExchangeMoney(int value);
   void SetPlayerPosition(int x, int y, int direction);
   void SetRecord0734Value(int id, std::uint32_t value);
-  void LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& delays, int& skillFlag);
+  void LoadSkillDelayList(int skillId, std::vector<std::map<int, long>>& delays, int& skillFlag);
   int SetServiceFlags(int first, int second);
 };
 
