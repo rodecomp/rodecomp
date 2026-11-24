@@ -6808,6 +6808,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       break;
     }
     case 6: {
+      ITEM_INFO item;
       if (g_session.GetNumPurchaseItems() >= 8) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
@@ -6831,7 +6832,6 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           }
         }
       }
-      ITEM_INFO item;
       item.Assign(mode->drag);
       item.bindOnEquip = static_cast<std::uint16_t>(this->m_selectedIndex);
       g_session.MergeItem1720ByName(item);
