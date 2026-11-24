@@ -139,8 +139,8 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
     return std::make_pair(false, BarterMarketItem());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
@@ -171,8 +171,8 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
     return std::make_pair(false, BarterMarketItem());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
@@ -315,8 +315,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
 
   const int offsetY = y - 17;
   const int row = offsetY / 64;
-  int index = 0;
   int visible = 0;
+  int index = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
@@ -353,8 +353,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
   }
 
   const int offsetY = y - 17;
-  const int row = offsetY / 64;
   int index = 0;
+  const int row = offsetY / 64;
   int visible = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
