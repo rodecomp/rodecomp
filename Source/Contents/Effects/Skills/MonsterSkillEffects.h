@@ -373,7 +373,7 @@ public:
   void OnProcess() override;
   void Render() override;
   bool IsAlive() override;
-  void SetColor(int red, int green, int blue) override;
+  void SetColor(short red, short green, short blue) override;
   void SetParticleTexture(std::string name) override;
   void Close() override;
   void Init();

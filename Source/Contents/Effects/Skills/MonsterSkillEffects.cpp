@@ -2676,7 +2676,7 @@ CRandomOptEffect::CRandomOptEffect() : CEffect(-1) {
 
 // OFFSET: 0x00720AF0
 // FUNCTION: fn_07366
-void CRandomOptEffect::SetColor(int red, int green, int blue) {
+void CRandomOptEffect::SetColor(short red, short green, short blue) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }

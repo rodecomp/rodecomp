@@ -57,7 +57,7 @@ void CEffect::SetDestinationBlend(int) {
 
 // OFFSET: 0x005A2120
 // FUNCTION: fn_03084
-void CEffect::SetColor(int, int, int) {
+void CEffect::SetColor(short, short, short) {
 }
 
 // OFFSET: 0x005A2130

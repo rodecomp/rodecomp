@@ -27,7 +27,7 @@ __declspec(noinline) CCommonFloorEffect::~CCommonFloorEffect() {
 
 // OFFSET: 0x006FD8C0
 // FUNCTION: fn_06935
-void CCommonFloorEffect::SetColor(int red, int green, int blue) {
+void CCommonFloorEffect::SetColor(short red, short green, short blue) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
