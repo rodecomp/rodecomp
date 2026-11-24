@@ -634,9 +634,7 @@ void SpriteLayerRenderer::LoadLayers() {
       }
     }
 
-    SpriteLayerResources& resources = this->layers[layer];
-    resources.sprite = static_cast<CSprRes*>(sprite);
-    resources.action = static_cast<CActRes*>(action);
+    this->layers[layer] = {static_cast<CSprRes*>(sprite), static_cast<CActRes*>(action)};
   }
 
   for (int layer = 2; layer <= 4; ++layer) {
