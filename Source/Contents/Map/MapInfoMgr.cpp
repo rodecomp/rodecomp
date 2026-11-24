@@ -340,3 +340,8 @@ int CMapInfoMgr::L_AddMapSignName(lua_State* state) {
 
   return 2;
 }
+
+// OFFSET: 0x006CE620
+// FUNCTION: fn_46562
+MapInfo::~MapInfo() {
+}

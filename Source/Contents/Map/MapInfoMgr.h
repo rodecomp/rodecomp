@@ -18,6 +18,8 @@ struct MapInfo {
   /* 0018 */ bool m_showDisplayName;
   /* 001C */ std::pair<std::string, std::string> m_sign;
   /* 004C */ std::string m_backgroundBmp;
+
+  ~MapInfo();
 };
 
 struct MapNameDisplay {
