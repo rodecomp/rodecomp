@@ -1374,7 +1374,9 @@ bool CGravityControlEffect::IsAlive() {
   return this->ActorExists();
 }
 
-CMeteorEffect::~CMeteorEffect() {
+// OFFSET: 0x00B1D680
+// FUNCTION: fn_46483
+__declspec(noinline) CMeteorEffect::~CMeteorEffect() {
 }
 
 // OFFSET: 0x00B1D6E0
