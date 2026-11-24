@@ -507,19 +507,16 @@ void CGameActor::ResetState() {
   this->merAI = nullptr;
   this->objectType = 4;
   this->actorWindows[4] = 0;
-  this->transformJobs[0] = -1;
-  this->transformJobs[1] = -1;
-  this->transformJobs[2] = -1;
+  for (int index = 0; index < 3; ++index) {
+    this->transformJobs[index] = -1;
+  }
   this->monsterTransformJob = -1;
   this->transformPriority = 0;
   this->charmType = 0;
   this->charmCount = 0;
-  this->movementState[0] = 0;
-  this->movementState[1] = 0;
-  this->movementState[2] = 0;
-  this->movementState[3] = 0;
-  this->movementState[4] = 0;
-  this->movementState[5] = 0;
+  for (int index = 0; index < 6; ++index) {
+    this->movementState[index] = 0;
+  }
   this->hasHp = 0;
   this->maxHp = 0;
   this->hpGaugeWindow = nullptr;
@@ -527,7 +524,8 @@ void CGameActor::ResetState() {
   this->hasSp = 0;
   this->spGaugeValue = 0;
   this->mountedState = 0;
-  this->actorFlags = 0;
+  this->storedActorEntry = 0;
+  this->modelReady = false;
   this->emblemVersion = 0;
   this->firstFollowerEffect = nullptr;
   this->secondFollowerEffect = nullptr;
