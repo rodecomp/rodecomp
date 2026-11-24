@@ -68,6 +68,11 @@ static __forceinline void SetClipCorners(RenderVertex* vertices, const EZeffectT
 }
 
 // INLINED
+static __forceinline void OffsetParticleDepth(RenderVertex& vertex, float offset) {
+  vertex.rhw += offset;
+}
+
+// INLINED
 static __forceinline std::uint32_t ClipColor(const EZeffectTransform& transform, float alpha) {
   return (((((static_cast<int>(transform.crA * alpha) << 8) + static_cast<unsigned char>(transform.crR)) << 8) + static_cast<unsigned char>(transform.crG)) << 8) +
          static_cast<unsigned char>(transform.crB);
@@ -521,7 +526,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
     point.y = vertices[i].y;
     point.z = vertices[i].z;
     g_renderer->Project(&point.x, combined.values, vertices[i]);
-    vertices[i].rhw = this->depthOffset + vertices[i].rhw;
+    OffsetParticleDepth(vertices[i], this->depthOffset);
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
@@ -698,7 +703,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     this->m_groundHeight = point.y;
 
     g_renderer->Project(&point.x, view.values, vertices[i]);
-    vertices[i].rhw = this->depthOffset + vertices[i].rhw;
+    OffsetParticleDepth(vertices[i], this->depthOffset);
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
