@@ -6973,7 +6973,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (21150 == header.type || 21100 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
@@ -6982,7 +6983,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
           [[fallthrough]];
         case 21151:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          return 0;
+          scanning = false;
+          break;
         default:
           offset += header.size;
           break;
