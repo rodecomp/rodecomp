@@ -4144,15 +4144,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       const float y = mode->scene->terrain->Height(x, z);
+      const vector3d center = {x, y, z};
       int delay = 0;
       for (int degrees = 0; degrees < 1080; degrees += 72) {
         const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
         matrix rotation;
         rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
         vector3d position;
-        position = vector3d{rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x,
-                            rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y,
-                            rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z};
+        position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + center.x;
+        position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + center.y;
+        position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + center.z;
         CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_EARTHGRAVE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetScale(0.5f);
