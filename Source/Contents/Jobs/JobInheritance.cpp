@@ -1175,8 +1175,9 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
       static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), g_equipmentResourceExtensions[type]));
   } else {
+    const char* const className = g_session.GetWeaponClassName(weaponItem);
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob + 3950)) +
-      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), g_equipmentResourceExtensions[type]));
+      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), className, g_equipmentResourceExtensions[type]));
   }
 
   return result;
@@ -1201,8 +1202,9 @@ std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job,
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
       static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), suffix, g_equipmentResourceExtensions[type]));
   } else {
+    const char* const className = g_session.GetWeaponClassName(weaponItem);
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
-      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), suffix, g_equipmentResourceExtensions[type]));
+      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), className, suffix, g_equipmentResourceExtensions[type]));
   }
 
   return result;
