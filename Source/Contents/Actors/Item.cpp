@@ -138,6 +138,11 @@ void CItem::Render(int argument) {
   }
 }
 
+// INLINED
+static inline vector3d DropEffectPosition(float x, float y, float z) {
+  return vector3d{x, y, z};
+}
+
 // OFFSET: 0x00D8B720
 // FUNCTION: fn_22252
 void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
@@ -182,16 +187,13 @@ void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, s
   this->render.motionStartTime = timeGetTime();
 
   if (entry->showEffect == 1) {
-    const float height = TerrainHeight(mode, this->render.position.x, this->render.position.z);
-    const float x = this->render.position.x;
-    const float z = this->render.position.z;
-    const vector3d position{x, height, z};
+    const vector3d position = DropEffectPosition(
+        this->render.position.x, TerrainHeight(mode, this->render.position.x, this->render.position.z),
+        this->render.position.z);
     const int effectId = g_itemInfoMgr->GetEffectId(this->itemIndex);
     if (effectId >= 0 && !g_effectMgr->Spawn(entry->aid, effectId, position, 0, -1, 0, 0)) {
       if (CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->render.position.x = x;
-        effect->render.position.y = height;
-        effect->render.position.z = z;
+        effect->render.position = position;
       }
     }
 
@@ -217,9 +219,7 @@ void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, s
 
       if (!g_effectMgr->Spawn(entry->aid, gradeEffectId, position, 0, -1, 0, 0)) {
         if (CRagEffect* effect = this->LaunchEffect(gradeEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-          effect->render.position.x = x;
-          effect->render.position.y = height;
-          effect->render.position.z = z;
+          effect->render.position = position;
         }
       }
     }
