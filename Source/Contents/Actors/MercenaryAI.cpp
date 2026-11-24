@@ -432,7 +432,8 @@ int AiHomunGetV(lua_State* state) {
           const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
           cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
           const float sine = -ClientSin(angle);
-          cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
+          const float offsetY = sine * static_cast<float>(clamped);
+          cellY = static_cast<int>(static_cast<float>(cellY) + offsetY);
 
           if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
             if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
@@ -619,7 +620,8 @@ int AiMercenaryGetV(lua_State* state) {
           const float angle = std::acos((1.0f / dist) * dx);
           cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
           const float sine = -ClientSin(angle);
-          cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
+          const float offsetY = sine * static_cast<float>(clamped);
+          cellY = static_cast<int>(static_cast<float>(cellY) + offsetY);
 
           if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
             if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
