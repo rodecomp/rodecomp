@@ -4069,14 +4069,9 @@ void CPlayer::SendMsg(
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      int attackMode;
-      switch (this->proceedType) {
-      case 1:
+      int attackMode = 1;
+      if (this->proceedType == 1) {
         attackMode = 5;
-        break;
-      default:
-        attackMode = 1;
-        break;
       }
       this->tickOfMoveForAttack = timeGetTime() - 1200;
       this->proceedType = attackMode;
