@@ -2,6 +2,11 @@
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Utility/Math/AffineMatrix.h"
 
+// INLINED
+static vector3d Sum(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
 // OFFSET: 0x00BF5060
 // FUNCTION: fn_19996
 __declspec(safebuffers) void CEffectPrim::RenderTwinGlowSquares(matrix& wtm) {
@@ -43,33 +48,17 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinGlowSquares(matrix& wtm) {
     vec4.z = slot.distance * g_sinTable[315];
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    const float x2 = vec2.x;
-    const float z2 = vec2.z;
-    const float x3 = vec3.x;
-    const float y3 = vec3.y;
-    const float z3 = vec3.z;
-    const float x4 = vec4.x;
-    const float y4 = vec4.y;
-    const float z4 = vec4.z;
-    const float y2 = vec2.y;
-    const float x1 = vec1.x;
-    const float y1 = vec1.y;
-    const float z1 = vec1.z;
+    const vector3d corner1{vec1.x, vec1.y, vec1.z};
+    const vector3d corner2{vec2.x, vec2.y, vec2.z};
+    const vector3d corner3{vec3.x, vec3.y, vec3.z};
+    const vector3d corner4{vec4.x, vec4.y, vec4.z};
 
-    vec1.x = slot.vecBPre.x + x1;
-    vec1.y = slot.vecBPre.y + y1;
-    vec1.z = slot.vecBPre.z + z1;
-    vec2.x = slot.vecBPre.x + x2;
-    vec2.y = slot.vecBPre.y + y2;
-    vec2.z = slot.vecBPre.z + z2;
-    vec3.x = slot.vecBPre.x + x3;
-    vec3.y = slot.vecBPre.y + y3;
-    vec3.z = slot.vecBPre.z + z3;
-    vec4.x = slot.vecBPre.x + x4;
-    vec4.y = slot.vecBPre.y + y4;
-    vec4.z = slot.vecBPre.z + z4;
+    vec1 = Sum(slot.vecBPre, corner1);
+    vec2 = Sum(slot.vecBPre, corner2);
+    vec3 = Sum(slot.vecBPre, corner3);
+    vec4 = Sum(slot.vecBPre, corner4);
     int alpha = static_cast<int>(slot.height[12]);
-    alpha = alpha < 0 ? 0 : alpha;
+    alpha = alpha >= 0 ? alpha : 0;
     if (slot.flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, alpha / 3, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 1);
@@ -82,20 +71,12 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinGlowSquares(matrix& wtm) {
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     }
 
-    vec1.x = slot.vecBNow.x + x1;
-    vec1.y = slot.vecBNow.y + y1;
-    vec1.z = slot.vecBNow.z + z1;
-    vec2.x = slot.vecBNow.x + x2;
-    vec2.y = slot.vecBNow.y + y2;
-    vec2.z = slot.vecBNow.z + z2;
-    vec3.x = slot.vecBNow.x + x3;
-    vec3.y = slot.vecBNow.y + y3;
-    vec3.z = slot.vecBNow.z + z3;
-    vec4.x = slot.vecBNow.x + x4;
-    vec4.y = slot.vecBNow.y + y4;
-    vec4.z = slot.vecBNow.z + z4;
+    vec1 = Sum(slot.vecBNow, corner1);
+    vec2 = Sum(slot.vecBNow, corner2);
+    vec3 = Sum(slot.vecBNow, corner3);
+    vec4 = Sum(slot.vecBNow, corner4);
     alpha = static_cast<int>(slot.height[13]);
-    alpha = alpha < 0 ? 0 : alpha;
+    alpha = alpha >= 0 ? alpha : 0;
     if (slot.flag1[0] == 1) {
       this->RenderTeiRect(&rpCnt, alpha / 3, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 1);
