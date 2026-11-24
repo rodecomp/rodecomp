@@ -40,7 +40,8 @@ CChampionMonsterMgr::lcData::~lcData() {
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
 __declspec(noinline) void CChampionMonsterMgr::AddItem(int id, float value) {
-  lcData data(value);
+  lcData data;
+  data.m_value = value;
   this->m_items.insert(std::pair<int, lcData>(id, data));
 }
 
