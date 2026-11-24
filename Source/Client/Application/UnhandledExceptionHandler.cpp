@@ -39,7 +39,8 @@ char g_crashString[8096] = {};
 // FUNCTION: fn_04701
 CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 
-// INLINED
+// OFFSET: 0x00635990
+// FUNCTION: fn_46503
 CUnhandledExceptionHandler::CUnhandledExceptionHandler(int (*callback)()) {
   g_unhandledExceptionCallback = callback;
   GetModuleFileNameA(nullptr, g_filename, MAX_PATH);
