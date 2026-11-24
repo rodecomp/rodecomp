@@ -497,7 +497,7 @@ void CDCBitmap::DrawSurface(
               const int destinationY = y + row * scaleY + dy;
               if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
                   this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
-                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+                pixels[(y + row * scaleY + dy) * width + x + (sourceWidth - column - 1) * scaleX + dx] = PackPixel(0xFF, red, green, blue);
               }
             }
           }
@@ -523,7 +523,7 @@ void CDCBitmap::DrawSurface(
               const int destinationY = y + row * scaleY + dy;
               if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
                   this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
-                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+                pixels[(y + row * scaleY + dy) * width + x + column * scaleX + dx] = PackPixel(0xFF, red, green, blue);
               }
             }
           }
