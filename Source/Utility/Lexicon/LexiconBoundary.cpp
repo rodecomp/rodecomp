@@ -46,6 +46,26 @@ static bool HasClass(std::uint32_t classes, int bit) {
   return ((classes >> bit) & 1) != 0;
 }
 
+// INLINED
+static bool MatchesClasses(const std::uint32_t& before, const std::uint32_t& after, unsigned char options) {
+  if ((options & 2) != 0) {
+    if (((before & 0x470) != 0) == ((after & 0x470) != 0) &&
+        ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
+         (HasClass(before, 1) && HasClass(after, 1)))) {
+      return true;
+    }
+  } else {
+    if (!HasClass(after, 4) || HasClass(before, 4)) {
+      if ((after & 0x60) != 0 || HasClass(before, 4) || (HasClass(before, 12) && HasClass(after, 0)) ||
+          (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00AC4EA0
 // FUNCTION: fn_17634
 bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, unsigned char options) const {
@@ -64,22 +84,7 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
   if (previous != 32) {
     const std::uint32_t& after = this->flags[current];
     const std::uint32_t& before = this->flags[previous];
-    if ((options & 2) != 0) {
-      if (((before & 0x470) != 0) == ((after & 0x470) != 0) &&
-          ((HasClass(before, 12) && HasClass(after, 0)) || ((before & 0x470) != 0 && (after & 0x470) != 0) ||
-           (HasClass(before, 1) && HasClass(after, 1)))) {
-        return true;
-      }
-    } else {
-      if (HasClass(after, 4) && !HasClass(before, 4)) {
-        return false;
-      }
-
-      if ((after & 0x60) != 0 || HasClass(before, 4) || (HasClass(before, 12) && HasClass(after, 0)) ||
-          (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10)) {
-        return true;
-      }
-    }
+    return MatchesClasses(before, after, options);
   }
 
   return false;
