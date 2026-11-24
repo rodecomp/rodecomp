@@ -9713,13 +9713,11 @@ void CGameMode::ProcessInput() {
       if (this->skillId == AM_POTIONPITCHER) {
         offset = g_session.IsCompanionJob(pick->job) && pick->kind == 4;
       } else {
-        int eligible;
+        int eligible = 0;
         if (g_session.monsterInfoEnabled && g_session.IsMonsterClass(pick->job)) {
           eligible = 1;
-        } else if (g_serviceOptions.Get(TT_ITEM_SNAP_ON_OFF)) {
-          eligible = pick->kind == 1;
-        } else {
-          eligible = 0;
+        } else if (g_serviceOptions.Get(TT_ITEM_SNAP_ON_OFF) && pick->kind == 1) {
+          eligible = 1;
         }
         offset = 0;
         switch (pick->kind) {
@@ -9733,7 +9731,8 @@ void CGameMode::ProcessInput() {
       }
       if (offset) {
         const float centerX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x;
-        const float centerY = (pick->corners[0].y - pick->corners[1].y) * g_depthAverageHalf + pick->corners[1].y;
+        const float bottom = pick->corners[1].y;
+        const float centerY = (pick->corners[0].y - bottom) * g_depthAverageHalf + bottom;
         this->cursorOffsetX = centerX - static_cast<float>(g_mouse.x);
         this->cursorOffsetY = centerY - static_cast<float>(g_mouse.y);
       }
@@ -9762,7 +9761,7 @@ void CGameMode::ProcessInput() {
     this->leftBtnClickTick = timeGetTime();
   }
 
-  const bool statusIcons = g_serviceOptions.Get(TT_STATEINFO_ON_OFF) != 0;
+  const bool statusIcons = g_serviceOptions.Get(TT_STATEINFO_ON_OFF);
   if (Replay::Instance().state != 6 && statusIcons) {
     this->ProcessStatusIconTooltip(g_mouse.x, g_mouse.y);
   }
