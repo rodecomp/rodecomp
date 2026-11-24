@@ -186,11 +186,10 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_ADDITEM:
     if (b) {
       this->AddLine(reinterpret_cast<const char*>(a), static_cast<unsigned>(b));
-      this->Invalidate();
-      break;
+    } else {
+      this->AddLine(reinterpret_cast<const char*>(a), 0);
     }
 
-    this->AddLine(reinterpret_cast<const char*>(a), 0);
     this->Invalidate();
     break;
 
