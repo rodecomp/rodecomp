@@ -924,7 +924,12 @@ void CGameMode::UpdateMiniMapTooltip() {
   int id = this->miniMapTooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
-    if (this->miniMapTooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
+    id = this->miniMapTooltipId;
+    if (id != -1) {
+      return;
+    }
+
+    if (g_windowMgr.illustWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
     return;
@@ -935,7 +940,7 @@ void CGameMode::UpdateMiniMapTooltip() {
   }
 
   int& tooltipId = this->miniMapTooltipId;
-  std::string& tooltipText = this->miniMapTooltipText;
+  const std::string& tooltipText = this->miniMapTooltipText;
   UIWindow* window = g_windowMgr.illustWnd;
   if (window == nullptr) {
     window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
@@ -948,10 +953,10 @@ void CGameMode::UpdateMiniMapTooltip() {
   }
   std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
 
-  window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
-
   int x = 160;
   int y = 0;
+  window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
+
   switch (tooltipId) {
   case 0:
     window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
