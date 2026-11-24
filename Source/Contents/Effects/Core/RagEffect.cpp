@@ -3688,14 +3688,12 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     } else if (kind == 20) {
       this->state.lastPrim->state.slots[index].alphaB = 65;
       this->state.lastPrim->state.slots[index].alphaT = 2170;
+    } else if (kind == 21) {
+      this->state.lastPrim->state.slots[index].alphaB = 32;
+      this->state.lastPrim->state.slots[index].alphaT = 2140;
     } else {
       this->state.lastPrim->state.slots[index].alphaB = 32;
-
-      if (kind == 21) {
-        this->state.lastPrim->state.slots[index].alphaT = 2140;
-      } else {
-        this->state.lastPrim->state.slots[index].alphaT = 2385;
-      }
+      this->state.lastPrim->state.slots[index].alphaT = 2385;
     }
 
     if (kind >= 10 && kind < 20) {
@@ -3721,7 +3719,11 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
 
-    this->state.lastPrim->state.slots[index].maxHeight = kind == 0 || kind == 10 || kind == 20 ? static_cast<float>(index) + 30.0f : static_cast<float>(index) + 20.0f;
+    if (kind == 0 || kind == 10 || kind == 20) {
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 30.0f;
+    } else {
+      this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) + 20.0f;
+    }
 
     if (kind == 10 || kind == 20) {
       this->state.lastPrim->state.slots[index].distance = static_cast<float>(index - 2) * 30.2f;
