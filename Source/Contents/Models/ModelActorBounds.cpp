@@ -249,5 +249,88 @@ void C3dActorV2::UpdateBounds() {
   }
 
   this->UpdateMatrix();
-  FinishBoundsModern(this, bounds.data(), true);
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    this->minimum[axis] = 100000;
+  }
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    this->maximum[axis] = -100000;
+  }
+
+  BoundsCorner points[8];
+  points[0].Set(bounds[0], bounds[1], bounds[2]);
+  points[1].Set(bounds[3], bounds[1], bounds[2]);
+  points[2].Set(bounds[0], bounds[4], bounds[2]);
+  points[3].Set(bounds[3], bounds[4], bounds[2]);
+  points[4].Set(bounds[0], bounds[1], bounds[5]);
+  points[5].Set(bounds[3], bounds[1], bounds[5]);
+  points[6].Set(bounds[0], bounds[4], bounds[5]);
+  points[7].Set(bounds[3], bounds[4], bounds[5]);
+
+  BoundsCorner* output = this->corners;
+  const BoundsCorner* point = points;
+  for (unsigned corner = 0; corner < 8; ++corner) {
+    float* stored = output->values;
+    stored[0] = Coordinate(point->values, this->transform.values, 0);
+    stored[1] = Coordinate(point->values, this->transform.values, 1);
+    stored[2] = Coordinate(point->values, this->transform.values, 2);
+
+    for (unsigned axis = 0; axis < 3; ++axis) {
+      if (this->minimum[axis] > stored[axis]) {
+        this->minimum[axis] = stored[axis];
+      }
+    }
+
+    for (unsigned axis = 0; axis < 3; ++axis) {
+      if (stored[axis] > this->maximum[axis]) {
+        this->maximum[axis] = stored[axis];
+      }
+    }
+    ++output;
+    ++point;
+  }
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    const float high = Coordinate(bounds.data() + 3, this->transform.values, axis);
+    const float low = Coordinate(bounds.data(), this->transform.values, axis);
+    this->oriented.center[axis] = (high + low) * g_depthAverageHalf;
+  }
+
+  this->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * this->scale.z) * g_depthAverageHalf;
+  this->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * this->scale.y) * g_depthAverageHalf;
+  this->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * this->scale.x) * g_depthAverageHalf;
+
+  matrix axes;
+  axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
+  axes.AppendYRotation(Radians(this->rotation.y));
+  axes.AppendXRotation(Radians(this->rotation.x));
+  axes.AppendZRotation(Radians(this->rotation.z));
+
+  SetAxis(this->oriented.axes[0], axes.values);
+  SetAxis(this->oriented.axes[1], axes.values + 3);
+  SetAxis(this->oriented.axes[2], axes.values + 6);
+
+  for (std::list<ModelVolume*>::iterator it = this->volumes.begin(); it != this->volumes.end(); ++it) {
+    ModelVolume* volume = *it;
+    volume->transform.MakeXRotation(Radians(volume->rotation.values[0]));
+    volume->transform.AppendYRotation(Radians(volume->rotation.values[1]));
+    volume->transform.AppendZRotation(Radians(volume->rotation.values[2]));
+    volume->transform.AppendTranslate(volume->position.values);
+    volume->inverseTransform.MakeInverse(volume->transform);
+    matrix combined;
+    combined.Compose(volume->transform, this->transform);
+
+    const float* size = volume->size.values;
+    TransformCorner(volume->corners[0].values, -size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[1].values, size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[2].values, size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[3].values, -size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[4].values, -size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[5].values, size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[6].values, size[0], size[1], size[2], combined.values);
+    TransformCorner(volume->corners[7].values, -size[0], size[1], size[2], combined.values);
+  }
+
+  this->dirty = 1;
 }
