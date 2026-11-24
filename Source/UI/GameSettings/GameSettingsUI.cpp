@@ -173,9 +173,9 @@ template <class T, class D> void SetScrollStep(CUIListBoxEx<T, D>* list, int ste
 // OFFSET: 0x00A1E250
 // FUNCTION: fn_15382
 template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHeight, int visibleItems) {
-  this->visibleItems = visibleItems;
   this->width = width;
   this->itemHeight = itemHeight;
+  this->visibleItems = visibleItems;
   this->SetSize(width + 2, itemHeight + 2);
 
   this->display = new T();
