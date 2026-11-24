@@ -65,7 +65,8 @@ int WorldViewSpatial::ClassifyOriented(const OrientedBounds& bounds) const {
     const float first = Absolute(((normal.x * bounds.axes[0][0] + normal.y * bounds.axes[0][1]) + normal.z * bounds.axes[0][2]) * bounds.halfSize[0]);
     const float third = Absolute(((normal.x * bounds.axes[2][0] + normal.y * bounds.axes[2][1]) + normal.z * bounds.axes[2][2]) * bounds.halfSize[2]);
     const float radius = (second + first) + third;
-    const float distance = ((normal.x * bounds.center[0] + normal.y * bounds.center[1]) + normal.z * bounds.center[2]) + view.planes[plane][3];
+    const float distance =
+      ((view.normals[plane].x * bounds.center[0] + view.normals[plane].y * bounds.center[1]) + view.normals[plane].z * bounds.center[2]) + view.planes[plane][3];
 
     if (!(distance > radius)) {
       const float negative = -radius;
