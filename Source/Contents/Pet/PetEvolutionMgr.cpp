@@ -99,8 +99,10 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
     return std::make_pair(false, std::move(materials));
   }
 
-  for (const auto material : recipe->materials) {
-    materials.push_back(material);
+  const auto materialEnd = recipe->materials.end();
+  for (auto materialIt = recipe->materials.begin(); materialIt != materialEnd; ++materialIt) {
+    auto material = *materialIt;
+    materials.push_back(std::move(material));
   }
   return std::make_pair(true, materials);
 }
