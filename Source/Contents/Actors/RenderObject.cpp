@@ -683,11 +683,11 @@ void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
 // FUNCTION: fn_21121
 int CRenderObject::HoverHeight() {
   this->render.hoverAngle += 2;
-  if (this->render.hoverAngle >= 360) {
+  short angle = this->render.hoverAngle;
+  if (angle >= 360) {
     this->render.hoverAngle -= 360;
+    angle = this->render.hoverAngle;
   }
-
-  const short angle = this->render.hoverAngle;
   const int state = this->render.state;
   if (state == ST_STAND || state == ST_MOVE || (this->render.flags & 0x40000) != 0) {
     if (this->render.hoverHeight < 20) {
