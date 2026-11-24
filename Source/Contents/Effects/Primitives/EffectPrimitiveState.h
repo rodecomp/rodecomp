@@ -15,6 +15,7 @@ class CTexture;
 
 extern float g_fullCircleAngle;
 extern float g_fireflyNormalDrift;
+extern float g_fireflyModeFive;
 
 struct ZeroVector3d : vector3d {
   // INLINED

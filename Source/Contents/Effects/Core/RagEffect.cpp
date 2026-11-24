@@ -3635,17 +3635,13 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
     if (kind == 2 || kind == 3 || kind == 6) {
       this->state.lastPrim->state.slots[index].process = 0;
       this->state.lastPrim->state.slots[index].distance = 2.0f;
-      if (kind == 3) {
-        this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 7 + index * 90);
-      } else {
-        this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 22 + index * 90);
-      }
     } else {
       this->state.lastPrim->state.slots[index].process = -24;
       this->state.lastPrim->state.slots[index].distance = 2.0f;
-      this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phase * 22 + index * 90);
     }
 
+    const int phaseAngle = kind == 3 ? phase * 7 : phase * 22;
+    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phaseAngle + index * 90);
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.slots[index].height[0] = -12.0f;
@@ -8051,6 +8047,7 @@ void CRagEffect::SpriteRing(char kind) {
 
   this->state.lastPrim->SetSpriteName(sprite);
   this->state.lastPrim->SetActionName(action);
+  const float radius = g_fireflyModeFive;
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].rotStart =
@@ -8059,8 +8056,8 @@ void CRagEffect::SpriteRing(char kind) {
     this->state.lastPrim->state.slots[i].vecBNow.x = 0.0f;
     this->state.lastPrim->state.slots[i].vecBNow.y = -5.0f;
     this->state.lastPrim->state.slots[i].vecBNow.z = 0.0f;
-    this->state.lastPrim->state.slots[i].vecBNow.x += g_cosTable[this->state.lastPrim->state.slots[i].rotStart] * 5.0f;
-    this->state.lastPrim->state.slots[i].vecBNow.z += g_sinTable[this->state.lastPrim->state.slots[i].rotStart] * 5.0f;
+    this->state.lastPrim->state.slots[i].vecBNow.x += g_cosTable[this->state.lastPrim->state.slots[i].rotStart] * radius;
+    this->state.lastPrim->state.slots[i].vecBNow.z += g_sinTable[this->state.lastPrim->state.slots[i].rotStart] * radius;
     if (kind == 9) {
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
     } else if (kind == 10) {
