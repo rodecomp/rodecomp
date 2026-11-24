@@ -16999,14 +16999,16 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     }
   }
 
+  int historyNotice = UIM_PUSHINTOCHATHISTORY;
   if (!systemMessage) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
     );
+    historyNotice = UIM_PUSHINTOCHATHISTORY2;
   }
   g_windowMgr.SendNotice(
-    UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    historyNotice, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
   );
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
