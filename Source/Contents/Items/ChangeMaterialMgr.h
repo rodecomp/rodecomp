@@ -84,9 +84,7 @@ public:
 
 class CChangeMaterialMgr {
 public:
-  // INLINED
-  CChangeMaterialMgr() : m_isValid(true) {
-  }
+  CChangeMaterialMgr();
 
   static bool CreateInstance();
   static void DestroyInstance();

@@ -16,6 +16,11 @@ extern "C" {
 // GLOBAL: gl_24855
 CChangeMaterialMgr* g_changeMaterialMgr = nullptr;
 
+// OFFSET: 0x005DC400
+// FUNCTION: fn_46519
+CChangeMaterialMgr::CChangeMaterialMgr() : m_isValid(true) {
+}
+
 // OFFSET: 0x005DC550
 // FUNCTION: fn_03809
 MaterialKey::MaterialKey(const std::vector<ChangeMaterialEntry>& materials) {
