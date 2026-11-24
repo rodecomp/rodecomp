@@ -3737,16 +3737,16 @@ void CUIEditBox::OnCreate(int width, int height) {
 // FUNCTION: fn_14511
 void CUITextViewer::AddLine(const std::string& text) {
   const int scrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
+  const int usedWidth = this->paddingLeft + this->paddingRight + scrollWidth;
+  const int availableWidth = std::max(0, this->geometry.width - usedWidth);
   int align;
   if (this->textX == 6) {
     align = 2;
   } else {
     align = this->textX == 2;
   }
-  LineTextStyle style{this->textColor, this->fontHeight, this->bold, false};
-  const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
   CCreateLineInfo lineInfo(
-    this, text.c_str(), availableWidth, this->lineSpacing, style,
+    this, text.c_str(), availableWidth, this->lineSpacing, LineTextStyle{this->textColor, this->fontHeight, this->bold, false},
     this->outline, this->outlineColor, this->shadow, this->shadowColor, align
   );
   if (!lineInfo.m_lines.empty()) {
@@ -3757,14 +3757,15 @@ void CUITextViewer::AddLine(const std::string& text) {
         this->AddLineChild(child);
       }
     }
-    const int visibleHeight = this->geometry.height - this->paddingTop - this->paddingBottom;
+    const int visibleHeight = this->geometry.height - this->paddingBottom - this->paddingTop;
     this->contentHeight += lineInfo.m_height;
     this->scrollBar->Move(this->geometry.width - this->scrollBar->geometry.width, 0);
     this->scrollBar->SetTotal(this->contentHeight);
     this->scrollBar->SetVisible(visibleHeight);
     this->scrollBar->SetPosition(this->scrollBar->position);
-    const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
-    this->padding->SetPadding(this->paddingLeft, this->paddingTop, this->paddingRight + newScrollWidth, this->paddingBottom);
+    this->padding->SetPadding(
+      this->paddingLeft, this->paddingTop, this->paddingRight + (this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0), this->paddingBottom
+    );
   }
 }
 
