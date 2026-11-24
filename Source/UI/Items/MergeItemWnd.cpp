@@ -298,10 +298,10 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
     return;
   }
 
-  const int minWidth = this->m_cellSize * 5;
   const int maxWidth = this->m_cellSize * 10;
   const int minHeight = this->m_gridTop + this->m_cellSize * 3;
   const int maxHeight = this->m_gridTop + this->m_cellSize * 6;
+  const int minWidth = this->m_cellSize * 5;
 
   const int left = this->m_gridLeft;
   int columns = width - this->m_marginRight - left;

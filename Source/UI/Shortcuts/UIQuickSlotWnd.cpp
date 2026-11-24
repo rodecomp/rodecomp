@@ -83,8 +83,8 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  int screenY = -17;
   int screenX = (x - 4) / 29 * 29 + 4;
+  int screenY = -17;
   this->ToScreen(screenX, screenY);
   std::string text;
   const std::uint32_t id = this->m_entries[this->m_selected].id;
