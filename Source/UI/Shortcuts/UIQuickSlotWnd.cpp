@@ -104,7 +104,7 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
     }
   } else {
-    text.clear();
+    text = "";
   }
 
   if (!text.empty()) {
