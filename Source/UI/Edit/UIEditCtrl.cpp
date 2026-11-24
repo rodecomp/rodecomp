@@ -11423,8 +11423,8 @@ void UIItemWnd::Paint() {
     }
   }
 
-  int visible = 0;
   int index = 0;
+  int visible = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
