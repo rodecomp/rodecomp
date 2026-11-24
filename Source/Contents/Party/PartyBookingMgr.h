@@ -48,6 +48,7 @@ public:
   bool FlushPending();
   void AddEntries(const PARTY_BOOKING_AD_INFO* infos, int count, bool more);
   void OnAdvertisement(PARTY_BOOKING_AD_INFO info);
+  bool MatchesFilter(PARTY_BOOKING_AD_INFO info);
   std::pair<bool, PartyBookingEntry> MakeEntry(PARTY_BOOKING_AD_INFO info);
 
   /* 0000 */ int seekWindowOpen;

@@ -154,33 +154,36 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
   return std::make_pair(true, entry);
 }
 
+// OFFSET: 0x00B17BA0
+// FUNCTION: fn_46727
+bool PartyBookingMgr::MatchesFilter(PARTY_BOOKING_AD_INFO info) {
+  if (this->m_filterLevel > 0 && (this->m_filterLevel > info.detail.level || this->m_filterLevel + 15 < info.detail.level)) {
+    return false;
+  }
+
+  if (this->m_filterMap > 0 && this->m_filterMap != info.detail.mapId) {
+    return false;
+  }
+
+  if (this->m_filterJob > 0) {
+    for (int i = 0; i < 6; ++i) {
+      if (this->m_filterJob == info.detail.job[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00B175B0
 // FUNCTION: fn_18448
 void PartyBookingMgr::OnAdvertisement(PARTY_BOOKING_AD_INFO info) {
   UISeekPartyListWnd* window = static_cast<UISeekPartyListWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND));
   if (window == nullptr) {
-    if (this->m_filterEnabled) {
-      PARTY_BOOKING_AD_INFO ad = info;
-      if (this->m_filterLevel > 0 && (this->m_filterLevel > ad.detail.level || this->m_filterLevel + 15 < ad.detail.level)) {
-        return;
-      }
-
-      if (this->m_filterMap > 0 && this->m_filterMap != ad.detail.mapId) {
-        return;
-      }
-
-      if (this->m_filterJob > 0) {
-        bool found = false;
-        for (int i = 0; i < 6; ++i) {
-          if (this->m_filterJob == ad.detail.job[i]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          return;
-        }
-      }
+    if (this->m_filterEnabled && !this->MatchesFilter(info)) {
+      return;
     }
 
     if (this->m_alarm) {
