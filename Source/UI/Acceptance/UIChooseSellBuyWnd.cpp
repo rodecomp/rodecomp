@@ -12511,7 +12511,8 @@ void UIFrameWnd::DrawItemNameText(
   };
   const ItemNameTextInfo* position = static_cast<const ItemNameTextInfo*>(info);
 
-  const FrameTextKeyView key{color, static_cast<std::uint32_t>(width), text};
+  const FrameTextKeyView keyView{color, static_cast<std::uint32_t>(width), text};
+  const FrameTextKey key{keyView};
   const auto cached = this->m_textCache.find(key);
   if (cached != this->m_textCache.end()) {
     this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
@@ -12530,7 +12531,7 @@ void UIFrameWnd::DrawItemNameText(
     this->FitLastTextLine(width, 2, position->family, position->height, lines);
   }
 
-  this->m_textCache[key] = lines;
+  this->m_textCache[keyView] = lines;
   this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
 }
 
