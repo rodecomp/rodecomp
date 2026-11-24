@@ -174,7 +174,8 @@ bool CSprArrowEffect::IsAlive() {
 void CSprArrowEffect::OnProcess() {
   const float ticks =
       static_cast<float>(static_cast<double>(timeGetTime() - static_cast<unsigned int>(this->startTick)) / 24.0);
-  if (ticks < this->delayFrames) {
+  float delay = this->delayFrames;
+  if (ticks < delay) {
     return;
   }
 
@@ -214,10 +215,11 @@ void CSprArrowEffect::OnProcess() {
 
     const float inverse = 1.0f / SquareRoot(lengthSquared);
     this->spriteParticle->position += vector3d{inverse * dx * 2.5f, inverse * dy * 2.5f, inverse * dz * 2.5f};
+    delay = this->delayFrames;
   }
 
   ++this->spriteParticle->elapsedFrames;
-  const float time = ticks - this->delayFrames;
+  const float time = ticks - delay;
   if (this->frame > 8) {
     const int last = static_cast<int>(this->spriteParticle->action->FrameCount(0)) - 1;
     this->spriteFrame = std::min(this->spriteFrame + 1, last);
