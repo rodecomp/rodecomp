@@ -484,8 +484,9 @@ void UIHotKeyWnd::Paint() {
 // FUNCTION: fn_12620
 void UIHotKeyWnd::ReloadHotkeys() {
   this->m_selectedRow = -1;
-  for (int tab = 0; tab < 4; ++tab) {
-    this->hotkeys[tab].clear();
+  auto* table = this->hotkeys.data();
+  for (auto remaining = this->hotkeys.size(); remaining != 0; --remaining, ++table) {
+    table->clear();
   }
 
   for (int position = 0; position < 4; ++position) {
