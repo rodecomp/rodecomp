@@ -3384,32 +3384,23 @@ int UIListBox_NaviSearch::SendMsg(
   }
 
   const int previous = this->topLine;
-  int lineHeight;
-  int top;
   if (message == UM_SCROLLVERTPAGEUP) {
-    lineHeight = this->lineHeight;
-    top = previous - this->geometry.height / lineHeight + 1;
+    this->topLine = previous - this->geometry.height / this->lineHeight + 1;
   } else if (message == UM_SCROLLVERTPAGEDOWN) {
-    lineHeight = this->lineHeight;
-    top = previous - 1 + this->geometry.height / lineHeight;
+    this->topLine = previous - 1 + this->geometry.height / this->lineHeight;
   } else {
-    top = static_cast<int>(argument1) + previous;
-    lineHeight = this->lineHeight;
+    this->topLine = previous + static_cast<int>(argument1);
   }
 
-  this->topLine = top;
-  if (top < 0) {
+  if (this->topLine < 0) {
     this->topLine = 0;
-    top = 0;
   }
 
-  const int maximum = this->bottomMargin + static_cast<int>(this->lines.size()) - this->geometry.height / lineHeight;
-  if (static_cast<unsigned int>(top) > static_cast<unsigned int>(maximum)) {
-    this->topLine = maximum;
-    top = maximum;
+  if (this->topLine > this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin) {
+    this->topLine = this->lines.size() - this->geometry.height / this->lineHeight + this->bottomMargin;
   }
 
-  this->verticalBar->SetPosition(top);
+  this->verticalBar->SetPosition(this->topLine);
   this->verticalBar->Invalidate();
   this->Invalidate();
   if (this->transparent != 0 && this->parent) {
