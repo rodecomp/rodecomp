@@ -17,6 +17,13 @@
 
 namespace {
   // INLINED
+  __forceinline void RaiseEntry(std::list<UIWindow*>::iterator entry) {
+    UIWindow* window = *entry;
+    g_windowMgr.rendered.erase(entry);
+    g_windowMgr.rendered.push_back(window);
+  }
+
+  // INLINED
   __forceinline void PromoteWindow(UIWindow* window) {
     if (!window || (g_windowMgr.modal != nullptr && g_windowMgr.navigationWnd != window)) {
       return;
@@ -38,21 +45,18 @@ namespace {
     if (companion != -1) {
       for (auto it = g_windowMgr.rendered.begin(); it != g_windowMgr.rendered.end(); ++it) {
         if ((*it)->geometry.id == companion) {
-          UIWindow* const value = *it;
-          g_windowMgr.rendered.erase(it);
-          g_windowMgr.rendered.emplace_back(value);
+          RaiseEntry(it);
           break;
         }
       }
     }
 
-    for (auto it = g_windowMgr.rendered.begin(); it != g_windowMgr.rendered.end(); ++it) {
-      if (*it == window) {
-        UIWindow* const value = *it;
-        g_windowMgr.rendered.erase(it);
-        g_windowMgr.rendered.emplace_back(value);
-        break;
-      }
+    const auto end = g_windowMgr.rendered.end();
+    const auto entry = std::find(g_windowMgr.rendered.begin(), end, window);
+
+    if (entry != end) {
+      g_windowMgr.rendered.erase(entry);
+      g_windowMgr.rendered.push_back(window);
     }
   }
 }
@@ -75,12 +79,12 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     this->chatWnd->Show(visible);
     UIWindow* window = this->chatWnd;
 
-    if (visible == 0) {
+    if (visible != 0) {
+      PromoteWindow(window);
+    } else {
       window->StoreInfo();
-      return true;
     }
 
-    PromoteWindow(window);
     return true;
   }
 
@@ -142,17 +146,17 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
     this->skillDescribeWnd->Show(visible);
     UIWindow* window = this->skillDescribeWnd;
 
-    if (visible == 0) {
+    if (visible != 0) {
+      PromoteWindow(window);
+    } else {
       window->StoreInfo();
-      return true;
     }
 
-    PromoteWindow(window);
     return true;
   }
 
   case WID_MINIMAPWND:
-    g_windowMgr.LookupWindow(WID_MINIMAPWND)->Show(visible);
+    this->LookupWindow(WID_MINIMAPWND)->Show(visible);
     return true;
 
   case WID_ROUNDBOXTOOLTIPWND:
@@ -172,7 +176,8 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
     this->roundBoxTooltipWnd->Show(visible);
     return true;
-  }
 
-  return false;
+  default:
+    return false;
+  }
 }
