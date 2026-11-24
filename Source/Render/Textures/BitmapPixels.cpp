@@ -151,10 +151,9 @@ void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uin
   this->m_bitmap.dirty = true;
   const std::int32_t count = static_cast<std::int32_t>(this->m_bitmap.width * this->m_bitmap.height);
 
-  const std::uint32_t* input = source;
-  for (int row = 0; row < copyHeight; ++row, source += copyWidth, input = source) {
-    for (int column = 0; column < copyWidth; ++column, ++input) {
-      const std::uint32_t value = *input;
+  for (int row = 0; row < copyHeight; ++row) {
+    for (int column = 0; column < copyWidth; ++column) {
+      const std::uint32_t value = source[column + row * copyWidth];
       if (static_cast<unsigned char>(transparent) == 0 || value != 0xFFFF00FF) {
         const std::int32_t index = static_cast<std::int32_t>((row + y) * this->m_bitmap.width + column + x);
         if (index > -1 && count > index) {
