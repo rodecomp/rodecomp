@@ -31,8 +31,7 @@ std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32
     const unsigned char* const word = current;
     remaining -= 4;
     current += 4;
-    hash += ReadWord(word) * 0xC2B2AE3Du;
-    hash = std::rotl(hash, 17) * 0x27D4EB2Fu;
+    hash = std::rotl(hash + ReadWord(word) * 0xC2B2AE3Du, 17) * 0x27D4EB2Fu;
   }
 
   while (remaining != 0) {
