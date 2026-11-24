@@ -976,21 +976,21 @@ void CGameMode::RefreshMiniMapTooltips() {
 // OFFSET: 0x00CD0B30
 // FUNCTION: fn_21254
 void CGameMode::UpdateMiniMapTooltip() {
-  int& tooltipId = this->miniMapTooltipId;
-  std::string& tooltipText = this->miniMapTooltipText;
-  int id = tooltipId;
+  int id = this->miniMapTooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
-    if (tooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
+    if (this->miniMapTooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
     return;
   }
 
-  if (tooltipText.size() == 0) {
+  if (this->miniMapTooltipText.size() == 0) {
     return;
   }
 
+  int& tooltipId = this->miniMapTooltipId;
+  std::string& tooltipText = this->miniMapTooltipText;
   UIWindow* window = g_windowMgr.illustWnd;
   if (window == nullptr) {
     window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
