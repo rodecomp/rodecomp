@@ -171,6 +171,11 @@ static int ClampedRandom(int range) {
 }
 
 // INLINED
+static std::string GetMapName(const CGameMode* mode) {
+  return mode->mapName;
+}
+
+// INLINED
 static int ClampedRandomAtZero(int range) {
   int value = rand() % range;
   if (value < 0) {
@@ -10557,13 +10562,14 @@ void CRagEffect::SkyCloud(char kind) {
     } else if (kind == 3) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
-      const CGameMode* mode = g_modeMgr.GetGameMode();
-      const EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
-      this->state.lastPrim->state.slots[index].vecBNow.y =
-        mode->scene->terrain->Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - g_fireflyGroundOffset -
-        static_cast<float>(ClampedRandom(5));
+      const C3dAttr* terrain = g_modeMgr.GetGameMode()->scene->terrain;
+      this->state.lastPrim->state.slots[index].vecBNow.y = terrain->Height(
+                                                             this->state.lastPrim->state.slots[index].vecBNow.x + this->render.position.x,
+                                                             this->state.lastPrim->state.slots[index].vecBNow.z + this->render.position.z
+                                                           ) -
+                                                           20.0f - static_cast<float>(ClampedRandom(5));
     } else if (kind == 5) {
-      this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + g_fireflyGroundOffset;
+      this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + 20.0f;
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
     } else if (kind == 9 || kind == 15) {
@@ -10571,30 +10577,30 @@ void CRagEffect::SkyCloud(char kind) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
-      if ((kind == 9 || kind == 15) && std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
+      if (GetMapName(g_modeMgr.GetGameMode()) == "ecl_fild01.rsw") {
         this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
         this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * g_heightSpeedSign;
+        this->state.lastPrim->state.slots[index].vecBNow.x *= -1.0f;
       }
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * g_heightSpeedSign;
+        this->state.lastPrim->state.slots[index].vecBNow.z *= -1.0f;
       }
     } else {
       this->state.lastPrim->state.slots[index].vecBNow.y = static_cast<float>(ClampedRandom(10)) + 40.0f;
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.x = this->state.lastPrim->state.slots[index].vecBNow.x * g_heightSpeedSign;
+        this->state.lastPrim->state.slots[index].vecBNow.x *= -1.0f;
       }
 
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
       if (ClampedRandom(2) == 0) {
-        this->state.lastPrim->state.slots[index].vecBNow.z = this->state.lastPrim->state.slots[index].vecBNow.z * g_heightSpeedSign;
+        this->state.lastPrim->state.slots[index].vecBNow.z *= -1.0f;
       }
     }
 
@@ -10613,37 +10619,28 @@ void CRagEffect::SkyCloud(char kind) {
 
     this->state.lastPrim->state.slots[index].height[8] = static_cast<float>(ClampedRandom(360));
 
-    switch (kind) {
-    case 3:
+    if (kind == 3) {
       this->state.lastPrim->state.slots[index].flag1[2] = 12;
-      break;
-    case 5:
+    } else if (kind == 5) {
       this->state.lastPrim->state.slots[index].flag1[2] = 14;
-      break;
-    case 7:
+    } else if (kind == 7) {
       this->state.lastPrim->state.slots[index].flag1[2] = 16;
-      break;
-    case 8:
+    } else if (kind == 8) {
       this->state.lastPrim->state.slots[index].flag1[2] = 17;
-      break;
-    case 9:
+    } else if (kind == 9) {
       this->state.lastPrim->state.slots[index].flag1[2] = 23;
-      break;
-    case 15:
+    } else if (kind == 15) {
       this->state.lastPrim->state.slots[index].flag1[2] = 25;
-      break;
-    case 11:
+    } else if (kind == 11) {
       this->state.lastPrim->state.slots[index].flag1[2] = 14;
-      break;
-    case 12:
+    } else if (kind == 12) {
       this->state.lastPrim->state.slots[index].flag1[2] = 16;
-      break;
-    case 13:
+    } else if (kind == 13) {
       this->state.lastPrim->state.slots[index].flag1[2] = 17;
-      break;
-    default:
-      this->state.lastPrim->state.slots[index].flag1[2] = kind == 14 ? 24 : 0;
-      break;
+    } else if (kind == 14) {
+      this->state.lastPrim->state.slots[index].flag1[2] = 24;
+    } else {
+      this->state.lastPrim->state.slots[index].flag1[2] = 0;
     }
   }
 }
@@ -18440,110 +18437,107 @@ void CRagEffect::FreezingCircle(char kind) {
     }
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
-      this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(15) - 8);
+    } else if (kind == 6) {
+      this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(35) - 17);
+      this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
     } else {
-      if (kind == 6) {
-        this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
-      } else {
-        this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
-      }
-
+      this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(std::max(rand() % 100, 0));
-    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
-      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecBNow.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecBNow.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecBNow.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(std::max(rand() % 100, 0));
-    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
-      this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecTPre.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecTPre.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecTPre.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(std::max(rand() % 100, 0));
-    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(std::max(rand() % 15, 0) - 8);
-      this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(std::max(rand() % 15, 0) - 8);
+      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(std::max(rand() % 35, 0) - 17);
+      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecTNow.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecTNow.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecTNow.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(std::max(rand() % 100, 0));
-    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 4) {
       this->state.lastPrim->state.slots[i].vecBPre.y = -40.0f;
       this->state.lastPrim->state.slots[i].vecBNow.y = -50.0f;
       this->state.lastPrim->state.slots[i].vecTPre.y = -60.0f;
       this->state.lastPrim->state.slots[i].vecTNow.y = -70.0f;
-      this->state.lastPrim->state.slots[i].flag1[0] = 14;
-    } else {
-      if (kind == 5 || kind == 7) {
-        this->state.lastPrim->state.slots[i].vecBPre.y = 0.0f;
-        this->state.lastPrim->state.slots[i].vecBNow.y = 0.0f;
-        this->state.lastPrim->state.slots[i].vecTPre.y = 0.0f;
-        this->state.lastPrim->state.slots[i].vecTNow.y = 0.0f;
-      } else if (kind == 6) {
-        this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
-        this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
-        this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
-        this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - std::max(rand() % 40, 0));
-        this->state.lastPrim->state.slots[i].flag1[0] = 16;
-        continue;
-      }
+    } else if (kind == 5 || kind == 7) {
+      this->state.lastPrim->state.slots[i].vecBPre.y = 0.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.y = 0.0f;
+      this->state.lastPrim->state.slots[i].vecTPre.y = 0.0f;
+      this->state.lastPrim->state.slots[i].vecTNow.y = 0.0f;
+    } else if (kind == 6) {
+      this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - ClampedRandom(40));
+    }
 
-      if (kind == 1) {
-        this->state.lastPrim->state.slots[i].flag1[0] = kind;
-      } else if (kind == 3) {
-        this->state.lastPrim->state.slots[i].flag1[0] = 11;
-      } else if (kind == 5 || kind == 7 || kind == 8) {
-        this->state.lastPrim->state.slots[i].flag1[0] = 15;
-        this->state.lastPrim->state.slots[i].flag1[1] = 0;
-        this->state.lastPrim->state.slots[i].flag1[2] = 0;
-        this->state.lastPrim->state.slots[i].flag1[3] = 0;
-        this->state.lastPrim->state.slots[i].flag1[4] = 0;
-        this->state.lastPrim->state.slots[i].flag1[5] = kind;
-      } else {
-        this->state.lastPrim->state.slots[i].flag1[0] = 0;
-      }
+    if (kind == 1) {
+      this->state.lastPrim->state.slots[i].flag1[0] = kind;
+    } else if (kind == 3) {
+      this->state.lastPrim->state.slots[i].flag1[0] = 11;
+    } else if (kind == 4) {
+      this->state.lastPrim->state.slots[i].flag1[0] = 14;
+    } else if (kind == 5 || kind == 7 || kind == 8) {
+      this->state.lastPrim->state.slots[i].flag1[0] = 15;
+      this->state.lastPrim->state.slots[i].flag1[1] = 0;
+      this->state.lastPrim->state.slots[i].flag1[2] = 0;
+      this->state.lastPrim->state.slots[i].flag1[3] = 0;
+      this->state.lastPrim->state.slots[i].flag1[4] = 0;
+      this->state.lastPrim->state.slots[i].flag1[5] = kind;
+    } else if (kind == 6) {
+      this->state.lastPrim->state.slots[i].flag1[0] = 16;
+    } else {
+      this->state.lastPrim->state.slots[i].flag1[0] = 0;
     }
   }
 }
