@@ -27,17 +27,10 @@ struct BarterTreeNode {
   /* 0014 */ int value;
 };
 
-struct BarterTreeLookup {
-  /* 0000 */ BarterTreeNode* node;
-  /* 0004 */ int direction;
-  /* 0008 */ BarterTreeNode* bound;
-};
-
 struct BarterTree {
   /* 0000 */ BarterTreeNode* head;
   /* 0004 */ std::size_t size;
 
-  BarterTreeLookup FindBound(const int& key);
   void EraseSubtree(BarterTree* owner, BarterTreeNode* node) noexcept;
   void Clear() noexcept;
   ~BarterTree();
@@ -205,30 +198,6 @@ void BarterTree::EraseSubtree(BarterTree* owner, BarterTreeNode* root) noexcept
     node = node->left;
     std::allocator<BarterTreeNode>().deallocate(erased, 1);
   }
-}
-
-// OFFSET: 0x005D6FD0
-// FUNCTION: fn_03718
-BarterTreeLookup BarterTree::FindBound(const int& key)
-{
-  BarterTreeNode* head = this->head;
-  BarterTreeLookup result;
-  BarterTreeNode* node = head->parent;
-  result.node = node;
-  result.direction = 0;
-  result.bound = head;
-  while (node->isnil == 0) {
-    result.node = node;
-    if (node->key < key) {
-      result.direction = 0;
-      node = node->right;
-    } else {
-      result.bound = node;
-      result.direction = 1;
-      node = node->left;
-    }
-  }
-  return result;
 }
 
 // OFFSET: 0x005D7390
