@@ -1445,7 +1445,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     CGameMode* gameMode = g_modeMgr.GetGameMode();
     if (gameMode && this->mode != 0) {
       int index = 0;
-      for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+      auto it = this->members.begin();
+      while (it != this->members.end()) {
         if (it->valid && !it->offline) {
           CRenderObject* actor;
           int current;
@@ -1493,6 +1494,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->jobIcons[index]->SetBitmap(path, 1, 0);
         this->jobIcons[index]->SetBitmap(path, 2, 0);
         this->jobIcons[index]->Invalidate();
+        ++it;
+        ++index;
       }
     }
 
