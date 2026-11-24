@@ -6051,11 +6051,11 @@ bool CEffectPrim::PrimFieldFireflies() {
         if (slot.process < 80 && this->render.position.y < slot.height[6]) {
           slot.alphaB += 2;
         }
-      } else if (mode == 2.0f) {
+      } else if (mode == g_effectIconOuterRadius) {
         if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (mode == 3.0f) {
+      } else if (mode == g_masterReachDistance) {
         if (slot.process < 170) {
           ++slot.alphaB;
         }
@@ -6090,7 +6090,7 @@ bool CEffectPrim::PrimFieldFireflies() {
           slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
           const C3dAttr* grid = g_modeMgr.GetGameMode()->scene->terrain;
           const int sink = ClampedRandom(5);
-          slot.vecBNow.y = grid->Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
+          slot.vecBNow.y = grid->Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - g_fireflyGroundOffset - static_cast<float>(sink);
         } else {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
@@ -6113,10 +6113,10 @@ bool CEffectPrim::PrimFieldFireflies() {
       DriftSlotAngles(slot, 2);
 
       const float motion = slot.height[7];
-      if (motion == 3.0f) {
+      if (motion == g_masterReachDistance) {
         slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.015f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.015f;
-      } else if (motion == 4.0f) {
+      } else if (motion == g_effectIconRadius) {
         if (g_sinTable[static_cast<int>(slot.height[0])] > 0.0f) {
           slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.2f;
         } else {
