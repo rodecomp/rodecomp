@@ -129,7 +129,8 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
         this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationValues[0])];
         this->offsets[index].z += speed * g_sinTable[static_cast<int>(particle->animationValues[1])];
         if (this->offsets[index].y < -20.0f) {
-          particle->alpha = std::max(particle->alpha - 4, 0);
+          const int alpha = particle->alpha - 4;
+          particle->alpha = alpha >= 0 ? alpha : 0;
         } else if (particle->alpha != 255) {
           particle->alpha = 255;
         }
