@@ -11,7 +11,7 @@ CRC32::CRC32() {
     for (int bit = 0; bit < 8; ++bit) {
       DWORD shifted = value >> 1;
       DWORD odd = shifted ^ 0xEDB88320;
-      value = (value & 1) ? odd : shifted;
+      value = (value & 1) == 0 ? shifted : odd;
     }
     m_table[i] = value;
   }
