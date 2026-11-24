@@ -4583,18 +4583,18 @@ int UIEditCtrl3::DecodeLinkNumber(std::string text) {
 // OFFSET: 0x008603D0
 // FUNCTION: fn_10899
 void UIEditCtrl3::DecodeLinkOptions(std::vector<int>& options, const char* text, int& position, const int& length, const char& separator, const char& alternate) {
-  std::string value;
+  std::string value("");
   while (++position < length + 1) {
     const char byte = text[position];
     if (byte >= '0') {
       value += byte;
-    } else if (separator != byte && alternate != byte) {
+    } else if (byte == separator || byte == alternate) {
+      options.push_back(this->DecodeLinkNumber(value));
+      value.clear();
+    } else {
       --position;
       options.push_back(this->DecodeLinkNumber(value));
       break;
-    } else {
-      options.push_back(this->DecodeLinkNumber(value));
-      value.clear();
     }
   }
 }
