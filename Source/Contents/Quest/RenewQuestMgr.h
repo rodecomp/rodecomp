@@ -76,6 +76,16 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
     SecureZeroMemory(this->m_huntName, sizeof(this->m_huntName));
   }
 
+  RenewQuestOngoingInfo(const RenewQuestOngoingInfo&) = default;
+  RenewQuestOngoingInfo(RenewQuestOngoingInfo&&) = default;
+  RenewQuestOngoingInfo& operator=(const RenewQuestOngoingInfo&) = default;
+  RenewQuestOngoingInfo& operator=(RenewQuestOngoingInfo&&) = default;
+
+  // OFFSET: 0x00677310
+  // FUNCTION: fn_46553
+  ~RenewQuestOngoingInfo() {
+  }
+
   std::string GetDateString() const;
   std::string GetHuntText(int index) const;
 };
@@ -85,6 +95,15 @@ struct RenewQuestRecommendedInfo : RenewQuestInfo {
   /* 00CC */ std::vector<std::string> m_descriptions[3];
 
   RenewQuestRecommendedInfo();
+  RenewQuestRecommendedInfo(const RenewQuestRecommendedInfo&) = default;
+  RenewQuestRecommendedInfo(RenewQuestRecommendedInfo&&) = default;
+  RenewQuestRecommendedInfo& operator=(const RenewQuestRecommendedInfo&) = default;
+  RenewQuestRecommendedInfo& operator=(RenewQuestRecommendedInfo&&) = default;
+
+  // OFFSET: 0x00677440
+  // FUNCTION: fn_46554
+  ~RenewQuestRecommendedInfo() {
+  }
 };
 
 struct RenewQuestFilter {
