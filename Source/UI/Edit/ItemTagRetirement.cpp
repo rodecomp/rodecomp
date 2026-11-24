@@ -255,12 +255,12 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   link.push_back(delimiters[5]);
   link += this->ItemLinkNumberText(item.grade);
 
-  const std::uint32_t* cards = item.cards;
   int slots = item.SlotCount();
   if (slots == 0) {
     slots = 4;
   }
 
+  const std::uint32_t* cards = item.cards;
   for (int index = 0; index < 4; ++index) {
     if (item.cards[index] != 0) {
       slots = 4;
