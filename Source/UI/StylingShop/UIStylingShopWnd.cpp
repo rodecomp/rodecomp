@@ -895,7 +895,7 @@ void UIDisplayCharacter::SelectNextStyle(const char* table, int* goods) {
   int sequence = 0;
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
   ++sequence;
-  if (sequence > size) {
+  if (size < sequence) {
     sequence = 1;
   }
   g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, sequence, goods);
