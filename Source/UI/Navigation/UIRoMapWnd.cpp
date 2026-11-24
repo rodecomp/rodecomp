@@ -348,8 +348,8 @@ void UIRoMapWnd::DrawDungeonLinks() {
       width = field->right - field->left;
       height = field->bottom - field->top;
       const int mapWidth = map->right - map->left;
-      const int mapHeight = map->bottom - map->top;
       const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
+      const int mapHeight = map->bottom - map->top;
       const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
       const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
       const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
@@ -368,8 +368,8 @@ void UIRoMapWnd::DrawDungeonLinks() {
       }
 
       DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, color, positionTexture);
-      x = field->left;
       y = field->top;
+      x = field->left;
     } else {
       const WorldViewRecord* selected = this->selectedRecord;
       isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
