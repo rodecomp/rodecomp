@@ -447,10 +447,10 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
       input.Read(buffer.data(), size);
       ModelFaceHeader record;
       std::memcpy(&record, buffer.data(), sizeof(record));
+      target.twoSided = record.twoSided;
       std::memcpy(target.vertices, record.vertices, sizeof(target.vertices));
       std::memcpy(target.textureVertices, record.textureVertices, sizeof(target.textureVertices));
       target.texture = record.texture;
-      target.twoSided = record.twoSided;
       const unsigned groups = (buffer.size() - 20u) / 4u;
       target.smoothing.resize(groups);
       std::memcpy(target.smoothing.data(), buffer.data() + 20, groups * 4u);
