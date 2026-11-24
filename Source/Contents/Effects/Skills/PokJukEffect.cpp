@@ -192,8 +192,8 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
         }
       } else if (this->states[index] == 1) {
         const int heading = particle->angleParameter;
-        const int phase = particle->phaseParameter;
         const float speed = particle->scale;
+        const int phase = particle->phaseParameter;
         const float flat = speed * g_cosTable[heading];
         this->trails[index][0].y += speed * g_sinTable[heading];
         Shift(this->trails[index][0], flat * g_cosTable[phase], g_sinTable[phase] * flat);
