@@ -7420,7 +7420,11 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
   if (item.itemIndex > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = g_session.LookupClientItemByIdentity(item.itemIndex);
-    mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, owned.itemIndex > 0 ? item.quantity : 1, -1);
+    if (owned.itemIndex > 0) {
+      mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, item.quantity, -1);
+    } else {
+      mode->BeginDragItem(DRAG_ITEM_NPC_SHOP, item, 1, -1);
+    }
   }
 }
 
