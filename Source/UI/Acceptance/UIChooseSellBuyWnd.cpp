@@ -1186,12 +1186,13 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.PartyCount() == 0) {
         if (this->m_mode == 50) {
-          std::string name;
+          std::string name = "";
           name = this->m_nameEdit->Text();
           if (name.find("#") != std::string::npos) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME)), 0xFF, 0, 0, 0);
           } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0xFF, 0, 0, 0);
+            return 0;
           } else if (std::strlen(name.c_str()) != 0) {
             mode->SendMsg(MM_WHISPER_FILTER, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
             g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
@@ -1240,7 +1241,8 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         }
       } else {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ONLY_PARTYMASTER)), 0xFFFF64, 10, 0, 0);
+        const char* message = LookupMessage(MSI_ONLY_PARTYMASTER);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF64, 10, 0, 0);
       }
       return 0;
     default:
