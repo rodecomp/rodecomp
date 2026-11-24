@@ -219,8 +219,10 @@ void CAcidifiedThrow::OnProcess() {
         FreeParticle(emitter);
         this->impactEmitters[i] = nullptr;
       } else {
-        const vector3d position = this->impactPosition;
-        this->impactEmitters[i]->position = vector3d{position.x - g_projectionDepthNumerator, position.y - 14.0f, position.z};
+        vector3d position = this->impactPosition;
+        position.y -= 14.0f;
+        position.x -= g_projectionDepthNumerator;
+        emitter->position = position;
         this->impactEmitters[i]->Process(0.0f, 0.0f, 0.0f);
         ++activeCount;
       }
