@@ -1104,8 +1104,9 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
   auto package = FindPackage(*Singleton<CSelectPackageItemMgr>::s_instance, this->packageId);
   if (package != Singleton<CSelectPackageItemMgr>::s_instance->m_packages.end()) {
     for (const auto& tab : package->second) {
+      const int tabId = tab.first;
       auto* tabList = this->tabList;
-      SelectPackageItemBox::CTabInfoData data{this->packageId, tab.first, tab.second.name};
+      SelectPackageItemBox::CTabInfoData data{this->packageId, tabId, tab.second.name};
       tabList->data.push_back(std::move(data));
     }
     this->tabList->UpdateScrollBar();
