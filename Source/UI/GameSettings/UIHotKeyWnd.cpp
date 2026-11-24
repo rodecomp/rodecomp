@@ -292,20 +292,22 @@ static UIHotKeyWnd::HotkeyEntry EntryOf(int index, const HotkeyInfo& info) {
 // OFFSET: 0x0091C720
 // FUNCTION: fn_12617
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
-  HotkeyInfo info;
+  HotkeyInfo info(0, 0);
   if (resolve) {
     index = g_session.HotkeyIndex(tab, index);
   }
 
   if (index != -1) {
+    bool found = false;
     const auto it = this->hotkeys[tab].find(index);
     if (it != this->hotkeys[tab].end()) {
       info = it->second;
-      if (!info.description.empty()) {
-        return EntryOf(index, info);
-      }
+      found = !info.description.empty();
     }
-    info = g_session.GetHotkeyInfo(tab, index);
+
+    if (!found) {
+      info = g_session.GetHotkeyInfo(tab, index);
+    }
   }
 
   return EntryOf(index, info);
@@ -492,24 +494,17 @@ void UIHotKeyWnd::ReloadHotkeys() {
     for (int row = 0; row < count; ++row) {
       const int index = g_session.HotkeyIndex(tab, row);
       if (index != -1) {
-        std::string text = "";
-        std::string description = "";
-        int key1 = 0;
-        int key2 = 0;
+        HotkeyInfo info(0, 0);
         const char* textValue = nullptr;
         const char* descriptionValue = nullptr;
-        if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-          description = descriptionValue;
-          if (!description.empty()) {
-            if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-              text = textValue;
-              description = descriptionValue;
-              if (!description.empty()) {
-                HotkeyInfo& info = this->hotkeys[tab][index];
-                info.key1 = key1;
-                info.key2 = key2;
-                info.text = text;
-                info.description = description;
+        if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &textValue, &descriptionValue)) {
+          info.description = descriptionValue;
+          if (!info.description.empty()) {
+            if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &textValue, &descriptionValue)) {
+              info.text = textValue;
+              info.description = descriptionValue;
+              if (!info.description.empty()) {
+                this->hotkeys[tab].try_emplace(index, 0, 0).first->second = info;
               }
             }
           }
