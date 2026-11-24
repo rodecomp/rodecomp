@@ -511,6 +511,16 @@ void CUIProbabilityTable::BindItem(ProbabilityTable::CUIItem* item, const Probab
   item->probabilityText->AddLine(FormatOwnedString("%.4lf%%", data.probability));
 }
 
+// INLINED
+static void SetClickHandler(CUIImageButton* button, std::function<void()> handler) {
+  button->onClick.swap(handler);
+}
+
+// INLINED
+static void SetSubmitHandler(CUIEditBoxEx* edit, std::function<void()> handler) {
+  edit->onSubmit.swap(handler);
+}
+
 // OFFSET: 0x00A493D0
 // FUNCTION: fn_16119
 void CUIProbabilityTable::OnCreate(int width, int height) {
@@ -553,7 +563,7 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   CUIImageButton* systemButton = new CUIImageButton();
   systemButton->SetSize(11, 11);
   systemButton->Move(3, 3);
-  systemButton->onClick = [this]() { this->OnButtonClick(); };
+  SetClickHandler(systemButton,[this]() { this->OnButtonClick(); });
   systemButton->disabled = 0;
   systemButton->Invalidate();
   systemButton->SetImages(
@@ -634,38 +644,41 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_searchEdit->SetEditBounds(0, 0, 0, 0);
   this->m_searchEdit->SetMask(0);
   this->m_searchEdit->SetAlignment(0);
-  this->m_searchEdit->onSubmit = [this]() { this->Search(); };
+  SetSubmitHandler(this->m_searchEdit,[this]() { this->Search(); });
   this->AddChild(this->m_searchEdit);
 
   this->m_searchButton = new CUIImageButton();
   this->m_searchButton->SetSize(25, 18);
   this->m_searchButton->Move(310, 30);
   this->m_searchButton->SetOnClick([this]() { this->Search(); });
-  this->m_searchButton->disabled = 0;
-  this->m_searchButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_searchButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   this->m_searchButton->SetImages(
-    std::string(OBFUSCATE_DECRYPT_CHARS(0x2F8B0F37118D157FULL, 62, {
+    OBFUSCATE_DECRYPT_CHARS(0x2F8B0F37118D157FULL, 62, {
     '\xBF', '\xBA', '\x4D', '\xEB', '\xF7', '\xC1', '\x4E', '\xE2', '\xB9', '\xF1', '\x4D', '\xDD', '\x8A', '\xB5', '\xD7', '\x41',
     '\x1E', '\x63', '\xE4', '\x76', '\x56', '\x7B', '\xE2', '\x40', '\x11', '\x4A', '\xE4', '\x7F', '\x43', '\x6A', '\xF9', '\x49',
     '\x1E', '\x76', '\xE8', '\x22', '\x6B', '\x6D', '\xFF', '\x41', '\x20', '\x66', '\xE8', '\x70', '\x45', '\x6C', '\xE3', '\x4D',
     '\x1E', '\x67', '\xD2', '\x7F', '\x58', '\x7D', '\xE6', '\x4E', '\x13', '\x3B', '\xEF', '\x7C', '\x47', '\x0F'
-  })), std::string(OBFUSCATE_DECRYPT_CHARS(0xAD075B8DB599F1CDULL, 61, {
+  }), OBFUSCATE_DECRYPT_CHARS(0xAD075B8DB599F1CDULL, 61, {
     '\x0D', '\x5E', '\x59', '\x4F', '\x4D', '\x95', '\xC2', '\x60', '\x0B', '\x15', '\x59', '\x79', '\x30', '\xE1', '\x5B', '\xC3',
     '\xAC', '\x87', '\xF0', '\xD2', '\xEC', '\x2F', '\x6E', '\xC2', '\xA3', '\xAE', '\xF0', '\xDB', '\xF9', '\x3E', '\x75', '\xCB',
     '\xAC', '\x92', '\xFC', '\x86', '\xD1', '\x39', '\x73', '\xC3', '\x92', '\x82', '\xFC', '\xD4', '\xFF', '\x38', '\x6F', '\xCF',
     '\xAC', '\x83', '\xC6', '\xC5', '\xFF', '\x3E', '\x74', '\xDE', '\xE3', '\x93', '\xF4', '\xC5', '\x8D'
-  })),
-    std::string(OBFUSCATE_DECRYPT_CHARS(0x2FE993D1DDE1F197ULL, 60, {
+  }),
+    OBFUSCATE_DECRYPT_CHARS(0x2FE993D1DDE1F197ULL, 60, {
     '\x57', '\x5E', '\x21', '\x27', '\x11', '\x5D', '\x2C', '\xE2', '\x51', '\x15', '\x21', '\x11', '\x6C', '\x29', '\xB5', '\x41',
     '\xF6', '\x87', '\x88', '\xBA', '\xB0', '\xE7', '\x80', '\x40', '\xF9', '\xAE', '\x88', '\xB3', '\xA5', '\xF6', '\x9B', '\x49',
     '\xF6', '\x92', '\x84', '\xEE', '\x8D', '\xF1', '\x9D', '\x41', '\xC8', '\x82', '\x84', '\xBC', '\xA3', '\xF0', '\x81', '\x4D',
     '\xF6', '\x83', '\xBE', '\xB2', '\xA7', '\xF6', '\x9B', '\x01', '\xF5', '\x9C', '\x91', '\xDD'
-  })), std::string(OBFUSCATE_DECRYPT_CHARS(0x39FF7FB50DEB998FULL, 62, {
+  }), OBFUSCATE_DECRYPT_CHARS(0x39FF7FB50DEB998FULL, 62, {
     '\x4F', '\x36', '\x2B', '\xF7', '\x75', '\xB1', '\x3A', '\xF4', '\x49', '\x7D', '\x2B', '\xC1', '\x08', '\xC5', '\xA3', '\x57',
     '\xEE', '\xEF', '\x82', '\x6A', '\xD4', '\x0B', '\x96', '\x56', '\xE1', '\xC6', '\x82', '\x63', '\xC1', '\x1A', '\x8D', '\x5F',
     '\xEE', '\xFA', '\x8E', '\x3E', '\xE9', '\x1D', '\x8B', '\x57', '\xD0', '\xEA', '\x8E', '\x6C', '\xC7', '\x1C', '\x97', '\x5B',
     '\xEE', '\xEB', '\xB4', '\x63', '\xDA', '\x0D', '\x92', '\x58', '\xE3', '\xB7', '\x89', '\x60', '\xC5', '\x7F'
-  }))
+  })
   );
   this->AddChild(this->m_searchButton);
 
@@ -675,7 +688,7 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_itemName->SetText("");
   this->m_itemName->SetFitText(1);
   this->m_itemName->SetAlign(6, 6);
-  this->m_itemName->SetFont(std::string(OBFUSCATE_DECRYPT_CHARS(0xB7FD8F670FC7B96BULL, 6, {'\x2C', '\xCC', '\xAB', '\x66', '\x0A', '\x8F'})));
+  this->m_itemName->SetFont(OBFUSCATE_DECRYPT_CHARS(0xB7FD8F670FC7B96BULL, 6, {'\x2C', '\xCC', '\xAB', '\x66', '\x0A', '\x8F'}));
   this->m_itemName->SetFontHeight(12);
   this->m_itemName->SetBold(1);
   this->m_itemName->SetColor(0);
@@ -689,7 +702,7 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_probabilityHeader->SetText(OBFUSCATE_DECRYPT_CHARS(0xE7978FB5A94DD7FDULL, 5, {'\x35', '\x79', '\xFA', '\x55', '\xB5'}));
   this->m_probabilityHeader->SetFitText(1);
   this->m_probabilityHeader->SetAlign(6, 6);
-  this->m_probabilityHeader->SetFont(std::string(OBFUSCATE_DECRYPT_CHARS(0x4941FD9F21BBB9FDULL, 6, {'\xBA', '\xCC', '\xD7', '\x48', '\xF2', '\xFD'})));
+  this->m_probabilityHeader->SetFont(OBFUSCATE_DECRYPT_CHARS(0x4941FD9F21BBB9FDULL, 6, {'\xBA', '\xCC', '\xD7', '\x48', '\xF2', '\xFD'}));
   this->m_probabilityHeader->SetFontHeight(12);
   this->m_probabilityHeader->SetBold(0);
   this->m_probabilityHeader->SetColor(0);
@@ -706,36 +719,39 @@ void CUIProbabilityTable::OnCreate(int width, int height) {
   this->m_list->SetOnSelect([this](ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) { this->OnPrepareItem(item, data); });
   this->m_list->SetBinder([this](ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) { this->BindItem(item, data); });
   this->m_list->SetImages("", "", "", "");
-  this->m_list->itemX = 0;
-  this->m_list->itemY = 0;
+  {
+    CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list = this->m_list;
+    list->itemX = 0;
+    list->itemY = 0;
+  }
   this->m_list->scrollBar->SetSize(13, 360);
   this->m_list->scrollBar->Move(312, 0);
   this->m_list->scrollBar->step = 30;
-  this->m_list->SetScrollBarButtonImages(std::string(OBFUSCATE_DECRYPT_CHARS(0x35E5656B5DEDCD75ULL, 29, {
+  this->m_list->SetScrollBarButtonImages(OBFUSCATE_DECRYPT_CHARS(0x35E5656B5DEDCD75ULL, 29, {
     '\xB5', '\x62', '\x2D', '\xA7', '\xAB', '\xAB', '\x20', '\xF8', '\xB3', '\x29', '\x2D', '\x91', '\xD6', '\xDF', '\xB9', '\x46',
     '\x16', '\xBF', '\x82', '\x31', '\x07', '\x55', '\x90', '\x45', '\x5B', '\xAF', '\x80', '\x2D', '\x6B'
-  })), std::string(OBFUSCATE_DECRYPT_CHARS(0x793F370985ED674FULL, 31, {
+  }), OBFUSCATE_DECRYPT_CHARS(0x793F370985ED674FULL, 31, {
     '\x8F', '\xC8', '\x2D', '\x7F', '\xC9', '\xF9', '\xFA', '\xB4', '\x89', '\x83', '\x2D', '\x49', '\xB4', '\x8D', '\x63', '\x0A',
     '\x2C', '\x15', '\x82', '\xE9', '\x65', '\x07', '\x5B', '\x16', '\x38', '\x09', '\xC3', '\xE7', '\x64', '\x47', '\x3F'
-  })));
-  this->m_list->SetScrollBarBackground(std::string(OBFUSCATE_DECRYPT_CHARS(0xE55723712993051DULL, 30, {
+  }));
+  this->m_list->SetScrollBarBackground(OBFUSCATE_DECRYPT_CHARS(0xE55723712993051DULL, 30, {
     '\xDD', '\xAA', '\x53', '\xD3', '\xB1', '\xED', '\x92', '\x28', '\xDB', '\xE1', '\x53', '\xE5', '\xCC', '\x99', '\x0B', '\x96',
     '\x7E', '\x77', '\xFC', '\x45', '\x1D', '\x13', '\x3A', '\x8C', '\x79', '\x2B', '\xF1', '\x44', '\x01', '\x23'
-  })));
+  }));
   this->m_list->SetScrollBarThumbImages(
-    std::string(OBFUSCATE_DECRYPT_CHARS(0x7115D9F973F913C9ULL, 33, {
+    OBFUSCATE_DECRYPT_CHARS(0x7115D9F973F913C9ULL, 33, {
     '\x09', '\xBC', '\x39', '\x89', '\x39', '\x17', '\xD0', '\xBC', '\x0F', '\xF7', '\x39', '\xBF', '\x44', '\x63', '\x49', '\x02',
     '\xAA', '\x61', '\x96', '\x1F', '\x95', '\xE9', '\x77', '\x10', '\xBB', '\x4C', '\x8C', '\x03', '\xD7', '\xBB', '\x78', '\x01',
     '\xC9'
-  })), std::string(OBFUSCATE_DECRYPT_CHARS(0xCB1D253B7FE1F563ULL, 34, {
+  }), OBFUSCATE_DECRYPT_CHARS(0xCB1D253B7FE1F563ULL, 34, {
     '\xA3', '\x5A', '\x21', '\x85', '\xFB', '\xEB', '\xD8', '\x06', '\xA5', '\x11', '\x21', '\xB3', '\x86', '\x9F', '\x41', '\xB8',
     '\x00', '\x87', '\x8E', '\x13', '\x57', '\x15', '\x7F', '\xAA', '\x11', '\xAA', '\x8C', '\x16', '\x5F', '\x0B', '\x7F', '\xA6',
     '\x13', '\xF5'
-  })), std::string(OBFUSCATE_DECRYPT_CHARS(0x7941D76335CFA14FULL, 35, {
+  }), OBFUSCATE_DECRYPT_CHARS(0x7941D76335CFA14FULL, 35, {
     '\x8F', '\x0E', '\x0F', '\xCF', '\xA3', '\x19', '\x84', '\xB4', '\x89', '\x45', '\x0F', '\xF9', '\xDE', '\x6D', '\x1D', '\x0A',
     '\x2C', '\xD3', '\xA0', '\x59', '\x0F', '\xE7', '\x23', '\x18', '\x3D', '\xFE', '\xAB', '\x5A', '\x14', '\xB9', '\x6F', '\x1B',
     '\x22', '\xD1', '\xCF'
-  }))
+  })
   );
   this->m_list->AddNewItem();
   this->AddChild(this->m_list);
