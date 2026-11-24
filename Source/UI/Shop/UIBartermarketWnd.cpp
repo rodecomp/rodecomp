@@ -1847,6 +1847,11 @@ void UIBartermarketWnd::Paint() {
   }
 }
 
+// INLINED
+static void DrawEntryItemName(UIFrameWnd* window, int x, int y, int width, const ITEM_INFO& item) {
+  window->DrawWrappedItemName(x, y, width, &item, 0, 0, 12);
+}
+
 // OFFSET: 0x008473F0
 // FUNCTION: fn_10585
 void UIExpandedBarterItemPurchaseWnd::Paint() {
@@ -1896,10 +1901,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     }
 
     this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 0, 0);
-    {
-      const ITEM_INFO item = it->ToItemInfo();
-      this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
-    }
+    DrawEntryItemName(this, 76, y + 29, 100, it->ToItemInfo());
 
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
@@ -1998,10 +2000,7 @@ void UIExpandedBartermarketWnd::Paint() {
     } else {
       this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 1, 0);
     }
-    {
-      const ITEM_INFO item = it->ToItemInfo();
-      this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
-    }
+    DrawEntryItemName(this, 76, y + 29, 100, it->ToItemInfo());
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
       const std::string quantity = fmt::format("+{}", it->refine);
@@ -2009,7 +2008,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     int chunkIndex = 0;
-    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
+    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk, ++chunkIndex) {
       ITEM_INFO chunkItem;
       chunkItem.quantity = chunk->amount;
       char itemId[33];
@@ -2028,17 +2027,17 @@ void UIExpandedBartermarketWnd::Paint() {
         std::uint32_t color = 0xFFFFFF;
         this->DrawOutlinedColoredText(chunkX + 8, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
-      ++chunkIndex;
     }
 
     char amount[23] = {};
     StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d z", it->field_8);
     this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount, 0, 0, 12, 0, 0);
 
-    if (++visible == this->rowCount) {
+    if (visible + 1 == this->rowCount) {
       ++index;
       break;
     }
+    ++visible;
   }
 
   for (int row = index; row < this->rowCount; ++row) {
