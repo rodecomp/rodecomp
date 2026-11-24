@@ -143,9 +143,11 @@ void UIWindow::AddRotatedSpriteCellOverlay(
     return;
   }
 
-  for (UIWindow* window = this; window; window = window->parent) {
-    x += window->geometry.x;
-    y += window->geometry.y;
+  int screenX = x;
+  int screenY = y;
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX += window->geometry.x;
+    screenY += window->geometry.y;
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
@@ -181,8 +183,8 @@ void UIWindow::AddRotatedSpriteCellOverlay(
     {-halfWidth, halfHeight},
     {halfWidth, halfHeight},
   };
-  const float centerX = static_cast<float>(x + startX) + halfWidth;
-  const float centerY = static_cast<float>(y + top) + halfHeight;
+  const float centerX = static_cast<float>(screenX + startX) + halfWidth;
+  const float centerY = static_cast<float>(screenY + top) + halfHeight;
   const float angle = static_cast<float>(cell->rotation) / 180.0f * 3.141592f;
 
   const SpriteCellColor& rgba = cell->colorChannels;
