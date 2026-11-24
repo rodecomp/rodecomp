@@ -3205,8 +3205,8 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         } else {
           const NavigationTarget target = g_navigationManager.GetCurrentTarget();
           CNavi_Object* object = static_cast<CNavi_Object*>(target.object);
-          int x = 1000;
           int y = 1000;
+          int x = 1000;
           if (type == 2) {
             NaviCell cell;
             x = object->GetCell(&cell)->x;
@@ -3231,8 +3231,8 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         if (g_windowMgr.modal) {
           this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
         }
-        g_navigationManager.displayMode = 0;
         g_navigationManager.expandedMap = false;
+        g_navigationManager.displayMode = 0;
         g_navigationManager.Reset(true);
         g_worldViewMgr.ClearMarks();
         g_worldViewMgr.ClearLevels();
