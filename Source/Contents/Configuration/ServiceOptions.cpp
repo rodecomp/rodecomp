@@ -858,6 +858,11 @@ void ApplyServiceOption(int id, bool value, bool notify, int enabledMessage, int
   }
 }
 
+// INLINED
+static int FacingDirection(float angle) {
+  return (static_cast<int>(angle) + 180) / 45 % 8;
+}
+
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
 void ToggleSitStand() {
@@ -878,7 +883,7 @@ void ToggleSitStand() {
   const int motion = (player->render.curMotion != 2) + 1;
   player->render.curMotion = motion;
   player->render.angle = static_cast<float>(std::ceil(player->render.angle));
-  mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
+  mode->SendMsg(MM_CHANGE_DIRECTION, FacingDirection(player->render.angle), motion, 0, 0);
 
   if (player->render.state == ST_SIT) {
     std::list<unsigned long>& times = mode->periodicTicks;

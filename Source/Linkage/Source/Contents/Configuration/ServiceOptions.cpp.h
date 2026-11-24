@@ -67,3 +67,6 @@ extern "C" {
 #include <timeapi.h>
 
 template CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance();
+template __forceinline std::_Hash_find_last_result<std::_List_node<std::pair<const int, std::function<void(int, bool, bool, int, int)>>, void*>*> std::_Hash<std::_Umap_traits<int, std::function<void(int, bool, bool, int, int)>, std::_Uhash_compare<int, std::hash<int>, std::equal_to<int>>, std::allocator<std::pair<const int, std::function<void(int, bool, bool, int, int)>>>, false>>::_Find_last<int>(const int&, const std::size_t) const;
+template __forceinline std::_Hash_find_last_result<std::_List_node<std::pair<const int, std::function<void()>>, void*>*> std::_Hash<std::_Umap_traits<int, std::function<void()>, std::_Uhash_compare<int, std::hash<int>, std::equal_to<int>>, std::allocator<std::pair<const int, std::function<void()>>>, false>>::_Find_last<int>(const int&, const std::size_t) const;
+template __forceinline bool std::operator==(const std::string&, const char* const);
