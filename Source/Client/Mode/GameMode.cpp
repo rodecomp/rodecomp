@@ -9130,8 +9130,8 @@ int CGameMode::ProcessGroundClick(int result) {
   UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
   if (reporter) {
     if (reporter->activeOnly == true && reporter->m_mode == 1) {
-      column = -1;
       row = -1;
+      column = -1;
       this->PickScreenTerrain(column, row);
       const int radius = reporter->reportCount;
       for (int dx = -radius; dx <= radius; ++dx) {
@@ -9270,8 +9270,8 @@ int CGameMode::ProcessGroundClick(int result) {
             message.type = 8;
             message.x = column;
             message.y = row;
-            message.level = this->skillUseLevel;
             message.skill = this->skillId;
+            message.level = this->skillUseLevel;
             message.target = 0;
             mercenary->SetMsg2AI(&message, 1);
             return 1;
