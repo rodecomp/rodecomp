@@ -250,7 +250,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
     link += this->ItemLinkNumberText(item.refiningLevel);
   }
 
-  link.push_back(delimiters[4]);
+  link += delimiters[4];
   link += this->ItemLinkNumberText(item.sprite);
   link.push_back(delimiters[5]);
   link += this->ItemLinkNumberText(item.grade);
