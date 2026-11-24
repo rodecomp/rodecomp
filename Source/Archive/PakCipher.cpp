@@ -348,7 +348,7 @@ namespace myGPack {
     Block64 blockInput;
     Block64 decoded;
     int block = 0;
-    int i = 0;
+    unsigned int i = 0;
 
     while (block < 20) {
       for (i = 0; i < 8; ++i) {
@@ -357,7 +357,7 @@ namespace myGPack {
 
       this->DecodeBlock(1, this->m_roundKeys, blockInput, &decoded);
       for (i = 0; i < 8; ++i) {
-        output[block * 8 + i] = decoded.bytes[i];
+        output[i + block * 8] = decoded.bytes[i];
       }
 
       if ((block + 1) * 8 >= length) {
