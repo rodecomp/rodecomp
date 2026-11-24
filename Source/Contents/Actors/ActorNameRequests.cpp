@@ -21,8 +21,9 @@ static_assert(sizeof(PACKET_CZ_REQNAME2) == 6);
 // OFFSET: 0x005BFD10
 // FUNCTION: fn_03500
 const CActorNameCard& CActorNameCardHolder::Lookup(std::uint32_t id) {
-  const auto found = std::as_const(this->cards).find(id);
-  if (this->cards.end() == found || found->second.received != 1) {
+  auto& cardsRef = this->cards;
+  const auto found = std::as_const(cardsRef).find(id);
+  if (cardsRef.end() == found || found->second.received != 1) {
     this->QueueRequest(id);
 
     // GLOBAL: gl_24526

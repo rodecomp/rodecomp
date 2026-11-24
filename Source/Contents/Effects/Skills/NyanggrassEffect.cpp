@@ -120,7 +120,8 @@ void CMultiTexParticle::Render(int column, int row) {
     const float u = this->uv1[i][0] + this->offsetU;
     const float v = this->uv1[i][1] + this->offsetV;
     SetTexCoord(this->command.vertices[i], u, v);
-    SetLightCoord(this->command.vertices[i], this->uv2[i][0], this->uv2[i][1]);
+    auto& uv2Ref = this->uv2;
+    SetLightCoord(this->command.vertices[i], uv2Ref[i][0], uv2Ref[i][1]);
   }
 
   g_renderer->SubmitAuxiliaryPrimitive(&this->command);

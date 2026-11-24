@@ -2991,20 +2991,21 @@ bool CEffectPrim::Prim3DParticleOrbit() {
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
 bool CEffectPrim::Prim3DParticleSpline() {
-  this->state.orgPos = this->state.master->render.position + this->state.deltaPos2;
+  auto& stateRef = this->state;
+  stateRef.orgPos = stateRef.master->render.position + stateRef.deltaPos2;
 
-  this->state.speed += this->state.accel;
-  this->state.latitude += this->state.latiSpeed;
-  this->state.latiSpeed += this->state.latiAccel;
-  this->state.gravSpeed += this->state.gravAccel;
+  stateRef.speed += stateRef.accel;
+  stateRef.latitude += stateRef.latiSpeed;
+  stateRef.latiSpeed += stateRef.latiAccel;
+  stateRef.gravSpeed += stateRef.gravAccel;
 
-  Forward(this->state.speed3d, this->state.speed - this->state.gravSpeed, this->state.transform.values);
-  this->state.rotTransform.MakeTransform(this->state.rotAxis, GetRadian(static_cast<int>(this->state.roll)));
-  Lift(this->state.deltaPos3, this->state.latitude, this->state.rotTransform.values);
+  Forward(stateRef.speed3d, stateRef.speed - stateRef.gravSpeed, stateRef.transform.values);
+  stateRef.rotTransform.MakeTransform(stateRef.rotAxis, GetRadian(static_cast<int>(stateRef.roll)));
+  Lift(stateRef.deltaPos3, stateRef.latitude, stateRef.rotTransform.values);
 
-  this->state.size += this->state.sizeSpeed;
-  this->state.deltaPos -= this->state.speed3d;
-  this->render.position = this->state.orgPos + this->state.deltaPos + this->state.deltaPos3;
+  stateRef.size += stateRef.sizeSpeed;
+  stateRef.deltaPos -= stateRef.speed3d;
+  this->render.position = stateRef.orgPos + stateRef.deltaPos + stateRef.deltaPos3;
 
   this->ProcessAlpha();
   this->ShiftSegment();
@@ -6848,10 +6849,11 @@ void CEffectPrim::PrimFadingColumns() {
 // OFFSET: 0x00BBCC20
 // FUNCTION: fn_19801
 void CEffectPrim::PrimAuraGlow() {
-  EffectPrimitiveSlot* slots = this->state.slots;
+  auto& stateRef = this->state;
+  EffectPrimitiveSlot* slots = stateRef.slots;
   FaceCamera(slots);
 
-  const CRagEffect* master = this->state.master;
+  const CRagEffect* master = stateRef.master;
   this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];

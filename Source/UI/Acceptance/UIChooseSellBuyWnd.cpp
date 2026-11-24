@@ -6270,29 +6270,30 @@ void UIItemCollectionWnd::SetHeight(int height) {
   if (height > 450) {
     height = 450;
   }
-  if (height == this->geometry.height) {
+  auto& geometryRef = this->geometry;
+  if (height == geometryRef.height) {
     return;
   }
 
   const int moveInfoId = FindItemMoveInfo(std::atoi(this->m_itemIdText.c_str())).itemId;
   if (moveInfoId != 0) {
-    this->Resize(this->geometry.width, height + this->m_moveInfo->geometry.height + 3);
+    this->Resize(geometryRef.width, height + this->m_moveInfo->geometry.height + 3);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
     moveInfo->m_moveIndex = std::atoi(this->m_itemIdText.c_str());
   } else {
-    this->Resize(this->geometry.width, height);
+    this->Resize(geometryRef.width, height);
   }
 
   const int viewHeight = height - this->m_extraHeight;
   int resizerY;
   if (this->m_compare != 0) {
-    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 69);
-    resizerY = this->geometry.height - this->m_extraHeight - 46;
+    this->m_viewer->Resize(geometryRef.width - 98, viewHeight - 69);
+    resizerY = geometryRef.height - this->m_extraHeight - 46;
   } else {
-    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 40);
-    resizerY = this->geometry.height - this->m_extraHeight - 17;
+    this->m_viewer->Resize(geometryRef.width - 98, viewHeight - 40);
+    resizerY = geometryRef.height - this->m_extraHeight - 17;
   }
-  this->m_resizer->Move(this->geometry.width - 17, resizerY);
+  this->m_resizer->Move(geometryRef.width - 17, resizerY);
 
   const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
   if (moveInfoId != 0) {
