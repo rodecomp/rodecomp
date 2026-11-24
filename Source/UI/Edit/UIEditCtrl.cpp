@@ -4064,7 +4064,7 @@ bool UIItemWnd::FilterItem(ITEM_INFO& item) {
           if (type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW) {
             return true;
           }
-          break;
+          return false;
         case 1:
           switch (type) {
           case TYPE_ARMOR:
@@ -8728,11 +8728,8 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     } else {
       this->footerHeight = 0;
     }
-    {
-      const int height = this->geometry.height - this->bottomPadding - this->footerHeight - 17;
-      this->visibleRows = height / 32;
-      this->scrollBar->Resize(this->geometry.width - 15, height);
-    }
+    this->visibleRows = (this->geometry.height - this->bottomPadding - this->footerHeight - 17) / 32;
+    this->scrollBar->Resize(this->geometry.width - 15, this->geometry.height - this->bottomPadding - this->footerHeight - 17);
     this->Invalidate();
     return 0;
   case UM_RESIZE:
