@@ -9,11 +9,9 @@ CRC32::CRC32() {
   for (int i = 0; i < 256; ++i) {
     DWORD value = i;
     for (int bit = 0; bit < 8; ++bit) {
-      if (value & 1) {
-        value = (value >> 1) ^ 0xEDB88320;
-      } else {
-        value >>= 1;
-      }
+      DWORD shifted = value >> 1;
+      DWORD odd = shifted ^ 0xEDB88320;
+      value = (value & 1) ? odd : shifted;
     }
     m_table[i] = value;
   }
