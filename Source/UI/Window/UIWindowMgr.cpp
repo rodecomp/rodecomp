@@ -4741,7 +4741,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (!this->IsOrderFixed(id)) {
     this->RemoveOrder(id);
     if (id == WID_NAVIGATIONV4WND) {
-      this->windowHistory.push_back(int(id));
+      this->windowHistory.emplace_back(id);
     } else {
       this->windowHistory.push_front(int(id));
     }
