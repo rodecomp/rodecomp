@@ -1335,6 +1335,18 @@ bool CUINormalPerfect::LoadEnchantList() {
 }
 
 namespace EnchantUI {
+// OFFSET: 0x00A05370
+// FUNCTION: fn_46592
+inline int CUIEnchantItem::GetItemId() const {
+  return std::atoi(this->itemIcon->GetItemInfo()->itemId.c_str());
+}
+
+// OFFSET: 0x00A053A0
+// FUNCTION: fn_46593
+inline int CUISlot::GetItemId() const {
+  return std::atoi(this->itemIcon->GetItemInfo()->itemId.c_str());
+}
+
 // OFFSET: 0x00A05470
 // FUNCTION: fn_14975
 void CUINormalPerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
@@ -1346,7 +1358,7 @@ void CUINormalPerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemD
 
   std::optional<EnchantOptionInfo*> option = this->FindOption(this->selectedSlot);
   if (option && (*option)->perfectEnchants.size() != 0) {
-    const int itemId = std::atoi(item->itemIcon->GetItemInfo()->itemId.c_str());
+    const int itemId = item->GetItemId();
     auto it = (*option)->perfectEnchants.find(itemId);
     if (it != (*option)->perfectEnchants.end()) {
       this->SetCost(it->second);
@@ -1365,11 +1377,11 @@ void CUIUpgradePerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItem
 
   std::optional<EnchantOptionInfo*> option = this->FindOption(this->selectedSlot);
   if (option && (*option)->perfectUpgrades.size() != 0) {
-    const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
+    const int baseItemId = this->slots[this->selectedSlot]->GetItemId();
     auto base = (*option)->perfectUpgrades.find(baseItemId);
     if (base != (*option)->perfectUpgrades.end()) {
       auto& enchants = base->second;
-      const int itemId = std::atoi(item->itemIcon->GetItemInfo()->itemId.c_str());
+      const int itemId = item->GetItemId();
       auto it = enchants.find(itemId);
       if (it != enchants.end()) {
         this->SetCost(it->second);
@@ -1540,7 +1552,7 @@ bool CUIUpgradeRandom::LoadEnchantList() {
   }
 
   auto& upgrades = (*option)->randomUpgrades;
-  const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
+  const int baseItemId = this->slots[this->selectedSlot]->GetItemId();
   auto base = upgrades.find(baseItemId);
   if (base == upgrades.end()) {
     return false;
@@ -1577,7 +1589,7 @@ bool CUIUpgradePerfect::LoadEnchantList() {
     return false;
   }
 
-  const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
+  const int baseItemId = this->slots[this->selectedSlot]->GetItemId();
   auto base = upgrades.find(baseItemId);
   if (base == upgrades.end() || base->second.size() == 0) {
     return false;

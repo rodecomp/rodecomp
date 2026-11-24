@@ -69,6 +69,7 @@ public:
   /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIStaticText* name;
 
+  int GetItemId() const;
   void OnCreate(int width, int height) override;
   void OnMouseHover(int x, int y) override;
   void OnRBtnDown(int x, int y) override;
@@ -262,6 +263,7 @@ public:
   /* 0084 */ CUIGameItem* itemIcon;
   /* 0088 */ CUITextViewer* description;
 
+  int GetItemId() const;
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
