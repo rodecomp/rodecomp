@@ -251,6 +251,20 @@ static __forceinline int SelectedSuccessRate(const UIRefiningWnd* window) {
   return 0;
 }
 
+// OFFSET: 0x007F8E60
+// FUNCTION: fn_46574
+inline void UIRefining_BtnAgain::SetSuccess(unsigned char value) {
+  this->success = value;
+  this->UpdateBitmaps();
+}
+
+// OFFSET: 0x007F8E80
+// FUNCTION: fn_46575
+inline void UIRefining_BtnReturn::SetHighlighted(unsigned char value) {
+  this->highlighted = value;
+  this->UpdateBitmaps();
+}
+
 // OFFSET: 0x007F55A0
 // FUNCTION: fn_09906
 void UIRefiningWnd::ApplyResult() {
@@ -262,28 +276,12 @@ void UIRefiningWnd::ApplyResult() {
 
   switch (this->result) {
   case REFINING_STATE_SUCCESS:
-    {
-      UIRefining_BtnReturn* button = this->returnButton;
-      button->highlighted = 1;
-      button->UpdateBitmaps();
-    }
-    {
-      UIRefining_BtnAgain* button = this->againButton;
-      button->success = 1;
-      button->UpdateBitmaps();
-    }
+    this->returnButton->SetHighlighted(1);
+    this->againButton->SetSuccess(1);
     break;
   case REFINING_STATE_FAIL:
-    {
-      UIRefining_BtnReturn* button = this->returnButton;
-      button->highlighted = 0;
-      button->UpdateBitmaps();
-    }
-    {
-      UIRefining_BtnAgain* button = this->againButton;
-      button->success = 0;
-      button->UpdateBitmaps();
-    }
+    this->returnButton->SetHighlighted(0);
+    this->againButton->SetSuccess(0);
     {
       UIRefining_BtnAgain* button = this->againButton;
       button->SetDisabled(1);
@@ -292,16 +290,8 @@ void UIRefiningWnd::ApplyResult() {
     break;
   case REFINING_STATE_DOWNGRADE:
   case REFINING_STATE_FAIL2:
-    {
-      UIRefining_BtnReturn* button = this->returnButton;
-      button->highlighted = 0;
-      button->UpdateBitmaps();
-    }
-    {
-      UIRefining_BtnAgain* button = this->againButton;
-      button->success = 0;
-      button->UpdateBitmaps();
-    }
+    this->returnButton->SetHighlighted(0);
+    this->againButton->SetSuccess(0);
     break;
   }
 

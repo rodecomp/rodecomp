@@ -43,6 +43,7 @@ public:
   UIRefining_BtnAgain();
   void Paint() override;
   void Enable(unsigned char value) override;
+  void SetSuccess(unsigned char value);
   void UpdateBitmaps();
 
   /* 0120 */ int cost;
@@ -63,6 +64,7 @@ class UIRefining_BtnReturn : public UIBitmapButton {
 public:
   UIRefining_BtnReturn();
   void Paint() override;
+  void SetHighlighted(unsigned char value);
   void UpdateBitmaps();
 
   /* 0120 */ unsigned char highlighted;
