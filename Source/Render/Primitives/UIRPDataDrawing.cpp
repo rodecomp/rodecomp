@@ -1,3 +1,4 @@
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/Renderer.h"
 #include "Render/Primitives/UIRPData.h"
 #include "Render/Textures/Texture.h"
@@ -205,9 +206,10 @@ void UIRPData::DrawNamedScaledRegion(float x, float y, std::string name, std::ui
     height = texture->Height();
   }
 
-  const float textureWidth = static_cast<float>(texture->TextureWidth());
+  const unsigned backingWidth = texture->TextureWidth();
+  const float scale = g_fireflyArcLength / scalePercent;
+  const float textureWidth = static_cast<float>(backingWidth);
   const float textureHeight = static_cast<float>(texture->TextureHeight());
-  const float scale = 100.0f / scalePercent;
 
   primitive->quad[0].x = x;
   primitive->quad[0].y = y;
