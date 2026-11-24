@@ -14,7 +14,8 @@ class UIBasicButton;
 
 class UIPrivateAirplaneWnd : public UIFrameWnd {
 public:
-  // INLINED
+  // OFFSET: 0x005C29C0
+  // FUNCTION: fn_46534
   UIPrivateAirplaneWnd() : UIFrameWnd(0) {}
   void OnCreate(int width, int height) override;
   void OnProcess() override;
