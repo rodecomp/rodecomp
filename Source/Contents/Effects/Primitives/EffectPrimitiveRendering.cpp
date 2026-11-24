@@ -1311,7 +1311,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   const int red = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : r;
   const int green = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : g;
   const int blue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : b;
-  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
+  const int destBlend = master.colorChannels[3] == -1 ? blend : master.colorChannels[3];
 
   if (*rpCnt >= 510) {
     return;
@@ -1435,28 +1435,30 @@ void CEffectPrim::RenderPentaRing(matrix& wtm) {
 
         if (i > 0) {
           if (pass == 0) {
-            if (2.0f == slot.height[4]) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            const short alpha = slot.alphaB;
+            if (slot.height[4] == 2.0f) {
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (slot.height[4] == 3.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (slot.height[4] == 4.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
             } else if (slot.height[4] == 5.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
             } else {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           } else if (pass == 1) {
+            const short alpha = slot.alphaB;
             if (slot.height[4] == 2.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (slot.height[4] == 3.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (slot.height[4] == 4.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
             } else if (slot.height[4] == 5.0f) {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
             } else {
-              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 200, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 200, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
         }
@@ -1535,6 +1537,7 @@ void CEffectPrim::RenderScrollColumn(matrix& wtm) {
         vec2.z = right;
       }
 
+      const short alpha = this->state.slots[ec].alphaB;
       int texture = static_cast<unsigned>(i) % 3;
       const int shift = cycle / frames;
       const char direction = this->state.slots[ec].flag1[1];
@@ -1556,11 +1559,11 @@ void CEffectPrim::RenderScrollColumn(matrix& wtm) {
         vec4.y = top;
         vec3.y = top;
         if (direction == 1) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
         } else if (direction == 10) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, cut, 1.0f, 0.0f, 1.0f, 0);
         }
       } else if (i == 4) {
         const float cut = scroll * 0.025f;
@@ -1568,19 +1571,19 @@ void CEffectPrim::RenderScrollColumn(matrix& wtm) {
         vec1.y = bottom;
         vec2.y = bottom;
         if (direction == 1) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
         } else if (direction == 10) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, cut, 0.0f, 1.0f, 0);
         }
       } else {
         if (direction == 1) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (direction == 10) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
@@ -2375,7 +2378,10 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
       continue;
     }
 
-    const vector3d top = slot.vecTPre;
+    const float topX = slot.vecTPre.x;
+    const float topY = slot.vecTPre.y;
+    const float topZ = slot.vecTPre.z;
+    const float radius = slot.maxHeight;
 
     for (int point = 0; point <= 5; ++point) {
       short angle = static_cast<short>(slot.rotStart + point * 72);
@@ -2383,10 +2389,10 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
         angle -= 360;
       }
 
-      const float dx = slot.maxHeight * g_cosTable[angle];
-      const float dz = slot.maxHeight * g_sinTable[angle];
+      const float dx = radius * g_cosTable[angle];
+      const float dz = radius * g_sinTable[angle];
       vec2.Set(dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z);
-      vec3.Set(top.x + dx, top.y, top.z + dz);
+      vec3.Set(topX + dx, topY, topZ + dz);
 
       if (point != 0) {
         if (slot.flag1[0] == 13) {
@@ -2679,7 +2685,10 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle += angle + 90 < 360 ? 90 : -270;
+      angle += 90;
+      if (angle >= 360) {
+        angle -= 360;
+      }
     }
 
     if (slot.flag1[1] == 1) {
@@ -2714,7 +2723,10 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle += angle + 90 < 360 ? 90 : -270;
+      angle += 90;
+      if (angle >= 360) {
+        angle -= 360;
+      }
     }
 
     if (slot.flag1[3] == 0) {
@@ -3497,37 +3509,9 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
     const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
     const float shape = slot.height[10];
     int angle = slot.fullDisplayAngle;
-    vec1.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
-
-    if (shape == 0.0f) {
-      angle += angle < 90 ? 270 : -90;
-    } else if (shape == 1.0f) {
-      angle += angle < 60 ? 300 : -60;
-    } else if (shape == 2.0f) {
-      angle -= 130;
-      if (angle < 0) {
-        angle += 360;
-      }
-    }
-    vec2.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
-
-    if (shape == 0.0f) {
-      angle -= 90;
-      if (angle < 0) {
-        angle += 360;
-      }
-    } else if (shape == 1.0f) {
-      angle -= 120;
-      if (angle < 0) {
-        angle += 360;
-      }
-    } else if (shape == 2.0f) {
-      angle -= 50;
-      if (angle < 0) {
-        angle += 360;
-      }
-    }
-    vec3.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
+    vec1.x = rx * g_cosTable[angle];
+    vec1.z = rx * g_sinTable[angle];
+    vec1.y = 0.0f;
 
     if (shape == 0.0f) {
       angle -= 90;
@@ -3545,26 +3529,66 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
         angle += 360;
       }
     }
-    vec4.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
+    vec2.x = rx * g_cosTable[angle];
+    vec2.z = rx * g_sinTable[angle];
+    vec2.y = 0.0f;
+
+    if (shape == 0.0f) {
+      angle -= 90;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 1.0f) {
+      angle -= 120;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 2.0f) {
+      angle -= 50;
+      if (angle < 0) {
+        angle += 360;
+      }
+    }
+    vec3.x = rx * g_cosTable[angle];
+    vec3.z = rx * g_sinTable[angle];
+    vec3.y = 0.0f;
+
+    if (shape == 0.0f) {
+      angle -= 90;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 1.0f) {
+      angle -= 60;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 2.0f) {
+      angle -= 130;
+      if (angle < 0) {
+        angle += 360;
+      }
+    }
+    vec4.x = rx * g_cosTable[angle];
+    vec4.z = rx * g_sinTable[angle];
+    vec4.y = 0.0f;
 
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     int trail = 0;
     for (int i = 0; i < 10; i += 2) {
-      const vector3d& position = this->render.position;
+      const vector3d position{this->render.position.x, this->render.position.y, this->render.position.z};
       const float deltaX = slot.vecBNow.x - position.x;
       const float deltaZ = slot.vecBNow.z - position.z;
       const float length = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
       short alpha = slot.alphaB;
       const float along = std::max(
         length / static_cast<float>(this->state.slots[0].flag1[5]) * static_cast<float>(slot.process) - static_cast<float>(i), 0.0f);
-      const float z = along * g_sinTable[slot.riseAngle] + position.z;
-      const float x = along * g_cosTable[slot.riseAngle] + position.x;
-      const float y = position.y - 12.0f + 0.0f;
-      const vector3d p2{x + vec2.x, y + vec2.y, z + vec2.z};
-      const vector3d p1{x + vec1.x, y + vec1.y, z + vec1.z};
-      const vector3d p4{x + vec4.x, y + vec4.y, z + vec4.z};
-      const vector3d p3{x + vec3.x, y + vec3.y, z + vec3.z};
+      const vector3d base{along * g_cosTable[slot.riseAngle] + position.x, position.y - 12.0f + 0.0f, along * g_sinTable[slot.riseAngle] + position.z};
+      const vector3d p2 = Sum(base, vec2);
+      const vector3d p1 = Sum(base, vec1);
+      const vector3d p4 = Sum(base, vec4);
+      const vector3d p3 = Sum(base, vec3);
 
       if (trail > 0) {
         alpha = static_cast<short>(alpha + 20 * (-5 - trail));
@@ -5046,16 +5070,14 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 2; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
     unsigned char r;
     unsigned char g;
     unsigned char b;
-    if (slot.height[4] < 10.0f) {
+    if (this->state.slots[ec].height[4] < 10.0f) {
       r = 200;
       g = 250;
       b = 200;
@@ -5065,114 +5087,113 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       b = 250;
     }
 
-    slot.vecBPre.x = slot.height[0];
-    slot.vecBPre.y = -1.0f;
-    slot.vecBPre.z = slot.height[1];
-    slot.vecBNow.x = slot.height[0];
-    slot.vecBNow.y = -1.0f;
-    slot.vecBNow.z = -slot.height[1];
-    slot.vecTNow.x = -slot.height[0];
-    slot.vecTNow.y = -1.0f;
-    slot.vecTNow.z = -slot.height[1];
-    slot.vecTPre.x = -slot.height[0];
-    slot.vecTPre.y = -1.0f;
-    slot.vecTPre.z = slot.height[1];
+    this->state.slots[ec].vecBPre.x = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBPre.y = -1.0f;
+    this->state.slots[ec].vecBPre.z = this->state.slots[ec].height[1];
+    this->state.slots[ec].vecBNow.x = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBNow.y = -1.0f;
+    this->state.slots[ec].vecBNow.z = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTNow.x = -this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTNow.y = -1.0f;
+    this->state.slots[ec].vecTNow.z = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTPre.x = -this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTPre.y = -1.0f;
+    this->state.slots[ec].vecTPre.z = this->state.slots[ec].height[1];
 
-    const float y = -1.0f - slot.height[2];
-    vec1.Set(slot.vecBPre.x, y, slot.vecBPre.z);
-    vec2.Set(slot.vecBNow.x, y, slot.vecBNow.z);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    const float y = -1.0f - this->state.slots[ec].height[2];
+    vec1.Set(this->state.slots[ec].vecBPre.x, y, this->state.slots[ec].vecBPre.z);
+    vec2.Set(this->state.slots[ec].vecBNow.x, y, this->state.slots[ec].vecBNow.z);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec4.Set(this->state.slots[ec].vecTNow.x, y, this->state.slots[ec].vecTNow.z);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec3.Set(this->state.slots[ec].vecTPre.x, y, this->state.slots[ec].vecTPre.z);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTPre, this->state.slots[ec].vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 
   for (int ec = 2; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
     float left = 0.0f;
 
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
-    unsigned char r = g_projectionDepthOffset <= slot.height[4] ? 50 : 150;
-    unsigned char g = g_projectionDepthOffset <= slot.height[4] ? 50 : 250;
-    unsigned char b = g_projectionDepthOffset <= slot.height[4] ? 250 : 150;
+    unsigned char r = g_projectionDepthOffset <= this->state.slots[ec].height[4] ? 50 : 150;
+    unsigned char g = g_projectionDepthOffset <= this->state.slots[ec].height[4] ? 50 : 250;
+    unsigned char b = g_projectionDepthOffset <= this->state.slots[ec].height[4] ? 250 : 150;
 
-    slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
-    slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
-    slot.vecTNow = {-slot.height[0], -1.0f, -slot.height[1]};
-    slot.vecTPre = {-slot.height[0], -1.0f, slot.height[1]};
+    this->state.slots[ec].vecBPre = {this->state.slots[ec].height[0], -1.0f, this->state.slots[ec].height[1]};
+    this->state.slots[ec].vecBNow = {this->state.slots[ec].height[0], -1.0f, -this->state.slots[ec].height[1]};
+    this->state.slots[ec].vecTNow = {-this->state.slots[ec].height[0], -1.0f, -this->state.slots[ec].height[1]};
+    this->state.slots[ec].vecTPre = {-this->state.slots[ec].height[0], -1.0f, this->state.slots[ec].height[1]};
 
-    if (slot.distance < slot.height[0] * 2.0f) {
-      slot.vecBPre.z = slot.height[1] - slot.distance;
-      slot.vecBNow.z = slot.vecBPre.z - slot.height[3];
+    if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 2.0f) {
+      this->state.slots[ec].vecBPre.z = this->state.slots[ec].height[1] - this->state.slots[ec].distance;
+      this->state.slots[ec].vecBNow.z = this->state.slots[ec].vecBPre.z - this->state.slots[ec].height[3];
 
-      if (slot.vecBNow.z < -slot.height[1]) {
-        left = -slot.height[1] - slot.vecBNow.z;
-        slot.vecBNow.z = -slot.height[1];
-        slot.vecTNow.x = slot.vecBNow.x - left;
+      if (this->state.slots[ec].vecBNow.z < -this->state.slots[ec].height[1]) {
+        left = -this->state.slots[ec].height[1] - this->state.slots[ec].vecBNow.z;
+        this->state.slots[ec].vecBNow.z = -this->state.slots[ec].height[1];
+        this->state.slots[ec].vecTNow.x = this->state.slots[ec].vecBNow.x - left;
       }
-    } else if (slot.distance < slot.height[0] * 4.0f) {
-      slot.vecBNow.x = slot.height[0] - (slot.distance - slot.height[0] * 2.0f);
-      slot.vecTNow.x = slot.vecBNow.x - slot.height[3];
+    } else if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 4.0f) {
+      this->state.slots[ec].vecBNow.x = this->state.slots[ec].height[0] - (this->state.slots[ec].distance - this->state.slots[ec].height[0] * 2.0f);
+      this->state.slots[ec].vecTNow.x = this->state.slots[ec].vecBNow.x - this->state.slots[ec].height[3];
 
-      if (slot.vecTNow.x < -slot.height[0]) {
-        left = -slot.height[0] - slot.vecTNow.x;
-        slot.vecTNow.x = -slot.height[0];
-        slot.vecTPre.z = slot.vecTNow.z + left;
+      if (this->state.slots[ec].vecTNow.x < -this->state.slots[ec].height[0]) {
+        left = -this->state.slots[ec].height[0] - this->state.slots[ec].vecTNow.x;
+        this->state.slots[ec].vecTNow.x = -this->state.slots[ec].height[0];
+        this->state.slots[ec].vecTPre.z = this->state.slots[ec].vecTNow.z + left;
       }
-    } else if (slot.distance < slot.height[0] * 6.0f) {
-      slot.vecTNow.z = slot.distance - slot.height[0] * 4.0f - slot.height[1];
-      slot.vecTPre.z = slot.vecTNow.z + slot.height[3];
+    } else if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 6.0f) {
+      this->state.slots[ec].vecTNow.z = this->state.slots[ec].distance - this->state.slots[ec].height[0] * 4.0f - this->state.slots[ec].height[1];
+      this->state.slots[ec].vecTPre.z = this->state.slots[ec].vecTNow.z + this->state.slots[ec].height[3];
 
-      if (slot.vecTPre.z > slot.height[1]) {
-        left = slot.vecTPre.z - slot.height[1];
-        slot.vecTPre.z = slot.height[1];
-        slot.vecBPre.x = slot.vecTPre.x + left;
+      if (this->state.slots[ec].vecTPre.z > this->state.slots[ec].height[1]) {
+        left = this->state.slots[ec].vecTPre.z - this->state.slots[ec].height[1];
+        this->state.slots[ec].vecTPre.z = this->state.slots[ec].height[1];
+        this->state.slots[ec].vecBPre.x = this->state.slots[ec].vecTPre.x + left;
       }
     } else {
-      slot.vecTPre.x = slot.distance - slot.height[0] * 6.0f - slot.height[0];
-      slot.vecBPre.x = slot.vecTPre.x + slot.height[3];
+      this->state.slots[ec].vecTPre.x = this->state.slots[ec].distance - this->state.slots[ec].height[0] * 6.0f - this->state.slots[ec].height[0];
+      this->state.slots[ec].vecBPre.x = this->state.slots[ec].vecTPre.x + this->state.slots[ec].height[3];
 
-      if (slot.vecBPre.x > slot.height[0]) {
-        left = slot.vecBPre.x - slot.height[0];
-        slot.vecBPre.x = slot.height[0];
-        slot.vecBNow.z = slot.vecBPre.z - left;
+      if (this->state.slots[ec].vecBPre.x > this->state.slots[ec].height[0]) {
+        left = this->state.slots[ec].vecBPre.x - this->state.slots[ec].height[0];
+        this->state.slots[ec].vecBPre.x = this->state.slots[ec].height[0];
+        this->state.slots[ec].vecBNow.z = this->state.slots[ec].vecBPre.z - left;
       }
     }
 
-    const float y = -1.0f - slot.height[2];
-    vec1.Set(slot.vecBPre.x, y, slot.vecBPre.z);
-    vec2.Set(slot.vecBNow.x, y, slot.vecBNow.z);
-    vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
-    vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
+    const float y = -1.0f - this->state.slots[ec].height[2];
+    vec1.Set(this->state.slots[ec].vecBPre.x, y, this->state.slots[ec].vecBPre.z);
+    vec2.Set(this->state.slots[ec].vecBNow.x, y, this->state.slots[ec].vecBNow.z);
+    vec3.Set(this->state.slots[ec].vecTPre.x, y, this->state.slots[ec].vecTPre.z);
+    vec4.Set(this->state.slots[ec].vecTNow.x, y, this->state.slots[ec].vecTNow.z);
 
-    if (slot.distance < slot.height[0] * 2.0f) {
-      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 2.0f) {
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (slot.distance < slot.height[0] * 4.0f) {
-      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 4.0f) {
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (slot.distance < slot.height[0] * 6.0f) {
-      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (this->state.slots[ec].distance < this->state.slots[ec].height[0] * 6.0f) {
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTPre, this->state.slots[ec].vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     } else {
-      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTPre, this->state.slots[ec].vecBPre, vec1, vec3, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
-        this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
   }
@@ -5466,10 +5487,11 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 
         vec2.x = vec1.x;
         vec2.z = vec1.z;
+        vec2.y = vec1.y;
         if (i == 1) {
-          vec2.y = vec1.y - this->state.slots[ec].maxHeight * 0.2f;
+          vec2.y -= this->state.slots[ec].maxHeight * 0.2f;
         } else {
-          vec2.y = vec1.y - this->state.slots[ec].maxHeight * 0.1f;
+          vec2.y -= this->state.slots[ec].maxHeight * 0.1f;
         }
 
         rx = this->state.slots[ec].height[0] + this->state.slots[ec].distance;
@@ -5480,10 +5502,11 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 
         vec4.x = vec3.x;
         vec4.z = vec3.z;
+        vec4.y = vec3.y;
         if (i == 1) {
-          vec4.y = vec3.y - this->state.slots[ec].maxHeight;
+          vec4.y -= this->state.slots[ec].maxHeight;
         } else {
-          vec4.y = vec3.y - this->state.slots[ec].maxHeight * 0.4f;
+          vec4.y -= this->state.slots[ec].maxHeight * 0.4f;
         }
 
         if (i == 1) {
@@ -5988,20 +6011,37 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     }
 
     const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
-    const int angle2 = angle + 90 >= 360 ? angle - 270 : angle + 90;
-    const int angle3 = angle2 + 90 >= 360 ? angle2 - 270 : angle2 + 90;
-    const int angle4 = angle3 + 90 >= 360 ? angle3 - 270 : angle3 + 90;
-    this->state.slots[ec].vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
-    this->state.slots[ec].vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
+    float cs = g_cosTable[angle];
+    float sn = g_sinTable[angle];
+    this->state.slots[ec].vecBPre.x = static_cast<float>(cs * radius);
+    this->state.slots[ec].vecBPre.z = static_cast<float>(sn * radius);
     this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecBNow.x = static_cast<float>(g_cosTable[angle2] * radius);
-    this->state.slots[ec].vecBNow.z = static_cast<float>(g_sinTable[angle2] * radius);
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    this->state.slots[ec].vecBNow.x = static_cast<float>(cs * radius);
+    this->state.slots[ec].vecBNow.z = static_cast<float>(sn * radius);
     this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecTNow.x = static_cast<float>(g_cosTable[angle3] * radius);
-    this->state.slots[ec].vecTNow.z = static_cast<float>(g_sinTable[angle3] * radius);
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    this->state.slots[ec].vecTNow.x = static_cast<float>(cs * radius);
+    this->state.slots[ec].vecTNow.z = static_cast<float>(sn * radius);
     this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecTPre.x = static_cast<float>(g_cosTable[angle4] * radius);
-    this->state.slots[ec].vecTPre.z = static_cast<float>(g_sinTable[angle4] * radius);
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    this->state.slots[ec].vecTPre.x = static_cast<float>(cs * radius);
+    this->state.slots[ec].vecTPre.z = static_cast<float>(sn * radius);
     this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
 
     const float mode = this->state.size;
