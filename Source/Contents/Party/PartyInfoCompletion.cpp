@@ -83,5 +83,6 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   } else {
     g_modeMgr.currentMode->SendMsg(MM_PARTY_REQ_MASTER_TO_JOIN, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
     g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
+    return;
   }
 }
