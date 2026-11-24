@@ -155,12 +155,14 @@ void CEffectPrim::RenderGroundSprite(matrix& wtm) {
     }
 
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    const int cellX = cell.x;
+    const int cellY = cell.y;
     const double factor = distanceScale;
-    const float left = static_cast<float>(cell.x * factor * cell.scaleX + screenX);
-    const float right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * factor * cell.scaleX + screenX + 1.0);
+    const float left = static_cast<float>(cellX * factor * cell.scaleX + screenX);
+    const float right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cellX) * factor * cell.scaleX + screenX + 1.0);
     const float lift = static_cast<float>(static_cast<double>(this->state.spriteLift));
-    const float top = static_cast<float>(cell.y * factor * cell.scaleY + screenY) - lift;
-    const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * factor * cell.scaleY + screenY + 1.0) - lift;
+    const float top = static_cast<float>(cellY * factor * cell.scaleY + screenY) - lift;
+    const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cellY) * factor * cell.scaleY + screenY + 1.0) - lift;
     if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||
         right <= 0.0f) {
       return;
@@ -168,6 +170,7 @@ void CEffectPrim::RenderGroundSprite(matrix& wtm) {
 
     const std::uint32_t color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
     SpriteQuad quad;
+    quad.image = image;
     quad.top = top;
     quad.left = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + left;
     quad.bottom = bottom;
@@ -177,7 +180,6 @@ void CEffectPrim::RenderGroundSprite(matrix& wtm) {
     quad.angle = static_cast<float>(cell.rotation);
     const float alphaScale = static_cast<unsigned char>(static_cast<int>(this->state.alpha)) / 255.0f;
     quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(alphaScale * static_cast<float>(color >> 24)))) << 24 | (color & 0xFFFFFF);
-    quad.image = image;
     this->DrawQuad(quad, sprite->palette, this->state.renderFlag, 0.0f, 0.0f, 0);
   }
 }
