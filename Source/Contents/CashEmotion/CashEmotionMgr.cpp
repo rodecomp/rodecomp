@@ -681,11 +681,14 @@ void CCashEmotionMgr::RefreshCommands() {
 
   const unsigned int now = this->ToServerTime(_time32(nullptr));
   for (auto& shortcut : this->m_shortcuts) {
-    for (const CashEmotionEntry& entry : shortcut.second->entries) {
+    for (const CashEmotionEntry entry : shortcut.second->entries) {
       const int packId = entry.packId;
       const int emotionId = entry.emotionId;
-      if (this->basePackId != packId && !this->IsOwnedPack(packId) && !this->IsPackAvailable(now, packId)) {
-        continue;
+      if (this->basePackId != packId && !this->IsOwnedPack(packId)) {
+        const CashEmotionPack* pack = this->GetPack(packId);
+        if (!pack || !pack->IsAvailable(now)) {
+          continue;
+        }
       }
 
       auto it = std::as_const(this->m_commands).find(shortcut.first);
@@ -760,8 +763,7 @@ const char* CCashEmotionMgr::GetPackName(int packId) {
 std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
   std::vector<int> result;
 
-  const int packId = this->basePackId;
-  auto it = this->emotionOrder.find(packId);
+  auto it = this->emotionOrder.find(this->BasePackId());
   if (it == this->emotionOrder.end()) {
     return result;
   }
@@ -1520,7 +1522,8 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
     return;
   }
 
-  std::string text = fmt::vformat(format, fmt::make_format_args(value));
+  const fmt::string_view messageFormat(format);
+  const std::string text = fmt::vformat(messageFormat, fmt::make_format_args(value));
   MessageBoxA(nullptr, text.c_str(), std::string("").c_str(), MB_OK);
 }
 
@@ -1888,7 +1891,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
 
   CashEmotionTable* table = g_cashEmotionMgr->GetBasePackEmotions();
   int index = 0;
-  for (int emotionId : emotions) {
+  for (const int& emotionId : emotions) {
     if (table->find(emotionId) == table->end()) {
       continue;
     }
@@ -3169,9 +3172,7 @@ int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
     this->packTitleText->SetTextFitted(g_cashEmotionMgr->GetPackTitle(packId));
   }
 
-  const auto pieceEnd = this->m_pieces.end();
-  for (auto pieceIt = this->m_pieces.begin(); pieceIt != pieceEnd; ++pieceIt) {
-    UICashEmotionPiece* piece = *pieceIt;
+  for (UICashEmotionPiece* piece : this->m_pieces) {
     this->RemoveChild(piece, 1);
   }
   this->m_pieces.clear();
@@ -3184,7 +3185,7 @@ int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
       int x = 8;
       int y = 63;
       int index = 0;
-      for (int emotionId : emotions) {
+      for (const int& emotionId : emotions) {
         auto it = table->find(emotionId);
         if (it == table->end()) {
           continue;

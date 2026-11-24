@@ -75,6 +75,9 @@ extern "C" {
 #include <utility>
 #include <windows.h>
 
+template __declspec(noinline) std::back_insert_iterator<std::vector<int>> std::copy(
+  std::vector<int>::const_iterator, std::vector<int>::const_iterator, std::back_insert_iterator<std::vector<int>>
+);
 extern template std::vector<int>::vector(const std::vector<int>&);
 template __declspec(noinline) std::unordered_map<std::string, CashEmotionCommand*>::iterator
 std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::find<void>(const std::string&);
