@@ -74,12 +74,12 @@ namespace LineCutter {
     // INLINED
     void SetText(std::string text, LineTextStyle style, unsigned char outlined, std::uint32_t outlineColor, unsigned char shadowed, std::uint32_t shadowColor) {
       this->m_text = text;
-      this->m_outlineColor = outlineColor;
-      this->m_shadowed = shadowed;
       this->m_style = style;
       this->m_outlined = outlined;
+      this->m_outlineColor = outlineColor;
+      this->m_shadowed = shadowed;
       this->m_shadowColor = shadowColor;
-      if (outlined == 1) {
+      if (this->m_outlined == 1) {
         const int textWidth = this->TextWidth(text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
         this->Resize(textWidth + 2, style.fontHeight + 2);
       }
