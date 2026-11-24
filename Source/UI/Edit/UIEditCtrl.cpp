@@ -9352,17 +9352,18 @@ void UIItemStoreSubWnd::Paint() {
 void UIItemPurchaseWnd::Paint() {
   this->DrawTitleBar(false, "", 0);
 
-  if (this->geometry.height == 17) {
+  auto& heightRef = this->geometry.height;
+  if (heightRef == 17) {
     return;
   }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  int rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
@@ -9372,14 +9373,14 @@ void UIItemPurchaseWnd::Paint() {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     const int fillWidth = (this->geometry.width - 60) % 32;
-    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-    const int fillHeight = (this->geometry.height - 38) % 32;
-    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, 17, fillWidth, heightRef - 38, RGB(red, green, blue));
+    const int fillHeight = (heightRef - 38) % 32;
+    const int fillY = (heightRef - 38) / 32 * 32 + 17;
     this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int height = this->geometry.height;
+  const int height = heightRef;
   {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
@@ -9473,9 +9474,9 @@ void UIItemPurchaseWnd::Paint() {
   }
 
   if (this->cashShopMode != 0) {
-    this->DrawTextAt(12, this->geometry.height - 48, LookupMessage(MSI_USE_FREE_POINT), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(179, this->geometry.height - 48, LookupMessage(MSI_CASH), 0, 0, 12, 0, 0, 0);
-    this->FillRegion(109, this->geometry.height - 51, 66, 18, 0x8E8E8E);
+    this->DrawTextAt(12, heightRef - 48, LookupMessage(MSI_USE_FREE_POINT), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(179, heightRef - 48, LookupMessage(MSI_CASH), 0, 0, 12, 0, 0, 0);
+    this->FillRegion(109, heightRef - 51, 66, 18, 0x8E8E8E);
   }
 }
 
