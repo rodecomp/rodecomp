@@ -64,12 +64,11 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
       do {
         position += static_cast<unsigned>(begin);
         remaining = remaining.substr(begin + g_itemLinkTagBegin.size());
-        const auto beginSize = g_itemLinkTagBegin.size();
         begin = remaining.find(g_itemLinkTagBegin);
         close = remaining.find(g_itemLinkTagEnd);
 
         if (begin != std::string::npos) {
-          position += static_cast<unsigned>(beginSize);
+          position += static_cast<unsigned>(g_itemLinkTagBegin.size());
         }
       } while (begin != std::string::npos);
 
@@ -78,7 +77,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
       std::string name = "";
 
       if (!this->Name(encoded, name)) {
-        position = static_cast<unsigned>(position + encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
+        position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
         remaining = remaining.substr(position);
         return true;
       }
