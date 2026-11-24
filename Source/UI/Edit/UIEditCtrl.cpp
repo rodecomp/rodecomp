@@ -2913,8 +2913,8 @@ void UISkillListWnd::Paint() {
       continue;
     }
 
-    const int top = drawn / this->columns * 32;
     int x = drawn % this->columns * 32;
+    const int top = drawn / this->columns * 32;
     if (this->hovered == index) {
       unsigned selectRed, selectGreen, selectBlue;
       g_skinInfo.PaletteChannels(6, 2, selectRed, selectGreen, selectBlue);
