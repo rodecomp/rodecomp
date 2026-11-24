@@ -197,8 +197,10 @@ void CTipBoxMgr::Sub7ACF50() {
   const float cellHeight = static_cast<float>(this->m_height) / 3.0f;
   const std::size_t found = this->m_currentEntry.bitmapName.find("유저인터페이스\\");
 
+  const float halfHeight = cellHeight * 0.5f;
+  const float top = static_cast<float>(row) * cellHeight;
   this->m_image.x = static_cast<float>(column) * cellWidth + cellWidth * 0.5f;
-  this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(row) * cellHeight;
+  this->m_image.y = static_cast<float>(this->m_maximumId) + halfHeight + top;
 
   if (found != std::string::npos) {
     this->m_image.path = this->m_currentEntry.bitmapName + ".bmp";
@@ -228,9 +230,9 @@ void CTipBoxMgr::Sub7ACF50() {
     }
 
     this->m_image.width = static_cast<float>(bitmap->image.width) * scale;
+    this->m_image.height = static_cast<float>(bitmap->image.height) * scale;
     this->m_image.kind = 0;
     this->m_image.scale = scale;
-    this->m_image.height = static_cast<float>(bitmap->image.height) * scale;
   } else {
     this->m_image.path = "sprite\\" + this->m_currentEntry.bitmapName;
 
@@ -260,9 +262,9 @@ void CTipBoxMgr::Sub7ACF50() {
     }
 
     this->m_image.width = static_cast<float>(image->width) * scale;
+    this->m_image.height = static_cast<float>(image->height) * scale;
     this->m_image.scale = scale;
     this->m_image.kind = 1;
-    this->m_image.height = static_cast<float>(image->height) * scale;
   }
 }
 
