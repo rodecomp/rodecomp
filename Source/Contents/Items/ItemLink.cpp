@@ -131,8 +131,8 @@ void UIChatHisBox::DecodeItemLinkFields(const std::string& text, std::vector<std
   char* buffer = new char[size];
   strcpy_s(buffer, size, text.c_str());
   std::string value("");
-  std::vector<std::int32_t> options;
   int optionCount = 0;
+  std::vector<std::int32_t> options;
   int cardCount = 0;
   fields.resize(260);
   fields[6] = -1;
