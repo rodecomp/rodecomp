@@ -1193,9 +1193,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   std::map<std::string, int> totals;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
 
-  const int inventoryCount = g_session.GetNumInventoryItems();
-  const int equippedCount = g_session.CountDistinctEquippedItems();
-  int count = inventoryCount + equippedCount + g_session.CountDistinctCostumeItems();
+  int count = g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
 
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
@@ -1222,7 +1220,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 
   std::map<int, int> required = *g_barterMarketItemMgr->GetTotals();
   for (std::map<int, int>::iterator it = required.begin(); it != required.end(); ++it) {
-    if (this->GetInventoryItemCount(it->first) < it->second) {
+    if (it->second > this->GetInventoryItemCount(it->first)) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 255, 0, 0, 0);
       this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
@@ -1609,9 +1607,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
   std::map<std::string, int> totals;
   std::vector<BarterMarketEntry> entries = *g_expandedBarterMarketItemMgr->GetEntries();
 
-  int count = g_session.GetNumInventoryItems();
-  count += g_session.CountDistinctEquippedItems();
-  count += g_session.CountDistinctCostumeItems();
+  int count = g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
 
   for (std::vector<BarterMarketEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
@@ -1621,7 +1617,8 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
       totals.insert(std::make_pair(it->name, it->value));
     }
 
-    if (g_session.IsEquipItemType(it->field_0) == true || g_session.IsShadowItemType(it->field_0) == true) {
+    const int type = it->field_0;
+    if (g_session.IsEquipItemType(type) == true || g_session.IsShadowItemType(type) == true) {
       ++count;
     } else {
       g_session.FindInventoryIndexByItemId(std::atoi(it->name.c_str()));
