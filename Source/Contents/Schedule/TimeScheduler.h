@@ -23,6 +23,7 @@ public:
   bool Init();
   CSchedule* FindSchedule(int serial);
   CSchedule* FindScheduleByKey(int key);
+  bool HasScheduleByKey(int key);
   void RemoveAllSchedules();
   CSchedule* CreateSchedule(const std::int64_t& interval, int scheduleType);
   CSchedule* AddSchedule(CSchedule* schedule);

@@ -116,6 +116,17 @@ CSchedule* CTimeScheduler::AddSchedule(CSchedule* schedule) {
   return schedule;
 }
 
+// OFFSET: 0x00BA9520
+// FUNCTION: fn_46723
+bool CTimeScheduler::HasScheduleByKey(int key) {
+  for (CSchedule* schedule : this->m_schedules) {
+    if (key == schedule->userValue) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x00BA9550
 // FUNCTION: fn_19738
 void CTimeScheduler::Process() {
