@@ -1568,6 +1568,177 @@ bool CRagEffect::ShieldCharge() {
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
+// OFFSET: 0x00C0B040
+// FUNCTION: fn_46634
+inline bool CRagEffect::Offertorium() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\ab_offertorium.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0B0E0
+// FUNCTION: fn_46635
+inline bool CRagEffect::FullThrottle() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\all_full_throttle.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0B180
+// FUNCTION: fn_46636
+inline bool CRagEffect::Angelus() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\EF_Angelus.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0B620
+// FUNCTION: fn_46637
+inline bool CRagEffect::AutoCounter() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\knight_autocounter.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0E6F0
+// FUNCTION: fn_46638
+inline bool CRagEffect::ClaymoreTrap() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\hunter_claymoretrap.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C0F530
+// FUNCTION: fn_46639
+inline bool CRagEffect::Cure() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\Acolyte_cure.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C15A10
+// FUNCTION: fn_46640
+inline bool CRagEffect::FreezingTrap() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\hunter_freezingtrap.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C16BD0
+// FUNCTION: fn_46641
+inline bool CRagEffect::IllusionDoping() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\gn_illusiondoping.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1EB90
+// FUNCTION: fn_46642
+inline bool CRagEffect::Magnificat() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_magnificat.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C1FDE0
+// FUNCTION: fn_46643
+inline bool CRagEffect::Mvp() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\st_mvp.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C35570
+// FUNCTION: fn_46644
+inline bool CRagEffect::WeaponPerfection() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\black_weapon_perfection.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C37880
+// FUNCTION: fn_46646
+inline bool CRagEffect::Recovery() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_recovery.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C38450
+// FUNCTION: fn_46647
+inline bool CRagEffect::Resurrection() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_resurrection.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C38710
+// FUNCTION: fn_46648
+inline bool CRagEffect::LuxAnima() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\rk_luxanima.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C38A30
+// FUNCTION: fn_46649
+inline bool CRagEffect::Sanctuary() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\priest_sanctuary.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3AC40
+// FUNCTION: fn_46650
+inline bool CRagEffect::ElementalShield() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\so_elemental_shield.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3C3A0
+// FUNCTION: fn_46651
+inline bool CRagEffect::SpringTrap() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\hunter_springtrap.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3C440
+// FUNCTION: fn_46652
+inline bool CRagEffect::FlashCombo() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\sr_flashcombo.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3DBF0
+// FUNCTION: fn_46653
+inline bool CRagEffect::Thunderstorm() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\magician_thunderstorm.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
 // OFFSET: 0x00C0B360
 // FUNCTION: fn_20016
 bool CRagEffect::Aspersio() {
@@ -22031,42 +22202,27 @@ bool CRagEffect::OnProcess3() {
     this->TexturedClassChange(86);
     break;
   case EF_ALL_FULL_THROTTLE:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\all_full_throttle.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->FullThrottle()) {
       return false;
     }
     break;
   case EF_SR_FLASHCOMBO:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\sr_flashcombo.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->FlashCombo()) {
       return false;
     }
     break;
   case EF_RK_LUXANIMA:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\rk_luxanima.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->LuxAnima()) {
       return false;
     }
     break;
   case EF_SO_ELEMENTAL_SHIELD:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\so_elemental_shield.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->ElementalShield()) {
       return false;
     }
     break;
   case EF_AB_OFFERTORIUM:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\ab_offertorium.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->Offertorium()) {
       return false;
     }
     break;
@@ -22081,10 +22237,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_GN_ILLUSIONDOPING:
-    if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\gn_illusiondoping.wav");
-    }
-    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    if (!this->IllusionDoping()) {
       return false;
     }
     break;
@@ -24784,10 +24937,7 @@ bool CRagEffect::OnProcess() {
       this->PotionPillar(1.0f, 50);
       break;
     case EF_ANGELUS:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\EF_Angelus.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Angelus()) {
         return false;
       }
       break;
@@ -24805,10 +24955,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_CURE:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\Acolyte_cure.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Cure()) {
         return false;
       }
       break;
@@ -24824,10 +24971,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_MVP:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\st_mvp.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Mvp()) {
         return false;
       }
       break;
@@ -24848,34 +24992,22 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_MAGNIFICAT:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_magnificat.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Magnificat()) {
         return false;
       }
       break;
     case EF_RESURRECTION:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_resurrection.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Resurrection()) {
         return false;
       }
       break;
     case EF_RECOVERY:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_recovery.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Recovery()) {
         return false;
       }
       break;
     case EF_SANCTUARY:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\priest_sanctuary.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Sanctuary()) {
         return false;
       }
       break;
@@ -25015,10 +25147,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_PERFECTION:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\black_weapon_perfection.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->WeaponPerfection()) {
         return false;
       }
       break;
@@ -25048,26 +25177,17 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_CLAYMORE:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\hunter_claymoretrap.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->ClaymoreTrap()) {
         return false;
       }
       break;
     case EF_FREEZING:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\hunter_freezingtrap.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->FreezingTrap()) {
         return false;
       }
       break;
     case EF_SPRINGTRAP:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\hunter_springtrap.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->SpringTrap()) {
         return false;
       }
       break;
@@ -25091,10 +25211,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_AUTOCOUNTER:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\knight_autocounter.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->AutoCounter()) {
         return false;
       }
       break;
@@ -25179,10 +25296,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_THUNDERSTORM:
-      if (this->state.stateCnt == 0) {
-        PlayEffectWaveInline(*this, "effect\\magician_thunderstorm.wav");
-      }
-      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      if (!this->Thunderstorm()) {
         return false;
       }
       break;
