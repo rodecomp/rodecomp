@@ -311,38 +311,13 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
 
     SnapObject* root = g_snapMgr.root;
     if ((height - up + y) != 0 && (!root || root != object || candidateBottom == screenHeight)) {
-      bool moveSelf = side != 3;
-      if (side == 3) {
-        bool boundaryAncestor = false;
-        if (root != object) {
-          for (SnapObject* next : root->edges[1]) {
-            if (next == object) {
-              boundaryAncestor = true;
-              break;
-            }
-
-            for (SnapObject* above : next->edges[1]) {
-              if (above->ContainsUpward(object)) {
-                boundaryAncestor = true;
-                break;
-              }
-            }
-
-            if (boundaryAncestor) {
-              break;
-            }
-          }
-        }
-
-        if (boundaryAncestor || candidateBottom == screenHeight) {
-          side = g_snapDirection;
-          dy = (0 - dy);
-          movedWindow = object->window;
-          moveSelf = true;
-        }
+      if (side == 3 && ((root != object && root->ContainsUpward(object)) || candidateBottom == screenHeight)) {
+        side = g_snapDirection;
+        dy = -dy;
+        movedWindow = object->window;
       }
 
-      if (moveSelf && side == 1 && movedWindow) {
+      if (side == 1 && movedWindow) {
         movedWindow->geometry.x += dx;
         object->window->geometry.y = (object->window->geometry.y + dy);
         g_windowMgr.StoreSnapRectangle(object->window);
