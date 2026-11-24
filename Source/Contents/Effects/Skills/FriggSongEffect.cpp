@@ -196,7 +196,7 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
   const int age = particle->elapsedFrames;
   const float baseAngle = particle->angle;
   const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
-  float& height = particle->animationParameter;
+  float height;
   if (age < 20) {
     height = g_projectionDepthNumerator;
   } else if (age <= 140) {
@@ -206,13 +206,14 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
     particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);
     height = particle->speedParameter;
   }
+  particle->animationParameter = height;
 
   matrix rotation;
   std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
   rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
   matrix scale;
   std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-  scale.SetScale(1.0f, height / 100.0f * 1.1f, 1.0f);
+  scale.SetScale(1.0f, particle->animationParameter / 100.0f * 1.1f, 1.0f);
   matrix first = rotation;
   rotation.Compose(first, scale);
   particle->transform = rotation;
