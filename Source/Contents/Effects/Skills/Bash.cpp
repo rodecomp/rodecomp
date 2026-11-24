@@ -144,9 +144,9 @@ __forceinline void CBash::UpdateRay(CParticle* particle) {
   particle->alpha = alpha;
 }
 
-// OFFSET: 0x00B42680
-// FUNCTION: fn_45937
-__forceinline void CBash::UpdateSpark(CParticle* particle) {
+// INLINED
+template <bool storeFirst>
+static __forceinline void UpdateBashSpark(CParticle* particle, int frame, int effectLifetime) {
   float* values = particle->animationValues;
   const int fadeFrame = static_cast<int>(values[8]);
   const int limit = static_cast<int>(values[6]);
@@ -154,15 +154,25 @@ __forceinline void CBash::UpdateSpark(CParticle* particle) {
   const float angle = speed + values[0];
   const float radius = values[5] + values[4];
   float step = values[7];
-  if (this->frame == fadeFrame) {
-    step = static_cast<float>(-(particle->alpha / (this->effectLifetime - this->frame)));
+  if (frame == fadeFrame) {
+    step = static_cast<float>(-(particle->alpha / (effectLifetime - frame)));
   }
 
-  values[7] = step;
-  int alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
-  values[0] = angle;
-  values[1] = speed;
-  values[4] = radius;
+  int alpha;
+  if (storeFirst) {
+    values[7] = step;
+    alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
+    values[0] = angle;
+    values[1] = speed;
+    values[4] = radius;
+  } else {
+    alpha = static_cast<int>(static_cast<float>(particle->alpha) + step);
+    values[0] = angle;
+    values[1] = speed;
+    values[4] = radius;
+    values[7] = step;
+  }
+
   if (alpha < 0.0f) {
     alpha = 0;
   }
@@ -172,6 +182,12 @@ __forceinline void CBash::UpdateSpark(CParticle* particle) {
   }
 
   particle->alpha = alpha;
+}
+
+// OFFSET: 0x00B42680
+// FUNCTION: fn_45937
+void CBash::UpdateSpark(CParticle* particle) {
+  UpdateBashSpark<false>(particle, this->frame, this->effectLifetime);
 }
 
 // OFFSET: 0x00B42720
@@ -185,7 +201,7 @@ void CBash::OnProcess() {
 
   for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
     CParticle* particle = *it;
-    this->UpdateSpark(particle);
+    UpdateBashSpark<true>(particle, this->frame, this->effectLifetime);
     ++particle->elapsedFrames;
   }
 }
