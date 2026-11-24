@@ -304,15 +304,17 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
     const int y = object->window->geometry.y;
     const int height = object->window->geometry.height;
     object->AccumulateHeight(down, 3);
-    const int candidateBottom = ((object->window->geometry.y - dy) + down);
+    UIWindow* movedWindow = object->window;
+    const int candidateBottom = down + (movedWindow->geometry.y - dy);
     const int screenHeight = g_renderer->viewport.height;
 
-    if (((y + height) - up) != 0 && (!g_snapMgr.root || g_snapMgr.root != object || candidateBottom == screenHeight)) {
+    SnapObject* root = g_snapMgr.root;
+    if ((height - up + y) != 0 && (!root || root != object || candidateBottom == screenHeight)) {
       bool moveSelf = side != 3;
       if (side == 3) {
         bool boundaryAncestor = false;
-        if (g_snapMgr.root != object) {
-          for (SnapObject* next : g_snapMgr.root->edges[1]) {
+        if (root != object) {
+          for (SnapObject* next : root->edges[1]) {
             if (next == object) {
               boundaryAncestor = true;
               break;
@@ -334,12 +336,13 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
         if (boundaryAncestor || candidateBottom == screenHeight) {
           side = g_snapDirection;
           dy = (0 - dy);
+          movedWindow = object->window;
           moveSelf = true;
         }
       }
 
-      if (moveSelf && side == 1 && object->window) {
-        object->window->geometry.x = (object->window->geometry.x + dx);
+      if (moveSelf && side == 1 && movedWindow) {
+        movedWindow->geometry.x += dx;
         object->window->geometry.y = (object->window->geometry.y + dy);
         g_windowMgr.StoreSnapRectangle(object->window);
       }
