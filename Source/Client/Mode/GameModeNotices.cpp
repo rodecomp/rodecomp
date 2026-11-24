@@ -4683,9 +4683,11 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       actor->SetHeadPaletteName();
       actor->RefreshAccessory3();
       break;
-    case LOOK_WEAPON:
-      actor->SetSprWeapon(packet->value, 0);
+    case LOOK_WEAPON: {
+      const std::int64_t weapons = packet->value;
+      actor->SetSprWeapon(static_cast<int>(weapons), static_cast<int>(weapons >> 32));
       break;
+    }
     case LOOK_HEAD_BOTTOM:
       actor->SetSprAccessory(packet->value);
       break;
@@ -7447,12 +7449,13 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   }
   item.grade = packet->grade;
 
+  const long long position = slot;
   if (0 == lookup) {
     g_session.UpdateInventoryItem(item, 1);
   } else if (lookup == 1) {
-    g_session.SetEquippedItem(slot, item);
+    g_session.SetEquippedItem(static_cast<unsigned int>(position), item);
   } else if (lookup == 2) {
-    g_session.SetCostumeItem(slot, item);
+    g_session.SetCostumeItem(static_cast<unsigned int>(position), item);
   }
 
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMCOLLECTIONWND)) {
@@ -7510,20 +7513,17 @@ void CGameMode::ReceiveWhisper2(const unsigned char* data) {
   this->ProcessWhisper(static_cast<int>(packet->senderGid), std::string(nameBuffer), text, packet->isAdmin);
 }
 
-struct RankNoticeStyle {
-  /* 0000 */ const char* title;
-  /* 0004 */ std::uint32_t color;
-  /* 0008 */ std::uint32_t background;
-};
+typedef std::pair<const char*, std::uint32_t> RankNoticeTitle;
+typedef std::pair<RankNoticeTitle, std::uint32_t> RankNoticeStyle;
 
 // OFFSET: 0x00D06760
 // FUNCTION: fn_21576
 static std::map<int, RankNoticeStyle> RankNoticeStyles() {
   std::map<int, RankNoticeStyle> styles;
-  styles.insert({0, {"========== BLACKSMITH RANK ============", 0x9B9B9B, 0xCDCDCD}});
-  styles.insert({1, {"=========== ALCHEMIST RANK =============", 0x9BCD9B, 0xCDFFCD}});
-  styles.insert({2, {"============ TAEKWON RANK =============", 0xCD9B9B, 0xFFCDCD}});
-  styles.insert({3, {"=========== KILLER RANK ==============", 0x9B9B9B, 0xCDCDCD}});
+  styles.insert({0, {{"========== BLACKSMITH RANK ============", 0x9B9B9B}, 0xCDCDCD}});
+  styles.insert({1, {{"=========== ALCHEMIST RANK =============", 0x9BCD9B}, 0xCDFFCD}});
+  styles.insert({2, {{"============ TAEKWON RANK =============", 0xCD9B9B}, 0xFFCDCD}});
+  styles.insert({3, {{"=========== KILLER RANK ==============", 0x9B9B9B}, 0xCDCDCD}});
   return styles;
 }
 
@@ -7550,9 +7550,9 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
   std::uint32_t background;
   auto style = styles.find(kind);
   if (style != styles.end()) {
-    title = style->second.title;
-    background = style->second.background;
-    color = style->second.color;
+    title = style->second.first.first;
+    background = style->second.second;
+    color = style->second.first.second;
   } else {
     title = "===========================================";
     background = 0;
