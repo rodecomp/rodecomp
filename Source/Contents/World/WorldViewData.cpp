@@ -411,9 +411,9 @@ bool CWorldViewMgr::ScaleToScreen() {
   return true;
 }
 
-// OFFSET: 0x006168F0
-// FUNCTION: fn_04375
-void CWorldViewMgr::LoadTextures() {
+// OFFSET: 0x006172A0
+// FUNCTION: fn_46725
+void CWorldViewMgr::UpdateScreenScale() {
   const int width = g_renderer->viewport.width;
   if (width > 640) {
     if (width <= 800) {
@@ -422,6 +422,12 @@ void CWorldViewMgr::LoadTextures() {
       this->screenScale = (width > 1024) + 2;
     }
   }
+}
+
+// OFFSET: 0x006168F0
+// FUNCTION: fn_04375
+void CWorldViewMgr::LoadTextures() {
+  this->UpdateScreenScale();
 
   for (std::vector<CWorldViewWorld*>::iterator it = this->worlds.begin(); it != this->worlds.end(); ++it) {
     (*it)->LoadTexture();

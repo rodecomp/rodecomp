@@ -141,6 +141,7 @@ public:
   void Load(LuaScript& script);
   void ScaleArea(int* area, int topOffset, int textureWidth, int textureHeight);
   bool ScaleToScreen();
+  void UpdateScreenScale();
   void LoadTextures();
   unsigned int FindWorld(int mapId);
   void ResetSelection();
