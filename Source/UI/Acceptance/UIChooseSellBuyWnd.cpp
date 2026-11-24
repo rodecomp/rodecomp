@@ -3438,20 +3438,18 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->AddChild(this->m_viewButton);
     }
 
-    if (this->m_viewOther == 0) {
-      std::string prefix("유저인터페이스\\basic_interface\\");
-      const int x = this->geometry.width / 2 - 14;
-      const int bottom = this->geometry.height - this->contentOffset;
-      this->m_otherButton = new UIBitmapButton();
-      this->m_otherButton->SetBitmap((prefix + "btn_items_off" + ".bmp").c_str(), 0, 0);
-      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 1, 0);
-      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
-      this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
-      this->m_otherButton->Move(x, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
-      this->m_otherButton->SetId(ID_EQUIP_OPTION_OPEN);
-      this->m_otherButton->SetTooltip(g_session.replayPacketMode > 0 ? LookupMessage(MSI_OPENCARTWINDOW) : "");
-      this->AddChild(this->m_otherButton);
-    }
+    std::string prefix("유저인터페이스\\basic_interface\\");
+    const int x = this->geometry.width / 2 - 14;
+    const int bottom = this->geometry.height - this->contentOffset;
+    this->m_otherButton = new UIBitmapButton();
+    this->m_otherButton->SetBitmap((prefix + "btn_items_off" + ".bmp").c_str(), 0, 0);
+    this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 1, 0);
+    this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
+    this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
+    this->m_otherButton->Move(x, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
+    this->m_otherButton->SetId(ID_EQUIP_OPTION_OPEN);
+    this->m_otherButton->SetTooltip(g_session.replayPacketMode > 0 ? LookupMessage(MSI_OPENCARTWINDOW) : "");
+    this->AddChild(this->m_otherButton);
   }
 
   this->m_show = this->geometry.height;
