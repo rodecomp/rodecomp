@@ -320,8 +320,8 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
               break;
             }
 
-            for (auto above = next->edges[1].begin(); above != next->edges[1].end(); ++above) {
-              if ((*above)->ContainsUpward(object)) {
+            for (SnapObject* above : next->edges[1]) {
+              if (above->ContainsUpward(object)) {
                 boundaryAncestor = true;
                 break;
               }
