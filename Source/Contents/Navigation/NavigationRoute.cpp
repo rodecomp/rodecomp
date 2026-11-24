@@ -1667,7 +1667,8 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
     return false;
   }
 
-  this->data.endLinks.clear();
+  std::vector<NaviLink>& endLinks = this->data.endLinks;
+  endLinks.clear();
   const int type = this->savedTarget.type;
   int x = -1;
   int y = -1;
@@ -1682,7 +1683,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
     const NaviCell* position = object->GetCell(&cell);
     x = position->x;
     y = position->y;
-    this->data.endLinks = object->CopyLinks();
+    endLinks = object->CopyLinks();
   } else {
     if (type == 3) {
       info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
@@ -1708,23 +1709,23 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
 
     int cost = 0;
     MovementRouteInterpolation route;
-    for (auto it = links.begin(); it != links.end(); ++it) {
+    for (CNavi_Link*& link : links) {
       if (this->savedTarget.type == 0) {
         this->pathFinder.Reset();
         cost = 0;
-        if ((*it)->GetLinkedCell().x == x && (*it)->GetLinkedCell().y == y) {
+        if (link->GetLinkedCell().x == x && link->GetLinkedCell().y == y) {
           cost = 1;
-        } else if (this->pathFinder.FindPath(1, (*it)->GetLinkedCell().x, (*it)->GetLinkedCell().y, 8, 8, x, y, 10, route, 15)) {
+        } else if (this->pathFinder.FindPath(1, link->GetLinkedCell().x, link->GetLinkedCell().y, 8, 8, x, y, 10, route, 15)) {
           cost = static_cast<int>(route.points.size());
         } else {
           continue;
         }
       }
-      this->data.endLinks.push_back(NaviLink{*it, cost});
+      endLinks.push_back(NaviLink{link, cost});
     }
   }
 
-  if (this->data.endLinks.empty()) {
+  if (endLinks.empty()) {
     return false;
   }
   return this->data.SetDestination(info, x, y);
