@@ -4,6 +4,19 @@
 #include <cwchar>
 #include <windows.h>
 
+#pragma pack(push, 1)
+struct DigestStorage {
+  /* 0000 */ unsigned char b0;
+  /* 0001 */ std::uint32_t b1;
+  /* 0005 */ std::uint32_t b2;
+  /* 0009 */ std::uint32_t b3;
+  /* 000D */ std::uint16_t b4;
+  /* 000F */ unsigned char b5;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(DigestStorage) == 16);
+
 namespace {
   // INLINED
   __forceinline std::uint32_t FoldDigest(const unsigned char* digest) {
@@ -15,10 +28,10 @@ namespace {
   __forceinline void Encode(unsigned char* output, const std::uint32_t* input, std::uint32_t length) {
     for (std::uint32_t i = 0; i < length / 4; ++i) {
       const std::uint32_t value = input[i];
-      output[i * 4] = static_cast<unsigned char>(value & 0xFF);
-      output[i * 4 + 1] = static_cast<unsigned char>((value >> 8) & 0xFF);
       output[i * 4 + 2] = static_cast<unsigned char>((value >> 16) & 0xFF);
       output[i * 4 + 3] = static_cast<unsigned char>((value >> 24) & 0xFF);
+      output[i * 4] = static_cast<unsigned char>(value & 0xFF);
+      output[i * 4 + 1] = static_cast<unsigned char>((value >> 8) & 0xFF);
     }
   }
 }
@@ -244,9 +257,10 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
 // OFFSET: 0x00402640
 // FUNCTION: fn_00130
 std::uint32_t MD5::HashString(const char* text) {
-  unsigned char digest[16] = {0};
-  DigestBuffer(reinterpret_cast<const unsigned char*>(text), std::strlen(text), digest);
-  return FoldDigest(digest);
+  DigestStorage digest;
+  digest.b0 = 0; digest.b1 = 0; digest.b2 = 0; digest.b3 = 0; digest.b4 = 0; digest.b5 = 0;
+  DigestBuffer(reinterpret_cast<const unsigned char*>(text), std::strlen(text), reinterpret_cast<unsigned char*>(&digest));
+  return FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
 }
 
 // OFFSET: 0x00402710
