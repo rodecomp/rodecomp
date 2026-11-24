@@ -364,11 +364,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (item.quantity > 0) {
       std::uint16_t weight;
       if (item.uniqueItem == 1) {
-        const std::uint16_t added = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumPurchasePriceFactor();
+        weight = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
+        weight += g_session.SumPurchasePriceFactor();
       } else {
-        const std::uint16_t added = g_session.GetShopItemPriceFactorByItemId(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumPurchasePriceFactorByItemId();
+        weight = g_session.GetShopItemPriceFactorByItemId(item) * static_cast<std::uint16_t>(item.quantity);
+        weight += g_session.SumPurchasePriceFactorByItemId();
       }
 
       if (!affordable) {
@@ -451,13 +451,13 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     break;
   case UM_REFRESHITEM: {
-    this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
+    this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(i);
       if (item.identity[1] > 0) {
-        sum += item.quantity * item.prices[1];
+        sum += item.quantity * static_cast<int>(item.prices[1]);
         this->items.push_back(item);
       }
     }
