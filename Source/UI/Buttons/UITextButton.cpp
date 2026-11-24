@@ -602,14 +602,13 @@ void UIMemberListBox::OnMouseHover(int, int y) {
   const unsigned count = static_cast<unsigned>(this->lines.size());
   auto& lineHeightRef = this->lineHeight;
   const int lineHeight = lineHeightRef;
-  const int topLine = this->topLine;
-  const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + topLine;
-  const int line = topLine + y / lineHeight;
-  if (line < topLine) {
+  const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + this->topLine;
+  const int line = this->topLine + y / lineHeight;
+  if (line < this->topLine) {
     return;
   }
 
-  if (line >= static_cast<int>(std::min(count, end))) {
+  if (line >= static_cast<int>(std::min(end, count))) {
     return;
   }
 
