@@ -66,14 +66,9 @@ HANDLE hObject;
 // GLOBAL: gl_24757
 std::vector<DeferredWorldModel> g_deferredWorldModels;
 
-// OFFSET: 0x00AC8220
-// FUNCTION: fn_17667
-CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
-  if (aid == g_session.m_aid) {
-    return this->player;
-  }
-
-  for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
+// INLINED
+static CGameActor* FindActorByAid(const std::list<CGameActor*>& actors, std::uint32_t aid) {
+  for (auto it = actors.begin(); it != actors.end(); ++it) {
     CGameActor* actor = *it;
 
     if (actor->render.accountId == aid) {
@@ -82,6 +77,16 @@ CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00AC8220
+// FUNCTION: fn_17667
+CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
+  if (aid == g_session.m_aid) {
+    return this->player;
+  }
+
+  return FindActorByAid(this->actors, aid);
 }
 
 // OFFSET: 0x00ACA4E0
