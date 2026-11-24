@@ -758,11 +758,9 @@ void EntryQueueWndInfo::Reset() {
 // OFFSET: 0x009A6870
 // FUNCTION: fn_13704
 void MiniMapWndInfo::Reset() {
-  const int x = g_renderer->viewport.width - 536;
-
+  this->width = g_renderer->viewport.width - 536;
   this->height = 190;
-  this->width = x;
-  this->x = x;
+  this->x = this->width;
   this->y = 190;
   this->expandedWidth = 516;
   this->expandedHeight = 559;
