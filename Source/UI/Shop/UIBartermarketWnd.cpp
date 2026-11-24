@@ -1426,10 +1426,12 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->UpdateScrollBar();
     }
 
-    const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
-    const int y = this->geometry.height - 24;
+    const POINT positions[2] = {
+      {this->geometry.width - 106, this->geometry.height - 24},
+      {this->geometry.width - 61, this->geometry.height - 24},
+    };
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index]->Move(xs[index], y);
+      this->buttons[index]->Move(positions[index].x, positions[index].y);
     }
 
     g_windowMgr.StoreSnapRectangle(this);
