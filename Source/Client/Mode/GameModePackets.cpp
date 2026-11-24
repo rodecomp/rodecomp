@@ -11435,12 +11435,13 @@ static_assert(sizeof(EffectNumberPacket) == 0xE);
 // FUNCTION: fn_21764
 void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   const EffectNumberPacket* packet = reinterpret_cast<const EffectNumberPacket*>(data);
-  if (g_session.m_isPvpZone == 0 && this->scene->isPKZone == 0) {
+  auto& sceneRef = this->scene;
+  if (g_session.m_isPvpZone == 0 && sceneRef->isPKZone == 0) {
     return;
   }
 
   CGameActor* actor;
-  if (packet->aid == g_session.m_aid && (actor = this->scene->player) != nullptr) {
+  if (packet->aid == g_session.m_aid && (actor = sceneRef->player) != nullptr) {
     if (packet->count == 1) {
       if (static_cast<CPlayer*>(actor)->pkRank != 1) {
         g_session.m_timeAttackStart = timeGetTime();
@@ -11449,7 +11450,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
       g_session.m_timeAttackStart = 0;
     }
 
-    const int previous = this->scene->player->pkRank;
+    const int previous = sceneRef->player->pkRank;
     const int count = packet->count;
     if (previous != count) {
       if (previous > 10) {
@@ -11463,13 +11464,13 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
         std::sprintf(text, LookupMessage(MSI_RANK_OUT_TEN), g_session.DecodePlayerName(), count);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
       }
-      CPlayer* player = this->scene->player;
+      CPlayer* player = sceneRef->player;
       g_soundMgr->PlayWave("effect\\number_change.wav", player->render.position.x, 0.0f, player->render.position.z, 250, 40, 1.0f, 0);
     }
-    this->scene->player->pkTotal = packet->value;
-    this->scene->player->pkRank = packet->count;
+    sceneRef->player->pkTotal = packet->value;
+    sceneRef->player->pkRank = packet->count;
   } else {
-    actor = this->scene->GetGameActorByAID(packet->aid);
+    actor = sceneRef->GetGameActorByAID(packet->aid);
     const std::uint32_t state = actor->GetStateFlags();
     if (IsCloaking(state) || IsHiding(state) || IsInvisible(state)) {
       return;
