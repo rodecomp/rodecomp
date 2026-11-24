@@ -74,8 +74,8 @@ namespace {
 // INLINED
 __forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
   bar->maximum = maximum;
-  bar->total = total;
   bar->visible = visible;
+  bar->total = total;
   bar->Invalidate();
 
   if (bar->position > bar->maximum) {
@@ -88,14 +88,18 @@ __forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int t
 // FUNCTION: fn_11510
 void UIComboBoxEx::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::ranges::max(count - visible, 0);
+  int overflow = static_cast<int>(this->lines.size()) - visible;
+
+  if (overflow < 0) {
+    overflow = 0;
+  }
+
   this->verticalOverflow = overflow != 0;
   auto& verticalBarRef = this->verticalBar;
   auto* bar = verticalBarRef;
 
   if (overflow != 0) {
-    SetBarRange(bar, (this->bottomMargin + overflow), visible, count);
+    SetBarRange(bar, (this->bottomMargin + overflow), visible, static_cast<int>(this->lines.size()));
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
@@ -111,12 +115,12 @@ void UIComboBoxEx::Refresh() {
       this->topLine = overflow;
     }
 
-    verticalBarRef->position = this->topLine;
+    this->verticalBar->position = this->topLine;
   } else {
-    SetBarRange(bar, 0, visible, count);
+    SetBarRange(bar, 0, visible, static_cast<int>(this->lines.size()));
   }
 
-  verticalBarRef->Invalidate();
+  this->verticalBar->Invalidate();
 
   if (this->Root()) {
     this->Root()->Invalidate();
