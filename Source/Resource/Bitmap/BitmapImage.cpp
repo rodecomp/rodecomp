@@ -179,18 +179,18 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
     } else if (bits == 24) {
       auto* first = new unsigned char[this->image.width * this->image.height * 3];
       auto* second = new unsigned char[this->image.width * this->image.height * 2];
+      unsigned char* firstTarget = first;
+      unsigned char* secondTarget = second;
 
-      unsigned char* target = first;
       for (int y = this->image.height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->image.width * 2);
-        target += this->image.width * 2;
+        std::memcpy(firstTarget, source, this->image.width * 2);
+        firstTarget += this->image.width * 2;
         source += this->image.width * 2;
       }
 
-      target = second;
       for (int y = this->image.height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->image.width);
-        target += this->image.width;
+        std::memcpy(secondTarget, source, this->image.width);
+        secondTarget += this->image.width;
         source += this->image.width;
       }
 
