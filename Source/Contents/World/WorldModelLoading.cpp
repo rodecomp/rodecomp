@@ -148,11 +148,10 @@ void CWorld::InitWorld() {
   this->movies = new BinkMovies();
   this->serializedSpatial = worldRes->spatial;
 
-  int* modeBounds = this->gameMode->areaBounds;
-  modeBounds[0] = worldRes->bounds[2];
-  modeBounds[1] = worldRes->bounds[3];
-  modeBounds[2] = worldRes->bounds[0];
-  modeBounds[3] = worldRes->bounds[1];
+  this->gameMode->areaBounds[0] = worldRes->bounds[2];
+  this->gameMode->areaBounds[1] = worldRes->bounds[3];
+  this->gameMode->areaBounds[2] = worldRes->bounds[0];
+  this->gameMode->areaBounds[3] = worldRes->bounds[1];
 
   g_worldLightDirection = worldRes->lightDirection;
   g_worldDiffuse = worldRes->diffuse;
@@ -206,19 +205,18 @@ void CWorld::InitWorld() {
 
     const int modelCount = static_cast<int>(worldRes->models.size());
     auto placementIt = worldRes->models.begin();
-    auto& modelsRef = this->models;
-    modelsRef.clear();
-    modelsRef.reserve(modelCount);
+    int lastPercent = -1;
+    this->models.clear();
+    this->models.reserve(modelCount);
 
     DWORD lastNoticeTime = 0;
-    int lastPercent = -1;
     int progress = 0;
 
     for (; placementIt != worldRes->models.end(); ++placementIt) {
       progress += 100;
       DWORD now = timeGetTime();
       int percent = static_cast<int>(progress / modelCount);
-      if ((percent != lastPercent && now - lastNoticeTime > 15) || percent == 100) {
+      if ((lastPercent != percent && now - lastNoticeTime > 15) || percent == 100) {
         lastPercent = percent;
         lastNoticeTime = now;
         g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
@@ -273,7 +271,7 @@ void CWorld::InitWorld() {
         actor->Assign(*modelRes);
         actor->occlusionEnabled = 0;
         actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
-        modelsRef.push_back(actor);
+        this->models.push_back(actor);
       }
     }
 
@@ -282,7 +280,7 @@ void CWorld::InitWorld() {
 
     this->ground->InitializeLighting();
 
-    this->published = static_cast<int>(modelsRef.size());
+    this->published = static_cast<int>(this->models.size());
 
     DWORD threadId;
     hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
