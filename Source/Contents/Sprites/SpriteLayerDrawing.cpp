@@ -500,7 +500,7 @@ std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActR
 
   std::string name = action->Sound(sound);
   if (name.find(".wav") != std::string::npos) {
-    name.clear();
+    name = "";
   }
 
   return std::make_pair(true, name);
