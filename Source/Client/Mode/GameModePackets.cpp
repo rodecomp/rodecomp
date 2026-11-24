@@ -15675,7 +15675,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((job < 45 || job >= 1000) && (job <= 1000 || job >= 3999) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -16417,9 +16417,9 @@ void CGameMode::SpawnStandingActor(
     }
 
     created->objectType = objectType;
-    this->scene->objects.push_back(created);
-    this->scene->actors.push_back(created);
     actor = created;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     if (objectType == 0) {
       if (this->partyPosList.find(aid) != this->partyPosList.end() || this->guildPosList.find(aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
