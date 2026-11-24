@@ -693,8 +693,6 @@ void CEffectPrim::RenderFanWedge(matrix& wtm) {
     if (leftAngle < 0) {
       leftAngle += 360;
     }
-    const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
-    const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
     int rightAngle = angle + 7;
     if (rightAngle >= 360) {
       rightAngle -= 360;
@@ -703,22 +701,26 @@ void CEffectPrim::RenderFanWedge(matrix& wtm) {
     if (backAngle < 0) {
       backAngle += 360;
     }
-    left.x = dist * g_cosTable[leftAngle] * rotCos;
-    left.y = dist * g_cosTable[leftAngle] * rotSin + base;
+    const float leftSpread = dist * g_cosTable[leftAngle];
     left.z = dist * g_sinTable[leftAngle];
-    right.x = dist * g_cosTable[rightAngle] * rotCos;
-    right.y = dist * g_cosTable[rightAngle] * rotSin + base;
+    left.x = leftSpread * g_cosTable[this->state.slots[ec].rotStart];
+    left.y = leftSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    const float rightSpread = dist * g_cosTable[rightAngle];
     right.z = dist * g_sinTable[rightAngle];
-    back.x = g_cosTable[backAngle] * 7.0f * rotCos;
-    back.y = g_cosTable[backAngle] * 7.0f * rotSin + base;
-    back.z = g_sinTable[backAngle] * 7.0f;
+    right.x = rightSpread * g_cosTable[this->state.slots[ec].rotStart];
+    right.y = rightSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    const float backSpread = 7.0f * g_cosTable[backAngle];
+    back.z = 7.0f * g_sinTable[backAngle];
+    back.x = backSpread * g_cosTable[this->state.slots[ec].rotStart];
+    back.y = backSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
     int tipAngle = angle - 90;
     if (tipAngle < 0) {
       tipAngle += 360;
     }
-    tip.x = g_cosTable[tipAngle] * 7.0f * rotCos;
-    tip.y = g_cosTable[tipAngle] * 7.0f * rotSin + base;
-    tip.z = g_sinTable[tipAngle] * 7.0f;
+    const float tipSpread = 7.0f * g_cosTable[tipAngle];
+    tip.z = 7.0f * g_sinTable[tipAngle];
+    tip.x = tipSpread * g_cosTable[this->state.slots[ec].rotStart];
+    tip.y = tipSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
 
     this->RenderTeiRect(
       &rpCnt, this->state.slots[ec].alphaB, tip, left, right, back, wtm, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), 0, 105,
