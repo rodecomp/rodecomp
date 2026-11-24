@@ -3585,15 +3585,12 @@ void UISlotBmpButton::Paint() {
   }
 
   if (this->m_index == 0 && g_session.characterSlotState == 0) {
-    CBitmapRes* balloon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp")));
-    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon, false);
+    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp"))), false);
 
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(MSI_CREATE_CHARACTER), lines, 0x14);
-    int y = 0x22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawCenteredText(0x21, y, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
-      y += 0xd;
+      this->DrawCenteredText(0x21, index * 0xd + 0x22, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
     }
   }
 
@@ -3602,24 +3599,24 @@ void UISlotBmpButton::Paint() {
     if (info) {
       if (info->nameChangeCount > 0 || info->slotChangeCount > 0) {
         if (this->m_inRange) {
-          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp")));
-          this->DrawBitmap(0, 0, bitmap, true);
+          this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp"))), true);
         } else {
-          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp")));
-          this->DrawBitmap(0x13, 0x19, bitmap, false);
+          this->DrawBitmap(0x13, 0x19, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp"))), false);
         }
       }
 
       if (info->deleteDate != 0) {
         Timestamp expiry(info->deleteDate);
-        const std::uint32_t color = expiry.IsBeforeNow() ? 0xff0000 : 0xff;
+        std::uint32_t color = 0xff;
+        if (expiry.IsBeforeNow()) {
+          color = 0xff0000;
+        }
+
         const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
         const std::string period = FormatOwnedString(LookupMessage(MSI_DATE_MM_DD), date.month, date.day);
         const std::string time = FormatOwnedString(LookupMessage(MSI_DATE_HH_MM_SS), date.hour, date.minute, date.second);
-        const int periodWidth = this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
-        const int timeWidth = this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(0x4f - timeWidth / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
+        this->DrawTextAt(0x4f - this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0) / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
+        this->DrawTextAt(0x4f - this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0) / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
       }
     }
   }
