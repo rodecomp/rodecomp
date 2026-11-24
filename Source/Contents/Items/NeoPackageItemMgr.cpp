@@ -32,7 +32,7 @@ void CNeoPackageItemMgr::Init() {
 // FUNCTION: fn_06523
 void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability) {
   std::map<int, PackageGroup>& groups = this->m_packages[packageId];
-  auto group = groups.try_emplace(groupId, PackageGroup{}).first;
+  auto group = groups.try_emplace(groupId, PackageGroup()).first;
   group->second.totalProbability += probability;
   group->second.items.emplace_back(itemId, name, probability);
 }

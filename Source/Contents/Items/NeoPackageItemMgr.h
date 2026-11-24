@@ -26,6 +26,10 @@ struct PackageEntry {
 };
 
 struct PackageGroup {
+  // INLINED
+  PackageGroup() : totalProbability(0) {
+  }
+
   /* 0000 */ int totalProbability;
   /* 0004 */ std::list<PackageEntry> items;
 };
