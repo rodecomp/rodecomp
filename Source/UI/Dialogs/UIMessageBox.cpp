@@ -1568,9 +1568,9 @@ void UIMakeCharWnd::InitHairControls() {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int positions[2][2] = {{57, 262}, {104, 262}};
-  const char* tooltips[2] = {"", ""};
   int ids[2] = {184, 185};
 
+  const char* tooltips[2] = {"", ""};
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
