@@ -1181,8 +1181,9 @@ void UIRuneSetList::Paint() {
     }
 
     const int active = runeSet->IsActive();
-    const bool selected = index == this->m_selected;
-    const int y = this->m_itemHeight * row + 1;
+    const int itemHeight = this->m_itemHeight;
+    const int selected = index == this->m_selected;
+    const int y = row * itemHeight + 1;
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_runeset_item_%d_%d.bmp", active, selected);
     this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
     for (unsigned int slot = 0; slot < runeSet->m_slots.size(); ++slot) {
