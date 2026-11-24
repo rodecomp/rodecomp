@@ -1168,8 +1168,7 @@ void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
   }
   const auto total = g_expandedBarterMarketItemMgr->total;
   if (total > 0) {
-    std::string totalText = FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), total);
-    text += "\n" + totalText;
+    text += "\n" + static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), total));
   }
   if (!text.empty()) {
     int tooltipX = 0;
