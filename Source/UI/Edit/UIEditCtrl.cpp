@@ -618,17 +618,18 @@ void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, co
 // OFFSET: 0x00856FB0
 // FUNCTION: fn_10758
 void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
-  const int right = this->geometry.width;
   if (x < 3) {
     width += x - 3;
   }
-  const int extent = width;
-  const int left = x >= 3 ? x : 3;
+  const int right = this->geometry.width;
+  if (x < 3) {
+    x = 3;
+  }
 
-  if (left < right && extent > 0) {
+  if (x < right && width > 0) {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-    this->FillRegion(left, y, left + extent > right ? right - left : extent, 14, RGB(red, green, blue));
+    this->FillRegion(x, y, x + width > right ? right - x : width, 14, RGB(red, green, blue));
   }
 }
 
@@ -11751,9 +11752,9 @@ void UIMerchantShopMakeWnd::UpdateScrollBar() {
     return;
   }
 
+  int maximum = static_cast<int>(this->items.size()) - this->maxVisibleRows;
   const int visible = this->maxVisibleRows;
   const int count = static_cast<int>(this->items.size());
-  int maximum = count - visible;
   if (maximum < 0) {
     maximum = 0;
   }
