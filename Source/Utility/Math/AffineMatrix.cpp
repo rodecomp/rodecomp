@@ -301,8 +301,8 @@ void SlerpQuaternion(RotationQuaternion& result, double amount, const RotationQu
     const float sine = sinf(static_cast<float>(angle));
     const float firstSine = sinf(static_cast<float>(firstWeight * angle));
     const float secondSine = sinf(static_cast<float>(amount * angle));
-    firstWeight = static_cast<double>(firstSine) / sine;
     secondWeight = static_cast<double>(secondSine) / sine;
+    firstWeight = static_cast<double>(firstSine) / sine;
   }
 
   const float firstScale = static_cast<float>(firstWeight);
