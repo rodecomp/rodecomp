@@ -546,10 +546,11 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     button->Invalidate();
 
     if (this->materials[slot].successRate < 100 && this->catalystEnabled == 0) {
+      int messageId = 0;
       switch (this->materials[slot].itemId) {
       case ITEMID_CARNIUM:
       case ITEMID_BRADIUM:
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR_OR_ITEM_DOWNGRADE), 0, 0);
+        messageId = MSI_REFINING_FAIL_ITEM_DISAPPEAR_OR_ITEM_DOWNGRADE;
         break;
       case ITEMID_HD_CARNIUM:
       case ITEMID_HD_BRADIUM:
@@ -563,7 +564,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case ITEMID_ETHERDEOCON:
       case ITEMID_ENRICHED_ETHERNIUM:
       case ITEMID_ENRICHED_ETHERDEOCON:
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DOWMGRADE), 0, 0);
+        messageId = MSI_REFINING_FAIL_ITEM_DOWMGRADE;
         break;
       case ITEMID_ORIDECON:
       case ITEMID_ELUNIUM:
@@ -577,8 +578,11 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case ITEMID_HD_ETEL_BRADIUM:
       case ITEMID_ETEL_CARNIUM:
       case ITEMID_HD_ETEL_CARNIUM:
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR), 0, 0);
+        messageId = MSI_REFINING_FAIL_ITEM_DISAPPEAR;
         break;
+      }
+      if (messageId != 0) {
+        this->notice->SetNotice(LookupMessage(messageId), 0, 0);
       }
     }
   } else {
