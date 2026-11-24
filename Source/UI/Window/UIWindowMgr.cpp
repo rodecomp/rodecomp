@@ -2532,8 +2532,6 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       case WID_SEARCH_STORE_INFO:
       case WID_NCASHWND:
       case WID_NAVIGATIONV4WND:
-      case WID_STYLINGSHOPWND:
-      case WID_REQUESTJOINPARTYWND:
         window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         return false;
       case WID_ITEMSHOPWND:
@@ -2549,6 +2547,10 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
           return false;
         }
         window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, replaying, replaying, replaying);
+        return false;
+      case WID_STYLINGSHOPWND:
+      case WID_REQUESTJOINPARTYWND:
+        window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         return false;
       case WID_BALLOONOPENBTN:
       case WID_WAITDBSAVEWND:
