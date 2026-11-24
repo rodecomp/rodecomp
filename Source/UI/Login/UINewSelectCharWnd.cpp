@@ -44,10 +44,6 @@
 #include <cstring>
 
 
-// GLOBAL: gl_25013
-unsigned char g_selectedSlotIndex;
-
-
 #pragma pack(push, 1)
 struct CharacterGidPacket {
   /* 0000 */ std::int16_t id;
@@ -158,7 +154,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   }
 
   g_session.m_options.Values()[6] = 1;
-  g_selectedSlotIndex = static_cast<unsigned char>(this->m_slotsPerPage * this->m_page + this->m_pageSlot);
+  g_charInfo.slot = static_cast<unsigned char>(this->m_slotsPerPage * this->m_page + this->m_pageSlot);
 
   for (int index = 0; index < this->m_slotsPerPage; ++index) {
     const int slot = this->m_page * this->m_slotsPerPage + index;
@@ -508,7 +504,7 @@ void UINewSelectCharWnd::Paint() {
     }
   }
 
-  const CharacterInfo* selected = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+  const CharacterInfo* selected = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
   if (selected && selected->deleteDate > 0) {
     Timestamp deleteDate(selected->deleteDate);
     if (deleteDate.IsBeforeNow() == 1) {
@@ -567,7 +563,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       CharacterInfo* info =
-        reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+        reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
       if (info != nullptr) {
         if (info->deleteDate > 0) {
           break;
@@ -610,18 +606,18 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot = argument2;
         this->SendMsg(this->m_slotButtons2[this->m_pageSlot], UM_COMMAND, ID_SLOT, 0, 0, 0);
       }
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_session.m_producibleSlotCount &&
+      if (this->m_slotStatus[g_charInfo.slot] == 1 && g_charInfo.slot < g_session.m_producibleSlotCount &&
           g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND) != nullptr) {
         g_windowMgr.CloseWindow(WID_NEWSELECTCHARWND);
       }
       break;
     case SELECTCHAR_BUTTON_DELETE: {
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
+      if (this->m_slotStatus[g_charInfo.slot] == 1) {
         break;
       }
 
       const CharacterInfo* info =
-        reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+        reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
       CharacterGidPacket packet;
       packet.id = ID_CH_DELETE_CHAR3_RESERVED;
       packet.gid = info->gid;
@@ -631,17 +627,17 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case SELECTCHAR_BUTTON_CANCEL_DELETE: {
       CharacterGidPacket packet;
       packet.id = ID_CH_DELETE_CHAR3_CANCEL;
-      packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
+      packet.gid = this->m_slotMap[g_charInfo.slot];
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     case ID_DELETE: {
-      if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
+      if (this->m_slotStatus[g_charInfo.slot] == 1) {
         break;
       }
 
       const CharacterInfo* info =
-        reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+        reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
       const BlockedCharacter* blocked = g_session.m_blockedCharacters;
       for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
@@ -683,9 +679,9 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         UIWindow* button = this->m_slotButtons2[index];
         if (sender == button) {
           this->m_pageSlot = index;
-          g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + index);
+          g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + index);
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-          if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
+          if (argument2 != 0xE2 && this->m_slotStatus[g_charInfo.slot] != 0 &&
               static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->m_displayMode == 0) {
             this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
             break;
@@ -698,8 +694,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (argument2 == 0xE2) {
         bool shown = false;
         const CharacterInfo* info =
-          reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-        const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
+          reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
+        const int selected = g_charInfo.slot;
         if (this->m_slotMoveSource != selected && selected < this->m_maxCharacters) {
           if (info != nullptr) {
             if (info->slotChangeCount > 0) {
@@ -732,7 +728,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (g_windowMgr.changeNameWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
       }
-      const std::intptr_t info = g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+      const std::intptr_t info = g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0);
       UIWindow* window = g_windowMgr.EnsureWindow(WID_CHANGENAMEWND);
       if (window != nullptr) {
         window->SendMsg(nullptr, UM_SETINFO, info, 0, 0, 0);
@@ -741,13 +737,13 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     case ID_CHANGE_NAME_SUCCESS: {
       CharacterInfo* info =
-        reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+        reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
       if (info->gid != g_session.m_renameGid) {
         break;
       }
 
       std::memcpy(info->name, g_session.m_renameName, sizeof(info->name));
-      const int column = static_cast<unsigned char>(g_selectedSlotIndex) - this->m_slotsPerPage * this->m_page;
+      const int column = g_charInfo.slot - this->m_slotsPerPage * this->m_page;
       this->m_characterWindows[column]->SetTextFitted(info->name);
       UIStaticText* name = this->m_characterWindows[column];
       name->Move(
@@ -784,10 +780,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN, 0, 0, 0);
       break;
     case SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN:
-      this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
+      this->m_slotMoveSource = g_charInfo.slot;
       break;
     case SELECTCHAR_BUTTON_SLOT_MOVE_CONFIRM: {
-      const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
+      const int selected = g_charInfo.slot;
       if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
@@ -961,7 +957,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
@@ -993,7 +989,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
@@ -1023,7 +1019,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
@@ -1055,7 +1051,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }

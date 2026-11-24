@@ -80,7 +80,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
     this->m_character.maxSp = 100;
     this->m_character.sp = 100;
     this->m_character.exp = 0;
-    this->m_character.slot = g_selectedSlotIndex;
+    this->m_character.slot = g_charInfo.slot;
     this->m_character.headPalette = 0;
     this->m_character.bodyStyle = 0;
     this->m_character.shield = 0;

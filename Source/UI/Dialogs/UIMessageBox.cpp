@@ -177,7 +177,7 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_info.maxSp = 100;
   this->m_info.sp = 100;
   this->m_info.exp = 0;
-  this->m_info.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+  this->m_info.slot = g_charInfo.slot;
   this->m_info.headPalette = 0;
   this->m_info.bodyStyle = 0;
   this->m_info.shield = 0;

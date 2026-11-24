@@ -25,8 +25,6 @@ enum NewSelectCharButtonId : int {
   SELECTCHAR_BUTTON_SLOT_MOVE_3 = 436,
 };
 
-extern unsigned char g_selectedSlotIndex;
-
 struct CharSlotInfo {
   CharSlotInfo() noexcept;
   ~CharSlotInfo();

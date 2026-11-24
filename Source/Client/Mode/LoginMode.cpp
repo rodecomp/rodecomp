@@ -1482,7 +1482,7 @@ ConnectionEndpoint g_zoneServerEndpoint;
 // FUNCTION: fn_22290
 void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host) {
   g_session.m_gid = gid;
-  g_modeMgr.currentMode->SendMsg(LMM_SELECT_CHARACTER, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(LMM_SELECT_CHARACTER, g_charInfo.slot, 0, 0, 0);
   if (g_windowMgr.newSelectCharWnd) {
     g_windowMgr.Schedule(g_windowMgr.newSelectCharWnd);
   }
@@ -2401,7 +2401,7 @@ void CLoginMode::PollNetworkStatus() {
       CharacterInfo* remaining = new CharacterInfo[this->characterCount];
       long long kept = 0;
       for (long long i = 0; i < this->characterCount; ++i) {
-        if (this->characters[i].slot != static_cast<unsigned char>(g_selectedSlotIndex)) {
+        if (this->characters[i].slot != g_charInfo.slot) {
           memcpy_s(&remaining[kept], sizeof(CharacterInfo), &this->characters[i], sizeof(CharacterInfo));
           ++kept;
         }
@@ -2815,7 +2815,6 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_ACCEPT_MAKECHAR2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
       g_charInfo = packet->info;
-      g_selectedSlotIndex = static_cast<unsigned char>(g_charInfo.slot);
       memcpy_s(&this->characters[this->characterCount], sizeof(CharacterInfo), &packet->info, sizeof(CharacterInfo));
       char* mapName = this->characters[this->characterCount].mapName;
       StringFormat(mapName, sizeof(this->characters[this->characterCount].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
@@ -3007,10 +3006,10 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     strcpy(this->m_authCode, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SELECT_CHARACTER: {
-    g_session.selectedCharacterSlot = static_cast<unsigned char>(g_selectedSlotIndex);
+    g_session.selectedCharacterSlot = g_charInfo.slot;
     g_windowMgr.LoadShortcutItems();
     for (int i = 0; i < this->characterCount; ++i) {
-      if (this->characters[i].slot == static_cast<unsigned char>(g_selectedSlotIndex)) {
+      if (this->characters[i].slot == g_charInfo.slot) {
         g_session.m_charSlot = this->characters[i].slot;
         g_session.SetJob(this->characters[i].job);
         g_session.m_gid = this->characters[i].gid;
@@ -3717,7 +3716,7 @@ void CLoginMode::OnChangeState(int value) {
     MakeCharacterPacket packet;
     packet.id = ID_CH_MAKE_CHAR_TRIBE;
     std::memcpy(packet.name, g_charInfo.name, sizeof(packet.name));
-    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    packet.slot = g_charInfo.slot;
     packet.headPalette = g_charInfo.headPalette;
     packet.head = g_charInfo.head;
     packet.job = g_charInfo.job;
@@ -3734,7 +3733,7 @@ void CLoginMode::OnChangeState(int value) {
     DeleteCharacterPacket packet;
     packet.id = ID_CH_DELETE_CHAR3;
     std::strncpy(packet.code, this->billingInfo, sizeof(packet.code));
-    const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(this->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+    const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(this->SendMsg(MM_QUERYCHARICTORINFO, g_charInfo.slot, 0, 0, 0));
     packet.gid = character->gid;
     if (g_serviceType == ServiceKorea) {
       if (this->billingInfo[5] == '\0') {
@@ -3759,7 +3758,7 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     SelectCharacterPacket packet;
     packet.id = ID_CH_SELECT_CHAR;
-    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    packet.slot = g_charInfo.slot;
     g_cashEmotionMgr->ClearOwnedPacks();
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
@@ -3913,7 +3912,7 @@ void CLoginMode::OnChangeState(int value) {
   case 31: {
     SelectMapPacket packet;
     packet.id = ID_CH_SELECT_ACCESSIBLE_MAPNAME;
-    packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+    packet.slot = g_charInfo.slot;
     packet.map = static_cast<unsigned char>(this->mapStates.front().index);
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
