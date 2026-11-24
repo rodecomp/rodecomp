@@ -783,7 +783,10 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->zenyEdit->SetEditBounds(0, 0, 0, 0);
   this->zenyEdit->SetMask(0);
   this->zenyEdit->SetAlignment(0);
-  this->zenyEdit->SetOnSubmit([this]() { this->OnEditSubmit(); });
+  {
+    std::function<void()> handler = [this]() { this->OnEditSubmit(); };
+    this->zenyEdit->onSubmit.swap(handler);
+  }
   this->AddChild(this->zenyEdit);
 
   ExchangeUI::CItemListBox* secondList = new ExchangeUI::CItemListBox();
@@ -900,8 +903,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->logCheckBox->SetSize(10, 10);
   this->logCheckBox->Move(105, 359);
   this->logCheckBox->SetOnCheck([this](bool checked) { this->OnCheckChanged(checked); });
-  this->logCheckBox->disabled = 0;
-  this->logCheckBox->Invalidate();
+  {
+    CUICheckBox* checkBox = this->logCheckBox;
+    checkBox->disabled = 0;
+    checkBox->Invalidate();
+  }
   {
     CUICheckBox* checkBox = this->logCheckBox;
     // GLOBAL: gl_25424
@@ -914,8 +920,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xF3CB6F7711A71B6DULL));
     checkBox->SetImages(normal, hover, pressed, disabled);
   }
-  this->logCheckBox->checked = false;
-  this->logCheckBox->Invalidate();
+  {
+    CUICheckBox* checkBox = this->logCheckBox;
+    checkBox->checked = false;
+    checkBox->Invalidate();
+  }
   this->AddChild(this->logCheckBox);
 
   this->screenshotLabel = new CUIStaticText();
@@ -927,7 +936,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* label = this->screenshotLabel;
     // GLOBAL: gl_25428
-    label->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x176F138D5DD7F365ULL)));
+    label->SetFont(OBFUSCATE_SOURCE_TEXT("Gulim", 0x176F138D5DD7F365ULL));
   }
   this->screenshotLabel->SetFontHeight(12);
   this->screenshotLabel->SetBold(1);
@@ -940,8 +949,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->lockButton->SetSize(42, 20);
   this->lockButton->Move(3, 354);
   this->lockButton->SetOnClick([this]() { this->SubmitZeny(); });
-  this->lockButton->disabled = 0;
-  this->lockButton->Invalidate();
+  {
+    CUIImageButton* button = this->lockButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->lockButton;
     // GLOBAL: gl_25429
@@ -960,8 +972,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->tradeButton->SetSize(42, 20);
   this->tradeButton->Move(260, 354);
   this->tradeButton->SetOnClick([this]() { this->Conclude(); });
-  this->tradeButton->disabled = 0;
-  this->tradeButton->Invalidate();
+  {
+    CUIImageButton* button = this->tradeButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->tradeButton;
     // GLOBAL: gl_25433
@@ -980,8 +995,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->cancelButton->SetSize(42, 20);
   this->cancelButton->Move(510, 354);
   this->cancelButton->SetOnClick([this]() { this->Cancel(); });
-  this->cancelButton->disabled = 0;
-  this->cancelButton->Invalidate();
+  {
+    CUIImageButton* button = this->cancelButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->cancelButton;
     // GLOBAL: gl_25437
