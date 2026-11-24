@@ -99,21 +99,20 @@ void CNavigationManager::DrawRoute(const float* matrix) {
   }
 
   const int blink = static_cast<int>(timeGetTime() % 1000 / 100);
-  auto& points = this->movementRoute.points;
 
-  for (unsigned index = 0; index < points.size() - 1; index += 2) {
-    const int x = points[index].x;
-    const int y = points[index].y;
+  for (unsigned index = 0; index < this->movementRoute.points.size() - 1; index += 2) {
+    const int x = this->movementRoute.points[index].x;
+    const int y = this->movementRoute.points[index].y;
     if (minX < x && maxX > x && minY < y && maxY > y) {
       ++visible;
-      CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
+      CTexture* texture = g_texMgr.Load(this->labels[this->movementRoute.points[index + 1].metadata].c_str(), 0, false, true, false);
       const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
       this->ground->DrawCellDecal(matrix, x, y, color, *texture, g_groundGridUV);
     }
   }
 
-  if (visible == 0 && points.size() != 0) {
-    this->BuildRoute(playerX, playerY, points[points.size() - 1].x, points[points.size() - 1].y, true);
+  if (visible == 0 && this->movementRoute.points.size() != 0) {
+    this->BuildRoute(playerX, playerY, this->movementRoute.points[this->movementRoute.points.size() - 1].x, this->movementRoute.points[this->movementRoute.points.size() - 1].y, true);
   }
 }
 
