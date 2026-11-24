@@ -438,14 +438,11 @@ bool GameSettings::RunFunction(int id) {
     return false;
   }
 
-  {
-    const std::function<void()> function = entry->second;
-    if (!function) {
-      return false;
-    }
+  if (const std::function<void()> function = entry->second) {
     function();
+    return true;
   }
-  return true;
+  return false;
 }
 
 // OFFSET: 0x006C1030
