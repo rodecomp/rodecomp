@@ -237,6 +237,7 @@ void UIQuestDisplay::StoreInfo() {
 // OFFSET: 0x00950BC0
 // FUNCTION: fn_12947
 int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  PACKET_CZ_ACTIVE_QUEST packet;
   switch (message) {
   case UM_SETINFO: {
     this->m_info = reinterpret_cast<QuestDisplayInfo*>(argument1);
@@ -253,7 +254,6 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       if (index == this->m_selectedIndex) {
         switch (this->m_menuItems[argument1].value) {
         case MENUID_TOGGLE_QUEST_ACTIVE: {
-          PACKET_CZ_ACTIVE_QUEST packet;
           packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.questId = it->first;
           packet.active = !it->second.m_active;
