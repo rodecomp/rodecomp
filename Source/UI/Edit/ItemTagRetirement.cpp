@@ -262,7 +262,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   }
 
   for (int index = 0; index < 4; ++index) {
-    if (cards[index] != 0) {
+    if (item.cards[index] != 0) {
       slots = 4;
     }
   }
