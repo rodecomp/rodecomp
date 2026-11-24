@@ -1537,13 +1537,15 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
 
       g_modeMgr.currentMode->SetCursorAction(2);
-      UITreeNode* node = this->dragNode;
-      UITVTextButton* label = node->labelButton;
-      this->RemoveNode(node, true);
+      UITVTextButton* label = this->dragNode->labelButton;
+      this->RemoveNode(this->dragNode, true);
       UITreeNode* previousParent = this->dragNode->parent;
       this->dragNode->parent = this->dropNode;
-      UITreeNode* target = this->dropNode ? this->dropNode : this->root;
-      target->children.push_back(this->dragNode);
+      if (this->dropNode) {
+        this->dropNode->children.push_back(this->dragNode);
+      } else {
+        this->root->children.push_back(this->dragNode);
+      }
       this->dragNode->labelButton = label;
       if (this->parent) {
         this->parent->SendMsg(
@@ -1562,7 +1564,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_CHANGE_TVITEM_TEXT:
     if (b == 0) {
       this->editNode = reinterpret_cast<UITreeNode*>(a);
-      this->edit->maximum = std::min(static_cast<int>(c), 361);
+      this->edit->maximum = std::min(c, 361);
       this->edit->SetText(this->editNode->name);
       g_windowMgr.SetFocus(this->edit);
       this->Invalidate();
