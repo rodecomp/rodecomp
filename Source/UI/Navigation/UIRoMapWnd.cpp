@@ -418,7 +418,8 @@ void UIRoMapWnd::DrawMarks() {
           static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]),
           static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1])
         };
-        DrawScreenLine(start, end, 5, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF);
+        CTexture* const texture = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false);
+        DrawScreenLine(start, end, 5, texture, 0x99FFFFFF);
       }
     }
 
