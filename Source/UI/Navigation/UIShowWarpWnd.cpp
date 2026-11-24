@@ -13,6 +13,13 @@
 #include <cstring>
 #include <string>
 
+namespace {
+  // INLINED
+  __forceinline bool MatchesWarpOption(const std::string& value, const char (&literal)[7]) {
+    return value.size() == sizeof(literal) - 1 && std::memcmp(value.data(), literal, sizeof(literal) - 1) == 0;
+  }
+}
+
 // OFFSET: 0x0094CA20
 // FUNCTION: fn_12899
 void UIShowWarpWnd::OnCreate(int width, int height) {
@@ -69,12 +76,9 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_SETINFO: {
     const char* name = reinterpret_cast<const char*>(argument1);
-    const auto matches = [](const std::string& value, const auto& literal) {
-      return value.size() == sizeof(literal) - 1 && std::memcmp(value.data(), literal, sizeof(literal) - 1) == 0;
-    };
-    if (matches(std::string(name), "Random")) {
+    if (MatchesWarpOption(std::string(name), "Random")) {
       this->m_list->AddLine(LookupMessage(MSI_RANDOM_POS));
-    } else if (matches(std::string(name), "cancel")) {
+    } else if (MatchesWarpOption(std::string(name), "cancel")) {
       this->m_list->AddLine(LookupMessage(MSI_CANCEL));
     } else {
       this->m_list->AddLine(g_session.GetMapDisplayName(g_session.GatName2RswName(name)));
