@@ -20,6 +20,8 @@ protected:
 
 class UIStaticItem_Illust : public UIStaticItem {
 public:
+  UIStaticItem_Illust();
+  ~UIStaticItem_Illust() override;
   void Paint() override;
   void OnMouseHover(int x, int y) override;
 };
