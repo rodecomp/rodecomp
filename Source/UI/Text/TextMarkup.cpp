@@ -170,13 +170,11 @@ const std::string UIWindow::DisplayTextTag(const std::string& source, const std:
       result += text.substr(0, position);
     }
 
-    const int content = position + static_cast<int>(begin.size());
-    std::string tail = text.substr(content);
-    const int close = static_cast<int>(tail.find(end));
+    position += static_cast<int>(begin.size());
+    std::string tail = text.substr(position);
+    const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
 
-    if (close == -1) {
-      position = content;
-    } else {
+    if (close != -1) {
       result += tail.substr(0, close);
       text = tail.substr(close + end.size());
       position = static_cast<int>(text.find(begin));
