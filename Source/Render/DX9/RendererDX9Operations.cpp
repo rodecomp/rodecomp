@@ -146,8 +146,15 @@ bool CRendererDX9::RenderToTexture(int width, int height, const std::list<Render
   CComPtr<IDirect3DSurface9> previous;
   CComPtr<IDirect3DSurface9> target;
 
-  if (FAILED(nativeTexture->GetSurfaceLevel(0, &target)) || FAILED(this->nativeDevice->GetRenderTarget(0, &previous)) ||
-      FAILED(this->nativeDevice->SetRenderTarget(0, target))) {
+  if (FAILED(nativeTexture->GetSurfaceLevel(0, &target))) {
+    return false;
+  }
+
+  if (FAILED(this->nativeDevice->GetRenderTarget(0, &previous))) {
+    return false;
+  }
+
+  if (FAILED(this->nativeDevice->SetRenderTarget(0, target))) {
     return false;
   }
 
