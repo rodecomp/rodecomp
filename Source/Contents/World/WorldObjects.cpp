@@ -508,20 +508,21 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     } else {
       this->nameBalloon->SetIcon(emblem.c_str(), 0);
     }
-  } else if (this->scene->player == actor) {
-    char path[256];
-    std::memset(path, 0, sizeof(path));
-    if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
-      StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
-    }
-    this->nameBalloon->SetIcon(path, 0);
-  } else if (actor->hasSp) {
-    char path[256];
-    std::memset(path, 0, sizeof(path));
-    std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
-    this->nameBalloon->SetIcon(path, 0);
   } else {
-    this->nameBalloon->SetIcon("", 0);
+    char path[256];
+    const char* icon = "";
+    if (this->scene->player == actor) {
+      std::memset(path, 0, sizeof(path));
+      if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
+        StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
+      }
+      icon = path;
+    } else if (actor->hasSp) {
+      std::memset(path, 0, sizeof(path));
+      std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
+      icon = path;
+    }
+    this->nameBalloon->SetIcon(icon, 0);
   }
 
   UINameBalloonText* balloon = this->nameBalloon;
