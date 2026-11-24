@@ -7433,8 +7433,8 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   stored()->render.position.x = radius * g_sinTable[angle] + stored()->render.position.x;
   stored()->render.position.z = radius * g_cosTable[angle] + stored()->render.position.z;
   CWorld* world = g_modeMgr.GetGameMode()->scene;
-  stored()->render.position.y =
-    world->terrain->Height(stored()->render.position.x, stored()->render.position.z);
+  this->state.lastPrim->render.position.y =
+    world->terrain->Height(this->state.lastPrim->render.position.x, this->state.lastPrim->render.position.z);
 
   if (kind == 5 || kind == 10) {
     stored()->state.slots[0].flag1[0] = 4;
@@ -7470,11 +7470,11 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     stored()->SetSpriteName("몬스터\\succubus.spr");
     stored()->SetActionName("몬스터\\succubus.act");
     if (pose == 0) {
-      stored()->SetAction(rand() % 8 + 56, 16, 1);
+      this->state.lastPrim->SetAction(rand() % 8 + 56, 16, 1);
     } else if (pose == 1) {
-      stored()->SetAction(rand() % 8 + 48, 16, 1);
+      this->state.lastPrim->SetAction(rand() % 8 + 48, 16, 1);
     } else {
-      stored()->SetAction(rand() % 8 + 40, 16, 1);
+      this->state.lastPrim->SetAction(rand() % 8 + 40, 16, 1);
     }
   } else if (kind == 5) {
     stored()->SetSpriteName("몬스터\\mineral.spr");
@@ -7516,7 +7516,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     stored()->SetActionName("몬스터\\imp.act");
     stored()->state.animSpeed = 4;
     stored()->SetAction(rand() % 8, 16, 1);
-  } else if (kind > 9) {
+  } else if (kind >= 10) {
     stored()->SetSpriteName("몬스터\\ifrit.spr");
     stored()->SetActionName("몬스터\\ifrit.act");
     stored()->state.animSpeed = 4;
