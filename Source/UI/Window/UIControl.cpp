@@ -3509,18 +3509,18 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "}\r\n";
   }
 
-  if (data.size() == 0) {
-    return false;
+  bool saved = false;
+  if (data.size() != 0) {
+    NSyncObject sync(&this->lock);
+    CFile file;
+    if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
+      data = EncodeBase64(data, false);
+      file.Write(data.c_str(), data.size());
+      file.Close();
+    }
+    saved = true;
   }
-
-  NSyncObject sync(&this->lock);
-  CFile file;
-  if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
-    data = EncodeBase64(data, false);
-    file.Write(data.c_str(), data.size());
-    file.Close();
-  }
-  return true;
+  return saved;
 }
 
 // OFFSET: 0x009D31F0
