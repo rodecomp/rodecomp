@@ -1349,12 +1349,14 @@ void UIListBoxID::Resize(int width, int height) {
 // FUNCTION: fn_11531
 void UIComboBoxID::Resize(int width, int height) {
   UIListBoxID::Resize(width, height);
-  this->topLine = 0;
-  this->verticalBar->position = this->topLine;
+  int& top = this->topLine;
+  top = 0;
   if (this->verticalOverflow != 0) {
+    this->verticalBar->position = top;
     this->verticalBar->Move(width - 13, 0);
     this->verticalBar->Invalidate();
   } else {
+    this->verticalBar->position = top;
     this->verticalBar->Move(width - 13, 0);
   }
 }
