@@ -1459,7 +1459,7 @@ int CCreateLineInfo::ParseItemName(int index) {
 
   if (index == static_cast<int>(this->m_text.find(keyword, index))) {
     std::string digits;
-    for (long long position = index + keyword.size(); position < this->m_text.size(); ++position) {
+    for (long long position = static_cast<unsigned int>(index) + 9u; position < this->m_text.size(); ++position) {
       const char ch = this->m_text.at(static_cast<std::size_t>(position));
       if (!IsValidIdentChar(ch)) {
         break;
