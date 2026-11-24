@@ -2102,11 +2102,11 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
   const std::string close = ">";
   std::string remaining;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
+    std::vector<std::string> split;
     if (wrapped.size() > 23) {
       break;
     }
 
-    std::vector<std::string> split;
     this->WrapLinkText(&mode, &split, wrapped[line]);
     if (split.size() > 1) {
       for (unsigned int part = 0; part < split.size(); ++part) {
