@@ -5,6 +5,22 @@
 // GLOBAL: gl_24911
 RodexMailStore* g_rodexMailStore;
 
+struct RodexMailDtorShape {
+  /* 0000 */ unsigned char isRead;
+  /* 0001 */ unsigned char type;
+  /* 0004 */ std::string sender;
+  /* 001C */ int sentAt;
+  /* 0020 */ int expiresAt;
+  /* 0024 */ std::string title;
+  /* 003C */ std::string body;
+
+  ~RodexMailDtorShape();
+};
+
+// OFFSET: 0x007FE430
+// FUNCTION: fn_46597
+RodexMailDtorShape::~RodexMailDtorShape() {}
+
 // OFFSET: 0x007FE5E0
 // FUNCTION: fn_09985
 bool RodexMailStore::Create() {
