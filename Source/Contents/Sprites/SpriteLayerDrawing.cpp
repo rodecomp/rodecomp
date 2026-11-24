@@ -85,8 +85,10 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
         swapped = true;
         layer = 4;
       }
+    } else if (layer == 2 && swapped == true) {
+      layer = 0;
     } else if (layer == 2) {
-      layer = swapped == true ? 0 : 4;
+      layer = 4;
     } else if (layer == 4) {
       layer = 2;
     } else if (static_cast<unsigned int>(layer) > 8) {
@@ -124,7 +126,11 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     }
 
     const auto synced = this->FindSyncedFrame(layer, action);
-    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second, stanceAnimation, frameIndex, replaced);
+    const ActionFrame* drawnFrame = &frame;
+    if (synced.first == true) {
+      drawnFrame = synced.second;
+    }
+    this->DrawLayer(index, layer, drawnFrame, found.second, stanceAnimation, frameIndex, replaced);
   }
 
   this->DrawQueuedLayers();
