@@ -3942,10 +3942,13 @@ void CPlayer::SendMsg(
     const float heading = this->Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
     const float facing = static_cast<float>((CPlayer::AngleToDirection(static_cast<float>(heading + 22.5)) + 4) * 45);
     int delta = static_cast<int>(this->render.angle - facing);
+    int direction;
     if (delta < 0) {
       delta += 360;
+      direction = delta / 45;
+    } else {
+      direction = delta / 45;
     }
-    int direction = delta / 45;
     if (direction < 0) {
       direction += 8;
     } else if (direction >= 8) {
