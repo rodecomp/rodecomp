@@ -137,9 +137,9 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
     const unsigned char* source = data + 12;
     const std::uint32_t dimensions = (Read32(source) >> 1) - 0x01929300u;
     source += 4;
-    const int height = static_cast<int>(dimensions & 0xFFFFu) - 1;
+    const int width = HIWORD(dimensions);
+    const int height = LOWORD(dimensions) - 1;
     const unsigned char format = *source++;
-    const int width = dimensions >> 16;
     WORD bits;
 
     switch (format) {
@@ -158,9 +158,9 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
       return false;
     }
 
-    this->image.height = height;
     this->image.width = width;
-    rgb = new unsigned char[height * width * 3];
+    this->image.height = height;
+    rgb = new unsigned char[width * height * 3];
     this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
     if (bits == 8) {
@@ -179,6 +179,7 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
     } else if (bits == 24) {
       auto* first = new unsigned char[this->image.width * this->image.height * 3];
       auto* second = new unsigned char[this->image.width * this->image.height * 2];
+      unsigned char* pixel = rgb;
       unsigned char* firstTarget = first;
       unsigned char* secondTarget = second;
 
@@ -194,7 +195,6 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
         source += this->image.width;
       }
 
-      unsigned char* pixel = rgb;
       int index = 0;
       for (int y = 0; y < this->image.height; ++y) {
         for (int x = 0; x < this->image.width; ++x) {
