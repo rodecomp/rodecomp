@@ -36,6 +36,8 @@ struct ZeroVector3d : vector3d {
 };
 
 struct EffectPrimitiveRecord {
+  EffectPrimitiveRecord();
+
   /* 0000 */ ZeroVector3d position;
   /* 000C */ ZeroVector3d corners[4];
   /* 003C */ float radius;

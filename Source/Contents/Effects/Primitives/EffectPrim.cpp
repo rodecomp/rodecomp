@@ -7,6 +7,10 @@
 #include <cstring>
 #include <windows.h>
 
+// OFFSET: 0x00BAE0D0
+// FUNCTION: fn_46546
+EffectPrimitiveRecord::EffectPrimitiveRecord() = default;
+
 // OFFSET: 0x00BAE170
 // FUNCTION: fn_19762
 EffectPrimitiveSlot::EffectPrimitiveSlot() {
