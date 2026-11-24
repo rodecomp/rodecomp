@@ -215,11 +215,12 @@ void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotat
   points[1].z = 1250.0f;
 
   vector3d point;
-  for (int i = 0; i < 2; ++i) {
-    point.x = points[i].x;
-    point.y = points[i].y;
-    point.z = points[i].z;
-    g_renderer->Project(&point.x, combined.values, projected[i]);
+  SkyVertex* output = projected;
+  for (const SkyVertex& input : points) {
+    point.x = input.x;
+    point.y = input.y;
+    point.z = input.z;
+    g_renderer->Project(&point.x, combined.values, *output++);
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
