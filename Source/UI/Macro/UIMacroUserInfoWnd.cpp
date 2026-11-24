@@ -78,8 +78,7 @@ void UIMacroReporterWnd::AddPickedActor(ActorPickInfo* pick) {
 // OFFSET: 0x007EF2E0
 // FUNCTION: fn_09840
 void UIMacroReporterWnd::AddActorByAID(int aid) {
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  CGameActor* actor = mode->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }
@@ -88,18 +87,13 @@ void UIMacroReporterWnd::AddActorByAID(int aid) {
     return;
   }
 
-  mode = g_modeMgr.GetGameMode();
-  std::string name = mode->ActorName(aid);
+  std::string name = g_modeMgr.GetGameMode()->ActorName(aid);
 
-  for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
-    if (it->id == aid) {
-      goto found;
-    }
+  if (std::find_if(this->m_entries.begin(), this->m_entries.end(), [aid](const MacroReporterEntry& entry) { return entry.id == aid; }) ==
+      this->m_entries.end()) {
+    this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
   }
 
-  this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
-
-found:
   this->AddActorRow(aid, name);
   this->UpdateScrollBar();
 }
