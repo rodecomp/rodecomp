@@ -17610,6 +17610,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       id = EF_NEW_ARMSCANNON_07_UP;
     }
 
+    vector3d position{0.0f, 0.0f, 0.0f};
+
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (id == EF_NEW_ARMSCANNON_05_UP) {
         id = EF_MINEFFECT_ARMSCANNON_05;
@@ -17620,14 +17622,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       } else if (id == EF_NEW_ARMSCANNON_07_UP) {
         id = EF_MINEFFECT_ARMSCANNON_07;
       }
-      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, position, 0, -1, 0, 0);
     } else {
-      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, id + 1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id + 1, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST_BOTTOM, position, 0, -1, 0, 0);
     }
     return;
   }
