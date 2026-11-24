@@ -2235,8 +2235,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
     int index = 0;
-    lua_pushnil(state);
-    while (lua_next(state, -2) != 0) {
+    for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
       ++index;
       std::vector<std::string> functions;
       int fieldResult = this->script.GetFieldStringArray(functions, "func");
@@ -2277,7 +2276,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
         break;
       }
 
-      for (const std::string& function : functions) {
+      for (auto it = functions.begin(); it != functions.end(); ++it) {
+        const std::string& function = *it;
         std::string text = fmt::format("{0}", function);
         for (auto condition = conditions.cbegin(); condition != conditions.cend(); ++condition) {
           text = fmt::format("{0} arg{1}:{2}", text, condition->first, condition->second);
@@ -2292,7 +2292,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       if (!this->loadValid) {
         break;
       }
-      lua_settop(state, -2);
     }
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
