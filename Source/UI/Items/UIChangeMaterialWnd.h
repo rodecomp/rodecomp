@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_ITEMS_UICHANGEMATERIALWND_H
 #define RAGNAROK_SOURCE_UI_ITEMS_UICHANGEMATERIALWND_H
 
+#include "Contents/Items/ChangeMaterialMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -20,27 +21,13 @@ struct MaterialSlotPos {
   /* 0004 */ int y;
 };
 
-struct MaterialReq {
-  /* 0000 */ int id;
-  /* 0004 */ int quantity;
-};
-
-struct MaterialResult {
-  // INLINED
-  MaterialResult() : id(0), quantity(0), amount(0) {}
-
-  /* 0000 */ int id;
-  /* 0004 */ int quantity;
-  /* 0008 */ int amount;
-};
-
 struct MaterialListEntry {
   // INLINED
   MaterialListEntry() : state(0) {}
 
   /* 0000 */ unsigned char state;
-  /* 0004 */ std::vector<MaterialReq> materials;
-  /* 0010 */ std::vector<MaterialResult> results;
+  /* 0004 */ std::vector<ChangeMaterialEntry> materials;
+  /* 0010 */ std::vector<ChangeMaterialProduct> results;
 };
 
 struct MaterialNameLess {
@@ -156,8 +143,8 @@ static_assert(offsetof(UIChangeMaterialWnd_List, m_entries) == 0xE8);
 static_assert(sizeof(MaterialListEntry) == 0x1C);
 static_assert(offsetof(MaterialListEntry, materials) == 0x4);
 static_assert(offsetof(MaterialListEntry, results) == 0x10);
-static_assert(sizeof(MaterialResult) == 0xC);
-static_assert(sizeof(MaterialReq) == 0x8);
+static_assert(sizeof(ChangeMaterialProduct) == 0xC);
+static_assert(sizeof(ChangeMaterialEntry) == 0x8);
 #endif
 
 #endif

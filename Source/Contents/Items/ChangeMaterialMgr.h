@@ -9,6 +9,8 @@ struct lua_State;
 
 struct ChangeMaterialEntry {
   // INLINED
+  ChangeMaterialEntry() : itemId(0), count(0) {}
+  // INLINED
   ChangeMaterialEntry(int itemId, int count) : itemId(itemId), count(count) {}
   // INLINED
   ChangeMaterialEntry(const ChangeMaterialEntry& other) : itemId(other.itemId), count(other.count) {}
@@ -24,6 +26,8 @@ struct ChangeMaterialEntry {
 };
 
 struct ChangeMaterialProduct {
+  // INLINED
+  ChangeMaterialProduct() : itemId(0), count(0), rate(0) {}
   // INLINED
   ChangeMaterialProduct(int itemId, int count, int rate) : itemId(itemId), count(count), rate(rate) {}
   // INLINED

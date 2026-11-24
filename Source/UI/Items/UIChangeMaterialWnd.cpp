@@ -275,7 +275,7 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   int index = 0;
   for (auto entryIt = this->m_entries.begin(); entryIt != this->m_entries.end(); ++entryIt, ++index) {
     const MaterialListEntry& entry = *entryIt;
-    std::string name = ItemDisplayName(entry.results.front().id);
+    std::string name = ItemDisplayName(entry.results.front().itemId);
     std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
     if (name.find(filter) == std::string::npos) {
@@ -304,31 +304,20 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
       }
 
       entry.materials.resize(recipe->materials.size());
-      auto material = entry.materials.begin();
-      for (const ChangeMaterialEntry& source : recipe->materials) {
-        material->id = source.itemId;
-        material->quantity = source.count;
-        ++material;
-      }
+      std::copy(recipe->materials.begin(), recipe->materials.end(), entry.materials.begin());
 
       entry.results.resize(recipe->products.size());
-      auto result = entry.results.begin();
-      for (const ChangeMaterialProduct& source : recipe->products) {
-        result->id = source.itemId;
-        result->quantity = source.count;
-        result->amount = source.rate;
-        ++result;
-      }
+      std::copy(recipe->products.begin(), recipe->products.end(), entry.results.begin());
 
       bool available = true;
       for (auto required = entry.materials.begin(); required != entry.materials.end(); ++required) {
-        const ITEM_INFO item = g_session.LookupClientItem(required->id, 1);
-        available &= item.quantity >= required->quantity;
+        const ITEM_INFO item = g_session.LookupClientItem(required->itemId, 1);
+        available &= item.quantity >= required->count;
       }
 
       entry.state = available;
-      std::sort(entry.results.begin(), entry.results.end(), [](const MaterialResult& left, const MaterialResult& right) {
-        return left.quantity < right.quantity;
+      std::sort(entry.results.begin(), entry.results.end(), [](const ChangeMaterialProduct& left, const ChangeMaterialProduct& right) {
+        return left.count < right.count;
       });
       this->m_entries.push_back(entry);
     }
@@ -419,31 +408,31 @@ int UIChangeMaterialWnd::SendMsg(
     if (argument1 != 0) {
       auto* entry = reinterpret_cast<MaterialListEntry*>(argument1);
       this->m_materials.clear();
-      this->m_resultItem.SetItemId(entry->results.front().id);
-      this->m_resultItem.quantity = entry->results.front().quantity;
+      this->m_resultItem.SetItemId(entry->results.front().itemId);
+      this->m_resultItem.quantity = entry->results.front().count;
 
       for (auto it = entry->materials.begin(); it != entry->materials.end(); ++it) {
         ITEM_INFO info;
-        info.SetItemId(it->id);
-        info.quantity = it->quantity;
-        const ITEM_INFO stock = g_session.LookupClientItem(it->id, 1);
+        info.SetItemId(it->itemId);
+        info.quantity = it->count;
+        const ITEM_INFO stock = g_session.LookupClientItem(it->itemId, 1);
         info.identity[1] = stock.identity[1];
-        info.identified = stock.quantity >= it->quantity;
+        info.identified = stock.quantity >= it->count;
         this->m_materials.push_back(info);
       }
 
       if (entry->results.size() > 1) {
         int total = 0;
-        for (const MaterialResult& result : entry->results) {
-          total += result.amount;
+        for (const ChangeMaterialProduct& result : entry->results) {
+          total += result.rate;
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
         this->m_resultText = static_cast<const std::string&>(FormatOwnedString(
-          LookupMessage(MSI_CHANGE_MATERIAL_MESSAGE), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity,
-          entry->results.back().quantity
+          LookupMessage(MSI_CHANGE_MATERIAL_MESSAGE), ItemDisplayName(entry->results.front().itemId).c_str(), entry->results.front().count,
+          entry->results.back().count
         ));
       } else {
-        this->m_resultAmount = entry->results.front().amount;
+        this->m_resultAmount = entry->results.front().rate;
         this->m_resultText = "";
       }
 
@@ -594,8 +583,8 @@ void UIChangeMaterialWnd_List::Paint() {
       this->DrawBitmap(0, this->rowHeight * row, static_cast<CBitmapRes*>(background), true);
 
       ITEM_INFO item;
-      item.SetItemId(entry->results[0].id);
-      item.quantity = entry->results[0].quantity;
+      item.SetItemId(entry->results[0].itemId);
+      item.quantity = entry->results[0].count;
       item.identified = 1;
 
       std::string name = item.DisplayName(0);
@@ -680,7 +669,7 @@ void UIChangeMaterialWnd_List::OnMouseHover(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
+  const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), ItemDisplayName(entry->results.front().itemId).c_str(), entry->results.front().count);
   CMode* const mode = g_modeMgr.currentMode;
   mode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
@@ -807,8 +796,8 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
 // OFFSET: 0x005E0A20
 // FUNCTION: fn_03866
 bool MaterialNameLess::operator()(unsigned int first, unsigned int second) const {
-  const std::string left = first < this->entries.size() ? ItemDisplayName(this->entries[first].results[0].id) : "";
+  const std::string left = first < this->entries.size() ? ItemDisplayName(this->entries[first].results[0].itemId) : "";
   const unsigned int rightIndex = second;
-  const std::string right = rightIndex < this->entries.size() ? ItemDisplayName(this->entries[rightIndex].results[0].id) : "";
+  const std::string right = rightIndex < this->entries.size() ? ItemDisplayName(this->entries[rightIndex].results[0].itemId) : "";
   return left < right;
 }
