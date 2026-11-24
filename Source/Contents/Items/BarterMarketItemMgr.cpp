@@ -50,7 +50,8 @@ CBarterMarketItemMgr* g_barterMarketItemMgr;
 // FUNCTION: fn_03719
 BarterMarketItem::BarterMarketItem(const BarterMarketItem& other) = default;
 
-// INLINED
+// OFFSET: 0x005D70C0
+// FUNCTION: fn_46485
 CBarterMarketItemMgr::CBarterMarketItemMgr()
 {
   this->initialized = true;
