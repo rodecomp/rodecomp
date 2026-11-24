@@ -597,9 +597,9 @@ void UINewChatWnd::SaveChatWndInfo() {
   sprintf(text, "CanDragWnd = %d\r\n\r\n", g_session.m_canDragWnd == 1);
   file.Write(text, std::strlen(text));
 
-  int index = 1;
+  int index = 0;
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it, ++index) {
-    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index + 1);
     file.Write(text, std::strlen(text));
     sprintf(text, "\tXPos = 0,\r\n\tYPos = 0,\r\n");
     file.Write(text, std::strlen(text));
@@ -614,9 +614,9 @@ void UINewChatWnd::SaveChatWndInfo() {
     file.Write("}\r\n\r\n", 5);
   }
 
-  index = static_cast<int>(g_session.m_noSubChatWnds.size()) + 1;
+  index = static_cast<int>(g_session.m_noSubChatWnds.size());
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++index) {
-    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index + 1);
     file.Write(text, std::strlen(text));
     sprintf(text, "\tXPos = %d,\r\n\tYPos = %d,\r\n", it->second.x, it->second.y);
     file.Write(text, std::strlen(text));
