@@ -94,15 +94,14 @@ void UIQuestDisplay::Paint() {
       for (int index = 0; index < info.m_huntCount; ++index) {
         std::string hunt;
         if (info.m_huntMobId[index] != 31999) {
-          const char* name = info.m_huntName[index];
           if (-1 >= info.m_huntMinLevel[index] || -1 >= info.m_huntMaxLevel[index] || (0 == info.m_huntMinLevel[index] && 0 == info.m_huntMaxLevel[index])) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
-          } else if (0 == info.m_huntMinLevel[index]) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, info.m_huntMaxLevel[index]));
-          } else if (0 == info.m_huntMaxLevel[index]) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, info.m_huntMinLevel[index]));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s", info.m_huntName[index]));
+          } else if (0 == info.m_huntMinLevel[index] && 0 != info.m_huntMaxLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", info.m_huntName[index], info.m_huntMaxLevel[index]));
+          } else if (0 != info.m_huntMinLevel[index] && 0 == info.m_huntMaxLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", info.m_huntName[index], info.m_huntMinLevel[index]));
           } else {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", info.m_huntName[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
           }
         } else {
           hunt = static_cast<const std::string&>(
@@ -119,8 +118,7 @@ void UIQuestDisplay::Paint() {
         if (g_windowMgr.chatWnd) {
           description = g_windowMgr.chatWnd->ConvertChat(std::move(description));
         }
-        parser = g_navigationLinkParser;
-        description = parser->DisplayNavigationLink(description);
+        description = g_navigationLinkParser->DisplayNavigationLink(description);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
         if (info.m_huntMaxCount[index] > 0) {
