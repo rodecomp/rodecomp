@@ -3887,7 +3887,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, 
     }
 
     if (this->properties3.find(combinationId) == this->properties3.end()) {
-      this->properties3.try_emplace(combinationId, new CEquipmentCombiitem(combinationId));
+      this->properties3.emplace(combinationId, new CEquipmentCombiitem(combinationId));
       this->properties3[combinationId]->Load(notify);
     }
   }

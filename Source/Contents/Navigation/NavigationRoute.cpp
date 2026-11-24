@@ -1531,13 +1531,13 @@ bool CNavigationManager::BuildTargetRouteLines() {
     NaviCell cellY;
     NaviCell cellX;
     std::sprintf(text, "( %d %d )", npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
-    this->routeLines.push_back(NaviRouteLine(2, 142, 149, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({2, 142, 149, text, 0xDCDCDC, 0xCB6B54});
   } else if (type == 3) {
     CNavi_Object* mob = static_cast<CNavi_Object*>(object);
     this->AddWrappedRouteLines(2, 141, 46, mob->GetName());
     NaviCell cell;
     std::sprintf(text, "Lv. %d", mob->GetCell(&cell)->x);
-    this->routeLines.push_back(NaviRouteLine(2, 142, 77, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({2, 142, 77, text, 0xDCDCDC, 0xCB6B54});
 
     const int attributes = mob->GetCell(&cell)->y;
     const unsigned int property = static_cast<unsigned char>(attributes >> 16);
@@ -1566,7 +1566,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = element == 9 ? 2271 : 2272;
     }
     std::sprintf(text, LookupMessage(message), propertyLevel);
-    this->routeLines.push_back(NaviRouteLine(2, 142, 93, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({2, 142, 93, text, 0xDCDCDC, 0xCB6B54});
 
     if (size == 1) {
       message = MSI_NAVIGATION_RACE1;
@@ -1588,7 +1588,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = size == 9 ? 2284 : 2285;
     }
     std::sprintf(text, LookupMessage(message));
-    this->routeLines.push_back(NaviRouteLine(2, 142, 109, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({2, 142, 109, text, 0xDCDCDC, 0xCB6B54});
 
     if ((attributes & 0xFF00) == 0x100) {
       message = MSI_NAVIGATION_SCALE1;
@@ -1596,15 +1596,15 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = (attributes & 0xFF00) == 0x200 ? 2274 : 2275;
     }
     std::sprintf(text, LookupMessage(message));
-    this->routeLines.push_back(NaviRouteLine(2, 142, 125, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({2, 142, 125, text, 0xDCDCDC, 0xCB6B54});
 
     if (mob->GetType() == 301) {
-      this->routeLines.push_back(NaviRouteLine(2, 142, 149, LookupMessage(MSI_NAVIGATION_BOSS), 0xC8C8C8, 0xFF));
+      this->routeLines.push_back({2, 142, 149, LookupMessage(MSI_NAVIGATION_BOSS), 0xC8C8C8, 0xFF});
     }
   } else if (type == 0) {
     this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
     std::sprintf(text, "( %d %d )", this->currentTarget.x, this->currentTarget.y);
-    this->routeLines.push_back(NaviRouteLine(1, 142, 149, text, 0xDCDCDC, 0xCB6B54));
+    this->routeLines.push_back({1, 142, 149, text, 0xDCDCDC, 0xCB6B54});
   }
   return true;
 }

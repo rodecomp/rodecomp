@@ -676,7 +676,7 @@ void CCashEmotionMgr::RefreshCommands() {
       auto it = std::as_const(this->m_commands).find(shortcut.first);
       if (this->m_commands.end() == it) {
         CashEmotionCommand* command = new CashEmotionCommand(shortcut.first, packId, emotionId);
-        this->m_commands.try_emplace(shortcut.first, std::move(command));
+        this->m_commands.emplace(shortcut.first, command);
       } else {
         it->second->Add(packId, emotionId);
       }
