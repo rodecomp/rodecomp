@@ -206,8 +206,9 @@ void CWorld::InitWorld() {
 
     const int modelCount = static_cast<int>(worldRes->models.size());
     auto placementIt = worldRes->models.begin();
-    this->models.clear();
-    this->models.reserve(modelCount);
+    auto& modelsRef = this->models;
+    modelsRef.clear();
+    modelsRef.reserve(modelCount);
 
     DWORD lastNoticeTime = 0;
     int lastPercent = -1;
@@ -272,7 +273,7 @@ void CWorld::InitWorld() {
         actor->Assign(*modelRes);
         actor->occlusionEnabled = 0;
         actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
-        this->models.push_back(actor);
+        modelsRef.push_back(actor);
       }
     }
 
@@ -281,7 +282,7 @@ void CWorld::InitWorld() {
 
     this->ground->InitializeLighting();
 
-    this->published = static_cast<int>(this->models.size());
+    this->published = static_cast<int>(modelsRef.size());
 
     DWORD threadId = 0;
     hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
