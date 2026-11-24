@@ -477,24 +477,26 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (20700 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        if (header.type == 20701) {
-          UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
-          if (window) {
-            window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          }
+    if (20700 != header.type) {
+      return 0;
+    }
 
-          this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
-        }
-
-        offset += header.size;
+    for (; static_cast<unsigned>(b) > offset; offset += header.size) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      if (header.type != 20701) {
+        continue;
       }
+
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      return 0;
     }
     break;
   }
