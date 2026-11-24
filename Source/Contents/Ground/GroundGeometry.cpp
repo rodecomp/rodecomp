@@ -221,10 +221,15 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
         }
 
         NormalVector points[4];
-        SetPoint(points[0].values, 0.0f, cell.heights[0], 0.0f);
-        SetPoint(points[1].values, this->cellSize, cell.heights[1], 0.0f);
-        SetPoint(points[2].values, 0.0f, cell.heights[2], this->cellSize);
-        SetPoint(points[3].values, this->cellSize, cell.heights[3], this->cellSize);
+        const float size = this->cellSize;
+        points[0].values[1] = cell.heights[0];
+        points[1].values[0] = size;
+        points[1].values[1] = cell.heights[1];
+        points[2].values[1] = cell.heights[2];
+        points[2].values[2] = size;
+        points[3].values[0] = size;
+        points[3].values[1] = cell.heights[3];
+        points[3].values[2] = size;
         TriangleNormal(cellNormals.faces[0].values, points[0].values, points[1].values, points[2].values);
         NormalizeGroundNormal(cellNormals.faces[0].values, true);
         TriangleNormal(cellNormals.faces[1].values, points[2].values, points[1].values, points[3].values);
