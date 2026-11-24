@@ -4358,10 +4358,102 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
     const vector3d c2{vec2.x, vec2.y, vec2.z};
     const vector3d c3{vec3.x, vec3.y, vec3.z};
     const vector3d c4{vec4.x, vec4.y, vec4.z};
-    RenderGroundBubbleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBPre, wtm);
-    RenderGroundBubbleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBNow, wtm);
-    RenderGroundBubbleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecTPre, wtm);
-    RenderGroundBubbleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecTNow, wtm);
+
+    {
+      vec1.Set(c1.x + slot.vecBPre.x, c1.y + slot.vecBPre.y, c1.z + slot.vecBPre.z);
+      vec2.Set(c2.x + slot.vecBPre.x, c2.y + slot.vecBPre.y, c2.z + slot.vecBPre.z);
+      vec3.Set(c3.x + slot.vecBPre.x, c3.y + slot.vecBPre.y, c3.z + slot.vecBPre.z);
+      vec4.Set(c4.x + slot.vecBPre.x, c4.y + slot.vecBPre.y, c4.z + slot.vecBPre.z);
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (g_heightSpeedSign > vec1.y) {
+        alpha = static_cast<int>((vec1.y + g_projectionDepthNumerator) * g_effectIconRadius + g_groundBubbleAlphaBase);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (vec1.y <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      vec1.Set(c1.x + slot.vecBNow.x, c1.y + slot.vecBNow.y, c1.z + slot.vecBNow.z);
+      vec2.Set(c2.x + slot.vecBNow.x, c2.y + slot.vecBNow.y, c2.z + slot.vecBNow.z);
+      vec3.Set(c3.x + slot.vecBNow.x, c3.y + slot.vecBNow.y, c3.z + slot.vecBNow.z);
+      vec4.Set(c4.x + slot.vecBNow.x, c4.y + slot.vecBNow.y, c4.z + slot.vecBNow.z);
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (g_heightSpeedSign > vec1.y) {
+        alpha = static_cast<int>((vec1.y + g_projectionDepthNumerator) * g_effectIconRadius + g_groundBubbleAlphaBase);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (vec1.y <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      vec1.Set(c1.x + slot.vecTPre.x, c1.y + slot.vecTPre.y, c1.z + slot.vecTPre.z);
+      vec2.Set(c2.x + slot.vecTPre.x, c2.y + slot.vecTPre.y, c2.z + slot.vecTPre.z);
+      vec3.Set(c3.x + slot.vecTPre.x, c3.y + slot.vecTPre.y, c3.z + slot.vecTPre.z);
+      vec4.Set(c4.x + slot.vecTPre.x, c4.y + slot.vecTPre.y, c4.z + slot.vecTPre.z);
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (g_heightSpeedSign > vec1.y) {
+        alpha = static_cast<int>((vec1.y + g_projectionDepthNumerator) * g_effectIconRadius + g_groundBubbleAlphaBase);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (vec1.y <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+
+    {
+      vec1.Set(c1.x + slot.vecTNow.x, c1.y + slot.vecTNow.y, c1.z + slot.vecTNow.z);
+      vec2.Set(c2.x + slot.vecTNow.x, c2.y + slot.vecTNow.y, c2.z + slot.vecTNow.z);
+      vec3.Set(c3.x + slot.vecTNow.x, c3.y + slot.vecTNow.y, c3.z + slot.vecTNow.z);
+      vec4.Set(c4.x + slot.vecTNow.x, c4.y + slot.vecTNow.y, c4.z + slot.vecTNow.z);
+      int alpha = 150;
+      if (slot.flag1[1] != 2) {
+        alpha = 130;
+      }
+      if (g_heightSpeedSign > vec1.y) {
+        alpha = static_cast<int>((vec1.y + g_projectionDepthNumerator) * g_effectIconRadius + g_groundBubbleAlphaBase);
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      if (vec1.y <= 0.0f) {
+        if (slot.flag1[1] == 2) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
   }
 }
 
