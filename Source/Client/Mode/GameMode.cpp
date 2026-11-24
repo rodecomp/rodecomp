@@ -3501,7 +3501,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       ITEM_INFO item(0);
-      item = argument2 != 0 ? g_session.GetCostumeItemAt(argument1) : g_session.GetEquippedItemAt(argument1);
+      if (argument2 != 0) {
+        item = g_session.GetCostumeItemAt(argument1);
+      } else {
+        item = g_session.GetEquippedItemAt(argument1);
+      }
       if (item.identity[1] == 0 || item.quantity <= 0) {
         return 0;
       }
@@ -4598,7 +4602,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       ITEM_INFO item(0);
-      item = argument2 ? g_session.GetSwapEquippedItem(argument1) : g_session.GetSwapCostumeItem(argument1);
+      if (argument2) {
+        item = g_session.GetSwapEquippedItem(argument1);
+      } else {
+        item = g_session.GetSwapCostumeItem(argument1);
+      }
       if (item.identity[1] && item.quantity > 0) {
         const PACKET_CZ_REQ_REMOVE_SWQP_EQUIPITEM packet{ID_CZ_REQ_REMOVE_SWQP_EQUIPITEM, static_cast<std::uint16_t>(item.identity[1])};
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
