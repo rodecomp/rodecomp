@@ -1647,13 +1647,17 @@ bool CNavigationManager::CollectStartLinks() {
       NaviCell targetRowCell;
       NaviCell targetCell;
       if (this->pathFinder.FindPath(1, column, row, 8, 8, (*it)->GetCell(&targetCell)->x, (*it)->GetCell(&targetRowCell)->y, 10, route, 15)) {
-        this->data.startLinks.push_back(NaviLink{*it, static_cast<int>(route.points.size())});
+        const int cost = static_cast<int>(route.points.size());
+        this->data.startLinks.push_back(NaviLink{*it, cost});
       }
       this->pathFinder.Reset();
     }
   }
 
-  return !this->data.startLinks.empty();
+  if (this->data.startLinks.empty()) {
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x00BA0C90
