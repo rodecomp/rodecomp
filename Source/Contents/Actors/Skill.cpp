@@ -685,25 +685,21 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       g_soundMgr->PlayWave("effect\\g카트토네이도.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       return;
     }
-    case UNT_SEEDTRAP:
-      switch (unit->level) {
-      case 1:
+    case UNT_SEEDTRAP: {
+      const int level = unit->level;
+      if (level == 1) {
         this->m_effectId = EF_BIO5_PLANT_GREEN;
-        break;
-      case 2:
+      } else if (level == 2) {
         this->m_effectId = EF_BIO5_PLANT_BLUE;
-        break;
-      case 3:
+      } else if (level == 3) {
         this->m_effectId = EF_BIO5_PLANT_YELLOW;
-        break;
-      case 4:
+      } else if (level == 4) {
         this->m_effectId = EF_BIO5_PLANT_WHITE;
-        break;
-      case 5:
+      } else if (level == 5) {
         this->m_effectId = EF_BIO5_PLANT_RED;
-        break;
       }
       return;
+    }
     case UNT_PNEUMATICUS_PROCELLA:
       g_effectMgr->Spawn(this->render.accountId, EF_PNEUMATICUS_PROCELLA, this->render.position, 0, unit->level, 0, 0);
       return;
@@ -935,14 +931,14 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     return;
   }
   case AM_DISAPPEAR:
-    if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
+    if (this->GetEffectiveJob(-1) != UNT_CANE_OF_EVIL_EYE) {
+      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
+      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
+    } else {
       CEffect* effect = g_effectMgr->Find(this->render.accountId, EF_UNK_2307);
       if (effect != nullptr) {
         static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
       }
-    } else {
-      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
     }
     return;
   default:
