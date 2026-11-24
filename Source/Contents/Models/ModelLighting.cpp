@@ -31,10 +31,10 @@ namespace {
   }
 
   // INLINED
-  __forceinline void Light(const float* normal, const float* values, const float* direction, const float* diffuse, const float* ambient, float* output) {
-    const float x = ((normal[0] * values[0] + normal[1] * values[3]) + normal[2] * values[6]) + 0.0f;
-    const float y = ((normal[0] * values[1] + normal[1] * values[4]) + normal[2] * values[7]) + 0.0f;
-    const float z = ((normal[0] * values[2] + normal[1] * values[5]) + normal[2] * values[8]) + 0.0f;
+  __forceinline void Light(const float* normal, const matrix transform, const float* direction, const float* diffuse, const float* ambient, float* output) {
+    const float x = ((normal[0] * transform.values[0] + normal[1] * transform.values[3]) + normal[2] * transform.values[6]) + 0.0f;
+    const float y = ((normal[0] * transform.values[1] + normal[1] * transform.values[4]) + normal[2] * transform.values[7]) + 0.0f;
+    const float z = ((normal[0] * transform.values[2] + normal[1] * transform.values[5]) + normal[2] * transform.values[8]) + 0.0f;
     const float inverse = InverseLength((y * y + x * x) + z * z);
     const float dot = ((y * inverse) * direction[1] + (x * inverse) * direction[0]) + (z * inverse) * direction[2];
     const float amount = dot > 0.0f ? dot : 0.0f;
@@ -149,7 +149,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       for (unsigned corner = 0; corner < 3; ++corner) {
         float light[3];
-        Light(&normals[index * 3 + corner].x, combined.values, direction, diffuse, ambient, light);
+        Light(&normals[index * 3 + corner].x, combined, direction, diffuse, ambient, light);
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
       }
     }
@@ -163,7 +163,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       float light[3];
-      Light(&normals[index].x, combined.values, direction, diffuse, ambient, light);
+      Light(&normals[index].x, combined, direction, diffuse, ambient, light);
 
       for (unsigned corner = 0; corner < 3; ++corner) {
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
