@@ -170,9 +170,15 @@ int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
     blueExpansion = owner->blue.expansion;
     transparent = PackedColor(owner, 255, 0, 255);
   } else {
-    redMask = greenMask = blueMask = 0;
-    redShift = greenShift = blueShift = 0;
-    redExpansion = greenExpansion = blueExpansion = 8;
+    redMask = 0;
+    greenMask = 0;
+    blueMask = 0;
+    redShift = 0;
+    greenShift = 0;
+    blueShift = 0;
+    redExpansion = 8;
+    greenExpansion = 8;
+    blueExpansion = 8;
     transparent = 0;
   }
 
@@ -186,7 +192,7 @@ int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
           const int overlayY = y - (this->viewport.height - overlay->image.height);
           const int overlayX = x - (this->viewport.width - overlay->image.width);
 
-          if (overlayX > -1 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
+          if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
             const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
             const int red = (color >> 16) & 0xFF;
             const int green = (color >> 8) & 0xFF;
