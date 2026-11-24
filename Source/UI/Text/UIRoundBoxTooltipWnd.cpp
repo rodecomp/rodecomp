@@ -115,9 +115,9 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     break;
   case UM_SET_ITEM_MOVE_TOOLTIP:
     if (argument1 != 0) {
-      std::string text = "";
-      int lines = 0;
       std::string longest = "";
+      int lines = 0;
+      std::string text = "";
 
       this->viewer->Clear();
       const ItemMoveInfo info = FindItemMoveInfo(static_cast<int>(argument1));
