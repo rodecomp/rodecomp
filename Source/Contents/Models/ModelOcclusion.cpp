@@ -46,15 +46,16 @@ __declspec(noinline) int Intersects(const float* ray, const OrientedBounds& boun
   float near = -999999.0f;
   float far = 999999.0f;
 
-  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[0], bounds.halfSize[0], near, far)) {
+  auto& axesRef = bounds.axes;
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, axesRef[0], bounds.halfSize[0], near, far)) {
     return 0;
   }
 
-  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[1], bounds.halfSize[1], near, far)) {
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, axesRef[1], bounds.halfSize[1], near, far)) {
     return 0;
   }
 
-  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, bounds.axes[2], bounds.halfSize[2], near, far)) {
+  if (!ClipSlab(ray, deltaX, deltaY, deltaZ, axesRef[2], bounds.halfSize[2], near, far)) {
     return 0;
   }
 

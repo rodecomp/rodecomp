@@ -1392,8 +1392,9 @@ void UIWindowMgr::UnregisterNamedWindow(std::string name) {
 // OFFSET: 0x00AAD8E0
 // FUNCTION: fn_17285
 void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
-  if (this->namedWindows.find(name) != this->namedWindows.end()) {
-    this->namedWindows[name]->SendMsg(nullptr, UM_MENU_SELECTED, 0, 0, 0, 0);
+  auto& namedWindowsRef = this->namedWindows;
+  if (namedWindowsRef.find(name) != namedWindowsRef.end()) {
+    namedWindowsRef[name]->SendMsg(nullptr, UM_MENU_SELECTED, 0, 0, 0, 0);
   }
 }
 
