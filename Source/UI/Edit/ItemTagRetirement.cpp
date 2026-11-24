@@ -306,21 +306,24 @@ void UIItemTagCtrl::SetTaggedText(const std::string& text, int width) {
 unsigned int UIItemTagCtrl::GetVisibleTagPrefix(std::string& visible, const std::string& text) {
   unsigned int firstVisible = 0;
   UIWindow* hover = g_windowMgr.GetHoverWindow();
-  if (hover != nullptr) {
-    switch (hover->geometry.id) {
-    case ID_WHISPER_EDIT:
-    case ID_NPC_TEXT_EDIT:
-    case ID_CHAT_EDIT:
-    case ID_CHATROOM_EDIT:
-      firstVisible = static_cast<UIEditCtrl*>(hover)->firstVisible;
-      break;
-    }
-
-    if (text.size() >= firstVisible) {
-      visible = text.substr(firstVisible);
-    }
+  if (hover == nullptr) {
+    return 0;
   }
 
+  switch (hover->geometry.id) {
+  case ID_WHISPER_EDIT:
+  case ID_NPC_TEXT_EDIT:
+  case ID_CHAT_EDIT:
+  case ID_CHATROOM_EDIT:
+    firstVisible = static_cast<UIEditCtrl*>(hover)->firstVisible;
+    break;
+  }
+
+  if (text.size() < firstVisible) {
+    return firstVisible;
+  }
+
+  visible = text.substr(firstVisible);
   return firstVisible;
 }
 
