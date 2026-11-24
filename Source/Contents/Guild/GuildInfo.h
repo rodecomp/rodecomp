@@ -121,6 +121,7 @@ public:
   void UpdateMemberExpRatios();
   int DeleteMember(const char* name);
   void UpdateMemberStatus(int accountId, int online, int characterId, short padding_002C, short padding_0020, short padding_0024);
+  void UpdateOnlineMemberCount();
   void SetMemberOnline(int accountId, int online);
   void SetMasterCharacterId(int characterId);
   void UpdatePosition(GuildPositionEntry entry);

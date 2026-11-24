@@ -269,6 +269,18 @@ void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
   }
 }
 
+// OFFSET: 0x00AE5060
+// FUNCTION: fn_46689
+void GuildInfo::UpdateOnlineMemberCount() {
+  int count = 0;
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->online) {
+      ++count;
+    }
+  }
+  this->onlineMemberCount = count;
+}
+
 // OFFSET: 0x00AE4F50
 // FUNCTION: fn_18045
 void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short sex, short head, short headPalette) {
@@ -282,13 +294,7 @@ void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, s
     }
   }
 
-  int count = 0;
-  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
-    if (it->online) {
-      ++count;
-    }
-  }
-  this->onlineMemberCount = count;
+  UpdateOnlineMemberCount();
   g_windowMgr.RefreshGuildWindows();
 }
 
@@ -302,13 +308,7 @@ void GuildInfo::SetMemberOnline(int accountId, int online) {
     }
   }
 
-  int count = 0;
-  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
-    if (it->online) {
-      ++count;
-    }
-  }
-  this->onlineMemberCount = count;
+  UpdateOnlineMemberCount();
   g_windowMgr.RefreshGuildWindows();
 }
 
