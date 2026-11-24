@@ -930,7 +930,7 @@ void CGameMode::RefreshMiniMapTooltips() {
       MiniMapTooltip tooltip{};
       tooltip.text = this->miniMapTooltipText;
       tooltip.windowId = windowId;
-      this->miniMapTooltipWindows.insert(std::make_pair(windowId, tooltip));
+      this->miniMapTooltipWindows.insert({windowId, tooltip});
       break;
     }
   }
