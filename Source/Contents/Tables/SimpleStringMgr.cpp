@@ -92,8 +92,9 @@ void CSimpleStringMgr::Init() {
   this->LoadCsv("simplemsg\\msg_emotion.csv",
                 [this](const std::vector<std::string>& fields) { return this->TransformFields(fields); },
                 [this](const std::vector<const char*>& fields, std::any context) {
+                  std::any type = context;
                   if (static_cast<int>(fields.size()) >= 2) {
-                    this->AddString(std::any_cast<STR_TYPE>(context), fields.front(), fields.back());
+                    this->AddString(std::any_cast<STR_TYPE>(type), fields.front(), fields.back());
                   }
                 },
                 STR_TYPE_EMOTION);
@@ -103,7 +104,7 @@ void CSimpleStringMgr::Init() {
 // FUNCTION: fn_09081
 void CSimpleStringMgr::LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
                               std::function<void(std::vector<const char*>&, std::any)> insert, std::any context) {
-  g_simpleStringObject.LoadCsv(name, transform, insert, std::move(context));
+  g_simpleStringObject.LoadCsv(name, transform, insert, context);
 }
 
 // OFFSET: 0x007AA4A0
