@@ -1999,7 +1999,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
 
     UICashEmotionPack* pack;
     int height;
-    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack* item) { return item->packId == packId; });
+    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack* item) { return packId == item->packId; });
     if (it != unused.end() && (pack = *it) != nullptr) {
       unused.remove(pack);
       height = pack->geometry.height;
@@ -3882,10 +3882,10 @@ void UICashEmotionSprBtn::PaintSelected() {
   const int width = this->geometry.width;
   const int height = this->geometry.height;
   SpriteAtlasRecord record{};
-  int halfWidth = 0;
   int halfHeight = 0;
-  int baseX = 0;
+  int halfWidth = 0;
   int baseY = 0;
+  int baseX = 0;
   for (unsigned index = 0; index < frame->cells.size(); ++index) {
     record = SpriteAtlasRecord{};
     const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
@@ -4122,8 +4122,8 @@ void UISpriteButton::Paint() {
       baseY = cell.y;
     } else {
       width = this->geometry.width;
-      height = this->geometry.height;
       x = width / 2 - baseX - halfWidth + cell.x;
+      height = this->geometry.height;
       y = height / 2 - baseY - halfHeight + cell.y;
     }
 
