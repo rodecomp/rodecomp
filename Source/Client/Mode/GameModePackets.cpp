@@ -10612,6 +10612,12 @@ namespace {
   static_assert(sizeof(ChatRoomMemberListPacket) == 0x8);
 }
 
+// INLINED
+static __forceinline void PushSkillFailureNotice(int messageId) {
+  const char* notice = LookupMessage(messageId);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
+}
+
 // OFFSET: 0x00D1E840
 // FUNCTION: fn_21636
 void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
@@ -10622,10 +10628,9 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   }
 
   const unsigned char showMessage = g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF);
-  const char* notice;
   switch (packet->cause) {
   case USESKILL_FAIL_SH_TEMPORARY_COMMUNION:
-    notice = LookupMessage(packet->value);
+    PushSkillFailureNotice(packet->value);
     break;
   case USESKILL_FAIL:
     if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
@@ -10637,157 +10642,156 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     if (!showMessage) {
       return;
     }
-    notice = LookupMessage(MSI_USESKILL_FAIL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL);
     break;
   case USESKILL_FAIL_REDJAMSTONE:
-    notice = LookupMessage(MSI_NEED_REDJAMSTONE);
+    PushSkillFailureNotice(MSI_NEED_REDJAMSTONE);
     break;
   case USESKILL_FAIL_BLUEJAMSTONE:
-    notice = LookupMessage(MSI_NEED_BLUEJAMSTONE);
+    PushSkillFailureNotice(MSI_NEED_BLUEJAMSTONE);
     break;
   case USESKILL_FAIL_THIS_WEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
     break;
   case USESKILL_FAIL_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_HP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_MONEY:
-    notice = LookupMessage(MSI_SKILL_FAIL_MONEY);
+    PushSkillFailureNotice(MSI_SKILL_FAIL_MONEY);
     break;
   case USESKILL_FAIL_STUFF_INSUFFICIENT:
-    notice = LookupMessage(MSI_NOT_ENOUGH_SOURCE);
+    PushSkillFailureNotice(MSI_NOT_ENOUGH_SOURCE);
     break;
   case USESKILL_FAIL_LEVEL:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     if (packet->skillId == NV_BASIC) {
       switch (packet->value) {
       case ZCSK_ITEMEXCHANGE:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE1);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE1);
+        return;
       case ZCSK_EMOTION:
         this->isEmotionRequested = 0;
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE2);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE2);
+        return;
       case ZCSK_SIT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE3);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE3);
+        return;
       case ZCSK_CHAT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE4);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE4);
+        return;
       case ZCSK_PARTY:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE5);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE5);
+        return;
       case ZCSK_SHOUT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE6);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE6);
+        return;
       case ZCSK_PK:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE7);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE7);
+        return;
       case ZCSK_MANNERPOINT: {
-        const char* text = LookupMessage(MSI_NOT_ENOUGH_FOR_MANNER_POINT);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_FOR_MANNER_POINT);
       }
         [[fallthrough]];
       case ZCSK_JOINPARTY:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE5_2);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE5_2);
+        return;
       default:
         return;
       }
     } else {
       switch (packet->skillId) {
       case AL_WARP:
-        notice = LookupMessage(MSI_NOTENOUGHSKILLLEVEL);
-        break;
+        PushSkillFailureNotice(MSI_NOTENOUGHSKILLLEVEL);
+        return;
       case TF_STEAL:
-        notice = LookupMessage(MSI_FAIL_STEAL);
-        break;
+        PushSkillFailureNotice(MSI_FAIL_STEAL);
+        return;
       case TF_POISON:
-        notice = LookupMessage(MSI_FAIL_POISON);
-        break;
+        PushSkillFailureNotice(MSI_FAIL_POISON);
+        return;
       default:
         if (!showMessage) {
           return;
         }
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE8);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE8);
+        return;
       }
     }
     break;
   case USESKILL_FAIL_WEIGHTOVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_WEIGHTOVER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_WEIGHTOVER);
     break;
   case USESKILL_FAIL_TOTARGET:
-    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_TOTARGET);
     break;
   case USESKILL_FAIL_ANCILLA_NUMOVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ANCILLA_NUMOVER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ANCILLA_NUMOVER);
     break;
   case USESKILL_FAIL_HOLYWATER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HOLYWATER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HOLYWATER);
     break;
   case USESKILL_FAIL_ANCILLA:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ANCILLA);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ANCILLA);
     break;
   case USESKILL_FAIL_DUPLICATE_RANGEIN:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DUPLICATE_RANGEIN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DUPLICATE_RANGEIN);
     break;
   case USESKILL_FAIL_NEED_OTHER_SKILL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_OTHER_SKILL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_OTHER_SKILL);
     break;
   case USESKILL_FAIL_NEED_HELPER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_HELPER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_HELPER);
     break;
   case USESKILL_FAIL_INVALID_DIR:
-    notice = LookupMessage(MSI_USESKILL_FAIL_INVALID_DIR);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_INVALID_DIR);
     break;
   case USESKILL_FAIL_SUMMON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON);
     break;
   case USESKILL_FAIL_SUMMON_NONE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON_NONE);
     break;
   case USESKILL_FAIL_IMITATION_SKILL_NONE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_IMITATION_SKILL_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_IMITATION_SKILL_NONE);
     break;
   case USESKILL_FAIL_DUPLICATE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DUPLICATE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DUPLICATE);
     break;
   case USESKILL_FAIL_CONDITION:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CONDITION);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CONDITION);
     break;
   case USESKILL_FAIL_PAINTBRUSH:
-    notice = LookupMessage(MSI_USESKILL_FAIL_PAINTBRUSH);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_PAINTBRUSH);
     break;
   case USESKILL_FAIL_POS:
-    notice = LookupMessage(MSI_USESKILL_FAIL_POS);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_POS);
     break;
   case USESKILL_FAIL_HELPER_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HELPER_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HELPER_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_GC_WEAPONBLOCKING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCKING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_WEAPONBLOCKING);
     break;
   case USESKILL_FAIL_NEED_WEAPON_BLOCKING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCK_ON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_WEAPONBLOCK_ON);
     break;
   case USESKILL_FAIL_GC_POISONINGWEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_POISONINGWEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_POISONINGWEAPON);
     break;
   case USESKILL_FAIL_MADOGEAR:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR);
     break;
   case USESKILL_FAIL_CANONBALL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CANONBALL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CANONBALL);
     break;
   case USESKILL_FAIL_MADOGEAR_HOVERING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR_HOVERING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR_HOVERING);
     break;
   case USESKILL_FAIL_GUILLONTINE_POISON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GUILLONTINE_POISON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GUILLONTINE_POISON);
     break;
   case USESKILL_FAIL_SKILLINTERVAL: {
     if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
@@ -10799,25 +10803,25 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_MADOGEAR_RIDE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR_RIDE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR_RIDE);
     break;
   case USESKILL_FAIL_SPELLBOOK:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK);
     break;
   case USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP);
     break;
   case USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT);
     break;
   case USESKILL_FAIL_SPELLBOOK_READING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_READING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_READING);
     break;
   case USESKILL_FAIL_CART:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CART);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CART);
     break;
   case USESKILL_FAIL_NO_MORE_SPELL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NO_MORE_SPELL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NO_MORE_SPELL);
     break;
   case USESKILL_FAIL_NEED_ITEM: {
     ITEM_INFO item;
@@ -10855,69 +10859,84 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_NEED_EQUIPPED_WEAPON_CLASS: {
     const int reason = packet->value;
     if (reason == 0x15) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GRANADE);
-    } else if (reason == 0x11) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_HANDGUN);
-    } else if (reason == 0x12) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_RIFLE);
-    } else if (reason == 0x14) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_SHOTGUN);
-    } else if (reason == 0x13) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING);
-    } else if (reason == 0xB) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_BOW);
-    } else if (reason == 0xD || reason == 0xE) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_INSTRUMENT_WHIP);
-    } else if (reason == 4) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_SPEAR);
-    } else if (reason == 0x16) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_SYURIKEN);
-    } else {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_GRANADE);
       return;
     }
-    break;
+    if (reason == 0x11) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_HANDGUN);
+      return;
+    }
+    if (reason == 0x12) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_RIFLE);
+      return;
+    }
+    if (reason == 0x14) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_SHOTGUN);
+      return;
+    }
+    if (reason == 0x13) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING);
+      return;
+    }
+    if (reason == 0xB) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_BOW);
+      return;
+    }
+    if (reason == 0xD || reason == 0xE) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_INSTRUMENT_WHIP);
+      return;
+    }
+    if (reason == 4) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_SPEAR);
+      return;
+    }
+    if (reason == 0x16) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_SYURIKEN);
+      return;
+    }
+    return;
   }
   case USESKILL_FAIL_EL_SUMMON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EL_SUMMON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EL_SUMMON);
     break;
   case USESKILL_FAIL_RELATIONGRADE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_RELATIONGRADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_RELATIONGRADE);
     break;
   case USESKILL_FAIL_STYLE_CHANGE_FIGHTER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_STYLE_CHANGE_FIGHTER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_STYLE_CHANGE_FIGHTER);
     break;
   case USESKILL_FAIL_STYLE_CHANGE_GRAPPLER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_STYLE_CHANGE_GRAPPLER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_STYLE_CHANGE_GRAPPLER);
     break;
   case USESKILL_FAIL_DRAGON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DRAGON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DRAGON);
     break;
   case USESKILL_FAIL_NEER_WALL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEER_WALL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEER_WALL);
     break;
   case USESKILL_FAIL_NEED_EXP_1PERCENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
     break;
   case USESKILL_FAIL_CHORUS_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_NEED_EQUIPMENT_KUNAI:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
     break;
   case USESKILL_FAIL_SIZE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SIZE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SIZE);
     break;
   case USESKILL_FAIL_TOTARGET_PLAYER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
     break;
   case USESKILL_FAIL_THERE_ARE_NPC_AROUND:
-    notice = LookupMessage(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND);
     break;
   case USESKILL_FAIL_NEED_MORE_BULLET:
-    notice = LookupMessage(MSI_NEED_MORE_BULLET);
+    PushSkillFailureNotice(MSI_NEED_MORE_BULLET);
     break;
   case USESKILL_FAIL_MAP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MAP);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MAP);
     break;
   case USESKILL_FAIL_COINS: {
     char text[256];
@@ -10931,10 +10950,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_NEED_SUMMON_SP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_SAME_VEND:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EXIST_STORE_ASSISTANT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EXIST_STORE_ASSISTANT);
     break;
   case USESKILL_FAIL_NEED_BULLETS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_BULLET_CNT), packet->value).c_str()), 0xFF, 0xB, 0, 0);
@@ -10949,82 +10968,80 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_NEED_PARTY_LEADER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_PARTY_MASTER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NOT_PARTY_MASTER);
     break;
   case USESKILL_FAIL_NEED_PARTNER_SP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ENSEMBLE_PARTYNER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ENSEMBLE_PARTYNER);
     break;
   case USESKILL_FAIL_NEED_WEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE);
     break;
   case USESKILL_FAIL_NEED_ENERGY_SPHERE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY);
     break;
   case USESKILL_FAIL_MAX_TRAPS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_OVER_INSTALLATION), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_MAGIC_SPELLBOOK:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_NONE);
     break;
   case USESKILL_FAIL_AP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_AP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_AP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_NEED_SERVANT_WEAPON: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_EMPTY_SERVANTWEAPON), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_TWINKLING_GALAXY:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_TWINKLING_GALAXY_AREA);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_TWINKLING_GALAXY_AREA);
     break;
   case USESKILL_FAIL_NEED_SOUL_ENGERY:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SOULCOLLECT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SOULCOLLECT);
     break;
   case USESKILL_FAIL_NEED_AMULET:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_CHARMS);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_CHARMS);
     break;
   case USESKILL_FAIL_NEED_GATLING_SHOTGUT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GATLING_OR_SHOTGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GATLING_OR_SHOTGUN);
     break;
   case USESKILL_FAIL_NEED_RIFLE_REVOLVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_RIFLE_OR_HANDGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_RIFLE_OR_HANDGUN);
     break;
   case USESKILL_FAIL_NEED_GLAUNCHER_RIFLE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GRANADE_OR_RIFLE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GRANADE_OR_RIFLE);
     break;
   case USESKILL_FAIL_NEED_GATLING_REVOLVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GATLING_OR_HANDGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GATLING_OR_HANDGUN);
     break;
   case USESKILL_FAIL_NEED_SHOTGUN_GLAUNCHER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GRANADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GRANADE);
     break;
   case USESKILL_FAIL_NEED_SHIELD:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHIELD_WEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHIELD_WEAPON);
     break;
   case USESKILL_FAIL_TARGET_SHADOW_SPACE:
-    notice = LookupMessage(MSI_FAIL_NO_SPACE_BEHIND_THE_TARGET);
+    PushSkillFailureNotice(MSI_FAIL_NO_SPACE_BEHIND_THE_TARGET);
     break;
   case USESKILL_FAIL_MAX:
-    notice = LookupMessage(MSI_FAIL_CALLHOMUN_INVALID_JOBTYPE);
+    PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_INVALID_JOBTYPE);
     break;
   case 113:
-    notice = LookupMessage(MSI_FAIL_CALLHOMUN_OVER_100LEVEL);
+    PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_OVER_100LEVEL);
     break;
   case 114:
-    notice = LookupMessage(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
+    PushSkillFailureNotice(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
     break;
   case 115:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GATLING_OR_GRANADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GATLING_OR_GRANADE);
     break;
   case 116:
   case 117:
-    notice = LookupMessage(packet->value == 0 ? 0x1119 : packet->value);
+    PushSkillFailureNotice(packet->value == 0 ? 0x1119 : packet->value);
     break;
   default:
     return;
   }
-
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
 }
 // OFFSET: 0x00D27420
 // FUNCTION: fn_21690
@@ -17276,8 +17293,8 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
   name[24] = '\0';
   std::memcpy(name, packet->memberName, sizeof(packet->memberName));
   char partyName[25];
-  partyName[24] = '\0';
   std::strncpy(partyName, packet->partyName, sizeof(packet->partyName));
+  partyName[24] = '\0';
   if (g_forbiddenWords.Contains(partyName)) {
     std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
@@ -17310,7 +17327,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
       currentMap.resize(currentMap.size() - 3);
     }
     if (memberMap != currentMap) {
-      this->SendMsg(MM_DELETEPARTYPOS, member.accountId, 0, 0, 0);
+      this->SendMsg(MM_DELETEPARTYPOS, packet->accountId, 0, 0, 0);
     }
   }
 
@@ -17441,11 +17458,12 @@ void CGameMode::UpdatePartyMemberInfo(
     if (currentMap.size() > 4) {
       currentMap.resize(currentMap.size() - 3);
     }
-    const bool sameMap = memberMap == currentMap;
-    if (!sameMap) {
+    if (memberMap != currentMap) {
       this->SendMsg(MM_DELETEPARTYPOS, accountId, 0, 0, 0);
+      this->SetActorGroupMemberVisible(accountId, 0);
+    } else {
+      this->SetActorGroupMemberVisible(accountId, 1);
     }
-    this->SetActorGroupMemberVisible(accountId, sameMap);
   }
 
   g_session.partyItemDistribute = itemDistribute != 0;
