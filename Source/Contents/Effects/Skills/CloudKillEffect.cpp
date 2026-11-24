@@ -59,7 +59,7 @@ __forceinline void CCloudKillEffect::AddParticle() {
   particle->SetSprite("이팩트\\particle3.spr");
   particle->SetAction("이팩트\\particle3.act");
   particle->life = static_cast<float>(this->particleLifetimeFrames) / 60.0f;
-  this->particles.push_back(created);
+  this->particles.push_back(particle);
 }
 
 // OFFSET: 0x006FC8F0
