@@ -71,6 +71,8 @@ NLuaState::~NLuaState() {
   }
 }
 
+// OFFSET: 0x00CA4E30
+// FUNCTION: fn_46481
 NLuaThread::NLuaThread(NLuaState& parent) : m_state(nullptr), m_isValid(false) {
   this->m_state = lua_newthread(parent.m_state);
   if (this->m_state != nullptr) {
