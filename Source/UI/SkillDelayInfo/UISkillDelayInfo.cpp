@@ -503,6 +503,11 @@ int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   return 0;
 }
 
+// INLINED
+static void AddDelayItem(CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* list, SkillDelayInfo::CDelayItemData&& item) {
+  list->data.push_back(std::move(item));
+}
+
 // OFFSET: 0x00A781C0
 // FUNCTION: fn_16889
 void CUISkillDelayInfo::SetSkill(int skillId) {
@@ -518,13 +523,12 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
     }
   }
 
-  unsigned int index = 0;
   int skillFlag = 0;
   std::vector<std::map<int, int>> delays;
   g_session.LoadSkillDelayList(skillId, delays, skillFlag);
-  const std::size_t delayCount = delays.size();
-  for (; index < delayCount; ++index) {
-    this->delayList->data.push_back(SkillDelayInfo::CDelayItemData{static_cast<int>(index), delays[index]});
+  for (unsigned int index = 0; index < delays.size(); ++index) {
+    auto* list = this->delayList;
+    AddDelayItem(list, SkillDelayInfo::CDelayItemData{static_cast<int>(index), delays[index]});
   }
   this->delayList->UpdateScrollBar();
 
