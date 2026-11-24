@@ -1052,6 +1052,12 @@ void UIRoMapWnd::DrawWorld() {
   this->m_flyingShipRoute2.Update(this, elapsed);
 }
 
+// INLINED
+static void DisableEdit(UIEditCtrl* edit) {
+  edit->disabled = 1;
+  edit->Invalidate();
+}
+
 // OFFSET: 0x00925530
 // FUNCTION: fn_12648
 void UIRoMapWnd::OnCreate(int, int) {
@@ -1082,13 +1088,13 @@ void UIRoMapWnd::OnCreate(int, int) {
 
   this->RefreshWorldMapLevels();
   this->RefreshWorldMapMarks();
-  const int closeX = this->geometry.width - 18;
+  int x = this->geometry.width - 18;
   UIBitmapButton* closeButton = new UIBitmapButton();
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_off.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 1, 0);
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 2, 0);
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
-  closeButton->Move(closeX, 0);
+  closeButton->Move(x, 0);
   closeButton->SetId(ID_CLOSE);
   closeButton->SetTooltip("ctrl+`");
   this->AddChild(closeButton);
@@ -1100,7 +1106,8 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_labelCheck->SetSize(80, 12);
     this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG1));
     this->m_labelCheck->SetId(ID_STATUS);
-    this->m_labelCheck->Move(closeX - 82, 3);
+    x -= 82;
+    this->m_labelCheck->Move(x, 3);
     this->m_labelCheck->SetChecked(this->m_showLabels);
     this->m_labelCheck->SetTooltip("Tab");
     this->AddChild(this->m_labelCheck);
@@ -1132,14 +1139,10 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchEdit->Background(232, 232, 232);
     this->m_searchEdit->Border(200, 100, 100);
     this->m_searchEdit->flat = 0;
-    UIEditCtrl* edit = this->m_searchEdit;
-    if (const char* tooltip = LookupMessage(MSI_NAVIGATION_SETSTRING)) {
-      edit->tooltip = tooltip;
-    }
+    this->m_searchEdit->SetTooltip(LookupMessage(MSI_NAVIGATION_SETSTRING));
     this->AddChild(this->m_searchEdit);
     if (g_replayAnimationScaling != 0) {
-      this->m_searchEdit->disabled = 1;
-      this->m_searchEdit->Invalidate();
+      DisableEdit(this->m_searchEdit);
     }
 
     this->UpdateNavigationButtons();
