@@ -4898,15 +4898,26 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
   return true;
 }
 
+using MessageMap = std::unordered_map<int, std::string, MessageIdHash>;
+using MessageBucket = MessageMap::_Unchecked_iterator;
+
 // OFFSET: 0x00B00360
 // FUNCTION: fn_18368
-void FillMessageBuckets(int* first, int* last, const int* value) {
+__declspec(noinline) void FillMessageBuckets(MessageBucket* first, MessageBucket* last, const MessageBucket& value) {
   for (; first != last; ++first) {
-    *first = *value;
+    *first = value;
   }
 }
 
-using MessageMap = std::unordered_map<int, std::string, MessageIdHash>;
+// INLINED
+template <> inline void MessageMap::_Mybase::clear() noexcept {
+  if (this->empty()) {
+    return;
+  }
+  this->_List.clear();
+  auto& buckets = this->_Vec._Mypair._Myval2;
+  FillMessageBuckets(buckets._Myfirst, buckets._Mylast, this->_Unchecked_end());
+}
 
 // OFFSET: 0x00B00130
 // FUNCTION: fn_18367
