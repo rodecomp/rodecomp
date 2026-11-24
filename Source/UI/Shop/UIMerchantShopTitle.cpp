@@ -105,9 +105,9 @@ UIMerchantShopTitle::UIMerchantShopTitle(int buyingShop) : UIWindow(0), buyingSh
 // INLINED
 static void SetLabelFont(UIStaticText* label, int family, int height) {
   label->fontFamily = family;
+  label->fontHeight = height;
   label->bold = 0;
   label->italic = 0;
-  label->fontHeight = height;
 }
 
 // OFFSET: 0x00864DB0

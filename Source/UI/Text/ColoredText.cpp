@@ -160,7 +160,7 @@ void UIWindow::DrawRightColoredText(
 
   while (current < end) {
     next = this->SegmentEnd(current, end);
-    prefix.insert(prefix.end(), current, next);
+    prefix.insert(prefix.end(), reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(next));
     if (next >= end) {
       break;
     }
@@ -171,11 +171,11 @@ void UIWindow::DrawRightColoredText(
     segment.prefix.insert(segment.prefix.end(), prefix.begin(), prefix.end());
     const char* segmentEnd = this->SegmentEnd(segmentStart, end);
     if (segmentEnd < end) {
-      segment.text.insert(segment.text.end(), segmentStart, segmentEnd);
-      segment.prefix.insert(segment.prefix.end(), segmentStart, segmentEnd);
+      segment.text.insert(segment.text.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(segmentEnd));
+      segment.prefix.insert(segment.prefix.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(segmentEnd));
     } else {
-      segment.text.insert(segment.text.end(), segmentStart, end);
-      segment.prefix.insert(segment.prefix.end(), segmentStart, end);
+      segment.text.insert(segment.text.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(end));
+      segment.prefix.insert(segment.prefix.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(end));
     }
     segments.push_back(segment);
     current = segmentStart;
