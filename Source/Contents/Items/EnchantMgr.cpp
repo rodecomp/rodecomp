@@ -298,44 +298,51 @@ inline void CEnchantMgr::AddRandomUpgradeEnchant(uint64_t group, uint32_t option
   }
 }
 
-// INLINED
-inline void CEnchantMgr::AddTargetItem(uint64_t group, const std::string& itemName) {
+// OFFSET: 0x00682660
+// FUNCTION: fn_46492
+void CEnchantMgr::AddTargetItem(uint64_t group, const std::string& itemName) {
   int itemId = ItemDbToIdMgr()->GetItemID(itemName);
   if (itemId != ITEMID_NONE) {
     m_enchants[group].targetItems.push_back(itemId);
   }
 }
 
-// INLINED
-inline void CEnchantMgr::AddUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
+// OFFSET: 0x00682740
+// FUNCTION: fn_46493
+void CEnchantMgr::AddUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
                                            uint64_t cost, const std::map<std::string, int>& materials) {
   m_enchants[group].options[optionKey].isUpgrade = true;
   AddPerfectUpgradeEnchant(group, optionKey, baseItemName, itemName, cost, materials);
 }
 
-// INLINED
-inline void CEnchantMgr::ApproveRandomOption(uint64_t group, bool approve) {
+// OFFSET: 0x00682790
+// FUNCTION: fn_46494
+void CEnchantMgr::ApproveRandomOption(uint64_t group, bool approve) {
   m_enchants[group].approveRandomOption = approve;
 }
 
-// INLINED
-inline void CEnchantMgr::SetCaution(uint64_t group, const std::string& caution) {
+// OFFSET: 0x00684560
+// FUNCTION: fn_46495
+void CEnchantMgr::SetCaution(uint64_t group, const std::string& caution) {
   m_enchants[group].caution = caution;
 }
 
-// INLINED
-inline void CEnchantMgr::SetCondition(uint64_t group, uint32_t condition1, uint32_t condition2) {
+// OFFSET: 0x00684590
+// FUNCTION: fn_46496
+void CEnchantMgr::SetCondition(uint64_t group, uint32_t condition1, uint32_t condition2) {
   m_enchants[group].condition1 = condition1;
   m_enchants[group].condition2 = condition2;
 }
 
-// INLINED
-inline void CEnchantMgr::SetGradeBonus(uint64_t group, uint32_t optionKey, const std::map<uint32_t, uint64_t>& gradeBonus) {
+// OFFSET: 0x00684A80
+// FUNCTION: fn_46497
+void CEnchantMgr::SetGradeBonus(uint64_t group, uint32_t optionKey, const std::map<uint32_t, uint64_t>& gradeBonus) {
   m_enchants[group].options[optionKey].gradeBonus = gradeBonus;
 }
 
-// INLINED
-inline void CEnchantMgr::SetRandomUpgradeRequire(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
+// OFFSET: 0x00684B60
+// FUNCTION: fn_46498
+void CEnchantMgr::SetRandomUpgradeRequire(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
                                                  const std::map<std::string, int>& materials) {
   int itemId = ItemDbToIdMgr()->GetItemID(itemName);
   if (itemId != ITEMID_NONE) {
@@ -344,27 +351,31 @@ inline void CEnchantMgr::SetRandomUpgradeRequire(uint64_t group, uint32_t option
   }
 }
 
-// INLINED
-inline void CEnchantMgr::SetRequire(uint64_t group, uint32_t optionKey, uint64_t cost, const std::map<std::string, int>& materials) {
+// OFFSET: 0x00684CB0
+// FUNCTION: fn_46499
+void CEnchantMgr::SetRequire(uint64_t group, uint32_t optionKey, uint64_t cost, const std::map<std::string, int>& materials) {
   m_enchants[group].options[optionKey].require.cost = cost;
   m_enchants[group].options[optionKey].require.materials = ConvertMaterials(materials);
 }
 
-// INLINED
-inline void CEnchantMgr::SetReset(uint64_t group, bool enabled, uint64_t rate, uint64_t cost, const std::map<std::string, int>& materials) {
+// OFFSET: 0x00684D80
+// FUNCTION: fn_46500
+void CEnchantMgr::SetReset(uint64_t group, bool enabled, uint64_t rate, uint64_t cost, const std::map<std::string, int>& materials) {
   m_enchants[group].resetEnabled = enabled;
   m_enchants[group].resetRate = rate;
   m_enchants[group].reset.cost = cost;
   m_enchants[group].reset.materials = ConvertMaterials(materials);
 }
 
-// INLINED
-inline void CEnchantMgr::SetSlotOrder(uint64_t group, const std::vector<int>& slots) {
+// OFFSET: 0x00684E50
+// FUNCTION: fn_46501
+void CEnchantMgr::SetSlotOrder(uint64_t group, const std::vector<int>& slots) {
   m_enchants[group].slots = slots;
 }
 
-// INLINED
-inline void CEnchantMgr::SetSuccessRate(uint64_t group, uint32_t optionKey, uint64_t rate) {
+// OFFSET: 0x00684EB0
+// FUNCTION: fn_46502
+void CEnchantMgr::SetSuccessRate(uint64_t group, uint32_t optionKey, uint64_t rate) {
   m_enchants[group].options[optionKey].successRate = rate;
 }
 
