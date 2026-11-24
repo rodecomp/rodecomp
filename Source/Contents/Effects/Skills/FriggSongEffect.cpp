@@ -140,7 +140,6 @@ void CFriggSongEffect::Open() {
     const float spread = speed * g_cosTable[tilt];
     const float height = speed * g_sinTable[tilt];
     const float offsetX = spread * cosine;
-    const float offsetZ = spread * sine;
 
     EffectPoint points[2];
     const float innerX = particle->scale * cosine;
@@ -148,7 +147,7 @@ void CFriggSongEffect::Open() {
     const float innerZ = particle->scale * sine;
     const float outerX = innerX + offsetX;
     const float outerY = 0.0f - height;
-    const float outerZ = innerZ + offsetZ;
+    const float outerZ = innerZ + spread * sine;
 
     if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
       particle->vertices[1].x = outerX;
