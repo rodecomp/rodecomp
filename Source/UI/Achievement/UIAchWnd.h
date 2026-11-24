@@ -68,6 +68,7 @@ public:
 
   void Create(int width, int height, int rows);
   void SelectAchievement(int index);
+  void SelectAchievementById(int id);
   __declspec(noinline) void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
   __declspec(noinline) void UpdateScroll();
 
@@ -211,6 +212,8 @@ public:
 class UIAchUpperWnd : public UIWindow {
 public:
   UIAchUpperWnd();
+  void SetCompletionCounts(int completed, int total);
+  void SetLevelPoints(int points, int total);
 
   /* 007C */ std::string title;
   /* 0094 */ int achievementPoints;

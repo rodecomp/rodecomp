@@ -701,6 +701,26 @@ void UIToolTipBitmapWnd::OnRBtnDown(int x, int y) {
   }
 }
 
+// OFFSET: 0x007B8760
+// FUNCTION: fn_46560
+__forceinline void UIAchListWnd::SelectAchievementById(int id) {
+  int index = 0;
+  for (std::vector<int>::iterator it = this->ids.begin(); it != this->ids.end() && id != *it; ++it) {
+    ++index;
+  }
+
+  this->selectedIndex = index;
+  if (index < this->rowCount) {
+    this->firstRow = 0;
+  } else {
+    const unsigned limit = this->achievementList->size() - this->rowCount;
+    this->firstRow = static_cast<unsigned>(index) > limit ? limit : index;
+  }
+
+  this->scrollBar->SetPosition(this->firstRow);
+  this->SelectAchievement(this->selectedIndex);
+}
+
 // OFFSET: 0x007B7CA0
 // FUNCTION: fn_09238
 void UIAchievementWnd::SelectAchievement(int id) {
@@ -712,22 +732,7 @@ void UIAchievementWnd::SelectAchievement(int id) {
 
   this->SelectTab(group, sub);
 
-  UIAchListWnd* list = this->list;
-  int index = 0;
-  for (std::vector<int>::iterator it = list->ids.begin(); it != list->ids.end() && id != *it; ++it) {
-    ++index;
-  }
-
-  list->selectedIndex = index;
-  if (index < list->rowCount) {
-    list->firstRow = 0;
-  } else {
-    const unsigned limit = list->achievementList->size() - list->rowCount;
-    list->firstRow = static_cast<unsigned>(index) > limit ? limit : index;
-  }
-
-  list->scrollBar->SetPosition(list->firstRow);
-  list->SelectAchievement(list->selectedIndex);
+  this->list->SelectAchievementById(id);
 }
 
 // OFFSET: 0x007B7D90
@@ -1293,6 +1298,26 @@ int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
   return 0;
 }
 
+// OFFSET: 0x007B8B80
+// FUNCTION: fn_46558
+inline void UIAchUpperWnd::SetCompletionCounts(int completed, int total) {
+  this->completedCount = completed;
+  this->completionGauge->SetValue(completed);
+  this->achievementCount = total;
+  this->completionGauge->SetMaximum(total);
+  this->completionGauge->Invalidate();
+}
+
+// OFFSET: 0x007B8BC0
+// FUNCTION: fn_46559
+void UIAchUpperWnd::SetLevelPoints(int points, int total) {
+  this->achievementPoints = points;
+  this->levelGauge->SetValue(points);
+  this->nextLevelPoints = total;
+  this->levelGauge->SetMaximum(total);
+  this->levelGauge->Invalidate();
+}
+
 // OFFSET: 0x007B8340
 // FUNCTION: fn_09249
 int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -1333,14 +1358,8 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
     const int completed = g_achievementMgr->GetCompletedCount(this->group, this->sub);
     const int total = g_achievementMgr->GetAchievementCount(this->group, this->sub);
+    this->upper->SetCompletionCounts(completed, total);
     UIAchUpperWnd* upper = this->upper;
-    upper->completedCount = completed;
-    upper->completionGauge->value = completed;
-    upper->achievementCount = total;
-    upper->completionGauge->maximum = total;
-    upper->completionGauge->Invalidate();
-
-    upper = this->upper;
     upper->achievementPoints = g_session.achievementCompleted;
     upper->levelGauge->value = g_session.achievementCompleted;
     upper->nextLevelPoints = g_session.achievementTotal;
