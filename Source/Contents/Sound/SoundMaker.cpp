@@ -1134,8 +1134,10 @@ void CNpc::Render(int argument) {
         }
         if (this->render.enabled) {
           this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
-          return;
+        } else {
+          this->UpdateTlvertex(matrix);
         }
+        return;
       }
       break;
   }
