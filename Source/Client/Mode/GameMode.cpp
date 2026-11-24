@@ -1197,8 +1197,9 @@ MinimapMarker* CGameMode::FindMinimapMarker(std::uint32_t key) {
 // OFFSET: 0x00CF05E0
 // FUNCTION: fn_21415
 std::string CGameMode::GetMapResource(unsigned int index) {
-  if (!this->mapResources.empty() && index <= this->mapResources.size()) {
-    return this->mapResources[index];
+  const MapResourceList& resources = this->mapResources;
+  if (resources.first != resources.last && index <= static_cast<unsigned int>(resources.last - resources.first)) {
+    return resources.first[index];
   }
 
   return "";
