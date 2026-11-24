@@ -174,7 +174,7 @@ bool CSprArrowEffect::IsAlive() {
 void CSprArrowEffect::OnProcess() {
   const float ticks =
       static_cast<float>(static_cast<double>(timeGetTime() - static_cast<unsigned int>(this->startTick)) / 24.0);
-  if (this->delayFrames > ticks) {
+  if (ticks < this->delayFrames) {
     return;
   }
 
@@ -189,9 +189,10 @@ void CSprArrowEffect::OnProcess() {
     const float dx = this->sourcePosition[0] - this->spriteParticle->position.x;
     const float dy = this->sourcePosition[1] - this->spriteParticle->position.y;
     const float dz = this->sourcePosition[2] - this->spriteParticle->position.z;
-    this->velocityX = dx * 0.125f;
-    this->velocityY = dy * 0.125f;
-    this->velocityZ = dz * 0.125f;
+    const vector3d velocity{dx * 0.125f, dy * 0.125f, dz * 0.125f};
+    this->velocityX = velocity.x;
+    this->velocityY = velocity.y;
+    this->velocityZ = velocity.z;
 
     const float lengthSquared = dy * dy + dx * dx + dz * dz;
     const float length = SquareRoot(lengthSquared);
@@ -226,9 +227,10 @@ void CSprArrowEffect::OnProcess() {
   particle->angle = this->heading - g_modeMgr.GetGameMode()->camera->camera.yaw;
   const vector3d travelled{time * this->velocityX + this->startX, this->velocityY * time + this->startY,
                            this->velocityZ * time + this->startZ};
-  this->spriteParticle->position.x = travelled.x + this->spriteParticle->velocity.x;
-  this->spriteParticle->position.y = travelled.y + this->spriteParticle->velocity.y;
-  this->spriteParticle->position.z = travelled.z + this->spriteParticle->velocity.z;
+  CSpriteParticle* sprite = this->spriteParticle;
+  sprite->position.x = travelled.x + sprite->velocity.x;
+  sprite->position.y = travelled.y + sprite->velocity.y;
+  sprite->position.z = travelled.z + sprite->velocity.z;
   if (time > 8.0f / this->travelSpeedScale) {
     this->alive = false;
   }
