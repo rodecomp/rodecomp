@@ -172,7 +172,8 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
 
   const float offset = this->rhw * 1000.0f + 2.0f;
   for (int layer = 1; layer >= 0; --layer) {
-    const auto found = this->layers.find(layer);
+    const int key = layer;
+    const auto found = this->layers.find(key);
     if (found == this->layers.end()) {
       continue;
     }
@@ -187,7 +188,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
       continue;
     }
 
-    const int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? 1 : layer);
+    const int cellIndex = GetSlotLayer(!g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? layer : 1);
     const SpriteFrameCell* cell = &frame->Cell(cellIndex);
     if (!cell || !sprite) {
       continue;
@@ -204,8 +205,8 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     itemOffset.second += resolved.offsetY;
     this->pc->ApplySwing(layer, itemOffset.first, itemOffset.second, this->swingX, this->swingY);
 
-    float bottomRhw = 0.0f;
     float topRhw = 0.0f;
+    float bottomRhw = 0.0f;
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t quadColor;
