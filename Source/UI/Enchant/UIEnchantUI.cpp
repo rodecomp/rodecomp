@@ -681,7 +681,7 @@ void CUISlot::OnCreate(int width, int height) {
     // GLOBAL: gl_25191
     // GLOBAL: gl_25190
     // GLOBAL: gl_25189
-    this->radioButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x23BBD58F8B5FF5C9ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_select.bmp", 0x0B7109397F6B1387ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_over.bmp", 0x03772763F96D9DA5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x17A9E5BF39AD4737ULL)));
+    this->radioButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x23BBD58F8B5FF5C9ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_select.bmp", 0x0B7109397F6B1387ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_over.bmp", 0x03772763F96D9DA5ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x17A9E5BF39AD4737ULL)));
   }
   {
     CUIRadioButton* radioButton = this->radioButton;
@@ -704,7 +704,7 @@ void CUISlot::OnCreate(int width, int height) {
   this->description->SetTextOffset(2, 0);
   {
     // GLOBAL: gl_25193
-    this->description->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
+    this->description->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
   }
   this->description->SetFontHeight(12);
   this->description->SetBold(true);
@@ -718,7 +718,7 @@ void CUISlot::OnCreate(int width, int height) {
   {
     // GLOBAL: gl_25195
     // GLOBAL: gl_25194
-    this->description->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0xCD8F077123FB7D6FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0x9949BFD527532943ULL)));
+    this->description->SetScrollBarButtonImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xCD8F077123FB7D6FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0x9949BFD527532943ULL)));
   }
   {
     // GLOBAL: gl_25196
