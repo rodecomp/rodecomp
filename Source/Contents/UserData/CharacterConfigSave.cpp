@@ -34,28 +34,37 @@ int CSession::UseLevel(int id) const {
   return 0;
 }
 
+namespace {
+
+struct UseSkillLevelAppender {
+  Json::Value* values;
+
+  // INLINED
+  bool operator()(const CSkillInfo& skill) const {
+    const int level = g_session.UseLevel(skill.id);
+    if (level != 0) {
+      Json::Value value;
+      value["SKID"] = skill.id;
+      value["SKLv"] = level;
+      this->values->append(value);
+    }
+
+    return true;
+  }
+};
+
+}
+
+// OFFSET: 0x005E7AE0
+// FUNCTION: fn_03940
+template <> bool std::_Func_impl_no_alloc<UseSkillLevelAppender, bool, const CSkillInfo&>::_Do_call(const CSkillInfo& skill) {
+  return this->_Callee(skill);
+}
+
 // INLINED
 inline void CCharacterLinkedUserDataMgr::SaveUseSkillLevel(Json::Value& data) {
   if (static_cast<int>(g_session.m_options.Get(7)) != 0) {
     Json::Value values;
-
-    struct UseSkillLevelAppender {
-      Json::Value* values;
-
-      // OFFSET: 0x005E7AE0
-      // FUNCTION: fn_03940
-      bool operator()(CSkillInfo& skill) const {
-        const int level = g_session.UseLevel(skill.id);
-        if (level != 0) {
-          Json::Value value;
-          value["SKID"] = skill.id;
-          value["SKLv"] = level;
-          this->values->append(value);
-        }
-
-        return true;
-      }
-    };
 
     g_session.m_skillBundle.ForEachGrouped(UseSkillLevelAppender{&values});
     data["UseSkillInfo"] = values;

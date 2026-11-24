@@ -387,7 +387,7 @@ void CPlayerSkillBundle::SetSkillValue(int id, int value) {
 
 // OFFSET: 0x00771B40
 // FUNCTION: fn_08287
-void CPlayerSkillBundle::ForEachGrouped(std::function<bool(CSkillInfo&)> callback) {
+void CPlayerSkillBundle::ForEachGrouped(std::function<bool(const CSkillInfo&)> callback) {
   for (auto group = this->groups.begin(); group != this->groups.end(); ++group) {
     auto& skills = group->second;
     for (auto skill = skills.begin(); skill != skills.end(); ++skill) {

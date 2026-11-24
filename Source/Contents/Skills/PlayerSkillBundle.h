@@ -44,7 +44,7 @@ public:
   void ClearGroups();
   CSkillInfo* FindGrouped(std::uint32_t id);
   std::list<CSkillInfo>& Group(int group);
-  void ForEachGrouped(std::function<bool(CSkillInfo&)> callback);
+  void ForEachGrouped(std::function<bool(const CSkillInfo&)> callback);
   int GroupSize(int group) const;
   int GroupedLevel(std::uint32_t id);
   bool HasHigherLevel(std::uint32_t id);
