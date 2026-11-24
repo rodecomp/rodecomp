@@ -55,9 +55,7 @@ PacketLengths::PacketLengths() {
 
 // OFFSET: 0x00B01F40
 // FUNCTION: fn_18384
-PacketLengths::~PacketLengths() {
-  this->m_values.clear();
-}
+PacketLengths::~PacketLengths() = default;
 
 // OFFSET: 0x00B02100
 // FUNCTION: fn_18385
