@@ -516,9 +516,8 @@ CashEmotionData::CashEmotionData(int id, int subId, const char* name, int action
     : id(id), subId(subId), name(name), actionIndex(actionIndex), frameIndex(frameIndex), actId(actId), sprId(sprId) {
 }
 
-// OFFSET: 0x00592820
-// FUNCTION: fn_02860
-bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
+// INLINED
+inline bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
   const int rightId = right;
   const int leftId = left;
   const char* leftTitle = this->mgr->GetPackTitleInline(leftId);
@@ -537,6 +536,12 @@ bool CashEmotionPackOrder::operator()(const int& left, const int& right) const {
   }
 
   return result > 0;
+}
+
+// OFFSET: 0x00592820
+// FUNCTION: fn_02860
+template <> template <> constexpr decltype(auto) std::_Ref_fn<CashEmotionPackOrder>::operator()<int&, int&>(int& left, int& right) {
+  return this->_Fn(left, right);
 }
 
 // OFFSET: 0x00596430
