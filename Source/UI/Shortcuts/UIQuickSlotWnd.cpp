@@ -230,11 +230,10 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     for (int index = 0; index < 2; ++index) {
       const std::uint32_t itemId = saved[index].itemId;
       const std::uint8_t enabled = saved[index].enabled;
-      const std::int16_t value = saved[index].value;
-      QuickSlotEntry& entry = this->m_entries[index];
-      entry.id = 0;
-      entry.skill = 0;
-      entry.count = 0;
+      const int value = saved[index].value;
+      this->m_entries[index].id = 0;
+      this->m_entries[index].skill = 0;
+      this->m_entries[index].count = 0;
       if (itemId == ITEMID_NONE) {
         continue;
       }
@@ -262,14 +261,19 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         }
 
         if (skill.available != 0 && skill.level != 0) {
-          entry.id = skill.id;
-          entry.skill = 1;
-          entry.count = static_cast<std::int16_t>(g_session.UseLevel(static_cast<int>(skill.id)) == 0 ? skill.level : value);
+          const int skillId = skill.id;
+          this->m_entries[index].id = skillId;
+          this->m_entries[index].skill = 1;
+          int count = value;
+          if (g_session.UseLevel(skillId) == 0) {
+            count = skill.level;
+          }
+          this->m_entries[index].count = static_cast<std::int16_t>(count);
         }
       } else {
         ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(itemId), 1);
         if (item.identity[1] > 0 && item.identified != 0) {
-          entry.id = itemId;
+          this->m_entries[index].id = itemId;
         }
       }
     }
