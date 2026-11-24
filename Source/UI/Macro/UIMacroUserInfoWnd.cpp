@@ -224,17 +224,18 @@ void UIMacroReporterWnd::Paint() {
     this->m_rows[index].second->Enable(0);
   }
 
-  int y = 57;
-  for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, y += 22) {
+  int row = 0;
+  for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, ++row) {
     if (this->m_rows.size() <= index) {
       return;
     }
 
-    std::pair<UIBitmapButton*, UITextButton*>& row = this->m_rows[index];
-    row.first->Enable(1);
-    row.first->Move(15, y + 2);
-    row.second->Enable(1);
-    row.second->Move(36, y);
+    const int y = row * 22 + 57;
+    std::pair<UIBitmapButton*, UITextButton*>& buttons = this->m_rows[index];
+    buttons.first->Enable(1);
+    buttons.first->Move(15, y + 2);
+    buttons.second->Enable(1);
+    buttons.second->Move(36, y);
   }
 }
 
