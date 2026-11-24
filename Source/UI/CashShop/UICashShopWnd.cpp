@@ -749,6 +749,13 @@ void UICashShopWnd_Banner::CreateButtons() {
   this->Invalidate();
 }
 
+// INLINED
+static void ResetCart(UICashShopWnd_Cart* cart) {
+  cart->m_cartItems.clear();
+  cart->SendMsg(cart, UM_SCROLLVERT, 0, 0, 0, 0);
+  cart->Invalidate();
+}
+
 // OFFSET: 0x007D17A0
 // FUNCTION: fn_09558
 int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -889,9 +896,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     switch (argument1) {
     case ID_RESET_CART:
       this->m_totalPrice = 0;
-      this->m_cart->m_cartItems.clear();
-      this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
-      this->m_cart->Invalidate();
+      ResetCart(this->m_cart);
       this->Invalidate();
       return 0;
     case ID_CLOSE:
@@ -1064,7 +1069,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     if (argument1 != 0 && argument1 != this->m_selectedTab) {
       for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
         if (tab->first != 10 && tab->first != 8 && tab->second != nullptr) {
-          tab->second->SendMsg(this, UM_SETSTATE, argument1 == tab->first, 0, 0, 0);
+          if (argument1 == tab->first) {
+            tab->second->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+          } else {
+            tab->second->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+          }
         }
       }
       this->m_selectedTab = argument1;
