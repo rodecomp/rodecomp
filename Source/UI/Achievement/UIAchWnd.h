@@ -85,7 +85,8 @@ struct UIAchTabGroup {
 
 class UIAchTab : public UIWindow {
 public:
-  // INLINED
+  // OFFSET: 0x007B20D0
+  // FUNCTION: fn_46517
   UIAchTab()
       : UIWindow(0), selectedGroup(-1), selectedSub(-1), fontHeight(0), hoverGroup(0), hoverSub(0) {
     this->scrollBar = nullptr;
@@ -146,7 +147,8 @@ public:
 
 class UIAchTV : public UITextViewer {
 public:
-  // INLINED
+  // OFFSET: 0x007B2050
+  // FUNCTION: fn_46516
   UIAchTV() : selectionDisabled(0), textColor(0), outlineColor(0), underline(0) {
   }
 
@@ -193,7 +195,8 @@ public:
 
   __declspec(noinline) void UpdateInfo();
 
-  // INLINED
+  // OFFSET: 0x007B8C00
+  // FUNCTION: fn_46518
   void SetAchievement(int id, AchievementInfo* achievement) {
     this->achievementId = id;
     this->info = achievement;
