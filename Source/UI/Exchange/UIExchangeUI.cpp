@@ -307,10 +307,20 @@ void ExchangeUI::CUIItem::Paint() {
   }
 }
 
+// INLINED
+static int ScreenCenterX(int x) {
+  return (g_renderer->viewport.width - 640) / 2 + x;
+}
+
+// INLINED
+static int ScreenRatioY(int y) {
+  return g_renderer->viewport.height * y / 480;
+}
+
 // OFFSET: 0x00A17730
 // FUNCTION: fn_15298
 void CUIExchangeUI::OnInit() {
-  this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
+  this->Move(ScreenCenterX(100), ScreenRatioY(100));
 
   this->titleBar->SetTitle(std::format("{} : ", LookupMessage(MSI_EXCHANGE)));
 
