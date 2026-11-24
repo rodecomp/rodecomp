@@ -5058,13 +5058,14 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
 // OFFSET: 0x00AAAF10
 // FUNCTION: fn_17276
 __declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
+  for (std::list<UIWindow*>::iterator it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
+    UIWindow* window = *it;
+    bool different;
     {
       MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = member.accountId == accountId;
+      different = member.accountId != static_cast<unsigned int>(accountId);
     }
-    if (matches) {
+    if (!different) {
       window->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, accountId, lower, upper);
       break;
     }
