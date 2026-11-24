@@ -3661,7 +3661,8 @@ void CUIVScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(0);
-    AssignHandler(this->thumb->onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
+    auto& onDrag = this->thumb->onDrag;
+    AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
   }
 }
