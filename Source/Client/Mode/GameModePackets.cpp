@@ -9988,10 +9988,7 @@ void CGameMode::ReceiveItemPickupAck5(
     }
 
     const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
-    int count = amount;
-    if (current.identity[1] > 0) {
-      count -= current.quantity;
-    }
+    const int count = current.identity[1] > 0 ? amount - current.quantity : amount;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
@@ -11054,48 +11051,40 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   bool joined = false;
   if (actor) {
     if (UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(actor->actorWindows[1])) {
-      info.title = room->info.title;
-      info.password = room->info.password;
-      info.type = room->info.type;
-      info.memberCount = room->info.memberCount;
-      info.memberLimit = room->info.memberLimit;
-      info.id = room->info.id;
+      info = room->info;
       if (packet->roomId == room->info.id) {
         joined = true;
       }
     }
     actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0);
-    if (joined) {
-      const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
-      std::list<std::pair<std::string, int>> members;
-      const ChatRoomMemberRecord* records = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
-      for (int i = 0; i < count; ++i) {
-        const ChatRoomMemberRecord* record = &records[i];
-        std::pair<std::string, int> member;
-        char name[25];
-        name[24] = '\0';
-        std::memcpy(name, record->name, sizeof(record->name));
-        member.first = name;
-        member.second = record->role;
-        members.push_back(member);
-      }
-
-      UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
-      window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
-      info.memberCount = static_cast<int>(members.size());
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
-      for (std::list<std::pair<std::string, int>>::iterator it = members.begin(); it != members.end(); ++it) {
-        window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(it->first.c_str()), it->second, 0, 0);
-      }
-
-      this->chatRoom.title = info.title;
-      this->chatRoom.password = info.password;
-      this->chatRoom.type = info.type;
-      this->chatRoom.memberCount = info.memberCount;
-      this->chatRoom.memberLimit = info.memberLimit;
-      this->chatRoom.id = info.id;
-    }
   }
+  if (!joined) {
+    return;
+  }
+
+  const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
+  std::list<std::pair<std::string, int>> members;
+  const ChatRoomMemberRecord* records = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
+  for (int i = 0; i < count; ++i) {
+    const ChatRoomMemberRecord* record = &records[i];
+    std::pair<std::string, int> member;
+    char name[25];
+    name[24] = '\0';
+    std::memcpy(name, record->name, sizeof(record->name));
+    member.first = name;
+    member.second = record->role;
+    members.push_back(member);
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
+  window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
+  info.memberCount = static_cast<int>(members.size());
+  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+  for (const std::pair<std::string, int>& member : members) {
+    window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(member.first.c_str()), member.second, 0, 0);
+  }
+
+  this->chatRoom = info;
 }
 
 // GLOBAL: gl_25381
@@ -13446,8 +13435,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
 
       CPc* pc = new CPc;
       actor = pc;
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      pc->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
+      pc->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
       pc->objectType = NPC_PET_TYPE;
       pc->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->scene->objects.push_back(pc);
@@ -13473,8 +13461,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   data.y = y;
   data.visible = 1;
   CSkill* skill = new CSkill(0);
-  const std::int64_t value = reinterpret_cast<std::intptr_t>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, value, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, reinterpret_cast<int>(&data), 0, 0, 0, 0, 0);
   this->scene->objects.push_back(skill);
   this->scene->skills.push_back(skill);
 }
