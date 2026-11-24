@@ -2845,11 +2845,11 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
     return;
   }
 
-  unsigned line = 0;
-  int consumed = 0;
   const int left = g_windowMgr.rodexComposeWnd->m_contents->geometry.x;
   const int top = g_windowMgr.rodexComposeWnd->m_contents->geometry.y;
   const int lineHeight = g_windowMgr.rodexComposeWnd->m_contents->lineHeight;
+  unsigned line = 0;
+  int consumed = 0;
   std::string rest = name;
   const int firstLine = g_windowMgr.rodexComposeWnd->m_contents->firstVisibleLine;
   const int visibleLines = g_windowMgr.rodexComposeWnd->m_contents->geometry.height / lineHeight;
@@ -2867,8 +2867,9 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
     }
   }
 
+  UIRodexComposeWnd* compose = g_windowMgr.rodexComposeWnd;
   unsigned bytes = 0;
-  const int width = g_windowMgr.rodexComposeWnd->MeasureText(name.c_str(), bytes);
+  const int width = compose->MeasureText(name.c_str(), bytes);
   const int row = static_cast<int>(line) - firstLine;
   if (row < 0 || static_cast<int>(line) >= firstLine + visibleLines) {
     button->Move(1000, 1000);
