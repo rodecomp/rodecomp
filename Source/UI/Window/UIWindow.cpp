@@ -1942,9 +1942,10 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
   int offset = 0;
 
   for (int row = 0; offset < bytes;) {
-    if (row++ > 1000) {
+    if (row > 1000) {
       return;
     }
+    ++row;
 
     int extent = 0;
     int count = 0;
@@ -1954,9 +1955,10 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
     bool newline = false;
 
     for (int step = 0; current < end;) {
-      if (step++ > 1000) {
+      if (step > 1000) {
         break;
       }
+      ++step;
 
       const int previous = count;
       const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
