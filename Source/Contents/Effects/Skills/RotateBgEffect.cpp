@@ -176,8 +176,8 @@ __forceinline void CRotateBgEffect::UpdateSegmentVertices(CParticle* particle) {
       angle = static_cast<int>(rotation);
     }
 
-    const float cosine = g_cosTable[angle];
     const float sine = g_sinTable[angle];
+    const float cosine = g_cosTable[angle];
     const int tilt = particle->phaseParameter;
     const float tiltX = g_cosTable[tilt] * cosine;
     const float tiltZ = g_cosTable[tilt] * sine;
