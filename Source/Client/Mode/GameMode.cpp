@@ -9709,8 +9709,10 @@ void CGameMode::ProcessInput() {
         }
       }
       if (offset) {
-        this->cursorOffsetX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x - static_cast<float>(g_mouse.x);
-        this->cursorOffsetY = (pick->corners[0].y - pick->corners[1].y) * g_depthAverageHalf + pick->corners[1].y - static_cast<float>(g_mouse.y);
+        const float centerX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x;
+        const float centerY = (pick->corners[0].y - pick->corners[1].y) * g_depthAverageHalf + pick->corners[1].y;
+        this->cursorOffsetX = centerX - static_cast<float>(g_mouse.x);
+        this->cursorOffsetY = centerY - static_cast<float>(g_mouse.y);
       }
     }
   }
