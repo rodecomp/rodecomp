@@ -102,6 +102,14 @@ UIMerchantShopTitle::UIMerchantShopTitle(int buyingShop) : UIWindow(0), buyingSh
   this->geometry.id = 189;
 }
 
+// INLINED
+static void SetLabelFont(UIStaticText* label, int family, int height) {
+  label->fontFamily = family;
+  label->bold = 0;
+  label->italic = 0;
+  label->fontHeight = height;
+}
+
 // OFFSET: 0x00864DB0
 // FUNCTION: fn_10918
 int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -126,41 +134,37 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->fontStyle = static_cast<std::int16_t>(b);
     switch (this->fontStyle) {
     case 1:
-      this->label->fontFamily = 21;
+      SetLabelFont(this->label, 21, 12);
       break;
     case 2:
-      this->label->fontFamily = 20;
+      SetLabelFont(this->label, 20, 12);
       break;
     case 3:
-      this->label->fontFamily = 22;
+      SetLabelFont(this->label, 22, 12);
       break;
     case 4:
-      this->label->fontFamily = 23;
+      SetLabelFont(this->label, 23, 12);
       break;
     case 5:
-      this->label->fontFamily = 24;
+      SetLabelFont(this->label, 24, 12);
       break;
     case 6:
-      this->label->fontFamily = 25;
+      SetLabelFont(this->label, 25, 12);
       break;
     case 7:
-      this->label->fontFamily = 26;
+      SetLabelFont(this->label, 26, 12);
       break;
     case 8:
-      this->label->fontFamily = 27;
+      SetLabelFont(this->label, 27, 12);
       break;
     case 9:
-      this->label->fontFamily = 28;
+      SetLabelFont(this->label, 28, 12);
       break;
     default:
-      this->label->fontFamily = 0;
+      SetLabelFont(this->label, 0, 12);
       break;
     }
-    UIStaticText* const label = this->label;
-    label->bold = 0;
-    label->italic = 0;
-    label->fontHeight = 12;
-    label->SetTextFitted(fitted);
+    this->label->SetTextFitted(fitted);
     this->Invalidate();
     break;
   }
