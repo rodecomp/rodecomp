@@ -487,9 +487,12 @@ void CStemSpearEffect::OnProcess() {
       emitter->velocity.z += dz * inverse * emitter->frameDelay;
       emitter->velocity.y += dy * inverse * emitter->frameDelay;
 
-      emitter->position.x = this->position[0] + emitter->velocity.x;
-      emitter->position.z = this->position[2] + emitter->velocity.z;
-      emitter->position.y = this->position[1] - 10.0f;
+      const float x = this->position[0] + emitter->velocity.x;
+      const float z = this->position[2] + emitter->velocity.z;
+      const float y = this->position[1] - g_projectionDepthOffset;
+      emitter->position.x = x;
+      emitter->position.z = z;
+      emitter->position.y = y;
 
       if (this->frame >= 10) {
         emitter->alpha -= 40;
