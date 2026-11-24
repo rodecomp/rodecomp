@@ -1913,7 +1913,9 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 
   const std::string* name;
   if (g_modeMgr.GetGameMode()) {
-    name = &(member.name = LookupPlayerName(member.characterId));
+    auto playerName = LookupPlayerName(member.characterId);
+    name = &member.name;
+    member.name = std::move(playerName);
   } else {
     name = &member.name;
   }
