@@ -1209,7 +1209,8 @@ public:
   int GetRobeAlpha(int robeId);
   bool IsTopLayerRobe(int robe);
   int IsExchangeItemListFull();
-  // INLINED
+  // OFFSET: 0x00DDC8A0
+  // FUNCTION: fn_46547
   int GetFilledExchangeItemList() {
     int count = 0;
 
