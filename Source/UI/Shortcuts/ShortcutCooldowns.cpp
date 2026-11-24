@@ -686,17 +686,19 @@ void UISelCharForUServerWnd::Paint() {
           frame = synced;
         }
 
+        int accessoryOffsetX = offsetX;
+        int accessoryOffsetY = offsetY;
         if (frame->anchorCount != 0 && head->anchorCount != 0) {
           const ActionAnchor* anchor = frame->anchors.data();
           const ActionAnchor* base = head->anchors.data();
           if (anchor->attachmentId == base->attachmentId) {
-            offsetX += base->x - anchor->x;
-            offsetY += base->y - anchor->y;
+            accessoryOffsetX += base->x - anchor->x;
+            accessoryOffsetY += base->y - anchor->y;
           }
         }
 
-        offsetX += g_charViewOffsetX;
-        offsetY += g_charViewOffsetY;
+        offsetX = accessoryOffsetX + g_charViewOffsetX;
+        offsetY = accessoryOffsetY + g_charViewOffsetY;
         if (layer == 3) {
           switch (this->accessory2[index]) {
           case ACCESSORY_TIGER_MASK:
