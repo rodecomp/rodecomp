@@ -116,6 +116,7 @@ public:
   int CountRelatedGuilds(int padding_0004);
   int GetAgitCount();
   void Init();
+  void ResetGuildDetails();
   bool HasRelatedGuild(int padding_0000);
   void UpdateMemberExpRatios();
   int DeleteMember(const char* name);

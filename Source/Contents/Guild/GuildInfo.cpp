@@ -115,6 +115,22 @@ int GuildInfo::GetAgitCount() {
   return static_cast<int>(this->agitIds.size());
 }
 
+// OFFSET: 0x00AE46D0
+// FUNCTION: fn_46630
+void GuildInfo::ResetGuildDetails() {
+  const int guildId = this->m_guildId;
+  const int invite = this->canInvite;
+  const int expel = this->canExpel;
+  const int master = this->isMaster;
+  const int state = this->requestState;
+  this->Init();
+  this->m_guildId = guildId;
+  this->canInvite = invite;
+  this->canExpel = expel;
+  this->isMaster = master;
+  this->requestState = state;
+}
+
 // OFFSET: 0x00AE4740
 // FUNCTION: fn_18039
 void GuildInfo::Init() {
