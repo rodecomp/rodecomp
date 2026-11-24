@@ -16395,19 +16395,16 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     this->state.lastPrim->state.size = 1.0f;
 
-    int process = 0;
-
-    for (int i = 0; process > -80; ++i) {
+    for (int i = 0, process = 0; process > -80; ++i, process -= 20) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = process;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].maxHeight = 10.0f;
       this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].alphaB = 200;
-      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(i);
       this->state.lastPrim->state.slots[i].height[4] = 10.0f;
+      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(i);
       this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(flag);
-      process -= 20;
     }
   }
 
@@ -16421,19 +16418,16 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     this->state.lastPrim->state.size = 1.0f;
 
-    int process = 0;
-
-    for (int i = 0; process > -80; ++i) {
+    for (int i = 0, process = 0; process > -80; ++i, process -= 20) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = process;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].maxHeight = 10.0f;
       this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].alphaB = 200;
-      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(i);
       this->state.lastPrim->state.slots[i].height[4] = 10.0f;
+      this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(i);
       this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(flag);
-      process -= 20;
     }
   }
 }
