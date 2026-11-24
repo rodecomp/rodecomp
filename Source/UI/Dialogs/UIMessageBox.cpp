@@ -1140,15 +1140,17 @@ void UILoginWnd::SaveLogin() {
   }
 
   char id[52];
-  int saveId;
 
   if (this->saveId != 0) {
     std::strcpy(id, this->idEdit->Text());
-    saveId = this->saveId != 0;
-    id[50] = 0;
   } else {
     std::memset(id, 0, sizeof(id));
-    saveId = 0;
+  }
+
+  id[50] = 0;
+  int saveId = this->saveId;
+  if (saveId) {
+    saveId = 1;
   }
 
   EncryptedName<3, 0xC517FB932D95BB6DULL>& idName = OBFUSCATE_STRING("ID", 0xC517FB932D95BB6DULL);
