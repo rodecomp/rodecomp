@@ -4,7 +4,11 @@
 #include <cstddef>
 #include <list>
 #include <string>
-#include <utility>
+
+struct ClanRelation {
+  /* 0000 */ int kind;
+  /* 0004 */ std::string name;
+};
 
 class CClanInfo {
 public:
@@ -17,7 +21,7 @@ public:
   /* 0040 */ std::string m_mapName;
   /* 0058 */ int m_clanId;
   /* 005C */ bool m_hasClan;
-  /* 0060 */ std::list<std::pair<int, std::string>> m_relations;
+  /* 0060 */ std::list<ClanRelation> m_relations;
 
   CClanInfo();
   ~CClanInfo();

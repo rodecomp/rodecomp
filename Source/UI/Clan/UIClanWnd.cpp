@@ -121,13 +121,13 @@ void UIClanInfoManageWnd::Paint() {
     if (y >= 205) {
       break;
     }
-    if (relation->first == 0) {
+    if (relation->kind == 0) {
       if (row == this->allyRow) {
         unsigned rowRed, rowGreen, rowBlue;
         g_skinInfo.PaletteChannels(6, 2, rowRed, rowGreen, rowBlue);
         this->FillRegion(204, y, 80, 16, RGB(rowRed, rowGreen, rowBlue));
       }
-      this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
     }
   }
@@ -140,13 +140,13 @@ void UIClanInfoManageWnd::Paint() {
     if (y >= 279) {
       break;
     }
-    if (relation->first == 1) {
+    if (relation->kind == 1) {
       if (row == this->hostileRow) {
         unsigned rowRed, rowGreen, rowBlue;
         g_skinInfo.PaletteChannels(6, 2, rowRed, rowGreen, rowBlue);
         this->FillRegion(204, y, 80, 16, RGB(rowRed, rowGreen, rowBlue));
       }
-      this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawTextAt(204, y, relation->name.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
     }
   }
