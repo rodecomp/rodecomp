@@ -10070,9 +10070,9 @@ void UIMerchantShopMakeWnd::Paint() {
   }
   this->DrawTextAt(5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
 
-  int visible = 0;
   int index = 0;
 
+  int visible = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
