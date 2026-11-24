@@ -684,7 +684,10 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   world.AppendTranslate(&this->position.x);
 
   for (int i = 0; i < 4; ++i) {
-    const vector3d vertex = {vertices[i].x, vertices[i].y, vertices[i].z};
+    vector3d vertex;
+    vertex.x = vertices[i].x;
+    vertex.z = vertices[i].z;
+    vertex.y = vertices[i].y;
     MatrixMult(point, vertex, world.values);
     CGameMode* mode = g_modeMgr.GetGameMode();
     point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;

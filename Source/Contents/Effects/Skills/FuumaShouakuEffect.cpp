@@ -63,8 +63,8 @@ void CFuumaShouakuEffect::Open() {
   this->velocityX = scale * this->velocityX;
   this->velocityY = scale * this->velocityY;
   this->velocityZ = scale * this->velocityZ;
-  this->velocityX *= 2.0f;
   this->velocityY *= 2.0f;
+  this->velocityX *= 2.0f;
   this->velocityZ *= 2.0f;
 
   this->first->m_angle = ScreenAngle(origin, target, g_modeMgr.GetGameMode()->camera->frame.view.values);
