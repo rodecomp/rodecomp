@@ -16,10 +16,8 @@ CGuildEmblemReqBundle::~CGuildEmblemReqBundle() = default;
 // OFFSET: 0x0065CA90
 // FUNCTION: fn_05154
 void CGuildEmblemReqBundle::Add(std::uint32_t guildId, std::uint32_t version) {
-  const auto request = std::pair{guildId, version};
-
-  if (std::find(this->m_pending.begin(), this->m_pending.end(), request) == this->m_pending.end()) {
-    this->m_pending.push_back(request);
+  if (this->m_pending.end() == std::find(this->m_pending.begin(), this->m_pending.end(), std::make_pair(guildId, version))) {
+    this->m_pending.push_back(std::make_pair(guildId, version));
   }
 }
 
