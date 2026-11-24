@@ -3639,9 +3639,12 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       char text[512];
       std::sprintf(text, LookupMessage(MSI_CHANGE_HOMUN_NAME), this->nameEdit->Text());
-      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
-        if (g_forbiddenWords.Contains(this->nameEdit->Text()) == true) {
+      const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0);
+      UIEditCtrl* edit = this->nameEdit;
+      if (response != ID_NO) {
+        if (g_forbiddenWords.Contains(edit->Text()) == true) {
           g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          edit = this->nameEdit;
         } else {
           g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
           std::sprintf(name, this->nameEdit->Text());
@@ -3649,7 +3652,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           return 0;
         }
       }
-      this->nameEdit->SetText(name);
+      edit->SetText(name);
       this->nameEdit->Invalidate();
       return 0;
     }
