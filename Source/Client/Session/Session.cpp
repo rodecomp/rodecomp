@@ -2694,11 +2694,12 @@ unsigned char CSession::GetShopType(int id) {
 // OFFSET: 0x00DE3930
 // FUNCTION: fn_23484
 std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
+  const unsigned int itemIndex = index;
   auto name = this->m_nameToId.find(std::string(this->m_navigationPlayerMap));
   if (name != this->m_nameToId.end()) {
     auto shop = this->m_shops.find(name->second);
-    if (shop != this->m_shops.end() && shop->second.items.size() > index) {
-      std::map<int, std::pair<int, int>>& entries = shop->second.items[index];
+    if (shop != this->m_shops.end() && shop->second.items.size() > itemIndex) {
+      std::map<int, std::pair<int, int>>& entries = shop->second.items[itemIndex];
       auto entry = entries.find(key);
       if (entries.end() != entry) {
         return entry->second;
