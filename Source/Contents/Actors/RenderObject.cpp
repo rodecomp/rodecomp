@@ -362,8 +362,8 @@ void CRenderObject::PlayFrameSounds() {
   int lastMotion = static_cast<int>(this->render.lastSoundMotion);
   if (lastMotion != this->render.curMotion || static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
     if (static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
-      this->render.lastSoundMotion = 0;
       lastMotion = 0;
+      this->render.lastSoundMotion = 0;
     }
     CActRes* action = this->render.action;
     if (lastMotion < this->render.curMotion) {
@@ -1866,13 +1866,13 @@ void CRenderObject::RenderBlur(
       quad.bottom = static_cast<float>(box->bottom);
       quad.right = static_cast<float>(box->right) + offset - spread;
     } else if (direction == 3) {
-      quad.top = static_cast<float>(box->top) + spread;
       quad.bottom = static_cast<float>(box->bottom) + spread;
+      quad.top = static_cast<float>(box->top) + spread;
       quad.left = static_cast<float>(box->left) + offset;
       quad.right = static_cast<float>(box->right) + offset;
     } else if (direction == 4) {
-      quad.top = static_cast<float>(box->top) - spread;
       quad.bottom = static_cast<float>(box->bottom) - spread;
+      quad.top = static_cast<float>(box->top) - spread;
       quad.left = static_cast<float>(box->left) + offset;
       quad.right = static_cast<float>(box->right) + offset;
     }
