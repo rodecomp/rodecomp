@@ -3169,9 +3169,9 @@ bool CEffectPrim::PrimAcidDemon() {
       this->state.slots[ec].process += 1;
 
       if (ec == 3) {
-        this->state.slots[3].rotStart += 2 + ClampedRandom(2);
+        this->state.slots[ec].rotStart = static_cast<std::int16_t>(this->state.slots[3].rotStart + (2 + ClampedRandom(2)));
       } else {
-        this->state.slots[ec].rotStart += 4 + ClampedRandom(3);
+        this->state.slots[ec].rotStart = static_cast<std::int16_t>(this->state.slots[ec].rotStart + (4 + ClampedRandom(3)));
       }
 
       if (this->state.slots[ec].rotStart >= 360) {
@@ -4129,7 +4129,7 @@ void CEffectPrim::PrimSphereWind2() {
       this->state.slots[index].riseAngle -= 360;
     }
 
-    this->state.slots[index].rotStart = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(this->state.slots[index].rotStart) + this->state.slots[index].height[1]));
+    this->state.slots[index].rotStart += this->state.slots[index].height[1];
 
     if (this->state.slots[index].rotStart >= 360) {
       this->state.slots[index].rotStart -= 360;
