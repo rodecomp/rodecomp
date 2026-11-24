@@ -9,6 +9,7 @@ class UISlotBmpButton : public UIBitmapButton {
   friend class UINewSelectCharWnd;
 
 public:
+  explicit UISlotBmpButton(int index);
   UISlotBmpButton(int index, bool);
   void OnCreate(int width, int height) override;
   void OnProcess() override;
