@@ -2506,12 +2506,14 @@ void CEffectPrim::RenderCone(matrix& wtm) {
       const float scale = this->state.slots[ec].height[0];
       const float cs = g_cosTable[angle];
       const float inner = this->state.slots[ec].distance * g_sinTable[angle];
+      vec2.y = this->state.slots[ec].distance * cs - this->state.slots[ec].maxHeight;
       const float outerRadius = scale * this->state.slots[ec].distance * 0.1f + this->state.slots[ec].distance;
+      vec3.y = outerRadius * cs - this->state.slots[ec].maxHeight;
+      vec2.x = this->state.slots[ec].vecTNow.x + inner * g_cosTable[this->state.slots[ec].rotStart];
+      vec2.z = this->state.slots[ec].vecTNow.z + inner * g_sinTable[this->state.slots[ec].rotStart];
       const float outer = outerRadius * g_sinTable[angle];
-      vec2.Set(this->state.slots[ec].vecTNow.x + inner * g_cosTable[this->state.slots[ec].rotStart], this->state.slots[ec].distance * cs - this->state.slots[ec].maxHeight, this->state.slots[ec].vecTNow.z + inner * g_sinTable[this->state.slots[ec].rotStart]);
-      vec3.Set(
-        outer * g_cosTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.x * scale, outerRadius * cs - this->state.slots[ec].maxHeight, outer * g_sinTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.z * scale
-      );
+      vec3.x = outer * g_cosTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.x * scale;
+      vec3.z = outer * g_sinTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.z * scale;
 
       if (count > 0) {
         this->RenderTeiRect(&rpCnt, texPart - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0);
