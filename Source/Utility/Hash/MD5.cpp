@@ -300,9 +300,10 @@ __declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
   if (mapping != nullptr) {
     const unsigned char* view = static_cast<const unsigned char*>(MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, size.LowPart));
     if (view != nullptr) {
-      unsigned char digest[16] = {0};
-      DigestBuffer(view, size.LowPart, digest);
-      result = FoldDigest(digest);
+      DigestStorage digest;
+      digest.b0 = 0; digest.b1 = 0; digest.b2 = 0; digest.b3 = 0; digest.b4 = 0; digest.b5 = 0;
+      DigestBuffer(view, size.LowPart, reinterpret_cast<unsigned char*>(&digest));
+      result = FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
       UnmapViewOfFile(view);
     }
     CloseHandle(mapping);
