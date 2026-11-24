@@ -3545,65 +3545,69 @@ void UIHomunInfoWnd::Paint() {
   this->DrawBitmap(0, 0, background, false);
   this->DrawFilledRoundedOutline(0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
   {
-  char title[32];
-  std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
-  this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
-  }
-  this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 105, LookupMessage(MSI_HOMUN_EXP), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 131, LookupMessage(MSI_PET_HUNGRY), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
-  const int* const stats = g_session.m_homunStats;
-  int bytes;
-  char number[12];
-  bytes = std::sprintf(number, "%d", stats[0]);
-  this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[1]);
-  this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[2]);
-  this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[3]);
-  this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[4]);
-  this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[5]);
-  this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", stats[6]);
-  this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
-  this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
-  char level[8];
-  _itoa(g_session.m_homunLevel, level, 10);
-  this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
-  if (g_session.m_homunJob == -1) {
-    return;
-  }
+    char title[32];
+    char text[24];
+    std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
+    this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 105, LookupMessage(MSI_HOMUN_EXP), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 131, LookupMessage(MSI_PET_HUNGRY), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
+    const int* const stats = g_session.m_homunStats;
+    int bytes;
+    {
+      char number[12];
+      bytes = std::sprintf(number, "%d", stats[0]);
+      this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[1]);
+      this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[2]);
+      this->DrawRightAlignedText(79, 60, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[3]);
+      this->DrawRightAlignedText(79, 78, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[4]);
+      this->DrawRightAlignedText(79, 96, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[5]);
+      this->DrawRightAlignedText(79, 114, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", stats[6]);
+      this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
+      bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
+      this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
+    }
+    {
+      char level[8];
+      _itoa(g_session.m_homunLevel, level, 10);
+      this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
+    }
+    if (g_session.m_homunJob == -1) {
+      return;
+    }
 
-  char text[24];
-  bytes = std::sprintf(text, "%lld", g_session.m_homunMaxExp);
-  this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
-  bytes = std::sprintf(text, "%d / %d", g_session.homunHunger, 100);
-  this->DrawRightAlignedText(200, 130, text, bytes, 1, 14, 0, 0);
-  if (g_session.homunFriendly >= 0 && g_session.homunFriendly <= 3) {
-    std::strcpy(text, LookupMessage(MSI_VERYHATE));
-  } else if (g_session.homunFriendly > 3 && g_session.homunFriendly <= 10) {
-    std::strcpy(text, LookupMessage(MSI_HATE));
-  } else if (g_session.homunFriendly > 10 && g_session.homunFriendly <= 100) {
-    std::strcpy(text, LookupMessage(MSI_VERY_AWKWARD));
-  } else if (g_session.homunFriendly > 100 && g_session.homunFriendly <= 250) {
-    std::strcpy(text, LookupMessage(MSI_AWKWARD));
-  } else if (g_session.homunFriendly > 250 && g_session.homunFriendly <= 750) {
-    std::strcpy(text, LookupMessage(MSI_NORMAL));
-  } else if (g_session.homunFriendly > 750 && g_session.homunFriendly <= 910) {
-    std::strcpy(text, LookupMessage(MSI_FRIENDLY));
-  } else if (g_session.homunFriendly > 910 && g_session.homunFriendly <= 1000) {
-    std::strcpy(text, LookupMessage(MSI_VERY_FRIENDLY));
-  } else {
-    std::strcpy(text, LookupMessage(MSI_UNKNOWN));
+    bytes = std::sprintf(text, "%lld", g_session.m_homunMaxExp);
+    this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
+    bytes = std::sprintf(text, "%d / %d", g_session.homunHunger, 100);
+    this->DrawRightAlignedText(200, 130, text, bytes, 1, 14, 0, 0);
+    if (g_session.homunFriendly >= 0 && g_session.homunFriendly <= 3) {
+      std::strcpy(text, LookupMessage(MSI_VERYHATE));
+    } else if (g_session.homunFriendly > 3 && g_session.homunFriendly <= 10) {
+      std::strcpy(text, LookupMessage(MSI_HATE));
+    } else if (g_session.homunFriendly > 10 && g_session.homunFriendly <= 100) {
+      std::strcpy(text, LookupMessage(MSI_VERY_AWKWARD));
+    } else if (g_session.homunFriendly > 100 && g_session.homunFriendly <= 250) {
+      std::strcpy(text, LookupMessage(MSI_AWKWARD));
+    } else if (g_session.homunFriendly > 250 && g_session.homunFriendly <= 750) {
+      std::strcpy(text, LookupMessage(MSI_NORMAL));
+    } else if (g_session.homunFriendly > 750 && g_session.homunFriendly <= 910) {
+      std::strcpy(text, LookupMessage(MSI_FRIENDLY));
+    } else if (g_session.homunFriendly > 910 && g_session.homunFriendly <= 1000) {
+      std::strcpy(text, LookupMessage(MSI_VERY_FRIENDLY));
+    } else {
+      std::strcpy(text, LookupMessage(MSI_UNKNOWN));
+    }
+    this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
   }
-  this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
   this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING)), 0, 0, 0, 0, 12, 0, 0);
   this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING_EXP_INFORMATION)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
