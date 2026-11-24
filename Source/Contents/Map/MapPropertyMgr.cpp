@@ -86,3 +86,8 @@ int CMapPropertyMgr::GetValue(int mapId, int key) {
   }
   return found->second.GetValue(key);
 }
+
+// OFFSET: 0x00CA7C70
+// FUNCTION: fn_46526
+CMapPropertyMgr::~CMapPropertyMgr() {
+}

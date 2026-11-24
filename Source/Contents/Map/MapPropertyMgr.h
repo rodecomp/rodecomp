@@ -18,9 +18,7 @@ public:
 class CMapPropertyMgr {
 public:
   CMapPropertyMgr();
-  // INLINED
-  virtual ~CMapPropertyMgr() {
-  }
+  virtual ~CMapPropertyMgr();
 
   static bool Create();
   static void Destroy();
