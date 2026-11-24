@@ -81,8 +81,10 @@ void CMapSkyMgr::ApplyBackgroundColor(const std::string& mapName) {
 
 // OFFSET: 0x00C7B200
 // FUNCTION: fn_20362
-CWeatherEffect::CWeatherEffect()
-    : color(), targetColor(), fog(), lightColor() {
+CWeatherEffect::CWeatherEffect() {
+  this->targetColor[0] = 0.0f;
+  this->targetColor[1] = 0.0f;
+  this->targetColor[2] = 0.0f;
   this->darken = 0;
   this->enabled = 1;
   this->lightning = 0;
