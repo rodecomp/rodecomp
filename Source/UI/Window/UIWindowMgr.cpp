@@ -2,6 +2,8 @@
 #include "Client/Mode/GameModeEnums.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Hotkeys/InterfaceHotkey.h"
@@ -2371,7 +2373,7 @@ void UIWindowMgr::DrawLoginOverlay() {
       }
 
       if (static_cast<float>(g_mouse.y) > static_cast<float>(third) * 2.7f + this->loginBottomPanelOffset.x &&
-          static_cast<float>(g_mouse.y) < static_cast<float>(third) * 3.0f + this->loginBottomPanelOffset.x) {
+          static_cast<float>(g_mouse.y) < static_cast<float>(third) * g_masterReachDistance + this->loginBottomPanelOffset.x) {
         this->loginDragRegion = 4;
       }
     }
@@ -2414,7 +2416,7 @@ void UIWindowMgr::DrawLoginOverlay() {
     rect.left = x;
     x += step;
     rect.right = x;
-    rect.bottom = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * 3.0f);
+    rect.bottom = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * g_masterReachDistance);
     rect.top = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * 2.5f);
     this->loginBottomPanelOffset.y = static_cast<short>(rect.top);
     std::sprintf(name, "유저인터페이스\\T_테입%d.tga", tape);
@@ -2430,7 +2432,7 @@ void UIWindowMgr::DrawLoginOverlay() {
   rect.left = static_cast<int>(this->loginButtonPanelOffset.x + static_cast<float>(step) * 3.1f);
   rect.right = step + rect.left;
   rect.top = static_cast<int>(this->loginButtonPanelOffset.y + static_cast<float>(third) * 2.4f);
-  const float half = static_cast<float>(third) * 0.5f;
+  const float half = static_cast<float>(third) * g_depthAverageHalf;
   rect.bottom = static_cast<int>(static_cast<float>(rect.top) + half);
   g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\T_중력성인.tga", 0, false, true, false), region);
 
@@ -2439,7 +2441,7 @@ void UIWindowMgr::DrawLoginOverlay() {
     ++row;
     int y = static_cast<int>(this->loginGridY + static_cast<float>(third) * 0.1f);
     if (this->loginGridY + (static_cast<float>(third) + static_cast<float>(third)) > static_cast<float>(y)) {
-      const int left = static_cast<int>(static_cast<float>(step) * 0.05f + column);
+      const int left = static_cast<int>(static_cast<float>(step) * g_fireflyNormalDrift + column);
       char index = row;
       do {
         index += 2;
