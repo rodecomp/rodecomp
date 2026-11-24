@@ -2863,20 +2863,20 @@ void CRagEffect::RingStack(char white) {
     return;
   }
 
-  for (int index = 1; index <= 3; ++index) {
+  for (int i = 0; i < 3; ++i) {
     this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = -3.0f;
-    this->state.lastPrim->state.outerSize = static_cast<float>(index + 3);
-    this->state.lastPrim->state.innerSize = static_cast<float>(index + 1.5);
-    this->state.lastPrim->state.heightSize = static_cast<float>((8 - 2 * index) * (5 - index) + 1) + 2.5f;
+    this->state.lastPrim->state.outerSize = static_cast<float>(i + 4);
+    this->state.lastPrim->state.innerSize = static_cast<float>(i + 1 + 1.5);
+    this->state.lastPrim->state.heightSize = static_cast<float>((6 - 2 * i) * (4 - i) + 1) + 2.5f;
     this->state.lastPrim->state.rollSpeed = -0.5f;
     this->state.lastPrim->state.alpha = static_cast<float>(this->state.stateCnt * -7 + 240);
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-    if (white != 0) {
-      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_white.tga", 0, false, true, false);
-    } else {
+    if (white == 0) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_red.tga", 0, false, true, false);
+    } else {
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_white.tga", 0, false, true, false);
     }
   }
 }
