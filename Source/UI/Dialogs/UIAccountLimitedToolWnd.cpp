@@ -288,9 +288,9 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       const std::string name = this->m_edits[0]->Text();
       if (name.empty()) {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
-        if (this->m_viewer->verticalOverflow != 0) {
-          const int lineCount = this->m_viewer->LineCount();
-          this->m_viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, viewer->LineCount(), 0, 0, 0);
         }
         this->m_edits[0]->SelectAll();
       } else {
@@ -352,8 +352,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, viewer->LineCount(), 0, 0, 0);
         }
         UIBitmapButton* deleteButton = this->m_buttons[2];
         deleteButton->SetDisabled(0);
