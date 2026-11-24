@@ -36,3 +36,5 @@
 #include <string>
 
 template __declspec(noinline) std::map<int, int>::map(const std::map<int, int>&);
+template __declspec(noinline) std::vector<int>::~vector() noexcept;
+template __declspec(noinline) std::vector<const char*>::~vector() noexcept;
