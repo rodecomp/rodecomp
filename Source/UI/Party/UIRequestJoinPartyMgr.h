@@ -32,7 +32,8 @@ private:
 
 extern UIRequestJoinPartyMgr* g_requestJoinPartyMgr;
 
-// INLINED
+// OFFSET: 0x007BB9D0
+// FUNCTION: fn_46604
 inline void UIRequestJoinPartyMgr::Block(std::uint32_t accountId) {
   this->m_blocked.push_back(accountId);
 }
