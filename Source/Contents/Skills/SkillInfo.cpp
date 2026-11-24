@@ -1136,17 +1136,19 @@ std::pair<bool, int> CSkillActionMgr::GetSkillCastMotion(int skillId) {
 // OFFSET: 0x0077AD90
 // FUNCTION: fn_08405
 vector3d CellWorldPosition(int column, int row) {
-  vector3d result;
-  if (!g_modeMgr.GetGameMode() || !g_modeMgr.GetGameMode()->scene ||
-      !g_modeMgr.GetGameMode()->scene->terrain) {
-    result = vector3d{0.0f, 0.0f, 0.0f};
-  } else {
-    vector3d position = {0.0f, 0.0f, 0.0f};
-    g_modeMgr.GetGameMode()->scene->CellOrigin(column, row, position.x, position.z);
-    position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
-    result = vector3d{position.x + 2.5f, position.y + 0.0f, position.z + 2.5f};
+  if (!g_modeMgr.GetGameMode()) {
+    return vector3d{0.0f, 0.0f, 0.0f};
   }
-  return result;
+  if (!g_modeMgr.GetGameMode()->scene) {
+    return vector3d{0.0f, 0.0f, 0.0f};
+  }
+  if (!g_modeMgr.GetGameMode()->scene->terrain) {
+    return vector3d{0.0f, 0.0f, 0.0f};
+  }
+  vector3d position = {0.0f, 0.0f, 0.0f};
+  g_modeMgr.GetGameMode()->scene->CellOrigin(column, row, position.x, position.z);
+  position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
+  return vector3d{position.x + 2.5f, position.y + 0.0f, position.z + 2.5f};
 }
 
 // OFFSET: 0x0077AEA0
