@@ -163,12 +163,12 @@ CSkyBox::~CSkyBox() {
 }
 
 // INLINED
-static __forceinline void DrawSkyFace(const char* textureName, const RenderVertex& first, const RenderVertex& second, const RenderVertex& third, const RenderVertex& fourth) {
+static __forceinline void DrawSkyFace(const char* textureName, const SkyCubeVertex* projected, int first, int second, int third, int fourth) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  primitive->SetPosition(0, &first.x);
-  primitive->SetPosition(1, &second.x);
-  primitive->SetPosition(2, &third.x);
-  primitive->SetPosition(3, &fourth.x);
+  primitive->SetPosition(0, &projected[first].x);
+  primitive->SetPosition(1, &projected[second].x);
+  primitive->SetPosition(2, &projected[third].x);
+  primitive->SetPosition(3, &projected[fourth].x);
   primitive->vertices[0].u = 0.0f;
   primitive->vertices[0].v = 0.0f;
   primitive->vertices[1].u = 1.0f;
@@ -180,10 +180,10 @@ static __forceinline void DrawSkyFace(const char* textureName, const RenderVerte
   primitive->sourceBlend = 5;
   primitive->destinationBlend = 6;
   primitive->texture = g_texMgr.Load(textureName, 0, false, true, false);
-  primitive->vertices[0].diffuse = first.diffuse;
-  primitive->vertices[1].diffuse = second.diffuse;
-  primitive->vertices[2].diffuse = third.diffuse;
-  primitive->vertices[3].diffuse = fourth.diffuse;
+  primitive->vertices[0].diffuse = projected[first].diffuse;
+  primitive->vertices[1].diffuse = projected[second].diffuse;
+  primitive->vertices[2].diffuse = projected[third].diffuse;
+  primitive->vertices[3].diffuse = projected[fourth].diffuse;
   g_renderer->Submit(primitive, 3);
 }
 
@@ -264,17 +264,7 @@ void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotat
 // OFFSET: 0x0075F080
 // FUNCTION: fn_46310
 void CSkyCube::Render(const matrix& camera, const vector3d& position, float rotation, float height, vector3d eye, vector3d target) {
-  RenderVertex projected[10];
-  for (RenderVertex& vertex : projected) {
-    vertex.x = 0.0f;
-    vertex.y = 0.0f;
-    vertex.z = 0.0f;
-    vertex.rhw = 0.0f;
-    vertex.diffuse = 0;
-    vertex.specular = 0xFF000000;
-    vertex.u = 0.0f;
-    vertex.v = 0.0f;
-  }
+  SkyCubeVertex projected[10];
 
   matrix transform;
   transform.Identity();
@@ -316,18 +306,18 @@ void CSkyCube::Render(const matrix& camera, const vector3d& position, float rota
   }
 
   if (rotation > 270.0f || rotation < 90.0f) {
-    DrawSkyFace("effect\\skybox_back.bmp", projected[0], projected[1], projected[2], projected[3]);
+    DrawSkyFace("effect\\skybox_back.bmp", projected, 0, 1, 2, 3);
   }
   if (rotation >= 90.0f && rotation < 270.0f) {
-    DrawSkyFace("effect\\skybox_front.bmp", projected[4], projected[5], projected[6], projected[7]);
+    DrawSkyFace("effect\\skybox_front.bmp", projected, 4, 5, 6, 7);
   }
   if (rotation >= 180.0f) {
-    DrawSkyFace("effect\\skybox_left.bmp", projected[0], projected[2], projected[4], projected[6]);
+    DrawSkyFace("effect\\skybox_left.bmp", projected, 0, 2, 4, 6);
   } else {
-    DrawSkyFace("effect\\skybox_right.bmp", projected[1], projected[3], projected[5], projected[7]);
+    DrawSkyFace("effect\\skybox_right.bmp", projected, 1, 3, 5, 7);
   }
   if (height > -11.0f) {
-    DrawSkyFace("effect\\skybox_top.bmp", projected[0], projected[1], projected[4], projected[5]);
+    DrawSkyFace("effect\\skybox_top.bmp", projected, 0, 1, 4, 5);
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
