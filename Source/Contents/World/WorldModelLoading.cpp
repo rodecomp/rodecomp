@@ -123,7 +123,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
 
 // OFFSET: 0x00ACB6C0
 // FUNCTION: fn_17705
-void CWorld::FinishModelLoading() {
+__declspec(noinline) void CWorld::FinishModelLoading() {
   if (hObject) {
     WaitForSingleObject(hObject, INFINITE);
     CloseHandle(hObject);
