@@ -128,22 +128,27 @@ __declspec(noinline) CNaviInfo* CNavigationManager::FindObject(const char* name)
   return nullptr;
 }
 
+// INLINED
+template <typename T>
+static T* FindNaviObjectWithId(std::vector<T*>& objects, unsigned int id) {
+  for (auto it = objects.begin(); it != objects.end(); ++it) {
+    if ((*it)->HasId(id)) {
+      return *it;
+    }
+  }
+  return nullptr;
+}
+
 // OFFSET: 0x00B88840
 // FUNCTION: fn_19377
 CNavi_Link* CNaviData::FindLink(unsigned int key, bool byId) {
   if (byId) {
-    const unsigned int id = key;
-    for (auto it = this->objects.begin(); it != this->objects.end(); ++it) {
-      if ((*it)->HasId(id)) {
-        return *it;
-      }
-    }
-    return nullptr;
+    return FindNaviObjectWithId(this->objects, key);
   }
   if (this->objects.empty()) {
     return nullptr;
   }
-  return key < this->objects.size() ? this->objects[key] : nullptr;
+  return key >= this->objects.size() ? nullptr : this->objects[key];
 }
 
 // OFFSET: 0x00B88910
