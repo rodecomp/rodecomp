@@ -286,16 +286,19 @@ void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int
   m_request = EnchantRequest{ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT, group, index, slot};
 }
 
-// INLINED
-inline void CEnchantMgr::AddRandomUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
-                                                 uint64_t rate) {
-  int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
-  if (baseItemId != 0) {
-    int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-    if (itemId != ITEMID_NONE) {
-      m_enchants[group].options[optionKey].randomUpgrades[baseItemId].rates[itemId] = rate;
-    }
+// OFFSET: 0x00682500
+// FUNCTION: fn_46505
+void CEnchantMgr::AddRandomUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
+                                         uint64_t rate) {
+  const int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
+  if (baseItemId == ITEMID_NONE) {
+    return;
   }
+  const int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+  if (itemId == ITEMID_NONE) {
+    return;
+  }
+  m_enchants[group].options[optionKey].randomUpgrades[baseItemId].rates[itemId] = rate;
 }
 
 // OFFSET: 0x00682660
