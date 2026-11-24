@@ -2660,7 +2660,8 @@ void UIListBox_NaviSearch::Paint() {
   const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = 0;
 
-  for (int index = first, row = 0; index < end; ++index, ++row) {
+  for (int index = first; index < end; ++index) {
+    const int row = index - first;
     if (index == this->selected) {
       this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
@@ -3764,8 +3765,14 @@ static const std::string g_windowNaviLinkCloseTag = "</NAVIL>";
 // OFFSET: 0x005C9E00
 // FUNCTION: fn_03636
 void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
-  const std::string xText = g_navigationLinkParser->EncodeNavigationNumber(x >= 0 ? x : 1000);
-  const std::string yText = g_navigationLinkParser->EncodeNavigationNumber(y >= 0 ? y : 1000);
+  if (x < 0) {
+    x = 1000;
+  }
+  if (y < 0) {
+    y = 1000;
+  }
+  const std::string xText = g_navigationLinkParser->EncodeNavigationNumber(x);
+  const std::string yText = g_navigationLinkParser->EncodeNavigationNumber(y);
   std::string link = g_windowNaviLinkTag;
   link += name;
   link += xText;
