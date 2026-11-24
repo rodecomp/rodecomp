@@ -67,8 +67,12 @@ public:
   /* 000C */ std::map<int, AchievementInfo> achievements;
   /* 0014 */ std::map<int, std::vector<int>> groups;
 
+  void SplitGroupKey(int key, int& group, int& index) const;
+  int MakeGroupKey(int group, int index) const;
   bool GetAchievement(AchievementInfo& out, int id);
   std::string GetIconName(int id);
+  std::string GetDescription(int id);
+  std::string GetTitle(int id);
   bool GetGroupAchievements(std::map<int, AchievementInfo>& out, int group, int index);
   int GetPoints(int id);
   std::string GetSummaryText(int id);

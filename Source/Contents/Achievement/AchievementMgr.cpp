@@ -34,6 +34,19 @@ CAchievementMgr::CAchievementMgr() : groupWidth(10) {
   this->enabled = true;
 }
 
+// OFFSET: 0x0066D4E0
+// FUNCTION: fn_46697
+void CAchievementMgr::SplitGroupKey(int key, int& group, int& index) const {
+  group = key / groupWidth;
+  index = key % groupWidth;
+}
+
+// OFFSET: 0x0066D520
+// FUNCTION: fn_46698
+int CAchievementMgr::MakeGroupKey(int group, int index) const {
+  return groupWidth * group + index;
+}
+
 // OFFSET: 0x0066D3A0
 // FUNCTION: fn_05311
 bool CAchievementMgr::CreateInstance() {
@@ -83,6 +96,15 @@ bool CAchievementMgr::GetAchievement(AchievementInfo& out, int id) {
   return true;
 }
 
+// OFFSET: 0x0066D640
+// FUNCTION: fn_46699
+std::string CAchievementMgr::GetDescription(int id) {
+  if (this->achievements.find(id) != this->achievements.end()) {
+    return this->achievements[id].description;
+  }
+  return "";
+}
+
 // OFFSET: 0x0066D720
 // FUNCTION: fn_05314
 std::string CAchievementMgr::GetIconName(int id) {
@@ -98,7 +120,7 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
   out.clear();
 
   if (index != -1) {
-    int key = this->groupWidth * group + index;
+    int key = MakeGroupKey(group, index);
     for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
       if (!out.insert(std::pair<int, AchievementInfo>(*it, this->achievements[*it])).second) {
         return false;
@@ -108,7 +130,7 @@ bool CAchievementMgr::GetGroupAchievements(std::map<int, AchievementInfo>& out, 
   }
 
   for (int i = 0; i < this->groupWidth; ++i) {
-    int key = this->groupWidth * group + i;
+    int key = MakeGroupKey(group, i);
     for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end(); ++it) {
       if (!out.insert(std::pair<int, AchievementInfo>(*it, this->achievements[*it])).second) {
         return false;
@@ -136,6 +158,15 @@ std::string CAchievementMgr::GetSummaryText(int id) {
   return "";
 }
 
+// OFFSET: 0x0066E380
+// FUNCTION: fn_46700
+std::string CAchievementMgr::GetTitle(int id) {
+  if (this->achievements.find(id) != this->achievements.end()) {
+    return this->achievements[id].title;
+  }
+  return "";
+}
+
 // OFFSET: 0x0066E460
 // FUNCTION: fn_05318
 int CAchievementMgr::GetRewardTitleId(int id) {
@@ -153,10 +184,10 @@ int CAchievementMgr::GetAchievementCount(int group, int index) {
     count = static_cast<int>(this->achievements.size());
   } else if (index == -1) {
     for (int i = 0; i < this->groupWidth; ++i) {
-      count += static_cast<int>(this->groups[this->groupWidth * group + i].size());
+      count += static_cast<int>(this->groups[MakeGroupKey(group, i)].size());
     }
   } else {
-    count = static_cast<int>(this->groups[this->groupWidth * group + index].size());
+    count = static_cast<int>(this->groups[MakeGroupKey(group, index)].size());
   }
   return count;
 }
@@ -182,7 +213,7 @@ int CAchievementMgr::GetCompletedCount(int group, int index) {
     }
   } else if (index == -1) {
     for (int i = 0; i < this->groupWidth; ++i) {
-      int key = this->groupWidth * group + i;
+      int key = MakeGroupKey(group, i);
       for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end();) {
         const int id = *it;
         ++it;
@@ -192,7 +223,7 @@ int CAchievementMgr::GetCompletedCount(int group, int index) {
       }
     }
   } else {
-    int key = this->groupWidth * group + index;
+    int key = MakeGroupKey(group, index);
     for (std::vector<int>::iterator it = this->groups[key].begin(); it != this->groups[key].end();) {
       const int id = *it;
       ++it;
@@ -212,9 +243,7 @@ bool CAchievementMgr::FindTab(int id, int& group, int& index) {
     const std::vector<int>::iterator valuesEnd = values.end();
     for (std::vector<int>::iterator value = values.begin(); value != valuesEnd; ++value) {
       if (*value == id) {
-        const int key = it->first;
-        group = key / this->groupWidth;
-        index = key % this->groupWidth;
+        SplitGroupKey(it->first, group, index);
         return true;
       }
     }
@@ -362,7 +391,7 @@ bool CAchievementMgr::HasReward(int id) {
 // OFFSET: 0x0066F970
 // FUNCTION: fn_05330
 std::pair<bool, std::string> CAchievementMgr::SetAchieveTab(int id, int group, int index) {
-  const int key = this->groupWidth * group + index;
+  const int key = MakeGroupKey(group, index);
   if (std::find(this->groups[key].begin(), this->groups[key].end(), id) == this->groups[key].end()) {
     this->groups[key].push_back(id);
     return std::make_pair(true, "good");
