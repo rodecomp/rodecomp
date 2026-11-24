@@ -389,6 +389,13 @@ namespace {
   }
 }
 
+namespace {
+  // INLINED
+  __forceinline void AppendText(std::string& result, const char* text) {
+    result.append(text, std::strlen(text));
+  }
+}
+
 // OFFSET: 0x006D59A0
 // FUNCTION: fn_06581
 std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
@@ -400,21 +407,21 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   if (this->identified == 1) {
     const int id = std::atoi(this->itemId.c_str());
     if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && CardId(*this, 3) == 1) {
-      result.append(InlineApprentice(*this, text, capacity, 0) > 0 ? text : "");
-      result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+      AppendText(result, InlineApprentice(*this, text, capacity, 0) > 0 ? text : "");
+      AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
     } else if (CardId(*this, 0) == 254 && CardId(*this, 1) == 0) {
       if (this->refiningLevel > 0) {
-        result.append(InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
       }
 
       if (this->grade > 0) {
-        result.append(this->Grade(text, capacity, 0) > 0 ? text : "");
+        AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
       }
 
       if (g_serviceType == ServiceBrazil || g_serviceType == ServiceRussia) {
-        result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-        result.append(InlineElement(*this, text, capacity, 0) > 0 ? text : "");
-        result.append(this->Creator(text, capacity, 0) > 0 ? text : "");
+        AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, InlineElement(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, this->Creator(text, capacity, 0) > 0 ? text : "");
       } else {
         result += this->Creator(text, capacity, 0) > 0 ? text : "";
         result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
@@ -422,24 +429,24 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
       }
     } else {
       if (!this->IsEquipment() && detailed == 0) {
-        result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
       } else {
         if (this->refiningLevel > 0) {
-          result.append(InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
         }
 
         if (this->grade > 0) {
-          result.append(this->Grade(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
         }
 
         if (this->HasCards() == true) {
-          result.append(this->Prefixes(text, capacity, 0) > 0 ? text : "");
-          result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-          result.append(this->Suffixes(text, capacity, 0) > 0 ? text : "");
-          result.append(InlineSlots(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Prefixes(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Suffixes(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, InlineSlots(*this, text, capacity, 0) > 0 ? text : "");
         } else if (CardId(*this, 0) != 254 && CardId(*this, 0) != 255) {
-          result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-          result.append(this->Slots(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Slots(text, capacity, 0) > 0 ? text : "");
         } else if (g_serviceType == ServiceBrazil) {
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
           result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
@@ -461,7 +468,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   } else {
     const int id = std::atoi(this->itemId.c_str());
     const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
-    result.append(CopyText(text, capacity, 0, name ? name : " ") > 0 ? text : "");
+    AppendText(result, CopyText(text, capacity, 0, name ? name : " ") > 0 ? text : "");
   }
 
   return result;
