@@ -165,6 +165,31 @@ void CItemInfoMgr::SetItemInfo(std::map<int, ITEM_DESC>& descriptions) const {
   }
 }
 
+// OFFSET: 0x00ADFAB0
+// FUNCTION: fn_46656
+void CItemInfoMgr::SetSlotCountAndClass(int id, int slotCount, int classNum) {
+  m_items[id].slotCount = slotCount;
+  m_items[id].classNum = classNum;
+}
+
+// OFFSET: 0x00ADFAF0
+// FUNCTION: fn_46657
+void CItemInfoMgr::SetEffectId(int id, int effectId) {
+  m_items[id].effectId = effectId;
+}
+
+// OFFSET: 0x00ADFC40
+// FUNCTION: fn_46660
+void CItemInfoMgr::SetCostume(int id, bool isCostume) {
+  m_items[id].isCostume = isCostume;
+}
+
+// OFFSET: 0x00ADFC60
+// FUNCTION: fn_46661
+void CItemInfoMgr::SetPackageId(int id, int packageId) {
+  m_items[id].packageId = packageId;
+}
+
 // OFFSET: 0x00AE07A0
 // FUNCTION: fn_17986
 int CItemInfoMgr::LuaAddItem(lua_State* state) {
@@ -199,12 +224,7 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     const char* identifiedResourceName = lua_tostring(state, -3);
     int slotCount = static_cast<int>(lua_tonumber(state, -2));
     int classNum = static_cast<int>(lua_tonumber(state, -1));
-    {
-      const int index = static_cast<int>(id);
-      CItemInfoMgr* mgr = g_itemInfoMgr;
-      mgr->m_items[index].slotCount = slotCount;
-      mgr->m_items[index].classNum = classNum;
-    }
+    g_itemInfoMgr->SetSlotCountAndClass(static_cast<int>(id), slotCount, classNum);
     CItemInfoMgr* unidentifiedTarget = g_itemInfoMgr;
     unidentifiedTarget->SetUnidentifiedName(static_cast<int>(id), unidentifiedDisplayName, unidentifiedResourceName);
     CItemInfoMgr* identifiedTarget = g_itemInfoMgr;
@@ -227,7 +247,7 @@ int CItemInfoMgr::LuaAddItemEffectInfo(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     int effectId = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[static_cast<int>(id)].effectId = effectId;
+    g_itemInfoMgr->SetEffectId(static_cast<int>(id), effectId);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -266,7 +286,7 @@ int CItemInfoMgr::LuaAddItemIsCostume(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     bool isCostume = lua_toboolean(state, -1) != 0;
-    g_itemInfoMgr->m_items[static_cast<int>(id)].isCostume = isCostume;
+    g_itemInfoMgr->SetCostume(static_cast<int>(id), isCostume);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -285,7 +305,7 @@ int CItemInfoMgr::LuaAddItemPackageID(lua_State* state) {
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
     int packageId = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[static_cast<int>(id)].packageId = packageId;
+    g_itemInfoMgr->SetPackageId(static_cast<int>(id), packageId);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }

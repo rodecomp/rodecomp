@@ -52,22 +52,26 @@ public:
   static int LuaAddItemPackageID(lua_State* state);
   static int LuaAddItemUnidentifiedDesc(lua_State* state);
 
-  // INLINED
+  // OFFSET: 0x00ADFC80
+  // FUNCTION: fn_46662
   void SetUnidentifiedName(int id, std::string displayName, std::string resourceName) {
     this->m_items[id].unidentifiedDisplayName = displayName;
     this->m_items[id].unidentifiedResourceName = resourceName;
   }
-  // INLINED
+  // OFFSET: 0x00ADFB10
+  // FUNCTION: fn_46658
   void SetIdentifiedName(int id, std::string displayName, std::string resourceName) {
     this->m_items[id].identifiedDisplayName = displayName;
     this->m_items[id].identifiedResourceName = resourceName;
   }
 
-  // INLINED
+  // OFFSET: 0x00ADFD30
+  // FUNCTION: fn_46663
   void AddUnidentifiedDescription(int id, std::string line) {
     this->m_items[id].unidentifiedDescription.push_back(line);
   }
-  // INLINED
+  // OFFSET: 0x00ADFBC0
+  // FUNCTION: fn_46659
   void AddIdentifiedDescription(int id, std::string line) {
     this->m_items[id].identifiedDescription.push_back(line);
   }
@@ -79,6 +83,12 @@ public:
 
   /* 0004 */ bool m_isValid;
   /* 0008 */ std::map<int, lcData> m_items;
+
+private:
+  void SetSlotCountAndClass(int id, int slotCount, int classNum);
+  void SetEffectId(int id, int effectId);
+  void SetCostume(int id, bool isCostume);
+  void SetPackageId(int id, int packageId);
 };
 
 extern CItemInfoMgr* g_itemInfoMgr;
