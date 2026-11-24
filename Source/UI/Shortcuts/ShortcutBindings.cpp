@@ -122,17 +122,18 @@ int CSession::FindNormalItemSlot(std::uint32_t id) const {
 // FUNCTION: fn_24233
 void CSession::AssignItemShortcut(std::uint32_t id, int slot) {
   if (id == 0) {
-    this->m_normalItemSlots[slot] = {};
+    std::memset(&this->m_normalItemSlots[slot], 0, sizeof(NormalItemSlot));
     return;
   }
 
   const int found = this->FindNormalItemSlot(id);
 
   if (found >= 0) {
-    this->m_normalItemSlots[found] = {};
+    std::memset(&this->m_normalItemSlots[found], 0, sizeof(NormalItemSlot));
   }
 
+  NormalItemSlot* target = &this->m_normalItemSlots[slot];
   this->m_normalItemSlots[slot].value = 0;
-  this->m_normalItemSlots[slot].enabled = 0;
+  target->enabled = 0;
   this->m_normalItemSlots[slot].itemId = id;
 }
