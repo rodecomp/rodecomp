@@ -1451,14 +1451,14 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
 
       switch (header.type) {
       case 0xCD: {
-        std::vector<unsigned char> record(0x10);
+        std::vector<unsigned char> record(0x10, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->Zc_Skill_Entry(record.data());
         break;
       }
       case 0xCE: {
-        std::vector<unsigned char> record(0x61);
+        std::vector<unsigned char> record(0x61, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->Zc_Skill_Entry2(record.data());
@@ -6043,12 +6043,13 @@ std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (ActiveSkillEffect effect : g_activeSkillEffects) {
+  for (auto it = g_activeSkillEffects.begin(), end = g_activeSkillEffects.end(); it != end; ++it) {
+    ActiveSkillEffect effect = *it;
     if (effect.expiration != 0 && effect.expiration != 999999) {
       effect.expiration -= timeGetTime();
     }
 
-    const std::vector<unsigned char> chunk = MakeRecordChunk(0x4A43, effect);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x4A43, effect);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -7101,19 +7102,22 @@ void CGameMode::EnsureNameBalloon(UINameBalloonText*& balloon) {
   switch (g_serviceOptions.Get(TT_NAME_ABOVE_HEAD_ON_OFF) != 0) {
   case NAME_BALLOON_BOTTOM:
     balloon = new UINameBalloonText();
+    balloon->SetSize(8, 8);
     break;
   case NAME_BALLOON_TOP:
     balloon = new UINameBalloonText();
+    balloon->SetSize(8, 8);
     break;
   case NAME_BALLOON_LEFT:
     balloon = new UIVerticalNameBalloonText();
+    balloon->SetSize(8, 8);
     break;
   case NAME_BALLOON_RIGHT:
     balloon = new UIVerticalNameBalloonText();
+    balloon->SetSize(8, 8);
     break;
   }
 
-  balloon->SetSize(8, 8);
   g_windowMgr.AddRenderedFront(balloon);
 }
 
