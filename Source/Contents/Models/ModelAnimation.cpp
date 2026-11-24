@@ -5,6 +5,9 @@
 #include <cmath>
 #include <cstring>
 
+// GLOBAL: gl_26030
+float g_piApprox = 3.141592f;
+
 // OFFSET: 0x00554340
 // FUNCTION: fn_02022
 __declspec(noinline) ModelRotationKey matrix::GetRotation() const {
@@ -277,14 +280,14 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       amount = (frame - static_cast<float>(a.frame)) / static_cast<float>((b.frame - a.frame));
     }
 
-    float ax = a.rotation[0];
-    float ay = a.rotation[1];
-    float az = a.rotation[2];
-    float aw = a.rotation[3];
-    float bx = b.rotation[0];
-    float by = b.rotation[1];
-    float bz = b.rotation[2];
-    float bw = b.rotation[3];
+    volatile float ax = a.rotation[0];
+    volatile float ay = a.rotation[1];
+    volatile float az = a.rotation[2];
+    volatile float aw = a.rotation[3];
+    volatile float bx = b.rotation[0];
+    volatile float by = b.rotation[1];
+    volatile float bz = b.rotation[2];
+    volatile float bw = b.rotation[3];
     float dot = ((bx * ax + by * ay) + bz * az) + bw * aw;
 
     if (dot < 0.0f) {
@@ -316,8 +319,8 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       by = ax;
       bz = -aw;
       bw = az;
-      firstWeight = ClientSin((g_depthAverageHalf - amount) * 3.141592f);
-      secondWeight = ClientSin(amount * 3.141592f);
+      firstWeight = ClientSin((g_depthAverageHalf - amount) * g_piApprox);
+      secondWeight = ClientSin(amount * g_piApprox);
     }
 
     auto& rotationRef = result.rotation;
@@ -325,6 +328,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     rotationRef[1] = by * secondWeight + firstWeight * ay;
     rotationRef[2] = bz * secondWeight + az * firstWeight;
     rotationRef[3] = bw * secondWeight + aw * firstWeight;
+
     rotation.MakeRotation(result);
   }
 
