@@ -287,7 +287,6 @@ namespace {
     entry.headDir = static_cast<short>(pc->headDir);
     const int equipment = pc->virtue;
     entry.weapon = equipment;
-    entry.shield = static_cast<int>(static_cast<std::int64_t>(equipment) >> 32);
     entry.accessory = static_cast<short>(pc->accessory);
     entry.accessory2 = static_cast<short>(pc->accessory2);
     entry.accessory3 = static_cast<short>(pc->accessory3);

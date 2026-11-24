@@ -468,26 +468,6 @@ namespace {
   };
 #pragma pack(pop)
 
-  struct StoreEquipEntry {
-    std::int16_t index;
-    int itemId;
-    unsigned char type;
-    std::uint32_t location;
-    std::uint32_t wearState;
-    unsigned char refine;
-    std::uint32_t card0;
-    std::uint32_t card1;
-    std::uint32_t card2;
-    std::uint32_t card3;
-    std::uint32_t expireTime;
-    std::uint16_t bindOnEquip;
-    std::uint16_t sprite;
-    bool identified;
-    bool damaged;
-    bool placeEtcTab;
-    StoreItemOption options[5];
-  };
-
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
   static_assert(sizeof(PickupItemOptions) == 25);
   static_assert(sizeof(StoreEquipRecord) == 0x29);
@@ -510,47 +490,6 @@ namespace {
       }
     }
     return count;
-  }
-
-  // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipRecord& record) {
-    entry.placeEtcTab = record.placeEtcTab;
-    entry.index = record.index;
-    entry.location = record.location;
-    entry.sprite = record.sprite;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.expireTime = record.expireTime;
-    entry.refine = record.refine;
-    entry.damaged = record.damaged;
-    entry.identified = record.identified;
-    entry.itemId = record.itemId;
-    entry.card3 = record.cards[3];
-    entry.card2 = record.cards[2];
-    entry.card1 = record.cards[1];
-    entry.card0 = record.cards[0];
-    entry.wearState = record.wearState;
-    entry.type = record.type;
-  }
-
-  // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    entry.index = record.index;
-    entry.sprite = record.sprite;
-    entry.bindOnEquip = record.bindOnEquip;
-    std::memcpy(entry.options, record.options.options, sizeof(entry.options));
-    entry.expireTime = record.expireTime;
-    entry.refine = record.refine;
-    entry.location = record.location;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.itemId = record.itemId;
-    entry.card3 = record.cards[3];
-    entry.card2 = record.cards[2];
-    entry.card1 = record.cards[1];
-    entry.card0 = record.cards[0];
-    entry.wearState = record.wearState;
-    entry.type = record.type;
   }
 
   // INLINED
@@ -584,6 +523,37 @@ namespace {
       item.options[i] = options.options[i];
     }
     addItem(item);
+  }
+
+  // INLINED
+  __forceinline void AddCartEquipItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card0, std::uint32_t card1, std::uint32_t card2,
+    std::uint32_t card3, int itemId, bool identified, bool damaged, unsigned char refine, std::uint32_t expireTime, std::uint16_t bindOnEquip,
+    std::uint16_t sprite, bool placeEtcTab, PickupItemOptions options
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    item.cards[0] = card0;
+    item.cards[1] = card1;
+    item.cards[2] = card2;
+    item.cards[3] = card3;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.placeEtcTab = placeEtcTab;
+    item.optionCount = CountStoreItemOptions(options.options);
+    for (int i = 0; i < item.optionCount; ++i) {
+      item.options[i] = options.options[i];
+    }
+    g_session.AddCartItem(item, 1);
   }
 
   static_assert(sizeof(DispelPacket) == 6);
@@ -1135,34 +1105,13 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(packet + 1);
-  StoreItemOption options[5] = {0};
+  PickupItemOptions options = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddCartItem(item, 1);
+    AddCartEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -1182,33 +1131,11 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options.options, sizeof(options));
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddCartItem(item, 1);
+    AddCartEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -4889,10 +4816,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
     effect = actor->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 
-  vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
-  if (effect) {
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
-  }
+  SetSpiritCount(effect, packet->value);
 }
 
 // OFFSET: 0x00D7A920
@@ -11760,8 +11684,7 @@ void CGameMode::ReceiveActorAction(
       }
     }
   }
-  const std::int64_t value = reinterpret_cast<std::intptr_t>(&act);
-  actor->SendMsg(nullptr, AM_ACTION, value, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_ACTION, reinterpret_cast<int>(&act), 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -13764,8 +13687,7 @@ struct ActorStandEntryPacket {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -13859,7 +13781,8 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -13867,7 +13790,6 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.stateFlags = packet->effectState;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
-  entry.shield = packet->shield;
   entry.accessory3 = packet->accessory3;
   entry.headPalette = packet->headPalette;
   entry.bodyPalette = packet->bodyPalette;
@@ -13877,6 +13799,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
@@ -13893,14 +13816,19 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
     CGameActor* created;
-    if ((job >= JT_WARPNPC && job < JT_MON_BEGIN) || (job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
+    if ((JT_WARPNPC <= job && JT_MON_BEGIN > job) || (JT_MON_BEGIN < job && JT_MONSTER_LAST > job) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsCompanionJob(job)) {
       if (g_session.IsHomunAid(packet->aid)) {
         g_session.homunAlive = 1;
@@ -13928,9 +13856,14 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -13952,7 +13885,8 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -13960,7 +13894,6 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.stateFlags = packet->effectState;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
-  entry.shield = packet->shield;
   entry.accessory3 = packet->accessory3;
   entry.headPalette = packet->headPalette;
   entry.bodyPalette = packet->bodyPalette;
@@ -13970,6 +13903,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
@@ -13987,9 +13921,14 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -14022,9 +13961,14 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       actor->render.font = packet->font;
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
@@ -14034,6 +13978,20 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   }
 
   this->ApplyActorStatusEffects(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+// INLINED
+static void SetNpcGuild(CGameActor* actor, std::uint32_t guildId, int guildVersion) {
+  if (guildId > 0) {
+    actor->SetGuildInfo(guildId, guildVersion);
+  }
+}
+
+// INLINED
+static void SetUnassignedNpcGuild(CGameActor* actor, std::uint32_t guildId, int guildVersion) {
+  if (guildId > 0 && !actor->GetGdid()) {
+    actor->SetGuildInfo(guildId, guildVersion);
+  }
 }
 
 // OFFSET: 0x00D38C40
@@ -14091,9 +14049,14 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -14127,16 +14090,19 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       const int actorJob = actor->GetEffectiveJob(-1);
       if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
         const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-        if (guildId > 0) {
-          actor->SetGuildInfo(guildId, packet->shield);
-        }
+        SetNpcGuild(actor, guildId, packet->shield);
       }
     }
   }
@@ -14198,9 +14164,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-      if (guildId > 0) {
-        actor->SetGuildInfo(guildId, packet->shield);
-      }
+      SetNpcGuild(actor, guildId, packet->shield);
     }
     actor->characterLevel = packet->actorFlags;
   }
@@ -14298,8 +14262,7 @@ struct ActorMoveEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ std::uint32_t moveStartTime;
   /* 0025 */ short accessory2;
@@ -14376,7 +14339,8 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14390,20 +14354,20 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
   CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14422,9 +14386,9 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     }
 
     created->objectType = packet->objectType;
-    actor = created;
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
+    actor = created;
     if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -14626,8 +14590,7 @@ struct ActorMoveEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ std::uint32_t moveStartTime;
   /* 0020 */ short accessory2;
@@ -14662,7 +14625,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14676,8 +14640,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14693,17 +14657,22 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14736,9 +14705,14 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -14759,8 +14733,7 @@ struct ActorMoveEntryOld2Packet {
   /* 000D */ int effectState;
   /* 0011 */ short job;
   /* 0013 */ short head;
-  /* 0015 */ int weapon;
-  /* 0019 */ int shield;
+  /* 0015 */ std::int64_t weapon;
   /* 001D */ short accessory;
   /* 001F */ std::uint32_t moveStartTime;
   /* 0023 */ short accessory2;
@@ -14795,7 +14768,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14809,8 +14783,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14827,17 +14801,22 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14873,9 +14852,14 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -14904,7 +14888,8 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14918,8 +14903,8 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14936,17 +14921,22 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14982,9 +14972,14 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -15067,9 +15062,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0) {
-        actor->SetGuildInfo(emblem, packet->shield);
-      }
+      SetNpcGuild(actor, emblem, packet->shield);
     }
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -15079,9 +15072,14 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -15112,13 +15110,16 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0 && !actor->GetGdid()) {
-        actor->SetGuildInfo(emblem, packet->shield);
-      }
+      SetUnassignedNpcGuild(actor, emblem, packet->shield);
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   }
 
@@ -15137,8 +15138,7 @@ struct ActorStandEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15173,8 +15173,7 @@ struct ActorStateEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15333,12 +15332,12 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -15348,6 +15347,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
@@ -15362,11 +15362,10 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (packet->objectType == PC_TYPE) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
   } else {
@@ -15388,12 +15387,10 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 2, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     } else {
       entry.appearanceVariant = 0;
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 1, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, reinterpret_cast<int>(&entry), 1, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -15459,8 +15456,7 @@ struct ActorStandEntryNamedOldPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15489,6 +15485,7 @@ static_assert(sizeof(ActorStandEntryNamedOldPacket) == 0x44);
 void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   const ActorStandEntryNamedOldPacket* packet = reinterpret_cast<const ActorStandEntryNamedOldPacket*>(data);
   ActorStandEntry entry;
+  entry.robe = packet->robe;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStandEntryNamedOldPacket));
   if (nameLength > 0) {
     const char* nameBegin = reinterpret_cast<const char*>(packet + 1);
@@ -15501,12 +15498,12 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -15516,8 +15513,8 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
-  entry.robe = packet->robe;
   entry.aid = packet->aid;
   if (packet->objectType == PC_TYPE) {
     entry.state = 0;
@@ -15586,11 +15583,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     }
 
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (created) {
-      if (guildId != 0) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
-    } else if (guildId != 0 && !actor->GetGdid()) {
+    if ((created && guildId != 0) || (!created && guildId != 0 && !actor->GetGdid())) {
       actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
@@ -15608,8 +15601,7 @@ struct ActorStandEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ short accessory2;
   /* 001E */ short accessory3;
@@ -15642,7 +15634,8 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15657,7 +15650,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -15732,8 +15725,7 @@ struct ActorStandEntryOld2Packet {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -15766,7 +15758,8 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15781,7 +15774,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -15858,8 +15851,7 @@ struct ActorStandEntryOld3Packet {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -15893,7 +15885,8 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15908,7 +15901,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -16130,13 +16123,13 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -16146,6 +16139,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.aid = packet->aid;
   if (packet->objectType != PC_TYPE) {
@@ -16155,9 +16149,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
 
+  int created = 0;
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
-  const int created = !actor;
   if (!actor) {
+    created = 1;
     if (packet->objectType == PC_TYPE) {
       actor = new CPc;
     } else {
@@ -16170,14 +16165,13 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   if (packet->objectType == PC_TYPE) {
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (created) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
@@ -16197,11 +16191,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
       g_session.mercenaryAlive = 1;
     }
 
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (created) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
@@ -16209,14 +16202,8 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     }
 
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (!created) {
-      if (guildId != 0 && !actor->GetGdid()) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
-    } else {
-      if (guildId != 0) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
+    if ((created && guildId != 0) || (!created && guildId != 0 && !actor->GetGdid())) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
 
@@ -16237,8 +16224,7 @@ struct ActorStateEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ short accessory2;
   /* 001E */ short accessory3;
@@ -16272,7 +16258,8 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -16288,7 +16275,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -16305,9 +16292,14 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -16336,9 +16328,14 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -16646,6 +16643,7 @@ void CGameMode::SpawnStateActor(
   entry.head = head;
   entry.weapon = static_cast<int>(weapon);
   entry.accessory = accessory;
+  entry.state = state;
   entry.effectState = healthState;
   entry.bodyState = bodyState;
   entry.stateFlags = effectState;
@@ -16661,7 +16659,6 @@ void CGameMode::SpawnStateActor(
   entry.robe = robe;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
-  entry.state = state;
   if (objectType != 0) {
     entry.shieldAppearance = entry.guildVersion;
   }
@@ -17117,7 +17114,6 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
 // FUNCTION: fn_21992
 void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   const ActorStateEntryLegacyPacket* packet = reinterpret_cast<const ActorStateEntryLegacyPacket*>(data);
-  std::int64_t bossFlag = 0;
   ActorStandEntry entry;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStateEntryLegacyPacket));
   if (nameLength > 0) {
@@ -17131,12 +17127,13 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
+  entry.state = packet->state;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -17146,10 +17143,10 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
-  entry.state = packet->state;
   if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
@@ -17189,6 +17186,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
 
+  std::int64_t bossFlag = 0;
   if (packet->isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;

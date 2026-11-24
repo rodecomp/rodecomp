@@ -15,8 +15,7 @@ struct ActorMoveEntryNamedPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ std::uint32_t moveStartTime;
   /* 0025 */ short accessory2;
@@ -49,8 +48,7 @@ struct ActorStateEntryNamedOldPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
