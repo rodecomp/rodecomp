@@ -1,0 +1,34 @@
+#ifndef RAGNAROK_SOURCE_SECURITY_THEMIDASDK_H
+#define RAGNAROK_SOURCE_SECURITY_THEMIDASDK_H
+
+#define VM_START \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x0C __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#define VM_END \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x0D __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#define MUTATE_START \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x10 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#define MUTATE_END \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x11 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#define UNPROTECTED_START \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x20 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#define UNPROTECTED_END \
+  __asm _emit 0xEB __asm _emit 0x10 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20 \
+  __asm _emit 0x21 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x00 \
+  __asm _emit 0x00 __asm _emit 0x00 __asm _emit 0x57 __asm _emit 0x4C __asm _emit 0x20 __asm _emit 0x20
+
+#endif

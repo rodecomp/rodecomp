@@ -169,6 +169,33 @@ void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
 - Strings such a body uses that exist only inside the protector's encrypted VM data are listed by a maintainer in
   `vmLiterals` (`data/decomp.json`), each with its evidence; no other literal outside the executable is allowed.
 
+Most of these functions are not stubs all the way: the protector rewrote one region and left the code
+around it. The target then has, in place of the region, a `jmp` into the protector's section, random
+bytes, and nine two-byte `mov reg,reg` where the region ended, followed by the function's own code.
+Mark such a region as the protected build did, with the SDK macros of `Security/ThemidaSDK.h`:
+
+```cpp
+// OFFSET: 0x0065B380
+// FUNCTION: fn_05138
+// VIRTUALIZED: 2025-06-04 0x0060C460
+void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
+    ...
+    MUTATE_START
+    ...
+    MUTATE_END
+}
+```
+
+- `MUTATE_START`/`MUTATE_END` where `20 10 00 00 00 00 00 00 00 57 4C 20 20` follows the target's
+  jump, `VM_START`/`VM_END` where random bytes do.
+- Each macro compiles to 18 bytes exactly where the target has the jump and the `mov` run, so the
+  function lines up with the target: a checker that knows the macros compares everything outside
+  the region, and that the region starts and ends where the target's does. Its code must therefore
+  compile to the length the original's had. What that code is still comes from the reference build.
+- The macros are the only inline assembly such a checker lets through.
+- `scripts/exe/postprocess.py` copies each marked region from `.td/target.exe` into the linked exe
+  (`scripts/exe/patches/0001_protected_regions.py`).
+
 ## 2a. Verification uses Clank
 
 - Read `td_disassemble` as ground truth and `td_decompile` as a starting point, not a specification.
