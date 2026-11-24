@@ -209,7 +209,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_messageEdit->Move(8, 80);
   {
     CUIEditBox* edit = this->m_messageEdit;
-    edit->SetText(std::string(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL)));
+    const std::string placeholder(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL));
+    edit->SetText(placeholder);
   }
   this->m_messageEdit->SetTextColor(0x808080);
   this->m_messageEdit->SetBackgroundColor(0xFFF3EE);
@@ -234,7 +235,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->firstTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->firstTypeText;
-    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL)));
+    const std::string firstTypeFont(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL));
+    text->SetFont(firstTypeFont);
   }
   this->firstTypeText->SetFontHeight(12);
   this->firstTypeText->SetBold(0);
@@ -254,7 +256,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->secondTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->secondTypeText;
-    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL)));
+    const std::string secondTypeFont(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL));
+    text->SetFont(secondTypeFont);
   }
   this->secondTypeText->SetFontHeight(12);
   this->secondTypeText->SetBold(0);
