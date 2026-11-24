@@ -38,10 +38,10 @@ struct PACKET_CZ_REQ_ACH_REWARD {
 
 namespace {
   // INLINED
-  bool HasReward(const AchievementInfo& info) {
-    bool result = info.reward.buffId > 0;
-    result |= info.reward.titleId > 0;
-    result |= info.reward.itemId > 0;
+  bool HasReward(const AchievementRewardIds& reward) {
+    bool result = reward.buffId > 0;
+    result |= reward.titleId > 0;
+    result |= reward.itemId > 0;
     return result;
   }
 
@@ -398,7 +398,7 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(250, this->rowHeight * row + 5, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
     }
 
-    if (HasReward(info) == true && record.rewarded == 0) {
+    if (HasReward(info.reward) == true && record.rewarded == 0) {
       if (record.completed == 1) {
         this->DrawBitmap(263, this->rowHeight * row + 49, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
       } else {
@@ -610,7 +610,7 @@ void UIAchViewWnd::Paint() {
     }
   }
 
-  if (HasReward(*this->info)) {
+  if (HasReward(this->info->reward)) {
     int width = 0;
     int count = 0;
     for (int index = 0; index < 3; ++index) {
@@ -1452,7 +1452,7 @@ void UIAchViewWnd::UpdateInfo() {
     const SessionRecord6144 record = g_session.FindAchievementRecord(this->achievementId);
     this->description->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->description.c_str()), 50, 0, 0);
 
-    if (HasReward(*this->info) == true && record.rewarded == 0) {
+    if (HasReward(this->info->reward) == true && record.rewarded == 0) {
       this->receiveButton->Enable(1);
       UIBitmapButton* button = this->receiveButton;
       button->SetDisabled(1);
@@ -1510,7 +1510,7 @@ void UIAchViewWnd::UpdateInfo() {
       }
     }
 
-    if (HasReward(*this->info)) {
+    if (HasReward(this->info->reward)) {
       if (this->info->reward.titleId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
         const std::string title = g_session.GetJobTitleString(this->info->reward.titleId);
