@@ -2024,8 +2024,8 @@ void UIMyStyleWnd::LoadLikeList() {
       int midAccNum;
       int bottomAccNum;
     };
-    LikeStyle style = {};
     char characterName[24] = {};
+    LikeStyle style = {};
     char* line = data;
     for (int i = 0; i < size; ++i) {
       switch (data[i]) {
