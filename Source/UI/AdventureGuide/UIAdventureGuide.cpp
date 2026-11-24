@@ -995,9 +995,11 @@ void CUICharacterInfo::OnCreate(int width, int height) {
   this->AddChild(this->name);
 }
 
+}
+
 // OFFSET: 0x009C8D00
 // FUNCTION: fn_14003
-void CUIItemInfo::OnCreate(int width, int height) {
+void AdventureGuide::CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(75, 100);
   this->image->Move(45, 14);
@@ -1089,7 +1091,9 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->sourcesViewer->SetTextOffset(0, 6);
   {
     CUITextViewer* sources = this->sourcesViewer;
-    sources->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB195637DAFCB0D59ULL)));
+    std::string font;
+    font.assign(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB195637DAFCB0D59ULL));
+    sources->SetFont(font);
   }
   this->sourcesViewer->SetFontHeight(12);
   this->sourcesViewer->SetBold(0);
@@ -1114,6 +1118,8 @@ void CUIItemInfo::OnCreate(int width, int height) {
   }
   this->AddChild(this->sourcesViewer);
 }
+
+namespace AdventureGuide {
 
 // OFFSET: 0x009CC580
 // FUNCTION: fn_14005
