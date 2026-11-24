@@ -1760,9 +1760,9 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
 // FUNCTION: fn_16977
 std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
   std::string display = DisplayUrlTextTag(text);
-  display = DisplayNavigationTextTag(display);
-  display = DisplayTipBoxTextTag(display);
-  display = DisplayItemTextTag(display);
+  display = DisplayTextTag(display, g_naviTagBegin, g_naviTagEnd);
+  display = DisplayTextTag(display, g_tipBoxTagBegin, g_tipBoxTagEnd);
+  display = DisplayTextTag(display, g_itemTagBegin, g_itemTagEnd);
   display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.chatWnd) {
@@ -1771,7 +1771,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
 
   NavigationLinkParser* const parser = g_navigationLinkParser;
   display = parser->DisplayNavigationLink(display);
-  display = DisplayQuestTextTag(display);
+  display = DisplayTextTag(display, g_questTagBegin, g_questTagEnd);
 
   const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
   const int ellipsisWidth = this->TextWidth("...", 3, family, height, bold, 0);
