@@ -6005,12 +6005,11 @@ void CSession::LoadSessionTables() {
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();
 
-  CCommonObject& storage = session->m_tableLoader;
   {
     std::vector<char*> tokens;
     session->m_bgmFileNames.clear();
     session->m_bgmFileNames.reserve(512);
-    storage.LoadTokens(tokens, "mp3NameTable.txt", 0);
+    session->m_tableLoader.LoadTokens(tokens, "mp3NameTable.txt", 0);
     for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
       session->m_bgmFileNames.push_back(std::make_pair(token[0], token[1]));
     }
@@ -6020,7 +6019,7 @@ void CSession::LoadSessionTables() {
               });
   }
 
-  storage.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
+  session->m_tableLoader.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
   std::sort(session->m_indoorRswNames.begin(), session->m_indoorRswNames.end(),
             [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
 
@@ -6061,7 +6060,7 @@ void CSession::LoadSessionTables() {
     std::vector<char*> buyingStoreItems;
     session->inventoryFilterIds.clear();
     session->inventoryFilterIds.reserve(512);
-    storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
+    session->m_tableLoader.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
     for (auto it = buyingStoreItems.begin(); it != buyingStoreItems.end(); ++it) {
       session->inventoryFilterIds.push_back(std::atoi(*it));
     }
