@@ -4060,7 +4060,7 @@ bool CSevereRainStorm::IsAlive() {
     break;
   case EF_NW_GRENADES_DROPPING:
   case EF_NW_MISSION_BOMBARD:
-    if (this->ActorExists() != true && this->emitters.size() < 1) {
+    if (this->ActorExists() != true && this->emitters.size() <= 0) {
       return false;
     }
     break;
