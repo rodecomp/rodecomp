@@ -611,9 +611,9 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   }
 
   SessionRecord6144 record;
+  std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.registered = 1;
   record.completed = packet.completed;
-  std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
   ::SplitDate(packet.completedAt, record.year, record.month, record.day);
