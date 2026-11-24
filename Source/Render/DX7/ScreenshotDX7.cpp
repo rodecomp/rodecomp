@@ -150,16 +150,28 @@ int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   }
 
   auto* pixels = new unsigned char[3 * this->viewport.width * this->viewport.height];
-  const DWORD redMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0;
-  const DWORD greenMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0;
-  const DWORD greenShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0;
-  const DWORD blueShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0;
-  const DWORD blueMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0;
-  const DWORD redShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0;
-  const DWORD greenExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8;
-  const DWORD redExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8;
-  const DWORD blueExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8;
-  const std::uint16_t transparent = PackedColor(g_deviceOwnerDX7, 255, 0, 255);
+  const DeviceOwnerDX7* owner = g_deviceOwnerDX7;
+  DWORD redMask, greenMask, blueMask;
+  DWORD redShift, greenShift, blueShift;
+  DWORD redExpansion, greenExpansion, blueExpansion;
+  std::uint16_t transparent;
+  if (owner) {
+    redMask = owner->redMask;
+    greenMask = owner->greenMask;
+    blueMask = owner->blueMask;
+    redShift = owner->red.shift;
+    greenShift = owner->green.shift;
+    blueShift = owner->blue.shift;
+    redExpansion = owner->red.expansion;
+    greenExpansion = owner->green.expansion;
+    blueExpansion = owner->blue.expansion;
+    transparent = PackedColor(owner, 255, 0, 255);
+  } else {
+    redMask = greenMask = blueMask = 0;
+    redShift = greenShift = blueShift = 0;
+    redExpansion = greenExpansion = blueExpansion = 8;
+    transparent = 0;
+  }
 
   for (int y = this->viewport.height - 1; y >= 0; --y) {
     const unsigned char* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
