@@ -31,10 +31,9 @@ void CNeoPackageItemMgr::Init() {
 // OFFSET: 0x006D1E10
 // FUNCTION: fn_06523
 void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability) {
-  std::map<int, PackageGroup>& groups = this->m_packages[packageId];
-  auto group = groups.try_emplace(groupId, PackageGroup()).first;
-  group->second.totalProbability += probability;
-  group->second.items.emplace_back(itemId, name, probability);
+  auto group = this->m_packages[packageId].try_emplace(groupId, PackageGroup());
+  group.first->second.totalProbability += probability;
+  group.first->second.items.emplace_back(itemId, name, probability);
 }
 
 // INLINED
