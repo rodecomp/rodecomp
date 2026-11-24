@@ -169,8 +169,8 @@ __forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
     level = static_cast<float>(this->alphaLevel);
   }
 
-  params[5] = fade;
   params[2] = lift;
+  params[5] = fade;
   sprite->velocity = velocity;
   sprite->position.x = x;
   sprite->position.y = y;
