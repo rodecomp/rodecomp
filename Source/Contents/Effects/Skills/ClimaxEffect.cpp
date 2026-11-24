@@ -81,16 +81,15 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
 // FUNCTION: fn_46252
 __forceinline void CClimaxEffect::PositionEmitter(CEZ2STRParticle* emitter) {
   if (FindRenderObject(this->actor)) {
-    const vector3d position = emitter->position;
+    vector3d position = emitter->position;
     const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
     const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
     vector3d viewPosition;
     MatrixMult(viewPosition, position, view);
     viewPosition.x += 0.0f;
     viewPosition.y -= 10.0f;
-    vector3d world;
-    MatrixMult(world, viewPosition, inverse);
-    emitter->position = world;
+    MatrixMult(position, viewPosition, inverse);
+    emitter->position = position;
   }
 }
 
