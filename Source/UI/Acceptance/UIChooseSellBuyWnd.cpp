@@ -6323,11 +6323,14 @@ void UIItemCollectionWnd::SetHeight(int height) {
   }
   this->m_resizer->Move(geometryRef.width - 17, resizerY);
 
-  const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
+  const UITextViewer* viewer = this->m_viewer;
+  UIItemMoveInfo* moveInfo = this->m_moveInfo;
+  const unsigned char comparing = this->m_compare;
+  const int bottom = viewer->geometry.y + viewer->geometry.height;
   if (moveInfoId != 0) {
-    this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_compare != 0 ? bottom - 29 : bottom);
+    moveInfo->Move(viewer->geometry.x, comparing != 0 ? bottom - 29 : bottom);
   } else {
-    this->m_moveInfo->Move(-1000, -1000);
+    moveInfo->Move(-1000, -1000);
   }
   this->m_viewer->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
 }
@@ -12264,9 +12267,11 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       const int overflowWidth = list->contentWidth + list->textInset * 2 - listWidth + scrollBarWidth;
       const int maximumGrowWidth = 0;
       const int growWidth = std::min(std::max(0, overflowWidth), maximumGrowWidth);
-      int growHeight = 0;
+      int growHeight;
       if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
         growHeight = list->lineHeight;
+      } else {
+        growHeight = 0;
       }
       if (growWidth > 0 || growHeight > 0) {
         const int okX = this->geometry.width - this->m_okButton->geometry.x;
