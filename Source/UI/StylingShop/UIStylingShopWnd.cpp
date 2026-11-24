@@ -333,7 +333,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (display->m_jobs.size() >= 2) {
       std::map<int, int>::iterator it = display->m_jobs.find(display->job);
       if (it == display->m_jobs.end()) {
-        --it;
+        it = --display->m_jobs.end();
       }
       if (it == display->m_jobs.begin()) {
         it = --display->m_jobs.end();
