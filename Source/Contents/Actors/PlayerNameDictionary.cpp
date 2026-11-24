@@ -21,7 +21,8 @@ struct PACKET_CZ_REQNAME_BYGID2 {
 static_assert(sizeof(PACKET_CZ_REQNAME_BYGID2) == 6);
 #endif
 
-// INLINED
+// OFFSET: 0x0060A640
+// FUNCTION: fn_46484
 CPlayerNameDictionary::CPlayerNameDictionary() {
   this->m_enabled = true;
 }
