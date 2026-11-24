@@ -313,6 +313,13 @@ public:
   __declspec(noinline) void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);
+  // INLINED
+  void SelectTab(char tab) {
+    auto found = this->m_tabs.find(tab);
+    if (this->m_tabs.end() != found) {
+      this->SendMsg(found->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
+    }
+  }
   void StartExpirySchedule();
   __declspec(noinline) void UpdateExpiry(int packId, Timestamp* expiry);
   __declspec(noinline) void RefreshSelection();
@@ -1285,7 +1292,7 @@ void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
   }
 
   auto it = this->m_expiry.begin();
-  for (; this->m_expiry.end() != it; ++it) {
+  for (const auto last = this->m_expiry.end(); it != last; ++it) {
     if (it->first == packId) {
       break;
     }
@@ -2379,10 +2386,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
     this->AddChild(this->m_searchList);
   }
 
-  auto first = this->m_tabs.find(1);
-  if (this->m_tabs.end() != first) {
-    this->SendMsg(first->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
-  }
+  this->SelectTab(1);
 
   this->m_period = new UIStaticText();
   this->m_period->SetSize(200, 14);
@@ -2430,10 +2434,7 @@ void UICashEmotionListWnd::ShowPack(int packId) {
     return;
   }
 
-  auto tab = this->m_tabs.find(3);
-  if (this->m_tabs.end() != tab) {
-    this->SendMsg(tab->second, UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
-  }
+  this->SelectTab(3);
 
   if (this->m_searchEdit) {
     this->m_searchEdit->SetText(title);
