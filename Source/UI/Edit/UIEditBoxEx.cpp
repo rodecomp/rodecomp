@@ -205,8 +205,9 @@ void CUIEditCtrlEx::Synchronize() {
   const std::string fullText = prefix + this->text;
   std::vector<bool> breaks;
   std::vector<std::string> lines;
+  const int width = this->geometry.width;
   if (this->multiline != 0) {
-    int wrapWidth = this->geometry.width - this->scrollBar->geometry.width - this->horizontalPadding;
+    int wrapWidth = width - this->scrollBar->geometry.width - this->horizontalPadding;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
     this->WrapLines(lines);
   } else {
@@ -234,12 +235,12 @@ void CUIEditCtrlEx::Synchronize() {
       std::size_t lineEnd = currentOffset + rawLine.size();
       if (static_cast<std::size_t>(anchor) <= lineEnd) {
         int offset = anchor - currentOffset;
-        line.selectionBegin = lineLen < offset ? lineLen : std::max(offset, 0);
+        line.selectionBegin = std::clamp(offset, 0, lineLen);
         line.selectionEnd = lineLen;
       }
       if (static_cast<std::size_t>(cursor) <= lineEnd) {
         int offset = cursor - currentOffset;
-        line.selectionEnd = lineLen < offset ? lineLen : std::max(offset, 0);
+        line.selectionEnd = std::clamp(offset, 0, lineLen);
       }
       currentOffset = static_cast<int>(lineEnd);
 
@@ -272,10 +273,9 @@ void CUIEditCtrlEx::Synchronize() {
       }
     }
 
-    const int candidateLength = static_cast<int>(g_serverLanguage->candidate.size());
-    int end = std::max(anchor, cursor) + candidateLength + static_cast<int>(prefix.size());
-    if (candidateLength != 0) {
-      this->column += candidateLength;
+    int end = std::max(anchor, cursor) + static_cast<int>(g_serverLanguage->candidate.size()) + static_cast<int>(prefix.size());
+    if (!g_serverLanguage->candidate.empty()) {
+      this->column += static_cast<int>(g_serverLanguage->candidate.size());
       const int cursorX = this->column > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0) : 0;
       const int readingOffset = end - currentOffset;
       const int readingX = readingOffset > 0 ? this->TextWidth(this->lines[this->line].text.c_str(), readingOffset, 0, 12, 0, 0) : 0;
