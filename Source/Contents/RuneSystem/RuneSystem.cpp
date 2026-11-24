@@ -840,7 +840,8 @@ inline RuneSetData* CRuneSystemMgr::GetRuneSet(int tagId, int runeSetId) {
   return static_cast<RuneSetData*>(this->FindRune(tagId, 0, runeSetId, nullptr));
 }
 
-// INLINED
+// OFFSET: 0x00765E40
+// FUNCTION: fn_46506
 inline void CRuneSystemMgr::InsertGradeType(int gradeId, int index, int value) {
   std::map<int, std::vector<int>>& types = this->m_gradeTypes;
   if (types[gradeId].size() < 15) {
@@ -852,7 +853,8 @@ inline void CRuneSystemMgr::InsertGradeType(int gradeId, int index, int value) {
   }
 }
 
-// INLINED
+// OFFSET: 0x00765EE0
+// FUNCTION: fn_46507
 inline void CRuneSystemMgr::InsertGradeFailType(int gradeId, int index, int value) {
   std::map<int, std::vector<int>>& types = this->m_gradeFailTypes;
   if (types[gradeId].size() < 15) {
@@ -864,7 +866,8 @@ inline void CRuneSystemMgr::InsertGradeFailType(int gradeId, int index, int valu
   }
 }
 
-// INLINED
+// OFFSET: 0x00765F80
+// FUNCTION: fn_46508
 inline void CRuneSystemMgr::InsertItemList(int listId, int itemId, int count) {
   this->m_itemLists[listId].emplace_back(itemId, count);
 }

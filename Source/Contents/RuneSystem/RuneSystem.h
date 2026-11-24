@@ -150,9 +150,11 @@ public:
   virtual ~CRuneSystemMgr();
 
   void AddRune(int tagId, int type, std::int64_t id, const std::string& resName, int activeType);
-  // INLINED
+  // OFFSET: 0x00766560
+  // FUNCTION: fn_46509
   void InsertTag(int tagId, std::string name) { this->m_tags.push_back(new CTagData(tagId, name)); }
-  // INLINED
+  // OFFSET: 0x00766690
+  // FUNCTION: fn_46510
   void InsertDecomItem(int itemId) { this->m_decomItems.push_back(itemId); }
   void InsertGradeType(int gradeId, int index, int value);
   void InsertGradeFailType(int gradeId, int index, int value);
