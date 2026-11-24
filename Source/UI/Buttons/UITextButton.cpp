@@ -2871,8 +2871,8 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 
   UIRodexComposeWnd* compose = g_windowMgr.rodexComposeWnd;
   unsigned bytes = 0;
-  const int width = compose->MeasureText(name.c_str(), bytes);
   const int row = static_cast<int>(line) - firstLine;
+  const int width = compose->MeasureText(name.c_str(), bytes);
   if (row < 0 || static_cast<int>(line) >= firstLine + visibleLines) {
     button->Move(1000, 1000);
   } else {
