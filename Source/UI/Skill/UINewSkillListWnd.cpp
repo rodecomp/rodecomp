@@ -1518,7 +1518,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
       CMode* gameMode = g_modeMgr.currentMode;
-      gameMode->SendMsg(MM_USING_SKILL, a, g_session.UseLevel(skill->id), 0, 0);
+      const int level = g_session.UseLevel(skill->id);
+      gameMode->SendMsg(MM_USING_SKILL, a, level, 0, 0);
       return 0;
     }
     break;
@@ -1737,7 +1738,6 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int textY = y + 70;
     const bool raised = it->level > this->SkillAt(static_cast<int>(it->treePosition), true).level;
     int red = shade;
     int green = shade;
@@ -1748,6 +1748,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       blue = 255;
     }
 
+    const int textY = y + 70;
     const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
     if (level != 0) {
       if (usesLevel) {
@@ -1777,7 +1778,8 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
         std::sprintf(text, "%d", it->level);
-        this->DrawOutlinedText((24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        const int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
+        this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       }
     }
 
