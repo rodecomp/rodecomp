@@ -1,5 +1,6 @@
 #include "Contents/Effects/Skills/StormKickEffect.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
@@ -341,7 +342,7 @@ __forceinline void CStormKickEffect::AdvanceStorm(CParticle* particle) {
 __forceinline void CStormKickEffect::AdvanceCloud(CParticle* particle) {
   if (particle) {
     float& rotation = particle->angle;
-    const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
+    const float nextRotation = static_cast<float>(static_cast<int>(rotation + g_fireflyModeFive) % 360);
     const int spread = std::min(particle->angleParameter + 3, 180);
     particle->angleParameter = spread;
     const int frame = particle->elapsedFrames;
@@ -372,7 +373,7 @@ __forceinline void CStormKickEffect::AdvanceCloud(CParticle* particle) {
 
     const int segment = particle->columnIndex;
     const float radius = particle->animationParameter;
-    const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(spread) / 20.0f) * segment) + nextRotation) % 360;
+    const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(spread) / g_fireflyGroundOffset) * segment) + nextRotation) % 360;
     const int tilt = particle->phaseParameter;
     const float horizontal = radius * g_cosTable[tilt];
     const float vertical = radius * g_sinTable[tilt];
