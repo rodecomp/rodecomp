@@ -2630,10 +2630,11 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   vector3d origin = particle.orgPos + particle.deltaPos2;
 
   if (particle.changePoint == particle.stateCnt) {
+    const float firstChange = particle.changeWidthSpeed;
     const float sentinel = g_changeEpsilon;
 
-    if (particle.changeWidthSpeed != sentinel) {
-      particle.widthSpeed = particle.changeWidthSpeed;
+    if (firstChange != sentinel) {
+      particle.widthSpeed = firstChange;
     }
 
     if (particle.changeHeightSpeed != sentinel) {
@@ -2714,9 +2715,8 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 
   this->render.position.x = origin.x + particle.deltaPos.x;
   this->render.position.y = origin.y + particle.deltaPos.y;
-  this->render.position.z = origin.z + particle.deltaPos.z;
-
   particle.widthSize += particle.widthSpeed;
+  this->render.position.z = origin.z + particle.deltaPos.z;
   particle.heightSize += particle.heightSpeed;
   particle.longitude += particle.longSpeed;
   particle.latitude += particle.latiSpeed;
@@ -2836,15 +2836,16 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
+    const auto totalTexture = particle.totalTexture;
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
     if (particle.repeatAnim == 0) {
-      if (next == particle.totalTexture) {
+      if (next == totalTexture) {
         return false;
       }
     } else {
-      this->render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(totalTexture);
     }
   }
 
