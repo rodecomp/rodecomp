@@ -1872,7 +1872,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         }
         g_modeMgr.Quit();
       }
-      message.clear();
+      message = "";
     } else {
       message = LookupMessage(MSI_INCORRECT_LOGIN_PASSWORD);
     }
