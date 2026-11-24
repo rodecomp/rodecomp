@@ -15,6 +15,8 @@ struct IdListLine {
   IdListLine() : id(0) {}
   // INLINED
   IdListLine(int id, const char* text) : id(id), text(text) {}
+  // INLINED
+  IdListLine(const std::pair<int, const char*>& line) : id(line.first), text(line.second) {}
 
   /* 0000 */ int id;
   /* 0004 */ std::string text;
