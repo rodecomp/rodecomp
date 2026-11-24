@@ -4067,10 +4067,10 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 
   std::vector<CActRes*> actions(9, nullptr);
+  float scale = 1.0f;
   std::vector<CSprRes*> sprites(9, nullptr);
   int offsetX = 0;
   int offsetY = 0;
-  float scale = 1.0f;
   actions[0] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(look.job, look.sex, look.job, 0)));
   sprites[0] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(look.job, look.sex, look.job, 0)));
   if (!sprites[0] || !actions[0]) {
