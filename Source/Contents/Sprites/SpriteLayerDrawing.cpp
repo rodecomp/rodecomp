@@ -357,7 +357,6 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
 ) {
   int offsetY = 0;
   int offsetX = 0;
-  int anchorY = 0;
   switch (layer) {
     case 1: {
       const ActionFrame& body = static_cast<CActRes*>(this->pc->GetEquipAction(0))->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
@@ -400,19 +399,18 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
         if (frame->anchors[0].attachmentId == bodyFrame->anchors[0].attachmentId) {
           offsetX = bodyFrame->anchors[0].x - frame->anchors[0].x;
-          anchorY = bodyFrame->anchors[0].y - frame->anchors[0].y;
+          offsetY = bodyFrame->anchors[0].y - frame->anchors[0].y;
         }
       }
 
       offsetX += this->swingX;
       if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->isRiding) == true) {
-        offsetY = SpriteRidingOffset(
-                    bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
-                    this->pc->GetBodyCostume()
-                  ) +
-                  anchorY;
+        offsetY += SpriteRidingOffset(
+          bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
+          this->pc->GetBodyCostume()
+        );
       } else {
-        offsetY = this->swingY + anchorY;
+        offsetY += this->swingY;
       }
 
       const float projectionDepthNumerator = g_projectionDepthNumerator;
