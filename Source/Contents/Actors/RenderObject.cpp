@@ -4232,7 +4232,8 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
   }
 }
 
-// INLINED
+// OFFSET: 0x00CC5660
+// FUNCTION: fn_46520
 CTexture* C3dGrannyGameActor::UpdateEmblemTexture() {
   CGuildMgr* guildMgr = g_guildMgr;
   const std::string name = guildMgr->GetEmblemFilename(this->GetGdid());
