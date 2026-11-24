@@ -102,12 +102,13 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
     return;
   }
 
+  const int imageType = cell.imageType;
   SpriteAtlasRecord record{};
   record.u0 = 0.0f;
   record.v0 = 0.0f;
-  const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+  const SpriteRleImage* image = sprite->images[imageType][cell.image];
   CTexture* texture;
-  if (cell.imageType == 0) {
+  if (imageType == 0) {
     texture = g_renderer->atlas.Find(image, sprite->palette, record);
     if (!texture) {
       texture = g_renderer->atlas.Insert(image, sprite->palette, record);
