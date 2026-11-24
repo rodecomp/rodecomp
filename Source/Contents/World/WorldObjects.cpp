@@ -446,6 +446,11 @@ __declspec(safebuffers) bool CGameMode::LaunchTargetEffect(int effectId, CGameAc
   return false;
 }
 
+// INLINED
+static std::string NameFromCard(CActorNameCardHolder& cards, std::uint32_t id) {
+  return cards.Name(id);
+}
+
 // OFFSET: 0x00CD7800
 // FUNCTION: fn_21297
 void CGameMode::UpdateNameBalloon(CGameActor* actor) {
@@ -460,27 +465,22 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   }
 
   if (actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
-    card.SetName("??????");
+    card.name = std::string_view("??????");
   } else {
-    card.SetName(this->nameCard.Name(actor->render.accountId));
+    card.name = std::string_view(NameFromCard(this->nameCard, actor->render.accountId));
   }
 
   if (g_session.IsMonsterActor(actor) == 1) {
-    UINameBalloonText* balloon = this->nameBalloon;
-    unsigned char monsterType;
-    if (actor->GetEffectiveJob(-1) == 20269) {
-      monsterType = 0;
-    } else {
-      monsterType = actor->hpGaugeFlags;
-    }
-    balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
+    this->nameBalloon->SetName(
+      card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, actor->GetEffectiveJob(-1) == 20269 ? 0 : actor->hpGaugeFlags
+    );
   } else if (actor->objectType == 7 || actor->objectType == 8) {
     CActorNameCard masked = card;
     char name[24] = {};
     strncpy_s(name, sizeof(name), masked.name.c_str(), masked.name.size());
     if (g_forbiddenWords.Contains(name) == true) {
       {
-        std::string unused;
+        std::string unused = "";
         g_forbiddenWords.Mask(name, &unused);
       }
       masked.name = name;
@@ -489,7 +489,9 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   } else {
     bool stripHash = true;
     if (actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 1) {
-      stripHash &= g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) != 0;
+      if (!g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1))) {
+        stripHash = false;
+      }
     }
     this->nameBalloon->SetName(card, stripHash, 0);
   }
@@ -510,24 +512,24 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     }
   } else {
     char path[256];
-    const char* icon = "";
     if (this->scene->player == actor) {
       std::memset(path, 0, sizeof(path));
       if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
         StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
       }
-      icon = path;
+      this->nameBalloon->SetIcon(path, 0);
     } else if (actor->hasSp) {
       std::memset(path, 0, sizeof(path));
       std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
-      icon = path;
+      this->nameBalloon->SetIcon(path, 0);
+    } else {
+      this->nameBalloon->SetIcon("", 0);
     }
-    this->nameBalloon->SetIcon(icon, 0);
   }
 
+  this->nameBalloonWidth = this->nameBalloon->geometry.width;
+  this->nameBalloonHeight = this->nameBalloon->geometry.height;
   UINameBalloonText* balloon = this->nameBalloon;
-  this->nameBalloonWidth = balloon->geometry.width;
-  this->nameBalloonHeight = balloon->geometry.height;
   if (balloon) {
     const int aid = actor->render.accountId;
     if (g_serviceType == ServiceBrazil) {
@@ -543,13 +545,16 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
         balloon->m_textColor = 0xFF;
         balloon->m_outlineColor = 0x646464;
         break;
-      default:
-        balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), aid);
+      default: {
+        const int job = actor->GetEffectiveJob(-1);
+        balloon->m_textColor = this->ActorNameColor(job, aid);
         balloon->m_outlineColor = 0;
         break;
       }
+      }
     } else {
-      balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), aid);
+      const int job = actor->GetEffectiveJob(-1);
+      balloon->m_textColor = this->ActorNameColor(job, aid);
       balloon->m_outlineColor = 0;
     }
 
