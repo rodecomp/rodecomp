@@ -7645,8 +7645,10 @@ void UIItemSellWnd2::OnMouseHover(int x, int y) {
     std::string text;
     char price[64];
     if (item.prices[0] != item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+      const char* groupedPrice = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64);
+      const char* quantityLabel = LookupMessage(MSI_EA4);
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity,
+                               quantityLabel, item.prices[0], groupedPrice));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
@@ -11649,11 +11651,11 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
     if (!this->searchText.empty()) {
       this->FilterByName(this->searchText);
+      this->Invalidate();
+      this->UpdateScrollBar();
+      return 0;
     }
-
-    this->Invalidate();
-    this->UpdateScrollBar();
-    return 0;
+    break;
   }
   case UM_COMMAND:
     if (a == ID_CLOSE) {
@@ -11690,13 +11692,10 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    switch (mode->drag.source) {
-    case 1:
+    if (mode->drag.source == 1) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-      break;
-    case 9:
+    } else if (mode->drag.source == 9) {
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
