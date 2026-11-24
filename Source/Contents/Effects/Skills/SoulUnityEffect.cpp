@@ -10,6 +10,16 @@
 #include "Render/Textures/Texture.h"
 #include "Utility/Math/AffineMatrix.h"
 
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  const float x = v.x;
+  const float y = v.y;
+  const float z = v.z;
+  result.x = x * m[0] + y * m[3] + z * m[6] + m[9];
+  result.y = x * m[1] + y * m[4] + z * m[7] + m[10];
+  result.z = x * m[2] + y * m[5] + z * m[8] + m[11];
+}
+
 // OFFSET: 0x0072B050
 // FUNCTION: fn_07465
 CSoulUnityEffect::CSoulUnityEffect() : CEffect(1222) {
@@ -67,23 +77,18 @@ __forceinline void CSoulUnityEffect::UpdateParticle(CParticle* particle) {
     return;
   }
 
-  float height = -15.0f;
+  vector3d offset{0.0f, -15.0f, 0.0f};
   CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
   if (actor && actor->isRiding) {
-    height = -20.0f;
+    offset.y = -20.0f;
   }
 
   matrix rotation;
   rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
   rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f);
 
-  const float x = 0.0f;
-  const float y = height;
-  const float z = 0.0f;
   vector3d rotated;
-  rotated.x = y * rotation.values[3] + x * rotation.values[0] + z * rotation.values[6] + rotation.values[9];
-  rotated.y = y * rotation.values[4] + x * rotation.values[1] + z * rotation.values[7] + rotation.values[10];
-  rotated.z = x * rotation.values[2] + y * rotation.values[5] + z * rotation.values[8] + rotation.values[11];
+  MatrixMult(rotated, offset, rotation.values);
 
   matrix scaling;
   scaling.SetScale(particle->scale, particle->scale, 1.0f);
