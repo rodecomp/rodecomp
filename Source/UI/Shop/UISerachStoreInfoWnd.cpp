@@ -264,8 +264,8 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             return 0;
           }
 
-          const int minPrice = std::atoi(this->m_edits[2]->Text());
-          const int maxPrice = std::atoi(this->m_edits[3]->Text());
+          int minPrice = std::atoi(this->m_edits[2]->Text());
+          int maxPrice = std::atoi(this->m_edits[3]->Text());
           const int maxLength = static_cast<int>(std::strlen(this->m_edits[3]->Text()));
           if (minPrice > maxPrice && maxLength > 0) {
             this->m_searchPending = 0;
@@ -287,28 +287,29 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
           }
           if (this->m_searchPending != 0) {
             const short length = static_cast<short>(count * 4 + 15);
-            const int maximum = std::atoi(this->m_edits[3]->Text());
-            const int minimum = std::atoi(this->m_edits[2]->Text());
+            maxPrice = std::atoi(this->m_edits[3]->Text());
+            minPrice = std::atoi(this->m_edits[2]->Text());
             const unsigned char searchType = static_cast<unsigned char>(this->m_searchType);
-            if (length > 0x800) {
+            if (0x800 < length) {
               this->m_searchPending = 0;
-            } else if (this->m_searchPending != 0) {
+            }
+            if (this->m_searchPending != 0) {
               char buffer[0x800];
               SearchStoreQueryPacket* packet = reinterpret_cast<SearchStoreQueryPacket*>(buffer);
-              packet->maxPrice = maximum;
               packet->packetType = ID_CZ_SEARCH_STORE_INFO;
               packet->packetLength = length;
               packet->searchType = searchType;
-              packet->minPrice = minimum;
+              packet->maxPrice = maxPrice;
+              packet->minPrice = minPrice;
               packet->itemCount = static_cast<unsigned char>(itemIds.size());
               packet->cardCount = static_cast<unsigned char>(cardIds.size());
-              int* id = packet->ids;
+              int index = 0;
               for (std::list<int>::iterator it = itemIds.begin(); it != itemIds.end(); ++it) {
-                *id++ = *it;
+                packet->ids[index++] = *it;
               }
-              id = packet->ids + itemIds.size();
+              index = itemIds.size();
               for (std::list<int>::iterator it = cardIds.begin(); it != cardIds.end(); ++it) {
-                *id++ = *it;
+                packet->ids[index++] = *it;
               }
               GetRagConnection().Send(static_cast<short>(count * 4 + 15), buffer);
             }
