@@ -23,6 +23,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
