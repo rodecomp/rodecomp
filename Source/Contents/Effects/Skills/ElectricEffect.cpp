@@ -230,24 +230,28 @@ void CElectricEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
 
-    const float scale = particle->scale + 0.4f;
-    ++particle->elapsedFrames;
-    int alpha = scale > 15.0f ? particle->alpha - 2 : particle->alpha;
-    if (particle->elapsedFrames <= 25) {
-      const int flicker = rand() % 4;
-      alpha += 5 + (flicker >= 0 ? flicker : 0);
-    }
-    particle->scale = scale;
-    particle->alpha = alpha >= 0 ? alpha : 0;
+    {
+      const float scale = particle->scale + 0.4f;
+      ++particle->elapsedFrames;
+      int alpha = scale > 15.0f ? particle->alpha - 2 : particle->alpha;
+      if (particle->elapsedFrames <= 25) {
+        const int flicker = rand() % 4;
+        alpha += 5 + (flicker >= 0 ? flicker : 0);
+      }
+      particle->scale = scale;
+      particle->alpha = alpha >= 0 ? alpha : 0;
 
-    matrix rotation;
-    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-    rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
-    particle->transform = rotation;
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
+      particle->transform = rotation;
+    }
 
     const int segment = particle->columnIndex;
     const int strand = particle->groupIndex;
-    EffectPoint points[2];
+    {
+      EffectPoint points[2];
+    }
 
     if (strand == 0) {
       const float* arc = &particle->animationParameter;
