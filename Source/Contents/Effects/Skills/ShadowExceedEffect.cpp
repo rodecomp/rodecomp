@@ -96,15 +96,13 @@ void CShadowExceed::Open() {
   const float cosine = ClientCosine(static_cast<int>(actor->render.angle)) * -3.5f;
   const float offsetX = 0.3f - ClientSine(static_cast<int>(actor->render.angle)) * 5.0f;
   const float offsetY = cosine - 7.3f;
-  const auto emitterEnd = this->emitters.end();
-  for (auto emitterIt = this->emitters.begin(); emitterIt != emitterEnd; ++emitterIt) {
-    CEZ2STRParticle* emitter = *emitterIt;
+  std::for_each(this->emitters.begin(), this->emitters.end(), [offsetX, offsetY](CEZ2STRParticle* emitter) {
     if (emitter) {
       emitter->offsetX = offsetX;
       emitter->offsetY = offsetY;
       emitter->offsetZ = 0.0f;
     }
-  }
+  });
 
   this->AddEvent(0, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
 }
