@@ -8,8 +8,10 @@
 
 // INLINED
 static const char* ItemResourceName(const char* id, int identified) {
-  const ITEM_DESC& value = FindItemDescription(std::atoi(id));
-  return identified != 0 ? value.identifiedResource : value.unidentifiedResource;
+  if (identified != 0) {
+    return FindItemDescription(std::atoi(id)).identifiedResource;
+  }
+  return FindItemDescription(std::atoi(id)).unidentifiedResource;
 }
 
 // OFFSET: 0x00DDDA20
