@@ -324,12 +324,12 @@ void CWeatherEffect::StopLightning() {
 
 // INLINED
 static int ClampedRandom(int range) {
-  if (range == 0) {
-    return 0;
+  int result = 0;
+  if (range != 0) {
+    const int value = rand() % range;
+    result = value >= 0 ? value : 0;
   }
-
-  const int value = rand() % range;
-  return value >= 0 ? value : 0;
+  return result;
 }
 
 // INLINED
