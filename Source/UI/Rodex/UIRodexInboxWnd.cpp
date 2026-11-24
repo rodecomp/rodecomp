@@ -855,6 +855,8 @@ void UIRodexInboxWnd::RequestAllMailActions() {
 // OFFSET: 0x00807AA0
 // FUNCTION: fn_10055
 int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  PACKET_CZ_RODEX_RETURN returnPacket;
+
   if (g_windowMgr.rodexComposeWnd != nullptr || g_windowMgr.rodexContentsWnd != nullptr) {
     return 0;
   }
@@ -964,10 +966,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case ID_DELETE:
       if (this->searchActive == 1) {
         std::vector<RodexMailEntry> selected;
+        const int firstRow = this->page * 6;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
-            selected.push_back(RodexMailEntry(this->searchResults[this->page * 6 + i]));
+            selected.push_back(RodexMailEntry(this->searchResults[firstRow + i]));
           }
         }
 
@@ -1058,10 +1061,9 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (g_rodexMailStore->inboxType == MAIL_INBOX_NORMAL) {
         RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
         if (mail != g_rodexMailStore->m_mails0.end()) {
-          PACKET_CZ_RODEX_RETURN packet;
-          packet.packetType = ID_CZ_RODEX_RETURN;
-          packet.mailId = static_cast<std::uint32_t>(mail->first);
-          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
+          returnPacket.packetType = ID_CZ_RODEX_RETURN;
+          returnPacket.mailId = static_cast<std::uint32_t>(mail->first);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(returnPacket.packetType), &returnPacket);
         }
       }
       break;
@@ -1087,51 +1089,6 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       const std::string text = FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), type.c_str());
       if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         this->RequestAllMailActions();
-      }
-      break;
-    }
-
-    case RODEX_BUTTON_DELETE_ALL: {
-      std::string type;
-      if (this->searchActive == 1) {
-        type = LookupMessage(MSI_RODEX_TAB_SEARCH);
-      } else {
-        switch (g_rodexMailStore->inboxType) {
-        case MAIL_INBOX_NORMAL:
-          type = LookupMessage(MSI_RODEX_TAB_DEFAULT);
-          break;
-        case MAIL_INBOX_ACCOUNT:
-          type = LookupMessage(MSI_RODEX_TAB_ADMIN);
-          break;
-        case MAIL_INBOX_RETURNED:
-          type = LookupMessage(MSI_RODEX_TAB_RETURN);
-          break;
-        }
-      }
-
-      const std::string text = FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str());
-      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        if (this->searchActive == 1) {
-          for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
-            if (entry->first == 0) {
-              RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(entry->second);
-              if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender <= 0) {
-                continue;
-              }
-            }
-            this->RequestMailAttachments(entry->first, entry->second);
-          }
-        } else {
-          const int mailType = g_rodexMailStore->inboxType;
-          RodexMailMap* mails = RodexMailsOfType(mailType);
-          if (mails != nullptr) {
-            for (RodexMailMap::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
-              if (mail->second.isKnownSender > 0) {
-                this->RequestMailAttachments(mailType, mail->first);
-              }
-            }
-          }
-        }
       }
       break;
     }
@@ -1177,6 +1134,51 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           for (int i = 0; i < 6; ++i) {
             this->checks[i]->SetChecked(0);
             this->checks[i]->m_message = 0;
+          }
+        }
+      }
+      break;
+    }
+
+    case RODEX_BUTTON_DELETE_ALL: {
+      std::string type;
+      if (this->searchActive == 1) {
+        type = LookupMessage(MSI_RODEX_TAB_SEARCH);
+      } else {
+        switch (g_rodexMailStore->inboxType) {
+        case MAIL_INBOX_NORMAL:
+          type = LookupMessage(MSI_RODEX_TAB_DEFAULT);
+          break;
+        case MAIL_INBOX_ACCOUNT:
+          type = LookupMessage(MSI_RODEX_TAB_ADMIN);
+          break;
+        case MAIL_INBOX_RETURNED:
+          type = LookupMessage(MSI_RODEX_TAB_RETURN);
+          break;
+        }
+      }
+
+      const std::string text = FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str());
+      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (this->searchActive == 1) {
+          for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
+            if (entry->first == 0) {
+              RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(entry->second);
+              if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender <= 0) {
+                continue;
+              }
+            }
+            this->RequestMailAttachments(entry->first, entry->second);
+          }
+        } else {
+          const int mailType = g_rodexMailStore->inboxType;
+          RodexMailMap* mails = RodexMailsOfType(mailType);
+          if (mails != nullptr) {
+            for (RodexMailMap::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
+              if (mail->second.isKnownSender > 0) {
+                this->RequestMailAttachments(mailType, mail->first);
+              }
+            }
           }
         }
       }
