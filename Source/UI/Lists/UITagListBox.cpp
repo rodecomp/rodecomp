@@ -163,7 +163,7 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
   value += buffer[3];
   value += buffer[4];
   fields[0] = this->DecodeNumber(value);
-  value.clear();
+  value = "";
 
   value += buffer[5];
   fields[1] = this->DecodeNumber(value);
