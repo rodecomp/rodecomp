@@ -2163,11 +2163,12 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
     return 0;
   }
 
+  const std::list<UIWindow*>::iterator end = this->m_children.end();
   char text[260];
   std::memset(text, 0, sizeof(text));
 
-  for (UIWindow*& child : this->m_children) {
-    if (child->GetWindowType() != 2) {
+  for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != end; ++it) {
+    if ((*it)->GetWindowType() != 2) {
       continue;
     }
 
@@ -2181,7 +2182,7 @@ int UIWindow::RestoreEditTexts(const unsigned char* data) {
     std::memset(text, 0, sizeof(text));
     std::memcpy(text, data + offset, length);
     offset += length;
-    UIEditCtrl* edit = static_cast<UIEditCtrl*>(child);
+    UIEditCtrl* edit = static_cast<UIEditCtrl*>(*it);
     edit->SetText(text);
     edit->Invalidate();
   }
