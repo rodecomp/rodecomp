@@ -559,18 +559,18 @@ int UIItemReformWnd_List::SendMsg(
         if (info->needOptionNumMin > options) {
           continue;
         }
-        bool emptySocket = true;
         if (info->isEmptySocket == 1) {
-          for (unsigned int slot = std::min(item.SlotCount(), 4); slot < 4; ++slot) {
+          unsigned int slot = std::min(item.SlotCount(), 4);
+          for (; slot < 4; ++slot) {
             if (static_cast<int>(slot) < 4 && static_cast<int>(item.cards[slot]) > 0) {
-              emptySocket = false;
               break;
             }
           }
+          if (slot < 4) {
+            continue;
+          }
         }
-        if (emptySocket) {
-          this->items.push_back(item);
-        }
+        this->items.push_back(item);
       }
     }
     this->UpdateScrollBar();
