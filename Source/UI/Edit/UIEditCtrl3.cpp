@@ -61,8 +61,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
   const std::string remaining = value;
 
   {
-    std::string prefix;
-    std::string rest;
+    std::string prefix, rest;
 
     if (value.find("<") == std::string::npos && value.find(">") == std::string::npos) {
       return;
@@ -80,18 +79,17 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       std::string display = "<";
       display += fitted;
       display += ">";
-      const std::size_t found = remaining.find(display);
+      const std::size_t displayLength = std::strlen(display.c_str());
+      const std::size_t found = remaining.find(display.c_str(), 0, displayLength);
 
       if (found != std::string::npos) {
         this->pendingText[line] = "";
         prefix = remaining.substr(0, found);
         rest = remaining.substr(found + std::strlen(display.c_str()));
 
-        int x = 3;
-
-        if (this->invalidatesParent == 0 && this->firstVisible != 0) {
-          x = 3 - this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
-        }
+        const int x = this->invalidatesParent == 0 && this->firstVisible != 0
+          ? 3 - this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0)
+          : 3;
 
         button->line = line;
         (*entry)->Move(x - 1 + this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0), y);
