@@ -704,10 +704,10 @@ UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
   this->m_showLabels = 0;
   this->m_lastTime = 0;
   this->m_resetTime = 1;
-  this->m_flyingShipRoute.lineTextureName.assign("유저인터페이스\\worldview_interface\\wv_Airf3.bmp", 0x2F);
+  this->m_flyingShipRoute.lineTextureName = "유저인터페이스\\worldview_interface\\wv_Airf3.bmp";
   this->m_flyingShipRoute.lineColor = 0xAAFFFFFF;
   this->m_flyingShipRoute.routeType = 1;
-  this->m_flyingShipRoute2.lineTextureName.assign("유저인터페이스\\worldview_interface\\wv_Airf3.bmp", 0x2F);
+  this->m_flyingShipRoute2.lineTextureName = "유저인터페이스\\worldview_interface\\wv_Airf3.bmp";
   this->m_flyingShipRoute2.lineColor = 0xAAFFFFFF;
   this->m_flyingShipRoute2.routeType = 0;
   this->m_comboHeight = 0x12;
