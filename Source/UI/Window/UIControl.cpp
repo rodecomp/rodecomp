@@ -2625,11 +2625,11 @@ void CUIResizer::OnMouseMove(int x, int y) {
     return;
   }
 
-  int screenY = y;
   int screenX = x;
-  this->ToScreen(screenX, screenY);
+  x = y;
+  this->ToScreen(screenX, x);
 
-  const int rows = static_cast<int>(std::round(static_cast<float>(screenY - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  const int rows = static_cast<int>(std::round(static_cast<float>(x - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
   int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
   if (this->maxWidth < width) {
     width = this->maxWidth;
