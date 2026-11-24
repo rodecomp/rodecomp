@@ -204,10 +204,10 @@ void CGndRes::Lightmap(int index, unsigned char* output) const {
   for (int pixel = 0; pixel < 64; ++pixel) {
     const unsigned transposed = static_cast<unsigned>(pixel) / 8 + 8 * (pixel & 7);
     output[transposed] = brightness[pixel];
-    unsigned char* color = output + 64 + 3 * transposed;
-    color[0] = red[pixel];
-    color[1] = green[pixel];
-    color[2] = blue[pixel];
+    unsigned char* color = output + 3 * transposed;
+    color[64] = red[pixel];
+    color[65] = green[pixel];
+    color[66] = blue[pixel];
   }
 }
 
