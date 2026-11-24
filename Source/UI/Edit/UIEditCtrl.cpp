@@ -9747,22 +9747,25 @@ void UIItemStoreWnd::Paint() {
     return;
   }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
+  int count = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int i = 0; i < count; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, i * 8 + 17, left, 0);
   }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
+  count = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int i = 0; i < count; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, 0);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
-  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  count = (this->geometry.width - 60) % 32;
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, count, this->geometry.height - 38, RGB(red, green, blue));
+    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -9808,8 +9811,7 @@ void UIItemStoreWnd::Paint() {
     this->DrawWrappedItemName(column * 32 + 80, row * 32 + 29, 180, &*it, 0, 0, 12);
 
     if (it->grade > 0) {
-      const std::string icon = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade);
-      this->DrawBitmap(x, row * 32 + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str()))), 1);
+      this->DrawBitmap(x, row * 32 + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), 1);
     }
 
     if (++visible == this->visibleRows * this->columns) {
