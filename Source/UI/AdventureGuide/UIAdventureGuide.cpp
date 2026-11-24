@@ -741,21 +741,26 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
   }
 }
 
+// INLINED
+template <class T> static __forceinline bool SelectListItem(CUIListBox<T>* list, T* item) {
+  if (item) {
+    list->SelectItem(item);
+    if (item != list->selected) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x009DE640
 // FUNCTION: fn_45710
 // OFFSET: 0x009DE600
 // FUNCTION: fn_45709
 template <class T> __forceinline bool CUIListBox<T>::SelectFirstItem() {
-  if (!this->items.empty()) {
-    T* first = this->items.front();
-    if (first) {
-      this->SelectItem(first);
-      if (first != this->selected) {
-        return true;
-      }
-    }
+  if (this->items.empty()) {
+    return false;
   }
-  return false;
+  return SelectListItem(this, this->items.front());
 }
 
 template bool CUIListBox<AdventureGuide::CUISubTab>::SelectFirstItem();
