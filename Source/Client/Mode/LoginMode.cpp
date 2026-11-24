@@ -2294,6 +2294,8 @@ static void IgnoreRemovedPacket(const unsigned char* packet) {
 // OFFSET: 0x00D98470
 // FUNCTION: fn_22309
 void CLoginMode::PollNetworkStatus() {
+  int accountId;
+
   if (g_replayMode) {
     return;
   }
@@ -2304,7 +2306,6 @@ void CLoginMode::PollNetworkStatus() {
   }
 
   if (g_charServerAccountIdPending == 1) {
-    int accountId;
     if (GetRagConnection().Read(&accountId, 4, 1)) {
       g_charServerAccountIdPending = 0;
     }
