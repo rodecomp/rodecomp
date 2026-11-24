@@ -781,15 +781,13 @@ void UITVTextButton::ResizeToTextClipped(int width, int height) {
   if (width != this->geometry.width && std::strcmp(this->label.c_str(), "") != 0) {
     std::string& text = this->displayText;
     text = this->label;
-    int resized;
     if (this->geometry.width > width) {
       text = this->ClipTextToWidth(this->label.c_str(), width - 2, this->m_fontFamily, this->m_fontHeight, this->m_outlined);
-      resized = width;
     } else {
-      resized = this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0) + 2;
+      width = this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0) + 2;
     }
 
-    this->UIWindow::Resize(this->m_border ? resized + 2 : resized, height);
+    this->UIWindow::Resize(this->m_border ? width + 2 : width, height);
   }
 }
 
