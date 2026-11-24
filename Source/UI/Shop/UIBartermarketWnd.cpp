@@ -1815,10 +1815,8 @@ void UIBartermarketWnd::Paint() {
       continue;
     }
 
-    const int row = visible / this->columns;
-    const int column = visible % this->columns;
-    const int x = column * 32;
-    const int y = row * 32;
+    const int y = visible / this->columns * 32;
+    const int x = visible % this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed;
       unsigned hoverGreen;
