@@ -560,26 +560,19 @@ void UICashShopWnd_Item::Paint() {
       this->DrawCenteredOutlinedText(0x53, 0x5B, count.c_str(), 0x51, 0, 0xFFFFFF, 0xD29374, 0, 0x10, 1);
     }
 
-    __time32_t& start = this->m_item.saleData.startTime;
-    __time32_t& end = this->m_item.saleData.endTime;
-    start = start < 0 ? 0 : start;
-    end = end < 0 ? 0 : end;
+    this->m_item.saleData.startTime = this->m_item.saleData.startTime < 0 ? 0 : this->m_item.saleData.startTime;
+    this->m_item.saleData.endTime = this->m_item.saleData.endTime < 0 ? 0 : this->m_item.saleData.endTime;
 
     __time32_t now;
     _time32(&now);
-    const tm startTime = *_localtime32(&start);
-    const tm endTime = *_localtime32(&end);
+    const tm startTime = *_localtime32(&this->m_item.saleData.startTime);
+    const tm endTime = *_localtime32(&this->m_item.saleData.endTime);
     std::string startText = FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_START_DATE), startTime.tm_mon + 1, startTime.tm_mday, startTime.tm_hour, startTime.tm_min);
     std::string endText =
       FormatOwnedString(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_NEXT_NEWDATE), endTime.tm_year + 1900, endTime.tm_mon + 1, endTime.tm_mday, endTime.tm_hour, endTime.tm_min);
 
-    const char* text = startText.c_str();
-    const int center = this->geometry.width / 2;
-    const int startWidth = this->TextWidth(text, 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(static_cast<int>(center - startWidth * 0.5), 0xA0, text, 0, 0, 0xB, 0, 0, 0);
-    text = endText.c_str();
-    const int endWidth = this->TextWidth(text, 0, 0, 0xC, 0, 0);
-    this->DrawTextAt(0x9E - endWidth, 0xAD, text, 0, 0, 0xB, 0, 0, 0);
+    this->DrawTextAt(static_cast<int>(this->geometry.width / 2 - this->TextWidth(startText.c_str(), 0, 0, 0xC, 0, 0) * 0.5), 0xA0, startText.c_str(), 0, 0, 0xB, 0, 0, 0);
+    this->DrawTextAt(0x9E - this->TextWidth(endText.c_str(), 0, 0, 0xC, 0, 0), 0xAD, endText.c_str(), 0, 0, 0xB, 0, 0, 0);
   } else {
     this->DrawBitmap(
       0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_itemBg.bmp"))), false
