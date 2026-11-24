@@ -334,15 +334,16 @@ const char* CSession::GetJobName(unsigned job, int sex) {
   }
 
   if (sex == 0) {
-    const auto found = this->m_jobNameTableWoman.find(base);
+    const std::map<unsigned, const char*>& table = this->m_jobNameTableWoman;
+    const auto found = table.find(base);
 
-    if (found != this->m_jobNameTableWoman.end()) {
+    if (table.end() != found) {
       return found->second;
     }
   } else if (sex == 1) {
     const auto found = this->m_jobNameTableMan.find(base);
 
-    if (found != this->m_jobNameTableMan.end()) {
+    if (this->m_jobNameTableMan.end() != found) {
       return found->second;
     }
   }
