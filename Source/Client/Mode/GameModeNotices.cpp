@@ -5284,7 +5284,7 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
 
   std::string grade;
   if (1 == packet->grade) {
-    grade = "D";
+    grade.assign(1, 'D');
   } else if (2 == packet->grade) {
     grade = "C";
   } else if (3 == packet->grade) {
