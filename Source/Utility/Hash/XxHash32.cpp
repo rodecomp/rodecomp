@@ -2,6 +2,7 @@
 
 #include <bit>
 #include <cstring>
+#include <cstdlib>
 
 namespace {
   // INLINED
@@ -51,29 +52,33 @@ std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32
 // OFFSET: 0x004D3320
 // FUNCTION: fn_00162
 std::uint32_t XxHash32(const void* data, std::uint32_t length, std::uint32_t seed) {
-  const auto* current = static_cast<const unsigned char*>(data);
+  const unsigned char* input = static_cast<const unsigned char*>(data);
+  const unsigned char* end = input + length;
   std::uint32_t hash;
 
   if (length >= 16u) {
-    const unsigned char* const limit = current + (length - 15u);
-    std::uint32_t first = seed + 0x9E3779B1u + 0x85EBCA77u;
-    std::uint32_t second = seed + 0x85EBCA77u;
-    std::uint32_t third = seed;
-    std::uint32_t fourth = seed - 0x9E3779B1u;
+    const unsigned char* const limit = end - 15;
+    std::uint32_t v1 = seed + 0x9E3779B1u + 0x85EBCA77u;
+    std::uint32_t v2 = seed + 0x85EBCA77u;
+    std::uint32_t v3 = seed + 0;
+    std::uint32_t v4 = seed - 0x9E3779B1u;
 
     do {
-      first = XxHash32Round(first, ReadWord(current));
-      second = XxHash32Round(second, ReadWord(current + 4));
-      third = XxHash32Round(third, ReadWord(current + 8));
-      fourth = XxHash32Round(fourth, ReadWord(current + 12));
-      current += 16;
-    } while (current < limit);
+      v1 = XxHash32Round(v1, ReadWord(input));
+      input += 4;
+      v2 = XxHash32Round(v2, ReadWord(input));
+      input += 4;
+      v3 = XxHash32Round(v3, ReadWord(input));
+      input += 4;
+      v4 = XxHash32Round(v4, ReadWord(input));
+      input += 4;
+    } while (input < limit);
 
-    hash = std::rotl(first, 1) + std::rotl(second, 7) + std::rotl(third, 12) + std::rotl(fourth, 18);
+    hash = _rotl(v1, 1) + _rotl(v2, 7) + _rotl(v3, 12) + _rotl(v4, 18);
   } else {
     hash = seed + 0x165667B1u;
   }
 
   hash += length;
-  return FinalizeXxHash32(hash, current, length & 15u, 1);
+  return FinalizeXxHash32(hash, input, length & 15u, 1);
 }
