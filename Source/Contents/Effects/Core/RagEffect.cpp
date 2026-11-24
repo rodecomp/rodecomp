@@ -13864,9 +13864,10 @@ void CRagEffect::WideTripleRingStack(const char* name) {
 void CRagEffect::SoulLink(int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
+  const vector3d origin{0.0f, 0.0f, 0.0f};
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(68, origin);
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -13881,12 +13882,12 @@ void CRagEffect::SoulLink(int) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    for (int index = 0; index < 4; ++index) {
+    for (int index = 0, process = -60, startHeight = -4; process < 20; ++index, process += 20, startHeight -= 6) {
       this->state.lastPrim->state.slots[index].life = 1;
-      this->state.lastPrim->state.slots[index].process = index * 20 - 60;
+      this->state.lastPrim->state.slots[index].process = process;
       this->state.lastPrim->state.slots[index].distance = 5.0f;
       this->state.lastPrim->state.slots[index].alphaB = 0;
-      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(-4 - index * 6);
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(startHeight);
       this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(index);
       this->state.lastPrim->state.slots[index].flag1[4] = 2;
 
@@ -13894,8 +13895,10 @@ void CRagEffect::SoulLink(int) {
         this->state.lastPrim->state.slots[index].height[height] = 0.0f;
       }
     }
-  } else if (this->state.stateCnt == 21) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+  }
+
+  if (this->state.stateCnt == 21) {
+    this->state.lastPrim = this->LaunchEffectPrim(68, origin);
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -13910,12 +13913,12 @@ void CRagEffect::SoulLink(int) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    for (int index = 0; index < 4; ++index) {
+    for (int index = 0, process = -120, startHeight = 22; process < -40; ++index, process += 20, startHeight -= 6) {
       this->state.lastPrim->state.slots[index].life = 1;
-      this->state.lastPrim->state.slots[index].process = index * 20 - 120;
+      this->state.lastPrim->state.slots[index].process = process;
       this->state.lastPrim->state.slots[index].distance = 5.0f;
       this->state.lastPrim->state.slots[index].alphaB = 0;
-      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(22 - index * 6);
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(startHeight);
       this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(index);
       this->state.lastPrim->state.slots[index].flag1[4] = 2;
 
