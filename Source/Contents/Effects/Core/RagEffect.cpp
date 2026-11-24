@@ -8480,7 +8480,6 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
   this->state.lastPrim->state.slots[3].alphaT = kind;
   this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
 
-  int delay = 0;
   for (int i = 0; i < 4; ++i) {
     for (int j = 0; j < 21; ++j) {
       this->state.lastPrim->state.slots[i].height[j] = 0.0f;
@@ -8489,10 +8488,8 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
 
     if (this->state.duration <= 60) {
       this->state.lastPrim->state.slots[i].alphaB = 0;
-      this->state.lastPrim->state.slots[i].process = delay;
+      this->state.lastPrim->state.slots[i].process = i * -5;
     }
-
-    delay -= 5;
   }
 }
 
@@ -18826,7 +18823,12 @@ void CRagEffect::TorchDust(char kind) {
   stored()->state.slots[3].life = 0;
   stored()->state.slots[0].process = 0;
   stored()->state.slots[0].life = 1;
-  stored()->state.slots[0].distance = this->state.param[0] <= 0.0f ? 20.0f : this->state.param[0];
+  float distance = this->state.param[0];
+  EffectPrimitiveSlot& slot = stored()->state.slots[0];
+  if (distance <= 0.0f) {
+    distance = 20.0f;
+  }
+  slot.distance = distance;
   stored()->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
   stored()->state.slots[0].flag1[2] = 4;
 
