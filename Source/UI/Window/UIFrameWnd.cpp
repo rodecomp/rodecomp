@@ -184,17 +184,18 @@ void UIFrameWnd::OnMouseMove(int x, int y) {
     return;
   }
 
-  int screenX = x;
-  int screenY = y;
-  this->ToScreen(screenX, screenY);
-  const int dx = screenX - this->m_dragX;
-  const int dy = screenY - this->m_dragY;
+  int screen[2];
+  screen[1] = x;
+  screen[0] = y;
+  int ownX, ownY;
+  this->ToScreen(screen[1], screen[0]);
+  const int dx = screen[1] - this->m_dragX;
+  const int dy = screen[0] - this->m_dragY;
 
   if (!g_snapMgr.Contains(this)) {
     this->Move(this->m_originX + dx, this->m_originY + dy);
   } else {
     this->MoveFromOrigin(dx, dy);
-    int ownX, ownY;
     g_windowMgr.ConstrainSnap(this, ownX, ownY, 0);
     int groupX = dx, groupY = dy;
     g_snapMgr.ConstrainGroup(this, groupX, groupY);
