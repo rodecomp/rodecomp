@@ -936,20 +936,18 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
 __forceinline void CFlyingShipRouteInfo::UpdateAnimation(UIRoMapWnd* wnd, float elapsed) {
   const int last = static_cast<int>(this->entries.size()) - 1;
   if (last > 0) {
-    int index = this->segmentIndex;
     this->m_moving = 1;
     if (this->travelledDistance > this->segmentLength) {
-      if (index >= last - 1) {
+      if (this->segmentIndex >= last - 1) {
         wnd->Invalidate();
-        index = -1;
+        this->segmentIndex = -1;
       }
-      ++index;
       this->travelledDistance = 0.0f;
-      this->segmentIndex = index;
+      ++this->segmentIndex;
     }
 
-    const float dy = this->entries[index].center[1] - this->entries[index + 1].center[1];
-    const float dx = this->entries[index].center[0] - this->entries[index + 1].center[0];
+    const float dy = this->entries[this->segmentIndex].center[1] - this->entries[this->segmentIndex + 1].center[1];
+    const float dx = this->entries[this->segmentIndex].center[0] - this->entries[this->segmentIndex + 1].center[0];
     const float distance = SquareRoot(dx * dx + dy * dy);
     if (this->travelledDistance == 0.0f) {
       this->segmentLength = distance;
