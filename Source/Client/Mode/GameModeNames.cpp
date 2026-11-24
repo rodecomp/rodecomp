@@ -13,18 +13,28 @@
 // GLOBAL: gl_24759
 std::vector<int> g_monsterJobs;
 
+struct SelectionTraceText {
+  char text[8];
+};
+
+// INLINED
+inline void WriteSelectionTrace(SelectionTraceText trace) {
+}
+
 // OFFSET: 0x00AD1C50
 // FUNCTION: fn_17815
 __declspec(noinline) void TraceSelectionRange(int first, int last) {
-  char buffer[8];
-  char* volatile bufferPointer = buffer;
+  SelectionTraceText trace;
+  trace.text[0] = 0;
+  WriteSelectionTrace(trace);
 }
 
 // OFFSET: 0x00AD1C70
 // FUNCTION: fn_17816
 __declspec(noinline) void TraceSelection(int selection) {
-  char buffer[8];
-  char* volatile bufferPointer = buffer;
+  SelectionTraceText trace;
+  trace.text[0] = 0;
+  WriteSelectionTrace(trace);
 }
 
 // OFFSET: 0x00DDC6F0
