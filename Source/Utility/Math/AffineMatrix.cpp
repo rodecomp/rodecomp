@@ -187,7 +187,10 @@ void matrix::MakeInverse(const matrix& source) {
   values[8] = thirdZ;
 
   values[9] = -(firstX * source.values[9] + secondX * source.values[10] + thirdX * source.values[11]);
-  values[10] = -((firstY * source.values[9] + secondY * source.values[10]) + thirdY * source.values[11]);
+  float y = firstY * source.values[9];
+  y += secondY * source.values[10];
+  y += thirdY * source.values[11];
+  values[10] = -y;
   values[11] = -((secondZ * source.values[10] + firstZ * source.values[9]) + thirdZ * source.values[11]);
 }
 
