@@ -4535,8 +4535,10 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
     int segment = this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
     total += segment;
     if (total >= width) {
-      it->second = static_cast<const std::string&>(this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0));
-      last.erase(it + 1, last.end());
+      const std::string fitted = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
+      it->second = fitted;
+      ++it;
+      last.erase(it, last.end());
       break;
     }
   }
@@ -10114,15 +10116,15 @@ void UIEquipWnd::DrawEquipSlots() {
     }
   }
 
-  const int rowOffsets[4] = {0, 26, 52, 78};
   int iconX[2] = {6, 251};
   int nameX[2] = {28, 167};
+  const int rowOffsets[4] = {0, 26, 52, 78};
   int shopId = g_session.FindShopId("");
   if (g_session.GetShopType(shopId)) {
     shopId = -1;
   }
 
-  for (unsigned slot = 0; slot < 10; ++slot) {
+  for (int slot = 0; slot < 10; ++slot) {
     ITEM_INFO item;
     if (this->m_page == 1) {
       if (this->m_viewOther == 0) {
@@ -10136,43 +10138,44 @@ void UIEquipWnd::DrawEquipSlots() {
       item = g_session.GetAlternateEquippedItemAt(slot);
     }
 
-    if (item.identity[1] == 0) {
-      continue;
-    }
-
-    if (item.quantity == 1) {
-      const unsigned row = slot & 3;
-      if (slot < 8) {
-        this->DrawItemIcon(iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
-        this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
-      } else {
-        this->DrawItemIcon(iconX[row], this->m_contentTop + 18, item, 0);
-        this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
+    if (item.identity[1] > 0) {
+      if (item.quantity == 1) {
+        const int row = slot % 4;
+        if (slot < 8) {
+          this->DrawItemIcon(iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
+          this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
+        } else {
+          this->DrawItemIcon(iconX[row], this->m_contentTop + 18, item, 0);
+          this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
+        }
       }
-    }
 
-    if (item.grade > 0) {
-      if (slot < 8) {
-        this->DrawBitmap(
-          iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26,
-          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-          true
-        );
-      } else {
-        this->DrawBitmap(
-          iconX[slot & 3], this->m_contentTop + 30,
-          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-          true
-        );
+      if (0 < item.grade) {
+        if (slot < 8) {
+          this->DrawBitmap(
+            iconX[slot / 4], this->m_contentTop + 56 + (slot % 4) * 26,
+            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+            true
+          );
+        } else {
+          this->DrawBitmap(
+            iconX[slot % 4], this->m_contentTop + 30,
+            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+            true
+          );
+        }
       }
-    }
 
-    if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
-      const unsigned row = slot & 3;
-      const unsigned column = slot < 8 ? slot / 4 : row;
-      auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
-      const int y = slot < 8 ? this->m_contentTop + (row + 1) * 26 : this->m_contentTop;
-      this->DrawBitmap(iconX[column], y + 18, banned, true);
+      if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
+        const int row = slot % 4;
+        const int column = slot < 8 ? slot / 4 : row;
+        auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
+        int y = (row + 1) * 26 + this->m_contentTop;
+        if (slot >= 8) {
+          y = this->m_contentTop;
+        }
+        this->DrawBitmap(iconX[column], y + 18, banned, true);
+      }
     }
   }
 }
