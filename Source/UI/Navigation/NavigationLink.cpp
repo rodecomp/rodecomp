@@ -806,31 +806,32 @@ void CCreateLineInfo::AddWindow(UIWindow* window) {
 // OFFSET: 0x00837BC0
 // FUNCTION: fn_10451
 int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
+  std::smatch match;
   int group = 0;
   int id = -1;
-  std::cmatch match;
 
-  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
-    id = std::stoi(match[1].str());
-  } else {
-    if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
-      return x;
-    }
-
-    const std::vector<std::string> parts = Split(match[1].str(), ",");
+  if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
+    const std::string number = match[1].str();
+    id = std::stoi(number);
+  } else if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
+    const std::string numbers = match[1].str();
+    const std::vector<std::string> parts = Split(numbers, ",");
     if (parts.size() == 2) {
       group = std::stoi(parts[0]);
       id = std::stoi(parts[1]);
     }
+  } else {
+    return x;
   }
 
   if (id >= 0) {
     int loops = 0;
     if (match[2].matched == true) {
       const std::string tail = match[2].str();
-      std::cmatch loopMatch;
-      if (std::regex_search(tail.c_str(), tail.c_str() + tail.size(), loopMatch, std::regex("^\\[(\\d)\\]"))) {
-        loops = std::atoi(loopMatch[1].str().c_str());
+      std::smatch loopMatch;
+      if (std::regex_search(tail, loopMatch, std::regex("^\\[(\\d)\\]")) == true) {
+        const std::string count = loopMatch[1].str();
+        loops = std::atoi(count.c_str());
       }
     }
 
@@ -846,7 +847,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
           emotion->Invalidate();
           emotion->m_maxLoops = loops;
           emotion->m_loops = 1;
-          if (this->m_width < emotion->geometry.width + x) {
+          if (emotion->geometry.width + x > this->m_width) {
             this->NewLine();
             this->AddWindow(emotion);
             x = emotion->geometry.width;
