@@ -604,8 +604,9 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     this->equipActions[slot]->Unlock();
   }
 
-  if (IsMonsterJob(this->render.accountId)) {
-    if (IsObfuscatedMessage(this->render.accountId)) {
+  auto& renderRef = this->render;
+  if (IsMonsterJob(renderRef.accountId)) {
+    if (IsObfuscatedMessage(renderRef.accountId)) {
       switch (slot) {
         case 0:
           if (this->sex != 0) {

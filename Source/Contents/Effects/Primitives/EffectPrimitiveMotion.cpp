@@ -3165,52 +3165,53 @@ bool CEffectPrim::PrimAcidDemon() {
   const int m2 = 90 / middle;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life == 1) {
-      this->state.slots[ec].process += 1;
+    auto& slotsRef = this->state.slots;
+    if (slotsRef[ec].life == 1) {
+      slotsRef[ec].process += 1;
 
       if (ec == 3) {
-        this->state.slots[ec].rotStart = static_cast<std::int16_t>(this->state.slots[3].rotStart + (2 + ClampedRandom(2)));
+        slotsRef[ec].rotStart = static_cast<std::int16_t>(slotsRef[3].rotStart + (2 + ClampedRandom(2)));
       } else {
-        this->state.slots[ec].rotStart = static_cast<std::int16_t>(this->state.slots[ec].rotStart + (4 + ClampedRandom(3)));
+        slotsRef[ec].rotStart = static_cast<std::int16_t>(slotsRef[ec].rotStart + (4 + ClampedRandom(3)));
       }
 
-      if (this->state.slots[ec].rotStart >= 360) {
-        this->state.slots[ec].rotStart -= 360;
+      if (slotsRef[ec].rotStart >= 360) {
+        slotsRef[ec].rotStart -= 360;
       }
 
-      if (this->state.slots[ec].process >= 40) {
-        this->state.slots[ec].alphaB -= 15;
-        if (this->state.slots[ec].alphaB < 0) {
-          this->state.slots[ec].alphaB = 0;
+      if (slotsRef[ec].process >= 40) {
+        slotsRef[ec].alphaB -= 15;
+        if (slotsRef[ec].alphaB < 0) {
+          slotsRef[ec].alphaB = 0;
         }
-      } else if (this->state.slots[ec].process < 20) {
-        this->state.slots[ec].alphaB += 5;
-        if (this->state.slots[ec].alphaB > 80) {
-          this->state.slots[ec].alphaB = 80;
+      } else if (slotsRef[ec].process < 20) {
+        slotsRef[ec].alphaB += 5;
+        if (slotsRef[ec].alphaB > 80) {
+          slotsRef[ec].alphaB = 80;
         }
       }
 
       if (ec == 3) {
-        this->state.slots[ec].maxHeight *= 1.025f;
+        slotsRef[ec].maxHeight *= 1.025f;
       } else {
-        this->state.slots[ec].maxHeight *= 1.005f;
+        slotsRef[ec].maxHeight *= 1.005f;
       }
 
       for (int i = 0; i < 21; ++i) {
         const int sinLimit = 90 + (i - middle) * m2;
 
-        if (this->state.slots[ec].process <= 90) {
-          this->state.slots[ec].height[i] = g_sinTable[sinLimit] * this->state.slots[ec].maxHeight * g_sinTable[this->state.slots[ec].process];
+        if (slotsRef[ec].process <= 90) {
+          slotsRef[ec].height[i] = g_sinTable[sinLimit] * slotsRef[ec].maxHeight * g_sinTable[slotsRef[ec].process];
         } else {
-          this->state.slots[ec].flag1[i] = 1;
+          slotsRef[ec].flag1[i] = 1;
         }
 
-        if (this->state.slots[ec].height[i] > g_sinTable[sinLimit] * this->state.slots[ec].maxHeight) {
-          this->state.slots[ec].flag1[i] = 1;
+        if (slotsRef[ec].height[i] > g_sinTable[sinLimit] * slotsRef[ec].maxHeight) {
+          slotsRef[ec].flag1[i] = 1;
         }
 
-        if (this->state.slots[ec].height[i] < 0.0f) {
-          this->state.slots[ec].height[i] = 0.0f;
+        if (slotsRef[ec].height[i] < 0.0f) {
+          slotsRef[ec].height[i] = 0.0f;
         }
       }
     }
@@ -5426,30 +5427,31 @@ void CEffectPrim::PrimPulseRing() {
 // OFFSET: 0x00BE87D0
 // FUNCTION: fn_19945
 __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
-  FaceCamera(this->state.slots);
-  this->render.position = this->state.master->render.position;
+  auto& stateRef = this->state;
+  FaceCamera(stateRef.slots);
+  this->render.position = stateRef.master->render.position;
 
-  if (this->state.slots[0].life != 1) {
+  if (stateRef.slots[0].life != 1) {
     return;
   }
 
-  ++this->state.slots[0].process;
-  this->state.slots[0].height[8] += 5.0f;
-  if (this->state.slots[0].height[8] >= 360.0f) {
-    this->state.slots[0].height[8] -= 360.0f;
+  ++stateRef.slots[0].process;
+  stateRef.slots[0].height[8] += 5.0f;
+  if (stateRef.slots[0].height[8] >= 360.0f) {
+    stateRef.slots[0].height[8] -= 360.0f;
   }
 
-  const std::int16_t rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart + 1);
-  this->state.slots[0].rotStart = rotStart;
+  const std::int16_t rotStart = static_cast<std::int16_t>(stateRef.slots[0].rotStart + 1);
+  stateRef.slots[0].rotStart = rotStart;
   if (rotStart >= 360) {
-    this->state.slots[0].rotStart = static_cast<std::int16_t>(rotStart - 360);
+    stateRef.slots[0].rotStart = static_cast<std::int16_t>(rotStart - 360);
   }
 
-  this->state.slots[0].vecBNow.x = this->render.position.x;
-  this->state.slots[0].vecBNow.z = this->render.position.z;
+  stateRef.slots[0].vecBNow.x = this->render.position.x;
+  stateRef.slots[0].vecBNow.z = this->render.position.z;
   const float base = this->render.position.y - g_effectPrimitiveOuterSpan;
-  this->state.slots[0].vecBPre.y = base;
-  this->state.slots[0].vecBNow.y = g_sinTable[this->state.slots[0].rotStart] * g_masterReachDistance + base;
+  stateRef.slots[0].vecBPre.y = base;
+  stateRef.slots[0].vecBNow.y = g_sinTable[stateRef.slots[0].rotStart] * g_masterReachDistance + base;
 }
 
 // OFFSET: 0x00BE9690

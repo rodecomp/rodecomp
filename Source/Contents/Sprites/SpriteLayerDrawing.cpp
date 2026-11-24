@@ -538,14 +538,15 @@ void SpriteLayerRenderer::DrawLayer(
     const SpriteLayerCell resolved = this->ResolveCell(layer, cell, cellIndex, resources.sprite, resources.action, frame, image, animation, frameIndex, replaced);
     offsetX += resolved.offsetX;
     offsetY += resolved.offsetY;
-    this->pc->ApplySwing(layer, offsetX, offsetY, this->swingX, this->swingY);
+    auto& pcRef = this->pc;
+    pcRef->ApplySwing(layer, offsetX, offsetY, this->swingX, this->swingY);
 
     float bottomRhw = 0.0f;
     float topRhw = 0.0f;
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t quadColor;
-    if (!this->pc->PrepareSprite(
+    if (!pcRef->PrepareSprite(
           index, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
           resolved.image, &quad, &box, &quadColor, offsetX, offsetY, 0
         )) {
@@ -558,13 +559,13 @@ void SpriteLayerRenderer::DrawLayer(
       this->depthBias = ((quad.topRhw + quad.bottomRhw) - (quad.top + quad.bottom) * depthScale) * g_depthAverageHalf;
     }
 
-    if (this->pc->render.translucentOther[0] == 1) {
+    if (pcRef->render.translucentOther[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
                    (quad.color & 0xFFFFFF);
     }
 
     if (layer == 1) {
-      CPc* pc = this->pc;
+      CPc* pc = pcRef;
       const float right = static_cast<float>(resolved.cell->x + this->swingX);
       const float bottom = static_cast<float>(resolved.cell->y + this->swingY);
       pc->extentBottom = bottom;
@@ -577,23 +578,23 @@ void SpriteLayerRenderer::DrawLayer(
     quad.image = resolved.image;
     const std::uint32_t* palette = this->GetPalette(layer, resources.sprite, resources.action);
     int effect = 0xA6;
-    this->pc->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
+    pcRef->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
 
     int blend = this->GetLayerBlend(layer, quad.color);
 
     this->IncludeLayerBounds(layer, &quad.top);
 
     this->alternateLayerRendering = true;
-    this->pc->ApplyLayerEffects(
+    pcRef->ApplyLayerEffects(
       &quad, resolved.cell, layer, &box, this->scale, this->rhw, bottomRhw, topRhw, this->x, this->y, palette, resolved.image, &blend, offsetX,
       offsetY
     );
     this->QueueQuad(layer, &quad, palette, blend);
-    this->pc->DrawStatusOverlays(quad, palette);
+    pcRef->DrawStatusOverlays(quad, palette);
     if (layer == 0) {
-      this->pc->blend = blend;
-      this->pc->layerCellX = resolved.cell->x;
-      this->pc->layerCellY = resolved.cell->y;
+      pcRef->blend = blend;
+      pcRef->layerCellX = resolved.cell->x;
+      pcRef->layerCellY = resolved.cell->y;
       this->DrawRobe(true);
     }
   }

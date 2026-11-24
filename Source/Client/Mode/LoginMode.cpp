@@ -1693,12 +1693,13 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
 // FUNCTION: fn_22300
 void CLoginMode::Initialize(const char* name) {
   g_soundMgr->StopStreams();
-  this->charParams[0] = 5;
-  this->charParams[1] = 5;
-  this->charParams[2] = 5;
-  this->charParams[3] = 5;
-  this->charParams[4] = 5;
-  this->charParams[5] = 5;
+  auto& charParamsRef = this->charParams;
+  charParamsRef[0] = 5;
+  charParamsRef[1] = 5;
+  charParamsRef[2] = 5;
+  charParamsRef[3] = 5;
+  charParamsRef[4] = 5;
+  charParamsRef[5] = 5;
   this->characterParameter7 = 0;
   this->characterParameter8 = 1;
   this->makingCharNameFirstByte = false;

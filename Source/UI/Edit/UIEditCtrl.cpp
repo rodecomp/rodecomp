@@ -9250,7 +9250,8 @@ void UIItemStoreFindWnd::Paint() {
   int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
-    if (index < this->scroll * this->columns) {
+    auto& columnsRef = this->columns;
+    if (index < this->scroll * columnsRef) {
       continue;
     }
 
@@ -9258,8 +9259,8 @@ void UIItemStoreFindWnd::Paint() {
       continue;
     }
 
-    const int top = visible / this->columns * 32;
-    const int left = visible % this->columns * 32 + 10;
+    const int top = visible / columnsRef * 32;
+    const int left = visible % columnsRef * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
     this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
@@ -9275,7 +9276,7 @@ void UIItemStoreFindWnd::Paint() {
       );
     }
 
-    if (++visible == this->visibleRows * this->columns) {
+    if (++visible == this->visibleRows * columnsRef) {
       break;
     }
   }
@@ -9312,7 +9313,8 @@ void UIItemStoreSubWnd::Paint() {
   int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
-    if (index < this->scroll * this->columns) {
+    auto& columnsRef = this->columns;
+    if (index < this->scroll * columnsRef) {
       continue;
     }
 
@@ -9320,8 +9322,8 @@ void UIItemStoreSubWnd::Paint() {
       continue;
     }
 
-    const int top = visible / this->columns * 32;
-    const int left = visible % this->columns * 32 + 10;
+    const int top = visible / columnsRef * 32;
+    const int left = visible % columnsRef * 32 + 10;
     const int width = this->geometry.width - left - 66;
     const int x = left + 4;
     this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
@@ -9337,7 +9339,7 @@ void UIItemStoreSubWnd::Paint() {
       );
     }
 
-    if (++visible == this->visibleRows * this->columns) {
+    if (++visible == this->visibleRows * columnsRef) {
       break;
     }
   }
@@ -9484,17 +9486,18 @@ void UIItemSellWnd::Paint() {
   char text[64];
   this->DrawTitleBar(false, "", 0);
 
-  if (this->geometry.height == 17) {
+  auto& heightRef = this->geometry.height;
+  if (heightRef == 17) {
     return;
   }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  int rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
@@ -9504,15 +9507,15 @@ void UIItemSellWnd::Paint() {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     const int fillWidth = (this->geometry.width - 60) % 32;
-    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-    const int fillHeight = (this->geometry.height - 38) % 32;
-    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, 17, fillWidth, heightRef - 38, RGB(red, green, blue));
+    const int fillHeight = (heightRef - 38) % 32;
+    const int fillY = (heightRef - 38) / 32 * 32 + 17;
     this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - 38) / 32;
+  const int slotRows = (heightRef - 38) / 32;
   int slots = slotRows;
   for (int i = 0; i < slots; ++i) {
     this->DrawItemSlotFrame(40, i * 32 + 17);
@@ -11017,17 +11020,18 @@ void UISkillListWnd::OnMouseHover(int x, int y) {
 void UIItemSellWnd2::Paint() {
   this->DrawTitleBar(false, "", 0);
 
-  if (this->geometry.height == 17) {
+  auto& heightRef = this->geometry.height;
+  if (heightRef == 17) {
     return;
   }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  int rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  rows = (heightRef - 38) / 8 + ((heightRef - 38) % 8 != 0);
   for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
@@ -11037,15 +11041,15 @@ void UIItemSellWnd2::Paint() {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     const int fillWidth = (this->geometry.width - 60) % 32;
-    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
-    const int fillHeight = (this->geometry.height - 38) % 32;
-    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, 17, fillWidth, heightRef - 38, RGB(red, green, blue));
+    const int fillHeight = (heightRef - 38) % 32;
+    const int fillY = (heightRef - 38) / 32 * 32 + 17;
     this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - 38) / 32;
+  const int slotRows = (heightRef - 38) / 32;
   int slots = slotRows;
   for (int i = 0; i < slots; ++i) {
     this->DrawItemSlotFrame(40, i * 32 + 17);

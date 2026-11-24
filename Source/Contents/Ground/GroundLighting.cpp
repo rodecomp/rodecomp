@@ -111,9 +111,8 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     std::memcpy(lightmap->vertices, vertices, sizeof(vertices));
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      RenderVertex& vertex = lightmap->vertices[corner];
-      vertex.u = lightUV[corner][0];
-      vertex.v = lightUV[corner][1];
+      lightmap->vertices[corner].u = lightUV[corner][0];
+      lightmap->vertices[corner].v = lightUV[corner][1];
     }
 
     lightmap->texture = quad.lightmapTexture;

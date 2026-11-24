@@ -141,7 +141,8 @@ __forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter)
 // OFFSET: 0x0072FD60
 // FUNCTION: fn_07535
 void CViolentQuakeEffect::OnProcess() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+  auto& emittersRef = this->emitters;
+  for (auto it = emittersRef.begin(); it != emittersRef.end(); ++it) {
     this->ProcessEmitter(*it);
   }
 }

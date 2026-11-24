@@ -600,7 +600,8 @@ void UIServerListBox::OnMouseHover(int x, int y) {
 // FUNCTION: fn_11456
 void UIMemberListBox::OnMouseHover(int, int y) {
   const unsigned count = static_cast<unsigned>(this->lines.size());
-  const int lineHeight = this->lineHeight;
+  auto& lineHeightRef = this->lineHeight;
+  const int lineHeight = lineHeightRef;
   const int topLine = this->topLine;
   const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + topLine;
   const int line = topLine + y / lineHeight;
@@ -619,7 +620,7 @@ void UIMemberListBox::OnMouseHover(int, int y) {
   }
 
   int screenX = -4;
-  y -= y % this->lineHeight;
+  y -= y % lineHeightRef;
   this->ToScreen(screenX, y);
   g_modeMgr.currentMode->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
 }

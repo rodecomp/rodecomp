@@ -110,20 +110,21 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
   points[1].y = (centerY - 0.0f) + particle->animationParameter;
   points[1].z = (centerZ - sideZ) + 0.0f;
 
-  particle->vertices[1].x = points[1].x;
-  particle->vertices[1].y = points[1].y;
-  particle->vertices[1].z = points[1].z;
-  particle->vertices[3].x = points[0].x;
-  particle->vertices[3].y = points[0].y;
-  particle->vertices[3].z = points[0].z;
+  auto& verticesRef = particle->vertices;
+  verticesRef[1].x = points[1].x;
+  verticesRef[1].y = points[1].y;
+  verticesRef[1].z = points[1].z;
+  verticesRef[3].x = points[0].x;
+  verticesRef[3].y = points[0].y;
+  verticesRef[3].z = points[0].z;
 
   if (segment != 0) {
-    particle->vertices[0].x = this->corners[1].x;
-    particle->vertices[0].y = this->corners[1].y;
-    particle->vertices[0].z = this->corners[1].z;
-    particle->vertices[2].x = this->corners[0].x;
-    particle->vertices[2].y = this->corners[0].y;
-    particle->vertices[2].z = this->corners[0].z;
+    verticesRef[0].x = this->corners[1].x;
+    verticesRef[0].y = this->corners[1].y;
+    verticesRef[0].z = this->corners[1].z;
+    verticesRef[2].x = this->corners[0].x;
+    verticesRef[2].y = this->corners[0].y;
+    verticesRef[2].z = this->corners[0].z;
   }
 
   this->corners[0].x = points[0].x;
