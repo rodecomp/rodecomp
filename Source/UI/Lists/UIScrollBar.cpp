@@ -582,18 +582,17 @@ void UITabControl::SetFlag(int index, bool value) {
 // FUNCTION: fn_11588
 void UITabControl::AddTab(const char* label, const char* tooltip) {
   this->labels.push_back(std::string(label));
-  auto& tooltipsRef = this->tooltips;
-  tooltipsRef.push_back(std::string());
+  this->tooltips.push_back("");
 
   if (this->parent) {
     const int tabWidth = this->parent->geometry.width / this->labels.size() - this->tabPadding;
 
     for (std::size_t index = 0; index < this->labels.size(); ++index) {
       if (this->TextWidth(this->labels[index].c_str(), 0, 0, this->fontSize, 0, 0) > tabWidth) {
-        if (tooltipsRef[index].empty() && index != this->labels.size() - 1) {
-          tooltipsRef[index] = this->labels[index];
+        if (this->tooltips[index].empty() && index != this->labels.size() - 1) {
+          this->tooltips[index] = this->labels[index];
         } else if (std::strlen(tooltip) != 0 && index == this->labels.size() - 1) {
-          tooltipsRef[index] = this->labels[index];
+          this->tooltips[index] = this->labels[index];
         }
       }
 
@@ -615,7 +614,7 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
   this->widths.push_back(width);
 
   if (std::strlen(tooltip) != 0) {
-    tooltipsRef[this->labels.size() - 1] = tooltip;
+    this->tooltips[this->labels.size() - 1] = tooltip;
   }
 
   this->flags.push_back(false);
