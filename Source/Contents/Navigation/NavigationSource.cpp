@@ -148,7 +148,13 @@ void NaviDataEntry::Reset() {
 // OFFSET: 0x00B88530
 // FUNCTION: fn_19371
 CNaviData::~CNaviData() {
-  this->Clear();
+  this->info = nullptr;
+  this->cellX = 0;
+  this->cellY = 0;
+  this->range = 50000;
+  this->startLinks.clear();
+  this->endLinks.clear();
+  this->entries.clear();
 
   for (std::vector<CNavi_Link*>::iterator it = this->objects.begin(); it != this->objects.end(); ++it) {
     if (*it != nullptr) {
