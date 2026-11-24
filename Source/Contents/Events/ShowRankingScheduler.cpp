@@ -42,33 +42,35 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
       const std::int64_t due = static_cast<std::int64_t>(this->timestamp) + count * 10000;
       if ((due <=> static_cast<std::int64_t>(now)) <= 0) {
         this->Show();
-      } else {
-        bool complete = true;
-        for (int index = 0; index < 10; ++index) {
-          std::string name("");
-          if (this->rankingData.ids[index] == 0) {
-            continue;
-          }
-          for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
-            if (this->rankingData.ids[index] == this->rankingList[listed]) {
-              name = g_namelessName;
-              break;
-            }
-          }
-          if (name.find(g_namelessName) != std::string::npos) {
-            continue;
-          }
-          name = LookupPlayerName(this->rankingData.ids[index]);
-          if (name.empty()) {
-            complete = false;
-          }
-        }
-        if (!complete) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANK_LOADING)), 0xffff, 0, 0, 0);
-          return;
-        }
-        this->Show();
+        this->active = false;
+        return;
       }
+
+      bool complete = true;
+      for (int index = 0; index < 10; ++index) {
+        std::string name("");
+        if (this->rankingData.ids[index] == 0) {
+          continue;
+        }
+        for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
+          if (this->rankingData.ids[index] == this->rankingList[listed]) {
+            name = g_namelessName;
+            break;
+          }
+        }
+        if (name.find(g_namelessName) != std::string::npos) {
+          continue;
+        }
+        name = LookupPlayerName(this->rankingData.ids[index]);
+        if (name.empty()) {
+          complete = false;
+        }
+      }
+      if (!complete) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANK_LOADING)), 0xffff, 0, 0, 0);
+        return;
+      }
+      this->Show();
     }
   }
   this->active = false;
