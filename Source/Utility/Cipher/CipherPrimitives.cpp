@@ -478,20 +478,21 @@ unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
     g_cryptonEncryptKey[5] = input[3];
   }
 
-  unsigned int x = (g_cryptonEncryptKey[0] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[1] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[2] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[3] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
-  unsigned int y = (g_cryptonEncryptKey[0] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[1] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[2] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[3] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
-  unsigned int z = (g_cryptonEncryptKey[0] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[1] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[2] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[3] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
-  unsigned int w = (g_cryptonEncryptKey[0] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[1] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[2] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[3] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
+  unsigned int t[4];
+  t[0] = (g_cryptonEncryptKey[0] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[1] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[2] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[3] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
+  t[1] = (g_cryptonEncryptKey[0] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[1] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[2] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[3] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
+  t[2] = (g_cryptonEncryptKey[0] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[1] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[2] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[3] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
+  t[3] = (g_cryptonEncryptKey[0] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[1] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[2] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[3] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
   for (unsigned int lane = 0; lane < 4; ++lane) {
-    g_cryptonEncryptKey[lane] = CryptonGammaTau(x, y, z, w, lane, false);
+    g_cryptonEncryptKey[lane] = CryptonGammaTau(t[0], t[1], t[2], t[3], lane, false);
   }
 
-  x = (g_cryptonEncryptKey[4] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[5] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[6] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[7] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
-  y = (g_cryptonEncryptKey[4] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[5] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[6] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[7] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
-  z = (g_cryptonEncryptKey[4] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[5] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[6] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[7] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
-  w = (g_cryptonEncryptKey[4] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[5] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[6] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[7] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
+  t[0] = (g_cryptonEncryptKey[4] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[5] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[6] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[7] & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
+  t[1] = (g_cryptonEncryptKey[4] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[5] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[6] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[7] & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
+  t[2] = (g_cryptonEncryptKey[4] & 0xCFF3FC3Fu) ^ (g_cryptonEncryptKey[5] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[6] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[7] & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
+  t[3] = (g_cryptonEncryptKey[4] & 0x3FCFF3FCu) ^ (g_cryptonEncryptKey[5] & 0xFC3FCFF3u) ^ (g_cryptonEncryptKey[6] & 0xF3FC3FCFu) ^ (g_cryptonEncryptKey[7] & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
   for (unsigned int lane = 0; lane < 4; ++lane) {
-    g_cryptonEncryptKey[lane + 4] = CryptonGammaTau(x, y, z, w, lane, true);
+    g_cryptonEncryptKey[lane + 4] = CryptonGammaTau(t[0], t[1], t[2], t[3], lane, true);
   }
 
   const unsigned int first = g_cryptonEncryptKey[0] ^ g_cryptonEncryptKey[1] ^ g_cryptonEncryptKey[2] ^ g_cryptonEncryptKey[3];
