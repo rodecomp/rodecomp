@@ -1922,8 +1922,11 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
       buffer[bytes] = '\0';
       lines->push_back(std::string(buffer));
       delete[] buffer;
-      newline = newline != false;
-      breaks->push_back(newline);
+      if (newline) {
+        breaks->push_back(true);
+      } else {
+        breaks->push_back(false);
+      }
       offset += bytes;
     }
   }
