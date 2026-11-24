@@ -770,21 +770,17 @@ void BuildKeyedBoxes(unsigned char* boxes, const unsigned char* key, int keyLeng
   }
 
   int j = keyLength;
-  int base = 0;
   int keyIndex = 0;
   for (int box = 0; box < count; ++box) {
-    int offset = 0;
     for (int pass = 0; pass < 8; ++pass) {
       for (int i = 0; i < 256; ++i) {
-        j = (boxes[base + (offset + i) % 256] + j + key[keyIndex]) % 256;
-        unsigned char swap = boxes[base + i];
-        boxes[base + i] = boxes[base + j];
-        boxes[base + j] = swap;
+        j = (boxes[box * 256 + (pass * box + i) % 256] + j + key[keyIndex]) % 256;
+        unsigned char swap = boxes[box * 256 + i];
+        boxes[box * 256 + i] = boxes[box * 256 + j];
+        boxes[box * 256 + j] = swap;
         keyIndex = (keyIndex + 1) % keyLength;
       }
-      offset += box;
     }
-    base += 256;
   }
 }
 
