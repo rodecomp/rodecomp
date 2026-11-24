@@ -3538,7 +3538,7 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   case UM_SET_CHARACTER_SLOT_STYLE: {
     this->m_displayMode = static_cast<int>(argument1);
-    const char* slot = argument1 != 0 ? "slot" : "slot2";
+    const char* slot = this->m_displayMode == 0 ? "slot2" : "slot";
     const char* img = this->m_inRange ? "img_buy" : "img_";
     const std::string base = fmt::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
 
