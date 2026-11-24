@@ -8378,8 +8378,9 @@ void UIItemWnd::OnCreate(int width, int height) {
   for (int index = 0; index < 4; ++index) {
     this->tabs->AddTab(labels[index], "");
   }
+  const std::uint32_t selectedColor = g_skinInfo.PaletteColor(SkinPaletteCell{5, 2}, g_skinInfo.Selected());
   UITabControl* tabControl = this->tabs;
-  tabControl->colors[3] = g_skinInfo.PaletteColor(SkinPaletteCell{5, 2}, g_skinInfo.Selected());
+  tabControl->colors[3] = selectedColor;
   tabControl->Invalidate();
 
   this->lockDropBox = new (std::nothrow) UICheckBox();
