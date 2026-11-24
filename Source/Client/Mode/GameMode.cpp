@@ -11167,10 +11167,12 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
 
     if (this->statusIconTooltip->GetLine(0) != " ") {
       this->statusIconTooltip->Show(1);
-      const int windowHeight = this->statusIconTooltip->geometry.height;
-      const int left = right - 30 + (slot / rows) * -45 - this->statusIconTooltip->geometry.width;
-      const int top = (slot % rows) * 35;
-      const int windowY = windowHeight + 171 + top > g_renderer->viewport.height ? g_renderer->viewport.height - windowHeight : top + 171;
+      const UITransBalloonText* tooltip = this->statusIconTooltip;
+      const int windowHeight = tooltip->geometry.height;
+      const int left = right - 30 + (slot / rows) * -45 - tooltip->geometry.width;
+      const int top = (slot % rows) * 35 + 171;
+      const int viewportHeight = g_renderer->viewport.height;
+      const int windowY = top + windowHeight > viewportHeight ? viewportHeight - windowHeight : top;
       this->statusIconTooltip->Move(left, windowY);
     }
 
