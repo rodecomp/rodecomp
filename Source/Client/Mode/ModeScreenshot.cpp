@@ -122,9 +122,9 @@ void CMode::TakeScreenshot() {
     std::string extension(".jpg");
     base += characterName;
 
-    std::string path = base + FormatOwnedString("%03d", g_screenshotIndex++) + extension;
+    std::string path = base + static_cast<const std::string&>(FormatOwnedString("%03d", g_screenshotIndex++)) + extension;
     while (_access(path.c_str(), 0) == 0) {
-      path = base + FormatOwnedString("%03d", g_screenshotIndex++) + extension;
+      path = base + static_cast<const std::string&>(FormatOwnedString("%03d", g_screenshotIndex++)) + extension;
     }
 
     g_renderer->SaveLogo(path);
