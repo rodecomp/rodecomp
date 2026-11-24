@@ -182,6 +182,10 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
   prevT.x = 0.0f;
   prevT.y = 0.0f;
   prevT.z = 0.0f;
+  vector3d prevB;
+  prevB.x = 0.0f;
+  prevB.y = 0.0f;
+  prevB.z = 0.0f;
   vector3d curB;
   curB.x = 0.0f;
   curB.y = 0.0f;
@@ -190,10 +194,6 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
   curT.x = 0.0f;
   curT.y = 0.0f;
   curT.z = 0.0f;
-  vector3d prevB;
-  prevB.x = 0.0f;
-  prevB.y = 0.0f;
-  prevB.z = 0.0f;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -211,8 +211,8 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
       const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
+      const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
       const float rise = this->state.slots[ec].height[i];
       const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
       curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
