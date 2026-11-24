@@ -87,6 +87,11 @@ static __forceinline vector3d operator+(const vector3d& a, const vector3d& b) {
 }
 
 // INLINED
+static vector3d Sum(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
+// INLINED
 static __forceinline void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
   result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
   result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
@@ -1823,19 +1828,42 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
       continue;
     }
 
-    int angle = slot.rotStart;
-    const float snA = g_sinTable[angle] * 2.0f;
     const float rx = slot.distance * 0.1f * (g_sinTable[slot.riseAngle] + 1.0f);
+    int angle = slot.rotStart;
+    float cs = g_cosTable[angle];
+    float sn = g_sinTable[angle];
     const double radius = slot.distance * 0.8 + rx;
-    const float y = slot.height[0] + snA;
 
-    slot.vecBPre = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
-    angle += angle >= 270 ? -270 : 90;
-    slot.vecBNow = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
-    angle += angle + 90 >= 360 ? -270 : 90;
-    slot.vecTNow = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
-    angle += angle + 90 >= 360 ? -270 : 90;
-    slot.vecTPre = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
+    slot.vecBPre.x = static_cast<float>(cs * radius);
+    slot.vecBPre.z = static_cast<float>(sn * radius);
+    slot.vecBPre.y = sn * 2.0f + slot.height[0];
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    slot.vecBNow.x = static_cast<float>(cs * radius);
+    slot.vecBNow.z = static_cast<float>(sn * radius);
+    slot.vecBNow.y = slot.vecBPre.y;
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    slot.vecTNow.x = static_cast<float>(cs * radius);
+    slot.vecTNow.z = static_cast<float>(sn * radius);
+    slot.vecTNow.y = slot.vecBPre.y;
+    angle += 90;
+    if (angle >= 360) {
+      angle -= 360;
+    }
+    cs = g_cosTable[angle];
+    sn = g_sinTable[angle];
+    slot.vecTPre.x = static_cast<float>(cs * radius);
+    slot.vecTPre.z = static_cast<float>(sn * radius);
+    slot.vecTPre.y = slot.vecBPre.y;
 
     vec1 = slot.vecBPre;
     vec1.y -= slot.distance;
@@ -2308,8 +2336,8 @@ __declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
 // OFFSET: 0x00BCFC00
 // FUNCTION: fn_19867
 void CEffectPrim::RenderRing(matrix& wtm) {
-  int rpCnt = 0;
   ZeroVector3d corners[4];
+  int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -2319,14 +2347,12 @@ void CEffectPrim::RenderRing(matrix& wtm) {
     }
 
     const float dist = slot.distance;
-    const float cs = g_cosTable[slot.riseAngle];
-    const float sn = g_sinTable[slot.riseAngle];
     const vector3d& center = slot.vecBNow;
     const int angles[4] = {90, 180, 270, 0};
 
     for (int index = 0; index < 4; ++index) {
       const float radial = dist * g_cosTable[angles[index]];
-      corners[index] = {cs * radial + center.x, dist * g_sinTable[angles[index]] + center.y, sn * radial + center.z};
+      corners[index] = {g_cosTable[slot.riseAngle] * radial + center.x, dist * g_sinTable[angles[index]] + center.y, g_sinTable[slot.riseAngle] * radial + center.z};
     }
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 60, 60, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -3126,37 +3152,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
         + slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f;
       const float shape = slot.height[10];
       int angle = slot.fullDisplayAngle;
-      vec1.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
-
-      if (shape == 0.0f) {
-        angle += angle >= 90 ? -90 : 270;
-      } else if (shape == 1.0f) {
-        angle += angle >= 60 ? -60 : 300;
-      } else if (shape == 2.0f) {
-        angle -= 130;
-        if (angle < 0) {
-          angle += 360;
-        }
-      }
-      vec2.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
-
-      if (shape == 0.0f) {
-        angle -= 90;
-        if (angle < 0) {
-          angle += 360;
-        }
-      } else if (shape == 1.0f) {
-        angle -= 120;
-        if (angle < 0) {
-          angle += 360;
-        }
-      } else if (shape == 2.0f) {
-        angle -= 50;
-        if (angle < 0) {
-          angle += 360;
-        }
-      }
-      vec3.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
+      vec1.x = rx * g_cosTable[angle];
+      vec1.z = rx * g_sinTable[angle];
+      vec1.y = 0.0f;
 
       if (shape == 0.0f) {
         angle -= 90;
@@ -3174,21 +3172,61 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
           angle += 360;
         }
       }
-      vec4.Set(rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]);
+      vec2.x = rx * g_cosTable[angle];
+      vec2.z = rx * g_sinTable[angle];
+      vec2.y = 0.0f;
+
+      if (shape == 0.0f) {
+        angle -= 90;
+        if (angle < 0) {
+          angle += 360;
+        }
+      } else if (shape == 1.0f) {
+        angle -= 120;
+        if (angle < 0) {
+          angle += 360;
+        }
+      } else if (shape == 2.0f) {
+        angle -= 50;
+        if (angle < 0) {
+          angle += 360;
+        }
+      }
+      vec3.x = rx * g_cosTable[angle];
+      vec3.z = rx * g_sinTable[angle];
+      vec3.y = 0.0f;
+
+      if (shape == 0.0f) {
+        angle -= 90;
+        if (angle < 0) {
+          angle += 360;
+        }
+      } else if (shape == 1.0f) {
+        angle -= 60;
+        if (angle < 0) {
+          angle += 360;
+        }
+      } else if (shape == 2.0f) {
+        angle -= 130;
+        if (angle < 0) {
+          angle += 360;
+        }
+      }
+      vec4.x = rx * g_cosTable[angle];
+      vec4.z = rx * g_sinTable[angle];
+      vec4.y = 0.0f;
 
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-      const vector3d& position = this->render.position;
+      const vector3d position{this->render.position.x, this->render.position.y, this->render.position.z};
       const float deltaX = slot.vecBNow.x - position.x;
       const float deltaZ = slot.vecBNow.z - position.z;
       const float along = SquareRoot(deltaX * deltaX + deltaZ * deltaZ) / 12.0f * step;
-      const float x = along * g_cosTable[slot.riseAngle] + position.x;
-      const float y = position.y - 12.0f + 0.0f;
-      const float z = along * g_sinTable[slot.riseAngle] + position.z;
-      const vector3d p1{x + vec1.x, y + vec1.y, z + vec1.z};
-      const vector3d p2{x + vec2.x, y + vec2.y, z + vec2.z};
-      const vector3d p3{x + vec3.x, y + vec3.y, z + vec3.z};
-      const vector3d p4{x + vec4.x, y + vec4.y, z + vec4.z};
+      const vector3d base{along * g_cosTable[slot.riseAngle] + position.x, position.y - 12.0f + 0.0f, along * g_sinTable[slot.riseAngle] + position.z};
+      const vector3d p1 = Sum(base, vec1);
+      const vector3d p2 = Sum(base, vec2);
+      const vector3d p3 = Sum(base, vec3);
+      const vector3d p4 = Sum(base, vec4);
 
       switch (this->state.slots[0].flag1[2]) {
       case 0:
@@ -3661,26 +3699,26 @@ void CEffectPrim::RenderStackedRings(matrix& wtm) {
         radius -= (2.2f - static_cast<float>(i) * 0.2f) * slot.distance;
       }
 
-      short angle1 = static_cast<short>(slot.rotStart + 45 * i);
-      if (angle1 >= 360) {
-        angle1 = static_cast<short>(static_cast<unsigned short>(angle1) % 360u);
+      short angle = static_cast<short>(slot.rotStart + 45 * i);
+      while (angle >= 360) {
+        angle -= 360;
       }
-      vec1.Set(radius * g_cosTable[angle1], y - 1.0f, radius * g_sinTable[angle1]);
-      short angle2 = static_cast<short>(angle1 + 90);
-      if (angle2 >= 360) {
-        angle2 = static_cast<short>(angle2 - 360);
+      vec1.Set(radius * g_cosTable[angle], y - 1.0f, radius * g_sinTable[angle]);
+      angle += 90;
+      if (angle >= 360) {
+        angle -= 360;
       }
-      vec2.Set(radius * g_cosTable[angle2], y - 1.0f, radius * g_sinTable[angle2]);
-      short angle3 = static_cast<short>(angle2 + 90);
-      if (angle3 >= 360) {
-        angle3 = static_cast<short>(angle3 - 360);
+      vec2.Set(radius * g_cosTable[angle], y - 1.0f, radius * g_sinTable[angle]);
+      angle += 90;
+      if (angle >= 360) {
+        angle -= 360;
       }
-      vec3.Set(radius * g_cosTable[angle3], y, radius * g_sinTable[angle3]);
-      short angle4 = static_cast<short>(angle3 + 90);
-      if (angle4 >= 360) {
-        angle4 = static_cast<short>(angle4 - 360);
+      vec3.Set(radius * g_cosTable[angle], y, radius * g_sinTable[angle]);
+      angle += 90;
+      if (angle >= 360) {
+        angle -= 360;
       }
-      vec4.Set(radius * g_cosTable[angle4], y, radius * g_sinTable[angle4]);
+      vec4.Set(radius * g_cosTable[angle], y, radius * g_sinTable[angle]);
 
       switch (slot.flag1[4]) {
       case 0:
