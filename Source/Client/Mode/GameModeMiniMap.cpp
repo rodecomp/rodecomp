@@ -264,9 +264,11 @@ void CGameMode::DrawMiniMap() {
     const int width = this->scene->terrain->width;
     const int height = this->scene->terrain->height;
     const CPlayer* player = this->scene->player;
+    const float worldX = player->render.position.x;
+    const float worldZ = player->render.position.z;
     int row;
     int column;
-    this->WorldCell(player->render.position.x, player->render.position.z, column, row);
+    this->WorldCell(worldX, worldZ, column, row);
 
     const float half = 1.0f / (g_windowMgr.minimapZoom * 2.0f);
     const float u = static_cast<float>(column) / static_cast<float>(width);
