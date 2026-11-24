@@ -722,31 +722,32 @@ bool ReplayFileList::Refresh() {
   WIN32_FIND_DATAA found;
   HANDLE search = FindFirstFileA(pattern.c_str(), &found);
 
-  if (search != INVALID_HANDLE_VALUE) {
-    while (more) {
-      if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-        const char* extension = found.cFileName + std::strlen(found.cFileName) - 4;
-        const BOOL isReplay = extension[3] == 'f' && extension[2] == 'r' && extension[1] == 'r' && extension[0] == '.';
-
-        if (isReplay) {
-          ReplayFileEntry entry = {};
-          const std::size_t length = std::strlen(found.cFileName);
-          std::memcpy(entry.name, found.cFileName, length);
-          entry.name[length] = '\0';
-          entry.index = 0;
-
-          if (length == 23) {
-            char number[6] = {};
-            std::memcpy(number, entry.name + 15, 4);
-            entry.index = std::atoi(number);
-          }
-
-          this->files.push_back(entry);
-        }
+  while (search != INVALID_HANDLE_VALUE && more) {
+    if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+      const std::size_t nameLength = std::strlen(found.cFileName);
+      BOOL isReplay = FALSE;
+      if (found.cFileName[nameLength - 1] == 'f' && found.cFileName[nameLength - 2] == 'r' && found.cFileName[nameLength - 3] == 'r') {
+        isReplay = found.cFileName[nameLength - 4] == '.';
       }
 
-      more = FindNextFileA(search, &found);
+      if (isReplay) {
+        ReplayFileEntry entry = {};
+        const std::size_t length = std::strlen(found.cFileName);
+        std::memcpy(entry.name, found.cFileName, length);
+        entry.name[length] = '\0';
+        entry.index = 0;
+
+        if (length == 23) {
+          char number[6] = {};
+          std::memcpy(number, entry.name + 15, 4);
+          entry.index = std::atoi(number);
+        }
+
+        this->files.push_back(entry);
+      }
     }
+
+    more = FindNextFileA(search, &found);
   }
 
   FindClose(search);
