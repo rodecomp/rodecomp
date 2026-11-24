@@ -31,6 +31,12 @@ int CMapProperty::GetValue(int key) {
   return found->second;
 }
 
+// OFFSET: 0x00CA79B0
+// FUNCTION: fn_46525
+CMapPropertyMgr::CMapPropertyMgr() {
+  this->m_valid = true;
+}
+
 // OFFSET: 0x00CA7D70
 // FUNCTION: fn_20978
 void CMapPropertyMgr::SetValue(int mapId, int key, int value) {
