@@ -241,14 +241,6 @@ void UIButton::OnLBtnUp(int x, int y) {
   g_windowMgr.ReleaseCapture();
 }
 
-// OFFSET: 0x005FEAF0
-// FUNCTION: fn_04132
-void UIButton::Enable(unsigned char value) {
-  this->m_disabled = value ^ 1;
-  this->Invalidate();
-  this->geometry.visible = value;
-}
-
 // OFFSET: 0x00869730
 // FUNCTION: fn_10967
 void UIButton::SetTooltip(const char* text) {

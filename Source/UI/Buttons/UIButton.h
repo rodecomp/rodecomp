@@ -72,6 +72,14 @@ protected:
   /* 00B0 */ int m_argument;
 };
 
+// OFFSET: 0x005FEAF0
+// FUNCTION: fn_04132
+inline void UIButton::Enable(unsigned char value) {
+  this->m_disabled = value ^ 1;
+  this->Invalidate();
+  this->geometry.visible = value;
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIButton) == 0xB4);
 #endif
