@@ -794,7 +794,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   } else {
     std::string name;
     if (target->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
-      name = "??????";
+      name = std::string_view("??????");
     } else {
       name = static_cast<const std::string&>(this->ActorName(pick->accountId));
     }
