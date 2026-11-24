@@ -1748,7 +1748,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       blue = 255;
     }
 
-    const int textY = y + 70;
+    volatile int textY = y + 70;
     const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
     if (level != 0) {
       if (usesLevel) {
