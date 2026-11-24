@@ -1906,6 +1906,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
   for (UICashEmotionPiece* item : recycled) {
     delete item;
   }
+  recycled.clear();
   this->UpdateScrollBars();
 }
 
