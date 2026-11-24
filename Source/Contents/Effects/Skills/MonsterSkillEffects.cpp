@@ -247,7 +247,7 @@ void CSprArrowEffect::Render() {
 }
 
 // INLINED
-static const char* BulletName(int job) {
+static const char* BulletNameForSprite(int job) {
   switch (job) {
   case JT_DISGUISER:
   case JT_G_DISGUISER:
@@ -314,7 +314,7 @@ void CSprArrowEffect::SetBulletSprite(int job) {
     return;
   }
 
-  const std::string_view name = BulletName(job);
+  const std::string_view name = BulletNameForSprite(job);
   if (name.empty()) {
     this->alive = false;
     return;
@@ -4995,4 +4995,65 @@ void CSavageImpactEffect::Open() {
   this->emitter->Load(std::string("savage_impact\\savage_impact\\savage_impact.str"));
   this->emitter->m_angle = static_cast<float>(angle);
   this->AddEvent(0, "effect\\SHC_SAVAGE_IMPACT.wav", 0, 0);
+}
+
+// OFFSET: 0x0070C550
+// FUNCTION: fn_46569
+const char* BulletName(int job) {
+  switch (job) {
+  case JT_DISGUISER:
+  case JT_G_DISGUISER:
+  case JT_SPIRIT_H_WATER_S:
+  case JT_SPIRIT_H_WATER_L:
+  case JT_SPIRIT_H_WATER_SL:
+  case JT_SPIRIT_C_WATER_S:
+  case JT_SPIRIT_C_WATER_L:
+  case JT_SPIRIT_C_WATER_SL:
+    return "canon_bullet";
+  case JT_MD_PRI_RIGEL_AC:
+  case JT_MD_PRI_RIGEL_ACS:
+    return "RIGEL_BULLET";
+  case JT_SPIRIT_I_WATER_S:
+    return "phylla_bullet";
+  case JT_SPIRIT_B_FLAME_M:
+  case JT_SPIRIT_B_FLAME_L:
+  case JT_SPIRIT_B_FLAME_SL:
+    return "mg_corruption_root_h_bullet";
+  case JT_SPIRIT_C_FLAME_L:
+  case JT_SPIRIT_C_FLAME_SL:
+  case JT_SPIRIT_R_FLAME_L:
+  case JT_SPIRIT_R_FLAME_SL:
+    return "mg_corruption_root_bullet";
+  case JT_VR_MD_DREGG1:
+    return "VR_MD_DREGG1_bullet";
+  case JT_VR_MD_DREGG2:
+    return "VR_MD_DREGG2_bullet";
+  case JT_EP21_YORKER_B:
+    return "EP21_YORKER_Bullet";
+  case JT_EP21_YOSTER_D:
+    return "EP21_YOSTER_D_bullet";
+  case JT_EP21_YOSTER_E:
+    return "EP21_YOSTER_E_bullet";
+  case JT_VIOLEN:
+  case JT_CP_VIOLEN:
+    return "violen_bullet";
+  case JT_EP21_YORMI_B:
+  case JT_EP21_YORMI_B_H:
+    return "EP21_YORMI_bullet";
+  case JT_EP21_YORDOS_A:
+  case JT_G_EP21_YORDOS_A:
+  case JT_EP21_YORDOS_A_H:
+    return "EP21_YORDOS_Bullet";
+  case JT_EP21_YOSCOPUS_B:
+  case JT_EP21_YOSCOPUS_B_H:
+    return "EP21_YOSCOPUS_Bullet";
+  case JT_CH1_SHADOW_JAILER:
+    return "CH1_SHADOW_JAILER_bullet";
+  case JT_CH1_SCABIOSA:
+    return "CH1_SCABIOSA_bullet";
+  case JT_CH1_LOBELIA:
+    return "CH1_LOBELIA_bullet";
+  default:
+    return "skel_archer_arrow";
+  }
 }
