@@ -487,8 +487,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
       break;
     }
 
-    std::string text;
-    text = value;
+    std::string text(value);
     constexpr char highlight[] = {'^', '7', '7', '7', '7', '7', '7'};
     if (text.find(highlight, 0, sizeof(highlight)) == std::string::npos) {
       continue;
@@ -497,7 +496,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     std::smatch match;
     std::regex pattern("\\^000000");
     std::regex_search(text, match, pattern);
-    while (!match.empty()) {
+    while (match.size() > 0) {
       std::string line = std::string(match.prefix().first, match.prefix().second) + match.str();
       this->descriptionViewer->AddLine(line);
       ++lines;
