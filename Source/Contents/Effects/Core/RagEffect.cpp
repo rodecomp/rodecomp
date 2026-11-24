@@ -15105,17 +15105,13 @@ void CRagEffect::StatusIconColumn() {
   }
 
   if (this->state.count != 0) {
-    this->SendMsg(nullptr, AM_CHILD_DEAD, 0, 100, 0, 0, 0, 0);
     this->state.count = 0;
     this->state.stateCnt = 0;
+    this->SendMsg(nullptr, AM_CHILD_DEAD, 0, 100, 0, 0, 0, 0);
   }
 
   if (this->state.stateCnt != 0) {
     return;
-  }
-
-  for (int index = 0; index < 100; ++index) {
-    g_session.m_statusIconIds[index] = -1;
   }
 
   int foundCount = 0;
@@ -15124,10 +15120,17 @@ void CRagEffect::StatusIconColumn() {
   int row = 0;
   const int limit = g_renderer->viewport.height - 50;
 
-  for (int type = 0; type < 5; ++type) {
-    for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
-      const char* texture = g_session.GetEFSTImgFileName(effect.id, type);
-      const int id = effect.id == EFST_MOVHASTE_INFINITY ? EFST_INC_AGI : static_cast<int>(effect.id);
+  for (int index = 0; index < 100; ++index) {
+    g_session.m_statusIconIds[index] = -1;
+  }
+
+  for (int type = 0; type <= 5; ++type) {
+    for (auto it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
+      int id = it->id;
+      const char* texture = g_session.GetEFSTImgFileName(id, type);
+      if (id == EFST_MOVHASTE_INFINITY) {
+        id = EFST_INC_AGI;
+      }
 
       if (texture == nullptr) {
         continue;
