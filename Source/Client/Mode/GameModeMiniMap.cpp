@@ -546,73 +546,77 @@ void CGameMode::DrawMiniMapMarker(
 // OFFSET: 0x00CD1C50
 // FUNCTION: fn_21258
 void CGameMode::DrawMiniMapCoordinates() {
-  const int coordinateX = this->scene->player->pkRank;
-  const int coordinateY = this->scene->player->pkTotal;
-  if (coordinateY <= 0 || coordinateX <= 0) {
+  const int rank = this->scene->player->pkRank;
+  const int total = this->scene->player->pkTotal;
+  if (total <= 0 || rank <= 0) {
     return;
   }
 
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.act"));
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.spr"));
 
-  int digits[4];
-  int count;
-  int value = coordinateY;
-  if (value > 9999) {
-    value = 9999;
-    count = 4;
-  } else {
-    count = 1;
-    if (value > 999) {
-      count = 4;
-    } else if (value > 99) {
-      count = 3;
-    } else if (value > 9) {
-      count = 2;
-    }
+  int number = total;
+  if (number > 9999) {
+    number = 9999;
+  }
+  if (number < 0) {
+    number = 0;
   }
 
-  int remaining = value;
-  digits[0] = remaining % 10;
-  remaining /= 10;
-  digits[1] = remaining % 10;
-  remaining /= 10;
-  digits[2] = remaining % 10;
-  digits[3] = remaining / 10;
-
-  auto& viewportRef = g_renderer->viewport;
-  const int y = viewportRef.height - 30;
-  int offset = count * 25;
-  for (int index = 0; index < count; ++index, offset -= 25) {
-    this->DrawActionSprite(viewportRef.width - 80 + offset, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-  }
-
-  this->DrawActionSprite(
-    viewportRef.width - 80, viewportRef.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
-  );
-
-  value = coordinateX;
-  count = 1;
-  if (value > 999) {
+  int count = 1;
+  if (number > 999) {
     count = 4;
-  } else if (value > 99) {
+  } else if (number > 99) {
     count = 3;
-  } else if (value > 9) {
+  } else if (number > 9) {
     count = 2;
   }
 
-  remaining = value;
-  digits[0] = remaining % 10;
-  remaining /= 10;
-  digits[1] = remaining % 10;
-  remaining /= 10;
-  digits[2] = remaining % 10;
-  digits[3] = remaining / 10;
+  int digits[4];
+  digits[0] = number % 10;
+  number /= 10;
+  digits[1] = number % 10;
+  number /= 10;
+  digits[2] = number % 10;
+  number /= 10;
+  digits[3] = number;
 
-  int x = viewportRef.width - 105;
-  const int secondY = viewportRef.height - 50;
-  for (int index = 0; index < count; ++index, x -= 25) {
-    this->DrawActionSprite(x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  int x = g_renderer->viewport.width - 80;
+  int y = g_renderer->viewport.height - 30;
+  for (int i = 0; i < count; ++i) {
+    this->DrawActionSprite(x + 25 * count - i * 25, y, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  }
+
+  x = g_renderer->viewport.width - 80;
+  y = g_renderer->viewport.height - 40;
+  this->DrawActionSprite(x, y, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+
+  number = rank;
+  if (number < 0) {
+    number = 0;
+  }
+
+  count = 1;
+  if (number > 999) {
+    count = 4;
+  } else if (number > 99) {
+    count = 3;
+  } else if (number > 9) {
+    count = 2;
+  }
+
+  digits[0] = number % 10;
+  number /= 10;
+  digits[1] = number % 10;
+  number /= 10;
+  digits[2] = number % 10;
+  number /= 10;
+  digits[3] = number;
+
+  x = g_renderer->viewport.width - 80;
+  y = g_renderer->viewport.height - 50;
+  for (int i = 0; i < count; ++i) {
+    this->DrawActionSprite(x - i * 25 - 25, y, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 }
 
