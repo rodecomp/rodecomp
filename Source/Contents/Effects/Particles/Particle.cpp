@@ -570,12 +570,13 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
 
   for (int i = 0; i <= 3; ++i) {
     const float rotated = vertices[i].y * cosine + vertices[i].x * sine;
-    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->m_screen.x;
+    auto& screen = this->m_screen;
+    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + screen.x;
     if (g_session.IsScreenShakeActive()) {
-      const float shake = screenY - this->m_screen.y;
-      vertices[i].y = (this->m_screen.y - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
+      const float shake = screenY - screen.y;
+      vertices[i].y = (screen.y - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
     } else {
-      vertices[i].y = ((transform->y - 240.0f) + rotated) * scale + this->m_screen.y;
+      vertices[i].y = ((transform->y - 240.0f) + rotated) * scale + screen.y;
     }
   }
 
