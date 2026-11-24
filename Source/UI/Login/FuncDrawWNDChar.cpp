@@ -359,14 +359,12 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   }
 
   offset.x += this->offsetX;
-  int ridingOffset;
   if (IsIgnoredRidingState(this->m_layers[layer], this->m_job, this->m_action - this->m_action % 8, this->m_flags) == true) {
-    ridingOffset = SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
+    offset.y += SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
   } else {
-    ridingOffset = this->offsetY;
+    offset.y += this->offsetY;
   }
 
-  offset.y += ridingOffset;
   if (layer == 4) {
     switch (this->m_topAccessory) {
     case 181:
