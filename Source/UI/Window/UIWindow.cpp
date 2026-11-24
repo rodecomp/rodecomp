@@ -2035,16 +2035,10 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
     char* buffer = new char[count + 1];
     std::memcpy(buffer, begin, count);
 
-    if (newline) {
-      buffer[count - 1] = '\0';
-
-      if (std::strlen(buffer) == 0) {
-        lines.push_back(" ");
-      } else {
-        AppendLine(lines, buffer);
-      }
+    buffer[newline ? count - 1 : count] = '\0';
+    if (newline && std::strlen(buffer) == 0) {
+      lines.push_back(" ");
     } else {
-      buffer[count] = '\0';
       AppendLine(lines, buffer);
     }
 
