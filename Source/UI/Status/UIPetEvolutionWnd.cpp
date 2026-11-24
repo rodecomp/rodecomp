@@ -156,9 +156,9 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         return 0;
       }
 
+      const int evolvedEggId = this->m_evolvedEggId;
       int count = static_cast<int>(materials.size());
       std::uint16_t length = static_cast<std::uint16_t>(count * 2 + 8);
-      const int evolvedEggId = this->m_evolvedEggId;
       PACKET_CZ_PET_EVOLUTION packet;
       std::memset(packet.materials, 0, sizeof(packet.materials));
       packet.packetType = ID_CZ_PET_EVOLUTION;
@@ -166,7 +166,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       packet.evolvedEggId = evolvedEggId;
       std::memcpy(packet.materials, materials.data(), count * 2);
       GetRagConnection().Send(static_cast<short>(length), &packet);
-        g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
+      g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
       break;
     }
 
