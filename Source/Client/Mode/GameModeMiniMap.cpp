@@ -413,6 +413,7 @@ void CGameMode::DrawMiniMapMarker(
   // GLOBAL: gl_24933
   static int s_lastPlayerY;
 
+  const float viewWidth = view.right - view.left;
   const float scale = g_shadedColorScale;
   const float xF = static_cast<float>(x);
   const int width = this->scene->terrain->width;
@@ -430,7 +431,6 @@ void CGameMode::DrawMiniMapMarker(
   }
 
   const double marginX = (scale - static_cast<float>(mapWidth)) * g_depthAverageHalf;
-  const float viewWidth = view.right - view.left;
   const double marginY = (scale - static_cast<float>(mapHeight)) * g_depthAverageHalf;
   const float viewLeft = view.left * scale / viewWidth;
   const double offsetX = (xF * static_cast<float>(mapWidth) / widthF + marginX) / viewWidth;
