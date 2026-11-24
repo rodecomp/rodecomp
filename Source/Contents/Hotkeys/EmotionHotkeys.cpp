@@ -32,7 +32,8 @@ bool CSession::HasEmotionHotkeyChanges() const {
     const std::string* current = this->m_emotionHotkeys.current.data();
     const std::string* saved = this->m_emotionHotkeys.saved.data();
     for (int i = 0; i < 10; ++i) {
-      if (saved[i] != current[i]) {
+      const std::string& entry = saved[i];
+      if (entry != current[i]) {
         return true;
       }
     }
