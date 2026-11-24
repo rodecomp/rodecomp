@@ -448,6 +448,28 @@ void UIGradeEnchant_BtnEnhancedUp::OnMouseHover(int x, int y) {
   mode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
 }
 
+// OFFSET: 0x007E9870
+// FUNCTION: fn_46633
+inline void UIGradeEnchantWnd::ShowResultMessage() {
+  switch (this->result) {
+  case ENCHANTGRADE_UPGRADE_SUCCESS:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_SUCCEESS)), 0xFFFF00, 0, 0, 0);
+    break;
+  case ENCHANTGRADE_UPGRADE_FAILED:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL)), 0xFFFF00, 0, 0, 0);
+    break;
+  case ENCHANTGRADE_UPGRADE_DOWNGRADE:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_DOWNGRADE)), 0xFFFF00, 0, 0, 0);
+    break;
+  case ENCHANTGRADE_UPGRADE_BREAK:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_BREAK)), 0xFFFF00, 0, 0, 0);
+    break;
+  case ENCHANTGRADE_UPGRADE_PROTECTED:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_PROTECT)), 0xFFFF00, 0, 0, 0);
+    break;
+  }
+}
+
 // OFFSET: 0x007E8CC0
 // FUNCTION: fn_09763
 void UIGradeEnchantWnd::OnProcess() {
@@ -474,23 +496,7 @@ void UIGradeEnchantWnd::OnProcess() {
   }
 
   if (this->state == 2 && now >= this->resultTick + 3000) {
-    switch (this->result) {
-    case ENCHANTGRADE_UPGRADE_SUCCESS:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_SUCCEESS)), 0xFFFF00, 0, 0, 0);
-      break;
-    case ENCHANTGRADE_UPGRADE_FAILED:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL)), 0xFFFF00, 0, 0, 0);
-      break;
-    case ENCHANTGRADE_UPGRADE_DOWNGRADE:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_DOWNGRADE)), 0xFFFF00, 0, 0, 0);
-      break;
-    case ENCHANTGRADE_UPGRADE_BREAK:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_BREAK)), 0xFFFF00, 0, 0, 0);
-      break;
-    case ENCHANTGRADE_UPGRADE_PROTECTED:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL_PROTECT)), 0xFFFF00, 0, 0, 0);
-      break;
-    }
+    this->ShowResultMessage();
     this->ResetItem();
   }
 

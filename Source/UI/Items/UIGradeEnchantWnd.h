@@ -86,6 +86,7 @@ public:
   int SelectedMaterialZeny();
   int SuccessRate();
   void UpdateEnchantMessages();
+  void ShowResultMessage();
   void SetEnchantInfo(
     short index, int value, int materialCount, GradeEnchantInfo info, int enchantOption, int enchantOptionCount, const GradeEnchantMaterial* materials
   );
