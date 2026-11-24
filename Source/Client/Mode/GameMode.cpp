@@ -8241,26 +8241,29 @@ void CGameMode::ProcessRightButtonDrag() {
         range = 20.0f;
       }
       g_cameraPitch = this->camera->camera.desiredPitch - static_cast<float>(delta);
-      float limit;
       if (this->hasViewParameters) {
         if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
           g_cameraPitch = static_cast<float>(this->viewParameters[7]);
         }
-        limit = static_cast<float>(this->viewParameters[6]);
+        if (g_cameraPitch > static_cast<float>(this->viewParameters[6])) {
+          g_cameraPitch = static_cast<float>(this->viewParameters[6]);
+        }
       } else {
         if (g_cameraPitch < -45.0f - range) {
           g_cameraPitch = -45.0f - range;
         }
+
+        float limit;
         if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->camera->camera.desiredDistance <= g_serviceOptionJitterScale) {
           limit = range - 45.0f;
         } else {
           limit = range - 70.0f;
         }
+        if (g_cameraPitch > limit) {
+          g_cameraPitch = limit;
+        }
       }
 
-      if (g_cameraPitch > limit) {
-        g_cameraPitch = limit;
-      }
       this->camera->camera.desiredPitch = g_cameraPitch;
     }
 
@@ -8331,28 +8334,34 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     const float step = g_mouse.wheel > 0 ? -5.0f : 5.0f;
-    const float range = this->canRotateView ? 20.0f : 10.0f;
+    float range = 10.0f;
+    if (this->canRotateView) {
+      range = 20.0f;
+    }
     g_cameraPitch = this->camera->camera.desiredPitch - step;
-    float limit;
     if (this->hasViewParameters) {
       if (g_cameraPitch < static_cast<float>(this->viewParameters[7])) {
         g_cameraPitch = static_cast<float>(this->viewParameters[7]);
       }
-      limit = static_cast<float>(this->viewParameters[6]);
+      if (g_cameraPitch > static_cast<float>(this->viewParameters[6])) {
+        g_cameraPitch = static_cast<float>(this->viewParameters[6]);
+      }
     } else {
       if (g_cameraPitch < -45.0f - range) {
         g_cameraPitch = -45.0f - range;
       }
+
+      float limit;
       if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->camera->camera.desiredDistance <= g_serviceOptionJitterScale) {
         limit = range - 45.0f;
       } else {
         limit = range - 70.0f;
       }
+      if (g_cameraPitch > limit) {
+        g_cameraPitch = limit;
+      }
     }
 
-    if (g_cameraPitch > limit) {
-      g_cameraPitch = limit;
-    }
     this->camera->camera.desiredPitch = g_cameraPitch;
     return;
   }
@@ -8370,8 +8379,9 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
         return;
       }
 
-      if (shortcuts->m_slots[3]->enabled && automatic->Contains(shortcuts->m_slots[3]->itemId)) {
-        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[3]->itemId), 1);
+      if (shortcuts->m_slots[7]->enabled && automatic->Contains(shortcuts->m_slots[7]->itemId)) {
+        const int option = automatic->CancelOption(shortcuts->m_slots[7]->itemId);
+        g_session.SetOption(option, 1);
       } else {
         automatic->DisableAll();
       }
@@ -8382,8 +8392,9 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
         return;
       }
 
-      if (shortcuts->m_slots[2]->enabled && automatic->Contains(shortcuts->m_slots[2]->itemId)) {
-        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[2]->itemId), 1);
+      if (shortcuts->m_slots[6]->enabled && automatic->Contains(shortcuts->m_slots[6]->itemId)) {
+        const int option = automatic->CancelOption(shortcuts->m_slots[6]->itemId);
+        g_session.SetOption(option, 1);
       } else {
         automatic->DisableAll();
       }
@@ -8395,42 +8406,50 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
 
   const float step = g_mouse.wheel > 0 ? -24.3f : 24.3f;
   g_cameraDistance = this->camera->camera.desiredDistance - step;
-  float maxDistance = this->canRotateView ? g_serviceOptionJitterScale : g_cameraBaseDistance;
+  float maxDistance = g_cameraBaseDistance;
+  if (this->canRotateView) {
+    maxDistance = g_serviceOptionJitterScale;
+  }
   CSkillInfo zoomSkill = g_session.m_skillBundle.Lookup(0x1B9);
-  bool extendedZoom = false;
   if (this->hasViewParameters) {
     if (g_cameraDistance < static_cast<float>(this->viewParameters[0])) {
       g_cameraDistance = static_cast<float>(this->viewParameters[0]);
     }
     maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
-  } else if (zoomSkill.level <= 0 && this->scene->player->render.state == 6 && !this->scene->player->HasId(EF_BLIND)) {
-    switch (g_session.m_job) {
-    case JT_STAR:
-    case JT_STAR_B:
-    case JT_STAR_EMPEROR:
-    case JT_STAR_EMPEROR_B:
-    case JT_SKY_EMPEROR:
-      extendedZoom = true;
-      break;
-    }
-  }
-
-  if (extendedZoom) {
-    if (g_cameraDistance < g_cameraMinDistance) {
-      g_cameraDistance = g_cameraMinDistance;
-    }
-    if (g_cameraDistance > maxDistance * 3.0f) {
-      g_cameraDistance = maxDistance * 3.0f;
-    }
-    if (g_cameraDistance > maxDistance && this->camera->camera.desiredPitch > -50.0f) {
-      this->camera->camera.desiredPitch = -50.0f;
-    }
-  } else {
-    if (!this->hasViewParameters && g_cameraDistance < g_cameraMinDistance) {
-      g_cameraDistance = g_cameraMinDistance;
-    }
     if (g_cameraDistance > maxDistance) {
       g_cameraDistance = maxDistance;
+    }
+  } else {
+    bool extendedZoom = false;
+    if (zoomSkill.level <= 0 && this->scene->player->render.state == 6 && !this->scene->player->HasId(EF_BLIND)) {
+      switch (g_session.m_job) {
+      case JT_STAR:
+      case JT_STAR_B:
+      case JT_STAR_EMPEROR:
+      case JT_STAR_EMPEROR_B:
+      case JT_SKY_EMPEROR:
+        extendedZoom = true;
+        break;
+      }
+    }
+
+    if (extendedZoom) {
+      if (g_cameraDistance < g_cameraMinDistance) {
+        g_cameraDistance = g_cameraMinDistance;
+      }
+      if (g_cameraDistance > maxDistance * 3.0f) {
+        g_cameraDistance = maxDistance * 3.0f;
+      }
+      if (g_cameraDistance > maxDistance && this->camera->camera.desiredPitch > -50.0f) {
+        this->camera->camera.desiredPitch = -50.0f;
+      }
+    } else {
+      if (g_cameraDistance < g_cameraMinDistance) {
+        g_cameraDistance = g_cameraMinDistance;
+      }
+      if (g_cameraDistance > maxDistance) {
+        g_cameraDistance = maxDistance;
+      }
     }
   }
 
