@@ -64,7 +64,10 @@ int CSession::HotkeyIndex(int tab, int index) const {
 
   int count = 0;
   g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
-  return index >= count ? -1 : index;
+  if (index >= count) {
+    index = -1;
+  }
+  return index;
 }
 
 // INLINED
