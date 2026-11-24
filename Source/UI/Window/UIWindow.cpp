@@ -1802,17 +1802,17 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
 // FUNCTION: fn_16978
 std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold) {
   std::string display = DisplayUrlTextTag(text);
-  display = DisplayNavigationTextTag(display);
+  display = DisplayTextTag(display, g_naviTagBegin, g_naviTagEnd);
   display = DisplayTipBoxTextTag(display);
-  display = DisplayItemTextTag(display);
+  display = DisplayTextTag(display, g_itemTagBegin, g_itemTagEnd);
   display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.chatWnd) {
-    display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
+    display = g_windowMgr.chatWnd->ConvertChat(display);
   }
 
   display = g_navigationLinkParser->DisplayNavigationLink(display);
-  display = DisplayQuestTextTag(display);
+  display = DisplayTextTag(display, g_questTagBegin, g_questTagEnd);
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
     return display;
