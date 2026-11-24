@@ -4463,18 +4463,16 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
-  bool isMaxLevel;
+  bool isMaxLevel = false;
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
-    const int skill = static_cast<std::int16_t>(this->characterLevel);
-    if (g_session.m_maxBaseLevelHomun == skill) {
+    const int level = static_cast<std::int16_t>(this->characterLevel);
+    if (g_session.m_maxBaseLevelHomun == level) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL150_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (g_session.m_maxBaseLevel != skill) {
-      this->hasLevelAura = 0;
-      return;
+    if (g_session.m_maxBaseLevel == level && g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) == 0) {
+      isMaxLevel = true;
     }
-    isMaxLevel = g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) == 0;
   } else if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
     if (g_session.m_maxBaseLevelDoram == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
@@ -4482,8 +4480,8 @@ void CGameActor::UpdateMaxLevelAura() {
     }
     this->hasLevelAura = 0;
     return;
-  } else {
-    isMaxLevel = g_session.m_maxBaseLevel == static_cast<std::int16_t>(this->characterLevel);
+  } else if (g_session.m_maxBaseLevel == static_cast<std::int16_t>(this->characterLevel)) {
+    isMaxLevel = true;
   }
 
   if (isMaxLevel) {
