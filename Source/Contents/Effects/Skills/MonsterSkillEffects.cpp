@@ -1428,10 +1428,13 @@ void CFootprintStrEffect::SpawnFootprint() {
 // OFFSET: 0x00713E00
 // FUNCTION: fn_07252
 void CFootprintStrEffect::OnProcess() {
-  const float dy = this->position[1] - this->lastPosition.y;
   const float dx = this->position[0] - this->lastPosition.x;
+  const float dy = this->position[1] - this->lastPosition.y;
   const float dz = this->position[2] - this->lastPosition.z;
-  if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->stepDistance) {
+  float distance = dx * dx;
+  distance += dy * dy;
+  distance += dz * dz;
+  if (static_cast<double>(distance) > this->stepDistance) {
     this->SpawnFootprint();
   }
 
