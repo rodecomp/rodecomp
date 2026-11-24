@@ -339,14 +339,14 @@ int SpriteLayerRenderer::DrawBodyOutline(int layer) {
   }
 
   const float offset = this->rhw * 1000.0f + 2.0f;
-  this->pc->RenderBodyOutline(layer, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 1, &this->position.x, this->x - offset, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 2, &this->position.x, offset + this->x, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 3, &this->position.x, this->x - offset, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 4, &this->position.x, offset + this->x, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 5, &this->position.x, offset + this->x, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 6, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  return layer + 7;
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  return layer;
 }
 
 // OFFSET: 0x00640ED0
