@@ -72,7 +72,8 @@ public:
 
 class UICashShopWnd_Item : public UIWindow {
 public:
-  // INLINED
+  // OFFSET: 0x007CD930
+  // FUNCTION: fn_46530
   UICashShopWnd_Item()
       : UIWindow(0), m_addButton(nullptr), m_largeLayout(false), m_soldOut(nullptr) {
   }
