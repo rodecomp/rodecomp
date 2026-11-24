@@ -1264,14 +1264,12 @@ void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int f
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
   context.SetColor(color);
-  const int bytes = static_cast<int>(std::strlen(text));
   if (!width) {
-    context.Draw(x, y, text, bytes);
+    context.Draw(x, y, text, static_cast<int>(std::strlen(text)));
   } else {
     SIZE size;
-    context.Measure(text, bytes, &size);
-    const int extent = size.cx;
-    context.Draw(static_cast<int>((width - extent) * 0.5 + x), y, text, static_cast<int>(std::strlen(text)));
+    context.Measure(text, static_cast<int>(std::strlen(text)), &size);
+    context.Draw(static_cast<int>((width - size.cx) * 0.5 + x), y, text, static_cast<int>(std::strlen(text)));
   }
 }
 
