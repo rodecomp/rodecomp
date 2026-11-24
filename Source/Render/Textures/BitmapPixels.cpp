@@ -906,7 +906,7 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
         }
 
         scratch[row * drawWidth + output] = source[row * sourceWidth + previous];
-        if (column == sourceWidth - 1 && output != drawWidth - 1) {
+        if (sourceWidth - 1 == column && drawWidth - 1 != output) {
           scratch[row * drawWidth + drawWidth - 1] = source[row * sourceWidth + previous];
         }
 
