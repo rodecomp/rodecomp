@@ -119,11 +119,13 @@ __forceinline void CLevel99Orb2Effect::UpdateParticle(CParticle* particle) {
           const int delta = static_cast<int>(particle->animationValues[i + 2]) - current;
           particle->animationValues[i] = static_cast<float>(current + (delta > 0 ? 3 : -2));
           if (std::abs(delta) < 3) {
+            int target;
             if (delta > 0) {
-              particle->animationValues[i + 2] = static_cast<float>(Random(current));
+              target = Random(current);
             } else {
-              particle->animationValues[i + 2] = static_cast<float>(359 - Random(current));
+              target = 359 - Random(current);
             }
+            particle->animationValues[i + 2] = static_cast<float>(target);
           }
         }
 
