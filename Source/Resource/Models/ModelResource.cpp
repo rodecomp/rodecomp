@@ -798,35 +798,39 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
   return control;
 }
 
+// INLINED
+static vector3d TransformPoint(const vector3d& point, const float* m) {
+  return vector3d{
+    point.x * m[0] + point.y * m[3] + point.z * m[6] + m[9],
+    point.x * m[1] + point.y * m[4] + point.z * m[7] + m[10],
+    point.x * m[2] + point.y * m[5] + point.z * m[8] + m[11]
+  };
+}
+
 // OFFSET: 0x00758710
 // FUNCTION: fn_08008
 bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const {
   matrix matrix;
   matrix.MakeZRotation(3.141592f);
-  const float* m = matrix.values;
-  const float x = this->position[1] * m[3] + this->position[0] * m[0] + this->position[2] * m[6] + m[9];
-  const float y = this->position[0] * m[1] + this->position[1] * m[4] + this->position[2] * m[7] + m[10];
-  const float z = this->position[0] * m[2] + this->position[1] * m[5] + this->position[2] * m[8] + m[11];
+  const vector3d position = TransformPoint(vector3d{this->position[0], this->position[1], this->position[2]}, matrix.values);
   matrix.Compose(world, view);
 
-  const float screenX = y * m[3] + x * m[0] + z * m[6] + m[9];
-  const float screenY = x * m[1] + y * m[4] + z * m[7] + m[10];
-  const float depth = y * m[5] + x * m[2] + z * m[8] + m[11];
-  const float deltaX = eye[0] - x;
-  const float deltaY = eye[1] - y;
-  const float deltaZ = eye[2] - z;
+  const vector3d projected = TransformPoint(position, matrix.values);
+  const float deltaX = eye[0] - position.x;
+  const float deltaY = eye[1] - position.y;
+  const float deltaZ = eye[2] - position.z;
   const float distance = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const float slope = std::min(std::fabs(1.0f / distance * deltaY), g_projectionDepthNumerator);
   const float height = this->topHeight - (this->topHeight - this->baseHeight) * slope;
   const float halfWidth = SquareRoot(this->baseHeight * this->baseHeight * g_depthAverageHalf);
   const float halfHeight = SquareRoot(height * height * g_depthAverageHalf);
-  const float inverseDepth = g_projectionDepthNumerator / depth;
+  const float inverseDepth = g_projectionDepthNumerator / projected.z;
 
   rect[4] = inverseDepth;
-  rect[0] = (screenX - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
-  rect[1] = (screenY - halfHeight) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
-  rect[2] = (halfWidth + screenX) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
-  rect[3] = (halfHeight + screenY) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
+  rect[0] = (projected.x - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
+  rect[1] = (projected.y - halfHeight) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
+  rect[2] = (halfWidth + projected.x) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
+  rect[3] = (halfHeight + projected.y) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
 
   return !(static_cast<unsigned>(rect[0]) > g_renderer->viewport.width && static_cast<unsigned>(rect[2]) > g_renderer->viewport.width &&
            static_cast<unsigned>(rect[1]) > g_renderer->viewport.height && static_cast<unsigned>(rect[3]) > g_renderer->viewport.height);
