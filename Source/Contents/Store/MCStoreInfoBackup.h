@@ -16,6 +16,7 @@ public:
   CMCStoreInfoBackup();
   virtual ~CMCStoreInfoBackup();
   void Clear();
+  void InitializeServiceUrls();
   int Restore(unsigned char wholeItem, int maximum);
   std::string LoadUrl() const;
   std::string SaveUrl() const;

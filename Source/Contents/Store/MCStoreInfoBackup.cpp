@@ -71,18 +71,24 @@ std::string CMCStoreInfoBackup::SaveUrl() const {
   return this->saveUrl;
 }
 
-// OFFSET: 0x006070E0
-// FUNCTION: fn_04237
-void CMCStoreInfoBackup::Reset() {
-  this->loaded = false;
-  this->title = "";
-  this->items.clear();
+// OFFSET: 0x00606A70
+// FUNCTION: fn_46719
+void CMCStoreInfoBackup::InitializeServiceUrls() {
   const std::string base = g_session.ResolveAccountServiceBase();
 
   if (!base.empty()) {
     this->saveUrl = base + "/MerchantStore/save";
     this->loadUrl = base + "/MerchantStore/load";
   }
+}
+
+// OFFSET: 0x006070E0
+// FUNCTION: fn_04237
+void CMCStoreInfoBackup::Reset() {
+  this->loaded = false;
+  this->title = "";
+  this->items.clear();
+  this->InitializeServiceUrls();
 }
 
 // OFFSET: 0x00605FA0
