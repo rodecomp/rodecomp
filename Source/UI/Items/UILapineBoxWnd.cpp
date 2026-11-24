@@ -45,6 +45,18 @@ UILapineBoxWnd::UILapineBoxWnd()
       moveButton(nullptr), ingredientList(nullptr), ingredientId(0), noticeTick(0), noticeDuration(3000), waiting(0) {
 }
 
+// OFFSET: 0x006025B0
+// FUNCTION: fn_46616
+bool UILapineBox_IngredientListWnd::TransferIngredient(std::uint32_t id, int quantity) {
+  UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(this->parent);
+  if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
+    if (this->SendMsg(this, UM_DECITEM, id, 0, 0, 0) >= 0) {
+      return static_cast<UILapineBoxWnd*>(this->parent)->AddIngredient(id, quantity);
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x006006D0
 // FUNCTION: fn_04160
 void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
@@ -59,13 +71,7 @@ void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
     return;
   }
 
-  const int quantity = this->quantity;
-  UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(list->parent);
-  if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
-    if (list->SendMsg(list, UM_DECITEM, id, 0, 0, 0) >= 0) {
-      static_cast<UILapineBoxWnd*>(list->parent)->AddIngredient(id, quantity);
-    }
-  }
+  list->TransferIngredient(id, this->quantity);
 }
 
 // OFFSET: 0x00600830
