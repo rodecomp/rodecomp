@@ -548,6 +548,11 @@ inline bool CashEmotionPackOrder::operator()(const int& left, const int& right) 
   return result > 0;
 }
 
+// INLINED
+static inline void SortPackIds(CCashEmotionMgr* mgr, std::vector<int>& ids, bool ascending) {
+  std::sort(ids.begin(), ids.end(), CashEmotionPackOrder{mgr, ascending});
+}
+
 // OFFSET: 0x00592820
 // FUNCTION: fn_02860
 template <> template <> constexpr decltype(auto) std::_Ref_fn<CashEmotionPackOrder>::operator()<int&, int&>(int& left, int& right) {
@@ -764,17 +769,16 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
   std::vector<int> result;
 
   auto it = this->emotionOrder.find(this->BasePackId());
-  if (it == this->emotionOrder.end()) {
+  if (this->emotionOrder.end() == it) {
     return result;
   }
 
-  const std::vector<int>& order = it->second;
-  result.reserve(order.size());
+  result.reserve(it->second.size());
   if (filter) {
     std::vector<int> others;
-    others.reserve(order.size());
+    others.reserve(it->second.size());
 
-    for (int emotionId : order) {
+    for (int emotionId : it->second) {
       const char* name = this->GetBaseEmotionName(emotionId);
       if (name) {
         if (std::strstr(name, filter)) {
@@ -785,12 +789,12 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
       }
     }
 
-    std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
+    SortPackIds(this, result, true);
     for (const int& emotionId : others) {
       result.push_back(emotionId);
     }
   } else {
-    std::copy(order.begin(), order.end(), std::back_inserter(result));
+    std::copy(it->second.cbegin(), it->second.cend(), std::back_inserter(result));
   }
 
   return result;
@@ -1059,8 +1063,8 @@ std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const
       }
     }
 
-    std::sort(matched.begin(), matched.end(), CashEmotionPackOrder{this, true});
-    std::sort(others.begin(), others.end(), CashEmotionPackOrder{this, true});
+    SortPackIds(this, matched, true);
+    SortPackIds(this, others, true);
     for (const int& packId : others) {
       matched.push_back(packId);
     }
@@ -1068,7 +1072,7 @@ std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const
     return matched;
   } else {
     std::vector<int> result(packs);
-    std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
+    SortPackIds(this, result, true);
     return result;
   }
 }
@@ -1522,8 +1526,7 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
     return;
   }
 
-  const fmt::string_view messageFormat(format);
-  const std::string text = fmt::vformat(messageFormat, fmt::make_format_args(value));
+  const std::string text = fmt::format(format, value);
   MessageBoxA(nullptr, text.c_str(), std::string("").c_str(), MB_OK);
 }
 
