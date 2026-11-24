@@ -1499,3 +1499,9 @@ std::vector<unsigned char> CSession::BuildMessengerReplayRecords() {
   AppendRecord(records, MakeReplayRecord(4001, nullptr, 0));
   return records;
 }
+
+// OFFSET: 0x00B83CB0
+// FUNCTION: fn_46521
+ReplayCachedPacket::~ReplayCachedPacket() {
+  this->bytes.clear();
+}

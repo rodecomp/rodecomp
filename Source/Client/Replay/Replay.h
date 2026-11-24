@@ -25,10 +25,7 @@ struct ReplayCachedPacket {
     this->enabled = false;
   }
   ReplayCachedPacket(const ReplayCachedPacket& other);
-  // INLINED
-  ~ReplayCachedPacket() {
-    this->bytes.clear();
-  }
+  ~ReplayCachedPacket();
 };
 
 #pragma pack(push, 1)
