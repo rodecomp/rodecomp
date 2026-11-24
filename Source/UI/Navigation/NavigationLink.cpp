@@ -1308,19 +1308,20 @@ int CCreateLineInfo::ParseEmotion(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
   std::smatch match;
 
-  bool missing = !std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"));
-  if (missing) {
-    missing = !std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"));
-    if (missing) {
+  if (!std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"))) {
+    if (!std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"))) {
       return index;
     }
   }
 
   if (match.size() >= 2) {
     this->AddSegment(LINE_SEGMENT_EMOTION);
-    this->AppendText(match[0].str());
+    {
+      const std::string matched = match[0].str();
+      this->AppendText(matched);
+    }
     this->m_newSegment = true;
-    index += static_cast<int>(match[0].length());
+    return index + static_cast<int>(match[0].length());
   }
 
   return index;
