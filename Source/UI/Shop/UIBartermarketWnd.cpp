@@ -515,15 +515,21 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
         const int itemId = chunk->field_0;
         const int refine = chunk->field_4;
         const int count = g_session.GetNumInventoryItems();
-        int available = 0;
-        for (int i = 0; i < count; ++i) {
+        int i = 0;
+        for (; i < count; ++i) {
           ITEM_INFO item = g_session.GetInventoryItemAt(i);
           if (std::atoi(item.itemId.c_str()) == itemId && item.refiningLevel >= refine) {
-            available = item.quantity;
+            if (item.quantity <= 0) {
+              mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+              g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+              g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_EXCHANGE_ITEMS)), 255, 0, 0, 0);
+              return 0;
+            }
             break;
           }
         }
-        if (available <= 0) {
+
+        if (i >= count) {
           mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_EXCHANGE_ITEMS)), 255, 0, 0, 0);
