@@ -394,7 +394,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   this->resultItem.identity[0] = 5;
   this->resultItem.identified = 1;
   this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
-  SecureZeroMemory(this->resultItem.options, sizeof(this->resultItem.options));
+  std::memset(this->resultItem.options, 0, sizeof(this->resultItem.options));
   if (info->randomOptionCode.size() == 0) {
     this->resultItem.optionCount = this->selectedItem->optionCount;
     memcpy_s(this->resultItem.options, sizeof(this->resultItem.options), this->selectedItem->options, this->selectedItem->optionCount * 5);
