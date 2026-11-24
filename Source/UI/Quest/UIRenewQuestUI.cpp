@@ -1112,6 +1112,16 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
   }
 }
 
+// INLINED
+static void AddProgressingQuest(
+  CUIRenewQuestUI* window, CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox, const std::pair<const unsigned int, RenewQuestOngoingInfo>& quest
+) {
+  const std::pair<const unsigned long, RenewQuestOngoingInfo> entry = quest;
+  if (window->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
+    listBox->AddData(entry.first, false);
+  }
+}
+
 // OFFSET: 0x00A67290
 // FUNCTION: fn_16629
 void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
@@ -1124,10 +1134,8 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
       if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
-        for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
-            listBox->AddData(entry.first, false);
-          }
+        for (const auto& quest : g_renewQuestMgr->m_ongoingQuests) {
+          AddProgressingQuest(this, listBox, quest);
         }
         listBox->UpdateScrollBar();
         if (position == -1) {
@@ -1182,7 +1190,10 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state == 0) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (entry.second.questType != 1 && entry.second.m_state == 0) {
             listBox->AddData(entry.first, false);
           }
         }
