@@ -3642,7 +3642,6 @@ void CGameMode::ReceiveFeedConfig4(volatile unsigned char state, bool option, bo
 void CGameMode::ReceiveLongParChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const LongParChangePacket*>(data);
   std::int64_t& exp = g_session.m_exp;
-  std::int64_t& nextExp = g_session.m_nextExp;
   std::int64_t& nextJobExp = g_session.m_nextJobExp;
   std::int64_t& jobExp = g_session.m_jobExp;
   bool refresh = true;
@@ -3654,8 +3653,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
       if (value != 0 && gained != 0) {
         char text[256];
         StringFormat(
-          text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %d", value - exp, value, nextExp,
-          static_cast<int>((nextExp - exp) / gained)
+          text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %d", value - exp, value, g_session.m_nextExp,
+          static_cast<int>((g_session.m_nextExp - exp) / gained)
         );
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xF51EF5, 0, 0, 0);
       }
@@ -3674,7 +3673,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.RefreshHpSpWindows();
     break;
   case SP_NEXTBASEEXP:
-    nextExp = packet->value;
+    g_session.m_nextExp = packet->value;
     break;
   case SP_NEXTJOBEXP:
     nextJobExp = packet->value;
@@ -3687,8 +3686,9 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.InvalidateWindowFrames();
   }
 
-  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->baseExpBar)->SetValues(exp, nextExp);
-  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->jobExpBar)->SetValues(jobExp, nextJobExp);
+  auto* const basicInfoWndRef = g_windowMgr.basicInfoWnd;
+  static_cast<UIINT64BarGraph*>(basicInfoWndRef->baseExpBar)->SetValues(exp, g_session.m_nextExp);
+  static_cast<UIINT64BarGraph*>(basicInfoWndRef->jobExpBar)->SetValues(jobExp, nextJobExp);
 }
 
 // OFFSET: 0x00D73A10
