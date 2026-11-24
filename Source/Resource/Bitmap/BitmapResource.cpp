@@ -336,7 +336,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
   GifScreenDescriptor screen;
   memcpy_s(&screen, sizeof(screen), cursor, sizeof(screen));
   cursor += sizeof(screen);
-  if (iconOnly == true && (screen.width != 24 || screen.height != 24)) {
+  if (iconOnly == true && (24 != screen.width || 24 != screen.height)) {
     return false;
   }
 
@@ -398,8 +398,8 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
           std::uint16_t loops;
           memcpy_s(&loops, sizeof(loops), cursor, sizeof(loops));
+          this->loopCount = 0 < loops ? loops + 1 : 0;
           cursor += sizeof(loops);
-          this->loopCount = loops > 0 ? loops + 1 : 0;
         }
         break;
       }
@@ -491,7 +491,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
     }
     case ';':
       delete[] globalPalette;
-      if (this->frames.size() != 0) {
+      if (0 < this->frames.size()) {
         this->image.pixels = this->frames[0].second;
       }
 
@@ -500,7 +500,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       }
 
       this->lastFrameTime = timeGetTime();
-      if (this->frames.size() != 0) {
+      if (0 < this->frames.size()) {
         this->animated = true;
       }
 
