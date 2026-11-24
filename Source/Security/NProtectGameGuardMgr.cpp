@@ -196,6 +196,9 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
       }(), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
+  case NPGAMEMON_CHECK_CSAUTH2:
+  case NPGAMEMON_GAMEHACK_REPORT:
+    return 1;
   case NPGAMEMON_CHECK_CSAUTH3: {
     const int id = packet[0];
     const unsigned char* end = reinterpret_cast<const unsigned char*>(packet + 2) + packet[1];
