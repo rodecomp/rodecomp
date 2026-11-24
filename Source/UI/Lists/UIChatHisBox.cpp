@@ -17,11 +17,6 @@
 #include <new>
 #include <string>
 
-// INLINED
-static std::string GetButtonLabel(const UIButton* button) {
-  return button->label;
-}
-
 // OFFSET: 0x00881BB0
 // FUNCTION: fn_11300
 std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
@@ -34,7 +29,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
     for (int index = 0; index < count; ++index) {
       const int line = (*row)[index]->line;
       result = this->lines[line];
-      std::string label = GetButtonLabel((*row)[index]);
+      std::string label = (*row)[index]->label;
 
       if (label.find(LookupMessage(MSI_NAMELESS_USER)) != std::string::npos) {
         const std::size_t found = result.find(LookupMessage(MSI_NAMELESS_USER));
@@ -48,8 +43,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           const std::size_t start = tail.find(opening);
           std::string head = result.substr(0, position + start);
           position += static_cast<int>(start + std::strlen(opening.c_str())) + 1;
-          UIItemTagButton* const button = (*row)[index];
-          button->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+          (*row)[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
           std::string bracket = this->BracketName((*row)[index]->item.DisplayName(0));
           (*row)[index]->SetTooltip(bracket.c_str());
@@ -63,8 +57,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
         const std::size_t found = tail.find(bracket);
         std::string head = result.substr(0, position + found);
         position += found + std::strlen(bracket.c_str());
-        UIItemTagButton* const button = (*row)[index];
-        button->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
+        (*row)[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
       }
     }
   }
