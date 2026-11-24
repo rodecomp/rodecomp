@@ -2707,7 +2707,9 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.longitude = this->render.angle;
   }
 
-  this->render.position = origin + particle.deltaPos;
+  this->render.position.x = origin.x + particle.deltaPos.x;
+  this->render.position.y = origin.y + particle.deltaPos.y;
+  this->render.position.z = origin.z + particle.deltaPos.z;
 
   particle.widthSize += particle.widthSpeed;
   particle.heightSize += particle.heightSpeed;
