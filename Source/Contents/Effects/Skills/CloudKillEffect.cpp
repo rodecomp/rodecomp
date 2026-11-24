@@ -200,7 +200,7 @@ void CCloudKillEffect::OnProcess() {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(*it);
     if (IsParticleActive(particle) != true) {
       FreeParticle(particle);
-      it = this->particles.erase(it);
+      this->particles.erase(it++);
     } else {
       this->UpdateParticle(particle);
       ++particle->elapsedFrames;
@@ -216,7 +216,7 @@ void CCloudKillEffect::OnProcess() {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(*it);
     if (IsParticleActive(particle) != true) {
       FreeParticle(particle);
-      it = this->sprites.erase(it);
+      this->sprites.erase(it++);
     } else {
       this->UpdateSprite(particle);
       ++particle->elapsedFrames;
