@@ -51,10 +51,7 @@ static_assert(sizeof(AchievementInfo) == 0x80);
 
 class CAchievementMgr {
 public:
-  // INLINED
-  CAchievementMgr() : groupWidth(10) {
-    this->enabled = true;
-  }
+  CAchievementMgr();
   // INLINED
   virtual ~CAchievementMgr() {
     this->achievements.clear();

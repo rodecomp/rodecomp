@@ -28,6 +28,12 @@ CAchievementMgr* g_achievementMgr;
 AchievementInfo::AchievementInfo() {
 }
 
+// OFFSET: 0x0066C940
+// FUNCTION: fn_46537
+CAchievementMgr::CAchievementMgr() : groupWidth(10) {
+  this->enabled = true;
+}
+
 // OFFSET: 0x0066D3A0
 // FUNCTION: fn_05311
 bool CAchievementMgr::CreateInstance() {
