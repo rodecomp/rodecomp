@@ -6630,7 +6630,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     const int count = g_session.GetInventoryCategorySize(this->m_tab);
     for (int index = 0; index < count; ++index) {
       ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(this->m_tab, index);
-      if (item.identity[1] != 0 && (this->m_tab != 8 || item.bindOnEquip != 0xFFFF)) {
+      if (item.identity[1] > 0 && (this->m_tab != 8 || item.bindOnEquip != 0xFFFF)) {
         this->items.push_back(item);
       }
     }
@@ -6891,7 +6891,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     const int count = g_session.GetNumPurchaseItems();
     for (int index = 0; index < count; ++index) {
       ITEM_INFO other = g_session.GetPurchaseItemInfoBySequence(index);
-      if (other.identity[1] != 0) {
+      if (other.identity[1] > 0) {
         this->m_otherItems.push_back(other);
       }
     }
