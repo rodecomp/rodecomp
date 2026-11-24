@@ -51,12 +51,14 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
   const unsigned capacity = columns * (this->height >> 2);
   int bestScore = -1024;
   int best = 32896;
+  bool succeeded = true;
 
   do {
     this->device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1, 0);
 
     if (FAILED(this->device->BeginScene())) {
-      return false;
+      succeeded = false;
+      break;
     }
 
     for (unsigned index = 0; index < capacity; ++index) {
@@ -89,7 +91,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
     DDSURFACEDESC2 locked = {sizeof(DDSURFACEDESC2)};
 
     if (FAILED(readback.m_surface->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
-      return false;
+      succeeded = false;
+      break;
     }
 
     const unsigned pixelBytes = locked.ddpfPixelFormat.dwRGBBitCount >> 3;
@@ -137,10 +140,12 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
     first += capacity;
   } while (first < 65536);
 
-  g_textureOffsetX = static_cast<float>(best % 256) * (1.0f / 256.0f);
-  g_textureOffsetY = static_cast<float>(best / 256) * (1.0f / 256.0f);
-  this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
-  this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+  if (succeeded) {
+    g_textureOffsetX = static_cast<float>(best % 256) * (1.0f / 256.0f);
+    g_textureOffsetY = static_cast<float>(best / 256) * (1.0f / 256.0f);
+    this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+    this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+  }
 
-  return true;
+  return succeeded;
 }
