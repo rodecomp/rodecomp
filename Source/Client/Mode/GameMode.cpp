@@ -8901,9 +8901,9 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       g_session.attackMercenaryEnemy = 0;
     } else {
       this->SetCursorAction(11);
-      g_session.mercenaryEnemyGid = actor->render.accountId;
       g_session.mercenaryEnemyX = 0;
       g_session.mercenaryEnemyY = 0;
+      g_session.mercenaryEnemyGid = actor->render.accountId;
       g_session.moveMercenaryEnemy = 0;
       g_session.attackMercenaryEnemy = 1;
     }
