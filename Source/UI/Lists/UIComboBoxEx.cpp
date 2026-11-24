@@ -135,11 +135,11 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     }
 
-    return 0;
+    break;
 
   case UM_UPPUSH:
     if (this->lines.size() == 0) {
-      return 0;
+      break;
     }
 
     --this->selected;
@@ -152,13 +152,15 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->topLine = this->selected;
     }
 
+    this->Refresh();
+    this->Invalidate();
     break;
 
   case UM_DOWNPUSH: {
     const unsigned count = static_cast<unsigned>(this->lines.size());
 
     if (count == 0) {
-      return 0;
+      break;
     }
 
     this->selected = (this->selected + 1);
@@ -175,21 +177,25 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
     }
 
+    this->Refresh();
+    this->Invalidate();
     break;
   }
 
   case UM_ADDITEM:
     if (b) {
       this->AddLine(reinterpret_cast<const char*>(a), static_cast<unsigned>(b));
-    } else {
-      this->AddLine(reinterpret_cast<const char*>(a), 0);
+      this->Invalidate();
+      break;
     }
+
+    this->AddLine(reinterpret_cast<const char*>(a), 0);
     this->Invalidate();
-    return 0;
+    break;
 
   case UM_SET_CALLER_WID:
     this->targetId = static_cast<int>(a);
-    return 0;
+    break;
 
   case UM_SETCURITEM:
     this->selected = static_cast<int>(a);
@@ -202,14 +208,14 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->selected = static_cast<int>(this->lines.size() - 1);
     }
 
+    this->Refresh();
+    this->Invalidate();
     break;
 
   default:
     return this->UIListBoxEx::SendMsg(sender, message, a, b, c, d);
   }
 
-  this->Refresh();
-  this->Invalidate();
   return 0;
 }
 
