@@ -31,4 +31,4 @@
 
 extern template std::string& std::string::insert(std::string::size_type, const char*, std::string::size_type);
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
-template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+template char* std::allocator<char>::allocate(const std::size_t);

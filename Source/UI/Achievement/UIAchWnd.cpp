@@ -1396,6 +1396,21 @@ void UIAchSummaryWnd::UpdateInfo() {
   this->Invalidate();
 }
 
+// INLINED
+static void AssignReward(UIToolTipBitmapWnd* reward, const char* name, const char* text, int item) {
+  if (text) {
+    reward->tooltip = std::string(text);
+  }
+
+  reward->bitmapName = name;
+  reward->bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  if (reward->bitmap) {
+    reward->Resize(reward->bitmap->image.width, reward->bitmap->image.height);
+  }
+
+  reward->itemId = item;
+}
+
 // OFFSET: 0x007B9440
 // FUNCTION: fn_09256
 void UIAchViewWnd::UpdateInfo() {
@@ -1480,16 +1495,7 @@ void UIAchViewWnd::UpdateInfo() {
       if (this->info->reward.titleId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
         const std::string title = g_session.GetJobTitleString(this->info->reward.titleId);
-        const char* text = title.c_str();
-        if (text) {
-          this->rewards[0]->tooltip = std::string(text);
-        }
-        this->rewards[0]->bitmapName = bitmap.c_str();
-        this->rewards[0]->bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmap.c_str())));
-        if (this->rewards[0]->bitmap) {
-          this->rewards[0]->Resize(this->rewards[0]->bitmap->image.width, this->rewards[0]->bitmap->image.height);
-        }
-        this->rewards[0]->itemId = 0;
+        AssignReward(this->rewards[0], bitmap.c_str(), title.c_str(), 0);
         this->rewards[0]->Show(1);
       }
 
