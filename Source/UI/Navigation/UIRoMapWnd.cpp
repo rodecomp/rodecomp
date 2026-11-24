@@ -792,10 +792,11 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         if (g_navigationManager.SearchNavigation(name, 0, true) == true) {
           this->RefreshWorldMapLevels();
         }
+        return 0;
       }
-      return 0;
+      break;
     }
-    return 0;
+    break;
 
   case UM_COMBOBOX_SELECTED:
     if (this->m_worldCombo == sender) {
@@ -820,7 +821,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->Invalidate();
       return 0;
     }
-    return 0;
+    break;
 
   case UM_REFRESH:
     this->ClearRecords();
@@ -832,13 +833,16 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     if (this->m_searchEdit == sender) {
       if (this->m_searchEdit->Length() > 0) {
         this->SendMsg(this->m_searchEdit, UM_COMMAND, ID_SEARCH, 0, 0, 0);
-        return 0;
+        break;
       }
     }
-    break;
+    [[fallthrough]];
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x0091CFB0
