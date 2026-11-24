@@ -5205,6 +5205,7 @@ void CGrannyPc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  const std::uint32_t* partyAid;
   switch (message) {
   case AM_SET_HEAD_DIR:
     if (this->render.state == ST_STAND || this->render.state == ST_SIT) {
@@ -5356,8 +5357,8 @@ void CGrannyPc::SendMsg(
     if (c == 2 && !IsInvisible(this->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
@@ -5387,8 +5388,8 @@ void CGrannyPc::SendMsg(
     } else {
       this->SetState(ST_STAND, 1);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
@@ -5421,8 +5422,8 @@ void CGrannyPc::SendMsg(
     } else {
       this->SetState(ST_STAND, 1);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_MOVEENTRY:
   case AM_MOVEENTRY2: {
@@ -5446,8 +5447,8 @@ void CGrannyPc::SendMsg(
       this->SetState(ST_MOVE, 1);
       this->pathStartCell = 0;
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_CHANGE_RANK:
     this->pkRank = static_cast<int>(c);
@@ -5459,6 +5460,10 @@ void CGrannyPc::SendMsg(
   case AM_MAKE_BLUR_ACTOR:
     break;
   }
+  return;
+
+showPartyEffect:
+  this->ShowPartyMemberEffect(*partyAid);
 }
 
 // OFFSET: 0x00DAC080
