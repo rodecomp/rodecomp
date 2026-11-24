@@ -1170,19 +1170,25 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
   }
 }
 
+// INLINED
+static inline int FindEmotionIdByName(CCashEmotionMgr* mgr, const char* name, std::size_t length) {
+  std::string key(name, length);
+  return mgr->FindEmotionIdByKey(key);
+}
+
 // OFFSET: 0x0059B660
 // FUNCTION: fn_02968
 int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type, const char* name) {
-  if (!name || std::strlen(name) == 0) {
+  if (!name) {
     return -1;
   }
 
-  int emotionId;
-  {
-    std::string key(name);
-    emotionId = this->FindEmotionIdByKey(key);
+  const std::size_t length = std::strlen(name);
+  if (length == 0) {
+    return -1;
   }
 
+  int emotionId = FindEmotionIdByName(this, name, length);
   this->m_specials.emplace(type, emotionId);
   return emotionId;
 }
