@@ -38,6 +38,7 @@
 #include <cstring>
 #include <timeapi.h>
 #include <format>
+#include <string_view>
 #include <utility>
 
 namespace {
@@ -67,6 +68,11 @@ static bool IsEmitterAlive(const CParticle* emitter) {
   }
 
   return emitter->life * 60.0f > static_cast<float>(emitter->elapsedFrames);
+}
+
+// INLINED
+static vector3d Subtract(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x - right.x, left.y - right.y, left.z - right.z};
 }
 
 // OFFSET: 0x0070C070
@@ -236,15 +242,8 @@ void CSprArrowEffect::Render() {
   }
 }
 
-// OFFSET: 0x0070CBA0
-// FUNCTION: fn_07140
-void CSprArrowEffect::SetBulletSprite(int job) {
-  CSpriteParticle* particle = this->spriteParticle;
-  if (!particle) {
-    return;
-  }
-
-  const char* name;
+// INLINED
+static const char* BulletName(int job) {
   switch (job) {
   case JT_DISGUISER:
   case JT_G_DISGUISER:
@@ -254,79 +253,71 @@ void CSprArrowEffect::SetBulletSprite(int job) {
   case JT_SPIRIT_C_WATER_S:
   case JT_SPIRIT_C_WATER_L:
   case JT_SPIRIT_C_WATER_SL:
-    name = "canon_bullet";
-    break;
+    return "canon_bullet";
   case JT_MD_PRI_RIGEL_AC:
   case JT_MD_PRI_RIGEL_ACS:
-    name = "RIGEL_BULLET";
-    break;
+    return "RIGEL_BULLET";
   case JT_SPIRIT_I_WATER_S:
-    name = "phylla_bullet";
-    break;
+    return "phylla_bullet";
   case JT_SPIRIT_B_FLAME_M:
   case JT_SPIRIT_B_FLAME_L:
   case JT_SPIRIT_B_FLAME_SL:
-    name = "mg_corruption_root_h_bullet";
-    break;
+    return "mg_corruption_root_h_bullet";
   case JT_SPIRIT_C_FLAME_L:
   case JT_SPIRIT_C_FLAME_SL:
   case JT_SPIRIT_R_FLAME_L:
   case JT_SPIRIT_R_FLAME_SL:
-    name = "mg_corruption_root_bullet";
-    break;
+    return "mg_corruption_root_bullet";
   case JT_VR_MD_DREGG1:
-    name = "VR_MD_DREGG1_bullet";
-    break;
+    return "VR_MD_DREGG1_bullet";
   case JT_VR_MD_DREGG2:
-    name = "VR_MD_DREGG2_bullet";
-    break;
+    return "VR_MD_DREGG2_bullet";
   case JT_EP21_YORKER_B:
-    name = "EP21_YORKER_Bullet";
-    break;
+    return "EP21_YORKER_Bullet";
   case JT_EP21_YOSTER_D:
-    name = "EP21_YOSTER_D_bullet";
-    break;
+    return "EP21_YOSTER_D_bullet";
   case JT_EP21_YOSTER_E:
-    name = "EP21_YOSTER_E_bullet";
-    break;
+    return "EP21_YOSTER_E_bullet";
   case JT_EP21_YORMI_B:
   case JT_EP21_YORMI_B_H:
-    name = "EP21_YORMI_bullet";
-    break;
+    return "EP21_YORMI_bullet";
   case JT_EP21_YORDOS_A:
   case JT_G_EP21_YORDOS_A:
   case JT_EP21_YORDOS_A_H:
-    name = "EP21_YORDOS_Bullet";
-    break;
+    return "EP21_YORDOS_Bullet";
   case JT_EP21_YOSCOPUS_B:
   case JT_EP21_YOSCOPUS_B_H:
-    name = "EP21_YOSCOPUS_Bullet";
-    break;
+    return "EP21_YOSCOPUS_Bullet";
   case JT_VIOLEN:
   case JT_CP_VIOLEN:
-    name = "violen_bullet";
-    break;
+    return "violen_bullet";
   case JT_CH1_SHADOW_JAILER:
-    name = "CH1_SHADOW_JAILER_bullet";
-    break;
+    return "CH1_SHADOW_JAILER_bullet";
   case JT_CH1_SCABIOSA:
-    name = "CH1_SCABIOSA_bullet";
-    break;
+    return "CH1_SCABIOSA_bullet";
   case JT_CH1_LOBELIA:
-    name = "CH1_LOBELIA_bullet";
-    break;
+    return "CH1_LOBELIA_bullet";
   default:
-    name = "skel_archer_arrow";
-    break;
+    return "skel_archer_arrow";
+  }
+}
+
+// OFFSET: 0x0070CBA0
+// FUNCTION: fn_07140
+void CSprArrowEffect::SetBulletSprite(int job) {
+  CSpriteParticle* particle = this->spriteParticle;
+  if (!particle) {
+    return;
   }
 
-  if (std::strlen(name) == 0) {
+  const std::string_view name = BulletName(job);
+  if (name.empty()) {
     this->alive = false;
     return;
   }
 
-  particle->SetSprite(std::format("몬스터\\{}.spr", name).c_str());
-  this->spriteParticle->SetAction(std::format("몬스터\\{}.act", name).c_str());
+  particle->SetSprite(std::format("몬스터\\{}.spr", name.data()).c_str());
+  this->spriteParticle->SetAction(std::format("몬스터\\{}.act", name.data()).c_str());
 }
 
 // OFFSET: 0x0070CEA0
@@ -2085,6 +2076,11 @@ bool CJupitelThunderHit::IsAlive() {
   return this->ActorExists();
 }
 
+// INLINED
+static void ApplyTexture(CParticle* particle, const std::vector<std::string>& textures, std::size_t index) {
+  particle->SetTexture(textures[index]);
+}
+
 // OFFSET: 0x0071C570
 // FUNCTION: fn_07325
 void CJupitelThunderHit::OnProcess() {
@@ -2118,7 +2114,7 @@ void CJupitelThunderHit::OnProcess() {
       const std::size_t nextIndex = state + 1;
       const std::size_t index = nextIndex < this->textures.size() ? nextIndex : 0;
 
-      particle->SetTexture(this->textures[index]);
+      ApplyTexture(particle, this->textures, index);
       particle->animationState = static_cast<signed char>(index);
       matrix rotation;
       rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
@@ -2883,6 +2879,11 @@ void CRandomOptEffect::Render() {
 CRichsCoinEffect::CRichsCoinEffect() : CEffect(EF_RL_B_TRAP), coinCount(0) {
 }
 
+// INLINED
+static void SetTransform(CParticle* particle, const matrix transform) {
+  particle->transform = transform;
+}
+
 // OFFSET: 0x007218D0
 // FUNCTION: fn_07377
 void CRichsCoinEffect::Open() {
@@ -2914,7 +2915,7 @@ void CRichsCoinEffect::Open() {
         matrix scale;
         std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
         scale.SetScale(1.5f, 1.5f, 1.0f);
-        particle->transform = scale;
+        SetTransform(particle, scale);
         particle->alpha = 70;
         particle->InitParticleQuad(particle->vertices);
         this->coins.push_back(particle);
@@ -3449,12 +3450,10 @@ void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
   particle->frameIndex = ClampedRandom(4);
   particle->phaseParameter = ClampedRandom(50) + 10;
   particle->angle = static_cast<float>(ClampedRandom(360));
-  const float z = static_cast<float>(ClampedRandom(10)) - 5.0f;
-  const float x = static_cast<float>(ClampedRandom(10)) - 5.0f;
-  particle->offsetY = -10.0f;
+  const int z = ClampedRandom(10);
+  const int x = ClampedRandom(10);
+  particle->offset = vector3d{static_cast<float>(x) - 5.0f, -10.0f, static_cast<float>(z) - 5.0f};
   particle->elapsedFrames = 0;
-  particle->offsetX = x;
-  particle->offsetZ = z;
   particle->InitParticleQuad(particle->vertices);
 }
 
@@ -4147,18 +4146,16 @@ void CCrimsonArrowEffect::Open() {
     vector3d from = this->positionVector;
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    float fromX;
-    float fromY;
-    float toX;
-    float toY;
-    g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    float fromScreen[2];
+    float toScreen[2];
+    g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromScreen[0], &fromScreen[1], &fromReciprocalDepth);
+    g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toScreen[0], &toScreen[1], &toReciprocalDepth);
 
-    const float dx = toX - fromX;
-    const float dy = toY - fromY;
+    const float dx = toScreen[0] - fromScreen[0];
+    const float dy = toScreen[1] - fromScreen[1];
     const float length = SquareRoot(dy * dy + dx * dx);
     const float degrees = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
-    angle = fromY > toY ? 360.0 - degrees : degrees;
+    angle = fromScreen[1] > toScreen[1] ? 360.0 - degrees : degrees;
   }
 
   CEZ2STRParticle* emitter = arrow;
@@ -4175,14 +4172,6 @@ void CCrimsonArrowEffect::Open() {
     arrow->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
     break;
-  case EF_FRENZY_SHOT:
-    arrow->Load("frenzy_shot\\frenzy_shot\\frenzy_shot.str");
-    emitter->offset.x = 0.0f;
-    emitter->offset.y = -4.0f;
-    emitter->offset.z = 0.0f;
-    arrow->m_angle = static_cast<float>(angle);
-    this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
-    break;
   case EF_UNLUCKY_RUSH:
     arrow->Load("unlucky_rush\\unlucky_rush\\unlucky_rush.str");
     arrow->m_angle = static_cast<float>(angle);
@@ -4190,6 +4179,14 @@ void CCrimsonArrowEffect::Open() {
   case EF_JUDGEMENT_CROSS_SHOT:
     arrow->Load("judgement_cross\\judgement_cross_shot\\judgement_cross_shot.str");
     arrow->m_angle = static_cast<float>(angle + 180.0);
+    break;
+  case EF_FRENZY_SHOT:
+    arrow->Load("frenzy_shot\\frenzy_shot\\frenzy_shot.str");
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -4.0f;
+    emitter->offset.z = 0.0f;
+    arrow->m_angle = static_cast<float>(angle);
+    this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
     break;
   }
 
@@ -4965,27 +4962,20 @@ void CRichsCoinEffect::OnProcess() {
 // FUNCTION: fn_07384
 void CSavageImpactEffect::Open() {
   this->emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
-  float toReciprocalDepth = 0.0f;
   float fromReciprocalDepth = 0.0f;
-  const float offsetX = this->sourcePosition[0] - this->position[0];
-  const float offsetY = this->sourcePosition[1] - this->position[1];
-  const float offsetZ = this->sourcePosition[2] - this->position[2];
-  this->offset.x = offsetX;
-  this->offset.y = offsetY;
-  this->offset.z = offsetZ;
+  float toReciprocalDepth = 0.0f;
+  this->offset = Subtract(this->sourcePositionVector, this->positionVector);
 
-  float fromX;
-  float fromY;
-  float toX;
-  float toY;
-  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  float from[2];
+  float to[2];
+  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &from[0], &from[1], &fromReciprocalDepth);
+  g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &to[0], &to[1], &toReciprocalDepth);
 
-  const float dx = toX - fromX;
-  const float dy = toY - fromY;
+  const float dx = to[0] - from[0];
+  const float dy = to[1] - from[1];
   const float length = SquareRoot(dy * dy + dx * dx);
   double angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
-  if (fromY > toY) {
+  if (from[1] > to[1]) {
     angle = 360.0 - angle;
   }
 
