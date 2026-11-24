@@ -1880,6 +1880,12 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
   return static_cast<int>(offset);
 }
 
+// INLINED
+static void SetWhisperCode(UIWhisperWnd* window, const char* text) {
+  std::string code(text);
+  window->m_code = std::move(code);
+}
+
 // OFFSET: 0x00AA9100
 // FUNCTION: fn_17253
 int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e) {
@@ -1908,10 +1914,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
         window->m_name = name + "  (" + reinterpret_cast<const char*>(b) + ")  *^_^*";
       }
       if (c != 0) {
-        const char* codeText = reinterpret_cast<const char*>(c);
-        std::string code;
-        code.assign(codeText, std::strlen(codeText));
-        window->m_code = std::move(code);
+        SetWhisperCode(window, reinterpret_cast<const char*>(c));
       }
       const int count = static_cast<int>(this->namedWindows.size());
       if (count != 0) {
@@ -1949,7 +1952,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     break;
   case UIM_PUSHINTOCHATHISTORY:
   case UIM_PUSHINTOCHATHISTORY2: {
-    if (g_replayAnimationScaling != 0 && !Replay::Instance().header.options.recordRestricted) {
+    if (g_replayAnimationScaling != 0 && Replay::Instance().header.options.Get(ReplayRecordOption::Chatting) == 0) {
       break;
     }
     if (this->chatWnd != nullptr) {
@@ -1983,15 +1986,15 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
       this->loadingWnd->SendMsg(nullptr, UM_LOADINGPERCENT, a, 0, 0, 0);
     }
     break;
-  case UIM_CHANGECHATWNDSTATUS:
-    if (this->chatWnd != nullptr) {
-      this->chatWnd->SendMsg(nullptr, UM_CHANGESTATUS, a, 0, 0, 0);
-    }
-    break;
   case UIM_OPENCHATWND:
     this->ShowWindowById(WID_CHATWND, 1);
     if (this->chatWnd != nullptr) {
       this->chatWnd->SendMsg(nullptr, UM_OPENCHATWND, 0, 0, 0, 0);
+    }
+    break;
+  case UIM_CHANGECHATWNDSTATUS:
+    if (this->chatWnd != nullptr) {
+      this->chatWnd->SendMsg(nullptr, UM_CHANGESTATUS, a, 0, 0, 0);
     }
     break;
   case UIM_IME_OPENCANDIDATE:
