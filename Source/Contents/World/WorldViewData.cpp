@@ -22,15 +22,8 @@ static bool AreaContains(int left, int top, int right, int bottom, int x, int y)
 }
 
 // INLINED
-static __forceinline WorldViewRecord* FindRecord(std::vector<WorldViewRecord>& records, const char* name) {
-  const std::string key(name);
-  for (std::vector<WorldViewRecord>::iterator it = records.begin(); it != records.end(); ++it) {
-    if (it->name == key) {
-      return &*it;
-    }
-  }
-
-  return nullptr;
+static CWorldViewMap* MapAt(const CWorldViewWorld* world, unsigned int mapIndex) {
+  return world->maps[mapIndex];
 }
 
 // OFFSET: 0x00612DF0
@@ -486,7 +479,7 @@ bool CWorldViewMgr::SelectField(const char* name) {
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
+    if (field && MapAt(this->worlds[index], mapIndex)->id >= 100) {
       this->selection.mapIndex = mapIndex;
       this->selection.worldIndex = index;
       this->selection.name = field->name;
@@ -517,15 +510,13 @@ void CWorldViewMgr::Draw(int unused, int x, int y, int width, int height) {
 // FUNCTION: fn_46321
 WorldViewRecord* CWorldViewMgr::FindMark(const char* name) {
   const std::string key(name);
-  WorldViewRecord* found = nullptr;
   for (std::vector<WorldViewRecord>::iterator it = this->marks.begin(); it != this->marks.end(); ++it) {
     if (it->name == key) {
-      found = &*it;
-      break;
+      return &*it;
     }
   }
 
-  return found;
+  return nullptr;
 }
 
 // OFFSET: 0x00616DD0
@@ -535,14 +526,14 @@ bool CWorldViewMgr::AddMark(const char* name) {
     return false;
   }
 
-  if (FindRecord(this->marks, name)) {
+  if (this->FindMark(name)) {
     return true;
   }
 
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
+    if (field && MapAt(this->worlds[index], mapIndex)->id >= 100) {
       WorldViewRecord mark;
       mark.worldIndex = index;
       mark.mapIndex = mapIndex;
@@ -607,15 +598,13 @@ int CWorldViewMgr::SelectCurrentWorld() {
 // FUNCTION: fn_46322
 WorldViewRecord* CWorldViewMgr::FindLevel(const char* name) {
   const std::string key(name);
-  WorldViewRecord* found = nullptr;
   for (std::vector<WorldViewRecord>::iterator it = this->levels.begin(); it != this->levels.end(); ++it) {
     if (it->name == key) {
-      found = &*it;
-      break;
+      return &*it;
     }
   }
 
-  return found;
+  return nullptr;
 }
 
 // OFFSET: 0x006172E0
@@ -625,7 +614,7 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
     return false;
   }
 
-  if (WorldViewRecord* found = FindRecord(this->levels, name)) {
+  if (WorldViewRecord* found = this->FindLevel(name)) {
     if (level != 0) {
       const int current = found->level;
       if (level == 10000) {
@@ -646,7 +635,7 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
   unsigned int mapIndex = static_cast<unsigned int>(-1);
   for (unsigned int index = 0; index < this->worlds.size(); ++index) {
     CWorldViewField* field = this->worlds[index]->FindField(mapIndex, name);
-    if (field && this->worlds[index]->maps[mapIndex]->id >= 100) {
+    if (field && MapAt(this->worlds[index], mapIndex)->id >= 100) {
       WorldViewRecord record;
       record.worldIndex = index;
       record.mapIndex = mapIndex;
