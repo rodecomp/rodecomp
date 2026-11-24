@@ -1428,11 +1428,11 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   switch (message) {
   case UM_SETTITLE: {
     char text[200];
-    int titleId = MSI_BUYINGSTORE_MYSHOPWND_TITLE;
-    if (this->buyingShop == 0) {
-      titleId = MSI_ITEM_MY_STORE;
+    if (this->buyingShop != 0) {
+      std::sprintf(text, "%s : %s", LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_TITLE), g_session.storeTitle.c_str());
+    } else {
+      std::sprintf(text, "%s : %s", LookupMessage(MSI_ITEM_MY_STORE), g_session.storeTitle.c_str());
     }
-    std::sprintf(text, "%s : %s", LookupMessage(titleId), g_session.storeTitle.c_str());
     this->title->SetTextFitted(text);
     return 0;
   }
@@ -1465,7 +1465,11 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
         this->scrollBar->Move(this->geometry.width - 15, 14);
         this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->footerHeight - 17);
-        this->saleAlarm->Move(12, this->geometry.height + (this->buyingShop != 0 ? -12 : -18));
+        if (this->buyingShop != 0) {
+          this->saleAlarm->Move(12, this->geometry.height - 12);
+        } else {
+          this->saleAlarm->Move(12, this->geometry.height - 18);
+        }
         this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
         if (this->actionButton) {
           this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
@@ -1486,7 +1490,6 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (a) {
     case ID_CLOSE: {
       mode = g_modeMgr.currentMode;
-      int windowId;
       if (this->buyingShop != 0) {
         if (this->shopOpen == 1) {
           g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
@@ -1497,7 +1500,11 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         mode->SendMsg(MM_REQ_CLOSE_BUYING_STORE, 0, 0, 0, 0);
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
-        windowId = 258;
+        UIWindow* window = g_windowMgr.EnsureWindow(258);
+        if (window) {
+          window->Show(1);
+          window->Move(this->geometry.x, this->geometry.y);
+        }
       } else {
         if (this->shopOpen == 1) {
           g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
@@ -1508,11 +1515,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         mode->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
-        windowId = 257;
-      }
-
-      {
-        UIWindow* window = g_windowMgr.EnsureWindow(windowId);
+        UIWindow* window = g_windowMgr.EnsureWindow(257);
         if (window) {
           window->Show(1);
           window->Move(this->geometry.x, this->geometry.y);
@@ -1549,7 +1552,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetNumMerchantPurchaseItems();
     for (int i = 0; i < size; ++i) {
-      ITEM_INFO item = g_session.GetMerchantPurchaseItemInfoBySequence(i);
+      const ITEM_INFO& item = g_session.GetMerchantPurchaseItemInfoBySequence(i);
       if (item.itemIndex > 0) {
         this->items.push_back(item);
       }
@@ -1560,10 +1563,9 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     return 0;
   }
   case UM_SET_BUYING_SHOP_ZENY: {
-    char grouped[80];
-    char text[80];
-    std::sprintf(text, LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_LIMITZENY), FormatGroupedInteger(static_cast<int>(a), grouped, 80));
-    this->notice->SetTextAutoWidth(text);
+    char texts[2][80];
+    std::sprintf(texts[1], LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_LIMITZENY), FormatGroupedInteger(static_cast<int>(a), texts[0], 80));
+    this->notice->SetTextAutoWidth(texts[1]);
     this->notice->Move(12, this->geometry.height - 26);
     this->buyingZeny = static_cast<int>(a);
     return 0;
@@ -1576,8 +1578,9 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (static_cast<std::uint16_t>(header.type) == 21000 || static_cast<std::uint16_t>(header.type) == 21050) {
-      while (static_cast<unsigned>(b) > offset) {
+    if (21000 == static_cast<std::uint16_t>(header.type) || 21050 == static_cast<std::uint16_t>(header.type)) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
@@ -1585,7 +1588,8 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         case 21051:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-          return 0;
+          scanning = false;
+          break;
         case 21052:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
