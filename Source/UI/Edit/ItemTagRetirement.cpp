@@ -404,12 +404,11 @@ void UIItemTagCtrl::UpdateItemTags() {
         const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
         if (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) {
           const int cursor = g_serverLanguage->cursor;
-          if (cursor > static_cast<int>(prefix.size()) && cursor < static_cast<int>(prefix.size()) + bytes + 2) {
-            if (static_cast<int>(prefix.size()) + bytes / 2 + 1 > cursor) {
-              g_serverLanguage->Select(static_cast<int>(prefix.size()) + bytes + 2, static_cast<int>(prefix.size()) + bytes + 2);
-            } else {
-              g_serverLanguage->Select(static_cast<int>(prefix.size()), static_cast<int>(prefix.size()));
-            }
+          const int start = static_cast<int>(prefix.size());
+          const int end = start + bytes + 2;
+          if (cursor > start && cursor < end) {
+            const int position = cursor < start + bytes / 2 + 1 ? end : start;
+            g_serverLanguage->Select(position, position);
           }
         }
 
