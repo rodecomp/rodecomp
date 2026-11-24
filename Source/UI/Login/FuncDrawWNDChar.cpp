@@ -387,7 +387,7 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
     const int& layer = *it;
     std::string sprName;
     std::string actName;
-    __declspec(align(8)) volatile __int64 aligned = 0;
+    __declspec(align(8)) volatile __int64 aligned = 1;
     (void)aligned;
     switch (layer) {
       case 1: {
