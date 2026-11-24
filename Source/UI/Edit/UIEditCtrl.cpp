@@ -9242,15 +9242,15 @@ void UIItemStoreFindWnd::Paint() {
   }
   this->DrawButtonBar(0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int rows = (this->geometry.height - 38) / 32;
-  int slots = rows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(10, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int rows = (this->geometry.height - 38) / 32;
+    int slots = rows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(10, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
@@ -9305,15 +9305,15 @@ void UIItemStoreSubWnd::Paint() {
   }
   this->DrawButtonBar(0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int rows = (this->geometry.height - 38) / 32;
-  int slots = rows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(10, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int rows = (this->geometry.height - 38) / 32;
+    int slots = rows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(10, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
@@ -9524,15 +9524,15 @@ void UIItemSellWnd::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (heightRef - 38) / 32;
-  int slots = slotRows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slotRows = (heightRef - 38) / 32;
+    int slots = slotRows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
@@ -9631,18 +9631,19 @@ void UIItemShopWnd::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  int slotRows = (this->geometry.height - this->footerHeight - this->bottomPadding - 17) / 32;
-  int slots = slotRows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
-  if (this->showFooter != 0) {
-    slotRows = (this->geometry.height - this->bottomPadding - 17) / 32;
-  }
   {
     unsigned red, green, blue;
+    const int columns = (this->geometry.width - 40) / 32;
+    int slotRows = (this->geometry.height - this->footerHeight - this->bottomPadding - 17) / 32;
+    int slots = slotRows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
+    if (this->showFooter != 0) {
+      slotRows = (this->geometry.height - this->bottomPadding - 17) / 32;
+    }
+
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(red, green, blue));
     if (this->showFooter != 0) {
@@ -9714,9 +9715,11 @@ void UIItemShopWnd::Paint() {
     char text[64];
     int length;
     if (it->prices[0] != it->prices[1]) {
-      length = sprintf(text, " %d -> %s %s", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64), currency);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64);
+      length = sprintf(text, " %d -> %s %s", it->prices[0], grouped, currency);
     } else {
-      length = sprintf(text, " %s %s", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64), currency);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64);
+      length = sprintf(text, " %s %s", grouped, currency);
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
 
@@ -9735,13 +9738,11 @@ void UIItemShopWnd::Paint() {
 
     char text[352];
     const int aid = g_session.m_pendingAid;
-    const char* name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
-    int length = sprintf(text, LookupMessage(message), name, aid);
+    const char* player = g_session.DecodePlayerName();
+    int length = sprintf(text, LookupMessage(message), this->ClipTextToWidth(player, 100, 0, 12, 0), aid);
     this->DrawTextAt(12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
 
-    const int gid = g_session.m_pendingGid;
-    name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
-    length = sprintf(text, LookupMessage(MSI_POINT_SHOP2), name, gid);
+    length = sprintf(text, LookupMessage(MSI_POINT_SHOP2), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingGid);
     this->DrawTextAt(12, this->geometry.height - this->bottomPadding - 21, text, length, 0, 12, 0, 0, 0);
   }
 }
@@ -9870,15 +9871,15 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - 38) / 32;
-  int slots = slotRows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slotRows = (this->geometry.height - 38) / 32;
+    int slots = slotRows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
@@ -11086,15 +11087,15 @@ void UIItemSellWnd2::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (heightRef - 38) / 32;
-  int slots = slotRows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slotRows = (heightRef - 38) / 32;
+    int slots = slotRows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
