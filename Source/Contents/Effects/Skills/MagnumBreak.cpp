@@ -92,19 +92,16 @@ bool CMagnumBreak::IsAlive() {
 // OFFSET: 0x00B4A030
 // FUNCTION: fn_45970
 __forceinline void CMagnumBreak::AdvanceRing(CParticle* ring) {
-  float& growth = ring->animationParameter;
-  float& maximum = ring->animationParameters[0];
-  float& spin = ring->animationParameters[1];
-  const float angle = spin;
-  float speed = growth + ring->speedParameter;
+  const float angle = ring->animationParameters[1];
+  float speed = ring->animationParameter + ring->speedParameter;
   speed = 0.0f > speed ? 0.0f : speed;
   float scale = speed + ring->scale;
-  scale = maximum < scale ? maximum : scale;
+  scale = ring->animationParameters[0] < scale ? ring->animationParameters[0] : scale;
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
   ring->scale = scale;
   ring->speedParameter = speed;
-  spin = angle + speed;
+  ring->animationParameters[1] = angle + speed;
   ring->alpha = this->alpha;
   ring->transform = rotation;
 }
