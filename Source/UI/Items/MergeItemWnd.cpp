@@ -303,11 +303,12 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
   const int minHeight = this->m_gridTop + this->m_cellSize * 3;
   const int maxHeight = this->m_gridTop + this->m_cellSize * 6;
 
-  int columns = width - this->m_marginRight - this->m_gridLeft;
+  const int left = this->m_gridLeft;
+  int columns = width - this->m_marginRight - left;
   columns -= columns % this->m_cellSize;
-  const int clamped = this->m_gridLeft + columns >= this->m_gridLeft + minWidth ? columns : minWidth;
-  const int gridWidth = this->m_gridLeft + clamped <= this->m_gridLeft + maxWidth ? clamped : maxWidth;
-  const int right = this->m_gridLeft + gridWidth;
+  const int clamped = columns + left >= minWidth + left ? columns : minWidth;
+  const int gridWidth = clamped + left <= maxWidth + left ? clamped : maxWidth;
+  const int right = gridWidth + left;
 
   int gridHeight = height - this->m_marginBottom - this->m_gridTop;
   gridHeight = gridHeight - gridHeight % this->m_cellSize + this->m_gridTop;
