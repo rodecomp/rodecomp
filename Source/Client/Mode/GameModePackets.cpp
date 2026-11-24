@@ -7492,12 +7492,11 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
 
   g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
-  const UIItemRepairEntry* entry = reinterpret_cast<const UIItemRepairEntry*>(p + 1);
+  const UIItemRepairEntry* entries = reinterpret_cast<const UIItemRepairEntry*>(p + 1);
   for (int i = 0; i < count; ++i) {
     if (window) {
-      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&entries[i]), 0, 0, 0);
     }
-    ++entry;
   }
 }
 
