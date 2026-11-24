@@ -3077,10 +3077,7 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectText->SetText(OBFUSCATE_SOURCE_TEXT("효과음", 0xB19D1FA9116F39D3ULL));
   this->m_effectText->SetFitText(0);
   this->m_effectText->SetAlign(0, 0);
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x9569C9C7E70909AFULL));
-    this->m_effectText->SetFont(text1);
-  }
+  this->m_effectText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x9569C9C7E70909AFULL)));
   this->m_effectText->SetFontHeight(12);
   this->m_effectText->SetBold(0);
   this->m_effectText->SetColor(0);
@@ -3133,10 +3130,7 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectMuteText->SetText(OBFUSCATE_SOURCE_TEXT("끄기", 0x81F58DED5D470D01ULL));
   this->m_effectMuteText->SetFitText(0);
   this->m_effectMuteText->SetAlign(0, 0);
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x454D31872BB3EDCBULL));
-    this->m_effectMuteText->SetFont(text1);
-  }
+  this->m_effectMuteText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x454D31872BB3EDCBULL)));
   this->m_effectMuteText->SetFontHeight(12);
   this->m_effectMuteText->SetBold(0);
   this->m_effectMuteText->SetColor(0);
