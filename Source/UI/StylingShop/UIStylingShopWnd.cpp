@@ -1373,7 +1373,7 @@ int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     if (argument1 == ID_BUTTON1 && sender) {
       UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
       for (unsigned int i = 0; i < this->m_itemFrames.size(); ++i) {
-        this->m_itemFrames[i]->SetBitmap(i == button->Argument() - 1 ? "유저인터페이스\\styleshop\\shadow_item_on.bmp" : "유저인터페이스\\styleshop\\shadow_item_off.bmp");
+        this->m_itemFrames[i]->SetBitmap(i != button->Argument() - 1 ? "유저인터페이스\\styleshop\\shadow_item_off.bmp" : "유저인터페이스\\styleshop\\shadow_item_on.bmp");
       }
 
       memset(table, 0, sizeof(table));
