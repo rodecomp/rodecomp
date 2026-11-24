@@ -404,11 +404,11 @@ void CDCBitmap::DrawSurface(
   const auto* input = static_cast<const std::uint16_t*>(locked.pixels);
   const int stride = locked.pitch / 2;
   this->m_bitmap.dirty = true;
-  const int format = static_cast<CTexture*>(source)->Format();
   const int width = this->m_bitmap.width;
   std::uint32_t* pixels = this->m_bitmap.pixels;
   unsigned red, green, blue;
 
+  const int format = static_cast<CTexture*>(source)->Format();
   if (format == TextureFormat::A4R4G4B4) {
     if (mirrored) {
       for (int row = 0; row < sourceHeight; ++row) {
