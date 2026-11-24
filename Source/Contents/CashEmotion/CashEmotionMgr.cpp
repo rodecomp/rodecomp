@@ -751,12 +751,13 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
     return result;
   }
 
-  result.reserve(it->second.size());
+  const std::vector<int>& order = it->second;
+  result.reserve(order.size());
   if (filter) {
     std::vector<int> others;
-    others.reserve(it->second.size());
+    others.reserve(order.size());
 
-    for (int emotionId : it->second) {
+    for (int emotionId : order) {
       const char* name = this->GetBaseEmotionName(emotionId);
       if (name) {
         if (std::strstr(name, filter)) {
@@ -772,7 +773,7 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
       result.push_back(emotionId);
     }
   } else {
-    std::copy(it->second.begin(), it->second.end(), std::back_inserter(result));
+    std::copy(order.begin(), order.end(), std::back_inserter(result));
   }
 
   return result;
