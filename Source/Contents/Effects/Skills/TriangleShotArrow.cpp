@@ -61,11 +61,9 @@ void CTriangleShotArrow::Open() {
   this->step = 0;
   target.y -= 10.0f;
 
-  this->direction.x = target.x - pos.x;
-  this->direction.y = target.y - pos.y;
-  this->direction.z = target.z - pos.z;
-  const float length = SquareRoot(this->direction.z * this->direction.z + this->direction.y * this->direction.y +
-                                  this->direction.x * this->direction.x);
+  const vector3d delta{target.x - pos.x, target.y - pos.y, target.z - pos.z};
+  this->direction = delta;
+  const float length = SquareRoot(delta.y * delta.y + delta.x * delta.x + delta.z * delta.z);
   this->direction.x *= 0.125f;
   this->direction.y *= 0.125f;
   this->direction.z *= 0.125f;
