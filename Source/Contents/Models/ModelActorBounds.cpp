@@ -66,11 +66,13 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool) {
   points[6].Set(bounds[0], bounds[4], bounds[5]);
   points[7].Set(bounds[3], bounds[4], bounds[5]);
 
+  BoundsCorner* output = this->corners;
   for (unsigned corner = 0; corner < 8; ++corner) {
-    float* stored = this->corners[corner].values;
-    stored[0] = Coordinate(points[corner].values, this->transform.values, 0);
-    stored[1] = Coordinate(points[corner].values, this->transform.values, 1);
-    stored[2] = Coordinate(points[corner].values, this->transform.values, 2);
+    const BoundsCorner& point = points[corner];
+    float* stored = output->values;
+    stored[0] = Coordinate(point.values, this->transform.values, 0);
+    stored[1] = Coordinate(point.values, this->transform.values, 1);
+    stored[2] = Coordinate(point.values, this->transform.values, 2);
 
     for (unsigned axis = 0; axis < 3; ++axis) {
       if (this->minimum[axis] > stored[axis]) {
@@ -83,17 +85,18 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool) {
         this->maximum[axis] = stored[axis];
       }
     }
+    ++output;
   }
 
   for (unsigned axis = 0; axis < 3; ++axis) {
-    const float low = Coordinate(bounds, this->transform.values, axis);
     const float high = Coordinate(bounds + 3, this->transform.values, axis);
-    this->oriented.center[axis] = (low + high) * g_depthAverageHalf;
+    const float low = Coordinate(bounds, this->transform.values, axis);
+    this->oriented.center[axis] = (high + low) * g_depthAverageHalf;
   }
 
-  for (unsigned axis = 0; axis < 3; ++axis) {
-    this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&this->scale.x)[axis]) * g_depthAverageHalf;
-  }
+  this->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * this->scale.z) * g_depthAverageHalf;
+  this->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * this->scale.y) * g_depthAverageHalf;
+  this->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * this->scale.x) * g_depthAverageHalf;
 
   matrix axes;
   axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
