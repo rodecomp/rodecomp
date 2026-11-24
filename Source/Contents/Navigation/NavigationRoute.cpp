@@ -1802,19 +1802,20 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
   }
 
 request:
-  if (this->RequestRoute(cellX, cellY) == -99) {
-    if (!this->RouteToSavedTarget(cellX, cellY)) {
-      return -97;
-    }
-    if (!this->CollectStartLinks()) {
-      return -98;
-    }
-    const int type = this->savedTarget.type;
-    this->routeResult =
-      this->data.FindRoute(&this->nodes, type != 2 && type != 0, this->allowGates, this->includeObjects, this->allowWarps, this->routeSide);
-    if (this->routeResult == 0) {
-      return -96;
-    }
+  if (this->RequestRoute(cellX, cellY) != -99) {
+    return this->RouteFromPlayer();
+  }
+  if (!this->RouteToSavedTarget(cellX, cellY)) {
+    return -97;
+  }
+  if (!this->CollectStartLinks()) {
+    return -98;
+  }
+  const int type = this->savedTarget.type;
+  this->routeResult =
+    this->data.FindRoute(&this->nodes, type != 2 && type != 0, this->allowGates, this->includeObjects, this->allowWarps, this->routeSide);
+  if (this->routeResult == 0) {
+    return -96;
   }
   return this->RouteFromPlayer();
 }
