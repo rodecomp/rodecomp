@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cstddef>
+#include <string>
 
 // VTABLE: vt_00057
 class ServerTimeManager : public Singleton<ServerTimeManager> {
@@ -27,6 +28,10 @@ public:
   int GetMonth() const;
   int GetSecond() const;
   int GetYear() const;
+  std::chrono::system_clock::duration* GetAbsoluteTimeSinceEpoch(std::chrono::system_clock::duration* out);
+  std::chrono::system_clock::time_point* GetCurrentTime(std::chrono::system_clock::time_point* out);
+  std::chrono::system_clock::duration* GetAbsoluteTimeAfter(std::chrono::system_clock::duration* out, const std::chrono::milliseconds& after);
+  std::string* FormatDateTime(std::string* out);
   void Reset();
   void Update();
 };

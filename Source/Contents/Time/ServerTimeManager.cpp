@@ -1,5 +1,11 @@
 #include "Contents/Time/ServerTimeManager.h"
 
+#include <windows.h>
+
+#undef GetCurrentTime
+
+#include <cstdlib>
+#include <cstring>
 #include <ctime>
 
 // OFFSET: 0x0053E4F0
@@ -47,6 +53,33 @@ int ServerTimeManager::GetSecond() const {
 int ServerTimeManager::GetYear() const {
   return this->year;
 }
+
+// OFFSET: 0x0053E6F0
+// FUNCTION: fn_46672
+std::chrono::system_clock::duration* ServerTimeManager::GetAbsoluteTimeSinceEpoch(std::chrono::system_clock::duration* out) {
+  this->Update();
+  *out = std::chrono::system_clock::duration(std::abs(this->now.time_since_epoch().count()));
+  return out;
+}
+
+// OFFSET: 0x0053E720
+// FUNCTION: fn_46674
+std::chrono::system_clock::time_point* ServerTimeManager::GetCurrentTime(std::chrono::system_clock::time_point* out) {
+  this->Update();
+  *out = this->now;
+  return out;
+}
+
+// OFFSET: 0x0053E850
+// FUNCTION: fn_46675
+std::chrono::system_clock::duration* ServerTimeManager::GetAbsoluteTimeAfter(std::chrono::system_clock::duration* out, const std::chrono::milliseconds& after) {
+  this->Update();
+  const auto ticks = this->now.time_since_epoch() + std::chrono::duration_cast<std::chrono::system_clock::duration>(after);
+  *out = std::chrono::system_clock::duration(std::abs(ticks.count()));
+  return out;
+}
+
+// OFFSET: 0x0053E8A0
 
 // OFFSET: 0x0053E910
 // FUNCTION: fn_01695
