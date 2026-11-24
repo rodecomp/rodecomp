@@ -79,8 +79,8 @@ bool CActRes::Load(const char* name) {
   bool loaded;
 
   if (!file.Open(name, 0, true, false)) {
-    loaded = false;
     ShowErrorDialog((std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
+    loaded = false;
   } else {
 
   struct Header {
