@@ -3362,8 +3362,6 @@ void CLoginMode::OnChangeState(int value) {
   g_session.quitBlocked = 0;
   this->connectionReady = 1;
 
-  ServerAddress2* servers = this->serverList;
-
   switch (value) {
   case 0:
   case 1:
@@ -3454,7 +3452,7 @@ void CLoginMode::OnChangeState(int value) {
     window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMSERVER", 0x6FE153231D879777ULL)), 0, 0);
 
     for (int i = 0; i < this->serverCount; ++i) {
-      const ServerAddress2& server = servers[i];
+      const ServerAddress2& server = this->serverList[i];
       char text[64];
       std::memset(text, 0, sizeof(text));
       if (server.address.property == 1) {
@@ -3816,7 +3814,7 @@ void CLoginMode::OnChangeState(int value) {
       ReplayFileList::Instance().fileState = 0;
     }
     for (int i = 0; i < this->serverCount; ++i) {
-      std::memcpy(&servers[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
+      std::memcpy(&this->serverList[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
     }
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
   case 27: {
@@ -3835,7 +3833,7 @@ void CLoginMode::OnChangeState(int value) {
       ReplayFileList::Instance().fileState = 0;
     }
     for (int i = 0; i < this->serverCount; ++i) {
-      const ServerAddress2 server = servers[i];
+      const ServerAddress2 server = this->serverList[i];
       reinterpret_cast<ServerAddress2*>(ReplayFileList::Instance().buffer)[i] = server;
     }
     break;
