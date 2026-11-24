@@ -198,7 +198,7 @@ void CCloudKillEffect::OnProcess() {
   }
 
   for (auto it = this->particles.begin(); it != this->particles.end();) {
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(*it);
+    CSpriteParticle* particle = *it;
     if (IsParticleActive(particle) != true) {
       FreeParticle(particle);
       this->particles.erase(it++);
