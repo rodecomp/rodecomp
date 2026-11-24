@@ -273,33 +273,49 @@ void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
   }
 }
 
-// OFFSET: 0x00830400
-// FUNCTION: fn_10392
-ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
+// INLINED
+static __forceinline int SwapEquipmentSlotAt(int x, int y, int width, int height) {
   int slot = -1;
-  if (y <= this->geometry.height && y >= 22 && y <= 151) {
-    if ((x >= 6 && x < 106) || (x >= 170 && x < this->geometry.width - 6)) {
-      slot = (y - 22) / 26;
-      if (x >= 170) {
-        if (slot == 0) {
-          slot = 9;
-        } else {
-          slot += 3;
-        }
-      } else {
-        if (slot == 0) {
-          slot = 8;
-        } else {
-          --slot;
-        }
-      }
-    }
+  if (y > height || y < 22 || y > 151) {
+    return -1;
+  }
 
-    if (x < 170 && x > 112 && y >= 28 && y <= 52) {
-      slot = 15;
+  if ((x >= 6 && x < 106) || (x >= 170 && x < width - 6)) {
+    slot = (y - 22) / 26;
+    if (x >= 170) {
+      if (slot == 0) {
+        slot = 9;
+      } else {
+        slot += 3;
+      }
+    } else {
+      if (slot == 0) {
+        slot = 8;
+      } else {
+        --slot;
+      }
     }
   }
 
+  if (x <= 112) {
+    return slot;
+  }
+
+  if (x >= 170) {
+    return slot;
+  }
+
+  if (y >= 28 && y <= 52) {
+    slot = 15;
+  }
+
+  return slot;
+}
+
+// OFFSET: 0x00830400
+// FUNCTION: fn_10392
+ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
+  const int slot = SwapEquipmentSlotAt(x, y, this->geometry.width, this->geometry.height);
   return this->GetSlotItem(slot);
 }
 
