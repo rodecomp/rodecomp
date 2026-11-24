@@ -682,6 +682,7 @@ void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
 // OFFSET: 0x00CC15F0
 // FUNCTION: fn_21121
 int CRenderObject::HoverHeight() {
+  const int frozen = this->render.flags & 0x40000;
   this->render.hoverAngle += 2;
   short angle = this->render.hoverAngle;
   if (angle >= 360) {
@@ -689,7 +690,7 @@ int CRenderObject::HoverHeight() {
     angle = this->render.hoverAngle;
   }
   const int state = this->render.state;
-  if (state == ST_STAND || state == ST_MOVE || (this->render.flags & 0x40000) != 0) {
+  if (state == ST_STAND || state == ST_MOVE || frozen != 0) {
     if (this->render.hoverHeight < 20) {
       if (angle % 30 == 0) {
         ++this->render.hoverHeight;
@@ -711,8 +712,8 @@ int CRenderObject::HoverHeight() {
 
   const short height = static_cast<short>(g_sinTable[angle] * 4.0f + this->render.hoverHeight);
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
-  return scaled < 0 ? 0 : scaled;
+  const unsigned short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
+  return static_cast<short>(scaled) < 0 ? 0 : scaled;
 }
 
 // OFFSET: 0x00CC1740
@@ -3017,11 +3018,14 @@ void CGameActor::SetMonsterTransformJob(int value) {
 // FUNCTION: fn_21038
 void CRenderObject::ScaleByFadePulse(float& scale) const {
   if (0 != (this->render.flags & 0x10)) {
-    const unsigned index = this->render.shrinkPhase * 4u + 90u;
+    int index = this->render.shrinkPhase * 4 + 90;
     if (index > 270) {
       scale = scale * 0.5f;
     } else {
-      scale = ((g_sinTable[index >= 90u ? index : 90u] + 1.0f) * 0.25f + 0.5f) * scale;
+      if (index < 90) {
+        index = 90;
+      }
+      scale = ((g_sinTable[index] + 1.0f) * 0.25f + 0.5f) * scale;
     }
   }
 }
