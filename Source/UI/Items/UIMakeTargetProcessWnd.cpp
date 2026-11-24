@@ -179,8 +179,8 @@ struct UIMakeTargetProcessRecordHeader {
 
   // INLINED
   ~UIMakeTargetProcessRecordHeader() {
-    this->bytes = 0;
     this->id = 0;
+    this->bytes = 0;
   }
 };
 #pragma pack(pop)
