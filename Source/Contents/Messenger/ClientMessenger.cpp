@@ -5054,23 +5054,6 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
   }
 }
 
-// OFFSET: 0x00AAAF10
-// FUNCTION: fn_17276
-__declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
-  for (std::list<UIWindow*>::iterator it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
-    UIWindow* window = *it;
-    bool different;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      different = member.accountId != static_cast<unsigned int>(accountId);
-    }
-    if (!different) {
-      window->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, accountId, lower, upper);
-      break;
-    }
-  }
-}
-
 // OFFSET: 0x00CD3780
 // FUNCTION: fn_21271
 bool CGameMode::GetClosestValidCell(int* x, int* y) {
@@ -5800,43 +5783,6 @@ void sub_68DAF0() {
 // OFFSET: 0x006A2170
 // FUNCTION: fn_06015
 void sub_6A2170() {
-}
-
-// OFFSET: 0x00A91730
-// FUNCTION: fn_17164
-UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = member.accountId == accountId;
-    }
-    if (matches) {
-      return window;
-    }
-  }
-  return nullptr;
-}
-
-// OFFSET: 0x00AA64D0
-// FUNCTION: fn_17230
-void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
-  if (this->messengerGroupWnd) {
-    this->messengerGroupWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  }
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = target->accountId == member.accountId;
-    }
-    if (matches) {
-      if (window) {
-        window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
-      }
-      break;
-    }
-  }
 }
 
 // OFFSET: 0x006BD660
