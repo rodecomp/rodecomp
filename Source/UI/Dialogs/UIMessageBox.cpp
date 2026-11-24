@@ -1568,10 +1568,10 @@ void UIMakeCharWnd::SetHairScrollRanges() {
 void UIMakeCharWnd::InitHairControls() {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int positions[2][2] = {{57, 262}, {104, 262}};
-  int ids[2] = {184, 185};
-
   const char* tooltips[2] = {"", ""};
+  int ids[2] = {184, 185};
+  int positions[2][2] = {{57, 262}, {104, 262}};
+
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
@@ -3542,9 +3542,11 @@ void UIHomunInfoWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, background, false);
   this->DrawFilledRoundedOutline(0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
+  {
   char title[32];
   std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+  }
   this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 105, LookupMessage(MSI_HOMUN_EXP), 0, 0, 12, 0, 0, 0);
@@ -3552,8 +3554,10 @@ void UIHomunInfoWnd::Paint() {
   this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
   const int* const stats = g_session.m_homunStats;
+  int bytes;
+  {
   char number[12];
-  int bytes = std::sprintf(number, "%d", stats[0]);
+  bytes = std::sprintf(number, "%d", stats[0]);
   this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(number, "%d", stats[1]);
   this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
@@ -3569,13 +3573,17 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
   this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
-  char level[12];
+  }
+  {
+  char level[8];
   _itoa(g_session.m_homunLevel, level, 10);
   this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
+  }
   if (g_session.m_homunJob == -1) {
     return;
   }
 
+  {
   char text[24];
   bytes = std::sprintf(text, "%lld", g_session.m_homunMaxExp);
   this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
@@ -3599,6 +3607,7 @@ void UIHomunInfoWnd::Paint() {
     std::strcpy(text, LookupMessage(MSI_UNKNOWN));
   }
   this->DrawTextAt(150, 159, text, 0, 0, 12, 0, 0, 0);
+  }
   this->DrawWrappedFormattedText(225, 136, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING)), 0, 0, 0, 0, 12, 0, 0);
   this->DrawWrappedFormattedText(8, 180, std::string(LookupMessage(MSI_HOMUN_SELF_FEEDING_EXP_INFORMATION)), 0, 0, 0, 0, 12, 0xFF, 0);
 }
