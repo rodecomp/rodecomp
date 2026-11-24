@@ -396,23 +396,22 @@ void UIQuickSlotWnd::Paint() {
 
   g_session.m_alternateCooldownIcons.clear();
 
-  const QuickSlotEntry* entry = this->m_entries;
-  for (int index = 0; index < 2; ++index, ++entry) {
-    if (entry->id == 0) {
+  for (int index = 0; index < 2; ++index) {
+    if (this->m_entries[index].id == 0) {
       continue;
     }
 
     const int x = index * 29 + 5;
-    if (entry->skill) {
-      CSkillInfo skill = g_session.LookupSkill(entry->id);
+    if (this->m_entries[index].skill) {
+      CSkillInfo skill = g_session.LookupSkill(this->m_entries[index].id);
       if (skill.available) {
         char text[1024];
         g_session.ItemBitmapPath(skill.name, text);
         auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
         g_session.m_alternateCooldownIcons.push_back({skill.id, index, x, 5});
         this->DrawBitmap(x, 5, image, true);
-        if (entry->count != 0) {
-          std::sprintf(text, "%d", entry->count);
+        if (this->m_entries[index].count != 0) {
+          std::sprintf(text, "%d", this->m_entries[index].count);
           this->DrawTextAt(x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
           this->DrawTextAt(x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
           this->DrawTextAt(x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
@@ -421,7 +420,7 @@ void UIQuickSlotWnd::Paint() {
         }
       }
     } else {
-      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry->id), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_entries[index].id), 1);
       if (item.identity[1] > 0) {
         this->DrawItemAndQuantity(x, 5, item, item.identified, 1);
         if (0 < item.grade) {
