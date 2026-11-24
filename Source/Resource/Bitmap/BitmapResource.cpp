@@ -54,9 +54,11 @@ bool CBitmapRes::LoadAlphaBitmap(const char* name) {
       const std::uint32_t source = x < 0 || x >= mask.image.width || y < 0 || y >= mask.image.height
                                        ? 0x00FF0000u
                                        : mask.image.pixels[x + y * mask.image.width];
-      const std::uint32_t channels = (source | 0xFFu) + ((source | 0xFF00u) >> 8) + ((source | 0xFF0000u) >> 16);
-      const std::int32_t alpha = static_cast<std::int32_t>(channels) / 3;
-      pixel = (color & 0x00FFFFFFu) + (static_cast<std::uint32_t>(alpha) << 24);
+      const int red = (source | 0xFF0000u) >> 16;
+      const int green = (source | 0xFF00u) >> 8;
+      const int blue = source | 0xFFu;
+      const int alpha = (blue + green + red) / 3;
+      pixel = (color & 0x00FFFFFFu) + (alpha << 24);
     }
   }
 
