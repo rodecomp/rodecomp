@@ -2990,10 +2990,7 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_title->SetText(OBFUSCATE_SOURCE_TEXT("사운드 설정", 0x6BDF334F2BFDAD51ULL));
   this->m_title->SetFitText(0);
   this->m_title->SetAlign(0, 0);
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x674D9F3975573D41ULL));
-    this->m_title->SetFont(text1);
-  }
+  this->m_title->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x674D9F3975573D41ULL)));
   this->m_title->SetFontHeight(12);
   this->m_title->SetBold(1);
   this->m_title->SetColor(0);
@@ -3006,10 +3003,7 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmText->SetText(OBFUSCATE_SOURCE_TEXT("배경음", 0xC9712D676B5B3943ULL));
   this->m_bgmText->SetFitText(0);
   this->m_bgmText->SetAlign(0, 0);
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0xED15938D333D2DB9ULL));
-    this->m_bgmText->SetFont(text1);
-  }
+  this->m_bgmText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xED15938D333D2DB9ULL)));
   this->m_bgmText->SetFontHeight(12);
   this->m_bgmText->SetBold(0);
   this->m_bgmText->SetColor(0);
@@ -3023,37 +3017,25 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmSlider->SetTotal(128);
   this->m_bgmSlider->SetVisible(128);
   this->m_bgmSlider->step = 1;
-  {
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL));
-    this->m_bgmSlider->SetButtonImages(text1, text2);
-  }
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xFD69A9B3F311818DULL));
-    this->m_bgmSlider->SetBackground(text1);
-  }
-  {
-    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL));
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL));
-    this->m_bgmSlider->SetThumbImages(text1, text2, text3);
-  }
+  this->m_bgmSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL)));
+  this->m_bgmSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xFD69A9B3F311818DULL)));
+  this->m_bgmSlider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL)));
   this->AddChild(this->m_bgmSlider);
   this->m_bgmMute = new CUICheckBox();
   this->m_bgmMute->SetSize(10, 10);
   this->m_bgmMute->Move(334, 13);
   this->m_bgmMute->SetOnCheck([this](bool checked) { this->OnBgmMute(checked); });
-  this->m_bgmMute->disabled = 0;
-  this->m_bgmMute->Invalidate();
   {
-    std::string text4(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD9452D81E5CD99C1ULL));
-    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xADADEB4DF7813B55ULL));
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0xB195637DAFCB0D59ULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD7A749EB27D5BF6DULL));
-    this->m_bgmMute->SetImages(text1, text2, text3, text4);
+    CUICheckBox* checkBox = this->m_bgmMute;
+    checkBox->disabled = 0;
+    checkBox->Invalidate();
   }
-  this->m_bgmMute->checked = false;
-  this->m_bgmMute->Invalidate();
+  this->m_bgmMute->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD7A749EB27D5BF6DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0xB195637DAFCB0D59ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xADADEB4DF7813B55ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD9452D81E5CD99C1ULL)));
+  {
+    CUICheckBox* checkBox = this->m_bgmMute;
+    checkBox->checked = false;
+    checkBox->Invalidate();
+  }
   this->AddChild(this->m_bgmMute);
   this->m_bgmMuteText = new CUIStaticText();
   this->m_bgmMuteText->SetSize(50, 13);
@@ -3061,10 +3043,7 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmMuteText->SetText(OBFUSCATE_SOURCE_TEXT("끄기", 0xF715514F5961B75BULL));
   this->m_bgmMuteText->SetFitText(0);
   this->m_bgmMuteText->SetAlign(0, 0);
-  {
-    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x4191BB5531FD3999ULL));
-    this->m_bgmMuteText->SetFont(text1);
-  }
+  this->m_bgmMuteText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x4191BB5531FD3999ULL)));
   this->m_bgmMuteText->SetFontHeight(12);
   this->m_bgmMuteText->SetBold(0);
   this->m_bgmMuteText->SetColor(0);
@@ -3091,38 +3070,38 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectSlider->SetTotal(128);
   this->m_effectSlider->SetVisible(128);
   this->m_effectSlider->step = 1;
+  this->m_effectSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL)));
+  this->m_effectSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL)));
   {
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL));
-    this->m_effectSlider->SetButtonImages(text1, text2);
-  }
-  {
-    std::string text1;
-    text1 = OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL);
-    this->m_effectSlider->SetBackground(text1);
-  }
-  {
-    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL));
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL));
-    this->m_effectSlider->SetThumbImages(text1, text2, text3);
+    CUIHScrollBar* slider = this->m_effectSlider;
+    std::string right(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL));
+    std::string middle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL));
+    std::string left(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL));
+    slider->SetThumbImages(left, middle, right);
   }
   this->AddChild(this->m_effectSlider);
   this->m_effectMute = new CUICheckBox();
   this->m_effectMute->SetSize(10, 10);
   this->m_effectMute->Move(334, 37);
   this->m_effectMute->SetOnCheck([this](bool checked) { this->OnEffectMute(checked); });
-  this->m_effectMute->disabled = 0;
-  this->m_effectMute->Invalidate();
   {
-    std::string text4(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x5DE7712FAB613F75ULL));
-    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x41CFCB831F6B6B91ULL));
-    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x659975C121557D3DULL));
-    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xBFF5C517A1A77F59ULL));
-    this->m_effectMute->SetImages(text1, text2, text3, text4);
+    CUICheckBox* checkBox = this->m_effectMute;
+    checkBox->disabled = 0;
+    checkBox->Invalidate();
   }
-  this->m_effectMute->checked = false;
-  this->m_effectMute->Invalidate();
+  {
+    CUICheckBox* checkBox = this->m_effectMute;
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x5DE7712FAB613F75ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x41CFCB831F6B6B91ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x659975C121557D3DULL));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xBFF5C517A1A77F59ULL));
+    checkBox->SetImages(normal, hover, pressed, inactive);
+  }
+  {
+    CUICheckBox* checkBox = this->m_effectMute;
+    checkBox->checked = false;
+    checkBox->Invalidate();
+  }
   this->AddChild(this->m_effectMute);
   this->m_effectMuteText = new CUIStaticText();
   this->m_effectMuteText->SetSize(50, 13);
@@ -3130,7 +3109,11 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectMuteText->SetText(OBFUSCATE_SOURCE_TEXT("끄기", 0x81F58DED5D470D01ULL));
   this->m_effectMuteText->SetFitText(0);
   this->m_effectMuteText->SetAlign(0, 0);
-  this->m_effectMuteText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x454D31872BB3EDCBULL)));
+  {
+    CUIStaticText* text = this->m_effectMuteText;
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0x454D31872BB3EDCBULL));
+    text->SetFont(font);
+  }
   this->m_effectMuteText->SetFontHeight(12);
   this->m_effectMuteText->SetBold(0);
   this->m_effectMuteText->SetColor(0);
