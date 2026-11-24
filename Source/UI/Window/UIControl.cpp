@@ -986,46 +986,49 @@ void CUIBasicButton::Paint() {
 // OFFSET: 0x009E20B0
 // FUNCTION: fn_14406
 void CUIBasicButton::LoadSkin(bool resolveSkin) {
+  bool skin = resolveSkin;
   auto& leftImagesRef = this->leftImages;
-  leftImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
-  leftImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
-  leftImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
-  this->disabledLeft = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_left.bmp", resolveSkin));
-  this->middleImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", resolveSkin));
+  leftImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", skin));
+  leftImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", skin));
+  leftImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", skin));
+  this->disabledLeft = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_left.bmp", skin));
+  auto& middleImagesRef = this->middleImages;
+  middleImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", skin));
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_press_mid.bmp";
-    this->middleImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    middleImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_over_mid.bmp";
-    this->middleImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    middleImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_disable_mid.bmp";
-    this->disabledMiddle = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    this->disabledMiddle = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
+  auto& rightImagesRef = this->rightImages;
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_out_right.bmp";
-    this->rightImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    rightImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_press_right.bmp";
-    this->rightImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    rightImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_over_right.bmp";
-    this->rightImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    rightImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_disable_right.bmp";
-    this->disabledRight = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+    this->disabledRight = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
 }
 
