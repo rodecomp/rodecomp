@@ -908,6 +908,19 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
   return x;
 }
 
+// OFFSET: 0x0083A920
+// FUNCTION: fn_46580
+UIWindow* CCreateLineInfo::CreateItemImageWindow(std::string itemId) {
+  UIItemImage* image = new (std::nothrow) UIItemImage();
+  if (!image) {
+    return nullptr;
+  }
+
+  image->SetSize(25, 25);
+  image->SetItemId(itemId);
+  return image;
+}
+
 // OFFSET: 0x00838780
 // FUNCTION: fn_10453
 __declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
@@ -1837,7 +1850,7 @@ UIEmotion::UIEmotion() : UIWindow(0), m_animation(0), m_frame(0), m_maxLoops(0) 
 
 // OFFSET: 0x00836EA0
 // FUNCTION: fn_10437
-UIItemImage::UIItemImage() : UIWindow(0), m_itemId("") {
+__forceinline UIItemImage::UIItemImage() : UIWindow(0), m_itemId("") {
   this->m_clip = 1;
 }
 

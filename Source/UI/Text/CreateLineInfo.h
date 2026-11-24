@@ -121,6 +121,7 @@ public:
   __declspec(noinline) int LayoutItemImage(int x, const std::string& text);
   __declspec(noinline) int LayoutText(int x, std::string text, LineTextStyle style);
   UITextButton* CreateLinkWindow(const std::string& text, const std::vector<std::string>& parts, int type, LineTextStyle style);
+  UIWindow* CreateItemImageWindow(std::string itemId);
   __declspec(noinline) UIWindow* CreateTextWindow(std::string text, const LineTextStyle& style);
 
 private:
