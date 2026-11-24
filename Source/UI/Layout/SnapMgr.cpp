@@ -74,7 +74,8 @@ SnapObject* CSnapMgr::Find(const UIWindow* window) const {
   return nullptr;
 }
 
-// INLINED
+// OFFSET: 0x007E28B0
+// FUNCTION: fn_46504
 void CSnapMgr::ResetVisited() {
   for (auto object = this->objects.begin(); object != this->objects.end(); ++object) {
     (*object)->visited = 0;
