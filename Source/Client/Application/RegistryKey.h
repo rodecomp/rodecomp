@@ -6,6 +6,9 @@
 class RegistryKey {
 public:
   RegistryKey() : handle(nullptr) {}
+
+  // OFFSET: 0x00B92F70
+  // FUNCTION: fn_46594
   ~RegistryKey() {
     if (this->handle != nullptr) {
       RegCloseKey(this->handle);
