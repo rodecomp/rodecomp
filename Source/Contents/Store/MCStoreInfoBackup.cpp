@@ -44,8 +44,8 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum) {
       continue;
     }
 
-    if (wholeItem == 0) {
-      found.second.quantity = found.second.quantity > saved->quantity ? saved->quantity : found.second.quantity;
+    if (wholeItem == 0 && found.second.quantity > saved->quantity) {
+      found.second.quantity = saved->quantity;
     }
 
     if (found.second.identity[1] != 0) {
