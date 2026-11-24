@@ -223,10 +223,11 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   struct matrix& matrix = this->state.rotTransform;
+  float yaw;
 
   if ((this->state.pattern & 0x200u) != 0) {
     matrix.MakeZRotation(g_modeMgr.GetGameMode()->camera->camera.pitch);
-    matrix.AppendYRotation(GetRadian(static_cast<int>(this->render.angle)));
+    yaw = this->render.angle;
   } else {
     if ((this->state.pattern & 0x40u) != 0) {
       CGameMode* const mode = g_modeMgr.GetGameMode();
@@ -239,8 +240,10 @@ bool CEffectPrim::MoveEffectPrimitive() {
       matrix.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     }
 
-    matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    yaw = this->state.longitude;
   }
+
+  matrix.AppendYRotation(GetRadian(static_cast<int>(yaw)));
 
   if ((this->state.pattern & 2u) != 0) {
     const auto index = this->state.chCnt;
