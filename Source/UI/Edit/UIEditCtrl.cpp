@@ -7962,10 +7962,10 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
       int screenX = tooltipX;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
     } else {
+      int screenX = tooltipX;
       CMode* mode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenY = tooltipY;
-      int screenX = tooltipX;
       mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
   } else {
