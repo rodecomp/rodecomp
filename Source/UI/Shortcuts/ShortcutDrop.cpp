@@ -125,10 +125,10 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
             previous->slot = index;
             previous->x = targetX;
           } else {
-            record->main.push_back(CooldownState(index, targetX, targetY, record->duration, record->end - record->duration, 0, 0));
+            record->main.push_back({index, targetX, targetY, record->duration, record->end - record->duration, 0, 0});
           }
         } else {
-          record->main.push_back(CooldownState(index, targetX, targetY, record->duration, record->end - record->duration, 0, 0));
+          record->main.push_back({index, targetX, targetY, record->duration, record->end - record->duration, 0, 0});
         }
       }
 
