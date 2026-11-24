@@ -897,6 +897,24 @@ static __forceinline void MoveWindowToScreenPosition(UIWindow* window, int x, in
   window->Move(static_cast<unsigned>(x) - parentX, static_cast<unsigned>(y) - parentY);
 }
 
+// INLINED
+static __forceinline bool MoveWindowHorizontally(bool canMoveLeft, bool canMoveRight, int left, int right, std::function<void()> moveLeft, std::function<void()> moveRight) {
+  if (!canMoveLeft && !canMoveRight) {
+    return false;
+  }
+
+  if (canMoveLeft) {
+    if (canMoveRight && left > right) {
+      moveRight();
+    } else {
+      moveLeft();
+    }
+  } else {
+    moveRight();
+  }
+  return true;
+}
+
 // OFFSET: 0x00A7AB50
 // FUNCTION: fn_45626
 bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
@@ -905,11 +923,11 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   }
 
   const auto screenPosition = [](const UIWindow* window, int bounds[4]) {
-    int x = 0;
-    int y = 0;
-    for (const UIWindow* node = window; node; node = node->parent) {
-      x += node->geometry.x;
-      y += node->geometry.y;
+    int x = window->geometry.x;
+    int y = window->geometry.y;
+    for (const UIWindow* parent = window->parent; parent; parent = parent->parent) {
+      x += parent->geometry.x;
+      y += parent->geometry.y;
     }
     bounds[0] = x;
     bounds[1] = y;
@@ -932,7 +950,9 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   const int bottom = anchorBounds[3] + this->geometry.height <= g_renderer->viewport.height ? anchorBounds[3] - windowBounds[1] : 0;
 
   const int nearestHorizontal = left > 0 ? (right > 0 ? std::min(left, right) : left) : (right > 0 ? right : 999999);
-  const int nearestVertical = top > 0 ? (bottom > 0 ? std::min(top, bottom) : top) : (bottom > 0 ? bottom : 999999);
+  const bool canMoveAbove = top > 0;
+  const bool canMoveBelow = bottom > 0;
+  const int nearestVertical = canMoveAbove ? (canMoveBelow ? std::min(top, bottom) : top) : (canMoveBelow ? bottom : 999999);
   const auto moveLeftAction = [this, &anchorBounds, &windowBounds] {
     MoveWindowToScreenPosition(this, static_cast<unsigned>(anchorBounds[0]) - this->geometry.width, windowBounds[1]);
   };
@@ -947,40 +967,15 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   };
   const WindowActionRunner runWindowAction{};
   if (nearestHorizontal < nearestVertical) {
-    std::function<void()> moveRight = moveRightAction;
-    std::function<void()> moveLeft = moveLeftAction;
-    if (left > 0) {
-      if (right > 0 && left > right) {
-        moveRight();
-      } else {
-        moveLeft();
-      }
+    if (MoveWindowHorizontally(left > 0, right > 0, left, right, moveLeftAction, moveRightAction)) {
       return true;
     }
-    if (right > 0) {
-      moveRight();
-      return true;
-    }
-    return runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction);
+    return runWindowAction(canMoveAbove, canMoveBelow, top, bottom, moveAboveAction, moveBelowAction);
   }
-  if (runWindowAction(top > 0, bottom > 0, top, bottom, moveAboveAction, moveBelowAction)) {
+  if (runWindowAction(canMoveAbove, canMoveBelow, top, bottom, moveAboveAction, moveBelowAction)) {
     return true;
   }
-  std::function<void()> moveRight = moveRightAction;
-  std::function<void()> moveLeft = moveLeftAction;
-  if (left > 0) {
-    if (right > 0 && left > right) {
-      moveRight();
-    } else {
-      moveLeft();
-    }
-    return true;
-  }
-  if (right > 0) {
-    moveRight();
-    return true;
-  }
-  return false;
+  return MoveWindowHorizontally(left > 0, right > 0, left, right, moveLeftAction, moveRightAction);
 }
 
 // OFFSET: 0x00A81A30
