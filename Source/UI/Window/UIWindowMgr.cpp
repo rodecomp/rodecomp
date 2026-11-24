@@ -1274,8 +1274,8 @@ void UIWindowMgr::RefreshFrameSkins() {
 // OFFSET: 0x00A8B840
 // FUNCTION: fn_17124
 __declspec(noinline) void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
-  auto found = this->namedWindows.find(name);
-  if (found == this->namedWindows.end()) {
+  const auto entry = this->namedWindows.find(name);
+  if (entry == this->namedWindows.end()) {
     this->namedWindows[name] = window;
   }
 }
@@ -1392,9 +1392,9 @@ void UIWindowMgr::UnregisterNamedWindow(std::string name) {
 // OFFSET: 0x00AAD8E0
 // FUNCTION: fn_17285
 void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
-  auto& namedWindowsRef = this->namedWindows;
-  if (namedWindowsRef.find(name) != namedWindowsRef.end()) {
-    namedWindowsRef[name]->SendMsg(nullptr, UM_MENU_SELECTED, 0, 0, 0, 0);
+  const auto entry = this->namedWindows.find(name);
+  if (entry != this->namedWindows.end()) {
+    this->namedWindows[name]->SendMsg(nullptr, UM_MENU_SELECTED, 0, 0, 0, 0);
   }
 }
 
