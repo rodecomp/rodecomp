@@ -4670,7 +4670,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   switch (message) {
   case UM_RESOLVE_PLAYER_TAGS:
     this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
-    return 0;
+    break;
   case UM_SETINFO: {
     WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
     this->placement = info;
@@ -4679,7 +4679,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     this->SendMsg(nullptr, UM_RESIZE, 7, this->placement->width, this->placement->height, 0);
     this->Move(this->placement->x, this->placement->y);
-    return 0;
+    break;
   }
   case UM_COMMAND:
     switch (a) {
@@ -4687,7 +4687,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (this->m_edit->HasItemLinkTag(this->m_edit->Text()) == 1) {
         this->m_edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
-        return 0;
+        break;
       }
 
       char text[256];
@@ -4695,12 +4695,12 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_edit->PushHistory();
       g_windowMgr.SetFocus(this->m_edit);
       if (std::strlen(text) == 0) {
-        return 0;
+        break;
       }
 
       if (g_serviceType == 1 && !g_session.ValidateCharacterName(text)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
-        return 0;
+        break;
       }
 
       if (this->m_target.size() != 0 && text[0] != '/') {
@@ -4713,11 +4713,11 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         }
 
         g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
-        return 0;
+        break;
       }
 
       if (g_session.ProcessEmotionShortcut(text) != 0) {
-        return 0;
+        break;
       }
 
       std::string parts[3];
@@ -4734,18 +4734,18 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else {
         g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
-      return 0;
+      break;
     }
     case ID_CLOSE:
       g_windowMgr.Schedule(this);
-      return 0;
+      break;
     }
-    return 0;
+    break;
   case UM_MENU_SELECTED:
     if (this->m_log[a].value == 11) {
       this->SaveChatLog();
     }
-    return 0;
+    break;
   case UM_MAKEMENU: {
     this->m_log.erase(this->m_log.begin(), this->m_log.end());
     if (g_windowMgr.menuWnd != nullptr) {
@@ -4759,7 +4759,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     g_modeMgr.currentMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     if (this->m_log.empty()) {
-      return 0;
+      break;
     }
 
     UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -4782,7 +4782,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       y = g_renderer->viewport.height - menu->geometry.height;
     }
     menu->Move(x, y);
-    return 0;
+    break;
   }
   case UM_ADDCHAT: {
     char* line = reinterpret_cast<char*>(a);
@@ -4798,18 +4798,18 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_chatHistory->AddTextWrapped(line, color, nullptr);
     }
     this->m_chatHistory->AddLinkRecord(line, color, "");
-    return 0;
+    break;
   }
   case UM_PAGEUPPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
       this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_PAGEDOWNPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
       this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_RESIZE:
     if (a == 7) {
       int width = b <= 512 ? static_cast<int>(b) : 512;
@@ -4834,10 +4834,12 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       g_windowMgr.StoreSnapRectangle(this);
     }
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x0090B080
@@ -5172,20 +5174,20 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_SET_TARGET:
     this->m_responseMessage = static_cast<int>(a);
-    return 0;
+    break;
   case UM_SETINFO:
     this->m_placement = reinterpret_cast<SayDialogWndInfo*>(a);
     if (!this->m_placement->IsValid()) {
       this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_viewer->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_DOWNPUSH:
     this->m_viewer->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, this->m_responseMessage);
     if (g_replayAnimationScaling != 0) {
@@ -5209,7 +5211,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, static_cast<int>(a), 0, 0);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SETSAYDIALOG:
     if (a != 0) {
@@ -5220,19 +5222,19 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->m_viewer->SendMsg(nullptr, UM_SETTEXT, a, c, 1, 0);
     }
     this->m_responseId = static_cast<int>(b);
-    return 0;
+    break;
   case UM_ENABLENEXTBUTTON:
     this->m_message0 = 218;
     this->m_responseMessage = 22;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_ENABLECLOSEBUTTON:
     this->m_message0 = 201;
     this->m_responseMessage = 89;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_ADD_BUTTON: {
     const std::string prefix("유저인터페이스\\");
     UIBitmapButton* button = new UIBitmapButton();
@@ -5245,13 +5247,13 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     button->SetId(static_cast<int>(a));
     this->AddChild(button);
     this->m_buttons.push_back(button);
-    return 0;
+    break;
   }
   case UM_DISABLENEXTBUTTON:
     this->m_message0 = 600;
     this->SendMsg(nullptr, UM_DELETE_BUTTON, 218, 0, 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_DELETE_BUTTON:
     for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
       if ((*it)->geometry.id == a) {
@@ -5261,47 +5263,50 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         break;
       }
     }
-    return 0;
+    break;
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (22500 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 22501:
-          scanning = false;
-          break;
-        case 22503: {
-          char text[260];
-          std::memset(text, 0, sizeof(text));
-          std::memcpy(text, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          break;
-        }
-        case 22504:
-          std::memcpy(&this->m_responsePending, records + position, header.length);
-          position += header.length;
-          break;
-        default:
-          position += header.length;
-          break;
-        }
+    if (22500 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 22501:
+        scanning = false;
+        break;
+      case 22503: {
+        char text[260];
+        std::memset(text, 0, sizeof(text));
+        std::memcpy(text, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        break;
+      }
+      case 22504:
+        std::memcpy(&this->m_responsePending, records + position, header.length);
+        position += header.length;
+        break;
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   case UM_CLEAR_ITEM:
     this->m_viewer->Clear();
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FAF50
@@ -5312,36 +5317,38 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->partnerName = reinterpret_cast<const char*>(a);
     this->partnerId = static_cast<int>(b);
     this->partnerLevel = static_cast<short>(c);
-    return 0;
+    break;
   case UM_MYDRAGCLOSED:
     this->isLocalTrader = 1;
     this->CancelInput();
     this->LayoutButtons();
-    return 0;
+    break;
   case UM_OTHERDRAGCLOSED:
     this->localConfirmed = 1;
     this->CancelInput();
     this->LayoutButtons();
-    return 0;
+    break;
   case UM_COMMAND: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case ID_CHECK:
       this->takeScreenshot = b != 0;
-      return 0;
+      break;
     case ID_OK:
       if (this->remoteConfirmed != 0) {
-        return 0;
+        break;
       }
       if (this->zenyEdit) {
         char text[24];
         std::sprintf(text, "%s ", this->zenyEdit->Text());
         if (!g_session.IsNumberWithCommas(text)) {
           g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
+          break;
         }
 
-        int amount = static_cast<int>(MaxInt64((std::min)(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), 0));
+        const std::int64_t value = _atoi64(text);
+        const std::int64_t limited = value > 0x7FFFFFFF ? 0x7FFFFFFF : value;
+        int amount = static_cast<int>(MaxInt64(limited, 0));
         if (amount < 0) {
           amount = 0;
         }
@@ -5353,10 +5360,10 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->remoteConfirmed = 1;
-      return 0;
+      break;
     case ID_EXCHANGE:
       if (this->localAccepted != 0) {
-        return 0;
+        break;
       }
       if (this->takeScreenshot) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE_CHARNAME), this->partnerName.c_str());
@@ -5365,17 +5372,17 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->localAccepted = 1;
       this->LayoutButtons();
-      return 0;
+      break;
     case ID_CANCEL:
       if (this->remoteAccepted != 0) {
-        return 0;
+        break;
       }
       mode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->remoteAccepted = 1;
-      return 0;
+      break;
     case ID_RIGHT: {
       if (!this->zenyEdit) {
-        return 0;
+        break;
       }
       int amount = std::atoi(this->zenyEdit->Text());
       if (amount < 0) {
@@ -5386,10 +5393,10 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.exchangeMoney + amount, 0, 0);
       this->CancelInput();
-      return 0;
+      break;
     }
     }
-    return 0;
+    break;
   }
   case UM_REFRESHITEM:
     this->m_myItems.erase(this->m_myItems.begin(), this->m_myItems.end());
@@ -5405,12 +5412,12 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
     }
     this->Invalidate();
-    return 0;
+    break;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
@@ -5486,13 +5493,15 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
       }
     }
-    return 0;
+    break;
   }
   case UM_SCROLLVERT:
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FB850
@@ -11334,34 +11343,34 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
     case ID_STORE_PASSWORD_NUM_RESET:
       if (this->passwordStage == 0) {
         this->passwordStage = 0;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        this->activeInputY = this->currentPasswordY;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(1);
+        this->actionButtons[3]->Enable(0);
+      } else if (g_session.m_passwordInputAlternate) {
+        this->passwordStage = 2;
+        this->activeInputY = this->newPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
         std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
+        this->passwordStage = 1;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        if (g_session.m_passwordInputAlternate) {
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(1);
-          this->actionButtons[3]->Enable(0);
-        } else {
-          this->passwordStage = 1;
-          this->activeInputY = this->currentPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(0);
-          this->actionButtons[3]->Enable(1);
-        }
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(0);
+        this->actionButtons[3]->Enable(1);
       }
       this->ShuffleKeypad();
       break;
@@ -11734,34 +11743,34 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_STORE_PASSWORD_NUM_RESET:
       if (this->passwordStage == 0) {
         this->passwordStage = 0;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        this->activeInputY = this->currentPasswordY;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(1);
+        this->actionButtons[3]->Enable(0);
+      } else if (g_session.m_passwordInputAlternate) {
+        this->passwordStage = 2;
+        this->activeInputY = this->newPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
         std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
+        this->passwordStage = 1;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        if (g_session.m_passwordInputAlternate) {
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(1);
-          this->actionButtons[3]->Enable(0);
-        } else {
-          this->passwordStage = 1;
-          this->activeInputY = this->currentPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(0);
-          this->actionButtons[3]->Enable(1);
-        }
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(0);
+        this->actionButtons[3]->Enable(1);
       }
       this->ShuffleKeypad();
       break;
