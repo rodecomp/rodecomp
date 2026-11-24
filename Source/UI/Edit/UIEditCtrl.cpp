@@ -9767,12 +9767,14 @@ void UIItemStoreWnd::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, 0);
   }
 
-  count = (this->geometry.width - 60) % 32;
   {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(20, 17, count, this->geometry.height - 38, RGB(red, green, blue));
-    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - 38, RGB(red, green, blue));
+    const int fillHeight = (this->geometry.height - 38) % 32;
+    const int fillY = (this->geometry.height - 38) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
 
@@ -9798,9 +9800,11 @@ void UIItemStoreWnd::Paint() {
     this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
@@ -9818,7 +9822,7 @@ void UIItemStoreWnd::Paint() {
     this->DrawItemAndQuantity(x, row * 32 + 21, *it, 0, 0);
     this->DrawWrappedItemName(column * 32 + 80, row * 32 + 29, 180, &*it, 0, 0, 12);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(x, row * 32 + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), 1);
     }
 
