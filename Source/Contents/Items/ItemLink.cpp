@@ -247,10 +247,10 @@ bool UIChatHisBox::ItemFromLinkFields(const std::vector<std::int32_t>& fields, I
     for (int option = 1; option < optionCount + 1; ++option) {
       ItemOption value;
       value.id = static_cast<std::int16_t>(fields[cardCount + 9 + (option - 1) * 3]);
-      value.parameter = static_cast<unsigned char>(fields[cardCount + 10 + (option - 1) * 3]);
+      const auto parameter = static_cast<unsigned char>(fields[cardCount + 10 + (option - 1) * 3]);
       value.value = static_cast<std::int16_t>(fields[cardCount + 11 + (option - 1) * 3]);
-      const int index = option - 1;
-      item.SetOption(value, index);
+      value.parameter = parameter;
+      item.SetOption(value, option - 1);
     }
   }
 
