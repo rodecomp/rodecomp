@@ -10298,63 +10298,69 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       bool include = false;
       if (item.placeEtcTab != 0) {
         include = this->categoryFilter == 3;
-      } else if (this->categoryFilter == 0) {
-        if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
-          switch (this->usableFilter) {
-          case 0:
-            include = type == TYPE_HEAL;
-            break;
-          case 2:
-            include = type == TYPE_SCHANGE || type == TYPE_SPECIAL;
-            break;
-          case 3:
-            include = true;
-            break;
-          default:
-            break;
+      } else {
+        switch (this->categoryFilter) {
+        case 0:
+          if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
+            switch (this->usableFilter) {
+            case 0:
+              include = type == TYPE_HEAL;
+              break;
+            case 2:
+              include = type == TYPE_SCHANGE || type == TYPE_SPECIAL;
+              break;
+            case 3:
+              include = true;
+              break;
+            default:
+              break;
+            }
           }
-        }
-      } else if (this->categoryFilter == 1) {
-        switch (type) {
-        case TYPE_ARMOR:
-        case TYPE_WEAPON:
-        case TYPE_BOW:
-        case TYPE_BOTHHAND:
-        case TYPE_ARMORTM:
-        case TYPE_ARMORTB:
-        case TYPE_ARMORMB:
-        case TYPE_ARMORTMB:
-        case TYPE_GUN:
-          switch (this->equipmentFilter) {
-          case 0:
-            include = type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW;
-            break;
-          case 1:
-            switch (type) {
-            case TYPE_ARMOR:
-            case TYPE_ARMORTM:
-            case TYPE_ARMORTB:
-            case TYPE_ARMORMB:
-            case TYPE_ARMORTMB:
+          break;
+        case 1:
+          switch (type) {
+          case TYPE_ARMOR:
+          case TYPE_WEAPON:
+          case TYPE_BOW:
+          case TYPE_BOTHHAND:
+          case TYPE_ARMORTM:
+          case TYPE_ARMORTB:
+          case TYPE_ARMORMB:
+          case TYPE_ARMORTMB:
+          case TYPE_GUN:
+            switch (this->equipmentFilter) {
+            case 0:
+              include = type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW;
+              break;
+            case 1:
+              switch (type) {
+              case TYPE_ARMOR:
+              case TYPE_ARMORTM:
+              case TYPE_ARMORTB:
+              case TYPE_ARMORMB:
+              case TYPE_ARMORTMB:
+                include = true;
+                break;
+              default:
+                break;
+              }
+              break;
+            case 3:
               include = true;
               break;
             default:
               break;
             }
             break;
-          case 3:
-            include = true;
-            break;
           default:
             break;
           }
           break;
-        default:
+        case 2:
+          if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
+            include = this->miscFilter == 4;
+          }
           break;
-        }
-      } else if (this->categoryFilter == 2) {
-        if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-          include = this->miscFilter == 4;
         }
       }
       if (include) {
