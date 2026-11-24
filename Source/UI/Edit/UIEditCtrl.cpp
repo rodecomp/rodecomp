@@ -1609,6 +1609,13 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x0098B980
 // FUNCTION: fn_13420
 int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  char amountText[12];
+  char limitText[200];
+  char priceText[80];
+  char titleText[16];
+  char priceGrouped[64];
+  char applyText[4];
+
   switch (message) {
   case UM_SETTITLE: {
     this->cashShopMode = a;
@@ -1631,9 +1638,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       format = "Total : %d Zeny";
     }
 
-    char text[16];
-    std::sprintf(text, format, 0);
-    this->title->SetTextAutoWidth(text);
+    std::sprintf(titleText, format, 0);
+    this->title->SetTextAutoWidth(titleText);
     return 0;
   }
   case UM_SETINFO:
@@ -1691,10 +1697,9 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
     if (owned + item.quantity > 30000) {
       item.quantity += 30000 - (owned + item.quantity);
-      char text[200];
-      std::sprintf(text, LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
+      std::sprintf(limitText, LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(limitText), 0xFF, 0, 0, 0);
     }
 
     if (item.quantity > 0) {
@@ -1733,10 +1738,9 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           amount = g_session.GetPurchaseItemTotalPrice();
         }
 
-        char text[12];
-        _itoa(amount, text, 10);
+        _itoa(amount, amountText, 10);
         g_windowMgr.SetFocus(this->quantityEdit);
-        this->quantityEdit->SetText(text);
+        this->quantityEdit->SetText(amountText);
         g_windowMgr.SetFocus(nullptr);
 
         const int total = g_session.GetPurchaseItemTotalPrice();
@@ -1782,9 +1786,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           amount = g_session.m_pendingGid;
         }
 
-        char text[4];
-        _itoa(amount, text, 10);
-        this->quantityEdit->SetText(text);
+        _itoa(amount, applyText, 10);
+        this->quantityEdit->SetText(applyText);
         g_windowMgr.SetFocus(nullptr);
       }
       return 0;
@@ -1863,10 +1866,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       format = "Total : %s Zeny";
     }
 
-    char grouped[64];
-    char text[80];
-    std::sprintf(text, format, FormatGroupedInteger(total, grouped, 64));
-    this->title->SetTextAutoWidth(text);
+    std::sprintf(priceText, format, FormatGroupedInteger(total, priceGrouped, 64));
+    this->title->SetTextAutoWidth(priceText);
     this->Invalidate();
     this->UpdateScrollBar();
     return 0;
