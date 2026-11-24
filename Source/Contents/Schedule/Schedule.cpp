@@ -1,7 +1,7 @@
 #include "Contents/Schedule/Schedule.h"
 
 // GLOBAL: gl_24850
-std::uniform_int_distribution<int> g_scheduleIntervalDistribution;
+static std::uniform_int_distribution<int> g_scheduleIntervalDistribution(30, 300);
 
 // GLOBAL: gl_24851
 std::mt19937 g_scheduleRandomEngine;
