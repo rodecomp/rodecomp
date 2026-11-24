@@ -361,7 +361,7 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(&volumeCount, 4);
 
   if (major == 1) {
-    if (minor >= 3) {
+    if (minor > 2) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
         ModelVolumeRecord record{};
