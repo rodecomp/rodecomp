@@ -31,9 +31,9 @@ int UIClanInfoManageWnd::Tab() {
   return 0;
 }
 
-// OFFSET: 0x0084CFD0
-// FUNCTION: fn_10629
-void UIClanInfoManageWnd::OnCreate(int width, int height) {
+// OFFSET: 0x0084CF00
+// FUNCTION: fn_46596
+inline void UIClanInfoManageWnd::CreateTitle() {
   if (!this->m_title) {
     const char* title = LookupMessage(MSI_CLAN_INFOMANAGE);
     this->m_title = new UIStaticText();
@@ -43,6 +43,12 @@ void UIClanInfoManageWnd::OnCreate(int width, int height) {
     this->AddChild(this->m_title);
     this->AddCloseButton("Ctrl+G", 0);
   }
+}
+
+// OFFSET: 0x0084CFD0
+// FUNCTION: fn_10629
+void UIClanInfoManageWnd::OnCreate(int width, int height) {
+  this->CreateTitle();
 
   this->allyRow = -1;
   this->hostileRow = -1;
@@ -152,15 +158,22 @@ void UIClanInfoManageWnd::Paint() {
   }
 }
 
-// OFFSET: 0x0084D8F0
-// FUNCTION: fn_10631
-void UIClanWnd::Paint() {
+// OFFSET: 0x0084CE60
+// FUNCTION: fn_46595
+inline void UIClanWnd::DrawTabBackground() {
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(10, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 18, 64, 23, RGB(red, green, blue));
+}
+
+// OFFSET: 0x0084D8F0
+// FUNCTION: fn_10631
+void UIClanWnd::Paint() {
+  this->DrawTabBackground();
   this->DrawTitleBar(false, "", 0);
+
   unsigned bodyRed, bodyGreen, bodyBlue;
   g_skinInfo.PaletteChannels(14, 6, bodyRed, bodyGreen, bodyBlue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(bodyRed, bodyGreen, bodyBlue));
