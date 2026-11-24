@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00DDE340
 // FUNCTION: fn_23394
-std::string CSession::GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
+__declspec(noinline) std::string CSession::GetBodyActionResourceName(int job, int sex, int costumeJob, int costume) {
   return g_equipmentResourceMgr->GetBodyResourceName(0, job, sex, costumeJob, costume);
 }
 
