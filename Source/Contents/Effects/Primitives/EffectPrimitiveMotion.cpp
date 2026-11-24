@@ -5472,11 +5472,13 @@ __declspec(noinline) void CEffectPrim::PrimGlowFollow() {
     return;
   }
 
+  const char kind = stateRef.slots[0].flag1[4];
   if (++stateRef.slots[0].process < 30) {
-    if (stateRef.slots[0].flag1[4] == 31) {
-      stateRef.slots[0].alphaB = static_cast<std::int16_t>(stateRef.slots[0].alphaB + 8);
-    } else {
-      stateRef.slots[0].alphaB = static_cast<std::int16_t>(stateRef.slots[0].alphaB + 3);
+    if (kind == 31) {
+      stateRef.slots[0].alphaB += 8;
+    }
+    if (kind != 31) {
+      stateRef.slots[0].alphaB += 3;
       if (stateRef.slots[0].alphaB >= 60) {
         stateRef.slots[0].alphaB = 60;
       }
