@@ -665,13 +665,14 @@ void UIComboBox::Configure(int x, int y, int width, int height, unsigned char va
 // FUNCTION: fn_11528
 void UIComboBox::Resize(int width, int height) {
   UIListBox::Resize(width, height);
-  this->topLine = 0;
-  const bool overflow = this->verticalOverflow;
-  this->verticalBar->position = this->topLine;
-  if (overflow) {
+  int& top = this->topLine;
+  top = 0;
+  if (this->verticalOverflow) {
+    this->verticalBar->position = top;
     this->verticalBar->Move(width - 13, 0);
     this->verticalBar->Invalidate();
   } else {
+    this->verticalBar->position = top;
     this->verticalBar->Move(width - 13, 0);
   }
 }
