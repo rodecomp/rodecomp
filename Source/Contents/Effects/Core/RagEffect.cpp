@@ -158,10 +158,8 @@ static void PlayEffectWave(const CRagEffect& effect, const char* name) {
 
 // INLINED
 static __forceinline void PlayEffectWaveInline(const CRagEffect& effect, const char* name) {
-  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  g_soundMgr->PlayWave(
-    name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-  );
+  const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+  g_soundMgr->PlayWave(name, effect.render.position.x - player.x, 0.0f, effect.render.position.z - player.z, 250, 40, 1.0f, 0);
 }
 
 // INLINED
@@ -169,6 +167,12 @@ static int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
 }
+
+struct ProjectedVertex : RenderVertex {
+  // INLINED
+  __forceinline ProjectedVertex() : RenderVertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f} {
+  }
+};
 
 // INLINED
 static std::string GetMapName(const CGameMode* mode) {
@@ -4987,7 +4991,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
 
 // OFFSET: 0x00C470D0
 // FUNCTION: fn_20155
-void CRagEffect::TexturedFlare(const char* name, char size, int, int) {
+void CRagEffect::TexturedFlare(const char* name, char size, float, float) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
 
@@ -17543,7 +17547,7 @@ bool CRagEffect::GlassWallRising(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
+    PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
     this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
@@ -17779,7 +17783,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
     return;
   }
 
-  PlayEffectWaveInline(*this, "effect\\EF_FireWall.wav");
+  PlayEffectWave(*this, "effect\\EF_FireWall.wav");
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -17867,7 +17871,7 @@ void CRagEffect::TeleportSpiral(const char* name) {
     return;
   }
 
-  PlayEffectWaveInline(*this, "effect\\EF_Teleportation.wav");
+  PlayEffectWave(*this, "effect\\EF_Teleportation.wav");
 
   this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -23148,10 +23152,8 @@ bool CRagEffect::OnProcess3() {
 
 // INLINED
 static __forceinline void PlayEffectWaveAt(const CRagEffect& effect, const char* name, float height) {
-  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  g_soundMgr->PlayWave(
-    name, effect.render.position.x - player->render.position.x, height, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-  );
+  const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+  g_soundMgr->PlayWave(name, effect.render.position.x - player.x, height, effect.render.position.z - player.z, 250, 40, 1.0f, 0);
 }
 
 // OFFSET: 0x00C0C400

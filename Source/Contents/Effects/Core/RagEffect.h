@@ -140,7 +140,7 @@ struct CRagEffect : CRenderObject {
   void TexturedOrbit(const char* name);
   void TexturedSlashCross(const char* name);
   void TexturedHalo(const char* name, char kind);
-  void TexturedFlare(const char* name, char size, int, int);
+  void TexturedFlare(const char* name, char size, float, float);
   void TexturedSwirl(unsigned char clockwise, const char* name);
   __declspec(noinline) void TexturedBeams(const char* name, char flag);
   void TexturedSlashWave(const char* name, char kind);
