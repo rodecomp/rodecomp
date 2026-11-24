@@ -279,15 +279,15 @@ void UINewSkillListWnd::DrawCharacter() {
 // OFFSET: 0x009AF300
 // FUNCTION: fn_13802
 void UINewSkillListWnd::DrawSkillList() {
-  int drawn = 0;
   int index = 0;
+  int drawn = 0;
 
   std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
   for (auto it = skills.begin(); it != skills.end(); ++it) {
     if (index >= this->m_firstRow * this->m_columns) {
       const int level = it->level;
-      const int y = drawn / this->m_columns * 32;
       const int x = drawn % this->m_columns * 32;
+      const int y = drawn / this->m_columns * 32;
 
       if (this->m_selectedSkill == index) {
         unsigned red, green, blue;
@@ -318,8 +318,8 @@ void UINewSkillListWnd::DrawSkillList() {
       }
 
       const bool raised = it->level > this->SkillAt(index, true).level;
-      const int red = raised ? 255 : shade;
       const int green = raised ? 0 : shade;
+      const int red = raised ? 255 : shade;
       const int textX = x + 112;
       const int textY = y + 47;
       const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
