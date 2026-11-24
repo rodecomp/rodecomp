@@ -89,7 +89,8 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
       result = this->range;
       std::vector<CNavi_Link*> path;
       for (int index = best; index != -1; index = this->entries[index].previous) {
-        path.push_back(this->entries[index].link);
+        CNavi_Link* link = this->entries[index].link;
+        path.push_back(link);
       }
       route->clear();
       for (int index = static_cast<int>(path.size()) - 1; index >= 0; --index) {
