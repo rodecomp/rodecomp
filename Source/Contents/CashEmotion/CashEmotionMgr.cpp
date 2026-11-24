@@ -282,6 +282,8 @@ public:
   void Refresh(const char* filter) override;
   const char* Filter() override;
 
+  void SelectPack(int packId);
+
 protected:
   /* 00B0 */ std::vector<UICashEmotionPack_Unpurchase*> m_items;
   /* 00BC */ std::string m_filter;
@@ -327,6 +329,8 @@ public:
   __declspec(noinline) void RefreshSelection();
   __declspec(noinline) void RestartExpirySchedule();
 
+  void SetSearchDisabled(bool disabled);
+
 protected:
   /* 00B4 */ CashEmotionListWndInfo* m_placement;
   /* 00B8 */ UICashEmotionListChildWnd_Basic* m_basicList;
@@ -357,6 +361,10 @@ public:
   void Refresh(int first);
   void Next();
   void SetIndex(int index);
+
+  CashEmotionData* GetSelectedEmotion();
+  void EnablePrevious(int enabled);
+  void EnableNext(int enabled);
 
 protected:
   /* 007C */ CashEmotionCommand* m_selected;
@@ -2275,6 +2283,14 @@ void UICashEmotionListChildWnd_UnPurchased::Paint() {
   this->ClearSurface(0xFFFF00FF);
 }
 
+// OFFSET: 0x007C6480
+// FUNCTION: fn_46583
+void UICashEmotionListChildWnd_UnPurchased::SelectPack(int packId) {
+  for (UICashEmotionPack_Unpurchase* pack : this->m_items) {
+    pack->SetPressed(pack->packId == packId, false);
+  }
+}
+
 // OFFSET: 0x007C6AC0
 // FUNCTION: fn_09396
 int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -2283,9 +2299,7 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
   }
   if (this->parent) {
     this->parent->SendMsg(sender, UM_TOGGLEPUSH, argument1, 0, 0, 0);
-    for (UICashEmotionPack_Unpurchase* pack : this->m_items) {
-      pack->SetPressed(pack->packId == argument1, false);
-    }
+    this->SelectPack(static_cast<int>(argument1));
   }
   return 0;
 }
@@ -2296,6 +2310,34 @@ UICashEmotionListWnd::UICashEmotionListWnd()
     : UIFrameWnd(0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_unpurchasedList(nullptr), m_searchList(nullptr),
       m_tab(0), m_backButton(nullptr), m_searchEdit(nullptr), m_searchButton(nullptr), m_shortcutButton(nullptr), m_buyButton(nullptr), m_currentList(nullptr),
       m_period(nullptr) {
+}
+
+// OFFSET: 0x007C7170
+// FUNCTION: fn_46584
+void UICashEmotionListWnd::SetSearchDisabled(bool disabled) {
+  if (this->m_searchEdit) {
+    if (g_windowMgr.GetHoverWindow() == this->m_searchEdit) {
+      g_windowMgr.SetFocus(nullptr);
+    }
+
+    this->m_searchEdit->OnFinishEdit(0);
+    UIEditCtrl* edit = this->m_searchEdit;
+    edit->disabled = disabled;
+    edit->Invalidate();
+    if (disabled) {
+      this->m_searchEdit->SetText("");
+    }
+  }
+
+  if (UIBitmapButton* backButton = this->m_backButton) {
+    backButton->SetDisabled(disabled);
+    backButton->Invalidate();
+  }
+
+  if (UIBitmapButton* searchButton = this->m_searchButton) {
+    searchButton->SetDisabled(disabled);
+    searchButton->Invalidate();
+  }
 }
 
 // OFFSET: 0x007C7240
@@ -2719,30 +2761,7 @@ void UICashEmotionListWnd::SetTab(char tab) {
     this->SetPeriod(0);
   }
 
-  const bool basic = this->m_currentList == this->m_basicList;
-  if (this->m_searchEdit) {
-    if (g_windowMgr.GetHoverWindow() == this->m_searchEdit) {
-      g_windowMgr.SetFocus(nullptr);
-    }
-
-    this->m_searchEdit->OnFinishEdit(0);
-    UIEditCtrl* edit = this->m_searchEdit;
-    edit->disabled = basic;
-    edit->Invalidate();
-    if (basic) {
-      this->m_searchEdit->SetText("");
-    }
-  }
-
-  if (UIBitmapButton* backButton = this->m_backButton) {
-    backButton->SetDisabled(basic);
-    backButton->Invalidate();
-  }
-
-  if (UIBitmapButton* searchButton = this->m_searchButton) {
-    searchButton->SetDisabled(basic);
-    searchButton->Invalidate();
-  }
+  this->SetSearchDisabled(this->m_currentList == this->m_basicList);
 
   if (this->m_currentList) {
     const char* filter = this->m_currentList->Filter();
@@ -2816,6 +2835,17 @@ UICashEmotionMiniWnd::~UICashEmotionMiniWnd() {
   this->m_action = nullptr;
 }
 
+// OFFSET: 0x007C91C0
+// FUNCTION: fn_46585
+CashEmotionData* UICashEmotionMiniWnd::GetSelectedEmotion() {
+  if (!this->m_selected) {
+    return nullptr;
+  }
+
+  CashEmotionEntry entry = this->m_selected->Get(this->m_selectedIndex);
+  return g_cashEmotionMgr->GetEmotionData(entry.packId, entry.emotionId);
+}
+
 // OFFSET: 0x007C9200
 // FUNCTION: fn_09428
 void UICashEmotionMiniWnd::Select(CashEmotionCommand* command) {
@@ -2824,16 +2854,12 @@ void UICashEmotionMiniWnd::Select(CashEmotionCommand* command) {
   this->m_selectedIndex = 0;
   this->Refresh(0);
 
-  if (this->m_previous) {
-    this->m_previous->Enable(0);
-  }
+  this->EnablePrevious(0);
 
   if (this->m_selected && this->m_selected->Count() > 3) {
-    if (this->m_next) {
-      this->m_next->Enable(1);
-    }
-  } else if (this->m_next) {
-    this->m_next->Enable(0);
+    this->EnableNext(1);
+  } else {
+    this->EnableNext(0);
   }
 }
 
@@ -2968,14 +2994,10 @@ void UICashEmotionMiniWnd::SetIndex(int index) {
   this->m_selectedIndex = index;
   if (this->m_selected) {
     bool enable = index > 0 && this->m_selected->Count() > 1;
-    if (this->m_previous) {
-      this->m_previous->Enable(enable);
-    }
+    this->EnablePrevious(enable);
 
     enable = this->m_selectedIndex + 1 < this->m_selected->Count() && this->m_selected->Count() > 1;
-    if (this->m_next) {
-      this->m_next->Enable(enable);
-    }
+    this->EnableNext(enable);
   }
 
   if (this->m_selectedIndex >= this->m_page + 3) {
@@ -3019,13 +3041,7 @@ int UICashEmotionMiniWnd::SendMsg(
   case UM_CASH_EMOTION_KEY:
     switch (argument1) {
     case 13:
-      if (!this->m_selected) {
-        return 0;
-      }
-      {
-        CashEmotionEntry entry = this->m_selected->Get(this->m_selectedIndex);
-        data = g_cashEmotionMgr->GetEmotionData(entry.packId, entry.emotionId);
-      }
+      data = this->GetSelectedEmotion();
       break;
     case 37:
       this->Previous();
@@ -3059,6 +3075,22 @@ int UICashEmotionMiniWnd::SendMsg(
   }
 
   return 0;
+}
+
+// OFFSET: 0x007C9AF0
+// FUNCTION: fn_46586
+void UICashEmotionMiniWnd::EnablePrevious(int enabled) {
+  if (this->m_previous) {
+    this->m_previous->Enable(enabled);
+  }
+}
+
+// OFFSET: 0x007C9B10
+// FUNCTION: fn_46587
+void UICashEmotionMiniWnd::EnableNext(int enabled) {
+  if (this->m_next) {
+    this->m_next->Enable(enabled);
+  }
 }
 
 // OFFSET: 0x007C9C40
