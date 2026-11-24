@@ -230,8 +230,9 @@ bool CGameActor::ProcessState() {
         }
         this->render.previousAnimation = this->Get8Dir(angle) + this->render.animation;
       }
-      const float movedX = this->render.position.x - old.x;
-      this->dist += SquareRoot(movedX * movedX + (this->render.position.z - old.z) * (this->render.position.z - old.z));
+      float squared = (this->render.position.x - old.x) * (this->render.position.x - old.x);
+      squared += (this->render.position.z - old.z) * (this->render.position.z - old.z);
+      this->dist += SquareRoot(squared);
       if (this->isNeverAnimation == 0) {
         this->ProcessMotionWithDist();
       }
