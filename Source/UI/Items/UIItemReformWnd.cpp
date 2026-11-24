@@ -348,7 +348,8 @@ void UIItemReformWnd_List::UpdateScrollBar() {
   if (count > this->visibleCount) {
     this->scrollBar->Show(1);
     this->scrollBar->SetRange(count - this->visibleCount, this->visibleCount, count);
-    this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, std::max<int>(this->scrollPosition, 0));
+    this->scrollPosition = std::max(0, this->scrollPosition);
+    this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, this->scrollPosition);
     this->scrollBar->SetPosition(this->scrollPosition);
   } else {
     this->scrollPosition = 0;

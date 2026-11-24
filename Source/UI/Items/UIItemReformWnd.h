@@ -32,7 +32,7 @@ public:
   /* 00B8 */ unsigned int visibleCount;
   /* 00BC */ unsigned int selectedIndex;
   /* 00C0 */ unsigned int hoverIndex;
-  /* 00C4 */ unsigned int scrollPosition;
+  /* 00C4 */ int scrollPosition;
   /* 00C8 */ UIScrollBar* scrollBar;
   /* 00CC */ std::vector<ITEM_INFO> items;
 
