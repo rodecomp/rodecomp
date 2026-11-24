@@ -216,7 +216,7 @@ void UICashShopWnd::OnCreate(int, int) {
   int tabX = 8;
   for (int tab = 0; tab < 11; ++tab) {
     const int tooltips[11] = {0xCDA, 0xCDB, 0xCDC, 0xCDD, 0xCDE, 0xCDF, 0xCE0, 0xCE1, 0xCE2, 0xE48, 0xECE};
-    if (static_cast<unsigned int>(tab) > 10) {
+    if (static_cast<unsigned int>(tab) >= 11) {
       break;
     }
     UIBmpRadioBtn* button = nullptr;
