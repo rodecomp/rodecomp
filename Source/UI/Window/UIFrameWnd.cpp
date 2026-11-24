@@ -1138,8 +1138,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
-          offset += header.size;
           settings->title = this->info.title = value;
+          offset += header.size;
           break;
         }
         case 0x5018: {
