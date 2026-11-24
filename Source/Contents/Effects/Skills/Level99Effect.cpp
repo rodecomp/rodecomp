@@ -73,8 +73,8 @@ void CLevel99Effect::AddRings() {
     }
 
     ++row;
-    tilt -= 5;
     startAngle += 90;
+    tilt -= 5;
   } while (tilt > 40);
 }
 
