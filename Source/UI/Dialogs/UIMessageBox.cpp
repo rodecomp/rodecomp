@@ -619,6 +619,7 @@ __forceinline void UIMessageBox::FormatCountdown() {
 void UIMessageBox::Configure(
   const char* text, int type, int defaultAccept, int timeout, const char* title, int width, int height, int modalValue, const char* icon
 ) {
+  volatile int accept = defaultAccept;
   this->caption = title;
   this->messageText = text;
   this->format = text;
@@ -711,7 +712,7 @@ void UIMessageBox::Configure(
       x += 45;
     }
 
-    if (defaultAccept) {
+    if (accept) {
       this->m_message0 = ID_YES;
     } else {
       this->m_message0 = ID_NO;
