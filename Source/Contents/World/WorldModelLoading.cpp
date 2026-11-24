@@ -284,7 +284,7 @@ void CWorld::InitWorld() {
 
     this->published = static_cast<int>(modelsRef.size());
 
-    DWORD threadId = 0;
+    DWORD threadId;
     hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
     if (!hObject) {
       CWorld::LoadDeferredModels(this);
