@@ -1886,8 +1886,8 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
 
   for (int offset = 0; offset < length;) {
     int bytes = 0;
-    const char* start = text + offset;
     int lineWidth = 0;
+    const char* start = text + offset;
     const char* end = start + std::strlen(start);
     if (start >= end) {
       continue;
