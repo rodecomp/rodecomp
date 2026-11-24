@@ -1237,8 +1237,33 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   g_commandLine = commandLine;
-  if (RestartFromCommandLine() == true) {
+  const char restart = RestartFromCommandLine();
+  if (restart == 1) {
     return 0;
+  }
+
+  if (restart) {
+    const std::array<char, 47> guardErrorSource =
+        OBFUSCATE_SOURCE_ARRAY_CHAR("CNProtectGameGuardMgr::CreateInstance() Failed", 0xBD3F430159B551FDULL);
+    EncryptedName<sizeof(guardErrorSource), 0xBD3F430159B551FDULL>& guardError =
+        OBFUSCATE_DECRYPT_NAME(0xBD3F430159B551FDULL, guardErrorSource);
+    ShowErrorDialog(guardError.Text(), MB_OK);
+
+    const std::array<char, 10> applySource = OBFUSCATE_SOURCE_ARRAY_CHAR("ApplyNPGE", 0xE51B29334D353B81ULL);
+    EncryptedName<sizeof(applySource), 0xE51B29334D353B81ULL>& apply = OBFUSCATE_DECRYPT_NAME(0xE51B29334D353B81ULL, applySource);
+    if (std::strstr(commandLine, apply.Text())) {
+      return 1;
+    }
+
+    if (!CGGHashMgr::Create()) {
+      const std::array<char, 18> hashErrorSource = OBFUSCATE_SOURCE_ARRAY_CHAR("GGHash Init Error", 0x8F3F2FA959977F9FULL);
+      EncryptedName<sizeof(hashErrorSource), 0x8F3F2FA959977F9FULL>& hashError =
+          OBFUSCATE_DECRYPT_NAME(0x8F3F2FA959977F9FULL, hashErrorSource);
+      ShowErrorDialog(hashError.Text(), MB_OK);
+      return 0;
+    }
+
+    g_ggHashMgr->IsValid();
   }
 
   {
