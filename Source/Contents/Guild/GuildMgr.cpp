@@ -19,10 +19,7 @@ CGuildMgr::CGuildMgr() : m_reqBundle(nullptr), m_timeout(0xC800) {
 // OFFSET: 0x0065DBC0
 // FUNCTION: fn_46446
 __declspec(noinline) CGuildMgr::~CGuildMgr() {
-  if (this->m_reqBundle) {
-    delete this->m_reqBundle;
-    this->m_reqBundle = nullptr;
-  }
+  this->ReleaseEmblemRequestBundle();
 }
 
 // OFFSET: 0x0065E290
@@ -44,6 +41,15 @@ bool CGuildMgr::Create() {
   }
 
   return true;
+}
+
+// OFFSET: 0x0065E410
+// FUNCTION: fn_46726
+void CGuildMgr::ReleaseEmblemRequestBundle() {
+  if (this->m_reqBundle) {
+    delete this->m_reqBundle;
+    this->m_reqBundle = nullptr;
+  }
 }
 
 // OFFSET: 0x0065E430

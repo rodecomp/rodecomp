@@ -31,6 +31,7 @@ public:
 
   CGuildMgr();
   virtual ~CGuildMgr();
+  void ReleaseEmblemRequestBundle();
 
   static bool Create();
   static void Destroy();
