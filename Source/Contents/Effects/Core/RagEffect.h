@@ -57,6 +57,7 @@ struct CRagEffect : CRenderObject {
   bool Magnificat();
   bool Mvp();
   bool WeaponPerfection();
+  bool PoisonReact2();
   bool Recovery();
   bool Resurrection();
   bool LuxAnima();

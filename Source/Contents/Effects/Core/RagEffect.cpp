@@ -1667,6 +1667,15 @@ inline bool CRagEffect::WeaponPerfection() {
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
+// OFFSET: 0x00C36070
+// FUNCTION: fn_46645
+bool CRagEffect::PoisonReact2() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWaveInline(*this, "effect\\assasin_poisonreact.wav");
+  }
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
 // OFFSET: 0x00C37880
 // FUNCTION: fn_46646
 inline bool CRagEffect::Recovery() {
