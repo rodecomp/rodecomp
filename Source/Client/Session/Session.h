@@ -76,11 +76,16 @@ struct GuildStorageLogEntry {
 };
 
 struct SessionRecord6144 {
-  /* 0000 */ unsigned char registered = 0;
-  /* 0001 */ unsigned char completed = 0;
-  /* 0004 */ std::uint32_t objectives[10] = {};
-  /* 002C */ int completedAt = 0;
-  /* 0030 */ std::uint8_t rewarded = 0;
+  // INLINED
+  SessionRecord6144() : registered(0), completed(0), completedAt(0), rewarded(0) {
+    std::memset(this->objectives, 0, sizeof(this->objectives));
+  }
+
+  /* 0000 */ unsigned char registered;
+  /* 0001 */ unsigned char completed;
+  /* 0004 */ std::uint32_t objectives[10];
+  /* 002C */ int completedAt;
+  /* 0030 */ std::uint8_t rewarded;
   /* 0031 */ std::uint8_t padding_0031;
   /* 0032 */ std::int16_t year;
   /* 0034 */ std::int16_t month;
