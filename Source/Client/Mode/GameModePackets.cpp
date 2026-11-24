@@ -14572,12 +14572,9 @@ void CGameMode::SpawnMovingActor(
   case NPC_MOB_TYPE:
   case NPC_HO_TYPE:
   case NPC_MERSOL_TYPE:
-  case NPC_ELEMENTAL_TYPE: {
-    const std::int64_t currentHp = hp;
-    const std::int64_t currentMaxHp = maxHp;
-    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, currentHp, currentMaxHp, bossFlag, 0, 0, 0);
+  case NPC_ELEMENTAL_TYPE:
+    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, hp, maxHp, bossFlag, 0, 0, 0);
     break;
-  }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, AM_UPDATEGAGE, gid, 0, 0, 0, 0, 0);
