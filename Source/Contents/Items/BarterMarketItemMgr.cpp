@@ -505,6 +505,7 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
     std::vector<BarterChunk16>::iterator target = this->chunks.begin();
     for (; target != this->chunks.end(); ++target) {
       if (target->field_0 == chunk.field_0 && target->field_4 == chunk.field_4) {
+        target->amount += chunk.amount * count;
         break;
       }
     }
@@ -515,8 +516,6 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
       added.amount = chunk.amount * count;
       added.field_c = chunk.field_c;
       this->chunks.push_back(added);
-    } else {
-      target->amount += chunk.amount * count;
     }
   }
   this->total = 0;
