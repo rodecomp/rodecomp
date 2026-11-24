@@ -3772,8 +3772,7 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
   float jitterY[21];
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-    const float count = slot.vecTNow.y;
+    const float count = this->state.slots[ec].vecTNow.y;
 
     if (count > 0.0f) {
       int i = 0;
@@ -3785,10 +3784,10 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
         const int z = std::rand() % 11;
         jitterZ[i] = static_cast<float>(z >= 0 ? z : 0) * 0.1f - 0.5f;
         ++i;
-      } while (slot.vecTNow.y > static_cast<float>(i));
+      } while (this->state.slots[ec].vecTNow.y > static_cast<float>(i));
     }
 
-    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0 || slot.vecTNow.y <= 0.0f) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].process <= 0 || this->state.slots[ec].vecTNow.y <= 0.0f) {
       continue;
     }
 
@@ -3797,16 +3796,16 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
     int segment = 0;
     do {
       const int next = segment + 1;
-      const float sn = g_sinTable[slot.riseAngle];
-      const float cs = g_cosTable[slot.riseAngle];
-      const float t0 = segment > 0 ? static_cast<float>(segment) / 5.0f * slot.distance + 0.0f : 0.0f;
+      const float sn = g_sinTable[this->state.slots[ec].riseAngle];
+      const float cs = g_cosTable[this->state.slots[ec].riseAngle];
+      const float t0 = segment > 0 ? static_cast<float>(segment) / 5.0f * this->state.slots[ec].distance + 0.0f : 0.0f;
       const float s0 = sn * t0 + jitterZ[segment];
-      const float y0 = jitterY[segment] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[segment]))] * 15.0f * slot.vecTNow.x;
+      const float y0 = jitterY[segment] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(this->state.slots[ec].height[segment]))] * 15.0f * this->state.slots[ec].vecTNow.x;
       const float c0 = cs * t0 + jitterX[segment];
-      const float t1 = next > 0 ? static_cast<float>(next) / 5.0f * slot.distance + 0.0f : 0.0f;
+      const float t1 = next > 0 ? static_cast<float>(next) / 5.0f * this->state.slots[ec].distance + 0.0f : 0.0f;
       const float c1 = cs * t1 + jitterX[next];
       const float s1 = sn * t1 + jitterZ[next];
-      const float y1 = jitterY[next] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[next]))] * 15.0f * slot.vecTNow.x;
+      const float y1 = jitterY[next] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(this->state.slots[ec].height[next]))] * 15.0f * this->state.slots[ec].vecTNow.x;
       const float deltaC = c0 - c1;
       const float deltaS = s0 - s1;
       const float length = SquareRoot(deltaC * deltaC + deltaS * deltaS);
@@ -3828,21 +3827,21 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
         side = static_cast<short>(side - 360);
       }
 
-      const vector3d start{slot.vecBNow.x + c0, slot.vecBNow.y + y0, slot.vecBNow.z + s0};
-      const vector3d end{slot.vecBNow.x + c1, slot.vecBNow.y + y1, slot.vecBNow.z + s1};
+      const vector3d start{this->state.slots[ec].vecBNow.x + c0, this->state.slots[ec].vecBNow.y + y0, this->state.slots[ec].vecBNow.z + s0};
+      const vector3d end{this->state.slots[ec].vecBNow.x + c1, this->state.slots[ec].vecBNow.y + y1, this->state.slots[ec].vecBNow.z + s1};
 
       if (next > 1 && next < 20) {
         int ring = 0;
         for (int angle = 0; angle <= 360; angle += 120) {
-          const float across = slot.maxHeight * g_cosTable[angle];
-          const float up = slot.maxHeight * g_sinTable[angle];
+          const float across = this->state.slots[ec].maxHeight * g_cosTable[angle];
+          const float up = this->state.slots[ec].maxHeight * g_sinTable[angle];
           const float offsetZ = across * g_sinTable[side];
           const float offsetX = across * g_cosTable[side];
           const vector3d ringEnd{offsetX + end.x, end.y + up, offsetZ + end.z};
           const vector3d ringStart{offsetX + start.x, up + start.y, offsetZ + start.z};
 
           if (ring > 0) {
-            const int alpha = (fade > 0 ? rise - 135 : fade) + slot.alphaB;
+            const int alpha = (fade > 0 ? rise - 135 : fade) + this->state.slots[ec].alphaB;
             if (alpha > 0) {
               const int green = std::rand() % 121;
               const int red = std::rand() % 121;
@@ -3862,7 +3861,7 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
       segment = next;
       fade -= 15;
       rise += 15;
-    } while (slot.vecTNow.y > static_cast<float>(segment));
+    } while (this->state.slots[ec].vecTNow.y > static_cast<float>(segment));
   }
 }
 
@@ -4070,9 +4069,8 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
   float jitterY[21];
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.vecTNow.y > 0.0f) {
+    if (this->state.slots[ec].vecTNow.y > 0.0f) {
       int i = 0;
       do {
         const int y = std::rand() % 7;
@@ -4082,28 +4080,28 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
         const int z = std::rand() % 7;
         jitterZ[i] = static_cast<float>(z >= 0 ? z : 0) * 0.1f - 0.3f;
         ++i;
-      } while (slot.vecTNow.y > static_cast<float>(i));
+      } while (this->state.slots[ec].vecTNow.y > static_cast<float>(i));
     }
 
-    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0 || slot.vecTNow.y <= 0.0f) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].process <= 0 || this->state.slots[ec].vecTNow.y <= 0.0f) {
       continue;
     }
 
     int fade = 0;
     int segment = 0;
     do {
-      const float cs = g_cosTable[slot.riseAngle];
-      const float sn = g_sinTable[slot.riseAngle];
-      const float a0 = slot.height[segment];
-      const float r0 = a0 > 0.0f ? a0 / 90.0f * slot.distance + 0.0f : 0.0f;
+      const float cs = g_cosTable[this->state.slots[ec].riseAngle];
+      const float sn = g_sinTable[this->state.slots[ec].riseAngle];
+      const float a0 = this->state.slots[ec].height[segment];
+      const float r0 = a0 > 0.0f ? a0 / 90.0f * this->state.slots[ec].distance + 0.0f : 0.0f;
       const float c0 = cs * r0 + jitterX[segment];
-      const float y0 = -slot.distance * g_sinTable[static_cast<short>(static_cast<int>(a0))] * slot.vecTNow.x + (jitterY[segment] - 2.0f);
+      const float y0 = -this->state.slots[ec].distance * g_sinTable[static_cast<short>(static_cast<int>(a0))] * this->state.slots[ec].vecTNow.x + (jitterY[segment] - 2.0f);
       const float s0 = sn * r0 + jitterZ[segment];
-      const float a1 = slot.height[segment + 1];
-      const float r1 = a1 > 0.0f ? a1 / 90.0f * slot.distance + 0.0f : 0.0f;
+      const float a1 = this->state.slots[ec].height[segment + 1];
+      const float r1 = a1 > 0.0f ? a1 / 90.0f * this->state.slots[ec].distance + 0.0f : 0.0f;
       const float c1 = cs * r1 + jitterX[segment + 1];
       const float s1 = sn * r1 + jitterZ[segment + 1];
-      const float y1 = -slot.distance * g_sinTable[static_cast<short>(static_cast<int>(a1))] * slot.vecTNow.x + (jitterY[segment + 1] - 2.0f);
+      const float y1 = -this->state.slots[ec].distance * g_sinTable[static_cast<short>(static_cast<int>(a1))] * this->state.slots[ec].vecTNow.x + (jitterY[segment + 1] - 2.0f);
       const float deltaS = s0 - s1;
       const float deltaC = c0 - c1;
       const float length = SquareRoot(deltaC * deltaC + deltaS * deltaS);
@@ -4125,25 +4123,25 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
         side = static_cast<short>(side - 360);
       }
 
-      const vector3d start{slot.vecBNow.x + c0, y0 + slot.vecBNow.y, s0 + slot.vecBNow.z};
-      const vector3d end{slot.vecBNow.x + c1, y1 + slot.vecBNow.y, s1 + slot.vecBNow.z};
+      const vector3d start{this->state.slots[ec].vecBNow.x + c0, y0 + this->state.slots[ec].vecBNow.y, s0 + this->state.slots[ec].vecBNow.z};
+      const vector3d end{this->state.slots[ec].vecBNow.x + c1, y1 + this->state.slots[ec].vecBNow.y, s1 + this->state.slots[ec].vecBNow.z};
 
       if (segment > 0 && segment < 19) {
         int ring = 0;
         for (int angle = 0; angle <= 360; angle += 120) {
-          const float across = slot.maxHeight * g_cosTable[angle];
-          const float up = slot.maxHeight * g_sinTable[angle];
+          const float across = this->state.slots[ec].maxHeight * g_cosTable[angle];
+          const float up = this->state.slots[ec].maxHeight * g_sinTable[angle];
           const float offsetX = across * g_cosTable[side];
           const float offsetZ = across * g_sinTable[side];
           const vector3d ringStart{offsetX + start.x, up + start.y, offsetZ + start.z};
           const vector3d ringEnd{offsetX + end.x, up + end.y, offsetZ + end.z};
 
           if (ring > 0) {
-            const int alpha = slot.alphaB - fade;
+            const int alpha = this->state.slots[ec].alphaB - fade;
             if (alpha > 0) {
               unsigned char red;
               unsigned char green;
-              if (slot.fullDisplayAngle == 3) {
+              if (this->state.slots[ec].fullDisplayAngle == 3) {
                 const int first = std::rand() % 100;
                 const int second = std::rand() % 50;
                 green = static_cast<unsigned char>(first >= 0 ? first : 0);
@@ -4164,7 +4162,7 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
 
       ++segment;
       fade += 5;
-    } while (slot.vecTNow.y > static_cast<float>(segment));
+    } while (this->state.slots[ec].vecTNow.y > static_cast<float>(segment));
   }
 }
 
