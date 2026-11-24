@@ -1733,17 +1733,17 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
 
   if (startTime != 0) {
     std::tm date = {};
-    date.tm_year = static_cast<int>(startTime / 10000 - 1900);
     date.tm_mon = static_cast<int>(startTime % 10000 / 100 - 1);
     date.tm_mday = static_cast<int>(startTime % 100);
+    date.tm_year = static_cast<int>(startTime / 10000 - 1900);
     startTime = _mktime32(&date);
   }
 
   if (endTime != 0) {
     std::tm date = {};
-    date.tm_year = static_cast<int>(endTime / 10000 - 1900);
     date.tm_mon = static_cast<int>(endTime % 10000 / 100 - 1);
     date.tm_mday = static_cast<int>(endTime % 100);
+    date.tm_year = static_cast<int>(endTime / 10000 - 1900);
     endTime = _mktime32(&date);
   }
 
@@ -3879,13 +3879,13 @@ void UICashEmotionSprBtn::PaintSelected() {
     return;
   }
 
-  const int width = this->geometry.width;
   const int height = this->geometry.height;
+  const int width = this->geometry.width;
   SpriteAtlasRecord record{};
-  int halfHeight = 0;
-  int halfWidth = 0;
   int baseY = 0;
+  int halfHeight = 0;
   int baseX = 0;
+  int halfWidth = 0;
   for (unsigned index = 0; index < frame->cells.size(); ++index) {
     record = SpriteAtlasRecord{};
     const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
@@ -3913,12 +3913,12 @@ void UICashEmotionSprBtn::PaintSelected() {
       continue;
     }
 
-    int x = width / 2;
     int y = height / 2;
+    int x = width / 2;
     if (index == 0) {
       halfWidth = image->width / 2;
-      x -= halfWidth;
       halfHeight = image->height / 2;
+      x -= halfWidth;
       y -= halfHeight;
       baseX = cell->x;
       baseY = cell->y;
@@ -4139,8 +4139,8 @@ void UISpriteButton::Paint() {
       drawHeight = height - y;
     }
 
-    const int clipY = y < 0 ? -y : 0;
     drawWidth -= clipX;
+    const int clipY = y < 0 ? -y : 0;
     drawHeight -= clipY;
     const int sourceX = static_cast<int>(record.u0 * 256.0f + clipX);
     const float sourceY = record.v0 * 256.0f + clipY;
