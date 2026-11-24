@@ -881,9 +881,17 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
   const float scaleX = static_cast<float>(drawWidth) / static_cast<float>(sourceWidth);
   const float scaleY = static_cast<float>(drawHeight) / static_cast<float>(sourceHeight);
   std::vector<std::uint32_t> scratch;
-  const int rows = scaleY < 1 ? sourceHeight : drawHeight;
-  const int columns = scaleX < 1 ? sourceWidth : drawWidth;
-  scratch.resize(static_cast<std::uint32_t>(columns) * rows);
+  if (scaleX >= 1) {
+    if (scaleY >= 1) {
+      scratch.resize(drawWidth * drawHeight);
+    } else {
+      scratch.resize(drawWidth * sourceHeight);
+    }
+  } else if (scaleY >= 1) {
+    scratch.resize(sourceWidth * drawHeight);
+  } else {
+    scratch.resize(sourceWidth * sourceHeight);
+  }
 
   if (scaleX == 1) {
     for (int row = 0; row < sourceHeight; ++row) {
@@ -896,16 +904,18 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
 
     for (int row = 0; row < sourceHeight; ++row) {
       for (int column = 0; column < sourceWidth; ++column) {
-        int next = static_cast<int>(static_cast<float>(column) * scaleX);
-        if (output != next) {
-          scratch[row * drawWidth + output] = source[row * sourceWidth + previous];
-          if (column == sourceWidth - 1 && output != drawWidth - 1) {
-            scratch[(row + 1) * drawWidth - 1] = source[row * sourceWidth + previous];
-          }
-
-          previous = column;
-          output = next;
+        const int next = static_cast<int>(static_cast<float>(column) * scaleX);
+        if (output == next) {
+          continue;
         }
+
+        scratch[row * drawWidth + output] = source[row * sourceWidth + previous];
+        if (column == sourceWidth - 1 && output != drawWidth - 1) {
+          scratch[row * drawWidth + drawWidth - 1] = source[row * sourceWidth + previous];
+        }
+
+        previous = column;
+        output = next;
       }
     }
   } else {
