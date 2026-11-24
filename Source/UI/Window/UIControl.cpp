@@ -3737,7 +3737,6 @@ void CUIEditBox::OnCreate(int width, int height) {
 // FUNCTION: fn_14511
 void CUITextViewer::AddLine(const std::string& text) {
   const int scrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
-  const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
   int align;
   if (this->textX == 6) {
     align = 2;
@@ -3745,6 +3744,7 @@ void CUITextViewer::AddLine(const std::string& text) {
     align = this->textX == 2;
   }
   LineTextStyle style{this->textColor, this->fontHeight, this->bold, false};
+  const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
   CCreateLineInfo lineInfo(
     this, text.c_str(), availableWidth, this->lineSpacing, style,
     this->outline, this->outlineColor, this->shadow, this->shadowColor, align
