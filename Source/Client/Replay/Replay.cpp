@@ -841,19 +841,21 @@ static __forceinline bool OpenReplayFile(Replay* replay, const char* path, int m
   if (replay->header.signature == 0x52414705u || replay->header.signature == 0x51404605u) {
     ReplaySection section;
 
-    for (int index = 0; index <= 0x1A; ++index) {
+    bool reading = true;
+
+    for (int index = 0; reading && index <= 0x1A; ++index) {
       std::fread(&section, sizeof(section), 1, replay->file);
 
       if (section.id < 0 || section.id > 0x1A) {
-        break;
+        reading = false;
+      } else {
+        replay->sections[section.id].id = section.id;
+        replay->sections[section.id].bytes = section.bytes;
+        replay->sections[section.id].fileOffset = section.fileOffset;
+        section.id = 0;
+        section.bytes = 0;
+        section.fileOffset = 0;
       }
-
-      replay->sections[section.id].id = section.id;
-      replay->sections[section.id].bytes = section.bytes;
-      replay->sections[section.id].fileOffset = section.fileOffset;
-      section.id = 0;
-      section.bytes = 0;
-      section.fileOffset = 0;
     }
 
     if (replay->ParseMetadata(replay->ReadSection(2)) == 0xFFFFFFFFu) {
@@ -889,47 +891,51 @@ int ReplayFileList::Open(int mode, int argument1, int argument2) {
     name += this->files[this->selected].name;
     std::memset(this->path, 0, sizeof(this->path));
     std::memcpy(this->path, name.data(), name.size());
-    if (!OpenReplayFile(this->replay, this->path, 0x20)) {
-      return 0;
+    if (OpenReplayFile(this->replay, this->path, 0x20)) {
+      return 1;
     }
-    return 1;
-  }
+  } else {
+    this->Refresh();
 
-  this->Refresh();
+    if (this->pathEnabled) {
+      if (this->rejectExistingName) {
+        auto file = this->files.begin();
+        const auto end = this->files.end();
+        char name[0x104];
+        std::memset(name, 0, sizeof(name));
+        std::sprintf(name, g_replayExtensionFormat, this->path);
 
-  if (this->pathEnabled) {
-    if (this->rejectExistingName) {
-      char name[0x104];
-      std::memset(name, 0, sizeof(name));
-      std::sprintf(name, g_replayExtensionFormat, this->path);
-
-      for (const ReplayFileEntry& file : this->files) {
-        if (std::strcmp(name, file.name) == 0) {
-          std::memset(this->path, 0, sizeof(this->path));
-          return -2;
+        for (; file != end; ++file) {
+          if (std::strcmp(name, file->name) == 0) {
+            std::memset(this->path, 0, sizeof(this->path));
+            return -2;
+          }
         }
       }
-    }
 
-    char name[0x104];
-    std::memset(name, 0, sizeof(name));
-    std::sprintf(name, g_replayPathFormat, this->path);
-    std::memcpy(this->path, name, sizeof(this->path));
-  } else {
-    int index = 1;
+      char name[0x104];
+      std::memset(name, 0, sizeof(name));
+      std::sprintf(name, g_replayPathFormat, this->path);
+      std::memcpy(this->path, name, sizeof(this->path));
+    } else {
+      int index = 1;
 
-    for (auto fileIt = this->files.begin(); fileIt != this->files.end(); ++fileIt) {
-      const ReplayFileEntry& file = *fileIt;
-      if (file.index == index) {
-        ++index;
+      for (const ReplayFileEntry& file : this->files) {
+        if (file.index == index) {
+          ++index;
+        }
       }
+
+      std::memset(this->path, 0, sizeof(this->path));
+      std::sprintf(this->path, g_replayNewFileFormat, index);
     }
 
-    std::memset(this->path, 0, sizeof(this->path));
-    std::sprintf(this->path, g_replayNewFileFormat, index);
+    if (OpenReplayFile(this->replay, this->path, 0x1F)) {
+      return 1;
+    }
   }
 
-  return OpenReplayFile(this->replay, this->path, 0x1F);
+  return 0;
 }
 
 // OFFSET: 0x00B87680
