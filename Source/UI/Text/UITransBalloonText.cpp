@@ -205,11 +205,10 @@ void UIAchBalloonText::Paint() {
 
   const int count = static_cast<int>(this->m_lines.size());
   const std::string& first = this->m_lines.front();
-  const int lineHeight =
+  const int textHeight =
     this->TextHeight(first.c_str(), static_cast<unsigned>(first.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
-    ) +
-    4;
-  const int top = (this->geometry.height - lineHeight * count + 4) / 2;
+    );
+  const int top = (this->geometry.height - (textHeight + 4) * count + 4) / 2;
 
   for (int index = 0; index < count; ++index) {
     const std::string& line = this->m_lines[index];
@@ -219,7 +218,7 @@ void UIAchBalloonText::Paint() {
     if (index == 0) {
       y = top;
     } else {
-      y = top - 4 + lineHeight * index;
+      y = top - 4 + (textHeight + 4) * index;
     }
     this->DrawShadowedText(
       (this->geometry.width - width) / 2, y, this->m_lines[index].c_str(), 0, this->m_textColor, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1
