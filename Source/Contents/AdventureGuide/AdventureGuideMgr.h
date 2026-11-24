@@ -50,7 +50,9 @@ struct AdventureGuideIntroPage {
 };
 
 struct AdventureGuideEpisodeInfo {
-  /* 0000 */ int order;
+  bool IsAvailable() const;
+
+  /* 0000 */ int minLevel;
   /* 0004 */ int maxLevel;
   /* 0008 */ std::vector<std::string> values;
 };
@@ -65,6 +67,8 @@ struct AdventureGuideEpisode {
 };
 
 struct AdventureGuideContents {
+  bool IsAvailable() const;
+
   /* 0000 */ std::uint8_t flag;
   /* 0004 */ int minLevel;
   /* 0008 */ int maxLevel;
@@ -138,6 +142,8 @@ public:
   void GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id);
   void GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id);
 
+  // OFFSET: 0x006664B0
+  // FUNCTION: fn_46609
   AdventureGuideResult SetIntroTitle(std::string_view title) {
     introPage.title = title;
     return AdventureGuideResult(true, "good");
@@ -159,6 +165,9 @@ public:
   __declspec(noinline) AdventureGuideResult InsertObtainGuide(int type, int id, std::string_view text);
   __declspec(noinline) AdventureGuideResult InsertMonsterContents(std::string_view name, int minLevel, int maxLevel);
   __declspec(noinline) AdventureGuideResult InsertMonsterReward(std::string_view name, std::string_view text);
+
+private:
+  bool CallGuideFunction(const std::string& function);
 };
 
 extern CAdventureGuideMgr* g_adventureGuideMgr;
