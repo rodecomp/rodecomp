@@ -5150,9 +5150,10 @@ int CLuaInstance::GetFieldInt(int& value, const char* name) {
 
   lua_getfield(this->m_state, -1, name);
   const int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TNUMBER) {
-    value = static_cast<int>(lua_tonumber(this->m_state, -1));
+    result = 0;
+    value = static_cast<unsigned int>(lua_tonumber(this->m_state, -1));
   } else {
     result = type == LUA_TNIL ? 1 : 2;
   }
@@ -5198,8 +5199,9 @@ int CLuaInstance::GetFieldString(std::string& value, const char* name) {
 
   lua_getfield(this->m_state, -1, name);
   const int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TSTRING) {
+    result = 0;
     value = lua_tostring(this->m_state, -1);
   } else {
     result = type == LUA_TNIL ? 1 : 2;
