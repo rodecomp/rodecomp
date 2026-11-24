@@ -9870,37 +9870,30 @@ void CRagEffect::SpawnBlurAfterimage() {
   }
 
   if (this->render.position.x == -1.0f) {
-    int value = 200;
-    if (std::rand() % 14 < 1) {
-      value = 250;
-    }
+    const int value = std::rand() % 14 <= 0 ? 250 : 200;
     this->state.parent->SetColor(-1, 250, value, value);
-    return;
-  }
-
-  if (this->render.position.x == -2.0f) {
+  } else if (this->render.position.x == -2.0f) {
     this->state.parent->SetColor(-1, 250, 250, 200);
-    return;
-  }
-
-  CBlurPC* blur;
-  if (this->state.duration == 30) {
-    blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   } else {
-    if (this->state.stateCnt % 5 != 0) {
-      return;
+    CBlurPC* blur;
+    if (this->state.duration == 30) {
+      blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
+    } else {
+      if (this->state.stateCnt % 5 != 0) {
+        return;
+      }
+
+      const std::uint32_t action = this->state.parent->render.state;
+      if (action == 0 || action == 10 || action == 6 || action == 11 || action == 13) {
+        return;
+      }
+
+      blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
     }
 
-    const std::uint32_t action = this->state.parent->render.state;
-    if (action == 0 || action == 10 || action == 6 || action == 11 || action == 13) {
-      return;
-    }
-
-    blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
+    SendAfterimageColor(*blur, *this, this->render.position);
+    WorldObjects().push_back(blur);
   }
-
-  SendAfterimageColor(*blur, *this, this->render.position);
-  WorldObjects().push_back(blur);
 }
 
 // OFFSET: 0x00C1F430
