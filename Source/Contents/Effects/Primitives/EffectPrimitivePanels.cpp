@@ -3,6 +3,18 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
+// GLOBAL: gl_26017
+float g_effectHoverLowerY = -4.0f;
+
+// GLOBAL: gl_26018
+float g_effectHoverUpperY = -0.5f;
+
+// GLOBAL: gl_26019
+float g_effectHoverAlphaScale = -100.0f;
+
+// GLOBAL: gl_26020
+float g_effectHoverBaseAlpha = 50.0f;
+
 // OFFSET: 0x00BF4630
 // FUNCTION: fn_19995
 void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
@@ -266,11 +278,11 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.y = slot.vecBPre.y + y4;
     vec4.z = slot.vecBPre.z + z4;
     int alpha = 50;
-    if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
+    if (vec1.y < g_effectHoverLowerY) {
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + g_effectHoverBaseAlpha);
     }
-    if (vec1.y > -0.5f) {
-      alpha = static_cast<int>(vec1.y * -100.0f);
+    if (g_effectHoverUpperY < vec1.y) {
+      alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
       this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -289,11 +301,11 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.y = slot.vecBNow.y + y4;
     vec4.z = slot.vecBNow.z + z4;
     alpha = 50;
-    if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
+    if (vec1.y < g_effectHoverLowerY) {
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + g_effectHoverBaseAlpha);
     }
-    if (vec1.y > -0.5f) {
-      alpha = static_cast<int>(vec1.y * -100.0f);
+    if (g_effectHoverUpperY < vec1.y) {
+      alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
       this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -312,11 +324,11 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.y = slot.vecTPre.y + y4;
     vec4.z = slot.vecTPre.z + z4;
     alpha = 50;
-    if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
+    if (vec1.y < g_effectHoverLowerY) {
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + g_effectHoverBaseAlpha);
     }
-    if (vec1.y > -0.5f) {
-      alpha = static_cast<int>(vec1.y * -100.0f);
+    if (g_effectHoverUpperY < vec1.y) {
+      alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
       this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -335,11 +347,11 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec4.y = slot.vecTNow.y + y4;
     vec4.z = slot.vecTNow.z + z4;
     alpha = 50;
-    if (vec1.y < -4.0f) {
-      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + 50.0f);
+    if (vec1.y < g_effectHoverLowerY) {
+      alpha = static_cast<int>((vec1.y + g_effectIconRadius) * 15.0f + g_effectHoverBaseAlpha);
     }
-    if (vec1.y > -0.5f) {
-      alpha = static_cast<int>(vec1.y * -100.0f);
+    if (g_effectHoverUpperY < vec1.y) {
+      alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
       this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
