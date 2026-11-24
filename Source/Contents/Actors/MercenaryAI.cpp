@@ -390,59 +390,64 @@ int AiHomunGetV(lua_State* state) {
     return 1;
 
   case V_POSITION:
-  case V_POSITION_APPLY_SKILLATTACKRANGE:
-    if (actor) {
-      if (aid == g_session.m_aid || !(IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
-        int cellX, cellY;
-        mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+  case V_POSITION_APPLY_SKILLATTACKRANGE: {
+    if (!actor) {
+      lua_pushnumber(state, -1.0);
+      lua_pushnumber(state, -1.0);
+      return 2;
+    }
 
-        int skillId = 0;
-        int skillLevel = 0;
-        if (property == 13) {
-          skillId = static_cast<int>(luaL_checknumber(state, 3));
-          skillLevel = static_cast<int>(luaL_checknumber(state, 4));
+    if (aid != g_session.m_aid && (IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
+      lua_pushnumber(state, -1.0);
+      lua_pushnumber(state, -1.0);
+      return 2;
+    }
+
+    int cellX, cellY;
+    mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+
+    int skillId = 0;
+    int skillLevel = 0;
+    if (property == 13) {
+      skillId = static_cast<int>(luaL_checknumber(state, 3));
+      skillLevel = static_cast<int>(luaL_checknumber(state, 4));
+    }
+
+    std::uint32_t homunAid = g_session.m_homunAid;
+    if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
+      CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(homunAid);
+      if (targetActor) {
+        int targetX, targetY;
+        g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+
+        int range = 0;
+        if (skillId != 0) {
+          range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
         }
 
-        std::uint32_t homunAid = g_session.m_homunAid;
-        if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
-          CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(homunAid);
-          if (targetActor) {
-            int targetX, targetY;
-            g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+        int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
+        if (clamped > 0) {
+          const float dx = static_cast<float>(targetX - cellX);
+          const float dy = static_cast<float>(cellY - targetY);
+          const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
+          cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
+          const float sine = -ClientSin(angle);
+          cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
 
-            int range = 0;
-            if (skillId != 0) {
-              range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
-            }
-
-            int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
-            if (clamped > 0) {
-              const float dx = static_cast<float>(targetX - cellX);
-              const float dy = static_cast<float>(cellY - targetY);
-              const float angle = std::acos((1.0f / SquareRoot(dy * dy + dx * dx)) * dx);
-              cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
-              const float sine = -ClientSin(angle);
-              cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
-
-              if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
-                if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
-                  cellX = targetX;
-                  cellY = targetY;
-                }
-              }
+          if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
+            if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
+              cellX = targetX;
+              cellY = targetY;
             }
           }
         }
-
-        lua_pushnumber(state, cellX);
-        lua_pushnumber(state, cellY);
-        return 2;
       }
     }
 
-    lua_pushnumber(state, -1.0);
-    lua_pushnumber(state, -1.0);
+    lua_pushnumber(state, cellX);
+    lua_pushnumber(state, cellY);
     return 2;
+  }
 
   case V_TYPE:
     return 1;
@@ -571,60 +576,65 @@ int AiMercenaryGetV(lua_State* state) {
     return 1;
 
   case V_POSITION:
-  case V_POSITION_APPLY_SKILLATTACKRANGE:
-    if (actor) {
-      if (aid == g_session.m_aid || !(IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
-        int cellX, cellY;
-        mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+  case V_POSITION_APPLY_SKILLATTACKRANGE: {
+    if (!actor) {
+      lua_pushnumber(state, -1.0);
+      lua_pushnumber(state, -1.0);
+      return 2;
+    }
 
-        int skillId = 0;
-        int skillLevel = 0;
-        if (property == 13) {
-          skillId = static_cast<int>(luaL_checknumber(state, 3));
-          skillLevel = static_cast<int>(luaL_checknumber(state, 4));
+    if (aid != g_session.m_aid && (IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
+      lua_pushnumber(state, -1.0);
+      lua_pushnumber(state, -1.0);
+      return 2;
+    }
+
+    int cellX, cellY;
+    mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+
+    int skillId = 0;
+    int skillLevel = 0;
+    if (property == 13) {
+      skillId = static_cast<int>(luaL_checknumber(state, 3));
+      skillLevel = static_cast<int>(luaL_checknumber(state, 4));
+    }
+
+    std::uint32_t mercAid = g_session.m_mercenaryAid;
+    if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
+      CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(mercAid);
+      if (targetActor) {
+        int targetX, targetY;
+        g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+
+        int range = 0;
+        if (skillId != 0) {
+          range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
         }
 
-        std::uint32_t mercAid = g_session.m_mercenaryAid;
-        if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
-          CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(mercAid);
-          if (targetActor) {
-            int targetX, targetY;
-            g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+        int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
+        if (clamped > 0) {
+          const float dx = static_cast<float>(targetX - cellX);
+          const float dy = static_cast<float>(cellY - targetY);
+          const float dist = SquareRoot(dy * dy + dx * dx);
+          const float angle = std::acos((1.0f / dist) * dx);
+          cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
+          const float sine = -ClientSin(angle);
+          cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
 
-            int range = 0;
-            if (skillId != 0) {
-              range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
-            }
-
-            int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
-            if (clamped > 0) {
-              const float dx = static_cast<float>(targetX - cellX);
-              const float dy = static_cast<float>(cellY - targetY);
-              const float dist = SquareRoot(dy * dy + dx * dx);
-              const float angle = std::acos((1.0f / dist) * dx);
-              cellX = static_cast<int>(static_cast<float>(cellX) + ClientCos(angle) * static_cast<float>(clamped));
-              const float sine = -ClientSin(angle);
-              cellY = static_cast<int>(static_cast<float>(cellY) + sine * static_cast<float>(clamped));
-
-              if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
-                if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
-                  cellX = targetX;
-                  cellY = targetY;
-                }
-              }
+          if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
+            if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
+              cellX = targetX;
+              cellY = targetY;
             }
           }
         }
-
-        lua_pushnumber(state, cellX);
-        lua_pushnumber(state, cellY);
-        return 2;
       }
     }
 
-    lua_pushnumber(state, -1.0);
-    lua_pushnumber(state, -1.0);
+    lua_pushnumber(state, cellX);
+    lua_pushnumber(state, cellY);
     return 2;
+  }
 
   case V_TYPE:
     return 1;
