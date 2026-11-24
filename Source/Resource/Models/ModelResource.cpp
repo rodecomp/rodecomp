@@ -988,6 +988,13 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
   return this->GetMeshRenderData(this->instance, mesh, texture, indices, triangleCount, transform, pose);
 }
 
+// INLINED
+static void SetRow(float* row, float x, float y, float z) {
+  row[0] = x;
+  row[1] = y;
+  row[2] = z;
+}
+
 // OFFSET: 0x0075CB60
 // FUNCTION: fn_08026
 const void* C3dGrannyModelRes::GetMeshRenderData(
@@ -1014,11 +1021,7 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
     for (int row = 0; row < 4; ++row) {
       const float* source = composite + row * 4;
-      const vector3d axis{source[0], source[1], source[2]};
-      float* destination = transform->values + row * 3;
-      destination[0] = axis.x;
-      destination[1] = axis.y;
-      destination[2] = axis.z;
+      SetRow(transform->values + row * 3, source[0], source[1], source[2]);
     }
 
     const void* vertices = meshes[mesh].vertices;
