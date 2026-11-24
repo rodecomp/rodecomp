@@ -5287,8 +5287,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
 // FUNCTION: fn_21217
 CGameMode::CGameMode()
     : scene(nullptr), skillUseType(0), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
-      broadcastBalloon(nullptr), noticeBalloon(nullptr), recordItemPickups(0) {
-  this->isInitializing = 0;
+      broadcastBalloon(nullptr), noticeBalloon(nullptr), isInitializing(0), recordItemPickups(0) {
   this->camera = nullptr;
   this->mousePointer = nullptr;
   this->replayPauseTick = 0;
