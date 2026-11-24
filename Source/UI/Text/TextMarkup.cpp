@@ -257,7 +257,7 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
       std::string metadata;
 
       if (info != -1) {
-        display = tail.substr(0, info);
+        display = display.substr(0, info);
         metadata = tail.substr(info + g_infoTagBegin.size());
         const int infoEnd = static_cast<int>(metadata.find(g_infoTagEnd));
 
