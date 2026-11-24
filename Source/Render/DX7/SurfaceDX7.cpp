@@ -210,20 +210,23 @@ void CSurfaceDX7::Fill(const RECT* rectangle, std::uint32_t color) {
 // FUNCTION: fn_01785
 void CSurfaceDX7::Draw(int x, int y, int width, int height, std::uint32_t) {
   RECT source{0, 0, width, height};
-  if (x + width > static_cast<int>(this->m_owner->width)) {
-    source.right = this->m_owner->width - x;
+  DeviceOwnerDX7* owner = this->m_owner;
+  if (x + width > static_cast<int>(owner->width)) {
+    source.right = owner->width - x;
   }
-  if (y + height > static_cast<int>(this->m_owner->height)) {
-    source.bottom = this->m_owner->height - y;
+  if (y + height > static_cast<int>(owner->height)) {
+    source.bottom = owner->height - y;
   }
   if (x < 0) {
     source.left = -x;
+  } else {
+    source.left = 0;
   }
-  const int destinationX = x < 0 ? 0 : x;
+  const int destinationX = x >= 0 ? x : 0;
   if (y < 0) {
     source.top = -y;
   }
-  const int destinationY = y < 0 ? 0 : y;
+  const int destinationY = y >= 0 ? y : 0;
   if (source.right > source.left && source.bottom > source.top) {
     this->m_owner->renderTarget->BltFast(destinationX, destinationY, this->m_surface, &source, DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
   }
