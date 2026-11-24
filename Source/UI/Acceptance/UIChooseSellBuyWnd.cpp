@@ -9263,7 +9263,8 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->selectionContext = static_cast<int>(c);
     const char* types = reinterpret_cast<const char*>(a);
     for (int i = 0; i < b; ++i) {
-      this->cartTypes.push_back(types[i]);
+      const int type = types[i];
+      this->cartTypes.push_back(type);
     }
     int index = 0;
     for (std::vector<int>::iterator cart = this->cartTypes.begin(); cart != this->cartTypes.end(); ++cart, ++index) {
