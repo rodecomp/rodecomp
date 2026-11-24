@@ -1120,9 +1120,11 @@ void UIAchTracingWnd::Paint() {
       this->toggleButtons[index]->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
       this->toggleButtons[index]->ResizeToText();
       this->toggleButtons[index]->Move(10, y);
-      this->toggleButtons[index]->m_value = g_achievementTracking[index].id;
+      UITextButton* toggleButton = this->toggleButtons[index];
+      toggleButton->m_value = g_achievementTracking[index].id;
       this->openButtons[index]->Move(this->geometry.width - 20, y);
-      this->openButtons[index]->m_value = g_achievementTracking[index].id;
+      UITextButton* openButton = this->openButtons[index];
+      openButton->m_value = g_achievementTracking[index].id;
 
       if (!g_achievementTracking[index].expanded) {
         this->DrawTextAt(this->toggleButtons[index]->geometry.width + 16, y + 1,
