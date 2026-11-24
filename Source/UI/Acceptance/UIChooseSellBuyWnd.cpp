@@ -595,11 +595,11 @@ void UIEquipWnd::Paint() {
     this->RefreshLook();
     const short job = static_cast<short>(this->appearance[0]);
     const unsigned char sex = static_cast<unsigned char>(this->appearance[1]);
-    const short costumeJob = static_cast<short>(this->costumeJob);
     const short head = static_cast<short>(this->appearance[2]);
     const short weapon = static_cast<short>(this->appearance[3]);
     const short shield = static_cast<short>(this->appearance[4]);
     const short accessory = static_cast<short>(this->appearance[5]);
+    const short costumeJob = static_cast<short>(this->costumeJob);
     FuncDrawWNDChar(
       this,
       this->geometry.width / 2 + 1,
@@ -926,10 +926,10 @@ void UIMonsterDisplayWnd::Paint() {
   const ActionFrame& frame = action->Frame(0, 0);
   const auto* palette = sprite->palette;
   SpriteAtlasRecord record{};
-  int left = 0;
   int top = 0;
   int offsetX = 0;
   int offsetY = 0;
+  int left = 0;
   for (int index = 0; index < frame.cellCount; ++index) {
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
