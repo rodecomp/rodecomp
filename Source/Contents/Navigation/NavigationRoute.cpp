@@ -1123,7 +1123,8 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
   } else {
     int kind = this->ParseSearchKind(tokens);
     out.clear();
-    for (auto infoIt = this->destinations.begin(); infoIt != this->destinations.end(); ++infoIt) {
+    const auto end = this->destinations.end();
+    for (auto infoIt = this->destinations.begin(); infoIt != end; ++infoIt) {
       auto& info = *infoIt;
       if (kind == 2) {
         info->CollectTargets(type, out);
