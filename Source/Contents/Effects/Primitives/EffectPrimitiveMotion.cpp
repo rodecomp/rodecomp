@@ -832,26 +832,26 @@ void CEffectPrim::PrimBottom2() {
   const CRagEffect* master = this->state.master;
   this->render.position = master->render.position;
 
-  for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
+  for (int ec = 0; ec < 4; ++ec) {
+    if (this->state.slots[ec].life == 1) {
+      ++this->state.slots[ec].process;
 
-    if (slot.life != 1) {
-      continue;
+      if (this->state.slots[ec].height[0] == 1.0f) {
+        this->state.slots[ec].fullDisplayAngle += 4;
+
+        if (this->state.slots[ec].fullDisplayAngle >= 360) {
+          this->state.slots[ec].fullDisplayAngle -= 360;
+        }
+      } else {
+        this->state.slots[ec].fullDisplayAngle += 2;
+
+        if (this->state.slots[ec].fullDisplayAngle >= 360) {
+          this->state.slots[ec].fullDisplayAngle -= 360;
+        }
+      }
+
+      this->state.slots[ec].maxHeight = 20.0f + 10.0f * g_sinTable[this->state.slots[ec].fullDisplayAngle];
     }
-
-    ++slot.process;
-
-    if (slot.height[0] == 1.0f) {
-      slot.fullDisplayAngle += 4;
-    } else {
-      slot.fullDisplayAngle += 2;
-    }
-
-    if (slot.fullDisplayAngle >= 360) {
-      slot.fullDisplayAngle -= 360;
-    }
-
-    slot.maxHeight = 20.0f + 10.0f * g_sinTable[slot.fullDisplayAngle];
   }
 }
 
