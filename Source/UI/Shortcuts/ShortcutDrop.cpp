@@ -263,15 +263,14 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
         const std::list<ShortcutCooldownRecord>::iterator record = FindCooldownRecord(records, skill.id);
         if (record != records.end() && timeGetTime() < record->end) {
-          std::list<CooldownState>& states = record->alternate;
-          const std::list<CooldownState>::iterator previous = FindCooldownState(states, value.slot);
-          if (previous != states.end()) {
+          const std::list<CooldownState>::iterator previous = FindCooldownState(record->alternate, value.slot);
+          if (previous != record->alternate.end()) {
             previous->slot = slot;
             previous->x = this->SlotX(slot);
           } else {
-            for (std::list<CooldownState>::iterator state = states.begin(); state != states.end(); ++state) {
+            for (std::list<CooldownState>::iterator state = record->alternate.begin(); state != record->alternate.end(); ++state) {
               if (state->x == this->SlotX(slot)) {
-                states.erase(state);
+                record->alternate.erase(state);
                 break;
               }
             }
