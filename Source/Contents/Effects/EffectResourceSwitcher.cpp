@@ -484,6 +484,12 @@ void CEZ2STREffectEx::SetDelay(int argument) {
   this->SetEventFrame(0, this->frameStep + 1);
 }
 
+// INLINED
+static void SetOffset(EZ2STREffectInfo& info, float x, float y) {
+  info.offsetX = x;
+  info.offsetY = y;
+}
+
 // OFFSET: 0x00700070
 // FUNCTION: fn_06983
 void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const {
@@ -494,10 +500,9 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
   EZ2STREffectInfo info;
   info.id = static_cast<int>(this->manager->effects.size());
   info.name = static_cast<const std::string&>(FromUtf8(entry.second.name, g_textCodePage));
-  info.offsetX = static_cast<float>(entry.second.offsetX);
+  SetOffset(info, static_cast<float>(entry.second.offsetX), static_cast<float>(entry.second.offsetY));
   info.flags = entry.second.infinite ? info.flags | 1 : info.flags;
   info.flags = entry.second.floor ? info.flags | 2 : info.flags;
-  info.offsetY = static_cast<float>(entry.second.offsetY);
   info.flags = entry.second.aboveUi ? info.flags | 4 : info.flags;
   info.soundPath = static_cast<const std::string&>(FromUtf8(entry.second.soundPath, g_textCodePage));
   info.flags = entry.second.soundLoop ? info.flags | 8 : info.flags;
