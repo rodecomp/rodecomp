@@ -481,7 +481,7 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
 {
   std::vector<BarterMarketEntry>::iterator found = this->entries.begin();
   for (; found != this->entries.end(); ++found) {
-    if (found->id == entry.id) {
+    if (entry.id == found->id) {
       break;
     }
   }
@@ -491,7 +491,7 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
     found->value += entry.value;
   }
   for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-    if (it->id == entry.id && !it->flag_30) {
+    if (entry.id == it->id && !it->flag_30) {
       it->value -= entry.value;
       if (it->value < 0) {
         it->value = 0;
