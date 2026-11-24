@@ -26,6 +26,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
+#include <tuple>
 
 // INLINED
 static void TransformPoint(vector3d& out, const vector3d& point, const float* matrix) {
@@ -322,7 +323,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
       entry.quad = quad;
       entry.palette = sprite->palette;
       entry.blend = blend;
-      this->quads.emplace(400, entry);
+      this->quads.emplace(std::piecewise_construct, std::forward_as_tuple(400), std::forward_as_tuple(entry));
     } else {
       this->QueueQuad(0, &quad, sprite->palette, blend);
     }
