@@ -27,7 +27,8 @@ void AppendLine(std::vector<std::string>& lines, const char* text) {
   lines.push_back(line);
 }
 
-// INLINED
+// OFFSET: 0x009B5100
+// FUNCTION: fn_46536
 inline int HexColorToken(const char* text, const char* end) {
   if (*text != '^' || end - text <= 6) {
     return 0;
