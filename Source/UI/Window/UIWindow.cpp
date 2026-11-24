@@ -2974,10 +2974,10 @@ void UINavigationV4Wnd::Paint() {
       5, 0x2e, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_dot.bmp"))), false
     );
 
-    int mapX = 0x9b;
     int mapY = 0x3c;
     int mapSize = 0x64;
     const NavigationTarget target = g_navigationManager.GetCurrentTarget();
+    int mapX = 0x9b;
     if (target.type == 2) {
       mapX = 0xe3;
       mapSize = 0x28;
