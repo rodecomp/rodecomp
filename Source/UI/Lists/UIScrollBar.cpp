@@ -462,14 +462,16 @@ void UIScrollBar::Paint() {
 void UIScrollBar::Configure(int x, int y, int vertical, int length) {
   this->vertical = vertical;
 
-  int width = length;
-  int height = length;
+  int width;
+  int height;
   switch (vertical) {
   case 0:
+    width = length;
     height = this->thickness;
     break;
   case 1:
     width = this->thickness;
+    height = length;
     break;
   }
 
