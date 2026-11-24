@@ -5787,8 +5787,11 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
         int row = 0;
         for (int y = 17; y < 241; y += 32, ++row) {
-          const bool visible = row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size();
-          this->upgradeButtons[row]->Move(visible ? 53 : -200, y);
+          int x = -200;
+          if (row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size()) {
+            x = 53;
+          }
+          this->upgradeButtons[row]->Move(x, y);
         }
         this->UpdateScrollBar();
         this->UpdateRowButtons();
