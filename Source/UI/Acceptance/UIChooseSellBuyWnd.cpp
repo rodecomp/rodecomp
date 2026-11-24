@@ -8742,29 +8742,26 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     case ID_INT:
       RequestStatusPointUp(this, mode, 3);
       break;
-    case ID_DEX:
-      RequestStatusPointUp(this, mode, 4);
-      break;
     case ID_LUK:
       RequestStatusPointUp(this, mode, 5);
       break;
+    case ID_DEX:
+      RequestStatusPointUp(this, mode, 4);
+      break;
     case ID_TOGGLE_STATUS_EXPAND: {
-      const char* normal;
-      const char* pressed;
       if (this->m_extended == 1) {
         this->m_extended = 0;
         this->Resize(280, 141);
-        normal = "유저인터페이스\\statuswnd\\expand_on_normal.bmp";
-        pressed = "유저인터페이스\\statuswnd\\expand_on_press.bmp";
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 0, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 1, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_press.bmp", 2, 0);
       } else {
         this->m_extended = 1;
         this->Resize(280, 241);
-        normal = "유저인터페이스\\statuswnd\\expand_off_normal.bmp";
-        pressed = "유저인터페이스\\statuswnd\\expand_off_press.bmp";
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_normal.bmp", 0, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_normal.bmp", 1, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_press.bmp", 2, 0);
       }
-      this->m_expandButton->SetBitmap(normal, 0, 0);
-      this->m_expandButton->SetBitmap(normal, 1, 0);
-      this->m_expandButton->SetBitmap(pressed, 2, 0);
       this->m_expandedHeight = this->geometry.height;
       break;
     }
