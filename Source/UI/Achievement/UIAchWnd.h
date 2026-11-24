@@ -68,6 +68,7 @@ public:
 
   void Create(int width, int height, int rows);
   void SelectAchievement(int index);
+  bool HitTestRow(int x, int y, int* row);
   void SelectAchievementById(int id);
   __declspec(noinline) void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
   __declspec(noinline) void UpdateScroll();
@@ -132,6 +133,7 @@ public:
 
   void ClearGroups();
   void DrawGroup(int group);
+  void NotifySelection(int group, int sub);
   __declspec(noinline) std::string Label(int group, int sub);
   __declspec(noinline) bool HitTestTab(int x, int y, int* a, int* b);
   __declspec(noinline) void UpdateScrollBar();

@@ -110,15 +110,28 @@ void UITextViewer::OnLBtnDown(int, int) {
 void UITextViewer::OnLBtnDblClk(int, int) {
 }
 
+// OFFSET: 0x007B41D0
+// FUNCTION: fn_46563
+inline bool UIAchListWnd::HitTestRow(int x, int y, int* row) {
+  if (x < 0 || this->geometry.width - this->scrollBarWidth < x) {
+    return false;
+  }
+
+  const int index = y / this->rowHeight;
+  if (this->achievementList->size() <= static_cast<unsigned>(index)) {
+    *row = 0;
+    return false;
+  }
+
+  *row = index;
+  return true;
+}
+
 // OFFSET: 0x007B78D0
 // FUNCTION: fn_09228
 void UIAchListWnd::OnLBtnDown(int x, int y) {
-  if (x < 0 || this->geometry.width - this->scrollBarWidth < x) {
-    return;
-  }
-
-  const int row = y / this->rowHeight;
-  if (static_cast<unsigned>(this->achievementList->size()) <= static_cast<unsigned>(row)) {
+  int row;
+  if (!this->HitTestRow(x, y, &row)) {
     return;
   }
 
@@ -139,6 +152,20 @@ void UIAchTV::OnLBtnDown(int, int) {
   }
 }
 
+// OFFSET: 0x007B3850
+// FUNCTION: fn_46564
+inline void UIAchTab::NotifySelection(int group, int sub) {
+  this->selectedGroup = group;
+  this->selectedSub = sub;
+  if (this->parent) {
+    this->parent->SendMsg(this, UM_TAB, group, sub, 0, 0);
+    this->parent->Invalidate();
+  }
+
+  this->UpdateScrollBar();
+  this->Invalidate();
+}
+
 // OFFSET: 0x007B7960
 // FUNCTION: fn_09230
 void UIAchTab::OnLBtnDown(int x, int y) {
@@ -148,15 +175,7 @@ void UIAchTab::OnLBtnDown(int x, int y) {
     return;
   }
 
-  this->selectedGroup = a;
-  this->selectedSub = b;
-  if (this->parent) {
-    this->parent->SendMsg(this, UM_TAB, a, b, 0, 0);
-    this->parent->Invalidate();
-  }
-
-  this->UpdateScrollBar();
-  this->Invalidate();
+  this->NotifySelection(a, b);
   g_windowMgr.SetCapture(this);
 }
 
