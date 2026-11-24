@@ -147,6 +147,7 @@ public:
 
 class UICashEmotionPack_Search_Normal : public UICashEmotionPack_Search {
 public:
+  UICashEmotionPack_Search_Normal();
   ~UICashEmotionPack_Search_Normal() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -3450,6 +3451,12 @@ void UICashEmotionPack_Search::Paint() {
   if (bitmap) {
     this->DrawBitmap(0, 0, bitmap, false);
   }
+}
+
+// OFFSET: 0x007CB1A0
+// FUNCTION: fn_46544
+UICashEmotionPack_Search_Normal::UICashEmotionPack_Search_Normal() {
+  this->m_action = new (std::nothrow) CCashEmotionAction_Play();
 }
 
 // OFFSET: 0x007CB2C0
