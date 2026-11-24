@@ -192,9 +192,9 @@ CTagData* CRuneSystemMgr::GetTag(int tagId) {
   }
 
   if (tagId > 0) {
-    for (CTagData*& tag : this->m_tags) {
-      if (tagId == tag->m_id) {
-        return tag;
+    for (std::vector<CTagData*>::iterator it = this->m_tags.begin(); it != this->m_tags.end(); ++it) {
+      if (tagId == (*it)->m_id) {
+        return *it;
       }
     }
   }
@@ -771,7 +771,7 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
 // OFFSET: 0x007688A0
 // FUNCTION: fn_08156
 void CRuneSystemMgr::SetSelectTag(int tagId) {
-  if (!this->m_tags.empty()) {
+  if (this->m_tags.begin() != this->m_tags.end()) {
     if (this->GetTag(tagId)) {
       this->m_selectTag = tagId;
     } else {
