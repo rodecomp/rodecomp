@@ -966,7 +966,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     }
 
     ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
-    if (found.identity[1] == 0) {
+    if (found.identity[1] <= 0) {
       return;
     }
 
@@ -1024,7 +1024,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     }
 
     ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
-    if (found.identity[1] == 0) {
+    if (found.identity[1] <= 0) {
       return;
     }
 
