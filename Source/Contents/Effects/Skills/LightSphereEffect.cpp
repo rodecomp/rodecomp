@@ -112,16 +112,12 @@ void CLightSphereEffect::CreateRayParticles(int param) {
   }
 }
 
-// OFFSET: 0x00B6CEA0
-// FUNCTION: fn_46112
-void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
-  if (particle == nullptr) {
-    return;
-  }
-
+// INLINED
+template <bool kUseUpdatedPhase>
+static __forceinline void SetRayVertices(CParticle* particle, int phase) {
   EffectPoint points[3];
   const int pitch = particle->phaseParameter;
-  const float radius = particle->scale * g_sinTable[particle->angleParameter] + particle->scale;
+  const float radius = particle->scale * g_sinTable[kUseUpdatedPhase ? phase : particle->angleParameter] + particle->scale;
   const int yaw = static_cast<int>(particle->angle);
   const float flat = radius * g_cosTable[pitch];
   const float corner0X = flat * g_cosTable[yaw];
@@ -162,6 +158,16 @@ void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
   particle->vertices[3].x = corner2X;
   particle->vertices[3].y = corner2Y;
   particle->vertices[3].z = corner2Z;
+}
+
+// OFFSET: 0x00B6CEA0
+// FUNCTION: fn_46112
+void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
+  if (particle == nullptr) {
+    return;
+  }
+
+  SetRayVertices<false>(particle, 0);
 }
 
 // OFFSET: 0x00B6CDB0
@@ -404,7 +410,7 @@ void CLightSphereEffect::UpdateRay(CParticle* particle) {
   const int previous = particle->angleParameter;
   const int phase = (previous + 1 + std::ranges::max(std::rand() % 2, 0)) % 360;
   particle->angleParameter = phase;
-  this->UpdateRayVertices(particle);
+  SetRayVertices<true>(particle, phase);
 }
 
 // OFFSET: 0x00B6D990
