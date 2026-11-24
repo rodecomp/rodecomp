@@ -326,11 +326,13 @@ void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
   const auto entry = this->levelChanges.find(id);
   if (entry != this->levelChanges.end()) {
     lcEXCInfo& change = entry->second;
-    if (value.level == change.previous || change.target < value.level) {
+    const int target = change.target;
+    const int level = value.level;
+    if (level == change.previous || target < level) {
       this->removals.push_back(id);
-    } else if (change.previous < value.level && value.level < change.target) {
-      change.previous = value.level;
-      value.level = change.target;
+    } else if (change.previous < level && level < target) {
+      change.previous = level;
+      value.level = target;
     }
   }
 
