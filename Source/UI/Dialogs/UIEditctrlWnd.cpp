@@ -392,21 +392,23 @@ void UIMiniMapWnd::Paint() {
 
 // OFFSET: 0x0099C8D0
 // FUNCTION: fn_45723
-__declspec(noinline) int UIMiniMapWnd::SaveMemos() {
+int UIMiniMapWnd::SaveMemos() {
   int count = 0;
   std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
   FILE* file = std::fopen(text.c_str(), "wb");
-  if (file) {
-    const auto tooltipOf = [](const UIBitmapButton* button) -> std::string { return button->m_tooltip; };
-    for (int index = 0; index < 20; ++index) {
-      if (this->memoButtons[index]->geometry.x > 0 && this->memoButtons[index]->geometry.y > 0) {
-        text = static_cast<const std::string&>(FormatOwnedString(g_miniMapMemoLineFormat, this->memoButtons[index]->geometry.x, this->memoButtons[index]->geometry.y, tooltipOf(this->memoButtons[index]).c_str()));
-        std::fwrite(text.c_str(), text.size(), 1, file);
-        ++count;
-      }
-    }
-    std::fclose(file);
+  if (!file) {
+    return count;
   }
+
+  const auto tooltipOf = [](const UIBitmapButton* button) -> std::string { return button->m_tooltip; };
+  for (int index = 0; index < 20; ++index) {
+    if (this->memoButtons[index]->geometry.x > 0 && this->memoButtons[index]->geometry.y > 0) {
+      text = static_cast<const std::string&>(FormatOwnedString(g_miniMapMemoLineFormat, this->memoButtons[index]->geometry.x, this->memoButtons[index]->geometry.y, tooltipOf(this->memoButtons[index]).c_str()));
+      std::fwrite(text.c_str(), text.size(), 1, file);
+      ++count;
+    }
+  }
+  std::fclose(file);
   return count;
 }
 
