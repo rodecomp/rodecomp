@@ -75,8 +75,7 @@ void CView::Smooth() {
   float tangent = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientCosine(static_cast<int>(-this->camera.pitch));
   float cotangent = ClientCosine(static_cast<int>(-this->camera.pitch)) / ClientSine(static_cast<int>(-this->camera.pitch));
 
-  tangent *= g_projectionScale;
-  g_tangent = tangent / g_renderer->UiScaleY();
+  g_tangent = tangent * g_projectionScale / g_renderer->UiScaleY();
   cotangent *= g_projectionScale;
   g_cotangent = cotangent / g_renderer->UiScaleY();
 
