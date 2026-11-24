@@ -10716,8 +10716,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     TalkCameraPacket packet;
     packet.action = 0;
-    packet.id = ID_CZ_VIEW_CAMERAINFO;
     packet.range = camera->camera.distance;
+    packet.id = ID_CZ_VIEW_CAMERAINFO;
     packet.rotation = camera->camera.yaw;
     packet.latitude = camera->camera.pitch;
     if (parts[0].find("range", 0) != std::string::npos) {
