@@ -62,6 +62,17 @@ __forceinline const char* TimeFontSpriteName() {
 // GLOBAL: gl_25107
 CFile g_whisperFile;
 
+// GLOBAL: gl_26022
+float g_shadedColorScale = 128.0f;
+// GLOBAL: gl_26029
+float g_angleDivisor = 180.0f;
+// GLOBAL: gl_26040
+double g_miniMapTop = 16.0;
+// GLOBAL: gl_26041
+double g_miniMapCenterOffset = 64.0;
+// GLOBAL: gl_26042
+double g_miniMapBottom = 144.0;
+
 namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
@@ -393,48 +404,50 @@ void CGameMode::DrawMiniMapMarker(
   // GLOBAL: gl_24933
   static int s_lastPlayerY;
 
+  const float scale = g_shadedColorScale;
   const float xF = static_cast<float>(x);
   const int width = this->scene->terrain->width;
   const int height = this->scene->terrain->height;
-  const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
+  const double originX = static_cast<double>(g_renderer->viewport.width - 144) + g_miniMapCenterOffset;
   const int longest = width >= height ? width : height;
   const float longestF = static_cast<float>(longest);
-  const double mapWidth = static_cast<float>(width) * 128.0f / longestF;
-  const double mapHeight = static_cast<float>(height) * 128.0f / longestF;
+  const float widthF = static_cast<float>(width);
+  const double mapWidth = widthF * scale / longestF;
+  const float heightF = static_cast<float>(height);
+  const double mapHeight = heightF * scale / longestF;
   const float yF = static_cast<float>(y);
   if (xF < 0.0f || yF < 0.0f) {
     return;
   }
 
-  const double marginX = (128.0f - static_cast<float>(mapWidth)) * g_depthAverageHalf;
+  const double marginX = (scale - static_cast<float>(mapWidth)) * g_depthAverageHalf;
   const float viewWidth = view.right - view.left;
-  const double marginY = (128.0f - static_cast<float>(mapHeight)) * g_depthAverageHalf;
-  const float viewLeft = view.left * 128.0f / viewWidth;
-  const double offsetX = (xF * static_cast<float>(mapWidth) / static_cast<float>(width) + marginX) / viewWidth;
+  const double marginY = (scale - static_cast<float>(mapHeight)) * g_depthAverageHalf;
+  const float viewLeft = view.left * scale / viewWidth;
+  const double offsetX = (xF * static_cast<float>(mapWidth) / widthF + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
-  const float viewTop = view.top * 128.0f / viewHeight;
-  const double offsetY = (mapHeight - static_cast<double>(yF * static_cast<float>(mapHeight) / static_cast<float>(height)) + marginY) / viewHeight;
-  const double left = originX - 64.0;
-  const double right = originX + 64.0;
+  const float viewTop = view.top * scale / viewHeight;
+  const double offsetY = (mapHeight - static_cast<double>(yF * static_cast<float>(mapHeight) / heightF) + marginY) / viewHeight;
+  const double left = originX - g_miniMapCenterOffset;
   double drawX = (left - viewLeft) + offsetX;
-  double drawY = (16.0 - viewTop) + offsetY;
+  double drawY = (g_miniMapTop - viewTop) + offsetY;
 
   if (clamp) {
     int direction = 0;
     if (drawX - size < left) {
       direction = 1;
       drawX = size + left;
-    } else if (drawX + size > right) {
+    } else if (drawX + size > originX + g_miniMapCenterOffset) {
       direction = 2;
-      drawX = right - size;
+      drawX = originX + g_miniMapCenterOffset - size;
     }
-    if (drawY - size < 16.0) {
-      drawY = size + 16.0;
+    if (drawY - size < g_miniMapTop) {
+      drawY = size + g_miniMapTop;
       if (direction == 0) {
         direction = 3;
       }
-    } else if (drawY + size > 144.0) {
-      drawY = 144.0 - size;
+    } else if (drawY + size > g_miniMapBottom) {
+      drawY = g_miniMapBottom - size;
       if (direction == 0) {
         direction = 4;
       }
@@ -444,7 +457,7 @@ void CGameMode::DrawMiniMapMarker(
       texture = arrow;
     }
   } else if (kind != 4) {
-    if (drawX - size < left || drawX + size > right || drawY - size < 16.0 || drawY + size > 144.0) {
+    if (drawX - size < left || drawX + size > originX + g_miniMapCenterOffset || drawY - size < g_miniMapTop || drawY + size > g_miniMapBottom) {
       return;
     }
   }
@@ -499,7 +512,7 @@ void CGameMode::DrawMiniMapMarker(
     white = g_texMgr.Default();
     this->DrawTexture(vertical, 0, 0.0999f, color, white, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
   } else if (kind == 4) {
-    const int angle = static_cast<int>(180.0f - this->scene->player->render.angle);
+    const int angle = static_cast<int>(g_angleDivisor - this->scene->player->render.angle);
     RECT shadow;
     shadow.left = rect.left - 2;
     shadow.top = rect.top - 2;
