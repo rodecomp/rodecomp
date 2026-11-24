@@ -117,7 +117,8 @@ public:
 
   Replay();
 
-  // INLINED
+  // OFFSET: 0x00B83B90
+  // FUNCTION: fn_46522
   ~Replay() {
     if (this->file) {
       if (this->fileMode == 31) {
@@ -175,7 +176,8 @@ struct ReplayFileEntry {
     std::memset(this->name, 0, sizeof(this->name));
   }
 
-  // INLINED
+  // OFFSET: 0x00B83D30
+  // FUNCTION: fn_46523
   ~ReplayFileEntry() {
     this->index = 0;
     std::memset(this->name, 0, sizeof(this->name));
@@ -198,7 +200,8 @@ public:
   /* 0124 */ int fileState;
   /* 0128 */ unsigned char buffer[0x3E80];
 
-  // INLINED
+  // OFFSET: 0x00B83820
+  // FUNCTION: fn_46524
   __forceinline ReplayFileList()
       : replay(nullptr),
         path(),
