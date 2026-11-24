@@ -28,10 +28,9 @@ void CFriggSongEffect::UpdateSegmentVertices(CParticle* particle) {
     return;
   }
 
-  const int segment = particle->columnIndex;
   const float speed = particle->speedParameter;
-  int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + particle->angle) % 360;
-  if (segment == 20) {
+  int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + particle->angle) % 360;
+  if (particle->columnIndex == 20) {
     angle = static_cast<int>(particle->angle);
   }
 
@@ -46,11 +45,11 @@ void CFriggSongEffect::UpdateSegmentVertices(CParticle* particle) {
   const float innerX = particle->scale * cosine;
   const float innerY = 0.0f;
   const float innerZ = particle->scale * sine;
-  const float outerX = innerX + offsetX;
   const float outerY = 0.0f - height;
+  const float outerX = innerX + offsetX;
   const float outerZ = innerZ + offsetZ;
 
-  if (segment >= 1 && segment <= 20) {
+  if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
     particle->vertices[1].x = outerX;
     particle->vertices[1].y = outerY;
     particle->vertices[1].z = outerZ;
