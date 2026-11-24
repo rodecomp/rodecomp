@@ -31,6 +31,7 @@ public:
   void OnActiveStateChanged(bool active);
 
   void OnSimpleView(bool simpleView);
+  void OpenQuestInfo();
 
   /* 00E8 */ CUIStaticImage* icon;
   /* 00EC */ CUIStaticText* titleText;

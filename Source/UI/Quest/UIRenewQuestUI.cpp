@@ -1037,16 +1037,16 @@ void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
   this->onSubmit = handler;
 }
 
-// OFFSET: 0x00A664C0
-// FUNCTION: fn_16616
-void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned long& questId) {
-  if (item->questId == 0) {
+// OFFSET: 0x00A67190
+// FUNCTION: fn_46607
+void RenewQuestUI::CUIQuestItem::OpenQuestInfo() {
+  if (this->questId == 0) {
     return;
   }
 
-  if (item->questType == 2) {
+  if (this->questType == 2) {
     if (CUIRecommendedQuestInfo* info = dynamic_cast<CUIRecommendedQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_RECOMMENDEDQUESTINFO)))) {
-      info->SetQuest(item->questId);
+      info->SetQuest(this->questId);
       if (UIWindow* other = g_windowMgr.LookupWindow(WID_ONGOINGQUESTINFO)) {
         info->Move(other->geometry.x, other->geometry.y);
         g_windowMgr.CloseWindow(WID_ONGOINGQUESTINFO);
@@ -1054,13 +1054,19 @@ void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned
     }
   } else {
     if (CUIOngoingQuestInfo* info = dynamic_cast<CUIOngoingQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_ONGOINGQUESTINFO)))) {
-      info->SetQuest(item->questId);
+      info->SetQuest(this->questId);
       if (UIWindow* other = g_windowMgr.LookupWindow(WID_RECOMMENDEDQUESTINFO)) {
         info->Move(other->geometry.x, other->geometry.y);
         g_windowMgr.CloseWindow(WID_RECOMMENDEDQUESTINFO);
       }
     }
   }
+}
+
+// OFFSET: 0x00A664C0
+// FUNCTION: fn_16616
+void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned long& questId) {
+  item->OpenQuestInfo();
 }
 
 // OFFSET: 0x00A665C0
