@@ -64,6 +64,7 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
 
   BOOL readResult = ReadFile(file, buffer, 0xFFFF, &bytesRead, nullptr);
   while (readResult && bytesRead != 0) {
+    const BYTE* data = buffer;
     const BYTE* end;
     if (length > bytesRead) {
       end = buffer + bytesRead;
@@ -72,8 +73,8 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
       end = buffer + length;
       length = 0;
     }
-    for (const BYTE* data = buffer; data < end; ++data) {
-      *checksum = (*checksum >> 8) ^ m_table[static_cast<BYTE>(*checksum) ^ *data];
+    for (; data < end; ++data) {
+      *checksum = (*checksum >> 8) ^ m_table[(*checksum & 0xFF) ^ *data];
     }
     if (length == 0) {
       break;
