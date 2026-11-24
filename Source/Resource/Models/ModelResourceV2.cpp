@@ -159,9 +159,9 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     int vertexCount = 0;
     input.Read(&vertexCount, 4);
     node->mesh->vertexCount = vertexCount;
-    auto* vertices = new std::array<float, 3>[vertexCount]{};
+    ShadeVector* vertices = new ShadeVector[vertexCount];
     input.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-    node->mesh->vertices = vertices;
+    node->mesh->vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
     int textureVertexCount = 0;
     input.Read(&textureVertexCount, 4);
     node->mesh->textureVertexCount = textureVertexCount;
