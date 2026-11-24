@@ -187,19 +187,20 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
       edge[1].x = offsetX + points[1].x;
       edge[1].y = up + points[1].y;
       edge[1].z = offsetZ + points[1].z;
-      particle->vertices[1].x = edge[1].x;
-      particle->vertices[1].y = edge[1].y;
-      particle->vertices[3].x = edge[0].x;
-      particle->vertices[3].y = edge[0].y;
-      particle->vertices[3].z = edge[0].z;
-      particle->vertices[1].z = edge[1].z;
+      auto& verticesRef = particle->vertices;
+      verticesRef[1].x = edge[1].x;
+      verticesRef[1].y = edge[1].y;
+      verticesRef[3].x = edge[0].x;
+      verticesRef[3].y = edge[0].y;
+      verticesRef[3].z = edge[0].z;
+      verticesRef[1].z = edge[1].z;
       if (corner > 0) {
-        particle->vertices[0].x = this->previous[1].x;
-        particle->vertices[0].y = this->previous[1].y;
-        particle->vertices[0].z = this->previous[1].z;
-        particle->vertices[2].x = this->previous[0].x;
-        particle->vertices[2].y = this->previous[0].y;
-        particle->vertices[2].z = this->previous[0].z;
+        verticesRef[0].x = this->previous[1].x;
+        verticesRef[0].y = this->previous[1].y;
+        verticesRef[0].z = this->previous[1].z;
+        verticesRef[2].x = this->previous[0].x;
+        verticesRef[2].y = this->previous[0].y;
+        verticesRef[2].z = this->previous[0].z;
         const int alpha = particle->effectParameter - segment * 5;
         if (alpha > 0) {
           particle->alpha = alpha;
