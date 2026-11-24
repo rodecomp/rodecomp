@@ -23,6 +23,8 @@ public:
   void Update();
 
 private:
+  void QueueRequest(std::uint32_t id);
+
   struct Entry {
     /* 0000 */ std::string name;
     /* 0018 */ std::uint32_t tick;

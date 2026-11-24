@@ -39,9 +39,7 @@ std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {
     return entry->second.name;
   }
 
-  if (this->m_pending.end() == std::find(this->m_pending.begin(), this->m_pending.end(), id)) {
-    this->m_pending.push_back(id);
-  }
+  this->QueueRequest(id);
 
   return LookupMessage(MSI_NAMELESS_USER);
 }
@@ -66,6 +64,14 @@ void CPlayerNameDictionary::Clear() {
   this->m_names.clear();
   this->m_pending.clear();
   this->m_requests.clear();
+}
+
+// OFFSET: 0x0060B320
+// FUNCTION: fn_46476
+void CPlayerNameDictionary::QueueRequest(std::uint32_t id) {
+  if (this->m_pending.end() == std::find(this->m_pending.begin(), this->m_pending.end(), id)) {
+    this->m_pending.push_back(id);
+  }
 }
 
 // OFFSET: 0x0060B420
