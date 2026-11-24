@@ -809,7 +809,7 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::OnGroundSkillEffect(vector3d position, int
     const float z = offsetZ + position.z;
     const float y = position.y + 0.0f;
     EffectLists* effects = g_effectMgr;
-    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), vector3d{x, y, z}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(delay);
     }
