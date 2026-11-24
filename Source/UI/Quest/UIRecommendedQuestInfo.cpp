@@ -169,6 +169,16 @@ void CUIQuestInfo::OnCreate(int width, int height) {
   this->AddChild(this->textViewer);
 }
 
+// OFFSET: 0x00A56930
+// FUNCTION: fn_46598
+inline CUIQuestInfo* CUIScrollWindow::CreateQuestInfo() {
+  CUIQuestInfo* info = new CUIQuestInfo();
+  info->SetSize(300, 150);
+  this->AddChild(info);
+  this->questInfos.push_back(info);
+  return info;
+}
+
 // OFFSET: 0x00A57EF0
 // FUNCTION: fn_16324
 void CUIScrollWindow::OnCreate(int width, int height) {
@@ -191,10 +201,7 @@ void CUIScrollWindow::OnCreate(int width, int height) {
   this->AddChild(this->bottomImage);
 
   for (int count = 3; count != 0; --count) {
-    CUIQuestInfo* info = new CUIQuestInfo();
-    info->SetSize(300, 150);
-    this->AddChild(info);
-    this->questInfos.push_back(info);
+    this->CreateQuestInfo();
   }
 
   this->questInfos[0]->Resize(306, 120);
@@ -285,19 +292,20 @@ void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
 
 namespace RecommendedQuestInfo {
 
-// INLINED
-static void SetQuestNpc(CUIScrollWindow* window, const std::string& sprite, const std::string& map, int x, int y) {
+// OFFSET: 0x00A58D10
+// FUNCTION: fn_46599
+inline void CUIScrollWindow::SetQuestNpc(const std::string& sprite, const std::string& map, int x, int y) {
   if (sprite.size() == 0) {
-    window->npcSprite->Show(0);
+    this->npcSprite->Show(0);
     return;
   }
 
-  window->npcSprite->SetSprite(75, 145, sprite);
+  this->npcSprite->SetSprite(75, 145, sprite);
   if (map.size() != 0) {
-    window->npcSprite->SetDestination(map, x, y);
+    this->npcSprite->SetDestination(map, x, y);
   }
-  window->npcSprite->Move(window->geometry.width - window->npcSprite->geometry.width - 40, window->geometry.height - window->npcSprite->geometry.height - 10);
-  window->npcSprite->Show(1);
+  this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 40, this->geometry.height - this->npcSprite->geometry.height - 10);
+  this->npcSprite->Show(1);
 }
 
 // OFFSET: 0x00A58E80
@@ -319,7 +327,7 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
       }
     }
 
-    SetQuestNpc(this, quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
+    this->SetQuestNpc(quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
   } else {
     std::string text = std::format("Not found Quest Info = %lu", static_cast<unsigned long>(questId));
     g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);

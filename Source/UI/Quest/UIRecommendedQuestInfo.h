@@ -49,6 +49,8 @@ public:
   __declspec(noinline) CUIScrollWindow();
   void OnCreate(int width, int height) override;
   void OnInit() override;
+  CUIQuestInfo* CreateQuestInfo();
+  void SetQuestNpc(const std::string& sprite, const std::string& map, int x, int y);
   void SetQuest(unsigned int questId);
 
   /* 0084 */ CUIStaticImage* background;
