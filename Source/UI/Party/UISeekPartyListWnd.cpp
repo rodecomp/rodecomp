@@ -326,7 +326,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
       const int level = packet.level;
       if (level > 0) {
-        if (level < 136) {
+        if (level > 135) {
           title = title + " Level: " + IntToString(level, 0);
         } else {
           title = title + " Level: " + IntToString(level, 0);
