@@ -5812,12 +5812,11 @@ void CRagEffect::ElectricArc(char kind, std::int16_t) {
     this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
-    for (int height = 1; height < 21; ++height) {
+    for (int height = 20; height > 0; --height) {
       this->state.lastPrim->state.slots[index].height[height] = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[index].alphaT = kind;
-  }
+    this->state.lastPrim->state.slots[index].alphaT = kind;  }
 }
 
 // OFFSET: 0x00C63A10
@@ -12206,33 +12205,37 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 8.0f;
   this->state.lastPrim->state.slots[0].rotStart = 0;
 
-  EffectPrimitiveSlot& trail = this->state.lastPrim->state.slots[0];
-  trail.height[1] = kind == 2 ? 2.0f : (kind == 3 ? 3.0f : trail.maxHeight / 25.0f);
+  if (kind == 2) {
+    this->state.lastPrim->state.slots[0].height[1] = 2.0f;
+  } else if (kind == 3) {
+    this->state.lastPrim->state.slots[0].height[1] = 3.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].height[1] = this->state.lastPrim->state.slots[0].maxHeight / 25.0f;
+  }
   this->state.lastPrim->state.slots[0].height[2] =
     (this->state.lastPrim->state.slots[0].height[1] / this->state.lastPrim->state.slots[0].maxHeight) *
     (this->state.deltaPos.y - this->render.position.y);
 
   if (kind == 3) {
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 330;
-    this->state.lastPrim->state.slots[0].flag1[0] = 0;
-    this->state.lastPrim->state.slots[0].height[7] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 15;
   } else {
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
-    this->state.lastPrim->state.slots[0].flag1[0] = 0;
-    this->state.lastPrim->state.slots[0].height[7] = 0.0f;
+  }
+  this->state.lastPrim->state.slots[0].flag1[0] = 0;
+  this->state.lastPrim->state.slots[0].height[7] = 0.0f;
 
-    if (kind == 0) {
-      this->state.lastPrim->state.slots[0].flag1[2] = 8;
-    } else if (kind == 1) {
-      this->state.lastPrim->state.slots[0].flag1[2] = 9;
-      this->state.lastPrim->state.slots[0].flag1[3] = static_cast<char>(this->state.count);
-    } else if (kind >= 10) {
-      this->state.lastPrim->state.slots[0].flag1[2] = 9;
-      this->state.lastPrim->state.slots[0].flag1[3] = 4;
-    } else if (kind == 2) {
-      this->state.lastPrim->state.slots[0].flag1[2] = 0;
-    }
+  if (kind == 0) {
+    this->state.lastPrim->state.slots[0].flag1[2] = 8;
+  } else if (kind == 1) {
+    this->state.lastPrim->state.slots[0].flag1[2] = 9;
+    this->state.lastPrim->state.slots[0].flag1[3] = static_cast<char>(this->state.count);
+  } else if (kind >= 10) {
+    this->state.lastPrim->state.slots[0].flag1[2] = 9;
+    this->state.lastPrim->state.slots[0].flag1[3] = 4;
+  } else if (kind == 2) {
+    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+  } else if (kind == 3) {
+    this->state.lastPrim->state.slots[0].flag1[2] = 15;
   }
 
   for (int stepIdx = 0; stepIdx < 100; ++stepIdx) {
