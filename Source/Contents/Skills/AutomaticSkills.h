@@ -15,6 +15,9 @@ public:
   void Complete(int id);
 
 private:
+  int ActiveOption(int id) const;
+  void RegisterSkills();
+
   /* 0000 */ std::set<int> m_ids;
   AutomaticSkills(const AutomaticSkills&) = delete;
   AutomaticSkills& operator=(const AutomaticSkills&) = delete;

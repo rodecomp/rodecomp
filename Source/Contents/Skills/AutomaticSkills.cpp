@@ -8,20 +8,6 @@
 
 namespace {
   // INLINED
-  int ActiveOption(std::uint16_t id) {
-    switch (id) {
-    case GC_ROLLINGCUTTER:
-      return 2;
-    case KR_CHOP_CHOP:
-      return 23;
-    case AT_FURIOS_STORM:
-      return 21;
-    default:
-      return -1;
-    }
-  }
-
-  // INLINED
   void Cancel(std::int16_t id, int option) {
     const std::uint16_t packet[2] = {2833, static_cast<std::uint16_t>(id)};
     GetRagConnection().Send(sizeof(packet), packet);
@@ -29,12 +15,33 @@ namespace {
   }
 }
 
+// OFFSET: 0x007AF3C0
+// FUNCTION: fn_46708
+int AutomaticSkills::ActiveOption(int id) const {
+  switch (static_cast<std::uint16_t>(id)) {
+  case GC_ROLLINGCUTTER:
+    return 2;
+  case KR_CHOP_CHOP:
+    return 23;
+  case AT_FURIOS_STORM:
+    return 21;
+  default:
+    return -1;
+  }
+}
+
+// OFFSET: 0x007AF440
+// FUNCTION: fn_46709
+void AutomaticSkills::RegisterSkills() {
+  this->m_ids.insert(GC_ROLLINGCUTTER);
+  this->m_ids.insert(AT_FURIOS_STORM);
+  this->m_ids.insert(KR_CHOP_CHOP);
+}
+
 // OFFSET: 0x007AEEE0
 // FUNCTION: fn_09148
 AutomaticSkills::AutomaticSkills() {
-  this->m_ids.insert(2036);
-  this->m_ids.insert(6601);
-  this->m_ids.insert(6552);
+  RegisterSkills();
 }
 
 // OFFSET: 0x007AF130
