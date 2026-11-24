@@ -424,6 +424,15 @@ CUITime::~CUITime() = default;
 void CUISkillDelayInfo::OnButtonClick() {
 }
 
+// OFFSET: 0x00A77A80
+// FUNCTION: fn_46631
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::ClearData() {
+  this->data.clear();
+  this->selected = static_cast<unsigned int>(-1);
+  this->UpdateScrollBar();
+}
+
 // OFFSET: 0x00A77B00
 // FUNCTION: fn_45472
 void CUISkillDelayInfo::OnClose() {
