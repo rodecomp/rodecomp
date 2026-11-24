@@ -5552,13 +5552,15 @@ void CRagEffect::TexturedGlow(const char* name, char size) {
 // OFFSET: 0x00C5E240
 // FUNCTION: fn_20238
 void CRagEffect::TexturedScatterArc(const char* name, std::int16_t angle, std::int16_t phase) {
-  if (static_cast<char>(phase) == 0) {
-    phase = 35;
-  } else if (static_cast<char>(phase) == 1) {
-    phase = 0;
+  int startCnt = phase;
+  const char kind = static_cast<char>(phase);
+  if (kind == 0) {
+    startCnt = 35;
+  } else if (kind == 1) {
+    startCnt = 0;
   }
 
-  if (this->state.stateCnt != phase) {
+  if (this->state.stateCnt != startCnt) {
     return;
   }
 
