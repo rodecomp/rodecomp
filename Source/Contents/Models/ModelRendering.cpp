@@ -104,7 +104,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       if (!clip || ModelTriangleVisible(&a, &b, &c)) {
         const bool winding = (b.y - a.y) * (c.x - a.x) > (c.y - a.y) * (b.x - a.x);
 
-        if ((winding && reversed == 0) || (!winding && reversed != 0) || face->twoSided != 0) {
+        if (winding == (reversed == 0) || face->twoSided != 0) {
           output[0] = a;
           output[1] = b;
           output[2] = c;
