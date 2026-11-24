@@ -620,8 +620,8 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
   std::memset(buffer, 0, sizeof(buffer));
 
   std::vector<std::wstring> wideKeywords;
-  for (const std::string& keyword : keywords) {
-    MultiByteToWideChar(CP_ACP, 0, keyword.c_str(), -1, buffer, 100);
+  for (auto it = keywords.begin(); it != keywords.end(); ++it) {
+    MultiByteToWideChar(CP_ACP, 0, it->c_str(), -1, buffer, 100);
     wideKeywords.push_back(std::wstring(buffer));
   }
 
