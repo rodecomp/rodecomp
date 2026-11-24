@@ -2056,7 +2056,11 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     case ID_SEND_GUILD_NOTICE: {
       std::string body;
       body.assign(this->m_bodyEdit->Text());
-      if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
+      if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true) {
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+      if (g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
