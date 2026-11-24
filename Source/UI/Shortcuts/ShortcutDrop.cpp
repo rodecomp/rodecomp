@@ -25,10 +25,10 @@ namespace {
 
   // INLINED
   __forceinline void RemoveFirst(std::list<ShortcutCooldownRecord>& cooldowns, int slot) {
-    for (ShortcutCooldownRecord& record : cooldowns) {
-      for (std::list<CooldownState>::iterator state = record.main.begin(); state != record.main.end(); ++state) {
+    for (std::list<ShortcutCooldownRecord>::iterator record = cooldowns.begin(); record != cooldowns.end(); ++record) {
+      for (std::list<CooldownState>::iterator state = record->main.begin(); state != record->main.end(); ++state) {
         if (state->slot == slot) {
-          record.main.erase(state);
+          record->main.erase(state);
           return;
         }
       }
@@ -45,6 +45,15 @@ namespace {
     return std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& entry) { return entry.id == group; });
   }
 
+  struct CooldownIdMatches {
+    const int& id;
+
+    // INLINED
+    bool operator()(const ShortcutCooldownRecord& record) const {
+      return record.id == id;
+    }
+  };
+
   struct SlotMatches {
     const int& slot;
 
@@ -59,6 +68,7 @@ namespace {
   }
 }
 
+template __declspec(noinline) std::list<ShortcutCooldownRecord>::iterator std::find_if<std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches>(std::list<ShortcutCooldownRecord>::iterator, std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches);
 template __declspec(noinline) std::list<CooldownState>::iterator std::find_if<std::list<CooldownState>::iterator, SlotMatches>(std::list<CooldownState>::iterator, std::list<CooldownState>::iterator, SlotMatches);
 template __declspec(noinline) std::list<CooldownState>::iterator std::list<CooldownState>::erase(std::list<CooldownState>::const_iterator) noexcept;
 
@@ -229,29 +239,16 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 }
 
 namespace {
-  struct CooldownIdMatches {
-    const int& id;
-
-    // INLINED
-    bool operator()(const ShortcutCooldownRecord& record) const {
-      return record.id == id;
-    }
-  };
-}
-
-template __declspec(noinline) std::list<ShortcutCooldownRecord>::iterator std::find_if<std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches>(std::list<ShortcutCooldownRecord>::iterator, std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches);
-
-namespace {
   // INLINED
   __forceinline void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
-    for (ShortcutCooldownRecord& record : cooldowns) {
+    for (std::list<ShortcutCooldownRecord>::iterator record = cooldowns.begin(); record != cooldowns.end(); ++record) {
       if (source == slot) {
         continue;
       }
 
-      for (std::list<CooldownState>::iterator state = record.alternate.begin(); state != record.alternate.end(); ++state) {
+      for (std::list<CooldownState>::iterator state = record->alternate.begin(); state != record->alternate.end(); ++state) {
         if (state->slot == slot) {
-          record.alternate.erase(state);
+          record->alternate.erase(state);
           return;
         }
       }
@@ -275,11 +272,11 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
 
         const std::list<ShortcutCooldownRecord>::iterator record = FindCooldownRecord(records, skill.id);
-        if (record != records.end() && timeGetTime() < record->end) {
+        if (record != records.end() && record->end > timeGetTime()) {
           const std::list<CooldownState>::iterator previous = FindCooldownState(record->alternate, value.slot);
           if (previous != record->alternate.end()) {
-            previous->slot = slot;
             previous->x = this->SlotX(slot);
+            previous->slot = slot;
           } else {
             for (std::list<CooldownState>::iterator state = record->alternate.begin(); state != record->alternate.end(); ++state) {
               if (state->x == this->SlotX(slot)) {
@@ -338,7 +335,8 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       case TYPE_CANNONBALL: {
         const int slot = this->SlotAt(x, y);
         if (slot != -1) {
-          g_session.SetHotkeyEntry(0, item.GetItemId(), 0, slot);
+          const int itemId = item.GetItemId();
+          g_session.SetHotkeyEntry(0, itemId, 0, slot);
           RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->Invalidate();
