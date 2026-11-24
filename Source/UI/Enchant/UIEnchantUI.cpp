@@ -681,7 +681,7 @@ void CUISlot::OnCreate(int width, int height) {
     // GLOBAL: gl_25191
     // GLOBAL: gl_25190
     // GLOBAL: gl_25189
-    this->radioButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x23BBD58F8B5FF5C9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_select.bmp", 0x0B7109397F6B1387ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_over.bmp", 0x03772763F96D9DA5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x17A9E5BF39AD4737ULL)));
+    this->radioButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x23BBD58F8B5FF5C9ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_select.bmp", 0x0B7109397F6B1387ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_over.bmp", 0x03772763F96D9DA5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x17A9E5BF39AD4737ULL)));
   }
   {
     CUIRadioButton* radioButton = this->radioButton;
@@ -704,7 +704,7 @@ void CUISlot::OnCreate(int width, int height) {
   this->description->SetTextOffset(2, 0);
   {
     // GLOBAL: gl_25193
-    this->description->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
+    this->description->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
   }
   this->description->SetFontHeight(12);
   this->description->SetBold(true);
@@ -722,13 +722,13 @@ void CUISlot::OnCreate(int width, int height) {
   }
   {
     // GLOBAL: gl_25196
-    this->description->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xED796785D1DF137FULL)));
+    this->description->SetScrollBarBackground(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xED796785D1DF137FULL)));
   }
   {
     // GLOBAL: gl_25199
     // GLOBAL: gl_25198
     // GLOBAL: gl_25197
-    this->description->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xD97D5DBDBB2F2709ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xA5FD29D7AB6DC59FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xF14F79170939C7F1ULL)));
+    this->description->SetScrollBarThumbImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xD97D5DBDBB2F2709ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xA5FD29D7AB6DC59FULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xF14F79170939C7F1ULL)));
   }
   this->AddChild(this->description);
 }
