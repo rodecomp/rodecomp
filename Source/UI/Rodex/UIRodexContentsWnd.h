@@ -26,6 +26,7 @@ public:
   void SetContentsText(const char* text);
   void SetMailContents(std::string title, std::string sender, std::string body, unsigned char hasItem, std::int64_t zeny, unsigned char flags);
   ITEM_INFO GetItemAtPoint(int x, int y);
+  void CreateReportButton();
   void DisableItemButton();
   void DisableZenyButton();
   void SetItemButtonDisabled(unsigned char disabled);

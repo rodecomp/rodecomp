@@ -112,6 +112,18 @@ void UIRodexContentsWnd::DisableZenyButton() {
   this->Invalidate();
 }
 
+// OFFSET: 0x008037C0
+// FUNCTION: fn_46600
+void UIRodexContentsWnd::CreateReportButton() {
+  UIBasicButton* report = new UIBasicButton();
+  report->Configure(70, LookupMessage(MSI_RODEX_TAB_RETURN));
+  report->Move(224, 29);
+  report->SetId(ID_REPORT_RODEX);
+  report->SetDisabled(0);
+  report->Invalidate();
+  this->AddChild(report);
+}
+
 // OFFSET: 0x008020B0
 // FUNCTION: fn_10020
 void UIRodexContentsWnd::OnCreate(int, int) {
@@ -129,13 +141,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
                             mail->second.type);
 
       if ((mail->second.type & 8) == 0 && mail->second.isKnownSender == 0) {
-        UIBasicButton* report = new UIBasicButton();
-        report->Configure(70, LookupMessage(MSI_RODEX_TAB_RETURN));
-        report->Move(224, 29);
-        report->SetId(ID_REPORT_RODEX);
-        report->SetDisabled(0);
-        report->Invalidate();
-        this->AddChild(report);
+        this->CreateReportButton();
       }
     }
     break;
