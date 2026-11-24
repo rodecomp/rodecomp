@@ -324,11 +324,12 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_filterMap = packet.mapId;
 
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
-      if (packet.level > 0) {
-        if (packet.level > 135) {
-          title = title + " Level: " + IntToString(packet.level, 0);
+      const int level = packet.level;
+      if (level > 0) {
+        if (level < 136) {
+          title = title + " Level: " + IntToString(level, 0);
         } else {
-          title = title + " Level: " + IntToString(packet.level, 0);
+          title = title + " Level: " + IntToString(level, 0);
         }
       }
 
