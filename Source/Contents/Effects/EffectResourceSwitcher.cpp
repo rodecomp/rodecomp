@@ -186,12 +186,12 @@ void CEffect::SetWindowOffset(vector3d, int, int) {
 
 // OFFSET: 0x005A2470
 // FUNCTION: fn_03102
-void CEffect::SetFlipX(int) {
+void CEffect::SetFlipX(bool) {
 }
 
 // OFFSET: 0x005A2480
 // FUNCTION: fn_03103
-void CEffect::SetFlipY(int) {
+void CEffect::SetFlipY(bool) {
 }
 
 // OFFSET: 0x005A2490
@@ -404,17 +404,17 @@ void CEZ2STREffectEx::SetAlpha(float argument) {
 
 // OFFSET: 0x006FFF10
 // FUNCTION: fn_06973
-void CEZ2STREffectEx::SetFlipX(int argument) {
+void CEZ2STREffectEx::SetFlipX(bool argument) {
   if (this->emitter) {
-    this->emitter->m_flipX = static_cast<unsigned char>(argument);
+    this->emitter->m_flipX = argument;
   }
 }
 
 // OFFSET: 0x006FFF30
 // FUNCTION: fn_06974
-void CEZ2STREffectEx::SetFlipY(int argument) {
+void CEZ2STREffectEx::SetFlipY(bool argument) {
   if (this->emitter) {
-    this->emitter->m_flipY = static_cast<unsigned char>(argument);
+    this->emitter->m_flipY = argument;
   }
 }
 

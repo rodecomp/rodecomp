@@ -22,8 +22,8 @@ public:
   void SetYaw(float argument) override;
   void SetScale(float argument) override;
   void SetAlpha(float argument) override;
-  void SetFlipX(int argument) override;
-  void SetFlipY(int argument) override;
+  void SetFlipX(bool argument) override;
+  void SetFlipY(bool argument) override;
   void EnableTimeLimit() override;
   void EnableGroundRender() override;
 
