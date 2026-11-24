@@ -1126,7 +1126,8 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
   AppendRecord(records, MakeFramedMessage(4520, SerializeItems(this->m_merchantHopeToSellItems)));
   AppendRecord(records, MakeFramedMessage(4521, SerializeItems(this->m_merchantPurchaseSavedItems)));
   AppendRecord(records, MakeFramedMessage(4522, SerializeItems(this->m_filteredInventoryItems)));
-  AppendRecord(records, MakeFramedMessage(4601, SerializeItems(std::list<ITEM_INFO>(std::begin(this->equippedItems), std::end(this->equippedItems)))));
+  auto& equippedItemsRef = this->equippedItems;
+  AppendRecord(records, MakeFramedMessage(4601, SerializeItems(std::list<ITEM_INFO>(std::begin(equippedItemsRef), std::end(equippedItemsRef)))));
   AppendRecord(records, MakeFramedMessage(4602, SerializeItems(std::list<ITEM_INFO>(std::begin(this->alternateEquippedItems), std::end(this->alternateEquippedItems)))));
   AppendRecord(records, MakeFramedMessage(4603, SerializeItems(std::list<ITEM_INFO>(std::begin(this->costumeItems), std::end(this->costumeItems)))));
   AppendRecord(records, MakeFramedMessage(4604, SerializeItems(std::list<ITEM_INFO>(std::begin(this->alternateCostumeItems), std::end(this->alternateCostumeItems)))));
