@@ -363,34 +363,18 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vector3d base1;
-    base1.x = vec1.x;
-    base1.y = vec1.y;
-    base1.z = vec1.z;
+    base1 = vec1;
     vector3d base2;
-    base2.x = vec2.x;
-    base2.y = vec2.y;
-    base2.z = vec2.z;
+    base2 = vec2;
     vector3d base3;
-    base3.x = vec3.x;
-    base3.y = vec3.y;
-    base3.z = vec3.z;
+    base3 = vec3;
     vector3d base4;
-    base4.x = vec4.x;
-    base4.y = vec4.y;
-    base4.z = vec4.z;
+    base4 = vec4;
     vector3d& vecBNow = this->state.slots[ec].vecBNow;
-    vec1.x = vecBNow.x + vec1.x;
-    vec1.y = vecBNow.y + vec1.y;
-    vec1.z = vecBNow.z + vec1.z;
-    vec2.x = vecBNow.x + vec2.x;
-    vec2.y = vecBNow.y + vec2.y;
-    vec2.z = vecBNow.z + vec2.z;
-    vec3.x = vecBNow.x + vec3.x;
-    vec3.y = vecBNow.y + vec3.y;
-    vec3.z = vecBNow.z + vec3.z;
-    vec4.x = vecBNow.x + vec4.x;
-    vec4.y = vecBNow.y + vec4.y;
-    vec4.z = vecBNow.z + vec4.z;
+    vec1 = vector3d{vecBNow.x + vec1.x, vecBNow.y + vec1.y, vecBNow.z + vec1.z};
+    vec2 = vector3d{vecBNow.x + vec2.x, vecBNow.y + vec2.y, vecBNow.z + vec2.z};
+    vec3 = vector3d{vecBNow.x + vec3.x, vecBNow.y + vec3.y, vecBNow.z + vec3.z};
+    vec4 = vector3d{vecBNow.x + vec4.x, vecBNow.y + vec4.y, vecBNow.z + vec4.z};
 
     const int alpha = this->state.slots[ec].alphaB < 0 ? 0 : this->state.slots[ec].alphaB;
     if (this->state.slots[ec].flag1[0] == 0) {
