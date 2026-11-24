@@ -60,10 +60,11 @@ bool CMapSkyMgr::LoadData() {
 // OFFSET: 0x005B8F20
 // FUNCTION: fn_46467
 void CMapSkyMgr::ApplyBackgroundFog(const std::string& mapName) {
-  unsigned char backgroundFog = 0;
+  bool backgroundFog = false;
   this->m_script->Call("IsBackGroundFog", "s>b", mapName.c_str(), &backgroundFog);
-  if (backgroundFog == 1) {
-    g_modeMgr.GetGameMode()->scene->backgroundFog = backgroundFog;
+  if (backgroundFog == true) {
+    CGameMode* mode = g_modeMgr.GetGameMode();
+    mode->scene->backgroundFog = backgroundFog;
   }
 }
 
@@ -451,37 +452,31 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
     return;
   }
 
-  int red = 0;
-  int green = 0;
-  int blue = 0;
-  this->m_script->Call("GetBackgroundColor", "s>ddd", sky.c_str(), &red, &green, &blue);
-  g_renderer->SetClearColor(
-    0xFF000000u | ((static_cast<unsigned>(red) & 255u) << 16) | ((static_cast<unsigned>(green) & 255u) << 8) | (static_cast<unsigned>(blue) & 255u)
-  );
+  this->ApplyBackgroundColor(sky);
 
-  unsigned char drawStar = 0;
-  this->m_script->Call("IsDrawStar", "s>b", sky.c_str(), &drawStar);
-  if (drawStar == 1) {
-    g_weatherEffect.Play(9);
+  {
+    unsigned char drawStar = 0;
+    this->m_script->Call("IsDrawStar", "s>b", sky.c_str(), &drawStar);
+    if (drawStar == 1) {
+      g_weatherEffect.Play(9);
+    }
   }
 
   this->CreateClouds(sky);
 
-  int oldCount = 0;
-  this->m_script->Call("GetOldCloudTypeNum", "s>d", sky.c_str(), &oldCount);
-  for (int index = 1; index <= oldCount; ++index) {
-    int info = -1;
-    this->m_script->Call("GetOldCloudInfo", "sd>d", sky.c_str(), index, &info);
-    if (info != -1) {
-      g_weatherEffect.Play(static_cast<char>(info));
+  {
+    int oldCount = 0;
+    this->m_script->Call("GetOldCloudTypeNum", "s>d", sky.c_str(), &oldCount);
+    for (int index = 1; index <= oldCount; ++index) {
+      int info = -1;
+      this->m_script->Call("GetOldCloudInfo", "sd>d", sky.c_str(), index, &info);
+      if (info != -1) {
+        g_weatherEffect.Play(static_cast<char>(info));
+      }
     }
   }
 
-  bool fog = false;
-  this->m_script->Call("IsBackGroundFog", "s>b", sky.c_str(), &fog);
-  if (fog == true) {
-    g_modeMgr.GetGameMode()->scene->backgroundFog = fog;
-  }
+  this->ApplyBackgroundFog(sky);
 }
 
 // GLOBAL: gl_24480
