@@ -1489,8 +1489,8 @@ bool CNavigationManager::LoadTargetPreview() {
           const int cellColumn = this->currentTarget.x;
           const int cellRow = this->currentTarget.y;
           CNaviInfo* info = static_cast<CNaviInfo*>(this->currentTarget.object);
-          int viewX = -1;
           int viewY = -1;
+          int viewX = -1;
           if (info) {
             int offsetX;
             int offsetY;
