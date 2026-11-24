@@ -39,6 +39,8 @@ struct RenderTriangleVertex : RenderVertex {
 };
 
 struct RenderTriangle {
+  // OFFSET: 0x00BAE110
+  // FUNCTION: fn_46549
   RenderTriangle() {
     ::new (static_cast<void*>(this->vertices)) RenderTriangleVertex[3];
   }
