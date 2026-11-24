@@ -260,13 +260,16 @@ bool FuncDrawWNDChar::DrawOnTop() {
   int job = this->m_job;
 
   if (g_session.m_newRobeDrawOnTop == 1) {
+    int ridden;
     if (this->m_flags == 1) {
-      job = g_session.GetRidingJob(job);
+      ridden = g_session.GetRidingJob(job);
+    } else {
+      ridden = job;
     }
 
     bool drawOnTop = true;
-    int layer = job;
-    if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
+    int layer = ridden;
+    if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, ridden, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
       return drawOnTop;
     }
   } else {
