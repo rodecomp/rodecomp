@@ -78,7 +78,8 @@ struct RefiningNoticeText {
 
 class UIRefining_Notice : public UIStaticText {
 public:
-  // INLINED
+  // OFFSET: 0x007F4B90
+  // FUNCTION: fn_46539
   UIRefining_Notice() : UIStaticText(), expireTick(0), autoShown(0), highlight(0) {}
   void OnProcess() override;
   void Paint() override;
