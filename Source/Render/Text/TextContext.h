@@ -23,6 +23,7 @@ public:
   void SetBackground(COLORREF color, int mode);
   void Measure(const char* text, int bytes, SIZE* size);
   void Draw(int x, int y, const char* text, int bytes);
+  void DrawPair(int x, int y, const char* text, int bytes);
   static unsigned CodePage(unsigned charset);
   static unsigned Marker(const char* text, unsigned bytes);
   HDC Dc() const { return this->m_dc; }
@@ -40,7 +41,6 @@ private:
   /* 001E */ unsigned char m_italic;
   SIZE MeasurePart(const char* text, int bytes, unsigned charset);
   void DrawPart(int x, int y, const char* text, int bytes, unsigned charset);
-  void DrawPair(int x, int y, const char* text, int bytes);
 };
 
 #endif

@@ -184,13 +184,14 @@ void UIWindow::DrawRightColoredText(
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, 0, 0);
 
-  for (const ColoredTextSegment& segment : segments) {
+  for (std::vector<ColoredTextSegment>::const_iterator it = segments.begin(); it != segments.end(); ++it) {
+    const ColoredTextSegment& segment = *it;
     color = segment.color;
     if (segment.text.size() != 0) {
       SIZE size = {};
       context.Measure(reinterpret_cast<const char*>(segment.prefix.data()), static_cast<int>(segment.prefix.size()), &size);
       context.SetColor(color);
-      context.Draw(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
+      context.DrawPair(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
     }
   }
 }
