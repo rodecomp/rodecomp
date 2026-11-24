@@ -7050,7 +7050,9 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     int row;
     int subColumn;
     int subRow;
-    this->WorldSubcell(item->render.position.x, item->render.position.z, column, row, subColumn, subRow);
+    const float x = item->render.position.x;
+    const float z = item->render.position.z;
+    this->WorldSubcell(x, z, column, row, subColumn, subRow);
     packet.x = static_cast<std::int16_t>(column);
     packet.y = static_cast<std::int16_t>(row);
     packet.subX = static_cast<unsigned char>(subColumn);
