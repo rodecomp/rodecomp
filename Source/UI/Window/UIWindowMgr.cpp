@@ -2288,7 +2288,8 @@ UIWindow* UIWindowMgr::OpenSubChatWindow(int id, int x, int y, int width, int he
     created->m_index = id;
     created->SetSize(width, height);
     created->Move(posX, posY);
-    this->rendered.push_back(created);
+    UIWindow* added = created;
+    this->rendered.push_back(added);
     this->retainedWindows[id] = created;
     window = created;
   }
