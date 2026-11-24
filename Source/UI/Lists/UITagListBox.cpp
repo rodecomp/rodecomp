@@ -758,7 +758,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
         button->item.identity[0] = id;
         button->item.identified = 1;
         button->item.refiningLevel = 0;
-        button->item.itemId = button->GetString(0);
+        button->item.itemId = static_cast<const std::string&>(button->GetString(0));
         break;
       }
       case LINE_SEGMENT_ITEM_LINK: {
