@@ -965,20 +965,25 @@ ITEM_INFO CSession::GetInventoryItemAt(int index) const {
   return ITEM_INFO(0);
 }
 
-// OFFSET: 0x00DDD7B0
-// FUNCTION: fn_23389
-ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) {
-  if (this->m_inventoryItems.size() == 0) {
+// INLINED
+static __forceinline ITEM_INFO* FindItemInListByItemId(std::list<ITEM_INFO>& items, int itemId, bool identifiedOnly) {
+  if (items.size() == 0) {
     return nullptr;
   }
 
-  for (ITEM_INFO& item : this->m_inventoryItems) {
+  for (ITEM_INFO& item : items) {
     if (std::atoi(item.itemId.c_str()) == itemId && (!identifiedOnly || item.identified != 0)) {
       return &item;
     }
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00DDD7B0
+// FUNCTION: fn_23389
+ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) {
+  return FindItemInListByItemId(this->m_inventoryItems, itemId, identifiedOnly);
 }
 
 // OFFSET: 0x00DDD9A0
