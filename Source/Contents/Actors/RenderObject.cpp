@@ -1466,7 +1466,7 @@ void CGameActor::SetState(int state, int resetPosition) {
       }
     }
     if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN) {
-      this->LaunchAttackProjectile(this->hitTargetAid, 30.0f);
+      this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
     }
     this->attackMotion = static_cast<float>(this->GetAttackMotion());
     this->RegisterPos();
