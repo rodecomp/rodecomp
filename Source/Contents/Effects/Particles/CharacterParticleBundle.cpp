@@ -68,6 +68,7 @@ void CChopChopClawMarks::SpawnParticle() {
   if (particle) {
     const std::vector<RadialGridPoint>& ring = this->GetRing(3);
     RadialGridPoint point;
+    std::vector<RadialGridPoint>::const_iterator found;
     do {
       const int positiveX = std::ranges::max(rand() % 2, 0);
       const int x = std::max(rand() % 4, 1);
@@ -83,9 +84,10 @@ void CChopChopClawMarks::SpawnParticle() {
         signedY = y;
       }
       point.y = static_cast<float>(signedY);
-    } while (ring.end() == std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
-      return candidate.x == point.x && candidate.y == point.y;
-    }));
+      found = std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
+        return candidate.x == point.x && candidate.y == point.y;
+      });
+    } while (found == ring.end());
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
