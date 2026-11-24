@@ -266,7 +266,7 @@ void CMercenaryAI::RegisterFunctions() {
 // OFFSET: 0x00D9EAF0
 // FUNCTION: fn_22335
 int AiHomunAttack(lua_State* state) {
-  if (g_session.GetOption(17) > 0) {
+  if (static_cast<int>(g_session.m_options.Get(17)) > 0) {
     return 0;
   }
 
