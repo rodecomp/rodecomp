@@ -937,16 +937,12 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
         continue;
       }
 
-      int sample = previous * drawWidth;
-
       for (int row = 0; row < sourceHeight; ++row) {
         const int next = static_cast<int>(static_cast<float>(row) * scaleY);
         if (output != next && static_cast<unsigned>(y + next) <= this->m_bitmap.height) {
+          this->m_bitmap.pixels[x + column + (y + output) * this->m_bitmap.width] = scratch[previous * drawWidth + column];
           previous = row;
-          this->m_bitmap.pixels[x + column + (y + output) * this->m_bitmap.width] = scratch[sample + column];
           output = next;
-
-          sample = row * drawWidth;
         }
       }
     }
