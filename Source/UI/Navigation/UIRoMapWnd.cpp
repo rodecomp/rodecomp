@@ -147,12 +147,12 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const WorldViewArea* anchor = this->previewArea;
   RECT rect;
   std::memcpy(&rect, &record->area, sizeof(rect));
-  int x;
-  if (anchor->right < rect.right) {
+  int x = anchor->right;
+  if (x < rect.right) {
     leftSide = true;
     x = anchor->left - 10;
   } else {
-    x = anchor->right + 10;
+    x += 10;
   }
 
   int y = anchor->top;
@@ -165,11 +165,13 @@ void UIRoMapWnd::DrawHoverTooltip() {
     ++count;
   }
 
-  const int width = maxWidth + 10;
-  const int height = count * lineHeight + 7;
-  int boxX = leftSide ? x - width : x;
-  if (boxX + width > g_renderer->viewport.width) {
-    boxX = rect.left - width - 10;
+  maxWidth += 10;
+  const int height = lineHeight * count + 7;
+  if (leftSide) {
+    x -= maxWidth;
+  }
+  if (x + maxWidth > g_renderer->viewport.width) {
+    x = rect.left - maxWidth - 10;
   } else if (!leftSide) {
     y += 17;
   }
@@ -178,15 +180,15 @@ void UIRoMapWnd::DrawHoverTooltip() {
     y = g_renderer->viewport.height - height + 10;
   }
 
-  int textY = y + 5;
+  int row = 0;
   for (std::list<std::string>::const_iterator it = this->hoveredRecord->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
     const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) != 0 ? 0xFFFFFF : 0x8080F0;
-    this->DrawOutlinedText(boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
-    textY += lineHeight;
+    this->DrawOutlinedText(x + 5, y + 5 + row * lineHeight, it->c_str(), 0, color, 0, 0, 12, 1, 0);
+    ++row;
   }
 
-  this->hoverTooltip = new RoMapTooltipBox(boxX, y, width, height);
-  this->DrawRoundedOutline(boxX, y, width, height, 0xFFFFFF);
+  this->hoverTooltip = new RoMapTooltipBox(x, y, maxWidth, height);
+  this->DrawRoundedOutline(x, y, maxWidth, height, 0xFFFFFF);
 }
 
 // INLINED
