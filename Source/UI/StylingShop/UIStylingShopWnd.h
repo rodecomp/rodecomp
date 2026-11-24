@@ -189,7 +189,8 @@ class UIStaticBitmap;
 
 class UIAccessoryShowCase : public UIScrollWnd {
 public:
-  // INLINED
+  // OFFSET: 0x00822D70
+  // FUNCTION: fn_46528
   UIAccessoryShowCase(int width, int height) : UIScrollWnd(width, height, 0), m_itemFrames() {
     this->LoadAccessories(width, height);
   }
