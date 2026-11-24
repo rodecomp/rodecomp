@@ -100,7 +100,10 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       const std::string visible = this->FitTextToWidth(name, this->geometry.width / 2);
       this->SnapLinkSelection(prefix, static_cast<int>(std::strlen(visible.c_str())));
       this->pendingText[line] += prefix;
-      this->pendingText[line] += button->Link();
+      {
+        const std::string link = button->link;
+        this->pendingText[line].append(link.data(), link.size());
+      }
       this->pendingText[line] += rest;
     }
   }
