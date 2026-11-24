@@ -56,12 +56,12 @@ RenderPrimitive* CCharacterRender::BuildSpriteQuad(const SpriteQuad& quad, const
   if (quad.angle > 0.0f) {
     const float cosine = ClientCosine(static_cast<int>(quad.angle));
     const float sine = ClientSine(static_cast<int>(quad.angle));
-    const float halfWidth = (quad.right - quad.left) * 0.5f;
     const float halfHeight = (quad.bottom - quad.top) * 0.5f;
+    const float halfWidth = (quad.right - quad.left) * 0.5f;
     const float centerX = quad.left + halfWidth + offsetX;
+    const float minY = -halfHeight;
     const float centerY = quad.top + halfHeight + offsetY;
     const float minX = -halfWidth;
-    const float minY = -halfHeight;
 
     vertices[0].x = minX * cosine - minY * sine + centerX + 0.5f;
     vertices[0].y = minY * cosine + minX * sine + centerY + 0.5f;
