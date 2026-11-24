@@ -21682,7 +21682,11 @@ void CGameMode::HandleCameraInfo(const unsigned char* data) {
     }
     g_session.showCameraInfo = g_session.showCameraInfo == 0;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.showCameraInfo == 1 ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+    const char* text = "Camera Info Off";
+    if (g_session.showCameraInfo == 1) {
+      text = "Camera Info On";
+    }
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     window->Show(g_session.showCameraInfo);
   } else if (this->camera != nullptr) {
     this->camera->camera.desiredDistance = packet->distance;
