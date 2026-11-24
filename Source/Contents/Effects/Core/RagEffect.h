@@ -90,7 +90,7 @@ struct CRagEffect : CRenderObject {
   void TexturedShieldThrow(const char* name);
   void LineStreakKind(std::int16_t kind);
   void LineStreak(std::int16_t kind);
-  void TexturedScatterArc(const char* name, std::int16_t angle, std::int16_t phase);
+  void TexturedScatterArc(const char* name, std::int16_t angle, int phase);
   void TexturedGlow(const char* name, char size);
   void TexturedCrossKind(const char* name, char level);
   __declspec(noinline) void ThunderSparks();
