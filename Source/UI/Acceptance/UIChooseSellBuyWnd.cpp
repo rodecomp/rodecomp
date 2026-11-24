@@ -8112,9 +8112,8 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
   switch (message) {
   case UM_SETINFO: {
     this->m_placement = reinterpret_cast<ItemParamChangeDisplayWndInfo*>(a);
-    auto* info = this->m_placement;
-    if (!info->IsValid()) {
-      info->Reset();
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
