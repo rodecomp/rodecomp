@@ -5944,7 +5944,8 @@ bool CEffectPrim::Prim3DSlotParticle() {
   this->state.speed = this->state.accel + this->state.speed;
   this->state.sizeSpeed = this->state.sizeAccel + this->state.sizeSpeed;
 
-  if ((this->state.pattern & 0x400u) != 0) {
+  auto& patternRef = this->state.pattern;
+  if ((patternRef & 0x400u) != 0) {
     this->state.speed3d.z = this->state.deltaPosAccel.z + this->state.speed3d.z;
     this->state.speed3d.x = this->state.deltaPosAccel.x + this->state.speed3d.x;
     this->state.speed3d.y = this->state.deltaPosAccel.y + this->state.speed3d.y;
@@ -5953,7 +5954,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.roll = this->state.rollSpeed + this->state.roll;
     this->state.size = this->state.size + this->state.sizeSpeed;
-  } else if ((this->state.pattern & 1u) != 0 || this->state.stateCnt > this->state.fadeInCnt) {
+  } else if ((patternRef & 1u) != 0 || this->state.stateCnt > this->state.fadeInCnt) {
     Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
@@ -5963,7 +5964,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
   }
 
 
-  if ((this->state.pattern & 2u) != 0) {
+  if ((patternRef & 2u) != 0) {
     if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
       const int delay = std::rand() % 8;
       this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 12);
@@ -5983,7 +5984,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.deltaPos.x = this->state.deltaPos3.x + this->state.deltaPos.x;
   }
 
-  if ((this->state.pattern & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+  if ((patternRef & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     const int burst = std::rand() % 35;
     this->state.speed = static_cast<float>((burst >= 0 ? burst : 0) + 15) / 100.0f;
     const int yaw = std::rand() % 80;
@@ -5996,7 +5997,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
   }
 
-  if ((this->state.pattern & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+  if ((patternRef & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     const int yaw = std::rand() % 10;
     this->state.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (this->state.longitude - 5.0f);
     const int pitch = std::rand() % 10;
@@ -6009,11 +6010,11 @@ bool CEffectPrim::Prim3DSlotParticle() {
 
   this->render.position = {this->state.orgPos.x + this->state.deltaPos.x, this->state.orgPos.y + this->state.deltaPos.y, this->state.orgPos.z + this->state.deltaPos.z};
 
-  if ((this->state.pattern & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
+  if ((patternRef & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
     return false;
   }
 
-  if ((this->state.pattern & 0x20u) != 0) {
+  if ((patternRef & 0x20u) != 0) {
     this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
