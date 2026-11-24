@@ -5,12 +5,16 @@
 // GLOBAL: gl_24376
 CClanInfo* g_clanInfo;
 
+// OFFSET: 0x00ADED90
+// FUNCTION: fn_46478
 CClanInfo::CClanInfo() {
   this->m_isInitialized = false;
   this->Clear();
   this->m_isInitialized = true;
 }
 
+// OFFSET: 0x00ADEF30
+// FUNCTION: fn_46479
 CClanInfo::~CClanInfo() {
   this->m_relations.clear();
 }
