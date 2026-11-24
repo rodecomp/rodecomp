@@ -81,20 +81,22 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
       continue;
     }
 
-    if (boundary == g_serverLanguage->cursor) {
-      if (before.find("<") != std::string::npos) {
-        remaining = current.substr(0, position - 1);
-      } else {
-        remaining = current.substr(0, position);
-      }
-
-      remaining += current.substr((after.find(">") != std::string::npos ? position + 1 : position) + bytes);
-      g_serverLanguage->ResetInput();
-      g_serverLanguage->Insert(remaining.c_str());
-      this->RemoveChild(*entry, 1);
-      entry = this->links.erase(entry);
-      return true;
+    if (boundary != g_serverLanguage->cursor) {
+      continue;
     }
+
+    if (before.find("<") != std::string::npos) {
+      remaining = current.substr(0, position - 1);
+    } else {
+      remaining = current.substr(0, position);
+    }
+
+    remaining += current.substr((after.find(">") != std::string::npos ? position + 1 : position) + bytes);
+    g_serverLanguage->ResetInput();
+    g_serverLanguage->Insert(remaining.c_str());
+    this->RemoveChild(*entry, 1);
+    entry = this->links.erase(entry);
+    return true;
   } while (found != -1);
 
   return true;
