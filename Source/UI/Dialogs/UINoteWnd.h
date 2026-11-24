@@ -8,7 +8,8 @@ class UIStaticText_LF;
 
 class UINoteWnd_Scroll : public UIScrollWnd {
 public:
-  // INLINED
+  // OFFSET: 0x00946D60
+  // FUNCTION: fn_46567
   UINoteWnd_Scroll(int width, int height) : UIScrollWnd(width, height, 0), m_text(nullptr) {
     this->SetSize(width, height);
   }

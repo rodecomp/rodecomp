@@ -72,7 +72,8 @@ UINoteWnd::UINoteWnd()
     : UIFrameWnd(0), m_scroll(nullptr) {
 }
 
-// INLINED
+// OFFSET: 0x00951A80
+// FUNCTION: fn_46568
 inline void UINoteWnd_Scroll::SetNote(std::string text) {
   this->m_text = new UIStaticText_LF(0);
   this->m_text->SetSize(this->geometry.width - 13, 12);
