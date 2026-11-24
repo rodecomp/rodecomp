@@ -6512,6 +6512,11 @@ finished:
 
 #include "Contents/Actors/Item.h"
 
+// INLINED
+static int GetActorEmblemVersion(const CGuildMgr* guildMgr, CGameActor* actor) {
+  return guildMgr->GetEmblemVersion(actor->GetGdid());
+}
+
 // OFFSET: 0x00CE93E0
 // FUNCTION: fn_21347
 std::vector<unsigned char> CGameMode::SaveNameCardState() {
@@ -6530,25 +6535,24 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
   }
 
   {
-    if (this->AppendGuildEmblem(buffer, names, this->scene->player->GetGdid(), g_guildMgr->GetEmblemVersion(this->scene->player->GetGdid()))) {
+    if (this->AppendGuildEmblem(buffer, names, this->scene->player->GetGdid(), GetActorEmblemVersion(g_guildMgr, this->scene->player))) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeRecordChunk(13004, this->scene->player->GetGdid());
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(13004, this->scene->player->GetGdid());
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeRecordChunk(13005, g_guildMgr->GetEmblemVersion(this->scene->player->GetGdid()));
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(13005, GetActorEmblemVersion(g_guildMgr, this->scene->player));
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
-    CGameActor* actor = *it;
-    if (this->AppendGuildEmblem(buffer, names, actor->GetGdid(), g_guildMgr->GetEmblemVersion(actor->GetGdid()))) {
+    if (this->AppendGuildEmblem(buffer, names, (*it)->GetGdid(), GetActorEmblemVersion(g_guildMgr, *it))) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
