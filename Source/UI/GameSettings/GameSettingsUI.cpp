@@ -67,7 +67,7 @@ int g_textureFiltering;
 int g_textureDetailLevel;
 
 // GLOBAL: gl_25086
-std::map<int, int> g_optionHotkeys;
+std::map<TALKTYPE, int> g_optionHotkeys = {{TT_HIDE_PLAYER_ON_OFF, 59}, {TT_HIDE_SUMMON_ON_OFF, 63}};
 
 // GLOBAL: gl_25229
 bool g_restartClient;
@@ -717,7 +717,7 @@ __declspec(noinline) GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(
 // OFFSET: 0x00A3CF80
 // FUNCTION: fn_15903
 __declspec(noinline) GameSettingsUI::CUIOptionItem::CUIOptionItem()
-    : CUIListItem(), m_check(nullptr), m_runButton(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
+    : CUIListItem(), m_check(nullptr), m_runButton(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(static_cast<TALKTYPE>(300)) {
 }
 
 // OFFSET: 0x00A36170
