@@ -764,13 +764,14 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
 // OFFSET: 0x00DD43A0
 // FUNCTION: fn_23232
 __declspec(noinline) EquipSlots EquipSlotDecoder::Decode(int mask) const {
+  int remaining = mask;
   std::vector<int> slots;
 
-  for (int index = 0; index < 10; ++index) {
-    if (mask & 1) {
-      slots.push_back(index);
+  for (mask = 0; mask < 10; ++mask) {
+    if (remaining & 1) {
+      slots.push_back(mask);
     }
-    mask >>= 1;
+    remaining >>= 1;
   }
 
   if (slots.empty()) {
