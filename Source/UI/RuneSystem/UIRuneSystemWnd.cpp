@@ -2261,10 +2261,12 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
         UIRuneSet_Info* info = this->m_runeSetInfo;
         info->m_runeSet = static_cast<RuneSetData*>(rune);
-        info->m_activeWnd->m_listId = info->m_runeSet->GetActiveType();
-        info->m_activeWnd->Invalidate();
-        info->m_gradeItems->m_listId = info->m_runeSet->GetGradeValue();
-        info->m_gradeItems->Invalidate();
+        auto* activeWnd = info->m_activeWnd;
+        activeWnd->m_listId = info->m_runeSet->GetActiveType();
+        activeWnd->Invalidate();
+        auto* gradeItems = info->m_gradeItems;
+        gradeItems->m_listId = info->m_runeSet->GetGradeValue();
+        gradeItems->Invalidate();
         info->RefreshDescription();
         const int slotCount = info->m_runeSet->CountSlots();
         const int activeCount = info->m_runeSet->CountActiveSlots();
@@ -2275,14 +2277,15 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
             runeSet = info->m_runeSet;
           }
 
+          UIRuneSetReWard* reward = info->m_rewards[index];
           if (index < runeSet->m_rewardStep) {
-            info->m_rewards[index]->SendMsg(info, UM_SETID, 3, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            reward->SendMsg(info, UM_SETID, 3, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
           } else if (index == 0) {
-            info->m_rewards[0]->SendMsg(info, UM_SETID, runeSet->GetActiveState() ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            reward->SendMsg(info, UM_SETID, runeSet->GetActiveState() ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
           } else if (index == 6) {
-            info->m_rewards[6]->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            reward->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
           } else {
-            info->m_rewards[index]->SendMsg(info, UM_SETID, index < activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            reward->SendMsg(info, UM_SETID, index < activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
           }
         }
         info->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
