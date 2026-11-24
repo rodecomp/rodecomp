@@ -18,6 +18,9 @@ public:
   void Update();
 
 protected:
+  void ExpireRecentRequests();
+  std::pair<std::uint32_t, std::uint32_t> TakeNextRequest();
+
   struct Recent {
     /* 0000 */ std::uint32_t guildId;
     /* 0004 */ std::uint32_t version;

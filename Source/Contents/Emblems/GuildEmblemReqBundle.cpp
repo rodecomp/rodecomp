@@ -21,9 +21,9 @@ void CGuildEmblemReqBundle::Add(std::uint32_t guildId, std::uint32_t version) {
   }
 }
 
-// OFFSET: 0x0065CB90
-// FUNCTION: fn_05155
-void CGuildEmblemReqBundle::Update() {
+// OFFSET: 0x0065C940
+// FUNCTION: fn_46687
+void CGuildEmblemReqBundle::ExpireRecentRequests() {
   while (!this->m_recent.empty()) {
     const Recent oldest = this->m_recent.front();
 
@@ -33,7 +33,11 @@ void CGuildEmblemReqBundle::Update() {
 
     this->m_recent.pop_front();
   }
+}
 
+// OFFSET: 0x0065C9A0
+// FUNCTION: fn_46688
+std::pair<std::uint32_t, std::uint32_t> CGuildEmblemReqBundle::TakeNextRequest() {
   while (!this->m_pending.empty()) {
     const auto [guildId, version] = this->m_pending.front();
     const auto end = this->m_recent.end();
@@ -45,11 +49,18 @@ void CGuildEmblemReqBundle::Update() {
     }
 
     this->m_pending.pop_front();
-    if (guildId != 0) {
-      g_emblemDataMgr->Download(guildId, version);
-      this->m_recent.push_back(Recent(guildId, version, timeGetTime()));
-    }
+    return {guildId, version};
+  }
+  return {};
+}
 
-    return;
+// OFFSET: 0x0065CB90
+// FUNCTION: fn_05155
+void CGuildEmblemReqBundle::Update() {
+  ExpireRecentRequests();
+  const auto [guildId, version] = TakeNextRequest();
+  if (guildId != 0) {
+    g_emblemDataMgr->Download(guildId, version);
+    this->m_recent.push_back(Recent(guildId, version, timeGetTime()));
   }
 }
