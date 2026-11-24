@@ -9841,6 +9841,10 @@ struct TalkWhisperSettingPacket {
   /* 001A */ unsigned char type;
 };
 
+struct TalkCommandPacket {
+  /* 0000 */ std::int16_t id;
+};
+
 struct TalkConfigPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char value;
@@ -9858,12 +9862,16 @@ struct TalkSelectPacket {
   /* 0007 */ unsigned char option;
 };
 
+struct TalkCameraView {
+  /* 0000 */ float range;
+  /* 0004 */ float rotation;
+  /* 0008 */ float latitude;
+};
+
 struct TalkCameraPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char action;
-  /* 0003 */ float range;
-  /* 0007 */ float rotation;
-  /* 000B */ float latitude;
+  /* 0003 */ TalkCameraView view;
 };
 
 struct TalkNamePacket {
@@ -9921,7 +9929,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (this->refuseWhisperName.size() > 0x18) {
       break;
     }
-    g_whisperBlockMgr->Add(this->refuseWhisperName);
+    auto* blockMgr = g_whisperBlockMgr;
+    blockMgr->Add(this->refuseWhisperName);
     TalkWhisperSettingPacket packet;
     packet.id = ID_CZ_SETTING_WHISPER_PC;
     StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
@@ -9934,7 +9943,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (this->refuseWhisperName.size() > 0x18) {
       break;
     }
-    g_whisperBlockMgr->Remove(this->refuseWhisperName);
+    auto* blockMgr = g_whisperBlockMgr;
+    blockMgr->Remove(this->refuseWhisperName);
     TalkWhisperSettingPacket packet;
     packet.id = ID_CZ_SETTING_WHISPER_PC;
     StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
@@ -9955,7 +9965,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (g_session.m_whisperRecord != 0) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.IsAdminSubMode(7) != 0) {
-        char directory[3000];
+        char directory[2048];
         PrepareChatLog(mode, directory);
       }
       std::sprintf(text, "Chatting Auto Save Start..");
@@ -10002,48 +10012,49 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_windowMgr.SetChatInputText(text + 1);
       clan = true;
     }
-    int clanChat = clan;
     if (HIBYTE(GetAsyncKeyState(VK_CAPITAL))) {
-      clanChat = 1;
+      clan = true;
     }
-    if (talkType == TT_NORMAL_FROM_CHATROOM) {
-      this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
-      break;
-    }
-    if (g_session.battleChat != 0) {
-      this->SendMsg(MM_CHAT_BATTLEFIELD, 0, 0, 0, 0);
-      break;
-    }
-    const int sendMode = g_session.m_chatTarget;
-    if (sendMode == 2 && g_guildInfo.m_guildId != 0) {
-      this->SendMsg(alternate ? MM_CHATMSG : MM_CHAT_GUILD, 0, 0, 0, 0);
-      break;
-    }
-    if (sendMode == 1) {
-      if (party == 0 && g_session.PartyCount() != 0) {
-        this->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
-      } else {
-        this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
+    if (talkType != TT_NORMAL_FROM_CHATROOM) {
+      if (g_session.battleChat != 0) {
+        this->SendMsg(MM_CHAT_BATTLEFIELD, 0, 0, 0, 0);
+        break;
       }
-      break;
+      if (g_session.m_chatTarget == 2 && g_guildInfo.m_guildId != 0) {
+        if (alternate != 0) {
+          this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
+        } else {
+          this->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
+        }
+        break;
+      }
+      if (g_session.m_chatTarget == 1) {
+        if (party == 0 && g_session.PartyCount() != 0) {
+          this->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
+          break;
+        }
+      } else {
+        if (g_session.m_chatTarget == 3 && g_clanInfo->m_hasClan == 1) {
+          this->SendMsg(MM_CHAT_CLAN, 0, 0, 0, 0);
+        } else if (g_session.m_chatTarget == 4 && g_guildInfo.m_guildId != 0) {
+          if (!clan) {
+            this->SendMsg(MM_CHAT_ALLY, 0, 0, 0, 0);
+          } else {
+            this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
+          }
+        } else if (party != 0 && g_session.PartyCount() != 0) {
+          this->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
+        } else if (alternate != 0) {
+          this->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
+        } else if (clan) {
+          this->SendMsg(MM_CHAT_ALLY, 0, 0, 0, 0);
+        } else {
+          this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
+        }
+        break;
+      }
     }
-    if (sendMode == 3 && g_clanInfo->m_hasClan == 1) {
-      this->SendMsg(MM_CHAT_CLAN, 0, 0, 0, 0);
-      break;
-    }
-    if (sendMode == 4 && g_guildInfo.m_guildId != 0) {
-      this->SendMsg(static_cast<char>(clanChat) ? MM_CHATMSG : MM_CHAT_ALLY, 0, 0, 0, 0);
-      break;
-    }
-    if (party != 0 && g_session.PartyCount() != 0) {
-      this->SendMsg(MM_CHAT_PARTY, 0, 0, 0, 0);
-    } else if (alternate != 0) {
-      this->SendMsg(MM_CHAT_GUILD, 0, 0, 0, 0);
-    } else if (static_cast<char>(clanChat)) {
-      this->SendMsg(MM_CHAT_ALLY, 0, 0, 0, 0);
-    } else {
-      this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
-    }
+    this->SendMsg(MM_CHATMSG, 0, 0, 0, 0);
     break;
   }
   case TT_BROADCAST:
@@ -10076,8 +10087,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_session.HiFriends(nullptr);
       std::sprintf(text, "[ To Friends ] : (Hi) *^_^*");
     } else {
-      char* message = const_cast<char*>(g_windowMgr.chatInputText.c_str());
       std::string copy;
+      char* message = const_cast<char*>(g_windowMgr.chatInputText.c_str());
       copy = message;
       g_session.HiFriends(message);
       if (g_serviceType == ServiceKorea) {
@@ -10162,11 +10173,13 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BATTLE_OFF)), 0x64FFFF, 0, 0, 0);
     }
     break;
-  case TT_BATTLECHAT_ON_OFF:
+  case TT_BATTLECHAT_ON_OFF: {
     g_session.battleChat = 1 - g_session.battleChat;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.battleChat ? MSI_BATTLECHAT_ON : MSI_BATTLECHAT_OFF)), 0x64FFFF, 0, 0, 0);
+    const char* text = LookupMessage(g_session.battleChat ? MSI_BATTLECHAT_ON : MSI_BATTLECHAT_OFF);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     break;
+  }
   case TT_AUTO_MSG_ON_OFF:
     g_session.m_autoReplyEnabled = !g_session.m_autoReplyEnabled;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -10226,15 +10239,19 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     g_windowMgr.RefreshGameSettings();
     break;
-  case TT_TINGONLY_ON_OFF:
+  case TT_TINGONLY_ON_OFF: {
     g_soundMgr->tingOnly = g_soundMgr->tingOnly == 0;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_soundMgr->tingOnly ? MSI_TINGONLY_ON : MSI_TINGONLY_OFF)), 0x64FFFF, 0, 0, 0);
+    const char* text = LookupMessage(g_soundMgr->tingOnly ? MSI_TINGONLY_ON : MSI_TINGONLY_OFF);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     break;
-  case TT_FRAMESKIP_ON_OFF:
+  }
+  case TT_FRAMESKIP_ON_OFF: {
     g_frameskip = 1 - g_frameskip;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? MSI_FRAME_SKIP_ON : MSI_FRAME_SKIP_OFF)), 0x64FFFF, 0, 0, 0);
+    const char* text = LookupMessage(g_frameskip ? MSI_FRAME_SKIP_ON : MSI_FRAME_SKIP_OFF);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     break;
+  }
   case TT_MUSIC_ON_OFF:
     g_serviceOptions.Set(TT_MUSIC_ON_OFF, !g_serviceOptions.Get(TT_MUSIC_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -10270,12 +10287,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_REQ_ITEM_CREATE:
     this->SendMsg(MM_ITEM_CREATE, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
-  case TT_REQ_MOVETO_MAP: {
-    const int third = std::atoi(parts[2].c_str());
-    const int second = std::atoi(parts[1].c_str());
-    this->SendMsg(MM_MOVETO_MAP, reinterpret_cast<int>(parts[0].c_str()), second, third, 0);
+  case TT_REQ_MOVETO_MAP:
+    this->SendMsg(MM_MOVETO_MAP, reinterpret_cast<int>(parts[0].c_str()), std::atoi(parts[1].c_str()), std::atoi(parts[2].c_str()), 0);
     break;
-  }
   case TT_REMOVE:
     this->SendMsg(MM_REMOVE_TO_AID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
     break;
@@ -10301,7 +10315,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     std::string value(parts[0].c_str());
     LowercaseText(value);
     if (value == "off" || value == "on") {
-      this->SendMsg(0x55, value == "off" ? 0 : 1, 0, 0, 0);
+      const int enabled = value == "off" ? 0 : 1;
+      this->SendMsg(0x55, enabled, 0, 0, 0);
     }
     break;
   }
@@ -10560,12 +10575,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_REQ_RESETSKILL:
     this->SendMsg(MM_RESET_SKILL, std::atoi(parts[0].c_str()), 0, 0, 0);
     break;
-  case TT_CHANGE_MAPTYPE: {
-    const int third = std::atoi(parts[2].c_str());
-    const int second = std::atoi(parts[1].c_str());
-    this->SendMsg(MM_REQ_CHANGE_MAPTYPE, std::atoi(parts[0].c_str()), second, third, 0);
+  case TT_CHANGE_MAPTYPE:
+    this->SendMsg(MM_REQ_CHANGE_MAPTYPE, std::atoi(parts[0].c_str()), std::atoi(parts[1].c_str()), std::atoi(parts[2].c_str()), 0);
     break;
-  }
   case TT_HIDE: {
     std::uint32_t flags = g_session.m_jobFlags;
     if (IsCloaking(flags)) {
@@ -10580,14 +10592,18 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     if (IsAdminAccount(g_session.m_aid)) {
       const unsigned char enabled = this->bossAlarmAndCopyNameFlags[1];
       this->bossAlarmAndCopyNameFlags[1] = enabled == 0;
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(enabled == 0 ? "Copy_Name_On!!" : "Copy_Name_Off!!"), 0x64FFFF, 0, 0, 0);
+      if (enabled == 0) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("Copy_Name_On!!"), 0x64FFFF, 0, 0, 0);
+      } else {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("Copy_Name_Off!!"), 0x64FFFF, 0, 0, 0);
+      }
     }
     break;
   case TT_REQ_ACCEPT_INVITE_PARTY:
   case TT_REQ_REFUSE_INVITE_PARTY: {
     TalkConfigPacket packet;
-    packet.value = talkType != TT_REQ_ACCEPT_INVITE_PARTY;
     packet.id = ID_CZ_PARTY_CONFIG;
+    packet.value = talkType != TT_REQ_ACCEPT_INVITE_PARTY;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
@@ -10625,14 +10641,21 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case TT_NAVIGATION2: {
     const NaviCell cell = g_navigationManager.ParseCell(parts[1].c_str());
-    bool first = false;
-    bool second = false;
-    bool third = false;
-    if (cell.x == -1 || cell.y == -1 || !g_navigationManager.ParseFlags(parts[2].c_str(), &first, &second, &third)) {
+    if (cell.x == -1 || cell.y == -1) {
       g_navigationManager.ShowRouteResult(-100, 1);
       break;
     }
-    unsigned char mode = second ? 1 : 0;
+    bool third = false;
+    bool second = false;
+    bool first = false;
+    if (!g_navigationManager.ParseFlags(parts[2].c_str(), &first, &second, &third)) {
+      g_navigationManager.ShowRouteResult(-100, 1);
+      break;
+    }
+    unsigned char mode = 0;
+    if (second) {
+      mode = 1;
+    }
     if (first) {
       mode += 2;
     }
@@ -10686,10 +10709,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
-  case TT_MACRO_REGISTER:
-  case TT_MACRO_DETECTOR: {
+  case TT_MACRO_REGISTER: {
     TalkConfigPacket packet;
-    packet.value = talkType == TT_MACRO_REGISTER ? 2 : 3;
+    packet.value = 2;
     packet.id = ID_CZ_UI_OPEN;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
@@ -10701,11 +10723,16 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
+  case TT_MACRO_DETECTOR: {
+    TalkConfigPacket packet;
+    packet.value = 3;
+    packet.id = ID_CZ_UI_OPEN;
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+    break;
+  }
   case TT_VIEW_CAMERAINFO_ON_OFF: {
     TalkCameraPacket packet;
-    packet.range = 0.0f;
-    packet.rotation = 0.0f;
-    packet.latitude = 0.0f;
+    packet.view = TalkCameraView{};
     packet.id = ID_CZ_VIEW_CAMERAINFO;
     packet.action = 1;
     GetRagConnection().Send(sizeof(packet), &packet);
@@ -10718,26 +10745,26 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     TalkCameraPacket packet;
     packet.action = 0;
-    packet.range = camera->camera.distance;
     packet.id = ID_CZ_VIEW_CAMERAINFO;
-    packet.rotation = camera->camera.yaw;
-    packet.latitude = camera->camera.pitch;
+    packet.view.range = camera->camera.distance;
+    packet.view.rotation = camera->camera.yaw;
+    packet.view.latitude = camera->camera.pitch;
     if (parts[0].find("range", 0) != std::string::npos) {
-      packet.range = static_cast<float>(std::atof(parts[1].c_str()));
+      packet.view.range = static_cast<float>(std::atof(parts[1].c_str()));
     } else if (parts[0].find("rotation", 0) != std::string::npos) {
-      packet.rotation = static_cast<float>(std::atof(parts[1].c_str()));
+      packet.view.rotation = static_cast<float>(std::atof(parts[1].c_str()));
     } else if (parts[0].find("latitude", 0) != std::string::npos) {
-      packet.latitude = static_cast<float>(std::atof(parts[1].c_str()));
+      packet.view.latitude = static_cast<float>(std::atof(parts[1].c_str()));
     } else {
-      packet.range = static_cast<float>(std::atof(parts[0].c_str()));
-      packet.rotation = static_cast<float>(std::atof(parts[1].c_str()));
-      packet.latitude = static_cast<float>(std::atof(parts[2].c_str()));
+      packet.view.range = static_cast<float>(std::atof(parts[0].c_str()));
+      packet.view.rotation = static_cast<float>(std::atof(parts[1].c_str()));
+      packet.view.latitude = static_cast<float>(std::atof(parts[2].c_str()));
     }
     GetRagConnection().Send(sizeof(packet), &packet);
     break;
   }
   case TT_RESET_COOLTIME: {
-    TalkConfigPacket packet;
+    TalkCommandPacket packet;
     packet.id = ID_CZ_CMD_RESETCOOLTIME;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
@@ -10786,40 +10813,38 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_PROBABILITY_TEST: {
     this->recordItemPickups = this->recordItemPickups == 0;
     std::string server("Dev");
-    if (g_serviceMode == ServerPrimary && server.compare(0, 3, g_launchServerName, std::strlen(g_launchServerName)) != 0) {
-      break;
-    }
-    SYSTEMTIME time;
-    GetLocalTime(&time);
-    if (this->recordItemPickups == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("확률 로그 시작"), 0x64FFFF, 0, 0, 0);
-      std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
-      FILE* file = std::fopen(name.c_str(), "a");
-      if (file) {
-        std::fprintf(file, "시작 : %02d-%02d-%02d %02d:%02d:%02d \n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
-                     time.wSecond);
-      }
-      std::fclose(file);
-    } else {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("확률 로그 끝"), 0x64FFFF, 0, 0, 0);
-      std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
-      FILE* file = std::fopen(name.c_str(), "a");
-      if (file) {
-        for (const auto& entry : this->itemPickupCounts) {
-          int itemId = entry.first;
-          int count = entry.second;
-          ITEM_INFO item;
-          item.SetItemId(itemId);
-          item.identified = 1;
-          const std::string itemName = item.DisplayName(0);
-          std::string line = std::format("ID : {}, {}, {}개 \n", itemId, itemName.c_str(), count);
-          std::fprintf(file, line.c_str());
+    if (g_serviceMode != ServerPrimary || server.compare(g_launchServerName) == 0) {
+      SYSTEMTIME time;
+      GetLocalTime(&time);
+      if (this->recordItemPickups == 1) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("확률 로그 시작"), 0x64FFFF, 0, 0, 0);
+        std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
+        FILE* file = std::fopen(name.c_str(), "a");
+        if (file) {
+          std::fprintf(file, "시작 : %02d-%02d-%02d %02d:%02d:%02d \n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
+                       time.wSecond);
         }
-        std::fprintf(file, "끝 : %02d-%02d-%02d %02d:%02d:%02d \n\n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
-                     time.wSecond);
         std::fclose(file);
+      } else {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("확률 로그 끝"), 0x64FFFF, 0, 0, 0);
+        std::string name(FormatString("ProbabilityLog(%02d-%02d-%02d).txt", time.wYear, time.wMonth, time.wDay));
+        FILE* file = std::fopen(name.c_str(), "a");
+        if (file) {
+          for (const auto& entry : this->itemPickupCounts) {
+            int itemId = entry.first;
+            int count = entry.second;
+            ITEM_INFO item;
+            item.SetItemId(itemId);
+            item.identified = 1;
+            std::string line = std::format("ID : {}, {}, {}개 \n", itemId, item.DisplayName(0).c_str(), count);
+            std::fprintf(file, line.c_str());
+          }
+          std::fprintf(file, "끝 : %02d-%02d-%02d %02d:%02d:%02d \n\n", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute,
+                       time.wSecond);
+          std::fclose(file);
+        }
+        this->itemPickupCounts.clear();
       }
-      this->itemPickupCounts.clear();
     }
     break;
   }
