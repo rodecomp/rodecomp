@@ -795,14 +795,12 @@ int AiTraceAI(lua_State* state) {
   }
   std::strcat(path, "\\TraceAI.txt");
 
-  char* buffer;
+  char* buffer = const_cast<char*>(text);
   if (file.Open(path, 0, true, false)) {
     size = file.GetSize();
     buffer = new char[size];
     file.Read(buffer, size);
     file.Close();
-  } else {
-    buffer = const_cast<char*>(text);
   }
 
   file.Open(path, 0x1001, true, false);
