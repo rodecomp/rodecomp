@@ -105,6 +105,7 @@ public:
   /* 0114 */ std::vector<int> agitIds;
 
   GuildInfo();
+  ~GuildInfo();
   void ChangeMemberPosition(int aid, int cid, int position);
   void ClearAgitIds();
   void ClearMembers();

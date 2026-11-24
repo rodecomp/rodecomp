@@ -13,6 +13,10 @@
 // GLOBAL: gl_25465
 GuildInfo g_guildInfo;
 
+// OFFSET: 0x00AE3DB0
+// FUNCTION: fn_46561
+GuildInfo::~GuildInfo() = default;
+
 // OFFSET: 0x00AE38C0
 // FUNCTION: fn_18026
 GuildInfo::GuildInfo() {
