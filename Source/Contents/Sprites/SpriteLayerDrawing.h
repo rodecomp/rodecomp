@@ -20,8 +20,16 @@ struct SpriteFrameCell;
 struct SpriteRleImage;
 
 struct SpriteLayerResources {
-  /* 0000 */ CSprRes* sprite = nullptr;
-  /* 0004 */ CActRes* action = nullptr;
+  // INLINED
+  SpriteLayerResources() : sprite(nullptr), action(nullptr) {
+  }
+
+  // INLINED
+  SpriteLayerResources(CSprRes* sprite, CActRes* action) : sprite(sprite), action(action) {
+  }
+
+  /* 0000 */ CSprRes* sprite;
+  /* 0004 */ CActRes* action;
 };
 
 struct SpriteLayerCell {
