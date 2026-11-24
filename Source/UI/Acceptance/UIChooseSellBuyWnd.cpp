@@ -1651,11 +1651,11 @@ void UIStatusWnd::Paint() {
 
   const int* traitBonus = g_session.m_traits.bonus;
   const std::int64_t* traitPoints = g_session.m_traits.points;
-  const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
-  const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
   const int types[6] = {219, 220, 221, 222, 223, 224};
+  const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
   const std::int64_t* point = points;
   int index = 0;
+  const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
   for (int y = 144; y < 240; y += 16, point += 1, ++index) {
     const int value = g_session.GetTraitStat(types[index]);
     this->DrawTextAt(36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
