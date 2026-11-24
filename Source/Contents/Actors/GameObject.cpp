@@ -288,8 +288,8 @@ void CRenderObject::Render(int argument) {
 // FUNCTION: fn_21103
 void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  CSprRes* sprite = this->render.sprite;
   CActRes* action = this->render.action;
+  CSprRes* sprite = this->render.sprite;
 
   if (g_session.guildLeader == 1 && seasonal == true) {
     SYSTEMTIME time;
