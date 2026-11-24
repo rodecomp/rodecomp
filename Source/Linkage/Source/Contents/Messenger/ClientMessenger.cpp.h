@@ -87,12 +87,13 @@ template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordere
 template __declspec(noinline) std::unordered_map<int, int>::unordered_map();
 template __declspec(noinline) std::unordered_map<unsigned int, int>::unordered_map();
 template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
-template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
-  std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
-) noexcept;
-template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_tree<std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>>(
-  std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&, std::_Tree_node<std::pair<const int, int>, void*>*
-) noexcept;
+template __forceinline std::set<unsigned int>::_Mybase::~_Tree() noexcept;
+template __forceinline std::map<int, int>::_Mybase::~_Tree() noexcept;
+template __forceinline void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_head(std::allocator<std::_Tree_node<unsigned int, void*>>&) noexcept;
+template __forceinline void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_head(std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&) noexcept;
+template __forceinline void std::_Tree_val<std::_Tree_simple_types<std::pair<const std::int64_t, EquipmentPropertyDefinition*>>>::_Erase_head(std::allocator<std::_Tree_node<std::pair<const std::int64_t, EquipmentPropertyDefinition*>, void*>>&) noexcept;
+template __forceinline std::set<unsigned int>::~set() noexcept;
+template __forceinline std::map<int, int>::~map() noexcept;
 template __declspec(noinline) std::string fmt::format<const char*&, int&>(fmt::format_string<const char*&, int&>, const char*&, int&);
 template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::format_string<unsigned int&, int&>, unsigned int&, int&);
 template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
