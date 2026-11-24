@@ -3275,9 +3275,9 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     }
     g_session.storeSearchResults.clear();
   }
+  const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   g_session.m_storeSearchHasNext = header->hasNext;
   g_session.storeSearchCount = header->count;
-  const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   for (long long i = 0; i < count; ++i) {
     const SearchStoreItemPacket record = items[i];
     SearchStoreResult entry;
@@ -3292,12 +3292,12 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     entry.item.identified = 1;
     int optionCount = 0;
     for (int j = 0; j < 5; ++j) {
-      if (record.options[j].id != 0) {
+      if (0 != record.options[j].id) {
         ++optionCount;
       }
     }
     entry.item.optionCount = optionCount;
-    for (long long j = 0; j < optionCount; ++j) {
+    for (long long j = 0; j < entry.item.optionCount; ++j) {
       entry.item.options[j] = record.options[j];
     }
     for (long long j = 0; j < 4; ++j) {
