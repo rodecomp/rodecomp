@@ -5061,34 +5061,33 @@ bool CEffectPrim::IsPartyVisible() {
 __declspec(noinline) bool CEffectPrim::PrimTwinSpin() {
   FollowMaster(*this);
 
-  EffectPrimitiveSlot& first = this->state.slots[0];
-  const int firstProcess = first.process + 1;
-  first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
-  first.process = firstProcess;
-  if (first.riseAngle >= 360) {
-    first.riseAngle = static_cast<std::int16_t>(first.riseAngle - 360);
+  ++this->state.slots[0].process;
+  this->state.slots[0].riseAngle += 3;
+
+  if (this->state.slots[0].riseAngle >= 360) {
+    this->state.slots[0].riseAngle -= 360;
   }
 
-  const int fadeStart = this->state.duration - 25;
-  if (firstProcess > fadeStart) {
-    first.alphaB = static_cast<std::int16_t>(first.alphaB - 8);
-    if (first.alphaB < 0) {
-      first.alphaB = 0;
+  if (this->state.slots[0].process > this->state.duration - 25) {
+    this->state.slots[0].alphaB -= 8;
+
+    if (this->state.slots[0].alphaB < 0) {
+      this->state.slots[0].alphaB = 0;
     }
   }
 
-  EffectPrimitiveSlot& second = this->state.slots[1];
-  const int secondProcess = second.process + 1;
-  second.riseAngle = static_cast<std::int16_t>(second.riseAngle + 3);
-  second.process = secondProcess;
-  if (second.riseAngle >= 360) {
-    second.riseAngle = static_cast<std::int16_t>(second.riseAngle - 360);
+  ++this->state.slots[1].process;
+  this->state.slots[1].riseAngle += 3;
+
+  if (this->state.slots[1].riseAngle >= 360) {
+    this->state.slots[1].riseAngle -= 360;
   }
 
-  if (secondProcess > fadeStart) {
-    second.alphaB = static_cast<std::int16_t>(second.alphaB - 8);
-    if (second.alphaB < 0) {
-      second.alphaB = 0;
+  if (this->state.slots[1].process > this->state.duration - 25) {
+    this->state.slots[1].alphaB -= 8;
+
+    if (this->state.slots[1].alphaB < 0) {
+      this->state.slots[1].alphaB = 0;
     }
   }
 
