@@ -214,6 +214,12 @@ UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)
   this->geometry.state = 0;
 }
 
+// INLINED
+static void ReadBytes(std::vector<unsigned char>& buffer, const std::vector<unsigned char>& data, int& offset, int size) {
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  offset += size;
+}
+
 // OFFSET: 0x00E48C00
 // FUNCTION: fn_24228
 int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data) {
@@ -221,10 +227,8 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     return offset;
   }
 
-  int position = offset;
   std::vector<unsigned char> buffer(size, 0);
-  std::memcpy(buffer.data(), data.data() + position, size);
-  position += size;
+  ReadBytes(buffer, data, offset, size);
   std::uint32_t consumed = 0;
   std::vector<unsigned char> remaining(buffer);
   while (consumed < buffer.size()) {
@@ -237,7 +241,7 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     }
   }
 
-  return position;
+  return offset;
 }
 
 // OFFSET: 0x00E494F0
