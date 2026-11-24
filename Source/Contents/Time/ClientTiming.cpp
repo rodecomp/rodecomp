@@ -524,23 +524,11 @@ void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
   this->hotkeySkillLevels[index] = skillLevel;
 }
 
-// INLINED
-template <class Iterator, class Predicate>
-__forceinline Iterator FindTrackedRecord(Iterator first, Iterator last, Predicate predicate) {
-  for (; first != last; ++first) {
-    if (predicate(*first)) {
-      break;
-    }
-  }
-  return first;
-}
-
 // OFFSET: 0x00E265C0
 // FUNCTION: fn_23916
 void CSession::RefreshTrackedAchievement(int id) {
-  std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
-  auto found = FindTrackedRecord(tracked.begin(), tracked.end(), [&](SessionRecord6178 record) { return id == record.id; });
-  if (found == tracked.end()) {
+  auto found = std::find_if(this->trackedAchievements.begin(), this->trackedAchievements.end(), [&](SessionRecord6178 record) { return id == record.id; });
+  if (found == this->trackedAchievements.end()) {
     return;
   }
 

@@ -34,3 +34,5 @@ template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(c
 template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
 template __declspec(noinline) std::_Tree_find_result<std::map<int, RobeAlpha>::_Mybase::_Nodeptr> std::map<int, RobeAlpha>::_Mybase::_Find_lower_bound<int>(const int&) const;
 template __declspec(noinline) std::vector<CNaviInfo*>::size_type std::vector<CNaviInfo*>::size() const noexcept;
+extern template SessionRecord6178Entry* std::vector<SessionRecord6178Entry>::_Ucopy<SessionRecord6178Entry*>(SessionRecord6178Entry*, SessionRecord6178Entry*, SessionRecord6178Entry*);
+template __declspec(noinline) SessionRecord6178Entry* std::allocator<SessionRecord6178Entry>::allocate(std::size_t);
