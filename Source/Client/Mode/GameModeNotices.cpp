@@ -5258,7 +5258,8 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
     itemName = item.DisplayName(0);
   }
 
-  std::string text = FormatOwnedString(LookupMessage(!success + 3271), name.c_str(), refine, itemName.c_str());
+  const int messageId = success ? MSI_BROADCASTING_REFINING_SUCCESS_LEVEL_9 : MSI_BROADCASTING_REFINING_FAIL_LEVEL_9;
+  std::string text = FormatOwnedString(LookupMessage(messageId), name.c_str(), refine, itemName.c_str());
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
     message.lines.emplace_back(text, 0x62B0FFu, 0u);
