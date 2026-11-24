@@ -4715,7 +4715,7 @@ int GetPlayerValue(lua_State* state) {
 
   std::map<int, int>& traitStats = g_session.m_traits.stats;
   int value = 0;
-  switch (args[0]) {
+  switch (static_cast<int>(args[0])) {
   case SP_BASELEVEL:
     value = g_session.m_level;
     break;
