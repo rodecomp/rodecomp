@@ -5845,30 +5845,29 @@ void CRagEffect::BlueRingStack() {
 
   for (int index = 0; index < 4; ++index) {
     if (index == 3) {
-      this->state.lastPrim->state.slots[3].life = 0;
-      return;
-    }
-
-    const float step = static_cast<float>(index);
-    this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].process = 0;
-    this->state.lastPrim->state.slots[index].fullDisplayAngle = 315;
-    this->state.lastPrim->state.slots[index].maxHeight = 13.0f - (step + step);
-    this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 90);
-    this->state.lastPrim->state.slots[index].alphaB = 0;
-    if (this->state.deltaPos2.y == 0.0f) {
-      this->state.lastPrim->state.slots[index].distance = step * 0.2f + 3.4f;
+      this->state.lastPrim->state.slots[index].life = 0;
     } else {
-      this->state.lastPrim->state.slots[index].distance = step * 0.2f + 2.4f;
-    }
-    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>((11 - index) * 5);
-    this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
+      const float step = static_cast<float>(index);
+      this->state.lastPrim->state.slots[index].life = 1;
+      this->state.lastPrim->state.slots[index].process = 0;
+      this->state.lastPrim->state.slots[index].fullDisplayAngle = 315;
+      this->state.lastPrim->state.slots[index].maxHeight = 13.0f - (step + step);
+      this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 90);
+      this->state.lastPrim->state.slots[index].alphaB = 0;
+      if (0.0f == this->state.deltaPos2.y) {
+        this->state.lastPrim->state.slots[index].distance = step * 0.2f + 3.4f;
+      } else {
+        this->state.lastPrim->state.slots[index].distance = step * 0.2f + 2.4f;
+      }
+      this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>((11 - index) * 5);
+      this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
 
-    for (int height = 0; height < 21; ++height) {
-      this->state.lastPrim->state.slots[index].height[height] = 0.0f;
-      this->state.lastPrim->state.slots[index].flag1[height] = 0;
+      for (int height = 0; height < 21; ++height) {
+        this->state.lastPrim->state.slots[index].height[height] = 0.0f;
+        this->state.lastPrim->state.slots[index].flag1[height] = 0;
+      }
+      this->state.lastPrim->state.slots[index].alphaT = 99;
     }
-    this->state.lastPrim->state.slots[index].alphaT = 99;
   }
 }
 
