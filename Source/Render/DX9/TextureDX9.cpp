@@ -128,6 +128,21 @@ __declspec(noinline) CTextureDX9::~CTextureDX9() {
   }
 }
 
+// OFFSET: 0x00572F70
+// FUNCTION: fn_46655
+inline void CTextureDX9::ClearTextureLevels() {
+  if (!this->m_renderTarget) {
+    for (UINT level = 0; level < this->m_texture->GetLevelCount(); ++level) {
+      CComPtr<IDirect3DSurface9> surface;
+      if (FAILED(this->m_texture->GetSurfaceLevel(level, &surface))) {
+        break;
+      }
+
+      this->ClearSurface(surface, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00572AC0
 // FUNCTION: fn_02480
 bool CTextureDX9::Create(int width, int height, int format) {
@@ -195,16 +210,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
     return false;
   }
 
-  if (!this->m_renderTarget) {
-    for (UINT level = 0; level < this->m_texture->GetLevelCount(); ++level) {
-      CComPtr<IDirect3DSurface9> surface;
-      if (FAILED(this->m_texture->GetSurfaceLevel(level, &surface))) {
-        break;
-      }
-
-      this->ClearSurface(surface, 0);
-    }
-  }
+  this->ClearTextureLevels();
 
   return true;
 }

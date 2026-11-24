@@ -44,6 +44,7 @@ protected:
 
 private:
   void Filter();
+  void ClearTextureLevels();
   void ClearSurface(IDirect3DSurface9* surface, std::uint32_t color);
   bool UploadSurface(IDirect3DSurface9* surface, int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth);
 };
