@@ -614,7 +614,9 @@ int CRenewQuestMgr::L_AddQuestFilterInfo(lua_State* state) {
     }
   }
 
-  g_renewQuestMgr->m_filters.emplace(static_cast<int>(id), RenewQuestFilter{std::string(name.c_str(), name.size()), std::move(icons)});
+  CRenewQuestMgr* manager = g_renewQuestMgr;
+  RenewQuestFilter filter{std::string(name.c_str(), name.size()), std::move(icons)};
+  manager->m_filters.emplace(static_cast<int>(id), std::move(filter));
   return 0;
 }
 
