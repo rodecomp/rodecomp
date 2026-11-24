@@ -5407,7 +5407,6 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CRenderObject* actor) {
   }
 
   int x = actor->render.screenX + offsetX;
-  int y = actor->render.screenY + offsetY;
   if (x < -3) {
     x = -3;
   }
@@ -5415,6 +5414,7 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CRenderObject* actor) {
   if (maximumX < x) {
     x = maximumX;
   }
+  int y = actor->render.screenY + offsetY;
   if (y < -3) {
     y = -3;
   }
