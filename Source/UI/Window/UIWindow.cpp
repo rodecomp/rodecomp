@@ -1813,8 +1813,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
-  NavigationLinkParser* const parser = g_navigationLinkParser;
-  display = parser->DisplayNavigationLink(display);
+  display = g_navigationLinkParser->DisplayNavigationLink(display);
   display = DisplayQuestTextTag(display);
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
@@ -1830,8 +1829,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
     fitted.resize(length);
     fitted += ".";
 
-    const unsigned characters = static_cast<unsigned>(CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length));
-    if (characters <= 1) {
+    if (CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length) <= 1) {
       break;
     }
 
