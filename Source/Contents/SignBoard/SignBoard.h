@@ -13,6 +13,7 @@ class UIStaticText;
 class CBmpObjWnd : public UIWindow {
 public:
   CBmpObjWnd();
+  void ResizeToBitmap();
   ~CBmpObjWnd() override;
   void OnCreate(int width, int height) override;
   void Paint() override;
@@ -27,6 +28,7 @@ public:
   void OnCreate(int width, int height) override;
   void Paint() override;
   void ApplyColor();
+  void UpdateText();
 
   /* 007C */ UIStaticText* text;
   /* 0080 */ std::string boardText;

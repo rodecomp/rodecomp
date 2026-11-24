@@ -345,6 +345,13 @@ void CIcon::Render(int argument) {
   this->DrawSprite(argument, false, 0.0f);
 }
 
+// OFFSET: 0x00822060
+// FUNCTION: fn_46717
+void CBmpObjWnd::ResizeToBitmap() {
+  const CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->path.c_str())));
+  this->Resize(bitmap->image.width, bitmap->image.height);
+}
+
 // OFFSET: 0x008220A0
 // FUNCTION: fn_10273
 void CIcon::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
@@ -372,14 +379,20 @@ void CIcon::Load(const std::string& name) {
   this->SetAction(0, 10, 0);
 }
 
+// OFFSET: 0x00822120
+// FUNCTION: fn_46718
+void CSignBoardWnd::UpdateText() {
+  this->ApplyColor();
+  this->text->SetTextFitted(this->boardText.c_str());
+}
+
 // OFFSET: 0x00822310
 // FUNCTION: fn_10276
 __declspec(noinline) void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
   static_cast<CSignBoardWnd*>(this->window)->boardText = text;
   static_cast<CSignBoardWnd*>(this->window)->colorText = color;
   CSignBoardWnd* board = static_cast<CSignBoardWnd*>(this->window);
-  board->ApplyColor();
-  board->text->SetTextFitted(board->boardText.c_str());
+  board->UpdateText();
 }
 
 // OFFSET: 0x00822390
@@ -393,8 +406,7 @@ __declspec(noinline) void C3DCooRendering::SetWindowImage(const std::string& nam
   case 1: {
     static_cast<CBmpObjWnd*>(this->window)->path = name;
     CBmpObjWnd* window = static_cast<CBmpObjWnd*>(this->window);
-    const CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(window->path.c_str())));
-    window->Resize(bitmap->image.width, bitmap->image.height);
+    window->ResizeToBitmap();
     break;
   }
   case 3:
