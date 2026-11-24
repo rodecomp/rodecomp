@@ -3942,8 +3942,8 @@ void C3dGrannyGameActor::ProcessMotion() {
 // FUNCTION: fn_21183
 void CGrannyCorpse3d::Render(int argument) {
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
-  CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
+  CTexture* texture = nullptr;
   RenderCommand* command;
 
   this->clock = GrannyGetSystemSeconds();
