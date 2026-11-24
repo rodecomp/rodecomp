@@ -9,7 +9,8 @@ class UIStaticText;
 
 class UIClanWnd : public UIFrameWnd {
 public:
-  // INLINED
+  // OFFSET: 0x0084CC60
+  // FUNCTION: fn_46565
   UIClanWnd() : UIFrameWnd(0), m_saved(nullptr), m_title(nullptr) {
   }
   void StoreInfo() override;
