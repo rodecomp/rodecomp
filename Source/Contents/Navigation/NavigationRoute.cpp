@@ -1241,7 +1241,7 @@ int CNavigationManager::AddWrappedRouteLines(int kind, int x, int y, const char*
     this->routeLines.push_back(routeLine);
   }
 
-  this->routeLines.back().text += "]";
+  this->routeLines[this->routeLines.size() - 1].text += "]";
   return count + 1;
 }
 
