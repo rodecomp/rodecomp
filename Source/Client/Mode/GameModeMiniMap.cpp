@@ -317,7 +317,7 @@ void CGameMode::DrawMiniMap() {
   }
 
   for (auto it = g_miniMapEffectMarkers.begin(); it != g_miniMapEffectMarkers.end();) {
-    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, 0xFFFF0000, false);
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 2, 0xFFFF0000, false);
     if (--it->second.count <= 0) {
       it = g_miniMapEffectMarkers.erase(it);
     } else {
@@ -333,10 +333,16 @@ void CGameMode::DrawMiniMap() {
     for (int index = 0;; ++index) {
       CTownInfoMgr* townInfoMgr = g_townInfoMgr;
       const TownInfo info = townInfoMgr->GetTownInfo(std::string(this->mapName), index);
-      if (info.image.size() == 0 || info.type == 8 || info.type == 9) {
+      if (info.image.size() == 0) {
         break;
       }
-      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(), 6, index, true);
+      if (info.type == 8) {
+        break;
+      }
+      if (info.type == 9) {
+        break;
+      }
+      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(""), 6, index, true);
     }
   }
 
