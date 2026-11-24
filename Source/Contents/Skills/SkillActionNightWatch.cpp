@@ -27,6 +27,11 @@ static int ClampedRandom(int range) {
   return value >= 0 ? value : 0;
 }
 
+// INLINED
+static vector3d Add(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
 class CSkillAction_NW_INTENSIVE_AIM : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
@@ -743,10 +748,9 @@ void CSkillAction_NW_WILD_SHOT::OnSkillEffect(int level, CGameActor* source, CGa
       second = 3;
     }
     const float offsetX = ClientSin(radians) * static_cast<float>(second * 5);
-    const float x = offsetX + target->render.position.x;
-    const float y = target->render.position.y + 0.0f;
-    const float z = offsetZ + target->render.position.z;
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot"), vector3d{x, y, z}, 0, -1, 0, 0);
+    const vector3d spawn = Add(vector3d{offsetX, 0.0f, offsetZ}, target->render.position);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot"), vector3d{spawn.x, spawn.y, spawn.z}, 0, -1, 0, 0);
     if (effect) {
       effect->SetScale(0.8f);
       effect->SetDelay(delay);
