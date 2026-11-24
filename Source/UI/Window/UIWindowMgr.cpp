@@ -1271,7 +1271,8 @@ void UIWindowMgr::RefreshFrameSkins() {
 // OFFSET: 0x00A8B840
 // FUNCTION: fn_17124
 __declspec(noinline) void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
-  if (this->namedWindows.find(name) == this->namedWindows.end()) {
+  auto found = this->namedWindows.find(name);
+  if (found == this->namedWindows.end()) {
     this->namedWindows[name] = window;
   }
 }
