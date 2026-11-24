@@ -1848,9 +1848,10 @@ void CHawkVumerangEffect::OnProcess() {
     particle->m_angle = 360.0f - static_cast<float>(angle) / 3.141592f * 180.0f;
     const float sine = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->orbitRadius);
     const float cosine = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->orbitRadius);
-    particle->position.z = this->orbitCenter.z + sine + this->orbitOffsetZ;
-    particle->position.x = cosine + this->orbitCenter.x + this->orbitOffsetX;
-    particle->position.y = this->orbitCenter.y + 0.0f + this->orbitOffsetY;
+    const vector3d orbit{cosine + this->orbitCenter.x, this->orbitCenter.y + 0.0f, this->orbitCenter.z + sine};
+    particle->position.z = orbit.z + this->orbitOffsetZ;
+    particle->position.x = orbit.x + this->orbitOffsetX;
+    particle->position.y = orbit.y + this->orbitOffsetY;
     this->emitters.push_front(particle);
   } else {
     this->finishedEmitters.push_back(particle);
