@@ -1221,21 +1221,23 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 
   float left;
   float right;
-  if (texPart < 100) {
+  if (texPart >= 100) {
+    if (texPart == 100) {
+      left = 0.35f;
+      right = 0.45f;
+    } else if (texPart == 101) {
+      left = 0.45f;
+      right = 0.55f;
+    } else {
+      left = 0.55f;
+      right = 0.65f;
+    }
+  } else {
     left = static_cast<float>(texPart) / 21.0f;
     if (texPart == 0) {
       left = 0.0f;
     }
     right = static_cast<float>(texPart + 1) / 21.0f;
-  } else if (texPart == 100) {
-    left = 0.35f;
-    right = 0.45f;
-  } else if (texPart == 101) {
-    left = 0.45f;
-    right = 0.55f;
-  } else {
-    left = 0.55f;
-    right = 0.65f;
   }
 
   const vector3d& position = this->render.position;
