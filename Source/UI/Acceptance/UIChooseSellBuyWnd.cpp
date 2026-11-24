@@ -12838,8 +12838,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         } else {
           const char* name = nullptr;
           if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", static_cast<int>(option.id), &name) && name) {
-            std::list<std::string> lines;
             std::string text = FormatOwnedString(name, static_cast<int>(option.value), option.parameter);
+            std::list<std::string> lines;
             this->WrapText(text, 254, lines);
             this->m_cardTexts.insert(std::make_pair(index, lines));
           }
