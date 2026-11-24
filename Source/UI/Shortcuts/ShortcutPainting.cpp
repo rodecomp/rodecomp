@@ -29,6 +29,17 @@ namespace {
     return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   }
 
+  // INLINED
+  void DrawGradeIcon(UIWindow& window, int x, int y, const ITEM_INFO& item) {
+    window.DrawBitmap(
+      x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true
+    );
+  }
+
+  // INLINED
+  void DrawRowNumber(UIWindow& window, int row) {
+    window.DrawTextAt(6, row * 33 + 13, FormatOwnedString("%d", row + 1).c_str(), 0, 0, 11, 0x2F4A4A, 0, 0);
+  }
 }
 
 // OFFSET: 0x00918940
@@ -60,9 +71,9 @@ void UIShortCutWnd::Paint() {
 
   if (grid.row != -1 && grid.hovered != -1) {
     const int x = ((grid.hovered * 29) + 16);
-    const int y = 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage);
+    const int page = g_session.m_hotkeyPage;
     const SkinPaletteCell cell{2, 2};
-    window.FillRegion(x, y, 24, 24, g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
+    window.FillRegion(x, page * 33 + 5, 24, 24, g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
   }
 
   g_session.m_mainCooldownIcons.clear();
@@ -112,14 +123,7 @@ void UIShortCutWnd::Paint() {
           this->DrawShortcutItem(x, y, item, item.identified);
 
           if (0 < item.grade) {
-            const std::string iconPath = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade);
-            window.DrawBitmap(
-              x, (y + 12),
-              static_cast<CBitmapRes*>(
-                ResourceMgr::Instance().Load(Resolve(iconPath.c_str()))
-              ),
-              true
-            );
+            DrawGradeIcon(window, x, y + 12, item);
           }
         }
       }
@@ -143,33 +147,30 @@ void UIShortCutWnd::Paint() {
   }
 
   for (int row = 0; row < grid.rows; ++row) {
-    const std::string label = FormatOwnedString("%d", row + 1);
-    window.DrawTextAt(6, ((row * 33) + 13), label.c_str(), 0, 0, 11, 0x2F4A4A, 0, 0);
+    DrawRowNumber(window, row);
   }
 
   const std::uint32_t now = CooldownNow();
 
   for (auto entry = g_session.m_requestTimers.begin(); entry != g_session.m_requestTimers.end();) {
     if (entry->end > now) {
-      std::list<CooldownState>& states = entry->main;
-
       for (auto icon = g_session.m_mainCooldownIcons.begin(); icon != g_session.m_mainCooldownIcons.end(); ++icon) {
         if (entry->id == icon->id || (entry->id == 577 && !g_session.IsHomunculusSkill(icon->id))) {
-          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
-          if (previous == states.end()) {
-            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          const auto previous = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == entry->main.end()) {
+            entry->main.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
           }
         }
 
         if ((g_session.IsHomunculusSkill(icon->id) || g_session.IsMercenarySkill(icon->id)) && entry->id == 9999) {
-          const auto previous = std::find_if(states.begin(), states.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
-          if (previous == states.end()) {
-            states.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
+          const auto previous = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon->slot; });
+          if (previous == entry->main.end()) {
+            entry->main.push_back(CooldownState(icon->slot, icon->x, icon->y, entry->duration, entry->end - entry->duration, 0, 0));
           }
         }
       }
 
-      for (auto state = states.begin(); state != states.end(); ++state) {
+      for (auto state = entry->main.begin(); state != entry->main.end(); ++state) {
         g_cooldownOwner->Draw(0, 0, 12, 12, *state, grid.rows * 33 + 4, window.geometry.x, window.geometry.y);
       }
 
