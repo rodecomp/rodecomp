@@ -6262,14 +6262,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (this->loadValid) {
         std::string categoryName;
         result = this->script.GetFieldString(categoryName, "name");
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, result), 0);
+          ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, static_cast<int>(result)), 0);
         }
         if (this->loadValid) {
           categoryName = FromUtf8(categoryName, g_textCodePage);
@@ -6290,7 +6290,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category table has invalid entry key({0})", result), 0);
+                ShowErrorDialog(fmt::format("Category table has invalid entry key({0})", static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6305,7 +6305,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldString(orderName, "name");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6328,7 +6328,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldStringArray(definition->functions, "func");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6354,7 +6354,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldUIntMap(values, "val");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6387,7 +6387,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               bool valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6438,7 +6438,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6463,7 +6463,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6488,7 +6488,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6498,7 +6498,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6531,7 +6531,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
