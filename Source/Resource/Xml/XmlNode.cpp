@@ -89,7 +89,8 @@ const std::string& XmlNode::Text() {
     }
 
     char* end = this->sourceEnd;
-    for (++cursor; cursor != end; ++cursor) {
+    ++cursor;
+    while (cursor != end) {
       for (XmlNode* node = this->child; node != nullptr; node = node->child) {
         if (cursor == node->sourceBegin) {
           cursor = node->sourceEnd;
@@ -108,20 +109,25 @@ const std::string& XmlNode::Text() {
       }
 
       if (value == '\r' || value == '\n') {
+        ++cursor;
         continue;
       }
 
+      char* next = cursor + 1;
       if (value == '&') {
         if (std::strcmp(this->name, "registrationweb") != 0) {
-          this->text += this->DecodeEntity(cursor + 1, end);
+          this->text += this->DecodeEntity(next, end);
           while (cursor != end && *cursor != ';') {
             ++cursor;
           }
+          ++cursor;
         } else {
           this->text.append(1, '&');
+          cursor = next;
         }
       } else {
         this->text.append(1, value);
+        cursor = next;
       }
     }
   }
