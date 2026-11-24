@@ -1439,9 +1439,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canInvite = position->canInvite;
-    if (this->inviteChecks[drawn]) {
-      this->inviteChecks[drawn]->geometry.state = canInvite;
-      this->inviteChecks[drawn]->Invalidate();
+    UICheckBox* inviteCheck = this->inviteChecks[drawn];
+    if (inviteCheck) {
+      inviteCheck->geometry.state = canInvite;
+      inviteCheck->Invalidate();
       this->inviteChecks[drawn]->Move(g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canInvite != 0);
@@ -1452,9 +1453,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canExpel = position->canExpel;
-    if (this->expelChecks[drawn]) {
-      this->expelChecks[drawn]->geometry.state = canExpel;
-      this->expelChecks[drawn]->Invalidate();
+    UICheckBox* expelCheck = this->expelChecks[drawn];
+    if (expelCheck) {
+      expelCheck->geometry.state = canExpel;
+      expelCheck->Invalidate();
       this->expelChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canExpel != 0);
@@ -1465,9 +1467,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canStorage = position->canStorage;
-    if (this->storageChecks[drawn]) {
-      this->storageChecks[drawn]->geometry.state = canStorage;
-      this->storageChecks[drawn]->Invalidate();
+    UICheckBox* storageCheck = this->storageChecks[drawn];
+    if (storageCheck) {
+      storageCheck->geometry.state = canStorage;
+      storageCheck->Invalidate();
       this->storageChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1], y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canStorage != 0);
