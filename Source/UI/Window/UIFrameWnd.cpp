@@ -939,18 +939,16 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (x < 1) {
         x = 1;
       }
-      int maxX = g_renderer->viewport.width - menu->geometry.width;
-      if (x <= maxX) {
-        maxX = x;
+      if (x > g_renderer->viewport.width - menu->geometry.width) {
+        x = g_renderer->viewport.width - menu->geometry.width;
       }
       if (y < 1) {
         y = 1;
       }
-      int maxY = g_renderer->viewport.height - menu->geometry.height;
-      if (y <= maxY) {
-        maxY = y;
+      if (y > g_renderer->viewport.height - menu->geometry.height) {
+        y = g_renderer->viewport.height - menu->geometry.height;
       }
-      menu->Move(maxX, maxY);
+      menu->Move(x, y);
     }
     break;
   }
@@ -976,24 +974,27 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     break;
   }
   case UM_ROLE_CHANGE: {
-    if (this->memberRoles.find(std::string(reinterpret_cast<const char*>(a))) != this->memberRoles.end()) {
-      this->memberRoles[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    const std::map<std::string, int>::iterator found = this->memberRoles.find(reinterpret_cast<const char*>(a));
+    if (found != this->memberRoles.end()) {
+      this->memberRoles[reinterpret_cast<const char*>(a)] = static_cast<int>(b);
     }
     this->memberList->Clear();
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+      const int color = it->second != 0 ? 0 : 0x808000;
+      this->memberList->AddText(it->first.c_str(), color, nullptr);
     }
     break;
   }
   case UM_MEMBER_EXIT: {
-    const std::map<std::string, int>::iterator found = this->memberRoles.find(std::string(reinterpret_cast<const char*>(a)));
+    const std::map<std::string, int>::iterator found = this->memberRoles.find(reinterpret_cast<const char*>(a));
     if (found == this->memberRoles.end()) {
       break;
     }
     this->memberRoles.erase(found);
     this->memberList->Clear();
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-      this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
+      const int color = it->second != 0 ? 0 : 0x808000;
+      this->memberList->AddText(it->first.c_str(), color, nullptr);
     }
     break;
   }
@@ -1002,14 +1003,14 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->memberRoles.erase(this->memberRoles.begin(), this->memberRoles.end());
     break;
   case UM_ADDMEMBER: {
-    this->memberRoles[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
+    this->memberRoles[reinterpret_cast<const char*>(a)] = static_cast<int>(b);
     int color = 0;
-    if (b != 0) {
+    if (b == 0) {
+      color = 0x808000;
+    } else {
       if (g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF) && g_soundMgr->tingOnly != 0) {
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
-    } else {
-      color = 0x808000;
     }
     this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
     break;
