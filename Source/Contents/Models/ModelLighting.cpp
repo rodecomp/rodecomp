@@ -206,18 +206,25 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
         state->colors[corner] = colors[corner].value;
       }
 
+      float lastU = u;
+      float lastV = v;
       if (this->mesh->textureVertexCount == 0) {
-        for (unsigned corner = 0; corner < 3; ++corner) {
+        for (unsigned corner = 0; corner < 2; ++corner) {
           state->uv[corner][0] = u;
           state->uv[corner][1] = v;
         }
       } else {
-        for (unsigned corner = 0; corner < 3; ++corner) {
+        for (unsigned corner = 0; corner < 2; ++corner) {
           const ModelTextureVertex& uv = textureVertices[face->textureVertices[corner]];
           state->uv[corner][1] = v * uv.v;
           state->uv[corner][0] = u * uv.u;
         }
+        const ModelTextureVertex& uv = textureVertices[face->textureVertices[2]];
+        lastU = u * uv.u;
+        lastV = v * uv.v;
       }
+      state->uv[2][0] = lastU;
+      state->uv[2][1] = lastV;
 
       ++face;
       ++state;
