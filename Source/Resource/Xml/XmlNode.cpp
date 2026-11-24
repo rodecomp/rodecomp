@@ -14,6 +14,17 @@ XmlNode::~XmlNode() {
   this->Clear();
 }
 
+// OFFSET: 0x00AFA560
+// FUNCTION: fn_46710
+XmlNode* XmlNode::AppendChild(XmlNode* node) {
+  if (this->child == nullptr) {
+    this->child = node;
+    return node;
+  }
+
+  return this->child->AppendSibling(node);
+}
+
 // OFFSET: 0x00AFA590
 // FUNCTION: fn_18293
 XmlNode* XmlNode::AppendSibling(XmlNode* node) {
@@ -213,11 +224,7 @@ char* XmlDocument::ParseElements(XmlNode* parent, char* cursor, char* end) {
 
       char* next = close + 1;
       XmlNode* node = new XmlNode(this->TerminateName(cursor + 1, end));
-      if (parent->child == nullptr) {
-        parent->child = node;
-      } else {
-        parent->child->AppendSibling(node);
-      }
+      parent->AppendChild(node);
 
       if (next[-2] == '/') {
         cursor = next;

@@ -7,6 +7,7 @@
 struct XmlNode {
   explicit XmlNode(const char* name);
   ~XmlNode();
+  XmlNode* AppendChild(XmlNode* node);
   XmlNode* AppendSibling(XmlNode* node);
   __declspec(noinline) void Clear();
   XmlNode* FindChild(const char* name);
