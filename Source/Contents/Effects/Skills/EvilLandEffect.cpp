@@ -31,15 +31,18 @@ void CEvilLandEffect::Close() {
 // FUNCTION: fn_06948
 void CEvilLandEffect::Open() {
   CTexture* texture = g_texMgr.Load("effect\\EVILLAND\\demonground.tga", 0, false, true, false);
-  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / static_cast<float>(this->effectLevel);
-  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / static_cast<float>(this->effectLevel);
+  const float textureEffectLevel = static_cast<float>(this->effectLevel);
+  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / textureEffectLevel;
+  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / textureEffectLevel;
 
   CTexture* alpha = g_texMgr.Load("effect\\EVILLAND\\demonground_alpha_translucent.tga", 0, false, true, false);
-  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / static_cast<float>(this->effectLevel);
-  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / static_cast<float>(this->effectLevel);
+  const int effectLevel = this->effectLevel;
+  const float alphaEffectLevel = static_cast<float>(effectLevel);
+  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / alphaEffectLevel;
+  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / alphaEffectLevel;
 
-  for (int row = 0; row < this->effectLevel; ++row) {
-    for (int column = 0; column < this->effectLevel; ++column) {
+  for (int row = 0; row < effectLevel; ++row) {
+    for (int column = 0; column < effectLevel; ++column) {
       CParticle* created = CreateMultiTexParticle(&this->positionVector, -1);
       if (!created) {
         continue;
