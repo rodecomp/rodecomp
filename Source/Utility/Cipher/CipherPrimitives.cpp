@@ -787,12 +787,6 @@ void BuildKeyedBoxes(unsigned char* boxes, const unsigned char* key, int keyLeng
   }
 }
 
-// INLINED
-static __forceinline unsigned short SboxRound(unsigned int a, unsigned int b, unsigned int c) {
-  return (g_sboxLookup[(a & 0x36) | (c & 0x6900) | (b & 0x6C0)] & 0xF) | (g_sboxLookup[(c & 0x22A) | (a & 0x2980) | (b & 0x9011)] & 0xCC00) |
-         (g_sboxLookup[(b & 0x4828) | (c & 0x10C4) | (a & 0x8601)] & 0x3300) | (g_sboxLookup[(c & 0x8411) | (a & 0x5048) | (b & 0x2106)] & 0xF0);
-}
-
 // OFFSET: 0x00B120B0
 // FUNCTION: fn_18412
 void SboxEncryptBlock(unsigned char* block, const unsigned short* key) {
@@ -801,12 +795,35 @@ void SboxEncryptBlock(unsigned char* block, const unsigned short* key) {
   unsigned short x2 = static_cast<unsigned short>((block[5] << 8) | block[4]);
   unsigned short x3 = static_cast<unsigned short>((block[7] << 8) | block[6]);
 
-  for (int round = 8; round != 0; --round) {
-    x0 ^= SboxRound(static_cast<unsigned short>(key[0] ^ x1), static_cast<unsigned short>(key[1] ^ x2), static_cast<unsigned short>(key[2] ^ x3));
-    x1 ^= SboxRound(static_cast<unsigned short>(key[3] ^ x2), static_cast<unsigned short>(key[4] ^ x3), static_cast<unsigned short>(key[5] ^ x0));
-    x2 ^= SboxRound(static_cast<unsigned short>(key[6] ^ x3), static_cast<unsigned short>(key[7] ^ x0), static_cast<unsigned short>(key[8] ^ x1));
-    x3 ^= SboxRound(static_cast<unsigned short>(key[9] ^ x0), static_cast<unsigned short>(key[10] ^ x1), static_cast<unsigned short>(key[11] ^ x2));
-    key += 12;
+  const unsigned short* roundKey = key;
+  unsigned short a;
+  unsigned short b;
+  unsigned short c;
+
+  for (int round = 0; round < 8; ++round) {
+    a = x1 ^ *roundKey++;
+    b = x2 ^ *roundKey++;
+    c = x3 ^ *roundKey++;
+    x0 ^= (g_sboxLookup[(a & 0x36) | (b & 0x6C0) | (c & 0x6900)] & 0xF) | (g_sboxLookup[(a & 0x2980) | (b & 0x9011) | (c & 0x22A)] & 0xCC00) |
+          (g_sboxLookup[(a & 0x8601) | (b & 0x4828) | (c & 0x10C4)] & 0x3300) | (g_sboxLookup[(a & 0x5048) | (b & 0x2106) | (c & 0x8411)] & 0xF0);
+
+    a = x2 ^ *roundKey++;
+    b = x3 ^ *roundKey++;
+    c = x0 ^ *roundKey++;
+    x1 ^= (g_sboxLookup[(a & 0x36) | (b & 0x6C0) | (c & 0x6900)] & 0xF) | (g_sboxLookup[(a & 0x2980) | (b & 0x9011) | (c & 0x22A)] & 0xCC00) |
+          (g_sboxLookup[(a & 0x8601) | (b & 0x4828) | (c & 0x10C4)] & 0x3300) | (g_sboxLookup[(a & 0x5048) | (b & 0x2106) | (c & 0x8411)] & 0xF0);
+
+    a = x3 ^ *roundKey++;
+    b = x0 ^ *roundKey++;
+    c = x1 ^ *roundKey++;
+    x2 ^= (g_sboxLookup[(a & 0x36) | (b & 0x6C0) | (c & 0x6900)] & 0xF) | (g_sboxLookup[(a & 0x2980) | (b & 0x9011) | (c & 0x22A)] & 0xCC00) |
+          (g_sboxLookup[(a & 0x8601) | (b & 0x4828) | (c & 0x10C4)] & 0x3300) | (g_sboxLookup[(a & 0x5048) | (b & 0x2106) | (c & 0x8411)] & 0xF0);
+
+    a = x0 ^ *roundKey++;
+    b = x1 ^ *roundKey++;
+    c = x2 ^ *roundKey++;
+    x3 ^= (g_sboxLookup[(a & 0x36) | (b & 0x6C0) | (c & 0x6900)] & 0xF) | (g_sboxLookup[(a & 0x2980) | (b & 0x9011) | (c & 0x22A)] & 0xCC00) |
+          (g_sboxLookup[(a & 0x8601) | (b & 0x4828) | (c & 0x10C4)] & 0x3300) | (g_sboxLookup[(a & 0x5048) | (b & 0x2106) | (c & 0x8411)] & 0xF0);
   }
 
   block[0] = static_cast<unsigned char>(x0);
