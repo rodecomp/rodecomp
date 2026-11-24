@@ -2048,11 +2048,11 @@ void UIMyStyleWnd::LoadLikeList() {
         }
 
         UIDisplayCharacter* display = new UIDisplayCharacter();
-        display->slotNumber = style.slotNum;
+        display->headPalette = style.headPaletteNum;
         display->robe = style.robe;
         display->head = style.headStyle;
+        display->slotNumber = style.slotNum;
         display->job = style.bodyStyle;
-        display->headPalette = style.headPaletteNum;
         display->bodyStyle = style.bodyPaletteNum;
         display->topAccessory = style.topAccNum;
         display->middleAccessory = style.midAccNum;
