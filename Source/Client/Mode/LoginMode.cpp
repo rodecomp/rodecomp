@@ -899,10 +899,10 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
   MapStateEntry entry;
   entry.index = -1;
   const MapStateInfo* state = packet->states;
-  for (int i = 0; i < count; ++i, ++state) {
+  for (int i = 0; i < count; ++state, ++i) {
     if (state->state == 0) {
       entry.index = i;
-      entry.data = packet->states[i].data;
+      entry.data = state->data;
       this->mapStates.push_back(entry);
     }
   }
