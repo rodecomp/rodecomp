@@ -238,8 +238,6 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       }
       if (length - 2 == this->cursor && this->lineBreaks[this->textY]) {
         g_serverLanguage->KeyDown(key, data);
-        g_serverLanguage->KeyDown(key, data);
-        return;
       }
     }
     g_serverLanguage->KeyDown(key, data);
@@ -262,8 +260,8 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       for (int line = 0; line < this->textY; ++line) {
         offset -= static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      const int length = static_cast<int>(std::strlen(this->wrappedLines[this->textY].c_str()));
-      g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? length - offset - 2 : length - offset);
+      const int remaining = static_cast<int>(std::strlen(this->wrappedLines[this->textY].c_str())) - offset;
+      g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? remaining - 2 : remaining);
       g_serverLanguage->Selection(this->anchor, this->cursor);
     }
     this->caretAtLineEnd = 1;
