@@ -5,12 +5,16 @@
 
 extern double s_shutDownNoticeSeconds[6];
 
+class Timestamp;
+
 class CShutDownSchedule : public CSchedule {
 public:
   void Process(const std::uint64_t& now) override;
   __declspec(noinline) void UpdateNotice();
 
-  /* 0030 */ void* ownedTimestamp;
+  bool IsInShutdownHours() const;
+
+  /* 0030 */ Timestamp* startTime;
   /* 0034 */ std::uint32_t embeddedTimestamp;
   /* 0038 */ int seconds;
   /* 003C */ int noticeIndex;

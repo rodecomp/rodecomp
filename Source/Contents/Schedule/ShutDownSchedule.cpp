@@ -6,6 +6,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "Utility/Timestamp.h"
 // GLOBAL: gl_24854
 double s_shutDownNoticeSeconds[6] = {
   1800.0,
@@ -28,6 +29,12 @@ void CShutDownSchedule::UpdateNotice() {
 
     ++this->noticeIndex;
   }
+}
+
+// OFFSET: 0x00BA8DF0
+// FUNCTION: fn_46724
+bool CShutDownSchedule::IsInShutdownHours() const {
+  return static_cast<unsigned int>(this->startTime->Hour()) <= 5;
 }
 
 // OFFSET: 0x00BA8E00
