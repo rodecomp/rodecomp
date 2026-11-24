@@ -1511,8 +1511,8 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
 
   matched = 0;
   char skip = 1;
-  short position = 0;
-  for (short index = 0; index < length; ++index) {
+  int position = 0;
+  for (unsigned short index = 0; static_cast<short>(index) < length; ++index) {
     CountSameNameChar(first[index], second[position], matched);
 
     if (matched != index + 1 && skip == 1) {
