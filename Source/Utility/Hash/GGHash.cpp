@@ -205,7 +205,7 @@ int CGGHash::VerifyBuffer(const wchar_t* name, const unsigned char* buf, unsigne
 
 // OFFSET: 0x004019E0
 // FUNCTION: fn_00117
-int CGGHash::VerifyFile(const wchar_t* filename) {
+__declspec(safebuffers) int CGGHash::VerifyFile(const wchar_t* filename) {
   this->m_error = 0;
   if (filename == nullptr) {
     this->m_error = 1;

@@ -13,6 +13,13 @@
 
 namespace {
 // INLINED
+void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
+
+// INLINED
 __forceinline int RandomSpan(int range) {
   if (range == 0) {
     return 0;
@@ -45,9 +52,7 @@ void CPowderingEffect::CreateSpriteParticles() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetParticleIndices(*particle, 1, i, 0);
 
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");
@@ -206,15 +211,11 @@ void CPowderingEffect::Open() {
 void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
   CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
 
-  const int r1Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
-
+  const float xVal = static_cast<float>(RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1);
   const float yVal = static_cast<float>(RandomSpan(7) + 7);
+  const float zVal = static_cast<float>(RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1);
 
-  const int r2Final = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
-
-  spriteParticle->velocity.y = -yVal;
-  spriteParticle->velocity.x = static_cast<float>(r1Final);
-  spriteParticle->velocity.z = static_cast<float>(r2Final);
+  spriteParticle->velocity = vector3d{xVal, -yVal, zVal};
 
   const int r3 = RandomSpan(3) + 1;
 

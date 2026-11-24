@@ -39,6 +39,16 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
     }
 
     break;
+  case LINE_SEGMENT_TIPBOX:
+    if (button && button->GetLinesCount() != 0) {
+      const std::string& tip = button->GetLine(0);
+
+      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
+        static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
+      }
+    }
+
+    break;
   case LINE_SEGMENT_NAVI: {
     if (!button) {
       break;
@@ -59,7 +69,7 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
       int policy = std::atoi(button->GetLine(4).c_str());
 
       if (policy == -222) {
-        std::string name = "$$DB ";
+        std::string name("$$DB ", 5);
 
         if (type != 3) {
           name.clear();
@@ -118,16 +128,6 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 
     break;
   }
-  case LINE_SEGMENT_TIPBOX:
-    if (button && button->GetLinesCount() != 0) {
-      const std::string& tip = button->GetLine(0);
-
-      if (UIWindow* window = g_windowMgr.EnsureWindow(WID_TIPBOXWND)) {
-        static_cast<UITipboxWnd*>(window)->ShowTip(std::atoi(tip.c_str()));
-      }
-    }
-
-    break;
   case LINE_SEGMENT_QUEST:
     if (button) {
       const int value = std::atoi(button->GetLine(0).c_str());
@@ -143,9 +143,9 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
 // INLINED
 __forceinline void UITextViewer::AppendText(char* text, int width, int carriageReturns, int pixels) {
   const int lineWidth = width == 0 ? 35 : width;
-  std::vector<std::string> wrapped;
 
   if (width == 138) {
+    std::vector<std::string> wrapped;
     WrapPlainText(text, wrapped, 38);
 
     for (unsigned index = 0; index < wrapped.size(); ++index) {
@@ -153,71 +153,72 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     }
 
     this->plainTextMode = 1;
-    return;
-  }
-
-  if (HasTextLinks(text)) {
-    const std::string expanded = ExpandTextEscapes(text);
-    strcpy_s(text, std::strlen(text) + 1, expanded.c_str());
-    std::string display = DisplayUrlTextTag(text);
-    display = DisplayNavigationTextTag(display);
-    display = DisplayTipBoxTextTag(display);
-    display = DisplayItemTextTag(display);
-    display = RemoveTextLinkInfo(display);
-
-    if (g_windowMgr.chatWnd) {
-      display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
-    }
-
-    display = g_navigationLinkParser->DisplayNavigationLink(display);
-    display = DisplayQuestTextTag(display);
-
-    if (pixels) {
-      int scrollWidth = 0;
-      if (carriageReturns) {
-        scrollWidth = this->verticalBar->geometry.width + 2;
-      }
-
-      this->WrapPixelText(display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
-
-      for (unsigned index = 0; index < wrapped.size(); ++index) {
-        this->AddLine(wrapped[index].c_str());
-      }
-    } else {
-      WrapRichText(display.c_str(), wrapped, lineWidth, carriageReturns != 0);
-
-      for (unsigned index = 0; index < wrapped.size(); ++index) {
-        this->AddLine(wrapped[index].c_str());
-      }
-    }
-
-    this->AddItemLinks(text, static_cast<unsigned>(wrapped.size()));
-    this->AddUrlLinks(text, static_cast<unsigned>(wrapped.size()));
-    this->AddNaviLinks(text, static_cast<unsigned>(wrapped.size()));
-    this->AddTipLinks(text, static_cast<unsigned>(wrapped.size()));
-    this->AddQuestLinks(text, static_cast<unsigned>(wrapped.size()));
   } else {
-    if (pixels) {
-      int scrollWidth = 0;
-      if (carriageReturns) {
-        scrollWidth = this->verticalBar->geometry.width + 2;
+    std::vector<std::string> wrapped;
+    if (HasTextLinks(text)) {
+      const std::string expanded = ExpandTextEscapes(text);
+      strcpy_s(text, std::strlen(text) + 1, expanded.c_str());
+      std::string display = DisplayUrlTextTag(text);
+      display = DisplayNavigationTextTag(display);
+      display = DisplayTipBoxTextTag(display);
+      display = DisplayItemTextTag(display);
+      display = RemoveTextLinkInfo(display);
+
+      if (g_windowMgr.chatWnd) {
+        display = g_windowMgr.chatWnd->ConvertChat(display);
       }
 
-      this->WrapPixelText(text, wrapped, this->geometry.width - scrollWidth - 4);
+      NavigationLinkParser* parser = g_navigationLinkParser;
+      display = parser->DisplayNavigationLink(display);
+      display = DisplayQuestTextTag(display);
 
-      for (unsigned index = 0; index < wrapped.size(); ++index) {
-        this->AddLine(wrapped[index].c_str());
+      if (pixels) {
+        int scrollWidth = 0;
+        if (carriageReturns) {
+          scrollWidth = this->verticalBar->geometry.width + 2;
+        }
+
+        this->WrapPixelText(display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
+
+        for (unsigned index = 0; index < wrapped.size(); ++index) {
+          this->AddLine(wrapped[index].c_str());
+        }
+      } else {
+        WrapRichText(display.c_str(), wrapped, lineWidth, carriageReturns != 0);
+
+        for (unsigned index = 0; index < wrapped.size(); ++index) {
+          this->AddLine(wrapped[index].c_str());
+        }
       }
+
+      this->AddItemLinks(text, static_cast<unsigned>(wrapped.size()));
+      this->AddUrlLinks(text, static_cast<unsigned>(wrapped.size()));
+      this->AddNaviLinks(text, static_cast<unsigned>(wrapped.size()));
+      this->AddTipLinks(text, static_cast<unsigned>(wrapped.size()));
+      this->AddQuestLinks(text, static_cast<unsigned>(wrapped.size()));
     } else {
-      WrapRichText(text, wrapped, lineWidth, carriageReturns != 0);
+      if (pixels) {
+        int scrollWidth = 0;
+        if (carriageReturns) {
+          scrollWidth = this->verticalBar->geometry.width + 2;
+        }
 
-      for (unsigned index = 0; index < wrapped.size(); ++index) {
-        this->AddLine(wrapped[index].c_str());
+        this->WrapPixelText(text, wrapped, this->geometry.width - scrollWidth - 4);
+
+        for (unsigned index = 0; index < wrapped.size(); ++index) {
+          this->AddLine(wrapped[index].c_str());
+        }
+      } else {
+        WrapRichText(text, wrapped, lineWidth, carriageReturns != 0);
+
+        for (unsigned index = 0; index < wrapped.size(); ++index) {
+          this->AddLine(wrapped[index].c_str());
+        }
       }
     }
-  }
 
-  this->plainTextMode = 0;
+    this->plainTextMode = 0;
+  }
 }
 
 // OFFSET: 0x00899E90
@@ -227,16 +228,18 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
+      return 0;
     }
 
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
+      return 0;
     }
 
-    return 0;
+    break;
 
   case UM_SETTEXT:
     this->AppendText(reinterpret_cast<char*>(argument1), static_cast<int>(argument2), static_cast<int>(argument3), static_cast<int>(argument4));
@@ -279,4 +282,6 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+
+  return 0;
 }

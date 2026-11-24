@@ -129,12 +129,13 @@ void UIAchTab::DrawGroup(int group) {
   std::string name = this->groups[group].name;
   int textY = (this->groupHeight - this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
 
-  if (group > this->selectedGroup) {
-    y += std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
-    textY += std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
+  auto& selectedGroupRef = this->selectedGroup;
+  if (group > selectedGroupRef) {
+    y += std::min(this->SubCount(selectedGroupRef), this->visibleSubs) * this->subHeight;
+    textY += std::min(this->SubCount(selectedGroupRef), this->visibleSubs) * this->subHeight;
   }
 
-  if (group == this->selectedGroup) {
+  if (group == selectedGroupRef) {
     this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_press.bmp"), false);
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
 
@@ -147,29 +148,28 @@ void UIAchTab::DrawGroup(int group) {
       }
 
       if (index >= this->scrollPos) {
-        const int rowY = (group + 1) * this->groupHeight + this->subHeight * row;
+        y = (group + 1) * this->groupHeight + this->subHeight * row;
         ++row;
         name = this->groups[group].subs[it->first];
         const int height = this->TextHeight(name.c_str(), 0, 0, this->fontHeight, 0, 0);
-        const int rowHeight = this->subHeight;
-        std::uint32_t color;
+        const int rowTextY = (this->subHeight - height) / 2 + y;
 
         if (it->first == this->selectedSub) {
-          this->DrawBitmap(0, rowY, AchievementBitmap("유저인터페이스\\achievement_re\\tab_sub_press.bmp"), false);
-          this->DrawBitmap(12, rowY + 7, AchievementBitmap("유저인터페이스\\achievement_re\\tab_subarrow.bmp"), true);
-          color = this->selectedSubColor;
+          this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_sub_press.bmp"), false);
+          this->DrawBitmap(12, y + 7, AchievementBitmap("유저인터페이스\\achievement_re\\tab_subarrow.bmp"), true);
+          this->DrawTextAt(26, rowTextY, name.c_str(), 0, 0, this->fontHeight, this->selectedSubColor, 0, 0);
         } else {
           const char* bitmap = it->first == this->hoverSub ? "유저인터페이스\\achievement_re\\tab_sub_over.bmp" : "유저인터페이스\\achievement_re\\tab_sub_out.bmp";
-          this->DrawBitmap(0, rowY, AchievementBitmap(bitmap), false);
-          color = this->subColor;
+          CBitmapRes* background = AchievementBitmap(bitmap);
+          this->DrawBitmap(0, y, background, false);
+          this->DrawTextAt(26, rowTextY, name.c_str(), 0, 0, this->fontHeight, this->subColor, 0, 0);
         }
-
-        this->DrawTextAt(26, (rowHeight - height) / 2 + rowY, name.c_str(), 0, 0, this->fontHeight, color, 0, 0);
       }
     }
   } else {
     const char* bitmap = group == this->hoverGroup ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
-    this->DrawBitmap(0, y, AchievementBitmap(bitmap), false);
+    CBitmapRes* background = AchievementBitmap(bitmap);
+    this->DrawBitmap(0, y, background, false);
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
   }
 }
@@ -194,7 +194,11 @@ bool UIAchTab::HitTestTab(int x, int y, int* a, int* b) {
 
   const int top = (this->selectedGroup + 1) * this->groupHeight;
   const int extent = std::min(this->SubCount(this->selectedGroup), this->visibleSubs) * this->subHeight;
-  if (y >= top) {
+  if (y < top) {
+    *a = y / this->groupHeight;
+    *b = -1;
+    return true;
+  } else {
     if (y > top && y < extent + top) {
       *a = this->selectedGroup;
       *b = (y - top) / this->subHeight + this->scrollPos;
@@ -267,7 +271,9 @@ void UIAchUpperWnd::OnCreate(int, int) {
   gauge->value = 0;
   gauge->maximum = 100;
   this->levelGauge->Move(47, 24);
-  this->levelGauge->text.assign(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE));
+  gauge = this->levelGauge;
+  const char* nextGrade = LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE);
+  gauge->text = nextGrade;
   this->AddChild(this->levelGauge);
 
   gauge = new (std::nothrow) UICustomGageBar();
@@ -351,30 +357,29 @@ void UIAchListWnd::Paint() {
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_list.bmp"), false);
 
   for (int row = 0; row < this->rowCount; ++row) {
-    const unsigned index = this->firstRow + row;
-    if (index >= this->ids.size()) {
+    if (static_cast<unsigned>(this->firstRow + row) >= this->ids.size()) {
       continue;
     }
 
-    std::map<int, AchievementInfo>* achievements = this->achievementList;
-    const auto found = achievements->find(this->ids[index]);
-    if (found == achievements->end()) {
+    const auto found = this->achievementList->find(this->ids[this->firstRow + row]);
+    if (found == this->achievementList->end()) {
       continue;
     }
 
     const AchievementInfo& info = found->second;
     const SessionRecord6144 record = g_session.FindAchievementRecord(found->first);
-    if (this->selectedIndex != this->firstRow + row) {
-      if (record.completed != 1) {
-        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
+    if (this->selectedIndex == this->firstRow + row) {
+      if (record.completed == 1) {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_press.bmp"), false);
       } else {
-        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_press.bmp"), false);
       }
     } else {
-      this->DrawBitmap(
-        0, this->rowHeight * row,
-        AchievementBitmap(record.completed == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
-      );
+      if (record.completed == 1) {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
+      } else {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
+      }
     }
 
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\achievement_re\\icon_" + info.iconName + ".bmp").c_str())));
@@ -386,7 +391,7 @@ void UIAchListWnd::Paint() {
       this->DrawBitmap(8, this->rowHeight * row + 3, AchievementBitmap("유저인터페이스\\achievement_re\\list_pin.bmp"), true);
     }
 
-    this->DrawTextAt(53, this->rowHeight * row + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(53, this->rowHeight * row + 14, found->second.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
     this->DrawCenteredText(258, this->rowHeight * row + 14, FormatOwnedString("%3d", info.points).c_str(), 40, 0, 12, 0xA55239, 1);
     this->DrawTextAt(10, this->rowHeight * row + 54, info.summaryText.c_str(), 0, 0, 12, 0xA55239, 0, 0);
     if (record.completed == 1) {
@@ -1102,8 +1107,7 @@ void UIAchTracingWnd::Paint() {
   }
 
   for (int pass = 0; pass < 2; ++pass) {
-    UITextButton** buttons = this->toggleButtons;
-    for (unsigned int index = 0; index < g_achievementTracking.size(); ++index, ++buttons) {
+    for (unsigned int index = 0; index < g_achievementTracking.size(); ++index) {
       if (pass == 0) {
         if (g_achievementTracking[index].pinned == 1) {
           continue;
@@ -1112,36 +1116,32 @@ void UIAchTracingWnd::Paint() {
         continue;
       }
 
-      buttons[0]->Enable(1);
-      buttons[3]->Enable(1);
-      UITextButton* toggle = buttons[0];
-      toggle->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
-      toggle->ResizeToText();
-      buttons[0]->Move(10, y);
-      buttons[0]->m_value = g_achievementTracking[index].id;
-      buttons[3]->Move(this->geometry.width - 20, y);
-      buttons[3]->m_value = g_achievementTracking[index].id;
+      this->toggleButtons[index]->Enable(1);
+      this->openButtons[index]->Enable(1);
+      this->toggleButtons[index]->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
+      this->toggleButtons[index]->ResizeToText();
+      this->toggleButtons[index]->Move(10, y);
+      UITextButton* toggleButton = this->toggleButtons[index];
+      toggleButton->m_value = g_achievementTracking[index].id;
+      this->openButtons[index]->Move(this->geometry.width - 20, y);
+      UITextButton* openButton = this->openButtons[index];
+      openButton->m_value = g_achievementTracking[index].id;
 
       if (!g_achievementTracking[index].expanded) {
-        this->DrawTextAt(buttons[0]->geometry.width + 16, y + 1,
+        this->DrawTextAt(this->toggleButtons[index]->geometry.width + 16, y + 1,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
         );
-        this->DrawTextAt(buttons[0]->geometry.width + 15, y,
+        this->DrawTextAt(this->toggleButtons[index]->geometry.width + 15, y,
           FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0, 1, 0
         );
       }
 
-      AchTracingEntry& entry = g_achievementTracking[index];
       y += 15;
-      if (entry.expanded == 1) {
-        for (auto conditionIt = entry.conditions.begin(); conditionIt != entry.conditions.end(); ++conditionIt) {
-          const AchTracingCondition& condition = *conditionIt;
-          this->DrawTextAt(21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
-          std::uint32_t color = 0xFFFFFF;
-          if (condition.completed) {
-            color = 0xDFF6F;
-          }
-          this->DrawTextAt(20, y, condition.text.c_str(), 0, 0, 12, color, 0, 0);
+      if (g_achievementTracking[index].expanded == 1) {
+        for (auto conditionIt = g_achievementTracking[index].conditions.begin(); conditionIt != g_achievementTracking[index].conditions.end(); ++conditionIt) {
+          this->DrawTextAt(21, y + 1, conditionIt->text.c_str(), 0, 0, 12, 0, 0, 0);
+          const std::uint32_t color = conditionIt->completed ? 0xDFF6F : 0xFFFFFF;
+          this->DrawTextAt(20, y, conditionIt->text.c_str(), 0, 0, 12, color, 0, 0);
           y += 15;
         }
       }
@@ -1317,7 +1317,8 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case UM_LIST_SELECTION:
     if (this->achievements.find(argument1) != this->achievements.end()) {
-      this->view->SetAchievement(argument1, &this->achievements[argument1]);
+      AchievementInfo* info = &this->achievements[argument1];
+      this->view->SetAchievement(argument1, info);
       this->Invalidate();
       return 0;
     }

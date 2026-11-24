@@ -94,3 +94,5 @@ extern template std::list<BroadcastBalloonLine>::~list();
 template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const std::int64_t, RodexMail>, void*>*>
 RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
 template __declspec(noinline) void std::list<ShortcutCooldownRecord>::push_back(const ShortcutCooldownRecord&);
+template __declspec(noinline) void std::_Destroy_range<std::allocator<SearchStoreResult>>(SearchStoreResult*, SearchStoreResult* const, std::allocator<SearchStoreResult>&) noexcept;
+template __forceinline void std::vector<SearchStoreResult>::clear() noexcept;

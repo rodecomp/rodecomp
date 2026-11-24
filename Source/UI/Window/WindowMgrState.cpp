@@ -19,6 +19,7 @@ __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
+#include "Contents/Messenger/MessengerWindows.h"
 #include "Contents/Navigation/NavigationManager.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Contents/World/World.h"
@@ -106,6 +107,48 @@ int UIWindowMgr::FindMiniPartyCell() {
 // FUNCTION: fn_17163
 UIWindow* UIWindowMgr::GetHoverWindow() {
   return this->hoverWindow;
+}
+
+// OFFSET: 0x00A91730
+// FUNCTION: fn_17164
+UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
+  for (UIWindow* window : this->snapExcluded) {
+    if (accountId != static_cast<UIMiniPartyWnd*>(window)->GetMember().accountId) {
+      continue;
+    }
+    return window;
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x00AA64D0
+// FUNCTION: fn_17230
+void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
+  if (this->messengerGroupWnd) {
+    this->messengerGroupWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  }
+  const unsigned int accountId = target->accountId;
+  for (UIWindow* window : this->snapExcluded) {
+    if (accountId != static_cast<UIMiniPartyWnd*>(window)->GetMember().accountId) {
+      continue;
+    }
+    if (window) {
+      window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
+    }
+    break;
+  }
+}
+
+// OFFSET: 0x00AAAF10
+// FUNCTION: fn_17276
+__declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
+  for (std::list<UIWindow*>::iterator it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
+    if (static_cast<unsigned int>(accountId) != static_cast<UIMiniPartyWnd*>(*it)->GetMember().accountId) {
+      continue;
+    }
+    (*it)->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, accountId, lower, upper);
+    break;
+  }
 }
 
 // OFFSET: 0x00A91C10
@@ -1227,6 +1270,11 @@ void UIWindowMgr::CycleWindowVisibilityTwice() {
   this->CycleWindowVisibility(4);
 }
 
+// INLINED
+static void PushRendered(UIWindowMgr* manager, UIWindow* window) {
+  manager->rendered.push_back(window);
+}
+
 // OFFSET: 0x00A8FDB0
 // FUNCTION: fn_17151
 int UIWindowMgr::RunEmailAddress() {
@@ -1237,7 +1285,7 @@ int UIWindowMgr::RunEmailAddress() {
   UIWindow* window = new UIEmailAddressWnd();
   window->SetSize(280, 48);
   window->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
-  this->rendered.push_back(window);
+  PushRendered(this, window);
 
   if (this->inputWindow) {
     this->persistentWindows.insert(this->inputWindow->Root());
@@ -1247,7 +1295,6 @@ int UIWindowMgr::RunEmailAddress() {
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
   int response;
-  CMode* pump = g_modeMgr.currentMode;
 
   for (;;) {
     if (g_modalImmediate != 0) {
@@ -1283,12 +1330,11 @@ int UIWindowMgr::RunEmailAddress() {
       break;
     }
 
-    if (pump) {
-      pump->Update();
-      pump = g_modeMgr.currentMode;
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->Update();
     }
 
-    if (g_session.GetOption(20) > 0) {
+    if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
       this->activeWindowId = 0;
       this->modalResponse = 0;
 

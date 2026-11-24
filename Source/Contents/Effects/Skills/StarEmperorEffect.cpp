@@ -4,9 +4,17 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
+
+// INLINED
+static void SetParticleIndices(CParticle& particle, int group, int column, int row) {
+  particle.columnIndex = column;
+  particle.rowIndex = row;
+  particle.groupIndex = group;
+}
 
 // OFFSET: 0x0072BBE0
 // FUNCTION: fn_07474
@@ -33,9 +41,7 @@ __forceinline void CStarEmperorEffect::BuildRings() {
   for (int i = 0; i < 10; ++i) {
     CParticle* particle = CreateParticle(&this->positionVector, 0x201);
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetParticleIndices(*particle, 1, i, 0);
     particle->SetTexture("effect\\star_emperor\\ring_white.tga");
     particle->phaseParameter = 36;
     this->rings.push_back(particle);
@@ -48,8 +54,8 @@ void CStarEmperorEffect::BuildSphere() {
   for (int row = 0; row < 6; ++row) {
     const float top = static_cast<float>(row) * 0.16666667f;
     const float bottom = static_cast<float>(row + 1) * 0.16666667f;
-    const float topPitch = (static_cast<float>(row) * 30.0f - 90.0f) / 180.0f * 3.141592f;
-    const float bottomPitch = (static_cast<float>(row + 1) * 30.0f - 90.0f) / 180.0f * 3.141592f;
+    const float topPitch = (static_cast<float>(row) * 30.0f - g_cameraYawOffset) / 180.0f * 3.141592f;
+    const float bottomPitch = (static_cast<float>(row + 1) * 30.0f - g_cameraYawOffset) / 180.0f * 3.141592f;
 
     for (int column = 0; column < 12; ++column) {
       CParticle* particle = CreateParticle(&this->positionVector, 1);

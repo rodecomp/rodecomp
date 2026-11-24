@@ -60,6 +60,7 @@ struct ITEM_INFO {
   explicit ITEM_INFO(int unused);
   ITEM_INFO(const ITEM_INFO& other);
   ITEM_INFO& operator=(const ITEM_INFO& other);
+  ~ITEM_INFO() {}
   void Reset();
   std::uint32_t Assign(const ModeDragState& item);
   ITEM_INFO& AssignBasic(const RawItemBasic& item);

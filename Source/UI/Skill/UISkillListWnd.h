@@ -39,9 +39,9 @@ public:
   /* 00B4 */ UIResizer* resizer;
   /* 00B8 */ UIScrollBar* scrollBar;
   /* 00BC */ UIBitmapButton* buttons[2];
-  /* 00C4 */ UIWindow* upgradeButtons[7];
-  /* 00E0 */ UIWindow* levelButtons[7];
-  /* 00FC */ UIWindow* levelLabels[7];
+  /* 00C4 */ UIBitmapButton* upgradeButtons[7];
+  /* 00E0 */ UIBitmapButton* levelButtons[7];
+  /* 00FC */ UIBitmapButton* levelLabels[7];
   /* 0118 */ int hovered;
   /* 011C */ int scroll;
   /* 0120 */ int columns;

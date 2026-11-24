@@ -31,10 +31,10 @@ namespace {
   }
 
   // INLINED
-  __forceinline void Light(const float* normal, const float* values, const float* direction, const float* diffuse, const float* ambient, float* output) {
-    const float x = ((normal[0] * values[0] + normal[1] * values[3]) + normal[2] * values[6]) + 0.0f;
-    const float y = ((normal[0] * values[1] + normal[1] * values[4]) + normal[2] * values[7]) + 0.0f;
-    const float z = ((normal[0] * values[2] + normal[1] * values[5]) + normal[2] * values[8]) + 0.0f;
+  __forceinline void Light(const float* normal, const matrix transform, const float* direction, const float* diffuse, const float* ambient, float* output) {
+    const float x = ((normal[0] * transform.values[0] + normal[1] * transform.values[3]) + normal[2] * transform.values[6]) + 0.0f;
+    const float y = ((normal[0] * transform.values[1] + normal[1] * transform.values[4]) + normal[2] * transform.values[7]) + 0.0f;
+    const float z = ((normal[0] * transform.values[2] + normal[1] * transform.values[5]) + normal[2] * transform.values[8]) + 0.0f;
     const float inverse = InverseLength((y * y + x * x) + z * z);
     const float dot = ((y * inverse) * direction[1] + (x * inverse) * direction[0]) + (z * inverse) * direction[2];
     const float amount = dot > 0.0f ? dot : 0.0f;
@@ -65,10 +65,12 @@ namespace {
 
   // INLINED
   __forceinline void GroundColor(const C3dNode* node, const GroundGeometry& ground, const float* matrix, const std::array<float, 3>& vertex, std::uint32_t* output) {
-    ground.WorldColor(vector3d{
-      (((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9]) + node->model->GetPosition().x,
-      (((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10]) + node->model->GetPosition().y,
-      (((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]) + node->model->GetPosition().z}, output);
+    vector3d position{
+      ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9],
+      ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10],
+      ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]};
+    position += node->model->GetPosition();
+    ground.WorldColor(position, output);
   }
 
   // INLINED
@@ -150,7 +152,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       for (unsigned corner = 0; corner < 3; ++corner) {
         float light[3];
-        Light(&normals[index * 3 + corner].x, rotation.values, direction, diffuse, ambient, light);
+        Light(&normals[index * 3 + corner].x, rotation, direction, diffuse, ambient, light);
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);
       }
     }
@@ -164,7 +166,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
 
     for (int index = 0; index < this->mesh->faceCount; ++index) {
       float light[3];
-      Light(&normals[index].x, rotation.values, direction, diffuse, ambient, light);
+      Light(&normals[index].x, rotation, direction, diffuse, ambient, light);
 
       for (unsigned corner = 0; corner < 3; ++corner) {
         *color++ = LitColor(this->model->color, this->alpha, textureVertices[faces[index].textureVertices[corner]].shaded, light);

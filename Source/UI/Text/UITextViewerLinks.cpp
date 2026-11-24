@@ -322,8 +322,8 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
         auto* button = new UITextButton();
         button->Configure(extracted[index].display.c_str(), 0x00F4934A, 0, 12, 0, 1);
         const int height = button->geometry.height;
-        const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
-        button->ResizeToTextClipped(width + 1, height);
+        const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0) + 1;
+        button->ResizeToTextClipped(width, height);
         button->m_hoverColor = 0x00FF7864;
         button->SetId(LINK_BUTTON_TIP);
         this->SplitTextLinkArguments(extracted[index].metadata, button);

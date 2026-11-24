@@ -10,7 +10,15 @@
 // OFFSET: 0x005666E0
 // FUNCTION: fn_02225
 void CRendererDX9::DrawOpaqueQueues() {
-  ScopedDeviceStateDX9 restore = this->device->SaveState();
+  const auto bindTexture = [this](CTexture* texture) {
+    if (texture) {
+      this->device->SetTexture(0, static_cast<CTextureDX9*>(texture)->NativeTexture());
+    } else {
+      this->device->SetTexture(0, nullptr);
+    }
+  };
+
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
   this->device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   this->device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
   std::sort(this->queue_015C.begin(), this->queue_015C.end(), [](const RenderCommand* left, const RenderCommand* right) {
@@ -19,7 +27,7 @@ void CRendererDX9::DrawOpaqueQueues() {
 
   for (RenderCommand* const& command : this->queue_015C) {
     if (command) {
-      this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      bindTexture(command->texture);
       this->DrawPrimitive(command);
     }
   }
@@ -32,7 +40,7 @@ void CRendererDX9::DrawOpaqueQueues() {
 
   for (RenderCommand* const& command : this->queue_01B0) {
     if (command) {
-      this->device->SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      bindTexture(command->texture);
       this->DrawPrimitive(command);
     }
   }

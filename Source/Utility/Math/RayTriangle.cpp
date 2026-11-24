@@ -44,8 +44,9 @@ int IntersectRayTriangle(const float* ray, const float* first, const float* seco
   const float inverse = unit / determinant;
   Subtract(tvec, ray, first);
 
-  u = Dot(tvec, pvec) * inverse;
-  if (u < 0.0f || u > unit) {
+  const float barycentricU = Dot(tvec, pvec) * inverse;
+  u = barycentricU;
+  if (barycentricU < 0.0f || barycentricU > unit) {
     return false;
   }
 

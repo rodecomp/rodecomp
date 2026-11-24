@@ -209,7 +209,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_messageEdit->Move(8, 80);
   {
     CUIEditBox* edit = this->m_messageEdit;
-    edit->SetText(std::string(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL)));
+    const std::string placeholder(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL));
+    edit->SetText(placeholder);
   }
   this->m_messageEdit->SetTextColor(0x808080);
   this->m_messageEdit->SetBackgroundColor(0xFFF3EE);
@@ -234,7 +235,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->firstTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->firstTypeText;
-    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL)));
+    const std::string firstTypeFont(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL));
+    text->SetFont(firstTypeFont);
   }
   this->firstTypeText->SetFontHeight(12);
   this->firstTypeText->SetBold(0);
@@ -254,7 +256,8 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->secondTypeText->SetAlign(0, 0);
   {
     CUIStaticText* text = this->secondTypeText;
-    text->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL)));
+    const std::string secondTypeFont(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL));
+    text->SetFont(secondTypeFont);
   }
   this->secondTypeText->SetFontHeight(12);
   this->secondTypeText->SetBold(0);
@@ -267,8 +270,11 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->cancelButton->SetSize(58, 20);
   this->cancelButton->Move(117, 165);
   this->cancelButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
-  this->cancelButton->disabled = 0;
-  this->cancelButton->Invalidate();
+  {
+    auto* control = this->cancelButton;
+    control->disabled = 0;
+    control->Invalidate();
+  }
   {
     CUIImageButton* button = this->cancelButton;
     const std::string cancelDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL));
@@ -283,8 +289,11 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->reportButton->SetSize(58, 20);
   this->reportButton->Move(55, 165);
   this->reportButton->SetOnClick([this]() { this->SendReport(); });
-  this->reportButton->disabled = 0;
-  this->reportButton->Invalidate();
+  {
+    auto* control = this->reportButton;
+    control->disabled = 0;
+    control->Invalidate();
+  }
   {
     CUIImageButton* button = this->reportButton;
     const std::string reportDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_report_disable.bmp", 0xCB1D253B7FE1F563ULL));
@@ -299,8 +308,11 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_firstTypeButton->SetSize(12, 12);
   this->m_firstTypeButton->Move(9, 25);
   this->m_firstTypeButton->SetOnSelect([this](CUIRadioButton* button) { this->OnReportTypeSelect(button); });
-  this->m_firstTypeButton->disabled = 0;
-  this->m_firstTypeButton->Invalidate();
+  {
+    auto* control = this->m_firstTypeButton;
+    control->disabled = 0;
+    control->Invalidate();
+  }
   {
     CUIRadioButton* button = this->m_firstTypeButton;
     const std::string firstRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x0F15B16B5BAFD57FULL));
@@ -309,16 +321,22 @@ void CUIMacroReport::OnCreate(int width, int height) {
     const std::string firstRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x793F370985ED674FULL));
     button->SetImages(firstRadioNormal, firstRadioPressed, firstRadioHover, firstRadioDisabled);
   }
-  this->m_firstTypeButton->checked = true;
-  this->m_firstTypeButton->Invalidate();
+  {
+    auto* control = this->m_firstTypeButton;
+    control->checked = true;
+    control->Invalidate();
+  }
   this->AddChild(this->m_firstTypeButton);
 
   this->m_secondTypeButton = new CUIRadioButton();
   this->m_secondTypeButton->SetSize(12, 12);
   this->m_secondTypeButton->Move(9, 43);
   this->m_secondTypeButton->SetOnSelect([this](CUIRadioButton* button) { this->OnReportTypeSelect(button); });
-  this->m_secondTypeButton->disabled = 0;
-  this->m_secondTypeButton->Invalidate();
+  {
+    auto* control = this->m_secondTypeButton;
+    control->disabled = 0;
+    control->Invalidate();
+  }
   {
     CUIRadioButton* button = this->m_secondTypeButton;
     const std::string secondRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xF3CB6F7711A71B6DULL));
@@ -327,8 +345,11 @@ void CUIMacroReport::OnCreate(int width, int height) {
     const std::string secondRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7941D76335CFA14FULL));
     button->SetImages(secondRadioNormal, secondRadioPressed, secondRadioHover, secondRadioDisabled);
   }
-  this->m_secondTypeButton->checked = false;
-  this->m_secondTypeButton->Invalidate();
+  {
+    auto* control = this->m_secondTypeButton;
+    control->checked = false;
+    control->Invalidate();
+  }
   this->AddChild(this->m_secondTypeButton);
 
   this->warningText = new CUIStaticText();

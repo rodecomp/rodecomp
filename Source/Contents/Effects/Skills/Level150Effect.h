@@ -18,7 +18,7 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
-  void SetColor(int red, int green, int blue) override;
+  void SetColor(short red, short green, short blue) override;
   void SetDestinationBlend(int blend) override;
   void AddBubbleRing(int alphaOffset);
   void AddShock(int kind);
@@ -45,7 +45,7 @@ public:
   void Render() override;
   void Close() override;
   bool IsAlive() override;
-  void SetColor(int red, int green, int blue) override;
+  void SetColor(short red, short green, short blue) override;
   void SetDestinationBlend(int blend) override;
   void Init();
 

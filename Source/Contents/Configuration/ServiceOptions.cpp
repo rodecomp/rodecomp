@@ -438,14 +438,11 @@ bool GameSettings::RunFunction(int id) {
     return false;
   }
 
-  {
-    const std::function<void()> function = entry->second;
-    if (!function) {
-      return false;
-    }
+  if (const std::function<void()> function = entry->second) {
     function();
+    return true;
   }
-  return true;
+  return false;
 }
 
 // OFFSET: 0x006C1030
@@ -465,12 +462,11 @@ std::optional<GameSettingsOption*> GameSettings::FindOption(int id) {
 // FUNCTION: fn_06316
 std::list<int> GameSettings::GetOptionIds(int tab) {
   std::list<int> ids;
-  for (auto optionIt = this->options.begin(), optionEnd = this->options.end(); optionIt != optionEnd; ++optionIt) {
-    const GameSettingsOption& option = *optionIt;
+  std::for_each(this->options.begin(), this->options.end(), [&](const GameSettingsOption& option) {
     if (option.tab == tab) {
       ids.push_back(option.id);
     }
-  }
+  });
   return ids;
 }
 
@@ -643,6 +639,12 @@ void GameSettings::ResetToDefaults() {
   }
 }
 
+// INLINED
+__forceinline bool GetServiceOptionInline(int id) {
+  const auto entry = g_serviceOptions.values.find(id);
+  return entry == g_serviceOptions.values.end() ? false : entry->second;
+}
+
 // OFFSET: 0x006C27D0
 // FUNCTION: fn_06323
 void GameSettings::ToggleOption(int id) {
@@ -652,7 +654,7 @@ void GameSettings::ToggleOption(int id) {
   }
 
   if ((*option)->type == 0) {
-    this->SetOption(id, g_serviceOptions.Get(id) == 0, true);
+    this->SetOption(id, GetServiceOptionInline(id) == 0, true);
     g_windowMgr.RefreshGameSettingOption(id);
   } else if ((*option)->type == 1) {
     this->RunFunction(id);
@@ -856,6 +858,11 @@ void ApplyServiceOption(int id, bool value, bool notify, int enabledMessage, int
   }
 }
 
+// INLINED
+static int FacingDirection(float angle) {
+  return (static_cast<int>(angle) + 180) / 45 % 8;
+}
+
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
 void ToggleSitStand() {
@@ -876,7 +883,7 @@ void ToggleSitStand() {
   const int motion = (player->render.curMotion != 2) + 1;
   player->render.curMotion = motion;
   player->render.angle = static_cast<float>(std::ceil(player->render.angle));
-  mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
+  mode->SendMsg(MM_CHANGE_DIRECTION, FacingDirection(player->render.angle), motion, 0, 0);
 
   if (player->render.state == ST_SIT) {
     std::list<unsigned long>& times = mode->periodicTicks;
@@ -1279,9 +1286,10 @@ void ShowPlayerLocation() {
     return;
   }
 
+  const float z = player->render.position.z;
   int column = 0;
   int row = 0;
-  mode->WorldCell(player->render.position.x, player->render.position.z, column, row);
+  mode->WorldCell(player->render.position.x, z, column, row);
 
   std::string name = mode->MapName();
   if (name.size() > 4) {

@@ -1,3 +1,4 @@
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/DX7/SurfaceDX7.h"
@@ -68,10 +69,12 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
       const int top = 4 * (index / columns);
       const float offsetX = static_cast<float>(candidate % 256) * (1.0f / 256.0f);
       const float offsetY = static_cast<float>(candidate / 256) * (1.0f / 256.0f);
-      const float u0 = (offsetX + 0.0f) / static_cast<float>(texture.TextureWidth());
-      const float v0 = (offsetY + 0.0f) / static_cast<float>(texture.TextureHeight());
-      const float u1 = (offsetX + 4.0f) / static_cast<float>(texture.TextureWidth());
-      const float v1 = (offsetY + 4.0f) / static_cast<float>(texture.TextureHeight());
+      const float textureWidth = static_cast<float>(texture.TextureWidth());
+      const float textureHeight = static_cast<float>(texture.TextureHeight());
+      const float u0 = (offsetX + 0.0f) / textureWidth;
+      const float v0 = (offsetY + 0.0f) / textureHeight;
+      const float u1 = (offsetX + g_effectIconRadius) / textureWidth;
+      const float v1 = (offsetY + g_effectIconRadius) / textureHeight;
       constexpr float z = 0.00001f;
       constexpr float rhw = 0.99999f;
       RenderVertex vertices[4] = {
@@ -140,6 +143,5 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
   g_textureOffsetY = static_cast<float>(best / 256) * (1.0f / 256.0f);
   this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
   this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
-
   return true;
 }

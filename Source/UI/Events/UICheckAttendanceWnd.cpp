@@ -100,12 +100,13 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
     return -1;
   }
 
-  const int localX = x - 26;
-  const int localY = y - top;
-  if (localX % 62 > 58 || localY % 64 > 60) {
+  if ((x - 26) % 62 > 58) {
     return -1;
   }
-  return (localY / 64) % 4 * 5 + (localX / 62) % 5;
+  if ((y - top) % 64 > 60) {
+    return -1;
+  }
+  return ((y - top) / 64) % 4 * 5 + ((x - 26) / 62) % 5;
 }
 
 // OFFSET: 0x007DC750
@@ -162,13 +163,21 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   this->AddChild(this->m_banner);
 }
 
+namespace {
+// INLINED
+inline void DrawDayLabel(UIWindow* window, int x, int y, int day) {
+  window->DrawCenteredText(x, y, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_COUNT), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
+}
+}
+
 // OFFSET: 0x007DD2E0
 // FUNCTION: fn_09640
 void UICheckAttendanceWnd::Paint() {
 
   const char* backgroundName = this->m_banner->HasEntries() ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
                                                                      : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName))), false);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName)));
+  this->DrawBitmap(0, 0, background, false);
 
   this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
 
@@ -202,12 +211,9 @@ void UICheckAttendanceWnd::Paint() {
       std::list<std::string> lines;
       this->WrapText(message, &lines, 112, 0, 12, 1);
       const int top = static_cast<int>((77 - lines.size() * 15) * 0.5 + 95);
-      int line = -1;
-      int offset = 0;
-      for (auto it = lines.begin(); it != lines.end(); ++it) {
-        this->DrawCenteredText(343, bannerHeight + (std::max(line, 0) + offset) * 3 + top, it->c_str(), 112, 0, 12, 0x613CA5, 1);
-        ++line;
-        offset += 4;
+      int i = 0;
+      for (auto it = lines.begin(); it != lines.end(); ++it, ++i) {
+        this->DrawCenteredText(343, bannerHeight + (std::max(i - 1, 0) + i * 4) * 3 + top, it->c_str(), 112, 0, 12, 0x613CA5, 1);
       }
     }
   }
@@ -238,7 +244,7 @@ void UICheckAttendanceWnd::Paint() {
     const int y = index / 5 * 64;
     const int x = index % 5 * 62;
     this->DrawItemAndQuantity(x + 43, y + 109 + bannerHeight, item, 1, 0);
-    this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_DATE_COUNT), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
+    DrawDayLabel(this, x + 26, y + 140 + bannerHeight, day);
   }
 }
 

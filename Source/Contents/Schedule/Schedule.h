@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <random>
 
-extern std::uniform_int_distribution<int> g_scheduleIntervalDistribution;
 extern std::mt19937 g_scheduleRandomEngine;
 
 #pragma pack(push, 4)

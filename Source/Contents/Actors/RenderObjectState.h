@@ -153,7 +153,9 @@ struct RenderObjectState {
 };
 
 // INLINED
-inline RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
+inline RenderObjectState::RenderObjectState() : position() {
+  this->sprite = nullptr;
+  this->action = nullptr;
 }
 
 // INLINED

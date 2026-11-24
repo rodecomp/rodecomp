@@ -118,18 +118,20 @@ bool CSprRes::Load(const char* name) {
 
         for (unsigned y = height; y != 0; --y) {
           std::uint8_t* pixel = row;
-          for (unsigned x = width; x != 0; --x) {
-            if (zeroCount == 0) {
-              value = *current++;
+          if (pixel) {
+            for (unsigned x = width; x != 0; --x) {
+              if (zeroCount == 0) {
+                value = *current++;
 
-              if (value == 0) {
-                zeroCount = *current++;
+                if (value == 0) {
+                  zeroCount = *current++;
+                }
               }
-            }
 
-            const std::uint16_t before = zeroCount;
-            zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
-            *pixel++ = before == 0 ? value : 0;
+              const std::uint16_t before = zeroCount;
+              zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
+              *pixel++ = before == 0 ? value : 0;
+            }
           }
           row += width;
         }
@@ -174,7 +176,7 @@ bool CSprRes::Load(const char* name) {
   }
 
   if (header.version >= 0x0200) {
-    for (unsigned index = 0; index < trueColorCount; ++index) {
+    for (int index = 0; index < trueColorCount; ++index) {
       file.Read(dimensions, sizeof(dimensions));
       auto* image = new SpriteRleImage();
       image->width = static_cast<std::int16_t>(dimensions[0]);

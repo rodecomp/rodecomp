@@ -273,33 +273,49 @@ void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
   }
 }
 
-// OFFSET: 0x00830400
-// FUNCTION: fn_10392
-ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
+// INLINED
+static __forceinline int SwapEquipmentSlotAt(int x, int y, int width, int height) {
   int slot = -1;
-  if (y <= this->geometry.height && y >= 22 && y <= 151) {
-    if ((x >= 6 && x < 106) || (x >= 170 && x < this->geometry.width - 6)) {
-      slot = (y - 22) / 26;
-      if (x >= 170) {
-        if (slot == 0) {
-          slot = 9;
-        } else {
-          slot += 3;
-        }
-      } else {
-        if (slot == 0) {
-          slot = 8;
-        } else {
-          --slot;
-        }
-      }
-    }
+  if (y > height || y < 22 || y > 151) {
+    return -1;
+  }
 
-    if (x > 112 && x < 170 && y >= 28 && y <= 52) {
-      slot = 15;
+  if ((x >= 6 && x < 106) || (x >= 170 && x < width - 6)) {
+    slot = (y - 22) / 26;
+    if (x >= 170) {
+      if (slot == 0) {
+        slot = 9;
+      } else {
+        slot += 3;
+      }
+    } else {
+      if (slot == 0) {
+        slot = 8;
+      } else {
+        --slot;
+      }
     }
   }
 
+  if (x <= 112) {
+    return slot;
+  }
+
+  if (x >= 170) {
+    return slot;
+  }
+
+  if (y >= 28 && y <= 52) {
+    slot = 15;
+  }
+
+  return slot;
+}
+
+// OFFSET: 0x00830400
+// FUNCTION: fn_10392
+ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
+  const int slot = SwapEquipmentSlotAt(x, y, this->geometry.width, this->geometry.height);
   return this->GetSlotItem(slot);
 }
 
@@ -344,7 +360,8 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10395
 void UISwapBitmapButton::Paint() {
   UIBitmapButton::Paint();
-  const unsigned long elapsed = timeGetTime() - g_session.m_swapEquipmentTick;
+  unsigned long elapsed = timeGetTime();
+  elapsed -= g_session.m_swapEquipmentTick;
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_normal.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 0, 0);
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_over.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 1, 0);
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_press.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 2, 0);
@@ -496,7 +513,10 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == DRAG_ITEM_INVENTORY) {
     const int id = mode->drag.id;
-    if (!((x >= 6 && x < 30) || (x >= 251 && x < 275))) {
+    const auto inColumn = [&](int left, int right) {
+      return x >= left && x < right;
+    };
+    if (!inColumn(6, 30) && !inColumn(251, 275)) {
       return;
     }
 

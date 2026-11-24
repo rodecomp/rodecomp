@@ -31,7 +31,7 @@ public:
   virtual void Close();
   virtual bool IsAlive();
   virtual void ResetParticles();
-  virtual void SetColor(int argument1, int argument2, int argument3);
+  virtual void SetColor(short argument1, short argument2, short argument3);
   virtual void SetSourceBlend(int argument);
   virtual void SetDestinationBlend(int argument);
   virtual void SetParticleTexture(std::string name);
@@ -49,8 +49,8 @@ public:
   virtual void SetAlpha(float argument);
   virtual void SetWindowOffset(vector3d offset, int attachToWindow, int windowId);
   virtual vector3d GetWindowOffset();
-  virtual void SetFlipX(int argument);
-  virtual void SetFlipY(int argument);
+  virtual void SetFlipX(bool argument);
+  virtual void SetFlipY(bool argument);
   virtual int GetFrame();
   virtual void SetId(int id);
   virtual ~CEffect();

@@ -15,6 +15,14 @@ struct WorldViewArea {
   WorldViewArea(int left, int top, int right, int bottom, int areaFlags) : left(left), top(top), right(right), bottom(bottom), areaFlags(areaFlags) {
   }
 
+  // INLINED
+  WorldViewArea(int left, int top, int right, int bottom) : areaFlags(1) {
+    this->left = left;
+    this->top = top;
+    this->right = right;
+    this->bottom = bottom;
+  }
+
   /* 0000 */ int left;
   /* 0004 */ int top;
   /* 0008 */ int right;
@@ -151,6 +159,7 @@ public:
   int* LevelAreaAt(int& kind, unsigned int index, bool currentWorldOnly);
   int LevelCount();
   CWorldViewWorld* CurrentWorld();
+  bool IsMapDisplayNameTranslated(const char* mapName);
 
   /* 0000 */ std::vector<WorldViewRecord> marks;
   /* 000C */ std::vector<WorldViewRecord> levels;

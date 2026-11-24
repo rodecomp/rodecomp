@@ -13,6 +13,10 @@ public:
   virtual std::uint8_t* Read(std::uint64_t offset, std::uint32_t length) = 0;
 };
 
+// OFFSET: 0x005EF3F0
+// FUNCTION: fn_04004
+inline CPakFile::~CPakFile() = default;
+
 namespace myGPack {
 
   class CReadPakFile : public CPakFile {
@@ -37,6 +41,13 @@ namespace myGPack {
     bool Open(const char* filename);
     bool Write(std::uint64_t offset, const void* bytes, std::uint32_t length);
   };
+
+  // INLINED
+  inline CReadPakFile::~CReadPakFile() {
+    this->Close();
+  }
+
+  inline CWritePakFile::~CWritePakFile() = default;
 
 }
 

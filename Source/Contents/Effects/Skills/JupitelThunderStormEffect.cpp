@@ -30,6 +30,11 @@ void LoadFormatted(CEZ2STRParticle* particle, const char* format, Args... args) 
   particle->Load(FormatOwnedString(format, args...));
 }
 
+// INLINED
+static vector3d Sum(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
 // OFFSET: 0x00705F80
 // FUNCTION: fn_07040
 CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
@@ -124,8 +129,9 @@ bool CJupitelThunderStormEffect::IsAlive() {
     return true;
   }
 
-  return std::find_if(this->particles.begin(), this->particles.end(),
-                      [](const CParticle* particle) { return particle && ParticleAlive(particle); }) != this->particles.end();
+  const auto alive = std::find_if(this->particles.begin(), this->particles.end(),
+                                  [](const CParticle* particle) { return particle && ParticleAlive(particle); });
+  return this->particles.end() != alive;
 }
 
 // OFFSET: 0x00706690
@@ -136,16 +142,7 @@ void CJupitelThunderStormEffect::OnProcess() {
       FreeParticle(particle);
       this->particle = nullptr;
     } else {
-      vector3d position;
-      if (this->frame < this->duration) {
-        position.x = particle->position.x + this->step.x;
-        position.y = particle->position.y + this->step.y;
-        position.z = particle->position.z + this->step.z;
-      } else {
-        const vector3d source = this->sourcePositionVector;
-        position = source;
-      }
-      particle->position = position;
+      particle->position = this->frame < this->duration ? Sum(particle->position, this->step) : this->sourcePositionVector;
       static_cast<CEZ2STRParticle*>(this->particle)->Process(0.0f, 0.0f, 0.0f);
     }
   }

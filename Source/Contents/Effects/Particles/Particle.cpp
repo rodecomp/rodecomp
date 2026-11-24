@@ -68,6 +68,11 @@ static __forceinline void SetClipCorners(RenderVertex* vertices, const EZeffectT
 }
 
 // INLINED
+static __forceinline void OffsetParticleDepth(RenderVertex& vertex, float offset) {
+  vertex.rhw += offset;
+}
+
+// INLINED
 static __forceinline std::uint32_t ClipColor(const EZeffectTransform& transform, float alpha) {
   return (((((static_cast<int>(transform.crA * alpha) << 8) + static_cast<unsigned char>(transform.crR)) << 8) + static_cast<unsigned char>(transform.crG)) << 8) +
          static_cast<unsigned char>(transform.crB);
@@ -521,7 +526,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
     point.y = vertices[i].y;
     point.z = vertices[i].z;
     g_renderer->Project(&point.x, combined.values, vertices[i]);
-    vertices[i].rhw = this->depthOffset + vertices[i].rhw;
+    OffsetParticleDepth(vertices[i], this->depthOffset);
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
@@ -544,8 +549,8 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
-  float screenX;
   float screenY;
+  float screenX;
   float rhw;
   g_renderer->ProjectViewport(&this->position.x, view.values, &screenX, &screenY, &rhw);
   const float sine = ClientSin(ToRadians(static_cast<float>(transform->rz / 2.8444444444444)));
@@ -569,13 +574,14 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   for (int i = 0; i <= 3; ++i) {
-    const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
-    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->m_screen.x;
+    const float rotated = vertices[i].y * cosine + vertices[i].x * sine;
+    auto& screen = this->m_screen;
+    vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + screen.x;
     if (g_session.IsScreenShakeActive()) {
-      const float shake = screenY - this->m_screen.y;
-      vertices[i].y = (this->m_screen.y - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
+      const float shake = screenY - screen.y;
+      vertices[i].y = (screen.y - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
     } else {
-      vertices[i].y = ((transform->y - 240.0f) + rotated) * scale + this->m_screen.y;
+      vertices[i].y = ((transform->y - 240.0f) + rotated) * scale + screen.y;
     }
   }
 
@@ -630,9 +636,9 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   }
 
   CTexture* texture = ClipTexture(clip, *transform, *this);
-  const float depth = static_cast<float>(index) * 1e-05f;
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+  const float depth = static_cast<float>(index) * 1e-05f;
   for (int i = 0; i < 4; ++i) {
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
@@ -684,7 +690,10 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   world.AppendTranslate(&this->position.x);
 
   for (int i = 0; i < 4; ++i) {
-    const vector3d vertex = {vertices[i].x, vertices[i].y, vertices[i].z};
+    vector3d vertex;
+    vertex.x = vertices[i].x;
+    vertex.z = vertices[i].z;
+    vertex.y = vertices[i].y;
     MatrixMult(point, vertex, world.values);
     CGameMode* mode = g_modeMgr.GetGameMode();
     point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;
@@ -694,7 +703,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     this->m_groundHeight = point.y;
 
     g_renderer->Project(&point.x, view.values, vertices[i]);
-    vertices[i].rhw = this->depthOffset + vertices[i].rhw;
+    OffsetParticleDepth(vertices[i], this->depthOffset);
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
@@ -778,7 +787,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
 
 // OFFSET: 0x00B3F630
 // FUNCTION: fn_18830
-CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position) {
+CParticle::CParticle(vector3d position, int flags) : flags(flags), position(position), motionVelocity{0.0f, 0.0f, 0.0f} {
   RenderVertex* vertex = this->vertices;
   for (int i = 4; i != 0; --i, ++vertex) {
     vertex->x = 0;

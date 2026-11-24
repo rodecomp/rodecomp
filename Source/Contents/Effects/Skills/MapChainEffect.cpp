@@ -23,18 +23,19 @@ __declspec(noinline) CMapChainEffect::~CMapChainEffect() {
 // OFFSET: 0x00B4AB90
 // FUNCTION: fn_18947
 void CMapChainEffect::CreateChainParticles(int param) {
-  int local8 = 0;
-  for (int localC = 0; localC < 360; localC += 60, ++local8) {
+  int row = 0;
+  for (int angle = 0; angle < 360; angle += 60) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->effectId = this->id;
-        particle->rowIndex = local8;
+        const int effectId = this->id;
+        particle->rowIndex = row;
+        particle->effectId = effectId;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        particle->angle = static_cast<float>(localC);
+        particle->angle = static_cast<float>(angle);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -46,20 +47,22 @@ void CMapChainEffect::CreateChainParticles(int param) {
         this->particles.push_back(particle);
       }
     }
+    ++row;
   }
 
-  int localC2 = 6;
-  for (int local82 = 0; local82 < 360; local82 += 60, ++localC2) {
+  row = 6;
+  for (int angle = 0; angle < 360; angle += 60) {
     for (int i = 0; i < 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
-        particle->effectId = this->id;
-        particle->rowIndex = localC2;
+        const int effectId = this->id;
+        particle->rowIndex = row;
+        particle->effectId = effectId;
         particle->columnIndex = i;
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        particle->angle = static_cast<float>(local82);
+        particle->angle = static_cast<float>(angle);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -72,6 +75,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         this->particles.push_back(particle);
       }
     }
+    ++row;
   }
 }
 
@@ -82,50 +86,53 @@ void CMapChainEffect::UpdateParticleGeometry(CParticle* particle) {
     return;
   }
 
-  const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * particle->columnIndex) + particle->angle) % 360;
+  const int segment = particle->columnIndex;
+  const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + particle->angle) % 360;
   MapChainPoint points[4];
 
   const int tilt = particle->phaseParameter;
   const float sinIndex = g_sinTable[index];
   const float cosIndex = g_cosTable[index];
+  const float scale = particle->scale;
+  const float centerY = scale * sinIndex;
   const float sinTilt = g_sinTable[tilt];
   const float cosTilt = g_cosTable[tilt];
+  const float centerX = sinTilt * scale * cosIndex;
+  const float centerZ = cosTilt * scale * cosIndex;
+  const float speed = particle->speedParameter;
+  const float sideX = cosTilt * speed;
+  const float sideZ = -sinTilt * speed;
 
-  const float centerY = particle->scale * sinIndex;
-  const float centerZ = (particle->scale * cosTilt) * cosIndex;
-  const float centerX = (sinTilt * particle->scale) * cosIndex;
-  const float sideX = particle->speedParameter * cosTilt;
-  const float sideZ = -sinTilt * particle->speedParameter;
+  points[0].x = (sideX + centerX) + 0.0f;
+  points[0].y = (centerY + 0.0f) + particle->animationParameter;
+  points[0].z = (sideZ + centerZ) + 0.0f;
+  points[1].x = (centerX - sideX) + 0.0f;
+  points[1].y = (centerY - 0.0f) + particle->animationParameter;
+  points[1].z = (centerZ - sideZ) + 0.0f;
 
-  const float v3x = (sideX + centerX) + 0.0f;
-  const float v3y = (centerY + 0.0f) + particle->animationParameter;
-  const float v3z = (sideZ + centerZ) + 0.0f;
-  const float v1x = (centerX - sideX) + 0.0f;
-  const float v1y = (centerY - 0.0f) + particle->animationParameter;
-  const float v1z = (centerZ - sideZ) + 0.0f;
+  auto& verticesRef = particle->vertices;
+  verticesRef[1].x = points[1].x;
+  verticesRef[1].y = points[1].y;
+  verticesRef[1].z = points[1].z;
+  verticesRef[3].x = points[0].x;
+  verticesRef[3].y = points[0].y;
+  verticesRef[3].z = points[0].z;
 
-  particle->vertices[1].x = v1x;
-  particle->vertices[1].y = v1y;
-  particle->vertices[1].z = v1z;
-  particle->vertices[3].x = v3x;
-  particle->vertices[3].y = v3y;
-  particle->vertices[3].z = v3z;
-
-  if (particle->columnIndex != 0) {
-    particle->vertices[0].x = this->corners[1].x;
-    particle->vertices[0].y = this->corners[1].y;
-    particle->vertices[0].z = this->corners[1].z;
-    particle->vertices[2].x = this->corners[0].x;
-    particle->vertices[2].y = this->corners[0].y;
-    particle->vertices[2].z = this->corners[0].z;
+  if (segment != 0) {
+    verticesRef[0].x = this->corners[1].x;
+    verticesRef[0].y = this->corners[1].y;
+    verticesRef[0].z = this->corners[1].z;
+    verticesRef[2].x = this->corners[0].x;
+    verticesRef[2].y = this->corners[0].y;
+    verticesRef[2].z = this->corners[0].z;
   }
 
-  this->corners[0].x = v3x;
-  this->corners[0].y = v3y;
-  this->corners[0].z = v3z;
-  this->corners[1].x = v1x;
-  this->corners[1].y = v1y;
-  this->corners[1].z = v1z;
+  this->corners[0].x = points[0].x;
+  this->corners[0].y = points[0].y;
+  this->corners[0].z = points[0].z;
+  this->corners[1].x = points[1].x;
+  this->corners[1].y = points[1].y;
+  this->corners[1].z = points[1].z;
 }
 
 // OFFSET: 0x00B4AFA0

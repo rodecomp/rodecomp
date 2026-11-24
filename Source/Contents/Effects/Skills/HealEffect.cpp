@@ -102,9 +102,11 @@ void CHealEffect::AddColumn(int kind) {
         continue;
       }
 
-      particle->effectId = this->id;
-      particle->columnIndex = segment;
-      particle->rowIndex = row;
+      CParticle& column = *particle;
+      const int effectId = this->id;
+      column.columnIndex = segment;
+      column.rowIndex = row;
+      column.effectId = effectId;
       particle->groupIndex = 1;
       particle->angleParameter = 360;
       particle->alpha = 0;
@@ -204,19 +206,19 @@ void CHealEffect::AddCone(int kind) {
         continue;
       }
 
-      particle->effectId = this->id;
-      particle->columnIndex = segment;
+      const int effectId = this->id;
       particle->rowIndex = row;
+      particle->effectId = effectId;
+      particle->columnIndex = segment;
       particle->groupIndex = 1;
       particle->angleParameter = 360;
       particle->alpha = 0;
       particle->animationParameter = 0.0f;
 
-      float& baseAngle = particle->angle;
       switch (kind) {
       case 0:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 12.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -225,7 +227,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 1:
         particle->SetTexture("effect\\ring_white.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -234,7 +236,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 2:
         particle->SetTexture("effect\\alpha_down.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 10.0f;
         particle->scale = static_cast<float>(row) * 0.1f + 5.3f;
         particle->phaseParameter = tilt - 4;
@@ -243,7 +245,7 @@ void CHealEffect::AddCone(int kind) {
         break;
       case 5:
         particle->SetTexture("effect\\ring_blue.tga");
-        baseAngle = randomAngle;
+        particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
         particle->scale = static_cast<float>(row) * 0.2f + 5.0f;
         particle->phaseParameter = tilt;
@@ -577,28 +579,36 @@ void CHealEffect::ProcessCone(CParticle* particle) {
   }
 }
 
+// INLINED
+template <bool kCacheFrames>
+static __forceinline void UpdateSparkParticle(CParticle* particle, int effectId) {
+  const int cachedFrames = particle->elapsedFrames;
+  particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
+
+  int alpha = particle->alpha;
+  if ((kCacheFrames ? cachedFrames : particle->elapsedFrames) <= 10) {
+    alpha += 15;
+  } else if (effectId != 312) {
+    const int segment = particle->columnIndex;
+    if ((5 - segment) * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames) ||
+        36 - segment * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames)) {
+      particle->SetTexture("effect\\pok3.tga");
+    } else {
+      particle->SetTexture("effect\\pok1.tga");
+    }
+  }
+  alpha -= 3;
+  particle->alpha = alpha >= 0 ? alpha : 0;
+
+  const vector3d offset = {particle->offsetX - 0.0f, particle->offsetY - particle->animationParameter, particle->offsetZ - 0.0f};
+  particle->offset = offset;
+}
+
 // OFFSET: 0x00B69060
 // FUNCTION: fn_46260
-__forceinline void CHealEffect::ProcessSpark(CParticle* particle) {
+void CHealEffect::ProcessSpark(CParticle* particle) {
   if (particle) {
-    particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
-
-    int alpha = particle->alpha;
-    if (particle->elapsedFrames <= 10) {
-      alpha += 15;
-    } else if (this->id != 312) {
-      const int segment = particle->columnIndex;
-      if ((5 - segment) * 7 == particle->elapsedFrames || 36 - segment * 7 == particle->elapsedFrames) {
-        particle->SetTexture("effect\\pok3.tga");
-      } else {
-        particle->SetTexture("effect\\pok1.tga");
-      }
-    }
-    alpha -= 3;
-    particle->alpha = alpha >= 0 ? alpha : 0;
-
-    const vector3d offset = {particle->offsetX - 0.0f, particle->offsetY - particle->animationParameter, particle->offsetZ - 0.0f};
-    particle->offset = offset;
+    UpdateSparkParticle<true>(particle, this->id);
   }
   this->UpdateParticleVertices(particle);
 }
@@ -754,7 +764,10 @@ void CHealEffect::OnProcess() {
     particlePosition.x = this->position[0];
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
-    this->ProcessSpark(particle);
+    if (particle) {
+      UpdateSparkParticle<false>(particle, this->id);
+    }
+    this->UpdateParticleVertices(particle);
     ++particle->elapsedFrames;
   }
 }

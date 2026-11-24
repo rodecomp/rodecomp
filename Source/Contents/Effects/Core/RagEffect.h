@@ -90,7 +90,7 @@ struct CRagEffect : CRenderObject {
   void TexturedShieldThrow(const char* name);
   void LineStreakKind(std::int16_t kind);
   void LineStreak(std::int16_t kind);
-  void TexturedScatterArc(const char* name, std::int16_t angle, std::int16_t phase);
+  void TexturedScatterArc(const char* name, std::int16_t angle, int phase);
   void TexturedGlow(const char* name, char size);
   void TexturedCrossKind(const char* name, char level);
   __declspec(noinline) void ThunderSparks();
@@ -255,10 +255,10 @@ struct CRagEffect : CRenderObject {
   void ShieldBoomerang3(const char* name);
   void ParticleTime(const char* name, char kind);
   void ThrowItem(const char* name, char kind);
-  void Bottom_Music(const char* name, char kind);
+  __declspec(noinline) void Bottom_Music(const char* name, char kind);
   void IceArrow();
   void Flasher();
-  int SuperAngel(char type, int dummy = 0);
+  void SuperAngel(char type, int dummy = 0);
   void WarpZone();
   void Enhance();
   void HealSP();

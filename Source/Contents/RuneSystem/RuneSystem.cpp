@@ -38,12 +38,14 @@ namespace {
     /* 0004 */ int runeId;
   };
 
+#pragma pack(push, 1)
   struct RuneSelectPacket {
     /* 0000 */ std::uint16_t id;
     /* 0002 */ std::uint16_t tagId;
     /* 0004 */ int runeId;
     /* 0008 */ std::uint8_t value;
   };
+#pragma pack(pop)
 
   struct RuneIdPacket {
     /* 0000 */ std::uint16_t id;
@@ -190,9 +192,9 @@ CTagData* CRuneSystemMgr::GetTag(int tagId) {
   }
 
   if (tagId > 0) {
-    for (CTagData*& tag : this->m_tags) {
-      if (tagId == tag->m_id) {
-        return tag;
+    for (std::vector<CTagData*>::iterator it = this->m_tags.begin(); it != this->m_tags.end(); ++it) {
+      if (tagId == (*it)->m_id) {
+        return *it;
       }
     }
   }
@@ -354,7 +356,8 @@ int CRuneSystemMgr::GetGradeValue(RuneSetData* runeSet) {
   if (runeSet) {
     const auto found = this->m_gradeTypes.find(runeSet->m_gradeType);
     if (this->m_gradeTypes.end() != found && found->second.size() > static_cast<unsigned int>(runeSet->m_grade)) {
-      return runeSet->m_gradeLevel * this->GetGradeFailValue(runeSet) + found->second[runeSet->m_grade];
+      const std::vector<int>& grades = found->second;
+      return runeSet->m_gradeLevel * this->GetGradeFailValue(runeSet) + grades[runeSet->m_grade];
     }
   }
 
@@ -717,7 +720,7 @@ int CRuneSystemMgr::UpdateOwnedDecomItems() {
     const auto decom = this->m_itemDecoms.find(std::atoi(item.itemId.c_str()));
     const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
     if (types) {
-      this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
+      this->m_ownedDecomItems.emplace_back(static_cast<unsigned int>(std::atoi(item.itemId.c_str())));
     }
   }
   return static_cast<int>(this->m_ownedDecomItems.size());
@@ -768,7 +771,7 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
 // OFFSET: 0x007688A0
 // FUNCTION: fn_08156
 void CRuneSystemMgr::SetSelectTag(int tagId) {
-  if (!this->m_tags.empty()) {
+  if (this->m_tags.begin() != this->m_tags.end()) {
     if (this->GetTag(tagId)) {
       this->m_selectTag = tagId;
     } else {

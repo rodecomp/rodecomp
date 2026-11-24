@@ -11,9 +11,18 @@ void C3dNode::AccumulateBounds(float* bounds, const matrix& parent) {
   const auto* vertices = this->mesh->vertices;
   for (int index = 0; index < this->mesh->vertexCount; ++index) {
     const auto& vertex = vertices[index];
-    const float x = ((vertex[0] * combined.values[0] + vertex[1] * combined.values[3]) + vertex[2] * combined.values[6]) + combined.values[9];
-    const float y = ((vertex[1] * combined.values[4] + vertex[0] * combined.values[1]) + vertex[2] * combined.values[7]) + combined.values[10];
-    const float z = ((vertex[0] * combined.values[2] + vertex[1] * combined.values[5]) + vertex[2] * combined.values[8]) + combined.values[11];
+    float x = vertex[0] * combined.values[0];
+    x += vertex[1] * combined.values[3];
+    x += vertex[2] * combined.values[6];
+    x += combined.values[9];
+    float y = vertex[1] * combined.values[4];
+    y += vertex[0] * combined.values[1];
+    y += vertex[2] * combined.values[7];
+    y += combined.values[10];
+    float z = vertex[0] * combined.values[2];
+    z += vertex[1] * combined.values[5];
+    z += vertex[2] * combined.values[8];
+    z += combined.values[11];
 
     if (bounds[0] > x) {
       bounds[0] = x;

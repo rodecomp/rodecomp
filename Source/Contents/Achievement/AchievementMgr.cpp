@@ -23,6 +23,11 @@ extern "C" {
 // GLOBAL: gl_24856
 CAchievementMgr* g_achievementMgr;
 
+// OFFSET: 0x007B1D80
+// FUNCTION: fn_09180
+AchievementInfo::AchievementInfo() {
+}
+
 // OFFSET: 0x0066D3A0
 // FUNCTION: fn_05311
 bool CAchievementMgr::CreateInstance() {

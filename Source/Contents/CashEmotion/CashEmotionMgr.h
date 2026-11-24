@@ -23,19 +23,37 @@ struct CashEmotionKeyHash {
   }
 };
 
+struct CashEmotionEntry {
+  // INLINED
+  CashEmotionEntry(int packId, int emotionId) : packId(packId), emotionId(emotionId) {
+  }
+
+  /* 0000 */ int packId;
+  /* 0004 */ int emotionId;
+};
+
 class CashEmotionCommand {
 public:
   __declspec(noinline) CashEmotionCommand(const std::string& name, int packId, int emotionId);
 
-  void Add(int packId, int emotionId);
-  std::pair<int, int> Get(int index) const;
+  // INLINED
+  void Append(int packId, int emotionId) {
+    if (packId < 0 || emotionId < 0) {
+      return;
+    }
+
+    this->entries.emplace_back(packId, emotionId);
+  }
+
+  __declspec(noinline) void Add(int packId, int emotionId);
+  CashEmotionEntry Get(int index) const;
   // INLINED
   int Count() const {
     return static_cast<int>(this->entries.size());
   }
 
   /* 0000 */ std::string name;
-  /* 0018 */ std::vector<std::pair<int, int>> entries;
+  /* 0018 */ std::vector<CashEmotionEntry> entries;
 };
 
 struct CashEmotionData {
@@ -59,16 +77,18 @@ struct CashEmotionPack {
 
   // INLINED
   bool IsAvailable(unsigned int now) const {
-    if (this->startTime == 0 && this->endTime == 0) {
+    if (this->startTime == 0 && this->endTime <= 0) {
       return true;
     }
-    if (now >= this->startTime && this->endTime == 0) {
+
+    const unsigned int end = this->endTime;
+    if (now >= this->startTime && end == 0) {
       return true;
     }
-    if (this->startTime == 0 && now < this->endTime) {
+    if (this->startTime == 0 && now < end) {
       return true;
     }
-    return now >= this->startTime && now < this->endTime;
+    return now >= this->startTime && now < end;
   }
 
   /* 0000 */ std::string name;
@@ -151,7 +171,16 @@ public:
   int GetEarliestExpiry();
   CashEmotionTable* GetPackEmotionTable(int packId);
   CashEmotionPack* GetPack(int packId);
-  const char* GetPackTitle(int packId);
+  __declspec(noinline) const char* GetPackTitle(int packId);
+  // INLINED
+  __forceinline const char* GetPackTitleInline(int packId) {
+    auto it = this->packs.find(packId);
+    if (this->packs.end() == it) {
+      return nullptr;
+    }
+
+    return it->second.name.c_str();
+  }
   int GetPackPrice(int packId);
   __declspec(noinline) Timestamp* FindExpiry(int packId);
   __declspec(noinline) std::vector<int> SortOwnedPacks(const char* filter);
@@ -199,6 +228,7 @@ public:
   bool AddEmotion(int packId, int emotionId, const char* name, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
   void LoadScripts();
   void InsertEmotion(int packId, int emotionId, int actionIndex, int frameIndex, const char* actFile, const char* sprFile);
+  void AddEmotionOrder(int packId, int emotionId);
   void AddPack(int packId, const char* name, int price, unsigned int startTime, unsigned int endTime, int period, int limited);
   void AcquirePack(int packId, unsigned int expiry);
 

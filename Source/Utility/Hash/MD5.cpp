@@ -4,6 +4,19 @@
 #include <cwchar>
 #include <windows.h>
 
+#pragma pack(push, 1)
+struct DigestStorage {
+  /* 0000 */ unsigned char b0;
+  /* 0001 */ std::uint32_t b1;
+  /* 0005 */ std::uint32_t b2;
+  /* 0009 */ std::uint32_t b3;
+  /* 000D */ std::uint16_t b4;
+  /* 000F */ unsigned char b5;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(DigestStorage) == 16);
+
 namespace {
   // INLINED
   __forceinline std::uint32_t FoldDigest(const unsigned char* digest) {
@@ -15,10 +28,10 @@ namespace {
   __forceinline void Encode(unsigned char* output, const std::uint32_t* input, std::uint32_t length) {
     for (std::uint32_t i = 0; i < length / 4; ++i) {
       const std::uint32_t value = input[i];
-      output[i * 4] = static_cast<unsigned char>(value & 0xFF);
-      output[i * 4 + 1] = static_cast<unsigned char>((value >> 8) & 0xFF);
       output[i * 4 + 2] = static_cast<unsigned char>((value >> 16) & 0xFF);
       output[i * 4 + 3] = static_cast<unsigned char>((value >> 24) & 0xFF);
+      output[i * 4] = static_cast<unsigned char>(value & 0xFF);
+      output[i * 4 + 1] = static_cast<unsigned char>((value >> 8) & 0xFF);
     }
   }
 }
@@ -50,8 +63,7 @@ int MD5::Initialize() {
   m_state[1] = 0xEFCDAB89;
   m_state[2] = 0x98BADCFE;
   m_state[3] = 0x10325476;
-  m_byteCount[0] = 0;
-  m_byteCount[1] = 0;
+  std::memset(m_byteCount, 0, sizeof(m_byteCount));
   return 0;
 }
 
@@ -69,8 +81,8 @@ int MD5::Initialize() {
 std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) {
   std::uint32_t a = state[0];
   std::uint32_t b = state[1];
-  std::uint32_t c = state[2];
   std::uint32_t d = state[3];
+  std::uint32_t c = state[2];
 
   MD5_STEP(MD5_F1, a, b, c, d, input[0], 7, 0xD76AA478);
   MD5_STEP(MD5_F1, d, a, b, c, input[1], 12, 0xE8C7B756);
@@ -140,9 +152,9 @@ std::uint32_t* MD5::Transform(std::uint32_t* state, const std::uint32_t* input) 
   MD5_STEP(MD5_F4, c, d, a, b, input[2], 15, 0x2AD7D2BB);
   MD5_STEP(MD5_F4, b, c, d, a, input[9], 21, 0xEB86D391);
 
-  state[0] += a;
   state[1] += b;
   state[2] += c;
+  state[0] += a;
   state[3] += d;
   return state;
 }
@@ -206,8 +218,8 @@ __declspec(noinline) unsigned char* MD5::Finalize() {
 
   std::memset(padding, 0, remaining - 8);
   Decode(m_words, m_buffer, 14);
-  m_words[14] = m_byteCount[0] << 3;
   m_words[15] = (m_byteCount[1] << 3) | (m_byteCount[0] >> 29);
+  m_words[14] = m_byteCount[0] << 3;
 
   std::uint32_t* state = m_state;
   Transform(state, m_words);
@@ -245,9 +257,10 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
 // OFFSET: 0x00402640
 // FUNCTION: fn_00130
 std::uint32_t MD5::HashString(const char* text) {
-  unsigned char digest[16] = {0};
-  DigestBuffer(reinterpret_cast<const unsigned char*>(text), std::strlen(text), digest);
-  return FoldDigest(digest);
+  DigestStorage digest;
+  digest.b0 = 0; digest.b1 = 0; digest.b2 = 0; digest.b3 = 0; digest.b4 = 0; digest.b5 = 0;
+  DigestBuffer(reinterpret_cast<const unsigned char*>(text), std::strlen(text), reinterpret_cast<unsigned char*>(&digest));
+  return FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
 }
 
 // OFFSET: 0x00402710
@@ -276,7 +289,8 @@ __declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
     return result;
   }
   if (size.QuadPart > 500000000) {
-    size.QuadPart = 500000000;
+    size.LowPart = 500000000;
+    size.HighPart = 0;
   }
   if (0 == size.QuadPart) {
     return 0;
@@ -286,9 +300,10 @@ __declspec(noinline) std::uint32_t MD5::HashFile(const wchar_t* filename) {
   if (mapping != nullptr) {
     const unsigned char* view = static_cast<const unsigned char*>(MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, size.LowPart));
     if (view != nullptr) {
-      unsigned char digest[16] = {0};
-      DigestBuffer(view, size.LowPart, digest);
-      result = FoldDigest(digest);
+      DigestStorage digest;
+      digest.b0 = 0; digest.b1 = 0; digest.b2 = 0; digest.b3 = 0; digest.b4 = 0; digest.b5 = 0;
+      DigestBuffer(view, size.LowPart, reinterpret_cast<unsigned char*>(&digest));
+      result = FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
       UnmapViewOfFile(view);
     }
     CloseHandle(mapping);

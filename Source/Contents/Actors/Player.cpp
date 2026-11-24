@@ -604,8 +604,9 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     this->equipActions[slot]->Unlock();
   }
 
-  if (IsMonsterJob(this->render.accountId)) {
-    if (IsObfuscatedMessage(this->render.accountId)) {
+  auto& renderRef = this->render;
+  if (IsMonsterJob(renderRef.accountId)) {
+    if (IsObfuscatedMessage(renderRef.accountId)) {
       switch (slot) {
         case 0:
           if (this->sex != 0) {
@@ -1959,8 +1960,8 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
     world.Compose(local, view);
 
     const std::uint16_t* indices = this->meshIndices[layer][mesh];
-    RenderCommand* command = commands[mesh];
     int vertexCount = 0;
+    RenderCommand* command = commands[mesh];
     const int triangleCount = this->meshTriangleCounts[layer][mesh];
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       for (int corner = 0; corner < 3; ++corner) {
@@ -2105,8 +2106,8 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   bounds.offset = reciprocalDepth;
 
   ResourceMgr::Instance().Load(this->imfName.c_str());
-  int count = 0;
   int drawn = 0;
+  int count = 0;
   if (std::strlen(this->equipActions[0] ? this->equipActions[0]->GetName() : "") == 0) {
     return;
   }
@@ -2872,11 +2873,10 @@ bool CPlayer::OnProcess() {
   this->PlayFrameSounds();
 
   if (this->isPlayHitWave != 0) {
-    const vector3d& player =
-      static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+    CGameMode* mode = g_modeMgr.GetGameMode();
     g_soundMgr->PlayWave(
-      this->hitWaveName, this->render.position.x - player.x, 0.0f,
-      this->render.position.z - player.z, 250, 40, 1.0f, 0
+      this->hitWaveName, this->render.position.x - mode->scene->player->render.position.x, 0.0f,
+      this->render.position.z - mode->scene->player->render.position.z, 250, 40, 1.0f, 0
     );
     this->isPlayHitWave = 0;
   }
@@ -2962,11 +2962,12 @@ void CPlayer::UpdatePendingAction() {
     if (this->attackMode == 2) {
       this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0);
     }
-    if (this->isAttackRequest != 0 || timeGetTime() <= this->attackReqTime + 1200) {
+    if (this->isAttackRequest != 0 || this->attackReqTime + 1200 >= timeGetTime()) {
       return;
     }
+    const std::uint32_t now = timeGetTime();
     ++this->totalAttackReqCnt;
-    this->attackReqTime = timeGetTime();
+    this->attackReqTime = now;
     this->isAttackRequest = 1;
     if (this->attackMode != 2) {
       this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0);
@@ -3823,7 +3824,10 @@ void CPlayer::ReapplySkillEffects() {
         this->ApplyEffectState(value + 0x9B5, true);
         break;
       default:
-        CSkillActionMgr::GetInstance()->OnEfstUpdate(type, value, argument3, argument4, this);
+        if (!g_skillActionMgr) {
+          g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
+        }
+        g_skillActionMgr->OnEfstUpdate(type, value, argument3, argument4, this);
         break;
       }
       break;
@@ -4066,14 +4070,9 @@ void CPlayer::SendMsg(
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      int attackMode;
-      switch (this->proceedType) {
-      case 1:
+      int attackMode = 1;
+      if (this->proceedType == 1) {
         attackMode = 5;
-        break;
-      default:
-        attackMode = 1;
-        break;
       }
       this->tickOfMoveForAttack = timeGetTime() - 1200;
       this->proceedType = attackMode;
@@ -5206,6 +5205,7 @@ void CGrannyPc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  const std::uint32_t* partyAid;
   switch (message) {
   case AM_SET_HEAD_DIR:
     if (this->render.state == ST_STAND || this->render.state == ST_SIT) {
@@ -5357,8 +5357,8 @@ void CGrannyPc::SendMsg(
     if (c == 2 && !IsInvisible(this->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_INITMOVEENTRY: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
@@ -5388,8 +5388,8 @@ void CGrannyPc::SendMsg(
     } else {
       this->SetState(ST_STAND, 1);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
@@ -5422,8 +5422,8 @@ void CGrannyPc::SendMsg(
     } else {
       this->SetState(ST_STAND, 1);
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_MOVEENTRY:
   case AM_MOVEENTRY2: {
@@ -5447,8 +5447,8 @@ void CGrannyPc::SendMsg(
       this->SetState(ST_MOVE, 1);
       this->pathStartCell = 0;
     }
-    this->ShowPartyMemberEffect(entry->aid);
-    break;
+    partyAid = &entry->aid;
+    goto showPartyEffect;
   }
   case AM_CHANGE_RANK:
     this->pkRank = static_cast<int>(c);
@@ -5460,6 +5460,10 @@ void CGrannyPc::SendMsg(
   case AM_MAKE_BLUR_ACTOR:
     break;
   }
+  return;
+
+showPartyEffect:
+  this->ShowPartyMemberEffect(*partyAid);
 }
 
 // OFFSET: 0x00DAC080

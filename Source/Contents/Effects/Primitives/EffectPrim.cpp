@@ -5,141 +5,125 @@
 #include "Client/Mode/CGameMode.h"
 
 #include <cstring>
+#include <windows.h>
 
-// INLINED
-__forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
-  this->textures = nullptr;
-
-  this->speed3d = {};
-  this->orgPos = {};
-  this->deltaPos = {};
-  this->deltaPos2 = {};
-  this->deltaPos3 = {};
-  this->deltaPosAccel = {};
-
-  for (vector3d& corner : this->segPos) {
-    corner = {};
+// OFFSET: 0x00BAE170
+// FUNCTION: fn_19762
+EffectPrimitiveSlot::EffectPrimitiveSlot() {
+  for (int i = 0; i < 4; ++i) {
+    this->vectors[i].x = 0.0f;
+    this->vectors[i].y = 0.0f;
+    this->vectors[i].z = 0.0f;
   }
-
-  for (EffectPrimitiveRecord& record : this->records) {
-    record.position = {};
-
-    for (vector3d& corner : record.corners) {
-      corner = {};
-    }
-  }
-
-  for (RenderTriangle& triangle : this->triangles) {
-    for (RenderVertex& vertex : triangle.vertices) {
-      vertex = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
-    }
-  }
-
-  this->playWaveType = 0;
-  this->playWaveName = 0;
-  this->type = 0;
-  this->count = 0;
-  this->pattern = 0;
-  this->renderFlag = 1;
-  this->masterReached = 0;
-  this->alphaSpeedCycle = 0;
-  this->alphaCycle = 0;
-  this->chRadiSpeed = 0;
-  this->isDisappear = 0;
-  this->changePointReached = 0;
-  this->master = nullptr;
-  this->chCnt = 0;
-  this->colorCycleIndex = 0;
-  this->stateCnt = 0;
-  this->radius = 0;
-  this->minRadius = 0;
-  this->arcAngle = 36.0f;
-  render.angle = 0;
-  this->validAngle = 180;
-  this->size = 1.0f;
-  this->innerSize = 0;
-  this->outerSize = 0;
-  this->widthSize = 0.0f;
-  this->heightSize = 0.0f;
-  this->maxHeightSize = 100.0f;
-  this->speed = 0.0f;
-  this->sizeSpeed = 0.0f;
-  this->radiusSpeed = 0.0f;
-  this->outerSpeed = 0;
-  this->innerSpeed = 0;
-  this->longSpeed = 0;
-  this->latiSpeed = 0;
-  this->rollSpeed = 0;
-  this->widthSpeed = 0.0f;
-  this->heightSpeed = 0.0f;
-  this->alphaSpeed = 0.0f;
-  this->gravSpeed = 0;
-  this->accel = 0.0f;
-  this->sizeAccel = 0;
-  this->radiusAccel = 0.0f;
-  this->gravAccel = 0;
-  this->longAccel = 0;
-  this->latiAccel = 0;
-  this->rollAccel = 0;
-  this->outerAccel = 0;
-  this->innerAccel = 0;
-  this->widthAccel = 0;
-  this->heightAccel = 0;
-  this->red = 255;
-  this->green = 255;
-  this->blue = 255;
-  this->redSpeed = 0;
-  this->greenSpeed = 0;
-  this->blueSpeed = 0;
-  this->changePoint = -1;
-  this->changeWidthSpeed = 0.0001f;
-  this->changeHeightSpeed = 0.0001f;
-  this->changeSpeed = 0.0001f;
-  this->changeSpeed3d.x = 0;
-  this->changeSpeed3d.y = 0;
-  this->changeSpeed3d.z = 0;
-  this->changeAccel3d.x = 0;
-  this->changeAccel3d.y = 0;
-  this->changeAccel3d.z = 0;
-  this->changeWidthAccel = 0.0001f;
-  this->changeHeightAccel = 0.0001f;
-  this->changeAccel = 0.0001f;
-  this->RGBCycleCnt = 0;
-  this->RGBCycleDelay = 0;
-  this->commonPattern = 0;
-  this->longitude = 0;
-  this->latitude = 0;
-  this->roll = 0.0f;
-  this->duration = 100;
-  this->fadeInCnt = -1;
-  this->fadeOutCnt = -1;
-  this->argb = -1;
-  this->alpha = 254.0f;
-  this->alphaDelta = 1.0f;
-  this->maxAlpha = 254.0f;
-  this->minAlpha = 0;
-  this->repeatAnim = 1;
-  this->numSegment = 1;
-  this->animSpeed = 4;
-  render.previousAnimation = 0;
-  render.curMotion = 0;
-  this->totalTexture = 1;
-  this->v1 = 0;
-  this->u1Bits = 0;
-  this->v2 = 1.0f;
-  this->u2 = 1.0f;
-  this->useRenderFlag[0] = 0;
-  this->spriteLiftLow = 0;
-  this->spriteLiftHigh = 0;
-
-  std::memcpy(&this->transform, g_identityMatrix, sizeof(g_identityMatrix));
-  std::memcpy(&this->rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
-  std::memset(this->slots, 0, sizeof(this->slots));
 }
 
 // OFFSET: 0x00BAD940
 // FUNCTION: fn_19761
-CEffectPrim::CEffectPrim() : CRenderObject(), state(this->render) {
+CEffectPrim::CEffectPrim() {
+  this->state.playWaveType = 0;
+  this->state.playWaveName = 0;
+  this->state.type = 0;
+  this->state.count = 0;
+  this->state.pattern = 0;
+  this->state.renderFlag = 1;
+  this->state.masterReached = 0;
+  this->state.alphaSpeedCycle = 0;
+  this->state.alphaCycle = 0;
+  this->state.chRadiSpeed = 0;
+  this->state.isDisappear = 0;
+  this->state.changePointReached = 0;
+  this->state.master = nullptr;
+  this->state.chCnt = 0;
+  this->state.colorCycleIndex = 0;
+  this->state.stateCnt = 0;
+  this->state.radius = 0;
+  this->state.minRadius = 0;
+  this->state.arcAngle = 36.0f;
+  this->render.angle = 0;
+  this->state.validAngle = 180;
+  this->state.size = 1.0f;
+  this->state.innerSize = 0;
+  this->state.outerSize = 0;
+  this->state.widthSize = 0.0f;
+  this->state.heightSize = 0.0f;
+  this->state.maxHeightSize = 100.0f;
+  this->state.speed = 0.0f;
+  this->state.sizeSpeed = 0.0f;
+  this->state.radiusSpeed = 0.0f;
+  this->state.outerSpeed = 0;
+  this->state.innerSpeed = 0;
+  this->state.longSpeed = 0;
+  this->state.latiSpeed = 0;
+  this->state.rollSpeed = 0;
+  this->state.widthSpeed = 0.0f;
+  this->state.heightSpeed = 0.0f;
+  this->state.alphaSpeed = 0.0f;
+  this->state.gravSpeed = 0;
+  this->state.accel = 0.0f;
+  this->state.sizeAccel = 0;
+  this->state.radiusAccel = 0.0f;
+  this->state.gravAccel = 0;
+  this->state.longAccel = 0;
+  this->state.latiAccel = 0;
+  this->state.rollAccel = 0;
+  this->state.outerAccel = 0;
+  this->state.innerAccel = 0;
+  this->state.widthAccel = 0;
+  this->state.heightAccel = 0;
+  this->state.red = 255;
+  this->state.green = 255;
+  this->state.blue = 255;
+  this->state.redSpeed = 0;
+  this->state.greenSpeed = 0;
+  this->state.blueSpeed = 0;
+  this->state.changePoint = -1;
+  this->state.changeWidthSpeed = 0.0001f;
+  this->state.changeHeightSpeed = 0.0001f;
+  this->state.changeSpeed = 0.0001f;
+  this->state.changeSpeed3d.x = 0;
+  this->state.changeSpeed3d.y = 0;
+  this->state.changeSpeed3d.z = 0;
+  this->state.changeAccel3d.x = 0;
+  this->state.changeAccel3d.y = 0;
+  this->state.changeAccel3d.z = 0;
+  this->state.changeWidthAccel = 0.0001f;
+  this->state.changeHeightAccel = 0.0001f;
+  this->state.changeAccel = 0.0001f;
+  this->state.RGBCycleCnt = 0;
+  this->state.RGBCycleDelay = 0;
+  this->state.commonPattern = 0;
+  this->state.speed3d.Set(0, 0, 0);
+  this->state.deltaPos = {0, 0, 0};
+  this->state.deltaPos2 = {0, 0, 0};
+  this->state.deltaPos3.Set(0, 0, 0);
+  this->state.deltaPosAccel.Set(0, 0, 0);
+  this->state.longitude = 0;
+  this->state.latitude = 0;
+  this->state.roll = 0.0f;
+  this->state.duration = 100;
+  this->state.fadeInCnt = -1;
+  this->state.fadeOutCnt = -1;
+  this->state.argb = -1;
+  this->state.alpha = 254.0f;
+  this->state.alphaDelta = 1.0f;
+  this->state.maxAlpha = 254.0f;
+  this->state.minAlpha = 0;
+  this->state.repeatAnim = 1;
+  this->state.numSegment = 1;
+  this->state.animSpeed = 4;
+  this->render.previousAnimation = 0;
+  this->render.curMotion = 0;
+  this->state.totalTexture = 1;
+  this->state.v1 = 0;
+  this->state.u1Bits = 0;
+  this->state.v2 = 1.0f;
+  this->state.u2 = 1.0f;
+
+  std::memcpy(&this->state.transform, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(&this->state.rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
+  this->state.useRenderFlag[0] = 0;
+  SecureZeroMemory(this->state.slots, sizeof(this->state.slots));
+  this->state.spriteLift = 0;
 }
 
 // OFFSET: 0x00BE6FC0

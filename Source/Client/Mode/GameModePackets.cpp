@@ -262,7 +262,10 @@ namespace {
     /* 000A */ std::uint16_t wearState;
     /* 000C */ unsigned char damaged;
     /* 000D */ unsigned char refine;
-    /* 000E */ std::uint32_t cards[4];
+    /* 000E */ std::uint32_t card0;
+    /* 0012 */ std::uint32_t card1;
+    /* 0016 */ std::uint32_t card2;
+    /* 001A */ std::uint32_t card3;
     /* 001E */ std::uint32_t expireTime;
   };
 
@@ -275,7 +278,10 @@ namespace {
     /* 000A */ std::uint16_t wearState;
     /* 000C */ unsigned char damaged;
     /* 000D */ unsigned char refine;
-    /* 000E */ std::uint32_t cards[4];
+    /* 000E */ std::uint32_t card0;
+    /* 0012 */ std::uint32_t card1;
+    /* 0016 */ std::uint32_t card2;
+    /* 001A */ std::uint32_t card3;
     /* 001E */ std::uint32_t expireTime;
     /* 0022 */ std::uint16_t bindOnEquip;
     /* 0024 */ std::uint16_t sprite;
@@ -288,6 +294,10 @@ namespace {
   };
 
   using StoreItemOption = ItemOptionRecord;
+
+  struct PickupItemOptions {
+    /* 0000 */ StoreItemOption options[5];
+  };
 
   struct StoreEquipRecord {
     /* 0000 */ std::int16_t index;
@@ -317,7 +327,7 @@ namespace {
     /* 0024 */ std::uint16_t bindOnEquip;
     /* 0026 */ std::uint16_t sprite;
     /* 0028 */ unsigned char optionCount;
-    /* 0029 */ StoreItemOption options[5];
+    /* 0029 */ PickupItemOptions options;
     /* 0042 */ unsigned char flags;
   };
 
@@ -458,27 +468,8 @@ namespace {
   };
 #pragma pack(pop)
 
-  struct StoreEquipEntry {
-    std::int16_t index;
-    int itemId;
-    unsigned char type;
-    std::uint32_t location;
-    std::uint32_t wearState;
-    unsigned char refine;
-    std::uint32_t card0;
-    std::uint32_t card1;
-    std::uint32_t card2;
-    std::uint32_t card3;
-    std::uint32_t expireTime;
-    std::uint16_t bindOnEquip;
-    std::uint16_t sprite;
-    bool identified;
-    bool damaged;
-    bool placeEtcTab;
-    StoreItemOption options[5];
-  };
-
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
+  static_assert(sizeof(PickupItemOptions) == 25);
   static_assert(sizeof(StoreEquipRecord) == 0x29);
   static_assert(sizeof(StoreEquipOptionRecord) == 0x43);
   static_assert(sizeof(StoreNormalRecord) == 0x22);
@@ -502,44 +493,67 @@ namespace {
   }
 
   // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipRecord& record) {
-    entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    entry.card0 = record.cards[0];
-    entry.card1 = record.cards[1];
-    entry.card2 = record.cards[2];
-    entry.card3 = record.cards[3];
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.sprite = record.sprite;
-    entry.identified = record.identified;
-    entry.damaged = record.damaged;
-    entry.placeEtcTab = record.placeEtcTab;
+  template <typename AddItem>
+  __forceinline void AddStoreEquipItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card0, std::uint32_t card1, std::uint32_t card2,
+    std::uint32_t card3, int itemId, bool identified, bool damaged, unsigned char refine, std::uint32_t expireTime, std::uint16_t bindOnEquip,
+    std::uint16_t sprite, bool placeEtcTab, PickupItemOptions options, std::int16_t grade, AddItem addItem
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    item.cards[0] = card0;
+    item.cards[1] = card1;
+    item.cards[2] = card2;
+    item.cards[3] = card3;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.placeEtcTab = placeEtcTab;
+    item.optionCount = CountStoreItemOptions(options.options);
+    item.grade = grade;
+    for (int i = 0; i < item.optionCount; ++i) {
+      item.options[i] = options.options[i];
+    }
+    addItem(item);
   }
 
   // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
-    entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    entry.card0 = record.cards[0];
-    entry.card1 = record.cards[1];
-    entry.card2 = record.cards[2];
-    entry.card3 = record.cards[3];
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.sprite = record.sprite;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
+  __forceinline void AddCartEquipItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card0, std::uint32_t card1, std::uint32_t card2,
+    std::uint32_t card3, int itemId, bool identified, bool damaged, unsigned char refine, std::uint32_t expireTime, std::uint16_t bindOnEquip,
+    std::uint16_t sprite, bool placeEtcTab, PickupItemOptions options
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    item.cards[0] = card0;
+    item.cards[1] = card1;
+    item.cards[2] = card2;
+    item.cards[3] = card3;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.placeEtcTab = placeEtcTab;
+    item.optionCount = CountStoreItemOptions(options.options);
+    for (int i = 0; i < item.optionCount; ++i) {
+      item.options[i] = options.options[i];
+    }
+    g_session.AddCartItem(item, 1);
   }
 
   static_assert(sizeof(DispelPacket) == 6);
@@ -1074,46 +1088,29 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
   }
 }
 
+// INLINED
+static __forceinline void SetItemStoreTitle(UIItemStoreWnd* window, std::string title) {
+  window->title->SetTextFitted(title.c_str());
+}
+
 // OFFSET: 0x00D2B710
 // FUNCTION: fn_21710
 void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
-    std::string title(packet->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, packet->title);
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(packet + 1);
-  StoreItemOption options[5] = {0};
+  PickupItemOptions options = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddCartItem(item, 1);
+    AddCartEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -1125,41 +1122,18 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
-    std::string title(packet->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, packet->title);
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddCartItem(item, 1);
+    AddCartEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options
+    );
   }
 
   g_session.RefreshItem1738Window();
@@ -1171,8 +1145,7 @@ void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
   const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
   UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREWND));
   if (packet->title[0] != '\0') {
-    std::string title(packet->title);
-    window->title->SetTextFitted(title.c_str());
+    SetItemStoreTitle(window, packet->title);
   }
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreNormalRecord);
@@ -1622,18 +1595,14 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
   int amount;
   std::int16_t type;
   switch (variant) {
-  case 0: {
-    const auto* p = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet);
-    amount = p->amount;
-    type = p->type;
+  case 0:
+    type = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet)->type;
+    amount = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet)->amount;
     break;
-  }
-  case 1: {
-    const auto* p = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet);
-    amount = p->amount;
-    type = p->type;
+  case 1:
+    type = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet)->type;
+    amount = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet)->amount;
     break;
-  }
   }
 
   switch (type) {
@@ -1827,7 +1796,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned c
   const int state = p->expirationTime != 0 ? 1 : 2;
   const int previous = g_session.memorialDungeonState;
   g_session.memorialDungeonState = state;
-  if (previous != state || state != 2 || g_session.memorialWindowOpen != 0) {
+  if (state != previous || previous != 2 || g_session.memorialWindowOpen != 0) {
     if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
       window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
@@ -2001,10 +1970,12 @@ void CGameMode::Zc_Notify_Exp(const unsigned char* packet) {
 
   char buffer[256];
   if (data->varId == 1) {
-    std::sprintf(buffer, LookupMessage(MSI_NOTIFY_EXP), amount);
+    const char* format = LookupMessage(MSI_NOTIFY_EXP);
+    std::sprintf(buffer, format, amount);
     text += buffer;
   } else if (data->varId == 2) {
-    std::sprintf(buffer, LookupMessage(MSI_NOTIFY_JOBEXP), amount);
+    const char* format = LookupMessage(MSI_NOTIFY_JOBEXP);
+    std::sprintf(buffer, format, amount);
     text += buffer;
   }
 
@@ -2193,35 +2164,16 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   const int count = (p->length - 4) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
+  PickupItemOptions options = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5] = {0};
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddMerchantShopItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options, 0,
+      [](const ITEM_INFO& item) {
+        g_session.AddMerchantShopItem(item);
+      }
+    );
   }
 
   g_session.RefreshItem1740Window();
@@ -2235,34 +2187,14 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
     const StoreEquipOptionRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.grade = 0;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddMerchantShopItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0,
+      [](const ITEM_INFO& item) {
+        g_session.AddMerchantShopItem(item);
+      }
+    );
   }
 
   g_session.RefreshItem1740Window();
@@ -2411,6 +2343,8 @@ __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char
   const auto* p = reinterpret_cast<const PACKET_ZC_DYNAMICNPC_CREATE_RESULT*>(packet);
   char text[0x400];
   switch (p->result) {
+  case 0:
+    return;
   case DYNAMICNPC_RESULT_DUPLICATE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DYNAMICNPC_FAIL_DUPLICATENAME)), 0x64FFFF, 0, 0, 0);
     break;
@@ -2630,7 +2564,10 @@ __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned cha
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -2647,15 +2584,19 @@ __declspec(noinline) void CGameMode::ReceiveItem1740BasicList(const unsigned cha
 __declspec(noinline) void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740EquipRecord);
-  const Item1740EquipRecord* record = reinterpret_cast<const Item1740EquipRecord*>(packet + 1);
-  for (int i = 0; i < count; ++i, ++record) {
+  const Item1740EquipRecord* records = reinterpret_cast<const Item1740EquipRecord*>(packet + 1);
+  for (int i = 0; i < count; ++i) {
+    const Item1740EquipRecord* record = &records[i];
     ITEM_INFO item;
     item.identity[0] = record->type;
-    item.identity[1] = record->index;
     item.identity[2] = record->location;
+    item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -3970,7 +3911,8 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       CEffect* effect;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8D;
-        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+        auto* effectMgr = g_effectMgr;
+        if (effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(200);
@@ -4022,7 +3964,8 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       CEffect* effect;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8B;
-        if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
+        auto* effectMgr = g_effectMgr;
+        if (effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(200);
@@ -4062,13 +4005,14 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         const float radius = static_cast<float>(std::ranges::max(std::rand() % 10, 0)) + 5.0f;
         matrix rotation;
         rotation.MakeYRotation(static_cast<float>(index) * step / 180.0f * 3.141592f);
-        vector3d position;
-        position.x = radius * rotation.values[0] + rotation.values[3] * origin.x + rotation.values[6] * origin.x
-                   + rotation.values[9] + target->render.position.x;
-        position.y = radius * rotation.values[1] + rotation.values[4] * origin.x + rotation.values[7] * origin.x
-                   + rotation.values[10] + target->render.position.y;
-        position.z = radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x
-                   + rotation.values[11] + target->render.position.z;
+        const auto makePosition = [&]() -> vector3d {
+          return {
+            radius * rotation.values[0] + rotation.values[3] * origin.x + rotation.values[6] * origin.x + rotation.values[9] + target->render.position.x,
+            radius * rotation.values[1] + rotation.values[4] * origin.x + rotation.values[7] * origin.x + rotation.values[10] + target->render.position.y,
+            radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x + rotation.values[11] + target->render.position.z,
+          };
+        };
+        const vector3d position = makePosition();
         const int kind = std::ranges::max(std::rand() % 3, 0);
         int id;
         if (kind == 0) {
@@ -4262,11 +4206,12 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   }
 
   {
-    int action;
     int loopType;
+    int action;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
     if (action != -1 && gameActor != nullptr) {
-      gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+      loopType = (loopType == 0);
+      gameActor->SetAction(action * 8 - 8, 1, loopType != 0);
     }
   }
 }
@@ -4801,6 +4746,14 @@ void CGameMode::ShowSpecialPopup(int popupId) {
   }
 }
 
+// INLINED
+static void SetSpiritCount(CRagEffect* effect, short value) {
+  vector3d count{static_cast<float>(value), 0.0f, 0.0f};
+  if (effect) {
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00D7A690
 // FUNCTION: fn_22191
 void CGameMode::Zc_Spirits2(const unsigned char* data) {
@@ -4861,10 +4814,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
     effect = actor->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 
-  vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
-  if (effect) {
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
-  }
+  SetSpiritCount(effect, packet->value);
 }
 
 // OFFSET: 0x00D7A920
@@ -4993,9 +4943,16 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   }
 
-  if (effect && (effect->state.type == 228 || effect->state.type == 504 || effect->state.type == 629)) {
-    vector3d value{static_cast<float>(count), 0.0f, 0.0f};
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
+  if (effect) {
+    switch (effect->state.type) {
+    case EF_CHOOKGI:
+    case EF_CHOOKGI2:
+    case EF_CHOOKGI3: {
+      vector3d value{static_cast<float>(count), 0.0f, 0.0f};
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&value), 0, 0, 0, 0);
+      break;
+    }
+    }
   }
 }
 
@@ -7534,12 +7491,11 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
 
   g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
-  const UIItemRepairEntry* entry = reinterpret_cast<const UIItemRepairEntry*>(p + 1);
+  const UIItemRepairEntry* entries = reinterpret_cast<const UIItemRepairEntry*>(p + 1);
   for (int i = 0; i < count; ++i) {
     if (window) {
-      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+      window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&entries[i]), 0, 0, 0);
     }
-    ++entry;
   }
 }
 
@@ -7683,7 +7639,7 @@ __declspec(noinline) void CGameMode::ReceiveParaItemResult(unsigned char success
     window->AddItem(item);
   }
 
-  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 > 0 ? count : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, UM_SETTITLE, (count - 2 <= 0 ? 0 : count) * 32 + 120, 0, 0, 0);
   window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   if (!success) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_FAIL2)), 0xFF, 0, 0, 0);
@@ -8482,8 +8438,9 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
   manager->RemoveExpiredPacks();
   const int expiry = manager->GetEarliestExpiry();
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
+    const std::chrono::system_clock::time_point current = std::chrono::system_clock::from_time_t(manager->GetServerTime());
+    const std::uint64_t now = current.time_since_epoch().count();
+    const std::int64_t interval = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(expiry) - current).count();
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
     }
@@ -8604,8 +8561,7 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 45) / 38u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE)) / sizeof(Item1740EquipRecord);
   const auto* entries = reinterpret_cast<const Item1740EquipRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const auto* entry = &entries[index];
@@ -8615,7 +8571,10 @@ void CGameMode::ReceiveEquipWindowMicroscope2(const unsigned char* packet) {
     item.identity[1] = entry->index;
     item.identity[3] = entry->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry->cards, sizeof(item.cards));
+    item.cards[0] = entry->card0;
+    item.cards[1] = entry->card1;
+    item.cards[2] = entry->card2;
+    item.cards[3] = entry->card3;
     item.SetItemId(entry->itemId);
     item.identified = entry->identified;
     item.damaged = entry->damaged;
@@ -8806,8 +8765,9 @@ void CGameMode::RefreshEmotionSaleSchedule() {
   const CashEmotionPackRefresh refresh = manager->RefreshUnownedPacks();
   const int expiry = refresh.nextTime;
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
+    const std::chrono::system_clock::time_point current = std::chrono::system_clock::from_time_t(manager->GetServerTime());
+    const std::uint64_t now = current.time_since_epoch().count();
+    const std::int64_t interval = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(expiry) - current).count();
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
     }
@@ -8894,7 +8854,7 @@ void CGameMode::ReceiveActorMessage34(const unsigned char* packet) {
 struct AddQuestPacket {
   /* 0000 */ std::int16_t packetType;
   /* 0002 */ unsigned int questId;
-  /* 0006 */ unsigned char state;
+  /* 0006 */ char state;
   /* 0007 */ __time32_t startTime;
   /* 000B */ __time32_t endTime;
   /* 000F */ std::int16_t huntCount;
@@ -9268,7 +9228,7 @@ namespace {
     /* 0023 */ std::uint16_t bindOnEquip;
     /* 0025 */ std::uint16_t sprite;
     /* 0027 */ unsigned char optionCount;
-    /* 0028 */ StoreItemOption options[5];
+    /* 0028 */ PickupItemOptions options;
     /* 0041 */ unsigned char refine;
     /* 0042 */ unsigned char grade;
     /* 0043 */ unsigned char flags;
@@ -9276,92 +9236,6 @@ namespace {
 #pragma pack(pop)
 
   static_assert(sizeof(EquipWindowGradeRecord) == 0x44);
-
-  struct StoreEquipGradeEntry {
-    std::int16_t index;
-    int itemId;
-    unsigned char type;
-    std::uint32_t location;
-    std::uint32_t wearState;
-    unsigned char refine;
-    std::uint32_t cards[4];
-    std::uint32_t expireTime;
-    std::uint16_t bindOnEquip;
-    std::uint16_t sprite;
-    bool identified;
-    bool damaged;
-    bool placeEtcTab;
-    StoreItemOption options[5];
-    unsigned char grade;
-  };
-
-  // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipGradeEntry& entry, const EquipWindowGradeRecord& record) {
-    entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.sprite = record.sprite;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
-    entry.grade = record.grade;
-  }
-
-  // INLINED
-  __forceinline void FillEquipWindowItem(ITEM_INFO& item, const StoreEquipEntry& record, const StoreItemOption* options) {
-    item.identity[0] = record.type;
-    item.identity[1] = record.index;
-    item.identity[2] = record.location;
-    item.identity[3] = record.wearState;
-    item.quantity = 1;
-    item.cards[0] = record.card0;
-    item.cards[1] = record.card1;
-    item.cards[2] = record.card2;
-    item.cards[3] = record.card3;
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.placeEtcTab = record.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-  }
-
-  // INLINED
-  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipGradeEntry& record, const StoreItemOption* options) {
-    item.identity[0] = record.type;
-    item.identity[1] = record.index;
-    item.identity[2] = record.location;
-    item.identity[3] = record.wearState;
-    item.quantity = 1;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.placeEtcTab = record.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = record.grade;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-  }
 
   // INLINED
   __forceinline void EquipWindowItem(const ITEM_INFO& item) {
@@ -9389,8 +9263,8 @@ namespace {
         g_equipmentPropertiesMgr = manager;
       }
 
-      const int kind = 0;
       const int itemId = std::atoi(item.itemId.c_str());
+      const int kind = 0;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -9403,18 +9277,15 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 45) / 67u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9465,18 +9336,15 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 47) / 67u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE_BODY)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9504,18 +9372,15 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 47) / 68u;
+  const int count = (p->length - sizeof(PACKET_ZC_EQUIPWIN_MICROSCOPE_BODY)) / sizeof(EquipWindowGradeRecord);
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipGradeEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, record->grade, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9568,8 +9433,8 @@ namespace {
         g_equipmentPropertiesMgr = manager;
       }
 
-      const int kind = 0;
       const int itemId = std::atoi(item.itemId.c_str());
+      const int kind = 0;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -9583,17 +9448,16 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 41u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
+  PickupItemOptions options = {0};
   for (int index = 0; index < count; ++index) {
     const StoreEquipRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5] = {0};
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options, 0,
+      AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9607,18 +9471,15 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 67u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(StoreEquipOptionRecord);
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9632,18 +9493,15 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
   g_session.ResetEquipment();
   g_session.ResetCostumeItems();
 
-  const int length = p->length;
-  const int count = static_cast<unsigned>(length - 4) / 68u;
+  const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(EquipWindowGradeRecord);
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipGradeEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, record->grade, AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9655,10 +9513,6 @@ struct ItemCardSlots {
 
 namespace {
 #pragma pack(push, 1)
-  struct PickupItemOptions {
-    /* 0000 */ StoreItemOption options[5];
-  };
-
   struct ItemPickupAckPacket {
     /* 0000 */ std::uint16_t packetType;
     /* 0002 */ std::uint16_t index;
@@ -9722,7 +9576,6 @@ namespace {
   };
 #pragma pack(pop)
 
-  static_assert(sizeof(PickupItemOptions) == 25);
   static_assert(offsetof(ItemPickupAck7Packet, cards) == 0x0D);
   static_assert(offsetof(ItemPickupAck7Packet, options) == 0x29);
   static_assert(sizeof(ItemPickupAckPacket) == 0x21);
@@ -10139,10 +9992,7 @@ void CGameMode::ReceiveItemPickupAck5(
     }
 
     const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
-    int count = amount;
-    if (current.identity[1] > 0) {
-      count -= current.quantity;
-    }
+    const int count = current.identity[1] > 0 ? amount - current.quantity : amount;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
@@ -10763,6 +10613,12 @@ namespace {
   static_assert(sizeof(ChatRoomMemberListPacket) == 0x8);
 }
 
+// INLINED
+static __forceinline void PushSkillFailureNotice(int messageId) {
+  const char* notice = LookupMessage(messageId);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
+}
+
 // OFFSET: 0x00D1E840
 // FUNCTION: fn_21636
 void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
@@ -10773,10 +10629,9 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   }
 
   const unsigned char showMessage = g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF);
-  const char* notice;
   switch (packet->cause) {
   case USESKILL_FAIL_SH_TEMPORARY_COMMUNION:
-    notice = LookupMessage(packet->value);
+    PushSkillFailureNotice(packet->value);
     break;
   case USESKILL_FAIL:
     if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
@@ -10788,157 +10643,156 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     if (!showMessage) {
       return;
     }
-    notice = LookupMessage(MSI_USESKILL_FAIL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL);
     break;
   case USESKILL_FAIL_REDJAMSTONE:
-    notice = LookupMessage(MSI_NEED_REDJAMSTONE);
+    PushSkillFailureNotice(MSI_NEED_REDJAMSTONE);
     break;
   case USESKILL_FAIL_BLUEJAMSTONE:
-    notice = LookupMessage(MSI_NEED_BLUEJAMSTONE);
+    PushSkillFailureNotice(MSI_NEED_BLUEJAMSTONE);
     break;
   case USESKILL_FAIL_THIS_WEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
     break;
   case USESKILL_FAIL_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_HP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_MONEY:
-    notice = LookupMessage(MSI_SKILL_FAIL_MONEY);
+    PushSkillFailureNotice(MSI_SKILL_FAIL_MONEY);
     break;
   case USESKILL_FAIL_STUFF_INSUFFICIENT:
-    notice = LookupMessage(MSI_NOT_ENOUGH_SOURCE);
+    PushSkillFailureNotice(MSI_NOT_ENOUGH_SOURCE);
     break;
   case USESKILL_FAIL_LEVEL:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     if (packet->skillId == NV_BASIC) {
       switch (packet->value) {
       case ZCSK_ITEMEXCHANGE:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE1);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE1);
+        return;
       case ZCSK_EMOTION:
         this->isEmotionRequested = 0;
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE2);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE2);
+        return;
       case ZCSK_SIT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE3);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE3);
+        return;
       case ZCSK_CHAT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE4);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE4);
+        return;
       case ZCSK_PARTY:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE5);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE5);
+        return;
       case ZCSK_SHOUT:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE6);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE6);
+        return;
       case ZCSK_PK:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE7);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE7);
+        return;
       case ZCSK_MANNERPOINT: {
-        const char* text = LookupMessage(MSI_NOT_ENOUGH_FOR_MANNER_POINT);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_FOR_MANNER_POINT);
       }
         [[fallthrough]];
       case ZCSK_JOINPARTY:
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE5_2);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE5_2);
+        return;
       default:
         return;
       }
     } else {
       switch (packet->skillId) {
       case AL_WARP:
-        notice = LookupMessage(MSI_NOTENOUGHSKILLLEVEL);
-        break;
+        PushSkillFailureNotice(MSI_NOTENOUGHSKILLLEVEL);
+        return;
       case TF_STEAL:
-        notice = LookupMessage(MSI_FAIL_STEAL);
-        break;
+        PushSkillFailureNotice(MSI_FAIL_STEAL);
+        return;
       case TF_POISON:
-        notice = LookupMessage(MSI_FAIL_POISON);
-        break;
+        PushSkillFailureNotice(MSI_FAIL_POISON);
+        return;
       default:
         if (!showMessage) {
           return;
         }
-        notice = LookupMessage(MSI_NOT_ENOUGH_SKILLLEVE8);
-        break;
+        PushSkillFailureNotice(MSI_NOT_ENOUGH_SKILLLEVE8);
+        return;
       }
     }
     break;
   case USESKILL_FAIL_WEIGHTOVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_WEIGHTOVER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_WEIGHTOVER);
     break;
   case USESKILL_FAIL_TOTARGET:
-    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_TOTARGET);
     break;
   case USESKILL_FAIL_ANCILLA_NUMOVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ANCILLA_NUMOVER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ANCILLA_NUMOVER);
     break;
   case USESKILL_FAIL_HOLYWATER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HOLYWATER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HOLYWATER);
     break;
   case USESKILL_FAIL_ANCILLA:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ANCILLA);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ANCILLA);
     break;
   case USESKILL_FAIL_DUPLICATE_RANGEIN:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DUPLICATE_RANGEIN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DUPLICATE_RANGEIN);
     break;
   case USESKILL_FAIL_NEED_OTHER_SKILL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_OTHER_SKILL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_OTHER_SKILL);
     break;
   case USESKILL_FAIL_NEED_HELPER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_HELPER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_HELPER);
     break;
   case USESKILL_FAIL_INVALID_DIR:
-    notice = LookupMessage(MSI_USESKILL_FAIL_INVALID_DIR);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_INVALID_DIR);
     break;
   case USESKILL_FAIL_SUMMON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON);
     break;
   case USESKILL_FAIL_SUMMON_NONE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON_NONE);
     break;
   case USESKILL_FAIL_IMITATION_SKILL_NONE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_IMITATION_SKILL_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_IMITATION_SKILL_NONE);
     break;
   case USESKILL_FAIL_DUPLICATE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DUPLICATE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DUPLICATE);
     break;
   case USESKILL_FAIL_CONDITION:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CONDITION);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CONDITION);
     break;
   case USESKILL_FAIL_PAINTBRUSH:
-    notice = LookupMessage(MSI_USESKILL_FAIL_PAINTBRUSH);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_PAINTBRUSH);
     break;
   case USESKILL_FAIL_POS:
-    notice = LookupMessage(MSI_USESKILL_FAIL_POS);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_POS);
     break;
   case USESKILL_FAIL_HELPER_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HELPER_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_HELPER_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_GC_WEAPONBLOCKING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCKING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_WEAPONBLOCKING);
     break;
   case USESKILL_FAIL_NEED_WEAPON_BLOCKING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCK_ON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_WEAPONBLOCK_ON);
     break;
   case USESKILL_FAIL_GC_POISONINGWEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GC_POISONINGWEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GC_POISONINGWEAPON);
     break;
   case USESKILL_FAIL_MADOGEAR:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR);
     break;
   case USESKILL_FAIL_CANONBALL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CANONBALL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CANONBALL);
     break;
   case USESKILL_FAIL_MADOGEAR_HOVERING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR_HOVERING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR_HOVERING);
     break;
   case USESKILL_FAIL_GUILLONTINE_POISON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_GUILLONTINE_POISON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_GUILLONTINE_POISON);
     break;
   case USESKILL_FAIL_SKILLINTERVAL: {
     if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
@@ -10950,25 +10804,25 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_MADOGEAR_RIDE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR_RIDE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MADOGEAR_RIDE);
     break;
   case USESKILL_FAIL_SPELLBOOK:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK);
     break;
   case USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_DIFFICULT_SLEEP);
     break;
   case USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_PRESERVATION_POINT);
     break;
   case USESKILL_FAIL_SPELLBOOK_READING:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_READING);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_READING);
     break;
   case USESKILL_FAIL_CART:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CART);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CART);
     break;
   case USESKILL_FAIL_NO_MORE_SPELL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NO_MORE_SPELL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NO_MORE_SPELL);
     break;
   case USESKILL_FAIL_NEED_ITEM: {
     ITEM_INFO item;
@@ -11006,69 +10860,84 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_NEED_EQUIPPED_WEAPON_CLASS: {
     const int reason = packet->value;
     if (reason == 0x15) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GRANADE);
-    } else if (reason == 0x11) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_HANDGUN);
-    } else if (reason == 0x12) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_RIFLE);
-    } else if (reason == 0x14) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_SHOTGUN);
-    } else if (reason == 0x13) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING);
-    } else if (reason == 0xB) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_BOW);
-    } else if (reason == 0xD || reason == 0xE) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_INSTRUMENT_WHIP);
-    } else if (reason == 4) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_SPEAR);
-    } else if (reason == 0x16) {
-      notice = LookupMessage(MSI_FAIL_NEED_EQUIPPED_SYURIKEN);
-    } else {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_GRANADE);
       return;
     }
-    break;
+    if (reason == 0x11) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_HANDGUN);
+      return;
+    }
+    if (reason == 0x12) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_RIFLE);
+      return;
+    }
+    if (reason == 0x14) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_SHOTGUN);
+      return;
+    }
+    if (reason == 0x13) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING);
+      return;
+    }
+    if (reason == 0xB) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_BOW);
+      return;
+    }
+    if (reason == 0xD || reason == 0xE) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_INSTRUMENT_WHIP);
+      return;
+    }
+    if (reason == 4) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_SPEAR);
+      return;
+    }
+    if (reason == 0x16) {
+      PushSkillFailureNotice(MSI_FAIL_NEED_EQUIPPED_SYURIKEN);
+      return;
+    }
+    return;
   }
   case USESKILL_FAIL_EL_SUMMON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EL_SUMMON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EL_SUMMON);
     break;
   case USESKILL_FAIL_RELATIONGRADE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_RELATIONGRADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_RELATIONGRADE);
     break;
   case USESKILL_FAIL_STYLE_CHANGE_FIGHTER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_STYLE_CHANGE_FIGHTER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_STYLE_CHANGE_FIGHTER);
     break;
   case USESKILL_FAIL_STYLE_CHANGE_GRAPPLER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_STYLE_CHANGE_GRAPPLER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_STYLE_CHANGE_GRAPPLER);
     break;
   case USESKILL_FAIL_DRAGON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DRAGON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_DRAGON);
     break;
   case USESKILL_FAIL_NEER_WALL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEER_WALL);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEER_WALL);
     break;
   case USESKILL_FAIL_NEED_EXP_1PERCENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
     break;
   case USESKILL_FAIL_CHORUS_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_NEED_EQUIPMENT_KUNAI:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
     break;
   case USESKILL_FAIL_SIZE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SIZE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SIZE);
     break;
   case USESKILL_FAIL_TOTARGET_PLAYER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
     break;
   case USESKILL_FAIL_THERE_ARE_NPC_AROUND:
-    notice = LookupMessage(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND);
     break;
   case USESKILL_FAIL_NEED_MORE_BULLET:
-    notice = LookupMessage(MSI_NEED_MORE_BULLET);
+    PushSkillFailureNotice(MSI_NEED_MORE_BULLET);
     break;
   case USESKILL_FAIL_MAP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_MAP);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_MAP);
     break;
   case USESKILL_FAIL_COINS: {
     char text[256];
@@ -11082,10 +10951,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_NEED_SUMMON_SP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SUMMON_SP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SUMMON_SP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_SAME_VEND:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EXIST_STORE_ASSISTANT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EXIST_STORE_ASSISTANT);
     break;
   case USESKILL_FAIL_NEED_BULLETS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_MORE_BULLET_CNT), packet->value).c_str()), 0xFF, 0xB, 0, 0);
@@ -11100,82 +10969,80 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
   case USESKILL_FAIL_NEED_PARTY_LEADER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_PARTY_MASTER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NOT_PARTY_MASTER);
     break;
   case USESKILL_FAIL_NEED_PARTNER_SP:
-    notice = LookupMessage(MSI_USESKILL_FAIL_ENSEMBLE_PARTYNER);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_ENSEMBLE_PARTYNER);
     break;
   case USESKILL_FAIL_NEED_WEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE);
     break;
   case USESKILL_FAIL_NEED_ENERGY_SPHERE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY);
     break;
   case USESKILL_FAIL_MAX_TRAPS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_OVER_INSTALLATION), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_MAGIC_SPELLBOOK:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SPELLBOOK_NONE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_SPELLBOOK_NONE);
     break;
   case USESKILL_FAIL_AP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_AP_INSUFFICIENT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_AP_INSUFFICIENT);
     break;
   case USESKILL_FAIL_NEED_SERVANT_WEAPON: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_EMPTY_SERVANTWEAPON), packet->value).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
   case USESKILL_FAIL_NEED_TWINKLING_GALAXY:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_TWINKLING_GALAXY_AREA);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_TWINKLING_GALAXY_AREA);
     break;
   case USESKILL_FAIL_NEED_SOUL_ENGERY:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SOULCOLLECT);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SOULCOLLECT);
     break;
   case USESKILL_FAIL_NEED_AMULET:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_CHARMS);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_CHARMS);
     break;
   case USESKILL_FAIL_NEED_GATLING_SHOTGUT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GATLING_OR_SHOTGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GATLING_OR_SHOTGUN);
     break;
   case USESKILL_FAIL_NEED_RIFLE_REVOLVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_RIFLE_OR_HANDGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_RIFLE_OR_HANDGUN);
     break;
   case USESKILL_FAIL_NEED_GLAUNCHER_RIFLE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GRANADE_OR_RIFLE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GRANADE_OR_RIFLE);
     break;
   case USESKILL_FAIL_NEED_GATLING_REVOLVER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_GATLING_OR_HANDGUN);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_GATLING_OR_HANDGUN);
     break;
   case USESKILL_FAIL_NEED_SHOTGUN_GLAUNCHER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GRANADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GRANADE);
     break;
   case USESKILL_FAIL_NEED_SHIELD:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHIELD_WEAPON);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHIELD_WEAPON);
     break;
   case USESKILL_FAIL_TARGET_SHADOW_SPACE:
-    notice = LookupMessage(MSI_FAIL_NO_SPACE_BEHIND_THE_TARGET);
+    PushSkillFailureNotice(MSI_FAIL_NO_SPACE_BEHIND_THE_TARGET);
     break;
   case USESKILL_FAIL_MAX:
-    notice = LookupMessage(MSI_FAIL_CALLHOMUN_INVALID_JOBTYPE);
+    PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_INVALID_JOBTYPE);
     break;
   case 113:
-    notice = LookupMessage(MSI_FAIL_CALLHOMUN_OVER_100LEVEL);
+    PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_OVER_100LEVEL);
     break;
   case 114:
-    notice = LookupMessage(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
+    PushSkillFailureNotice(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
     break;
   case 115:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GATLING_OR_GRANADE);
+    PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GATLING_OR_GRANADE);
     break;
   case 116:
   case 117:
-    notice = LookupMessage(packet->value == 0 ? 0x1119 : packet->value);
+    PushSkillFailureNotice(packet->value == 0 ? 0x1119 : packet->value);
     break;
   default:
     return;
   }
-
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xFF, 0xB, 0, 0);
 }
 // OFFSET: 0x00D27420
 // FUNCTION: fn_21690
@@ -11188,48 +11055,40 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   bool joined = false;
   if (actor) {
     if (UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(actor->actorWindows[1])) {
-      info.title = room->info.title;
-      info.password = room->info.password;
-      info.type = room->info.type;
-      info.memberCount = room->info.memberCount;
-      info.memberLimit = room->info.memberLimit;
-      info.id = room->info.id;
+      info = room->info;
       if (packet->roomId == room->info.id) {
         joined = true;
       }
     }
     actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0);
-    if (joined) {
-      const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
-      std::list<std::pair<std::string, int>> members;
-      const ChatRoomMemberRecord* records = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
-      for (int i = 0; i < count; ++i) {
-        const ChatRoomMemberRecord* record = &records[i];
-        std::pair<std::string, int> member;
-        char name[25];
-        name[24] = '\0';
-        std::memcpy(name, record->name, sizeof(record->name));
-        member.first = name;
-        member.second = record->role;
-        members.push_back(member);
-      }
-
-      UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
-      window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
-      info.memberCount = static_cast<int>(members.size());
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
-      for (std::list<std::pair<std::string, int>>::iterator it = members.begin(); it != members.end(); ++it) {
-        window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(it->first.c_str()), it->second, 0, 0);
-      }
-
-      this->chatRoom.title = info.title;
-      this->chatRoom.password = info.password;
-      this->chatRoom.type = info.type;
-      this->chatRoom.memberCount = info.memberCount;
-      this->chatRoom.memberLimit = info.memberLimit;
-      this->chatRoom.id = info.id;
-    }
   }
+  if (!joined) {
+    return;
+  }
+
+  const int count = static_cast<unsigned>(packet->length - sizeof(ChatRoomMemberListPacket)) / sizeof(ChatRoomMemberRecord);
+  std::list<std::pair<std::string, int>> members;
+  const ChatRoomMemberRecord* records = reinterpret_cast<const ChatRoomMemberRecord*>(data + sizeof(ChatRoomMemberListPacket));
+  for (int i = 0; i < count; ++i) {
+    const ChatRoomMemberRecord* record = &records[i];
+    std::pair<std::string, int> member;
+    char name[25];
+    name[24] = '\0';
+    std::memcpy(name, record->name, sizeof(record->name));
+    member.first = name;
+    member.second = record->role;
+    members.push_back(member);
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
+  window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
+  info.memberCount = static_cast<int>(members.size());
+  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+  for (const std::pair<std::string, int>& member : members) {
+    window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(member.first.c_str()), member.second, 0, 0);
+  }
+
+  this->chatRoom = info;
 }
 
 // GLOBAL: gl_25381
@@ -11493,8 +11352,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
 
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), p + 1, length);
-  const std::uint32_t& aid = p->gid;
-  CGameActor* speaker = this->scene->GetGameActorByAID(aid);
+  CGameActor* speaker = this->scene->GetGameActorByAID(p->gid);
   if (speaker && !speaker->objectType && g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
@@ -11503,16 +11361,16 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   if (g_windowMgr.chatRoomWnd) {
     g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.data()), 0x222222, 0, 0, 0);
   } else {
-    if (IsMonsterJob(aid)) {
+    if (IsMonsterJob(p->gid)) {
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == ServiceThai ? 0xFFFF00 : (g_serviceType == ServiceGermany ? 0x1D8DFF : 0xFFFF), 1, 0, 0
       );
-    } else if (MonsterJobColor(aid)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+    } else if (MonsterJobColor(p->gid)) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(p->gid), 0, 0, 0);
     } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
     }
-    if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(p->gid)) {
       actor->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text.data()), 0, 0, 0, 0, 0);
     }
   }
@@ -11582,12 +11440,13 @@ static_assert(sizeof(EffectNumberPacket) == 0xE);
 // FUNCTION: fn_21764
 void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   const EffectNumberPacket* packet = reinterpret_cast<const EffectNumberPacket*>(data);
-  if (g_session.m_isPvpZone == 0 && this->scene->isPKZone == 0) {
+  auto& sceneRef = this->scene;
+  if (g_session.m_isPvpZone == 0 && sceneRef->isPKZone == 0) {
     return;
   }
 
   CGameActor* actor;
-  if (packet->aid == g_session.m_aid && (actor = this->scene->player) != nullptr) {
+  if (packet->aid == g_session.m_aid && (actor = sceneRef->player) != nullptr) {
     if (packet->count == 1) {
       if (static_cast<CPlayer*>(actor)->pkRank != 1) {
         g_session.m_timeAttackStart = timeGetTime();
@@ -11596,7 +11455,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
       g_session.m_timeAttackStart = 0;
     }
 
-    const int previous = this->scene->player->pkRank;
+    const int previous = sceneRef->player->pkRank;
     const int count = packet->count;
     if (previous != count) {
       if (previous > 10) {
@@ -11610,13 +11469,13 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
         std::sprintf(text, LookupMessage(MSI_RANK_OUT_TEN), g_session.DecodePlayerName(), count);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
       }
-      CPlayer* player = this->scene->player;
+      CPlayer* player = sceneRef->player;
       g_soundMgr->PlayWave("effect\\number_change.wav", player->render.position.x, 0.0f, player->render.position.z, 250, 40, 1.0f, 0);
     }
-    this->scene->player->pkTotal = packet->value;
-    this->scene->player->pkRank = packet->count;
+    sceneRef->player->pkTotal = packet->value;
+    sceneRef->player->pkRank = packet->count;
   } else {
-    actor = this->scene->GetGameActorByAID(packet->aid);
+    actor = sceneRef->GetGameActorByAID(packet->aid);
     const std::uint32_t state = actor->GetStateFlags();
     if (IsCloaking(state) || IsHiding(state) || IsInvisible(state)) {
       return;
@@ -11690,23 +11549,26 @@ void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
   guildInfo->bannedMembers.clear();
 
-  const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(packet + 1);
-  for (int i = 0; i < count; ++i) {
-    const GuildBanCharacterRecord* record = &records[i];
-    char reason[41];
-    std::memcpy(reason, record->reason, sizeof(record->reason));
-    reason[40] = '\0';
+  if (count > 0) {
+    const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(packet + 1);
+    int i = 0;
+    do {
+      const GuildBanCharacterRecord* record = &records[i];
+      char reason[41];
+      std::memcpy(reason, record->reason, sizeof(record->reason));
+      reason[40] = '\0';
 
-    GuildInfo::Unknown00ECEntry entry;
-    entry.characterId = record->characterId;
-    entry.name = LookupPlayerName(entry.characterId);
-    entry.reason = reason;
-    if (entry.name.size() == 0) {
-      entry.name = LookupMessage(MSI_NAMELESS_USER) + g_gameModeNamelessTag;
-    }
-    if (entry.characterId != 0) {
-      guildInfo->bannedMembers.push_back(entry);
-    }
+      GuildInfo::Unknown00ECEntry entry;
+      entry.characterId = record->characterId;
+      entry.name = LookupPlayerName(entry.characterId);
+      entry.reason = reason;
+      if (entry.name.size() == 0) {
+        entry.name = LookupMessage(MSI_NAMELESS_USER) + g_gameModeNamelessTag;
+      }
+      if (entry.characterId != 0) {
+        guildInfo->bannedMembers.push_back(entry);
+      }
+    } while (++i < count);
   }
 
   g_windowMgr.RefreshGuildWindows();
@@ -11836,8 +11698,7 @@ void CGameMode::ReceiveActorAction(
       }
     }
   }
-  const std::int64_t value = reinterpret_cast<std::intptr_t>(&act);
-  actor->SendMsg(nullptr, AM_ACTION, value, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_ACTION, reinterpret_cast<int>(&act), 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
@@ -13200,7 +13061,10 @@ __declspec(noinline) void CGameMode::ReceiveEquipItemList34(const unsigned char*
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(item.cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -13241,7 +13105,10 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record->cards, sizeof(item.cards));
+    item.cards[0] = record->card0;
+    item.cards[1] = record->card1;
+    item.cards[2] = record->card2;
+    item.cards[3] = record->card3;
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
@@ -13576,8 +13443,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
 
       CPc* pc = new CPc;
       actor = pc;
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      pc->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
+      pc->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
       pc->objectType = NPC_PET_TYPE;
       pc->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->scene->objects.push_back(pc);
@@ -13603,8 +13469,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   data.y = y;
   data.visible = 1;
   CSkill* skill = new CSkill(0);
-  const std::int64_t value = reinterpret_cast<std::intptr_t>(&data);
-  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, value, 0, 0, 0, 0, 0);
+  skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, reinterpret_cast<int>(&data), 0, 0, 0, 0, 0);
   this->scene->objects.push_back(skill);
   this->scene->skills.push_back(skill);
 }
@@ -13834,8 +13699,7 @@ struct ActorStandEntryPacket {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -13929,7 +13793,8 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -13937,7 +13802,6 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.stateFlags = packet->effectState;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
-  entry.shield = packet->shield;
   entry.accessory3 = packet->accessory3;
   entry.headPalette = packet->headPalette;
   entry.bodyPalette = packet->bodyPalette;
@@ -13947,6 +13811,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
@@ -13963,14 +13828,19 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
     CGameActor* created;
-    if ((job >= JT_WARPNPC && job < JT_MON_BEGIN) || (job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
+    if ((JT_WARPNPC <= job && JT_MON_BEGIN > job) || (JT_MON_BEGIN < job && JT_MONSTER_LAST > job) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
         g_session.IsCompanionJob(job)) {
       if (g_session.IsHomunAid(packet->aid)) {
         g_session.homunAlive = 1;
@@ -13998,9 +13868,14 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -14022,7 +13897,8 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -14030,7 +13906,6 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.stateFlags = packet->effectState;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
-  entry.shield = packet->shield;
   entry.accessory3 = packet->accessory3;
   entry.headPalette = packet->headPalette;
   entry.bodyPalette = packet->bodyPalette;
@@ -14040,6 +13915,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
@@ -14057,9 +13933,14 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -14092,9 +13973,14 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       actor->render.font = packet->font;
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
@@ -14104,6 +13990,20 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   }
 
   this->ApplyActorStatusEffects(packet->aid, packet->effectState, packet->level, packet->virtue);
+}
+
+// INLINED
+static void SetNpcGuild(CGameActor* actor, std::uint32_t guildId, int guildVersion) {
+  if (guildId > 0) {
+    actor->SetGuildInfo(guildId, guildVersion);
+  }
+}
+
+// INLINED
+static void SetUnassignedNpcGuild(CGameActor* actor, std::uint32_t guildId, int guildVersion) {
+  if (guildId > 0 && !actor->GetGdid()) {
+    actor->SetGuildInfo(guildId, guildVersion);
+  }
 }
 
 // OFFSET: 0x00D38C40
@@ -14161,9 +14061,14 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -14197,16 +14102,19 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       const int actorJob = actor->GetEffectiveJob(-1);
       if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
         const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-        if (guildId > 0) {
-          actor->SetGuildInfo(guildId, packet->shield);
-        }
+        SetNpcGuild(actor, guildId, packet->shield);
       }
     }
   }
@@ -14268,9 +14176,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
       const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
-      if (guildId > 0) {
-        actor->SetGuildInfo(guildId, packet->shield);
-      }
+      SetNpcGuild(actor, guildId, packet->shield);
     }
     actor->characterLevel = packet->actorFlags;
   }
@@ -14368,8 +14274,7 @@ struct ActorMoveEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ std::uint32_t moveStartTime;
   /* 0025 */ short accessory2;
@@ -14446,7 +14351,8 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14460,20 +14366,20 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
   CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14492,9 +14398,9 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     }
 
     created->objectType = packet->objectType;
-    actor = created;
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
+    actor = created;
     if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -14666,12 +14572,9 @@ void CGameMode::SpawnMovingActor(
   case NPC_MOB_TYPE:
   case NPC_HO_TYPE:
   case NPC_MERSOL_TYPE:
-  case NPC_ELEMENTAL_TYPE: {
-    const std::int64_t currentHp = hp;
-    const std::int64_t currentMaxHp = maxHp;
-    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, currentHp, currentMaxHp, bossFlag, 0, 0, 0);
+  case NPC_ELEMENTAL_TYPE:
+    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, hp, maxHp, bossFlag, 0, 0, 0);
     break;
-  }
   case NPC_ABR_TYPE:
   case NPC_BIONIC_TYPE:
     actor->SendMsg(nullptr, AM_UPDATEGAGE, gid, 0, 0, 0, 0, 0);
@@ -14696,8 +14599,7 @@ struct ActorMoveEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ std::uint32_t moveStartTime;
   /* 0020 */ short accessory2;
@@ -14732,7 +14634,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14746,8 +14649,8 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14763,17 +14666,22 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14806,9 +14714,14 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -14829,8 +14742,7 @@ struct ActorMoveEntryOld2Packet {
   /* 000D */ int effectState;
   /* 0011 */ short job;
   /* 0013 */ short head;
-  /* 0015 */ int weapon;
-  /* 0019 */ int shield;
+  /* 0015 */ std::int64_t weapon;
   /* 001D */ short accessory;
   /* 001F */ std::uint32_t moveStartTime;
   /* 0023 */ short accessory2;
@@ -14865,7 +14777,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14879,8 +14792,8 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14897,17 +14810,22 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14943,9 +14861,14 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -14974,7 +14897,8 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -14988,8 +14912,8 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
-  entry.shield = packet->shield;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -15006,17 +14930,22 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -15052,9 +14981,14 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
-    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
     if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
       actor->SetGroupMemberVisible(1);
@@ -15137,9 +15071,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0) {
-        actor->SetGuildInfo(emblem, packet->shield);
-      }
+      SetNpcGuild(actor, emblem, packet->shield);
     }
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -15149,9 +15081,14 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
         actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -15182,13 +15119,16 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
       const std::uint32_t emblem = (packet->accessory2 << 16) | packet->accessory3;
-      if (emblem > 0 && !actor->GetGdid()) {
-        actor->SetGuildInfo(emblem, packet->shield);
-      }
+      SetUnassignedNpcGuild(actor, emblem, packet->shield);
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   }
 
@@ -15207,8 +15147,7 @@ struct ActorStandEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15243,8 +15182,7 @@ struct ActorStateEntryLegacyPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15403,12 +15341,12 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -15418,6 +15356,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
@@ -15432,11 +15371,10 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (packet->objectType == PC_TYPE) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
   } else {
@@ -15458,12 +15396,10 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 2, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     } else {
       entry.appearanceVariant = 0;
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
-      actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 1, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_INITSTANDENTRY, reinterpret_cast<int>(&entry), 1, 0, 0, 0, 0);
     }
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
@@ -15529,8 +15465,7 @@ struct ActorStandEntryNamedOldPacket {
   /* 000F */ int effectState;
   /* 0013 */ short job;
   /* 0015 */ short head;
-  /* 0017 */ int weapon;
-  /* 001B */ int shield;
+  /* 0017 */ std::int64_t weapon;
   /* 001F */ short accessory;
   /* 0021 */ short accessory2;
   /* 0023 */ short accessory3;
@@ -15559,6 +15494,7 @@ static_assert(sizeof(ActorStandEntryNamedOldPacket) == 0x44);
 void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   const ActorStandEntryNamedOldPacket* packet = reinterpret_cast<const ActorStandEntryNamedOldPacket*>(data);
   ActorStandEntry entry;
+  entry.robe = packet->robe;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStandEntryNamedOldPacket));
   if (nameLength > 0) {
     const char* nameBegin = reinterpret_cast<const char*>(packet + 1);
@@ -15571,12 +15507,12 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -15586,8 +15522,8 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
-  entry.robe = packet->robe;
   entry.aid = packet->aid;
   if (packet->objectType == PC_TYPE) {
     entry.state = 0;
@@ -15656,11 +15592,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
     }
 
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (created) {
-      if (guildId != 0) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
-    } else if (guildId != 0 && !actor->GetGdid()) {
+    if ((created && guildId != 0) || (!created && guildId != 0 && !actor->GetGdid())) {
       actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
@@ -15678,8 +15610,7 @@ struct ActorStandEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ short accessory2;
   /* 001E */ short accessory3;
@@ -15712,7 +15643,8 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15727,7 +15659,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -15752,7 +15684,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   } else {
     int isPc = 0;
     const short job = packet->job;
-    if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
+    if ((job < 45 || job >= 1000) && (job <= 1000 || job >= 3999) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job)) {
       isPc = 1;
       actor = new CPc;
     } else {
@@ -15802,8 +15734,7 @@ struct ActorStandEntryOld2Packet {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -15836,7 +15767,8 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15851,7 +15783,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -15928,8 +15860,7 @@ struct ActorStandEntryOld3Packet {
   /* 000C */ int effectState;
   /* 0010 */ short job;
   /* 0012 */ short head;
-  /* 0014 */ int weapon;
-  /* 0018 */ int shield;
+  /* 0014 */ std::int64_t weapon;
   /* 001C */ short accessory;
   /* 001E */ short accessory2;
   /* 0020 */ short accessory3;
@@ -15963,7 +15894,8 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -15978,7 +15910,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -16200,13 +16132,13 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -16216,6 +16148,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.aid = packet->aid;
   if (packet->objectType != PC_TYPE) {
@@ -16225,9 +16158,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.direction = packet->posDir[2] & 0x0F;
 
+  int created = 0;
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
-  const int created = !actor;
   if (!actor) {
+    created = 1;
     if (packet->objectType == PC_TYPE) {
       actor = new CPc;
     } else {
@@ -16240,14 +16174,13 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   if (packet->objectType == PC_TYPE) {
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (created) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     }
     if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
@@ -16267,11 +16200,10 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
       g_session.mercenaryAlive = 1;
     }
 
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (created) {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
@@ -16279,14 +16211,8 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     }
 
     const int guildId = (packet->accessory2 << 16) | packet->accessory3;
-    if (!created) {
-      if (guildId != 0 && !actor->GetGdid()) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
-    } else {
-      if (guildId != 0) {
-        actor->SetGuildInfo(guildId, packet->guildVersion);
-      }
+    if ((created && guildId != 0) || (!created && guildId != 0 && !actor->GetGdid())) {
+      actor->SetGuildInfo(guildId, packet->guildVersion);
     }
   }
 
@@ -16307,8 +16233,7 @@ struct ActorStateEntryOldPacket {
   /* 000C */ short effectState;
   /* 000E */ short job;
   /* 0010 */ short head;
-  /* 0012 */ int weapon;
-  /* 0016 */ int shield;
+  /* 0012 */ std::int64_t weapon;
   /* 001A */ short accessory;
   /* 001C */ short accessory2;
   /* 001E */ short accessory3;
@@ -16342,7 +16267,8 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -16358,7 +16284,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
-  entry.shield = packet->shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
@@ -16375,9 +16301,14 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-        (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-      this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+      if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+        if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
+      } else {
+        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      }
     }
   } else {
     const short job = packet->job;
@@ -16406,9 +16337,14 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
-          (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
-        this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr) {
+        if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+          if (g_session.IsGuardianJob(actor->GetEffectiveJob(-1))) {
+            this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+          }
+        } else {
+          this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
+        }
       }
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -16490,9 +16426,9 @@ void CGameMode::SpawnStandingActor(
     }
 
     created->objectType = objectType;
-    this->scene->objects.push_back(created);
-    this->scene->actors.push_back(created);
     actor = created;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     if (objectType == 0) {
       if (this->partyPosList.find(aid) != this->partyPosList.end() || this->guildPosList.find(aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -16716,6 +16652,7 @@ void CGameMode::SpawnStateActor(
   entry.head = head;
   entry.weapon = static_cast<int>(weapon);
   entry.accessory = accessory;
+  entry.state = state;
   entry.effectState = healthState;
   entry.bodyState = bodyState;
   entry.stateFlags = effectState;
@@ -16731,7 +16668,6 @@ void CGameMode::SpawnStateActor(
   entry.robe = robe;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
-  entry.state = state;
   if (objectType != 0) {
     entry.shieldAppearance = entry.guildVersion;
   }
@@ -17045,6 +16981,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     std::memcpy(body, text + 4, length - 4);
     body[length - 4] = '\0';
     message = body;
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     color = 0xFFFF;
     fontType = 14;
     systemMessage = true;
@@ -17058,19 +16995,17 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     }
   }
 
-  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  if (systemMessage) {
+  int historyNotice = UIM_PUSHINTOCHATHISTORY;
+  if (!systemMessage) {
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
     );
-  } else {
-    g_windowMgr.SendNotice(
-      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
-    );
-    g_windowMgr.SendNotice(
-      UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
-    );
+    historyNotice = UIM_PUSHINTOCHATHISTORY2;
   }
+  g_windowMgr.SendNotice(
+    historyNotice, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+  );
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
   NavigationLinkParser* parser = g_navigationLinkParser;
@@ -17190,7 +17125,6 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
 // FUNCTION: fn_21992
 void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   const ActorStateEntryLegacyPacket* packet = reinterpret_cast<const ActorStateEntryLegacyPacket*>(data);
-  std::int64_t bossFlag = 0;
   ActorStandEntry entry;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStateEntryLegacyPacket));
   if (nameLength > 0) {
@@ -17204,12 +17138,13 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = packet->accessory;
+  entry.state = packet->state;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
   entry.stateFlags = packet->effectState;
-  entry.shield = packet->shield;
   entry.pkMode = packet->pkMode;
   entry.accessory2 = packet->accessory2;
   entry.accessory3 = packet->accessory3;
@@ -17219,10 +17154,10 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
-  entry.state = packet->state;
   if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
@@ -17262,6 +17197,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
 
+  std::int64_t bossFlag = 0;
   if (packet->isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;
@@ -17351,8 +17287,8 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
   name[24] = '\0';
   std::memcpy(name, packet->memberName, sizeof(packet->memberName));
   char partyName[25];
-  partyName[24] = '\0';
   std::strncpy(partyName, packet->partyName, sizeof(packet->partyName));
+  partyName[24] = '\0';
   if (g_forbiddenWords.Contains(partyName)) {
     std::string masked("");
     g_forbiddenWords.Mask(partyName, &masked);
@@ -17385,7 +17321,7 @@ void CGameMode::ReceivePartyMemberInfo(const unsigned char* data) {
       currentMap.resize(currentMap.size() - 3);
     }
     if (memberMap != currentMap) {
-      this->SendMsg(MM_DELETEPARTYPOS, member.accountId, 0, 0, 0);
+      this->SendMsg(MM_DELETEPARTYPOS, packet->accountId, 0, 0, 0);
     }
   }
 
@@ -17516,11 +17452,12 @@ void CGameMode::UpdatePartyMemberInfo(
     if (currentMap.size() > 4) {
       currentMap.resize(currentMap.size() - 3);
     }
-    const bool sameMap = memberMap == currentMap;
-    if (!sameMap) {
+    if (memberMap != currentMap) {
       this->SendMsg(MM_DELETEPARTYPOS, accountId, 0, 0, 0);
+      this->SetActorGroupMemberVisible(accountId, 0);
+    } else {
+      this->SetActorGroupMemberVisible(accountId, 1);
     }
-    this->SetActorGroupMemberVisible(accountId, sameMap);
   }
 
   g_session.partyItemDistribute = itemDistribute != 0;
@@ -17667,6 +17604,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       id = EF_NEW_ARMSCANNON_07_UP;
     }
 
+    vector3d position{0.0f, 0.0f, 0.0f};
+
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (id == EF_NEW_ARMSCANNON_05_UP) {
         id = EF_MINEFFECT_ARMSCANNON_05;
@@ -17677,14 +17616,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       } else if (id == EF_NEW_ARMSCANNON_07_UP) {
         id = EF_MINEFFECT_ARMSCANNON_07;
       }
-      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, position, 0, -1, 0, 0);
     } else {
-      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, id + 1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id + 1, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST_BOTTOM, position, 0, -1, 0, 0);
     }
     return;
   }
@@ -19528,7 +19467,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case All_EVENT_20TH_ANNIVERSARY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_20TH_FIREWORK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_20TH_FIREWORK, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CR_SHRINK:
@@ -19594,19 +19533,19 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
   case GC_ROLLINGCUTTER:
     if (source != nullptr) {
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         LaunchRollingCutterEffect(source);
       } else {
-        g_effectMgr->Spawn(source->render.accountId, EF_NEW_ROLLINGCUTTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_ROLLINGCUTTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         LaunchRollingCutterEffect(source);
       }
     }
@@ -19619,11 +19558,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -19653,11 +19592,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -19687,11 +19626,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -19721,11 +19660,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -19831,15 +19770,15 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       } else {
         effectId = EF_NEW_WINDCUTTER_BOTTOM_01;
       }
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_WINDCUTTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_WINDCUTTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case RK_IGNITIONBREAK:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case RK_DRAGONHOWLING:
@@ -19916,8 +19855,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case AB_CLEARANCE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case AB_EXPIATIO:
@@ -19960,7 +19899,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RA_FEARBREEZE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_FEARBREEZE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_FEARBREEZE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case RA_WUGMASTERY:
@@ -20032,11 +19971,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->LaunchEffect(EF_NEW_CART_TORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
@@ -20067,8 +20006,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GN_MANDRAGORA:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -20231,15 +20170,15 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SC_REPRODUCE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     g_soundMgr->PlayWave("effect\\reproduce.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SC_AUTOSHADOWSPELL:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     g_soundMgr->PlayWave("effect\\autoshadow.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -20427,8 +20366,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case GN_CARTBOOST:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\G카트부스트.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case WM_SOUND_OF_DESTRUCTION:
@@ -20480,8 +20419,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SR_HOWLINGOFLION:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_HOWLINGOFLION.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -20516,13 +20455,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RL_P_ALTER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_P_ALTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_P_ALTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case SJ_STAREMPEROR:
     if (source != nullptr) {
       source->LaunchEffect(EF_LANDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(source->render.accountId, EF_STAR_EMPEROR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_STAR_EMPEROR, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       while (source->HasId(EF_JUMPBODY)) {
         source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
@@ -20564,33 +20503,33 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       target->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       switch (skillId) {
       case SP_SOULGOLEM:
-        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_GOLEM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_GOLEM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         break;
       case SP_SOULSHADOW:
-        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_SHADOW, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_SHADOW, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         break;
       case SP_SOULFALCON:
-        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FALCON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FALCON, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         break;
       case SP_SOULFAIRY:
-        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FAIRY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FAIRY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         break;
       }
     }
     break;
   case SJ_PROMINENCEKICK:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_PROMINENCE_KICK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROMINENCE_KICK, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case SP_SOULCURSE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_CURSE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_CURSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case SP_SOULREVOLVE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_REVOLVE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_REVOLVE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_soundMgr->PlayWave(
         "effect\\t_방어형.wav", target->render.position.x - this->scene->player->render.position.x, 0.0f,
         target->render.position.z - this->scene->player->render.position.z, 250, 40, 1.0f, 0
@@ -20599,9 +20538,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case KO_HUUMARANKA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_HUUMARANKA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_LINE_BLUE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_KO_HUUMARANKA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_HUUMARANKA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_LINE_BLUE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_KO_HUUMARANKA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ALL_FULL_THROTTLE:
@@ -20766,19 +20705,19 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NV_HELPANGEL:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\priest_sanctuary.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case DK_DRAGONIC_AURA:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(100);
       }
-      effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(100);
       }
@@ -20791,13 +20730,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case AG_DESTRUCTIVE_HURRICANE:
-    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case AG_CRYSTAL_IMPACT:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case BS_REPAIRWEAPON:
@@ -20809,26 +20748,26 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case IQ_POWERFUL_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(96, 1, 1, 96, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_POWERFUL_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_POWERFUL_FAITH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_FIRM_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 1, 0x60, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_FIRM_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FIRM_FAITH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_SINCERE_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 1, 0x60, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_FIRST_FAITH_POWER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER_START, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -20837,12 +20776,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case IQ_JUDGE:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_START, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_AURA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -20851,12 +20790,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case IQ_THIRD_EXOR_FLAME:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 2, 2, 0x60, 2, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_START, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_AURA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -20864,13 +20803,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case IQ_OLEUM_SANCTUM:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_EXPOSION_BLASTER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->SetSequenceInterval(5);
       source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1100, 0);
     }
@@ -20884,70 +20823,70 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case IQ_THIRD_FLAME_BOMB:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_THIRD_CONSECRATION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case IQ_THIRD_PUNISH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_MEDIALE_VOTUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_MEDIALE_VOTUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_MEDIALE_VOTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_BENEDICTUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_BENEDICTUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_BENEDICTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_RELIGIO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_RELIGIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_RELIGIO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_COMPETENTIA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
   case CD_ARGUTUS_VITA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_VITA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_VITA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_PRESENS_ACIES:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_PRESENS_ACIES, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PRESENS_ACIES, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_ARGUTUS_TELUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_TELUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_TELUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_FRAMEN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case AG_ROCK_DOWN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case AG_STORM_CANNON:
@@ -20971,7 +20910,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case AG_DESTRUCTIVE_HURRICANE_CLIMAX:
-    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_CLIMAX, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_CLIMAX, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case AG_CRIMSON_ARROW:
     if (source != nullptr && target != nullptr) {
@@ -20983,38 +20922,38 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case AG_CLIMAX:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_CLIMAX_LIGHT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_CLIMAX_LIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_MOTHER_NET:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_BATTLE_WARIOR:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_BATTLE_W, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_BATTLE_W, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_DUAL_CANNON:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_D_CANNON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_D_CANNON, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_INFINITY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ABR_INFINITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_INFINITY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_D_MACHINE: {
-    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    CEffect* effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_START, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(500);
     }
-    effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(1430);
     }
@@ -21022,7 +20961,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case MT_A_MACHINE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_A_MACHINE_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_A_MACHINE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MT_AXE_STOMP: {
@@ -21033,11 +20972,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       scale = 1.2f;
     }
     if (source != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
@@ -21048,16 +20987,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   }
   case MT_RUSH_QUAKE:
-    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case IQ_SECOND_FLAME:
     if (target != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
-      effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
@@ -21066,21 +21005,21 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case CD_REPARATIO: {
     if (source != nullptr) {
       if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-        g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
         effect->AddEvent(0, "effect\\CD_REPARATIO1.wav", 0x1F, 0);
       }
     }
     if (target != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_REPARATIO_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_REPARATIO_TARGET, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(800);
         effect->AddEvent(0, "effect\\CD_REPARATIO2.wav", 0x32, 0);
@@ -21090,17 +21029,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case CD_DILECTIO_HEAL:
     if (source != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_DILECTIO_HEAL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_DILECTIO_HEAL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(400);
       }
       if (target != nullptr) {
         if (source->render.accountId != target->render.accountId) {
           if (g_effectMgr->Find(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET) == nullptr) {
-            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
           }
           if (g_effectMgr->Find(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM) == nullptr) {
-            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
           }
         } else if (effect) {
           effect->AddEvent(0, "effect\\CD_DILECTIO_HEAL.wav", 0x19, 0);
@@ -21118,20 +21057,20 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CD_EFFLIGO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case TR_MUSICAL_INTERLUDE:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_MUSICAL_INTERLUDE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_MUSICAL_INTERLUDE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case TR_NIPELHEIM_REQUIEM:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NIFLHEIM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NIFLHEIM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case AG_RAIN_OF_CRYSTAL:
@@ -21143,33 +21082,33 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WH_WIND_SIGN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_WIND_SIGN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_WIND_SIGN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case WH_HAWKRUSH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_HAWK_RUSH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HAWK_RUSH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case CD_PETITIO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_PETITIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PETITIO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case SHC_ETERNAL_SLASH:
     if (source != nullptr) {
       LaunchRollingCutterEffect(source);
-      g_effectMgr->Spawn(source->render.accountId, EF_ETERNAL_SLASH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ETERNAL_SLASH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case SHC_POTENT_VENOM:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_POTENT_VENOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_POTENT_VENOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABC_ABYSS_DAGGER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ABYSS_DAGGER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABYSS_DAGGER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->SetState(ST_ATTACK, 1);
     }
     break;
@@ -21182,12 +21121,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case EM_INCREASING_ACTIVITY:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_INCREASING_ACTIVITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_INCREASING_ACTIVITY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_ACTIVITY_BURN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ACTIVITY_BURN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ACTIVITY_BURN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABC_CHAIN_REACTION_SHOT:
@@ -21207,18 +21146,18 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case EM_SPELL_ENCHANTING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_SPELL_ENCHANTING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SPELL_ENCHANTING, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABC_FROM_THE_ABYSS:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_FROM_THE_ABYSS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FROM_THE_ABYSS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 0x2BC, 0);
     }
     break;
   case ABC_DEFT_STAB:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_DEFT_STAB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DEFT_STAB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABC_FRENZY_SHOT:
@@ -21228,48 +21167,48 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case EM_ELEMENTAL_BUSTER_FIRE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_GROUND:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_POISON:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_WATER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_WIND:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case BO_ADVANCE_PROTECTION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case BO_THE_WHOLE_PROTECTION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_THE_W_PROTECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THE_W_PROTECTION, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case NPC_BO_HELL_HOWLING:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_HELLTREE_HOWLING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELLTREE_HOWLING, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_FIRE:
@@ -21289,7 +21228,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NPC_BO_FAIRY_DUSTY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_WOODEN_FAIRY_DUSTY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WOODEN_FAIRY_DUSTY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_WATER:
@@ -21309,7 +21248,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case BO_RESEARCHREPORT:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_RESEARCH_REPORT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_RESEARCH_REPORT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABC_STRIP_SHADOW:
@@ -21462,43 +21401,43 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MH_TOXIN_OF_MANDARA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MH_HEILIGE_PFERD:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MH_GOLDENE_TONE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_GOLDENE_TONE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_GOLDENE_TONE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MH_THE_ONE_FIGHTER_RISES:
     if (source != nullptr) {
       source->LaunchEffect(EF_THE_ONE_FIGHTER_RISES, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(source->render.accountId, EF_THE_ONE_FIGHTER_RISES_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_THE_ONE_FIGHTER_RISES_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MH_TEMPERING:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_TEMPERING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_TEMPERING, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_EL_FLAMETECHNIC:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case ABR_NET_REPAIR:
     if (target != nullptr) {
       target->LaunchEffect(EF_HEAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (source != nullptr && g_effectMgr->Find(source->render.accountId, EF_ABR_MOTHER_01) == nullptr) {
-        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
@@ -21506,17 +21445,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (source != nullptr && g_effectMgr->Find(source->render.accountId, EF_ABR_MOTHER_02) == nullptr) {
-        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
     break;
   case EM_EL_POISON_SHIELD: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_SHIELD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_SHIELD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, EF_SERPENS_SHIELD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_SERPENS_SHIELD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_SERPENS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -21524,17 +21463,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_DEEP_POISONING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_EL_CRYSTAL_ARMOR: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ARMOR, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, EF_DILUVIO_ARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_DILUVIO_ARMOR, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_DILUVIO_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -21542,17 +21481,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_COLD_FORCE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_EL_FLAMEARMOR: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMEARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMEARMOR, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, EF_ARDOR_FLAMEARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_ARDOR_FLAMEARMOR, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_ARDOR_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -21560,11 +21499,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_EYES_OF_STORM: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_STORM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_STORM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, EF_PROCELLA_STORM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_PROCELLA_STORM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_PROCELLA_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -21572,17 +21511,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_GRACE_BREEZE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case EM_EL_STRONG_PROTECTION: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_PROTECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_PROTECT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, EF_TERREMOTUS_PROTECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_TERREMOTUS_PROTECT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -21590,8 +21529,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_EARTH_CARE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
   case MG_SAFETYWALL:
@@ -21639,7 +21578,11 @@ void CGameMode::HandleCameraInfo(const unsigned char* data) {
     }
     g_session.showCameraInfo = g_session.showCameraInfo == 0;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_session.showCameraInfo == 1 ? "Camera Info On" : "Camera Info Off"), 0x64FFFF, 0, 0, 0);
+    const char* text = "Camera Info Off";
+    if (g_session.showCameraInfo == 1) {
+      text = "Camera Info On";
+    }
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
     window->Show(g_session.showCameraInfo);
   } else if (this->camera != nullptr) {
     this->camera->camera.desiredDistance = packet->distance;

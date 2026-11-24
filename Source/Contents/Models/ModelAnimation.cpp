@@ -197,23 +197,28 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   }
 
   if (frame >= static_cast<float>(keys[count - 1].frame)) {
-    output.values[9] = keys[keys.size() - 1].rotation[0];
+    output.values[9] = keys[count - 1].rotation[0];
     output.values[10] = keys[keys.size() - 1].rotation[1];
     output.values[11] = keys[keys.size() - 1].rotation[2];
     return;
   }
 
-  ModelPositionKey first;
-  ModelPositionKey second;
+  ModelRotationKey first;
+  ModelRotationKey second;
 
   for (unsigned next = 0; next < count; ++next) {
     if (static_cast<float>(keys[next].frame) > frame) {
       if (next == 0) {
-        first = ModelPositionKey{0, {base.values[9], base.values[10], base.values[11]}};
-        std::memcpy(&second, &keys[0], sizeof(second));
+        ModelRotationKey start;
+        start.frame = 0;
+        start.rotation[0] = base.values[9];
+        start.rotation[1] = base.values[10];
+        start.rotation[2] = base.values[11];
+        first = start;
+        second = keys[0];
       } else {
-        std::memcpy(&first, &keys[next - 1], sizeof(first));
-        std::memcpy(&second, &keys[next], sizeof(second));
+        first = keys[next - 1];
+        second = keys[next];
       }
 
       break;
@@ -223,9 +228,14 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   const float amount = (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame));
   const float previous = 1.0f - amount;
 
-  output.values[9] = first.position[0] * previous + second.position[0] * amount;
-  output.values[10] = first.position[1] * previous + second.position[1] * amount;
-  output.values[11] = first.position[2] * previous + second.position[2] * amount;
+  const vector3d position{
+    first.rotation[0] * previous + second.rotation[0] * amount, first.rotation[1] * previous + second.rotation[1] * amount,
+    first.rotation[2] * previous + second.rotation[2] * amount
+  };
+
+  output.values[9] = position.x;
+  output.values[10] = position.y;
+  output.values[11] = position.z;
 }
 
 // OFFSET: 0x005407A0
@@ -267,7 +277,6 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       amount = (frame - static_cast<float>(a.frame)) / static_cast<float>((b.frame - a.frame));
     }
 
-    ModelRotationKey result{0, {0, 0, 0, 1}};
     float ax = a.rotation[0];
     float ay = a.rotation[1];
     float az = a.rotation[2];
@@ -285,6 +294,8 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       aw = -aw;
       dot = -dot;
     }
+
+    ModelRotationKey result{0, {0, 0, 0, 1}};
 
     float firstWeight;
     float secondWeight;
@@ -309,10 +320,11 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       secondWeight = ClientSin(amount * 3.141592f);
     }
 
-    result.rotation[0] = bx * secondWeight + firstWeight * ax;
-    result.rotation[1] = by * secondWeight + firstWeight * ay;
-    result.rotation[2] = bz * secondWeight + az * firstWeight;
-    result.rotation[3] = bw * secondWeight + aw * firstWeight;
+    auto& rotationRef = result.rotation;
+    rotationRef[0] = bx * secondWeight + firstWeight * ax;
+    rotationRef[1] = by * secondWeight + firstWeight * ay;
+    rotationRef[2] = bz * secondWeight + az * firstWeight;
+    rotationRef[3] = bw * secondWeight + aw * firstWeight;
     rotation.MakeRotation(result);
   }
 

@@ -241,7 +241,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
     } else {
       UIBroadcastBalloon* balloonWindow = g_modeMgr.GetGameMode()->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
-        BroadcastBalloonMessage balloon;
+        BroadcastBalloonMessage balloon(20);
         balloon.lines.emplace_back(message, 0x62B0FF, 0);
         balloonWindow->AddMessage(0, balloon);
       }

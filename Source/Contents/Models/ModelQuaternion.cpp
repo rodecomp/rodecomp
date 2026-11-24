@@ -45,13 +45,13 @@ void ModelRotationKey::Interpolate(float amount, const ModelRotationKey& first, 
     magnitude = -magnitude;
     flip = true;
   }
-  constexpr double epsilon = 0.000001;
+  constexpr float epsilon = 0.000001f;
   float firstWeight;
   float secondWeight;
 
   if (epsilon > 1.0 - static_cast<double>(magnitude)) {
-    firstWeight = static_cast<float>(1.0 - static_cast<double>(amount));
     secondWeight = amount;
+    firstWeight = static_cast<float>(1.0 - static_cast<double>(amount));
   } else {
     const float angle = static_cast<float>(std::acos(static_cast<double>(magnitude)));
     const float denominator = ClientSin(angle);

@@ -76,7 +76,7 @@ void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
       if (window) {
         window->Move(window->geometry.x + 12, window->geometry.y + 12);
         this->AddChild(*windowIt);
-        height = std::max<unsigned int>(height, window->geometry.y + 12);
+        height = std::max<unsigned int>(window->geometry.y + 12, height);
       }
     }
   }
@@ -155,6 +155,15 @@ void UIItemReformWnd_List::OnCreate(int width, int height) {
   this->UpdateScrollBar();
 }
 
+// INLINED
+static void DrawMaterialCount(UIItemReformWnd* window, int x, int y, unsigned int half, int owned, int required) {
+  const std::uint32_t color = owned < required ? 0x321EC8 : 0x3C3C3C;
+  const int left = x - half;
+  window->DrawTextAt(left, y, "/", 0, 0, 12, 0, 0, 0);
+  window->DrawRightAlignedText(left, y, FormatOwnedString("%d", owned).c_str(), 0, 0, 12, color, 0);
+  window->DrawTextAt(x + half, y, FormatOwnedString("%d", required).c_str(), 0, 0, 12, color, 0, 0);
+}
+
 // OFFSET: 0x005FD270
 // FUNCTION: fn_04110
 void UIItemReformWnd::Paint() {
@@ -171,11 +180,7 @@ void UIItemReformWnd::Paint() {
     const int y = index / 3 * 50 + 167;
     const int owned = g_session.GetInventoryItemCount(std::atoi(this->materials[index].itemId.c_str()));
     const int required = this->materials[index].quantity;
-    const std::uint32_t color = owned < required ? 0x321EC8 : 0x3C3C3C;
-    const int left = x - half;
-    this->DrawTextAt(left, y, "/", 0, 0, 12, 0, 0, 0);
-    this->DrawRightAlignedText(left, y, FormatOwnedString("%d", owned).c_str(), 0, 0, 12, color, 0);
-    this->DrawTextAt(x + half, y, FormatOwnedString("%d", required).c_str(), 0, 0, 12, color, 0, 0);
+    DrawMaterialCount(this, x, y, half, owned, required);
   }
   if (this->warning.size() != 0) {
     this->DrawTextAt(8, 240, this->FitDisplayText(280, this->warning.c_str(), 0, 12, 0).c_str(), 0, 0, 12, 0xA0AFF, 0, 0);
@@ -210,6 +215,24 @@ void UIItemReformWnd_Item::Paint() {
   }
 }
 
+// INLINED
+static void DrawReformRow(UIItemReformWnd_List* list, unsigned int row) {
+  const unsigned int index = list->scrollPosition + row;
+  const char* image;
+  if (index == list->selectedIndex) {
+    image = "유저인터페이스\\ItemReform\\btn_reform_item_press.bmp";
+  } else {
+    image = index == list->hoverIndex ? "유저인터페이스\\ItemReform\\btn_reform_item_over.bmp" : "유저인터페이스\\ItemReform\\btn_reform_item.bmp";
+  }
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image)));
+  list->DrawBitmap(0, list->itemHeight * row, bitmap, true);
+  const ITEM_INFO& item = list->items[list->scrollPosition + row];
+  list->DrawItemIcon(15, list->itemHeight * row + 4, item, 1);
+  list->DrawTextAt(42, list->itemHeight * row + 10, list->FitDisplayText(160, item.DisplayName(0).c_str(), 0, 12, 0).c_str(), 0, 0,
+    12, 0, 0, 0
+  );
+}
+
 // OFFSET: 0x005FD8A0
 // FUNCTION: fn_04114
 void UIItemReformWnd_List::Paint() {
@@ -217,18 +240,7 @@ void UIItemReformWnd_List::Paint() {
   for (unsigned int row = 0; row < this->visibleCount; ++row) {
     const unsigned int index = this->scrollPosition + row;
     if (index < this->items.size()) {
-      const char* image;
-      if (index == this->selectedIndex) {
-        image = "유저인터페이스\\ItemReform\\btn_reform_item_press.bmp";
-      } else {
-        image = index == this->hoverIndex ? "유저인터페이스\\ItemReform\\btn_reform_item_over.bmp" : "유저인터페이스\\ItemReform\\btn_reform_item.bmp";
-      }
-      this->DrawBitmap(0, this->itemHeight * row, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image))), true);
-      const ITEM_INFO& item = this->items[this->scrollPosition + row];
-      this->DrawItemIcon(15, this->itemHeight * row + 4, item, 1);
-      this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, item.DisplayName(0).c_str(), 0, 12, 0).c_str(), 0, 0,
-        12, 0, 0, 0
-      );
+      DrawReformRow(this, row);
     }
   }
 }
@@ -336,7 +348,8 @@ void UIItemReformWnd_List::UpdateScrollBar() {
   if (count > this->visibleCount) {
     this->scrollBar->Show(1);
     this->scrollBar->SetRange(count - this->visibleCount, this->visibleCount, count);
-    this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, std::max<int>(this->scrollPosition, 0));
+    this->scrollPosition = std::max(0, this->scrollPosition);
+    this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, this->scrollPosition);
     this->scrollBar->SetPosition(this->scrollPosition);
   } else {
     this->scrollPosition = 0;
@@ -547,18 +560,18 @@ int UIItemReformWnd_List::SendMsg(
         if (info->needOptionNumMin > options) {
           continue;
         }
-        bool emptySocket = true;
         if (info->isEmptySocket == 1) {
-          for (unsigned int slot = std::min(item.SlotCount(), 4); slot < 4; ++slot) {
+          unsigned int slot = std::min(item.SlotCount(), 4);
+          for (; slot < 4; ++slot) {
             if (static_cast<int>(slot) < 4 && static_cast<int>(item.cards[slot]) > 0) {
-              emptySocket = false;
               break;
             }
           }
+          if (slot < 4) {
+            continue;
+          }
         }
-        if (emptySocket) {
-          this->items.push_back(item);
-        }
+        this->items.push_back(item);
       }
     }
     this->UpdateScrollBar();

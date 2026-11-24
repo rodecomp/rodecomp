@@ -57,6 +57,9 @@ bool ITEM_INFO::IsEquipment() const {
 }
 
 namespace {
+  // GLOBAL: gl_25966
+  const char* const s_unknownItemName = "Unknown Item";
+
   // INLINED
   int CardId(const ITEM_INFO& item, int index) {
     int id;
@@ -67,21 +70,6 @@ namespace {
   // INLINED
   ItemCardName MakeEmptyItemCardName() {
     return ItemCardName{nullptr, nullptr, nullptr};
-  }
-
-  // INLINED
-  ItemMoveInfo MakeEmptyItemMoveInfo() {
-    ItemMoveInfo info;
-    info.itemId = ITEMID_NONE;
-    info.drop = false;
-    info.trade = false;
-    info.storage = false;
-    info.cart = false;
-    info.sellToNpc = false;
-    info.mail = false;
-    info.auction = false;
-    info.guildStorage = false;
-    return info;
   }
 
   // INLINED
@@ -311,6 +299,86 @@ namespace {
     }
     return CopyText(output, capacity, consume, " ");
   }
+
+  // INLINED
+  __forceinline int InlineRefine(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    const int bytes = StringFormat(output, capacity, _TRUNCATE, "+%d ", item.refiningLevel);
+    if (bytes > 0) {
+      if (consume) {
+        capacity -= bytes;
+      }
+      return bytes;
+    }
+    return 0;
+  }
+
+  // INLINED
+  __forceinline int InlineApprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    return CopyText(output, capacity, consume, LookupMessage(MSI_NAMED_PET));
+  }
+
+  // INLINED
+  __forceinline int InlineElement(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    switch (reinterpret_cast<const unsigned char*>(item.cards)[4]) {
+    case ELE_NEUTRAL: {
+      const int id = std::atoi(item.itemId.c_str());
+      if (id == 2634 || id == 2635) {
+        return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM));
+      }
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_NORMAL_ITEM));
+    }
+    case ELE_WATER:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_ICE_ITEM));
+    case ELE_EARTH:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_EARTH_ITEM));
+    case ELE_FIRE:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_FIRE_ITEM));
+    case ELE_WIND:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_WIND_ITEM));
+    default:
+      return 0;
+    }
+  }
+
+  // INLINED
+  __forceinline int InlineStar(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    switch (reinterpret_cast<const unsigned char*>(item.cards)[5]) {
+    case 5:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_ONE_STARPIECE));
+    case 10:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_TWO_STARPIECE));
+    case 15:
+      return CopyText(output, capacity, consume, LookupMessage(MSI_THREE_STARPIECE));
+    default:
+      return 0;
+    }
+  }
+
+  // INLINED
+  __forceinline int InlineSlots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
+    const int id = std::atoi(item.itemId.c_str());
+    const int slots = FindItemDescription(id, g_itemDescriptions).slots;
+    if (slots == 0) {
+      return 0;
+    }
+
+    const int bytes = StringFormat(output, capacity, _TRUNCATE, " [%d]", slots);
+    if (bytes <= 0) {
+      return 0;
+    }
+
+    if (consume) {
+      capacity -= bytes;
+    }
+    return bytes;
+  }
+}
+
+namespace {
+  // INLINED
+  __forceinline void AppendText(std::string& result, const char* text) {
+    result.append(text, std::strlen(text));
+  }
 }
 
 // OFFSET: 0x006D59A0
@@ -324,66 +392,68 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
   if (this->identified == 1) {
     const int id = std::atoi(this->itemId.c_str());
     if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && CardId(*this, 3) == 1) {
-      result.append(this->Apprentice(text, capacity, 0) > 0 ? text : "");
-      result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+      AppendText(result, InlineApprentice(*this, text, capacity, 0) > 0 ? text : "");
+      AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
     } else if (CardId(*this, 0) == 254 && CardId(*this, 1) == 0) {
       if (this->refiningLevel > 0) {
-        result.append(this->Refine(text, capacity, 0) > 0 ? text : "");
+        AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
       }
 
       if (this->grade > 0) {
-        result.append(this->Grade(text, capacity, 0) > 0 ? text : "");
+        AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
       }
 
       if (g_serviceType == ServiceBrazil || g_serviceType == ServiceRussia) {
-        result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-        result.append(this->Element(text, capacity, 0) > 0 ? text : "");
-        result.append(this->Creator(text, capacity, 0) > 0 ? text : "");
+        AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, InlineElement(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, this->Creator(text, capacity, 0) > 0 ? text : "");
       } else {
         result += this->Creator(text, capacity, 0) > 0 ? text : "";
-        result += this->Element(text, capacity, 0) > 0 ? text : "";
+        result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
         result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
       }
     } else {
       if (!this->IsEquipment() && detailed == 0) {
-        result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+        AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
       } else {
         if (this->refiningLevel > 0) {
-          result.append(this->Refine(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
         }
 
         if (this->grade > 0) {
-          result.append(this->Grade(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
         }
 
         if (this->HasCards() == true) {
-          result.append(this->Prefixes(text, capacity, 0) > 0 ? text : "");
-          result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-          result.append(this->Suffixes(text, capacity, 0) > 0 ? text : "");
-          result.append(this->Slots(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Prefixes(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Suffixes(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, InlineSlots(*this, text, capacity, 0) > 0 ? text : "");
         } else if (CardId(*this, 0) != 254 && CardId(*this, 0) != 255) {
-          result.append(IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
-          result.append(this->Slots(text, capacity, 0) > 0 ? text : "");
+          AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+          AppendText(result, this->Slots(text, capacity, 0) > 0 ? text : "");
         } else if (g_serviceType == ServiceBrazil) {
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
         } else if (g_serviceType == ServiceRussia) {
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
         } else {
-          result += this->Star(text, capacity, 0) > 0 ? text : "";
+          result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
-          result += this->Element(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
         }
       }
     }
   } else {
-    result.append(this->UnidentifiedName(text, capacity, 0) > 0 ? text : "");
+    const int id = std::atoi(this->itemId.c_str());
+    const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
+    AppendText(result, CopyText(text, capacity, 0, name ? name : " ") > 0 ? text : "");
   }
 
   return result;
@@ -411,13 +481,22 @@ std::string ItemDisplayName(int id) {
   return item.DisplayName(0);
 }
 
+// INLINED
+static std::vector<const char*>& FindItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values) {
+  // GLOBAL: gl_24728
+  static std::vector<const char*> missingLines;
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  return missingLines;
+}
+
 // OFFSET: 0x006D69C0
 // FUNCTION: fn_06582
 const std::vector<const char*>& FindMetalProcessItems(int id) {
-  // GLOBAL: gl_24728
-  static std::vector<const char*> missing;
-  const auto entry = g_metalProcessItems.find(id);
-  return entry == g_metalProcessItems.end() ? missing : entry->second;
+  return FindItemDescriptionLines(id, g_metalProcessItems);
 }
 
 // INLINED
@@ -489,8 +568,11 @@ int ITEM_INFO::SlotCount() const {
 // FUNCTION: fn_06594
 int ITEM_INFO::UnidentifiedName(char* output, int& capacity, unsigned char consume) const {
   const int id = std::atoi(this->itemId.c_str());
-  const char* name = FindItemDescription(id, g_itemDescriptions).unidentifiedName;
-  return CopyText(output, capacity, consume, name ? name : " ");
+  const ITEM_DESC& desc = FindItemDescription(id, g_itemDescriptions);
+  if (desc.unidentifiedName) {
+    return CopyText(output, capacity, consume, desc.unidentifiedName);
+  }
+  return CopyText(output, capacity, consume, " ");
 }
 
 // OFFSET: 0x006D3770
@@ -518,7 +600,7 @@ ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
 // FUNCTION: fn_45456
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values) {
   // GLOBAL: gl_24789
-  static ItemMoveInfo missingMoveInfo = MakeEmptyItemMoveInfo();
+  static ItemMoveInfo missingMoveInfo;
   const auto entry = values.find(id);
   return entry == values.end() ? missingMoveInfo : entry->second;
 }
@@ -571,7 +653,7 @@ __declspec(noinline) void LoadItemNameTables() {
       ITEM_DESC& desc = EnsureItemDescription(std::atoi(*cursor), g_itemDescriptions);
       cursor += 2;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
       char* name = *cursor;
@@ -582,7 +664,7 @@ __declspec(noinline) void LoadItemNameTables() {
       desc.identifiedName = name;
       cursor += 2;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
       while (*cursor != nullptr) {
@@ -592,33 +674,28 @@ __declspec(noinline) void LoadItemNameTables() {
 
       ++cursor;
       if (cursor >= tokens.end()) {
-        ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+        ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
       }
 
-      char* unidentified = *cursor;
-      if (unidentified == nullptr || std::strstr(unidentified, "idenitfied equal unidentified") != nullptr) {
+      if (*cursor == nullptr || std::strstr(*cursor, "idenitfied equal unidentified") != nullptr) {
         desc.unidentifiedName = desc.identifiedName;
         desc.unidentifiedDescription = desc.identifiedDescription;
-        cursor += 2;
+        ++cursor;
       } else {
-        g_session.ConvertTooltipText(unidentified, unidentified);
-        unidentified = *cursor;
+        g_session.ConvertTooltipText(*cursor, *cursor);
+        desc.unidentifiedName = *cursor;
         cursor += 2;
-        desc.unidentifiedName = unidentified;
         if (cursor >= tokens.end()) {
-          ShowErrorDialog("item.txt \xbd\xba\xc5\xa9\xb8\xb3\xc6\xae\xb8\xa6 \xc8\xae\xc0\xce\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", 0);
+          ShowErrorDialog("item.txt 스크립트를 확인해주세요.", 0);
         }
 
-        if (*cursor == nullptr) {
-          ++cursor;
-        } else {
-          do {
-            desc.unidentifiedDescription.push_back(*cursor);
-            ++cursor;
-          } while (*cursor != nullptr);
+        while (*cursor != nullptr) {
+          desc.unidentifiedDescription.push_back(*cursor);
           ++cursor;
         }
       }
+
+      ++cursor;
     }
 
     loaded = 1;
@@ -645,7 +722,7 @@ __declspec(noinline) void LoadItemNameTables() {
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(*token);
         } else {
           id = std::atoi(text);
         }
@@ -672,7 +749,7 @@ __declspec(noinline) void LoadItemNameTables() {
 
         if (!IsNumericText(text)) {
           DecodeMessageRot(text);
-          EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(text);
+          EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(*token);
         } else {
           id = std::atoi(text);
         }
@@ -685,20 +762,23 @@ __declspec(noinline) void LoadItemNameTables() {
   if (ResourceExists("EventNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventNum2ItemResNameTable.txt", 0);
     for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unidentifiedResource = token[1];
+      ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+      desc.unidentifiedResource = token[1];
     }
   }
 
   if (ResourceExists("EventIdNum2ItemResNameTable.txt", 0)) {
     g_tableStorage.LoadTokens(tokens, "EventIdNum2ItemResNameTable.txt", 0);
     for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-      EnsureItemDescription(std::atoi(*token), g_itemDescriptions).identifiedResource = token[1];
+      ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+      desc.identifiedResource = token[1];
     }
   }
 
   g_tableStorage.LoadTokens(tokens, "itemSlotTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemDescription(std::atoi(*token), g_itemDescriptions).descriptionFlags = std::atoi(token[1]);
+    ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
+    desc.descriptionFlags = std::atoi(token[1]);
   }
 
   g_tableStorage.LoadTokens(tokens, "itemParamTable.txt", 0);
@@ -715,12 +795,14 @@ __declspec(noinline) void LoadItemNameTables() {
 
   g_tableStorage.LoadTokens(tokens, "Num2CardIllustNameTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemCardName(std::atoi(*token), g_itemCardNames).name = token[1];
+    ItemCardName& card = EnsureItemCardName(std::atoi(*token), g_itemCardNames);
+    card.name = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPrefixNameTable.txt", 0);
   for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
-    EnsureItemCardName(std::atoi(*token), g_itemCardNames).prefix = token[1];
+    ItemCardName& card = EnsureItemCardName(std::atoi(*token), g_itemCardNames);
+    card.prefix = token[1];
   }
 
   g_tableStorage.LoadTokens(tokens, "CardPostfixNameTable.txt", 0);
@@ -743,20 +825,22 @@ __declspec(noinline) void LoadItemNameTables() {
       continue;
     }
 
-    if (IsNumericText(text)) {
+    if (!IsNumericText(text)) {
+      if (std::strlen(text) != 0) {
+        EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(*token);
+      }
+    } else {
       metalId = std::atoi(text);
-    } else if (std::strlen(text) != 0) {
-      EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(text);
     }
   }
 
   ITEM_DESC& unknownItemDesc = FindItemDescription(0, g_itemDescriptions);
-  unknownItemDesc.identifiedName = "Unknown Item";
-  unknownItemDesc.identifiedResource = "\xbb\xe7\xb0\xfa";
-  unknownItemDesc.identifiedDescription.push_back("Unknown Item");
-  unknownItemDesc.unidentifiedName = "Unknown Item";
-  unknownItemDesc.unidentifiedResource = "\xbb\xe7\xb0\xfa";
-  unknownItemDesc.unidentifiedDescription.push_back("Unknown Item");
+  unknownItemDesc.identifiedName = s_unknownItemName;
+  unknownItemDesc.identifiedResource = "사과";
+  unknownItemDesc.identifiedDescription.push_back(s_unknownItemName);
+  unknownItemDesc.unidentifiedName = s_unknownItemName;
+  unknownItemDesc.unidentifiedResource = "사과";
+  unknownItemDesc.unidentifiedDescription.push_back(s_unknownItemName);
   FindItemDescription(-1, g_itemDescriptions) = unknownItemDesc;
 
   ItemCardName& sorry = FindItemCardName(0, g_itemCardNames);
@@ -771,14 +855,30 @@ __declspec(noinline) void LoadItemNameTables() {
     for (std::vector<int>::iterator value = moveInfo.begin(); value != moveInfo.end(); value += 9) {
       ItemMoveInfo flags;
       flags.itemId = value[0];
-      flags.drop = value[1] != 0;
-      flags.trade = value[2] != 0;
-      flags.storage = value[3] != 0;
-      flags.cart = value[4] != 0;
-      flags.sellToNpc = value[5] != 0;
-      flags.mail = value[6] != 0;
-      flags.auction = value[7] != 0;
-      flags.guildStorage = value[8] != 0;
+      if (value[1] != 0) {
+        flags.drop = true;
+      }
+      if (value[2] != 0) {
+        flags.trade = true;
+      }
+      if (value[3] != 0) {
+        flags.storage = true;
+      }
+      if (value[4] != 0) {
+        flags.cart = true;
+      }
+      if (value[5] != 0) {
+        flags.sellToNpc = true;
+      }
+      if (value[6] != 0) {
+        flags.mail = true;
+      }
+      if (value[7] != 0) {
+        flags.auction = true;
+      }
+      if (value[8] != 0) {
+        flags.guildStorage = true;
+      }
       g_itemMoveInfo.insert(std::make_pair(flags.itemId, flags));
     }
   }

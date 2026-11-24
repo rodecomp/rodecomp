@@ -169,28 +169,28 @@ bool CTextureDX9::Create(int width, int height, int format) {
   DWORD usage = renderTarget ? 0 : D3DUSAGE_DYNAMIC;
   UINT size[2];
   const UINT* adjusted = this->m_owner->AdjustTextureDimensions(size, width, height);
-  UINT textureWidth = adjusted[0];
-  UINT textureHeight = adjusted[1];
-  this->m_textureWidth = textureWidth;
-  this->m_textureHeight = textureHeight;
+  this->m_textureWidth = adjusted[0];
+  this->m_textureHeight = adjusted[1];
+  width = this->m_textureWidth;
+  height = this->m_textureHeight;
   this->m_format = format;
   UINT levels;
 
   if (this->m_allowDynamic && this->m_owner->dynamicTextures) {
     const bool dynamic = this->m_owner->CanAutoGenerateMipmaps(nativeFormat);
-    textureWidth = this->m_textureWidth;
-    textureHeight = this->m_textureHeight;
+    width = this->m_textureWidth;
+    height = this->m_textureHeight;
+    levels = 0;
     this->m_dynamic = dynamic;
     if (dynamic) {
-      usage = renderTarget ? D3DUSAGE_AUTOGENMIPMAP : D3DUSAGE_DYNAMIC | D3DUSAGE_AUTOGENMIPMAP;
+      usage |= D3DUSAGE_AUTOGENMIPMAP;
     }
-    levels = 0;
   } else {
     this->m_dynamic = false;
     levels = 1;
   }
 
-  if (FAILED(device->CreateTexture(textureWidth, textureHeight, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
+  if (FAILED(device->CreateTexture(width, height, levels, usage, nativeFormat, D3DPOOL_DEFAULT, &this->m_texture, nullptr)) ||
       FAILED(this->m_texture->GetSurfaceLevel(0, &this->m_surface)) || FAILED(this->m_surface->GetDesc(&this->m_description))) {
     return false;
   }
@@ -359,13 +359,15 @@ bool CTextureDX9::UploadSurface(
     ++stepY;
   }
 
-  const int left = x / stepX, top = y / stepY;
-  const int w = width / stepX, h = height / stepY;
-  if (!w || !h) {
+  x /= stepX;
+  y /= stepY;
+  width /= stepX;
+  height /= stepY;
+  if (!width || !height) {
     return false;
   }
 
-  const RECT rectangle{left, top, left + w, top + h};
+  const RECT rectangle{x, y, x + width, y + height};
   D3DLOCKED_RECT locked;
   if (FAILED(surface->LockRect(&locked, &rectangle, 0))) {
     return false;
@@ -373,11 +375,16 @@ bool CTextureDX9::UploadSurface(
 
   switch (description.Format) {
   case D3DFMT_A1R5G5B5: {
+    int row = 0;
+    if (row >= height) {
+      break;
+    }
+    const std::uint32_t* sourceRow = pixels;
     const std::uint8_t transparent = static_cast<std::uint8_t>(option);
-    for (int row = 0; row < h; ++row) {
+    do {
       std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
-      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
-        const std::uint16_t color = Convert16(pixels[source], D3DFMT_A1R5G5B5);
+      for (int column = 0, source = 0; column < width; ++column, source += stepX) {
+        const std::uint16_t color = Convert16(sourceRow[source], D3DFMT_A1R5G5B5);
         if ((color & 0x7FFF) == 0x7C1F) {
           output[column] = 0;
         } else if (transparent && (color & 0x7FFF) == 0) {
@@ -386,16 +393,23 @@ bool CTextureDX9::UploadSurface(
           output[column] = color;
         }
       }
-      pixels += sourceWidth * stepY;
-    }
+      ++row;
+      sourceRow += sourceWidth * stepY;
+    } while (row < height);
     break;
   }
   case D3DFMT_A4R4G4B4: {
+    int row = 0;
+    if (row >= height) {
+      break;
+    }
+    const int rowCount = height;
+    const std::uint32_t* sourceRow = pixels;
     const std::uint8_t transparent = static_cast<std::uint8_t>(option);
-    for (int row = 0; row < h; ++row) {
+    do {
       std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
-      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
-        const std::uint16_t color = Convert16(pixels[source], D3DFMT_A4R4G4B4);
+      for (int column = 0, source = 0; column < width; ++column, source += stepX) {
+        const std::uint16_t color = Convert16(sourceRow[source], D3DFMT_A4R4G4B4);
         if ((color & 0x0FFF) == 0x0F0F) {
           output[column] = 0;
         } else if (transparent && (color & 0x0FFF) == 0) {
@@ -404,26 +418,25 @@ bool CTextureDX9::UploadSurface(
           output[column] = color;
         }
       }
-      pixels += sourceWidth * stepY;
-    }
+      ++row;
+      sourceRow += sourceWidth * stepY;
+    } while (row < rowCount);
     break;
   }
   case D3DFMT_R5G6B5:
-    for (int row = 0; row < h; ++row) {
+    for (int row = 0; row < height; ++row, pixels += sourceWidth * stepY) {
       std::uint16_t* output = reinterpret_cast<std::uint16_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
-      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+      for (int column = 0, source = 0; column < width; ++column, source += stepX) {
         output[column] = Convert16(pixels[source], D3DFMT_R5G6B5);
       }
-      pixels += sourceWidth * stepY;
     }
     break;
   case D3DFMT_A8R8G8B8:
-    for (int row = 0; row < h; ++row) {
+    for (int row = 0; row < height; ++row, pixels += sourceWidth * stepY) {
       std::uint32_t* output = reinterpret_cast<std::uint32_t*>(static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch);
-      for (int column = 0, source = 0; column < w; ++column, source += stepX) {
+      for (int column = 0, source = 0; column < width; ++column, source += stepX) {
         output[column] = pixels[source];
       }
-      pixels += sourceWidth * stepY;
     }
     break;
   default:

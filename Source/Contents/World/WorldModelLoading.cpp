@@ -61,7 +61,7 @@ inline bool operator<(const DeferredWorldModel& left, const DeferredWorldModel& 
 
 namespace {
   // INLINED
-  inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
+  inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource) {
     resource.RegisterMovies(placement.position);
 
     if (!resource.FindNode(placement.node) && resource.nodes.front() == nullptr) {
@@ -107,7 +107,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
       continue;
     }
 
-    C3dActor* model = CreateWorldModel(placement, *resource, *world->movies);
+    C3dActor* model = CreateWorldModel(placement, *resource);
 
     if (!model) {
       continue;
@@ -123,7 +123,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
 
 // OFFSET: 0x00ACB6C0
 // FUNCTION: fn_17705
-void CWorld::FinishModelLoading() {
+__declspec(noinline) void CWorld::FinishModelLoading() {
   if (hObject) {
     WaitForSingleObject(hObject, INFINITE);
     CloseHandle(hObject);
@@ -186,89 +186,115 @@ void CWorld::InitWorld() {
     return;
   }
 
-  if (groundRes->loaded == 0) {
-    ShowErrorDialog("\xb8\xca\xc0\xcc \xbf\xbe \xb9\xf6\xc1\xaf\xc0\xd4\xb4\xcf\xb4\xd9", 0);
-    return;
-  }
+  if (groundRes->loaded != 0) {
+    this->ground = new GroundGeometry();
+    this->ground->Build(*groundRes, &g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
+    this->ground->terrain = this->terrain;
 
-  this->ground = new GroundGeometry();
-  this->ground->Build(*groundRes, &g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
-  this->ground->terrain = this->terrain;
+    this->ground->SetWater(
+      worldRes->waterLevel,
+      worldRes->waterType,
+      worldRes->waterAnimation,
+      static_cast<int>(worldRes->wavePitch),
+      static_cast<int>(worldRes->waveSpeed),
+      worldRes->waveHeight
+    );
 
-  this->ground->SetWater(
-    worldRes->waterLevel,
-    worldRes->waterType,
-    worldRes->waterAnimation,
-    static_cast<int>(worldRes->wavePitch),
-    static_cast<int>(worldRes->waveSpeed),
-    worldRes->waveHeight
-  );
+    this->ground->ImportWater(*groundRes);
 
-  this->ground->ImportWater(*groundRes);
+    ResourceMgr::Instance().Remove(groundRes);
 
-  ResourceMgr::Instance().Remove(groundRes);
+    const int modelCount = static_cast<int>(worldRes->models.size());
+    auto placementIt = worldRes->models.begin();
+    auto& modelsRef = this->models;
+    modelsRef.clear();
+    modelsRef.reserve(modelCount);
 
-  const int modelCount = static_cast<int>(worldRes->models.size());
-  this->models.clear();
-  this->models.reserve(modelCount);
+    DWORD lastNoticeTime = 0;
+    int lastPercent = -1;
+    int progress = 0;
 
-  DWORD lastNoticeTime = 0;
-  int lastPercent = -1;
-  int progress = 0;
-
-  for (auto placementIt = worldRes->models.begin(); placementIt != worldRes->models.end(); ++placementIt) {
-    const WorldModelRecord* placement = *placementIt;
-    progress += 100;
-    DWORD now = timeGetTime();
-    int percent = static_cast<int>(progress / modelCount);
-    if ((percent != lastPercent && now - lastNoticeTime > 15) || percent == 100) {
-      lastPercent = percent;
-      lastNoticeTime = now;
-      g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
-      g_windowMgr.DrawCenteredBackground();
-      g_windowMgr.DrawWindows();
-      if (g_renderer->Draw()) {
-        g_renderer->Present(0);
-      }
-      PumpApplicationMessages();
-    }
-
-    g_modeMgr.GetGameMode()
-      ->CellCenter(g_session.m_playerX, g_session.m_playerY, g_worldLoadCenter[0], g_worldLoadCenter[2]);
-
-    const float dx = placement->position.x - g_worldLoadCenter[0];
-    const float dy = placement->position.y - g_worldLoadCenter[1];
-    const float dz = placement->position.z - g_worldLoadCenter[2];
-    const float squared = dy * dy + dx * dx + dz * dz;
-    const float distance = SquareRoot(squared);
-
-    if (distance > 200.0f) {
-      g_deferredWorldModels.push_back({distance, placement});
-    } else {
-      auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
-      if (modelRes) {
-        if (C3dActor* actor = CreateWorldModel(*placement, *modelRes, *this->movies)) {
-          this->models.push_back(actor);
+    for (; placementIt != worldRes->models.end(); ++placementIt) {
+      progress += 100;
+      DWORD now = timeGetTime();
+      int percent = static_cast<int>(progress / modelCount);
+      if ((percent != lastPercent && now - lastNoticeTime > 15) || percent == 100) {
+        lastPercent = percent;
+        lastNoticeTime = now;
+        g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
+        g_windowMgr.DrawCenteredBackground();
+        g_windowMgr.DrawWindows();
+        if (g_renderer->Draw()) {
+          g_renderer->Present(0);
         }
+        PumpApplicationMessages();
+      }
+
+      const WorldModelRecord* placement = *placementIt;
+      g_modeMgr.GetGameMode()
+        ->CellCenter(g_session.m_playerX, g_session.m_playerY, g_worldLoadCenter[0], g_worldLoadCenter[2]);
+
+      const float dx = placement->position.x - g_worldLoadCenter[0];
+      const float dy = placement->position.y - g_worldLoadCenter[1];
+      const float dz = placement->position.z - g_worldLoadCenter[2];
+      const float squared = dy * dy + dx * dx + dz * dz;
+      const float distance = SquareRoot(squared);
+
+      if (distance > 200.0f) {
+        g_deferredWorldModels.push_back({distance, placement});
+      } else {
+        auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
+        if (!modelRes) {
+          continue;
+        }
+
+        modelRes->RegisterMovies(placement->position);
+
+        if (!modelRes->FindNode(placement->node) && modelRes->nodes.front() == nullptr) {
+          continue;
+        }
+
+        C3dActor* actor = nullptr;
+
+        if (modelRes->major == 1) {
+          actor = new C3dActorV1;
+        } else if (modelRes->major == 2) {
+          actor = new C3dActorV2;
+        }
+
+        actor->CopyVolumes(modelRes->volumes);
+        actor->SetSpeed(placement->animationSpeed);
+        actor->playback = placement->animation;
+        actor->SetPosition(placement->position);
+        actor->SetRotation(placement->rotation);
+        actor->SetScale(placement->scale);
+        actor->commandMode = placement->flag;
+        actor->color = static_cast<std::uint32_t>(placement->index);
+        actor->Assign(*modelRes);
+        actor->occlusionEnabled = 0;
+        actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
+        modelsRef.push_back(actor);
       }
     }
+
+    this->InitializeSpatial();
+    this->LoadMapEffects();
+
+    this->ground->InitializeLighting();
+
+    this->published = static_cast<int>(modelsRef.size());
+
+    DWORD threadId;
+    hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
+    if (!hObject) {
+      CWorld::LoadDeferredModels(this);
+      this->FinishModelLoading();
+    }
+
+    this->player = new CPlayer();
+    this->objects.push_back(this->player);
+    g_session.m_whisperOption0 = 0;
+  } else {
+    ShowErrorDialog("\xb8\xca\xc0\xcc \xbf\xbe \xb9\xf6\xc1\xaf\xc0\xd4\xb4\xcf\xb4\xd9", 0);
   }
-
-  this->InitializeSpatial();
-  this->LoadMapEffects();
-
-  this->ground->InitializeLighting();
-
-  this->published = static_cast<int>(this->models.size());
-
-  DWORD threadId = 0;
-  hObject = CreateThread(nullptr, 0, &CWorld::LoadDeferredModels, this, 0, &threadId);
-  if (!hObject) {
-    CWorld::LoadDeferredModels(this);
-    this->FinishModelLoading();
-  }
-
-  this->player = new CPlayer();
-  this->objects.push_back(this->player);
-  g_session.m_whisperOption0 = 0;
 }

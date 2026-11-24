@@ -241,12 +241,7 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
       if (effectId == EF_POISON_MIST || effectId == EF_VOLCANIC_ASH) {
         y += 20.0f;
       }
-      y -= static_cast<float>(rand() % 11) * 0.4f;
-
-      vector3d position;
-      position.x = x;
-      position.y = y;
-      position.z = z;
+      const vector3d position{x, y - static_cast<float>(rand() % 11) * 0.4f, z};
       g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, effectId, interval + 20, 0);
     }
   }
@@ -329,6 +324,7 @@ void CSkill::ShowModel(const char* modelName) {
 // FUNCTION: fn_24302
 void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  ActorDamageMessage damageMessage;
 
   switch (message) {
   case AM_SKILL: {
@@ -354,10 +350,9 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       CRenderObject* skill = mode->scene->GetSkillByAID(targetAid);
       if (actor != nullptr) {
         target = actor;
+        static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
       } else if (skill != nullptr) {
         target = skill;
-      }
-      if (target != nullptr) {
         static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
       }
     }
@@ -422,17 +417,18 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
 
     if (target != nullptr) {
-      ActorDamageMessage damageMessage;
-      damageMessage.targetAid = this->hitTargetAid;
+      const std::uint32_t attackerAid = this->skillAid;
+      const std::uint32_t targetAidValue = this->hitTargetAid;
+      damageMessage.targetAid = targetAidValue;
       damageMessage.action = 26;
       damageMessage.damage = damage;
       damageMessage.time = timeGetTime();
-      damageMessage.attackerAid = this->skillAid;
+      damageMessage.attackerAid = attackerAid;
+      damageMessage.monsterValue = monsterValue;
       damageMessage.cellX = cellX;
       damageMessage.cellY = cellY;
-      damageMessage.hitEffect = effectId;
       damageMessage.effectId = -1;
-      damageMessage.monsterValue = monsterValue;
+      damageMessage.hitEffect = effectId;
       damageMessage.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
       damageMessage.blueDamage = 0;
       damageMessage.skillId = skillId;
@@ -503,7 +499,6 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     this->m_effectId = -1;
     this->render.position.y = height;
 
-    const vector3d& position = this->render.position;
     switch (this->GetEffectiveJob(-1)) {
     case UNT_ICEWALL:
       this->render.trackBounds = 1;
@@ -511,7 +506,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_FIREWALL:
     case UNT_FIRE_MANTLE: {
       const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave("effect\\EF_FireWall.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
     }
@@ -577,7 +572,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_KAEN:
       if (rand() % 8 == 0) {
         const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-        g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+        g_soundMgr->PlayWave("effect\\화염진.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       }
       this->render.trackBounds = 0;
       return;
@@ -647,119 +642,115 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
     case UNT_KINGS_GRACE: {
       const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
     }
     case UNT_MAGMA_ERUPTION: {
       const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
     }
     case UNT_PNEUMA:
-      g_effectMgr->Spawn(this->render.accountId, EF_PNEUMA, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_PNEUMA, this->render.position, 0, -1, 0, 0);
       return;
     case UNT_B_TRAP:
       switch (unit->level) {
       case 1:
-        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP1, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP1, this->render.position, 0, -1, 0, 0);
         return;
       case 2:
       case 3:
-        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP2, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP2, this->render.position, 0, -1, 0, 0);
         return;
       case 4:
       case 5:
-        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP3, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_BIND_TRAP3, this->render.position, 0, -1, 0, 0);
         return;
       }
       return;
     case UNT_CATNIPPOWDER:
-      g_effectMgr->Spawn(this->render.accountId, EF_SU_CN_POWDERING, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_SU_CN_POWDERING, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_NYANGGRASS: {
       const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\su_nyanggrass.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(this->render.accountId, EF_SU_LOPE, position, 0, unit->level, 0, 0);
+      g_soundMgr->PlayWave("effect\\su_nyanggrass.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_SU_LOPE, this->render.position, 0, unit->level, 0, 0);
       return;
     }
     case UNT_CREATINGSTAR: {
-      g_effectMgr->Spawn(this->render.accountId, EF_THUNDER_PLAZMA_BLAST, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_THUNDER_PLAZMA_BLAST, this->render.position, 0, -1, 0, 0);
       const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave("effect\\g카트토네이도.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
+      g_soundMgr->PlayWave("effect\\g카트토네이도.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
       return;
     }
-    case UNT_SEEDTRAP:
-      switch (unit->level) {
-      case 1:
+    case UNT_SEEDTRAP: {
+      const int level = unit->level;
+      if (level == 1) {
         this->m_effectId = EF_BIO5_PLANT_GREEN;
-        break;
-      case 2:
+      } else if (level == 2) {
         this->m_effectId = EF_BIO5_PLANT_BLUE;
-        break;
-      case 3:
+      } else if (level == 3) {
         this->m_effectId = EF_BIO5_PLANT_YELLOW;
-        break;
-      case 4:
+      } else if (level == 4) {
         this->m_effectId = EF_BIO5_PLANT_WHITE;
-        break;
-      case 5:
+      } else if (level == 5) {
         this->m_effectId = EF_BIO5_PLANT_RED;
-        break;
       }
       return;
+    }
     case UNT_PNEUMATICUS_PROCELLA:
-      g_effectMgr->Spawn(this->render.accountId, EF_PNEUMATICUS_PROCELLA, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_PNEUMATICUS_PROCELLA, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_RAIN_OF_CRYSTAL:
       if (!g_effectMgr->Has(this->render.accountId, EF_UNK_1752)) {
         g_effectMgr->Retire(this->render.accountId, 0x6D8);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1752, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1752, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_VIOLENT_QUAKE:
       g_effectMgr->Retire(this->render.accountId, 0x701);
-      g_effectMgr->Spawn(this->render.accountId, EF_VIOLENT_QUAKE_BOTTOM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_VIOLENT_QUAKE_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_ASTRAL_STRIKE:
       if (!g_effectMgr->Has(this->render.accountId, EF_ASTRAL_STRIKE)) {
         g_effectMgr->Retire(this->render.accountId, 0x6E8);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_ASTRAL_STRIKE, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_ASTRAL_STRIKE, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_MYSTERY_ILLUSION:
       if (!g_effectMgr->Has(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM)) {
         g_effectMgr->Retire(this->render.accountId, 0x6EC);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_TORNADO_STORM:
       if (!g_effectMgr->Has(this->render.accountId, EF_TORNADO_STORM)) {
         g_effectMgr->Retire(this->render.accountId, 0x6F0);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM, this->render.position, 0, unit->level, 0, 0);
       if (!g_effectMgr->Has(this->render.accountId, EF_TORNADO_STORM_BOTTOM)) {
         g_effectMgr->Retire(this->render.accountId, 0x6F1);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM_BOTTOM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_ALL_BLOOM:
       g_effectMgr->Retire(this->render.accountId, 0x702);
-      g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM, this->render.position, 0, unit->level, 0, 0);
       g_effectMgr->Retire(this->render.accountId, 0x703);
-      g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM_BOTTOM, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_FLORAL_FLARE_ROAD:
       g_effectMgr->Retire(this->render.accountId, 0x70C);
-      g_effectMgr->Spawn(this->render.accountId, EF_FLORAL_FLARE_ROAD, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_FLORAL_FLARE_ROAD, this->render.position, 0, unit->level, 0, 0);
       return;
     case UNT_STRANTUM_TREMOR:
       for (std::int64_t effectId = EF_STRATUM_TREMOR; effectId <= EF_STRATUM_TREMOR_BOTTOM; ++effectId) {
         if (!g_effectMgr->Has(this->render.accountId, static_cast<int>(effectId))) {
           g_effectMgr->Retire(this->render.accountId, static_cast<int>(effectId));
         }
-        CEffect* effect = g_effectMgr->Spawn(this->render.accountId, static_cast<int>(effectId), position, 0, unit->level, 0, 0);
+        CEffect* effect = g_effectMgr->Spawn(this->render.accountId, static_cast<int>(effectId), this->render.position, 0, unit->level, 0, 0);
         if (effect != nullptr) {
           effect->SetAngle(90.0f);
           static_cast<CEZ2STRScreenEffect*>(effect)->followCamera = 1;
@@ -855,28 +846,28 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       this->render.trackBounds = 1;
       ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
-        g_effectMgr->Spawn(this->render.accountId, EF_DEEP_BLIND_TRAP, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_DEEP_BLIND_TRAP, this->render.position, 0, -1, 0, 0);
       }
       return;
     case UNT_SWIFTTRAP:
       this->render.trackBounds = 1;
       ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SWIFT_TRAP, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_SWIFT_TRAP, this->render.position, 0, -1, 0, 0);
       }
       return;
     case UNT_SOLIDTRAP:
       this->render.trackBounds = 1;
       ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SOLID_TRAP, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_SOLID_TRAP, this->render.position, 0, -1, 0, 0);
       }
       return;
     case UNT_FLAMETRAP:
       this->render.trackBounds = 1;
       ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
-        g_effectMgr->Spawn(this->render.accountId, EF_FLAME_TRAP, position, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_FLAME_TRAP, this->render.position, 0, -1, 0, 0);
       }
       return;
     default: {
@@ -940,14 +931,14 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     return;
   }
   case AM_DISAPPEAR:
-    if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
+    if (this->GetEffectiveJob(-1) != UNT_CANE_OF_EVIL_EYE) {
+      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
+      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
+    } else {
       CEffect* effect = g_effectMgr->Find(this->render.accountId, EF_UNK_2307);
       if (effect != nullptr) {
         static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
       }
-    } else {
-      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
     }
     return;
   default:

@@ -47,7 +47,7 @@ struct CharacterRenderDrawItem {
 // OFFSET: 0x0080D2A0
 // FUNCTION: fn_10099
 CCharacterRender::CCharacterRender(int width, int renderHeight)
-    : position{0.0f, 0.0f, 0.0f}, headJob(0), lowerHeadgear(0), upperHeadgear(0), middleHeadgear(0), lowerHeadgearLocation(0),
+    : position(), headJob(0), lowerHeadgear(0), upperHeadgear(0), middleHeadgear(0), lowerHeadgearLocation(0),
       upperHeadgearLocation(0), middleHeadgearLocation(0), madogearType(0), riding(0), bodyCostume(0), viewportOffsetX(0), viewportOffsetY(80.0f), bodyBlend(-1),
       bodyCellX(-1), bodyCellY(-1), viewportWidth(width), viewportHeight(renderHeight), cameraDistance(400.0f), cameraPitch(-45.0f),
       cameraYaw(0.0f), unknown_007C(0.0f), unknown_0080(0.0f), unknown_0084(0.0f), cameraUp{0.0f, 1.0f, 0.0f},
@@ -75,20 +75,17 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   position.z = this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11];
   float depthBias = 0.0f;
 
-  float& screenX = this->screenX;
-  float& screenY = this->screenY;
-  screenX = 0.0f;
-  screenY = 0.0f;
+  this->screenX = 0.0f;
+  this->screenY = 0.0f;
   float rhw = 0.0f;
-  g_renderer->ProjectViewport(&this->position.x, view, &screenX, &screenY, &rhw);
+  g_renderer->ProjectViewport(&this->position.x, view, &this->screenX, &this->screenY, &rhw);
   float distanceScale = g_renderer->ScaleDistance(rhw);
   distanceScale *= g_session.GetSkillFactor(this->job);
 
   int swapCount = 0;
   bool bodyDrawn = false;
   *boundsUpdated = 0;
-  RenderBounds& bounds = this->renderBounds;
-  bounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, rhw);
+  this->renderBounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, rhw);
 
   std::list<CharacterRenderDrawItem> commands;
   if (this->drawShadow == 1) {
@@ -104,14 +101,13 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   CImfRes* imf = static_cast<CImfRes*>(
     ResourceMgr::Instance().Load(g_session.GetBodyImfName(this->job, this->appearance[0], this->appearance[1], this->bodyCostume).c_str())
   );
-  this->RenderRobeCommands(commands, false, view, layer, &position.x, screenX, screenY, distanceScale, 0.0f, rhw);
+  this->RenderRobeCommands(commands, false, view, layer, &position.x, this->screenX, this->screenY, distanceScale, 0.0f, rhw);
 
   std::map<int, SpriteLayerQuad> quads;
-  std::map<int, int>& views = this->layerViews;
-  views[2] = this->lowerHeadgear;
-  views[3] = this->upperHeadgear;
-  views[4] = this->middleHeadgear;
-  views[8] = this->robe;
+  this->layerViews[2] = this->lowerHeadgear;
+  this->layerViews[3] = this->upperHeadgear;
+  this->layerViews[4] = this->middleHeadgear;
+  this->layerViews[8] = this->robe;
 
   std::vector<CActRes*> actions(9, nullptr);
   std::vector<CSprRes*> sprites(9, nullptr);
@@ -129,35 +125,35 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     ResourceMgr::Instance().Load(g_session.GetHeadSprName(this->job, this->appearance[0], &this->appearance[1]))
   );
   actions[2] = static_cast<CActRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], views[2])
+    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], this->layerViews[2])
   ));
   sprites[2] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], views[2])
+    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], this->layerViews[2])
   ));
   actions[3] = static_cast<CActRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], views[3])
+    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], this->layerViews[3])
   ));
   sprites[3] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], views[3])
+    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], this->layerViews[3])
   ));
   actions[4] = static_cast<CActRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], views[4])
+    g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], this->layerViews[4])
   ));
   sprites[4] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(
-    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], views[4])
+    g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], this->layerViews[4])
   ));
   if (this->isHelmRobe == 1) {
     actions[8] = static_cast<CActRes*>(ResourceMgr::Instance().Load(
-      g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], views[8])
+      g_session.GetAccessoryActName(this->job, this->appearance[0], this->appearance[1], this->layerViews[8])
     ));
     sprites[8] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(
-      g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], views[8])
+      g_session.GetAccessorySprName(this->job, this->appearance[0], this->appearance[1], this->layerViews[8])
     ));
   }
 
   bool hidesHead = false;
   for (int slot = 2; slot <= 3; ++slot) {
-    if (g_session.IsSpecialMonsterJob(views[slot]) == true) {
+    if (g_session.IsSpecialMonsterJob(this->layerViews[slot]) == true) {
       hidesHead = true;
       break;
     }
@@ -188,7 +184,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       continue;
     }
 
-    const int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(views[type]) ? 1 : type);
+    const int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(this->layerViews[type]) ? 1 : type);
     if (this->frameIndex >= static_cast<int>(actions[type]->FrameCount(this->actionIndex))) {
       continue;
     }
@@ -227,7 +223,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       if (direction > 7) {
         direction = 0;
       }
-      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", views[type], direction, this->appearance[0], &doramX, &doramY);
+      g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->layerViews[type], direction, this->appearance[0], &doramX, &doramY);
       offsetX = doramX;
       offsetY = doramY;
     }
@@ -279,7 +275,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         }
 
         offsetX += g_headAnchorOffsetX;
-        if (IsIgnoredRidingState(views[type], this->job, baseAction, this->riding) == true) {
+        if (IsIgnoredRidingState(this->layerViews[type], this->job, baseAction, this->riding) == true) {
           offsetY += SpriteRidingOffset(&bodyFrame, this->actionIndex, this->frameIndex, this->job, this->appearance[0], this->bodyCostume);
         } else {
           offsetY += g_headAnchorOffsetY;
@@ -300,7 +296,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     SpriteColor color = {};
     tagRECT rect;
     if (!this->ProjectCell(
-          index, layer, distanceScale, *cell, screenX, screenY, &position.x, 0.0f, bottomDepth, topDepth, *quad.image,
+          index, layer, distanceScale, *cell, this->screenX, this->screenY, &position.x, 0.0f, bottomDepth, topDepth, *quad.image,
           quad, rect, color, offsetX, offsetY, 0
         )) {
       continue;
@@ -321,7 +317,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     }
 
     if (trackBounds == 1 && (type == 0 || type == 1)) {
-      bounds.Include(&quad.top);
+      this->renderBounds.Include(&quad.top);
     }
 
     const std::uint32_t* palette = sprites[type]->palette;
@@ -365,9 +361,9 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       case 4:
       case 8: {
         const int direction = this->actionIndex % 8;
-        if (views[type] > 0) {
+        if (this->layerViews[type] > 0) {
           int priority = -1;
-          g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", direction, type, views[type], &priority);
+          g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", direction, type, this->layerViews[type], &priority);
           if (priority != -1) {
             SpriteLayerQuad entry;
             entry.quad = quad;
@@ -391,7 +387,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       this->bodyBlend = blend;
       this->bodyCellX = cell->x;
       this->bodyCellY = cell->y;
-      this->RenderRobeCommands(commands, true, view, layer, &position.x, screenX, screenY, distanceScale, 0.0f, rhw);
+      this->RenderRobeCommands(commands, true, view, layer, &position.x, this->screenX, this->screenY, distanceScale, 0.0f, rhw);
     }
   }
 
@@ -401,8 +397,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     float bottom = it->second.quad.bottomRhw;
     float top = it->second.quad.topRhw;
     if (it != quads.begin()) {
-      bottom = (std::max)(maxBottom, bottom);
-      top = (std::max)(maxTop, top);
+      bottom = bottom > maxBottom ? bottom : maxBottom;
+      top = top > maxTop ? top : maxTop;
     }
     maxBottom = bottom;
     maxTop = top;

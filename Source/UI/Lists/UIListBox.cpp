@@ -395,7 +395,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_UPPUSH:
     this->selected = (this->selected - 1);
@@ -410,7 +410,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     this->selected = (this->selected + 1);
@@ -424,7 +424,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 
     this->Invalidate();
     this->Refresh();
-    return 0;
+    break;
 
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -495,11 +495,13 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
       }
     }
 
-    return 0;
+    break;
 
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00880D90
@@ -550,7 +552,7 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
 // FUNCTION: fn_11200
 void UIComboBoxID::AddLine(const char* text, int id, int data) {
   const int index = static_cast<int>(this->lines.size());
-  this->lines.insert(std::pair<const int, IdListLine>(std::piecewise_construct, std::forward_as_tuple(index), std::forward_as_tuple(id, text)));
+  this->lines.insert(std::pair<const int, IdListLine>(index, std::make_pair(id, text)));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -563,7 +565,7 @@ void UIComboBoxID::AddLine(const char* text, int id, int data) {
 // OFFSET: 0x00875DD0
 // FUNCTION: fn_11203
 void UIListBoxID::AddLine(const char* text, int id) {
-  this->lines.insert(std::pair<const int, IdListLine>(std::piecewise_construct, std::forward_as_tuple(static_cast<int>(this->lines.size())), std::forward_as_tuple(id, text)));
+  this->lines.insert(std::pair<const int, IdListLine>(static_cast<int>(this->lines.size()), std::make_pair(id, text)));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();

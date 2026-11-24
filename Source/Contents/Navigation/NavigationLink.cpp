@@ -163,11 +163,11 @@ std::vector<NaviLink>::iterator CNavi_Object::LinksBegin() {
 
 // OFFSET: 0x00B8DBB0
 // FUNCTION: fn_19447
-CNavi_Link* CNavi_Link::FindLinkAt(int x, int y) {
+CNavi_Link* CNavi_Link::FindLinkAt(std::pair<int, int> target) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     NaviCell cell;
     NaviCell* found = it->link->GetCell(&cell);
-    if (x == found->x && y == found->y) {
+    if (found->x == target.first && found->y == target.second) {
       return it->link;
     }
   }
@@ -177,11 +177,11 @@ CNavi_Link* CNavi_Link::FindLinkAt(int x, int y) {
 
 // OFFSET: 0x00B8DC00
 // FUNCTION: fn_19448
-CNavi_Link* CNavi_Object::FindLinkAt(int x, int y) {
+CNavi_Link* CNavi_Object::FindLinkAt(std::pair<int, int> target) {
   for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
     NaviCell cell;
     NaviCell* found = it->link->GetCell(&cell);
-    if (x == found->x && y == found->y) {
+    if (found->x == target.first && found->y == target.second) {
       return it->link;
     }
   }

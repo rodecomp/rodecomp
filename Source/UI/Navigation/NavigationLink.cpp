@@ -74,12 +74,12 @@ namespace LineCutter {
     // INLINED
     void SetText(std::string text, LineTextStyle style, unsigned char outlined, std::uint32_t outlineColor, unsigned char shadowed, std::uint32_t shadowColor) {
       this->m_text = text;
-      this->m_outlineColor = outlineColor;
-      this->m_shadowed = shadowed;
       this->m_style = style;
       this->m_outlined = outlined;
+      this->m_outlineColor = outlineColor;
+      this->m_shadowed = shadowed;
       this->m_shadowColor = shadowColor;
-      if (outlined == 1) {
+      if (this->m_outlined == 1) {
         const int textWidth = this->TextWidth(text.c_str(), 0, 0, style.fontHeight, style.bold, style.italic);
         this->Resize(textWidth + 2, style.fontHeight + 2);
       }
@@ -344,14 +344,15 @@ int NavigationLinkParser::DecodeNavigationNumber(std::string value) {
 // FUNCTION: fn_10410
 std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  int number = value;
   std::vector<char> characters;
   int radix = 62;
 
   do {
-    characters.push_back(digits[value % radix]);
-    value /= radix;
-  } while (value >= radix);
-  characters.push_back(digits[value]);
+    characters.push_back(digits[number % radix]);
+    number /= radix;
+  } while (number >= radix);
+  characters.push_back(digits[number]);
 
   std::string result("");
   for (std::size_t i = 0; i < characters.size(); ++i) {
@@ -432,17 +433,17 @@ std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::strin
 std::string NavigationLinkParser::DisplayNavigationLink(std::string value) {
   std::string text = value;
   std::string output = text;
-  const auto begin = text.find(g_naviLinkTag);
+  const auto begin = text.find(g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
     output.clear();
     const std::string head = text.substr(0, begin);
     text = text.substr(begin);
-    const auto end = text.find(g_naviLinkCloseTag);
+    const auto end = text.find(g_parserNaviLinkCloseTag);
 
     if (end != std::string::npos) {
-      const std::string rest = text.substr(end + std::strlen(g_naviLinkCloseTag.c_str()));
-      text = text.substr(0, end + std::strlen(g_naviLinkCloseTag.c_str()));
+      const std::string rest = text.substr(end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
+      text = text.substr(0, end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
       NavigationLinkParser* parser = g_navigationLinkParser;
       const std::string link = parser->FormatNavigationLink(text, true);
       output += head;
@@ -542,6 +543,8 @@ void NavigationLinkParser::SplitMessageArguments(const char* text, std::vector<s
   }
 }
 
+using MessageArgumentSubstring = std::string (std::string::*)(std::size_t, std::size_t) const;
+
 // OFFSET: 0x00834C30
 // FUNCTION: fn_10418
 std::string NavigationLinkParser::FormatMessageArguments(std::string value, int messageId) {
@@ -578,10 +581,9 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
           if (arguments[index].find("MsgStr(") != std::string::npos) {
-            std::string stripped = arguments[index].substr(7);
-            arguments[index] = std::move(stripped);
-            std::string trimmed = arguments[index].substr(0, arguments[index].size() - 1);
-            arguments[index] = std::move(trimmed);
+            const MessageArgumentSubstring substring = &std::string::substr;
+            arguments[index] = (arguments[index].*substring)(7, std::string::npos);
+            arguments[index] = (arguments[index].*substring)(0, arguments[index].size() - 1);
             const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
           } else {
@@ -798,37 +800,38 @@ void CCreateLineInfo::AddWindow(UIWindow* window) {
   if (this->m_lines.empty()) {
     this->NewLine();
   }
-  this->m_lines.back().push_back(window);
+  this->m_lines.rbegin()->push_back(window);
 }
 
 // OFFSET: 0x00837BC0
 // FUNCTION: fn_10451
 int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
+  std::smatch match;
   int group = 0;
   int id = -1;
-  std::cmatch match;
 
-  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
-    id = std::stoi(match[1].str());
-  } else {
-    if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
-      return x;
-    }
-
-    const std::vector<std::string> parts = Split(match[1].str(), ",");
+  if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
+    const std::string number = match[1].str();
+    id = std::stoi(number);
+  } else if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
+    const std::string numbers = match[1].str();
+    const std::vector<std::string> parts = Split(numbers, ",");
     if (parts.size() == 2) {
       group = std::stoi(parts[0]);
       id = std::stoi(parts[1]);
     }
+  } else {
+    return x;
   }
 
   if (id >= 0) {
     int loops = 0;
     if (match[2].matched == true) {
       const std::string tail = match[2].str();
-      std::cmatch loopMatch;
-      if (std::regex_search(tail.c_str(), tail.c_str() + tail.size(), loopMatch, std::regex("^\\[(\\d)\\]"))) {
-        loops = std::atoi(loopMatch[1].str().c_str());
+      std::smatch loopMatch;
+      if (std::regex_search(tail, loopMatch, std::regex("^\\[(\\d)\\]")) == true) {
+        const std::string count = loopMatch[1].str();
+        loops = std::atoi(count.c_str());
       }
     }
 
@@ -844,7 +847,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
           emotion->Invalidate();
           emotion->m_maxLoops = loops;
           emotion->m_loops = 1;
-          if (this->m_width < emotion->geometry.width + x) {
+          if (emotion->geometry.width + x > this->m_width) {
             this->NewLine();
             this->AddWindow(emotion);
             x = emotion->geometry.width;
@@ -906,9 +909,9 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
 // OFFSET: 0x00838780
 // FUNCTION: fn_10453
 __declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
-  std::cmatch match;
+  std::smatch match;
 
-  if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
+  if (!std::regex_search(text, match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
     return x;
   }
 
@@ -926,13 +929,11 @@ __declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::s
   if (image->geometry.width + x > this->m_width) {
     this->NewLine();
     this->AddWindow(image);
-    x = image->geometry.width;
-  } else {
-    this->AddWindow(image);
-    x += image->geometry.width;
+    return image->geometry.width;
   }
 
-  return x;
+  this->AddWindow(image);
+  return image->geometry.width + x;
 }
 
 // OFFSET: 0x008389A0
@@ -1045,8 +1046,8 @@ std::size_t CCreateLineInfo::FindTag(std::string text, std::string keyword, bool
 // FUNCTION: fn_10458
 std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::string text, const LineTextStyle& style, int width) {
   std::vector<std::string> lines;
-  const int length = static_cast<int>(text.size());
   int position = 0;
+  const int length = static_cast<int>(text.size());
 
   while (position < length) {
     const std::string rest = text.substr(position, length - position);
@@ -1066,9 +1067,9 @@ std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::stri
 // OFFSET: 0x00839860
 // FUNCTION: fn_10459
 std::string CCreateLineInfo::FitText(UIWindow* window, const std::string text, const LineTextStyle& style, int width) {
-  const int length = static_cast<int>(text.size());
-  int position = 0;
   int total = 0;
+  int position = 0;
+  const int length = static_cast<int>(text.size());
 
   while (position < length) {
     const std::string rest = text.substr(position, text.size() - position);
@@ -1115,8 +1116,9 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
 // OFFSET: 0x00839FA0
 // FUNCTION: fn_10461
 tagSIZE CCreateLineInfo::MeasureText(UIWindow* window, std::string text, const LineTextStyle& style) {
+  tagSIZE size = {};
   if (!window) {
-    return tagSIZE();
+    return size;
   }
 
   return window->TextSize(text.c_str(), text.size(), 0, style.fontHeight, style.bold, style.italic);
@@ -1145,7 +1147,10 @@ void CCreateLineInfo::ApplyFont(std::string tag) {
     const unsigned long color = std::strtol(digits, &end, 16);
     if (end > digits && end - digits == 6) {
       changed = true;
-      this->m_color = RGB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+      const unsigned char red = static_cast<unsigned char>(color >> 16);
+      const unsigned char green = static_cast<unsigned char>(color >> 8);
+      const unsigned char blue = static_cast<unsigned char>(color);
+      this->m_color = (((blue << 8) | green) << 8) | red;
     }
   }
 
@@ -1299,21 +1304,22 @@ void OpenTextButtonLink(UITextButton* button) {
 // FUNCTION: fn_10488
 int CCreateLineInfo::ParseEmotion(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
-  std::cmatch match;
+  std::smatch match;
 
-  bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"));
-  if (missing) {
-    missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"));
-    if (missing) {
+  if (!std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"))) {
+    if (!std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"))) {
       return index;
     }
   }
 
   if (match.size() >= 2) {
     this->AddSegment(LINE_SEGMENT_EMOTION);
-    this->AppendText(match[0].str());
+    {
+      const std::string matched = match[0].str();
+      this->AppendText(matched);
+    }
     this->m_newSegment = true;
-    index += static_cast<int>(match[0].length());
+    return index + static_cast<int>(match[0].length());
   }
 
   return index;
@@ -1429,12 +1435,16 @@ int CCreateLineInfo::ParseLink(int index) {
 // FUNCTION: fn_10491
 int CCreateLineInfo::ParseItemImage(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
-  std::cmatch match;
+  std::smatch match;
 
-  const bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
+  const bool missing = !std::regex_search(text, match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
   if (!missing && match.size() >= 2) {
     this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
-    this->AppendText(match[0].str());
+    {
+      const std::string matched = match[0].str();
+      this->AppendText(matched);
+    }
+
     this->m_newSegment = true;
     return index + static_cast<int>(match[0].length());
   }
@@ -1449,7 +1459,7 @@ int CCreateLineInfo::ParseItemName(int index) {
 
   if (index == static_cast<int>(this->m_text.find(keyword, index))) {
     std::string digits;
-    for (long long position = index + keyword.size(); position < this->m_text.size(); ++position) {
+    for (long long position = static_cast<unsigned int>(index) + 9u; position < this->m_text.size(); ++position) {
       const char ch = this->m_text.at(static_cast<std::size_t>(position));
       if (!IsValidIdentChar(ch)) {
         break;
@@ -1496,8 +1506,10 @@ int CCreateLineInfo::ParseChar(int index) {
         const std::string previous = NextCharacter(previousText);
         if (previous.compare("\n") == 0) {
           this->AddSegment(LINE_SEGMENT_TEXT);
+          this->AppendText(character);
+        } else {
+          this->AppendText(character);
         }
-        this->AppendText(character);
       } else {
         this->AppendText(character);
       }
@@ -1538,7 +1550,10 @@ static int ParseColorCode(CCreateLineInfo& info, int index) {
     return index;
   }
 
-  const std::uint32_t color = RGB((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+  const unsigned char red = static_cast<unsigned char>(value >> 16);
+  const unsigned char green = static_cast<unsigned char>(value >> 8);
+  const unsigned char blue = static_cast<unsigned char>(value);
+  const std::uint32_t color = (((blue << 8) | green) << 8) | red;
   info.m_newSegment = true;
   info.m_defaultColor = color;
   info.m_color = color;
@@ -1586,7 +1601,7 @@ void CCreateLineInfo::ArrangeLines() {
     unsigned lineHeight = 0;
     for (UIWindow* window : line) {
       const unsigned height = static_cast<unsigned>(window->geometry.height);
-      if (lineHeight < height) {
+      if (height > lineHeight) {
         lineHeight = height;
       }
     }

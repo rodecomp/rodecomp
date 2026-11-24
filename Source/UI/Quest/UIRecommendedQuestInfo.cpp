@@ -266,6 +266,11 @@ struct UIRegistration {
 // FUNCTION: fn_45553
 static UIRegistration s_recommendedQuestRegistered(10010, CreateRecommendedQuestInfo);
 
+// INLINED
+static void SetCaption(CUIRecommendedQuestInfo* window, const RenewQuestRecommendedInfo& quest) {
+  window->titleText->SetText(quest.m_title);
+}
+
 // OFFSET: 0x00A58E00
 // FUNCTION: fn_16351
 void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
@@ -273,7 +278,7 @@ void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
   const auto found = quests.find(questId);
   const unsigned int selectedQuestId = questId;
   if (found != quests.end()) {
-    this->titleText->SetText(found->second.m_title.c_str(), found->second.m_title.size());
+    SetCaption(this, found->second);
     this->scrollWindow->SetQuest(selectedQuestId);
   }
 }

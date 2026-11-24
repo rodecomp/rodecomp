@@ -27,14 +27,16 @@ struct AdventureGuideIntro {
   /* 0034 */ std::map<int, AdventureGuideDetail> details;
 };
 
-struct AdventureGuideText {
+namespace Guide_Intro {
+struct Contents {
   /* 0000 */ std::string first;
   /* 0018 */ std::string second;
 };
+}
 
 struct AdventureGuideIntroPage {
   /* 0000 */ std::string title;
-  /* 0018 */ std::map<int, AdventureGuideText> texts;
+  /* 0018 */ std::map<int, Guide_Intro::Contents> texts;
 };
 
 struct AdventureGuideEpisodeInfo {
@@ -43,10 +45,7 @@ struct AdventureGuideEpisodeInfo {
   /* 0008 */ std::vector<std::string> values;
 };
 
-struct AdventureGuideEpisodeSource {
-  /* 0000 */ const char* name;
-  /* 0004 */ AdventureGuideEpisodeInfo info;
-};
+using AdventureGuideEpisodeSource = std::pair<const char*, AdventureGuideEpisodeInfo>;
 
 struct AdventureGuideEpisode {
   AdventureGuideEpisode(AdventureGuideEpisodeSource&& source);
@@ -89,6 +88,8 @@ struct AdventureGuideResult {
   /* 0004 */ std::string message;
 };
 
+class AdventureGuideEpisodeList : public std::list<AdventureGuideEpisode> {};
+
 // VTABLE: vt_00350
 class CAdventureGuideMgr {
 public:
@@ -98,7 +99,7 @@ public:
   /* 0004 */ CLuaInstance m_lua;
   /* 000C */ std::map<int, AdventureGuideIntro> m_intros;
   /* 0014 */ AdventureGuideIntroPage introPage;
-  /* 0034 */ std::list<AdventureGuideEpisode> m_episodes;
+  /* 0034 */ AdventureGuideEpisodeList m_episodes;
   /* 003C */ std::map<int, std::map<int, AdventureGuideContents>> episodeContents;
   /* 0044 */ std::map<int, std::map<int, AdventureGuideContents>> questContents;
   /* 004C */ std::map<int, std::map<int, AdventureGuideContents>> dungeonContents;
@@ -145,7 +146,7 @@ extern CAdventureGuideMgr* g_adventureGuideMgr;
 static_assert(sizeof(AdventureGuideDetail) == 0x24);
 static_assert(sizeof(AdventureGuideIntro) == 0x3C);
 static_assert(offsetof(AdventureGuideIntro, details) == 0x34);
-static_assert(sizeof(AdventureGuideText) == 0x30);
+static_assert(sizeof(Guide_Intro::Contents) == 0x30);
 static_assert(sizeof(AdventureGuideEpisodeSource) == 0x18);
 static_assert(sizeof(AdventureGuideEpisode) == 0x2C);
 static_assert(sizeof(AdventureGuideResult) == 0x1C);

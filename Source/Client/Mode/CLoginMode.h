@@ -152,7 +152,7 @@ public:
   /* 6F10 */ std::uint32_t nextKeepaliveTime;
   /* 6F14 */ UIWaitWnd* waitWnd;
   /* 6F18 */ int passwordRetryCount;
-  /* 6F1C */ std::vector<int> noticeCommands;
+  /* 6F1C */ std::vector<unsigned int> noticeCommands;
   /* 6F28 */ int authChallengeId;
   /* 6F2C */ std::vector<LoginStringRecord> padding_6F2C;
   /* 6F38 */ std::vector<LoginStringRecord> accountInfo;

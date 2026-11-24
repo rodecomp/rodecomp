@@ -23,6 +23,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
@@ -61,6 +62,17 @@ __forceinline const char* TimeFontSpriteName() {
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
+
+// GLOBAL: gl_26022
+float g_shadedColorScale = 128.0f;
+// GLOBAL: gl_26029
+float g_angleDivisor = 180.0f;
+// GLOBAL: gl_26040
+double g_miniMapTop = 16.0;
+// GLOBAL: gl_26041
+double g_miniMapCenterOffset = 64.0;
+// GLOBAL: gl_26042
+double g_miniMapBottom = 144.0;
 
 namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
@@ -306,7 +318,7 @@ void CGameMode::DrawMiniMap() {
   }
 
   for (auto it = g_miniMapEffectMarkers.begin(); it != g_miniMapEffectMarkers.end();) {
-    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, 0xFFFF0000, false);
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 2, 0xFFFF0000, false);
     if (--it->second.count <= 0) {
       it = g_miniMapEffectMarkers.erase(it);
     } else {
@@ -322,10 +334,16 @@ void CGameMode::DrawMiniMap() {
     for (int index = 0;; ++index) {
       CTownInfoMgr* townInfoMgr = g_townInfoMgr;
       const TownInfo info = townInfoMgr->GetTownInfo(std::string(this->mapName), index);
-      if (info.image.size() == 0 || info.type == 8 || info.type == 9) {
+      if (info.image.size() == 0) {
         break;
       }
-      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(), 6, index, true);
+      if (info.type == 8) {
+        break;
+      }
+      if (info.type == 9) {
+        break;
+      }
+      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(""), 6, index, true);
     }
   }
 
@@ -393,56 +411,60 @@ void CGameMode::DrawMiniMapMarker(
   // GLOBAL: gl_24933
   static int s_lastPlayerY;
 
+  const float scale = g_shadedColorScale;
+  const float xF = static_cast<float>(x);
   const int width = this->scene->terrain->width;
   const int height = this->scene->terrain->height;
-  const double originX = static_cast<double>(g_renderer->viewport.width - 144) + 64.0;
+  const double originX = static_cast<double>(g_renderer->viewport.width - 144) + g_miniMapCenterOffset;
   const int longest = width >= height ? width : height;
-  const float widthF = static_cast<float>(width);
   const float longestF = static_cast<float>(longest);
-  const float mapWidth = widthF * 128.0f / longestF;
+  const float widthF = static_cast<float>(width);
+  const double mapWidth = widthF * scale / longestF;
   const float heightF = static_cast<float>(height);
-  const float mapHeight = heightF * 128.0f / longestF;
-  if (static_cast<float>(x) < 0.0f || static_cast<float>(y) < 0.0f) {
+  const double mapHeight = heightF * scale / longestF;
+  const float yF = static_cast<float>(y);
+  if (xF < 0.0f || yF < 0.0f) {
     return;
   }
 
-  const float marginX = (128.0f - mapWidth) * g_depthAverageHalf;
+  const double marginX = (scale - static_cast<float>(mapWidth)) * g_depthAverageHalf;
   const float viewWidth = view.right - view.left;
-  const float marginY = (128.0f - mapHeight) * g_depthAverageHalf;
-  const float viewLeft = view.left * 128.0f / viewWidth;
-  const double offsetX = (static_cast<double>(static_cast<float>(x) * mapWidth / widthF) + marginX) / viewWidth;
+  const double marginY = (scale - static_cast<float>(mapHeight)) * g_depthAverageHalf;
+  const float viewLeft = view.left * scale / viewWidth;
+  const double offsetX = (xF * static_cast<float>(mapWidth) / widthF + marginX) / viewWidth;
   const float viewHeight = view.bottom - view.top;
-  const float viewTop = view.top * 128.0f / viewHeight;
-  const double offsetY =
-    (static_cast<double>(mapHeight) - static_cast<double>(static_cast<float>(y) * mapHeight / heightF) + marginY) / viewHeight;
-  const double left = originX - 64.0;
+  const float viewTop = view.top * scale / viewHeight;
+  const double offsetY = (mapHeight - static_cast<double>(yF * static_cast<float>(mapHeight) / heightF) + marginY) / viewHeight;
+  const double left = originX - g_miniMapCenterOffset;
   double drawX = (left - viewLeft) + offsetX;
-  double drawY = (16.0 - viewTop) + offsetY;
+  double drawY = (g_miniMapTop - viewTop) + offsetY;
 
   if (clamp) {
-    int directionX = 0;
-    int directionY = 0;
+    int direction = 0;
     if (drawX - size < left) {
-      directionX = 1;
+      direction = 1;
       drawX = size + left;
-    } else if (drawX + size > originX + 64.0) {
-      directionX = 2;
-      drawX = (originX + 64.0) - size;
+    } else if (drawX + size > originX + g_miniMapCenterOffset) {
+      direction = 2;
+      drawX = originX + g_miniMapCenterOffset - size;
     }
-    if (drawY - size < 16.0) {
-      drawY = size + 16.0;
-      directionY = 3;
-    } else if (drawY + size > 144.0) {
-      drawY = 144.0 - size;
-      directionY = 4;
+    if (drawY - size < g_miniMapTop) {
+      drawY = size + g_miniMapTop;
+      if (direction == 0) {
+        direction = 3;
+      }
+    } else if (drawY + size > g_miniMapBottom) {
+      drawY = g_miniMapBottom - size;
+      if (direction == 0) {
+        direction = 4;
+      }
     }
-    const int direction = directionX != 0 ? directionX : directionY;
     if (kind != 5 && direction != 0) {
       const std::string arrow = FormatOwnedString("유저인터페이스\\basic_interface\\quest_arrow%d.bmp", direction);
-      texture.assign(arrow.c_str(), arrow.size());
+      texture = arrow;
     }
   } else if (kind != 4) {
-    if (drawX - size < left || drawX + size > originX + 64.0 || drawY - size < 16.0 || drawY + size > 144.0) {
+    if (drawX - size < left || drawX + size > originX + g_miniMapCenterOffset || drawY - size < g_miniMapTop || drawY + size > g_miniMapBottom) {
       return;
     }
   }
@@ -497,7 +519,7 @@ void CGameMode::DrawMiniMapMarker(
     white = g_texMgr.Default();
     this->DrawTexture(vertical, 0, 0.0999f, color, white, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
   } else if (kind == 4) {
-    const int angle = static_cast<int>(180.0f - this->scene->player->render.angle);
+    const int angle = static_cast<int>(g_angleDivisor - this->scene->player->render.angle);
     RECT shadow;
     shadow.left = rect.left - 2;
     shadow.top = rect.top - 2;
@@ -531,72 +553,77 @@ void CGameMode::DrawMiniMapMarker(
 // OFFSET: 0x00CD1C50
 // FUNCTION: fn_21258
 void CGameMode::DrawMiniMapCoordinates() {
-  const int coordinateX = this->scene->player->pkRank;
-  const int coordinateY = this->scene->player->pkTotal;
-  if (coordinateY <= 0 || coordinateX <= 0) {
+  const int rank = this->scene->player->pkRank;
+  const int total = this->scene->player->pkTotal;
+  if (total <= 0 || rank <= 0) {
     return;
   }
 
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.act"));
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.spr"));
 
-  int digits[4];
-  int count;
-  int value = coordinateY;
-  if (value > 9999) {
-    value = 9999;
-    count = 4;
-  } else {
-    count = 1;
-    if (value > 999) {
-      count = 4;
-    } else if (value > 99) {
-      count = 3;
-    } else if (value > 9) {
-      count = 2;
-    }
+  int number = total;
+  if (number > 9999) {
+    number = 9999;
+  }
+  if (number < 0) {
+    number = 0;
   }
 
-  int remaining = value;
-  digits[0] = remaining % 10;
-  remaining /= 10;
-  digits[1] = remaining % 10;
-  remaining /= 10;
-  digits[2] = remaining % 10;
-  digits[3] = remaining / 10;
-
-  const int y = g_renderer->viewport.height - 30;
-  int offset = count * 25;
-  for (int index = 0; index < count; ++index, offset -= 25) {
-    this->DrawActionSprite(g_renderer->viewport.width - 80 + offset, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
-  }
-
-  this->DrawActionSprite(
-    g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
-  );
-
-  value = coordinateX;
-  count = 1;
-  if (value > 999) {
+  int count = 1;
+  if (number > 999) {
     count = 4;
-  } else if (value > 99) {
+  } else if (number > 99) {
     count = 3;
-  } else if (value > 9) {
+  } else if (number > 9) {
     count = 2;
   }
 
-  remaining = value;
-  digits[0] = remaining % 10;
-  remaining /= 10;
-  digits[1] = remaining % 10;
-  remaining /= 10;
-  digits[2] = remaining % 10;
-  digits[3] = remaining / 10;
+  int digits[4];
+  digits[0] = number % 10;
+  number /= 10;
+  digits[1] = number % 10;
+  number /= 10;
+  digits[2] = number % 10;
+  number /= 10;
+  digits[3] = number;
 
-  int x = g_renderer->viewport.width - 105;
-  const int secondY = g_renderer->viewport.height - 50;
-  for (int index = 0; index < count; ++index, x -= 25) {
-    this->DrawActionSprite(x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  int x = g_renderer->viewport.width - 80;
+  int y = g_renderer->viewport.height - 30;
+  for (int i = 0; i < count; ++i) {
+    this->DrawActionSprite(x + 25 * count - i * 25, y, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  }
+
+  x = g_renderer->viewport.width - 80;
+  y = g_renderer->viewport.height - 40;
+  this->DrawActionSprite(x, y, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+
+  number = rank;
+  if (number < 0) {
+    number = 0;
+  }
+
+  count = 1;
+  if (number > 999) {
+    count = 4;
+  } else if (number > 99) {
+    count = 3;
+  } else if (number > 9) {
+    count = 2;
+  }
+
+  digits[0] = number % 10;
+  number /= 10;
+  digits[1] = number % 10;
+  number /= 10;
+  digits[2] = number % 10;
+  number /= 10;
+  digits[3] = number;
+
+  x = g_renderer->viewport.width - 80;
+  y = g_renderer->viewport.height - 50;
+  for (int i = 0; i < count; ++i) {
+    this->DrawActionSprite(x - i * 25 - 25, y, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 }
 
@@ -620,20 +647,17 @@ void CGameMode::DrawMiniMapNumber() {
     int value = number;
     if (value > 9999) {
       value = 9999;
+    }
+    if (value < 0) {
+      value = 0;
+    }
+    g_minimapCoordinateDigits = 1;
+    if (value > 999) {
       g_minimapCoordinateDigits = 4;
-    } else {
-      if (value < 0) {
-        value = 0;
-      }
-      int digits = 1;
-      if (value > 999) {
-        digits = 4;
-      } else if (value > 99) {
-        digits = 3;
-      } else if (value > 9) {
-        digits = 2;
-      }
-      g_minimapCoordinateDigits = digits;
+    } else if (value > 99) {
+      g_minimapCoordinateDigits = 3;
+    } else if (value > 9) {
+      g_minimapCoordinateDigits = 2;
     }
 
     g_minimapCoordinateDigitValues[0] = value % 10;
@@ -677,90 +701,16 @@ __forceinline void CGameMode::DrawTimeAttackTitle() {
 // OFFSET: 0x00CD1EE0
 // FUNCTION: fn_21259
 void CGameMode::DrawTimeAttackTimer() {
-  const int coordinateX = this->scene->player->pkRank;
-  const int coordinateY = this->scene->player->pkTotal;
-  if (coordinateY <= 0 || coordinateX <= 0) {
+  const int rank = this->scene->player->pkRank;
+  const int total = this->scene->player->pkTotal;
+  if (total <= 0 || rank <= 0) {
     return;
   }
-  if (coordinateY <= 1 || coordinateX != 1) {
+  if (total <= 1 || rank != 1) {
     return;
   }
 
-  const std::uint32_t start = g_session.m_timeAttackStart;
-  const std::uint32_t elapsed = timeGetTime() - start;
-  if (start == 0) {
-    g_session.m_timeAttackVisible = 0;
-  }
-
-  int digits[16] = {};
-  int seconds = static_cast<int>(elapsed / 1000);
-  int minutes = 0;
-  int hours = 0;
-  int days = 0;
-  if (seconds >= 60) {
-    minutes = seconds / 60;
-    seconds %= 60;
-    if (minutes >= 60) {
-      hours = minutes / 60;
-      minutes %= 60;
-      if (hours >= 24) {
-        days = hours / 24;
-        hours %= 24;
-      }
-    }
-  }
-
-  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(TimeFontActionName()));
-  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(TimeFontSpriteName()));
-
-  int count = 2;
-  int value = seconds;
-  if (value > 9999) {
-    value = 9999;
-  }
-  if (value < 0) {
-    value = 0;
-  }
-  digits[0] = value % 10;
-  digits[1] = (value /= 10) % 10;
-  if (minutes > 0) {
-    count = 4;
-    digits[3] = minutes % 10;
-    digits[4] = (minutes /= 10) % 10;
-  }
-  if (hours > 0) {
-    count = 6;
-    digits[6] = hours % 10;
-    digits[7] = (hours /= 10) % 10;
-  }
-
-  int total;
-  int offset;
-  int startIndex;
-  if (days > 0) {
-    digits[9] = days % 10;
-    digits[10] = (days /= 10) % 10;
-    total = 11;
-    offset = -220;
-    startIndex = 10;
-  } else {
-    total = count + (count - 2) / 2;
-    offset = total * -20;
-    startIndex = total - 1;
-  }
-
-  const int center = g_renderer->viewport.width / 2;
-  for (int index = 0; index < total; ++index, --startIndex) {
-    int digit;
-    if ((index + 1) % 3 != 0) {
-      digit = digits[startIndex];
-    } else {
-      digit = 10;
-    }
-    this->DrawActionSprite(
-    center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
-    );
-  }
+  this->DrawTimeAttackCountdown(g_session.m_timeAttackStart, 1);
 
   if (g_session.m_timeAttackStart != 0 && timeGetTime() - g_session.m_timeAttackStart < 3000) {
     this->DrawTimeAttackTitle();
@@ -770,34 +720,34 @@ void CGameMode::DrawTimeAttackTimer() {
 // OFFSET: 0x00CD2430
 // FUNCTION: fn_21260
 void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
-  std::uint32_t remaining = 0;
+  std::uint32_t current = 0;
   switch (mode) {
     case 0:
+      current = value;
       if (this->countdownStartTick == 0) {
         this->countdownStartTick = timeGetTime();
       }
-      remaining = value;
       if (timeGetTime() - this->countdownStartTick > 5000) {
         this->countdownStartTick = 0;
         g_session.m_timeAttackVisible = 0;
       }
       break;
     case 1:
-      remaining = timeGetTime() - value;
+      current = timeGetTime() - value;
       if (value == 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
     case 2:
-      remaining = value - timeGetTime();
-      if (remaining == 0) {
+      current = value - timeGetTime();
+      if (current == 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
     case 3:
-      remaining = g_session.m_timeAttackCountdown / 30;
+      current = g_session.m_timeAttackCountdown / 30;
       --g_session.m_timeAttackCountdown;
-      if (remaining <= 0) {
+      if (current <= 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
@@ -805,79 +755,83 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
       break;
   }
 
-  int digits[16] = {};
-  int seconds = static_cast<int>(remaining / 1000);
+  int seconds = current / 1000;
   int minutes = 0;
   int hours = 0;
   int days = 0;
+  int digits[16] = {};
   if (seconds >= 60) {
     minutes = seconds / 60;
-    seconds %= 60;
+    seconds = seconds - minutes * 60;
     if (minutes >= 60) {
       hours = minutes / 60;
-      minutes %= 60;
-      if (hours >= 24) {
-        days = hours / 24;
-        hours %= 24;
-      }
+      minutes = minutes - hours * 60;
+    }
+    if (hours >= 24) {
+      days = hours / 24;
+      hours = hours - days * 24;
     }
   }
 
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(TimeFontActionName()));
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(TimeFontSpriteName()));
 
-  int display = mode != 3 ? seconds : static_cast<int>(remaining);
+  int number;
   if (mode == 3) {
+    number = current;
     minutes = 0;
     hours = 0;
     days = 0;
+  } else {
+    number = seconds;
   }
-  if (display > 9999) {
-    display = 9999;
+
+  if (number > 9999) {
+    number = 9999;
   }
-  if (display < 0) {
-    display = 0;
+  if (number < 0) {
+    number = 0;
   }
+
   int count = 2;
-  digits[0] = display % 10;
-  digits[1] = (display /= 10) % 10;
+  digits[0] = number % 10;
+  number /= 10;
+  digits[1] = number % 10;
   if (minutes > 0) {
+    number = minutes;
+    digits[3] = number % 10;
+    number /= 10;
+    digits[4] = number % 10;
     count = 4;
-    digits[3] = minutes % 10;
-    digits[4] = (minutes /= 10) % 10;
   }
   if (hours > 0) {
+    number = hours;
+    digits[6] = number % 10;
+    number /= 10;
+    digits[7] = number % 10;
     count = 6;
-    digits[6] = hours % 10;
-    digits[7] = (hours /= 10) % 10;
   }
-
-  int total;
-  int offset;
-  int startIndex;
   if (days > 0) {
-    digits[9] = days % 10;
-    digits[10] = (days /= 10) % 10;
-    total = 11;
-    offset = -220;
-    startIndex = 10;
-  } else {
-    total = count + (count - 2) / 2;
-    offset = total * -20;
-    startIndex = total - 1;
+    number = days;
+    digits[9] = number % 10;
+    number /= 10;
+    digits[10] = number % 10;
+    count = 8;
   }
 
-  const int center = g_renderer->viewport.width / 2;
-  for (int index = 0; index < total; ++index, --startIndex) {
-    int digit;
-    if ((index + 1) % 3 != 0) {
-      digit = digits[startIndex];
+  const int x = g_renderer->viewport.width / 2;
+  const int y = 40;
+  const int separators = (count - 2) / 2;
+  count = count + separators;
+  int start = count * 40 / 2 * -1;
+  int j = count - 1;
+  for (int i = 0; i < count; ++i, --j) {
+    if ((i + 1) % 3 != 0) {
+      this->DrawActionSprite(x + start, y, action, sprite, digits[j], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
     } else {
-      digit = 10;
+      this->DrawActionSprite(x + start, y, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
     }
-    this->DrawActionSprite(
-    center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
-    );
+    start += 40;
   }
 }
 
@@ -928,7 +882,7 @@ void CGameMode::RefreshMiniMapTooltips() {
       MiniMapTooltip tooltip{};
       tooltip.text = this->miniMapTooltipText;
       tooltip.windowId = windowId;
-      this->miniMapTooltipWindows.insert(std::make_pair(windowId, tooltip));
+      this->miniMapTooltipWindows.insert({windowId, tooltip});
       break;
     }
   }
@@ -974,21 +928,26 @@ void CGameMode::RefreshMiniMapTooltips() {
 // OFFSET: 0x00CD0B30
 // FUNCTION: fn_21254
 void CGameMode::UpdateMiniMapTooltip() {
-  int& tooltipId = this->miniMapTooltipId;
-  std::string& tooltipText = this->miniMapTooltipText;
-  int id = tooltipId;
+  int id = this->miniMapTooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
-    if (tooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
+    id = this->miniMapTooltipId;
+    if (id != -1) {
+      return;
+    }
+
+    if (g_windowMgr.illustWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
     return;
   }
 
-  if (tooltipText.size() == 0) {
+  if (this->miniMapTooltipText.size() == 0) {
     return;
   }
 
+  int& tooltipId = this->miniMapTooltipId;
+  const std::string& tooltipText = this->miniMapTooltipText;
   UIWindow* window = g_windowMgr.illustWnd;
   if (window == nullptr) {
     window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
@@ -1001,10 +960,10 @@ void CGameMode::UpdateMiniMapTooltip() {
   }
   std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
 
-  window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
-
   int x = 160;
   int y = 0;
+  window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
+
   switch (tooltipId) {
   case 0:
     window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);

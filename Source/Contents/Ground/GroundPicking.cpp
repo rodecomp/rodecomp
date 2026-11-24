@@ -89,30 +89,45 @@ bool GroundGeometry::CellVertices(float* vertices, int column, int row) const {
   return true;
 }
 
+namespace {
+  struct PickVertex {
+    // INLINED
+    PickVertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+    }
+
+    float x;
+    float y;
+    float z;
+  };
+}
+
 // INLINED
-static __forceinline void MarkQuadRay(const float* ray, GroundQuad* const& quad, float limit) {
-  if (!quad) {
+static __forceinline void MarkQuadRay(const float* ray, GroundCell* cells, unsigned index, GroundQuad* GroundCell::* member, float limit) {
+  if (!(cells[index].*member)) {
     return;
   }
 
-  float vertices[4][3] = {};
+  PickVertex vertices[4];
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner][0] = quad->vertices[corner].position[0];
-    vertices[corner][1] = quad->vertices[corner].position[1];
-    vertices[corner][2] = quad->vertices[corner].position[2];
+    vertices[corner].x = (cells[index].*member)->vertices[corner].position[0];
+    vertices[corner].y = (cells[index].*member)->vertices[corner].position[1];
+    vertices[corner].z = (cells[index].*member)->vertices[corner].position[2];
   }
 
   float u;
   float v;
   float distance;
 
-  if (IntersectRayTriangle(ray, vertices[0], vertices[1], vertices[2], u, v, distance) && limit > distance) {
-    quad->selected = 1;
+  if (IntersectRayTriangle(ray, &vertices[0].x, &vertices[1].x, &vertices[2].x, u, v, distance) && limit > distance) {
+    (cells[index].*member)->selected = 1;
   }
 
-  if (quad->selected == 0 && IntersectRayTriangle(ray, vertices[1], vertices[3], vertices[2], u, v, distance) && limit > distance) {
-    quad->selected = 1;
+  if ((cells[index].*member)->selected == 0 && IntersectRayTriangle(ray, &vertices[1].x, &vertices[3].x, &vertices[2].x, u, v, distance) && limit > distance) {
+    (cells[index].*member)->selected = 1;
   }
 }
 
@@ -123,10 +138,11 @@ void GroundGeometry::MarkRay(const float* ray, int column, int row, float limit)
     return;
   }
 
+  GroundCell* const cells = this->cells.data();
   const unsigned index = static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
-  MarkQuadRay(ray, this->cells[index].top, limit);
-  MarkQuadRay(ray, this->cells[index].side2, limit);
-  MarkQuadRay(ray, this->cells[index].side1, limit);
+  MarkQuadRay(ray, cells, index, &GroundCell::top, limit);
+  MarkQuadRay(ray, cells, index, &GroundCell::side2, limit);
+  MarkQuadRay(ray, cells, index, &GroundCell::side1, limit);
 }
 
 // OFFSET: 0x00AC0170

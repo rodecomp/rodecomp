@@ -4857,7 +4857,8 @@ bool CCommonObject::LoadCsv(const char* name, std::vector<std::string> (*transfo
       fields.reserve(row.size());
       const int count = static_cast<int>(row.size());
       for (int i = 0; i < count; ++i) {
-        fields.push_back(row[i].c_str());
+        const char* text = row[i].c_str();
+        fields.push_back(text);
       }
       insert(fields);
     }
@@ -4886,7 +4887,8 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
       std::vector<const char*> fields;
       fields.reserve(row.size());
       for (const std::string& field : row) {
-        fields.push_back(field.c_str());
+        const char* text = field.c_str();
+        fields.push_back(text);
       }
       insert(fields, context);
     }
@@ -4896,15 +4898,26 @@ bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::str
   return true;
 }
 
+using MessageMap = std::unordered_map<int, std::string, MessageIdHash>;
+using MessageBucket = MessageMap::_Unchecked_iterator;
+
 // OFFSET: 0x00B00360
 // FUNCTION: fn_18368
-void FillMessageBuckets(int* first, int* last, const int* value) {
+__declspec(noinline) void FillMessageBuckets(MessageBucket* first, MessageBucket* last, const MessageBucket& value) {
   for (; first != last; ++first) {
-    *first = *value;
+    *first = value;
   }
 }
 
-using MessageMap = std::unordered_map<int, std::string, MessageIdHash>;
+// INLINED
+template <> inline void MessageMap::_Mybase::clear() noexcept {
+  if (this->empty()) {
+    return;
+  }
+  this->_List.clear();
+  auto& buckets = this->_Vec._Mypair._Myval2;
+  FillMessageBuckets(buckets._Myfirst, buckets._Mylast, this->_Unchecked_end());
+}
 
 // OFFSET: 0x00B00130
 // FUNCTION: fn_18367
@@ -4917,7 +4930,7 @@ MessageMap::_Mybase::emplace<int&, const char*&>(int& id, const char*& text) {
   }
 
   this->_Check_max_size();
-  std::_List_node_emplace_op2<_Alnode> node(this->_List._Getal(), id, text);
+  std::_List_node_emplace_op2<_Alnode> node(this->_List._Getal(), std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(text));
   if (this->_Check_rehash_required_1()) {
     this->_Rehash_for_1();
     target = this->_Find_last(node._Ptr->_Myval.first, hash);

@@ -347,10 +347,12 @@ bool C3dModelResV1::Load(const char* name) {
     this->ReadNode(file, minor, textureNames);
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
     if (!node->parentName.empty()) {
-      node->parent = this->FindNode(node->parentName.c_str());
-      node->parent->children.push_back(node);
+      ModelNode* parent = this->FindNode(node->parentName.c_str());
+      node->parent = parent;
+      parent->children.push_back(*it);
     }
   }
 
@@ -359,7 +361,7 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(&volumeCount, 4);
 
   if (major == 1) {
-    if (minor >= 3) {
+    if (minor > 2) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
         ModelVolumeRecord record{};
@@ -377,7 +379,6 @@ bool C3dModelResV1::Load(const char* name) {
     } else if (minor == 2) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
-        std::memset(volume, 0, 132);
         ModelVolumeRecordV1 record{};
         file.Read(&record, sizeof(record));
         volume->flag = 0;
@@ -797,35 +798,41 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
   return control;
 }
 
+// INLINED
+static void TransformPoint(vector3d& result, const float* point, const matrix& transform) {
+  const float* m = transform.values;
+  result.x = point[0] * m[0] + point[1] * m[3] + point[2] * m[6] + m[9];
+  result.y = point[0] * m[1] + point[1] * m[4] + point[2] * m[7] + m[10];
+  result.z = point[0] * m[2] + point[1] * m[5] + point[2] * m[8] + m[11];
+}
+
 // OFFSET: 0x00758710
 // FUNCTION: fn_08008
 bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const {
   matrix matrix;
   matrix.MakeZRotation(3.141592f);
-  const float* m = matrix.values;
-  const float x = this->position[1] * m[3] + this->position[0] * m[0] + this->position[2] * m[6] + m[9];
-  const float y = this->position[0] * m[1] + this->position[1] * m[4] + this->position[2] * m[7] + m[10];
-  const float z = this->position[0] * m[2] + this->position[1] * m[5] + this->position[2] * m[8] + m[11];
+  vector3d position;
+  TransformPoint(position, this->position, matrix);
   matrix.Compose(world, view);
 
-  const float screenX = y * m[3] + x * m[0] + z * m[6] + m[9];
-  const float screenY = x * m[1] + y * m[4] + z * m[7] + m[10];
-  const float depth = y * m[5] + x * m[2] + z * m[8] + m[11];
-  const float deltaX = eye[0] - x;
-  const float deltaY = eye[1] - y;
-  const float deltaZ = eye[2] - z;
+  const float rotated[] = {position.x, position.y, position.z};
+  vector3d projected;
+  TransformPoint(projected, rotated, matrix);
+  const float deltaX = eye[0] - position.x;
+  const float deltaY = eye[1] - position.y;
+  const float deltaZ = eye[2] - position.z;
   const float distance = SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
   const float slope = std::min(std::fabs(1.0f / distance * deltaY), g_projectionDepthNumerator);
   const float height = this->topHeight - (this->topHeight - this->baseHeight) * slope;
   const float halfWidth = SquareRoot(this->baseHeight * this->baseHeight * g_depthAverageHalf);
   const float halfHeight = SquareRoot(height * height * g_depthAverageHalf);
-  const float inverseDepth = g_projectionDepthNumerator / depth;
+  const float inverseDepth = g_projectionDepthNumerator / projected.z;
 
   rect[4] = inverseDepth;
-  rect[0] = (screenX - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
-  rect[1] = (screenY - halfHeight) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
-  rect[2] = (halfWidth + screenX) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
-  rect[3] = (halfHeight + screenY) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
+  rect[0] = (projected.x - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
+  rect[1] = (projected.y - halfHeight) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
+  rect[2] = (halfWidth + projected.x) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
+  rect[3] = (halfHeight + projected.y) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
 
   return !(static_cast<unsigned>(rect[0]) > g_renderer->viewport.width && static_cast<unsigned>(rect[2]) > g_renderer->viewport.width &&
            static_cast<unsigned>(rect[1]) > g_renderer->viewport.height && static_cast<unsigned>(rect[3]) > g_renderer->viewport.height);
@@ -839,15 +846,22 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   // GLOBAL: gl_24736
   static ShadeVector vertexNormals[30000];
   std::list<int> groups[32];
-  auto faceColors = [this](int index) { return this->faceColors[index].data(); };
+
+  auto transform = [matrix](const std::array<float, 3>& position) {
+    return vector3d{
+      position[0] * matrix[0] + position[1] * matrix[3] + position[2] * matrix[6] + matrix[9],
+      position[0] * matrix[1] + position[1] * matrix[4] + position[2] * matrix[7] + matrix[10],
+      position[0] * matrix[2] + position[1] * matrix[5] + position[2] * matrix[8] + matrix[11]
+    };
+  };
 
   switch (shadeType) {
   case 0: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
-      faceColors(index)[0] = color;
-      faceColors(index)[1] = color;
-      faceColors(index)[2] = color;
+      this->faceColors[index][0] = color;
+      this->faceColors[index][1] = color;
+      this->faceColors[index][2] = color;
     }
     break;
   }
@@ -855,35 +869,28 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const AnimatedModelVertex* vertices = this->frames[frame].vertices;
-      const std::array<float, 3>& v0 = vertices[face.vertices[0]].position;
-      const std::array<float, 3>& v1 = vertices[face.vertices[1]].position;
-      const std::array<float, 3>& v2 = vertices[face.vertices[2]].position;
-      const float x2 = v2[0] * matrix[0] + v2[1] * matrix[3] + v2[2] * matrix[6] + matrix[9];
-      const float y2 = v2[0] * matrix[1] + v2[1] * matrix[4] + v2[2] * matrix[7] + matrix[10];
-      const float z2 = v2[0] * matrix[2] + v2[1] * matrix[5] + v2[2] * matrix[8] + matrix[11];
-      const float ax = x2 - (matrix[0] * v0[0] + v0[1] * matrix[3] + v0[2] * matrix[6] + matrix[9]);
-      const float ay = y2 - (matrix[1] * v0[0] + matrix[4] * v0[1] + matrix[7] * v0[2] + matrix[10]);
-      const float az = z2 - (matrix[2] * v0[0] + matrix[5] * v0[1] + matrix[8] * v0[2] + matrix[11]);
-      const float bx = x2 - (v1[0] * matrix[0] + v1[1] * matrix[3] + v1[2] * matrix[6] + matrix[9]);
-      const float by = y2 - (v1[0] * matrix[1] + v1[1] * matrix[4] + v1[2] * matrix[7] + matrix[10]);
-      const float bz = z2 - (v1[0] * matrix[2] + v1[1] * matrix[5] + v1[2] * matrix[8] + matrix[11]);
-      const float nx = by * az - bz * ay;
-      const float ny = bz * ax - bx * az;
-      const float nz = bx * ay - by * ax;
+      const vector3d v0 = transform(vertices[face.vertices[0]].position);
+      const vector3d v1 = transform(vertices[face.vertices[1]].position);
+      const vector3d v2 = transform(vertices[face.vertices[2]].position);
+      const vector3d a{v2.x - v0.x, v2.y - v0.y, v2.z - v0.z};
+      const vector3d b{v2.x - v1.x, v2.y - v1.y, v2.z - v1.z};
+      const float nx = b.y * a.z - b.z * a.y;
+      const float ny = b.z * a.x - b.x * a.z;
+      const float nz = b.x * a.y - b.y * a.x;
       const float inverse = 1.0f / SquareRoot(ny * ny + nx * nx + nz * nz);
       const float dot = nx * inverse * light[0] + ny * inverse * light[1] + nz * inverse * light[2];
-      const float intensity = dot >= 0.0f ? dot : 0.0f;
+      const float intensity = std::max(dot, 0.0f);
       const float redLevel = intensity * diffuse[0] + ambient[0];
-      const float red = 1.0f < redLevel ? 1.0f : redLevel;
+      const float red = std::min(redLevel, g_projectionDepthNumerator);
       const float greenLevel = intensity * diffuse[1] + ambient[1];
-      const float green = 1.0f < greenLevel ? 1.0f : greenLevel;
+      const float green = std::min(greenLevel, g_projectionDepthNumerator);
       const float blueLevel = intensity * diffuse[2] + ambient[2];
-      const float blue = 1.0f < blueLevel ? 1.0f : blueLevel;
+      const float blue = std::min(blueLevel, g_projectionDepthNumerator);
 
       for (int corner = 0; corner < 3; ++corner) {
         const int source = this->sharedTextureVertices == 0 ? frame : 0;
         const float scale = this->frames[source].textureVertices[face.textureVertices[corner]].shaded ? 128.0f : 255.0f;
-        faceColors(index)[corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(scale * green)) << 8) | static_cast<int>(scale * blue);
+        this->faceColors[index][corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(scale * green)) << 8) | static_cast<int>(scale * blue);
       }
     }
     break;
@@ -892,22 +899,15 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const AnimatedModelVertex* vertices = this->frames[frame].vertices;
-      const std::array<float, 3>& v0 = vertices[face.vertices[0]].position;
-      const std::array<float, 3>& v1 = vertices[face.vertices[1]].position;
-      const std::array<float, 3>& v2 = vertices[face.vertices[2]].position;
-      const float x2 = v2[0] * matrix[0] + v2[1] * matrix[3] + v2[2] * matrix[6] + matrix[9];
-      const float y2 = v2[0] * matrix[1] + v2[1] * matrix[4] + v2[2] * matrix[7] + matrix[10];
-      const float z2 = v2[0] * matrix[2] + v2[1] * matrix[5] + v2[2] * matrix[8] + matrix[11];
-      const float ax = x2 - (v0[0] * matrix[0] + v0[1] * matrix[3] + v0[2] * matrix[6] + matrix[9]);
-      const float ay = y2 - (matrix[1] * v0[0] + matrix[4] * v0[1] + matrix[7] * v0[2] + matrix[10]);
-      const float az = z2 - (matrix[2] * v0[0] + matrix[5] * v0[1] + matrix[8] * v0[2] + matrix[11]);
-      const float bx = x2 - (v1[0] * matrix[0] + v1[1] * matrix[3] + v1[2] * matrix[6] + matrix[9]);
-      const float by = y2 - (v1[0] * matrix[1] + v1[1] * matrix[4] + v1[2] * matrix[7] + matrix[10]);
-      const float bz = z2 - (v1[0] * matrix[2] + v1[1] * matrix[5] + v1[2] * matrix[8] + matrix[11]);
+      const vector3d v0 = transform(vertices[face.vertices[0]].position);
+      const vector3d v1 = transform(vertices[face.vertices[1]].position);
+      const vector3d v2 = transform(vertices[face.vertices[2]].position);
+      const vector3d a{v2.x - v0.x, v2.y - v0.y, v2.z - v0.z};
+      const vector3d b{v2.x - v1.x, v2.y - v1.y, v2.z - v1.z};
       ShadeVector& normal = faceNormals[index];
-      normal.x = by * az - bz * ay;
-      normal.y = ax * bz - bx * az;
-      normal.z = bx * ay - ax * by;
+      normal.x = b.y * a.z - b.z * a.y;
+      normal.y = a.x * b.z - b.x * a.z;
+      normal.z = b.x * a.y - a.x * b.y;
       const float inverse = 1.0f / SquareRoot(normal.y * normal.y + normal.x * normal.x + normal.z * normal.z);
       normal.x = inverse * normal.x;
       normal.y = inverse * normal.y;
@@ -950,15 +950,15 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
           const ShadeVector& normal = vertexNormals[face.vertices[corner]];
           const int source = this->sharedTextureVertices == 0 ? frame : 0;
           const float dot = normal.y * light[1] + light[0] * normal.x + normal.z * light[2];
-          const float intensity = dot >= 0.0f ? dot : 0.0f;
+          const float intensity = std::max(dot, 0.0f);
           const float redLevel = intensity * diffuse[0] + ambient[0];
-          const float red = 1.0f < redLevel ? 1.0f : redLevel;
+          const float red = std::min(redLevel, g_projectionDepthNumerator);
           const float greenLevel = intensity * diffuse[1] + ambient[1];
-          const float green = 1.0f < greenLevel ? 1.0f : greenLevel;
+          const float green = std::min(greenLevel, g_projectionDepthNumerator);
           const float blueLevel = intensity * diffuse[2] + ambient[2];
-          const float blue = 1.0f < blueLevel ? 1.0f : blueLevel;
+          const float blue = std::min(blueLevel, g_projectionDepthNumerator);
           const float scale = this->frames[source].textureVertices[face.textureVertices[corner]].shaded ? 128.0f : 255.0f;
-          faceColors(index)[corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(green * scale)) << 8) | static_cast<int>(blue * scale);
+          this->faceColors[index][corner] = ((((alpha << 8) | static_cast<int>(scale * red)) << 8 | static_cast<int>(green * scale)) << 8) | static_cast<int>(blue * scale);
         }
       }
     }
@@ -967,9 +967,9 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   default: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
-      faceColors(index)[0] = color;
-      faceColors(index)[1] = color;
-      faceColors(index)[2] = color;
+      this->faceColors[index][0] = color;
+      this->faceColors[index][1] = color;
+      this->faceColors[index][2] = color;
     }
 
     ShowErrorDialog("Invalid Shade Type", 0);
@@ -988,6 +988,13 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
   int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform, granny_world_pose* pose
 ) {
   return this->GetMeshRenderData(this->instance, mesh, texture, indices, triangleCount, transform, pose);
+}
+
+// INLINED
+static void SetRow(float* row, float x, float y, float z) {
+  row[0] = x;
+  row[1] = y;
+  row[2] = z;
 }
 
 // OFFSET: 0x0075CB60
@@ -1016,11 +1023,7 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
     for (int row = 0; row < 4; ++row) {
       const float* source = composite + row * 4;
-      const vector3d axis{source[0], source[1], source[2]};
-      float* destination = transform->values + row * 3;
-      destination[0] = axis.x;
-      destination[1] = axis.y;
-      destination[2] = axis.z;
+      SetRow(transform->values + row * 3, source[0], source[1], source[2]);
     }
 
     const void* vertices = meshes[mesh].vertices;

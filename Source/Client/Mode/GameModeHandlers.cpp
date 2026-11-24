@@ -983,9 +983,8 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
   g_session.ClearTradeItems();
 
   const int count = (value->packetLength - 4) / sizeof(Item1718IndexRecord);
-  const Item1718IndexRecord* records = value->items;
   for (int i = 0; i < count; ++i) {
-    const Item1718IndexRecord record = records[i];
+    const Item1718IndexRecord record = value->items[i];
     ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
     if (owned.identity[1] > 0 && (owned.placeEtcTab == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
       RawItemBasic item = {};
@@ -1862,7 +1861,7 @@ void CGameMode::ReceiveActorNameCard(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_ACK_REQNAMEALL2*>(packet);
   char name[25] = "";
 
-  memcpy_s(name, 24, value->name, 24);
+  memcpy_s(name, sizeof(name), value->name, 24);
   name[24] = '\0';
   this->SetActorNameCard(
     value->gid, name, value->partyName, value->guildName,
@@ -2181,14 +2180,16 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
     if (mail != store->m_mails0.end()) {
       if (!mail->second.isRead) {
         --store->unreadCount;
-        if (g_rodexMailStore->unreadCount == 0) {
+        store = g_rodexMailStore;
+        if (store->unreadCount == 0) {
           if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
             window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
           }
+          store = g_rodexMailStore;
         }
       }
 
-      g_rodexMailStore->m_mails0.erase(mail);
+      store->m_mails0.erase(mail);
       if (g_windowMgr.rodexInboxWnd) {
         g_windowMgr.rodexInboxWnd->RemoveInboxMail(mailId);
       }
@@ -2426,7 +2427,7 @@ void CGameMode::ReceiveAchievementUpdate(
       g_windowMgr.AddRenderedFront(this->achievementBalloon);
     }
 
-    AchievementInfo info;
+    AchievementInfo info(id);
     g_achievementMgr->GetAchievement(info, id);
     const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_COMPLETE_ACHIEVEMENT), info.title.c_str());
     this->achievementBalloon->WrapText(text.c_str(), 72);
@@ -2901,14 +2902,14 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(record);
   GroundSkillArgumentData arguments;
   GroundSkillSpawnData& data = arguments.extended.skill;
+  data.aid = packet.aid;
   data.type = packet.type;
   data.x = packet.x;
   data.y = packet.y;
+  data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
   packet.visible = 1;
-  data.aid = packet.aid;
-  data.owner = packet.owner;
 
   CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
@@ -2947,10 +2948,10 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
   data.x = packet.x;
   data.y = packet.y;
   data.aid = packet.aid;
+  packet.visible = 1;
   data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
-  packet.visible = 1;
 
   if (packet.graffiti == 1) {
     CGraffiSkill* skill = new CGraffiSkill;
@@ -3025,7 +3026,8 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
         break;
       }
     }
-  } else if (data.visible) {
+  }
+  if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -3082,7 +3084,8 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
         break;
       }
     }
-  } else if (data.visible) {
+  }
+  if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -3167,9 +3170,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
   }
 
   const int count = (value->packetLength - 12) / sizeof(Item1718PendingRecord);
-  const Item1718PendingRecord* record = value->items;
   for (int i = 0; i < count; ++i) {
-    const Item1718PendingRecord entry = *record;
+    const Item1718PendingRecord entry = value->items[i];
     RawItemBasic item = {};
     _itoa(entry.itemId, item.itemId, 10);
     item.price = entry.price;
@@ -3178,7 +3180,6 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     item.id = -1;
     item.identified = 1;
     g_session.AddShopItem(item, 0);
-    ++record;
   }
 
   g_session.m_pendingAid = value->cashPoints;
@@ -3276,9 +3277,9 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     }
     g_session.storeSearchResults.clear();
   }
+  const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   g_session.m_storeSearchHasNext = header->hasNext;
   g_session.storeSearchCount = header->count;
-  const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   for (long long i = 0; i < count; ++i) {
     const SearchStoreItemPacket record = items[i];
     SearchStoreResult entry;
@@ -3293,12 +3294,12 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     entry.item.identified = 1;
     int optionCount = 0;
     for (int j = 0; j < 5; ++j) {
-      if (record.options[j].id != 0) {
+      if (0 != record.options[j].id) {
         ++optionCount;
       }
     }
     entry.item.optionCount = optionCount;
-    for (long long j = 0; j < optionCount; ++j) {
+    for (long long j = 0; j < entry.item.optionCount; ++j) {
       entry.item.options[j] = record.options[j];
     }
     for (long long j = 0; j < 4; ++j) {

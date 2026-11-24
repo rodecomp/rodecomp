@@ -142,10 +142,9 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
         if (this->m_titled != 0) {
           CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
           this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
-          this->Invalidate();
-          return 0;
+        } else {
+          this->Resize(bitmap->image.width, bitmap->image.height);
         }
-        this->Resize(bitmap->image.width, bitmap->image.height);
       }
       this->Invalidate();
       return 0;
@@ -221,10 +220,9 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         if (this->m_titled != 0) {
           CBitmapRes* titlebar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
           this->Resize(bitmap->image.width, titlebar->image.height + bitmap->image.height);
-          this->Invalidate();
-          return 0;
+        } else {
+          this->Resize(bitmap->image.width, bitmap->image.height);
         }
-        this->Resize(bitmap->image.width, bitmap->image.height);
       }
       this->Invalidate();
       return 0;

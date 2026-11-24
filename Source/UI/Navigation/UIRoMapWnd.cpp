@@ -147,12 +147,12 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const WorldViewArea* anchor = this->previewArea;
   RECT rect;
   std::memcpy(&rect, &record->area, sizeof(rect));
-  int x;
-  if (anchor->right < rect.right) {
+  int x = anchor->right;
+  if (x < rect.right) {
     leftSide = true;
     x = anchor->left - 10;
   } else {
-    x = anchor->right + 10;
+    x += 10;
   }
 
   int y = anchor->top;
@@ -165,11 +165,13 @@ void UIRoMapWnd::DrawHoverTooltip() {
     ++count;
   }
 
-  const int width = maxWidth + 10;
-  const int height = count * lineHeight + 7;
-  int boxX = leftSide ? x - width : x;
-  if (boxX + width > g_renderer->viewport.width) {
-    boxX = rect.left - width - 10;
+  maxWidth += 10;
+  const int height = lineHeight * count + 7;
+  if (leftSide) {
+    x -= maxWidth;
+  }
+  if (x + maxWidth > g_renderer->viewport.width) {
+    x = rect.left - maxWidth - 10;
   } else if (!leftSide) {
     y += 17;
   }
@@ -178,15 +180,15 @@ void UIRoMapWnd::DrawHoverTooltip() {
     y = g_renderer->viewport.height - height + 10;
   }
 
-  int textY = y + 5;
+  int row = 0;
   for (std::list<std::string>::const_iterator it = this->hoveredRecord->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
     const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) != 0 ? 0xFFFFFF : 0x8080F0;
-    this->DrawOutlinedText(boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
-    textY += lineHeight;
+    this->DrawOutlinedText(x + 5, y + 5 + row * lineHeight, it->c_str(), 0, color, 0, 0, 12, 1, 0);
+    ++row;
   }
 
-  this->hoverTooltip = new RoMapTooltipBox(boxX, y, width, height);
-  this->DrawRoundedOutline(boxX, y, width, height, 0xFFFFFF);
+  this->hoverTooltip = new RoMapTooltipBox(x, y, maxWidth, height);
+  this->DrawRoundedOutline(x, y, maxWidth, height, 0xFFFFFF);
 }
 
 // INLINED
@@ -346,26 +348,28 @@ void UIRoMapWnd::DrawDungeonLinks() {
       width = field->right - field->left;
       height = field->bottom - field->top;
       const int mapWidth = map->right - map->left;
-      const int mapHeight = map->bottom - map->top;
       const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
+      const int mapHeight = map->bottom - map->top;
       const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
       const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
       const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
-      const alignas(8) ScreenPoint start{startX, startY};
-      const alignas(8) ScreenPoint end{endX, endY};
       CTexture* const lineTexture = g_texMgr.Default();
       std::uint32_t color;
       if (isSelected) {
+        const alignas(8) ScreenPoint end{endX, endY};
+        const alignas(8) ScreenPoint start{startX, startY};
         DrawScreenLine(start, end, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
         color = 0xFFFFFFFF;
       } else {
+        const alignas(8) ScreenPoint end{endX, endY};
+        const alignas(8) ScreenPoint start{startX, startY};
         DrawScreenLine(start, end, 1, lineTexture, lineColor);
         color = rectColor;
       }
 
       DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, color, positionTexture);
-      x = field->left;
       y = field->top;
+      x = field->left;
     } else {
       const WorldViewRecord* selected = this->selectedRecord;
       isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
@@ -376,7 +380,11 @@ void UIRoMapWnd::DrawDungeonLinks() {
       height = map->bottom - map->top;
     }
 
-    DrawTexturedRectangle(x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture);
+    if (isSelected) {
+      DrawTexturedRectangle(x, y, width, height, 0xFFFFFFFF, selectTexture);
+    } else {
+      DrawTexturedRectangle(x, y, width, height, rectColor, selectTexture);
+    }
   }
 }
 
@@ -384,6 +392,10 @@ void UIRoMapWnd::DrawDungeonLinks() {
 // FUNCTION: fn_12603
 void UIRoMapWnd::DrawMarks() {
   const int count = g_worldViewMgr.MarkCount();
+  if (count <= 0) {
+    return;
+  }
+
   for (int index = 0; index < count; ++index) {
     const int* area = g_worldViewMgr.MarkAreaAt(index, true);
     if (area == nullptr) {
@@ -406,7 +418,8 @@ void UIRoMapWnd::DrawMarks() {
           static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]),
           static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1])
         };
-        DrawScreenLine(start, end, 5, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF);
+        CTexture* const texture = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false);
+        DrawScreenLine(start, end, 5, texture, 0x99FFFFFF);
       }
     }
 
@@ -467,9 +480,9 @@ void UIRoMapWnd::DrawRecordFaces(int) {
 // OFFSET: 0x0091E670
 // FUNCTION: fn_45669
 bool UIRoMapWnd::AddRelatedName(std::string map, std::string name) {
-  for (WorldViewRecord& record : this->m_records) {
-    if (record.name == map) {
-      record.relatedNames.push_back(name);
+  for (auto it = this->m_records.begin(); it != this->m_records.end(); ++it) {
+    if (it->name == map) {
+      it->relatedNames.push_back(name);
       return true;
     }
   }
@@ -644,12 +657,13 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
       to.center[1] = static_cast<float>(to.area.top);
     }
 
+    const float blend = this->m_kafraMarkers.blend;
     CTexture* head = g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false);
     CTexture* body = g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false);
     this->DrawArrow(
       from.center[0], from.center[1], to.center[0], to.center[1], static_cast<float>(from.area.left), static_cast<float>(from.area.top),
       static_cast<float>(from.area.right), static_cast<float>(from.area.bottom), static_cast<float>(to.area.left), static_cast<float>(to.area.top),
-      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, this->m_kafraMarkers.blend, 0xAAFFFFFF
+      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, blend, 0xAAFFFFFF
     );
   }
 
@@ -779,10 +793,11 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         if (g_navigationManager.SearchNavigation(name, 0, true) == true) {
           this->RefreshWorldMapLevels();
         }
+        return 0;
       }
-      return 0;
+      break;
     }
-    return 0;
+    break;
 
   case UM_COMBOBOX_SELECTED:
     if (this->m_worldCombo == sender) {
@@ -807,7 +822,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->Invalidate();
       return 0;
     }
-    return 0;
+    break;
 
   case UM_REFRESH:
     this->ClearRecords();
@@ -819,13 +834,16 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     if (this->m_searchEdit == sender) {
       if (this->m_searchEdit->Length() > 0) {
         this->SendMsg(this->m_searchEdit, UM_COMMAND, ID_SEARCH, 0, 0, 0);
-        return 0;
+        break;
       }
     }
-    break;
+    [[fallthrough]];
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x0091CFB0
@@ -884,32 +902,29 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         return false;
       }
       return true;
-    case 0:
+    case 0: {
+      std::vector<std::string> route;
       if (name == "izlude.rsw") {
-        std::vector<std::string> route;
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
-        this->BuildRoute(route);
       } else if (name == "ra_fild12.rsw") {
-        std::vector<std::string> route;
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
-        this->BuildRoute(route);
       } else if (name == "yuno.rsw") {
-        std::vector<std::string> route;
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
-        this->BuildRoute(route);
       } else {
         return false;
       }
+      this->BuildRoute(route);
       return true;
+    }
     }
 
     return false;
@@ -929,20 +944,18 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
 __forceinline void CFlyingShipRouteInfo::UpdateAnimation(UIRoMapWnd* wnd, float elapsed) {
   const int last = static_cast<int>(this->entries.size()) - 1;
   if (last > 0) {
-    int index = this->segmentIndex;
     this->m_moving = 1;
     if (this->travelledDistance > this->segmentLength) {
-      if (index >= last - 1) {
+      if (this->segmentIndex >= last - 1) {
         wnd->Invalidate();
-        index = -1;
+        this->segmentIndex = -1;
       }
-      ++index;
       this->travelledDistance = 0.0f;
-      this->segmentIndex = index;
+      ++this->segmentIndex;
     }
 
-    const float dy = this->entries[index].center[1] - this->entries[index + 1].center[1];
-    const float dx = this->entries[index].center[0] - this->entries[index + 1].center[0];
+    const float dy = this->entries[this->segmentIndex].center[1] - this->entries[this->segmentIndex + 1].center[1];
+    const float dx = this->entries[this->segmentIndex].center[0] - this->entries[this->segmentIndex + 1].center[0];
     const float distance = SquareRoot(dx * dx + dy * dy);
     if (this->travelledDistance == 0.0f) {
       this->segmentLength = distance;
@@ -974,6 +987,9 @@ void UIRoMapWnd::UpdateFlyingShipRoute(CFlyingShipRouteInfo* route, float elapse
 // FUNCTION: fn_45666
 void UIRoMapWnd::DrawLevelAreas() {
   const int count = g_worldViewMgr.LevelCount();
+  if (count <= 0) {
+    return;
+  }
   for (int index = 0; index < count; ++index) {
     int kind = 0;
     const int* area = g_worldViewMgr.LevelAreaAt(kind, index, true);
@@ -1048,6 +1064,12 @@ void UIRoMapWnd::DrawWorld() {
   this->m_flyingShipRoute2.Update(this, elapsed);
 }
 
+// INLINED
+static void DisableEdit(UIEditCtrl* edit) {
+  edit->disabled = 1;
+  edit->Invalidate();
+}
+
 // OFFSET: 0x00925530
 // FUNCTION: fn_12648
 void UIRoMapWnd::OnCreate(int, int) {
@@ -1078,13 +1100,13 @@ void UIRoMapWnd::OnCreate(int, int) {
 
   this->RefreshWorldMapLevels();
   this->RefreshWorldMapMarks();
-  const int closeX = this->geometry.width - 18;
+  int x = this->geometry.width - 18;
   UIBitmapButton* closeButton = new UIBitmapButton();
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_off.bmp", 0, 0);
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 1, 0);
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 2, 0);
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
-  closeButton->Move(closeX, 0);
+  closeButton->Move(x, 0);
   closeButton->SetId(ID_CLOSE);
   closeButton->SetTooltip("ctrl+`");
   this->AddChild(closeButton);
@@ -1096,7 +1118,8 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_labelCheck->SetSize(80, 12);
     this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG1));
     this->m_labelCheck->SetId(ID_STATUS);
-    this->m_labelCheck->Move(closeX - 82, 3);
+    x -= 82;
+    this->m_labelCheck->Move(x, 3);
     this->m_labelCheck->SetChecked(this->m_showLabels);
     this->m_labelCheck->SetTooltip("Tab");
     this->AddChild(this->m_labelCheck);
@@ -1128,14 +1151,10 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchEdit->Background(232, 232, 232);
     this->m_searchEdit->Border(200, 100, 100);
     this->m_searchEdit->flat = 0;
-    UIEditCtrl* edit = this->m_searchEdit;
-    if (const char* tooltip = LookupMessage(MSI_NAVIGATION_SETSTRING)) {
-      edit->tooltip = tooltip;
-    }
+    this->m_searchEdit->SetTooltip(LookupMessage(MSI_NAVIGATION_SETSTRING));
     this->AddChild(this->m_searchEdit);
     if (g_replayAnimationScaling != 0) {
-      this->m_searchEdit->disabled = 1;
-      this->m_searchEdit->Invalidate();
+      DisableEdit(this->m_searchEdit);
     }
 
     this->UpdateNavigationButtons();

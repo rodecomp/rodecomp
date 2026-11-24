@@ -49,7 +49,7 @@ void CGameMode::ReceiveSound(const unsigned char* data) {
     sound.npcId = packet->npcId;
     this->loopSounds.push_back(sound);
     g_soundMgr->PlayWave(packet->name, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   }
   case SOUNT_ACT_STOP:
     for (std::vector<GameModeLoopSound>::iterator it = this->loopSounds.begin(); it != this->loopSounds.end(); ++it) {

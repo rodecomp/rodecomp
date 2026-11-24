@@ -137,6 +137,12 @@ void CPokJukEffect::OnProcess() {
   }
 }
 
+// INLINED
+static void Shift(EffectPoint& point, float x, float z) {
+  point.x += x;
+  point.z += z;
+}
+
 // OFFSET: 0x00B6FB60
 // FUNCTION: fn_46077
 __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
@@ -146,9 +152,10 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
 
     if (age > 0) {
       if (age % 3 == 0) {
-        this->trails[index][3].x = this->trails[index][2].x;
-        this->trails[index][3].y = this->trails[index][2].y;
-        this->trails[index][3].z = this->trails[index][2].z;
+        EffectPoint& oldest = this->trails[index][3];
+        oldest.x = this->trails[index][2].x;
+        oldest.y = this->trails[index][2].y;
+        oldest.z = this->trails[index][2].z;
         this->trails[index][2].x = this->trails[index][1].x;
         this->trails[index][2].y = this->trails[index][1].y;
         this->trails[index][2].z = this->trails[index][1].z;
@@ -189,19 +196,19 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
         const float speed = particle->scale;
         const float flat = speed * g_cosTable[heading];
         this->trails[index][0].y += speed * g_sinTable[heading];
-        this->trails[index][0].x += flat * g_cosTable[phase];
-        this->trails[index][0].z += flat * g_sinTable[phase];
+        Shift(this->trails[index][0], flat * g_cosTable[phase], g_sinTable[phase] * flat);
         this->trails[index][0].y += 0.02f;
         particle->scale = speed * 0.98f;
 
-        const int alpha = particle->alpha;
+        int alpha = particle->alpha;
         if (ClampedRandom(2) == 0) {
           const int faded = alpha - 2;
-          particle->alpha = faded >= 0 ? faded : 0;
+          alpha = faded < 0 ? 0 : faded;
         } else {
           const int faded = alpha - 1;
-          particle->alpha = faded < 0 ? 0 : faded;
+          alpha = faded < 0 ? 0 : faded;
         }
+        particle->alpha = alpha;
       }
 
       if (age > 2000) {

@@ -77,7 +77,8 @@ __declspec(noinline) UIEntryQueueListBox::~UIEntryQueueListBox() {
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
-  if (this->m_entries.insert(std::map<std::string, int>::value_type(name, value)).second) {
+  const auto result = this->m_entries.insert(std::map<std::string, int>::value_type(name, value));
+  if (result.second) {
     this->AddLine(name);
   }
 }
@@ -121,23 +122,21 @@ bool UIEntryQueueRequestWnd::Create() {
   this->SetSize(300, 250);
   this->OnCreate(300, 250);
   this->OnSize(300, 250);
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  int top = (g_renderer->viewport.height - 480) / 2 + 180;
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, top);
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 280, 305, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  {
-    auto* viewer = this->m_viewer;
-    viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
-    viewer->Invalidate();
-  }
+  this->m_viewer->backgroundColor = ((blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF)) | 0xFF000000u;
+  this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
   char message[0x104];
   std::memset(message, 0, sizeof(message));
-  if (g_entryQueueMgr->current) {
-    sprintf_s(message, sizeof(message), LookupMessage(MSI_BATTLEFIELD_START), g_entryQueueMgr->current->displayName);
+  if (EntryQueueInfo* current = g_entryQueueMgr->current) {
+    sprintf_s(message, sizeof(message), LookupMessage(MSI_BATTLEFIELD_START), current->displayName);
   }
 
   this->m_viewer->Clear();
@@ -253,13 +252,15 @@ bool UIEntryQueueStandByWnd::Create() {
   this->SetSize(280, 120);
   this->OnCreate(280, 120);
   this->OnSize(280, 120);
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  int top = (g_renderer->viewport.height - 480) / 2 + 180;
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, top);
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 260, 65, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  this->m_viewer->backgroundColor = ((blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF)) | 0xFF000000u;
+  this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
   const std::string path = "유저인터페이스\\";
@@ -481,7 +482,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         }
         return 0;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     case 1:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
@@ -499,7 +504,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         }
         return 0;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     case 2: {
       GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() != 1) {
@@ -520,7 +529,11 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       } else {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
       }
-      break;
+      {
+        const char* text = LookupMessage(error);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+      }
+      return 0;
     }
     case 3:
       if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUEHELPWND)) {
@@ -653,7 +666,8 @@ void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   {
     auto* viewer = this->m_viewer;
-    viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+    const COLORREF rgb = RGB(red, green, blue);
+    viewer->backgroundColor = rgb | 0xFF000000u;
     viewer->Invalidate();
   }
   this->AddChild(this->m_viewer);

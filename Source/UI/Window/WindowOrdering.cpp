@@ -95,6 +95,13 @@ void UIWindowMgr::UpdateSnapRectangles() {
   }
 }
 
+// INLINED
+static void RaiseEntry(UIWindowMgr* mgr, std::list<UIWindow*>::iterator entry) {
+  UIWindow* window = *entry;
+  mgr->rendered.erase(entry);
+  mgr->rendered.push_back(window);
+}
+
 // OFFSET: 0x00A976C0
 // FUNCTION: fn_17206
 void UIWindowMgr::Promote(UIWindow* window) {
@@ -118,17 +125,16 @@ void UIWindowMgr::Promote(UIWindow* window) {
   if (companion != -1) {
     for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
       if ((*it)->geometry.id == companion) {
-        UIWindow* value = *it;
-        this->rendered.erase(it);
-        this->rendered.push_back(value);
+        RaiseEntry(this, it);
         break;
       }
     }
   }
 
-  const auto entry = std::find(this->rendered.begin(), this->rendered.end(), window);
+  const auto end = this->rendered.end();
+  const auto entry = std::find(this->rendered.begin(), end, window);
 
-  if (entry != this->rendered.end()) {
+  if (entry != end) {
     this->rendered.erase(entry);
     this->rendered.push_back(window);
   }

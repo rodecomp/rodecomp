@@ -238,8 +238,9 @@ void CAsyncWorkMgr::SaveStore(
 ) {
   NAsyncWorkPtr work(this->m_pools, g_mcStoreInfoBackupSavePoolName);
 
-  if (work.Get()) {
-    static_cast<CMCStoreInfoBackupSaveAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, data, type);
+  auto* saveWork = static_cast<CMCStoreInfoBackupSaveAsyncWork*>(work.Get());
+  if (saveWork) {
+    saveWork->Bind(url, accountId, characterId, world, token, data, type);
     this->Submit(work);
   }
 }

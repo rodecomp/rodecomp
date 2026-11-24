@@ -49,9 +49,7 @@ FileSignatureVerifier::FileSignatureVerifier() {
   signatureBlockSize = 0;
   error = 0;
   publicKey = 0;
-  if (!CryptAcquireContextW(&provider, nullptr, aMicrosoftBaseC, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-    provider = 0;
-  }
+  provider = CryptAcquireContextW(&provider, nullptr, aMicrosoftBaseC, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT) ? provider : 0;
 }
 #pragma optimize("", on)
 

@@ -139,38 +139,6 @@ void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
   }
 }
 
-// OFFSET: 0x00AC8590
-// FUNCTION: fn_17674
-void WorldSpatialTree::BindTerrain(C3dAttr& resource, int depth) {
-  const float minimumZ = this->minimum[2];
-  this->dirty = 1;
-  this->terrain = &resource;
-  resource.SpatialCell(this->minimum[0], minimumZ, this->terrainCells[0], this->terrainCells[1]);
-  this->terrain->SpatialCell(this->maximum[0], this->maximum[2], this->terrainCells[2], this->terrainCells[3]);
-
-  if (depth != 5) {
-    for (unsigned index = 0; index < 4; ++index) {
-      this->children[index]->BindTerrain(resource, depth + 1);
-    }
-  }
-}
-
-// OFFSET: 0x00AC8620
-// FUNCTION: fn_17675
-void WorldSpatialTree::BindGround(GroundGeometry& resource, int depth) {
-  const float minimumZ = this->minimum[2];
-  this->dirty = 1;
-  this->ground = &resource;
-  resource.SpatialCell(this->minimum[0], minimumZ, this->groundCells[0], this->groundCells[1]);
-  this->ground->SpatialCell(this->maximum[0], this->maximum[2], this->groundCells[2], this->groundCells[3]);
-
-  if (depth != 5) {
-    for (unsigned index = 0; index < 4; ++index) {
-      this->children[index]->BindGround(resource, depth + 1);
-    }
-  }
-}
-
 // OFFSET: 0x00AC7EE0
 // FUNCTION: fn_17662
 void WorldSpatialTree::CopyBounds(int depth, const WorldSpatialTree& source) {
@@ -372,7 +340,10 @@ void WorldSpatialTree::RefreshModelBounds(int depth) {
     float& minimum = this->minimum[1];
     float& maximum = this->maximum[1];
     maximum = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
-    minimum = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
+    minimum = groundMinimum;
+    if (terrainMinimum < groundMinimum) {
+      minimum = terrainMinimum;
+    }
     const auto expand = [&minimum, &maximum](C3dActor* const& object) {
       if (minimum > object->minimum[1]) {
         minimum = object->minimum[1];

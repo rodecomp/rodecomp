@@ -2,6 +2,7 @@
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -143,11 +144,10 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
     const int segment = particle->columnIndex;
     HitLineVector3d points[2];
     const int phase = particle->phaseParameter;
-    const float lift = -particle->speedParameter;
-    const float* turns = &particle->animationParameter + segment;
-    const signed char* halfTurns = &particle->animationState + segment;
+    const float* turns = &particle->animationParameter;
+    const signed char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
-      const int count = halfTurns[index];
+      const int count = halfTurns[segment + index];
       float distance = 0.0f;
       float factor = 1.0f;
       for (int step = 0; step < count; ++step) {
@@ -155,12 +155,12 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
         factor *= 0.7f;
       }
 
-      const float turn = turns[index];
+      const float turn = turns[segment + index];
       if (turn > 0.0f) {
         distance += particle->speedParameter * factor * (turn / 90.0f);
       }
 
-      const float height = lift * g_sinTable[static_cast<int>(turn)] * 1.5f;
+      const float height = -particle->speedParameter * g_sinTable[static_cast<int>(turn)] * 1.5f;
       float scale = 1.0f;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
@@ -188,19 +188,20 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
       edge[1].x = offsetX + points[1].x;
       edge[1].y = up + points[1].y;
       edge[1].z = offsetZ + points[1].z;
-      particle->vertices[1].x = edge[1].x;
-      particle->vertices[1].y = edge[1].y;
-      particle->vertices[3].x = edge[0].x;
-      particle->vertices[3].y = edge[0].y;
-      particle->vertices[3].z = edge[0].z;
-      particle->vertices[1].z = edge[1].z;
+      auto& verticesRef = particle->vertices;
+      verticesRef[1].x = edge[1].x;
+      verticesRef[1].y = edge[1].y;
+      verticesRef[3].x = edge[0].x;
+      verticesRef[3].y = edge[0].y;
+      verticesRef[3].z = edge[0].z;
+      verticesRef[1].z = edge[1].z;
       if (corner > 0) {
-        particle->vertices[0].x = this->previous[1].x;
-        particle->vertices[0].y = this->previous[1].y;
-        particle->vertices[0].z = this->previous[1].z;
-        particle->vertices[2].x = this->previous[0].x;
-        particle->vertices[2].y = this->previous[0].y;
-        particle->vertices[2].z = this->previous[0].z;
+        verticesRef[0].x = this->previous[1].x;
+        verticesRef[0].y = this->previous[1].y;
+        verticesRef[0].z = this->previous[1].z;
+        verticesRef[2].x = this->previous[0].x;
+        verticesRef[2].y = this->previous[0].y;
+        verticesRef[2].z = this->previous[0].z;
         const int alpha = particle->effectParameter - segment * 5;
         if (alpha > 0) {
           particle->alpha = alpha;
@@ -219,7 +220,6 @@ void CHitLineEffect::RenderParticle(CParticle* particle) {
 // OFFSET: 0x00705510
 // FUNCTION: fn_07039
 void CHitLineEffect::Render() {
-  const float attenuationBase = g_projectionDepthNumerator;
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (!particle || particle->effectParameter <= 0 || particle->elapsedFrames <= 0) {
@@ -230,24 +230,25 @@ void CHitLineEffect::Render() {
     HitLineVector3d points[2];
     const int phase = particle->phaseParameter;
     const float radius = particle->speedParameter;
-    const float* turns = &particle->animationParameter + segment;
-    const signed char* halfTurns = &particle->animationState + segment;
+    const float initialScale = g_projectionDepthNumerator;
+    const float* turns = &particle->animationParameter;
+    const signed char* halfTurns = &particle->animationState;
     for (int index = 0; index < 2; ++index) {
-      const int count = halfTurns[index];
+      const int count = halfTurns[segment + index];
       float distance = 0.0f;
-      float factor = attenuationBase;
+      float factor = initialScale;
       for (int step = 0; step < count; ++step) {
         distance += particle->speedParameter * 2.0f * factor;
         factor *= 0.7f;
       }
 
-      const float turn = turns[index];
+      const float turn = turns[segment + index];
       if (turn > 0.0f) {
-        distance += radius * factor * (turn / 90.0f);
+        distance += radius * factor * (turn / g_cameraYawOffset);
       }
 
       float height = -radius * g_sinTable[static_cast<int>(turn)] * 1.5f;
-      float scale = attenuationBase;
+      float scale = initialScale;
       for (int step = 0; step < count; ++step) {
         scale *= 0.7f;
       }
@@ -259,22 +260,7 @@ void CHitLineEffect::Render() {
 
     const float dz = points[0].z - points[1].z;
     const float dx = points[0].x - points[1].x;
-    const float length = SquareRoot(dz * dz + dx * dx);
-    const float cosine = dx / length;
-    const float sine = dz / length;
-    int index = 0;
-    for (; index < 180; ++index) {
-      if (cosine >= g_cosTable[index]) {
-        break;
-      }
-    }
-
-    short direction = static_cast<short>(index);
-    if (index < 180 && !(sine >= 0.0f)) {
-      direction = static_cast<short>(360 - index);
-    }
-
-    const int heading = (direction + 90) % 360;
+    const int heading = (this->LineDirection(dx, dz) + 90) % 360;
     int corner = 0;
     for (int degree = 0; degree <= 360; degree += 120) {
       const float size = particle->scale;

@@ -57,7 +57,7 @@ void CEffect::SetDestinationBlend(int) {
 
 // OFFSET: 0x005A2120
 // FUNCTION: fn_03084
-void CEffect::SetColor(int, int, int) {
+void CEffect::SetColor(short, short, short) {
 }
 
 // OFFSET: 0x005A2130
@@ -186,12 +186,12 @@ void CEffect::SetWindowOffset(vector3d, int, int) {
 
 // OFFSET: 0x005A2470
 // FUNCTION: fn_03102
-void CEffect::SetFlipX(int) {
+void CEffect::SetFlipX(bool) {
 }
 
 // OFFSET: 0x005A2480
 // FUNCTION: fn_03103
-void CEffect::SetFlipY(int) {
+void CEffect::SetFlipY(bool) {
 }
 
 // OFFSET: 0x005A2490
@@ -265,7 +265,13 @@ __declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {
 // OFFSET: 0x006FFA20
 // FUNCTION: fn_06968
 void CEZ2STREffectEx::Open() {
-  EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::s_instance;
+  if (!manager) {
+    manager = new (std::nothrow) CEZ2STREffectMgr;
+    CEZ2STREffectMgr::s_instance = manager;
+  }
+
+  EZ2STREffectInfo* info = manager->FindById(this->id);
   if (!info) {
     return;
   }
@@ -398,17 +404,17 @@ void CEZ2STREffectEx::SetAlpha(float argument) {
 
 // OFFSET: 0x006FFF10
 // FUNCTION: fn_06973
-void CEZ2STREffectEx::SetFlipX(int argument) {
+void CEZ2STREffectEx::SetFlipX(bool argument) {
   if (this->emitter) {
-    this->emitter->m_flipX = static_cast<unsigned char>(argument);
+    this->emitter->m_flipX = argument;
   }
 }
 
 // OFFSET: 0x006FFF30
 // FUNCTION: fn_06974
-void CEZ2STREffectEx::SetFlipY(int argument) {
+void CEZ2STREffectEx::SetFlipY(bool argument) {
   if (this->emitter) {
-    this->emitter->m_flipY = static_cast<unsigned char>(argument);
+    this->emitter->m_flipY = argument;
   }
 }
 
@@ -478,6 +484,12 @@ void CEZ2STREffectEx::SetDelay(int argument) {
   this->SetEventFrame(0, this->frameStep + 1);
 }
 
+// INLINED
+static void SetOffset(EZ2STREffectInfo& info, float x, float y) {
+  info.offsetX = x;
+  info.offsetY = y;
+}
+
 // OFFSET: 0x00700070
 // FUNCTION: fn_06983
 void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const {
@@ -488,15 +500,14 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
   EZ2STREffectInfo info;
   info.id = static_cast<int>(this->manager->effects.size());
   info.name = static_cast<const std::string&>(FromUtf8(entry.second.name, g_textCodePage));
-  info.offsetX = static_cast<float>(entry.second.offsetX);
+  SetOffset(info, static_cast<float>(entry.second.offsetX), static_cast<float>(entry.second.offsetY));
   info.flags = entry.second.infinite ? info.flags | 1 : info.flags;
   info.flags = entry.second.floor ? info.flags | 2 : info.flags;
-  info.offsetY = static_cast<float>(entry.second.offsetY);
   info.flags = entry.second.aboveUi ? info.flags | 4 : info.flags;
   info.soundPath = static_cast<const std::string&>(FromUtf8(entry.second.soundPath, g_textCodePage));
   info.flags = entry.second.soundLoop ? info.flags | 8 : info.flags;
-  info.delay = entry.second.delays[0];
-  info.interval = entry.second.delays[1];
+  info.delay = entry.second.quakeDelay;
+  info.interval = entry.second.startDelayTime;
   info.flags = entry.second.toGround ? info.flags | 16 : info.flags;
 
   std::string key = FromUtf8(entry.first, g_textCodePage);
@@ -507,13 +518,13 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
 // OFFSET: 0x00700A10
 // FUNCTION: fn_06988
 EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
-  auto it = this->effects.begin();
-  const auto end = this->effects.end();
+  auto it = this->effects.cbegin();
+  const auto end = this->effects.cend();
   while (it != end && id != it->second.id + 10000) {
     ++it;
   }
 
-  return it != end ? &it->second : nullptr;
+  return it != end ? const_cast<EZ2STREffectInfo*>(&it->second) : nullptr;
 }
 
 // OFFSET: 0x00700A90
@@ -534,7 +545,8 @@ int CEZ2STREffectMgr::EffectId(const std::string& name) {
 // FUNCTION: fn_06990
 std::vector<int> CEZ2STREffectMgr::EffectIds() {
   std::vector<int> ids;
-  for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
+  const auto end = this->effects.end();
+  for (auto it = this->effects.begin(); it != end; it++) {
     ids.push_back(it->second.id + 10000);
   }
   return ids;

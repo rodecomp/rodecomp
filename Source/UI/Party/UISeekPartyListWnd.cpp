@@ -270,18 +270,21 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       PACKET_CZ_PARTY_BOOKING_REQ_SEARCH packet;
       packet.packetType = ID_CZ_PARTY_BOOKING_REQ_SEARCH;
       packet.level = static_cast<short>(std::atoi(this->m_searchEdit->Text()));
-      std::string text(this->m_searchEdit->Text());
-      for (std::size_t i = 0; i < text.size(); ++i) {
-        if (text[i] < '/' || text[i] > '9') {
-          g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
+      {
+        std::string text(this->m_searchEdit->Text());
+        for (std::size_t i = 0; i < text.size(); ++i) {
+          if (text[i] < '/' || text[i] > '9') {
+            g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
         }
       }
 
-      if (packet.level < 0 || packet.level > g_session.m_maxLevel) {
+      const int maxLevel = g_session.m_maxLevel;
+      if (packet.level < 0 || packet.level > maxLevel) {
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
-        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), g_session.m_maxLevel);
+        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -321,11 +324,12 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_filterMap = packet.mapId;
 
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
-      if (packet.level > 0) {
-        if (packet.level > 135) {
-          title = title + " Level: " + IntToString(packet.level, 0);
+      const int level = packet.level;
+      if (level > 0) {
+        if (level < 136) {
+          title = title + " Level: " + IntToString(level, 0);
         } else {
-          title = title + " Level: " + IntToString(packet.level, 0);
+          title = title + " Level: " + IntToString(level, 0);
         }
       }
 
@@ -359,7 +363,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->SendMsg(nullptr, UM_COMMAND, SEEKPARTY_SEARCH_NEXT_PAGE, 0, 0, 0);
           g_session.m_partyBooking.EraseEntry(it->first);
         } else {
-          const std::string leaderName = it->second.leaderName;
+          const std::string leaderName = entry.leaderName;
           if (leaderName != g_session.DecodePlayerName()) {
             g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(leaderName.c_str()), 0, 0, 0, 0);
           }

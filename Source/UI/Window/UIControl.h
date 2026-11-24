@@ -377,7 +377,7 @@ class CUIResizer : public CUIControl {
 public:
   // INLINED
   explicit CUIResizer()
-      : CUIControl(), minWidth(0), minHeight(0), maxWidth(0), maxHeight(0), stepX(1), stepY(1), startX(0), startY(0), startWidth(0), startHeight(0),
+      : CUIControl(), minWidth(0), minHeight(0), maxWidth(0), maxHeight(0), stepX(1), stepY(1), startPosition{0, 0}, startSize{0, 0},
         deltaX(0), deltaY(0), imageName(), onResize(), image() {
   }
 
@@ -403,10 +403,13 @@ public:
   /* 0090 */ int maxHeight;
   /* 0094 */ int stepX;
   /* 0098 */ int stepY;
-  /* 009C */ int startX;
-  /* 00A0 */ int startY;
-  /* 00A4 */ int startWidth;
-  /* 00A8 */ int startHeight;
+  struct Extent {
+    /* 0000 */ int x;
+    /* 0004 */ int y;
+  };
+
+  /* 009C */ Extent startPosition;
+  /* 00A4 */ Extent startSize;
   /* 00AC */ int deltaX;
   /* 00B0 */ int deltaY;
   /* 00B4 */ std::string imageName;

@@ -50,16 +50,15 @@ __declspec(noinline) jsoncons::json_type JsonCppLoader::GetValueType(const jsonc
 // OFFSET: 0x00509940
 // FUNCTION: fn_00891
 bool JsonCppLoader::GetMapStringBoolValue(const jsoncons::json& node, const std::string& key, std::map<std::string, bool>* out) {
-  const jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
+  jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  auto&& members = value.object_range();
-  for (auto it = members.begin(); it != members.end(); ++it) {
-    std::string name = it->key();
-    const jsoncons::json element = it->value();
+  for (auto& member : value.object_range()) {
+    std::string name = member.key();
+    jsoncons::json element = member.value();
     if (this->GetValueType(element) != jsoncons::json_type::bool_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. boolValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -231,16 +230,15 @@ bool JsonCppLoader::GetIntValue(const jsoncons::json& node, const std::string& k
 // OFFSET: 0x005087D0
 // FUNCTION: fn_00888
 bool JsonCppLoader::GetMapStringIntValue(const jsoncons::json& node, const std::string& key, std::map<std::string, int>* out) {
-  const jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
+  jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  auto&& members = value.object_range();
-  for (auto it = members.begin(); it != members.end(); ++it) {
-    std::string name = it->key();
-    const jsoncons::json element = it->value();
+  for (auto& member : value.object_range()) {
+    std::string name = member.key();
+    jsoncons::json element = member.value();
     if (this->GetValueType(element) != jsoncons::json_type::int64_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -259,16 +257,15 @@ bool JsonCppLoader::GetMapStringIntValue(const jsoncons::json& node, const std::
 // OFFSET: 0x00508BD0
 // FUNCTION: fn_00889
 bool JsonCppLoader::GetMapStringStringValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::string>* out) {
-  const jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
+  jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  auto&& members = value.object_range();
-  for (auto it = members.begin(); it != members.end(); ++it) {
-    std::string name = it->key();
-    const jsoncons::json element = it->value();
+  for (auto& member : value.object_range()) {
+    std::string name = member.key();
+    jsoncons::json element = member.value();
     if (this->GetValueType(element) != jsoncons::json_type::string_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. stringValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -286,25 +283,23 @@ bool JsonCppLoader::GetMapStringStringValue(const jsoncons::json& node, const st
 
 // OFFSET: 0x00509130
 // FUNCTION: fn_00890
-bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<int> >* out) {
-  const jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
+bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const std::string& key, std::map<std::string, std::vector<unsigned int> >* out) {
+  jsoncons::json value = this->GetValue(key, node, jsoncons::json_type::object_value);
   if (value.is_null() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  auto&& members = value.object_range();
-  for (auto it = members.begin(); it != members.end(); ++it) {
-    std::string name = it->key();
-    const jsoncons::json element = it->value();
+  for (auto& member : value.object_range()) {
+    std::string name = member.key();
+    jsoncons::json element = member.value();
     if (this->GetValueType(element) != jsoncons::json_type::array_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. arrayValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    std::vector<int> values;
-    for (auto it = element.array_value().begin(); it != element.array_value().end(); ++it) {
-      const jsoncons::json& item = *it;
+    std::vector<unsigned int> values;
+    for (const jsoncons::json& item : element.array_range()) {
       if (this->GetValueType(item) != jsoncons::json_type::int64_value) {
         this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
         return false;
@@ -313,7 +308,7 @@ bool JsonCppLoader::GetMapStringIntVectorValue(const jsoncons::json& node, const
       values.push_back(item.as<int>());
     }
 
-    const auto inserted = out->insert(std::make_pair(name, values));
+    const auto inserted = out->insert(std::pair<std::string, std::vector<unsigned int> >(name, values));
     if (!inserted.second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
@@ -332,7 +327,9 @@ __declspec(noinline) bool JsonCppLoader::GetIntVectorValue(const jsoncons::json&
     return false;
   }
 
-  for (const jsoncons::json& item : value.array_range()) {
+  auto range = value.array_range();
+  for (auto it = range.begin(); it != range.end(); ++it) {
+    const jsoncons::json& item = *it;
     if (this->GetValueType(item) != jsoncons::json_type::int64_value) {
       this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -378,7 +375,7 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     this->GetStringValue(node, "Name", &record.name);
     this->GetIntVectorValue(node, "ReputeList", &record.reputes);
 
-    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
+    if (!out->insert({std::stoi(name), record}).second) {
       this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
       return false;
     }

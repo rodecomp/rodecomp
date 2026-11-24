@@ -218,7 +218,10 @@ void UIBasicInfoWnd::OnMouseHover(int x, int y) {
   }
 
   int top = this->geometry.height - 20;
-  if (x >= 0 && y >= top && x < 100 && y < this->geometry.height) {
+  const auto inside = [&](int left, int right) {
+    return x >= left && x < right;
+  };
+  if (inside(0, 100) && y >= top && y < this->geometry.height) {
     char text[64];
     std::sprintf(text, "Weight %d%%", g_session.m_maxWeight == 0 ? 0 : g_session.m_weight * 100 / g_session.m_maxWeight);
 
@@ -439,8 +442,11 @@ void UIBasicInfoWnd::DrawExpanded() {
     weightText = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_WEIGHT), g_session.m_weight, g_session.m_maxWeight));
   }
 
+  std::uint32_t weightColor = 0;
   const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
-  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_session.m_overweightThresholdPercent ? 255 : 0;
+  if (100 * g_session.m_weight / denominator >= g_session.m_overweightThresholdPercent) {
+    weightColor = 255;
+  }
   this->DrawRightAlignedText(
     this->geometry.width - zenyWidth - 5, this->layoutOffset + 103, weightText.c_str(), 0, 1, 14, weightColor, 0
   );
@@ -500,10 +506,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
     8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_HP), g_session.hp, g_session.maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
   );
 
-  std::int64_t current = BaseExpCurrent();
-  if (current < 0) {
-    current = 0;
-  }
+  std::int64_t current = std::max<std::int64_t>(BaseExpCurrent(), 0);
   std::int64_t maximum = BaseExpMaximum();
   if (maximum <= 0) {
     maximum = current + 1;

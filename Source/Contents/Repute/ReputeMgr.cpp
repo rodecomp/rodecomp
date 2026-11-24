@@ -128,13 +128,19 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
 // OFFSET: 0x0060DBF0
 // FUNCTION: fn_04293
 bool CReputeMgr::Load() {
-  if (this->LoadReputeInfoData(this->m_infos)) {
-    const bool loaded = this->LoadReputeGroupData(this->m_groups);
-    if (loaded) {
-      return loaded;
-    }
+  bool loaded = this->LoadReputeInfoData(this->m_infos);
+  if (!loaded) {
+    ShowErrorDialog("Failed : LoadReputeInfoData", 0);
+    return false;
   }
 
+  loaded = this->LoadReputeGroupData(this->m_groups);
+  if (!loaded) {
+    goto failed;
+  }
+  return true;
+
+failed:
   ShowErrorDialog("Failed : LoadReputeInfoData", 0);
   return false;
 }
@@ -213,10 +219,8 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<int, ReputeInfoRecord>
   info.maxPointNegative = entry.second.maxPointNegative;
   const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
   ReputeVisibility visibility;
-  const char* text = invisible.c_str();
-  if (invisible.size() == 12 && text[0] == 'V' && text[1] == 'I' && text[2] == 'S' && text[3] == 'I' &&
-      text[4] == 'B' && text[5] == 'L' && text[6] == 'E' && text[7] == '_' && text[8] == 'T' &&
-      text[9] == 'R' && text[10] == 'U' && text[11] == 'E') {
+  const uint32_t* words = reinterpret_cast<const uint32_t*>(invisible.data());
+  if (invisible.size() == 12 && words[0] == 0x49534956 && words[1] == 0x5f454c42 && words[2] == 0x45555254) {
     visibility = REPUTE_VISIBLE;
   } else if (invisible == "VISIBLE_FALSE") {
     visibility = REPUTE_HIDDEN;

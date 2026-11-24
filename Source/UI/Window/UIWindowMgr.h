@@ -691,7 +691,7 @@ public:
   void DeferDeletion(UIWindow* window);
   UIWindow* Top() const;
   void RestoreInput();
-  int Confirm(const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect);
+  int Confirm(const char* text, int type, int defaultAccept, int replace, int timeout, const char* caption, int width, int height, unsigned char protect);
   void AddMessageBox(
     const char* text, int type, int defaultAccept, int unused, int timeout, const char* caption, int width, int height, const char* icon, bool track
   );

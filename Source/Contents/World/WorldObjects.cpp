@@ -52,7 +52,6 @@
 #include "UI/Text/UINameBalloonText.h"
 
 #include <algorithm>
-#include <atomic>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -67,14 +66,9 @@ HANDLE hObject;
 // GLOBAL: gl_24757
 std::vector<DeferredWorldModel> g_deferredWorldModels;
 
-// OFFSET: 0x00AC8220
-// FUNCTION: fn_17667
-CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
-  if (aid == g_session.m_aid) {
-    return this->player;
-  }
-
-  for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
+// INLINED
+static CGameActor* FindActorByAid(const std::list<CGameActor*>& actors, std::uint32_t aid) {
+  for (auto it = actors.begin(); it != actors.end(); ++it) {
     CGameActor* actor = *it;
 
     if (actor->render.accountId == aid) {
@@ -83,6 +77,16 @@ CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00AC8220
+// FUNCTION: fn_17667
+CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
+  if (aid == g_session.m_aid) {
+    return this->player;
+  }
+
+  return FindActorByAid(this->actors, aid);
 }
 
 // OFFSET: 0x00ACA4E0
@@ -153,8 +157,7 @@ void CWorld::OnProcess() {
     this->movies->Update();
   }
 
-  std::atomic_ref<long> pending(this->pending);
-  const int ready = pending.load(std::memory_order_acquire);
+  const int ready = this->pending;
   if (ready != 0) {
     const int end = this->published + ready;
     WorldSpatialTree& root = this->spatial;
@@ -457,9 +460,9 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   }
 
   if (actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)) {
-    card.name = "??????";
+    card.SetName("??????");
   } else {
-    card.name = this->nameCard.Name(actor->render.accountId);
+    card.SetName(this->nameCard.Name(actor->render.accountId));
   }
 
   if (g_session.IsMonsterActor(actor) == 1) {
@@ -505,20 +508,21 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     } else {
       this->nameBalloon->SetIcon(emblem.c_str(), 0);
     }
-  } else if (this->scene->player == actor) {
-    char path[256];
-    std::memset(path, 0, sizeof(path));
-    if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
-      StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
-    }
-    this->nameBalloon->SetIcon(path, 0);
-  } else if (actor->hasSp) {
-    char path[256];
-    std::memset(path, 0, sizeof(path));
-    std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
-    this->nameBalloon->SetIcon(path, 0);
   } else {
-    this->nameBalloon->SetIcon("", 0);
+    char path[256];
+    const char* icon = "";
+    if (this->scene->player == actor) {
+      std::memset(path, 0, sizeof(path));
+      if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
+        StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", g_clanInfo->m_clanId);
+      }
+      icon = path;
+    } else if (actor->hasSp) {
+      std::memset(path, 0, sizeof(path));
+      std::sprintf(path, "유저인터페이스\\clan_system\\clan_emblem%02d.bmp", actor->spGaugeValue);
+      icon = path;
+    }
+    this->nameBalloon->SetIcon(icon, 0);
   }
 
   UINameBalloonText* balloon = this->nameBalloon;
@@ -985,228 +989,249 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
 // OFFSET: 0x00CDA580
 // FUNCTION: fn_21309
 CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, std::uint32_t accountId, bool visible) {
-  std::string names[2] = {std::string(), std::string()};
-  int type = 0;
+  struct {
+    std::string sprite;
+    std::string action;
+  } names;
   int animation = 0;
+  int type = 0;
 
   switch (effectId) {
   case MAKETYPE_MVP_EFFECT:
-    names[0] = "이팩트\\mvp.spr";
-    names[1] = "이팩트\\mvp.act";
+    names.sprite = "이팩트\\mvp.spr";
+    names.action = "이팩트\\mvp.act";
     animation = 0;
     type = 2;
     break;
   case MAKETYPE_CART_EFFECT:
-    names[0] = "이팩트\\손수레.spr";
-    names[1] = "이팩트\\손수레.act";
+    names.sprite = "이팩트\\손수레.spr";
+    names.action = "이팩트\\손수레.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT2:
-    names[0] = "이팩트\\손수레1.spr";
-    names[1] = "이팩트\\손수레1.act";
+    names.sprite = "이팩트\\손수레1.spr";
+    names.action = "이팩트\\손수레1.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT3:
-    names[0] = "이팩트\\손수레2.spr";
-    names[1] = "이팩트\\손수레2.act";
+    names.sprite = "이팩트\\손수레2.spr";
+    names.action = "이팩트\\손수레2.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT4:
-    names[0] = "이팩트\\손수레3.spr";
-    names[1] = "이팩트\\손수레3.act";
+    names.sprite = "이팩트\\손수레3.spr";
+    names.action = "이팩트\\손수레3.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT5:
-    names[0] = "이팩트\\손수레4.spr";
-    names[1] = "이팩트\\손수레4.act";
+    names.sprite = "이팩트\\손수레4.spr";
+    names.action = "이팩트\\손수레4.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT6:
-    names[0] = "이팩트\\슈노손수레.spr";
-    names[1] = "이팩트\\슈노손수레.act";
+    names.sprite = "이팩트\\슈노손수레.spr";
+    names.action = "이팩트\\슈노손수레.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT11:
-    names[0] = "이팩트\\손수레.spr";
-    names[1] = "이팩트\\베이비손수레.act";
+    names.sprite = "이팩트\\손수레.spr";
+    names.action = "이팩트\\베이비손수레.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT12:
-    names[0] = "이팩트\\손수레1.spr";
-    names[1] = "이팩트\\베이비손수레1.act";
+    names.sprite = "이팩트\\손수레1.spr";
+    names.action = "이팩트\\베이비손수레1.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT13:
-    names[0] = "이팩트\\손수레2.spr";
-    names[1] = "이팩트\\베이비손수레2.act";
+    names.sprite = "이팩트\\손수레2.spr";
+    names.action = "이팩트\\베이비손수레2.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT14:
-    names[0] = "이팩트\\손수레3.spr";
-    names[1] = "이팩트\\베이비손수레3.act";
+    names.sprite = "이팩트\\손수레3.spr";
+    names.action = "이팩트\\베이비손수레3.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT15:
-    names[0] = "이팩트\\손수레4.spr";
-    names[1] = "이팩트\\베이비손수레4.act";
+    names.sprite = "이팩트\\손수레4.spr";
+    names.action = "이팩트\\베이비손수레4.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_CART_EFFECT16:
-    names[0] = "이팩트\\슈노손수레.spr";
-    names[1] = "이팩트\\베이비슈노손수레.act";
+    names.sprite = "이팩트\\슈노손수레.spr";
+    names.action = "이팩트\\베이비슈노손수레.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_WARG_EFFECT:
-    names[0] = "몬스터\\워그.spr";
-    names[1] = "몬스터\\워그.act";
+    names.sprite = "몬스터\\워그.spr";
+    names.action = "몬스터\\워그.act";
     animation = 0;
     type = 27;
     break;
   case MAKETYPE_BABY_WARG_EFFECT:
-    names[0] = "몬스터\\워그.spr";
-    names[1] = "몬스터\\베이비워그.act";
+    names.sprite = "몬스터\\워그.spr";
+    names.action = "몬스터\\베이비워그.act";
     animation = 0;
     type = 31;
     break;
   case MAKETYPE_BIRD_EFFECT:
-    names[0] = "이팩트\\매.spr";
-    names[1] = "이팩트\\매.act";
+    names.sprite = "이팩트\\매.spr";
+    names.action = "이팩트\\매.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_BIRD_EFFECT2:
-    names[0] = "이팩트\\매2.spr";
-    names[1] = "이팩트\\매2.act";
+    names.sprite = "이팩트\\매2.spr";
+    names.action = "이팩트\\매2.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_BIRD_EFFECT3:
-    names[0] = "이팩트\\매.spr";
-    names[1] = "이팩트\\베이비매.act";
+    names.sprite = "이팩트\\매.spr";
+    names.action = "이팩트\\베이비매.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_BIRD_EFFECT4:
-    names[0] = "몬스터\\demon_pungus.spr";
-    names[1] = "몬스터\\demon_pungus.act";
+    names.sprite = "몬스터\\demon_pungus.spr";
+    names.action = "몬스터\\demon_pungus.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_BIRD_EFFECT5:
-    names[0] = "몬스터\\explosion.spr";
-    names[1] = "몬스터\\explosion.act";
+    names.sprite = "몬스터\\explosion.spr";
+    names.action = "몬스터\\explosion.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_BIRD_EFFECT6:
-    names[0] = "몬스터\\lude.spr";
-    names[1] = "몬스터\\lude.act";
+    names.sprite = "몬스터\\lude.spr";
+    names.action = "몬스터\\lude.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_PK_EFFECT:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 8;
     type = 4;
     break;
   case MAKETYPE_ICE_EFFECT:
-    names[0] = "이팩트\\얼음땡.spr";
-    names[1] = "이팩트\\얼음땡.act";
+    names.sprite = "이팩트\\얼음땡.spr";
+    names.action = "이팩트\\얼음땡.act";
     animation = 0;
     type = 5;
     break;
   case MAKETYPE_ICEBREAK_EFFECT:
-    names[0] = "이팩트\\얼음땡.spr";
-    names[1] = "이팩트\\얼음땡.act";
+    names.sprite = "이팩트\\얼음땡.spr";
+    names.action = "이팩트\\얼음땡.act";
     animation = 1;
     type = 6;
     break;
   case MAKETYPE_SMOKE_EFFECT:
-    names[0] = "이팩트\\smoke.spr";
-    names[1] = "이팩트\\smoke.act";
+    names.sprite = "이팩트\\smoke.spr";
+    names.action = "이팩트\\smoke.act";
     animation = 0;
     type = 6;
     break;
   case MAKETYPE_CURSE_EFFECT:
-    names[0] = "이팩트\\Status-curse.spr";
-    names[1] = "이팩트\\Status-curse.act";
+    names.sprite = "이팩트\\Status-curse.spr";
+    names.action = "이팩트\\Status-curse.act";
     animation = 0;
     type = 7;
     break;
   case MAKETYPE_SLEEP_EFFECT:
-    names[0] = "이팩트\\Status-sleep.spr";
-    names[1] = "이팩트\\Status-sleep.act";
+    names.sprite = "이팩트\\Status-sleep.spr";
+    names.action = "이팩트\\Status-sleep.act";
     animation = 0;
     type = 8;
     break;
   case MAKETYPE_STUN_EFFECT:
-    names[0] = "이팩트\\Status-stun.spr";
-    names[1] = "이팩트\\Status-stun.act";
+    names.sprite = "이팩트\\Status-stun.spr";
+    names.action = "이팩트\\Status-stun.act";
     animation = 0;
     type = 9;
     break;
   case MAKETYPE_SILENCE_EFFECT:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 10;
     type = 10;
     break;
-  case MAKETYPE_ANGELUS_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
+  case MAKETYPE_ANGELUS_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+
+    names.sprite = std::move(formatted);
+    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
     animation = 1;
     type = 11;
     break;
-  case MAKETYPE_CRUSIS_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
+  }
+  case MAKETYPE_CRUSIS_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+
+    names.sprite = std::move(formatted);
+    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
     animation = 2;
     type = 12;
     break;
-  case MAKETYPE_CRITICAL_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
+  }
+  case MAKETYPE_CRITICAL_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+
+    names.sprite = std::move(formatted);
+    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
     animation = 2;
     type = 15;
     break;
-  case MAKETYPE_BLUE_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSkinAuxiliaryName());
+  }
+  case MAKETYPE_BLUE_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSkinAuxiliaryName());
+
+    names.sprite = std::move(formatted);
     if (g_session.m_damageSkinIndex == 0) {
-      names[1] = "이팩트\\msg.act";
+      names.action = "이팩트\\msg.act";
     } else {
-      names[1] = FormatOwnedString("%s.act", g_session.GetDamageSkinAuxiliaryName());
+      names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSkinAuxiliaryName()));
     }
     animation = 2;
     type = 25;
     break;
-  case MAKETYPE_LUCKY_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
+  }
+  case MAKETYPE_LUCKY_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+
+    names.sprite = std::move(formatted);
+    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
     animation = 3;
     type = 17;
     break;
-  case MAKETYPE_GUARD_EFFECT:
-    names[0] = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-    names[1] = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
+  }
+  case MAKETYPE_GUARD_EFFECT: {
+    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+
+    names.sprite = std::move(formatted);
+    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
     animation = 1;
     type = 24;
     break;
+  }
   case MAKETYPE_CURSOR_EFFECT:
-    names[0] = "cursors.spr";
-    names[1] = "cursors.act";
+    names.sprite = "cursors.spr";
+    names.action = "cursors.act";
     animation = 10;
     type = 26;
     break;
@@ -1216,199 +1241,199 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
   case 39:
   case 40:
   case 41:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     if (effectId == 36) {
       animation = 80;
-      type = 28;
+      type = effectId - 8;
     } else if (effectId == 37) {
       animation = 81;
-      type = 28;
+      type = effectId - 9;
     } else if (effectId == 38) {
       animation = 82;
-      type = 29;
+      type = effectId - 9;
     } else if (effectId == 39) {
       animation = 83;
-      type = 29;
+      type = effectId - 10;
     } else if (effectId == 40) {
       animation = 84;
-      type = 30;
+      type = effectId - 10;
     } else if (effectId == 41) {
       animation = 85;
-      type = 30;
+      type = effectId - 11;
     }
     break;
   case 60:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 93;
     type = 34;
     break;
   case 61:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 94;
     type = 35;
     break;
   case 62:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 95;
     type = 30;
     break;
   case 63:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 96;
     type = 29;
     break;
   case 64:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 97;
     type = 36;
     break;
   case MAKETYPE_SHIELD_EFFECT:
-    names[0] = "이팩트\\shield.spr";
-    names[1] = "이팩트\\shield.act";
+    names.sprite = "이팩트\\shield.spr";
+    names.action = "이팩트\\shield.act";
     animation = 0;
     type = 32;
     break;
   case MAKETYPE_COSTUME_BODY_EFFECT:
-    names[0] = "이팩트\\costumebody.spr";
-    names[1] = "이팩트\\costumebody.act";
+    names.sprite = "이팩트\\costumebody.spr";
+    names.action = "이팩트\\costumebody.act";
     animation = 0;
     type = 33;
     break;
   case 45:
-    names[0] = "이팩트\\손수레5.spr";
-    names[1] = "이팩트\\손수레5.act";
+    names.sprite = "이팩트\\손수레5.spr";
+    names.action = "이팩트\\손수레5.act";
     animation = 0;
     type = 3;
     break;
   case 47:
-    names[0] = "이팩트\\손수레6.spr";
-    names[1] = "이팩트\\손수레6.act";
+    names.sprite = "이팩트\\손수레6.spr";
+    names.action = "이팩트\\손수레6.act";
     animation = 0;
     type = 3;
     break;
   case 49:
-    names[0] = "이팩트\\손수레7.spr";
-    names[1] = "이팩트\\손수레7.act";
+    names.sprite = "이팩트\\손수레7.spr";
+    names.action = "이팩트\\손수레7.act";
     animation = 0;
     type = 3;
     break;
   case 51:
-    names[0] = "이팩트\\손수레8.spr";
-    names[1] = "이팩트\\손수레8.act";
+    names.sprite = "이팩트\\손수레8.spr";
+    names.action = "이팩트\\손수레8.act";
     animation = 0;
     type = 3;
     break;
   case 46:
-    names[0] = "이팩트\\손수레5베이비.spr";
-    names[1] = "이팩트\\손수레5베이비.act";
+    names.sprite = "이팩트\\손수레5베이비.spr";
+    names.action = "이팩트\\손수레5베이비.act";
     animation = 0;
     type = 3;
     break;
   case 48:
-    names[0] = "이팩트\\손수레6베이비.spr";
-    names[1] = "이팩트\\손수레6베이비.act";
+    names.sprite = "이팩트\\손수레6베이비.spr";
+    names.action = "이팩트\\손수레6베이비.act";
     animation = 0;
     type = 3;
     break;
   case 50:
-    names[0] = "이팩트\\손수레7베이비.spr";
-    names[1] = "이팩트\\손수레7베이비.act";
+    names.sprite = "이팩트\\손수레7베이비.spr";
+    names.action = "이팩트\\손수레7베이비.act";
     animation = 0;
     type = 3;
     break;
   case 52:
-    names[0] = "이팩트\\손수레8베이비.spr";
-    names[1] = "이팩트\\손수레8베이비.act";
+    names.sprite = "이팩트\\손수레8베이비.spr";
+    names.action = "이팩트\\손수레8베이비.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_OWL_EFFECT:
-    names[0] = "이팩트\\OWL.spr";
-    names[1] = "이팩트\\OWL.act";
+    names.sprite = "이팩트\\OWL.spr";
+    names.action = "이팩트\\OWL.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_GIFT_BOX_CART_EFFECT:
-    names[0] = "이팩트\\선물상자카트.spr";
-    names[1] = "이팩트\\선물상자카트.act";
+    names.sprite = "이팩트\\선물상자카트.spr";
+    names.action = "이팩트\\선물상자카트.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_GIFT_BOX_CART_MINI_EFFECT:
-    names[0] = "이팩트\\선물상자카트_미니.spr";
-    names[1] = "이팩트\\선물상자카트_미니.act";
+    names.sprite = "이팩트\\선물상자카트_미니.spr";
+    names.action = "이팩트\\선물상자카트_미니.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_PORING_LOADED_CART_EFFECT:
-    names[0] = "이팩트\\포링싣은카트.spr";
-    names[1] = "이팩트\\포링싣은카트.act";
+    names.sprite = "이팩트\\포링싣은카트.spr";
+    names.action = "이팩트\\포링싣은카트.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_PORING_LOADED_CART_MINI_EFFECT:
-    names[0] = "이팩트\\포링싣은카트_미니.spr";
-    names[1] = "이팩트\\포링싣은카트_미니.act";
+    names.sprite = "이팩트\\포링싣은카트_미니.spr";
+    names.action = "이팩트\\포링싣은카트_미니.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_PORING_CART_EFFECT:
-    names[0] = "이팩트\\포링카트.spr";
-    names[1] = "이팩트\\포링카트.act";
+    names.sprite = "이팩트\\포링카트.spr";
+    names.action = "이팩트\\포링카트.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_PORING_CART_MINI_EFFECT:
-    names[0] = "이팩트\\포링카트_미니.spr";
-    names[1] = "이팩트\\포링카트_미니.act";
+    names.sprite = "이팩트\\포링카트_미니.spr";
+    names.action = "이팩트\\포링카트_미니.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_MADO_CART_EFFECT:
-    names[0] = "이팩트\\마도카트.spr";
-    names[1] = "이팩트\\마도카트.act";
+    names.sprite = "이팩트\\마도카트.spr";
+    names.action = "이팩트\\마도카트.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_MADO_CART_MINI_EFFECT:
-    names[0] = "이팩트\\마도카트_미니.spr";
-    names[1] = "이팩트\\마도카트_미니.act";
+    names.sprite = "이팩트\\마도카트_미니.spr";
+    names.action = "이팩트\\마도카트_미니.act";
     animation = 0;
     type = 3;
     break;
   case MAKETYPE_LASSITUDE_EFFECT:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 5;
     type = 37;
     break;
   case MAKETYPE_MISFORTUNE_EFFECT:
-    names[0] = "이팩트\\emotion.spr";
-    names[1] = "이팩트\\emotion.act";
+    names.sprite = "이팩트\\emotion.spr";
+    names.action = "이팩트\\emotion.act";
     animation = 28;
     type = 38;
     break;
   case MAKETYPE_WINDHAWK_HAWK_EFFECT:
-    names[0] = "이팩트\\WINDHAWK_HAWK.spr";
-    names[1] = "이팩트\\WINDHAWK_HAWK.act";
+    names.sprite = "이팩트\\WINDHAWK_HAWK.spr";
+    names.action = "이팩트\\WINDHAWK_HAWK.act";
     animation = 0;
     type = 18;
     break;
   case MAKETYPE_WINDHAWK_WOLF_EFFECT:
-    names[0] = "이팩트\\WINDHAWK_WOLF.spr";
-    names[1] = "이팩트\\WINDHAWK_WOLF.act";
+    names.sprite = "이팩트\\WINDHAWK_WOLF.spr";
+    names.action = "이팩트\\WINDHAWK_WOLF.act";
     animation = 0;
     type = 27;
     break;
   default:
-    names[0] = "이팩트\\msg.spr";
-    names[1] = "이팩트\\msg.act";
+    names.sprite = "이팩트\\msg.spr";
+    names.action = "이팩트\\msg.act";
     break;
   }
 
@@ -1423,7 +1448,7 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     this->scene->objects.push_back(effect);
     effect->SendMsg(nullptr, AM_SETMASTERGID, accountId, type, 0, 0, 0, 0);
     effect->m_visible = visible;
-    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<int>(position), reinterpret_cast<int>(names), animation, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<int>(position), reinterpret_cast<int>(&names), animation, 0, 0, 0);
   }
 
   return effect;

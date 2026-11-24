@@ -279,21 +279,22 @@ void UINewSkillListWnd::DrawCharacter() {
 // OFFSET: 0x009AF300
 // FUNCTION: fn_13802
 void UINewSkillListWnd::DrawSkillList() {
-  int drawn = 0;
   int index = 0;
+  int drawn = 0;
 
-  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+  std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
+  for (auto it = skills.begin(); it != skills.end(); ++it) {
     if (index >= this->m_firstRow * this->m_columns) {
-      const int level = skill.level;
-      const int y = drawn / this->m_columns * 32;
+      const int level = it->level;
       const int x = drawn % this->m_columns * 32;
+      const int y = drawn / this->m_columns * 32;
 
       if (this->m_selectedSkill == index) {
         unsigned red, green, blue;
         g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-        if (skill.level == 0) {
+        if (it->level == 0) {
           g_skinInfo.PaletteChannels(10, 2, red, green, blue);
-        } else if (skill.spCost == 0) {
+        } else if (it->spCost == 0) {
           g_skinInfo.PaletteChannels(14, 2, red, green, blue);
         }
         this->FillRegion(x + 104, y + 32, 164, 28, RGB(red, green, blue));
@@ -301,7 +302,7 @@ void UINewSkillListWnd::DrawSkillList() {
 
       int shade = 0;
       char text[80];
-      g_session.ItemBitmapPath(skill.name, text);
+      g_session.ItemBitmapPath(it->name, text);
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
       if (!bitmap) {
         std::sprintf(text, "유저인터페이스\\item\\am_berserkpitcher.bmp");
@@ -316,49 +317,49 @@ void UINewSkillListWnd::DrawSkillList() {
         }
       }
 
-      const int maxLevel = this->SkillAt(index, true).level;
-      const int red = level > maxLevel ? 255 : shade;
-      const int green = level > maxLevel ? 0 : shade;
+      const bool raised = it->level > this->SkillAt(index, true).level;
+      const int green = raised ? 0 : shade;
+      const int red = raised ? 255 : shade;
       const int textX = x + 112;
       const int textY = y + 47;
-      const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
+      const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
       if (level != 0) {
         std::sprintf(text, g_serviceType == ServiceBrazil ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
-        const std::uint32_t gray = RGB(shade, shade, shade);
+        const std::uint32_t gray = (shade << 8 | shade) << 8 | shade;
         this->DrawTextAt(labelX, textY, text, 0, 0, 12, gray, 0, 0);
 
         int levelX;
         if (usesLevel) {
-          int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
-          if (useLevel <= 0 || useLevel > skill.level) {
-            useLevel = skill.level;
+          int useLevel = g_session.UseLevel(static_cast<int>(it->id));
+          if (useLevel <= 0 || useLevel > it->level) {
+            useLevel = it->level;
           }
           levelX = (this->m_locked == 0 ? 37 : 25) + textX;
           std::sprintf(text, "%2d", useLevel);
-          this->DrawTextAt(levelX, textY, text, 0, 0, 12, useLevel == skill.level ? gray : 255, 0, 0);
+          this->DrawTextAt(levelX, textY, text, 0, 0, 12, useLevel == it->level ? gray : 255, 0, 0);
           levelX += 7 + this->TextWidth(text, 0, 0, 12, 0, 0);
           this->DrawTextAt(levelX, textY, "/ ", 0, 0, 12, gray, 0, 0);
           levelX += this->TextWidth("/ ", 0, 0, 12, 0, 0);
-          std::sprintf(text, "%2d", skill.level);
+          std::sprintf(text, "%2d", it->level);
         } else {
-          std::sprintf(text, "%d", skill.level);
+          std::sprintf(text, "%d", it->level);
           levelX = textX + 25;
         }
-        this->DrawTextAt(levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
+        this->DrawTextAt(levelX, textY, text, 0, 0, 12, (red << 8 | green) << 8 | green, 0, 0);
 
-        if (skill.type == 0) {
+        if (it->type == 0) {
           std::sprintf(text, LookupMessage(MSI_PASSIVE));
         } else {
-          int sp = static_cast<int>(skill.spCost);
-          const int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
+          int sp = static_cast<int>(it->spCost);
+          const int useLevel = g_session.UseLevel(static_cast<int>(it->id));
           bool found = false;
           if (usesLevel) {
-            const std::uint32_t id = skill.id;
+            const std::uint32_t id = it->id;
             for (const CSkillInfo& live : this->SkillList(this->m_tab, true)) {
               if (live.id == id && live.level != 0) {
-                const int amount = skill.UseSpAmount(useLevel);
-                if (amount != 0 && useLevel <= skill.level) {
+                const int amount = it->UseSpAmount(useLevel);
+                if (amount != 0 && useLevel <= it->level) {
                   sp = amount;
                 }
                 found = true;
@@ -367,11 +368,11 @@ void UINewSkillListWnd::DrawSkillList() {
             }
           }
           if (!found) {
-            sp = skill.UseSpAmount(skill.level);
+            sp = it->UseSpAmount(it->level);
           }
 
-          const int ap = skill.UseApAmount(useLevel > 0 ? useLevel : skill.level);
-          if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
+          const int ap = it->UseApAmount(useLevel > 0 ? useLevel : it->level);
+          if (g_session.SkillUsesPercentSp(static_cast<int>(it->id))) {
             if (ap != 0) {
               std::sprintf(text, "Sp : %d%%, Ap : %d", sp, ap);
             } else {
@@ -386,7 +387,7 @@ void UINewSkillListWnd::DrawSkillList() {
         this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
       }
 
-      this->DrawTextAt(textX, y + 35, skill.DisplayName(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+      this->DrawTextAt(textX, y + 35, it->DisplayName(), 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
       if (++drawn == this->m_visibleRows * this->m_columns) {
         break;
       }
@@ -1176,8 +1177,9 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
     const int key = static_cast<int>(skill.treePosition);
     if (key != -1 && key >= this->m_firstRow * this->m_columns && key == this->m_selectedSkill) {
       this->m_values.push_front({static_cast<int>(skill.id), 0});
-      for (std::size_t i = 0; i < skill.entries.size(); ++i) {
-        const int id = static_cast<int>(skill.entries[i].skillId);
+      auto& entriesRef = skill.entries;
+      for (std::size_t i = 0; i < entriesRef.size(); ++i) {
+        const int id = static_cast<int>(entriesRef[i].skillId);
         const int tab = SkillTabOf(id);
         if (tab != this->m_tab) {
           UITabControl* tabs = this->m_tabs;
@@ -1187,7 +1189,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
           }
         }
 
-        int level = static_cast<int>(skill.entries[i].requiredLevel);
+        int level = static_cast<int>(entriesRef[i].requiredLevel);
         for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
           if (it->id == id) {
             level = (std::max)(level, it->value);
@@ -1195,8 +1197,9 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
             break;
           }
         }
-        skill.entries[i].requiredLevel = level;
-        this->m_values.emplace_front(skill.entries[i].skillId, skill.entries[i].requiredLevel);
+        entriesRef[i].requiredLevel = level;
+        SkillInfoEntry& entry = entriesRef[i];
+        this->m_values.emplace_front(entry.skillId, entry.requiredLevel);
       }
       return;
     }
@@ -1389,16 +1392,18 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->ResetLists();
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       return 0;
-    case ID_MINI:
+    case ID_MINI: {
       this->StoreInfo();
       this->m_needsRedraw = 1;
-      gate = !gate;
-      if (gate) {
+      const bool simplified = gate == 0;
+      gate = simplified;
+      if (simplified) {
         this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
       }
       return 0;
+    }
     case ID_CHECK: {
       int& flag = g_session.m_showSkillDescription;
       flag = flag == 0;
@@ -1441,7 +1446,10 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + slot, false);
       if (skill.available != 0) {
         const int current = g_session.UseLevel(skill.id);
-        int level = offset > 41 ? current - 1 : current + 1;
+        int level = current + 1;
+        if (offset > 41) {
+          level = current - 1;
+        }
         if (level <= 0) {
           level = 1;
         }
@@ -1471,18 +1479,16 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_session.m_skillBundle.extraIds.clear();
       }
     }
+  }
+  refreshUi:
     this->UpdateScrollBar();
     this->LayoutButtons();
     this->Invalidate();
     return 0;
-  }
   case UM_REFRESHITEM:
     this->ResetLists();
     g_session.m_skillBundle.NumberExtra();
-    this->UpdateScrollBar();
-    this->LayoutButtons();
-    this->Invalidate();
-    return 0;
+    goto refreshUi;
   case UM_REFRESH:
     this->InitTabs();
     return 0;
@@ -1512,7 +1518,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
       CMode* gameMode = g_modeMgr.currentMode;
-      gameMode->SendMsg(MM_USING_SKILL, a, g_session.UseLevel(skill->id), 0, 0);
+      const int level = g_session.UseLevel(skill->id);
+      gameMode->SendMsg(MM_USING_SKILL, a, level, 0, 0);
       return 0;
     }
     break;
@@ -1527,7 +1534,6 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
   return 0;
 }
 
@@ -1630,8 +1636,8 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       if (skill.level >= static_cast<int>(skill.maxLevel)) {
         return false;
       }
-      ++skill.level;
       --this->m_skillPoints;
+      ++skill.level;
       return true;
     }
   }
@@ -1671,8 +1677,7 @@ void UINewSkillListWnd::DrawSkillTree() {
 
   std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
   for (auto it = skills.begin(); it != skills.end(); ++it) {
-    const CSkillInfo& skill = *it;
-    int position = static_cast<int>(skill.treePosition);
+    int position = static_cast<int>(it->treePosition);
     if (position == -1) {
       continue;
     }
@@ -1685,14 +1690,14 @@ void UINewSkillListWnd::DrawSkillTree() {
       continue;
     }
 
-    const int level = skill.level;
+    const int level = it->level;
     const int x = position % this->m_columns * 68 + 72;
     const int y = position / this->m_columns * 56;
 
-    if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(skill.id))) {
+    if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(it->id))) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
       this->DrawRoundedOutline(x + 2, y + 42, 28, 28, 0xC1B6FF);
-    } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
+    } else if (this->m_skillPoints != 0 && it->available != 0 && it->upgradable != 0) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xF0C4AF);
       this->DrawRoundedOutline(x + 2, y + 42, 28, 28, 0xF0C4AF);
     } else {
@@ -1701,20 +1706,20 @@ void UINewSkillListWnd::DrawSkillTree() {
 
     int shade = 102;
     char text[80];
-    g_session.ItemBitmapPath(skill.name, text);
+    g_session.ItemBitmapPath(it->name, text);
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     if (!bitmap) {
       std::sprintf(text, "유저인터페이스\\item\\am_berserkpitcher.bmp");
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     }
     if (bitmap) {
-      if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(skill.id))) {
+      if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(it->id))) {
         this->DrawAuxiliary(2, x + 4, y + 44, bitmap, true, true);
-        const std::string value = this->ValueText(static_cast<int>(skill.id));
+        const std::string value = this->ValueText(static_cast<int>(it->id));
         if (value.size() != 0) {
           this->DrawOutlinedText(x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
         }
-      } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
+      } else if (this->m_skillPoints != 0 && it->available != 0 && it->upgradable != 0) {
         this->DrawAuxiliary(4, x + 4, y + 44, bitmap, true, true);
       } else if (level == 0) {
         shade = 120;
@@ -1723,8 +1728,8 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawBitmap(x + 4, y + 44, bitmap, true);
       }
 
-      const int planned = this->SkillValueOf(static_cast<int>(skill.id));
-      const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
+      const int planned = this->SkillValueOf(static_cast<int>(it->id));
+      const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(it->id);
       if (current) {
         const int added = std::max(0, planned - current->learnedLevel);
         if (added > 0) {
@@ -1733,8 +1738,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int textY = y + 70;
-    const bool raised = skill.level > this->SkillAt(static_cast<int>(skill.treePosition), true).level;
+    const bool raised = it->level > this->SkillAt(static_cast<int>(it->treePosition), true).level;
     int red = shade;
     int green = shade;
     int blue = shade;
@@ -1744,22 +1748,23 @@ void UINewSkillListWnd::DrawSkillTree() {
       blue = 255;
     }
 
-    const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
+    const int textY = y + 70;
+    const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
     if (level != 0) {
       if (usesLevel) {
-        int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
-        if (useLevel <= 0 || useLevel > skill.level) {
-          useLevel = skill.level;
+        int useLevel = g_session.UseLevel(static_cast<int>(it->id));
+        if (useLevel <= 0 || useLevel > it->level) {
+          useLevel = it->level;
         }
-        std::sprintf(text, "%d / %d", useLevel, skill.level);
+        std::sprintf(text, "%d / %d", useLevel, it->level);
         int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
         std::sprintf(text, "%d", useLevel);
-        this->DrawOutlinedText(textX, textY, text, 0, useLevel == skill.level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText(textX, textY, text, 0, useLevel == it->level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(text, 0, 0, 11, 1, 0);
         this->DrawOutlinedText(textX, textY, " / ", 0, (shade << 8 | shade) << 8 | shade, 0xFFFFFF, 0, 11, 1, 0);
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
-        const std::uint32_t id = skill.id;
+        const std::uint32_t id = it->id;
         int target = this->SkillValueOf(static_cast<int>(id));
         const int grouped = g_session.m_skillBundle.GroupedLevel(id);
         if (target < grouped) {
@@ -1772,20 +1777,21 @@ void UINewSkillListWnd::DrawSkillTree() {
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", target);
         this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
-        std::sprintf(text, "%d", skill.level);
-        this->DrawOutlinedText((24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        std::sprintf(text, "%d", it->level);
+        const int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
+        this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       }
     }
 
-    const int nameWidth = this->TextWidth(skill.DisplayName(), 0, 0, 11, 0, 0);
+    const int nameWidth = this->TextWidth(it->DisplayName(), 0, 0, 11, 0, 0);
     int nameOffset = 0;
     if (nameWidth < 48) {
       nameOffset = (48 - nameWidth) / 2;
     }
-    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(), 48, 0, 11, 0), 0, 0, 11, (shade << 8 | shade) << 8 | shade, 0, 0
+    this->DrawTextAt(x - 8 + nameOffset, y + 30, this->ClipTextToWidth(it->DisplayName(), 48, 0, 11, 0), 0, 0, 11, (shade << 8 | shade) << 8 | shade, 0, 0
     );
 
-    if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {
+    if (g_session.m_skillBundle.HasHigherLevel(it->id) == true) {
       this->DrawBitmap(
         x + 8, y + 58, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp"))), true
       );

@@ -53,18 +53,6 @@ void CCharacterLinkedUserDataMgr::Shutdown() {
   }
 }
 
-// OFFSET: 0x005E5FD0
-// FUNCTION: fn_03925
-std::string CCharacterLinkedUserDataMgr::LoadUrl() const {
-  return this->m_loadUrl;
-}
-
-// OFFSET: 0x005E6030
-// FUNCTION: fn_03926
-std::string CCharacterLinkedUserDataMgr::SaveUrl() const {
-  return this->m_saveUrl;
-}
-
 // OFFSET: 0x005E78B0
 // FUNCTION: fn_03936
 void CCharacterLinkedUserDataMgr::CompleteSave() {

@@ -616,12 +616,21 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
     resizer->SetImage(image);
   }
   this->resizer->SetOnResize([this](int deltaWidth, int deltaHeight) { this->Grow(deltaWidth, deltaHeight); });
-  this->resizer->minWidth = 300;
-  this->resizer->minHeight = 308;
-  this->resizer->maxWidth = 300;
-  this->resizer->maxHeight = 470;
-  this->resizer->stepX = 1;
-  this->resizer->stepY = 18;
+  {
+    CUIResizer* minimum = this->resizer;
+    minimum->minWidth = 300;
+    minimum->minHeight = 308;
+  }
+  {
+    CUIResizer* maximum = this->resizer;
+    maximum->maxWidth = 300;
+    maximum->maxHeight = 470;
+  }
+  {
+    CUIResizer* step = this->resizer;
+    step->stepX = 1;
+    step->stepY = 18;
+  }
   this->AddChild(this->resizer);
   this->tabs->Select(allButton);
 }

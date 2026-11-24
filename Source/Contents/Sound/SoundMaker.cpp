@@ -503,16 +503,16 @@ bool CGndRiser::OnProcess() {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
-    GroundGeometry* ground = mode->scene->ground;
     const float half = static_cast<float>(this->lifetime / 2);
+    auto* scene = mode->scene;
     if (frame > half) {
       const float rise = frame - half;
       const float span = static_cast<float>(this->lifetime) * g_depthAverageHalf;
       const float alpha = (rise * rise - span * span) / 25.0f;
-      ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
+      scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
     } else {
       const float alpha = -frame * frame / 25.0f;
-      ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
+      scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
     }
   }
 
@@ -1101,7 +1101,13 @@ void CNpc::Render(int argument) {
           if (effect.id == EFST_CLAIRVOYANCE) {
             if (this->objectType == NPC_MOB_TYPE && (!this->render.visible || !this->render.enabled)) {
               this->SetColor(-1, 0, 0, 0);
-              const bool monster = g_session.IsMonsterClass(this->GetEffectiveJob(-1));
+              const int job = this->GetEffectiveJob(-1);
+              bool monster;
+              if ((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned int>(job - 20021) <= 11978) {
+                monster = true;
+              } else {
+                monster = false;
+              }
               this->DrawSprite(argument, monster, 0.0f);
               return;
             }
@@ -1128,8 +1134,10 @@ void CNpc::Render(int argument) {
         }
         if (this->render.enabled) {
           this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
-          return;
+        } else {
+          this->UpdateTlvertex(matrix);
         }
+        return;
       }
       break;
   }

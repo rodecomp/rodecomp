@@ -28,7 +28,7 @@ bool PakRegistry::Add(const char* filename) {
 
 // OFFSET: 0x00AE9BF0
 // FUNCTION: fn_18112
-void* PakRegistry::Read(const char* filename, std::uint32_t* size, int) {
+void* PakRegistry::Read(const char* filename, std::uint32_t* size, bool) {
   void* result = this->ReadArchive(filename, size);
   if (result) {
     return result;

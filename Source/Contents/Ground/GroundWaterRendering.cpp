@@ -46,10 +46,14 @@ static __forceinline RenderPrimitive* BuildWaterPrimitive(
     g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
-  const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);
-  const float secondArea = (vertices[1].x - vertices[0].x) * (vertices[2].y - vertices[0].y);
+  const float dx1 = vertices[1].x - vertices[0].x;
+  const float dy2 = vertices[2].y - vertices[0].y;
+  const float dx2 = vertices[2].x - vertices[0].x;
+  const float dy1 = vertices[1].y - vertices[0].y;
 
-  if (!(firstArea > secondArea)) {
+  const float clockwiseArea = dx1 * dy2;
+  const float counterclockwiseArea = dx2 * dy1;
+  if (!(counterclockwiseArea > clockwiseArea)) {
     return nullptr;
   }
 
@@ -108,25 +112,29 @@ void GroundGeometry::DrawWaterCell(
   int column, int row, GroundCell& cell, const float* matrix, const float* ambient
 ) {
   const float level = this->WaterLevel(column, row);
-  unsigned partition = 0;
+  unsigned partition;
 
   if (this->waterPartitioned) {
     partition = static_cast<unsigned>(this->WaterPartition(column, row));
+  } else {
+    partition = 0;
   }
 
-  const GroundWater& surface = this->waterSurfaces[partition];
+  const GroundWater* const surfaces = &this->waterSurfaces[0];
   float middle;
   float first;
   float last;
 
-  if (0.0f != surface.parameters.height) {
-    const int sum = column + row;
-    float wave = ClientSine(static_cast<int>(static_cast<float>(sum) * surface.parameters.pitch + surface.phase));
-    middle = level + wave * surface.parameters.height;
-    wave = ClientSine(static_cast<int>(static_cast<float>(sum - 1) * surface.parameters.pitch + surface.phase));
-    first = level + wave * surface.parameters.height;
-    wave = ClientSine(static_cast<int>(static_cast<float>(sum + 1) * surface.parameters.pitch + surface.phase));
-    last = level + wave * surface.parameters.height;
+  if (0.0f != surfaces[partition].parameters.height) {
+    const auto waveHeight = [surfaces, partition, level](int diagonal) {
+      const float angle = static_cast<float>(diagonal) * surfaces[partition].parameters.pitch + surfaces[partition].phase;
+      const float wave = ClientSine(static_cast<int>(angle));
+      return level + wave * surfaces[partition].parameters.height;
+    };
+    const int diagonal = column + row;
+    middle = waveHeight(diagonal);
+    first = waveHeight(diagonal - 1);
+    last = waveHeight(diagonal + 1);
   } else {
     middle = level;
     first = level;

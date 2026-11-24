@@ -32,6 +32,16 @@ inline void WindowGeometry::Move(int newX, int newY) {
   this->y = newY;
 }
 
+// INLINED
+inline void WindowGeometry::Show(int state) {
+  this->visible = state;
+}
+
+// INLINED
+inline void WindowGeometry::SetId(int value) {
+  this->id = value;
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(WindowGeometry) == 48);
 #endif

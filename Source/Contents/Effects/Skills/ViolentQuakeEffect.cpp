@@ -130,9 +130,7 @@ __forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter)
                      view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10],
                      view.values[2] * origin.x + view.values[5] * origin.y + view.values[8] * origin.z + view.values[11]};
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-    viewPos.x += emitter->offsetX;
-    viewPos.y += emitter->offsetY;
-    viewPos.z += emitter->offsetZ;
+    viewPos += vector3d{emitter->offsetX, emitter->offsetY, emitter->offsetZ};
     emitter->position = TransformPoint(inverse, viewPos);
     emitter->Process(0.0f, 0.0f, 0.0f);
   }
@@ -141,7 +139,8 @@ __forceinline void CViolentQuakeEffect::ProcessEmitter(CEZ2STRParticle* emitter)
 // OFFSET: 0x0072FD60
 // FUNCTION: fn_07535
 void CViolentQuakeEffect::OnProcess() {
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+  auto& emittersRef = this->emitters;
+  for (auto it = emittersRef.begin(); it != emittersRef.end(); ++it) {
     this->ProcessEmitter(*it);
   }
 }

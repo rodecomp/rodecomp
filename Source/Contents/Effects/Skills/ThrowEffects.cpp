@@ -232,7 +232,7 @@ void CThrowItemEffect::Open() {
         }
         break;
       }
-      case EF_THROW_MULTIPLE_COIN:
+      case EF_THROW_MULTIPLE_COIN: {
         this->effectLifetime = 200;
         this->arcHeight = 10.0f;
         particle->SetTexture("effect\\coin_a.bmp");
@@ -241,11 +241,13 @@ void CThrowItemEffect::Open() {
         particle->angle = 330.0f;
         particle->speedParameter = 2.0f;
         particle->alpha = 255;
+        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
         particle->destinationBlend = 6;
-        particle->offsetZ = this->position[2];
-        particle->offsetY = this->position[1] - 8.0f;
-        particle->offsetX = this->position[0];
+        particle->offsetZ = offset.z;
+        particle->offsetY = offset.y;
+        particle->offsetX = offset.x;
         break;
+      }
       case EF_KAIHOU:
         if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
           if (owner->charmType == CHARM_TYPE_WATER) {
@@ -264,9 +266,10 @@ void CThrowItemEffect::Open() {
           particle->angle = 330.0f;
           particle->speedParameter = 1.5f;
           particle->alpha = 255;
-          particle->offsetZ = this->position[2];
-          particle->offsetY = this->position[1] - 15.0f;
-          particle->offsetX = this->position[0];
+          const vector3d offset = {this->position[0], this->position[1] - 15.0f, this->position[2]};
+          particle->offsetZ = offset.z;
+          particle->offsetY = offset.y;
+          particle->offsetX = offset.x;
         }
         break;
       }
@@ -527,12 +530,11 @@ void CThrowItemEffect::OnProcess() {
       if (progress > 1.05f) {
         target->alpha = std::ranges::max(target->alpha - 20, 0);
       } else {
-        const int index = target->phaseParameter;
         const float radius = angle / target->animationParameter;
-        const vector3d moved{angle * g_cosTable[index] + offsetX, radius * this->heightDelta + offsetY, angle * g_sinTable[index] + offsetZ};
-        offsetX = moved.x;
-        offsetY = moved.y;
-        offsetZ = moved.z;
+        const int index = target->phaseParameter;
+        const vector3d delta{angle * g_cosTable[index], radius * this->heightDelta, angle * g_sinTable[index]};
+        const vector3d moved{delta.x + offsetX, delta.y + offsetY, delta.z + offsetZ};
+        target->offset = moved;
         height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->arcHeight;
       }
 
@@ -617,9 +619,7 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240
 void CVolcanoEffect::AddRings() {
-  int baseAngle = 0;
-  int row = 0;
-  for (; baseAngle < 360; baseAngle += 90) {
+  for (int row = 0; row < 4; ++row) {
     for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -657,19 +657,21 @@ void CVolcanoEffect::AddRings() {
         particle->animationParameter = 0.0f;
         particle->angleParameter = 360;
         particle->alpha = 1;
-        particle->angle = static_cast<float>(baseAngle);
+        particle->angle = static_cast<float>(row * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
-      case EF_GUMGANG5:
+      case EF_GUMGANG5: {
+        const int angle = particle->rowIndex * 90;
         particle->alpha = 1;
         particle->angleParameter = 360;
         particle->speedParameter = 25.0f;
         particle->phaseParameter = 80;
-        particle->angle = static_cast<float>(particle->rowIndex * 90);
         particle->animationParameter = 0.0f;
+        particle->angle = static_cast<float>(angle);
         particle->scale = static_cast<float>(row) + 1.0f;
         particle->SetColor(0, 0, 255);
         break;
+      }
       }
 
       switch (this->id) {
@@ -705,8 +707,6 @@ void CVolcanoEffect::AddRings() {
       particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
-
-    ++row;
   }
 }
 
@@ -810,12 +810,14 @@ void CVolcanoEffect::OnProcess() {
         break;
       }
 
+      int alpha = particle->alpha;
       if (particle->elapsedFrames > 10) {
-        const int alpha = particle->alpha - fadeOut;
-        particle->alpha = alpha > 0 ? alpha : 0;
+        alpha -= fadeOut;
+        alpha = alpha > 0 ? alpha : 0;
       } else {
-        particle->alpha += fadeIn;
+        alpha += fadeIn;
       }
+      particle->alpha = alpha;
 
       const int segment = particle->columnIndex;
       const float radius = g_sinTable[segment * 9] * particle->speedParameter;
@@ -825,14 +827,16 @@ void CVolcanoEffect::OnProcess() {
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
       const float height = radius * g_sinTable[tilt];
+      const float spreadX = spread * cosine;
+      const float spreadZ = spread * sine;
 
       EffectPoint corners[2];
       corners[0].x = scale * cosine;
       corners[0].y = 0.0f;
       corners[0].z = scale * sine;
-      corners[1].x = corners[0].x + spread * cosine;
+      corners[1].x = corners[0].x + spreadX;
       corners[1].y = 0.0f - height;
-      corners[1].z = corners[0].z + spread * sine;
+      corners[1].z = corners[0].z + spreadZ;
 
       particle->vertices[3].x = corners[0].x;
       particle->vertices[3].y = corners[0].y;

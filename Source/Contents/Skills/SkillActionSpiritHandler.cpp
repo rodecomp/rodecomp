@@ -12,6 +12,7 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Text/FormatString.h"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -156,9 +157,9 @@ void CSkillAction_SH_CHUL_HO_SONIC_CLAW::OnSkillEffect(int level, CGameActor* so
   }
 
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
-  const int waves[12] = {12, 1, 1, 3, 5, 5, 6, 7, 7, 9, 11, 11};
+  const std::array<int, 12> waves = {12, 1, 1, 3, 5, 5, 6, 7, 7, 9, 11, 11};
   const int index = static_cast<int>(angle + 105.0f) % 360 / 30;
-  if (index >= 0 && static_cast<std::size_t>(index) < sizeof(waves) / sizeof(waves[0])) {
+  if (index >= 0 && static_cast<std::size_t>(index) < waves.size()) {
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("chul_ho_sonic_claw_wave_%d", waves[index])), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }

@@ -1,22 +1,5 @@
 #include "Utility/Async/NRecycleObjectPoolMgr.h"
 
-// INLINED
-std::size_t NRecycleObjectPoolMgr::NameHash::operator()(const std::string& name) const {
-  std::uint32_t hash = 2166136261;
-
-  for (unsigned char byte : name) {
-    hash = 16777619 * (hash ^ byte);
-  }
-
-  std::uint32_t value = hash & 0x7FFFFFFF;
-  std::int32_t reduced = static_cast<std::int32_t>(16807 * (value % 127773)) - static_cast<std::int32_t>(2836 * (value / 127773));
-  if (reduced < 0) {
-    reduced += 0x7FFFFFFF;
-  }
-
-  return static_cast<std::uint32_t>(reduced);
-}
-
 // OFFSET: 0x00736B30
 // FUNCTION: fn_07632
 NRecycleObjectPoolMgr::NRecycleObjectPoolMgr() {

@@ -396,8 +396,7 @@ unsigned __stdcall CSoundMgr::FadeThread(void* direction) {
         break;
       }
 
-      const int next = sound->streamVolume + 1;
-      sound->SetVolume(next);
+      g_soundMgr->SetVolume(sound->streamVolume + 1);
       Sleep(10);
     }
   } else {
@@ -412,8 +411,7 @@ unsigned __stdcall CSoundMgr::FadeThread(void* direction) {
         break;
       }
 
-      const int next = sound->streamVolume - 1;
-      sound->SetVolume(next);
+      g_soundMgr->SetVolume(sound->streamVolume - 1);
       Sleep(10);
     }
   }

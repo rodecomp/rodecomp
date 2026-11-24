@@ -455,9 +455,13 @@ struct CEffectAllocator : CAllocator {
 
 }
 
+struct ThunderingOrbName {
+  __declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& operator()() const;
+};
+
 // OFFSET: 0x00B1D9E0
 // FUNCTION: fn_18561
-__declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName() {
+EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName::operator()() const {
   OBFUSCATE_STRING_BODY("DRUID\\KR_THUNDERING_ORB\\thundering_orb_orb\\thundering_orb_small.str", 0x2F8B0F37118D157FULL);
 }
 
@@ -548,7 +552,7 @@ namespace {
 // FUNCTION: fn_18655
 template <>
 CEffect* CEffectAllocator<CThunderingOrb>::Create() {
-  return new (std::nothrow) CThunderingOrb(ThunderingOrbName().Text());
+  return new (std::nothrow) CThunderingOrb(ThunderingOrbName{}().Text());
 }
 
 // INLINED

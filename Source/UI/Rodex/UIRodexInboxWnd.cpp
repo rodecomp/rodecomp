@@ -225,11 +225,11 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->writeButton->SetId(ID_SEND_MAIL);
   this->AddChild(this->writeButton);
 
-  for (int y = 0x66, row = 0; y < 0x16E; y += 0x2C, ++row) {
+  for (int row = 0; row < 6; ++row) {
     this->checks[row] = new UICheckBox();
     this->checks[row]->SetSize(14, 14);
     this->checks[row]->SetBitmaps("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_on.bmp", "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_off.bmp");
-    this->checks[row]->Move(0x11, y + 6);
+    this->checks[row]->Move(0x11, row * 0x2C + 0x6C);
     this->checks[row]->SetChecked(0);
     this->checks[row]->m_message = 0;
     this->checks[row]->Show(0);
@@ -238,7 +238,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->subjectButtons[row] = new UITextButton();
     this->subjectButtons[row]->Configure("", 0, 0, 12, 0, 0);
     this->subjectButtons[row]->m_hoverColor = 0x51417E;
-    this->subjectButtons[row]->Move(0x45, y);
+    this->subjectButtons[row]->Move(0x45, row * 0x2C + 0x66);
     this->subjectButtons[row]->SetId(RODEX_BUTTON_SUBJECT);
     this->subjectButtons[row]->SetTooltip(LookupMessage(MSI_RODEX_READ));
     this->subjectButtons[row]->Enable(0);
@@ -247,7 +247,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->senderButtons[row] = new UITextButton();
     this->senderButtons[row]->Configure("", 0x844A42, 0, 11, 1, 0);
     this->senderButtons[row]->m_hoverColor = 0x51417E;
-    this->senderButtons[row]->Move(0x47, y + 0x10);
+    this->senderButtons[row]->Move(0x47, row * 0x2C + 0x76);
     this->senderButtons[row]->SetId(RODEX_BUTTON_SENDER);
     this->senderButtons[row]->SetTooltip(LookupMessage(MSI_RODEX_FOWARD));
     this->senderButtons[row]->Enable(0);
@@ -258,7 +258,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->returnButtons[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_over.bmp", 1, 0);
     this->returnButtons[row]->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_return_press.bmp", 2, 0);
     this->returnButtons[row]->SetSize(this->returnButtons[row]->BitmapWidth(), this->returnButtons[row]->BitmapHeight());
-    this->returnButtons[row]->Move(0xBA, y + 0x1D);
+    this->returnButtons[row]->Move(0xBA, row * 0x2C + 0x83);
     this->returnButtons[row]->SetTooltip(LookupMessage(MSI_RODEX_RETURN));
     this->returnButtons[row]->SetId(ID_REPORT_RODEX);
     this->returnButtons[row]->Enable(0);
@@ -300,13 +300,13 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->AddChild(this->nextPageButton);
 
   const int searchTexts[2] = {0xC78, 0xC79};
-  for (int x = 0x16, index = 0; x < 0x7C; x += 0x33, ++index) {
+  for (int index = 0; index < 2; ++index) {
     this->searchModeButtons[index] = new UIRadioBtn();
     this->searchModeButtons[index]->SetSize(0x33, 12);
     this->searchModeButtons[index]->SetBitmaps("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_search_on.bmp", "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\checkbox_search_off.bmp");
     this->searchModeButtons[index]->SetText(LookupMessage(searchTexts[index]));
     this->searchModeButtons[index]->textColor = 0x654939;
-    this->searchModeButtons[index]->Move(x, 0x44);
+    this->searchModeButtons[index]->Move(index * 0x33 + 0x16, 0x44);
     this->searchModeButtons[index]->value = 0x141;
     this->searchModeButtons[index]->SendMsg(this, UM_SETSTATE, 1 - index, 0, 0, 0);
     this->AddChild(this->searchModeButtons[index]);
@@ -351,7 +351,8 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->returnTab->Move(0x9B, 0x56);
   this->refreshButton->Move(0xF8, 0x14);
   this->writeButton->Move(0x115, 0x12);
-  for (int y = 0x79, row = 0; y < 0x181; y += 0x2C, ++row) {
+  for (int row = 0; row < 6; ++row) {
+    const int y = row * 0x2C + 0x79;
     this->checks[row]->Move(0x11, y + 7);
     this->subjectButtons[row]->Move(0x45, y);
     this->senderButtons[row]->Move(0x47, y + 0x14);
@@ -1138,10 +1139,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case RODEX_BUTTON_DELETE_SELECTED: {
       if (this->searchActive == 1) {
         std::vector<RodexMailEntry> selected;
+        const int firstRow = this->page * 6;
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
-            selected.push_back(RodexMailEntry(this->searchResults[this->page * 6 + i]));
+            selected.push_back(RodexMailEntry(this->searchResults[firstRow + i]));
           }
         }
 

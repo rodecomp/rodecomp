@@ -16,6 +16,13 @@ __forceinline int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
 }
+
+// INLINED
+void SetSegment(CParticle* particle, int effectId, int row, int segment) {
+  particle->rowIndex = row;
+  particle->effectId = effectId;
+  particle->columnIndex = segment;
+}
 }
 
 // OFFSET: 0x00B715F0
@@ -42,9 +49,7 @@ void CRedLineEffect::CreateLines(int layer) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_red.tga");
-        particle->effectId = this->id;
-        particle->rowIndex = row;
-        particle->columnIndex = segment;
+        SetSegment(particle, this->id, row, segment);
         particle->groupIndex = 3;
         particle->angleParameter = 360;
         particle->angle = static_cast<float>(row * 90);
@@ -206,19 +211,29 @@ void CRedLineEffect::OnProcess() {
   }
 }
 
-// OFFSET: 0x00B72180
-// FUNCTION: fn_46053
-__forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
+// INLINED
+template <bool zeroFirst>
+static __forceinline void RenderRedLineSegment(CParticle* particle) {
   if (particle && particle->columnIndex > 0) {
     int blend;
     short shade;
 
-    if (particle->animationParameter == 0.0f) {
-      shade = 10;
-      blend = 6;
+    if (zeroFirst) {
+      if (0.0f == particle->animationParameter) {
+        shade = 10;
+        blend = 6;
+      } else {
+        shade = 100;
+        blend = 2;
+      }
     } else {
-      shade = 100;
-      blend = 2;
+      if (particle->animationParameter == 0.0f) {
+        shade = 10;
+        blend = 6;
+      } else {
+        shade = 100;
+        blend = 2;
+      }
     }
 
     particle->destinationBlend = blend;
@@ -237,12 +252,18 @@ __forceinline void CRedLineEffect::RenderSegment(CParticle* particle) {
   }
 }
 
+// OFFSET: 0x00B72180
+// FUNCTION: fn_46053
+void CRedLineEffect::RenderSegment(CParticle* particle) {
+  RenderRedLineSegment<true>(particle);
+}
+
 // OFFSET: 0x00B72240
 // FUNCTION: fn_19139
 void CRedLineEffect::Render() {
   for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
     CParticle* particle = *it;
 
-    this->RenderSegment(particle);
+    RenderRedLineSegment<false>(particle);
   }
 }

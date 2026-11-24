@@ -82,7 +82,8 @@ public:
   UIRefining_Notice() : UIStaticText(), expireTick(0), autoShown(0), highlight(0) {}
   void OnProcess() override;
   void Paint() override;
-  void SetNotice(const char* value, int duration, unsigned char highlight);
+  __declspec(noinline) void SetNotice(const char* value, int duration, unsigned char highlight);
+  void SetNoticeInline(const char* value, int duration, unsigned char highlight);
 
   /* 00D8 */ RefiningNoticeText saved;
   /* 00F4 */ std::uint32_t expireTick;

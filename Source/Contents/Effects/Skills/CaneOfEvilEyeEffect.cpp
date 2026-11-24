@@ -157,10 +157,15 @@ void CCaneOfEvilEyeEffect::Finish() {
 
   for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     CEZ2STRParticle* light = *it;
-    if (light && light->animationState != 3) {
-      *it = this->CreateLight(3, &light->originX);
-      FreeParticle(light);
+    if (!light) {
+      continue;
     }
+    const signed char state = light->animationState;
+    if (state == 3) {
+      continue;
+    }
+    *it = this->CreateLight(3, &light->originX);
+    FreeParticle(light);
   }
 }
 
@@ -333,8 +338,9 @@ __forceinline void CCaneOfEvilEyeEffect::RenderParticle(CEZ2STRParticle* particl
 // FUNCTION: fn_46281
 void CCaneOfEvilEyeEffect::ProcessParticle(CEZ2STRParticle* particle) {
   if (particle) {
-    vector3d position = {this->position[0], this->position[1], this->position[2]};
-    position += particle->offset;
+    vector3d position;
+    position = particle->offset;
+    position += this->positionVector;
 
     const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
     const vector3d viewPos = {position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9],

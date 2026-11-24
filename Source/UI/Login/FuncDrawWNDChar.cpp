@@ -75,8 +75,8 @@ void FuncDrawWNDChar::Draw(bool option) {
       }
 
       g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.GetCurrentSex(), &x, &y);
-      offset.x = x;
       offset.y = y;
+      offset.x = x;
     }
 
     const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
@@ -86,8 +86,8 @@ void FuncDrawWNDChar::Draw(bool option) {
         continue;
       }
 
-      offset.x += body.x;
       offset.y += body.y;
+      offset.x += body.x;
     } else {
       switch (layer) {
         case 3:
@@ -121,13 +121,13 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const std::uint32_t* palette = sprite->palette;
-    switch (layer) {
-      case 1:
+    switch (layer - 1) {
+      case 0:
         if (this->m_bodyStyle > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
         }
         break;
-      case 2:
+      case 1:
         if (this->m_headPalette > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
         }
@@ -135,33 +135,28 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
+    if (cell.image == -1) {
+      continue;
+    }
+
     SpriteAtlasRecord record{};
     record.u0 = 0.0f;
     record.v0 = 0.0f;
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
     if (option == true) {
-      if (cell.image == -1) {
-        continue;
-      }
-
-      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       if (cell.imageType == 0 && !g_renderer->atlas.Find(image, palette, record)) {
         g_renderer->atlas.Insert(image, palette, record);
       }
 
       float scale = g_session.GetSkillFactor(this->m_job);
       int offsetX = static_cast<int>(static_cast<float>(offset.x) * scale);
-      int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
       UIWindow* window = this->m_window;
+      int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
       window->AddSpriteCellOverlay(
         this->m_x + offsetX, this->m_y + offsetY, reinterpret_cast<int>(act), reinterpret_cast<int>(sprite), image, &cell, scale,
         static_cast<float>(cell.rotation), window->Color(), palette, 1.0f
       );
     } else {
-      if (cell.image == -1) {
-        continue;
-      }
-
-      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       CTexture* texture;
       if (cell.imageType == 0) {
         texture = g_renderer->atlas.Find(image, palette, record);
@@ -174,8 +169,12 @@ void FuncDrawWNDChar::Draw(bool option) {
 
       int x = this->m_x + cell.x + offset.x;
       int y = cell.y + this->m_y + offset.y;
-      int clip = y >= 0 ? 0 : y;
-      int top = y >= 0 ? y : 0;
+      int clip = y;
+      int top = 0;
+      if (y >= 0) {
+        clip = 0;
+        top = y;
+      }
       if (clip <= top) {
         this->m_window->geometry.surface->DrawSurface(
           x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
@@ -261,13 +260,16 @@ bool FuncDrawWNDChar::DrawOnTop() {
   int job = this->m_job;
 
   if (g_session.m_newRobeDrawOnTop == 1) {
+    int ridden;
     if (this->m_flags == 1) {
-      job = g_session.GetRidingJob(job);
+      ridden = g_session.GetRidingJob(job);
+    } else {
+      ridden = job;
     }
 
     bool drawOnTop = true;
-    int layer = job;
-    if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, job, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
+    int layer = ridden;
+    if (g_session.m_hotkeyScript->Call(std::string("_New_DrawOnTop", 14), "ddddd>bd", this->m_robe, this->m_sex, ridden, this->m_action, this->m_motion, &drawOnTop, &layer) == 1) {
       return drawOnTop;
     }
   } else {
@@ -355,14 +357,12 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   }
 
   offset.x += this->offsetX;
-  int ridingOffset;
   if (IsIgnoredRidingState(this->m_layers[layer], this->m_job, this->m_action - this->m_action % 8, this->m_flags) == true) {
-    ridingOffset = SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
+    offset.y += SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
   } else {
-    ridingOffset = this->offsetY;
+    offset.y += this->offsetY;
   }
 
-  offset.y += ridingOffset;
   if (layer == 4) {
     switch (this->m_topAccessory) {
     case 181:
@@ -383,12 +383,12 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 // OFFSET: 0x007E5A30
 // FUNCTION: fn_09733
 void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
-  __declspec(align(8)) volatile __int64 aligned = 0;
-  (void)aligned;
   for (auto it = layers.begin(); it != layers.end(); ++it) {
     const int& layer = *it;
     std::string sprName;
     std::string actName;
+    __declspec(align(8)) volatile __int64 aligned = 0;
+    (void)aligned;
     switch (layer) {
       case 1: {
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
@@ -424,7 +424,7 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprName));
     CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
     if (sprite && act) {
-      std::pair<CSprRes*, CActRes*>& entry = this->m_resources[layer];
+      std::pair<CSprRes*, CActRes*>& entry = this->m_resources.try_emplace(layer).first->second;
       entry.first = sprite;
       entry.second = act;
     }

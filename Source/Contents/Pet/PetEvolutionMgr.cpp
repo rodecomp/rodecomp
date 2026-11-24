@@ -99,8 +99,10 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
     return std::make_pair(false, std::move(materials));
   }
 
-  for (const auto material : recipe->materials) {
-    materials.push_back(material);
+  const auto materialEnd = recipe->materials.end();
+  for (auto materialIt = recipe->materials.begin(); materialIt != materialEnd; ++materialIt) {
+    auto material = *materialIt;
+    materials.push_back(std::move(material));
   }
   return std::make_pair(true, materials);
 }
@@ -167,9 +169,7 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
   }
 
   if (it == recipes.end()) {
-    PetEvolutionRecipe recipe;
-    recipe.target = target;
-    recipe.materials.push_back(std::make_pair(material, count));
+    PetEvolutionRecipe recipe(target, material, count);
     recipes.push_back(std::move(recipe));
   } else {
     if (std::find_if(it->materials.begin(), it->materials.end(), [material](const std::pair<int, int>& entry) {

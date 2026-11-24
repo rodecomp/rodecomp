@@ -69,8 +69,8 @@ bool CRmaRes::Load(const char* name) {
       this->models[model] = tokenizer[1];
     } else if (const auto& actionToken = tokenizer[0];
                [](const std::string& token) {
-                 const auto size = token.size();
                  const auto* tag = reinterpret_cast<const RmaActionTag*>(token.data());
+                 const auto size = token.size();
                  return size == 7 && tag->first == 0x74636123u && tag->second == 0x6f69 && tag->third == 0x6e;
                }(actionToken)) {
       const unsigned int action = std::atoi(tokenizer[1].c_str());

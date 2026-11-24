@@ -284,6 +284,12 @@ private:
   UIWindow& operator=(const UIWindow&) = delete;
 };
 
+// OFFSET: 0x005C8F60
+// FUNCTION: fn_03629
+inline void UIWindow::SetId(int value) {
+  this->geometry.SetId(value);
+}
+
 extern std::uint32_t g_windowUid;
 
 #if defined(_WIN32) && !defined(_WIN64)

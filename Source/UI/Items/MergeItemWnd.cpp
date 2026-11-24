@@ -203,7 +203,9 @@ void CMergeItemWnd::OnMouseHover(int x, int y) {
     this->ToScreen(screenX, screenY);
     const int quantity = item.quantity;
     std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), quantity);
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+    const auto color = g_session.GetItemNameColor(item);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), screenX, screenY, color, 0, 1);
   }
 }
 
@@ -301,11 +303,12 @@ void CMergeItemWnd::FitToGrid(int width, int height) {
   const int minHeight = this->m_gridTop + this->m_cellSize * 3;
   const int maxHeight = this->m_gridTop + this->m_cellSize * 6;
 
-  int columns = width - this->m_marginRight - this->m_gridLeft;
+  const int left = this->m_gridLeft;
+  int columns = width - this->m_marginRight - left;
   columns -= columns % this->m_cellSize;
-  const int clamped = this->m_gridLeft + columns >= this->m_gridLeft + minWidth ? columns : minWidth;
-  const int gridWidth = this->m_gridLeft + clamped <= this->m_gridLeft + maxWidth ? clamped : maxWidth;
-  const int right = this->m_gridLeft + gridWidth;
+  const int clamped = columns + left >= minWidth + left ? columns : minWidth;
+  const int gridWidth = clamped + left <= maxWidth + left ? clamped : maxWidth;
+  const int right = gridWidth + left;
 
   int gridHeight = height - this->m_marginBottom - this->m_gridTop;
   gridHeight = gridHeight - gridHeight % this->m_cellSize + this->m_gridTop;

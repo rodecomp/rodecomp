@@ -44,3 +44,4 @@ extern template bool std::_Traits_equal<std::char_traits<char>>(const char*, std
 extern template std::string& std::string::operator=(std::string&&) noexcept;
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) void std::vector<NavigationTarget>::push_back(const NavigationTarget&);
+template __forceinline void std::_Destroy_range(NavigationTarget*, NavigationTarget* const, std::allocator<NavigationTarget>&) noexcept;

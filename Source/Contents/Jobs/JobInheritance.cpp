@@ -757,8 +757,8 @@ __declspec(noinline) int CSession::IsPlayerJob(int job) const {
 // OFFSET: 0x00E19110
 // FUNCTION: fn_23835
 int CSession::InheritedJob(int job) {
-  job = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, job);
-  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, job);
+  job = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, reinterpret_cast<const void*>(job));
+  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, reinterpret_cast<const void*>(job));
   return replacement != -1 ? replacement : job;
 }
 
@@ -926,10 +926,14 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
     }
     break;
   case JT_MAGICIAN:
-  case JT_MERCHANT:
   case JT_MAGICIAN_H:
-  case JT_MERCHANT_H:
   case JT_MAGICIAN_B:
+    if (view == W_DAGGER) {
+      result = true;
+    }
+    break;
+  case JT_MERCHANT:
+  case JT_MERCHANT_H:
   case JT_MERCHANT_B:
     if (view == W_DAGGER) {
       result = true;
@@ -1031,28 +1035,22 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
     }
     break;
   case JT_SWORDMAN:
+  case JT_SWORDMAN_H:
+  case JT_SWORDMAN_B:
+    if (view == W_1HSPEAR || view == W_2HSPEAR) {
+      result = true;
+    }
+    break;
   case JT_KNIGHT:
   case JT_CHICKEN:
-  case JT_CRUSADER:
-  case JT_CHICKEN2:
-  case JT_SWORDMAN_H:
   case JT_KNIGHT_H:
   case JT_CHICKEN_H:
-  case JT_CRUSADER_H:
-  case JT_CHICKEN2_H:
-  case JT_SWORDMAN_B:
   case JT_KNIGHT_B:
   case JT_CHICKEN_B:
-  case JT_CRUSADER_B:
-  case JT_CHICKEN2_B:
   case JT_RUNE_KNIGHT:
   case JT_RUNE_KNIGHT_H:
-  case JT_ROYAL_GUARD:
-  case JT_ROYAL_GUARD_H:
   case JT_RUNE_CHICKEN:
   case JT_RUNE_CHICKEN_H:
-  case JT_ROYAL_CHICKEN:
-  case JT_ROYAL_CHICKEN_H:
   case JT_RUNE_CHICKEN2:
   case JT_RUNE_CHICKEN2_H:
   case JT_RUNE_CHICKEN3:
@@ -1062,12 +1060,26 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
   case JT_RUNE_CHICKEN5:
   case JT_RUNE_CHICKEN5_H:
   case JT_RUNE_KNIGHT_B:
-  case JT_ROYAL_GUARD_B:
   case JT_RUNE_CHICKEN_B:
-  case JT_ROYAL_CHICKEN_B:
   case JT_DRAGON_KNIGHT:
-  case JT_IMPERIAL_GUARD:
   case JT_DRAGON_KNIGHT_CHICKEN:
+    if (view == W_1HSPEAR || view == W_2HSPEAR) {
+      result = true;
+    }
+    break;
+  case JT_CRUSADER:
+  case JT_CHICKEN2:
+  case JT_CRUSADER_H:
+  case JT_CHICKEN2_H:
+  case JT_CRUSADER_B:
+  case JT_CHICKEN2_B:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_ROYAL_GUARD_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_IMPERIAL_GUARD:
   case JT_IMPERIAL_GUARD_CHICKEN:
     if (view == W_1HSPEAR || view == W_2HSPEAR) {
       result = true;
@@ -1085,40 +1097,52 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
     }
     break;
   case JT_THIEF:
-  case JT_HUNTER:
-  case JT_ROGUE:
-  case JT_BARD:
-  case JT_DANCER:
   case JT_THIEF_H:
-  case JT_HUNTER_H:
-  case JT_ROGUE_H:
-  case JT_BARD_H:
-  case JT_DANCER_H:
   case JT_THIEF_B:
+    if (view == W_BOW) {
+      result = true;
+    }
+    break;
+  case JT_HUNTER:
+  case JT_HUNTER_H:
   case JT_HUNTER_B:
-  case JT_ROGUE_B:
-  case JT_BARD_B:
-  case JT_DANCER_B:
   case JT_RANGER:
   case JT_RANGER_H:
-  case JT_MINSTREL:
-  case JT_WANDERER:
-  case JT_SHADOW_CHASER:
-  case JT_MINSTREL_H:
-  case JT_WANDERER_H:
-  case JT_SHADOW_CHASER_H:
   case JT_WOLF_RANGER:
   case JT_WOLF_RANGER_H:
   case JT_RANGER_B:
-  case JT_MINSTREL_B:
-  case JT_WANDERER_B:
-  case JT_SHADOW_CHASER_B:
   case JT_WOLF_RANGER_B:
   case JT_WINDHAWK:
+  case JT_WOLF_WINDHAWK:
+    if (view == W_BOW) {
+      result = true;
+    }
+    break;
+  case JT_ROGUE:
+  case JT_ROGUE_H:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
   case JT_ABYSS_CHASER:
+    if (view == W_BOW) {
+      result = true;
+    }
+    break;
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+  case JT_MINSTREL:
+  case JT_WANDERER:
+  case JT_MINSTREL_H:
+  case JT_WANDERER_H:
+  case JT_MINSTREL_B:
+  case JT_WANDERER_B:
   case JT_TROUBADOUR:
   case JT_TROUVERE:
-  case JT_WOLF_WINDHAWK:
     if (view == W_BOW) {
       result = true;
     }
@@ -1175,8 +1199,9 @@ std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int s
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
       static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), g_equipmentResourceExtensions[type]));
   } else {
+    const char* const className = g_session.GetWeaponClassName(weaponItem);
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob + 3950)) +
-      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), g_equipmentResourceExtensions[type]));
+      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), className, g_equipmentResourceExtensions[type]));
   }
 
   return result;
@@ -1201,8 +1226,9 @@ std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job,
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
       static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), suffix, g_equipmentResourceExtensions[type]));
   } else {
+    const char* const className = g_session.GetWeaponClassName(weaponItem);
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(spriteJob)) +
-      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), suffix, g_equipmentResourceExtensions[type]));
+      static_cast<const std::string&>(FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), className, suffix, g_equipmentResourceExtensions[type]));
   }
 
   return result;
@@ -1273,7 +1299,7 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
     main = second;
 
     if (second == 0) {
-      return result;
+      goto finished;
     }
 
     sub = 0;
@@ -1312,6 +1338,7 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
     }
   }
 
+finished:
   return result;
 }
 
@@ -2532,8 +2559,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(EF_DANCE_BLADE_ATK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_DARKPIERCING: {
-    CRagEffect* first = source->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    CRagEffect* second = source->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* first = target->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* second = target->LaunchEffect(EF_DARKPIERCING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (first) {
       vector3d position = source->render.position;
       first->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);

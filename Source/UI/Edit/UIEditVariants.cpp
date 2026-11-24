@@ -55,16 +55,14 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x00863C70
 // FUNCTION: fn_10912
 int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
-
   switch (message) {
   case UM_DEFPUSH:
     if (this->multiline == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || this->multiline == 0) {
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
-    } else {
-      this->UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
+      return 0;
     }
+    this->UIWindow::SendMsg(sender, UM_DEFPUSH, a, b, c, d);
     return 0;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -102,97 +100,99 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->caretAtLineEnd = 0;
 
     const unsigned count = this->wrappedLines.size();
-    if (count <= 1 && (count != 1 || !this->lineBreaks[0])) {
-      return 0;
-    }
+    if (count > 1 || (count == 1 && this->lineBreaks[0])) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      if (this->verticalCursorStep > 0 && this->previousCursor == this->cursor && this->movingUp == 0) {
+        g_serverLanguage->RetreatCursor(this->verticalCursorStep);
+      } else {
+        const char* current = this->previousLineText;
+        this->movingDown = 0;
+        int bytes = 0;
+        int width = 0;
+        const char* const end = current + std::strlen(current);
 
-    g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingUp != 0) {
-      const char* current = this->previousLineText;
-      this->movingDown = 0;
-      int bytes = 0;
-      int width = 0;
-      const char* const end = current + std::strlen(current);
+        if (this->previousLineLength != 0) {
+          while (current < end) {
+            const int previousBytes = bytes;
+            const char* const start = current;
+            current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
+            const int length = static_cast<int>(current - start);
+            const int previousWidth = width;
+            width += this->TextWidth(start, length, 0, 12, 0, 0);
+            bytes += length;
 
-      if (this->previousLineLength != 0) {
-        while (current < end) {
-          const int previousBytes = bytes;
-          const int previousWidth = width;
-          const char* const start = current;
-          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
-          const int length = static_cast<int>(current - start);
-          width += this->TextWidth(start, length, 0, 12, 0, 0);
-          bytes += length;
-
-          if (length == 1 && *start == '\n') {
-            --bytes;
-            break;
-          }
-
-          if (width > this->caretPixelX) {
-            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              bytes = previousBytes;
+            if (length == 1 && *start == '\n') {
+              --bytes;
+              break;
             }
-            break;
+
+            if (width > this->caretPixelX) {
+              if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
+                bytes = previousBytes;
+              }
+              break;
+            }
           }
         }
+
+        this->verticalCursorStep = this->previousLineLength - bytes + static_cast<int>(std::strlen(this->previousLineText));
+        g_serverLanguage->RetreatCursor(this->verticalCursorStep);
       }
 
-      this->verticalCursorStep = this->previousLineLength - bytes + static_cast<int>(std::strlen(this->previousLineText));
+      this->movingUp = 1;
+      this->caretAtLineEnd = 1;
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      this->previousCursor = this->cursor;
     }
-
-    g_serverLanguage->RetreatCursor(this->verticalCursorStep);
-    this->movingUp = 1;
-    this->caretAtLineEnd = 1;
     break;
   }
   case UM_DOWNPUSH: {
     this->caretAtLineEnd = 0;
 
-    const unsigned count = this->wrappedLines.size();
-    if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->lineBreaks[0] || this->nextLineLength <= 0)) {
-      return 0;
-    }
+    if ((this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) ||
+        (this->wrappedLines.size() == 1 && this->lineBreaks[0] && this->nextLineLength > 0)) {
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      if (this->verticalCursorStep > 0 && this->previousCursor == this->cursor && this->movingDown == 0) {
+        g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
+      } else {
+        this->movingUp = 0;
+        int bytes = 0;
+        int width = 0;
+        if (this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) {
+          const char* current = this->nextLineText;
+          const char* const end = current + std::strlen(current);
 
-    g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingDown != 0) {
-      this->movingUp = 0;
-      int bytes = 0;
-      int width = 0;
-      const unsigned lines = this->wrappedLines.size();
+          while (current < end) {
+            const int previousBytes = bytes;
+            const char* const start = current;
+            current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
+            const int length = static_cast<int>(current - start);
+            const int previousWidth = width;
+            width += this->TextWidth(start, length, 0, 12, 0, 0);
+            bytes += length;
 
-      if (lines > 1 && static_cast<unsigned>(this->textY) < lines - 1) {
-        const char* current = this->nextLineText;
-        const char* const end = current + std::strlen(current);
-
-        while (current < end) {
-          const int previousBytes = bytes;
-          const int previousWidth = width;
-          const char* const start = current;
-          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
-          const int length = static_cast<int>(current - start);
-          width += this->TextWidth(start, length, 0, 12, 0, 0);
-          bytes += length;
-
-          if (length == 1 && *start == '\n') {
-            --bytes;
-            break;
-          }
-
-          if (width > this->caretPixelX) {
-            if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
-              bytes = previousBytes;
+            if (length == 1 && *start == '\n') {
+              --bytes;
+              break;
             }
-            break;
+
+            if (width > this->caretPixelX) {
+              if (width - this->caretPixelX > this->caretPixelX - previousWidth) {
+                bytes = previousBytes;
+              }
+              break;
+            }
           }
         }
+
+        this->verticalCursorStep = this->nextLineLength + bytes;
+        g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
       }
 
-      this->verticalCursorStep = this->nextLineLength + bytes;
+      this->movingDown = 1;
+      g_serverLanguage->Selection(this->anchor, this->cursor);
+      this->previousCursor = this->cursor;
     }
-
-    g_serverLanguage->AdvanceCursor(this->verticalCursorStep);
-    this->movingDown = 1;
     break;
   }
   case WM_KEYDOWN:
@@ -201,19 +201,15 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 3;
   default:
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
-    return 0;
+    break;
   }
 
-  g_serverLanguage->Selection(this->anchor, this->cursor);
-  this->previousCursor = this->cursor;
   return 0;
 }
 
 // OFFSET: 0x0085E420
 // FUNCTION: fn_10829
 void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
-  UIWindow* const chatWindow = ChatWindow() ? ChatWindow()->m_suggestions : nullptr;
-
   this->verticalCursorStep = 0;
   this->previousCursor = 0;
 
@@ -240,8 +236,6 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       }
       if (length - 2 == this->cursor && this->lineBreaks[this->textY]) {
         g_serverLanguage->KeyDown(key, data);
-        g_serverLanguage->KeyDown(key, data);
-        return;
       }
     }
     g_serverLanguage->KeyDown(key, data);
@@ -264,12 +258,20 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       for (int line = 0; line < this->textY; ++line) {
         offset -= static_cast<int>(std::strlen(this->wrappedLines[line].c_str()));
       }
-      const int length = static_cast<int>(std::strlen(this->wrappedLines[this->textY].c_str()));
-      g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? length - offset - 2 : length - offset);
+      const int remaining = static_cast<int>(std::strlen(this->wrappedLines[this->textY].c_str())) - offset;
+      g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? remaining - 2 : remaining);
       g_serverLanguage->Selection(this->anchor, this->cursor);
     }
     this->caretAtLineEnd = 1;
     return;
+  case VK_INSERT:
+  case VK_DELETE:
+  case 'A':
+  case 'C':
+  case 'V':
+  case 'X':
+    g_serverLanguage->KeyDown(key, data);
+    break;
   case VK_BACK:
     if (this->wrappedLines.size() != 0) {
       g_serverLanguage->Selection(this->anchor, this->cursor);
@@ -281,14 +283,6 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
         g_serverLanguage->Character(VK_BACK, data);
       }
     }
-    break;
-  case VK_INSERT:
-  case VK_DELETE:
-  case 'A':
-  case 'C':
-  case 'V':
-  case 'X':
-    g_serverLanguage->KeyDown(key, data);
     break;
   }
 }
@@ -405,11 +399,10 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ++this->historyIndex;
       if (this->historyIndex == static_cast<int>(this->history.size())) {
         this->SetText("");
-        this->OnBeginEdit();
       } else {
         this->SetText(this->history[this->historyIndex].c_str());
-        this->OnBeginEdit();
       }
+      this->OnBeginEdit();
     }
     break;
   default:
@@ -660,16 +653,18 @@ void UIEditCtrl3::PaintText() {
     }
 
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
-      this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
+      int caretRow = wrapped - first;
+      caretRow += this->textY;
+      this->DrawTextAt(x - 2 + caretX, caretRow * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
 
       if (this->manualScroll == 0) {
         if (this->movingUp != 0) {
           const int current = this->textY;
           if (current - wrapped < this->firstVisibleLine) {
-            if (current >= this->lineCount - rows) {
-              this->firstVisibleLine = this->lineCount - rows;
-            } else {
+            if (current < this->lineCount - rows) {
               this->firstVisibleLine = current + wrapped;
+            } else {
+              this->firstVisibleLine = this->lineCount - rows;
             }
           }
         } else if (this->movingDown != 0) {
@@ -695,7 +690,17 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  if (this->wrappedLines.size() > 1 && this->textY > 0) {
+  if (this->wrappedLines.size() < 2 || this->textY < 1) {
+    if ((this->wrappedLines.size() == 1 || (this->wrappedLines.size() > 1 && this->textY == 0)) && this->lineBreaks[0]) {
+      const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+      if (this->previousLineText) {
+        delete[] this->previousLineText;
+        this->previousLineText = nullptr;
+      }
+      this->previousLineText = new char[length + 1];
+      std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
+    }
+  } else {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY - 1].c_str());
     if (this->previousLineText) {
       delete[] this->previousLineText;
@@ -703,17 +708,19 @@ void UIEditCtrl3::PaintText() {
     }
     this->previousLineText = new char[length + 1];
     std::strcpy(this->previousLineText, this->wrappedLines[this->textY - 1].c_str());
-  } else if ((this->wrappedLines.size() == 1 || (this->wrappedLines.size() > 1 && this->textY == 0)) && this->lineBreaks[0]) {
-    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
-    if (this->previousLineText) {
-      delete[] this->previousLineText;
-      this->previousLineText = nullptr;
-    }
-    this->previousLineText = new char[length + 1];
-    std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
   }
 
-  if (this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) {
+  if (this->wrappedLines.size() < 2 || static_cast<unsigned>(this->textY) >= this->wrappedLines.size() - 1) {
+    if (this->wrappedLines.size() == 1 && this->lineBreaks[0]) {
+      const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+      if (this->nextLineText) {
+        delete[] this->nextLineText;
+        this->nextLineText = nullptr;
+      }
+      this->nextLineText = new char[length + 1];
+      std::strcpy(this->nextLineText, this->wrappedLines[0].c_str());
+    }
+  } else {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY + 1].c_str());
     if (this->nextLineText) {
       delete[] this->nextLineText;
@@ -721,14 +728,6 @@ void UIEditCtrl3::PaintText() {
     }
     this->nextLineText = new char[length + 1];
     std::strcpy(this->nextLineText, this->wrappedLines[this->textY + 1].c_str());
-  } else if (this->wrappedLines.size() == 1 && this->lineBreaks[0]) {
-    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
-    if (this->nextLineText) {
-      delete[] this->nextLineText;
-      this->nextLineText = nullptr;
-    }
-    this->nextLineText = new char[length + 1];
-    std::strcpy(this->nextLineText, this->wrappedLines[0].c_str());
   }
 
   this->UpdateScrollBar();
@@ -825,7 +824,11 @@ void UIEditCtrl4::PaintText() {
     }
     if (this->secondColor == 0xFFFFFFFF) {
       if (this->placeholderEnabled == 1) {
-        this->DrawTextAt(x, this->textY, std::strcmp(display.c_str(), "") == 0 ? this->placeholder.c_str() : display.c_str(), 0, 0, 12, this->placeholderColor, 0, 0);
+        if (std::strcmp(display.c_str(), "") == 0) {
+          this->DrawTextAt(x, this->textY, this->placeholder.c_str(), 0, 0, 12, this->placeholderColor, 0, 0);
+        } else {
+          this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->placeholderColor, 0, 0);
+        }
       } else {
         this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
       }

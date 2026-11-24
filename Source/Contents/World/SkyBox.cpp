@@ -14,6 +14,20 @@
 #include <cstdio>
 
 namespace {
+struct SkyLightVector : vector3d {
+  // INLINED
+  SkyLightVector(float x, float y, float z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+
+  // INLINED
+  operator const float*() const {
+    return &this->x;
+  }
+};
+
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
@@ -117,17 +131,16 @@ CSkyBox::CSkyBox() {
   this->m_actor->SetSpeed(0.1f);
   this->m_actor->Assign(*static_cast<C3dModelRes*>(this->m_model));
 
-  const vector3d direction{0.0f, 1.0f, 0.0f};
-  const vector3d diffuse{1.0f, 1.0f, 1.0f};
-  const vector3d ambient{1.0f, 1.0f, 1.0f};
-  this->m_actor->Prepare(&direction.x, &diffuse.x, &ambient.x);
+  this->m_actor->Prepare(SkyLightVector(0.0f, 1.0f, 0.0f), SkyLightVector(1.0f, 1.0f, 1.0f), SkyLightVector(1.0f, 1.0f, 1.0f));
   this->m_actor->Animate(0.0);
   this->m_flare.Init();
 }
 
 // OFFSET: 0x0075DFB0
 // FUNCTION: fn_08046
-FlareElement::FlareElement() : position{0.0f, 0.0f, 0.0f} {
+FlareElement::FlareElement() {
+  vector3d zero = {0.0f, 0.0f, 0.0f};
+  this->position = zero;
 }
 
 // OFFSET: 0x0075DFD0
@@ -202,11 +215,12 @@ void CSkyBox::Render(const matrix& camera, const vector3d& position, float rotat
   points[1].z = 1250.0f;
 
   vector3d point;
-  for (int i = 0; i < 2; ++i) {
-    point.x = points[i].x;
-    point.y = points[i].y;
-    point.z = points[i].z;
-    g_renderer->Project(&point.x, combined.values, projected[i]);
+  SkyVertex* output = projected;
+  for (const SkyVertex& input : points) {
+    point.x = input.x;
+    point.y = input.y;
+    point.z = input.z;
+    g_renderer->Project(&point.x, combined.values, *output++);
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
@@ -447,7 +461,7 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
     view.x = target.x - eye.x;
     view.y = target.y - eye.y;
     view.z = target.z - eye.z;
-    const float inversePosition = 1.0f / SquareRoot(position.x * position.x + position.y * position.y + position.z * position.z);
+    const float inversePosition = 1.0f / SquareRoot(position.y * position.y + position.x * position.x + position.z * position.z);
     const float inverseView = 1.0f / SquareRoot(view.y * view.y + view.x * view.x + view.z * view.z);
     const float dot = inverseView * view.y * (position.y * inversePosition) + inverseView * view.x * (position.x * inversePosition) +
                       inverseView * view.z * (position.z * inversePosition);

@@ -128,8 +128,8 @@ namespace {
 #pragma pack(pop)
 
   // INLINED
-  __forceinline std::vector<unsigned char> MakeChatRoomRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
-    std::vector<unsigned char> record(bytes + sizeof(ChatRoomRecordHeader));
+  inline std::vector<unsigned char> MakeChatRoomRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+    std::vector<unsigned char> record(bytes + sizeof(ChatRoomRecordHeader), 0);
     ChatRoomRecordHeader* header = reinterpret_cast<ChatRoomRecordHeader*>(record.data());
     header->id = id;
     header->bytes = bytes;
@@ -308,15 +308,16 @@ void UIMakeCharWnd::Paint() {
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[i].c_str()));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
     const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
-    POINT offset;
-    offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    const POINT point = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    int offsetX = point.x;
+    int offsetY = point.y;
 
     if (i == 1) {
       CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
       const ActionFrame& bodyFrame = body->Frame(this->m_view.action, this->m_view.frame);
       if (frame.anchorCount != 0 && bodyFrame.anchorCount != 0 && frame.anchors[0].attachmentId == bodyFrame.anchors[0].attachmentId) {
-        offset.x += bodyFrame.anchors[0].x - frame.anchors[0].x;
-        offset.y += bodyFrame.anchors[0].y - frame.anchors[0].y;
+        offsetX += bodyFrame.anchors[0].x - frame.anchors[0].x;
+        offsetY += bodyFrame.anchors[0].y - frame.anchors[0].y;
       }
     }
 
@@ -351,7 +352,7 @@ void UIMakeCharWnd::Paint() {
     }
 
     this->geometry.surface->DrawSurface(
-      this->m_view.x + cell.x + offset.x, this->m_view.y + cell.y + offset.y, texture, static_cast<int>(record.u0 * 256.0f),
+      this->m_view.x + cell.x + offsetX, this->m_view.y + cell.y + offsetY, texture, static_cast<int>(record.u0 * 256.0f),
       static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
@@ -669,12 +670,12 @@ void UIMessageBox::Configure(
 
   switch (type) {
   case 4: {
-    int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    int x = width - 46;
     button->Move(x, height - 24);
     button->SetId(ID_CANCEL);
     this->AddChild(button);
@@ -1139,15 +1140,17 @@ void UILoginWnd::SaveLogin() {
   }
 
   char id[52];
-  int saveId;
 
   if (this->saveId != 0) {
     std::strcpy(id, this->idEdit->Text());
-    saveId = this->saveId != 0;
-    id[50] = 0;
   } else {
     std::memset(id, 0, sizeof(id));
-    saveId = 0;
+  }
+
+  id[50] = 0;
+  int saveId = this->saveId;
+  if (saveId) {
+    saveId = 1;
   }
 
   EncryptedName<3, 0xC517FB932D95BB6DULL>& idName = OBFUSCATE_STRING("ID", 0xC517FB932D95BB6DULL);
@@ -1156,8 +1159,8 @@ void UILoginWnd::SaveLogin() {
   EncryptedName<10, 0x03772763F96D9DA5ULL>& checkName = OBFUSCATE_STRING("CHECKSAVE", 0x03772763F96D9DA5ULL);
   RegSetValueExA(key, checkName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&saveId), 4);
 
-  int bitwise = 1;
   EncryptedName<8, 0x0B7109397F6B1387ULL>& bitwiseName = OBFUSCATE_STRING("BITWISE", 0x0B7109397F6B1387ULL);
+  int bitwise = 1;
   RegSetValueExA(key, bitwiseName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&bitwise), 4);
   RegCloseKey(key);
 }
@@ -1442,13 +1445,14 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
   this->viewer->Move(7, 0x17);
   this->viewer->SetBackgroundColor(0xFFFF00FF);
 
-  auto accept = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == ID_YES; });
-  if (this->m_children.end() != accept) {
+  auto& children = this->m_children;
+  auto accept = std::find_if(children.begin(), children.end(), [](UIWindow* child) { return child->geometry.id == ID_YES; });
+  if (children.end() != accept) {
     (*accept)->Move(0x59, 0x6D);
   }
 
-  auto cancel = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == ID_NO; });
-  if (this->m_children.end() != cancel) {
+  auto cancel = std::find_if(children.begin(), children.end(), [](UIWindow* child) { return child->geometry.id == ID_NO; });
+  if (children.end() != cancel) {
     auto* button = static_cast<UIBitmapButton*>(*cancel);
     button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
     button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
@@ -1566,9 +1570,9 @@ void UIMakeCharWnd::SetHairScrollRanges() {
 void UIMakeCharWnd::InitHairControls() {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int positions[2][2] = {{57, 262}, {104, 262}};
   const char* tooltips[2] = {"", ""};
   int ids[2] = {184, 185};
+  int positions[2][2] = {{57, 262}, {104, 262}};
 
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBitmapButton();
@@ -1797,13 +1801,17 @@ void UINoticeWnd::OnCreate(int, int) {
   }
 
   for (int i = 0, y = 22; y < 364; ++i, y += 18) {
-    this->m_texts[i]->SetSize(540, 16);
-    this->m_texts[i]->SetFont(0, 16, 0, 0);
+    const char* text;
     if (i < lineCount) {
-      this->m_texts[i]->SetText(patchText + lines[i], 1);
+      this->m_texts[i]->SetSize(540, 16);
+      this->m_texts[i]->SetFont(0, 16, 0, 0);
+      text = patchText + lines[i];
     } else {
-      this->m_texts[i]->SetText("", 1);
+      this->m_texts[i]->SetSize(540, 16);
+      this->m_texts[i]->SetFont(0, 16, 0, 0);
+      text = "";
     }
+    this->m_texts[i]->SetText(text, 1);
     this->m_texts[i]->Move(30, y);
     this->AddChild(this->m_texts[i]);
   }
@@ -2311,27 +2319,27 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->mode = 1;
         g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
         this->ApplyMode();
-        return 0;
+        break;
       }
 
       this->mode = 3;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_STOP_REPLAY_RECORDING:
       this->mode = 0;
       this->ApplyMode();
       g_modeMgr.currentMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       if (this->filenameEdit->Length() <= 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
         g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
       ReplayFileList::Instance().SetPath(this->filenameEdit->Text());
@@ -2339,37 +2347,35 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->filenameEdit->SetText("");
       g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
 
-      if (Replay::Instance().state == 1) {
-        return 0;
+      if (Replay::Instance().state != 1) {
+        this->mode = 1;
+        this->ApplyMode();
       }
-
-      this->mode = 1;
-      this->ApplyMode();
-      return 0;
+      break;
     }
     case ID_REPLAY_RECORDING_OPTIONS:
       this->mode = 2;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_CANCEL_REPLAY_RECORDING_OPTIONS:
       this->mode = 0;
       this->ApplyMode();
-      return 0;
+      break;
     case ID_CLOSE_REPLAY_RECORDING:
       this->mode = 0;
       g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
-      return 0;
+      break;
     case ID_CHECK:
       if (sender == this->userFilenameCheckBox) {
         ReplayFileList::Instance().pathEnabled = b != 0;
         this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
-        return 0;
+        break;
       }
 
       if (sender == this->rejectExistingNameCheckBox) {
         ReplayFileList::Instance().rejectExistingName = b != 0;
         this->replayOption119 = ReplayFileList::Instance().rejectExistingName;
-        return 0;
+        break;
       }
 
       if (sender == this->options[9]) {
@@ -2411,10 +2417,9 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
 
       Replay::Instance().SetOptions(this->recordOptions, 10);
-      return 0;
-    default:
-      return 0;
+      break;
     }
+    break;
   case UM_UPDATE_RECORD_TIME:
     this->UpdateRecordTime();
     return 0;
@@ -2425,12 +2430,14 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_REFRESH:
     this->Invalidate();
     this->InvalidateChildren();
+    break;
   case UM_REPLAY_FRAMED_DATA:
   case 251:
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x008BA820
@@ -3537,9 +3544,11 @@ void UIHomunInfoWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, background, false);
   this->DrawFilledRoundedOutline(0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
+  {
   char title[32];
   std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);
+  }
   this->DrawTextAt(100, 24, LookupMessage(MSI_NAME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 47, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(100, 105, LookupMessage(MSI_HOMUN_EXP), 0, 0, 12, 0, 0, 0);
@@ -3547,8 +3556,9 @@ void UIHomunInfoWnd::Paint() {
   this->DrawTextAt(100, 159, LookupMessage(MSI_PET_FRIENDLY), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(140, 159, ":", 0, 0, 12, 0, 0, 0);
   const int* const stats = g_session.m_homunStats;
+  int bytes;
   char number[12];
-  int bytes = std::sprintf(number, "%d", stats[0]);
+  bytes = std::sprintf(number, "%d", stats[0]);
   this->DrawRightAlignedText(79, 24, number, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(number, "%d", stats[1]);
   this->DrawRightAlignedText(79, 42, number, bytes, 1, 14, 0, 0);
@@ -3564,7 +3574,7 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(79, 132, number, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(number, "%d", (2000 - stats[7]) / 10);
   this->DrawRightAlignedText(79, 150, number, bytes, 1, 14, 0, 0);
-  char level[12];
+  char level[8];
   _itoa(g_session.m_homunLevel, level, 10);
   this->DrawTextAt(135, 47, level, 0, 0, 12, 0, 0, 0);
   if (g_session.m_homunJob == -1) {
@@ -3625,9 +3635,12 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       char text[512];
       std::sprintf(text, LookupMessage(MSI_CHANGE_HOMUN_NAME), this->nameEdit->Text());
-      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
-        if (g_forbiddenWords.Contains(this->nameEdit->Text()) == true) {
+      const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0);
+      UIEditCtrl* edit = this->nameEdit;
+      if (response != ID_NO) {
+        if (g_forbiddenWords.Contains(edit->Text()) == true) {
           g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          edit = this->nameEdit;
         } else {
           g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
           std::sprintf(name, this->nameEdit->Text());
@@ -3635,7 +3648,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           return 0;
         }
       }
-      this->nameEdit->SetText(name);
+      edit->SetText(name);
       this->nameEdit->Invalidate();
       return 0;
     }
@@ -4013,7 +4026,7 @@ void UIReplayControlWnd::OnCreate(int, int) {
   this->m_pauseButton->SetId(ids[5]);
   this->AddChild(this->m_pauseButton);
 
-  HotkeyInfo hotkey;
+  HotkeyInfo hotkey(0, 0);
   hotkey = g_session.GetHotkeyInfo(1, 39);
   this->m_playButton->SetTooltip(hotkey.text.c_str());
   this->m_pauseButton->SetTooltip(hotkey.text.c_str());

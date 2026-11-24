@@ -12,11 +12,11 @@
 // OFFSET: 0x005E65E0
 // FUNCTION: fn_03929
 void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
-  const Json::Value& root = data;
+  Json::Value* const root = &data;
   NormalItemSlotWindow& saved = g_windowMgr.m_normalItemSlotWindow;
   bool& itemSlotActive = g_session.ItemSlotActive();
 
-  const Json::Value& values = root["NormalItemSlot"];
+  const Json::Value& values = (*root)["NormalItemSlot"];
 
   if (values.isNull()) {
     return;
@@ -36,7 +36,7 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     g_session.m_normalItemSlots[index].itemId = static_cast<std::uint32_t>(item);
   }
 
-  const Json::Value& info = root["SlotInfo"];
+  const Json::Value& info = (*root)["SlotInfo"];
 
   if (info.empty()) {
     NormalItemSlotWindow defaults;
@@ -56,6 +56,21 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     saved.show = show;
   }
 
-  const Json::Value& active = root["ItemSlotActive"];
+  const Json::Value& active = (*root)["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
+
+  UIWindow* window = g_windowMgr.LookupWindow(WID_SHORTCUTWND);
+
+  if (!window) {
+    return;
+  }
+
+  window->geometry.x = saved.x;
+  window->geometry.y = saved.y;
+  window->geometry.width = saved.width;
+  window->geometry.height = saved.height;
+
+  g_windowMgr.ShowWindowById(WID_SHORTCUTWND, saved.show);
+  window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&saved), 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, itemSlotActive ? 588 : 589, 0, 0, 0);
 }

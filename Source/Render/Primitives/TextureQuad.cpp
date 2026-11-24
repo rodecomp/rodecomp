@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
@@ -17,21 +18,22 @@ float g_depthEnd;
 // FUNCTION: fn_17826
 void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  RenderVertex* vertices = primitive->vertices;
+  volatile RenderVertex* vertices = primitive->vertices;
   primitive->texture = texture;
   const float bottomZ = RhwToDepth(rhw);
   const float topZ = RhwToDepth(rhw);
+  float lastY;
 
   if (angle != 0) {
     const float cosine = ClientCosine(angle);
     const float sine = ClientSine(angle);
     const float width = static_cast<float>(rect.right - rect.left);
     const float height = static_cast<float>(rect.bottom - rect.top);
-    const float right = width * 0.5f;
-    const float bottom = height * 0.5f;
+    const float right = width * g_depthAverageHalf;
+    const float bottom = height * g_depthAverageHalf;
     const float centerX = static_cast<float>(rect.left) + right;
-    const float left = -width * 0.5f;
-    const float top = -height * 0.5f;
+    const float left = -width * g_depthAverageHalf;
+    const float top = -height * g_depthAverageHalf;
     const float centerY = static_cast<float>(rect.top) + bottom;
 
     vertices[0].x = left * cosine - top * sine + centerX;
@@ -41,7 +43,7 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
     vertices[2].x = left * cosine - bottom * sine + centerX;
     vertices[3].x = right * cosine - bottom * sine + centerX;
     vertices[2].y = bottom * cosine + left * sine + centerY;
-    vertices[3].y = bottom * cosine + right * sine + centerY;
+    lastY = bottom * cosine + right * sine + centerY;
   } else {
     vertices[0].x = static_cast<float>(rect.left);
     vertices[0].y = static_cast<float>(rect.top);
@@ -50,8 +52,9 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
     vertices[2].x = static_cast<float>(rect.left);
     vertices[2].y = static_cast<float>(rect.bottom);
     vertices[3].x = static_cast<float>(rect.right);
-    vertices[3].y = static_cast<float>(rect.bottom);
+    lastY = static_cast<float>(rect.bottom);
   }
+  vertices[3].y = lastY;
 
   const float scaleU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
   const float scaleV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
@@ -59,23 +62,23 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
 
   vertices[0].z = topZ;
   vertices[0].rhw = rhw;
-  vertices[0].diffuse = color;
   vertices[0].u = region.left * scaleU + margin;
-  vertices[0].v = region.top * scaleV + margin;
+  vertices[0].diffuse = color;
   vertices[1].z = topZ;
   vertices[1].rhw = rhw;
-  vertices[1].diffuse = color;
+  vertices[0].v = region.top * scaleV + margin;
   vertices[1].u = region.right * scaleU - margin;
-  vertices[1].v = region.top * scaleV + margin;
+  vertices[1].diffuse = color;
   vertices[2].z = bottomZ;
   vertices[2].rhw = rhw;
-  vertices[2].diffuse = color;
+  vertices[1].v = region.top * scaleV + margin;
   vertices[2].u = region.left * scaleU + margin;
-  vertices[2].v = region.bottom * scaleV - margin;
+  vertices[2].diffuse = color;
   vertices[3].z = bottomZ;
   vertices[3].rhw = rhw;
-  vertices[3].diffuse = color;
+  vertices[2].v = region.bottom * scaleV - margin;
   vertices[3].u = region.right * scaleU - margin;
+  vertices[3].diffuse = color;
   vertices[3].v = region.bottom * scaleV - margin;
 
   g_renderer->Submit(primitive, 0x201);

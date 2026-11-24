@@ -112,16 +112,12 @@ void CLightSphereEffect::CreateRayParticles(int param) {
   }
 }
 
-// OFFSET: 0x00B6CEA0
-// FUNCTION: fn_46112
-void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
-  if (particle == nullptr) {
-    return;
-  }
-
+// INLINED
+template <bool kUseUpdatedPhase>
+static __forceinline void SetRayVertices(CParticle* particle, int phase) {
   EffectPoint points[3];
   const int pitch = particle->phaseParameter;
-  const float radius = particle->scale * g_sinTable[particle->angleParameter] + particle->scale;
+  const float radius = particle->scale * g_sinTable[kUseUpdatedPhase ? phase : particle->angleParameter] + particle->scale;
   const int yaw = static_cast<int>(particle->angle);
   const float flat = radius * g_cosTable[pitch];
   const float corner0X = flat * g_cosTable[yaw];
@@ -162,6 +158,16 @@ void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
   particle->vertices[3].x = corner2X;
   particle->vertices[3].y = corner2Y;
   particle->vertices[3].z = corner2Z;
+}
+
+// OFFSET: 0x00B6CEA0
+// FUNCTION: fn_46112
+void CLightSphereEffect::UpdateRayVertices(CParticle* particle) {
+  if (particle == nullptr) {
+    return;
+  }
+
+  SetRayVertices<false>(particle, 0);
 }
 
 // OFFSET: 0x00B6CDB0
@@ -240,6 +246,48 @@ bool CLightSphereEffect::IsAlive() {
   return sphere != this->spheres.end() || ray != this->rays.end();
 }
 
+// INLINED
+template <bool kStandalone>
+static __forceinline void UpdateSphereParticle(CParticle* particle) {
+  if (particle->elapsedFrames < 300) {
+    if (kStandalone) {
+      particle->alpha = particle->alpha + 1 >= 255 ? 255 : particle->alpha + 1;
+    } else {
+      const int alpha = particle->alpha + 1;
+      particle->alpha = alpha >= 255 ? 255 : alpha;
+    }
+  } else if (kStandalone) {
+    particle->alpha = particle->alpha - 1 < 0 ? 0 : particle->alpha - 1;
+  } else {
+    const int alpha = particle->alpha - 1;
+    particle->alpha = alpha < 0 ? 0 : alpha;
+  }
+
+  float& phase = particle->animationParameters[0];
+  const int spin = (static_cast<int>(phase) + 2) % 360;
+  phase = static_cast<float>(spin);
+  const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
+
+  matrix rotation;
+  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+
+  matrix scaling;
+  std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+  scaling.SetScale(scale, scale, 1.0f);
+
+  matrix billboard;
+  billboard.Compose(scaling, rotation);
+
+  matrix translation;
+  std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
+  translation.MakeTranslate(0.0f, particle->animationParameter, 0.0f);
+
+  matrix transform;
+  transform.Compose(billboard, translation);
+  particle->transform = transform;
+}
+
 // OFFSET: 0x00B6D1C0
 // FUNCTION: fn_19109
 void CLightSphereEffect::OnProcess() {
@@ -251,7 +299,9 @@ void CLightSphereEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
 
-    this->UpdateSphere(particle);
+    if (particle) {
+      UpdateSphereParticle<false>(particle);
+    }
 
     ++particle->elapsedFrames;
   }
@@ -332,42 +382,10 @@ void CLightSphereEffect::OnProcess() {
 
 // OFFSET: 0x00B6D7B0
 // FUNCTION: fn_46114
-__forceinline void CLightSphereEffect::UpdateSphere(CParticle* particle) {
-  if (!particle) {
-    return;
+void CLightSphereEffect::UpdateSphere(CParticle* particle) {
+  if (particle) {
+    UpdateSphereParticle<true>(particle);
   }
-
-  if (particle->elapsedFrames < 300) {
-    const int alpha = particle->alpha + 1;
-    particle->alpha = alpha >= 255 ? 255 : alpha;
-  } else {
-    const int alpha = particle->alpha - 1;
-    particle->alpha = alpha < 0 ? 0 : alpha;
-  }
-
-  float& phase = particle->animationParameters[0];
-  const int spin = (static_cast<int>(phase) + 2) % 360;
-  phase = static_cast<float>(spin);
-  const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
-
-  matrix rotation;
-  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-
-  matrix scaling;
-  std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
-  scaling.SetScale(scale, scale, 1.0f);
-
-  matrix billboard;
-  billboard.Compose(scaling, rotation);
-
-  matrix translation;
-  std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-  translation.MakeTranslate(0.0f, particle->animationParameter, 0.0f);
-
-  matrix transform;
-  transform.Compose(billboard, translation);
-  particle->transform = transform;
 }
 
 // OFFSET: 0x00B6D600
@@ -392,7 +410,7 @@ void CLightSphereEffect::UpdateRay(CParticle* particle) {
   const int previous = particle->angleParameter;
   const int phase = (previous + 1 + std::ranges::max(std::rand() % 2, 0)) % 360;
   particle->angleParameter = phase;
-  this->UpdateRayVertices(particle);
+  SetRayVertices<true>(particle, phase);
 }
 
 // OFFSET: 0x00B6D990

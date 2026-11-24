@@ -176,21 +176,21 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      if (status == DDERR_OUTOFVIDEOMEMORY) {
-        return status;
+      if (status != DDERR_OUTOFVIDEOMEMORY) {
+        return DeviceError(7);
       }
-      return DeviceError(7);
+      return DDERR_OUTOFVIDEOMEMORY;
     }
 
     if (flags & 2) {
-      DDSCAPS2 caps{DDSCAPS_BACKBUFFER};
+      DDSCAPS2 caps = {DDSCAPS_BACKBUFFER, 0, 0, 0};
       status = this->primary->GetAttachedSurface(&caps, &this->backBuffer);
 
       if (FAILED(status)) {
-        if (status == DDERR_OUTOFVIDEOMEMORY) {
-          return status;
+        if (status != DDERR_OUTOFVIDEOMEMORY) {
+          return DeviceError(10);
         }
-        return DeviceError(10);
+        return DDERR_OUTOFVIDEOMEMORY;
       }
     }
 
@@ -220,10 +220,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
     if (FAILED(status)) {
-      if (status == DDERR_OUTOFVIDEOMEMORY) {
-        return status;
+      if (status != DDERR_OUTOFVIDEOMEMORY) {
+        return DeviceError(7);
       }
-      return DeviceError(7);
+      return DDERR_OUTOFVIDEOMEMORY;
     }
 
     IDirectDrawClipper* clipper;
@@ -248,10 +248,10 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
       status = this->draw->CreateSurface(&description, &this->backBuffer, nullptr);
 
       if (FAILED(status)) {
-        if (status == DDERR_OUTOFVIDEOMEMORY) {
-          return status;
+        if (status != DDERR_OUTOFVIDEOMEMORY) {
+          return DeviceError(10);
         }
-        return DeviceError(10);
+        return DDERR_OUTOFVIDEOMEMORY;
       }
     } else {
       ClientToScreen(this->window, reinterpret_cast<POINT*>(&this->source.left));
@@ -261,20 +261,19 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
 
   SurfaceDescription(&this->primaryDescription, DDSD_CAPS, 0);
   this->primary->GetSurfaceDesc(&this->primaryDescription);
-  const auto& format = this->primaryDescription.ddpfPixelFormat;
-  this->bitDepth = format.dwRGBBitCount;
-  this->redMask = format.dwRBitMask;
-  this->greenMask = format.dwGBitMask;
-  this->blueMask = format.dwBBitMask;
-  this->alphaMask = format.dwRGBAlphaBitMask;
+  this->bitDepth = this->primaryDescription.ddpfPixelFormat.dwRGBBitCount;
+  this->redMask = this->primaryDescription.ddpfPixelFormat.dwRBitMask;
+  this->greenMask = this->primaryDescription.ddpfPixelFormat.dwGBitMask;
+  this->blueMask = this->primaryDescription.ddpfPixelFormat.dwBBitMask;
+  this->alphaMask = this->primaryDescription.ddpfPixelFormat.dwRGBAlphaBitMask;
   this->red = {0, 8};
   this->green = {0, 8};
   this->blue = {0, 8};
   this->alpha = {0, 8};
-  ChannelMask(this->red, format.dwRBitMask);
-  ChannelMask(this->green, format.dwGBitMask);
-  ChannelMask(this->blue, format.dwBBitMask);
-  ChannelMask(this->alpha, format.dwRGBAlphaBitMask);
+  ChannelMask(this->red, this->primaryDescription.ddpfPixelFormat.dwRBitMask);
+  ChannelMask(this->green, this->primaryDescription.ddpfPixelFormat.dwGBitMask);
+  ChannelMask(this->blue, this->primaryDescription.ddpfPixelFormat.dwBBitMask);
+  ChannelMask(this->alpha, this->primaryDescription.ddpfPixelFormat.dwRGBAlphaBitMask);
   if (flags & 2) {
     this->renderTarget = this->backBuffer;
   } else {

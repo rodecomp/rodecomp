@@ -159,9 +159,9 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     int vertexCount = 0;
     input.Read(&vertexCount, 4);
     node->mesh->vertexCount = vertexCount;
-    auto* vertices = new std::array<float, 3>[vertexCount]{};
+    ShadeVector* vertices = new ShadeVector[vertexCount];
     input.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-    node->mesh->vertices = vertices;
+    node->mesh->vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
     int textureVertexCount = 0;
     input.Read(&textureVertexCount, 4);
     node->mesh->textureVertexCount = textureVertexCount;
@@ -192,7 +192,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     }
 
     node->mesh->faces = faces;
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
     node->mesh->CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
@@ -201,13 +201,14 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
     this->meshes[node->name] = node->mesh;
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
     if (!node->parentName.empty()) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
         node->parent = parent;
-        parent->children.push_back(node);
+        parent->children.push_back(*it);
       }
     }
   }
@@ -446,10 +447,10 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
       input.Read(buffer.data(), size);
       ModelFaceHeader record;
       std::memcpy(&record, buffer.data(), sizeof(record));
+      target.twoSided = record.twoSided;
       std::memcpy(target.vertices, record.vertices, sizeof(target.vertices));
       std::memcpy(target.textureVertices, record.textureVertices, sizeof(target.textureVertices));
       target.texture = record.texture;
-      target.twoSided = record.twoSided;
       const unsigned groups = (buffer.size() - 20u) / 4u;
       target.smoothing.resize(groups);
       std::memcpy(target.smoothing.data(), buffer.data() + 20, groups * 4u);
@@ -484,7 +485,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
-        node->parent = parent;
+        (*it)->parent = parent;
         parent->children.push_back(*it);
       }
     }

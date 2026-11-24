@@ -26,7 +26,7 @@ namespace {
 
   // INLINED
   template <typename Count>
-  __forceinline const unsigned char* ReadPalette(RGBQUAD* palette, unsigned char* first, unsigned char* second, const unsigned char* source, Count count) {
+  __forceinline void ReadPalette(RGBQUAD* palette, unsigned char* first, unsigned char* second, const unsigned char*& source, Count count) {
     std::memcpy(first, source, count * 2);
     source += count * 2;
     std::memcpy(second, source, count * 2);
@@ -40,8 +40,6 @@ namespace {
       palette[i].rgbRed = second[offset + 1];
       offset += 2;
     }
-
-    return source;
   }
 
   // INLINED
@@ -172,27 +170,27 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
       unsigned char second[512];
 
       if (count != 0) {
-        source = ReadPalette(palette, first, second, source, count);
+        ReadPalette(palette, first, second, source, count);
       } else {
-        source = ReadPalette(palette, first, second, source, 256);
+        ReadPalette(palette, first, second, source, 256);
       }
 
       DecodeIndexedRows(this->image, rgb, source, palette, row);
     } else if (bits == 24) {
       auto* first = new unsigned char[this->image.width * this->image.height * 3];
       auto* second = new unsigned char[this->image.width * this->image.height * 2];
+      unsigned char* firstTarget = first;
+      unsigned char* secondTarget = second;
 
-      unsigned char* target = first;
       for (int y = this->image.height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->image.width * 2);
-        target += this->image.width * 2;
+        std::memcpy(firstTarget, source, this->image.width * 2);
+        firstTarget += this->image.width * 2;
         source += this->image.width * 2;
       }
 
-      target = second;
       for (int y = this->image.height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->image.width);
-        target += this->image.width;
+        std::memcpy(secondTarget, source, this->image.width);
+        secondTarget += this->image.width;
         source += this->image.width;
       }
 

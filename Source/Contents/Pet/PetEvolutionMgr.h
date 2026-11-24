@@ -9,6 +9,12 @@
 struct lua_State;
 
 struct PetEvolutionRecipe {
+  // INLINED
+  PetEvolutionRecipe(int target, int material, int count) {
+    this->target = target;
+    this->materials.push_back(std::make_pair(material, count));
+  }
+
   /* 0000 */ int target;
   /* 0004 */ std::vector<std::pair<int, int>> materials;
 };

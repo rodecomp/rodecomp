@@ -26,6 +26,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
+#include <tuple>
 
 // INLINED
 static void TransformPoint(vector3d& out, const vector3d& point, const float* matrix) {
@@ -65,7 +66,8 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
 
   this->DrawRobe(false);
   this->imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->pc->imfName));
-  this->bounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, this->rhw);
+  auto& viewportRef = g_renderer->viewport;
+  this->bounds.Set(static_cast<float>(viewportRef.width), static_cast<float>(viewportRef.height), 0.0f, 0.0f, this->rhw);
 
   bool bodyDrawn = false;
   bool swapped = false;
@@ -84,8 +86,10 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
         swapped = true;
         layer = 4;
       }
+    } else if (layer == 2 && swapped == true) {
+      layer = 0;
     } else if (layer == 2) {
-      layer = swapped == true ? 0 : 4;
+      layer = 4;
     } else if (layer == 4) {
       layer = 2;
     } else if (static_cast<unsigned int>(layer) > 8) {
@@ -123,7 +127,11 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     }
 
     const auto synced = this->FindSyncedFrame(layer, action);
-    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second, stanceAnimation, frameIndex, replaced);
+    const ActionFrame* drawnFrame = &frame;
+    if (synced.first == true) {
+      drawnFrame = synced.second;
+    }
+    this->DrawLayer(index, layer, drawnFrame, found.second, stanceAnimation, frameIndex, replaced);
   }
 
   this->DrawQueuedLayers();
@@ -172,7 +180,8 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
 
   const float offset = this->rhw * 1000.0f + 2.0f;
   for (int layer = 1; layer >= 0; --layer) {
-    const auto found = this->layers.find(layer);
+    const int key = layer;
+    const auto found = this->layers.find(key);
     if (found == this->layers.end()) {
       continue;
     }
@@ -187,7 +196,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
       continue;
     }
 
-    const int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? 1 : layer);
+    const int cellIndex = GetSlotLayer(!g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? layer : 1);
     const SpriteFrameCell* cell = &frame->Cell(cellIndex);
     if (!cell || !sprite) {
       continue;
@@ -204,8 +213,8 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     itemOffset.second += resolved.offsetY;
     this->pc->ApplySwing(layer, itemOffset.first, itemOffset.second, this->swingX, this->swingY);
 
-    float bottomRhw = 0.0f;
     float topRhw = 0.0f;
+    float bottomRhw = 0.0f;
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t quadColor;
@@ -314,7 +323,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
       entry.quad = quad;
       entry.palette = sprite->palette;
       entry.blend = blend;
-      this->quads.emplace(400, entry);
+      this->quads.emplace(std::piecewise_construct, std::forward_as_tuple(400), std::forward_as_tuple(entry));
     } else {
       this->QueueQuad(0, &quad, sprite->palette, blend);
     }
@@ -338,14 +347,14 @@ int SpriteLayerRenderer::DrawBodyOutline(int layer) {
   }
 
   const float offset = this->rhw * 1000.0f + 2.0f;
-  this->pc->RenderBodyOutline(layer, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 1, &this->position.x, this->x - offset, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 2, &this->position.x, offset + this->x, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 3, &this->position.x, this->x - offset, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 4, &this->position.x, offset + this->x, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 5, &this->position.x, offset + this->x, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  this->pc->RenderBodyOutline(layer + 6, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
-  return layer + 7;
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, this->y - offset, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, offset + this->y, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, offset + this->x, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  this->pc->RenderBodyOutline(layer++, &this->position.x, this->x - offset, this->y + 0.0f, this->distanceScale, this->scale, this->rhw, color);
+  return layer;
 }
 
 // OFFSET: 0x00640ED0
@@ -356,7 +365,6 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
 ) {
   int offsetY = 0;
   int offsetX = 0;
-  int anchorY = 0;
   switch (layer) {
     case 1: {
       const ActionFrame& body = static_cast<CActRes*>(this->pc->GetEquipAction(0))->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
@@ -388,30 +396,28 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
 
       CActRes* body = static_cast<CActRes*>(this->pc->GetEquipAction(1));
-      int bodyAnimation = this->pc->render.previousAnimation;
-      int bodyFrameIndex = this->pc->render.curMotion;
+      const ActionFrame* bodyFrame;
       if (replaced == true) {
-        bodyAnimation = animation;
-        bodyFrameIndex = frameIndex;
+        bodyFrame = &body->Frame(animation, frameIndex);
+      } else {
+        bodyFrame = &body->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       }
-      const ActionFrame* bodyFrame = &body->Frame(bodyAnimation, bodyFrameIndex);
 
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
         if (frame->anchors[0].attachmentId == bodyFrame->anchors[0].attachmentId) {
           offsetX = bodyFrame->anchors[0].x - frame->anchors[0].x;
-          anchorY = bodyFrame->anchors[0].y - frame->anchors[0].y;
+          offsetY = bodyFrame->anchors[0].y - frame->anchors[0].y;
         }
       }
 
       offsetX += this->swingX;
       if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->isRiding) == true) {
-        offsetY = SpriteRidingOffset(
-                    bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
-                    this->pc->GetBodyCostume()
-                  ) +
-                  anchorY;
+        offsetY += SpriteRidingOffset(
+          bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
+          this->pc->GetBodyCostume()
+        );
       } else {
-        offsetY = this->swingY + anchorY;
+        offsetY += this->swingY;
       }
 
       const float projectionDepthNumerator = g_projectionDepthNumerator;
@@ -446,12 +452,8 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
     }
 
     int direction = pc->render.previousAnimation - pc->render.animation + turn;
-    if (direction < 0) {
-      direction = 7;
-    }
-    if (direction > 7) {
-      direction = 0;
-    }
+    direction = direction < 0 ? 7 : direction;
+    direction = direction > 7 ? 0 : direction;
 
     int x = 0;
     int y = 0;
@@ -505,7 +507,7 @@ std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActR
 
   std::string name = action->Sound(sound);
   if (name.find(".wav") != std::string::npos) {
-    name.clear();
+    name = "";
   }
 
   return std::make_pair(true, name);
@@ -543,14 +545,15 @@ void SpriteLayerRenderer::DrawLayer(
     const SpriteLayerCell resolved = this->ResolveCell(layer, cell, cellIndex, resources.sprite, resources.action, frame, image, animation, frameIndex, replaced);
     offsetX += resolved.offsetX;
     offsetY += resolved.offsetY;
-    this->pc->ApplySwing(layer, offsetX, offsetY, this->swingX, this->swingY);
+    auto& pcRef = this->pc;
+    pcRef->ApplySwing(layer, offsetX, offsetY, this->swingX, this->swingY);
 
     float bottomRhw = 0.0f;
     float topRhw = 0.0f;
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t quadColor;
-    if (!this->pc->PrepareSprite(
+    if (!pcRef->PrepareSprite(
           index, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
           resolved.image, &quad, &box, &quadColor, offsetX, offsetY, 0
         )) {
@@ -563,17 +566,17 @@ void SpriteLayerRenderer::DrawLayer(
       this->depthBias = ((quad.topRhw + quad.bottomRhw) - (quad.top + quad.bottom) * depthScale) * g_depthAverageHalf;
     }
 
-    if (this->pc->render.translucentOther[0] == 1) {
+    if (pcRef->render.translucentOther[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
                    (quad.color & 0xFFFFFF);
     }
 
     if (layer == 1) {
-      CPc* pc = this->pc;
+      CPc* pc = pcRef;
       const float right = static_cast<float>(resolved.cell->x + this->swingX);
       const float bottom = static_cast<float>(resolved.cell->y + this->swingY);
-      pc->extentRight = right;
       pc->extentBottom = bottom;
+      pc->extentRight = right;
       if (this->hideHeadLayer == true) {
         continue;
       }
@@ -582,23 +585,23 @@ void SpriteLayerRenderer::DrawLayer(
     quad.image = resolved.image;
     const std::uint32_t* palette = this->GetPalette(layer, resources.sprite, resources.action);
     int effect = 0xA6;
-    this->pc->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
+    pcRef->SendMsg(nullptr, AM_IS_HAVE_EFFECT, reinterpret_cast<int>(&effect), 0, 0, 0, 0, 0);
 
     int blend = this->GetLayerBlend(layer, quad.color);
 
     this->IncludeLayerBounds(layer, &quad.top);
 
     this->alternateLayerRendering = true;
-    this->pc->ApplyLayerEffects(
+    pcRef->ApplyLayerEffects(
       &quad, resolved.cell, layer, &box, this->scale, this->rhw, bottomRhw, topRhw, this->x, this->y, palette, resolved.image, &blend, offsetX,
       offsetY
     );
     this->QueueQuad(layer, &quad, palette, blend);
-    this->pc->DrawStatusOverlays(quad, palette);
+    pcRef->DrawStatusOverlays(quad, palette);
     if (layer == 0) {
-      this->pc->blend = blend;
-      this->pc->layerCellX = resolved.cell->x;
-      this->pc->layerCellY = resolved.cell->y;
+      pcRef->blend = blend;
+      pcRef->layerCellX = resolved.cell->x;
+      pcRef->layerCellY = resolved.cell->y;
       this->DrawRobe(true);
     }
   }

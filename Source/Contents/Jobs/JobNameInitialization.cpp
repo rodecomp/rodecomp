@@ -23,28 +23,26 @@ void CSession::InitJobNameTable() {
   for (int id = JT_RUNE_KNIGHT_2ND; id < JT_SECOND_JOB_END; ++id) {
     jobs.push_back(id);
   }
-  for (int id = JT_DRUID; id < JT_2004_JOB_LAST; ++id) {
+  for (int id = JT_DRUID; id <= JT_ALITEA_RIDING; ++id) {
     jobs.push_back(id);
   }
 
   name = nullptr;
-  for (std::list<int>::iterator job = jobs.begin(); job != jobs.end(); ++job) {
-    int id = *job;
-    LuaScript* script = this->m_hotkeyScript;
-    if (script->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
+  for (const int id : jobs) {
+    if (this->m_hotkeyScript->Call("ReqPCJobName", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTable[id] = name;
     }
 
-    if (script->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (this->m_hotkeyScript->Call("ReqPCJobNameMan", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTableMan[id] = name;
     }
 
-    if (script->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
+    if (this->m_hotkeyScript->Call("ReqPCJobNameWoman", "d>s", id, &name) && std::strlen(name) != 0) {
       this->m_jobNameTableWoman[id] = name;
     }
   }
 
-  for (int id = JT_WARPNPC; id < JT_SAFETYWALL; ++id) {
+  for (int id = JT_WARPNPC; id <= JT_4_M_TELEPORTER; ++id) {
     g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
   }
   for (int id = JT_NEW_NPC_START; id < JT_MON_BEGIN; ++id) {

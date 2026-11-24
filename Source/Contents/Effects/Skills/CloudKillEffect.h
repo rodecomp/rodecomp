@@ -25,7 +25,7 @@ public:
   void RenderParticle(CParticle* particle);
   void RenderSprite(CParticle* particle);
 
-  /* 00CC */ std::list<CParticle*> particles;
+  /* 00CC */ std::list<CSpriteParticle*> particles;
   /* 00D4 */ std::list<CParticle*> sprites;
   /* 00DC */ int particleLifetimeFrames;
   /* 00E0 */ int spriteLifetimeFrames;

@@ -462,14 +462,16 @@ void UIScrollBar::Paint() {
 void UIScrollBar::Configure(int x, int y, int vertical, int length) {
   this->vertical = vertical;
 
-  int width = length;
-  int height = length;
+  int width;
+  int height;
   switch (vertical) {
   case 0:
+    width = length;
     height = this->thickness;
     break;
   case 1:
     width = this->thickness;
+    height = length;
     break;
   }
 
@@ -580,7 +582,7 @@ void UITabControl::SetFlag(int index, bool value) {
 // FUNCTION: fn_11588
 void UITabControl::AddTab(const char* label, const char* tooltip) {
   this->labels.push_back(std::string(label));
-  this->tooltips.push_back(std::string());
+  this->tooltips.push_back("");
 
   if (this->parent) {
     const int tabWidth = this->parent->geometry.width / this->labels.size() - this->tabPadding;
@@ -601,7 +603,8 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
   }
 
   this->activeTabIndex = 0;
-  this->colors.push_back(0xFFFFFFFFu);
+  const std::uint32_t defaultColor = 0xFFFFFFFFu;
+  this->colors.push_back(defaultColor);
 
   int width;
   if (this->layout == 0 || this->layout == 2) {
@@ -803,12 +806,12 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
       this->DrawTextAt(x + 16, y + 20, count.c_str(), 0, 0, 11, 0, 0, 0);
     } else {
       const int textY = y + 15;
-      x += this->m_item.quantity < 1000 ? 14 : 0;
-      this->DrawTextAt(x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
-      this->DrawTextAt(x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
+      const int textX = x + (this->m_item.quantity < 1000 ? 14 : 0);
+      this->DrawTextAt(textX + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(textX, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
     }
   }
 }
@@ -1538,13 +1541,15 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
 
       g_modeMgr.currentMode->SetCursorAction(2);
-      UITreeNode* node = this->dragNode;
-      UITVTextButton* label = node->labelButton;
-      this->RemoveNode(node, true);
+      UITVTextButton* label = this->dragNode->labelButton;
+      this->RemoveNode(this->dragNode, true);
       UITreeNode* previousParent = this->dragNode->parent;
       this->dragNode->parent = this->dropNode;
-      UITreeNode* target = this->dropNode ? this->dropNode : this->root;
-      target->children.push_back(this->dragNode);
+      if (this->dropNode) {
+        this->dropNode->children.push_back(this->dragNode);
+      } else {
+        this->root->children.push_back(this->dragNode);
+      }
       this->dragNode->labelButton = label;
       if (this->parent) {
         this->parent->SendMsg(
@@ -1563,7 +1568,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_CHANGE_TVITEM_TEXT:
     if (b == 0) {
       this->editNode = reinterpret_cast<UITreeNode*>(a);
-      this->edit->maximum = std::min(static_cast<int>(c), 361);
+      this->edit->maximum = std::min(c, 361);
       this->edit->SetText(this->editNode->name);
       g_windowMgr.SetFocus(this->edit);
       this->Invalidate();
@@ -1944,7 +1949,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
         break;
       }
     }
-    result += prefix;
+    result.append(prefix.data(), prefix.size());
 
     if (encoded.substr(0, 6) == "00000T") {
       const int titleId = g_navigationLinkParser->ItemLinkMessageId(encoded);
@@ -1957,7 +1962,8 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
             buttons.push_back(button);
             button->line = static_cast<int>(this->lines.size());
             button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-            result += std::string(button->label);
+            const std::string buttonLabel(button->label);
+            result.append(buttonLabel.data(), buttonLabel.size());
           }
         }
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
@@ -1982,9 +1988,9 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;
       button->SetId(ID_ITEM_TAG);
-      button->ResizeToTextClipped(
-          this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
-          button->geometry.height);
+      const int buttonHeight = button->geometry.height;
+      const int buttonWidth = this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1;
+      button->ResizeToTextClipped(buttonWidth, buttonHeight);
 
       const std::string namelessUserName = LookupMessage(MSI_NAMELESS_USER);
       if (label.find(namelessUserName) != std::string::npos) {
@@ -1998,7 +2004,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       buttons.push_back(button);
       button->line = static_cast<int>(this->lines.size());
       button->column = this->TextWidth(result.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-      result += label;
+      result.append(label.data(), label.size());
       position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
     }
     previous = position;
@@ -2007,7 +2013,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   if (result.size() < std::strlen(lineText)) {
     const int available = static_cast<int>(std::strlen(lineText) - result.size());
     if (available > 0 && remaining.size() >= static_cast<unsigned>(available)) {
-      result += remaining.substr(0, available);
+      result.append(remaining.substr(0, available));
       previous += available;
     }
   }
@@ -2097,13 +2103,13 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
 void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode) {
   const std::string open = "<";
   const std::string close = ">";
-  std::string remaining = "";
+  std::string remaining;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
+    std::vector<std::string> split;
     if (wrapped.size() > 23) {
       break;
     }
 
-    std::vector<std::string> split;
     this->WrapLinkText(&mode, &split, wrapped[line]);
     if (split.size() > 1) {
       for (unsigned int part = 0; part < split.size(); ++part) {
@@ -2116,16 +2122,18 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
         } else if (part != 0) {
           std::vector<std::string> rebuilt;
           for (unsigned int index = 0; index < wrapped.size(); ++index) {
-            if (!wrapped[index].empty()) {
-              rebuilt.push_back(wrapped[index]);
+            const std::string& entry = wrapped[index];
+            if (!entry.empty()) {
+              rebuilt.push_back(entry);
             }
           }
           if (!split[part].empty()) {
             rebuilt.push_back(split[part]);
           }
           for (unsigned int next = line + 1; next < wrapped.size(); ++next) {
-            if (!wrapped[next].empty()) {
-              rebuilt.push_back(wrapped[next]);
+            const std::string& entry = wrapped[next];
+            if (!entry.empty()) {
+              rebuilt.push_back(entry);
             }
           }
           wrapped.swap(rebuilt);
@@ -2135,31 +2143,34 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
     remaining = wrapped[line];
     unsigned int offset = 0;
-    std::size_t position;
-    for (position = remaining.find('>'); position != std::string::npos; position = remaining.find('>')) {
+    std::size_t position = remaining.find(close);
+    while (position != std::string::npos) {
       ++position;
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
+      position = remaining.find(close);
     }
 
-    position = remaining.find('<');
+    position = remaining.find(open);
     if (position != std::string::npos) {
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
       std::string tail = remaining.substr(1);
-      position = tail.find('<');
+      position = tail.find(open);
       while (position != std::string::npos) {
         offset += static_cast<unsigned int>(position);
         remaining = tail;
         tail = remaining.substr(1);
-        position = tail.find('<');
+        position = tail.find(open);
       }
 
-      if (line + 1 < wrapped.size() && wrapped[line + 1].find('>') != std::string::npos) {
-        remaining.append(wrapped[line + 1]);
-        wrapped[line + 1].swap(remaining);
-        std::string truncated = wrapped[line].substr(0, offset);
-        wrapped[line] = truncated;
+      if (line + 1 < wrapped.size()) {
+        std::string& next = wrapped[line + 1];
+        if (next.find(close) != std::string::npos) {
+          remaining.append(next);
+          next.swap(remaining);
+          wrapped[line] = wrapped[line].substr(0, offset);
+        }
       }
     }
   }
@@ -2205,7 +2216,7 @@ void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color,
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     wrapped[line] = this->RenderNavigationLinks(wrapped[line].c_str(), source);
-    if (line != 0) {
+    if (line > 0) {
       this->lineColors.push_back(color);
     }
     this->UIListBox::AddLine(wrapped[line].c_str());
@@ -2234,18 +2245,20 @@ void UIString::SetText(int width, int height, std::string text) {
   this->SetSize(width, height);
   const char* chars = text.c_str();
   if (text.size() == 1 && chars[0] == '\n') {
+    std::string& label = this->text;
     this->Resize(5, 5);
-    this->text = text;
+    label = text;
     return;
   }
 
+  std::string& label = this->text;
   this->ParseTags(text);
   if (this->image.size() != 0) {
-    this->Resize(this->TextWidth(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0) + 24, 24);
+    this->Resize(this->TextWidth(label.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0) + 24, 24);
   } else {
     this->Resize(
       this->TextWidth(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0),
-      this->TextHeight(this->text.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0)
+      this->TextHeight(label.c_str(), static_cast<unsigned>(this->text.size()), 0, 12, 0, 0)
     );
   }
 }

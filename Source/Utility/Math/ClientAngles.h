@@ -1,0 +1,6 @@
+#ifndef RAGNAROK_SOURCE_UTILITY_MATH_CLIENTANGLES_H
+#define RAGNAROK_SOURCE_UTILITY_MATH_CLIENTANGLES_H
+
+extern float g_angleDivisor;
+
+#endif

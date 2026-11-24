@@ -19,6 +19,7 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/MousePointer.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
@@ -197,13 +198,14 @@ void CRenderObject::ProcessMotion() {
       ++this->render.sequenceIndex;
     }
     if (this->render.sequenceIndex > this->render.sequenceLast) {
-      if (this->render.sequenceLoop != 0) {
+      if (this->render.sequenceLoop == 0) {
+        this->render.sequenceIndex = this->render.sequenceLast;
+        this->render.sequenceFinished = 1;
+      } else {
         ++this->render.sequenceTick;
         this->render.sequenceIndex = 0;
         return;
       }
-      this->render.sequenceIndex = this->render.sequenceLast;
-      this->render.sequenceFinished = 1;
     }
     ++this->render.sequenceTick;
     return;
@@ -289,9 +291,9 @@ void CRenderObject::ProcessMotion() {
     if (this->render.sequenceFrame > this->render.sequenceLast) {
       if (this->render.sequenceLoop != 0) {
         if (this->render.sequenceFinishAnimation == 0) {
+          this->render.sequenceFrame = this->render.sequenceIndex + 1;
           this->render.sequenceFinishFrame = 1;
           ++this->render.sequenceTick;
-          this->render.sequenceFrame = this->render.sequenceIndex + 1;
           return;
         } else {
           this->render.sequenceFrame = this->render.sequenceIndex;
@@ -360,8 +362,8 @@ void CRenderObject::PlayFrameSounds() {
   int lastMotion = static_cast<int>(this->render.lastSoundMotion);
   if (lastMotion != this->render.curMotion || static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
     if (static_cast<std::uint32_t>(this->render.animation) != this->render.lastSoundAnimation) {
-      this->render.lastSoundMotion = 0;
       lastMotion = 0;
+      this->render.lastSoundMotion = 0;
     }
     CActRes* action = this->render.action;
     if (lastMotion < this->render.curMotion) {
@@ -471,7 +473,10 @@ void CRenderObject::SetTlvert(float x, float y) {
 // OFFSET: 0x00CACEA0
 // FUNCTION: fn_46350
 float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const {
-  if (this->render.action == nullptr || scale <= 0.0f) {
+  if (this->render.action == nullptr) {
+    return 1.0f;
+  }
+  if (scale <= 0.0f) {
     return 1.0f;
   }
   const float speed = this->render.action->Speed(animation);
@@ -481,9 +486,6 @@ float CRenderObject::GetScaledActionSpeed(unsigned animation, float scale) const
 // OFFSET: 0x00CACE40
 // FUNCTION: fn_46349
 float CRenderObject::GetMotionActionSpeed(unsigned animation) const {
-  if (this->render.action == nullptr) {
-    return 1.0f;
-  }
   return this->GetScaledActionSpeed(animation, this->render.motionSpeedScale);
 }
 
@@ -680,14 +682,15 @@ void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
 // OFFSET: 0x00CC15F0
 // FUNCTION: fn_21121
 int CRenderObject::HoverHeight() {
+  const int frozen = this->render.flags & 0x40000;
   this->render.hoverAngle += 2;
-  if (this->render.hoverAngle >= 360) {
+  short angle = this->render.hoverAngle;
+  if (angle >= 360) {
     this->render.hoverAngle -= 360;
+    angle = this->render.hoverAngle;
   }
-
-  const short angle = this->render.hoverAngle;
   const int state = this->render.state;
-  if (state == ST_STAND || state == ST_MOVE || (this->render.flags & 0x40000) != 0) {
+  if (state == ST_STAND || state == ST_MOVE || frozen != 0) {
     if (this->render.hoverHeight < 20) {
       if (angle % 30 == 0) {
         ++this->render.hoverHeight;
@@ -709,8 +712,8 @@ int CRenderObject::HoverHeight() {
 
   const short height = static_cast<short>(g_sinTable[angle] * 4.0f + this->render.hoverHeight);
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
-  return scaled < 0 ? 0 : scaled;
+  const unsigned short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
+  return static_cast<short>(scaled) < 0 ? 0 : scaled;
 }
 
 // OFFSET: 0x00CC1740
@@ -1002,6 +1005,8 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   const int skillId = skill[0];
   int effectId;
   int motion;
+  int dummyEffect;
+  int dummyLifetime;
   g_session.GetSkillActionInfo2(skillId, effectId, motion);
   float x;
   float z;
@@ -1047,17 +1052,17 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case PR_MAGNUS: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x71, EffectLifetime(0x71) + 10, 0);
-    break;
+    return;
   }
   case PR_SANCTUARY: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x53, EffectLifetime(0x53) + 10, 0);
-    break;
+    return;
   }
   case WZ_HEAVENDRIVE: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x8E, EffectLifetime(0x8E) + 10, 0);
-    break;
+    return;
   }
   case WZ_QUAGMIRE: {
     vector3d position{x, height, z};
@@ -1066,7 +1071,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     } else {
       mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
     }
-    break;
+    return;
   }
   case WZ_VERMILION: {
     vector3d position{x, height, z};
@@ -1075,7 +1080,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     } else {
       mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
     }
-    break;
+    return;
   }
   case WZ_METEOR: {
     vector3d position{x, height, z};
@@ -1084,12 +1089,12 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     } else {
       mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
     }
-    break;
+    return;
   }
   case HT_SKIDTRAP: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x45, EffectLifetime(0x45) + 10, 0);
-    break;
+    return;
   }
   case HT_DETECTING: {
     vector3d position{x, height, z};
@@ -1098,41 +1103,40 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
       const std::int64_t address = reinterpret_cast<int>(&position);
       this->statusEffects[0]->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
     }
-    break;
+    return;
   }
   case AS_VENOMDUST: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x7C, EffectLifetime(0x7C) + 10, 0);
-    break;
+    return;
   }
   case BS_HAMMERFALL: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
-    break;
+    return;
   }
   case WZ_ICEWALL: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x4A, EffectLifetime(0x4A) + 10, 0);
-    break;
+    return;
   }
   case MG_THUNDERSTORM: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x1E, EffectLifetime(0x1E) + 10, 0);
-    break;
+    return;
   }
   case PR_BENEDICTIO:
   case ALL_ANGEL_PROTECT: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x5B, EffectLifetime(0x5B) + 10, 0);
-    break;
+    return;
   }
   case WZ_STORMGUST:
   case NPC_STORMGUST2: {
-    vector3d position{x, height, z};
+    dummyEffect = 0x59;
+    dummyLifetime = 0x59;
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      mode->LaunchDummyEffect(&position, 0x2C4, EffectLifetime(0x59) + 10, 0);
-    } else {
-      mode->LaunchDummyEffect(&position, 0x59, EffectLifetime(0x59) + 10, 0);
+      dummyEffect = 0x2C4;
     }
     break;
   }
@@ -1140,37 +1144,39 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case BS_ADRENALINE2: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x62, EffectLifetime(0x62) + 10, 0);
-    break;
+    return;
   }
   case SA_VOLCANO: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xE1, EffectLifetime(0xE1) + 10, 0);
-    break;
+    return;
   }
   case SA_DELUGE: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xEC, EffectLifetime(0xEC) + 10, 0);
-    break;
+    return;
   }
   case SA_VIOLENTGALE: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xED, EffectLifetime(0xED) + 10, 0);
-    break;
+    return;
   }
   case SA_LANDPROTECTOR: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xEE, EffectLifetime(0xEE) + 10, 0);
-    break;
+    return;
   }
   case CR_SLIMPITCHER: {
     g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
-    vector3d position{x, height, z};
     if (level < 6) {
-      mode->LaunchDummyEffect(&position, 0x1F1, EffectLifetime(0x1F1) + 10, 0);
+      dummyEffect = 0x1F1;
+      dummyLifetime = 0x1F1;
     } else if (level < 10) {
-      mode->LaunchDummyEffect(&position, 0x1F2, EffectLifetime(0x1F2) + 10, 0);
+      dummyEffect = 0x1F2;
+      dummyLifetime = 0x1F2;
     } else {
-      mode->LaunchDummyEffect(&position, 0x1F3, EffectLifetime(0x1F3) + 10, 0);
+      dummyEffect = 0x1F3;
+      dummyLifetime = 0x1F3;
     }
     break;
   }
@@ -1178,53 +1184,47 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0xDF, EffectLifetime(0xDF) + 10, 0);
-    break;
+    return;
   }
   case HW_GRAVITATION: {
     vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x20A, 0x104, 0);
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   }
-  case CR_CULTIVATION:
-    this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
   case GS_GROUNDDRIFT:
     g_soundMgr->PlayWave("effect\\그라운드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   case NJ_SUITON:
     g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
+  case CR_CULTIVATION:
+    this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    return;
   case NPC_ICEEXPLO:
     this->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   case NPC_MAXPAIN_ATK:
     this->LaunchEffect(EF_MAXPAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    break;
-  case NPC_MAGMA_ERUPTION:
-  case NC_MAGMA_ERUPTION: {
-    vector3d position{x, height, z};
-    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
-    break;
-  }
+    return;
   case NPC_RAYOFGENESIS:
   case LG_RAYOFGENESIS: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_NEW_RAYOFGENESIS, position, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   }
   case NPC_RAINOFMETEOR: {
     const vector3d raised{x, height + 25.0f, z};
     g_effectMgr->Spawn(0, EF_NEW_METEORSTORM_BOTTOM, raised, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, EF_NEW_METEORSTORM, raised, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
+    return;
   }
   case NPC_GROUNDDRIVE: {
-    vector3d position{x, height, z};
-    mode->LaunchDummyEffect(&position, 0x577, EffectLifetime(0x577) + 10, 0);
+    dummyEffect = 0x577;
+    dummyLifetime = 0x577;
     break;
   }
   case NPC_LOCKON_LASER_ATK: {
@@ -1233,7 +1233,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     if (effect != nullptr) {
       effect->AdvanceFrame(0.4f);
     }
-    break;
+    return;
   }
   case NC_COLDSLOWER: {
     CRagEffect* effect = this->LaunchEffect(EF_COLDTHROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1241,7 +1241,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
       vector3d position{x, height, z};
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
-    break;
+    return;
   }
   case SO_DIAMONDDUST: {
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1253,44 +1253,50 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
       g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST, position, 0, level, 0, 0);
       g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST_BOTTOM, position, 0, level, 0, 0);
     }
+    return;
+  }
+  case NPC_MAGMA_ERUPTION:
+  case NC_MAGMA_ERUPTION: {
+    dummyEffect = 0x66;
+    dummyLifetime = 0x66;
     break;
   }
   case RL_HAMMER_OF_GOD: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position, 0, -1, 0, 0);
-    break;
+    return;
   }
   case SU_CN_METEOR: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_UNK_1106, position, 0, -1, 0, 0);
-    break;
+    return;
   }
   case SU_CN_METEOR2: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_UNK_1112, position, 0, -1, 0, 0);
-    break;
+    return;
   }
   case AG_VIOLENT_QUAKE_ATK: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_VIOLENTQUAKE, position, 0, -1, 0, 0);
-    break;
+    return;
   }
   case AG_STRANTUM_TREMOR:
   case AG_TORNADO_STORM:
   case AG_FLORAL_FLARE_ROAD:
     this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
-    break;
+    return;
   case AG_ALL_BLOOM_ATK: {
     vector3d position{x, height, z};
     g_effectMgr->Spawn(0, EF_UNK_1798, position, 0, -1, 0, 0);
-    break;
+    return;
   }
   case WH_DEEPBLINDTRAP:
   case WH_SOLIDTRAP:
   case WH_SWIFTTRAP:
   case WH_FLAMETRAP:
     this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
-    break;
+    return;
   case ABC_ABYSS_STRIKE: {
     g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, vector3d{x, height, z}, 0, -1, 0, 0);
     g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, vector3d{x, height, z}, 0, -1, 0, 0);
@@ -1302,14 +1308,16 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
-    break;
+    return;
   }
   case ABC_ABYSS_SQUARE:
     this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 500, 0);
-    break;
+    return;
   }
-}
 
+  vector3d position{x, height, z};
+  mode->LaunchDummyEffect(&position, dummyEffect, EffectLifetime(dummyLifetime) + 10, 0);
+}
 // OFFSET: 0x00CC2D50
 // FUNCTION: fn_21145
 void CGameActor::SetResMsg2AI(const AiMessage* value, int index) {
@@ -1458,7 +1466,7 @@ void CGameActor::SetState(int state, int resetPosition) {
       }
     }
     if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN) {
-      this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
+      this->LaunchAttackProjectile(this->hitTargetAid, 30.0f);
     }
     this->attackMotion = static_cast<float>(this->GetAttackMotion());
     this->RegisterPos();
@@ -1859,13 +1867,13 @@ void CRenderObject::RenderBlur(
       quad.bottom = static_cast<float>(box->bottom);
       quad.right = static_cast<float>(box->right) + offset - spread;
     } else if (direction == 3) {
-      quad.top = static_cast<float>(box->top) + spread;
       quad.bottom = static_cast<float>(box->bottom) + spread;
+      quad.top = static_cast<float>(box->top) + spread;
       quad.left = static_cast<float>(box->left) + offset;
       quad.right = static_cast<float>(box->right) + offset;
     } else if (direction == 4) {
-      quad.top = static_cast<float>(box->top) - spread;
       quad.bottom = static_cast<float>(box->bottom) - spread;
+      quad.top = static_cast<float>(box->top) - spread;
       quad.left = static_cast<float>(box->left) + offset;
       quad.right = static_cast<float>(box->right) + offset;
     }
@@ -3010,11 +3018,14 @@ void CGameActor::SetMonsterTransformJob(int value) {
 // FUNCTION: fn_21038
 void CRenderObject::ScaleByFadePulse(float& scale) const {
   if (0 != (this->render.flags & 0x10)) {
-    const unsigned index = this->render.shrinkPhase * 4u + 90u;
+    int index = this->render.shrinkPhase * 4 + 90;
     if (index > 270) {
       scale = scale * 0.5f;
     } else {
-      scale = ((g_sinTable[index >= 90u ? index : 90u] + 1.0f) * 0.25f + 0.5f) * scale;
+      if (index < 90) {
+        index = 90;
+      }
+      scale = ((g_sinTable[index] + 1.0f) * 0.25f + 0.5f) * scale;
     }
   }
 }
@@ -3931,8 +3942,8 @@ void C3dGrannyGameActor::ProcessMotion() {
 // FUNCTION: fn_21183
 void CGrannyCorpse3d::Render(int argument) {
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
-  CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
+  CTexture* texture = nullptr;
   RenderCommand* command;
 
   this->clock = GrannyGetSystemSeconds();
@@ -4451,16 +4462,18 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
+  bool isMaxLevel;
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
     const int skill = static_cast<std::int16_t>(this->characterLevel);
     if (g_session.m_maxBaseLevelHomun == skill) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL150_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (g_session.m_maxBaseLevel != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
+    if (g_session.m_maxBaseLevel != skill) {
       this->hasLevelAura = 0;
       return;
     }
+    isMaxLevel = g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) == 0;
   } else if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
     if (g_session.m_maxBaseLevelDoram == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
@@ -4468,12 +4481,15 @@ void CGameActor::UpdateMaxLevelAura() {
     }
     this->hasLevelAura = 0;
     return;
-  } else if (g_session.m_maxBaseLevel != static_cast<std::int16_t>(this->characterLevel)) {
-    this->hasLevelAura = 0;
-    return;
+  } else {
+    isMaxLevel = g_session.m_maxBaseLevel == static_cast<std::int16_t>(this->characterLevel);
   }
 
-  this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0);
+  if (isMaxLevel) {
+    this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  this->hasLevelAura = 0;
 }
 
 // OFFSET: 0x00CC2340
@@ -4651,10 +4667,9 @@ void C3dGrannyGameActor::MakeCorpse() {
 __forceinline void CGameActor::RefreshBodyPaletteName() {
   const int costume = this->GetMadogearType();
   const int costumeJob = this->GetBodyCostume();
-  const std::string paletteName = g_session.GetBodyPalName(
+  this->render.name = static_cast<const std::string&>(g_session.GetBodyPalName(
     this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
-  );
-  this->render.name = paletteName;
+  ));
 }
 
 // OFFSET: 0x00CC40D0
@@ -4776,7 +4791,7 @@ bool C3dGrannyGameActor::OnProcess() {
 // FUNCTION: fn_21195
 void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int type) {
   const int value = damage >= 0 ? damage : 0;
-  std::vector<int> digits;
+  std::vector<std::uint32_t> digits;
   int remaining = value;
   if (g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF)) {
     if (value >= 100000000) {
@@ -4817,12 +4832,12 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     effect->SendMsg(nullptr, AM_SETMASTERGID, static_cast<std::uint32_t>(this->render.accountId), type, 0, 0, 0, 0);
     if (value >= 100000000 && g_session.m_damageMillionUnit == 2) {
       if (index == 0) {
-        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 + 4), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 + 4), 0, 0, 0);
       } else {
-        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 - index * 8), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 - index * 8), 0, 0, 0);
       }
     } else {
-      effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - index * 2) * 4 - 4), 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - index * 2) * 4 - 4), 0, 0, 0);
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->render.useGroundLighting = 0;
@@ -4988,36 +5003,76 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (!IsHiding(this->stateFlags) && !IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags)) {
     if (HasFalconChanged(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, HasFalcon(this->stateFlags) ? AM_MAKE_BIRD : AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+      if (HasFalcon(this->stateFlags)) {
+        this->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
+      } else {
+        this->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+      }
     }
     if (HasWargChanged(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, HasWarg(this->stateFlags) ? AM_MAKE_WOLF : AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+      if (HasWarg(this->stateFlags)) {
+        this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
+      } else {
+        this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+      }
     }
   }
 
   if (IsRidingGreenDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingGreenDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingGreenDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingBrownDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingBrownDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingBrownDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingGrayDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingGrayDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingGrayDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingBlueDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingBlueDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingBlueDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingRedDragonChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingRedDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingRedDragon(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingWargChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingWarg(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingWarg(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsRidingPecoChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsRidingPeco(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsRidingPeco(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
   if (IsStarUnionChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsStarUnion(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsStarUnion(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
 
   if (IsInvisibleChanged(this->stateFlags, previousFlags)) {
@@ -5025,7 +5080,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     if (IsInvisible(this->stateFlags)) {
       const int admin = g_session.IsAdminSubMode(8);
       this->render.shadowVisible = 0;
-      if (admin == 0) {
+      if (admin != 0) {
+        this->render.visible = 1;
+      } else {
         this->render.visible = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         if (this->msgEffectList.size() != 0) {
@@ -5033,8 +5090,6 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
             static_cast<CMsgEffect*>(*it)->m_visible = this->render.accountId == g_session.m_aid;
           }
         }
-      } else {
-        this->render.visible = 1;
       }
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
@@ -5079,19 +5134,13 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
+  CChampionMonsterMgr* championMonsters = g_championMonsterMgr;
   const std::uint32_t accountId = this->render.accountId;
-  g_championMonsterMgr->ApplyEffects(this->GetEffectiveJob(-1), this, static_cast<int>(accountId));
+  const int job = this->GetEffectiveJob(-1);
+  championMonsters->ApplyEffects(job, this, static_cast<int>(accountId));
 
   if (previousBodyState != this->bodyState) {
     switch (previousBodyState) {
-    case OPT1_STONE: {
-      const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
-      g_soundMgr->PlayWave(
-        "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
-      );
-      g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
-      break;
-    }
     case OPT1_FREEZE: {
       this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
       this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
@@ -5105,6 +5154,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       color.green = 0xFF;
       color.red = 0xFF;
       color.blue = 0xFF;
+      g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
+      break;
+    }
+    case OPT1_STONE: {
+      const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
       g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
       break;
     }
@@ -5129,14 +5186,6 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
 
     switch (this->bodyState) {
-    case OPT1_STONE:
-      this->render.isMotionFinished = true;
-      this->render.isMotionFreezed = true;
-      this->render.colorLocked = 1;
-      color.green = 0x40;
-      color.red = 0x40;
-      color.blue = 0x40;
-      break;
     case OPT1_FREEZE:
       this->SendMsg(nullptr, AM_MAKE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
       this->render.isMotionFinished = true;
@@ -5152,6 +5201,20 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
+    case OPT1_STONE:
+      this->render.isMotionFinished = true;
+      this->render.isMotionFreezed = true;
+      this->render.colorLocked = 1;
+      color.green = 0x40;
+      color.red = 0x40;
+      color.blue = 0x40;
+      break;
+    case OPT1_STONEWAIT:
+      this->render.colorLocked = 1;
+      color.green = 0x80;
+      color.red = 0x80;
+      color.blue = 0x80;
+      break;
     case OPT1_STUN:
       this->SendMsg(nullptr, AM_MAKE_STUN_EFFECT, 0, 0, 0, 0, 0, 0);
       if (notify) {
@@ -5161,17 +5224,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         );
       }
       break;
-    case OPT1_SLEEP:
-      this->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
-      break;
-    case OPT1_STONEWAIT:
-      this->render.colorLocked = 1;
-      color.green = 0x80;
-      color.red = 0x80;
-      color.blue = 0x80;
-      break;
     case OPT1_BURNING:
       this->SendMsg(nullptr, AM_MAKE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
+      break;
+    case OPT1_SLEEP:
+      this->SendMsg(nullptr, AM_MAKE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_IMPRISON:
       if (!this->HasId(EF_BOTTOM_BASILICA2)) {
@@ -5250,7 +5307,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->SendMsg(nullptr, AM_DELETE_SILENCE_EFFECT, 0, 0, 0, 0, 0, 0);
   }
 
-  this->SendMsg(nullptr, (this->effectState & 0x20) ? AM_MAKE_ANGELUS_EFFECT : AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  if (this->effectState & 0x20) {
+    this->SendMsg(nullptr, AM_MAKE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(nullptr, AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  }
 
   if ((this->effectState & 0x08) && notify) {
     const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
@@ -5322,7 +5383,11 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   const int cellY = info->cellY;
   const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
-  if (hitCount <= 0 || hitCount > 36) {
+  if (hitCount > 0) {
+    if (hitCount > 36) {
+      hitCount = 1;
+    }
+  } else {
     hitCount = 1;
   }
 
@@ -5984,4 +6049,31 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
 
     target->SendMsg(this, kind, address, total, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00CA8630
+// FUNCTION: fn_20990
+CMousePointer::CMousePointer() {
+  this->m_remainingFrames = 0;
+  this->render.flatDepth = 1;
+  this->render.visible = 0;
+  this->render.motionStartTime = timeGetTime();
+
+  if (this->render.sprite) {
+    this->render.sprite->Unlock();
+  }
+  this->render.sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("cursors.spr"));
+  if (this->render.sprite) {
+    this->render.sprite->Lock();
+  }
+
+  if (this->render.action) {
+    this->render.action->Unlock();
+  }
+  this->render.action = static_cast<CActRes*>(ResourceMgr::Instance().Load("cursors.act"));
+  if (this->render.action) {
+    this->render.action->Lock();
+  }
+
+  static_cast<CRenderObject*>(this)->SetAction(3, 2, 0);
 }

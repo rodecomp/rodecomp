@@ -104,24 +104,25 @@ void UIBalloonText::FitText() {
   int height = 4;
 
   for (unsigned int index = 0; index < this->m_lines.size(); ++index) {
-    if (this->m_fontMode == 3) {
+    const std::int16_t mode = this->m_fontMode;
+    if (mode == 3) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0));
       height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0) + 4));
-    } else if (this->m_fontMode == 2) {
+    } else if (mode == 2) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 20, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 1) {
+    } else if (mode == 1) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 21, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 4) {
+    } else if (mode == 4) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 23, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 5) {
+    } else if (mode == 5) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 24, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 6) {
+    } else if (mode == 6) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 25, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 7) {
+    } else if (mode == 7) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 26, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 8) {
+    } else if (mode == 8) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 27, this->m_fontHeight, 0, 0));
-    } else if (this->m_fontMode == 9) {
+    } else if (mode == 9) {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 28, this->m_fontHeight, 0, 0));
     } else {
       width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0));
@@ -387,7 +388,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      sprintf_s(line, sizeof(line), g_serviceType != ServiceKorea ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
+      if (g_serviceType == ServiceKorea) {
+        sprintf_s(line, sizeof(line), "%s (%s) ", name.c_str(), party);
+      } else {
+        sprintf_s(line, sizeof(line), "%s (%s)", name.c_str(), party);
+      }
       this->m_lines.push_back(line);
     }
 
@@ -410,7 +415,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      sprintf_s(line, sizeof(line), g_serviceType != ServiceKorea ? "%s [%s]" : "%s (%s) ", guild, position);
+      if (g_serviceType == ServiceKorea) {
+        sprintf_s(line, sizeof(line), "%s (%s) ", guild, position);
+      } else {
+        sprintf_s(line, sizeof(line), "%s [%s]", guild, position);
+      }
       this->m_lines.push_back(line);
     }
   }
@@ -427,23 +436,22 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
   if (monsterType == 0 || info.groupIconId != 0) {
     this->Resize(width, static_cast<int>(this->m_lines.size()) * (g_nameBalloonFontHeight + 2) + 6);
   } else {
-    const char* path;
+    const char* path = nullptr;
     if (monsterType == 1) {
       path = "유저인터페이스\\montype_boss.bmp";
     } else if (monsterType == 2) {
       path = "유저인터페이스\\montype_mvp.bmp";
-    } else {
-      this->Invalidate();
-      return;
     }
 
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-    if (bitmap) {
-      std::size_t height = this->m_lines.size() * (g_nameBalloonFontHeight + 2) + 6;
-      if (height < static_cast<std::size_t>(bitmap->image.height)) {
-        height = bitmap->image.height;
+    if (path) {
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      if (bitmap) {
+        std::size_t height = this->m_lines.size() * (g_nameBalloonFontHeight + 2) + 6;
+        if (height < static_cast<std::size_t>(bitmap->image.height)) {
+          height = bitmap->image.height;
+        }
+        this->Resize(bitmap->image.width + this->nameWidth, static_cast<int>(height));
       }
-      this->Resize(bitmap->image.width + this->nameWidth, static_cast<int>(height));
     }
   }
 

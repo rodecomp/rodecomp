@@ -13,7 +13,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
   const unsigned char* entry = data;
   int offset = 0;
   unsigned char* offsetBytes = reinterpret_cast<unsigned char*>(&offset);
-  while (*text != 0) {
+  do {
     if (text >= end || failed) {
       break;
     }
@@ -54,7 +54,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       }
     } else if (*node >= *text) {
       if (*node != *text) {
-        return accepted;
+        break;
       }
 
       ++matched;
@@ -62,7 +62,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       ++text;
       accepted = (static_cast<signed char>(*entry) >= 0) ? accepted : matched;
     }
-  }
+  } while (*text != 0);
 
   return accepted;
 }

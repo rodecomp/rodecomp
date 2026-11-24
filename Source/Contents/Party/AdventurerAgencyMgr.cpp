@@ -8,10 +8,6 @@
 
 // INLINED
 std::uint32_t CAdventurerAgencyMgr::Id(double value) {
-  if (!(value < 4294967296.0) || value <= -1.0) {
-    return 0xFFFFFFFFu;
-  }
-
   return static_cast<std::uint32_t>(value);
 }
 
@@ -70,45 +66,6 @@ void CAdventurerAgencyMgr::Shutdown() {
 // FUNCTION: fn_03654
 const std::vector<CAdvenPartyInfo>& CAdventurerAgencyMgr::Entries() const {
   return this->entries;
-}
-
-// OFFSET: 0x005CAA50
-// FUNCTION: fn_03655
-std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
-  std::string url = g_session.ResolveAccountServiceBase();
-
-  if (url.empty()) {
-    return "";
-  }
-
-  switch (operation) {
-  case 1:
-    url += "/party/list";
-    break;
-  case 0:
-  case 2:
-    url += "/party/add";
-    break;
-  case 3:
-    url += "/party/search";
-    break;
-  case 4:
-    url += "/party/del";
-    break;
-  case 5:
-    url += "/party/get";
-    break;
-  case 6:
-    url += "/party/change";
-    break;
-  case 7:
-    url += "/party/info";
-    break;
-  default:
-    break;
-  }
-
-  return url;
 }
 
 // OFFSET: 0x005CAC00

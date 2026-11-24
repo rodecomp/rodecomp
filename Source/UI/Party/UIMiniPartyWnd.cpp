@@ -300,7 +300,8 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           }
         } else {
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_YIELD_PARTYMASTER)), 255, 3, 0, 0);
+          const char* message = LookupMessage(MSI_CANNOT_YIELD_PARTYMASTER);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 255, 3, 0, 0);
           return 0;
         }
       }
@@ -315,7 +316,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case MENUID_CLOSE_MINIPARTY:
       if (this->m_owner->GetMember().valid) {
         g_windowMgr.CloseMiniPartyWindow(this->m_owner->GetMember().accountId);
-        return 0;
       }
       break;
       }
@@ -326,25 +326,21 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_SENDMSG:
       if (!g_session.m_lockMouse) {
         this->m_owner->GetMember();
-        return 0;
       }
       break;
     case ID_TALK:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
-          const char* group;
+          const char* group = nullptr;
           if (g_windowMgr.IsFriend(this->m_owner->GetMember().name.c_str())) {
             group = LookupMessage(MSI_FRIEND);
           } else if (g_session.IsGuildMemberCharacter(this->m_owner->GetMember().characterId)) {
             group = "GuildMember";
-          } else {
-            group = nullptr;
           }
           g_windowMgr.SendNotice(
             14, reinterpret_cast<std::intptr_t>(this->m_owner->GetMember().name.c_str()), reinterpret_cast<std::intptr_t>(group),
             reinterpret_cast<std::intptr_t>(g_session.ShortcutFilename(this->m_owner->GetMember().characterId).c_str()), 0, 0
           );
-          return 0;
         }
       }
       break;

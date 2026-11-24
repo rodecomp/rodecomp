@@ -6,6 +6,9 @@
 #include <cstring>
 #include <zlib.h>
 
+// GLOBAL: gl_26045
+const char gl_obsoleteName000[44] = "data\\texture\\유저인터페이스\\map\\1@20cn1.bmp";
+
 namespace {
 #pragma pack(push, 1)
 
@@ -31,15 +34,7 @@ namespace {
     /* 000C */ std::uint32_t version;
   };
 
-  struct PakUsedBlock {
-    PakUsedBlock(std::uint64_t blockOffset, std::uint32_t blockSize) : offset(blockOffset), size(blockSize) {
-    }
-
-    /* 0000 */ std::uint64_t offset;
-    /* 0008 */ std::uint32_t size;
-
-    auto operator<=>(const PakUsedBlock& other) const = default;
-  };
+  using PakUsedBlock = std::pair<std::uint64_t, std::uint32_t>;
 
   static_assert(sizeof(PakTableHeader) == 12);
   static_assert(sizeof(PakEntryRecord) == 21);
@@ -94,22 +89,12 @@ CPakFile* PakFileDeleter::Destroy(unsigned int flags) {
 
 template __declspec(noinline) std::pair<std::set<PakUsedBlock>::iterator, bool> std::set<PakUsedBlock>::_Mybase::insert<false, 0>(PakUsedBlock&&);
 
-// OFFSET: 0x005EF3F0
-// FUNCTION: fn_04004
-CPakFile::~CPakFile() = default;
 
 namespace myGPack {
   // OFFSET: 0x005F7790
   // FUNCTION: fn_04046
   CReadPakFile::CReadPakFile() : m_handle(INVALID_HANDLE_VALUE), m_size(0) {
   }
-
-  // INLINED
-  CReadPakFile::~CReadPakFile() {
-    this->Close();
-  }
-
-  CWritePakFile::~CWritePakFile() = default;
 
   // OFFSET: 0x005EF850
   // FUNCTION: fn_04013
@@ -136,7 +121,7 @@ namespace myGPack {
   // FUNCTION: fn_04014
   bool CGPakUpdate::RemoveObsoleteEntries() {
     std::list<std::string> names;
-    names.push_back("data\\texture\\유저인터페이스\\map\\1@20cn1.bmp");
+    names.push_back(std::string(gl_obsoleteName000, 43));
     names.push_back("data\\texture\\유저인터페이스\\map\\1@20cn2.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\1@4cdn.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\1@4drk.bmp");
@@ -527,15 +512,13 @@ namespace myGPack {
 
     std::int64_t removed = 0;
 
-    if (names.size() > 0) {
-      for (auto name = names.begin(); name != names.end(); ++name) {
-        for (auto entry = this->m_entries.begin(); entry != this->m_entries.end();) {
-          if (std::strcmp(entry->name.m_name, name->c_str()) == 0) {
-            entry = this->m_entries.erase(entry);
-            ++removed;
-          } else {
-            ++entry;
-          }
+    for (auto name = names.begin(); name != names.end(); ++name) {
+      for (auto entry = this->m_entries.begin(); entry != this->m_entries.end();) {
+        if (std::strcmp(entry->name.m_name, name->c_str()) == 0) {
+          entry = this->m_entries.erase(entry);
+          ++removed;
+        } else {
+          ++entry;
         }
       }
     }
@@ -560,8 +543,8 @@ namespace myGPack {
     this->m_freeBlocks.clear();
 
     for (const PakUsedBlock& block : used) {
-      const std::uint32_t size = block.size;
-      const std::uint64_t offset = block.offset;
+      const std::uint32_t size = block.second;
+      const std::uint64_t offset = block.first;
       if (position < offset) {
         const std::uint64_t gap = offset - position;
         this->m_freeBlocks.insert({static_cast<std::uint32_t>(gap), position});

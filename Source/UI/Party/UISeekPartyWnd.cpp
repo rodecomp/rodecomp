@@ -39,11 +39,13 @@ __declspec(noinline) UISeekPartyWnd::~UISeekPartyWnd() {
 void UISeekPartyWnd::OnCreate(int, int) {
   char text[0x80] = {};
   const int minimum = g_session.m_partyBookingLevelLimit;
-  int maximum = g_session.m_maxLevel;
-  if (minimum + 0xF <= maximum) {
+  const int currentMax = g_session.m_maxLevel;
+  volatile int maximum = currentMax;
+  if (minimum + 0xF <= currentMax) {
     maximum = minimum + 0xF;
   }
-  std::sprintf(text, "%s - %d~%d", LookupMessage(MSI_PARTY_BOOKING_REQURT), minimum, maximum);
+  const char* message = LookupMessage(MSI_PARTY_BOOKING_REQURT);
+  std::sprintf(text, "%s - %d~%d", message, minimum, maximum);
 
   this->m_label = new UIStaticText();
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);

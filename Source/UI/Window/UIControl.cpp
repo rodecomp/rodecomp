@@ -986,18 +986,47 @@ void CUIBasicButton::Paint() {
 // OFFSET: 0x009E20B0
 // FUNCTION: fn_14406
 void CUIBasicButton::LoadSkin(bool resolveSkin) {
-  this->leftImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
-  this->leftImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
-  this->leftImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
+  auto& leftImagesRef = this->leftImages;
+  leftImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
+  leftImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
+  leftImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
   this->disabledLeft = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_left.bmp", resolveSkin));
   this->middleImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", resolveSkin));
-  this->middleImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_mid.bmp", resolveSkin));
-  this->middleImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_mid.bmp", resolveSkin));
-  this->disabledMiddle = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_mid.bmp", resolveSkin));
-  this->rightImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_right.bmp", resolveSkin));
-  this->rightImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_right.bmp", resolveSkin));
-  this->rightImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_right.bmp", resolveSkin));
-  this->disabledRight = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_right.bmp", resolveSkin));
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_press_mid.bmp";
+    this->middleImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_over_mid.bmp";
+    this->middleImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_disable_mid.bmp";
+    this->disabledMiddle = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_out_right.bmp";
+    this->rightImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_press_right.bmp";
+    this->rightImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_over_right.bmp";
+    this->rightImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
+  {
+    std::string name;
+    name = "유저인터페이스\\basic_interface\\btn_disable_right.bmp";
+    this->disabledRight = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, resolveSkin));
+  }
 }
 
 // OFFSET: 0x009F26B0
@@ -1095,18 +1124,19 @@ void CUITab::SelectPage(UIWindow* page) {
 // OFFSET: 0x009F10F0
 // FUNCTION: fn_14687
 bool CUITab::SelectIndex(unsigned int index) {
-  if (index >= this->m_children.size()) {
+  auto& children = this->m_children;
+  if (index >= children.size()) {
     return false;
   }
 
-  CUITabButton* button = static_cast<CUITabButton*>(*std::next(this->m_children.begin(), index));
+  CUITabButton* button = static_cast<CUITabButton*>(*std::next(children.begin(), index));
   if (this->current == button) {
     return true;
   }
 
   if (!button) {
     this->current = nullptr;
-    for (UIWindow* child : this->m_children) {
+    for (UIWindow* child : children) {
       static_cast<CUITabButton*>(child)->SetSelected(false);
     }
   } else {
@@ -1118,7 +1148,7 @@ bool CUITab::SelectIndex(unsigned int index) {
     }
 
     this->current = button;
-    for (UIWindow* child : this->m_children) {
+    for (UIWindow* child : children) {
       if (this->current != child) {
         static_cast<CUITabButton*>(child)->SetSelected(false);
       }
@@ -1148,12 +1178,10 @@ void CUITabButton::SetSelected(bool selected) {
 // OFFSET: 0x009F1740
 // FUNCTION: fn_14696
 void CUITabButton::SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow) {
-  this->normalCell = SkinPaletteCell{normalColumn, normalRow};
-  this->selectedCell.column = selectedColumn;
-  this->selectedCell.row = selectedRow;
-  this->borderCell.column = borderColumn;
-  this->borderCell.row = borderRow;
   this->useSkinColors = 1;
+  this->normalCell = SkinPaletteCell{normalColumn, normalRow};
+  this->selectedCell = SkinPaletteCell{selectedColumn, selectedRow};
+  this->borderCell = SkinPaletteCell{borderColumn, borderRow};
   this->LoadSkin(0);
   this->Invalidate();
 }
@@ -2561,10 +2589,8 @@ void CUIResizer::OnLBtnDown(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  this->startX = screenX;
-  this->startY = screenY;
-  this->startWidth = this->parent->geometry.width;
-  this->startHeight = this->parent->geometry.height;
+  this->startPosition = Extent{screenX, screenY};
+  this->startSize = Extent{this->parent->geometry.width, this->parent->geometry.height};
   this->deltaX = 0;
   this->deltaY = 0;
 }
@@ -2582,10 +2608,8 @@ void CUIResizer::OnLBtnUp(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  this->startX = screenX;
-  this->startY = screenY;
-  this->startWidth = this->parent->geometry.width;
-  this->startHeight = this->parent->geometry.height;
+  this->startPosition = Extent{screenX, screenY};
+  this->startSize = Extent{this->parent->geometry.width, this->parent->geometry.height};
   this->deltaX = 0;
   this->deltaY = 0;
 }
@@ -2597,27 +2621,27 @@ void CUIResizer::OnMouseMove(int x, int y) {
     return;
   }
 
-  int screenY = y;
   int screenX = x;
-  this->ToScreen(screenX, screenY);
+  x = y;
+  this->ToScreen(screenX, x);
 
-  const int rows = static_cast<int>(std::round(static_cast<float>(screenY - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
-  int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+  const int rows = static_cast<int>(std::round(static_cast<float>(x - this->startPosition.y) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startPosition.x) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startSize.x;
   if (this->maxWidth < width) {
     width = this->maxWidth;
   } else if (width < this->minWidth) {
     width = this->minWidth;
   }
 
-  int height = rows + this->startHeight;
+  int height = rows + this->startSize.y;
   if (this->maxHeight < height) {
     height = this->maxHeight;
   } else if (height < this->minHeight) {
     height = this->minHeight;
   }
 
-  width -= this->startWidth;
-  height -= this->startHeight;
+  width -= this->startSize.x;
+  height -= this->startSize.y;
   if (width != this->deltaX || height != this->deltaY) {
     if (this->onResize) {
       this->onResize(width - this->deltaX, height - this->deltaY);
@@ -3467,7 +3491,8 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblPos = \r\n";
     data += "{\r\n";
     for (const auto& position : this->windowPositions) {
-      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.x, position.second.y);
+      const int key = position.first;
+      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", key, position.second.x, position.second.y);
     }
     data += "}\r\n";
   }
@@ -3476,23 +3501,28 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblSize = \r\n";
     data += "{\r\n";
     for (const auto& size : this->windowSizes) {
-      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.cx, size.second.cy);
+      const int key = size.first;
+      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", key, size.second.cx, size.second.cy);
     }
     data += "}\r\n";
   }
 
-  if (data.size() == 0) {
-    return false;
+  bool saved;
+  if (data.size() != 0) {
+    {
+      NSyncObject sync(&this->lock);
+      CFile file;
+      if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
+        data = EncodeBase64(data, false);
+        file.Write(data.c_str(), data.size());
+        file.Close();
+      }
+    }
+    saved = true;
+  } else {
+    saved = false;
   }
-
-  NSyncObject sync(&this->lock);
-  CFile file;
-  if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
-    data = EncodeBase64(data, false);
-    file.Write(data.c_str(), data.size());
-    file.Close();
-  }
-  return true;
+  return saved;
 }
 
 // OFFSET: 0x009D31F0
@@ -3608,7 +3638,8 @@ void CUIHScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIHThumb();
     this->thumb->Show(0);
-    AssignHandler(this->thumb->onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
+    auto& onDrag = this->thumb->onDrag;
+    AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
   }
 }
@@ -3631,7 +3662,8 @@ void CUIVScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(0);
-    AssignHandler(this->thumb->onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
+    auto& onDrag = this->thumb->onDrag;
+    AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
   }
 }
@@ -3705,16 +3737,16 @@ void CUIEditBox::OnCreate(int width, int height) {
 // FUNCTION: fn_14511
 void CUITextViewer::AddLine(const std::string& text) {
   const int scrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
-  const int availableWidth = std::max(0, this->geometry.width - (this->paddingLeft + this->paddingRight + scrollWidth));
+  const int usedWidth = this->paddingLeft + this->paddingRight + scrollWidth;
+  const int availableWidth = std::max(0, this->geometry.width - usedWidth);
   int align;
   if (this->textX == 6) {
     align = 2;
   } else {
     align = this->textX == 2;
   }
-  LineTextStyle style{this->textColor, this->fontHeight, this->bold, false};
   CCreateLineInfo lineInfo(
-    this, text.c_str(), availableWidth, this->lineSpacing, style,
+    this, text.c_str(), availableWidth, this->lineSpacing, LineTextStyle{this->textColor, this->fontHeight, this->bold, false},
     this->outline, this->outlineColor, this->shadow, this->shadowColor, align
   );
   if (!lineInfo.m_lines.empty()) {
@@ -3725,14 +3757,15 @@ void CUITextViewer::AddLine(const std::string& text) {
         this->AddLineChild(child);
       }
     }
+    const int visibleHeight = this->geometry.height - this->paddingBottom - this->paddingTop;
     this->contentHeight += lineInfo.m_height;
-    const int visibleHeight = this->geometry.height - this->paddingTop - this->paddingBottom;
     this->scrollBar->Move(this->geometry.width - this->scrollBar->geometry.width, 0);
     this->scrollBar->SetTotal(this->contentHeight);
     this->scrollBar->SetVisible(visibleHeight);
     this->scrollBar->SetPosition(this->scrollBar->position);
-    const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
-    this->padding->SetPadding(this->paddingLeft, this->paddingTop, this->paddingRight + newScrollWidth, this->paddingBottom);
+    this->padding->SetPadding(
+      this->paddingLeft, this->paddingTop, this->paddingRight + (this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0), this->paddingBottom
+    );
   }
 }
 

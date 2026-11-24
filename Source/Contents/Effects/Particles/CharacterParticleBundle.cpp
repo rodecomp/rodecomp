@@ -27,9 +27,9 @@ namespace {
 
   // INLINED
   static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
-    return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
-                    point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
-                    point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+    return vector3d{point.x * transform.values[0] + point.y * transform.values[3] + point.z * transform.values[6] + transform.values[9],
+                    point.x * transform.values[1] + point.y * transform.values[4] + point.z * transform.values[7] + transform.values[10],
+                    point.x * transform.values[2] + point.y * transform.values[5] + point.z * transform.values[8] + transform.values[11]};
   }
 
   // GLOBAL: gl_24870
@@ -68,6 +68,7 @@ void CChopChopClawMarks::SpawnParticle() {
   if (particle) {
     const std::vector<RadialGridPoint>& ring = this->GetRing(3);
     RadialGridPoint point;
+    std::vector<RadialGridPoint>::const_iterator found;
     do {
       const int positiveX = std::ranges::max(rand() % 2, 0);
       const int x = std::max(rand() % 4, 1);
@@ -83,9 +84,10 @@ void CChopChopClawMarks::SpawnParticle() {
         signedY = y;
       }
       point.y = static_cast<float>(signedY);
-    } while (ring.end() == std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
-      return candidate.x == point.x && candidate.y == point.y;
-    }));
+      found = std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
+        return candidate.x == point.x && candidate.y == point.y;
+      });
+    } while (found == ring.end());
 
     const float x = point.x * 5.0f;
     const float y = point.y * 5.0f;
@@ -121,8 +123,9 @@ void CharacterParticleBundle::Close() {
 // OFFSET: 0x005A3A10
 // FUNCTION: fn_03134
 const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
+  const auto end = g_clawMarkRings.end();
   const auto found = g_clawMarkRings.find(radius);
-  if (found != g_clawMarkRings.end()) {
+  if (found != end) {
     return found->second;
   }
 
@@ -186,8 +189,7 @@ bool CChopChopClawMarks::IsAlive() {
 // FUNCTION: fn_03139
 void CharacterParticleBundle::OnProcess() {
   this->EmitParticles();
-  const auto last = this->particles.end();
-  this->particles.erase(std::remove_if(this->particles.begin(), last, [](CEZ2STRParticle* particle) {
+  std::erase_if(this->particles, [](CEZ2STRParticle* particle) {
     if (!particle) {
       return true;
     }
@@ -196,10 +198,9 @@ void CharacterParticleBundle::OnProcess() {
       return true;
     }
     return false;
-  }), last);
+  });
 
-  for (auto particleIt = this->particles.begin(); particleIt != this->particles.end(); ++particleIt) {
-    CEZ2STRParticle*& particle = *particleIt;
+  for (CEZ2STRParticle*& particle : this->particles) {
     this->UpdateParticlePosition(particle);
     this->ProcessParticle(particle);
   }

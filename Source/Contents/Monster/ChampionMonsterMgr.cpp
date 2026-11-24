@@ -34,12 +34,15 @@ __declspec(noinline) CChampionMonsterMgr::~CChampionMonsterMgr() = default;
 
 // OFFSET: 0x00ADDE00
 // FUNCTION: fn_46439
-__declspec(noinline) CChampionMonsterMgr::lcData::~lcData() = default;
+CChampionMonsterMgr::lcData::~lcData() {
+}
 
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
 __declspec(noinline) void CChampionMonsterMgr::AddItem(int id, float value) {
-  this->m_items.insert(std::pair<int, lcData>(id, lcData(value)));
+  lcData data;
+  data.m_value = value;
+  this->m_items.insert(std::pair<int, lcData>(id, data));
 }
 
 // OFFSET: 0x00ADE140

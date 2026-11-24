@@ -28,8 +28,9 @@ struct AchievementRewardIds {
 };
 
 struct AchievementInfo {
+  AchievementInfo();
   // INLINED
-  AchievementInfo() {
+  explicit AchievementInfo(int id) {
   }
   // INLINED
   AchievementInfo(std::string title, std::string summaryText, std::string description, int points)

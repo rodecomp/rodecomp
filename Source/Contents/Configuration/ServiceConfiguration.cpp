@@ -181,11 +181,11 @@ void InitializeServiceStrings(char* protection) {
   InitializeLanguage();
 
   if (g_serviceType == ServiceKorea || g_serviceType == ServiceIndonesia) {
-    g_nameBalloonFontHeight = 13;
     g_serviceFlag05 = true;
+    g_nameBalloonFontHeight = 13;
   } else {
-    g_nameBalloonFontHeight = 12;
     g_serviceFlag05 = false;
+    g_nameBalloonFontHeight = 12;
   }
   g_serviceFlag06 = g_serviceFlag05;
 

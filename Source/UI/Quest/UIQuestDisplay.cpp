@@ -94,15 +94,14 @@ void UIQuestDisplay::Paint() {
       for (int index = 0; index < info.m_huntCount; ++index) {
         std::string hunt;
         if (info.m_huntMobId[index] != 31999) {
-          const char* name = info.m_huntName[index];
           if (-1 >= info.m_huntMinLevel[index] || -1 >= info.m_huntMaxLevel[index] || (0 == info.m_huntMinLevel[index] && 0 == info.m_huntMaxLevel[index])) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
-          } else if (0 == info.m_huntMinLevel[index]) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, info.m_huntMaxLevel[index]));
-          } else if (0 == info.m_huntMaxLevel[index]) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, info.m_huntMinLevel[index]));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s", info.m_huntName[index]));
+          } else if (0 == info.m_huntMinLevel[index] && 0 != info.m_huntMaxLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", info.m_huntName[index], info.m_huntMaxLevel[index]));
+          } else if (0 != info.m_huntMinLevel[index] && 0 == info.m_huntMaxLevel[index]) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", info.m_huntName[index], info.m_huntMinLevel[index]));
           } else {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", info.m_huntName[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
           }
         } else {
           hunt = static_cast<const std::string&>(
@@ -119,8 +118,7 @@ void UIQuestDisplay::Paint() {
         if (g_windowMgr.chatWnd) {
           description = g_windowMgr.chatWnd->ConvertChat(std::move(description));
         }
-        parser = g_navigationLinkParser;
-        description = parser->DisplayNavigationLink(description);
+        description = g_navigationLinkParser->DisplayNavigationLink(description);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
         if (info.m_huntMaxCount[index] > 0) {
@@ -148,9 +146,41 @@ void UIQuestDisplay::Paint() {
   }
 }
 
+// INLINED
+static __forceinline int FindDisplayQuestAt(int y) {
+  int multiple = 0;
+  int none = 0;
+  int single = 0;
+  int index = 0;
+  const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
+  for (auto it = g_renewQuestMgr->m_ongoingQuests.cbegin(); end != it; ++it, ++index) {
+    if (single + multiple + none >= 5) {
+      break;
+    }
+
+    const int top = single * 50 + (none + multiple * 2) * 40;
+    const RenewQuestOngoingInfo& info = it->second;
+    if (info.m_active && info.m_simpleView) {
+      if (y >= top && y <= top + 10) {
+        return index;
+      }
+
+      if (info.m_huntCount == 0) {
+        ++none;
+      } else if (info.m_huntCount > 1) {
+        ++multiple;
+      } else {
+        ++single;
+      }
+    }
+  }
+
+  return -1;
+}
+
 // OFFSET: 0x00949AB0
 // FUNCTION: fn_45700
-__forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
+void UIQuestDisplay::SelectQuestAt(int x, int y) {
   int none = 0;
   int multiple = 0;
   int single = 0;
@@ -186,7 +216,7 @@ __forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
 // FUNCTION: fn_12934
 void UIQuestDisplay::OnRBtnUp(int x, int y) {
   const int previous = this->m_selectedIndex;
-  this->SelectQuestAt(x, y);
+  this->m_selectedIndex = FindDisplayQuestAt(y);
   if (previous != this->m_selectedIndex) {
     this->Invalidate();
   }
@@ -207,12 +237,12 @@ void UIQuestDisplay::StoreInfo() {
 // OFFSET: 0x00950BC0
 // FUNCTION: fn_12947
 int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  PACKET_CZ_ACTIVE_QUEST packet;
   switch (message) {
   case UM_SETINFO: {
     this->m_info = reinterpret_cast<QuestDisplayInfo*>(argument1);
-    QuestDisplayInfo* info = reinterpret_cast<QuestDisplayInfo*>(argument1);
-    if (!info->IsValid()) {
-      info->Reset();
+    if (!this->m_info->IsValid()) {
+      this->m_info->Reset();
     }
     this->Show(this->m_info->visible);
     break;
@@ -220,11 +250,10 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_MENU_SELECTED: {
     int index = 0;
     const auto end = g_renewQuestMgr->m_ongoingQuests.end();
-    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
+    for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); end != it; ++it, ++index) {
       if (index == this->m_selectedIndex) {
         switch (this->m_menuItems[argument1].value) {
         case MENUID_TOGGLE_QUEST_ACTIVE: {
-          PACKET_CZ_ACTIVE_QUEST packet;
           packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.questId = it->first;
           packet.active = !it->second.m_active;
@@ -258,12 +287,18 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 204, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(g_mouse.x + 1, 1);
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      if (x < 1) {
+        x = 1;
+      }
       int maxX = g_renderer->viewport.width - menu->geometry.width;
       if (x > maxX) {
         x = maxX;
       }
-      int y = std::max(g_mouse.y + 1, 1);
+      if (y < 1) {
+        y = 1;
+      }
       int maxY = g_renderer->viewport.height - menu->geometry.height;
       if (y > maxY) {
         y = maxY;

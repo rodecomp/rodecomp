@@ -548,20 +548,21 @@ int UIGradeEnchantWnd::SendMsg(
     switch (argument1) {
     case ID_OK:
       if (this->requestPending != 1 && this->item.identity[1] > 0 && this->selectedMaterial != -1) {
-        const int quantity = g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity;
-        if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
-          if (this->protect != 0 || this->blessingAmount != 0 ||
-              g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
-            this->requestPending = 1;
+        if (g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity >= this->materials[this->selectedMaterial].amount) {
+          if (g_session.m_zeny >= this->SelectedMaterialZeny()) {
+            if (this->protect != 0 || this->blessingAmount != 0 ||
+                g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
+              this->requestPending = 1;
 
-            GradeEnchantRequestPacket packet;
-            packet.id = ID_CZ_GRADE_ENCHANT_REQUEST;
-            packet.index = static_cast<std::uint16_t>(this->item.identity[1]);
-            packet.material = this->selectedMaterial;
-            packet.useBlessing = this->blessingAmount > 0;
-            packet.blessingCount = this->blessingAmount / this->info.blessingStepAmount;
-            packet.protect = this->protect;
-            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+              GradeEnchantRequestPacket packet;
+              packet.id = ID_CZ_GRADE_ENCHANT_REQUEST;
+              packet.index = static_cast<std::uint16_t>(this->item.identity[1]);
+              packet.material = this->selectedMaterial;
+              packet.useBlessing = this->blessingAmount > 0;
+              packet.blessingCount = this->blessingAmount / this->info.blessingStepAmount;
+              packet.protect = this->protect;
+              GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+            }
           }
         }
       }
@@ -592,7 +593,8 @@ int UIGradeEnchantWnd::SendMsg(
     break;
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
-      const ITEM_INFO dropped = g_session.LookupClientItemByIdentity(argument1);
+      const int identity = static_cast<int>(argument1);
+      const ITEM_INFO dropped = g_session.LookupClientItemByIdentity(identity);
       if (g_session.HasSwapEquipmentItem(dropped.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
@@ -601,7 +603,7 @@ int UIGradeEnchantWnd::SendMsg(
       if (dropped.identity[1] > 0 && dropped.identified == 1) {
         GradeEnchantSelectPacket packet;
         packet.id = ID_CZ_GRADE_ENCHANT_SELECT_EQUIPMENT;
-        packet.index = static_cast<std::uint16_t>(argument1);
+        packet.index = static_cast<std::uint16_t>(identity);
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
     }

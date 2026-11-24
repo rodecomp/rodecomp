@@ -17,6 +17,7 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Contents/Items/EnchantMgr.h"
 #include "Contents/EntryQueue/EntryQueueMgr.h"
+#include "Contents/Actors/Resources/BodyResources.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/Items/ItemDBToIDMgr.h"
@@ -843,36 +844,33 @@ int InitApp(HINSTANCE instance, int showCommand) {
   int y = 0;
   if (!g_configuredFullscreen) {
     GetSystemMetrics(SM_CXSCREEN);
-    int posX;
-    int posY;
     if (g_configuredOldWidth == g_viewportWidth && g_configuredOldHeight == g_viewportHeight) {
       int defaultX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      posX = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_XPos", 0x9B17C9EFDBB39F2FULL), defaultX);
+      x = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_XPos", 0x9B17C9EFDBB39F2FULL), defaultX);
 
       int defaultY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
-      posY = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_YPos", 0x69D345DB950F336DULL), defaultY);
+      y = g_session.GetOptionInteger(OBFUSCATE_BYTES_TEXT("Window_YPos", 0x69D345DB950F336DULL), defaultY);
     } else {
-      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
-      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
 
-    if (posX > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
-      posX = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
+    if (x > GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) {
+      x = (GetSystemMetrics(SM_CXSCREEN) - g_viewportWidth) / 2;
     }
-    x = posX < 0 ? 0 : posX;
-    if (posY > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
-      posY = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
+    if (x < 0) {
+      x = 0;
     }
-    if (posY < 0) {
-      posY = 0;
+    if (y > GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) {
+      y = (GetSystemMetrics(SM_CYSCREEN) - g_viewportHeight) / 2;
     }
-    y = posY;
+    if (y < 0) {
+      y = 0;
+    }
   }
 
-  const __int64 width = rect.right - rect.left;
-  const __int64 height = rect.bottom - rect.top;
-  int windowWidth = static_cast<int>(width);
-  int windowHeight = static_cast<int>(height);
+  __int64 width = rect.right - rect.left;
+  __int64 height = rect.bottom - rect.top;
   if (!g_configuredFullscreen) {
     RECT trayRect;
     HWND tray = FindWindowA(OBFUSCATE_BYTES_TEXT("Shell_TrayWnd", 0xC7912587FFF31B71ULL), nullptr);
@@ -886,17 +884,17 @@ int InitApp(HINSTANCE instance, int showCommand) {
       const __int64 trayWidth = trayRect.right - trayRect.left;
       const __int64 trayHeight = trayRect.bottom - trayRect.top;
       if (trayWidth < trayHeight) {
-        windowWidth = static_cast<int>(screenWidth - trayWidth);
-      } else if (trayHeight < trayWidth) {
-        windowHeight = static_cast<int>(screenHeight - trayHeight);
+        width = screenWidth - trayWidth;
+      } else if (trayWidth > trayHeight) {
+        height = screenHeight - trayHeight;
       }
     }
   }
 
-  hWnd = CreateWindowExA(0, windowClass.lpszClassName, g_windowName, style, x, y, windowWidth, windowHeight, nullptr, nullptr, instance, nullptr);
+  hWnd = CreateWindowExA(0, windowClass.lpszClassName, g_windowName, style, x, y, static_cast<int>(width), static_cast<int>(height), nullptr, nullptr, instance, nullptr);
   if (!hWnd) {
     const char* caption = OBFUSCATE_BYTES_TEXT("ERROR", 0x078333BB9725B7C9ULL);
-    MessageBoxA(nullptr, OBFUSCATE_BYTES_TEXT("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL), caption, MB_OK);
+    MessageBoxA(nullptr, OBFUSCATE_TEXT("Window Creation Failed", 0x8F1B5BFD5F6175B5ULL), caption, MB_OK);
     return 0;
   }
 
@@ -1240,8 +1238,33 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   g_commandLine = commandLine;
-  if (RestartFromCommandLine() == true) {
+  const char restart = RestartFromCommandLine();
+  if (restart == 1) {
     return 0;
+  }
+
+  if (restart) {
+    const std::array<char, 47> guardErrorSource =
+        OBFUSCATE_SOURCE_ARRAY_CHAR("CNProtectGameGuardMgr::CreateInstance() Failed", 0xBD3F430159B551FDULL);
+    EncryptedName<sizeof(guardErrorSource), 0xBD3F430159B551FDULL>& guardError =
+        OBFUSCATE_DECRYPT_NAME(0xBD3F430159B551FDULL, guardErrorSource);
+    ShowErrorDialog(guardError.Text(), MB_OK);
+
+    const std::array<char, 10> applySource = OBFUSCATE_SOURCE_ARRAY_CHAR("ApplyNPGE", 0xE51B29334D353B81ULL);
+    EncryptedName<sizeof(applySource), 0xE51B29334D353B81ULL>& apply = OBFUSCATE_DECRYPT_NAME(0xE51B29334D353B81ULL, applySource);
+    if (std::strstr(commandLine, apply.Text())) {
+      return 1;
+    }
+
+    if (!CGGHashMgr::Create()) {
+      const std::array<char, 18> hashErrorSource = OBFUSCATE_SOURCE_ARRAY_CHAR("GGHash Init Error", 0x8F3F2FA959977F9FULL);
+      EncryptedName<sizeof(hashErrorSource), 0x8F3F2FA959977F9FULL>& hashError =
+          OBFUSCATE_DECRYPT_NAME(0x8F3F2FA959977F9FULL, hashErrorSource);
+      ShowErrorDialog(hashError.Text(), MB_OK);
+      return 0;
+    }
+
+    g_ggHashMgr->IsValid();
   }
 
   {
@@ -1615,8 +1638,9 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const int deltaX = cursor.x - g_windowDragStart.x;
     const int deltaY = cursor.y - g_windowDragStart.y;
     if (deltaX != 0 || deltaY != 0) {
-      MoveWindow(hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, g_windowDragRect.right - g_windowDragRect.left,
-                 g_windowDragRect.bottom - g_windowDragRect.top, TRUE);
+      const int height = g_windowDragRect.bottom - g_windowDragRect.top;
+      const int width = g_windowDragRect.right - g_windowDragRect.left;
+      MoveWindow(hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, width, height, TRUE);
     }
 
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0) {
@@ -1642,13 +1666,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   if (g_restartClient) {
     const std::array<char, 4> devServerSource = OBFUSCATE_SOURCE_ARRAY_CHAR("Dev", 0x4B755DB19953E311ULL);
     EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL>& devServer = OBFUSCATE_DECRYPT_NAME(0x4B755DB19953E311ULL, devServerSource);
-    if (!std::strstr(g_launchServerName, devServer.Text())) {
-      const char* parameters = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
-      const char* file = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
-      const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0xD7A749EB27D5BF6DULL);
-      EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = OBFUSCATE_DECRYPT_NAME(0xD7A749EB27D5BF6DULL, openSource);
-      ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
-    } else if (g_serviceMode == 0) {
+    if (std::strstr(g_launchServerName, devServer.Text())) {
+      if (g_serviceMode == 0) {
       const std::array<char, 62> parametersSource = OBFUSCATE_SOURCE_ARRAY_CHAR("http://admtools.gnjoy.com/gamestarter/devro.asp?GameCode=4011", 0xFD69A9B3F311818DULL);
       EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL>& parameters = OBFUSCATE_DECRYPT_NAME(0xFD69A9B3F311818DULL, parametersSource);
       const char* arguments = parameters.Text();
@@ -1668,6 +1687,13 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
       const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0x9B0F234DEFDF7593ULL);
       EncryptedName<sizeof(openSource), 0x9B0F234DEFDF7593ULL>& open = OBFUSCATE_DECRYPT_NAME(0x9B0F234DEFDF7593ULL, openSource);
       ShellExecuteA(nullptr, open.Text(), target, arguments, nullptr, SW_SHOWNORMAL);
+      }
+    } else {
+      const char* parameters = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
+      const char* file = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
+      const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0xD7A749EB27D5BF6DULL);
+      EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = OBFUSCATE_DECRYPT_NAME(0xD7A749EB27D5BF6DULL, openSource);
+      ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);
     }
   }
 

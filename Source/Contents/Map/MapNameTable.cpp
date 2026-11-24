@@ -14,7 +14,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
-#include <utility>
 #include <vector>
 
 // OFFSET: 0x00DE8740
@@ -78,25 +77,14 @@ bool CSession::LoadMapPosTable() {
       } else if (fields.size() < 3) {
         fields.push_back(std::string(start, cursor));
       } else {
-        {
-          std::string last(start, cursor);
-          fields.push_back(std::move(last));
-        }
+        fields.push_back(std::string(start, cursor));
         const int bottom = std::atoi(fields[3].c_str());
         const int right = std::atoi(fields[2].c_str());
         const int top = std::atoi(fields[1].c_str());
-        MapPosRect rect;
-        rect.left = std::atoi(fields[0].c_str());
-        rect.top = top;
-        rect.right = right;
-        rect.bottom = bottom;
-
-        MapPosEntry& listed = this->m_mapPosLists[currentId][name];
-        listed.rect = rect;
-        listed.valid = 1;
-        MapPosEntry& position = this->m_mapPositions[name];
-        position.rect = rect;
-        position.valid = 1;
+        const MapPosRect rect = {std::atoi(fields[0].c_str()), top, right, bottom};
+        const MapPosEntry position = {rect, 1};
+        this->m_mapPosLists[currentId][name] = position;
+        this->m_mapPositions[name] = position;
 
         if (boundsValid != 0) {
           bounds.right = std::max(right, bounds.right);

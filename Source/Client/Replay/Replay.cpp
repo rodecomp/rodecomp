@@ -386,7 +386,7 @@ void Replay::ResetPlayback() {
 
 // OFFSET: 0x00B83E40
 // FUNCTION: fn_19310
-bool Replay::Cipher(std::uint32_t bytes, void* data) {
+__declspec(noinline) bool Replay::Cipher(std::uint32_t bytes, void* data) {
   if (!data || !bytes) {
     return false;
   }
@@ -499,8 +499,12 @@ int Replay::SpeedLevel() const {
 // OFFSET: 0x00B846D0
 // FUNCTION: fn_19319
 void Replay::ResetFile() {
-  this->header.Reset();
+  const ReplayOptions savedOptions = this->header.options;
+  std::memset(&this->header.key0, 0, offsetof(ReplayHeader, options) - offsetof(ReplayHeader, key0));
+  this->header.signature = 0x52414705;
+  this->header.closingSignature = 0x52414705;
   this->records = 0;
+  this->header.options = savedOptions;
   this->fileMode = -1;
   this->file = nullptr;
   this->fileOffset = 0;
@@ -718,31 +722,32 @@ bool ReplayFileList::Refresh() {
   WIN32_FIND_DATAA found;
   HANDLE search = FindFirstFileA(pattern.c_str(), &found);
 
-  if (search != INVALID_HANDLE_VALUE) {
-    while (more) {
-      if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-        const char* extension = found.cFileName + std::strlen(found.cFileName) - 4;
-        const BOOL isReplay = extension[3] == 'f' && extension[2] == 'r' && extension[1] == 'r' && extension[0] == '.';
-
-        if (isReplay) {
-          ReplayFileEntry entry = {};
-          const std::size_t length = std::strlen(found.cFileName);
-          std::memcpy(entry.name, found.cFileName, length);
-          entry.name[length] = '\0';
-          entry.index = 0;
-
-          if (length == 23) {
-            char number[6] = {};
-            std::memcpy(number, entry.name + 15, 4);
-            entry.index = std::atoi(number);
-          }
-
-          this->files.push_back(entry);
-        }
+  while (search != INVALID_HANDLE_VALUE && more) {
+    if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+      const std::size_t nameLength = std::strlen(found.cFileName);
+      BOOL isReplay = FALSE;
+      if (found.cFileName[nameLength - 1] == 'f' && found.cFileName[nameLength - 2] == 'r' && found.cFileName[nameLength - 3] == 'r') {
+        isReplay = found.cFileName[nameLength - 4] == '.';
       }
 
-      more = FindNextFileA(search, &found);
+      if (isReplay) {
+        ReplayFileEntry entry = {};
+        const std::size_t length = std::strlen(found.cFileName);
+        std::memcpy(entry.name, found.cFileName, length);
+        entry.name[length] = '\0';
+        entry.index = 0;
+
+        if (length == 23) {
+          char number[6] = {};
+          std::memcpy(number, entry.name + 15, 4);
+          entry.index = std::atoi(number);
+        }
+
+        this->files.push_back(entry);
+      }
     }
+
+    more = FindNextFileA(search, &found);
   }
 
   FindClose(search);
@@ -1121,7 +1126,8 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
   AppendRecord(records, MakeFramedMessage(4520, SerializeItems(this->m_merchantHopeToSellItems)));
   AppendRecord(records, MakeFramedMessage(4521, SerializeItems(this->m_merchantPurchaseSavedItems)));
   AppendRecord(records, MakeFramedMessage(4522, SerializeItems(this->m_filteredInventoryItems)));
-  AppendRecord(records, MakeFramedMessage(4601, SerializeItems(std::list<ITEM_INFO>(std::begin(this->equippedItems), std::end(this->equippedItems)))));
+  auto& equippedItemsRef = this->equippedItems;
+  AppendRecord(records, MakeFramedMessage(4601, SerializeItems(std::list<ITEM_INFO>(std::begin(equippedItemsRef), std::end(equippedItemsRef)))));
   AppendRecord(records, MakeFramedMessage(4602, SerializeItems(std::list<ITEM_INFO>(std::begin(this->alternateEquippedItems), std::end(this->alternateEquippedItems)))));
   AppendRecord(records, MakeFramedMessage(4603, SerializeItems(std::list<ITEM_INFO>(std::begin(this->costumeItems), std::end(this->costumeItems)))));
   AppendRecord(records, MakeFramedMessage(4604, SerializeItems(std::list<ITEM_INFO>(std::begin(this->alternateCostumeItems), std::end(this->alternateCostumeItems)))));
@@ -1369,9 +1375,9 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
     ReplayShopNameRecord value;
     value.reserved = 0;
     value.shopId = it->second;
+    const std::size_t length = (std::min)(it->first.size(), sizeof(value.name));
     std::memset(value.name, 0, sizeof(value.name));
-    const std::size_t length = it->first.size();
-    std::memcpy(value.name, it->first.c_str(), length > sizeof(value.name) ? sizeof(value.name) : length);
+    std::memcpy(value.name, it->first.c_str(), length);
     AppendRecord(records, MakeReplayRecord(7502, &value, sizeof(value)));
   }
   for (auto shop = this->m_shops.begin(); shop != this->m_shops.end(); ++shop) {

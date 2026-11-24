@@ -383,13 +383,9 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     this->m_charSlotInfos[slot].y = (column / 5) * 0xC3 + 0x9E;
     this->m_charSlotInfos[slot].job = character->job;
     this->m_charSlotInfos[slot].robe = character->robe;
-    if (character->deleteDate > 0) {
-      this->m_charSlotInfos[slot].actionBase = 0x10;
-      this->m_charSlotInfos[slot].action = 0x10;
-    } else {
-      this->m_charSlotInfos[slot].actionBase = 0;
-      this->m_charSlotInfos[slot].action = 0;
-    }
+    const int action = character->deleteDate > 0 ? 0x10 : 0;
+    this->m_charSlotInfos[slot].actionBase = action;
+    this->m_charSlotInfos[slot].action = action;
     this->m_charSlotInfos[slot].frame = 0;
 
     this->m_charSlotInfos[slot].actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0));
@@ -477,8 +473,11 @@ void UINewSelectCharWnd::Paint() {
         .Draw(true);
     }
 
+    int buttonIndex = slot;
     const int page = slot / this->m_slotsPerPage;
-    const int buttonIndex = page != 0 ? slot % (page * this->m_slotsPerPage) : slot;
+    if (page != 0) {
+      buttonIndex %= page * this->m_slotsPerPage;
+    }
     if (buttonIndex < this->m_slotsPerPage) {
       if (slot >= this->m_totalSlots) {
         continue;

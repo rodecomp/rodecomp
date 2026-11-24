@@ -136,6 +136,7 @@ void UITagTextViewer::Resize(int width, int height) {
 int TagTextViewer::UIScroll::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
+  int delta = argument1;
   switch (message) {
   case UM_UPPUSH:
     this->SendMsg(this->m_scrollBar, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
@@ -147,7 +148,6 @@ int TagTextViewer::UIScroll::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
-    int delta = argument1;
     if (message == UM_SCROLLVERTPAGEUP) {
       delta = -10;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
@@ -171,7 +171,8 @@ int UITagTextViewer::SendMsg(
   switch (message) {
   case UM_SETTEXT:
     if (argument1 != 0) {
-      this->AddText(std::string(reinterpret_cast<const char*>(argument1)));
+      std::string text(reinterpret_cast<const char*>(argument1));
+      this->AddText(text);
     }
     break;
   case UM_TEXT_LBTN_UP:
@@ -201,11 +202,11 @@ int UITagTextViewer::SendMsg(
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scrollPos;
     if (message == UM_SCROLLVERTPAGEUP) {
-      this->m_scrollPos = previous - 30;
+      this->m_scrollPos -= 30;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->m_scrollPos = previous + 30;
+      this->m_scrollPos += 30;
     } else if (message == UM_SCROLLVERT) {
-      this->m_scrollPos = previous + static_cast<int>(argument1);
+      this->m_scrollPos += argument1;
     }
 
     if (previous != this->m_scrollPos) {

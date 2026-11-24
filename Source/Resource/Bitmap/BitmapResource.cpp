@@ -54,9 +54,11 @@ bool CBitmapRes::LoadAlphaBitmap(const char* name) {
       const std::uint32_t source = x < 0 || x >= mask.image.width || y < 0 || y >= mask.image.height
                                        ? 0x00FF0000u
                                        : mask.image.pixels[x + y * mask.image.width];
-      const std::uint32_t channels = (source | 0xFFu) + ((source | 0xFF00u) >> 8) + ((source | 0xFF0000u) >> 16);
-      const std::int32_t alpha = static_cast<std::int32_t>(channels) / 3;
-      pixel = (color & 0x00FFFFFFu) + (static_cast<std::uint32_t>(alpha) << 24);
+      const int red = (source | 0xFF0000u) >> 16;
+      const int green = (source | 0xFF00u) >> 8;
+      const int blue = source | 0xFFu;
+      const int alpha = (blue + green + red) / 3;
+      pixel = (color & 0x00FFFFFFu) + (alpha << 24);
     }
   }
 
@@ -195,7 +197,8 @@ bool CGifRes::Load(const char* name) {
 // OFFSET: 0x00749B60
 // FUNCTION: fn_07854
 bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnly) {
-  if (IsGifSignature(data)) {
+  constexpr char signature[] = {'G', 'I', 'F', '\0'};
+  if (std::memcmp(data, signature, 3) == 0) {
     return this->DecodeGif(data, bytes, iconOnly);
   }
 
@@ -333,7 +336,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
   GifScreenDescriptor screen;
   memcpy_s(&screen, sizeof(screen), cursor, sizeof(screen));
   cursor += sizeof(screen);
-  if (iconOnly == true && (screen.width != 24 || screen.height != 24)) {
+  if (iconOnly == true && (24 != screen.width || 24 != screen.height)) {
     return false;
   }
 
@@ -395,8 +398,8 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
           std::uint16_t loops;
           memcpy_s(&loops, sizeof(loops), cursor, sizeof(loops));
+          this->loopCount = 0 < loops ? loops + 1 : 0;
           cursor += sizeof(loops);
-          this->loopCount = loops > 0 ? loops + 1 : 0;
         }
         break;
       }
@@ -488,7 +491,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
     }
     case ';':
       delete[] globalPalette;
-      if (this->frames.size() != 0) {
+      if (0 < this->frames.size()) {
         this->image.pixels = this->frames[0].second;
       }
 
@@ -497,7 +500,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       }
 
       this->lastFrameTime = timeGetTime();
-      if (this->frames.size() != 0) {
+      if (0 < this->frames.size()) {
         this->animated = true;
       }
 

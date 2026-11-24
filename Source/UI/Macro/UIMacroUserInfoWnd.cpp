@@ -78,8 +78,7 @@ void UIMacroReporterWnd::AddPickedActor(ActorPickInfo* pick) {
 // OFFSET: 0x007EF2E0
 // FUNCTION: fn_09840
 void UIMacroReporterWnd::AddActorByAID(int aid) {
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  CGameActor* actor = mode->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }
@@ -88,18 +87,13 @@ void UIMacroReporterWnd::AddActorByAID(int aid) {
     return;
   }
 
-  mode = g_modeMgr.GetGameMode();
-  std::string name = mode->ActorName(aid);
+  std::string name = g_modeMgr.GetGameMode()->ActorName(aid);
 
-  for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
-    if (it->id == aid) {
-      goto found;
-    }
+  if (std::find_if(this->m_entries.begin(), this->m_entries.end(), [aid](const MacroReporterEntry& entry) { return entry.id == aid; }) ==
+      this->m_entries.end()) {
+    this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
   }
 
-  this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
-
-found:
   this->AddActorRow(aid, name);
   this->UpdateScrollBar();
 }
@@ -224,17 +218,18 @@ void UIMacroReporterWnd::Paint() {
     this->m_rows[index].second->Enable(0);
   }
 
-  int y = 57;
-  for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, y += 22) {
+  int row = 0;
+  for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, ++row) {
     if (this->m_rows.size() <= index) {
       return;
     }
 
-    std::pair<UIBitmapButton*, UITextButton*>& row = this->m_rows[index];
-    row.first->Enable(1);
-    row.first->Move(15, y + 2);
-    row.second->Enable(1);
-    row.second->Move(36, y);
+    const int y = row * 22 + 57;
+    std::pair<UIBitmapButton*, UITextButton*>& buttons = this->m_rows[index];
+    buttons.first->Enable(1);
+    buttons.first->Move(15, y + 2);
+    buttons.second->Enable(1);
+    buttons.second->Move(36, y);
   }
 }
 
@@ -570,6 +565,23 @@ namespace {
     /* 0002 */ std::uint32_t accountId;
   };
 #pragma pack(pop)
+
+  struct MacroReportScratch {
+    /* 0000 */ char name[16];
+    /* 0010 */ PACKET_CZ_MACRO_REPORT_HEADER header;
+  };
+}
+
+// INLINED
+static void SetDisabledState(UIButton* button, int disabled) {
+  button->SetDisabled(disabled);
+  button->Invalidate();
+}
+
+// INLINED
+static void SetDisabledState(UIEditCtrl* edit, int disabled) {
+  edit->disabled = disabled;
+  edit->Invalidate();
 }
 
 // OFFSET: 0x007F1420
@@ -577,7 +589,7 @@ namespace {
 int UIMacroReporterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  PACKET_CZ_MACRO_REPORT_HEADER header;
+  MacroReportScratch report;
   switch (message) {
   case UM_SETINFO: {
     this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
@@ -590,7 +602,7 @@ int UIMacroReporterWnd::SendMsg(
     this->activeCheckBox->SetChecked(this->activeOnly);
     this->m_entries.clear();
     for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
-      const MacroReporterEntry& entry = this->m_state->entries[index];
+      const MacroReporterRecord& entry = this->m_state->entries[index];
       this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.reportValue));
       this->AddActorRow(entry.id, entry.name);
     }
@@ -613,12 +625,12 @@ int UIMacroReporterWnd::SendMsg(
       }
       for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
         if (sender == it->first) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
-          this->m_removedRows.push_back(it->first);
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
-          this->m_removedRows.push_back(it->second);
+          SetDisabledState(it->first, 1);
+          UIButton* first = it->first;
+          this->m_removedRows.push_back(first);
+          SetDisabledState(it->second, 1);
+          UIButton* second = it->second;
+          this->m_removedRows.push_back(second);
           this->m_rows.erase(it);
           break;
         }
@@ -651,23 +663,23 @@ int UIMacroReporterWnd::SendMsg(
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
         if (this->m_namesValid == true && this->m_targetValid == true) {
-          header.packetType = ID_CZ_MACRO_REPORT_USER;
-          strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
-          header.count = static_cast<std::uint8_t>(this->m_nameCount);
-          const int length = this->m_nameCount * 16 + sizeof(header);
-          header.type = 6;
+          report.header.packetType = ID_CZ_MACRO_REPORT_USER;
+          strncpy_s(report.header.target, sizeof(report.header.target), this->m_target.c_str(), _TRUNCATE);
+          report.header.count = static_cast<std::uint8_t>(this->m_nameCount);
+          const int length = this->m_nameCount * 16 + sizeof(report.header);
+          report.header.type = 6;
           char buffer[2048];
-          std::memset(buffer + sizeof(header), 0, sizeof(buffer) - sizeof(header));
+          std::memset(buffer + sizeof(report.header), 0, sizeof(buffer) - sizeof(report.header));
           if (length > sizeof(buffer)) {
             break;
           }
-          header.packetLength = static_cast<std::uint16_t>(length);
-          std::memcpy(buffer, &header, sizeof(header));
+          report.header.packetLength = static_cast<std::uint16_t>(length);
+          std::memcpy(buffer, &report.header, sizeof(report.header));
           for (int index = 0; index < this->m_nameCount; ++index) {
             if (!this->m_names[index].empty()) {
-              char name[16];
-              strncpy_s(name, sizeof(name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
-              memcpy_s(buffer + sizeof(header) + index * 16, 16, name, sizeof(name));
+              const std::string mapName = this->m_names[index] + ".gat";
+              strncpy_s(report.name, sizeof(report.name), mapName.c_str(), _TRUNCATE);
+              memcpy_s(buffer + sizeof(report.header) + index * 16, 16, report.name, sizeof(report.name));
             }
           }
           GetRagConnection().Send(length, buffer);
@@ -692,12 +704,12 @@ int UIMacroReporterWnd::SendMsg(
         }
         this->m_entries.clear();
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
-          this->m_removedRows.push_back(it->first);
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
-          this->m_removedRows.push_back(it->second);
+          SetDisabledState(it->first, 1);
+          UIButton* first = it->first;
+          this->m_removedRows.emplace_back(first);
+          SetDisabledState(it->second, 1);
+          UIButton* second = it->second;
+          this->m_removedRows.emplace_back(second);
         }
         this->m_rows.clear();
       }
@@ -729,42 +741,36 @@ int UIMacroReporterWnd::SendMsg(
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
       if (sender == this->m_tabs[1]) {
-        UIEditCtrl* edit = this->m_edit;
-        edit->disabled = 0;
-        edit->Invalidate();
+        SetDisabledState(this->m_edit, 0);
       } else {
-        UIEditCtrl* edit = this->m_edit;
-        edit->disabled = 1;
-        edit->Invalidate();
+        SetDisabledState(this->m_edit, 1);
       }
 
       if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
         g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          this->m_fields[index]->disabled = 1;
-          this->m_fields[index]->Invalidate();
+          SetDisabledState(this->m_fields[index], 1);
           this->m_fields[index]->SetText("");
         }
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(0);
-          it->first->Invalidate();
-          it->second->SetDisabled(0);
-          it->second->Invalidate();
-          it->first->Enable(1);
-          it->second->Enable(1);
+          if (it != this->m_rows.end()) {
+            SetDisabledState(it->first, 0);
+            SetDisabledState(it->second, 0);
+            it->first->Enable(1);
+            it->second->Enable(1);
+          }
         }
       } else {
         for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
-          it->first->SetDisabled(1);
-          it->first->Invalidate();
-          it->second->SetDisabled(1);
-          it->second->Invalidate();
-          it->first->Enable(0);
-          it->second->Enable(0);
+          if (it != this->m_rows.end()) {
+            SetDisabledState(it->first, 1);
+            SetDisabledState(it->second, 1);
+            it->first->Enable(0);
+            it->second->Enable(0);
+          }
         }
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          this->m_fields[index]->disabled = 0;
-          this->m_fields[index]->Invalidate();
+          SetDisabledState(this->m_fields[index], 0);
           if (sender == this->m_tabs[2]) {
             this->m_fields[index]->SetText(this->m_names[index].c_str());
           } else if (sender == this->m_tabs[3]) {
@@ -795,14 +801,17 @@ int UIMacroReporterWnd::SendMsg(
       std::string text = this->m_edit->Text();
       if (text.size() > 1) {
         this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
-      } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
+        break;
+      }
+
+      if (text.c_str()[0] < '0' || text.c_str()[0] > '9') {
+        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
+      } else {
         this->reportCount = std::atoi(text.c_str());
         if (this->reportCount > this->maxReportCount) {
           this->reportCount = this->maxReportCount;
           this->m_edit->SetText(IntToString(this->maxReportCount, 0).c_str());
         }
-      } else {
-        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
       }
     }
     break;
@@ -828,7 +837,7 @@ int UIMacroReporterWnd::SendMsg(
     if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
       UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
-      const int job = entry->reportValue;
+      const unsigned short job = entry->reportValue;
       std::string name = entry->name;
       info->m_name = name;
       info->m_message = g_session.GetJobName(job, -1);

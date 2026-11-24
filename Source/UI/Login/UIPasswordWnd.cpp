@@ -41,15 +41,15 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
   std::shuffle(this->m_digits, this->m_digits + 10, CSecondPwdRandom(seed));
 
+  const char* const commandNames[5][5] = {
+    {"btn_big_ok", "btn_big_ok_a", "btn_big_ok_b", "btn_big_ok_b", nullptr},
+    {"btn_big_change", "btn_big_change_a", "btn_big_change_b", "btn_big_change_c", nullptr},
+    {"btn_big_unused", "btn_big_unused_a", "btn_big_unused_b", "btn_big_unused_c", nullptr},
+    {"btn_big_next", "btn_big_next_a", "btn_big_next_b", "btn_big_next_b", nullptr},
+    {"btn_big_cancel", "btn_big_cancel_a", "btn_big_cancel_b", "btn_big_cancel_b", nullptr},
+  };
   std::string prefix = "유저인터페이스\\";
   {
-    const char* const commandNames[5][5] = {
-      {"btn_big_ok", "btn_big_ok_a", "btn_big_ok_b", "btn_big_ok_b", nullptr},
-      {"btn_big_change", "btn_big_change_a", "btn_big_change_b", "btn_big_change_c", nullptr},
-      {"btn_big_unused", "btn_big_unused_a", "btn_big_unused_b", "btn_big_unused_c", nullptr},
-      {"btn_big_next", "btn_big_next_a", "btn_big_next_b", "btn_big_next_b", nullptr},
-      {"btn_big_cancel", "btn_big_cancel_a", "btn_big_cancel_b", "btn_big_cancel_b", nullptr},
-    };
     const int commandIds[5] = {184, 292, 419, 218, 185};
     const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
 

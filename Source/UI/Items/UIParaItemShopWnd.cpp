@@ -199,11 +199,13 @@ void UIParaResultWnd::OnLBtnDown(int x, int y) {
 void UIParaResultWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    std::string text;
+    std::string text = "";
     char price[64];
     std::memset(price, 0, sizeof(price));
     if (item.prices[0] != item.prices[1]) {
@@ -211,10 +213,11 @@ void UIParaResultWnd::OnMouseHover(int x, int y) {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0], amount));
     } else {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
-      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount);
+      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount));
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -341,9 +344,9 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
     }
 
-    const int combined = existing + item.quantity;
-    if (combined > 30000) {
-      item.quantity += 30000 - combined;
+    existing += item.quantity;
+    if (existing > 30000) {
+      item.quantity += 30000 - existing;
       char text[200];
       std::memset(text, 0, sizeof(text));
       sprintf_s(text, sizeof(text), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
@@ -361,11 +364,11 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (item.quantity > 0) {
       std::uint16_t weight;
       if (item.uniqueItem == 1) {
-        const std::uint16_t added = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumPurchasePriceFactor();
+        weight = g_session.GetShopItemPriceFactor(item) * static_cast<std::uint16_t>(item.quantity);
+        weight += g_session.SumPurchasePriceFactor();
       } else {
-        const std::uint16_t added = g_session.GetShopItemPriceFactorByItemId(item) * static_cast<std::uint16_t>(item.quantity);
-        weight = added + g_session.SumPurchasePriceFactorByItemId();
+        weight = g_session.GetShopItemPriceFactorByItemId(item) * static_cast<std::uint16_t>(item.quantity);
+        weight += g_session.SumPurchasePriceFactorByItemId();
       }
 
       if (!affordable) {
@@ -448,13 +451,13 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     break;
   case UM_REFRESHITEM: {
-    this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
+    this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(i);
       if (item.identity[1] > 0) {
-        sum += item.quantity * item.prices[1];
+        sum += item.quantity * static_cast<int>(item.prices[1]);
         this->items.push_back(item);
       }
     }
@@ -474,24 +477,26 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (20700 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        if (header.type == 20701) {
-          UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
-          if (window) {
-            window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-            window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          }
+    if (20700 != header.type) {
+      return 0;
+    }
 
-          this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
-        }
-
-        offset += header.size;
+    for (; static_cast<unsigned>(b) > offset; offset += header.size) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      if (header.type != 20701) {
+        continue;
       }
+
+      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      return 0;
     }
     break;
   }
@@ -708,7 +713,8 @@ void UIParaItemShopWnd::Paint() {
       this->DrawBitmap(0, left->image.height * i + titleHeight, left, false);
     }
     if (height % left->image.height > 0) {
-      this->DrawBitmap(0, this->geometry.height - barHeight - left->image.height, left, false);
+      const int bottom = this->geometry.height - barHeight;
+      this->DrawBitmap(0, bottom - left->image.height, left, false);
     }
   }
 
@@ -718,7 +724,8 @@ void UIParaItemShopWnd::Paint() {
       this->DrawBitmap(this->geometry.width - right->image.width, right->image.height * i + titleHeight, right, false);
     }
     if (height % right->image.height > 0) {
-      this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - barHeight - right->image.height, right, false);
+      const int bottom = this->geometry.height - barHeight;
+      this->DrawBitmap(this->geometry.width - right->image.width, bottom - right->image.height, right, false);
     }
   }
 

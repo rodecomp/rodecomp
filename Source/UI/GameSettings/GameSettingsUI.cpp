@@ -67,7 +67,7 @@ int g_textureFiltering;
 int g_textureDetailLevel;
 
 // GLOBAL: gl_25086
-std::map<int, int> g_optionHotkeys;
+std::map<TALKTYPE, int> g_optionHotkeys = {{TT_HIDE_PLAYER_ON_OFF, 59}, {TT_HIDE_SUMMON_ON_OFF, 63}};
 
 // GLOBAL: gl_25229
 bool g_restartClient;
@@ -152,6 +152,18 @@ template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool 
   return index;
 }
 
+// INLINED
+template <class T, class D> void SetListSize(CUIListBoxEx<T, D>* list, int width, int height, int itemWidth, int rowHeight) {
+  list->itemWidth = itemWidth;
+  list->rowHeight = rowHeight;
+  list->SetSize(width, height);
+}
+
+// INLINED
+template <class T, class D> void SetScrollStep(CUIListBoxEx<T, D>* list, int step) {
+  list->scrollBar->step = step;
+}
+
 // OFFSET: 0x00A1C1B0
 // FUNCTION: fn_15379
 // OFFSET: 0x00A1CC90
@@ -161,9 +173,9 @@ template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool 
 // OFFSET: 0x00A1E250
 // FUNCTION: fn_15382
 template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHeight, int visibleItems) {
-  this->visibleItems = visibleItems;
   this->width = width;
   this->itemHeight = itemHeight;
+  this->visibleItems = visibleItems;
   this->SetSize(width + 2, itemHeight + 2);
 
   this->display = new T();
@@ -184,13 +196,8 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   });
   this->AddChild(this->button);
 
-  CUIListBoxEx<T, D>* listBox = new CUIListBoxEx<T, D>();
-  this->listBox = listBox;
-  const int listWidth = this->width;
-  const int listRowHeight = this->itemHeight;
-  listBox->itemWidth = listWidth;
-  listBox->rowHeight = listRowHeight;
-  listBox->SetSize(listWidth + 13, listRowHeight);
+  this->listBox = new CUIListBoxEx<T, D>();
+  SetListSize(this->listBox, this->width + 13, this->itemHeight, this->width, this->itemHeight);
   this->listBox->Move(1, 1);
   this->listBox->SetOnSelect([this](T* item, const D& value) {
     g_windowMgr.CloseDropDown();
@@ -204,7 +211,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
 
   this->listBox->scrollBar->SetSize(13, this->itemHeight);
   this->listBox->scrollBar->Move(this->width, 0);
-  this->listBox->scrollBar->step = this->itemHeight;
+  SetScrollStep(this->listBox, this->itemHeight);
 
   this->listBox->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0xC5B1BBCD9BC9C997ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0xC1BB8111EDD183E1ULL)));
 
@@ -710,7 +717,7 @@ __declspec(noinline) GameSettingsUI::CUIComboItem::CUIComboItem() : CUIListItem(
 // OFFSET: 0x00A3CF80
 // FUNCTION: fn_15903
 __declspec(noinline) GameSettingsUI::CUIOptionItem::CUIOptionItem()
-    : CUIListItem(), m_check(nullptr), m_runButton(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(300) {
+    : CUIListItem(), m_check(nullptr), m_runButton(nullptr), m_label(nullptr), m_description(nullptr), m_optionId(static_cast<TALKTYPE>(300)) {
 }
 
 // OFFSET: 0x00A36170
@@ -1417,15 +1424,12 @@ void CUIGroupGraphicsAPI::Refresh() {
 // OFFSET: 0x00A3FCD0
 // FUNCTION: fn_15960
 std::string CUIListPage::GetHotkeyText(int tab, int index) {
-  int key1 = 0;
-  int key2 = 0;
-  std::string hotkeyText;
-  std::string hotkeyDescription;
+  HotkeyInfo info(0, 0);
   const char* keyText = nullptr;
   const char* description = nullptr;
-  g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description);
+  g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
   if (IsNullOrEmpty(keyText)) {
-    g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description);
+    g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
   }
 
   if (IsNullOrEmpty(keyText)) {
@@ -1673,8 +1677,9 @@ void CUIGroupSound::Refresh() {
   this->m_bgmSlider->SetVisible(this->m_bgmSlider->PositionFromOffset(8));
   this->m_bgmSlider->SetPosition(g_soundMgr->Volume());
   this->m_bgmSlider->SetThumbTooltip(std::to_string(g_soundMgr->Volume()));
-  const bool bgmMuted = !g_serviceOptions.Get(TT_MUSIC_ON_OFF);
-  this->m_bgmSlider->SetTransparent(bgmMuted);
+  const bool bgmOn = g_serviceOptions.Get(TT_MUSIC_ON_OFF);
+  const bool bgmMuted = !bgmOn;
+  this->m_bgmSlider->SetTransparent(!bgmOn);
   CUIVScrollBar* const bgmSlider = this->m_bgmSlider;
   bgmSlider->dragging = bgmMuted;
   bgmSlider->Invalidate();
@@ -1686,8 +1691,9 @@ void CUIGroupSound::Refresh() {
   this->m_effectSlider->SetVisible(this->m_effectSlider->PositionFromOffset(8));
   this->m_effectSlider->SetPosition(g_soundMgr->sampleVolume);
   this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
-  const bool effectMuted = !g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
-  this->m_effectSlider->SetTransparent(effectMuted);
+  const bool effectOn = g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
+  const bool effectMuted = !effectOn;
+  this->m_effectSlider->SetTransparent(!effectOn);
   CUIVScrollBar* const effectSlider = this->m_effectSlider;
   effectSlider->dragging = effectMuted;
   effectSlider->Invalidate();
@@ -2292,7 +2298,7 @@ GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen() : CUIGroup(0) {
 // OFFSET: 0x00A3C7E0
 // FUNCTION: fn_15892
 GameSettingsUI::CUIGroupGraphics::CUIGroupGraphics()
-    : CUIGroup(), m_adapterCombo(nullptr), m_modeText(nullptr), m_modeCombo(nullptr),
+    : CUIGroup(0), m_adapterCombo((m_title = nullptr, nullptr)), m_modeText(nullptr), m_modeCombo(nullptr),
       m_adapter(), m_pendingAdapter() {
 }
 
@@ -2984,7 +2990,10 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_title->SetText(OBFUSCATE_SOURCE_TEXT("사운드 설정", 0x6BDF334F2BFDAD51ULL));
   this->m_title->SetFitText(0);
   this->m_title->SetAlign(0, 0);
-  this->m_title->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x674D9F3975573D41ULL)));
+  {
+    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x674D9F3975573D41ULL));
+    this->m_title->SetFont(text1);
+  }
   this->m_title->SetFontHeight(12);
   this->m_title->SetBold(1);
   this->m_title->SetColor(0);
@@ -2997,7 +3006,10 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmText->SetText(OBFUSCATE_SOURCE_TEXT("배경음", 0xC9712D676B5B3943ULL));
   this->m_bgmText->SetFitText(0);
   this->m_bgmText->SetAlign(0, 0);
-  this->m_bgmText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xED15938D333D2DB9ULL)));
+  {
+    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0xED15938D333D2DB9ULL));
+    this->m_bgmText->SetFont(text1);
+  }
   this->m_bgmText->SetFontHeight(12);
   this->m_bgmText->SetBold(0);
   this->m_bgmText->SetColor(0);
@@ -3011,9 +3023,21 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmSlider->SetTotal(128);
   this->m_bgmSlider->SetVisible(128);
   this->m_bgmSlider->step = 1;
-  this->m_bgmSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL)));
-  this->m_bgmSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xFD69A9B3F311818DULL)));
-  this->m_bgmSlider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL)));
+  {
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL));
+    this->m_bgmSlider->SetButtonImages(text1, text2);
+  }
+  {
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xFD69A9B3F311818DULL));
+    this->m_bgmSlider->SetBackground(text1);
+  }
+  {
+    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL));
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL));
+    this->m_bgmSlider->SetThumbImages(text1, text2, text3);
+  }
   this->AddChild(this->m_bgmSlider);
   this->m_bgmMute = new CUICheckBox();
   this->m_bgmMute->SetSize(10, 10);
@@ -3021,7 +3045,13 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmMute->SetOnCheck([this](bool checked) { this->OnBgmMute(checked); });
   this->m_bgmMute->disabled = 0;
   this->m_bgmMute->Invalidate();
-  this->m_bgmMute->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD7A749EB27D5BF6DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0xB195637DAFCB0D59ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xADADEB4DF7813B55ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD9452D81E5CD99C1ULL)));
+  {
+    std::string text4(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD9452D81E5CD99C1ULL));
+    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xADADEB4DF7813B55ULL));
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0xB195637DAFCB0D59ULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xD7A749EB27D5BF6DULL));
+    this->m_bgmMute->SetImages(text1, text2, text3, text4);
+  }
   this->m_bgmMute->checked = false;
   this->m_bgmMute->Invalidate();
   this->AddChild(this->m_bgmMute);
@@ -3031,7 +3061,10 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmMuteText->SetText(OBFUSCATE_SOURCE_TEXT("끄기", 0xF715514F5961B75BULL));
   this->m_bgmMuteText->SetFitText(0);
   this->m_bgmMuteText->SetAlign(0, 0);
-  this->m_bgmMuteText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x4191BB5531FD3999ULL)));
+  {
+    std::string text1(OBFUSCATE_SOURCE_TEXT("Gulim", 0x4191BB5531FD3999ULL));
+    this->m_bgmMuteText->SetFont(text1);
+  }
   this->m_bgmMuteText->SetFontHeight(12);
   this->m_bgmMuteText->SetBold(0);
   this->m_bgmMuteText->SetColor(0);
@@ -3058,9 +3091,22 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectSlider->SetTotal(128);
   this->m_effectSlider->SetVisible(128);
   this->m_effectSlider->step = 1;
-  this->m_effectSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL)));
-  this->m_effectSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL)));
-  this->m_effectSlider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL)));
+  {
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL));
+    this->m_effectSlider->SetButtonImages(text1, text2);
+  }
+  {
+    std::string text1;
+    text1 = OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL);
+    this->m_effectSlider->SetBackground(text1);
+  }
+  {
+    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL));
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL));
+    this->m_effectSlider->SetThumbImages(text1, text2, text3);
+  }
   this->AddChild(this->m_effectSlider);
   this->m_effectMute = new CUICheckBox();
   this->m_effectMute->SetSize(10, 10);
@@ -3068,7 +3114,13 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectMute->SetOnCheck([this](bool checked) { this->OnEffectMute(checked); });
   this->m_effectMute->disabled = 0;
   this->m_effectMute->Invalidate();
-  this->m_effectMute->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xBFF5C517A1A77F59ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x659975C121557D3DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x41CFCB831F6B6B91ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x5DE7712FAB613F75ULL)));
+  {
+    std::string text4(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x5DE7712FAB613F75ULL));
+    std::string text3(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x41CFCB831F6B6B91ULL));
+    std::string text2(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x659975C121557D3DULL));
+    std::string text1(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xBFF5C517A1A77F59ULL));
+    this->m_effectMute->SetImages(text1, text2, text3, text4);
+  }
   this->m_effectMute->checked = false;
   this->m_effectMute->Invalidate();
   this->AddChild(this->m_effectMute);
@@ -3612,7 +3664,9 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   basicButton->SetFitText(0);
   basicButton->SetAlign(6, 6);
   {
-    basicButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL)));
+    std::string font;
+    font = OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL);
+    basicButton->SetFont(font);
   }
   basicButton->SetFontHeight(12);
   basicButton->SetBold(0);
@@ -3630,12 +3684,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   effectButton->Invalidate();
   effectButton->SetId(1);
   {
-    effectButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("이펙트 설정", 0xB3CF9BEB7963DB89ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("이펙트 설정", 0xB3CF9BEB7963DB89ULL));
+    effectButton->SetText(label);
   }
   effectButton->SetFitText(0);
   effectButton->SetAlign(6, 6);
   {
-    effectButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5D7B5AF4FEDFF57ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5D7B5AF4FEDFF57ULL));
+    effectButton->SetFont(font);
   }
   effectButton->SetFontHeight(12);
   effectButton->SetBold(0);
@@ -3653,12 +3709,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   controlButton->Invalidate();
   controlButton->SetId(2);
   {
-    controlButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("컨트롤 설정", 0x9B9D51AD3515F779ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("컨트롤 설정", 0x9B9D51AD3515F779ULL));
+    controlButton->SetText(label);
   }
   controlButton->SetFitText(0);
   controlButton->SetAlign(6, 6);
   {
-    controlButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x038535BB092533B7ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0x038535BB092533B7ULL));
+    controlButton->SetFont(font);
   }
   controlButton->SetFontHeight(12);
   controlButton->SetBold(0);
@@ -3676,12 +3734,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   graphicsButton->Invalidate();
   graphicsButton->SetId(3);
   {
-    graphicsButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("그래픽 설정", 0xFB2BC75769E777D3ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("그래픽 설정", 0xFB2BC75769E777D3ULL));
+    graphicsButton->SetText(label);
   }
   graphicsButton->SetFitText(0);
   graphicsButton->SetAlign(6, 6);
   {
-    graphicsButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x91493751EF33B5FDULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0x91493751EF33B5FDULL));
+    graphicsButton->SetFont(font);
   }
   graphicsButton->SetFontHeight(12);
   graphicsButton->SetBold(0);
@@ -3699,12 +3759,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   etcButton->Invalidate();
   etcButton->SetId(4);
   {
-    etcButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("기타 설정", 0x6BC977B3B5993503ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("기타 설정", 0x6BC977B3B5993503ULL));
+    etcButton->SetText(label);
   }
   etcButton->SetFitText(0);
   etcButton->SetAlign(6, 6);
   {
-    etcButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5F3F779237315F3ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5F3F779237315F3ULL));
+    etcButton->SetFont(font);
   }
   etcButton->SetFontHeight(12);
   etcButton->SetBold(0);
@@ -3725,7 +3787,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_pageContainer;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_pageContainer);
 
@@ -3740,7 +3806,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_applyButton;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_applyButton);
 
@@ -3755,7 +3825,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_closeButton;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_closeButton);
 

@@ -20,7 +20,7 @@ public:
   void Close() override;
   bool IsAlive() override;
   void ResetParticles() override;
-  void SetColor(int red, int green, int blue) override;
+  void SetColor(short red, short green, short blue) override;
   void SetParticleTexture(std::string name) override;
 
   /* 00CC */ std::vector<CParticle*> particles;

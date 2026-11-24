@@ -112,11 +112,9 @@ void UIClanInfoManageWnd::Paint() {
   std::sprintf(text, "%s", LookupMessage(MSI_HOSTILITY_CLAN));
   this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
-  {
-    unsigned red, green, blue;
-    g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-    this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
-  }
+  unsigned red, green, blue;
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
+  this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
   int row = 0;
   for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
     const int y = 157 + row * 16;
@@ -134,11 +132,8 @@ void UIClanInfoManageWnd::Paint() {
     }
   }
 
-  {
-    unsigned red, green, blue;
-    g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-    this->FillRegion(200, 229, 168, 48, RGB(red, green, blue));
-  }
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
+  this->FillRegion(200, 229, 168, 48, RGB(red, green, blue));
   row = 0;
   for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
     const int y = 231 + row * 16;

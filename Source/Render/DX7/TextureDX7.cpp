@@ -197,9 +197,9 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
   description.dwWidth = this->m_textureWidth;
   description.dwFlags = (selected == TextureFormat::R5G6B5 ? DDSD_CKSRCBLT : 0) | g_textureAllocationDX7.descriptorFlags | DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
                         DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
+  description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.dwHeight = this->m_textureHeight;
   description.dwTextureStage = 0;
-  description.ddsCaps.dwCaps = g_textureAllocationDX7.surfaceCaps | DDSCAPS_TEXTURE;
   description.ddpfPixelFormat = formats[selected];
   description.ddckCKSrcBlt.dwColorSpaceLowValue = description.ddpfPixelFormat.dwBBitMask | description.ddpfPixelFormat.dwRBitMask;
   description.ddckCKSrcBlt.dwColorSpaceHighValue = description.ddckCKSrcBlt.dwColorSpaceLowValue;
@@ -324,8 +324,7 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     surface = static_cast<std::uint16_t*>(description.lpSurface);
     for (row = 0; row < height; ++row) {
       for (column = 0, source = 0; column < width; ++column, source += stepX) {
-        color = pixels[source];
-        color = ((color >> 9) & 0x7C00) + ((color >> 6) & 0x03E0) + ((color >> 3) & 0x001F) + ((color >> 16) & 0x8000);
+        color = ((pixels[source] >> 9) & 0x7C00) + ((pixels[source] >> 6) & 0x03E0) + ((pixels[source] >> 3) & 0x001F) + ((pixels[source] >> 16) & 0x8000);
 
         if (color == 0xFC1F) {
           surface[column] = 0;

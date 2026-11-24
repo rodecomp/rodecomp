@@ -965,20 +965,25 @@ ITEM_INFO CSession::GetInventoryItemAt(int index) const {
   return ITEM_INFO(0);
 }
 
-// OFFSET: 0x00DDD7B0
-// FUNCTION: fn_23389
-ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) {
-  if (this->m_inventoryItems.size() == 0) {
+// INLINED
+static __forceinline ITEM_INFO* FindItemInListByItemId(std::list<ITEM_INFO>& items, int itemId, bool identifiedOnly) {
+  if (items.size() == 0) {
     return nullptr;
   }
 
-  for (ITEM_INFO& item : this->m_inventoryItems) {
+  for (ITEM_INFO& item : items) {
     if (std::atoi(item.itemId.c_str()) == itemId && (!identifiedOnly || item.identified != 0)) {
       return &item;
     }
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00DDD7B0
+// FUNCTION: fn_23389
+ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) {
+  return FindItemInListByItemId(this->m_inventoryItems, itemId, identifiedOnly);
 }
 
 // OFFSET: 0x00DDD9A0
@@ -1167,8 +1172,8 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = TT_REQ_MOVETO_MAP;
     parts[0] = tokenizer[1];
     if (tokenizer.TokenCount() == 4) {
-      parts[1] = tokenizer[2];
       parts[2] = tokenizer[3];
+      parts[1] = tokenizer[2];
     } else {
       parts[1] = parts[2].assign("0");
     }
@@ -1809,7 +1814,8 @@ bool CSession::IsIndoorMapName(const char* name) const {
 // OFFSET: 0x00DDB580
 // FUNCTION: fn_23354
 void CSession::RemovePartyMemberByName(const char* name) {
-  for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
+  using PartyList = std::list<MessengerMember>;
+  for (PartyList::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
     if (it->name != name) {
       continue;
     }
@@ -1824,7 +1830,8 @@ void CSession::RemovePartyMemberByName(const char* name) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PARTY, 0, 0, 0, 0, 0);
     }
 
-    this->m_partyMembers.erase(it);
+    PartyList::iterator (PartyList::*erase)(PartyList::const_iterator) = &PartyList::erase;
+    (this->m_partyMembers.*erase)(it);
     return;
   }
 }
@@ -2687,13 +2694,14 @@ unsigned char CSession::GetShopType(int id) {
 // OFFSET: 0x00DE3930
 // FUNCTION: fn_23484
 std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
+  const unsigned int itemIndex = index;
   auto name = this->m_nameToId.find(std::string(this->m_navigationPlayerMap));
   if (name != this->m_nameToId.end()) {
     auto shop = this->m_shops.find(name->second);
-    if (shop != this->m_shops.end() && shop->second.items.size() > index) {
-      std::map<int, std::pair<int, int>>& entries = shop->second.items[index];
+    if (shop != this->m_shops.end() && shop->second.items.size() > itemIndex) {
+      std::map<int, std::pair<int, int>>& entries = shop->second.items[itemIndex];
       auto entry = entries.find(key);
-      if (entry != entries.end()) {
+      if (entries.end() != entry) {
         return entry->second;
       }
     }
@@ -5998,12 +6006,11 @@ void CSession::LoadSessionTables() {
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();
 
-  CCommonObject& storage = session->m_tableLoader;
   {
     std::vector<char*> tokens;
     session->m_bgmFileNames.clear();
     session->m_bgmFileNames.reserve(512);
-    storage.LoadTokens(tokens, "mp3NameTable.txt", 0);
+    session->m_tableLoader.LoadTokens(tokens, "mp3NameTable.txt", 0);
     for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
       session->m_bgmFileNames.push_back(std::make_pair(token[0], token[1]));
     }
@@ -6013,7 +6020,7 @@ void CSession::LoadSessionTables() {
               });
   }
 
-  storage.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
+  session->m_tableLoader.LoadTokens(session->m_indoorRswNames, "indoorRswTable.txt", 0);
   std::sort(session->m_indoorRswNames.begin(), session->m_indoorRswNames.end(),
             [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
 
@@ -6054,7 +6061,7 @@ void CSession::LoadSessionTables() {
     std::vector<char*> buyingStoreItems;
     session->inventoryFilterIds.clear();
     session->inventoryFilterIds.reserve(512);
-    storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
+    session->m_tableLoader.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
     for (auto it = buyingStoreItems.begin(); it != buyingStoreItems.end(); ++it) {
       session->inventoryFilterIds.push_back(std::atoi(*it));
     }

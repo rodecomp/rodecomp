@@ -2477,7 +2477,8 @@ namespace {
 // OFFSET: 0x00C16440
 // FUNCTION: fn_20056
 int EffectLifetime(int id) {
-  if (lifetimes.find(id) != lifetimes.end()) {
+  const auto found = lifetimes.find(id);
+  if (lifetimes.end() != found) {
     return lifetimes[id];
   }
   return 0;

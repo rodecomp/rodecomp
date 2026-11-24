@@ -20,9 +20,12 @@ static vector3d s_chargingPierceNewOffsets[10] = {
 
 // INLINED
 static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
-  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
-  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
-  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+  const float x = v.x;
+  const float y = v.y;
+  const float z = v.z;
+  result.x = x * m[0] + y * m[3] + z * m[6] + m[9];
+  result.y = x * m[1] + y * m[4] + z * m[7] + m[10];
+  result.z = x * m[2] + y * m[5] + z * m[8] + m[11];
 }
 
 // INLINED
@@ -66,9 +69,7 @@ void CChargingPierceNewEffect::SetCount(int count) {
     }
 
     particle->Load(std::string("DRAGON_KNIGHT\\DK_CHARGINGPIERCE\\chargingpierce_cast2\\chargingpierce_cast2.str"));
-    particle->offsetX = s_chargingPierceNewOffsets[index].x;
-    particle->offsetY = s_chargingPierceNewOffsets[index].y;
-    particle->offsetZ = s_chargingPierceNewOffsets[index].z;
+    particle->offset = s_chargingPierceNewOffsets[index];
     particle->m_hold = true;
     particle->m_scale = 0.75f;
     this->emitters.push_back(particle);

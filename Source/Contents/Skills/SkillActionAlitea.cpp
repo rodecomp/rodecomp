@@ -748,9 +748,11 @@ void CSkillAction_AT_FRENZY_FANG::OnSkillEffect(int level, CGameActor* source, C
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
-    bool flip = true;
+    bool flip;
     if (angle >= 90.0f && angle <= 270.0f) {
       flip = false;
+    } else {
+      flip = true;
     }
     effect->SetFlipX(flip);
   }
@@ -1021,7 +1023,10 @@ int CSkillAction_AT_GLACIER_NOVA::GetSkillAttackMotion() {
 // FUNCTION: fn_03225
 void CSkillAction_AT_GLACIER_NOVA::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("glacier_nova", 0x2D394DBD0F332733ULL)), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = OBFUSCATE_TEXT("glacier_nova", 0x2D394DBD0F332733ULL);
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A91A0
@@ -1388,10 +1393,20 @@ void CSkillAction_AT_TERRA_HARVEST::OnSkillEffect(int level, CGameActor* source,
 // OFFSET: 0x005AD630
 // FUNCTION: fn_03268
 void CSkillAction_AT_TERRA_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
-  EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("terra_wave", 0xC399B7091589B50BULL, char)), position.x, position.y, position.z, 0, -1, 0, 0);
-  effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("terra_wave_bottom", 0xB739073FE921AD6FULL, char)), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = OBFUSCATE_ARRAY_TEXT("terra_wave", 0xC399B7091589B50BULL, char);
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
+  {
+    EffectLists* effects = g_effectMgr;
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = OBFUSCATE_ARRAY_TEXT("terra_wave_bottom", 0xB739073FE921AD6FULL, char);
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x005AD970

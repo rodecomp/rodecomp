@@ -17,6 +17,11 @@ struct ItemCardName {
 };
 
 struct ItemMoveInfo {
+  // INLINED
+  ItemMoveInfo()
+    : itemId(0), drop(false), trade(false), storage(false), cart(false), sellToNpc(false), mail(false), auction(false), guildStorage(false) {
+  }
+
   /* 0000 */ int itemId;
   /* 0004 */ bool drop;
   /* 0005 */ bool trade;

@@ -140,7 +140,6 @@ void CFriggSongEffect::Open() {
     const float spread = speed * g_cosTable[tilt];
     const float height = speed * g_sinTable[tilt];
     const float offsetX = spread * cosine;
-    const float offsetZ = spread * sine;
 
     EffectPoint points[2];
     const float innerX = particle->scale * cosine;
@@ -148,7 +147,7 @@ void CFriggSongEffect::Open() {
     const float innerZ = particle->scale * sine;
     const float outerX = innerX + offsetX;
     const float outerY = 0.0f - height;
-    const float outerZ = innerZ + offsetZ;
+    const float outerZ = innerZ + spread * sine;
 
     if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
       particle->vertices[1].x = outerX;
@@ -197,7 +196,7 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
   const int age = particle->elapsedFrames;
   const float baseAngle = particle->angle;
   const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
-  float& height = particle->animationParameter;
+  float height;
   if (age < 20) {
     height = g_projectionDepthNumerator;
   } else if (age <= 140) {
@@ -207,13 +206,14 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
     particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);
     height = particle->speedParameter;
   }
+  particle->animationParameter = height;
 
   matrix rotation;
   std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
   rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
   matrix scale;
   std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-  scale.SetScale(1.0f, height / 100.0f * 1.1f, 1.0f);
+  scale.SetScale(1.0f, particle->animationParameter / 100.0f * 1.1f, 1.0f);
   matrix first = rotation;
   rotation.Compose(first, scale);
   particle->transform = rotation;
@@ -233,7 +233,8 @@ void CFriggSongEffect::OnProcess() {
       if (age < 20) {
         height = 1.0f;
       } else if (age <= 140) {
-        height = (std::max)(g_sinTable[age - 20] * particle->speedParameter, 0.0f);
+        const float value = g_sinTable[age - 20] * particle->speedParameter;
+        height = value > 0.0f ? value : 0.0f;
       } else {
         const float speed = particle->speedParameter;
         particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);

@@ -73,12 +73,15 @@ void UIWindow::ExtractUrlTextLinks(const std::string& text, std::vector<TextLink
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
 bool UIWindow::HasTextLinks(const std::string& text) {
-  const auto urlPosition = text.find(g_urlTagBegin);
+  bool hasLink = false;
+  if (text.find(g_urlTagBegin) != std::string::npos) {
+    hasLink = true;
+  }
+
   if (text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos) {
     return true;
   }
 
-  bool hasLink = urlPosition != std::string::npos;
   if (text.find(g_naviTagBegin) != std::string::npos) {
     hasLink = true;
   }
@@ -86,6 +89,7 @@ bool UIWindow::HasTextLinks(const std::string& text) {
   if (text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos) {
     return true;
   }
+
   return hasLink;
 }
 
@@ -131,6 +135,24 @@ std::string UIWindow::RemoveTextColors(const char* text) {
   return result;
 }
 
+// OFFSET: 0x00A7F510
+// FUNCTION: fn_16963
+const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
+}
+
+// OFFSET: 0x00A7F580
+// FUNCTION: fn_16964
+const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
+}
+
+// OFFSET: 0x00A7F5F0
+// FUNCTION: fn_16965
+const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
+}
+
 // OFFSET: 0x00A7F660
 // FUNCTION: fn_16966
 const std::string UIWindow::DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
@@ -148,13 +170,11 @@ const std::string UIWindow::DisplayTextTag(const std::string& source, const std:
       result += text.substr(0, position);
     }
 
-    const int content = position + static_cast<int>(begin.size());
-    std::string tail = text.substr(content);
-    const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
+    position += static_cast<int>(begin.size());
+    std::string tail = text.substr(position);
+    const int close = static_cast<int>(tail.find(end));
 
-    if (close == -1) {
-      position = content;
-    } else {
+    if (close != -1) {
       result += tail.substr(0, close);
       text = tail.substr(close + end.size());
       position = static_cast<int>(text.find(begin));
@@ -162,6 +182,12 @@ const std::string UIWindow::DisplayTextTag(const std::string& source, const std:
   } while (position != -1);
 
   return result + text;
+}
+
+// OFFSET: 0x00A7FE50
+// FUNCTION: fn_16967
+const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0
@@ -225,11 +251,11 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
       position = content;
     } else {
       std::string display = tail.substr(0, close);
-      std::string metadata;
       const int info = static_cast<int>(display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size()));
+      std::string metadata;
 
       if (info != -1) {
-        display = tail.substr(0, info);
+        display = display.substr(0, info);
         metadata = tail.substr(info + g_infoTagBegin.size());
         const int infoEnd = static_cast<int>(metadata.find(g_infoTagEnd));
 
@@ -245,7 +271,7 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
       links.push_back(link);
       offset += static_cast<std::uint32_t>(display.size());
 
-      text = tail.substr(close + end.size());
+      text = std::string(tail, end.size() + close);
       position = static_cast<int>(text.find(begin));
 
       if (position != -1) {

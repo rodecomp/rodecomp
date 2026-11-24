@@ -174,28 +174,12 @@ struct SessionParameterNameLess {
 };
 
 struct SearchStoreResult {
-  SearchStoreResult() : item() {}
-  SearchStoreResult(const SearchStoreResult& other) {
-    this->storeId = other.storeId;
-    this->accountId = other.accountId;
-    std::memcpy(this->storeName, other.storeName, sizeof(this->storeName));
-    this->price = other.price;
-    this->quantity = other.quantity;
-    new (&this->item) ITEM_INFO(other.item);
-  }
-  ~SearchStoreResult() {
-    this->item.displayName.~basic_string();
-    this->item.itemId.~basic_string();
-  }
-
   /* 0000 */ int storeId;
   /* 0004 */ int accountId;
   /* 0008 */ char storeName[80];
   /* 0058 */ int price;
   /* 005C */ std::uint16_t quantity;
-  union {
-    /* 0060 */ ITEM_INFO item;
-  };
+  /* 0060 */ ITEM_INFO item;
 };
 
 static_assert(sizeof(SearchStoreResult) == 0x158);
@@ -860,7 +844,7 @@ public:
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
   void LoadDamageSkinSettings();
-  bool LoadExceptionMinimapNameTable();
+  BOOL LoadExceptionMinimapNameTable();
   BOOL LoadMapNameTable();
   bool LoadMapPosTable();
   BOOL ScaleMapPositions();
@@ -1412,7 +1396,7 @@ public:
   void SetOtherExchangeMoney(int value);
   void SetPlayerPosition(int x, int y, int direction);
   void SetRecord0734Value(int id, std::uint32_t value);
-  void LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& delays, int& skillFlag);
+  void LoadSkillDelayList(int skillId, std::vector<std::map<int, long>>& delays, int& skillFlag);
   int SetServiceFlags(int first, int second);
 };
 

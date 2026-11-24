@@ -954,15 +954,22 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
   return offset;
 }
 
+// INLINED
+static inline bool IsSecondJobId(int job) {
+  return job >= JT_RUNE_KNIGHT_2ND && job < JT_SECOND_JOB_END;
+}
+
 // OFFSET: 0x00E488C0
 // FUNCTION: fn_24221
 void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
-  if (style >= 2 || this->IsSecondJob(renderJob)) {
+  const bool upperJob = job >= JT_NOVICE_H && job <= JT_CHICKEN2_H;
+  if (style >= 2 || IsSecondJobId(renderJob)) {
     this->m_bodyStyle = style;
-  } else if (static_cast<unsigned>(job - 4001) <= 21) {
+  } else if (upperJob) {
     this->m_bodyStyle = job <= JT_THIEF_H;
   } else {
-    this->m_bodyStyle = static_cast<unsigned>(g_session.GetBodyStyleJob(job) - 4001) <= 6;
+    const int bodyJob = g_session.GetBodyStyleJob(job);
+    this->m_bodyStyle = bodyJob >= JT_NOVICE_H && bodyJob <= JT_THIEF_H;
   }
 }
 

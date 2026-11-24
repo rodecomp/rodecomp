@@ -213,7 +213,7 @@ void UICheckBox::FitToText() {
     return;
   }
 
-  const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
+  int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
   CBitmapRes* bitmap = nullptr;
   switch (this->geometry.state) {
   case 0:
@@ -224,8 +224,9 @@ void UICheckBox::FitToText() {
     break;
   }
 
-  const int desired = ((bitmap->image.width + width) + 3);
-  if (desired != this->geometry.width) {
-    this->Resize(desired, this->geometry.height);
+  width += 3;
+  width += bitmap->image.width;
+  if (width != this->geometry.width) {
+    this->Resize(width, this->geometry.height);
   }
 }

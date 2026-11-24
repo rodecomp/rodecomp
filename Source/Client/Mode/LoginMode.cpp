@@ -536,21 +536,23 @@ int GetClientType() {
 // FUNCTION: fn_22271
 std::string GetMacAddress() {
   ULONG size = 0;
+  IP_ADAPTER_INFO* adapter = nullptr;
   if (GetAdaptersInfo(nullptr, &size) == ERROR_BUFFER_OVERFLOW) {
-    IP_ADAPTER_INFO* adapter = reinterpret_cast<IP_ADAPTER_INFO*>(new (std::nothrow) char[size]);
+    adapter = reinterpret_cast<IP_ADAPTER_INFO*>(new (std::nothrow) char[size]);
     memset(adapter, 0, size);
     GetAdaptersInfo(adapter, &size);
-    if (adapter != nullptr) {
-      char text[100];
-      memset(text, 0, sizeof(text));
-      _snprintf(text, sizeof(text), OBFUSCATE_ARRAY_TEXT("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL, char), adapter->Address[0], adapter->Address[1], adapter->Address[2],
-        adapter->Address[3], adapter->Address[4], adapter->Address[5]);
-      delete[] reinterpret_cast<char*>(adapter);
-      return text;
-    }
   }
 
-  return OBFUSCATE_ARRAY_TEXT("11-22-33-44-55-66", 0xFBD599E117C547C1ULL, char);
+  if (adapter == nullptr) {
+    return OBFUSCATE_ARRAY_TEXT("11-22-33-44-55-66", 0xFBD599E117C547C1ULL, char);
+  }
+
+  char text[100];
+  memset(text, 0, sizeof(text));
+  _snprintf(text, sizeof(text), OBFUSCATE_ARRAY_TEXT("%02X-%02X-%02X-%02X-%02X-%02X", 0x0F41EBBDA32D1B17ULL, char), adapter->Address[0], adapter->Address[1], adapter->Address[2],
+    adapter->Address[3], adapter->Address[4], adapter->Address[5]);
+  delete[] reinterpret_cast<char*>(adapter);
+  return text;
 }
 
 // OFFSET: 0x00D8E700
@@ -883,7 +885,7 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
 // OFFSET: 0x00D904B0
 // FUNCTION: fn_22284
 void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
-  const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
+  const int count = (packet->length - 4) / sizeof(MapStateInfo);
   if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
     constexpr std::array<char, 34> source = OBFUSCATE_SOURCE("mismatch MapState size(size = %d)", 0x792FFD1325418FB5ULL);
     char text[256];
@@ -893,19 +895,19 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
     return;
   }
 
-  std::vector<MapStateEntry>& states = this->mapStates;
-  states.clear();
+  this->mapStates.clear();
   MapStateEntry entry;
   entry.index = -1;
-  for (int i = 0; i < static_cast<int>(count); ++i) {
-    if (packet->states[i].state == 0) {
+  const MapStateInfo* state = packet->states;
+  for (int i = 0; i < count; ++state, ++i) {
+    if (state->state == 0) {
       entry.index = i;
-      entry.data = packet->states[i].data;
-      states.push_back(entry);
+      entry.data = state->data;
+      this->mapStates.push_back(entry);
     }
   }
 
-  if (states.size() == 0) {
+  if (this->mapStates.size() == 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_EXIST_ENTRYMAP), 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
@@ -1168,16 +1170,13 @@ void CLoginMode::OpenAccountRegistration() {
   case ServiceJapan:
     break;
   case ServiceChina: {
-    constexpr std::array<char, 54> urlSource = OBFUSCATE_SOURCE("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL);
-    const char* file = OBFUSCATE_DECRYPT(0x9949BFD527532943ULL, urlSource);
-    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xCD8F077123FB7D6FULL);
-    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xCD8F077123FB7D6FULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
+    const char* file = OBFUSCATE_ARRAY_TEXT("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL, char);
+    ShellExecuteA(hWnd, OBFUSCATE_ARRAY_TEXT("open", 0xCD8F077123FB7D6FULL, char), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   default: {
     const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xC517FB932D95BB6DULL);
-    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xC517FB932D95BB6DULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);
+    ShellExecuteA(hWnd, OBFUSCATE_ARRAY_TEXT("open", 0xC517FB932D95BB6DULL, char), url, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   }
@@ -1439,7 +1438,7 @@ int CLoginMode::Run() {
       }
     }
 
-    if (g_nProtectGameGuardMgr->HasError()) {
+    if (static_cast<unsigned char>(g_nProtectGameGuardMgr->HasError())) {
       GetRagConnection().Close();
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
@@ -1694,12 +1693,13 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
 // FUNCTION: fn_22300
 void CLoginMode::Initialize(const char* name) {
   g_soundMgr->StopStreams();
-  this->charParams[0] = 5;
-  this->charParams[1] = 5;
-  this->charParams[2] = 5;
-  this->charParams[3] = 5;
-  this->charParams[4] = 5;
-  this->charParams[5] = 5;
+  auto& charParamsRef = this->charParams;
+  charParamsRef[0] = 5;
+  charParamsRef[1] = 5;
+  charParamsRef[2] = 5;
+  charParamsRef[3] = 5;
+  charParamsRef[4] = 5;
+  charParamsRef[5] = 5;
   this->characterParameter7 = 0;
   this->characterParameter8 = 1;
   this->makingCharNameFirstByte = false;
@@ -1872,7 +1872,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         }
         g_modeMgr.Quit();
       }
-      message.clear();
+      message = "";
     } else {
       message = LookupMessage(MSI_INCORRECT_LOGIN_PASSWORD);
     }
@@ -2018,9 +2018,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         url.assign("https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=", 121);
       }
       url.append(g_stoveMgr->GetAccessToken());
-      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
-      ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
-      message.assign("", 0);
+      ShellExecuteA(nullptr, OBFUSCATE_BYTES_TEXT("OPEN", 0xD98F5345098D630DULL), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      message.assign("");
       g_modeMgr.Quit();
       return;
     }
@@ -2296,6 +2295,8 @@ static void IgnoreRemovedPacket(const unsigned char* packet) {
 // OFFSET: 0x00D98470
 // FUNCTION: fn_22309
 void CLoginMode::PollNetworkStatus() {
+  int accountId;
+
   if (g_replayMode) {
     return;
   }
@@ -2306,7 +2307,6 @@ void CLoginMode::PollNetworkStatus() {
   }
 
   if (g_charServerAccountIdPending == 1) {
-    int accountId;
     if (GetRagConnection().Read(&accountId, 4, 1)) {
       g_charServerAccountIdPending = 0;
     }
@@ -3362,8 +3362,6 @@ void CLoginMode::OnChangeState(int value) {
   g_session.quitBlocked = 0;
   this->connectionReady = 1;
 
-  ServerAddress2* servers = this->serverList;
-
   switch (value) {
   case 0:
   case 1:
@@ -3375,7 +3373,7 @@ void CLoginMode::OnChangeState(int value) {
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       const int port = rand() % 3 + 6951;
-      const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
+      alignas(16) const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
       const char* hostText = host.Text();
       StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
@@ -3454,7 +3452,7 @@ void CLoginMode::OnChangeState(int value) {
     window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMSERVER", 0x6FE153231D879777ULL)), 0, 0);
 
     for (int i = 0; i < this->serverCount; ++i) {
-      const ServerAddress2& server = servers[i];
+      const ServerAddress2& server = this->serverList[i];
       char text[64];
       std::memset(text, 0, sizeof(text));
       if (server.address.property == 1) {
@@ -3816,7 +3814,7 @@ void CLoginMode::OnChangeState(int value) {
       ReplayFileList::Instance().fileState = 0;
     }
     for (int i = 0; i < this->serverCount; ++i) {
-      std::memcpy(&servers[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
+      std::memcpy(&this->serverList[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
     }
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
   case 27: {
@@ -3835,7 +3833,7 @@ void CLoginMode::OnChangeState(int value) {
       ReplayFileList::Instance().fileState = 0;
     }
     for (int i = 0; i < this->serverCount; ++i) {
-      const ServerAddress2 server = servers[i];
+      const ServerAddress2 server = this->serverList[i];
       reinterpret_cast<ServerAddress2*>(ReplayFileList::Instance().buffer)[i] = server;
     }
     break;

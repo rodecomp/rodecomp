@@ -5,6 +5,8 @@ struct RenderVertex;
 struct matrix;
 struct vector3d;
 
+extern float g_cameraYawOffset;
+
 RenderVertex TransformVert(const matrix& view, const vector3d& position);
 
 #endif

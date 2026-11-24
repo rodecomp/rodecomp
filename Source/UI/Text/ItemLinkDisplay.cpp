@@ -41,7 +41,7 @@ bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
 // OFFSET: 0x0087FD70
 // FUNCTION: fn_11275
 bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original) {
-  auto close = remaining.find(g_itemLinkTagEnd);
+  std::size_t close = remaining.find(g_itemLinkTagEnd);
 
   if (close == std::string::npos) {
     return false;
@@ -49,9 +49,9 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
 
   while (close != std::string::npos) {
     remaining = remaining.substr(0, close);
-    auto begin = remaining.find(g_itemLinkTagBegin);
+    std::size_t begin = remaining.find(g_itemLinkTagBegin);
 
-    if (close != std::string::npos && begin == std::string::npos) {
+    if (begin == std::string::npos && close != std::string::npos) {
       position += static_cast<unsigned>(g_itemLinkTagEnd.size());
       remaining = original;
       remaining = remaining.substr(position);
@@ -74,7 +74,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
 
       encoded = remaining;
       remaining = original;
-      std::string name = "";
+      std::string name("");
 
       if (!this->Name(encoded, name)) {
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());

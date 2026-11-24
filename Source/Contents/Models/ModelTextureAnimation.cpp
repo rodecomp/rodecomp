@@ -54,7 +54,7 @@ __declspec(safebuffers) void ModelKeyList2::Read(CFile& file) {
   for (int i = 0; i < count; ++i) {
     ModelRotationKey key;
     file.Read(&key, sizeof(key));
-    this->push_back(key);
+    this->push_back(std::move(key));
   }
 }
 

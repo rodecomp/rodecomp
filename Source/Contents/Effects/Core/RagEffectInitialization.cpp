@@ -26,6 +26,10 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   char name[64];
   std::sprintf(name, "");
   switch (this->state.type) {
+  case EF_ANGELUS:
+  case EF_WEWISH:
+    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "jong_mini.str" : "Angelus.str");
+    break;
   case EF_WINDHIT:
     std::sprintf(name, "WindHit%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
@@ -477,10 +481,7 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   case EF_BAKU:
     std::sprintf(name, "fire dragon.str");
     break;
-  case EF_ANGELUS:
-  case EF_WEWISH:
-    std::sprintf(name, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? "jong_mini.str" : "Angelus.str");
-    break;
+
   case EF_CRASHAXE:
     std::sprintf(name, "powerswing.str");
     break;

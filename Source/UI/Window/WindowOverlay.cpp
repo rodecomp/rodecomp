@@ -87,13 +87,16 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
   std::memset(buffer, 0, sizeof(buffer));
   char* highlight = nullptr;
   int remaining = sizeof(buffer);
-  char* cursor = buffer;
   int highlightColor;
-  this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 0, option);
+  {
+    char* cursor = buffer;
+    this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 0, option);
+  }
 
   const char* text = buffer;
   int offset = 0;
-  for (auto it = breaks.begin(); it != breaks.end(); ++it) {
+  auto it = breaks.begin();
+  while (it != breaks.end()) {
     std::string fitted = this->FitTextToWidth(std::string(text), this->geometry.width - x - 10);
     bool truncated;
     const char* end;
@@ -127,6 +130,7 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
         break;
       }
     }
+    ++it;
   }
   return offset;
 }

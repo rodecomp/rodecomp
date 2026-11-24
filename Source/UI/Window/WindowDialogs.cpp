@@ -176,7 +176,7 @@ void UIWindowMgr::RestoreInput() {
 // OFFSET: 0x00A901E0
 // FUNCTION: fn_17153
 int UIWindowMgr::Confirm(
-  const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
+  const char* text, int type, int defaultAccept, int replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing == 1) {
@@ -326,6 +326,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   this->hoverWindow = nullptr;
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
+  int result;
   if (g_modalImmediate == 0) {
     CMode* pump = g_modeMgr.currentMode;
 
@@ -341,10 +342,12 @@ int UIWindowMgr::RunModal(UIWindow* window) {
 
         if (this->modalWindows.empty()) {
           this->activeWindowId = 0;
+          this->RestoreInput();
+          return response;
         }
 
-        this->RestoreInput();
-        return response;
+        result = response;
+        goto restoreInput;
       }
 
       if (this->modalResponse != 0) {
@@ -379,6 +382,8 @@ int UIWindowMgr::RunModal(UIWindow* window) {
     } while (g_modalImmediate == 0);
   }
 
+  result = ID_OK;
+restoreInput:
   this->RestoreInput();
-  return ID_OK;
+  return result;
 }

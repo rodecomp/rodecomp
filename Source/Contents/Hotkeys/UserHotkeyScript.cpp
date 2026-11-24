@@ -1,6 +1,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Hotkeys/UserHotkeyScript.h"
+#include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Network/TextEncoding.h"
 
 // OFFSET: 0x005F7D60
@@ -31,7 +32,7 @@ __declspec(noinline) void CUserHotkeyMgr::ChangeUserHotkey(int tab, int index, i
 
 // OFFSET: 0x005BD660
 // FUNCTION: fn_03473
-void CUserHotkeyMgr::LoadUserHotkeyTab(Json::Value& values, int tab) {
+void CAccountLinkedUserDataMgr::LoadUserHotkeyTab(Json::Value& values, int tab) {
   Json::Value entries = values;
 
   for (auto item = entries.begin(); item != entries.end(); ++item) {

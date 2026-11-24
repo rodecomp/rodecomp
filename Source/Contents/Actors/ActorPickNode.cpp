@@ -145,10 +145,16 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
 int CActorPickNode::QuadrantAt(int x, int y) const {
   const int centerX = this->bounds.right / 2;
   const int centerY = this->bounds.bottom / 2;
-  if (x <= centerX) {
-    return y <= centerY ? 0 : 3;
+  if (x <= centerX && y <= centerY) {
+    return 0;
   }
-  return (y > centerY) + 1;
+  if (x > centerX && y <= centerY) {
+    return 1;
+  }
+  if (x > centerX && y > centerY) {
+    return 2;
+  }
+  return 3;
 }
 
 // OFFSET: 0x00ADAA20

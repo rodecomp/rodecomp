@@ -9,11 +9,12 @@
 // OFFSET: 0x00548380
 // FUNCTION: fn_01854
 void CDCBitmap::UpdateCache() {
+  const bool alpha = this->m_alpha;
   if (!this->m_bitmap.dirty) {
     return;
   }
 
-  if (this->m_alpha == true) {
+  if (alpha == true) {
     if (this->m_textures.empty()) {
       CTexture* texture = g_texMgr.CreateTexture(this->m_bitmap.width, this->m_bitmap.height, TextureFormat::A8R8G8B8, false, false);
       if (texture) {

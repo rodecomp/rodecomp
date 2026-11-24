@@ -36,20 +36,23 @@ namespace {
     }
 
     if (companion != -1) {
-      const auto it = std::find_if(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), [companion](UIWindow* entry) { return entry->geometry.id == companion; });
-
-      if (it != g_windowMgr.rendered.end()) {
-        UIWindow* value = *it;
-        g_windowMgr.rendered.erase(it);
-        g_windowMgr.rendered.emplace_back(value);
+      for (auto it = g_windowMgr.rendered.begin(); it != g_windowMgr.rendered.end(); ++it) {
+        if ((*it)->geometry.id == companion) {
+          UIWindow* const value = *it;
+          g_windowMgr.rendered.erase(it);
+          g_windowMgr.rendered.emplace_back(value);
+          break;
+        }
       }
     }
 
-    const auto entry = std::find(g_windowMgr.rendered.begin(), g_windowMgr.rendered.end(), window);
-
-    if (entry != g_windowMgr.rendered.end()) {
-      g_windowMgr.rendered.erase(entry);
-      g_windowMgr.rendered.emplace_back(window);
+    for (auto it = g_windowMgr.rendered.begin(); it != g_windowMgr.rendered.end(); ++it) {
+      if (*it == window) {
+        UIWindow* const value = *it;
+        g_windowMgr.rendered.erase(it);
+        g_windowMgr.rendered.emplace_back(value);
+        break;
+      }
     }
   }
 }

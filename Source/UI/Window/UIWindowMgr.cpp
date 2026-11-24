@@ -291,6 +291,9 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 // GLOBAL: gl_24366
 UIWindowMgr g_windowMgr;
 
+// GLOBAL: gl_24603
+CInstantVar g_modalFrameOptions;
+
 // GLOBAL: gl_24683
 const int* g_windowCloseValue;
 
@@ -1188,8 +1191,8 @@ const char* g_newWhisperWave = "..\\..\\BGM\\Msg_NewMsg.wav";
 // OFFSET: 0x00A8B3D0
 // FUNCTION: fn_17123
 int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, std::uint32_t accountId) {
-  int shown = 0;
   const int isFriend = g_session.IsFriendName(name) != 0;
+  int shown = 0;
   if ((g_session.m_autoOpenWhisperWindow != 0 && !isFriend) || (g_session.m_autoOpenFriendWhisperWindow != 0 && isFriend)) {
     const char* label = nullptr;
     if (isFriend) {
@@ -1220,15 +1223,14 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
     g_windowMgr.AddWhisperName(name);
   }
 
-  const auto entry = this->namedWindows.find(std::string(name));
-  if (entry == this->namedWindows.end()) {
-    return 0;
+  const auto entry = this->namedWindows.find(name);
+  if (entry != this->namedWindows.end()) {
+    UIWindow* window = entry->second;
+    window->SendMsg(nullptr, UM_ADDCHAT, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
+    PromoteWindow(this, window);
+    return 1;
   }
-
-  UIWindow* window = entry->second;
-  window->SendMsg(nullptr, UM_ADDCHAT, reinterpret_cast<std::intptr_t>(text), color, 2, 0);
-  PromoteWindow(this, window);
-  return 1;
+  return 0;
 }
 
 // OFFSET: 0x00A8B240
@@ -1261,7 +1263,8 @@ void UIWindowMgr::RefreshFrameSkins() {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
     auto& entries = CUIRegisterMgr::s_instance->entries;
-    if (entries.end() != entries.find(static_cast<int>(window->geometry.id))) {
+    const int id = window->geometry.id;
+    if (entries.end() != entries.find(id)) {
       static_cast<CUIFrameWnd*>(window)->RefreshSkinColors();
     }
   }
@@ -1270,7 +1273,8 @@ void UIWindowMgr::RefreshFrameSkins() {
 // OFFSET: 0x00A8B840
 // FUNCTION: fn_17124
 __declspec(noinline) void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
-  if (this->namedWindows.find(name) == this->namedWindows.end()) {
+  const auto entry = this->namedWindows.find(name);
+  if (entry == this->namedWindows.end()) {
     this->namedWindows[name] = window;
   }
 }
@@ -1387,7 +1391,8 @@ void UIWindowMgr::UnregisterNamedWindow(std::string name) {
 // OFFSET: 0x00AAD8E0
 // FUNCTION: fn_17285
 void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
-  if (this->namedWindows.find(name) != this->namedWindows.end()) {
+  const auto entry = this->namedWindows.find(name);
+  if (entry != this->namedWindows.end()) {
     this->namedWindows[name]->SendMsg(nullptr, UM_MENU_SELECTED, 0, 0, 0, 0);
   }
 }
@@ -1466,7 +1471,8 @@ static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag
 
 // INLINED
 static __forceinline std::vector<unsigned char> MakeReplayChunk(int tag, const std::vector<unsigned char>& state) {
-  std::vector<unsigned char> chunk(state.size() + 6, 0);
+  std::vector<unsigned char> chunk;
+  chunk.resize(state.size() + 6);
   ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
   header->tag = static_cast<std::int16_t>(tag);
   header->size = static_cast<int>(state.size());
@@ -1874,6 +1880,12 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
   return static_cast<int>(offset);
 }
 
+// INLINED
+static void SetWhisperCode(UIWhisperWnd* window, const char* text) {
+  std::string code(text);
+  window->m_code = std::move(code);
+}
+
 // OFFSET: 0x00AA9100
 // FUNCTION: fn_17253
 int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e) {
@@ -1902,7 +1914,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
         window->m_name = name + "  (" + reinterpret_cast<const char*>(b) + ")  *^_^*";
       }
       if (c != 0) {
-        window->m_code = reinterpret_cast<const char*>(c);
+        SetWhisperCode(window, reinterpret_cast<const char*>(c));
       }
       const int count = static_cast<int>(this->namedWindows.size());
       if (count != 0) {
@@ -1940,7 +1952,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     break;
   case UIM_PUSHINTOCHATHISTORY:
   case UIM_PUSHINTOCHATHISTORY2: {
-    if (g_replayAnimationScaling != 0 && !Replay::Instance().header.options.recordRestricted) {
+    if (g_replayAnimationScaling != 0 && Replay::Instance().header.options.Get(ReplayRecordOption::Chatting) == 0) {
       break;
     }
     if (this->chatWnd != nullptr) {
@@ -2147,8 +2159,7 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     const unsigned id = static_cast<unsigned>((*it)->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      std::vector<unsigned char> state = (*it)->GetReplayData();
-      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, state));
+      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, (*it)->GetReplayData()));
     }
   }
   AppendReplayChunk(data, MakeReplayMarker(20001));
@@ -2282,7 +2293,8 @@ UIWindow* UIWindowMgr::OpenSubChatWindow(int id, int x, int y, int width, int he
     created->m_index = id;
     created->SetSize(width, height);
     created->Move(posX, posY);
-    this->rendered.push_back(created);
+    UIWindow* added = created;
+    this->rendered.push_back(added);
     this->retainedWindows[id] = created;
     window = created;
   }
@@ -2523,8 +2535,6 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       case WID_SEARCH_STORE_INFO:
       case WID_NCASHWND:
       case WID_NAVIGATIONV4WND:
-      case WID_STYLINGSHOPWND:
-      case WID_REQUESTJOINPARTYWND:
         window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         return false;
       case WID_ITEMSHOPWND:
@@ -2540,6 +2550,10 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
           return false;
         }
         window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, replaying, replaying, replaying);
+        return false;
+      case WID_STYLINGSHOPWND:
+      case WID_REQUESTJOINPARTYWND:
+        window->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         return false;
       case WID_BALLOONOPENBTN:
       case WID_WAITDBSAVEWND:
@@ -4300,7 +4314,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
   }
 
-  if (static_cast<int>(g_session.m_options.Get(5)) > 0) {
+  if (static_cast<int>(g_modalFrameOptions.Get(5)) > 0) {
     return false;
   }
 
@@ -4734,7 +4748,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (!this->IsOrderFixed(id)) {
     this->RemoveOrder(id);
     if (id == WID_NAVIGATIONV4WND) {
-      this->windowHistory.push_back(int(id));
+      this->windowHistory.emplace_back(id);
     } else {
       this->windowHistory.push_front(int(id));
     }
@@ -4763,7 +4777,8 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     window->Show(g_replayAnimationScaling ? Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) : 1);
     if (this->savedWindowIds.size() != 0) {
-      for (int savedId : this->savedWindowIds) {
+      for (auto entry = this->savedWindowIds.begin(); entry != this->savedWindowIds.end(); ++entry) {
+        int savedId = *entry;
         if (savedId == WID_MINIPARTYWND) {
           this->RebuildMiniPartyWindows();
         } else {

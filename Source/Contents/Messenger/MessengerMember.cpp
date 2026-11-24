@@ -214,6 +214,12 @@ UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)
   this->geometry.state = 0;
 }
 
+// INLINED
+static void ReadBytes(std::vector<unsigned char>& buffer, const std::vector<unsigned char>& data, int& offset, int size) {
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  offset += size;
+}
+
 // OFFSET: 0x00E48C00
 // FUNCTION: fn_24228
 int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data) {
@@ -221,10 +227,8 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     return offset;
   }
 
-  int position = offset;
   std::vector<unsigned char> buffer(size, 0);
-  std::memcpy(buffer.data(), data.data() + position, size);
-  position += size;
+  ReadBytes(buffer, data, offset, size);
   std::uint32_t consumed = 0;
   std::vector<unsigned char> remaining(buffer);
   while (consumed < buffer.size()) {
@@ -237,7 +241,7 @@ int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int si
     }
   }
 
-  return position;
+  return offset;
 }
 
 // OFFSET: 0x00E494F0
@@ -853,7 +857,7 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     int disabledIndices[2] = {0, 2};
 
     int index = 0;
-    for (int x = 5; x < 291; x += 26, ++index) {
+    for (int x = 5; x < 291; ++index, x += 26) {
       char number[8];
       _itoa(index + 1, number, 10);
       this->buttons[index] = new UIBitmapButton();
@@ -882,7 +886,11 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       );
       this->buttons[index]->Move(x, this->geometry.height - 40);
       this->buttons[index]->SetId(ids[index]);
-      this->buttons[index]->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
+      if (this->mode == 0) {
+        this->buttons[index]->SetTooltip(friendTooltips[index]);
+      } else {
+        this->buttons[index]->SetTooltip(partyTooltips[index]);
+      }
       {
         UIBitmapButton* button = this->buttons[index];
         button->SetDisabled(disabled[index]);
@@ -1060,7 +1068,7 @@ void UIMessengerGroupWnd::Paint() {
 
       char nameText[80];
       memset(nameText, 0, sizeof(nameText));
-      std::string display = entry.name;
+      std::string display(entry.name, entry.name.get_allocator());
       const std::size_t position = entry.name.find(g_messengerNamelessTag);
       if (position != std::string::npos) {
         display.clear();
@@ -1441,7 +1449,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     CGameMode* gameMode = g_modeMgr.GetGameMode();
     if (gameMode && this->mode != 0) {
       int index = 0;
-      for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+      auto it = this->members.begin();
+      while (it != this->members.end()) {
         if (it->valid && !it->offline) {
           CRenderObject* actor;
           int current;
@@ -1489,6 +1498,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         this->jobIcons[index]->SetBitmap(path, 1, 0);
         this->jobIcons[index]->SetBitmap(path, 2, 0);
         this->jobIcons[index]->Invalidate();
+        ++it;
+        ++index;
       }
     }
 

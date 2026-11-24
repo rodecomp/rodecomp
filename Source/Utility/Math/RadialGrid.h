@@ -4,6 +4,9 @@
 #include <vector>
 
 struct RadialGridPoint {
+  RadialGridPoint() = default;
+  RadialGridPoint(float pointX, float pointY) : x(pointX), y(pointY) {}
+
   /* 0000 */ float x;
   /* 0004 */ float y;
 };

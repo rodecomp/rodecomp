@@ -21,8 +21,9 @@ static_assert(sizeof(PACKET_CZ_REQNAME2) == 6);
 // OFFSET: 0x005BFD10
 // FUNCTION: fn_03500
 const CActorNameCard& CActorNameCardHolder::Lookup(std::uint32_t id) {
-  const auto found = std::as_const(this->cards).find(id);
-  if (this->cards.end() == found || found->second.received != 1) {
+  auto& cardsRef = this->cards;
+  const auto found = std::as_const(cardsRef).find(id);
+  if (cardsRef.end() == found || found->second.received != 1) {
     this->QueueRequest(id);
 
     // GLOBAL: gl_24526
@@ -50,7 +51,7 @@ void CActorNameCardHolder::ExpireRequests() {
 std::uint32_t CActorNameCardHolder::PopNextRequest() {
   while (!this->pending.empty()) {
     const int id = this->pending.front();
-    const auto found = this->cards.find(id);
+    const std::map<std::uint32_t, CActorNameCard>::const_iterator found = this->cards.find(id);
     if (found == this->cards.end() || found->second.received != 1) {
       const auto end = this->requests.end();
       const auto requested = std::find_if(this->requests.begin(), end, [id](const Request& request) { return id == request.id; });
@@ -68,8 +69,7 @@ std::uint32_t CActorNameCardHolder::PopNextRequest() {
 // OFFSET: 0x005C0090
 // FUNCTION: fn_45911
 void CActorNameCardHolder::QueueRequest(std::uint32_t id) {
-  const auto end = this->pending.end();
-  if (end == std::find(this->pending.begin(), end, id)) {
+  if (this->pending.end() == std::find(this->pending.begin(), this->pending.end(), id)) {
     this->pending.push_back(id);
   }
 }

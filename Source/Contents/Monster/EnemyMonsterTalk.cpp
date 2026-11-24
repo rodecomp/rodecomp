@@ -37,7 +37,14 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
     return;
   }
 
-  const bool bySkill = event == 1 || event == 2 || event == 3;
+  BOOL bySkill = FALSE;
+  switch (event) {
+  case 1:
+  case 2:
+  case 3:
+    bySkill = TRUE;
+    break;
+  }
   std::vector<const char*> talks;
   if (bySkill) {
     char skillName[16];
@@ -59,6 +66,7 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
   if (count != 0) {
     char line[256];
     std::sprintf(line, talks[std::rand() % count]);
+    talks.clear();
     g_session.FormatMonsterSpeech(line, text, aid, 0);
   }
 }

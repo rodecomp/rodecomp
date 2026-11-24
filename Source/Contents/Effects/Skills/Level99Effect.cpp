@@ -19,7 +19,7 @@ __declspec(noinline) CLevel99Effect::~CLevel99Effect() {
 
 // OFFSET: 0x00B6A250
 // FUNCTION: fn_19081
-void CLevel99Effect::SetColor(int red, int green, int blue) {
+void CLevel99Effect::SetColor(short red, short green, short blue) {
   for (std::vector<CParticle*>::iterator it = this->sparkles.begin(); it != this->sparkles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -73,8 +73,8 @@ void CLevel99Effect::AddRings() {
     }
 
     ++row;
-    tilt -= 5;
     startAngle += 90;
+    tilt -= 5;
   } while (tilt > 40);
 }
 

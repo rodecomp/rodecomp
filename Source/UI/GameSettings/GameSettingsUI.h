@@ -29,7 +29,7 @@ extern int g_textureDetailLevel;
 extern int g_textureFiltering;
 extern int g_configuredRenderBackend;
 extern bool g_restartClient;
-extern std::map<int, int> g_optionHotkeys;
+extern std::map<TALKTYPE, int> g_optionHotkeys;
 
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
@@ -353,7 +353,7 @@ public:
   /* 00EC */ CUIImageButton* m_runButton;
   /* 00F0 */ CUITextButton* m_label;
   /* 00F4 */ CUIStaticText* m_description;
-  /* 00F8 */ int m_optionId;
+  /* 00F8 */ TALKTYPE m_optionId;
 };
 
 }

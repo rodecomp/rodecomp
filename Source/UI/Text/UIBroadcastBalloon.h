@@ -19,7 +19,11 @@ struct BroadcastBalloonLine {
 struct BroadcastBalloonMessage {
   // OFFSET: 0x00D040D0
   // FUNCTION: fn_21554
-  BroadcastBalloonMessage() : duration(20), fontHeight(12), backgroundColor(0x40000000), width(0), height(0) {
+  __declspec(noinline) BroadcastBalloonMessage() : duration(20), fontHeight(12), backgroundColor(0x40000000), width(0), height(0) {
+    this->start = std::chrono::system_clock::now();
+  }
+  // INLINED
+  explicit BroadcastBalloonMessage(int seconds) : duration(seconds), fontHeight(12), backgroundColor(0x40000000), width(0), height(0) {
     this->start = std::chrono::system_clock::now();
   }
 

@@ -140,6 +140,7 @@ bool C3dWorldRes::Load(const char* name) {
   this->major = major;
   this->minor = minor;
   unsigned build = 0;
+  int modelIndex;
 
   if (major == 2 && minor >= 5) {
     input.Read(&build, sizeof(build));
@@ -232,10 +233,9 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   if (CompareWorldVersion(std::tuple<int, int>(2, 7), std::tie(major, minor)) <= 0 && build >= 221) {
-    unsigned count;
-    input.Read(&count, sizeof(count));
+    input.Read(&modelIndex, sizeof(modelIndex));
 
-    input.Seek(4u * count, FILE_CURRENT);
+    input.Seek(4u * modelIndex, FILE_CURRENT);
   }
 
   int count;
@@ -249,9 +249,10 @@ bool C3dWorldRes::Load(const char* name) {
     case 1: {
       int animation;
       int animationType;
-      int modelIndex = -1;
       float speed;
       unsigned char flag;
+
+      modelIndex = -1;
 
       if ((major == 1 && minor >= 3) || major >= 2) {
         input.Read(lastName, 40);
@@ -313,16 +314,14 @@ bool C3dWorldRes::Load(const char* name) {
     }
 
     case 3: {
-      WorldSoundRecord* record;
-
       if (major >= 2) {
-        record = new WorldSoundRecord;
+        auto* record = new WorldSoundRecord;
         input.Read(record, sizeof(*record));
         this->sounds.push_back(record);
       } else {
         WorldLegacySoundFileRecord wire;
         input.Read(&wire, sizeof(wire));
-        record = new WorldSoundRecord;
+        auto* record = new WorldSoundRecord;
         std::strncpy(record->name, wire.name, 79);
         std::strncpy(record->file, wire.file, 79);
         record->position[0] = wire.position.x;

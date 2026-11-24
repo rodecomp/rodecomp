@@ -134,7 +134,7 @@ void UILapineBox_IngredientListWnd::Paint() {
 UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int height)
     : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
   this->UIWindow::Resize(width, height);
-  this->OnCreate(width, height);
+  static_cast<UIWindow*>(this)->OnCreate(width, height);
 }
 
 // OFFSET: 0x005FF820
@@ -142,11 +142,13 @@ UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int heig
 void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (this->items.size() < static_cast<unsigned>(this->maxItems) && drag->source == 27) {
-    const int result = this->ingredientList->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0);
-    if (result >= 0) {
-      this->AddIngredient(drag->id, drag->quantity);
-    }
+  if (this->items.size() >= static_cast<unsigned>(this->maxItems) || drag->source != 27) {
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+    return;
+  }
+
+  if (this->ingredientList->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0) >= 0) {
+    this->AddIngredient(drag->id, drag->quantity);
   }
   mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }

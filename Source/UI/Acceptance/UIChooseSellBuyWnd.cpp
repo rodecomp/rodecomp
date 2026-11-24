@@ -563,7 +563,8 @@ void UIEquipWnd::Paint() {
     return;
   }
 
-  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp")))) {
+  const int viewOther = this->m_viewOther;
+  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp")))) {
     this->DrawBitmap(0, this->m_contentTop + 17, bitmap, false);
   }
 
@@ -592,18 +593,25 @@ void UIEquipWnd::Paint() {
 
     this->DrawEquipSlots();
     this->RefreshLook();
+    const short job = static_cast<short>(this->appearance[0]);
+    const unsigned char sex = static_cast<unsigned char>(this->appearance[1]);
+    const short head = static_cast<short>(this->appearance[2]);
+    const short weapon = static_cast<short>(this->appearance[3]);
+    const short shield = static_cast<short>(this->appearance[4]);
+    const short accessory = static_cast<short>(this->appearance[5]);
+    const short costumeJob = static_cast<short>(this->costumeJob);
     FuncDrawWNDChar(
       this,
       this->geometry.width / 2 + 1,
       149,
-      static_cast<unsigned char>(this->appearance[1]),
-      static_cast<short>(this->appearance[0]),
+      sex,
+      job,
       this->appearance[0],
-      static_cast<short>(this->costumeJob),
-      static_cast<short>(this->appearance[2]),
-      static_cast<short>(this->appearance[3]),
-      static_cast<short>(this->appearance[4]),
-      static_cast<short>(this->appearance[5]),
+      costumeJob,
+      head,
+      weapon,
+      shield,
+      accessory,
       this->robeId,
       0,
       g_session.madogearType,
@@ -771,8 +779,8 @@ static __forceinline UIBitmapButton* AddNumberedButtonInline(UIFrameWnd* frame, 
 // OFFSET: 0x008E3340
 // FUNCTION: fn_12182
 void UIMinimapZoomWnd::OnCreate(int, int) {
-  const int ys[5] = {128, 128, 128, 128, 128};
   const int xs[5] = {1, this->geometry.width - 55, this->geometry.width - 41, this->geometry.width - 27, this->geometry.width - 13};
+  const int ys[5] = {128, 128, 128, 128, 128};
   const int ids[5] = {452, 216, 217, 189, 454};
   const char* tooltips[5] = {LookupMessage(MSI_MINIMAP_TIP_POS_ON), LookupMessage(MSI_MINIMAP_TIP_ZOOM_IN), LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), LookupMessage(MSI_MINIMAP_TIP_MAP_VIEW), LookupMessage(MSI_MINIMAP_TIP_WORLD_VIEW)};
   const char* names[5] = {"object", "plus", "minus", "mini", "viewon"};
@@ -780,8 +788,9 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
 
   this->m_buttons.clear();
   for (int i = 0; i < 5; ++i) {
+    const char* tooltip = tooltips[i];
     const std::string name = prefix + names[i];
-    UIBitmapButton* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
+    UIBitmapButton* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltip, true);
     this->m_buttons.push_back(button);
   }
 
@@ -859,20 +868,25 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       static_cast<UIButton*>(button)->Enable(enabled);
     }
     this->Invalidate();
-    break;
+    [[fallthrough]];
   }
-  }
+  default: {
+    std::string mapName = g_modeMgr.GetGameMode()->MapName();
+    CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+    TownInfo town = townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
+    if (town.image.empty()) {
+      break;
+    }
 
-  std::string mapName = g_modeMgr.GetGameMode()->MapName();
-  CTownInfoMgr* townInfoMgr = g_townInfoMgr;
-  TownInfo town = townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
-  if (!town.image.empty()) {
     const std::size_t extension = mapName.find_first_of(".");
     if (extension != std::string::npos) {
       mapName = mapName.substr(0, extension);
     }
     g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+    return 0;
   }
+  }
+
   return 0;
 }
 
@@ -917,10 +931,10 @@ void UIMonsterDisplayWnd::Paint() {
   const ActionFrame& frame = action->Frame(0, 0);
   const auto* palette = sprite->palette;
   SpriteAtlasRecord record{};
-  int left = 0;
   int top = 0;
   int offsetX = 0;
   int offsetY = 0;
+  int left = 0;
   for (int index = 0; index < frame.cellCount; ++index) {
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
@@ -1177,12 +1191,13 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.PartyCount() == 0) {
         if (this->m_mode == 50) {
-          std::string name;
+          std::string name = "";
           name = this->m_nameEdit->Text();
           if (name.find("#") != std::string::npos) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME)), 0xFF, 0, 0, 0);
           } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0xFF, 0, 0, 0);
+            return 0;
           } else if (std::strlen(name.c_str()) != 0) {
             mode->SendMsg(MM_WHISPER_FILTER, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
             g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
@@ -1231,7 +1246,8 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         }
       } else {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ONLY_PARTYMASTER)), 0xFFFF64, 10, 0, 0);
+        const char* message = LookupMessage(MSI_ONLY_PARTYMASTER);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF64, 10, 0, 0);
       }
       return 0;
     default:
@@ -1463,8 +1479,9 @@ void UISpellListWnd::Paint() {
 
   int row = 0;
   int index = 0;
+  unsigned position = 0;
   CSkillInfo skill;
-  for (unsigned position = 0; position < this->m_skills.size(); ++position) {
+  for (; position < this->m_skills.size(); ++position) {
     char name[64];
     std::strcpy(name, CSkillInfo::DisplayName(static_cast<int>(this->m_skills[position])));
     if (index < this->m_scroll * this->m_columns) {
@@ -1482,7 +1499,8 @@ void UISpellListWnd::Paint() {
     skill.id = this->m_skills[position];
     char path[256];
     g_session.ItemBitmapPath(skill.IdName(), path);
-    this->DrawBitmap(8, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), 1);
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    this->DrawBitmap(8, y, bitmap, 1);
     this->DrawTextAt(40, y + 4, name, 0, 0, 12, 0, 0, 0);
 
     ++row;
@@ -1516,22 +1534,25 @@ void UITipOfTheDayWnd::Paint() {
 
   rows = (this->geometry.width - 60) % 32;
   {
-    unsigned red, green, blue;
+    unsigned blue;
+    {
+      unsigned red, green;
+      g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+      this->FillRegion(20, 17, rows, this->geometry.height - 38, RGB(red, green, blue));
+      this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+    }
+    this->DrawButtonBar(2, 0, 1);
+
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slots = (this->geometry.height - 38) / 32;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
+    unsigned red, green;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(20, 17, rows, this->geometry.height - 38, RGB(red, green, blue));
-    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+    this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
   }
-  this->DrawButtonBar(2, 0, 1);
-
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slots = (this->geometry.height - 38) / 32;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
 }
 
 // OFFSET: 0x008F2A80
@@ -1639,11 +1660,11 @@ void UIStatusWnd::Paint() {
 
   const int* traitBonus = g_session.m_traits.bonus;
   const std::int64_t* traitPoints = g_session.m_traits.points;
-  const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
-  const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
   const int types[6] = {219, 220, 221, 222, 223, 224};
+  const std::int64_t points[6] = {traitPoints[0], traitPoints[1], traitPoints[2], traitPoints[3], traitPoints[4], traitPoints[5]};
   const std::int64_t* point = points;
   int index = 0;
+  const int bonuses[6] = {traitBonus[0], traitBonus[1], traitBonus[2], traitBonus[3], traitBonus[4], traitBonus[5]};
   for (int y = 144; y < 240; y += 16, point += 1, ++index) {
     const int value = g_session.GetTraitStat(types[index]);
     this->DrawTextAt(36, y, FormatOwnedString("%d", value).c_str(), 0, 1, 14, 0, 0, 0);
@@ -2103,10 +2124,14 @@ int UIMenuWnd::ItemAt(int x, int y) {
     return -1;
   }
 
-  int row = y / (this->m_itemHeight / 2);
-  const unsigned index = row >= 0 ? row : 0;
-  const unsigned last = static_cast<unsigned>(this->m_items.size()) - 1;
-  return index <= last ? index : last;
+  int index = y / (this->m_itemHeight / 2);
+  if (index < 0) {
+    index = 0;
+  }
+  if (static_cast<unsigned>(index) > this->m_items.size() - 1) {
+    index = static_cast<int>(this->m_items.size()) - 1;
+  }
+  return index;
 }
 
 // OFFSET: 0x008DA300
@@ -2207,9 +2232,8 @@ void UITipboxWnd::UpdatePageText() {
     (separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), std::strlen((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str()), 0, 12, 0
   );
 
-  const int offset = (36 - totalWidth - pageWidth) / 2;
-  this->m_pageText->Move(offset + 426, 320);
-  this->m_pageTotalText->Move(pageWidth + 426 + offset, 320);
+  this->m_pageText->Move((36 - totalWidth - pageWidth) / 2 + 426, 320);
+  this->m_pageTotalText->Move(pageWidth + 426 + (36 - totalWidth - pageWidth) / 2, 320);
 }
 
 // OFFSET: 0x008D0230
@@ -2597,19 +2621,19 @@ void UIItemIdentifyWnd::OnWheel(int delta) {
 // OFFSET: 0x008F6370
 // FUNCTION: fn_12315
 void UIItemParamChangeDisplayWnd::SumEquippedStats() {
-  int locations = 0;
   this->m_before = 0;
   this->m_beforeSecond = 0;
+  int locations = 0;
 
   for (int index = 0; index < 8; ++index) {
     ITEM_INFO item = g_session.GetEquippedItemAt(index);
     if (item.identity[1] > 0 && item.quantity == 1) {
       const ITEM_DESC& description = FindItemDescription(std::atoi(item.itemId.c_str()));
-      const int previous = locations;
-      locations |= description.descriptionFlags;
-      if ((description.descriptionFlags & previous) != 0) {
+      if ((description.descriptionFlags & locations) != 0) {
+        locations |= description.descriptionFlags;
         continue;
       }
+      locations |= description.descriptionFlags;
 
       if (description.descriptionValues.size() == 2) {
         this->m_before += description.descriptionValues[0];
@@ -2727,18 +2751,19 @@ int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int me
 // OFFSET: 0x008F9460
 // FUNCTION: fn_12335
 int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != UM_SETINFO) {
+  switch (message) {
+  case UM_SETINFO:
+    this->m_cardPlacement = reinterpret_cast<CombinedCardItemCollectionWndInfo*>(argument1);
+    if (!this->m_cardPlacement->IsValid()) {
+      this->m_cardPlacement->Reset();
+      this->Move((g_renderer->viewport.width - 640) / 2 + this->m_cardPlacement->x, this->m_cardPlacement->y * g_renderer->viewport.height / 480);
+      return 0;
+    }
+    this->Move(this->m_cardPlacement->x, this->m_cardPlacement->y);
+    return 0;
+  default:
     return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  this->m_cardPlacement = reinterpret_cast<CombinedCardItemCollectionWndInfo*>(argument1);
-  if (!this->m_cardPlacement->IsValid()) {
-    this->m_cardPlacement->Reset();
-    this->Move((g_renderer->viewport.width - 640) / 2 + this->m_cardPlacement->x, this->m_cardPlacement->y * g_renderer->viewport.height / 480);
-  } else {
-    this->Move(this->m_cardPlacement->x, this->m_cardPlacement->y);
-  }
-  return 0;
 }
 
 // OFFSET: 0x008FD640
@@ -2751,7 +2776,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->m_compositionPlacement->Reset();
     }
     this->Move(this->m_compositionPlacement->x, this->m_compositionPlacement->y);
-    return 0;
+    break;
   case UM_SET_CARD_ITEM_INDEX:
     this->m_compositionState = static_cast<int>(a);
     if (a != 0) {
@@ -2760,7 +2785,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->m_title = static_cast<const std::string&>(FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), item.DisplayName(0).c_str()));
       }
     }
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
     if (g_replayAnimationScaling != 0) {
@@ -2784,40 +2809,43 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x574E == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x574F:
-          scanning = false;
-          break;
-        case 0x5751: {
-            std::vector<unsigned char> packet(header.length, 0);
-            std::memcpy(packet.data(), records + position, header.length);
-            position += header.length;
-            g_modeMgr.GetGameMode()->ReceiveCardCompositionItemList(packet.data());
-          break;
-        }
-        default:
+    if (0x574E != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x574F:
+        scanning = false;
+        break;
+      case 0x5751: {
+          std::vector<unsigned char> packet(header.length, 0);
+          std::memcpy(packet.data(), records + position, header.length);
           position += header.length;
-          break;
-        }
+          g_modeMgr.GetGameMode()->ReceiveCardCompositionItemList(packet.data());
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIItemIdentifyWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FDA10
@@ -2830,19 +2858,20 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
-    return 0;
+    break;
   case UM_CLEAR_ITEM:
     this->m_items.clear();
-    return 0;
+    break;
   case UM_REFRESH:
     this->UpdateScroll();
     this->Invalidate();
-    return 0;
+    break;
   case UM_ADDITEM: {
-    ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(b));
+    const std::uint32_t identity = static_cast<std::uint32_t>(b);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(identity);
     this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-    return 0;
+    break;
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
@@ -2865,7 +2894,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -2876,7 +2905,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
-      this->m_scroll = previous + static_cast<int>(a);
+      this->m_scroll += static_cast<int>(a);
     }
     if (previous != this->m_scroll) {
       this->UpdateScroll();
@@ -2889,31 +2918,36 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x571C == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x571D:
-          return 0;
-        case 0x571F: {
-          std::vector<unsigned char> packet(header.length, 0);
-          std::memcpy(packet.data(), records + position, header.length);
-          position += header.length;
-          g_modeMgr.GetGameMode()->ReceiveItemIdentificationList(packet.data());
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x571C != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x571D:
+        scanning = false;
+        break;
+      case 0x571F: {
+        std::vector<unsigned char> packet(header.length, 0);
+        std::memcpy(packet.data(), records + position, header.length);
+        position += header.length;
+        g_modeMgr.GetGameMode()->ReceiveItemIdentificationList(packet.data());
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FD5F0
@@ -3420,20 +3454,18 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->AddChild(this->m_viewButton);
     }
 
-    if (this->m_viewOther == 0) {
-      std::string prefix("유저인터페이스\\basic_interface\\");
-      const int x = this->geometry.width / 2 - 14;
-      const int bottom = this->geometry.height - this->contentOffset;
-      this->m_otherButton = new UIBitmapButton();
-      this->m_otherButton->SetBitmap((prefix + "btn_items_off" + ".bmp").c_str(), 0, 0);
-      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 1, 0);
-      this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
-      this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
-      this->m_otherButton->Move(x, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
-      this->m_otherButton->SetId(ID_EQUIP_OPTION_OPEN);
-      this->m_otherButton->SetTooltip(g_session.replayPacketMode > 0 ? LookupMessage(MSI_OPENCARTWINDOW) : "");
-      this->AddChild(this->m_otherButton);
-    }
+    std::string prefix("유저인터페이스\\basic_interface\\");
+    const int x = this->geometry.width / 2 - 14;
+    const int bottom = this->geometry.height - this->contentOffset;
+    this->m_otherButton = new UIBitmapButton();
+    this->m_otherButton->SetBitmap((prefix + "btn_items_off" + ".bmp").c_str(), 0, 0);
+    this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 1, 0);
+    this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
+    this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
+    this->m_otherButton->Move(x, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
+    this->m_otherButton->SetId(ID_EQUIP_OPTION_OPEN);
+    this->m_otherButton->SetTooltip(g_session.replayPacketMode > 0 ? LookupMessage(MSI_OPENCARTWINDOW) : "");
+    this->AddChild(this->m_otherButton);
   }
 
   this->m_show = this->geometry.height;
@@ -3488,26 +3520,26 @@ void UIEquipWnd::OnCreate(int width, int height) {
   if (this->m_viewOther == 0) {
     this->m_tabs->AddTab(LookupMessage(MSI_DAMAGE_EQUIPMENT), LookupMessage(MSI_DAMAGE_EQUIPMENT_TOOLTIP));
 
-    UIBitmapButton* apply = new UIBitmapButton();
-    this->damageSkinButtons[0] = apply;
-    apply->SetBitmap("유저인터페이스\\btn_apply.bmp", 0, 0);
-    apply->SetBitmap("유저인터페이스\\btn_apply_a.bmp", 1, 0);
-    apply->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
-    apply->SetSize(apply->BitmapWidth(), apply->BitmapHeight());
+    UIWindow*& apply = this->damageSkinButtons[0];
+    apply = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply.bmp", 0, 0);
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply_a.bmp", 1, 0);
+    static_cast<UIBitmapButton*>(apply)->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
+    apply->SetSize(static_cast<UIBitmapButton*>(apply)->BitmapWidth(), static_cast<UIBitmapButton*>(apply)->BitmapHeight());
     apply->Move(160, 167);
     apply->SetId(ID_APPLY);
-    apply->Enable(0);
+    static_cast<UIBitmapButton*>(apply)->Enable(0);
     this->AddChild(apply);
 
-    UIBitmapButton* close = new UIBitmapButton();
-    this->damageSkinButtons[1] = close;
-    close->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
-    close->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
-    close->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
-    close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+    UIWindow*& close = this->damageSkinButtons[1];
+    close = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
+    static_cast<UIBitmapButton*>(close)->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
+    close->SetSize(static_cast<UIBitmapButton*>(close)->BitmapWidth(), static_cast<UIBitmapButton*>(close)->BitmapHeight());
     close->Move(220, 167);
     close->SetId(ID_CLOSE);
-    close->Enable(0);
+    static_cast<UIBitmapButton*>(close)->Enable(0);
     this->AddChild(close);
 
     const int count = g_session.damageSkinCount;
@@ -3523,17 +3555,16 @@ void UIEquipWnd::OnCreate(int width, int height) {
       }
     }
 
-    UIScrollBar* scrollBar = new UIScrollBar();
-    this->m_scrollBar = scrollBar;
-    scrollBar->Configure(1, 153, 0, width);
-    scrollBar->Show(0);
-    scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
+    this->m_scrollBar = new UIScrollBar();
+    this->m_scrollBar->Configure(1, 153, 0, width);
+    this->m_scrollBar->Show(0);
+    this->m_scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
     this->AddChild(this->m_scrollBar);
 
     const char* labels[4] = {LookupMessage(MSI_DAMAGE_DIR_DEFAULT), LookupMessage(MSI_DAMAGE_DIR_RIGHT), LookupMessage(MSI_DAMAGE_DIR_CENTER), LookupMessage(MSI_DAMAGE_DIR_LEFT)};
     for (int index = 0; index < 4; ++index) {
-      UIRadioBtn* radio = new UIRadioBtn();
-      this->damageSkinButtons[index + 2] = radio;
+      UIWindow*& radio = this->damageSkinButtons[index + 2];
+      radio = new UIRadioBtn();
       radio->SetSize(60, 12);
       if (index == 0) {
         radio->Move(8, this->m_contentTop + 20);
@@ -3541,12 +3572,15 @@ void UIEquipWnd::OnCreate(int width, int height) {
         radio->Move(index * 60 + 28, this->m_contentTop + 20);
       }
       radio->SendMsg(this, UM_SETSTATE, index == this->damageSkinMode, 0, 0, 0);
-      radio->SetText(labels[index]);
-      const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
-      const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
-      radio->checkedBitmap = checked;
-      radio->uncheckedBitmap = unchecked;
-      radio->Invalidate();
+      static_cast<UIRadioBtn*>(radio)->SetText(labels[index]);
+      {
+        UIRadioBtn* button = static_cast<UIRadioBtn*>(radio);
+        const std::string unchecked("유저인터페이스\\tipbox\\checkBox.bmp");
+        const std::string checked("유저인터페이스\\tipbox\\checkBox_check.bmp");
+        button->checkedBitmap = checked;
+        button->uncheckedBitmap = unchecked;
+        button->Invalidate();
+      }
       radio->Show(0);
       this->AddChild(radio);
     }
@@ -3650,7 +3684,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_modeMgr.currentMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SET_BABY_MSG: {
     this->identity = static_cast<std::uint32_t>(a);
@@ -3660,41 +3694,44 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     text += LookupMessage(MSI_SUGGEST_BABY);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x53FC == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        std::memcpy(&header, packet + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x53FD:
-          scanning = false;
-          break;
-        case 0x53FE: {
-          char name[260];
-          std::memset(name, 0, sizeof(name));
-          std::memcpy(name, packet + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_BABY_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x53FC != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      std::memcpy(&header, packet + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x53FD:
+        scanning = false;
+        break;
+      case 0x53FE: {
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        std::memcpy(name, packet + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_BABY_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008F7050
@@ -3992,7 +4029,12 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  {
+    UITextViewer* viewer = this->m_viewer;
+    const COLORREF rgb = RGB(red, green, blue);
+    viewer->backgroundColor = rgb | 0xFF000000u;
+    viewer->Invalidate();
+  }
   this->AddChild(this->m_viewer);
 
   this->m_closeButton = this->AddCloseButton("ESC", 0);
@@ -4493,8 +4535,10 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
     int segment = this->TextWidth(it->second.c_str(), it->second.size(), 0, 12, 0, 0);
     total += segment;
     if (total >= width) {
-      it->second = static_cast<const std::string&>(this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0));
-      last.erase(it + 1, last.end());
+      const std::string fitted = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
+      it->second = fitted;
+      ++it;
+      last.erase(it, last.end());
       break;
     }
   }
@@ -4547,11 +4591,11 @@ void UIFrameWnd::SplitHighlightText(
     std::string::size_type pos = full.find(word);
     if (pos != std::string::npos) {
       if (pos != 0) {
-        segments.push_back(std::make_pair(color, full.substr(0, pos)));
+        segments.push_back({color, full.substr(0, pos)});
       }
-      segments.push_back(std::make_pair(highlightColor, full.substr(pos, word.size())));
+      segments.push_back({highlightColor, full.substr(pos, word.size())});
       if (word.size() + pos < full.size()) {
-        segments.push_back(std::make_pair(color, full.substr(word.size() + pos)));
+        segments.push_back({color, full.substr(word.size() + pos)});
       }
     }
   }
@@ -4628,7 +4672,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   switch (message) {
   case UM_RESOLVE_PLAYER_TAGS:
     this->m_chatHistory->ResolvePlayerTags(reinterpret_cast<const char*>(a));
-    return 0;
+    break;
   case UM_SETINFO: {
     WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
     this->placement = info;
@@ -4637,7 +4681,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     this->SendMsg(nullptr, UM_RESIZE, 7, this->placement->width, this->placement->height, 0);
     this->Move(this->placement->x, this->placement->y);
-    return 0;
+    break;
   }
   case UM_COMMAND:
     switch (a) {
@@ -4645,7 +4689,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (this->m_edit->HasItemLinkTag(this->m_edit->Text()) == 1) {
         this->m_edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
-        return 0;
+        break;
       }
 
       char text[256];
@@ -4653,12 +4697,12 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_edit->PushHistory();
       g_windowMgr.SetFocus(this->m_edit);
       if (std::strlen(text) == 0) {
-        return 0;
+        break;
       }
 
       if (g_serviceType == 1 && !g_session.ValidateCharacterName(text)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
-        return 0;
+        break;
       }
 
       if (this->m_target.size() != 0 && text[0] != '/') {
@@ -4671,11 +4715,11 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         }
 
         g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
-        return 0;
+        break;
       }
 
       if (g_session.ProcessEmotionShortcut(text) != 0) {
-        return 0;
+        break;
       }
 
       std::string parts[3];
@@ -4692,18 +4736,18 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else {
         g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
-      return 0;
+      break;
     }
     case ID_CLOSE:
       g_windowMgr.Schedule(this);
-      return 0;
+      break;
     }
-    return 0;
+    break;
   case UM_MENU_SELECTED:
     if (this->m_log[a].value == 11) {
       this->SaveChatLog();
     }
-    return 0;
+    break;
   case UM_MAKEMENU: {
     this->m_log.erase(this->m_log.begin(), this->m_log.end());
     if (g_windowMgr.menuWnd != nullptr) {
@@ -4717,7 +4761,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     g_modeMgr.currentMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     if (this->m_log.empty()) {
-      return 0;
+      break;
     }
 
     UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -4740,7 +4784,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       y = g_renderer->viewport.height - menu->geometry.height;
     }
     menu->Move(x, y);
-    return 0;
+    break;
   }
   case UM_ADDCHAT: {
     char* line = reinterpret_cast<char*>(a);
@@ -4756,18 +4800,18 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_chatHistory->AddTextWrapped(line, color, nullptr);
     }
     this->m_chatHistory->AddLinkRecord(line, color, "");
-    return 0;
+    break;
   }
   case UM_PAGEUPPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
       this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_PAGEDOWNPUSH:
     if (this->m_chatHistory->verticalOverflow != 0) {
       this->m_chatHistory->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_RESIZE:
     if (a == 7) {
       int width = b <= 512 ? static_cast<int>(b) : 512;
@@ -4792,10 +4836,12 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       g_windowMgr.StoreSnapRectangle(this);
     }
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x0090B080
@@ -5130,20 +5176,20 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_SET_TARGET:
     this->m_responseMessage = static_cast<int>(a);
-    return 0;
+    break;
   case UM_SETINFO:
     this->m_placement = reinterpret_cast<SayDialogWndInfo*>(a);
     if (!this->m_placement->IsValid()) {
       this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_viewer->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_DOWNPUSH:
     this->m_viewer->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, this->m_responseMessage);
     if (g_replayAnimationScaling != 0) {
@@ -5167,7 +5213,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, static_cast<int>(a), 0, 0);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SETSAYDIALOG:
     if (a != 0) {
@@ -5178,19 +5224,19 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->m_viewer->SendMsg(nullptr, UM_SETTEXT, a, c, 1, 0);
     }
     this->m_responseId = static_cast<int>(b);
-    return 0;
+    break;
   case UM_ENABLENEXTBUTTON:
     this->m_message0 = 218;
     this->m_responseMessage = 22;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_ENABLECLOSEBUTTON:
     this->m_message0 = 201;
     this->m_responseMessage = 89;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_ADD_BUTTON: {
     const std::string prefix("유저인터페이스\\");
     UIBitmapButton* button = new UIBitmapButton();
@@ -5203,13 +5249,13 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     button->SetId(static_cast<int>(a));
     this->AddChild(button);
     this->m_buttons.push_back(button);
-    return 0;
+    break;
   }
   case UM_DISABLENEXTBUTTON:
     this->m_message0 = 600;
     this->SendMsg(nullptr, UM_DELETE_BUTTON, 218, 0, 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_DELETE_BUTTON:
     for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
       if ((*it)->geometry.id == a) {
@@ -5219,47 +5265,50 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         break;
       }
     }
-    return 0;
+    break;
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (22500 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 22501:
-          scanning = false;
-          break;
-        case 22503: {
-          char text[260];
-          std::memset(text, 0, sizeof(text));
-          std::memcpy(text, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          break;
-        }
-        case 22504:
-          std::memcpy(&this->m_responsePending, records + position, header.length);
-          position += header.length;
-          break;
-        default:
-          position += header.length;
-          break;
-        }
+    if (22500 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 22501:
+        scanning = false;
+        break;
+      case 22503: {
+        char text[260];
+        std::memset(text, 0, sizeof(text));
+        std::memcpy(text, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETSAYDIALOG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        break;
+      }
+      case 22504:
+        std::memcpy(&this->m_responsePending, records + position, header.length);
+        position += header.length;
+        break;
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   case UM_CLEAR_ITEM:
     this->m_viewer->Clear();
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FAF50
@@ -5270,36 +5319,38 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->partnerName = reinterpret_cast<const char*>(a);
     this->partnerId = static_cast<int>(b);
     this->partnerLevel = static_cast<short>(c);
-    return 0;
+    break;
   case UM_MYDRAGCLOSED:
     this->isLocalTrader = 1;
     this->CancelInput();
     this->LayoutButtons();
-    return 0;
+    break;
   case UM_OTHERDRAGCLOSED:
     this->localConfirmed = 1;
     this->CancelInput();
     this->LayoutButtons();
-    return 0;
+    break;
   case UM_COMMAND: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case ID_CHECK:
       this->takeScreenshot = b != 0;
-      return 0;
+      break;
     case ID_OK:
       if (this->remoteConfirmed != 0) {
-        return 0;
+        break;
       }
       if (this->zenyEdit) {
         char text[24];
         std::sprintf(text, "%s ", this->zenyEdit->Text());
         if (!g_session.IsNumberWithCommas(text)) {
           g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
+          break;
         }
 
-        int amount = static_cast<int>(MaxInt64((std::min)(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), 0));
+        const std::int64_t value = _atoi64(text);
+        const std::int64_t limited = value > 0x7FFFFFFF ? 0x7FFFFFFF : value;
+        int amount = static_cast<int>(MaxInt64(limited, 0));
         if (amount < 0) {
           amount = 0;
         }
@@ -5311,10 +5362,10 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       mode->SendMsg(MM_CONCLUDE_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->remoteConfirmed = 1;
-      return 0;
+      break;
     case ID_EXCHANGE:
       if (this->localAccepted != 0) {
-        return 0;
+        break;
       }
       if (this->takeScreenshot) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE_CHARNAME), this->partnerName.c_str());
@@ -5323,17 +5374,17 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->localAccepted = 1;
       this->LayoutButtons();
-      return 0;
+      break;
     case ID_CANCEL:
       if (this->remoteAccepted != 0) {
-        return 0;
+        break;
       }
       mode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->remoteAccepted = 1;
-      return 0;
+      break;
     case ID_RIGHT: {
       if (!this->zenyEdit) {
-        return 0;
+        break;
       }
       int amount = std::atoi(this->zenyEdit->Text());
       if (amount < 0) {
@@ -5344,10 +5395,10 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       mode->SendMsg(MM_ADD_EXCHANGE_ITEM, 0, g_session.exchangeMoney + amount, 0, 0);
       this->CancelInput();
-      return 0;
+      break;
     }
     }
-    return 0;
+    break;
   }
   case UM_REFRESHITEM:
     this->m_myItems.erase(this->m_myItems.begin(), this->m_myItems.end());
@@ -5363,12 +5414,12 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
     }
     this->Invalidate();
-    return 0;
+    break;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
@@ -5444,13 +5495,15 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
       }
     }
-    return 0;
+    break;
   }
   case UM_SCROLLVERT:
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FB850
@@ -5565,8 +5618,9 @@ bool UITipboxWnd::BuildAnimations() {
 
       for (int step = 0; step < count; ++step) {
         TipBoxDot dot;
-        dot.x = static_cast<float>(step) * dx / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromX);
-        dot.y = static_cast<float>(step) * dy / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromY);
+        const float position = static_cast<float>(step);
+        dot.x = position * dx / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromX);
+        dot.y = position * dy / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].fromY);
         dot.visible = false;
         this->m_dots.push_back(dot);
       }
@@ -6246,35 +6300,39 @@ void UIItemCollectionWnd::SetHeight(int height) {
   if (height > 450) {
     height = 450;
   }
-  if (height == this->geometry.height) {
+  auto& geometryRef = this->geometry;
+  if (height == geometryRef.height) {
     return;
   }
 
   const int moveInfoId = FindItemMoveInfo(std::atoi(this->m_itemIdText.c_str())).itemId;
   if (moveInfoId != 0) {
-    this->Resize(this->geometry.width, height + this->m_moveInfo->geometry.height + 3);
+    this->Resize(geometryRef.width, height + this->m_moveInfo->geometry.height + 3);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
     moveInfo->m_moveIndex = std::atoi(this->m_itemIdText.c_str());
   } else {
-    this->Resize(this->geometry.width, height);
+    this->Resize(geometryRef.width, height);
   }
 
   const int viewHeight = height - this->m_extraHeight;
   int resizerY;
   if (this->m_compare != 0) {
-    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 69);
-    resizerY = this->geometry.height - this->m_extraHeight - 46;
+    this->m_viewer->Resize(geometryRef.width - 98, viewHeight - 69);
+    resizerY = geometryRef.height - this->m_extraHeight - 46;
   } else {
-    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 40);
-    resizerY = this->geometry.height - this->m_extraHeight - 17;
+    this->m_viewer->Resize(geometryRef.width - 98, viewHeight - 40);
+    resizerY = geometryRef.height - this->m_extraHeight - 17;
   }
-  this->m_resizer->Move(this->geometry.width - 17, resizerY);
+  this->m_resizer->Move(geometryRef.width - 17, resizerY);
 
-  const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
+  const UITextViewer* viewer = this->m_viewer;
+  UIItemMoveInfo* moveInfo = this->m_moveInfo;
+  const unsigned char comparing = this->m_compare;
+  const int bottom = viewer->geometry.y + viewer->geometry.height;
   if (moveInfoId != 0) {
-    this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_compare != 0 ? bottom - 29 : bottom);
+    moveInfo->Move(viewer->geometry.x, comparing != 0 ? bottom - 29 : bottom);
   } else {
-    this->m_moveInfo->Move(-1000, -1000);
+    moveInfo->Move(-1000, -1000);
   }
   this->m_viewer->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
 }
@@ -6783,6 +6841,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       break;
     }
     case 6: {
+      ITEM_INFO item;
       if (g_session.GetNumPurchaseItems() >= 8) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
@@ -6806,7 +6865,6 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           }
         }
       }
-      ITEM_INFO item;
       item.Assign(mode->drag);
       item.bindOnEquip = static_cast<std::uint16_t>(this->m_selectedIndex);
       g_session.MergeItem1720ByName(item);
@@ -7229,11 +7287,11 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     std::list<ITEM_INFO>::iterator it = this->items.begin();
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
-        int index = row + (this->m_page - 1) * 8;
         int count = lists.GetInventoryCategorySize(this->m_tab);
         if (this->m_tab == 8) {
           count = static_cast<int>(this->items.size());
         }
+        int index = row + (this->m_page - 1) * 8;
         if (count <= index) {
           return ITEM_INFO(0);
         }
@@ -7649,9 +7707,9 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
 
   {
     const std::string prefix("유저인터페이스\\");
-    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
+    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
 
     for (int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
@@ -8091,27 +8149,11 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
   switch (message) {
   case UM_SETINFO: {
     this->m_placement = reinterpret_cast<ItemParamChangeDisplayWndInfo*>(a);
-    auto* info = this->m_placement;
-    if (!info->IsValid()) {
-      info->Reset();
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
-  }
-  case UM_REFRESH: {
-    this->SumEquippedStats();
-    this->equippedParam = 0;
-    this->equippedSecondParam = 0;
-    const ITEM_DESC& description = FindItemDescription(std::atoi(this->m_label.c_str()));
-    ITEM_INFO equipped = this->FindEquippedItem(description.descriptionFlags);
-    if (equipped.identity[1] > 0) {
-      const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
-      if (equippedDescription.descriptionValues.size() == 2) {
-        this->equippedParam = equippedDescription.descriptionValues[0];
-        this->equippedSecondParam = equippedDescription.descriptionValues[1];
-      }
-    }
-    break;
   }
   case UM_PARAM: {
     this->SumEquippedStats();
@@ -8124,25 +8166,43 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     }
     this->equippedParam = 0;
     this->equippedSecondParam = 0;
-    const ITEM_DESC& slot = FindItemDescription(std::atoi(this->m_label.c_str()));
-    ITEM_INFO equipped = this->FindEquippedItem(slot.descriptionFlags);
-    if (equipped.identity[1] > 0) {
-      const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
-      if (equippedDescription.descriptionValues.size() == 2) {
-        this->equippedParam = equippedDescription.descriptionValues[0];
-        this->equippedSecondParam = equippedDescription.descriptionValues[1];
+    {
+      ITEM_INFO equipped = this->FindEquippedItem(FindItemDescription(std::atoi(this->m_label.c_str())).descriptionFlags);
+      if (equipped.identity[1] > 0) {
+        const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
+        if (equippedDescription.descriptionValues.size() == 2) {
+          this->equippedParam = equippedDescription.descriptionValues[0];
+          this->equippedSecondParam = equippedDescription.descriptionValues[1];
+        }
       }
     }
-    break;
+    this->m_after = this->itemParam + this->m_before - this->equippedParam;
+    this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
+    this->Invalidate();
+    return 0;
+  }
+  case UM_REFRESH: {
+    this->SumEquippedStats();
+    this->equippedParam = 0;
+    this->equippedSecondParam = 0;
+    {
+      ITEM_INFO equipped = this->FindEquippedItem(FindItemDescription(std::atoi(this->m_label.c_str())).descriptionFlags);
+      if (equipped.identity[1] > 0) {
+        const ITEM_DESC& equippedDescription = FindItemDescription(std::atoi(equipped.itemId.c_str()));
+        if (equippedDescription.descriptionValues.size() == 2) {
+          this->equippedParam = equippedDescription.descriptionValues[0];
+          this->equippedSecondParam = equippedDescription.descriptionValues[1];
+        }
+      }
+    }
+    this->m_after = this->itemParam + this->m_before - this->equippedParam;
+    this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
+    this->Invalidate();
+    return 0;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
-
-  this->m_after = this->itemParam + this->m_before - this->equippedParam;
-  this->m_afterSecond = this->itemSecondParam + this->m_beforeSecond - this->equippedSecondParam;
-  this->Invalidate();
-  return 0;
 }
 
 // OFFSET: 0x008FE0E0
@@ -8251,10 +8311,11 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     return 0;
   case UM_SETTITLE: {
     this->m_kind = static_cast<int>(a);
+    const int amount = static_cast<int>(b);
     char text[128];
     if (a != 0) {
       char grouped[24];
-      std::sprintf(text, LookupMessage(MSI_GET_ZENY), FormatGroupedInteger(static_cast<int>(b), grouped, sizeof(grouped)));
+      std::sprintf(text, LookupMessage(MSI_GET_ZENY), FormatGroupedInteger(amount, grouped, sizeof(grouped)));
       this->m_message = text;
       this->m_itemId = "";
     } else {
@@ -8263,7 +8324,7 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       item.itemId = reinterpret_cast<const char*>(c);
       item.identified = this->m_identified;
       item.refiningLevel = 0;
-      std::sprintf(text, LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), static_cast<int>(b));
+      std::sprintf(text, LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), amount);
       this->m_message = text;
     }
 
@@ -8437,7 +8498,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
       break;
     }
-    return 0;
+    break;
   case UM_SET_BABY_MSG: {
     this->m_place = static_cast<char>(a);
     std::string text;
@@ -8448,38 +8509,41 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x54C4 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        std::memcpy(&header, packet + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x54C5:
-          scanning = false;
-          break;
-        case 0x54C6:
-          std::memcpy(&this->m_place, packet + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
-          break;
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x54C4 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      std::memcpy(&header, packet + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x54C5:
+        scanning = false;
+        break;
+      case 0x54C6:
+        std::memcpy(&this->m_place, packet + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
+        break;
+      default:
+        offset += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  return 0;
 }
 
 // OFFSET: 0x00908080
@@ -8692,29 +8756,26 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     case ID_INT:
       RequestStatusPointUp(this, mode, 3);
       break;
-    case ID_DEX:
-      RequestStatusPointUp(this, mode, 4);
-      break;
     case ID_LUK:
       RequestStatusPointUp(this, mode, 5);
       break;
+    case ID_DEX:
+      RequestStatusPointUp(this, mode, 4);
+      break;
     case ID_TOGGLE_STATUS_EXPAND: {
-      const char* normal;
-      const char* pressed;
       if (this->m_extended == 1) {
         this->m_extended = 0;
         this->Resize(280, 141);
-        normal = "유저인터페이스\\statuswnd\\expand_on_normal.bmp";
-        pressed = "유저인터페이스\\statuswnd\\expand_on_press.bmp";
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 0, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_normal.bmp", 1, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_on_press.bmp", 2, 0);
       } else {
         this->m_extended = 1;
         this->Resize(280, 241);
-        normal = "유저인터페이스\\statuswnd\\expand_off_normal.bmp";
-        pressed = "유저인터페이스\\statuswnd\\expand_off_press.bmp";
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_normal.bmp", 0, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_normal.bmp", 1, 0);
+        this->m_expandButton->SetBitmap("유저인터페이스\\statuswnd\\expand_off_press.bmp", 2, 0);
       }
-      this->m_expandButton->SetBitmap(normal, 0, 0);
-      this->m_expandButton->SetBitmap(normal, 1, 0);
-      this->m_expandButton->SetBitmap(pressed, 2, 0);
       this->m_expandedHeight = this->geometry.height;
       break;
     }
@@ -9239,7 +9300,8 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->selectionContext = static_cast<int>(c);
     const char* types = reinterpret_cast<const char*>(a);
     for (int i = 0; i < b; ++i) {
-      this->cartTypes.push_back(types[i]);
+      const int type = types[i];
+      this->cartTypes.push_back(type);
     }
     int index = 0;
     for (std::vector<int>::iterator cart = this->cartTypes.begin(); cart != this->cartTypes.end(); ++cart, ++index) {
@@ -9565,8 +9627,8 @@ void UISecondPasswordInputWnd::Paint() {
   std::uint32_t shadowColor;
   if (!g_session.m_passwordInputAlternate) {
     boxColor = 0xFAC8AA;
-    shadowColor = 0;
     textColor = 0xE6E6E6;
+    shadowColor = 0;
   } else {
     boxColor = 0xE6E6E6;
     textColor = 0xF0F0F0;
@@ -9783,8 +9845,7 @@ void UIItemCollectionWnd::Paint() {
         } else {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
           if (this->m_kind == 234) {
-            const char* name = slot < this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
-                                                                   : "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp";
+            const char* name = slot >= this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp" : "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp";
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
           } else if (slot >= this->m_item.SlotCount()) {
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
@@ -9795,7 +9856,7 @@ void UIItemCollectionWnd::Paint() {
     }
   }
 
-  if (FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str())).itemId >= 1) {
+  if (FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str())).itemId > 0) {
     this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_viewer->geometry.y + this->m_viewer->geometry.height);
   } else {
     this->m_moveInfo->Move(-1000, -1000);
@@ -10054,15 +10115,15 @@ void UIEquipWnd::DrawEquipSlots() {
     }
   }
 
-  const int rowOffsets[4] = {0, 26, 52, 78};
   int iconX[2] = {6, 251};
   int nameX[2] = {28, 167};
+  const int rowOffsets[4] = {0, 26, 52, 78};
   int shopId = g_session.FindShopId("");
   if (g_session.GetShopType(shopId)) {
     shopId = -1;
   }
 
-  for (unsigned slot = 0; slot < 10; ++slot) {
+  for (int slot = 0; slot < 10; ++slot) {
     ITEM_INFO item;
     if (this->m_page == 1) {
       if (this->m_viewOther == 0) {
@@ -10076,43 +10137,44 @@ void UIEquipWnd::DrawEquipSlots() {
       item = g_session.GetAlternateEquippedItemAt(slot);
     }
 
-    if (item.identity[1] == 0) {
-      continue;
-    }
-
-    if (item.quantity == 1) {
-      const unsigned row = slot & 3;
-      if (slot < 8) {
-        this->DrawItemIcon(iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
-        this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
-      } else {
-        this->DrawItemIcon(iconX[row], this->m_contentTop + 18, item, 0);
-        this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
+    if (item.identity[1] > 0) {
+      if (item.quantity == 1) {
+        const int row = slot % 4;
+        if (slot < 8) {
+          this->DrawItemIcon(iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
+          this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
+        } else {
+          this->DrawItemIcon(iconX[row], this->m_contentTop + 18, item, 0);
+          this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
+        }
       }
-    }
 
-    if (item.grade > 0) {
-      if (slot < 8) {
-        this->DrawBitmap(
-          iconX[slot / 4], this->m_contentTop + 56 + (slot & 3) * 26,
-          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-          true
-        );
-      } else {
-        this->DrawBitmap(
-          iconX[slot & 3], this->m_contentTop + 30,
-          static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-          true
-        );
+      if (0 < item.grade) {
+        if (slot < 8) {
+          this->DrawBitmap(
+            iconX[slot / 4], this->m_contentTop + 56 + (slot % 4) * 26,
+            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+            true
+          );
+        } else {
+          this->DrawBitmap(
+            iconX[slot % 4], this->m_contentTop + 30,
+            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+            true
+          );
+        }
       }
-    }
 
-    if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
-      const unsigned row = slot & 3;
-      const unsigned column = slot < 8 ? slot / 4 : row;
-      auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
-      const int y = slot < 8 ? this->m_contentTop + (row + 1) * 26 : this->m_contentTop;
-      this->DrawBitmap(iconX[column], y + 18, banned, true);
+      if (shopId != -1 && g_session.GetShopEntry(0, std::atoi(item.itemId.c_str())).first == 0) {
+        const int row = slot % 4;
+        const int column = slot < 8 ? slot / 4 : row;
+        auto* banned = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\ban.bmp")));
+        int y = (row + 1) * 26 + this->m_contentTop;
+        if (slot >= 8) {
+          y = this->m_contentTop;
+        }
+        this->DrawBitmap(iconX[column], y + 18, banned, true);
+      }
     }
   }
 }
@@ -10312,7 +10374,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
-      this->m_scroll = previous + static_cast<int>(a);
+      this->m_scroll += static_cast<int>(a);
     }
     if (previous != this->m_scroll) {
       this->UpdateScroll();
@@ -10358,33 +10420,34 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x5654 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x5655:
-          scanning = false;
-          break;
-        case 0x5656: {
-          int value = 0;
-          std::memcpy(&value, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
-          break;
-        }
-        case 0x5657: {
-          int value = 0;
-          std::memcpy(&value, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x5654 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x5655:
+        scanning = false;
+        break;
+      case 0x5656: {
+        int value = 0;
+        std::memcpy(&value, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
+        break;
+      }
+      case 0x5657: {
+        int value = 0;
+        std::memcpy(&value, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
     break;
@@ -10441,10 +10504,10 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
@@ -10461,11 +10524,11 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SETSKID:
     this->skillId = static_cast<int>(a);
-    return 0;
+    break;
   case UM_SETCHOOSE:
     if (a != 0) {
       const char* choice = reinterpret_cast<const char*>(a);
@@ -10478,38 +10541,43 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       this->m_choices.push_back(choice);
     }
-    return 0;
+    break;
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x55BE == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x55BF:
-          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
-          return 0;
-        case 0x55C1: {
-          char text[260] = {};
-          std::memcpy(text, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x55BE != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x55BF:
+        this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+        scanning = false;
+        break;
+      case 0x55C1: {
+        char text[260] = {};
+        std::memcpy(text, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008F26B0
@@ -10532,7 +10600,7 @@ void UITipboxWnd::Paint() {
       if (manager->m_currentEntry.imageCell == 5 && manager->m_currentEntry.imageScalePercent == 100) {
         this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((manager->m_currentEntry.bitmapName + ".bmp").c_str()))), false);
       } else {
-        CTexture* texture = g_texMgr.Load(manager->m_imagePath.c_str(), 0, false, true, false);
+        CTexture* texture = g_texMgr.Load(manager->m_image.path.c_str(), 0, false, true, false);
         this->geometry.surface->DrawScaledSurface(
           static_cast<int>(manager->m_image.x), static_cast<int>(manager->m_image.y), static_cast<int>(manager->m_image.width),
           static_cast<int>(manager->m_image.height), texture, texture->Width(), texture->Height(), manager->m_image.scale, manager->m_image.scale, 0xFFFFFFFF,
@@ -10541,8 +10609,8 @@ void UITipboxWnd::Paint() {
       }
       break;
     case 1: {
-      auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".act"));
-      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_imagePath + ".spr"));
+      auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".act"));
+      auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".spr"));
       if (!action || !sprite) {
         return;
       }
@@ -11280,34 +11348,34 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
     case ID_STORE_PASSWORD_NUM_RESET:
       if (this->passwordStage == 0) {
         this->passwordStage = 0;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        this->activeInputY = this->currentPasswordY;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(1);
+        this->actionButtons[3]->Enable(0);
+      } else if (g_session.m_passwordInputAlternate) {
+        this->passwordStage = 2;
+        this->activeInputY = this->newPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
         std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
+        this->passwordStage = 1;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        if (g_session.m_passwordInputAlternate) {
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(1);
-          this->actionButtons[3]->Enable(0);
-        } else {
-          this->passwordStage = 1;
-          this->activeInputY = this->currentPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(0);
-          this->actionButtons[3]->Enable(1);
-        }
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(0);
+        this->actionButtons[3]->Enable(1);
       }
       this->ShuffleKeypad();
       break;
@@ -11680,34 +11748,34 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_STORE_PASSWORD_NUM_RESET:
       if (this->passwordStage == 0) {
         this->passwordStage = 0;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        this->activeInputY = this->currentPasswordY;
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(1);
+        this->actionButtons[3]->Enable(0);
+      } else if (g_session.m_passwordInputAlternate) {
+        this->passwordStage = 2;
+        this->activeInputY = this->newPasswordY;
+        this->inputDigitCount = 0;
+        this->maskTextX = 0;
         std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
+        this->passwordStage = 1;
+        this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
-        if (g_session.m_passwordInputAlternate) {
-          this->passwordStage = 2;
-          this->activeInputY = this->newPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(1);
-          this->actionButtons[3]->Enable(0);
-        } else {
-          this->passwordStage = 1;
-          this->activeInputY = this->currentPasswordY;
-          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-          std::memset(this->newPassword, 0, sizeof(this->newPassword));
-          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-          this->actionButtons[0]->Enable(0);
-          this->actionButtons[3]->Enable(1);
-        }
+        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+        std::memset(this->newPassword, 0, sizeof(this->newPassword));
+        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+        this->actionButtons[0]->Enable(0);
+        this->actionButtons[3]->Enable(1);
       }
       this->ShuffleKeypad();
       break;
@@ -12201,9 +12269,11 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       const int overflowWidth = list->contentWidth + list->textInset * 2 - listWidth + scrollBarWidth;
       const int maximumGrowWidth = 0;
       const int growWidth = std::min(std::max(0, overflowWidth), maximumGrowWidth);
-      int growHeight = 0;
+      int growHeight;
       if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
         growHeight = list->lineHeight;
+      } else {
+        growHeight = 0;
       }
       if (growWidth > 0 || growHeight > 0) {
         const int okX = this->geometry.width - this->m_okButton->geometry.x;
@@ -12340,7 +12410,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case ID_NEXT: {
-    const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
+    const int page = g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex;
     g_itemTagOwner->paragraphIndex = page + 1;
     if (g_itemTagOwner->IsLastTip() == true) {
       this->SetPageButtonEnabled(PageButton::Next, 0);
@@ -12353,7 +12423,11 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->previousButton->Enable(1);
     this->nextButton->Enable(1);
     g_itemTagOwner->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
-    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    if (g_itemTagOwner->IsLastTip() == true) {
+      this->SetPageButtonEnabled(PageButton::Next, 0);
+    } else {
+      this->SetPageButtonEnabled(PageButton::Next, 1);
+    }
     this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
@@ -12362,7 +12436,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     g_windowMgr.CloseWindow(WID_TIPBOXWND);
     break;
   case ID_PREV: {
-    const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
+    const int page = g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex;
     g_itemTagOwner->paragraphIndex = page - 1;
     this->SetPageButtonEnabled(PageButton::Next, 1);
     if (page == 1) {
@@ -12397,9 +12471,8 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->searchResults->Show(1);
       this->searchResults->Clear();
       this->tipViewer->Clear();
-      UIStaticText* const texts[2] = {this->m_titleTexts[0], this->m_titleTexts[1]};
       for (int index = 0; index < 2; ++index) {
-        texts[index]->SetText("", 0);
+        this->m_titleTexts[index]->SetText("", 0);
       }
       this->m_pageText->SetText("", 0);
       this->m_pageTotalText->SetText("", 0);
@@ -12414,7 +12487,11 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case ID_REFRESH_TIP:
-    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    if (g_itemTagOwner->IsLastTip() == true) {
+      this->SetPageButtonEnabled(PageButton::Next, 0);
+    } else {
+      this->SetPageButtonEnabled(PageButton::Next, 1);
+    }
     this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
@@ -12428,9 +12505,9 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 void UIFrameWnd::WrapTextSegments(
   int width, int maxLines, const std::vector<std::pair<int, std::string>>& segments, FrameTextLines& lines
 ) {
-  auto* line = &lines[0];
   int lineCount = 1;
   int lineWidth = 0;
+  auto* line = &lines[0];
   for (const auto& segment : segments) {
     const char* begin = segment.second.c_str();
     const char* lineStart = begin;
@@ -12476,40 +12553,35 @@ void UIFrameWnd::DrawItemNameText(
   const std::vector<const char*>* breaks
 ) {
   struct ItemNameTextInfo {
-    int x;
-    int y;
-    int height;
-    int family;
+    /* 0000 */ int x;
+    /* 0004 */ int y;
+    /* 0008 */ int height;
+    /* 000C */ int family;
   };
   const ItemNameTextInfo* position = static_cast<const ItemNameTextInfo*>(info);
 
-  FrameTextCache::iterator cached;
-  {
-    const FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
-    cached = this->m_textCache.find(key);
-  }
-  if (cached == this->m_textCache.end()) {
-    std::vector<std::pair<int, std::string>> segments;
-    const int highlightValue = static_cast<int>(highlightColor);
-    const int colorValue = static_cast<int>(color);
-    this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
-
-    FrameTextLines lines(2);
-    this->WrapTextSegments(width, 2, segments, lines);
-
-    const std::size_t textLength = std::strlen(text);
-    if (this->TextWidth(text, textLength, position->family, position->height, 0, 0) > width * 2) {
-      this->FitLastTextLine(width, 2, position->family, position->height, lines);
-    }
-
-    {
-      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, textLength)};
-      this->m_textCache[std::move(key)] = lines;
-    }
-    this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
-  } else {
+  const FrameTextKeyView keyView{color, static_cast<std::uint32_t>(width), text};
+  const FrameTextKey key{keyView};
+  const auto cached = this->m_textCache.find(key);
+  if (cached != this->m_textCache.end()) {
     this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
+    return;
   }
+
+  const int colorValue = static_cast<int>(color);
+  std::vector<std::pair<int, std::string>> segments;
+  const int highlightValue = static_cast<int>(highlightColor);
+  this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
+
+  FrameTextLines lines(2);
+  this->WrapTextSegments(width, 2, segments, lines);
+
+  if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+    this->FitLastTextLine(width, 2, position->family, position->height, lines);
+  }
+
+  this->m_textCache[keyView] = lines;
+  this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
 }
 
 // OFFSET: 0x00900D90
@@ -12653,12 +12725,11 @@ void UIExchangeWnd::Paint() {
     if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
       continue;
     }
-    const ITEM_INFO& item = *it;
     const int y = this->m_rowHeight * row;
-    this->DrawItemAndQuantity(16, y + 21, item, 0, 0);
-    this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
-    if (0 < item.grade) {
-      this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
+    this->DrawItemAndQuantity(16, y + 21, *it, 0, 0);
+    this->DrawFittedItemName(48, y + 29, &*it, 0, 0, 12, 1);
+    if (0 < it->grade) {
+      this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), true);
     }
     if (row == 9) {
       break;
@@ -12674,12 +12745,11 @@ void UIExchangeWnd::Paint() {
     if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
       continue;
     }
-    const ITEM_INFO& item = *it;
     const int y = this->m_rowHeight * otherRow;
-    this->DrawItemAndQuantity(295, y + 21, item, 0, 0);
-    this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
-    if (0 < item.grade) {
-      this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
+    this->DrawItemAndQuantity(295, y + 21, *it, 0, 0);
+    this->DrawFittedItemName(327, y + 29, &*it, 0, 0, 12, 1);
+    if (0 < it->grade) {
+      this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))), true);
     }
     if (otherRow == 9) {
       break;
@@ -12817,8 +12887,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         } else {
           const char* name = nullptr;
           if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", static_cast<int>(option.id), &name) && name) {
-            std::list<std::string> lines;
             std::string text = FormatOwnedString(name, static_cast<int>(option.value), option.parameter);
+            std::list<std::string> lines;
             this->WrapText(text, 254, lines);
             this->m_cardTexts.insert(std::make_pair(index, lines));
           }

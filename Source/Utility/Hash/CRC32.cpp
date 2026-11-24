@@ -9,11 +9,9 @@ CRC32::CRC32() {
   for (int i = 0; i < 256; ++i) {
     DWORD value = i;
     for (int bit = 0; bit < 8; ++bit) {
-      if (value & 1) {
-        value = (value >> 1) ^ 0xEDB88320;
-      } else {
-        value >>= 1;
-      }
+      DWORD shifted = value >> 1;
+      DWORD odd = shifted ^ 0xEDB88320;
+      value = (value & 1) == 0 ? shifted : odd;
     }
     m_table[i] = value;
   }
@@ -66,6 +64,7 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
 
   BOOL readResult = ReadFile(file, buffer, 0xFFFF, &bytesRead, nullptr);
   while (readResult && bytesRead != 0) {
+    const BYTE* data = buffer;
     const BYTE* end;
     if (length > bytesRead) {
       end = buffer + bytesRead;
@@ -74,8 +73,8 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
       end = buffer + length;
       length = 0;
     }
-    for (const BYTE* data = buffer; data < end; ++data) {
-      *checksum = (*checksum >> 8) ^ m_table[static_cast<BYTE>(*checksum) ^ *data];
+    for (; data < end; ++data) {
+      *checksum = (*checksum >> 8) ^ m_table[(*checksum & 0xFF) ^ *data];
     }
     if (length == 0) {
       break;

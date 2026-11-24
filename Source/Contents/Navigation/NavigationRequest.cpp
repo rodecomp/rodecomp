@@ -287,10 +287,10 @@ CNavi_Link* CNaviInfo::FindLink(unsigned int key, bool byId) {
   if (byId) {
     return FindNaviObjectById(this->links, key);
   }
-  if (this->links.empty() || key >= this->links.size()) {
+  if (this->links.empty()) {
     return nullptr;
   }
-  return this->links[key];
+  return key >= this->links.size() ? nullptr : this->links[key];
 }
 
 // OFFSET: 0x00B8E640
@@ -299,10 +299,10 @@ CNavi_Object* CNaviInfo::FindNpc(unsigned int key, bool byId) {
   if (byId) {
     return FindNaviObjectById(this->npcs, key);
   }
-  if (this->npcs.empty() || key >= this->npcs.size()) {
+  if (this->npcs.empty()) {
     return nullptr;
   }
-  return this->npcs[key];
+  return key >= this->npcs.size() ? nullptr : this->npcs[key];
 }
 
 // OFFSET: 0x00B8E6F0
@@ -324,7 +324,9 @@ std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
 
 // INLINED
 static CNavi_Link* FindSameLink(const std::vector<CNavi_Link*>& links, CNavi_Link target) {
-  for (CNavi_Link* candidate : links) {
+  const auto end = links.end();
+  for (auto it = links.begin(); it != end; ++it) {
+    CNavi_Link* candidate = *it;
     if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->linkedCellX == target.linkedCellX &&
         candidate->linkedCellY == target.linkedCellY && candidate->info != nullptr &&
         std::strcmp(candidate->info->name.c_str(), target.info->name.c_str()) == 0 && candidate->linkedInfo != nullptr &&
@@ -365,10 +367,10 @@ CNavi_Object* CNaviInfo::FindMob(unsigned int key, bool byId) {
   if (byId) {
     return FindNaviObjectById(this->mobs, key);
   }
-  if (this->mobs.empty() || key >= this->mobs.size()) {
+  if (this->mobs.empty()) {
     return nullptr;
   }
-  return this->mobs[key];
+  return key >= this->mobs.size() ? nullptr : this->mobs[key];
 }
 
 // OFFSET: 0x00B8E450

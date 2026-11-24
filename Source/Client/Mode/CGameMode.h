@@ -82,6 +82,12 @@ struct SkillListEntry {
 
 static_assert(sizeof(SkillListEntry) == 0xF);
 
+struct MapResourceList {
+  /* 0000 */ std::string* first;
+  /* 0004 */ std::string* last;
+  /* 0008 */ std::string* end;
+};
+
 struct GameModeLoopSound {
   /* 0000 */ std::string name;
   /* 0018 */ std::uint32_t npcId;
@@ -120,7 +126,7 @@ public:
   /* 0058 */ int areaBounds[4];
   /* 0068 */ char mapName[16];
   /* 0078 */ unsigned char padding_0078[0xC];
-  /* 0084 */ std::vector<std::string> mapResources;
+  /* 0084 */ MapResourceList mapResources;
   /* 0090 */ unsigned char minimapBmpName[0x3C];
   /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;

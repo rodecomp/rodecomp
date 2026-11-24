@@ -56,15 +56,16 @@ namespace {
 // OFFSET: 0x00ADB7F0
 // FUNCTION: fn_17922
 int WorldViewSpatial::ClassifyOriented(const OrientedBounds& bounds) const {
+  const ModelViewPlanes& view = this->planes;
   bool clipped = false;
 
   for (int plane = 0; plane < 6; ++plane) {
-    const PlaneNormal& normal = this->planes.normals[plane];
+    const PlaneNormal& normal = view.normals[plane];
     const float second = Absolute(((normal.x * bounds.axes[1][0] + normal.y * bounds.axes[1][1]) + normal.z * bounds.axes[1][2]) * bounds.halfSize[1]);
     const float first = Absolute(((normal.x * bounds.axes[0][0] + normal.y * bounds.axes[0][1]) + normal.z * bounds.axes[0][2]) * bounds.halfSize[0]);
     const float third = Absolute(((normal.x * bounds.axes[2][0] + normal.y * bounds.axes[2][1]) + normal.z * bounds.axes[2][2]) * bounds.halfSize[2]);
     const float radius = (second + first) + third;
-    const float distance = ((normal.x * bounds.center[0] + normal.y * bounds.center[1]) + normal.z * bounds.center[2]) + this->planes.planes[plane][3];
+    const float distance = ((normal.x * bounds.center[0] + normal.y * bounds.center[1]) + normal.z * bounds.center[2]) + view.planes[plane][3];
 
     if (!(distance > radius)) {
       const float negative = -radius;

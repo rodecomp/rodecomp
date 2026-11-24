@@ -57,23 +57,20 @@ void UIResizer::OnLBtnDown(int x, int y) {
 void UIResizer::OnMouseHover(int, int) {
 }
 
-// OFFSET: 0x0085F6D0
-// FUNCTION: fn_10869
-void UIResizer::OnMouseMove(int x, int y) {
-  if (g_windowMgr.Capture() != this) {
+// INLINED
+static __forceinline void DragResizer(UIResizer* self, int x, int y) {
+  int screenX = x;
+  int screenY = y;
+  self->ToScreen(screenX, screenY);
+  if (!self->parent) {
     return;
   }
 
-  this->ToScreen(x, y);
-  if (!this->parent) {
-    return;
-  }
-
-  const int dx = x - this->startX;
-  int width = this->parentWidth;
-  int height = this->parentHeight;
-  const int dy = y - this->startY;
-  switch (this->direction) {
+  const int dx = screenX - self->startX;
+  int width = self->parentWidth;
+  int height = self->parentHeight;
+  const int dy = screenY - self->startY;
+  switch (self->direction) {
   case 0:
     width -= dx;
     break;
@@ -104,7 +101,17 @@ void UIResizer::OnMouseMove(int x, int y) {
     break;
   }
 
-  this->parent->SendMsg(this, UM_RESIZE, this->direction, width, height, 0);
+  self->parent->SendMsg(self, UM_RESIZE, self->direction, width, height, 0);
+}
+
+// OFFSET: 0x0085F6D0
+// FUNCTION: fn_10869
+void UIResizer::OnMouseMove(int x, int y) {
+  if (g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  DragResizer(this, x, y);
 }
 
 // OFFSET: 0x0085FA20

@@ -292,17 +292,20 @@ static UIHotKeyWnd::HotkeyEntry EntryOf(int index, const HotkeyInfo& info) {
 // OFFSET: 0x0091C720
 // FUNCTION: fn_12617
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
-  HotkeyInfo info;
+  HotkeyInfo info(0, 0);
   if (resolve) {
     index = g_session.HotkeyIndex(tab, index);
   }
 
   if (index != -1) {
+    bool found = false;
     const auto it = this->hotkeys[tab].find(index);
     if (it != this->hotkeys[tab].end()) {
       info = it->second;
+      found = !info.description.empty();
     }
-    if (info.description.empty()) {
+
+    if (!found) {
       info = g_session.GetHotkeyInfo(tab, index);
     }
   }
@@ -414,26 +417,16 @@ void UIHotKeyWnd::Paint() {
       const int keyColumnWidth = this->m_keyColumnWidth;
       const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
       const int textX = (keyColumnWidth - textWidth) / 2;
-      const int halfWidth = this->geometry.width / 2;
       const int column = visibleRow / this->m_rowsPerPage;
       const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
                        (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
+      const int halfWidth = this->geometry.width / 2;
 
       const int backgroundX = column ? this->geometry.width - keyColumnWidth - this->m_horizontalMargin
                                      : halfWidth - keyColumnWidth;
       const int keyX = column ? halfWidth : this->m_horizontalMargin;
 
-      std::uint32_t color = 0xDFFFFE;
-      switch (this->m_tab) {
-      case 0:
-        color = 0xFFEFD6;
-        break;
-      case 3:
-        color = 0xEFD6FF;
-        break;
-      default:
-        break;
-      }
+      const std::uint32_t color = this->m_tab != 0 ? (this->m_tab != 3 ? 0xDFFFFE : 0xEFD6FF) : 0xFFEFD6;
 
       this->FillRegion(backgroundX, rowY, keyColumnWidth, this->m_rowHeight - 1, color);
 
@@ -459,14 +452,14 @@ void UIHotKeyWnd::Paint() {
     std::string text = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
     UIBitmapButton* prevButton = this->m_prevButton;
     const int pagesWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
+    int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
 
     text = static_cast<const std::string&>(FormatOwnedString("%d", this->m_page));
     this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
 
-    const int currentWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+    pageX += this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     text = static_cast<const std::string&>(FormatOwnedString(" / %d", this->m_pageCount));
-    this->DrawOutlinedText(pageX + currentWidth, 25, text.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
+    this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
   }
 
   const int bottomY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin;
@@ -491,8 +484,9 @@ void UIHotKeyWnd::Paint() {
 // FUNCTION: fn_12620
 void UIHotKeyWnd::ReloadHotkeys() {
   this->m_selectedRow = -1;
-  for (int tab = 0; tab < 4; ++tab) {
-    this->hotkeys[tab].clear();
+  auto* table = this->hotkeys.data();
+  for (auto remaining = this->hotkeys.size(); remaining != 0; --remaining, ++table) {
+    table->clear();
   }
 
   for (int position = 0; position < 4; ++position) {
@@ -501,24 +495,17 @@ void UIHotKeyWnd::ReloadHotkeys() {
     for (int row = 0; row < count; ++row) {
       const int index = g_session.HotkeyIndex(tab, row);
       if (index != -1) {
-        std::string text = "";
-        std::string description = "";
-        int key1 = 0;
-        int key2 = 0;
+        HotkeyInfo info(0, 0);
         const char* textValue = nullptr;
         const char* descriptionValue = nullptr;
-        if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-          description = descriptionValue;
-          if (!description.empty()) {
-            if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-              text = textValue;
-              description = descriptionValue;
-              if (!description.empty()) {
-                HotkeyInfo& info = this->hotkeys[tab][index];
-                info.key1 = key1;
-                info.key2 = key2;
-                info.text = text;
-                info.description = description;
+        if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &textValue, &descriptionValue)) {
+          info.description = descriptionValue;
+          if (!info.description.empty()) {
+            if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &textValue, &descriptionValue)) {
+              info.text = textValue;
+              info.description = descriptionValue;
+              if (!info.description.empty()) {
+                this->hotkeys[tab].try_emplace(index, 0, 0).first->second = info;
               }
             }
           }
@@ -583,10 +570,10 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
       mode = 3;
     } else if (key == 0x20 || key == 0x90) {
-      if (g_windowMgr.modifierKey != 0) {
-        mode = this->CheckHotkeyConflict();
-      } else {
+      if (g_windowMgr.modifierKey == 0) {
         mode = 2;
+      } else {
+        mode = this->CheckHotkeyConflict();
       }
     } else if (mode == 4) {
       if (key == 0x14) {
@@ -658,39 +645,37 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
     for (int index = 0; index < count; ++index) {
       const HotkeyEntry entry = this->GetHotkey(tab, index, true);
       HotkeyInfo info = entry.info;
-      if (info.key1 != g_windowMgr.keyCode || info.key2 != g_windowMgr.modifierKey) {
-        continue;
-      }
-
-      if (index == this->m_selectedRow && tab == this->m_tab) {
-        return 1;
-      }
-
-      StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
-      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        info.key1 = 0;
-        info.key2 = 0;
-        info.text = "";
-        this->SetHotkey(tab, entry.index, info);
-
-        if (tab == 0 && this->m_tab != 0) {
-          const int shortcutCount = g_session.HotkeyCount(3);
-          for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
-            const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
-            HotkeyInfo otherInfo = other.info;
-            if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
-              otherInfo.key1 = 0;
-              otherInfo.key2 = 0;
-              otherInfo.text = "";
-              this->SetHotkey(3, other.index, otherInfo);
-            }
-          }
+      if (info.key1 == g_windowMgr.keyCode && info.key2 == g_windowMgr.modifierKey) {
+        if (index == this->m_selectedRow && tab == this->m_tab) {
+          return 1;
         }
 
-        return 0;
-      }
+        StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
+        if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+          info.key1 = 0;
+          info.key2 = 0;
+          info.text = "";
+          this->SetHotkey(tab, entry.index, info);
 
-      return 1;
+          if (tab == 0 && this->m_tab != 0) {
+            const int shortcutCount = g_session.HotkeyCount(3);
+            for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
+              const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
+              HotkeyInfo otherInfo = other.info;
+              if (otherInfo.key1 == g_windowMgr.keyCode && otherInfo.key2 == g_windowMgr.modifierKey) {
+                otherInfo.key1 = 0;
+                otherInfo.key2 = 0;
+                otherInfo.text = "";
+                this->SetHotkey(3, other.index, otherInfo);
+              }
+            }
+          }
+
+          return 0;
+        }
+
+        return 1;
+      }
     }
   }
 

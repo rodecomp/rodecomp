@@ -46,7 +46,7 @@ void CTownInfoMgr::AddTownInfo(std::string mapName, std::string name, int x, int
     "유저인터페이스\\minimap\\Quest.bmp",
   };
 
-  std::map<std::string, std::vector<TownInfo>>::iterator it = this->m_towns.find(mapName);
+  const auto it = this->m_towns.find(mapName);
   if (it == this->m_towns.end()) {
     TownInfo info(type, name, x, y, icons[type]);
     std::vector<TownInfo> list;

@@ -600,15 +600,15 @@ void UIServerListBox::OnMouseHover(int x, int y) {
 // FUNCTION: fn_11456
 void UIMemberListBox::OnMouseHover(int, int y) {
   const unsigned count = static_cast<unsigned>(this->lines.size());
-  const int lineHeight = this->lineHeight;
-  const int topLine = this->topLine;
-  const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + topLine;
-  const int line = topLine + y / lineHeight;
-  if (line < topLine) {
+  auto& lineHeightRef = this->lineHeight;
+  const int lineHeight = lineHeightRef;
+  const unsigned end = this->geometry.height / lineHeight - this->bottomMargin + this->topLine;
+  const int line = this->topLine + y / lineHeight;
+  if (line < this->topLine) {
     return;
   }
 
-  if (line >= static_cast<int>(std::min(count, end))) {
+  if (line >= static_cast<int>(std::min(end, count))) {
     return;
   }
 
@@ -619,7 +619,7 @@ void UIMemberListBox::OnMouseHover(int, int y) {
   }
 
   int screenX = -4;
-  y -= y % this->lineHeight;
+  y -= y % lineHeightRef;
   this->ToScreen(screenX, y);
   g_modeMgr.currentMode->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
 }
@@ -664,13 +664,14 @@ void UIComboBox::Configure(int x, int y, int width, int height, unsigned char va
 // FUNCTION: fn_11528
 void UIComboBox::Resize(int width, int height) {
   UIListBox::Resize(width, height);
-  this->topLine = 0;
-  const bool overflow = this->verticalOverflow;
-  this->verticalBar->position = this->topLine;
-  if (overflow) {
+  if (this->verticalOverflow) {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move(width - 13, 0);
     this->verticalBar->Invalidate();
   } else {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move(width - 13, 0);
   }
 }
@@ -778,10 +779,11 @@ void UIChatHisBox3::Resize(int width, int height) {
 // OFFSET: 0x00897120
 // FUNCTION: fn_45599
 void UITVTextButton::ResizeToTextClipped(int width, int height) {
-  if (this->geometry.width != width && std::strcmp(this->label.c_str(), "") != 0) {
-    this->displayText = this->label;
+  if (width != this->geometry.width && std::strcmp(this->label.c_str(), "") != 0) {
+    std::string& text = this->displayText;
+    text = this->label;
     if (this->geometry.width > width) {
-      this->displayText = this->ClipTextToWidth(this->label.c_str(), width - 2, this->m_fontFamily, this->m_fontHeight, this->m_outlined);
+      text = this->ClipTextToWidth(this->label.c_str(), width - 2, this->m_fontFamily, this->m_fontHeight, this->m_outlined);
     } else {
       width = this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0) + 2;
     }
@@ -1346,12 +1348,14 @@ void UIListBoxID::Resize(int width, int height) {
 // FUNCTION: fn_11531
 void UIComboBoxID::Resize(int width, int height) {
   UIListBoxID::Resize(width, height);
-  this->topLine = 0;
-  this->verticalBar->position = this->topLine;
   if (this->verticalOverflow != 0) {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move(width - 13, 0);
     this->verticalBar->Invalidate();
   } else {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move(width - 13, 0);
   }
 }
@@ -1368,17 +1372,44 @@ static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total
   }
 }
 
+// INLINED
+__forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+
 // OFFSET: 0x00896060
 // FUNCTION: fn_11514
 void UIListBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = count - visible >= 0 ? count - visible : 0;
+  int overflow = count - visible;
+
+  if (overflow < 0) {
+    overflow = 0;
+  }
+
   this->verticalOverflow = overflow != 0;
   if (overflow != 0) {
-    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
+    this->verticalBar->maximum = this->bottomMargin + overflow;
   } else {
-    SetScrollRange(this->verticalBar, 0, visible, count);
+    this->verticalBar->maximum = 0;
+  }
+
+  auto* bar = this->verticalBar;
+
+  bar->total = count;
+  bar->visible = visible;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
   }
 
   this->verticalBar->Invalidate();
@@ -1388,30 +1419,40 @@ void UIListBoxID::Refresh() {
 // FUNCTION: fn_11511
 void UIComboBoxID::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int count = static_cast<int>(this->lines.size());
-  const int overflow = 0 > count - visible ? 0 : count - visible;
+  int overflow = static_cast<int>(this->lines.size()) - visible;
+
+  if (overflow < 0) {
+    overflow = 0;
+  }
 
   this->verticalOverflow = overflow != 0;
+  auto& verticalBarRef = this->verticalBar;
+  auto* bar = verticalBarRef;
+
   if (overflow != 0) {
-    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, count);
+    SetBarRange(bar, (this->bottomMargin + overflow), visible, static_cast<int>(this->lines.size()));
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
-    } else if (this->topLine + visible <= this->selected) {
-      this->topLine = this->selected - visible + 1;
+    } else if ((this->topLine + visible) <= this->selected) {
+      this->topLine = ((this->selected - visible) + 1);
     }
+
     if (this->topLine < 0) {
       this->topLine = 0;
     }
+
     if (this->topLine > overflow) {
       this->topLine = overflow;
     }
+
     this->verticalBar->position = this->topLine;
   } else {
-    SetScrollRange(this->verticalBar, 0, visible, count);
+    SetBarRange(bar, 0, visible, static_cast<int>(this->lines.size()));
   }
 
   this->verticalBar->Invalidate();
+
   if (this->Root()) {
     this->Root()->Invalidate();
   }
@@ -2043,7 +2084,7 @@ void UIScrollBar3::Paint() {
     }
 
     int length = this->ThumbLength();
-    if (this->geometry.height - 20 < length) {
+    if (length > this->geometry.height - 20) {
       length = 1;
     }
 
@@ -2357,73 +2398,58 @@ void UIBmpRadioBtn::Paint() {
 
   FontCache& fonts = g_fontCache;
   if (this->m_disabled == true) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 3) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
-        }
-        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 3; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
       }
+      this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
-    return;
-  }
-
-  if (this->geometry.state == 1) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 2) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
-        }
-        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+  } else if (this->geometry.state == 1) {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 2; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
       }
+      this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
-    return;
-  }
-
-  if (this->m_hovered == true) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 1) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
-        }
-        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+  } else if (this->m_hovered == true) {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 1; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
       }
+      this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
-    return;
-  }
-
-  for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-    if (it->id == 0) {
+  } else {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 0; });
+    if (it != this->m_texts.end()) {
       if (it->drawShadow == true) {
         this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xD7D7D7, it->bold, 0);
       }
       this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-      return;
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
   }
-
-  const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
-  this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008894A0
@@ -2475,7 +2501,7 @@ void UIComboBox::Paint() {
 // OFFSET: 0x0088F1C0
 // FUNCTION: fn_11387
 void UIStaticItem_Illust::Paint() {
-  const std::string path = "유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath()) + ".bmp";
+  const std::string path = std::move(("유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath())).append(".bmp", 4));
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
   if (!bitmap) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\collection\\사과.bmp")));
@@ -2859,11 +2885,11 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
     return;
   }
 
-  unsigned line = 0;
-  int consumed = 0;
   const int left = g_windowMgr.rodexComposeWnd->m_contents->geometry.x;
   const int top = g_windowMgr.rodexComposeWnd->m_contents->geometry.y;
   const int lineHeight = g_windowMgr.rodexComposeWnd->m_contents->lineHeight;
+  unsigned line = 0;
+  int consumed = 0;
   std::string rest = name;
   const int firstLine = g_windowMgr.rodexComposeWnd->m_contents->firstVisibleLine;
   const int visibleLines = g_windowMgr.rodexComposeWnd->m_contents->geometry.height / lineHeight;
@@ -2881,9 +2907,10 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
     }
   }
 
+  UIRodexComposeWnd* compose = g_windowMgr.rodexComposeWnd;
   unsigned bytes = 0;
-  const int width = g_windowMgr.rodexComposeWnd->MeasureText(name.c_str(), bytes);
   const int row = static_cast<int>(line) - firstLine;
+  const int width = compose->MeasureText(name.c_str(), bytes);
   if (row < 0 || static_cast<int>(line) >= firstLine + visibleLines) {
     button->Move(1000, 1000);
   } else {
@@ -2894,22 +2921,25 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 // OFFSET: 0x00884C40
 // FUNCTION: fn_11312
 void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
-  UINpcTextEditDialogWnd* owner = g_windowMgr.npcTextEditDialogWnd;
-  if (!owner || owner->edit->geometry.id != 492) {
+  if (!g_windowMgr.npcTextEditDialogWnd || g_windowMgr.npcTextEditDialogWnd->edit->geometry.id != 492) {
     return;
   }
 
-  const int left = owner->edit->geometry.x;
-  const int top = owner->edit->geometry.y;
+  const int left = g_windowMgr.npcTextEditDialogWnd->edit->geometry.x;
+  const int top = g_windowMgr.npcTextEditDialogWnd->edit->geometry.y;
   int position = x;
+  UINpcTextEditDialogWnd* owner = g_windowMgr.npcTextEditDialogWnd;
   unsigned bytes = 0;
   const int width = owner->MeasureText(name.c_str(), bytes);
   if (this->textWidth + width > g_windowMgr.npcTextEditDialogWnd->edit->geometry.width) {
     position = 1000;
-  } else if (position == 0) {
-    position = left + 2 + width;
   }
-  button->Move(position, top + 1);
+
+  if (position != 0) {
+    button->Move(position, top + 1);
+  } else {
+    button->Move(left + 2 + width, top + 1);
+  }
 }
 
 // OFFSET: 0x0088AC80
@@ -3366,28 +3396,34 @@ void UITextViewEX::Paint() {
   }
 
   const int top = this->topLine;
+  auto it = this->lineLinks.begin();
+  const auto end = this->lineLinks.end();
   int y = 7;
   int line = 0;
-  for (auto it = this->lineLinks.begin(), end = this->lineLinks.end(); it != end; ++it, ++line) {
+  for (; it != end; ++it, ++line) {
     std::vector<UIString*> buttons = *it;
     if (line >= top) {
-      int x = 0;
-      for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
-        UIString* text = *buttonIt;
-        if (StringText(*text) != "\n") {
-          text->Show(1);
-          x = text->enabled == 0 ? x : x - 5;
-          if (x < 0) {
-            x = 0;
+      auto buttonIt = buttons.begin();
+      const auto buttonEnd = buttons.end();
+      if (buttonIt != buttonEnd) {
+        int x = 0;
+        do {
+          UIString* text = *buttonIt;
+          if (StringText(*text) != "\n") {
+            text->Show(1);
+            x = text->enabled == 0 ? x : x - 5;
+            if (x < 0) {
+              x = 0;
+            }
+            const bool hasImage = !StringImage(*text).empty();
+            if (hasImage) {
+              text->Move(x, y - 7);
+            } else {
+              text->Move(x, y);
+            }
+            x = x + 5 + text->geometry.width;
           }
-          const bool hasImage = !StringImage(*text).empty();
-          if (hasImage) {
-            text->Move(x, y - 7);
-          } else {
-            text->Move(x, y);
-          }
-          x = x + 5 + text->geometry.width;
-        }
+        } while (++buttonIt != buttonEnd);
       }
       y += 21;
     } else {
@@ -3541,7 +3577,7 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   case UM_SET_CHARACTER_SLOT_STYLE: {
     this->m_displayMode = static_cast<int>(argument1);
-    const char* slot = argument1 != 0 ? "slot" : "slot2";
+    const char* slot = this->m_displayMode == 0 ? "slot2" : "slot";
     const char* img = this->m_inRange ? "img_buy" : "img_";
     const std::string base = fmt::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
 
@@ -3591,15 +3627,12 @@ void UISlotBmpButton::Paint() {
   }
 
   if (this->m_index == 0 && g_session.characterSlotState == 0) {
-    CBitmapRes* balloon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp")));
-    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon, false);
+    this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\balloon.bmp"))), false);
 
     std::vector<std::string> lines;
     WrapPlainText(LookupMessage(MSI_CREATE_CHARACTER), lines, 0x14);
-    int y = 0x22;
     for (unsigned index = 0; index < lines.size(); ++index) {
-      this->DrawCenteredText(0x21, y, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
-      y += 0xd;
+      this->DrawCenteredText(0x21, index * 0xd + 0x22, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
     }
   }
 
@@ -3608,24 +3641,24 @@ void UISlotBmpButton::Paint() {
     if (info) {
       if (info->nameChangeCount > 0 || info->slotChangeCount > 0) {
         if (this->m_inRange) {
-          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp")));
-          this->DrawBitmap(0, 0, bitmap, true);
+          this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\select_character_ver3\\buyslot_add_ons.bmp"))), true);
         } else {
-          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp")));
-          this->DrawBitmap(0x13, 0x19, bitmap, false);
+          this->DrawBitmap(0x13, 0x19, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Add_Ons.bmp"))), false);
         }
       }
 
       if (info->deleteDate != 0) {
         Timestamp expiry(info->deleteDate);
-        const std::uint32_t color = expiry.IsBeforeNow() ? 0xff0000 : 0xff;
+        std::uint32_t color = 0xff;
+        if (expiry.IsBeforeNow()) {
+          color = 0xff0000;
+        }
+
         const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
         const std::string period = FormatOwnedString(LookupMessage(MSI_DATE_MM_DD), date.month, date.day);
         const std::string time = FormatOwnedString(LookupMessage(MSI_DATE_HH_MM_SS), date.hour, date.minute, date.second);
-        const int periodWidth = this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
-        const int timeWidth = this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0);
-        this->DrawTextAt(0x4f - timeWidth / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
+        this->DrawTextAt(0x4f - this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0) / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
+        this->DrawTextAt(0x4f - this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0) / 2, 0x34, time.c_str(), 0, 0, 0xb, color, 0, 0);
       }
     }
   }

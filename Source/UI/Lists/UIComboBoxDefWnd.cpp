@@ -180,8 +180,9 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   switch (message) {
   case UM_COMMAND:
     if (a == ID_OPEN_MEMBER_POS_COMBO) {
-      this->expanded = this->expanded == 0;
-      if (this->expanded) {
+      const bool expanded = this->expanded == 0;
+      this->expanded = expanded;
+      if (expanded) {
         this->Resize(this->geometry.width, this->list->geometry.height + this->geometry.height);
       } else {
         this->Resize(this->geometry.width, this->geometry.height - this->list->geometry.height);

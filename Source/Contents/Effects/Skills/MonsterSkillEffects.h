@@ -15,6 +15,17 @@ class CParticle;
 class CEZ2STRParticle;
 class CSpriteParticle;
 
+struct EffectOffset : vector3d {
+  // INLINED
+  EffectOffset() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+
+  using vector3d::operator=;
+};
+
 class CCrimsonArrowEffect : public CEffect {
 public:
   CCrimsonArrowEffect();
@@ -362,12 +373,12 @@ public:
   void OnProcess() override;
   void Render() override;
   bool IsAlive() override;
-  void SetColor(int red, int green, int blue) override;
+  void SetColor(short red, short green, short blue) override;
   void SetParticleTexture(std::string name) override;
   void Close() override;
   void Init();
 
-  /* 00CC */ vector3d offsets[2];
+  /* 00CC */ EffectOffset offsets[2];
   /* 00E4 */ std::vector<CParticle*> particles;
 };
 
@@ -410,7 +421,7 @@ public:
   void SetPhantomShot(long long column);
   void SetSignShot(int column);
 
-  /* 00CC */ vector3d offsets[5];
+  /* 00CC */ EffectOffset offsets[5];
   /* 0108 */ CEZ2STRParticle* emitters[3][5];
 };
 

@@ -53,3 +53,5 @@
 extern template std::list<ITEM_INFO>::iterator std::list<ITEM_INFO>::erase(std::list<ITEM_INFO>::const_iterator) noexcept;
 extern template void std::_List_node<MessengerMember, void*>::_Free_non_head(std::allocator<std::_List_node<MessengerMember, void*>>&, std::_List_node<MessengerMember, void*>*) noexcept;
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::pair<bool, ITEM_INFO> std::make_pair<bool, ITEM_INFO&>(bool&&, ITEM_INFO&);
+template __declspec(noinline) std::pair<bool, ITEM_INFO> std::make_pair<bool, ITEM_INFO>(bool&&, ITEM_INFO&&);

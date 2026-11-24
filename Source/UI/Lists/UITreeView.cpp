@@ -1,3 +1,4 @@
+#define UITREEVIEW_NODE_DESTRUCTOR
 #include "UI/Lists/UITreeView.h"
 
 #include <cstring>

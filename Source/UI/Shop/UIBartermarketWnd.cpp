@@ -139,8 +139,8 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
     return std::make_pair(false, BarterMarketItem());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
@@ -171,8 +171,8 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
     return std::make_pair(false, BarterMarketItem());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   const int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
@@ -315,8 +315,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
 
   const int offsetY = y - 17;
   const int row = offsetY / 64;
-  int index = 0;
   int visible = 0;
+  int index = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
@@ -353,8 +353,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
   }
 
   const int offsetY = y - 17;
-  const int row = offsetY / 64;
   int index = 0;
+  const int row = offsetY / 64;
   int visible = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
@@ -873,12 +873,13 @@ void UIBarterItemPurchaseWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_10562
 void UIBartermarketWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemOrPriceAt(x, y);
-  if (found.first) {
-    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-    ITEM_INFO item = found.second.ToItemInfo();
-    if (window) {
-      window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    }
+  if (!found.first) {
+    return;
+  }
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
+  ITEM_INFO item = found.second.ToItemInfo();
+  if (window) {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
 
@@ -997,21 +998,22 @@ void UIExpandedBartermarketWnd::OnRBtnDown(int x, int y) {
 // FUNCTION: fn_10558
 void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
-  if (found.first) {
-    const int column = (x - 40) / 32;
-    const int row = (y - 17) / 32;
-    int tooltipX = column * 32 + 40;
-    int tooltipY = row * 32 + 1;
-    this->ToScreen(tooltipX, tooltipY);
-    std::string text;
-    BarterMarketItem item = found.second;
-    ITEM_DESC description = FindItemDescription(item.currencyItemId);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, item.currencyAmount * item.value));
-    CMode* tooltip = g_modeMgr.currentMode;
-    ITEM_INFO info = item.ToItemInfo();
-    if (tooltip) {
-      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
-    }
+  if (!found.first) {
+    return;
+  }
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  int tooltipX = column * 32 + 40;
+  int tooltipY = row * 32 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+  std::string text;
+  BarterMarketItem item = found.second;
+  ITEM_DESC description = FindItemDescription(item.currencyItemId);
+  text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, item.value * item.currencyAmount));
+  CMode* tooltip = g_modeMgr.currentMode;
+  ITEM_INFO info = item.ToItemInfo();
+  if (tooltip) {
+    tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
   }
 }
 
@@ -1019,20 +1021,21 @@ void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10559
 void UIBartermarketWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
-  if (found.first) {
-    const int column = (x - 40) / 32;
-    const int row = (y - 17) / 32;
-    int tooltipX = column * 32 + 40;
-    int tooltipY = row * 32 + 1;
-    this->ToScreen(tooltipX, tooltipY);
-    std::string text;
-    ITEM_DESC description = FindItemDescription(found.second.currencyItemId);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, found.second.currencyAmount));
-    CMode* tooltip = g_modeMgr.currentMode;
-    ITEM_INFO info = found.second.ToItemInfo();
-    if (tooltip) {
-      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
-    }
+  if (!found.first) {
+    return;
+  }
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  int tooltipX = column * 32 + 40;
+  int tooltipY = row * 32 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+  std::string text;
+  ITEM_DESC description = FindItemDescription(found.second.currencyItemId);
+  text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, found.second.currencyAmount));
+  CMode* tooltip = g_modeMgr.currentMode;
+  ITEM_INFO info = found.second.ToItemInfo();
+  if (tooltip) {
+    tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
   }
 }
 
@@ -1040,32 +1043,33 @@ void UIBartermarketWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10589
 void UIExpandedBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
-  if (found.first && x > 40 && x < 72) {
-    int tooltipX = x;
-    int tooltipY = (y - 17) / 64 * 64 + 1;
-    this->ToScreen(tooltipX, tooltipY);
-    std::string text;
-    int index = 1;
-    for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
-      ITEM_DESC description = FindItemDescription(chunk->field_0);
-      const char* name = description.identifiedName;
-      if (chunk->field_4 > 0) {
-        text += "+";
-        char buffer[12];
-        _itoa(chunk->field_4, buffer, 10);
-        text += buffer;
-        text += " ";
-      }
-      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount * found.second.value);
-      if (index != static_cast<int>(found.second.chunks.size())) {
-        text += "\n";
-      }
+  if (!found.first || x <= 40 || x >= 72) {
+    return;
+  }
+  int tooltipX = x;
+  int tooltipY = (y - 17) / 64 * 64 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+  std::string text;
+  int index = 1;
+  for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
+    ITEM_DESC description = FindItemDescription(chunk->field_0);
+    const char* name = description.identifiedName;
+    if (chunk->field_4 > 0) {
+      text += "+";
+      char buffer[12];
+      _itoa(chunk->field_4, buffer, 10);
+      text += buffer;
+      text += " ";
     }
-    CGameMode* tooltip = g_modeMgr.GetGameMode();
-    ITEM_INFO info = found.second.ToItemInfo();
-    if (tooltip) {
-      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount * found.second.value);
+    if (index != static_cast<int>(found.second.chunks.size())) {
+      text += "\n";
     }
+  }
+  CGameMode* tooltip = g_modeMgr.GetGameMode();
+  ITEM_INFO info = found.second.ToItemInfo();
+  if (tooltip) {
+    tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
   }
 }
 
@@ -1073,32 +1077,33 @@ void UIExpandedBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10591
 void UIExpandedBartermarketWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
-  if (found.first && x > 40 && x < 72) {
-    int tooltipX = x;
-    int tooltipY = (y - 17) / 64 * 64 + 1;
-    this->ToScreen(tooltipX, tooltipY);
-    std::string text;
-    int index = 1;
-    for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
-      ITEM_DESC description = FindItemDescription(chunk->field_0);
-      const char* name = description.identifiedName;
-      if (chunk->field_4 > 0) {
-        text += "+";
-        char buffer[12];
-        _itoa(chunk->field_4, buffer, 10);
-        text += buffer;
-        text += " ";
-      }
-      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount);
-      if (index != static_cast<int>(found.second.chunks.size())) {
-        text += "\n";
-      }
+  if (!found.first || x <= 40 || x >= 72) {
+    return;
+  }
+  int tooltipX = x;
+  int tooltipY = (y - 17) / 64 * 64 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+  std::string text;
+  int index = 1;
+  for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
+    ITEM_DESC description = FindItemDescription(chunk->field_0);
+    const char* name = description.identifiedName;
+    if (chunk->field_4 > 0) {
+      text += "+";
+      char buffer[12];
+      _itoa(chunk->field_4, buffer, 10);
+      text += buffer;
+      text += " ";
     }
-    CGameMode* tooltip = g_modeMgr.GetGameMode();
-    ITEM_INFO info = found.second.ToItemInfo();
-    if (tooltip) {
-      tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount);
+    if (index != static_cast<int>(found.second.chunks.size())) {
+      text += "\n";
     }
+  }
+  CGameMode* tooltip = g_modeMgr.GetGameMode();
+  ITEM_INFO info = found.second.ToItemInfo();
+  if (tooltip) {
+    tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
   }
 }
 
@@ -1168,8 +1173,7 @@ void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
   }
   const auto total = g_expandedBarterMarketItemMgr->total;
   if (total > 0) {
-    std::string totalText = FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), total);
-    text += "\n" + totalText;
+    text += "\n" + static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), total));
   }
   if (!text.empty()) {
     int tooltipX = 0;
@@ -1189,9 +1193,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   std::map<std::string, int> totals;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
 
-  int count = g_session.GetNumInventoryItems();
-  count += g_session.CountDistinctEquippedItems();
-  count += g_session.CountDistinctCostumeItems();
+  int count = g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
 
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
@@ -1218,7 +1220,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 
   std::map<int, int> required = *g_barterMarketItemMgr->GetTotals();
   for (std::map<int, int>::iterator it = required.begin(); it != required.end(); ++it) {
-    if (this->GetInventoryItemCount(it->first) < it->second) {
+    if (it->second > this->GetInventoryItemCount(it->first)) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 255, 0, 0, 0);
       this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
@@ -1422,10 +1424,12 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       this->UpdateScrollBar();
     }
 
-    const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
-    const int y = this->geometry.height - 24;
+    const POINT positions[2] = {
+      {this->geometry.width - 106, this->geometry.height - 24},
+      {this->geometry.width - 61, this->geometry.height - 24},
+    };
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index]->Move(xs[index], y);
+      this->buttons[index]->Move(positions[index].x, positions[index].y);
     }
 
     g_windowMgr.StoreSnapRectangle(this);
@@ -1603,9 +1607,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
   std::map<std::string, int> totals;
   std::vector<BarterMarketEntry> entries = *g_expandedBarterMarketItemMgr->GetEntries();
 
-  int count = g_session.GetNumInventoryItems();
-  count += g_session.CountDistinctEquippedItems();
-  count += g_session.CountDistinctCostumeItems();
+  int count = g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
 
   for (std::vector<BarterMarketEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
     std::map<std::string, int>::iterator total = totals.find(it->name);
@@ -1615,7 +1617,8 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
       totals.insert(std::make_pair(it->name, it->value));
     }
 
-    if (g_session.IsEquipItemType(it->field_0) == true || g_session.IsShadowItemType(it->field_0) == true) {
+    const int type = it->field_0;
+    if (g_session.IsEquipItemType(type) == true || g_session.IsShadowItemType(type) == true) {
       ++count;
     } else {
       g_session.FindInventoryIndexByItemId(std::atoi(it->name.c_str()));
@@ -1766,15 +1769,13 @@ void UIBartermarketWnd::Paint() {
     return;
   }
 
-  const int leftHeight = this->geometry.height - this->bottomPadding - 17;
-  const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0; tile < leftTiles; ++tile) {
+  int tiles = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
+  for (int tile = 0; tile < tiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
-  const int rightHeight = this->geometry.height - this->bottomPadding - 17;
-  const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0; tile < rightTiles; ++tile) {
+  tiles = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
+  for (int tile = 0; tile < tiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
@@ -1811,10 +1812,8 @@ void UIBartermarketWnd::Paint() {
       continue;
     }
 
-    const int row = visible / this->columns;
-    const int column = visible % this->columns;
-    const int x = column * 32;
-    const int y = row * 32;
+    const int y = visible / this->columns * 32;
+    const int x = visible % this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed;
       unsigned hoverGreen;
@@ -1842,9 +1841,15 @@ void UIBartermarketWnd::Paint() {
     }
 
     if (++visible == this->visibleRows * this->columns) {
+      ++index;
       break;
     }
   }
+}
+
+// INLINED
+static void DrawEntryItemName(UIFrameWnd* window, int x, int y, int width, const ITEM_INFO& item) {
+  window->DrawWrappedItemName(x, y, width, &item, 0, 0, 12);
 }
 
 // OFFSET: 0x008473F0
@@ -1896,10 +1901,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     }
 
     this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 0, 0);
-    {
-      const ITEM_INFO item = it->ToItemInfo();
-      this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
-    }
+    DrawEntryItemName(this, 76, y + 29, 100, it->ToItemInfo());
 
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
@@ -1998,10 +2000,7 @@ void UIExpandedBartermarketWnd::Paint() {
     } else {
       this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 1, 0);
     }
-    {
-      const ITEM_INFO item = it->ToItemInfo();
-      this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
-    }
+    DrawEntryItemName(this, 76, y + 29, 100, it->ToItemInfo());
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
       const std::string quantity = fmt::format("+{}", it->refine);
@@ -2009,7 +2008,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     int chunkIndex = 0;
-    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
+    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk, ++chunkIndex) {
       ITEM_INFO chunkItem;
       chunkItem.quantity = chunk->amount;
       char itemId[33];
@@ -2028,17 +2027,17 @@ void UIExpandedBartermarketWnd::Paint() {
         std::uint32_t color = 0xFFFFFF;
         this->DrawOutlinedColoredText(chunkX + 8, y + 49, chunkAmount, std::strlen(chunkAmount), color, 200, 0, 12, 1);
       }
-      ++chunkIndex;
     }
 
     char amount[23] = {};
     StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d z", it->field_8);
     this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount, 0, 0, 12, 0, 0);
 
-    if (++visible == this->rowCount) {
+    if (visible + 1 == this->rowCount) {
       ++index;
       break;
     }
+    ++visible;
   }
 
   for (int row = index; row < this->rowCount; ++row) {

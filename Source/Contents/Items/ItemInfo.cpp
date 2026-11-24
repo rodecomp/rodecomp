@@ -462,8 +462,10 @@ bool CSession::HasItemId(int itemId) const {
     return true;
   }
 
+  const ITEM_INFO* const equipped = this->equippedItems;
+  const ITEM_INFO* const costume = this->costumeItems;
   for (int index = 0; index < 10; ++index) {
-    if (std::atoi(this->equippedItems[index].itemId.c_str()) == itemId || std::atoi(this->costumeItems[index].itemId.c_str()) == itemId) {
+    if (std::atoi(equipped[index].itemId.c_str()) == itemId || std::atoi(costume[index].itemId.c_str()) == itemId) {
       return true;
     }
   }
@@ -479,11 +481,13 @@ bool CSession::HasItemCount(int itemId, int count) const {
     return true;
   }
 
+  const ITEM_INFO* const equipped = this->equippedItems;
+  const ITEM_INFO* const costume = this->costumeItems;
   for (int index = 0; index < 10; ++index) {
-    if (std::atoi(this->equippedItems[index].itemId.c_str()) == itemId && this->equippedItems[index].refiningLevel >= count) {
+    if (std::atoi(equipped[index].itemId.c_str()) == itemId && equipped[index].refiningLevel >= count) {
       return true;
     }
-    if (std::atoi(this->costumeItems[index].itemId.c_str()) == itemId && this->costumeItems[index].refiningLevel >= count) {
+    if (std::atoi(costume[index].itemId.c_str()) == itemId && costume[index].refiningLevel >= count) {
       return true;
     }
   }

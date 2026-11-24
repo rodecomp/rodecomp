@@ -5,15 +5,22 @@
 
 // INLINED
 static __forceinline void DrawGageBar(UIPlayerGage* gage, int y, std::function<std::int64_t()>& current, std::function<std::int64_t()>& maximum,
-                                     const std::uint32_t& color, const std::uint32_t& alternateColor, bool thresholdColor, bool wideDenominator) {
+                                     const std::uint32_t& color, const std::uint32_t& alternateColor, bool thresholdColor, bool wideDenominator,
+                                     bool backgroundBeforeRatio = false) {
   const std::int64_t maximumValue = MaxIntAndInt64(1, maximum());
-  const std::int64_t denominator = (std::max)(current(), maximumValue);
+  const std::int64_t currentValue = current();
+  const std::int64_t& denominator = (std::max)(currentValue, maximumValue);
   const std::int64_t numerator = current();
+  if (backgroundBeforeRatio) {
+    gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
+  }
   const double divisor =
       wideDenominator ? static_cast<double>(denominator) : static_cast<double>(static_cast<int>(denominator));
   const float ratio = static_cast<float>(static_cast<double>(numerator) / divisor);
 
-  gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
+  if (!backgroundBeforeRatio) {
+    gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
+  }
   gage->FillRegion(1, y, static_cast<int>(static_cast<float>(gage->geometry.width - 2) * ratio), 3,
                    thresholdColor && ratio < 0.25f ? alternateColor : color);
 }
@@ -141,7 +148,7 @@ void UIPlayerGage::Paint() {
     default:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
         DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, false);
-        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
+        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false, true);
         if (this->m_fourthCurrent && this->m_fourthMaximum) {
           DrawGageBar(this, 9, this->m_fourthCurrent, this->m_fourthMaximum, this->colors[7], this->colors[7], false, false);
         }

@@ -96,7 +96,7 @@ const char* CSession::GetPlayerMapDisplayName() {
 
 // OFFSET: 0x00E31650
 // FUNCTION: fn_24173
-void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& delays, int& skillFlag) {
+void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, long>>& delays, int& skillFlag) {
   delays.clear();
   int maxLevel = 0;
   skillFlag = 0;
@@ -341,7 +341,8 @@ void CSession::ResolvePendingActorName(std::uint32_t id, const char* name) {
     return;
   }
 
-  if (this->pendingActorNames.end() == this->pendingActorNames.find(static_cast<std::uint32_t>(id))) {
+  std::uint32_t key = id;
+  if (this->pendingActorNames.end() == this->pendingActorNames.find(key)) {
     return;
   }
 

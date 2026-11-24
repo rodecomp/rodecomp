@@ -28,7 +28,11 @@ void CView::Refresh() {
   orbit.MakeXRotation((this->camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((this->camera.yaw / 180.0f) * pi);
   vector3d& eye = this->frame.eye;
-  OrbitOffset(eye, vector3d{0.0f, 0.0f, -this->camera.distance}, orbit);
+  vector3d offset;
+  offset.z = -this->camera.distance;
+  offset.y = 0.0f;
+  offset.x = 0.0f;
+  OrbitOffset(eye, offset, orbit);
   eye.x += this->camera.target.x;
   this->frame.eye.y = this->camera.target.y + this->frame.eye.y;
   this->frame.eye.z = this->camera.target.z + this->frame.eye.z;

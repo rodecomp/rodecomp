@@ -507,19 +507,16 @@ void CGameActor::ResetState() {
   this->merAI = nullptr;
   this->objectType = 4;
   this->actorWindows[4] = 0;
-  this->transformJobs[0] = -1;
-  this->transformJobs[1] = -1;
-  this->transformJobs[2] = -1;
+  for (int index = 0; index < 3; ++index) {
+    this->transformJobs[index] = -1;
+  }
   this->monsterTransformJob = -1;
   this->transformPriority = 0;
   this->charmType = 0;
   this->charmCount = 0;
-  this->movementState[0] = 0;
-  this->movementState[1] = 0;
-  this->movementState[2] = 0;
-  this->movementState[3] = 0;
-  this->movementState[4] = 0;
-  this->movementState[5] = 0;
+  for (int index = 0; index < 6; ++index) {
+    this->movementState[index] = 0;
+  }
   this->hasHp = 0;
   this->maxHp = 0;
   this->hpGaugeWindow = nullptr;
@@ -527,7 +524,8 @@ void CGameActor::ResetState() {
   this->hasSp = 0;
   this->spGaugeValue = 0;
   this->mountedState = 0;
-  this->actorFlags = 0;
+  this->storedActorEntry = 0;
+  this->modelReady = false;
   this->emblemVersion = 0;
   this->firstFollowerEffect = nullptr;
   this->secondFollowerEffect = nullptr;
@@ -543,26 +541,25 @@ void CGameActor::UpdateGaugePositions() {
 
   if (this->actorWindows[0] != 0) {
     if (timeGetTime() < this->chatTick + 5000) {
-      UIWindow* window = this->actorWindows[0];
       int x = this->render.screenX - this->chatWidth / 2;
-      if (x < -3) {
-        x = -3;
-      }
-      const int maximumX = g_renderer->viewport.width - window->geometry.width + 3;
-      if (x > maximumX) {
-        x = maximumX;
-      }
       int y = static_cast<int>(
         static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - static_cast<float>(this->chatHeight)
       );
+      if (x < -3) {
+        x = -3;
+      }
+      const int maximumX = g_renderer->viewport.width - this->actorWindows[0]->geometry.width + 3;
+      if (x > maximumX) {
+        x = maximumX;
+      }
       if (y < -3) {
         y = -3;
       }
-      const int maximumY = g_renderer->viewport.height - window->geometry.height + 3;
+      const int maximumY = g_renderer->viewport.height - this->actorWindows[0]->geometry.height + 3;
       if (y > maximumY) {
         y = maximumY;
       }
-      window->Move(x, y);
+      this->actorWindows[0]->Move(x, y);
     } else {
       g_windowMgr.Schedule(this->actorWindows[0]);
       this->actorWindows[0] = 0;
@@ -595,11 +592,12 @@ void CGameActor::UpdateGaugePositions() {
         static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale)
       );
       const std::uint32_t total = this->skillRechargeEndTick - this->skillRechargeStartTick;
-      std::uint32_t elapsed = timeGetTime() - this->skillRechargeStartTick;
+      const std::uint32_t elapsed = timeGetTime() - this->skillRechargeStartTick;
       if (elapsed > total) {
-        elapsed = total;
+        static_cast<UIRechargeGage*>(this->actorWindows[3])->SetValues(total, total);
+      } else {
+        static_cast<UIRechargeGage*>(this->actorWindows[3])->SetValues(elapsed, total);
       }
-      static_cast<UIRechargeGage*>(this->actorWindows[3])->SetValues(elapsed, total);
     }
   }
 

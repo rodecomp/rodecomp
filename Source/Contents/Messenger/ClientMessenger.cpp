@@ -210,11 +210,11 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
     if (source->m_keys.size() != 1) {
       return this;
     }
-    const unsigned int& key = *source->m_keys.begin();
-    if (this->m_keys.contains(key)) {
+    auto keyIt = source->m_keys.begin();
+    if (this->m_keys.contains(*keyIt)) {
       return this;
     }
-    this->m_keys.insert(key);
+    this->m_keys.insert(*keyIt);
   }
 
   for (auto& entry : source->m_values) {
@@ -1183,12 +1183,12 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
       EquipmentProperty* property = it->second;
       EquipmentPropertyDefinition* definition = property->m_definition;
       if (definition != nullptr && definition->uniqueGroup.size() > 0) {
-        if (names.find(definition->uniqueGroup) == names.end()) {
+        if (names.end() == names.find(definition->uniqueGroup)) {
           names.insert(definition->uniqueGroup);
           ++it;
         } else {
-          delete property;
-          it = group.second.erase(it);
+          delete it->second;
+          group.second.erase(it++);
         }
       } else {
         ++it;
@@ -2142,7 +2142,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
       if (!this->loadValid) {
         continue;
       }
-      std::vector<int> values;
+      std::vector<unsigned int> values;
       if (lua_type(state, -1) == LUA_TTABLE) {
         lua_pushnil(state);
         while (lua_next(state, -2) != 0) {
@@ -2235,8 +2235,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
     int index = 0;
-    lua_pushnil(state);
-    while (lua_next(state, -2) != 0) {
+    for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
       ++index;
       std::vector<std::string> functions;
       int fieldResult = this->script.GetFieldStringArray(functions, "func");
@@ -2277,7 +2276,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
         break;
       }
 
-      for (const std::string& function : functions) {
+      for (auto it = functions.begin(); it != functions.end(); ++it) {
+        const std::string& function = *it;
         std::string text = fmt::format("{0}", function);
         for (auto condition = conditions.cbegin(); condition != conditions.cend(); ++condition) {
           text = fmt::format("{0} arg{1}:{2}", text, condition->first, condition->second);
@@ -2292,7 +2292,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       if (!this->loadValid) {
         break;
       }
-      lua_settop(state, -2);
     }
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
@@ -3863,7 +3862,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
 // OFFSET: 0x006AB810
 // FUNCTION: fn_06169
 void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, bool notify) {
-  this->activeItems.insert(itemId);
+  this->activeItems.emplace(itemId);
 
   auto combinations = this->m_itemCombinations.find(itemId);
   if (this->m_itemCombinations.end() == combinations) {
@@ -3888,7 +3887,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, 
     }
 
     if (this->properties3.find(combinationId) == this->properties3.end()) {
-      this->properties3.try_emplace(combinationId, new CEquipmentCombiitem(combinationId));
+      this->properties3.emplace(combinationId, new CEquipmentCombiitem(combinationId));
       this->properties3[combinationId]->Load(notify);
     }
   }
@@ -4061,8 +4060,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
   this->m_dirty |= found->second->IsPretend();
   auto combinations = this->m_itemCombinations.find(found->second->GetId());
   if (this->m_itemCombinations.end() != combinations) {
-    auto& properties = this->properties3;
     for (const unsigned int& combinationId : combinations->second) {
+      auto& properties = this->properties3;
       if (properties.end() != properties.find(combinationId)) {
         properties[combinationId]->IsPretend();
       }
@@ -4586,7 +4585,7 @@ int GetCategoryJob(lua_State* state) {
 // OFFSET: 0x006BD3C0
 // FUNCTION: fn_06277
 int GetEquipArmorLv(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4609,7 +4608,7 @@ int GetEquipArmorLv(lua_State* state) {
 // OFFSET: 0x006BDCE0
 // FUNCTION: fn_06280
 int GetEquipWeaponLv(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4682,7 +4681,7 @@ __declspec(noinline) CSkillInfo* CSession::FindGroupedSkill(std::uint32_t id) {
 // OFFSET: 0x006BEA40
 // FUNCTION: fn_06287
 int GetSkillLevel(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4702,7 +4701,7 @@ int GetSkillLevel(lua_State* state) {
 // OFFSET: 0x006BEC30
 // FUNCTION: fn_06288
 int GetPlayerValue(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4716,7 +4715,7 @@ int GetPlayerValue(lua_State* state) {
 
   std::map<int, int>& traitStats = g_session.m_traits.stats;
   int value = 0;
-  switch (args[0]) {
+  switch (static_cast<int>(args[0])) {
   case SP_BASELEVEL:
     value = g_session.m_level;
     break;
@@ -5055,22 +5054,6 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
   }
 }
 
-// OFFSET: 0x00AAAF10
-// FUNCTION: fn_17276
-__declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = member.accountId == accountId;
-    }
-    if (matches) {
-      window->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, accountId, lower, upper);
-      break;
-    }
-  }
-}
-
 // OFFSET: 0x00CD3780
 // FUNCTION: fn_21271
 bool CGameMode::GetClosestValidCell(int* x, int* y) {
@@ -5080,9 +5063,9 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
   int subColumn;
   int subRow;
   this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
-  const int startY = *y;
   const int startX = *x;
   const int deltaX = column - startX;
+  const int startY = *y;
   const int deltaY = row - startY;
   const int offsets[9][2] = {{0, 0}, {1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
   if (std::abs(deltaX) >= std::abs(deltaY)) {
@@ -5150,9 +5133,10 @@ int CLuaInstance::GetFieldInt(int& value, const char* name) {
 
   lua_getfield(this->m_state, -1, name);
   const int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TNUMBER) {
-    value = static_cast<int>(lua_tonumber(this->m_state, -1));
+    result = 0;
+    value = static_cast<unsigned int>(lua_tonumber(this->m_state, -1));
   } else {
     result = type == LUA_TNIL ? 1 : 2;
   }
@@ -5198,8 +5182,9 @@ int CLuaInstance::GetFieldString(std::string& value, const char* name) {
 
   lua_getfield(this->m_state, -1, name);
   const int type = lua_type(this->m_state, -1);
-  int result = 0;
+  int result;
   if (type == LUA_TSTRING) {
+    result = 0;
     value = lua_tostring(this->m_state, -1);
   } else {
     result = type == LUA_TNIL ? 1 : 2;
@@ -5800,43 +5785,6 @@ void sub_68DAF0() {
 void sub_6A2170() {
 }
 
-// OFFSET: 0x00A91730
-// FUNCTION: fn_17164
-UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = member.accountId == accountId;
-    }
-    if (matches) {
-      return window;
-    }
-  }
-  return nullptr;
-}
-
-// OFFSET: 0x00AA64D0
-// FUNCTION: fn_17230
-void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
-  if (this->messengerGroupWnd) {
-    this->messengerGroupWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  }
-  for (UIWindow* window : this->snapExcluded) {
-    bool matches;
-    {
-      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
-      matches = target->accountId == member.accountId;
-    }
-    if (matches) {
-      if (window) {
-        window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
-      }
-      break;
-    }
-  }
-}
-
 // OFFSET: 0x006BD660
 // FUNCTION: fn_06278
 int GetEquipGrade(lua_State* state) {
@@ -6011,7 +5959,9 @@ int SetEquipTempValue(lua_State* state) {
   }
 
   std::unordered_map<int, EquipmentValueC>& displayValues = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDisplayValues();
-  displayValues[args[0]].value = args[1];
+  const int key = args[0];
+  const int value = args[1];
+  displayValues[key].value = value;
   return 0;
 }
 
@@ -6219,8 +6169,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const std::ui
   found->second->IsPretend();
   auto combinations = this->m_itemCombinations.find(found->second->GetId());
   if (this->m_itemCombinations.end() != combinations) {
-    auto& properties = this->properties3;
     for (const unsigned int& combinationId : combinations->second) {
+      auto& properties = this->properties3;
       if (properties.end() != properties.find(combinationId)) {
         properties[combinationId]->IsPretend();
       }
@@ -6258,14 +6208,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (this->loadValid) {
         std::string categoryName;
         result = this->script.GetFieldString(categoryName, "name");
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, result), 0);
+          ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, static_cast<int>(result)), 0);
         }
         if (this->loadValid) {
           categoryName = FromUtf8(categoryName, g_textCodePage);
@@ -6286,7 +6236,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category table has invalid entry key({0})", result), 0);
+                ShowErrorDialog(fmt::format("Category table has invalid entry key({0})", static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6301,7 +6251,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldString(orderName, "name");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6324,7 +6274,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldStringArray(definition->functions, "func");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6350,7 +6300,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldUIntMap(values, "val");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6383,7 +6333,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               bool valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6394,11 +6344,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 for (const auto& condition : conditions) {
                   text = fmt::format("{0} arg{1}:{2}", text, condition.first, condition.second);
                 }
-                unsigned int hash = 5381;
-                for (const char* character = text.c_str(); *character != '\0'; ++character) {
-                  hash = hash * 33 + *character;
-                }
-                const std::uint64_t nameKey = hash;
+                const std::uint64_t nameKey = HashName(text.c_str());
                 valid = this->m_definitionsByName.find(nameKey) == this->m_definitionsByName.end();
                 this->loadValid &= valid;
                 if (!valid) {
@@ -6438,7 +6384,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6463,7 +6409,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6478,7 +6424,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                                   0);
                 }
                 if (!this->loadValid) {
-                  break;
+                  lua_settop(state, -2);
+                  continue;
                 }
                 this->randomOptionDefinitions[randomOption] = definition;
               }
@@ -6487,7 +6434,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6497,7 +6444,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6530,7 +6477,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, static_cast<int>(result)), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6793,6 +6740,34 @@ bool EquipmentProperties::CEquipmentPropertiesMgr::InitializeLua() {
   return this->loadValid;
 }
 
+// INLINED
+static int ReadIntArray(const CLuaInstance& script, std::vector<int>& values, const char* name) {
+  if (lua_type(script.GetState(), -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(script.GetState(), -1, name);
+  const int type = lua_type(script.GetState(), -1);
+  int result;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(script.GetState());
+    result = 0;
+    while (lua_next(script.GetState(), -2) != 0) {
+      const int valueType = lua_type(script.GetState(), -1);
+      result = valueType == LUA_TNUMBER ? 0 : 2;
+      if (valueType != LUA_TNUMBER) {
+        break;
+      }
+      values.push_back(static_cast<int>(lua_tonumber(script.GetState(), -1)));
+      lua_settop(script.GetState(), -2);
+    }
+  } else {
+    result = type == LUA_TNIL ? 1 : 2;
+  }
+  lua_settop(script.GetState(), -2);
+  return result;
+}
+
 // OFFSET: 0x006B4600
 // FUNCTION: fn_06197
 void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
@@ -6809,7 +6784,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       CEquipmentInfo info;
       unsigned int key = 0;
       int result;
-      int type = lua_type(this->script.GetState(), -2);
+      const int type = lua_type(this->script.GetState(), -2);
       if (type == LUA_TNUMBER) {
         key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
         result = 0;
@@ -6818,38 +6793,18 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
       }
 
       std::vector<int> stats;
-      if (lua_type(this->script.GetState(), -1) == LUA_TTABLE) {
-        lua_getfield(this->script.GetState(), -1, "Stat");
-        type = lua_type(this->script.GetState(), -1);
-        if (type == LUA_TTABLE) {
-          lua_pushnil(this->script.GetState());
-          result = 0;
-          while (lua_next(this->script.GetState(), -2) != 0) {
-            if (lua_type(this->script.GetState(), -1) != LUA_TNUMBER) {
-              result = 2;
-              break;
-            }
-            stats.push_back(static_cast<int>(lua_tonumber(this->script.GetState(), -1)));
-            lua_settop(this->script.GetState(), -2);
-          }
-        } else {
-          result = (type != LUA_TNIL) + 1;
-        }
-        lua_settop(this->script.GetState(), -2);
-      } else {
-        result = 3;
-      }
+      result = ReadIntArray(this->script, stats, "Stat");
       bool valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6860,14 +6815,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       const bool hasType = result == 0;
       this->loadValid &= hasType;
       if (result != 0) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;
       }
 
       int count = 0;
-      if (hasType) {
+      if (hasType == true) {
         unsigned int hash = HashName(itemType.c_str());
         switch (hash) {
         case 0x0F1AAAA6:
@@ -6888,6 +6843,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           break;
         case 0xA4C66E86:
           info.kind = 5;
+          count = 0;
           break;
         }
       }
@@ -7045,16 +7001,22 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           if (stats[index] == 0) {
             continue;
           }
-          if (index == 0) {
+          int variable;
+          switch (index) {
+          case 0:
             info.values.try_emplace(0, stats[index]);
-          } else if (index == 1) {
-            const int variable = 41;
-            auto found = this->statVariables.find(variable);
-            if (found == this->statVariables.end()) {
-              ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-            } else {
-              info.statProperties.try_emplace(found->second.value, stats[index]);
-            }
+            continue;
+          case 1:
+            variable = 41;
+            break;
+          default:
+            continue;
+          }
+          auto found = this->statVariables.find(variable);
+          if (found == this->statVariables.end()) {
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+          } else {
+            info.statProperties.try_emplace(found->second.value, stats[index]);
           }
         }
         break;
@@ -7132,7 +7094,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, static_cast<int>(result)), 0);
       }
       if (!this->loadValid) {
         continue;

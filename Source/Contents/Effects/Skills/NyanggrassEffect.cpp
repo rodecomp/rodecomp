@@ -111,14 +111,17 @@ void CMultiTexParticle::Render(int column, int row) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const float* cameraMatrix = mode->camera->frame.view.values;
 
+  EffectPoint* corner = corners;
   for (int i = 0; i < 4; ++i) {
-    g_renderer->Project(&corners[i].x, cameraMatrix, this->command.vertices[i]);
+    g_renderer->Project(&corner->x, cameraMatrix, this->command.vertices[i]);
+    ++corner;
     this->command.vertices[i].z -= 0.000030517578125f;
     this->command.vertices[i].diffuse = 0xFFFFFFFF;
     const float u = this->uv1[i][0] + this->offsetU;
     const float v = this->uv1[i][1] + this->offsetV;
     SetTexCoord(this->command.vertices[i], u, v);
-    SetLightCoord(this->command.vertices[i], this->uv2[i][0], this->uv2[i][1]);
+    auto& uv2Ref = this->uv2;
+    SetLightCoord(this->command.vertices[i], uv2Ref[i][0], uv2Ref[i][1]);
   }
 
   g_renderer->SubmitAuxiliaryPrimitive(&this->command);

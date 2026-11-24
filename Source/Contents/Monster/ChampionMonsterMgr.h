@@ -14,7 +14,7 @@ public:
   class lcData {
   public:
     // INLINED
-    explicit lcData(float value) : m_value(value) {
+    lcData() {
     }
     // INLINED
     __forceinline lcData(const lcData& other) : m_value(other.m_value), m_effects(other.m_effects) {

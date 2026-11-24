@@ -33,15 +33,24 @@ void UIScrollBar_Navi::Paint() {
     CBitmapRes* thumbUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_up.bmp")));
     CBitmapRes* thumbMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_mid.bmp")));
     CBitmapRes* thumbDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_down.bmp")));
-    const int thumb = this->arrowLength + this->ThumbOffset();
+    int length = this->geometry.height;
+    switch (this->vertical) {
+    case 0:
+      length = this->geometry.width;
+      break;
+    case 1:
+      length = this->geometry.height;
+      break;
+    }
+    const int thumb = this->arrowLength + ((length - 2 * this->arrowLength - this->ThumbLength()) * this->position) / this->maximum;
     this->DrawBitmap(0, thumb, thumbUp, true);
-    const int length = this->ThumbLength();
+    const int thumbLength = this->ThumbLength();
 
-    for (int y = (thumb + thumbUp->image.height); y < ((thumb + thumbUp->image.height) + length); y = (y + thumbDown->image.height)) {
+    for (int y = (thumb + thumbUp->image.height); y < ((thumb + thumbUp->image.height) + thumbLength); y = (y + thumbDown->image.height)) {
       this->DrawBitmap(0, y, thumbDown, true);
     }
 
-    this->DrawBitmap(0, ((thumb + thumbUp->image.height) + length), thumbMiddle, true);
+    this->DrawBitmap(0, ((thumb + thumbUp->image.height) + thumbLength), thumbMiddle, true);
     break;
   }
   }

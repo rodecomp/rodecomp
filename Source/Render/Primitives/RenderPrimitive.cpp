@@ -38,9 +38,18 @@ bool RenderTriangle::Visible() const {
 
 // OFFSET: 0x00568F40
 // FUNCTION: fn_02244
-RenderCommand::RenderCommand()
-    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), depthFlags(1), sourceBlend(0), destinationBlend(0), textureMode(0),
-      primitiveType(D3DPT_TRIANGLELIST) {
+RenderCommand::RenderCommand() {
+  this->vertices = nullptr;
+  this->vertexCount = 0;
+  this->texture = nullptr;
+  this->indices = nullptr;
+  this->indexCount = 0;
+  this->depthTest = 1;
+  this->commandMode = 0;
+  this->sourceBlend = 0;
+  this->destinationBlend = 0;
+  this->textureMode = 0;
+  this->primitiveType = D3DPT_TRIANGLELIST;
 }
 
 namespace {
@@ -54,10 +63,18 @@ namespace {
 
 // OFFSET: 0x005691D0
 // FUNCTION: fn_02250
-RenderPrimitive::RenderPrimitive() : RenderCommand() {
-  new (this->quad) QuadVertex[4];
-  this->vertices = this->quad;
+RenderPrimitive::RenderPrimitive() : RenderCommand(0) {
   this->vertexCount = 4;
+  this->vertices = this->quad;
+  this->texture = nullptr;
+  this->indices = nullptr;
+  this->indexCount = 0;
+  this->depthTest = 1;
+  this->commandMode = 0;
+  this->sourceBlend = 0;
+  this->destinationBlend = 0;
+  this->textureMode = 0;
+  new (this->quad) QuadVertex[4];
   this->primitiveType = D3DPT_TRIANGLESTRIP;
 }
 
@@ -111,8 +128,8 @@ void RenderCommand::ApplyDepthAlpha() {
 // OFFSET: 0x00569580
 // FUNCTION: fn_02264
 void RenderCommand::SetPosition(std::uint32_t index, const float* position) {
-  this->vertices[index].x = position[0];
-  this->vertices[index].y = position[1];
-  this->vertices[index].z = position[2];
-  this->vertices[index].rhw = position[3];
+  this->vertices[static_cast<int>(index)].x = position[0];
+  this->vertices[static_cast<int>(index)].y = position[1];
+  this->vertices[static_cast<int>(index)].z = position[2];
+  this->vertices[static_cast<int>(index)].rhw = position[3];
 }

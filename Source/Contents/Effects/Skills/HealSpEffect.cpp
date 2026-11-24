@@ -13,9 +13,12 @@
 namespace {
 // INLINED
 void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
-  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
-  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
-  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+  const float y = v.y;
+  const float x = v.x;
+  const float z = v.z;
+  result.x = x * m[0] + y * m[3] + z * m[6] + m[9];
+  result.y = x * m[1] + y * m[4] + z * m[7] + m[10];
+  result.z = x * m[2] + y * m[5] + z * m[8] + m[11];
 }
 
 // INLINED
@@ -166,8 +169,8 @@ __forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
     level = static_cast<float>(this->alphaLevel);
   }
 
-  params[5] = fade;
   params[2] = lift;
+  params[5] = fade;
   sprite->velocity = velocity;
   sprite->position.x = x;
   sprite->position.y = y;

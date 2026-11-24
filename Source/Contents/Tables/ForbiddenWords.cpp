@@ -168,7 +168,8 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
 
     int advance = 1;
 
-    for (auto it = this->words.begin(); it != this->words.end(); ++it) {
+    auto& wordsRef = this->words;
+    for (auto it = wordsRef.begin(); it != wordsRef.end(); ++it) {
       if (std::strncmp(*it, current, std::strlen(*it)) == 0) {
         std::strcpy(matchedWord, *it);
         LowercaseMatchedWord(matchedWord);

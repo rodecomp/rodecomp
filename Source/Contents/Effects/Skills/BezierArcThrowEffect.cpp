@@ -84,9 +84,9 @@ void CBezierArcThrowEffect::OnProcess() {
 
   matrix rotation;
   if (targetViewX >= actorView.x) {
-    rotation.MakeYRotation(4.188789f);
+    rotation.MakeYRotation(240.0f / 180.0f * 3.141592f);
   } else {
-    rotation.MakeYRotation(2.094395f);
+    rotation.MakeYRotation(120.0f / 180.0f * 3.141592f);
   }
 
   actorView.y -= 10.0f;
@@ -106,18 +106,18 @@ void CBezierArcThrowEffect::OnProcess() {
 
   vector3d rotated = TransformPoint(rotation, norm);
 
-  const vector3d start = this->m_target;
+  vector3d start = this->m_target;
   float t = this->m_progress;
   float u = 1.0f - t;
-  float u2 = static_cast<float>(std::pow(static_cast<double>(u), 2.0));
-  float t2 = static_cast<float>(std::pow(static_cast<double>(t), 2.0));
-  float mid = (t + t) * u;
+  const vector3d first = start * static_cast<float>(std::pow(static_cast<double>(u), 2.0));
+  const vector3d last = ctrlPt * static_cast<float>(std::pow(static_cast<double>(t), 2.0));
+  vector3d end{rotated.x + this->m_target.x, rotated.y + this->m_target.y, rotated.z + this->m_target.z};
+  const vector3d middle = end * ((t + t) * u);
 
-  const vector3d end{rotated.x + this->m_target.x, rotated.y + this->m_target.y, rotated.z + this->m_target.z};
   CEZ2STRParticle* particle = this->m_particle;
-  particle->position.x = end.x * mid + ctrlPt.x * t2 + start.x * u2;
-  particle->position.y = end.y * mid + ctrlPt.y * t2 + start.y * u2;
-  particle->position.z = end.z * mid + ctrlPt.z * t2 + start.z * u2;
+  particle->position.x = middle.x + last.x + first.x;
+  particle->position.y = middle.y + last.y + first.y;
+  particle->position.z = middle.z + last.z + first.z;
 
   this->m_particle->Process(0.0f, 0.0f, 0.0f);
   if (0.0f >= this->m_progress) {

@@ -59,10 +59,9 @@ void CCherryBlossomEffect::Open() {
         particle->scale = 0.55f;
         particle->alpha = 0;
 
-        const float height = static_cast<float>(Random(100));
-        this->offsets[row * 4 + column].x = 0.0f;
-        this->offsets[row * 4 + column].y = height;
-        this->offsets[row * 4 + column].z = 0.0f;
+        EffectPoint offset;
+        offset.y = static_cast<float>(Random(100));
+        this->offsets[row * 4 + column] = offset;
 
         for (int i = 0; i < 4; ++i) {
           particle->animationValues[i] = static_cast<float>(Random(360));
@@ -82,9 +81,8 @@ __forceinline void CCherryBlossomEffect::UpdatePetal(CParticle* particle) {
     const float speed = particle->speedParameter;
     if (this->offsets[index].y < 0.0f) {
       if (this->offsets[index].y < -30.0f) {
-        const float height = static_cast<float>(Random(100));
         this->offsets[index].x = 0.0f;
-        this->offsets[index].y = height;
+        this->offsets[index].y = static_cast<float>(Random(100));
         this->offsets[index].z = 0.0f;
 
         for (int i = 0; i < 4; ++i) {

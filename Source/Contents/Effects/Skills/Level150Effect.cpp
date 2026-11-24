@@ -43,7 +43,7 @@ void CLevel150Effect::SetDestinationBlend(int blend) {
 
 // OFFSET: 0x00B46600
 // FUNCTION: fn_18909
-void CLevel150Effect::SetColor(int red, int green, int blue) {
+void CLevel150Effect::SetColor(short red, short green, short blue) {
   for (std::vector<CParticle*>::iterator it = this->bubbles.begin(); it != this->bubbles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -388,7 +388,7 @@ void CLevel150SubEffect::SetDestinationBlend(int blend) {
 
 // OFFSET: 0x00B47810
 // FUNCTION: fn_18920
-void CLevel150SubEffect::SetColor(int red, int green, int blue) {
+void CLevel150SubEffect::SetColor(short red, short green, short blue) {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
   }
@@ -486,9 +486,9 @@ __forceinline void CLevel150SubEffect::UpdateParticle(CParticle* particle) {
     if (size > 20.0f) {
       int alpha = particle->alpha - 3;
       if (alpha <= 0) {
-        size = g_projectionDepthOffset;
-        particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
         alpha = 200;
+        size = 10.0f;
+        particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
       }
       particle->alpha = alpha;
     }

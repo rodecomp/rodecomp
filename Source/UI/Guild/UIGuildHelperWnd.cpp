@@ -104,10 +104,17 @@ void UIGuildHelperWnd::OnMouseMove(int x, int y) {
 void UICreateGuildWnd::Paint() {
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
-  const int text = this->m_mode == 0 ? MIS_PUT_GUILD_NAME_IN : MSI_PUT_DISBAND_GUILDNAME;
-  this->DrawTitleBar(true, LookupMessage(text - 1), 0);
-  const char* message = LookupMessage(text);
-  this->DrawTextAt(16, 23, message, 0, 0, 12, 0, 0, 0);
+  const auto drawPrompt = [this](int titleId, int promptId) {
+    const char* title = LookupMessage(titleId);
+    this->DrawTitleBar(true, title, 0);
+    const char* prompt = LookupMessage(promptId);
+    this->DrawTextAt(16, 23, prompt, 0, 0, 12, 0, 0, 0);
+  };
+  if (this->m_mode == 0) {
+    drawPrompt(MSI_CREATE_GUILD, MIS_PUT_GUILD_NAME_IN);
+  } else {
+    drawPrompt(MSI_GUILD_DISBAND, MSI_PUT_DISBAND_GUILDNAME);
+  }
 }
 
 // OFFSET: 0x0095FBE0
@@ -291,7 +298,7 @@ void UICreateGuildWnd::OnCreate(int, int) {
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
     for (unsigned int i = 0; i < 2; ++i) {
-      auto* button = new UIBitmapButton();
+      UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
@@ -311,15 +318,15 @@ void UICreateGuildWnd::OnCreate(int, int) {
 void UIGuildHelperWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\guild_helper\\");
   const char* names[3][3] = {{"btn_help", "btn_help_a", "btn_help_b"}, {"create_guild", "create_guild_a", "create_guild_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}};
-  int ids[3] = {343, 448, 184};
+  const int ids[3] = {343, 448, 184};
 
-  for (int i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     this->m_button = new UIBitmapButton();
     this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
     this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
     this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
     this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
-    if (i < 2) {
+    if (static_cast<int>(i) < 2) {
       this->m_button->Move(i * 62 + 8, height - 24);
     } else {
       this->m_button->Move(width - 52, height - 24);
@@ -363,19 +370,12 @@ void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
     int positions[2][2] = {{this->geometry.width - 101, this->geometry.height - 32}, {this->geometry.width - 55, this->geometry.height - 32}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     int ids[2] = {184, 185};
-    std::string name;
 
     for (int i = 0; i < 2; ++i) {
-      auto* button = new UIBitmapButton();
-      name.assign(prefix + names[i][0]);
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 0, 0);
-      name.assign(prefix + names[i][1]);
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 1, 0);
-      name.assign(prefix + names[i][2]);
-      name += ".bmp";
-      button->SetBitmap(name.c_str(), 2, 0);
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->Move(positions[i][0], positions[i][1]);
       button->SetId(ids[i]);
@@ -396,7 +396,7 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   unsigned int green;
   unsigned int blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_textViewer->SetBackgroundColor(0xFF000000 | RGB(red, green, blue));
+  this->m_textViewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000);
   this->AddChild(this->m_textViewer);
 
   if (!g_guildTip.m_bTryLoading) {

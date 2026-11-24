@@ -441,7 +441,6 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
 
     if (huntCount > 0) {
       RenewQuestHuntRecord* huntDestination = reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset);
-      offset += static_cast<int>(huntCount) * sizeof(RenewQuestHuntRecord);
       for (int index = 0; index < huntCount; ++index) {
         RenewQuestHuntRecord hunt;
         SecureZeroMemory(&hunt, sizeof(hunt));
@@ -455,6 +454,7 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
         strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
         *huntDestination++ = hunt;
       }
+      offset += static_cast<int>(huntCount) * sizeof(RenewQuestHuntRecord);
     }
   }
 }
@@ -614,7 +614,9 @@ int CRenewQuestMgr::L_AddQuestFilterInfo(lua_State* state) {
     }
   }
 
-  g_renewQuestMgr->m_filters.emplace(static_cast<int>(id), RenewQuestFilter{std::string(name.c_str(), name.size()), std::move(icons)});
+  CRenewQuestMgr* manager = g_renewQuestMgr;
+  RenewQuestFilter filter{std::string(name.c_str(), name.size()), std::move(icons)};
+  manager->m_filters.emplace(static_cast<int>(id), std::move(filter));
   return 0;
 }
 
@@ -796,23 +798,25 @@ void CRenewQuestMgr::SetParameter(int key, int value) {
 void CRenewQuestMgr::SaveOngoingSimpleViewList() {
   std::string path = "SaveData\\OngoingSimpleViewList.lua";
   CFile file;
-  if (file.Open(path.c_str(), 0x1001, true, true)) {
-    std::string text = "OngoingSimpleViewList = {}\r\n\r\n";
-    file.Write(text.c_str(), text.size());
-    text = "OngoingSimpleViewList = \r\n{\r\n";
-    file.Write(text.c_str(), text.size());
-
-    for (auto it = this->m_ongoingQuests.begin(); this->m_ongoingQuests.end() != it; ++it) {
-      if (!it->second.m_simpleView) {
-        text = '\t' + IntToString(it->first, 0) + ",\r\n";
-        file.Write(text.c_str(), text.size());
-      }
-    }
-
-    text = "}";
-    file.Write(text.c_str(), text.size());
-    file.Close();
+  if (!file.Open(path.c_str(), 0x1001, true, true)) {
+    return;
   }
+
+  std::string text = "OngoingSimpleViewList = {}\r\n\r\n";
+  file.Write(text.c_str(), text.size());
+  text = "OngoingSimpleViewList = \r\n{\r\n";
+  file.Write(text.c_str(), text.size());
+
+  for (auto it = this->m_ongoingQuests.begin(); this->m_ongoingQuests.end() != it; ++it) {
+    if (!it->second.m_simpleView) {
+      text = '\t' + IntToString(it->first, 0) + ",\r\n";
+      file.Write(text.c_str(), text.size());
+    }
+  }
+
+  text = "}";
+  file.Write(text.c_str(), text.size());
+  file.Close();
 }
 
 // OFFSET: 0x0067C5A0
@@ -820,23 +824,25 @@ void CRenewQuestMgr::SaveOngoingSimpleViewList() {
 void CRenewQuestMgr::SaveRecommendedActiveList() {
   std::string path = "SaveData\\RecommendedActiveList.lua";
   CFile file;
-  if (file.Open(path.c_str(), 0x1001, true, true)) {
-    std::string text = "RecommendedActiveList = {}\r\n\r\n";
-    file.Write(text.c_str(), text.size());
-    text = "RecommendedActiveList = \r\n{\r\n";
-    file.Write(text.c_str(), text.size());
-
-    for (auto it = this->m_recommendedQuests.begin(); this->m_recommendedQuests.end() != it; ++it) {
-      if (!it->second.m_active) {
-        text = '\t' + IntToString(it->first, 0) + ",\r\n";
-        file.Write(text.c_str(), text.size());
-      }
-    }
-
-    text = "}";
-    file.Write(text.c_str(), text.size());
-    file.Close();
+  if (!file.Open(path.c_str(), 0x1001, true, true)) {
+    return;
   }
+
+  std::string text = "RecommendedActiveList = {}\r\n\r\n";
+  file.Write(text.c_str(), text.size());
+  text = "RecommendedActiveList = \r\n{\r\n";
+  file.Write(text.c_str(), text.size());
+
+  for (auto it = this->m_recommendedQuests.begin(); this->m_recommendedQuests.end() != it; ++it) {
+    if (!it->second.m_active) {
+      text = '\t' + IntToString(it->first, 0) + ",\r\n";
+      file.Write(text.c_str(), text.size());
+    }
+  }
+
+  text = "}";
+  file.Write(text.c_str(), text.size());
+  file.Close();
 }
 
 // OFFSET: 0x0067E370

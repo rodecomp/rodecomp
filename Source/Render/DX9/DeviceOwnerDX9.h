@@ -31,6 +31,10 @@ public:
   bool CaptureBackBuffer();
   bool RestoreBackBuffer();
   ScopedDeviceStateDX9 SaveState();
+  // INLINED
+  ScopedDeviceStateDX9 CaptureState() {
+    return ScopedDeviceStateDX9(this->state);
+  }
 
   // INLINED
   HRESULT SetRenderState(D3DRENDERSTATETYPE type, DWORD value) {
@@ -70,7 +74,7 @@ public:
 
 // OFFSET: 0x005650F0
 // FUNCTION: fn_02213
-inline ScopedDeviceStateDX9 DeviceOwnerDX9::SaveState() {
+__declspec(noinline) inline ScopedDeviceStateDX9 DeviceOwnerDX9::SaveState() {
   return ScopedDeviceStateDX9(this->state);
 }
 

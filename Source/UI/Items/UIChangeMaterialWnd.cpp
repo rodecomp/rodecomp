@@ -323,9 +323,7 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
       bool available = true;
       for (auto required = entry.materials.begin(); required != entry.materials.end(); ++required) {
         const ITEM_INFO item = g_session.LookupClientItem(required->id, 1);
-        if (item.quantity < required->quantity) {
-          available = false;
-        }
+        available &= item.quantity >= required->quantity;
       }
 
       entry.state = available;
@@ -436,8 +434,7 @@ int UIChangeMaterialWnd::SendMsg(
 
       if (entry->results.size() > 1) {
         int total = 0;
-        for (auto resultIt = entry->results.begin(); resultIt != entry->results.end(); ++resultIt) {
-          const MaterialResult& result = *resultIt;
+        for (const MaterialResult& result : entry->results) {
           total += result.amount;
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
@@ -450,8 +447,9 @@ int UIChangeMaterialWnd::SendMsg(
         this->m_resultText = "";
       }
 
-      this->m_button->SetDisabled(entry->state != 1);
-      this->m_button->Invalidate();
+      UIButton* button = this->m_button;
+      button->SetDisabled(entry->state != 1);
+      button->Invalidate();
       this->Invalidate();
     }
     break;
@@ -580,8 +578,8 @@ void UIChangeMaterialWnd_List::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
   for (int row = 0; row < this->m_pageSize; ++row) {
+    const MaterialListEntry* entry = this->GetEntry(row + this->m_scrollOffset);
     const int index = row + this->m_scrollOffset;
-    const MaterialListEntry* entry = this->GetEntry(index);
     if (entry) {
       const char* bitmap;
       if (index == this->m_selectedIndex) {

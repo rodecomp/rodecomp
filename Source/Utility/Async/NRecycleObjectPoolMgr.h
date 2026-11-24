@@ -1,10 +1,12 @@
 #ifndef RAGNAROK_SOURCE_UTILITY_ASYNC_NRECYCLEOBJECTPOOLMGR_H
 #define RAGNAROK_SOURCE_UTILITY_ASYNC_NRECYCLEOBJECTPOOLMGR_H
 
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+
 #include "Utility/Async/NRecycleObject.h"
 
+#include <hash_map>
 #include <string>
-#include <unordered_map>
 
 class NRecycleObjectPoolMgr {
 public:
@@ -14,14 +16,8 @@ public:
   void Release(std::string poolName, NRecycleObject* object);
 
 protected:
-  struct NameHash {
-
-    /* 0000 */ std::uint8_t padding_0000 = 0;
-    std::size_t operator()(const std::string& name) const;
-  };
-
   /* 0004 */ bool m_enabled;
-  /* 0008 */ std::unordered_map<std::string, NRecycleObjectPoolInter*, NameHash> m_pools;
+  /* 0008 */ stdext::hash_map<std::string, NRecycleObjectPoolInter*> m_pools;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

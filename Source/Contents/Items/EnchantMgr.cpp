@@ -118,23 +118,23 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     }
 
     if (ID_CZ_REQUEST_RESET_ENCHANT == this->m_request.packetType) {
-      for (auto slotIt = enchant->second.slots.begin(); slotIt != enchant->second.slots.end(); ++slotIt) {
-        int slot = *slotIt;
+      for (const int slot : enchant->second.slots) {
         if (static_cast<uint32_t>(slot) < 4) {
-          item.SetCard(0, slot);
+          item.cards[slot] = 0;
         }
       }
     } else {
       if (static_cast<uint16_t>(this->m_request.slot) > 3) {
         return;
       }
-      item.SetCard(itemId, this->m_request.slot);
+      item.cards[this->m_request.slot] = itemId;
     }
 
     g_session.UpdateInventoryItem(item, 1);
-    int effect;
+    const int16_t packetType = this->m_request.packetType;
     const vector3d position = {0.0f, 0.0f, 0.0f};
-    switch (this->m_request.packetType) {
+    int effect;
+    switch (packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
       effect = EF_UI_ENCHANT_SUCCESS;
@@ -153,8 +153,8 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
   } else if (messageId == MSI_ENCHANT_FAILED) {
-    int effect;
     const vector3d position = {0.0f, 0.0f, 0.0f};
+    int effect;
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
@@ -630,13 +630,17 @@ void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const st
 void CEnchantMgr::AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
                                            uint64_t cost, const std::map<std::string, int>& materials) {
   int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
-  if (baseItemId != 0) {
-    int itemId = ItemDbToIdMgr()->GetItemID(itemName);
-    if (itemId != ITEMID_NONE) {
-      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
-      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
-    }
+  if (baseItemId == 0) {
+    return;
   }
+
+  int itemId = ItemDbToIdMgr()->GetItemID(itemName);
+  if (itemId == ITEMID_NONE) {
+    return;
+  }
+
+  m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
+  m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
 }
 
 // OFFSET: 0x006827B0

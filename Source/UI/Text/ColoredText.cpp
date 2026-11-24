@@ -63,9 +63,9 @@ const char* UIWindow::ParseColorCode(const char* text, std::uint32_t& color) {
   }
 
   if (*text == '^') {
-    std::uint32_t value = static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]);
-    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]]);
-    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
+    std::uint32_t value = (static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]) << 8 |
+                           static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]])) << 8 |
+                          static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
     color = value;
     return text + 7;
   }
@@ -126,6 +126,14 @@ void UIWindow::DrawColoredText(
 }
 
 struct ColoredTextSegment {
+  // INLINED
+  ColoredTextSegment(const char* begin, const char* end, std::uint32_t color) : prefix(begin, end), color(color), text(begin, end) {
+  }
+
+  // INLINED
+  explicit ColoredTextSegment(std::uint32_t color) : color(color) {
+  }
+
   std::vector<unsigned char> prefix;
   std::uint32_t color;
   std::vector<unsigned char> text;
@@ -146,28 +154,28 @@ void UIWindow::DrawRightColoredText(
   const char* const end = text + bytes;
   const char* next = this->SegmentEnd(current, end);
   std::uint32_t segmentColor = color;
-  const ColoredTextSegment first{std::vector<unsigned char>(current, next), segmentColor, std::vector<unsigned char>(current, next)};
+  const ColoredTextSegment first(current, next, segmentColor);
   std::vector<ColoredTextSegment> segments(1, first);
   std::vector<unsigned char> prefix;
 
   while (current < end) {
     next = this->SegmentEnd(current, end);
-    prefix.insert(prefix.end(), current, next);
+    prefix.insert(prefix.end(), reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>(next));
     if (next >= end) {
       break;
     }
 
     segmentColor = 0;
     const char* segmentStart = this->ParseColorCode(next, segmentColor);
-    ColoredTextSegment segment{{}, segmentColor, {}};
+    ColoredTextSegment segment(segmentColor);
     segment.prefix.insert(segment.prefix.end(), prefix.begin(), prefix.end());
     const char* segmentEnd = this->SegmentEnd(segmentStart, end);
     if (segmentEnd < end) {
-      segment.text.insert(segment.text.end(), segmentStart, segmentEnd);
-      segment.prefix.insert(segment.prefix.end(), segmentStart, segmentEnd);
+      segment.text.insert(segment.text.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(segmentEnd));
+      segment.prefix.insert(segment.prefix.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(segmentEnd));
     } else {
-      segment.text.insert(segment.text.end(), segmentStart, end);
-      segment.prefix.insert(segment.prefix.end(), segmentStart, end);
+      segment.text.insert(segment.text.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(end));
+      segment.prefix.insert(segment.prefix.end(), reinterpret_cast<const unsigned char*>(segmentStart), reinterpret_cast<const unsigned char*>(end));
     }
     segments.push_back(segment);
     current = segmentStart;
@@ -176,13 +184,14 @@ void UIWindow::DrawRightColoredText(
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, 0, 0);
 
-  for (const ColoredTextSegment& segment : segments) {
+  for (std::vector<ColoredTextSegment>::const_iterator it = segments.begin(); it != segments.end(); ++it) {
+    const ColoredTextSegment& segment = *it;
     color = segment.color;
     if (segment.text.size() != 0) {
       SIZE size = {};
       context.Measure(reinterpret_cast<const char*>(segment.prefix.data()), static_cast<int>(segment.prefix.size()), &size);
       context.SetColor(color);
-      context.Draw(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
+      context.DrawPair(right - size.cx, y, reinterpret_cast<const char*>(segment.text.data()), static_cast<int>(segment.text.size()));
     }
   }
 }

@@ -151,10 +151,9 @@ void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uin
   this->m_bitmap.dirty = true;
   const std::int32_t count = static_cast<std::int32_t>(this->m_bitmap.width * this->m_bitmap.height);
 
-  const std::uint32_t* input = source;
   for (int row = 0; row < copyHeight; ++row) {
-    for (int column = 0; column < copyWidth; ++column, ++input) {
-      const std::uint32_t value = *input;
+    for (int column = 0; column < copyWidth; ++column) {
+      const std::uint32_t value = source[column + row * copyWidth];
       if (static_cast<unsigned char>(transparent) == 0 || value != 0xFFFF00FF) {
         const std::int32_t index = static_cast<std::int32_t>((row + y) * this->m_bitmap.width + column + x);
         if (index > -1 && count > index) {
@@ -162,9 +161,6 @@ void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uin
         }
       }
     }
-
-    source += copyWidth;
-    input = source;
   }
 }
 
@@ -234,11 +230,13 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
     for (int column = 0; column < copyWidth; ++column) {
       if (source.m_alpha == true) {
         const std::uint32_t target = destination[column];
+        const WORD targetLow = static_cast<WORD>(target);
+        const WORD sourceLow = static_cast<WORD>(input[column]);
         const WORD targetAlpha = static_cast<WORD>(target >> 24);
         const WORD sourceAlpha = static_cast<WORD>(input[column] >> 24);
         const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(input[column]) * sourceAlpha / 255;
-        const BYTE green = GetGValue(target) * (255 - sourceAlpha) / 255 + GetGValue(input[column]) * sourceAlpha / 255;
-        const BYTE red = GetRValue(target) * (255 - sourceAlpha) / 255 + GetRValue(input[column]) * sourceAlpha / 255;
+        const BYTE green = static_cast<BYTE>(targetLow >> 8) * (255 - sourceAlpha) / 255 + static_cast<BYTE>(sourceLow >> 8) * sourceAlpha / 255;
+        const BYTE red = static_cast<BYTE>(targetLow) * (255 - sourceAlpha) / 255 + static_cast<BYTE>(sourceLow) * sourceAlpha / 255;
         destination[column] = (std::max(sourceAlpha, targetAlpha) << 24) + (blue << 16) + (green << 8) + red;
       } else if (input[column] != 0xFFFF00FF) {
         destination[column] = input[column] - 0x01000000;
@@ -337,9 +335,8 @@ void BitmapPixels::CopyRegion(
         continue;
       }
 
-      std::uint32_t& destination = this->pixels[destinationX + destinationY * this->width];
       if (alpha) {
-        const std::uint32_t target = destination;
+        const std::uint32_t target = this->pixels[destinationX + destinationY * this->width];
         const std::int64_t targetAlpha = target >> 24;
         const std::int64_t targetChannels[3] = {GetBValue(target), GetGValue(target), GetRValue(target)};
         const std::int64_t sourceAlpha = input >> 24;
@@ -354,7 +351,7 @@ void BitmapPixels::CopyRegion(
         this->pixels[destinationX + destinationY * this->width] =
           (outputAlpha << 24) + (static_cast<BYTE>(channels[0]) << 16) + (static_cast<BYTE>(channels[1]) << 8) + static_cast<BYTE>(channels[2]);
       } else {
-        destination = input;
+        this->pixels[destinationX + destinationY * this->width] = input;
       }
     }
   }
@@ -406,11 +403,11 @@ void CDCBitmap::DrawSurface(
   const auto* input = static_cast<const std::uint16_t*>(locked.pixels);
   const int stride = locked.pitch / 2;
   this->m_bitmap.dirty = true;
-  const int format = static_cast<CTexture*>(source)->Format();
   const int width = this->m_bitmap.width;
   std::uint32_t* pixels = this->m_bitmap.pixels;
   unsigned red, green, blue;
 
+  const int format = static_cast<CTexture*>(source)->Format();
   if (format == TextureFormat::A4R4G4B4) {
     if (mirrored) {
       for (int row = 0; row < sourceHeight; ++row) {
@@ -496,7 +493,7 @@ void CDCBitmap::DrawSurface(
               const int destinationY = y + row * scaleY + dy;
               if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
                   this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
-                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+                pixels[(y + row * scaleY + dy) * width + x + (sourceWidth - column - 1) * scaleX + dx] = PackPixel(0xFF, red, green, blue);
               }
             }
           }
@@ -522,7 +519,7 @@ void CDCBitmap::DrawSurface(
               const int destinationY = y + row * scaleY + dy;
               if (destinationX >= 0 && destinationY >= 0 && this->m_bitmap.width > static_cast<unsigned>(destinationX) &&
                   this->m_bitmap.height > static_cast<unsigned>(destinationY)) {
-                pixels[destinationX + destinationY * width] = PackPixel(0xFF, red, green, blue);
+                pixels[(y + row * scaleY + dy) * width + x + column * scaleX + dx] = PackPixel(0xFF, red, green, blue);
               }
             }
           }
@@ -571,10 +568,10 @@ void CDCBitmap::DrawScaledSurface(
   const float greenScale = static_cast<float>((color >> 8) & 0xFF) * alpha / 255.0f;
   const float blueScale = static_cast<float>(color & 0xFF) * alpha / 255.0f;
   const float inverse = 1.0f - alpha;
-  const float inverseX = 1.0f / scaleX;
-  const int scaledHeight = static_cast<int>(static_cast<float>(sourceHeight) * scaleY);
-  const float inverseY = 1.0f / scaleY;
   const int scaledWidth = static_cast<int>(static_cast<float>(sourceWidth) * scaleX);
+  const int scaledHeight = static_cast<int>(static_cast<float>(sourceHeight) * scaleY);
+  const float inverseX = 1.0f / scaleX;
+  const float inverseY = 1.0f / scaleY;
   const int limit = sourceHeight * stride;
 
   if (format == TextureFormat::A4R4G4B4) {
@@ -879,9 +876,17 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
   const float scaleX = static_cast<float>(drawWidth) / static_cast<float>(sourceWidth);
   const float scaleY = static_cast<float>(drawHeight) / static_cast<float>(sourceHeight);
   std::vector<std::uint32_t> scratch;
-  const int columns = scaleX < 1 ? sourceWidth : drawWidth;
-  const int rows = scaleY < 1 ? sourceHeight : drawHeight;
-  scratch.resize(static_cast<std::uint32_t>(columns) * rows);
+  if (scaleX >= 1) {
+    if (scaleY >= 1) {
+      scratch.resize(drawWidth * drawHeight);
+    } else {
+      scratch.resize(drawWidth * sourceHeight);
+    }
+  } else if (scaleY >= 1) {
+    scratch.resize(sourceWidth * drawHeight);
+  } else {
+    scratch.resize(sourceWidth * sourceHeight);
+  }
 
   if (scaleX == 1) {
     for (int row = 0; row < sourceHeight; ++row) {
@@ -894,16 +899,18 @@ void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int d
 
     for (int row = 0; row < sourceHeight; ++row) {
       for (int column = 0; column < sourceWidth; ++column) {
-        int next = static_cast<int>(static_cast<float>(column) * scaleX);
-        if (output != next) {
-          scratch[row * drawWidth + output] = source[row * sourceWidth + previous];
-          if (column == sourceWidth - 1 && output != drawWidth - 1) {
-            scratch[(row + 1) * drawWidth - 1] = source[row * sourceWidth + previous];
-          }
-
-          previous = column;
-          output = next;
+        const int next = static_cast<int>(static_cast<float>(column) * scaleX);
+        if (output == next) {
+          continue;
         }
+
+        scratch[row * drawWidth + output] = source[row * sourceWidth + previous];
+        if (sourceWidth - 1 == column && drawWidth - 1 != output) {
+          scratch[row * drawWidth + drawWidth - 1] = source[row * sourceWidth + previous];
+        }
+
+        previous = column;
+        output = next;
       }
     }
   } else {

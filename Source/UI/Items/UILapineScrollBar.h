@@ -28,10 +28,10 @@ public:
   UILapineUpgradeBox_IngredientListWnd(int width, int height)
       : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
     this->UIWindow::Resize(width, height);
-    this->OnCreate(width, height);
+    static_cast<UIWindow*>(this)->OnCreate(width, height);
   }
   void DragAndDrop(int x, int y, std::intptr_t value) override;
-  __declspec(noinline) void OnCreate(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void Paint() override;
   void OnWheel(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -60,7 +60,7 @@ class UILapineBox_IngredientListWnd : public UIScrollWnd {
 public:
   UILapineBox_IngredientListWnd(int width, int height);
   void DragAndDrop(int x, int y, std::intptr_t value) override;
-  __declspec(noinline) void OnCreate(int width, int height) override;
+  void OnCreate(int width, int height) override;
   void OnWheel(int argument) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;

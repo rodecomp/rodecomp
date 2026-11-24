@@ -11,6 +11,11 @@
 #include <cstdlib>
 #include <cstring>
 
+// INLINED
+static void SetParticleOffset(CParticle& particle, vector3d offset) {
+  particle.offset = offset;
+}
+
 // OFFSET: 0x00B7A8C0
 // FUNCTION: fn_46034
 CStormGustEffect::CStormGustEffect() : CEffect(EF_STORMGUST) {
@@ -42,11 +47,9 @@ __forceinline void CStormGustEffect::SetupParticle(CParticle* particle) {
     const float speed = static_cast<float>((speedRoll >= 0 ? speedRoll : 0) + 3);
     const int angleRoll = rand() % 360;
     const float angle = static_cast<float>(angleRoll >= 0 ? angleRoll : 0);
-    vector3d velocity;
-    velocity.z = ClientCosine(static_cast<int>(angle)) * -speed;
-    velocity.x = ClientSine(static_cast<int>(angle)) * speed;
-    velocity.y = 20.0f;
-    particle->offset = velocity;
+    const float z = ClientCosine(static_cast<int>(angle)) * -speed;
+    const float x = ClientSine(static_cast<int>(angle)) * speed;
+    SetParticleOffset(*particle, vector3d{x, 20.0f, z});
 
     const int scaleRoll = rand() % 100;
     particle->speedParameter = 1.5f;
@@ -102,11 +105,8 @@ __forceinline void CStormGustEffect::UpdateAlpha(CParticle* particle) {
     }
 
     alpha += fade;
-    if (alpha < 0) {
-      alpha = 0;
-    } else if (alpha > 254) {
-      alpha = 254;
-    }
+    alpha = alpha < 0 ? 0 : alpha;
+    alpha = alpha > 254 ? 254 : alpha;
     particle->alpha = alpha;
   }
 }
@@ -122,19 +122,17 @@ __forceinline void CStormGustEffect::UpdateParticle(CParticle* particle) {
     const float speed = particle->speedParameter;
     const matrix& rotation = particle->rotation;
     const float* values = rotation.values;
-    const float moveX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
-    const float moveY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];
-    const float moveZ = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11];
-    const float offsetX = particle->offsetX + moveX;
-    const float offsetY = particle->offsetY + moveY;
-    const float offsetZ = particle->offsetZ + moveZ;
-    particle->offsetY = offsetY;
-    particle->offsetX = offsetX;
-    particle->offsetZ = offsetZ;
+    vector3d offset{
+      values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9],
+      values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10],
+      values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11],
+    };
+    offset += particle->offset;
+    particle->offset = offset;
 
     matrix translation;
     std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-    translation.MakeTranslate(offsetX, offsetY, offsetZ);
+    translation.MakeTranslate(offset.x, offset.y, offset.z);
     matrix scale;
     std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
     scale.SetScale(particle->scale, particle->scale, 1.0f);

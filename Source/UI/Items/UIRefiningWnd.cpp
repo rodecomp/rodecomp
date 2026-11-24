@@ -56,6 +56,26 @@ struct RefiningClosePacket {
 };
 #pragma pack(pop)
 
+// INLINED
+inline void UIRefining_Notice::SetNoticeInline(const char* value, int duration, unsigned char highlight) {
+  this->highlight = highlight;
+  this->text = value;
+  if (duration == 0) {
+    this->saved.text = value;
+    this->saved.highlight = highlight;
+  } else {
+    this->expireTick = timeGetTime() + duration;
+    if (this->geometry.visible == 0) {
+      this->autoShown = 1;
+      this->geometry.visible = 1;
+    }
+  }
+  this->Invalidate();
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
+
 // OFFSET: 0x007F4920
 // FUNCTION: fn_09890
 UIRefiningWnd::UIRefiningWnd()
@@ -163,7 +183,7 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
   this->materials.clear();
   this->catalystEnabled = 0;
   this->catalystCount = 0;
-  this->notice->SetNotice("", 0, 0);
+  this->notice->SetNoticeInline("", 0, 0);
 
   {
     UIRefining_BtnRefining* button = this->refiningButton;
@@ -234,7 +254,7 @@ static __forceinline int SelectedSuccessRate(const UIRefiningWnd* window) {
 // OFFSET: 0x007F55A0
 // FUNCTION: fn_09906
 void UIRefiningWnd::ApplyResult() {
-  this->notice->SetNotice("", 0, 0);
+  this->notice->SetNoticeInline("", 0, 0);
   this->item = this->nextItem;
   this->refiningButton->Enable(0);
   this->returnButton->Enable(1);
@@ -294,7 +314,7 @@ void UIRefiningWnd::ApplyResult() {
   }
 
   if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
-    this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 5000, 1);
+    this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 5000, 1);
     UIRefining_BtnAgain* button = this->againButton;
     button->SetDisabled(1);
     button->Invalidate();
@@ -308,17 +328,17 @@ void UIRefiningWnd::ApplyResult() {
   if (this->catalystEnabled == 1) {
     if (this->nextCatalystCount == 0) {
       this->catalystEnabled = 0;
-      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
+      this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
       {
         UIRefining_BtnAgain* button = this->againButton;
         button->SetDisabled(1);
         button->Invalidate();
       }
     } else {
-      this->notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
+      this->notice->SetNoticeInline(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
       if (this->catalystCount > g_session.LookupClientItem(this->catalystItemId, 0).quantity) {
         this->catalystEnabled = 0;
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
+        this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
         {
           UIRefining_BtnAgain* button = this->againButton;
           button->SetDisabled(1);
@@ -332,7 +352,7 @@ void UIRefiningWnd::ApplyResult() {
   if (count == 0) {
     this->materials.clear();
     this->selectedMaterial = -1;
-    this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 5000, 1);
+    this->notice->SetNoticeInline(LookupMessage(MSI_CANNOT_REFINE_ITEM), 5000, 1);
     {
       UIRefining_BtnAgain* button = this->againButton;
       button->SetDisabled(1);
@@ -367,7 +387,7 @@ void UIRefiningWnd::ApplyResult() {
 
     if (!same) {
       this->selectedMaterial = -1;
-      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
+      this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
       {
         UIRefining_BtnAgain* button = this->againButton;
         button->SetDisabled(1);
@@ -387,7 +407,7 @@ void UIRefiningWnd::ApplyResult() {
 
       const ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       if (owned.quantity == 0) {
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_INGREDIENT), 5000, 1);
+        this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_INGREDIENT), 5000, 1);
         {
           UIRefining_BtnAgain* button = this->againButton;
           button->SetDisabled(1);
@@ -563,9 +583,6 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case ITEMID_HD_ETEL_CARNIUM:
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR), 0, 0);
         break;
-      default:
-        this->Invalidate();
-        return;
       }
     }
   } else {
@@ -609,7 +626,11 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
   char name[260];
   std::memset(name, 0, sizeof(name));
 
-  if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+  auto inRect = [&](int left, int top, int right, int bottom) {
+    return x >= left && x <= right && y >= top && y <= bottom;
+  };
+
+  if (this->selectedMaterial != -1 && inRect(81, 150, 105, 174)) {
     ITEM_INFO info;
     info.SetItemId(this->materials[this->selectedMaterial].itemId);
     int capacity = 260;
@@ -621,7 +642,7 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+  if (this->catalystEnabled == 1 && inRect(161, 150, 185, 174)) {
     ITEM_INFO info;
     info.SetItemId(this->catalystItemId);
     int capacity = 260;
@@ -762,8 +783,12 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
+  auto inRect = [&](int left, int top, int right, int bottom) {
+    return x >= left && x <= right && y >= top && y <= bottom;
+  };
+
   if (this->state == REFINING_STATE_READY) {
-    if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+    if (this->selectedMaterial != -1 && inRect(81, 150, 105, 174)) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
@@ -773,7 +798,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       return;
     }
 
-    if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+    if (this->catalystEnabled == 1 && inRect(161, 150, 185, 174)) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
         return;
@@ -891,7 +916,7 @@ int UIRefiningWnd::SendMsg(
       }
       break;
     case REFINING_BUTTON_RETURN:
-      this->notice->SetNotice("", 0, 0);
+      this->notice->SetNoticeInline("", 0, 0);
       this->selectedMaterial = -1;
       this->catalystEnabled = 0;
       if (this->state == REFINING_STATE_FAIL) {
@@ -942,7 +967,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     }
 
     ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
-    if (found.identity[1] == 0) {
+    if (found.identity[1] <= 0) {
       return;
     }
 
@@ -1000,7 +1025,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     }
 
     ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
-    if (found.identity[1] == 0) {
+    if (found.identity[1] <= 0) {
       return;
     }
 

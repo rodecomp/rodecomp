@@ -30,7 +30,7 @@ protected:
 
 class NAsyncWorkPtr {
 public:
-  NAsyncWorkPtr(NAsyncWorkPtr& other);
+  NAsyncWorkPtr(const NAsyncWorkPtr& other);
   NAsyncWorkPtr(NRecycleObjectPoolMgr* manager, std::string poolName);
   virtual ~NAsyncWorkPtr();
 
@@ -40,8 +40,8 @@ public:
   }
 
 protected:
-  /* 0004 */ NRecycleObjectPoolMgr* m_manager;
-  /* 0008 */ NAsyncWork* m_work;
+  /* 0004 */ mutable NRecycleObjectPoolMgr* m_manager;
+  /* 0008 */ mutable NAsyncWork* m_work;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

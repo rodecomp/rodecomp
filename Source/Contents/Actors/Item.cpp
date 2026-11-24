@@ -70,15 +70,15 @@ void CItem::SetRenderInfo(const float* bounds, float x, float y) {
     const int width = static_cast<int>(info->corners[1].x - info->corners[0].x);
     if (width < minimumSize) {
       const int grow = (minimumSize - width) / 2;
-      info->corners[0].x -= grow;
       info->corners[1].x += grow;
+      info->corners[0].x -= grow;
     }
 
     const int height = static_cast<int>(info->corners[1].y - info->corners[0].y);
     if (height < minimumSize) {
       const int grow = (minimumSize - height) / 2;
-      info->corners[0].y -= grow;
       info->corners[1].y += grow;
+      info->corners[0].y -= grow;
     }
 
     g_actorPickNode.AddPickInfo(info);

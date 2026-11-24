@@ -47,13 +47,12 @@ namespace {
 }
 
 // INLINED
-inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
-  const float angle = transform.values[4];
-  const float cosineU = ClientCos(angle) * (u - g_depthAverageHalf);
-  const float rotatedU = cosineU - ClientSin(angle) * (v - g_depthAverageHalf);
+__forceinline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
+  const float cosineU = ClientCos(transform.values[4]) * (u - g_depthAverageHalf);
+  const float rotatedU = cosineU - ClientSin(transform.values[4]) * (v - g_depthAverageHalf);
   const float resultU = rotatedU * transform.values[2] + g_depthAverageHalf + transform.values[0];
-  const float cosineV = ClientCos(angle) * (v - g_depthAverageHalf);
-  const float rotatedV = ClientSin(angle) * (u - g_depthAverageHalf) + cosineV;
+  const float cosineV = ClientCos(transform.values[4]) * (v - g_depthAverageHalf);
+  const float rotatedV = ClientSin(transform.values[4]) * (u - g_depthAverageHalf) + cosineV;
   const float resultV = rotatedV * transform.values[3] + g_depthAverageHalf;
   const float offsetV = transform.values[1];
 
@@ -105,7 +104,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       if (!clip || ModelTriangleVisible(&a, &b, &c)) {
         const bool winding = (b.y - a.y) * (c.x - a.x) > (c.y - a.y) * (b.x - a.x);
 
-        if ((winding && reversed == 0) || (!winding && reversed != 0) || face->twoSided != 0) {
+        if (winding == (reversed == 0) || face->twoSided != 0) {
           output[0] = a;
           output[1] = b;
           output[2] = c;
@@ -194,8 +193,8 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   combined.Compose(this->transform, camera);
   // GLOBAL: gl_24587
   static ProjectedVertex projected[30000];
-  const int vertexCount = this->mesh->vertexCount;
   const std::array<float, 3>* meshVertices = this->mesh->vertices;
+  const int vertexCount = this->mesh->vertexCount;
   float lightColor[3];
   std::memcpy(lightColor, g_weatherEffect.lightColor, sizeof(lightColor));
   float ambient[3];
@@ -221,7 +220,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     const std::uint16_t texture = face->texture;
     std::uint16_t flags = 0;
 
-    while (face != faceEnd && face->texture == texture) {
+    while (face != faceEnd && face && face->texture == texture) {
       const RenderVertex& a = projected[face->vertices[0]];
       const RenderVertex& b = projected[face->vertices[1]];
       const RenderVertex& c = projected[face->vertices[2]];
@@ -240,7 +239,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
           }
 
           for (int corner = 0; corner < 3; ++corner) {
-            const auto found = this->textureTransforms.find(face->texture);
+            const auto found = this->textureTransforms.find(texture);
 
             if (found != this->textureTransforms.end()) {
               TransformModelUV(output[corner].u, output[corner].v, found->second);
@@ -252,9 +251,9 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
-              color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
-              color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
+              color.red = static_cast<int>(color.red * ambient[0]);
+              color.green = static_cast<int>(color.green * ambient[1]);
+              color.blue = static_cast<int>(color.blue * ambient[2]);
               output[corner].diffuseChannels = color;
             }
           } else if (this->overrideColors) {
@@ -270,18 +269,18 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               const int* values = &this->faceValues[faceIndex * 9 + corner * 3];
               SpriteColor color;
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
-              color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
-              color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
+              color.red = static_cast<int>(values[0] * lightColor[0]);
+              color.green = static_cast<int>(values[1] * lightColor[1]);
+              color.blue = static_cast<int>(values[2] * lightColor[2]);
               output[corner].diffuseChannels = color;
             }
           } else {
             for (int corner = 0; corner < 3; ++corner) {
               SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
-              color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
-              color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
-              color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
+              color.red = static_cast<int>(color.red * lightColor[0]);
+              color.green = static_cast<int>(color.green * lightColor[1]);
+              color.blue = static_cast<int>(color.blue * lightColor[2]);
               output[corner].diffuseChannels = color;
             }
           }
@@ -301,7 +300,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
-      command->depthFlags = static_cast<std::uint16_t>((command->depthFlags & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+      command->commandMode = commandMode;
 
       if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;

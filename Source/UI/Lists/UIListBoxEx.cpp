@@ -70,13 +70,14 @@ void UIListBoxEx::OnCreate(int width, int height) {
 // FUNCTION: fn_11530
 void UIComboBoxEx::Resize(int width, int height) {
   this->UIListBoxEx::Resize(width, height);
-  this->topLine = 0;
-  this->verticalBar->position = this->topLine;
-
   if (this->verticalOverflow != 0) {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move((width - 13), 0);
     this->verticalBar->Invalidate();
   } else {
+    this->topLine = 0;
+    this->verticalBar->position = this->topLine;
     this->verticalBar->Move((width - 13), 0);
   }
 }

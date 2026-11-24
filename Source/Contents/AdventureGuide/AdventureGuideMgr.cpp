@@ -71,9 +71,10 @@ int InsertIntroContents(lua_State* state) {
   }
 
   const double id = lua_tonumber(state, -3);
-  const std::string_view title = lua_tostring(state, -2);
-  const std::string_view text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertIntroContents(static_cast<int>(id), title, text);
+  const char* const title = lua_tostring(state, -2);
+  const std::string_view titleView(title);
+  const char* const text = lua_tostring(state, -1);
+  const AdventureGuideResult result = g_adventureGuideMgr->InsertIntroContents(static_cast<int>(id), titleView, std::string_view(text));
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
@@ -1112,7 +1113,7 @@ using AdventureGuideContentsTable = std::map<int, std::map<int, AdventureGuideCo
 // OFFSET: 0x0065F5C0
 // FUNCTION: fn_05188
 AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
-    : name(source.name), info(std::move(source.info)) {
+    : name(source.first), info(std::move(source.second)) {
 }
 
 // INLINED
@@ -1238,10 +1239,14 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
     return;
   }
 
-  std::copy_if((*contents)->begin(), (*contents)->end(), std::back_inserter(out),
-               [](const std::pair<const int, AdventureGuideContents>& entry) {
-                 return entry.second.minLevel <= g_session.m_level && g_session.m_level <= entry.second.maxLevel;
-               });
+  std::for_each((*contents)->begin(), (*contents)->end(), [&out](const std::pair<const int, AdventureGuideContents>& entry) {
+    const auto inLevelRange = [](const AdventureGuideContents& contents) {
+      return contents.minLevel <= g_session.m_level && g_session.m_level <= contents.maxLevel;
+    };
+    if (inLevelRange(entry.second)) {
+      out.push_back(std::make_pair(entry.first, entry.second));
+    }
+  });
 
   out.sort([](const std::pair<int, AdventureGuideContents>& lhs, const std::pair<int, AdventureGuideContents>& rhs) {
     return lhs.second.minLevel < rhs.second.minLevel;
@@ -1438,7 +1443,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntrySubMenu(int type, int id, in
 // OFFSET: 0x00666220
 // FUNCTION: fn_05249
 AdventureGuideResult CAdventureGuideMgr::InsertIntroContents(int id, std::string_view title, std::string_view text) {
-  AdventureGuideText entry;
+  Guide_Intro::Contents entry;
   entry.first = title;
   entry.second = text;
   introPage.texts.try_emplace(id, std::as_const(entry));
@@ -1463,8 +1468,10 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
 // OFFSET: 0x00666860
 // FUNCTION: fn_05251
 AdventureGuideResult CAdventureGuideMgr::InsertMonsterContents(std::string_view name, int minLevel, int maxLevel) {
-  AdventureGuideEpisodeInfo info{minLevel, maxLevel};
-  m_episodes.emplace_back(AdventureGuideEpisodeSource{name.data(), std::move(info)});
+  AdventureGuideEpisodeInfo info;
+  info.order = minLevel;
+  info.maxLevel = maxLevel;
+  m_episodes.emplace_back(std::make_pair(name.data(), info));
   return AdventureGuideResult(true, "good");
 }
 
@@ -1594,10 +1601,11 @@ bool CAdventureGuideMgr::Load() {
   m_lua.SetGlobal("InsertArmorContents", ::InsertArmorContents);
   m_lua.SetGlobal("InsertArmorObtainGuide", ::InsertArmorObtainGuide);
 
-  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\AdventureGuide_F.lub")) {
-    return false;
+  bool loaded = m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\AdventureGuide_F.lub");
+  if (loaded) {
+    loaded = m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Intro.lub");
   }
-  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Intro.lub")) {
+  if (!loaded) {
     return false;
   }
   if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Episode.lub")) {

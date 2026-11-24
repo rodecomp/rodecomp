@@ -161,8 +161,11 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   title->SetColor(0);
   title->SetShadow(1, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->titleBar->titleText = title;
-  this->titleBar->AddChild(title);
+  {
+    CUITitleBar* titleBar = this->titleBar;
+    titleBar->titleText = title;
+    titleBar->AddChild(title);
+  }
 
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
@@ -234,27 +237,33 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   this->tabs->SetOnSelect([this](AdventureGuide::CUITab* tab) { this->OnSelectTab(tab); });
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x79DF094DD9616575ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_press.bmp", 0x11CB35636377DD07ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_over.bmp", 0x4755C1355575FD37ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x9BE3EF737387AD79ULL)));
+    tabs->SetImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x79DF094DD9616575ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_press.bmp", 0x11CB35636377DD07ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_over.bmp", 0x4755C1355575FD37ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\tab_btn_normal.bmp", 0x9BE3EF737387AD79ULL));
   }
 
-  this->tabs->itemWidth = 98;
-  this->tabs->rowHeight = 40;
-  this->tabs->itemX = 8;
-  this->tabs->itemY = 0;
+  {
+    CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
+    tabs->itemWidth = 98;
+    tabs->rowHeight = 40;
+  }
+  {
+    CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
+    tabs->itemX = 8;
+    tabs->itemY = 0;
+  }
   this->tabs->scrollBar->SetSize(8, 372);
   this->tabs->scrollBar->Move(0, 0);
   this->tabs->scrollBar->step = 20;
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xB96B77B7255F8569ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x875FCDF1E7A1795FULL)));
+    tabs->SetScrollBarButtonImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xB96B77B7255F8569ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x875FCDF1E7A1795FULL));
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x072D2D872D259D5BULL)));
+    tabs->SetScrollBarBackground(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x072D2D872D259D5BULL));
   }
   {
     CUIListBox<AdventureGuide::CUITab>* tabs = this->tabs;
-    tabs->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xF535E561137F138DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD3E5516F89F161D1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x5FFD7FABB5D1EF57ULL)));
+    tabs->SetScrollBarThumbImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xF535E561137F138DULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD3E5516F89F161D1ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x5FFD7FABB5D1EF57ULL));
   }
   this->AddChild(this->tabs);
 }
@@ -424,9 +433,8 @@ void CUIIntro::OnInit() {
     return;
   }
 
-  const auto end = intro.texts.end();
-  for (auto it = intro.texts.begin(); it != end; ++it) {
-    this->contents->data.emplace_back(it->second.first, it->second.second);
+  for (const auto& entry : intro.texts) {
+    this->contents->data.push_back(entry.second);
   }
 
   this->contents->UpdateScrollBar();
@@ -469,7 +477,8 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
       break;
     }
 
-    std::string text(value);
+    std::string text;
+    text = value;
     constexpr char highlight[] = {'^', '7', '7', '7', '7', '7', '7'};
     if (text.find(highlight, 0, sizeof(highlight)) == std::string::npos) {
       continue;
@@ -561,7 +570,9 @@ void CUIQuestInfo::SetTitle(int id) {
   std::smatch match;
   std::regex_search(text, match, std::regex("Q(.+)\\("));
   const std::string whitespace(" \r\n\t\v\f");
-  match.size() > 1 ? text = match[1].str() : text;
+  if (match.size() > 1) {
+    text = match[1];
+  }
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
@@ -570,7 +581,9 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text = entry.paragraphs[0];
   std::regex_search(text, match, std::regex("\n"));
-  match.size() > 0 ? text = match.prefix().str() : text;
+  if (match.size() > 0) {
+    text = match.prefix();
+  }
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
@@ -736,21 +749,26 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
   }
 }
 
+// INLINED
+template <class T> static __forceinline bool SelectListItem(CUIListBox<T>* list, T* item) {
+  if (item) {
+    list->SelectItem(item);
+    if (item != list->selected) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x009DE640
 // FUNCTION: fn_45710
 // OFFSET: 0x009DE600
 // FUNCTION: fn_45709
 template <class T> __forceinline bool CUIListBox<T>::SelectFirstItem() {
-  if (!this->items.empty()) {
-    T* first = this->items.front();
-    if (first) {
-      this->SelectItem(first);
-      if (first != this->selected) {
-        return true;
-      }
-    }
+  if (this->items.empty()) {
+    return false;
   }
-  return false;
+  return SelectListItem(this, this->items.front());
 }
 
 template bool CUIListBox<AdventureGuide::CUISubTab>::SelectFirstItem();
@@ -836,7 +854,9 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   std::smatch match;
   std::regex_search(title, match, std::regex("\\#"));
   const std::string whitespace(" \r\n\t\v\f");
-  match.empty() ? title : title = match.prefix().str();
+  if (!match.empty()) {
+    title = match.prefix();
+  }
 
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
@@ -845,7 +865,9 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 
   title = tip.paragraphs.front();
   std::regex_search(title, match, std::regex("\n"));
-  match.empty() ? title : title = match.prefix().str();
+  if (!match.empty()) {
+    title = match.prefix();
+  }
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
   this->titleViewer->SetBold(false);
@@ -855,12 +877,12 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 // OFFSET: 0x009DE680
 // FUNCTION: fn_45711
 void AdventureGuide::CUIQuest::MarkQuest(int questId) {
-  std::vector<CUIQuestInfo*> items(this->questList->items.begin(), this->questList->items.end());
-  for (CUIQuestInfo* item : items) {
-    if (item->questId == questId) {
-      item->stampImage->Show(1);
-      break;
-    }
+  std::vector<CUIQuestInfo*> items = this->questList->items;
+  auto found = std::find_if(items.begin(), items.end(), [questId](CUIQuestInfo* item) {
+    return item->questId == questId;
+  });
+  if (found != items.end()) {
+    (*found)->stampImage->Show(1);
   }
 }
 
@@ -884,13 +906,7 @@ void CUIAdventureGuide::MarkQuest(int questId) {
 
     AdventureGuide::CUIQuest* quest = dynamic_cast<AdventureGuide::CUIQuest*>(tab->page);
     if (quest) {
-      std::vector<AdventureGuide::CUIQuestInfo*> items = quest->questList->items;
-      auto found = std::find_if(items.begin(), items.end(), [questId](AdventureGuide::CUIQuestInfo* item) {
-        return item->questId == questId;
-      });
-      if (found != items.end()) {
-        (*found)->stampImage->Show(1);
-      }
+      quest->MarkQuest(questId);
     }
   }
 }
@@ -988,9 +1004,11 @@ void CUICharacterInfo::OnCreate(int width, int height) {
   this->AddChild(this->name);
 }
 
+}
+
 // OFFSET: 0x009C8D00
 // FUNCTION: fn_14003
-void CUIItemInfo::OnCreate(int width, int height) {
+void AdventureGuide::CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
   this->image->SetSize(75, 100);
   this->image->Move(45, 14);
@@ -1082,7 +1100,9 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->sourcesViewer->SetTextOffset(0, 6);
   {
     CUITextViewer* sources = this->sourcesViewer;
-    sources->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB195637DAFCB0D59ULL)));
+    std::string font;
+    font.assign(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB195637DAFCB0D59ULL));
+    sources->SetFont(font);
   }
   this->sourcesViewer->SetFontHeight(12);
   this->sourcesViewer->SetBold(0);
@@ -1107,6 +1127,8 @@ void CUIItemInfo::OnCreate(int width, int height) {
   }
   this->AddChild(this->sourcesViewer);
 }
+
+namespace AdventureGuide {
 
 // OFFSET: 0x009CC580
 // FUNCTION: fn_14005
@@ -1291,11 +1313,10 @@ void CUIQuestInfo::OnCreate(int width, int height) {
 // OFFSET: 0x009DCE10
 // FUNCTION: fn_14330
 void CUICharacterInfo::OnInit() {
-  this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", g_session.m_job));
+  this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", static_cast<int>(g_session.m_job)));
   const int level = g_session.m_level;
   this->level->SetText(std::format("Lv. {}", level));
-  const int jobLevel = g_session.m_jobLevel;
-  this->jobLevel->SetText(std::format("Jv. {}", jobLevel));
+  this->jobLevel->SetText(std::format("Jv. {}", static_cast<int>(g_session.m_jobLevel)));
   this->name->SetText(g_session.DecodePlayerName());
 }
 

@@ -2,6 +2,7 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CMode.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
@@ -26,7 +27,7 @@ namespace {
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
+    if (this->m_commands.end() == this->m_current) {
       this->m_commands.emplace_back();
       this->m_current = this->m_commands.end();
       return &this->m_commands.back();
@@ -123,32 +124,37 @@ void CMode::DrawCursor() {
 
     const float scaleX = cell.scaleX;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-    float left = static_cast<float>(cell.x);
-    float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
+    const float left = static_cast<float>(cell.x);
+    const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
     const float top = static_cast<float>(cell.y) * cell.scaleY;
     const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * cell.scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
-      texture = g_renderer->atlas.Find(image, sprite->palette, record);
+      auto& atlasRef = g_renderer->atlas;
+      texture = atlasRef.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
+        texture = atlasRef.Insert(image, sprite->palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
     primitive->texture = texture;
 
+    float scaledLeft;
+    float scaledRight;
     if (cell.mirrored & 1) {
-      const float swap = left;
-      left = right;
-      right = swap;
+      scaledLeft = scaleX * right;
+      scaledRight = scaleX * left;
+    } else {
+      scaledLeft = scaleX * left;
+      scaledRight = scaleX * right;
     }
 
-    const float x0 = static_cast<float>(x) + scaleX * left + 0.5f;
-    const float y0 = static_cast<float>(y) + top + 0.5f;
-    const float x1 = scaleX * right + static_cast<float>(x) + 0.5f;
-    const float y1 = static_cast<float>(y) + bottom + 0.5f;
+    const float x0 = static_cast<float>(x) + scaledLeft + g_depthAverageHalf;
+    const float y0 = static_cast<float>(y) + top + g_depthAverageHalf;
+    const float x1 = scaledRight + static_cast<float>(x) + g_depthAverageHalf;
+    const float y1 = static_cast<float>(y) + bottom + g_depthAverageHalf;
 
     RenderVertex* quad = primitive->quad;
     quad[0].x = x0;

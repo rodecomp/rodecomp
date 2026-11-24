@@ -13,9 +13,31 @@
 struct CRagEffect;
 class CTexture;
 
+extern float g_fullCircleAngle;
+extern float g_fireflyNormalDrift;
+extern float g_fireflyModeFive;
+
+struct ZeroVector3d : vector3d {
+  // INLINED
+  ZeroVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+
+  using vector3d::operator=;
+
+  // INLINED
+  void Set(float x, float y, float z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+  }
+};
+
 struct EffectPrimitiveRecord {
-  /* 0000 */ vector3d position;
-  /* 000C */ vector3d corners[4];
+  /* 0000 */ ZeroVector3d position;
+  /* 000C */ ZeroVector3d corners[4];
   /* 003C */ float radius;
   /* 0040 */ float scale;
   /* 0044 */ float angle;
@@ -55,13 +77,13 @@ struct EffectPrimitiveSlot {
 };
 
 struct EffectPrimitiveState {
-  explicit EffectPrimitiveState(RenderObjectState& render);
-  ~EffectPrimitiveState();
+  // INLINED
+  __forceinline EffectPrimitiveState() {}
 
   /* 0138 */ std::uint32_t changePointReached;
   /* 013C */ std::uint32_t isChangeProcessed;
   /* 0140 */ CRagEffect* master;
-  /* 0144 */ CTexture** textures;
+  /* 0144 */ CTexture** textures = nullptr;
   /* 0148 */ std::uint32_t playWaveName;
   /* 014C */ std::uint32_t masterReached;
   /* 0150 */ std::uint32_t alphaSpeedCycle;
@@ -156,13 +178,13 @@ struct EffectPrimitiveState {
   /* 0364 */ float heightSpeed;
   /* 0368 */ float heightAccel;
   /* 036C */ float maxHeightSize;
-  /* 0370 */ vector3d speed3d;
-  /* 037C */ vector3d orgPos;
+  /* 0370 */ ZeroVector3d speed3d;
+  /* 037C */ ZeroVector3d orgPos;
   /* 0388 */ vector3d deltaPos;
   /* 0394 */ vector3d deltaPos2;
-  /* 03A0 */ vector3d deltaPos3;
-  /* 03AC */ vector3d deltaPosAccel;
-  /* 03B8 */ vector3d segPos[4];
+  /* 03A0 */ ZeroVector3d deltaPos3;
+  /* 03AC */ ZeroVector3d deltaPosAccel;
+  /* 03B8 */ ZeroVector3d segPos[4];
   /* 03E8 */ EffectPrimitiveSlot slots[4];
   /* 06B8 */ EffectPrimitiveRecord records[50];
   /* 2210 */ RenderTriangle triangles[512];

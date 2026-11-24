@@ -96,11 +96,16 @@ public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
+// INLINED
+static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
+  return effects->Spawn(0, id, position, 0, -1, 0, 0);
+}
+
 // OFFSET: 0x007950C0
 // FUNCTION: fn_08785
 void CSkillAction_SS_REIKETSUHOU::OnGroundSkillEffect(vector3d position, int level, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position, 0, -1, 0, 0);
+  SpawnAt(effects, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position);
 
   const int counts[] = {5, 5, 5, 5, 5, 6, 6, 6, 7, 7};
   const int count = counts[std::min<unsigned int>(level, 10) - 1];
@@ -626,7 +631,12 @@ void CSkillObjectAction_SS_KUNAITRAP::OnSkillObjectRemove(CRenderObject* object)
 void CSkillAction_SS_TOKEDASU::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   CGameActor* shadow = reinterpret_cast<CGameActor*>(argument3);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu"), position.x, position.y, position.z, 0, -1, 0, 0);
+  {
+    CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+    const std::string name = "tokedasu";
+    const int effectId = manager->EffectId(name);
+    effects->Spawn(0, effectId, position, 0, -1, 0, 0);
+  }
   if (shadow) {
     effects = g_effectMgr;
     effects->Spawn(shadow->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu_shadow"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -690,7 +700,10 @@ void CSkillAction_SS_SHINKIROU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08756
 void CSkillAction_SS_KAGEGARI::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagegari"), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = "kagegari";
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00793A50
@@ -776,7 +789,10 @@ void CSkillAction_SS_FUUMAKOUCHIKU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08768
 void CSkillAction_SS_FUUMAKOUCHIKU::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_fuumakouchiku"), position.x, position.y, position.z, 0, -1, 0, 0);
+  CEZ2STREffectMgr* manager = CEZ2STREffectMgr::GetInstance();
+  const std::string name = "new_fuumakouchiku";
+  const int effectId = manager->EffectId(name);
+  effects->Spawn(0, effectId, position, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00794350
@@ -828,17 +844,14 @@ int CSkillAction_SS_KUNAIKAITEN::GetSkillAttackMotion() {
 void CSkillAction_SS_KUNAIKAITEN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     std::string names[] = {"kunaikaiten_bottom", "kunaikaiten_00", "kunaikaiten_01", "kunaikaiten_02"};
-    const auto spawn = [&](const std::string& name) {
-      EffectLists* effects = g_effectMgr;
-      return effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position, 0, -1, 0, 0);
-    };
     for (int wave = 0; wave < 4; ++wave) {
-      for (const std::string& name : names) {
-        CEffect* effect = spawn(name);
+      std::for_each(std::begin(names), std::end(names), [&](const std::string& name) {
+        EffectLists* effects = g_effectMgr;
+        CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(wave * 480);
         }
-      }
+      });
     }
   }
 }

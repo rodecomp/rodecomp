@@ -159,22 +159,18 @@ void RouletteMgr::SetQuad(int x, int y, int originX, int originY) {
     originY += 3;
   }
 
-  const float left = x - 18.0f + originX;
-  const float top = y - 18.0f + originY + 17.0f;
-  const float bottom = y + 18.0f + originY + 17.0f;
-  const float right = x + 18.0f + originX;
-
   RenderVertex* vertices = this->m_quads.current.vertices;
-  vertices[0].y = bottom;
-  vertices[1].y = bottom;
-  vertices[0].x = left;
-  vertices[1].x = right;
-  vertices[2].x = right;
-  vertices[2].y = top;
+  const float offsetX = static_cast<float>(originX);
+  vertices[0].x = x - 18.0f + offsetX;
+  vertices[0].y = y + 18.0f + originY + 17.0f;
+  vertices[1].x = x + 18.0f + offsetX;
+  vertices[1].y = y + 18.0f + originY + 17.0f;
+  vertices[2].x = x + 18.0f + offsetX;
+  vertices[2].y = y - 18.0f + originY + 17.0f;
   vertices[3] = vertices[0];
   vertices[4] = vertices[2];
-  vertices[5].x = left;
-  vertices[5].y = top;
+  vertices[5].x = x - 18.0f + offsetX;
+  vertices[5].y = y - 18.0f + originY + 17.0f;
 
   for (int i = 0; i < 6; ++i) {
     vertices[i].z = 0.000001f;

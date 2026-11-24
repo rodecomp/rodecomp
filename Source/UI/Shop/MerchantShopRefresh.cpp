@@ -31,7 +31,7 @@ void UIMerchantShopMakeWnd::Refresh() {
   this->titleEdit->Invalidate();
 
   for (int index = 0; index < this->slotCount; ++index) {
-    this->priceEdits[index]->SetText("");
+    this->priceEdits[index]->SetText("0");
 
     if (this->mode != 0) {
       this->priceEdits[index]->Background(232, 232, 232);
@@ -56,7 +56,7 @@ void UIMerchantShopMakeWnd::Refresh() {
   int index = 0;
   const std::vector<ITEM_INFO> displayed(backup.items);
 
-  for (auto itemIt = displayed.begin(); itemIt != displayed.end(); ++itemIt) {
+  for (auto itemIt = displayed.begin(); itemIt != displayed.end(); ++itemIt, ++index) {
     const ITEM_INFO& item = *itemIt;
     if (this->slotCount <= index) {
       break;
@@ -85,8 +85,6 @@ void UIMerchantShopMakeWnd::Refresh() {
       this->priceEdits[index]->SetText(grouped);
       this->previousPriceLength = this->priceEdits[index]->Length();
     }
-
-    ++index;
   }
 
   g_session.RefreshItem1768Window(this->mode != 0, 0);

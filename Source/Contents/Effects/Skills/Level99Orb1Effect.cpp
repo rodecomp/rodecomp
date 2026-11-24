@@ -103,10 +103,9 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
     const float heightBeforeUpdate = this->offsets[index].y;
     if (heightBeforeUpdate < 0.0f) {
       if (heightBeforeUpdate < -30.0f) {
-        const float height = static_cast<float>(Random(100));
-        this->offsets[index].x = 0.0f;
-        this->offsets[index].y = height;
-        this->offsets[index].z = 0.0f;
+        EffectPoint offset;
+        offset.y = static_cast<float>(Random(100));
+        this->offsets[index] = offset;
 
         for (int i = 0; i < 4; ++i) {
           particle->animationValues[i] = static_cast<float>(Random(360));
@@ -138,8 +137,7 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
       }
     }
 
-    EffectPoint& offset = this->offsets[index];
-    offset.y -= speed;
+    this->offsets[index].y -= speed;
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
@@ -147,7 +145,7 @@ __declspec(noinline) void CLevel99Orb1Effect::UpdateParticle(CParticle* particle
 
     matrix translation;
     std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-    translation.MakeTranslate(offset.x, offset.y, offset.z);
+    translation.MakeTranslate(this->offsets[index].x, this->offsets[index].y, this->offsets[index].z);
 
     matrix scale;
     std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));

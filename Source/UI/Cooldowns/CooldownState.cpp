@@ -122,7 +122,8 @@ void CooldownState::UpdateSegment(std::uint32_t progress) {
 // OFFSET: 0x00CA5180
 // FUNCTION: fn_20948
 float CooldownState::Update() {
-  std::uint32_t progress = CooldownNow() + this->elapsed - this->start;
+  std::uint32_t progress = CooldownNow();
+  progress += this->elapsed - this->start;
   if (this->duration - progress <= 60000 && this->finalMinute == 0 && this->reverse == 1) {
     const std::uint32_t previous = this->duration;
     this->finalMinute = 1;

@@ -96,8 +96,7 @@ void CStormKickEffect::CreateStorms(int layer) {
 // OFFSET: 0x00B7B6C0
 // FUNCTION: fn_19219
 void CStormKickEffect::CreateClouds(int layer) {
-  int ring = 0;
-  for (int angle = 0; angle < 360; angle += 90) {
+  for (int ring = 0; ring < 4; ++ring) {
     for (int segment = 0; segment < 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -111,7 +110,7 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->groupIndex = 1;
       particle->alpha = 0;
       particle->angleParameter = 30;
-      particle->angle = static_cast<float>(angle);
+      particle->angle = static_cast<float>(ring * 90);
       particle->phaseParameter = ClampedRandom(21) + 80;
       particle->animationParameter = 1.0f;
 
@@ -134,8 +133,6 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->InitParticleQuad(particle->vertices);
       this->clouds.push_back(particle);
     }
-
-    ++ring;
   }
 }
 

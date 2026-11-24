@@ -56,14 +56,16 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     if (g_serverLanguage->candidateCount != 0) {
       std::string candidates[9];
       int info[4];
-      info[0] = g_serverLanguage->selection % 9;
-      const int first = g_serverLanguage->selection - info[0];
+      const int selection = g_serverLanguage->selection;
+      const int total = g_serverLanguage->candidateCount;
+      info[0] = selection % 9;
+      const int first = selection - info[0];
       int last = first + 9;
-      if (g_serverLanguage->candidateCount < last) {
-        last = g_serverLanguage->candidateCount;
+      if (total < last) {
+        last = total;
       }
-      info[1] = (g_serverLanguage->selection + 8) / 9;
-      info[2] = (g_serverLanguage->candidateCount + 8) / 9;
+      info[1] = (selection + 8) / 9;
+      info[2] = (total + 8) / 9;
       const int count = last - first;
       info[3] = count;
       for (int i = 0; i < count; ++i) {

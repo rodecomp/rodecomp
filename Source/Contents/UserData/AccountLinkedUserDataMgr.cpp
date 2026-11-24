@@ -42,12 +42,16 @@ CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
 // FUNCTION: fn_46464
 __declspec(noinline) CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
 
-struct WhisperNameAppender {
-  /* 0000 */ Json::Value* values;
+class WhisperNameAppender {
+  /* 0000 */ Json::Value& values;
+
+public:
+  // INLINED
+  explicit WhisperNameAppender(Json::Value& output) : values(output) {}
 
   // INLINED
   void operator()(std::string name) const {
-    this->values->append(ToUtf8(name, g_textCodePage));
+    this->values.append(ToUtf8(name, g_textCodePage));
   }
 };
 
@@ -64,7 +68,7 @@ __declspec(noinline) WhisperNameAppender std::for_each(std::set<std::string>::co
 
 // INLINED
 void CWhisperBlockMgr::Export(Json::Value& values) const {
-  std::for_each(this->m_names.begin(), this->m_names.end(), WhisperNameAppender{&values});
+  std::for_each(this->m_names.begin(), this->m_names.end(), WhisperNameAppender{values});
 }
 
 // OFFSET: 0x005BBF50
@@ -128,10 +132,10 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
           LoadWhisperBlockList(root[(OBFUSCATE_DECRYPT(0x93E7A3A1F587CDC5ULL, whisperSource))]);
           constexpr std::array<std::uint8_t, 5> emotionSourceArray = OBFUSCATE_SOURCE("data", 0x2FF3C5036D070127ULL);
           const std::uint8_t (&emotionSource)[5] = emotionSourceArray._Elems;
-          g_session.m_emotionHotkeys.Load(root[(OBFUSCATE_DECRYPT(0x2FF3C5036D070127ULL, emotionSource))]);
+          this->LoadEmotionHotkeys(root[(OBFUSCATE_DECRYPT(0x2FF3C5036D070127ULL, emotionSource))]);
           constexpr std::array<std::uint8_t, 5> hotkeySourceArray = OBFUSCATE_SOURCE("data", 0x17359BF953C367B3ULL);
           const std::uint8_t (&hotkeySource)[5] = hotkeySourceArray._Elems;
-          g_userHotkeyMgr->LoadV2(root[(OBFUSCATE_DECRYPT(0x17359BF953C367B3ULL, hotkeySource))]);
+          this->LoadUserHotkeysV2(root[(OBFUSCATE_DECRYPT(0x17359BF953C367B3ULL, hotkeySource))]);
         }
         g_whisperBlockMgr->m_tracking = true;
         g_userHotkeyMgr->m_loaded = true;
@@ -207,13 +211,16 @@ void CAccountLinkedUserDataMgr::Save() {
     this->ExportUserHotkey(data);
   }
 
-  if (data.isNull() != true) {
-    root["data"] = data;
-    Json::StyledWriter writer;
-    const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), response);
-    ++this->m_pendingLoads;
+  if (data.isNull() == true) {
+    return;
   }
+
+  root["data"] = data;
+  Json::StyledWriter writer;
+  const std::string response = writer.write(root);
+  CAsyncWorkMgr* asyncWorkMgr = g_asyncWorkMgr;
+  asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, g_session.m_webAuthToken + 16), response);
+  ++this->m_pendingLoads;
 }
 
 // OFFSET: 0x005BCD80

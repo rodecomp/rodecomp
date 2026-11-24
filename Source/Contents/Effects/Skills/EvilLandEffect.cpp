@@ -31,21 +31,22 @@ void CEvilLandEffect::Close() {
 // FUNCTION: fn_06948
 void CEvilLandEffect::Open() {
   CTexture* texture = g_texMgr.Load("effect\\EVILLAND\\demonground.tga", 0, false, true, false);
-  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / static_cast<float>(this->effectLevel);
-  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / static_cast<float>(this->effectLevel);
+  const float textureEffectLevel = static_cast<float>(this->effectLevel);
+  const float textureStepU = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth()) / textureEffectLevel;
+  const float textureStepV = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight()) / textureEffectLevel;
 
   CTexture* alpha = g_texMgr.Load("effect\\EVILLAND\\demonground_alpha_translucent.tga", 0, false, true, false);
-  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / static_cast<float>(this->effectLevel);
-  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / static_cast<float>(this->effectLevel);
+  const int effectLevel = this->effectLevel;
+  const float alphaEffectLevel = static_cast<float>(effectLevel);
+  const float alphaStepU = static_cast<float>(alpha->ImageWidth()) / static_cast<float>(alpha->TextureWidth()) / alphaEffectLevel;
+  const float alphaStepV = static_cast<float>(alpha->ImageHeight()) / static_cast<float>(alpha->TextureHeight()) / alphaEffectLevel;
 
-  for (int row = 0; row < this->effectLevel; ++row) {
-    for (int column = 0; column < this->effectLevel; ++column) {
-      CParticle* created = CreateMultiTexParticle(&this->positionVector, -1);
-      if (!created) {
+  for (int row = 0; row < effectLevel; ++row) {
+    for (int column = 0; column < effectLevel; ++column) {
+      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(CreateMultiTexParticle(&this->positionVector, -1));
+      if (!particle) {
         continue;
       }
-
-      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(created);
 
       particle->effectId = this->id;
       particle->rowIndex = row;
@@ -80,7 +81,7 @@ void CEvilLandEffect::Open() {
       particle->uv2[3][1] = bottom * alphaStepV;
 
       particle->AllocateVertices(4);
-      this->particles.push_back(created);
+      this->particles.push_back(particle);
     }
   }
 }
@@ -103,7 +104,7 @@ __forceinline void CEvilLandEffect::ScrollParticleTexture(CMultiTexParticle* par
 // FUNCTION: fn_06950
 void CEvilLandEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    this->ScrollParticleTexture(static_cast<CMultiTexParticle*>(*it));
+    this->ScrollParticleTexture(*it);
   }
 }
 
@@ -126,6 +127,6 @@ __forceinline void CEvilLandEffect::RenderParticle(CMultiTexParticle* particle) 
 // FUNCTION: fn_06951
 void CEvilLandEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    this->RenderParticle(static_cast<CMultiTexParticle*>(*it));
+    this->RenderParticle(*it);
   }
 }

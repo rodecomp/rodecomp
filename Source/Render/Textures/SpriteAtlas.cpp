@@ -217,7 +217,7 @@ CTexture* SpriteAtlas::Insert(const SpriteRleImage* image, const std::uint32_t* 
     record.u1 = u1;
     record.v1 = static_cast<float>(record.y + image->height) / height;
   } else {
-    if (image->width > 64) {
+    if (64 < image->width) {
       u1 -= 0.005f;
     }
 

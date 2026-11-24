@@ -148,7 +148,13 @@ void NaviDataEntry::Reset() {
 // OFFSET: 0x00B88530
 // FUNCTION: fn_19371
 CNaviData::~CNaviData() {
-  this->Clear();
+  this->info = nullptr;
+  this->cellX = 0;
+  this->cellY = 0;
+  this->range = 50000;
+  this->startLinks.clear();
+  this->endLinks.clear();
+  this->entries.clear();
 
   for (std::vector<CNavi_Link*>::iterator it = this->objects.begin(); it != this->objects.end(); ++it) {
     if (*it != nullptr) {
@@ -157,14 +163,15 @@ CNaviData::~CNaviData() {
     *it = nullptr;
   }
   this->objects.clear();
+  auto& destinations = this->destinations;
 
-  for (std::vector<CNaviInfo*>::iterator it = this->destinations.begin(); it != this->destinations.end(); ++it) {
+  for (std::vector<CNaviInfo*>::iterator it = destinations.begin(); it != destinations.end(); ++it) {
     if (*it != nullptr) {
       delete *it;
     }
     *it = nullptr;
   }
-  this->destinations.clear();
+  destinations.clear();
 }
 
 // OFFSET: 0x00B8CC10
@@ -409,10 +416,11 @@ NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
   std::vector<char> buffer(size - 3, '\0');
   if (target.type == 1 || target.type == 0) {
     std::memcpy(buffer.data(), data + 4, size - 4);
-    target.object = this->FindObject(buffer.data());
-    if (target.object == nullptr) {
+    void* object = this->FindObject(buffer.data());
+    if (object == nullptr) {
       return NavigationTarget(0, nullptr);
     }
+    target.object = object;
   } else {
     target.object = this->ReadTargetObject(data + 4);
   }
@@ -612,8 +620,8 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
   std::memset(buffer, 0, sizeof(buffer));
 
   std::vector<std::wstring> wideKeywords;
-  for (const std::string& keyword : keywords) {
-    MultiByteToWideChar(CP_ACP, 0, keyword.c_str(), -1, buffer, 100);
+  for (auto it = keywords.begin(); it != keywords.end(); ++it) {
+    MultiByteToWideChar(CP_ACP, 0, it->c_str(), -1, buffer, 100);
     wideKeywords.push_back(std::wstring(buffer));
   }
 
@@ -630,8 +638,8 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
   }
 
   bool matched = true;
-  for (const std::wstring& keyword : wideKeywords) {
-    matched &= StrStrIW(wideText.c_str(), keyword.c_str()) != nullptr;
+  for (std::vector<std::wstring>::iterator it = wideKeywords.begin(); it != wideKeywords.end(); ++it) {
+    matched &= StrStrIW(wideText.c_str(), it->c_str()) != nullptr;
   }
   if (!matched) {
     return;
@@ -915,9 +923,12 @@ bool CNavigationManager::GetMobInfo(
     *sprite = static_cast<const std::string&>(FormatOwnedString("npc\\%s", g_session.GetJobName(mob->GetIndex(), -1)));
   }
 
-  NaviCell cell;
-  *cellX = mob->GetCell(&cell)->x;
-  const int packed = mob->GetCell(&cell)->y;
+  int packed;
+  {
+    NaviCell cell;
+    *cellX = mob->GetCell(&cell)->x;
+    packed = mob->GetCell(&cell)->y;
+  }
   const unsigned int elementValue = static_cast<unsigned char>(packed >> 16);
   *elementLevel = elementValue / 20;
   *element = elementValue % 10;

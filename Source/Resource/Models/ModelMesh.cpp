@@ -72,9 +72,9 @@ void ModelMesh::CalculateNormals() {
     const auto& first = this->vertices[face.vertices[0]];
     const auto& third = this->vertices[face.vertices[2]];
     const auto& second = this->vertices[face.vertices[1]];
-    const float x1 = first[0] - third[0];
     const float y1 = first[1] - third[1];
     const float z1 = first[2] - third[2];
+    const float x1 = first[0] - third[0];
     const float x2 = second[0] - third[0];
     const float y2 = second[1] - third[1];
     const float z2 = second[2] - third[2];

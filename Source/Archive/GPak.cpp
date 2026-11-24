@@ -117,6 +117,11 @@ CGPak::~CGPak() {
 // OFFSET: 0x00AEBC00
 // FUNCTION: fn_18130
 void CGPak::Reset() {
+  this->Clear();
+}
+
+// INLINED
+inline void CGPak::Clear() {
   this->m_entries.clear();
   this->m_file = nullptr;
   this->m_version = 0;
@@ -171,7 +176,7 @@ bool CGPak::Open(CPakFile* file) {
     return true;
   }
 
-  this->Reset();
+  this->Clear();
   return false;
 }
 

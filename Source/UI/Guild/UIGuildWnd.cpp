@@ -1055,28 +1055,32 @@ void UIGuildInfoManageWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  if (y > 157 && y < 205) {
+  int top = 157;
+  if (y > top && y < top + 3 * 16) {
     const int count = g_guildInfo.CountRelatedGuilds(0);
     this->m_allyRow = -1;
     this->m_hostileRow = -1;
     if (count != 0) {
-      this->m_allyRow = (y - 157) / 16;
+      this->m_allyRow = (y - top) / 16;
       if (count > this->m_allyRow) {
         this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
       }
     }
-  } else if (y > 231 && y < 279) {
+  } else {
+    top += 74;
+    if (y <= top || y >= top + 3 * 16) {
+      return;
+    }
+
     const int count = g_guildInfo.CountRelatedGuilds(1);
     this->m_allyRow = -1;
     this->m_hostileRow = -1;
     if (count != 0) {
-      this->m_hostileRow = (y - 231) / 16;
+      this->m_hostileRow = (y - top) / 16;
       if (count > this->m_hostileRow) {
         this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
       }
     }
-  } else {
-    return;
   }
 
   this->Invalidate();
@@ -1264,9 +1268,10 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
 // FUNCTION: fn_13086
 void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   UIGuildWnd::OnLBtnDown(x, y);
-  int left = 6;
-  if (x >= left && x <= 381 && y >= 47 && y <= 66) {
-    for (int column = 0; column < 6; ++column) {
+  int left = 5;
+  if (x >= left + 1 && x <= left + 376 && y >= 47 && y <= 66) {
+    int column = 0;
+    for (++left; column < 6; ++column) {
       const int right = g_guildMemberColumnWidths[column] + left;
       if (left <= x && x <= right) {
         this->SortMembers(column);
@@ -1278,10 +1283,8 @@ void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->m_hoverRow;
-  const int row = this->MemberIndexAt(x, y);
-
-  this->m_hoverRow = row;
-  if (previous != row) {
+  this->m_hoverRow = this->MemberIndexAt(x, y);
+  if (previous != this->m_hoverRow) {
     this->Invalidate();
   }
 }
@@ -1436,9 +1439,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canInvite = position->canInvite;
-    if (this->inviteChecks[drawn]) {
-      this->inviteChecks[drawn]->geometry.state = canInvite;
-      this->inviteChecks[drawn]->Invalidate();
+    UICheckBox* inviteCheck = this->inviteChecks[drawn];
+    if (inviteCheck) {
+      inviteCheck->geometry.state = canInvite;
+      inviteCheck->Invalidate();
       this->inviteChecks[drawn]->Move(g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canInvite != 0);
@@ -1449,9 +1453,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canExpel = position->canExpel;
-    if (this->expelChecks[drawn]) {
-      this->expelChecks[drawn]->geometry.state = canExpel;
-      this->expelChecks[drawn]->Invalidate();
+    UICheckBox* expelCheck = this->expelChecks[drawn];
+    if (expelCheck) {
+      expelCheck->geometry.state = canExpel;
+      expelCheck->Invalidate();
       this->expelChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canExpel != 0);
@@ -1462,9 +1467,10 @@ void UIGuildPositionManageWnd::Paint() {
     }
 
     const int canStorage = position->canStorage;
-    if (this->storageChecks[drawn]) {
-      this->storageChecks[drawn]->geometry.state = canStorage;
-      this->storageChecks[drawn]->Invalidate();
+    UICheckBox* storageCheck = this->storageChecks[drawn];
+    if (storageCheck) {
+      storageCheck->geometry.state = canStorage;
+      storageCheck->Invalidate();
       this->storageChecks[drawn]->Move(g_guildPositionColumnWidths[0] + 12 + g_guildPositionColumnWidths[2] + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[1], y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", canStorage != 0);
@@ -1666,6 +1672,7 @@ void UIGuildTotalInfoWnd::Paint() {
   }
 
   const auto& entries = g_guildInfo.guildList;
+  auto row = this->m_rows;
   int drawn = 0;
   int index = 0;
   for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
@@ -1681,8 +1688,8 @@ void UIGuildTotalInfoWnd::Paint() {
     }
 
     char buffer[512];
-    this->m_rows[drawn]->SetTextFitted(entry->name.c_str());
-    this->m_rows[drawn]->Move(8, y);
+    (*row)->SetTextFitted(entry->name.c_str());
+    (*row)->Move(8, y);
     std::sprintf(buffer, "%d", entry->level);
     this->DrawTextAt(g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
     std::sprintf(buffer, "%d/%d", entry->memberCount, entry->maxMembers);
@@ -1694,6 +1701,7 @@ void UIGuildTotalInfoWnd::Paint() {
     if (++drawn == this->m_visibleRows * this->m_columns) {
       return;
     }
+    ++row;
   }
 }
 
@@ -1738,14 +1746,14 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
 
   if (g_guildInfo.isMaster) {
     const std::string prefix("유저인터페이스\\basic_interface\\");
-    UIBitmapButton** button = this->m_rowButtons;
-    for (int y = 82; y < 298; y += 36, ++button) {
+    for (int index = 0; index < 6; ++index) {
+      UIBitmapButton** button = &this->m_rowButtons[index];
       *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
       (*button)->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
       (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(142, y);
+      (*button)->Move(142, index * 36 + 82);
       (*button)->SetId(ID_OPEN_MEMBER_POS_COMBO);
       this->AddChild(*button);
     }
@@ -1857,6 +1865,7 @@ void UIGuildBanishedMemberWnd::Paint() {
   }
 
   const auto& members = g_guildInfo.bannedMembers;
+  int row = 0;
   int drawn = 0;
   int index = 0;
   for (auto member = members.begin(); member != members.end(); ++index) {
@@ -1873,8 +1882,8 @@ void UIGuildBanishedMemberWnd::Paint() {
     }
 
     const std::string name = this->StripNamelessTag(member->name);
-    this->m_names[drawn]->SetTextFitted(name.c_str());
-    this->m_names[drawn]->Move(8, y);
+    this->m_names[row]->SetTextFitted(name.c_str());
+    this->m_names[row]->Move(8, y);
 
     char reason[260];
     memset(reason, 0, sizeof(reason));
@@ -1883,12 +1892,13 @@ void UIGuildBanishedMemberWnd::Paint() {
       std::string masked("");
       g_forbiddenWords.Mask(reason, &masked);
     }
-    this->m_reasons[drawn]->SetTextFitted(reason);
-    this->m_reasons[drawn]->Move(g_guildBanishedColumnWidths[0] + 9, y);
+    this->m_reasons[row]->SetTextFitted(reason);
+    this->m_reasons[row]->Move(g_guildBanishedColumnWidths[0] + 9, y);
     if (++drawn == this->m_visibleRows * this->m_columns) {
       break;
     }
     ++member;
+    ++row;
   }
 }
 
@@ -1910,7 +1920,6 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   if (member.name.size() == 0) {
     member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildNamelessTag;
   }
-  const std::string& name = member.name;
 
   if (member.online == 1) {
     this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, 0xE4FFE2);
@@ -1957,34 +1966,39 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     );
   }
 
-  const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
-  this->m_rowTexts[1][row]->SetTextFittedCodePage(this->StripNamelessTag(name).c_str());
-  this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
-  this->m_rowTexts[2][row]->SetTextFittedCodePage(member.positionName.c_str());
-  this->m_rowTexts[2][row]->Move(g_guildMemberColumnWidths[0] + 11, y);
-  if (this->m_rowButtons[row]) {
-    this->m_rowButtons[row]->Move(150, y - 4);
-  }
+  {
+    const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
+    const std::string displayName = this->StripNamelessTag(member.name);
+    this->m_rowTexts[1][row]->SetTextFittedCodePage(displayName.c_str());
+    this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
+    int x = g_guildMemberColumnWidths[0];
+    this->m_rowTexts[2][row]->SetTextFittedCodePage(member.positionName.c_str());
+    this->m_rowTexts[2][row]->Move(x + 11, y);
+    if (this->m_rowButtons[row]) {
+      this->m_rowButtons[row]->Move(150, y - 4);
+    }
 
-  int x = g_guildMemberColumnWidths[0] + g_guildMemberColumnWidths[1] + 8;
-  const std::string job(g_session.GetJobName(member.job, member.sex));
-  this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
-  this->m_rowTexts[3][row]->Move(x + 4, y);
-  x += g_guildMemberColumnWidths[2] + 1;
-  this->DrawRightAlignedText(g_guildMemberColumnWidths[3] + x - 4, y, FormatOwnedString("%d", member.level).c_str(), 0, 0, 12, 0, 0);
-  x += g_guildMemberColumnWidths[3] + 1;
-  this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
-  x += g_guildMemberColumnWidths[4] + 1;
-  if (member.exp >= 0x7FFFFFFF) {
-    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
-  } else {
-    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
-  }
+    x += g_guildMemberColumnWidths[1] + 8;
+    const std::string job(g_session.GetJobName(member.job, member.sex));
+    this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
+    this->m_rowTexts[3][row]->Move(x + 4, y);
+    x += g_guildMemberColumnWidths[2] + 1;
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[3] + x - 4, y, FormatOwnedString("%d", member.level).c_str(), 0, 0, 12, 0, 0);
+    x += g_guildMemberColumnWidths[3] + 1;
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
+    x += g_guildMemberColumnWidths[4] + 1;
+    if (member.exp >= 0x7FFFFFFF) {
+      this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
+    } else {
+      this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
+    }
 
-  char lastLogin[128];
-  strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), _localtime32(&member.lastOfflineTime));
-  this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
-  return true;
+    char lastLogin[128];
+    const tm* lastOffline = _localtime32(&member.lastOfflineTime);
+    strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), lastOffline);
+    this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
+    return true;
+  }
 }
 
 // OFFSET: 0x0095ACC0
@@ -2042,7 +2056,11 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     case ID_SEND_GUILD_NOTICE: {
       std::string body;
       body.assign(this->m_bodyEdit->Text());
-      if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
+      if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true) {
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+      if (g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -2343,8 +2361,8 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
         {46, this->geometry.height - 24},
         {92, this->geometry.height - 24},
     };
-    UIBitmapButton** button = this->m_actionButtons;
-    for (int index = 0; index < 2; ++index, ++button) {
+    for (int index = 0; index < 2; ++index) {
+      UIBitmapButton** button = &this->m_actionButtons[index];
       *button = new UIBitmapButton();
       (*button)->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       (*button)->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);

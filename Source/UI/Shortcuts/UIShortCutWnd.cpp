@@ -597,9 +597,9 @@ void UINewChatWnd::SaveChatWndInfo() {
   sprintf(text, "CanDragWnd = %d\r\n\r\n", g_session.m_canDragWnd == 1);
   file.Write(text, std::strlen(text));
 
-  int index = 1;
+  int index = 0;
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it, ++index) {
-    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index + 1);
     file.Write(text, std::strlen(text));
     sprintf(text, "\tXPos = 0,\r\n\tYPos = 0,\r\n");
     file.Write(text, std::strlen(text));
@@ -614,9 +614,9 @@ void UINewChatWnd::SaveChatWndInfo() {
     file.Write("}\r\n\r\n", 5);
   }
 
-  index = static_cast<int>(g_session.m_noSubChatWnds.size()) + 1;
+  index = static_cast<int>(g_session.m_noSubChatWnds.size());
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++index) {
-    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index + 1);
     file.Write(text, std::strlen(text));
     sprintf(text, "\tXPos = %d,\r\n\tYPos = %d,\r\n", it->second.x, it->second.y);
     file.Write(text, std::strlen(text));
@@ -1006,15 +1006,16 @@ void UINewChatWnd::SaveChatLogs() {
 
   std::string name;
   int index = 0;
+  const auto& chatWindows = g_session.m_noSubChatWnds;
   for (std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
-    const std::map<int, SubChatWndInfo>::iterator info = g_session.m_noSubChatWnds.find(index);
-    if (info != g_session.m_noSubChatWnds.end()) {
+    const auto info = chatWindows.find(index);
+    if (info != chatWindows.end()) {
       name = info->second.name;
     }
 
     if (!name.empty()) {
-      sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
       int number = 0;
+      sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
       while (_access(path, 0) == 0) {
         ++number;
         sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
@@ -1030,16 +1031,15 @@ void UINewChatWnd::SaveChatLogs() {
   }
 
   for (std::map<int, UIWindow*>::iterator it = g_windowMgr.retainedWindows.begin(); it != g_windowMgr.retainedWindows.end(); ++it) {
-    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(it->second);
-    name = window->Name();
-    sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
+    name = static_cast<UISubChatHisWnd*>(it->second)->Name();
     int number = 0;
+    sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
     while (_access(path, 0) == 0) {
       ++number;
       sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
     }
 
-    if (window->ChatBox()->SaveChatLog(path)) {
+    if (static_cast<UISubChatHisWnd*>(it->second)->ChatBox()->SaveChatLog(path)) {
       std::string message(path);
       message += " is Saved.";
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -1542,15 +1542,16 @@ void UINewChatWnd::OnCreate(int width, int height) {
   const int buttonPositions[3][2] = {{0x61, base + 3}, {0x24A, base + 7}, {0x23C, base + 7}};
   const char* const tooltips[3] = {LookupMessage(MSI_CHATWND_RECEIVER_LIST), LookupMessage(MSI_CHATWND_CHANGE_SIZE), LookupMessage(MSI_CHATWND_RECEPTIVE_GROUP_LIST)};
   for (int index = 0; index < 3; ++index) {
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_inputButtons[index] = button;
-    button->SetBitmap((basePath + buttonNames[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((basePath + buttonNames[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((basePath + buttonNames[index][2] + ".bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    UIWindow*& button = this->m_inputButtons[index];
+    button = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][0] + ".bmp").c_str(), 0, 0);
+    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][1] + ".bmp").c_str(), 1, 0);
+    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][2] + ".bmp").c_str(), 2, 0);
+    UIBitmapButton* bitmap = static_cast<UIBitmapButton*>(button);
+    bitmap->SetSize(bitmap->BitmapWidth(), bitmap->BitmapHeight());
     button->Move(buttonPositions[index][0], buttonPositions[index][1]);
     button->SetId(buttonIds[index]);
-    button->SetTooltip(tooltips[index]);
+    static_cast<UIBitmapButton*>(button)->SetTooltip(tooltips[index]);
     this->AddChild(button);
   }
 

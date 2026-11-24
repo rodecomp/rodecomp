@@ -12,7 +12,7 @@ public:
   ~PakRegistry();
   bool Add(const char* filename);
   bool Exists(const char* filename, bool looseOnly) const;
-  void* Read(const char* filename, std::uint32_t* size, int option = 0);
+  void* Read(const char* filename, std::uint32_t* size, bool option = false);
   __declspec(noinline) void* ReadArchive(const char* filename, std::uint32_t* size);
   void* ReadLooseResource(const char* filename, std::uint32_t* size);
   BOOL Free(void* buffer);

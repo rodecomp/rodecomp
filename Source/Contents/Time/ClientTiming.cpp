@@ -140,7 +140,6 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   std::memset(message, 0, sizeof(message));
   this->data.ClearAll();
 
-  int index = 1;
   const char* mapName;
   const char* name;
   const char* title;
@@ -153,9 +152,10 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int linkedY = 0;
   int targetId = -1;
   int cost = 0;
+  int index = 1;
   for (; index < 9999; ++index) {
-    mapName = nullptr;
     name = nullptr;
+    mapName = nullptr;
     if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &mapName, &name, &id, &cell.x, &cell.y)) {
       std::sprintf(message, "Map 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
@@ -527,9 +527,8 @@ void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
 // OFFSET: 0x00E265C0
 // FUNCTION: fn_23916
 void CSession::RefreshTrackedAchievement(int id) {
-  std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
-  auto found = std::find_if(tracked.begin(), tracked.end(), [&](SessionRecord6178 record) { return id == record.id; });
-  if (found == tracked.end()) {
+  auto found = std::find_if(this->trackedAchievements.begin(), this->trackedAchievements.end(), [&](SessionRecord6178 record) { return id == record.id; });
+  if (found == this->trackedAchievements.end()) {
     return;
   }
 
@@ -808,7 +807,7 @@ void CSession::LoadDamageSkinSettings() {
 
 // OFFSET: 0x00DE53C0
 // FUNCTION: fn_23491
-bool CSession::LoadExceptionMinimapNameTable() {
+BOOL CSession::LoadExceptionMinimapNameTable() {
   std::vector<char*> tokens;
   this->m_navigationForbiddenMaps.clear();
   this->m_navigationForbiddenMaps.reserve(512);
@@ -829,48 +828,49 @@ bool CSession::LoadExceptionMinimapNameTable() {
 bool CSession::LoadFogParameters() {
   this->m_fogParameters.clear();
 
+  bool result = false;
   CFile file;
-  if (!file.Open("fogParameterTable.txt", 0, true, false)) {
-    return false;
-  }
+  if (file.Open("fogParameterTable.txt", 0, true, false)) {
+    const char* cursor = static_cast<const char*>(file.GetData());
+    const char* end = cursor + file.GetSize();
+    std::string name;
+    std::vector<std::string> values;
 
-  const char* cursor = static_cast<const char*>(file.GetData());
-  const char* end = cursor + file.GetSize();
-  std::string name;
-  std::vector<std::string> values;
+    for (const char* start = cursor; cursor < end; ++cursor) {
+      const char value = *cursor;
+      if (value == '\n' || value == '\r') {
+        start = cursor + 1;
+        continue;
+      }
 
-  for (const char* start = cursor; cursor < end; ++cursor) {
-    const char value = *cursor;
-    if (value == '\n' || value == '\r') {
+      if (value != '#') {
+        continue;
+      }
+
+      if (name.empty()) {
+        name.assign(start, cursor - start);
+      } else if (values.size() < 3) {
+        values.push_back(std::string(start, cursor));
+      } else {
+        values.push_back(std::string(start, cursor));
+        this->m_fogParameters.push_back(std::pair<std::string, std::vector<std::string>>(name, values));
+        name.clear();
+        values.clear();
+      }
+
       start = cursor + 1;
-      continue;
     }
 
-    if (value != '#') {
-      continue;
-    }
-
-    if (name.empty()) {
-      name.assign(start, cursor - start);
-    } else if (values.size() < 3) {
-      values.push_back(std::string(start, cursor));
-    } else {
-      values.push_back(std::string(start, cursor));
-      this->m_fogParameters.push_back(std::pair<std::string, std::vector<std::string>>(name, values));
-      name.clear();
-      values.clear();
-    }
-
-    start = cursor + 1;
+    std::sort(this->m_fogParameters.begin(), this->m_fogParameters.end(),
+              [](const std::pair<std::string, std::vector<std::string>>& left,
+                 const std::pair<std::string, std::vector<std::string>>& right) {
+                return std::strcmp(left.first.c_str(), right.first.c_str()) < 0;
+              });
+    file.Close();
+    result = true;
   }
 
-  std::sort(this->m_fogParameters.begin(), this->m_fogParameters.end(),
-            [](const std::pair<std::string, std::vector<std::string>>& left,
-               const std::pair<std::string, std::vector<std::string>>& right) {
-              return std::strcmp(left.first.c_str(), right.first.c_str()) < 0;
-            });
-  file.Close();
-  return true;
+  return result;
 }
 
 // OFFSET: 0x00DE5B40

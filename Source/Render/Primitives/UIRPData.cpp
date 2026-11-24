@@ -75,8 +75,8 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
       height = texture->Height();
     }
 
-    const int textureWidth = texture->TextureWidth();
-    const int textureHeight = texture->TextureHeight();
+    const float textureWidth = static_cast<float>(static_cast<int>(texture->TextureWidth()));
+    const float textureHeight = static_cast<float>(static_cast<int>(texture->TextureHeight()));
     const int right = x + width;
     const float bottom = static_cast<float>(y + height);
     primitive->quad[0].x = static_cast<float>(x);
@@ -85,18 +85,18 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[0].v = g_textureOffsetY / textureHeight;
     primitive->quad[1].x = static_cast<float>(right);
     primitive->quad[1].y = static_cast<float>(y);
-    primitive->quad[1].u = (static_cast<float>(width <= imageWidth ? width : imageWidth) + g_textureOffsetX) / textureWidth;
+    primitive->quad[1].u = ((width <= imageWidth ? static_cast<float>(width) : static_cast<float>(imageWidth)) + g_textureOffsetX) / textureWidth;
     primitive->quad[1].v = g_textureOffsetY / textureHeight;
     primitive->quad[2].x = static_cast<float>(x);
     primitive->quad[2].y = bottom;
     primitive->quad[2].u = g_textureOffsetX / textureWidth;
     primitive->quad[2].v =
-      (height <= imageHeight ? static_cast<float>(height) + g_textureOffsetX : static_cast<float>(imageHeight) + g_textureOffsetY) / textureHeight;
+      (height > imageHeight ? static_cast<float>(imageHeight) + g_textureOffsetY : static_cast<float>(height) + g_textureOffsetX) / textureHeight;
     primitive->quad[3].x = static_cast<float>(right);
     primitive->quad[3].y = bottom;
-    primitive->quad[3].u = (static_cast<float>(width <= imageWidth ? width : imageWidth) + g_textureOffsetX) / textureWidth;
+    primitive->quad[3].u = ((width <= imageWidth ? static_cast<float>(width) : static_cast<float>(imageWidth)) + g_textureOffsetX) / textureWidth;
     primitive->quad[3].v =
-      (height <= imageHeight ? static_cast<float>(height) + g_textureOffsetX : static_cast<float>(imageHeight) + g_textureOffsetY) / textureHeight;
+      (height > imageHeight ? static_cast<float>(imageHeight) + g_textureOffsetY : static_cast<float>(height) + g_textureOffsetX) / textureHeight;
     primitive->quad[0].z = 0.000001f;
     primitive->quad[0].rhw = 0.999999f;
     primitive->quad[0].diffuse = color;

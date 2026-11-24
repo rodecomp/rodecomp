@@ -138,11 +138,14 @@ void UIAccountLimitedToolWnd::OnCreate(int, int) {
       this->m_buttons[i]->Enable(1);
       this->AddChild(this->m_buttons[i]);
       if (i == 0) {
-        this->m_buttons[i]->SetDisabled(0);
+        UIBitmapButton* button = this->m_buttons[i];
+        button->SetDisabled(0);
+        button->Invalidate();
       } else {
-        this->m_buttons[i]->SetDisabled(1);
+        UIBitmapButton* button = this->m_buttons[i];
+        button->SetDisabled(1);
+        button->Invalidate();
       }
-      this->m_buttons[i]->Invalidate();
     }
   }
 
@@ -208,14 +211,13 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_STARTTIME_MSG)), 60, 0, 0);
           UITextViewer* viewer = this->m_viewer;
           if (viewer->verticalOverflow != 0) {
-            const int lineCount = viewer->LineCount();
-            viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+            viewer->SendMsg(nullptr, UM_SCROLLVERT, static_cast<int>(viewer->lines.size()), 0, 0, 0);
             this->m_edits[i]->SelectAll();
             return 0;
           }
 
-          const AccountLimitedRange& range = ranges[i % 5 - 2];
-          if (std::atoi(this->m_edits[i]->Text()) < range.minimum || std::atoi(this->m_edits[i]->Text()) > range.maximum) {
+          const int rangeIndex = i % 5 - 2;
+          if (std::atoi(this->m_edits[i]->Text()) < ranges[rangeIndex].minimum || std::atoi(this->m_edits[i]->Text()) > ranges[rangeIndex].maximum) {
             this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_WRONG_RANGE_MSG)), 60, 0, 0);
             UITextViewer* rangeViewer = this->m_viewer;
             if (rangeViewer->verticalOverflow != 0) {
@@ -289,9 +291,9 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       const std::string name = this->m_edits[0]->Text();
       if (name.empty()) {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
-        if (this->m_viewer->verticalOverflow != 0) {
-          const int lineCount = this->m_viewer->LineCount();
-          this->m_viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, viewer->LineCount(), 0, 0, 0);
         }
         this->m_edits[0]->SelectAll();
       } else {
@@ -353,8 +355,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, viewer->LineCount(), 0, 0, 0);
         }
         UIBitmapButton* deleteButton = this->m_buttons[2];
         deleteButton->SetDisabled(0);

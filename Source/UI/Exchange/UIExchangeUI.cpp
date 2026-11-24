@@ -312,10 +312,7 @@ void ExchangeUI::CUIItem::Paint() {
 void CUIExchangeUI::OnInit() {
   this->Move((g_renderer->viewport.width - 640) / 2 + 100, g_renderer->viewport.height * 100 / 480);
 
-  {
-    const std::string title = std::format("{} : ", LookupMessage(MSI_EXCHANGE));
-    this->titleBar->SetTitle(title);
-  }
+  this->titleBar->SetTitle(std::format("{} : ", LookupMessage(MSI_EXCHANGE)));
 
   this->screenshotLabel->SetText(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE));
 
@@ -906,6 +903,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->logCheckBox->disabled = 0;
   this->logCheckBox->Invalidate();
   {
+    CUICheckBox* checkBox = this->logCheckBox;
     // GLOBAL: gl_25424
     const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x452FEF0D7FC95565ULL));
     // GLOBAL: gl_25425
@@ -914,7 +912,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x839B27DF8F5967B3ULL));
     // GLOBAL: gl_25427
     const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xF3CB6F7711A71B6DULL));
-    this->logCheckBox->SetImages(normal, hover, pressed, disabled);
+    checkBox->SetImages(normal, hover, pressed, disabled);
   }
   this->logCheckBox->checked = false;
   this->logCheckBox->Invalidate();
@@ -945,6 +943,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->lockButton->disabled = 0;
   this->lockButton->Invalidate();
   {
+    CUIImageButton* button = this->lockButton;
     // GLOBAL: gl_25429
     const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok_dis.bmp", 0x4F99DF03C3EF31B7ULL));
     // GLOBAL: gl_25430
@@ -953,7 +952,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok_b.bmp", 0x0F41EBBDA32D1B17ULL));
     // GLOBAL: gl_25432
     const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok.bmp", 0xFBD599E117C547C1ULL));
-    this->lockButton->SetImages(normal, hover, pressed, disabled);
+    button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->lockButton);
 
@@ -964,6 +963,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->tradeButton->disabled = 0;
   this->tradeButton->Invalidate();
   {
+    CUIImageButton* button = this->tradeButton;
     // GLOBAL: gl_25433
     const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange_dis.bmp", 0x4F637DC51307B759ULL));
     // GLOBAL: gl_25434
@@ -972,7 +972,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange_b.bmp", 0xCFF3899D95AF355FULL));
     // GLOBAL: gl_25436
     const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange.bmp", 0x9171997D6963C9F7ULL));
-    this->tradeButton->SetImages(normal, hover, pressed, disabled);
+    button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->tradeButton);
 
@@ -983,6 +983,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->cancelButton->disabled = 0;
   this->cancelButton->Invalidate();
   {
+    CUIImageButton* button = this->cancelButton;
     // GLOBAL: gl_25437
     const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x33133B977BCD03CDULL));
     // GLOBAL: gl_25438
@@ -991,7 +992,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
     const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel_b.bmp", 0xB39FA7917BCFBB8DULL));
     // GLOBAL: gl_25440
     const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x2DCB7567394DC1ABULL));
-    this->cancelButton->SetImages(normal, hover, pressed, disabled);
+    button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->cancelButton);
 }

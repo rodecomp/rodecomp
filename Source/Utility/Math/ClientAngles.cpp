@@ -1,4 +1,5 @@
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/ClientAngles.h"
 
 #include <bit>
 #include <cmath>
@@ -22,8 +23,11 @@ static void Wrap(int& degrees) {
 // OFFSET: 0x00554280
 // FUNCTION: fn_02021
 void CreateTrigonometricTable() {
+  const float angleDivisor = g_angleDivisor;
+  const float piApprox = 3.141592f;
+
   for (int index = 0; index <= 360; ++index) {
-    const float angle = static_cast<float>(index) / 180.0f * 3.141592f;
+    const float angle = static_cast<float>(index) / angleDivisor * piApprox;
     g_radTable[index] = angle;
     g_sinTable[index] = ClientSin(angle);
     g_cosTable[index] = ClientCos(angle);

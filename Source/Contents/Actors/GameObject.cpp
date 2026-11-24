@@ -100,6 +100,12 @@ std::uint64_t CGameObject::s_nextIdentity = 0;
 float g_cotangent = 0.16f;
 
 namespace {
+// GLOBAL: gl_26036
+const int s_cartEffectIds[14][2] = {
+  {0x15, 0x1E}, {0x01, 0x19}, {0x10, 0x1A}, {0x11, 0x1B}, {0x12, 0x1C}, {0x13, 0x1D}, {0x2D, 0x2E},
+  {0x2F, 0x30}, {0x31, 0x32}, {0x33, 0x34}, {0x36, 0x37}, {0x38, 0x39}, {0x3A, 0x3B}, {0x41, 0x42},
+};
+
 struct PrimitivePoolAccess : RenderPrimitivePool {
   // INLINED
   inline RenderPrimitive* AcquireLocal() {
@@ -282,8 +288,8 @@ void CRenderObject::Render(int argument) {
 // FUNCTION: fn_21103
 void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  CSprRes* sprite = this->render.sprite;
   CActRes* action = this->render.action;
+  CSprRes* sprite = this->render.sprite;
 
   if (g_session.guildLeader == 1 && seasonal == true) {
     SYSTEMTIME time;
@@ -1371,10 +1377,6 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (IsHiding(this->stateFlags) || IsCloaking(this->stateFlags) || this->statusEffects[1] != 0) {
       break;
     }
-    int effectIds[14][2] = {
-      {0x15, 0x1E}, {0x01, 0x19}, {0x10, 0x1A}, {0x11, 0x1B}, {0x12, 0x1C}, {0x13, 0x1D}, {0x2D, 0x2E},
-      {0x2F, 0x30}, {0x31, 0x32}, {0x33, 0x34}, {0x36, 0x37}, {0x38, 0x39}, {0x3A, 0x3B}, {0x41, 0x42},
-    };
     int row = this->maxHp;
     int baby = 0;
     if (g_session.IsSuperNoviceClass(this->GetEffectiveJob(-1))) {
@@ -1383,7 +1385,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
       baby = 1;
     }
-    CGameObject* effect = mode->SpawnMsgEffect(effectIds[row][baby], &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(s_cartEffectIds[row][baby], &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[1] = effect;

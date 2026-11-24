@@ -53,14 +53,17 @@ void CAxeBoomerang::Close() {
 // FUNCTION: fn_06840
 void CAxeBoomerang::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->particlePosition, 5));
-  if (this->id != 0x887) {
+  switch (this->id) {
+  case 0x887:
+    particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
+    break;
+  default:
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str");
     } else {
       particle->Open("new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str");
     }
-  } else {
-    particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
+    break;
   }
 
   particle->m_loop = true;

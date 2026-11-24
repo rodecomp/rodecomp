@@ -32,9 +32,19 @@ void CNeoPackageItemMgr::Init() {
 // FUNCTION: fn_06523
 void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability) {
   std::map<int, PackageGroup>& groups = this->m_packages[packageId];
-  PackageGroup& group = groups.try_emplace(groupId, PackageGroup{}).first->second;
-  group.totalProbability += probability;
-  group.items.emplace_back(itemId, name, probability);
+  auto group = groups.try_emplace(groupId, PackageGroup()).first;
+  group->second.totalProbability += probability;
+  group->second.items.emplace_back(itemId, name, probability);
+}
+
+// INLINED
+static std::optional<std::map<int, PackageGroup>*> FindGroups(std::map<int, std::map<int, PackageGroup>>& packages, int packageId) {
+  std::map<int, std::map<int, PackageGroup>>::iterator package = packages.find(packageId);
+  if (package != packages.end()) {
+    return &package->second;
+  }
+
+  return std::nullopt;
 }
 
 // OFFSET: 0x006D2140
@@ -45,12 +55,7 @@ __declspec(noinline) std::optional<std::map<int, PackageGroup>*> CNeoPackageItem
     packageId = itemId;
   }
 
-  std::map<int, std::map<int, PackageGroup>>::iterator package = this->m_packages.find(packageId);
-  if (package != this->m_packages.end()) {
-    return &package->second;
-  }
-
-  return std::nullopt;
+  return FindGroups(this->m_packages, packageId);
 }
 
 // OFFSET: 0x006D21B0
@@ -145,7 +150,11 @@ int CNeoPackageItemMgr::LuaInsertPackage(lua_State* state) {
   const double itemId = lua_tonumber(state, 3);
   const std::string name = lua_tostring(state, 4);
   const int probability = static_cast<int>(lua_tonumber(state, 5));
-  CNeoPackageItemMgr* packageItemMgr = CNeoPackageItemMgr::GetInstance();
+  if (!CNeoPackageItemMgr::s_instance) {
+    CNeoPackageItemMgr::s_instance = new (std::nothrow) CNeoPackageItemMgr;
+  }
+
+  CNeoPackageItemMgr* packageItemMgr = CNeoPackageItemMgr::s_instance;
   packageItemMgr->InsertPackage(packageId, static_cast<int>(groupId), static_cast<int>(itemId), name, probability);
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
@@ -195,9 +204,7 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
   }
 
   this->m_items.insert(itemId);
-  const auto tabEnd = selectPackage->second.end();
-  for (auto tabIt = selectPackage->second.begin(); tabIt != tabEnd; ++tabIt) {
-    std::pair<const int, SelectPackageTab>& tab = *tabIt;
+  for (std::pair<const int, SelectPackageTab>& tab : selectPackage->second) {
     std::optional<std::vector<ITEM_INFO>*> items = SelectPackageItemMgr()->FindItems(itemId, tab.first);
     if (items) {
       for (ITEM_INFO& item : **items) {

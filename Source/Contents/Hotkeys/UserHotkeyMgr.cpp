@@ -64,7 +64,26 @@ int CSession::HotkeyIndex(int tab, int index) const {
 
   int count = 0;
   g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
-  return index >= count ? -1 : index;
+  if (index >= count) {
+    index = -1;
+  }
+  return index;
+}
+
+// INLINED
+static int HiddenHotkeyCount(int tab, int count) {
+  if (tab != 1) {
+    return 0;
+  }
+
+  int hidden = 0;
+  for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
+    if (HiddenInterfaceIndex(index) == true) {
+      ++hidden;
+    }
+  }
+
+  return hidden;
 }
 
 // OFFSET: 0x00E0A4C0
@@ -72,16 +91,7 @@ int CSession::HotkeyIndex(int tab, int index) const {
 int CSession::HotkeyCount(int tab) const {
   int count = 0;
   if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
-    int hidden = 0;
-    if (tab == 1) {
-      for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
-        if (HiddenInterfaceIndex(index) == true) {
-          ++hidden;
-        }
-      }
-    }
-
-    return count - hidden;
+    return count - HiddenHotkeyCount(tab, count);
   }
 
   return count;
@@ -160,7 +170,7 @@ void CUserHotkeyMgr::Reset() {
 
 // OFFSET: 0x005BC420
 // FUNCTION: fn_03464
-void CUserHotkeyMgr::LoadV2(Json::Value& data) {
+void CAccountLinkedUserDataMgr::LoadUserHotkeysV2(Json::Value& data) {
   Json::Value values = data["UserHotkey_V2"];
   Json::Value::iterator it = values.begin();
   if (values.empty()) {
@@ -200,7 +210,7 @@ void CUserHotkeyMgr::Capture() {
       if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
         hotkey.description = description;
         if (!hotkey.description.empty()) {
-          this->m_original.emplace_back(hotkey.tab, hotkey.index, hotkey.key1, hotkey.key2, hotkey.description);
+          this->m_original.push_back(hotkey);
         }
       }
     }
@@ -220,17 +230,14 @@ bool CUserHotkeyMgr::HasUserAssignments() const {
         continue;
       }
 
-      int key1 = 0;
-      int key2 = 0;
-      std::string keyName;
-      std::string userDescription;
+      HotkeyInfo hotkey(0, 0);
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
-        userDescription = description;
-        if (!userDescription.empty() &&
-            g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
+        hotkey.description = description;
+        if (!hotkey.description.empty() &&
+            g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
           std::string originalDescription = description;
           if (!originalDescription.empty()) {
             return true;
@@ -289,6 +296,7 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
       emotionTab.append(value);
       break;
     }
+
     ++it;
   }
 

@@ -29,19 +29,20 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float rightZ = sideZ * sideInverse;
 
   const float crossX = rightZ * forwardY - rightY * forwardZ;
-  const float crossZ = rightY * forwardX - rightX * forwardY;
   const float crossY = rightX * forwardZ - rightZ * forwardX;
+  const float crossZ = rightY * forwardX - rightX * forwardY;
   const float upLength = SquareRoot((crossY * crossY + crossX * crossX) + crossZ * crossZ);
   const float upInverse = numerator / upLength;
+
+  const float upX = crossX * upInverse;
+  const float upY = crossY * upInverse;
   const float upZ = crossZ * upInverse;
 
   this->values[2] = forwardX;
   this->values[0] = rightX;
   this->values[7] = upZ;
-  const float upX = crossX * upInverse;
   this->values[5] = forwardY;
   this->values[1] = upX;
-  const float upY = crossY * upInverse;
   this->values[3] = rightY;
   this->values[6] = rightZ;
   this->values[4] = upY;

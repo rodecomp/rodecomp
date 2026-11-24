@@ -57,3 +57,5 @@ template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemDat
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnCreate(int, int);
 template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnCreate(int, int);
 template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnCreate(int, int);
+template __forceinline void std::vector<std::string>::_Buy_nonzero(const std::size_t);
+template __forceinline void std::vector<std::string>::_Buy_raw(const std::size_t);

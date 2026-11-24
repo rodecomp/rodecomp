@@ -18,6 +18,14 @@ struct ZoneVector3d : vector3d {
   }
 };
 
+// INLINED
+static inline void SetIdentity(CParticle* particle, int id, int group, int column, int row) {
+  particle->effectId = id;
+  particle->rowIndex = row;
+  particle->columnIndex = column;
+  particle->groupIndex = group;
+}
+
 // OFFSET: 0x00B6DAC0
 // FUNCTION: fn_46117
 CMapMagicZoneEffect::CMapMagicZoneEffect() : CEffect(0x28A), spinners(), petals(), ribbon() {
@@ -106,11 +114,7 @@ __forceinline void CMapMagicZoneEffect::AddRibbon() {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_blue.tga");
-        const int id = this->id;
-        particle->rowIndex = row;
-        particle->effectId = id;
-        particle->columnIndex = segment;
-        particle->groupIndex = 3;
+        SetIdentity(particle, this->id, 3, segment, row);
         particle->alpha = 50;
         particle->angle = static_cast<float>(row * 90);
         particle->angleParameter = 315;

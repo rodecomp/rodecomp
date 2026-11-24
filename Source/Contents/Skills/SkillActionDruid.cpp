@@ -585,8 +585,8 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
     horizontal ? std::string(OBFUSCATE_TEXT_NAMED("low_flight_horizon", 0x8B65CD61012B5931ULL, horizonName)) : std::string(OBFUSCATE_TEXT_NAMED("low_flight_vertical", 0xF7530137154D8FE5ULL, verticalName))
   );
 
-  float angleOffset = 0.0f;
   EffectLists* effects = g_effectMgr;
+  float angleOffset = 0.0f;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
     if (horizontal) {
@@ -602,7 +602,8 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
         angleOffset = -270.0f;
       }
     }
-    effect->SetAngle(static_cast<float>((static_cast<int>(angle + angleOffset) + 360) % 360));
+    const int rotation = (static_cast<int>(angle + angleOffset) + 360) % 360;
+    effect->SetAngle(static_cast<float>(rotation));
   }
 
   effects = g_effectMgr;

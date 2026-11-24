@@ -250,19 +250,19 @@ bool C3dAnimModelRes::Load(const char* name) {
   file.Close();
   delete[] names;
 
-  for (AnimatedModelNode* node : this->nodes) {
-    if (!node->parentName.empty()) {
+  for (std::list<AnimatedModelNode*>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    if (!(*it)->parentName.empty()) {
       const auto findNode = [this](const char* name) -> AnimatedModelNode* {
-        for (AnimatedModelNode* candidate : this->nodes) {
-          if (candidate->name == name) {
-            return candidate;
+        for (std::list<AnimatedModelNode*>::iterator candidate = this->nodes.begin(); candidate != this->nodes.end(); ++candidate) {
+          if ((*candidate)->name == name) {
+            return *candidate;
           }
         }
         return nullptr;
       };
-      AnimatedModelNode* parent = findNode(node->parentName.c_str());
-      node->parent = parent;
-      parent->children.push_back(node);
+      AnimatedModelNode* parent = findNode((*it)->parentName.c_str());
+      (*it)->parent = parent;
+      parent->children.push_back(*it);
     }
   }
 

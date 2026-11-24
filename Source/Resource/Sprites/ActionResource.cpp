@@ -76,10 +76,12 @@ __forceinline void CActRes::AdjustCellPosition(SpriteFrameCell* cell, int width,
 // FUNCTION: fn_07750
 bool CActRes::Load(const char* name) {
   CFile file;
+  bool loaded;
+
   if (!file.Open(name, 0, true, false)) {
+    loaded = false;
     ShowErrorDialog((std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
-    return false;
-  }
+  } else {
 
   struct Header {
     std::uint16_t magic;
@@ -123,11 +125,7 @@ bool CActRes::Load(const char* name) {
       int cellCount;
       file.Read(&cellCount, sizeof(cellCount));
       ActionFrame& frame = animation[frameIndex];
-      frame.sound = -1;
-      frame.cellCount = cellCount;
-      frame.cells.resize(std::min(static_cast<unsigned>(cellCount), 1000u));
-      frame.anchors.clear();
-      frame.anchorCount = 0;
+      frame.InitializeCells(cellCount);
       std::memcpy(frame.rangeBounds, range1, sizeof(range1));
       std::memcpy(frame.rangeBounds + 4, range2, sizeof(range2));
       if (this->maximumCells < cellCount) {
@@ -245,7 +243,10 @@ bool CActRes::Load(const char* name) {
   }
 
   file.Close();
-  return true;
+  loaded = true;
+  }
+
+  return loaded;
 }
 
 // OFFSET: 0x007445A0
@@ -268,12 +269,10 @@ void CActRes::InitializeAnimations(unsigned animationCount) {
 void ActionFrame::InitializeCells(unsigned cellCount) {
   this->cellCount = cellCount;
   this->sound = -1;
-  const unsigned size = (std::min)(cellCount, 1000u);
-  if (this->cells.size() > size) {
-    this->cells.erase(this->cells.begin() + size, this->cells.end());
-  } else if (this->cells.size() < size) {
-    this->cells.resize(size, SpriteFrameCell{});
+  if (cellCount > 1000) {
+    cellCount = 1000;
   }
+  this->cells.resize(cellCount);
   this->anchors.clear();
   this->anchorCount = 0;
 }

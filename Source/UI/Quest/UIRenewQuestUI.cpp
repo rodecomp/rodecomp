@@ -934,26 +934,22 @@ void CUIRenewQuestUI::OnCallback56() {
 // OFFSET: 0x00A66FF0
 // FUNCTION: fn_16628
 void CUIRenewQuestUI::SelectQuest(unsigned int questId) {
-  for (auto list = this->questLists.begin(); list != this->questLists.end(); ++list) {
-    CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = (*list)->list;
-    auto node = std::find(listBox->data.begin(), listBox->data.end(), questId);
-    if (node != listBox->data.end()) {
-      this->tab->SelectPage(*list);
-
-      int index = 0;
-      for (auto it = listBox->data.begin(); it != node; ++it) {
-        ++index;
-      }
+  for (auto* page : this->questLists) {
+    const auto& data = page->list->data;
+    const auto node = std::find(data.begin(), data.end(), questId);
+    if (node != data.end()) {
+      this->tab->SelectPage(page);
+      auto* listBox = page->list;
+      const int index = static_cast<int>(std::distance(data.begin(), node));
 
       listBox->scrollBar->SetPosition(listBox->rowHeight * index);
 
-      for (RenewQuestUI::CUIQuestItem* item : listBox->items) {
-        if (index == item->index) {
-          listBox->SelectItem(item);
-          return;
-        }
+      const auto found = std::find_if(listBox->items.begin(), listBox->items.end(), [index](RenewQuestUI::CUIQuestItem* item) {
+        return index == item->index;
+      });
+      if (found != listBox->items.end()) {
+        listBox->SelectItem(*found);
       }
-
       return;
     }
   }
@@ -1116,6 +1112,16 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
   }
 }
 
+// INLINED
+static void AddProgressingQuest(
+  CUIRenewQuestUI* window, CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox, const std::pair<const unsigned int, RenewQuestOngoingInfo>& quest
+) {
+  const std::pair<const unsigned long, RenewQuestOngoingInfo> entry = quest;
+  if (window->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
+    listBox->AddData(entry.first, false);
+  }
+}
+
 // OFFSET: 0x00A67290
 // FUNCTION: fn_16629
 void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
@@ -1128,10 +1134,8 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
       if (CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
-        for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
-            listBox->AddData(entry.first, false);
-          }
+        for (const auto& quest : g_renewQuestMgr->m_ongoingQuests) {
+          AddProgressingQuest(this, listBox, quest);
         }
         listBox->UpdateScrollBar();
         if (position == -1) {
@@ -1186,7 +1190,10 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state == 0) {
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
+          }
+          if (entry.second.questType != 1 && entry.second.m_state == 0) {
             listBox->AddData(entry.first, false);
           }
         }

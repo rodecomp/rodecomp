@@ -163,7 +163,7 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
   value += buffer[3];
   value += buffer[4];
   fields[0] = this->DecodeNumber(value);
-  value.clear();
+  value = "";
 
   value += buffer[5];
   fields[1] = this->DecodeNumber(value);
@@ -259,13 +259,12 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
     const int optionCount = fields[cardCount + 8];
     item.optionCount = optionCount;
     for (int option = 1; option < optionCount + 1; ++option) {
-      const int* record = &fields[cardCount + 9 + (option - 1) * 3];
       ItemOption value;
-      value.id = static_cast<std::int16_t>(record[0]);
-      value.value = static_cast<std::int16_t>(record[2]);
-      value.parameter = static_cast<unsigned char>(record[1]);
-      const int index = option - 1;
-      item.SetOption(value, index);
+      value.id = static_cast<std::int16_t>(fields[cardCount + 9 + (option - 1) * 3]);
+      const unsigned char parameter = static_cast<unsigned char>(fields[cardCount + 10 + (option - 1) * 3]);
+      value.value = static_cast<std::int16_t>(fields[cardCount + 11 + (option - 1) * 3]);
+      value.parameter = parameter;
+      item.SetOption(value, option - 1);
     }
   }
 
@@ -307,7 +306,7 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
     } else if (byte == separator) {
       ++count;
       cards.push_back(this->DecodeNumber(value));
-      value.clear();
+      value = "";
     } else {
       --position;
       cards.push_back(this->DecodeNumber(value));
@@ -329,13 +328,11 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
-      return 0;
     }
     break;
   case UM_DOWNPUSH:
     if (this->verticalOverflow) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
-      return 0;
     }
     break;
   case UM_SETTEXT:
@@ -353,11 +350,11 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       UITagButton* tag = this->m_tagWindows[index];
       if (tag) {
         const int line = tag->m_value;
-        if (line < this->topLine || line >= this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
-          tag->Enable(0);
-        } else {
+        if (line >= this->topLine && line < this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine) {
           tag->Enable(1);
           tag->Move(tag->geometry.x - this->horizontalOffset + offset, (line - this->topLine) * this->lineHeight + 3);
+        } else {
+          tag->Enable(0);
         }
       }
     }
@@ -566,17 +563,20 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
       } else {
         const int flag = std::atoi(button->GetString(5).c_str());
         const int id = std::atoi(button->GetString(6).c_str());
-        unsigned char hundreds = 0;
+        unsigned char group = 0;
         if (code >= 100) {
-          hundreds = 1;
+          group = 1;
           code -= 100;
         }
 
-        const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
-        const int remainder = code < 10 ? code : code - 10;
-        g_navigationManager.StartNavigation(
-          name.c_str(), mode, remainder < 1 ? group : static_cast<unsigned char>(group + 4), flag == 0, x, y, id
-        );
+        if (code >= 10) {
+          group += 2;
+          code -= 10;
+        }
+        if (code >= 1) {
+          group += 4;
+        }
+        g_navigationManager.StartNavigation(name.c_str(), mode, group, flag == 0, x, y, id);
       }
     } else {
       g_navigationManager.StartNavigation(name.c_str(), 2, 5, false, x, y, 1002);
@@ -663,25 +663,31 @@ __forceinline int UITagListBox::WrappedLineLength(const char* text, int length, 
   return static_cast<int>(current - text);
 }
 
-// OFFSET: 0x009BB8E0
-// FUNCTION: fn_13888
-void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
-  const char* buffer = text.c_str();
-  const int firstLine = static_cast<int>(this->lines.size());
-  std::size_t position = 0;
-  while (text.size() > position) {
-    const char* start = buffer + position;
-    int next = this->WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
+namespace {
+  // INLINED
+  int LineEnd(int end, const std::vector<UITagListBox::STagInfoV2>& tags) {
     for (std::size_t index = 0; index < tags.size(); ++index) {
-      if (next > tags[index].startOffset && next < tags[index].endOffset) {
-        next = tags[index].startOffset;
-        break;
+      if (end > tags[index].startOffset && end < tags[index].endOffset) {
+        return tags[index].startOffset;
       }
     }
 
-    std::string line(start, buffer + next);
+    return end;
+  }
+}
+
+// OFFSET: 0x009BB8E0
+// FUNCTION: fn_13888
+void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
+  const int firstLine = static_cast<int>(this->lines.size());
+  const char* buffer = text.c_str();
+  std::size_t position = 0;
+  while (text.size() > position) {
+    const char* start = buffer + position;
+    position = LineEnd(this->WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position), tags);
+
+    std::string line(start, buffer + position);
     this->AddLine(line.c_str());
-    position = next;
   }
 
   for (std::vector<STagInfoV2>::iterator tag = tags.begin(); tag != tags.end(); ++tag) {
@@ -758,7 +764,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
         button->item.identity[0] = id;
         button->item.identified = 1;
         button->item.refiningLevel = 0;
-        button->item.itemId = button->GetString(0);
+        button->item.itemId = static_cast<const std::string&>(button->GetString(0));
         break;
       }
       case LINE_SEGMENT_ITEM_LINK: {

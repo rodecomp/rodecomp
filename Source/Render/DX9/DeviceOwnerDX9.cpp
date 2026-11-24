@@ -73,25 +73,25 @@ UINT* DeviceOwnerDX9::AdjustTextureDimensions(UINT* output, UINT width, UINT hei
     return value + (value == 0);
   };
 
-  UINT adjustedWidth = roundUp(width);
-  UINT adjustedHeight = roundUp(height);
+  width = roundUp(width);
+  height = roundUp(height);
   const DWORD ratio = this->caps.MaxTextureAspectRatio;
 
-  adjustedWidth = std::min<UINT>(adjustedWidth, this->caps.MaxTextureWidth);
-  adjustedHeight = std::min<UINT>(adjustedHeight, this->caps.MaxTextureHeight);
+  width = std::min<UINT>(width, this->caps.MaxTextureWidth);
+  height = std::min<UINT>(height, this->caps.MaxTextureHeight);
 
   if (ratio != 0) {
-    if (adjustedWidth / adjustedHeight > ratio) {
-      adjustedHeight = adjustedWidth / ratio;
+    if (width / height > ratio) {
+      height = width / ratio;
     }
 
-    if (adjustedHeight / adjustedWidth > ratio) {
-      adjustedWidth = adjustedHeight / ratio;
+    if (height / width > ratio) {
+      width = height / ratio;
     }
   }
 
-  output[0] = adjustedWidth;
-  output[1] = adjustedHeight;
+  output[0] = width;
+  output[1] = height;
   return output;
 }
 
