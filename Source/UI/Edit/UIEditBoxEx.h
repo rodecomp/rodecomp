@@ -21,6 +21,8 @@ struct EditLine {
 class CUIEditCtrlEx : public UIEditCtrl3 {
 public:
   CUIEditCtrlEx();
+  CUIEditCtrlEx(const CUIEditCtrlEx& other);
+  void SetAlignment(int value);
   void Paint() override;
   void Invalidate() override;
   void SelectAll() override;

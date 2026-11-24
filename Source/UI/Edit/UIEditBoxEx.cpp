@@ -314,12 +314,17 @@ int CUIEditBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   return UIWindow::SendMsg(sender, message, a, b, c, d);
 }
 
+// OFFSET: 0x009E60B0
+// FUNCTION: fn_46556
+inline void CUIEditCtrlEx::SetAlignment(int value) {
+  this->alignment = value;
+  this->Invalidate();
+}
+
 // OFFSET: 0x009E6090
 // FUNCTION: fn_14451
 void CUIEditBoxEx::SetAlignment(int value) {
-  CUIEditCtrlEx* edit = this->edit;
-  edit->alignment = value;
-  edit->Invalidate();
+  this->edit->SetAlignment(value);
 }
 
 // OFFSET: 0x009E60D0
@@ -723,6 +728,23 @@ CUIEditCtrlEx::CUIEditCtrlEx()
       scrollStep(1),
       scrollPosition(0),
       textAlignment(0) {
+}
+
+// OFFSET: 0x009E3D80
+// FUNCTION: fn_46555
+CUIEditCtrlEx::CUIEditCtrlEx(const CUIEditCtrlEx& other)
+    : UIEditCtrl3(other), normalColor(0), outlineColor(0), drawOutline(0),
+      placeholderColor(0x808080), alignment(0), horizontalPadding(3), verticalPadding(1),
+      selectedAll(0), column(0), line(0), previousCursorLine(-1), cursorAdvance(0), wrapPending(0),
+      caretStart(std::chrono::system_clock::now()), scrollMaximum(0), visibleLines(0),
+      scrollStep(1), scrollPosition(0), textAlignment(0) {
+  this->multiline = other.multiline;
+  this->normalColor = other.normalColor;
+  this->textColor = this->normalColor;
+  this->selectedAll = 1;
+  this->maximum = other.maximum;
+  this->mask = other.mask;
+  this->SetAlignment(other.alignment);
 }
 
 // OFFSET: 0x009E45F0
