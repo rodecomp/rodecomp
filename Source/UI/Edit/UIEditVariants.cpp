@@ -766,7 +766,7 @@ void UIEditCtrl4::PaintText() {
     x -= this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
   }
 
-  std::string display = "";
+  std::string display;
   if (g_windowMgr.GetHoverWindow() == this) {
     this->Synchronize();
     unsigned begin;
