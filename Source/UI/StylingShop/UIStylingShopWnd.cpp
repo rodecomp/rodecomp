@@ -331,10 +331,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case STYLINGSHOP_BUTTON_JOB_PREV: {
     UIDisplayCharacter* display = this->m_display;
     if (display->m_jobs.size() >= 2) {
-      std::map<int, int>::iterator it = display->m_jobs.lower_bound(display->job);
-      if (it != display->m_jobs.end() && it->first > display->job) {
-        it = display->m_jobs.end();
-      }
+      std::map<int, int>::iterator it = display->m_jobs.find(display->job);
       if (it == display->m_jobs.end()) {
         --it;
       }
@@ -348,18 +345,17 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     break;
   }
   case STYLINGSHOP_BUTTON_JOB_NEXT: {
-    if (this->m_display->m_jobs.size() >= 2) {
-      std::map<int, int>::iterator it = this->m_display->m_jobs.lower_bound(this->m_display->job);
-      if (it != this->m_display->m_jobs.end() && it->first != this->m_display->job) {
-        it = this->m_display->m_jobs.end();
-      }
-      if (it != this->m_display->m_jobs.end()) {
+    UIDisplayCharacter* display = this->m_display;
+    const std::map<int, int>& jobs = display->m_jobs;
+    if (jobs.size() >= 2) {
+      std::map<int, int>::const_iterator it = jobs.find(display->job);
+      if (it != jobs.end()) {
         ++it;
       }
-      if (it == this->m_display->m_jobs.end()) {
-        it = this->m_display->m_jobs.begin();
+      if (it == jobs.end()) {
+        it = jobs.begin();
       }
-      this->m_display->job = it->first;
+      display->job = it->first;
     }
     break;
   }
