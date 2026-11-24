@@ -3862,7 +3862,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
 // OFFSET: 0x006AB810
 // FUNCTION: fn_06169
 void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, bool notify) {
-  this->activeItems.insert(itemId);
+  this->activeItems.emplace(itemId);
 
   auto combinations = this->m_itemCombinations.find(itemId);
   if (this->m_itemCombinations.end() == combinations) {
@@ -6794,6 +6794,34 @@ bool EquipmentProperties::CEquipmentPropertiesMgr::InitializeLua() {
   return this->loadValid;
 }
 
+// INLINED
+static int ReadIntArray(const CLuaInstance& script, std::vector<int>& values, const char* name) {
+  if (lua_type(script.GetState(), -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(script.GetState(), -1, name);
+  const int type = lua_type(script.GetState(), -1);
+  int result;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(script.GetState());
+    result = 0;
+    while (lua_next(script.GetState(), -2) != 0) {
+      const int valueType = lua_type(script.GetState(), -1);
+      result = valueType == LUA_TNUMBER ? 0 : 2;
+      if (valueType != LUA_TNUMBER) {
+        break;
+      }
+      values.push_back(static_cast<int>(lua_tonumber(script.GetState(), -1)));
+      lua_settop(script.GetState(), -2);
+    }
+  } else {
+    result = type == LUA_TNIL ? 1 : 2;
+  }
+  lua_settop(script.GetState(), -2);
+  return result;
+}
+
 // OFFSET: 0x006B4600
 // FUNCTION: fn_06197
 void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
@@ -6810,7 +6838,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       CEquipmentInfo info;
       unsigned int key = 0;
       int result;
-      int type = lua_type(this->script.GetState(), -2);
+      const int type = lua_type(this->script.GetState(), -2);
       if (type == LUA_TNUMBER) {
         key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
         result = 0;
@@ -6826,27 +6854,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       }
 
       std::vector<int> stats;
-      if (lua_type(this->script.GetState(), -1) == LUA_TTABLE) {
-        lua_getfield(this->script.GetState(), -1, "Stat");
-        type = lua_type(this->script.GetState(), -1);
-        if (type == LUA_TTABLE) {
-          lua_pushnil(this->script.GetState());
-          result = 0;
-          while (lua_next(this->script.GetState(), -2) != 0) {
-            if (lua_type(this->script.GetState(), -1) != LUA_TNUMBER) {
-              result = 2;
-              break;
-            }
-            stats.push_back(static_cast<int>(lua_tonumber(this->script.GetState(), -1)));
-            lua_settop(this->script.GetState(), -2);
-          }
-        } else {
-          result = (type != LUA_TNIL) + 1;
-        }
-        lua_settop(this->script.GetState(), -2);
-      } else {
-        result = 3;
-      }
+      result = ReadIntArray(this->script, stats, "Stat");
       bool valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
@@ -6868,7 +6876,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       }
 
       int count = 0;
-      if (hasType) {
+      if (hasType == true) {
         unsigned int hash = HashName(itemType.c_str());
         switch (hash) {
         case 0x0F1AAAA6:
@@ -6889,13 +6897,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           break;
         case 0xA4C66E86:
           info.kind = 5;
+          count = 0;
           break;
         }
       }
       valid = count == stats.size();
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, static_cast<int>(count)), 0);
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
       }
       if (!this->loadValid) {
         continue;
@@ -6966,7 +6975,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }
@@ -7035,7 +7044,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }
@@ -7046,16 +7055,22 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           if (stats[index] == 0) {
             continue;
           }
-          if (index == 0) {
+          int variable;
+          switch (index) {
+          case 0:
             info.values.try_emplace(0, stats[index]);
-          } else if (index == 1) {
-            const int variable = 41;
-            auto found = this->statVariables.find(variable);
-            if (found == this->statVariables.end()) {
-              ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
-            } else {
-              info.statProperties.try_emplace(found->second.value, stats[index]);
-            }
+            continue;
+          case 1:
+            variable = 41;
+            break;
+          default:
+            continue;
+          }
+          auto found = this->statVariables.find(variable);
+          if (found == this->statVariables.end()) {
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+          } else {
+            info.statProperties.try_emplace(found->second.value, stats[index]);
           }
         }
         break;
@@ -7116,7 +7131,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           auto found = this->statVariables.find(variable);
           if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
             info.statProperties.try_emplace(found->second.value, stats[index]);
           }

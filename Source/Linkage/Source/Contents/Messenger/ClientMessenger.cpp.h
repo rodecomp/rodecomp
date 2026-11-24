@@ -85,6 +85,7 @@ NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
 template __declspec(noinline) std::unordered_map<int, int>::unordered_map();
+template __declspec(noinline) std::unordered_map<unsigned int, int>::unordered_map();
 template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
   std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
@@ -97,7 +98,7 @@ template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::
 template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
 template __declspec(noinline) std::string fmt::format<double&, int&>(fmt::format_string<double&, int&>, double&, int&);
 template __declspec(noinline) std::wstring fmt::format<std::wstring, std::wstring>(fmt::wformat_string<std::wstring, std::wstring>, std::wstring&&, std::wstring&&);
-template __declspec(noinline) std::unordered_map<int, int, EquipmentProperties::CEquipmentValueHash>::~unordered_map();
+template __declspec(noinline) std::_Hash<std::_Umap_traits<int, int, std::_Uhash_compare<int, EquipmentProperties::CEquipmentValueHash, std::equal_to<int>>, std::allocator<std::pair<const int, int>>, false>>::~_Hash();
 template __forceinline void std::_Hash<std::_Umap_traits<std::string, std::string, std::_Uhash_compare<std::string, std::hash<std::string>, std::equal_to<std::string>>, std::allocator<std::pair<const std::string, std::string>>, false>>::clear() noexcept;
 template __forceinline std::_Hash_find_last_result<std::_List_node<std::pair<const int, int>, void*>*> std::_Hash<std::_Umap_traits<int, int, std::_Uhash_compare<int, EquipmentProperties::CEquipmentValueHash, std::equal_to<int>>, std::allocator<std::pair<const int, int>>, false>>::_Find_last<int>(const int&, const std::size_t) const;
 template __forceinline void std::_Tree<std::_Tset_traits<unsigned long, std::less<unsigned long>, std::allocator<unsigned long>, true>>::clear() noexcept;
