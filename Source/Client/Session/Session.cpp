@@ -1172,8 +1172,8 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = TT_REQ_MOVETO_MAP;
     parts[0] = tokenizer[1];
     if (tokenizer.TokenCount() == 4) {
-      parts[1] = tokenizer[2];
       parts[2] = tokenizer[3];
+      parts[1] = tokenizer[2];
     } else {
       parts[1] = parts[2].assign("0");
     }
