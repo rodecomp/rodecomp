@@ -253,7 +253,8 @@ void CEmitterEffect::CheckRange() {
   }
 
   this->emissionStopped = 1;
-  if (this->pool.active == 0) {
+  ParticlePool* pool = &this->pool;
+  if (pool->active == 0) {
     this->outsideRange = 1;
   }
 }
