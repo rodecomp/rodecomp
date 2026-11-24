@@ -1407,10 +1407,7 @@ void CEffectPrim::RenderBladeFins(matrix& wtm) {
     outer.y = -6.0f;
     inner.y = -6.0f;
 
-    int angle = this->state.slots[ec].riseAngle - 25;
-    if (angle < 0) {
-      angle += 360;
-    }
+    int angle = this->state.slots[ec].riseAngle < 25 ? this->state.slots[ec].riseAngle + 335 : this->state.slots[ec].riseAngle - 25;
     inner.x = this->state.slots[ec].height[0] * g_cosTable[angle];
     inner.z = this->state.slots[ec].height[0] * g_sinTable[angle];
     angle -= 90;
