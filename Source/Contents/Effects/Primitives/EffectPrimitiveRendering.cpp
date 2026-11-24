@@ -6223,7 +6223,8 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
     g_renderer->Project(&point2.x, wtm.values, projected);
     this->state.triangles[rpCnt].vertices[2] = projected;
     this->state.triangles[rpCnt].vertices[2].diffuse = this->state.argb;
-    this->state.triangles[rpCnt].vertices[2].u = uVal + 0.2f;
+    uVal += 0.2f;
+    this->state.triangles[rpCnt].vertices[2].u = uVal;
     this->state.triangles[rpCnt].vertices[2].v = 1.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[0];
 
@@ -6236,8 +6237,6 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
         g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
       }
     }
-
-    uVal += 0.2f;
   }
 }
 
