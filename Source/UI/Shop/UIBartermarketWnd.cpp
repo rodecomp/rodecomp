@@ -816,7 +816,8 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   }
 }
 
-// INLINED
+// OFFSET: 0x00840EC0
+// FUNCTION: fn_46511
 __forceinline int UIBartermarketWnd::GetBarterItemIndexAt(int x, int y) {
   if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return -1;
