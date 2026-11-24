@@ -229,6 +229,19 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 }
 
 namespace {
+  struct CooldownIdMatches {
+    const int& id;
+
+    // INLINED
+    bool operator()(const ShortcutCooldownRecord& record) const {
+      return record.id == id;
+    }
+  };
+}
+
+template __declspec(noinline) std::list<ShortcutCooldownRecord>::iterator std::find_if<std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches>(std::list<ShortcutCooldownRecord>::iterator, std::list<ShortcutCooldownRecord>::iterator, CooldownIdMatches);
+
+namespace {
   // INLINED
   __forceinline void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
     for (ShortcutCooldownRecord& record : cooldowns) {
@@ -282,7 +295,12 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       }
     } else if (value.slot != -1) {
       CSkillInfo skill = g_session.LookupSkill(value.id);
-      const std::list<ShortcutCooldownRecord>::iterator record = FindCooldownRecord(records, skill.id);
+      std::list<ShortcutCooldownRecord>::iterator record;
+      if (!g_session.IsHomunculusSkill(skill.id) && !g_session.IsMercenarySkill(skill.id)) {
+        record = std::find_if(records.begin(), records.end(), CooldownIdMatches{skill.id});
+      } else {
+        record = std::find_if(records.begin(), records.end(), [](const ShortcutCooldownRecord& entry) { return entry.id == 9999; });
+      }
       if (record != records.end()) {
         std::list<CooldownState>& states = record->alternate;
         const std::list<CooldownState>::iterator previous = FindCooldownState(states, value.slot);
@@ -334,4 +352,3 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
   g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
-
