@@ -6,6 +6,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Navigation/NavigationManager.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UITagButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -782,4 +783,24 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
   button->Move(position.second, -100);
   this->AddChild(button);
   this->m_tagWindows.push_back(button);
+}
+
+// OFFSET: 0x009B7320
+// FUNCTION: fn_46543
+UITagListBox::UITagListBox() : UIListBox(), m_tagWindows() {
+  this->lineHeight = 18;
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  g_skinInfo.PaletteChannels(18, 2, red, green, blue);
+  this->backgroundRed = red;
+  this->backgroundGreen = green;
+  this->backgroundBlue = blue;
+  this->plainTextMode = 0;
+}
+
+// OFFSET: 0x009B7840
+// FUNCTION: fn_46545
+__declspec(noinline) UITagListBox::~UITagListBox() {
 }

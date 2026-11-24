@@ -13,6 +13,9 @@ class UITagButton;
 
 class UITagListBox : public UIListBox {
 public:
+  UITagListBox();
+  __declspec(noinline) ~UITagListBox() override;
+
   struct STagInfoV2 {
     /* 0004 */ int type;
     /* 0008 */ int startOffset;
