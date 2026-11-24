@@ -10,7 +10,7 @@ namespace Stove::PCSDK {
 
     bool IsSuccessful() const;
 
-    /* 0000 */ std::uint8_t padding_0000[12];
+    /* 0000 */ void* padding_0000[3];
   };
 
   struct __declspec(dllimport) CallbackResult {
