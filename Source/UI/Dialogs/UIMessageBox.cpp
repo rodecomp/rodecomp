@@ -670,12 +670,12 @@ void UIMessageBox::Configure(
 
   switch (type) {
   case 4: {
-    int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    int x = width - 46;
     button->Move(x, height - 24);
     button->SetId(ID_CANCEL);
     this->AddChild(button);
