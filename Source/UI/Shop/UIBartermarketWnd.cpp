@@ -1772,15 +1772,13 @@ void UIBartermarketWnd::Paint() {
     return;
   }
 
-  const int leftHeight = this->geometry.height - this->bottomPadding - 17;
-  const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0; tile < leftTiles; ++tile) {
+  int tiles = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
+  for (int tile = 0; tile < tiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
-  const int rightHeight = this->geometry.height - this->bottomPadding - 17;
-  const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0; tile < rightTiles; ++tile) {
+  tiles = (this->geometry.height - this->bottomPadding - 17) / 8 + ((this->geometry.height - this->bottomPadding - 17) % 8 != 0);
+  for (int tile = 0; tile < tiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
@@ -1846,6 +1844,7 @@ void UIBartermarketWnd::Paint() {
     }
 
     if (++visible == this->visibleRows * this->columns) {
+      ++index;
       break;
     }
   }
