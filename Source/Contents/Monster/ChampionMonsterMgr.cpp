@@ -34,7 +34,8 @@ __declspec(noinline) CChampionMonsterMgr::~CChampionMonsterMgr() = default;
 
 // OFFSET: 0x00ADDE00
 // FUNCTION: fn_46439
-__declspec(noinline) CChampionMonsterMgr::lcData::~lcData() = default;
+CChampionMonsterMgr::lcData::~lcData() {
+}
 
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
