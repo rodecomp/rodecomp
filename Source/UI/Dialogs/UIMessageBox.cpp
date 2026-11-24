@@ -3142,21 +3142,19 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
   int high;
   if (g_session.m_petFriendly >= 0 && g_session.m_petFriendly <= 100) {
     if (g_session.GetDisplayJob() >= JT_GANGSI && g_session.GetDisplayJob() <= JT_COLLECTOR) {
-      int message;
       if (g_session.m_petFriendly <= 20) {
         low = 0;
-        message = MSI_VERYHATE;
         high = 100;
+        this->friendlyText = LookupMessage(MSI_VERYHATE);
       } else if (g_session.m_petFriendly <= 40) {
         low = 20;
-        message = MSI_HATE;
         high = 40;
+        this->friendlyText = LookupMessage(MSI_HATE);
       } else {
         low = 40;
-        message = MSI_VERY_AWKWARD;
         high = 100;
+        this->friendlyText = LookupMessage(MSI_VERY_AWKWARD);
       }
-      this->friendlyText = LookupMessage(message);
     } else {
       this->friendlyText = LookupMessage(MSI_VERY_AWKWARD);
       low = 0;
