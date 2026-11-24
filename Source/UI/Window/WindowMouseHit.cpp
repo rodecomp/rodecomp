@@ -291,12 +291,8 @@ int UIWindowMgr::ProcessMouse() {
         this->keyboardCommandRootWnd = window;
       } else {
         UIWindow* root = window;
-        for (;;) {
-          UIWindow* next = root->parent;
-          if (!next) {
-            break;
-          }
-          root = next;
+        while (root->parent) {
+          root = root->parent;
         }
         this->keyboardCommandRootWnd = root;
       }
