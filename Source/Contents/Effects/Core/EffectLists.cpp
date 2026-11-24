@@ -465,7 +465,8 @@ EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName::operator()() cons
   OBFUSCATE_STRING_BODY("DRUID\\KR_THUNDERING_ORB\\thundering_orb_orb\\thundering_orb_small.str", 0x2F8B0F37118D157FULL);
 }
 
-// INLINED
+// OFFSET: 0x00B1ACA0
+// FUNCTION: fn_46540
 __forceinline EffectLists::EffectLists() {
   this->initialized = false;
   if (this->RegisterAllocators()) {
