@@ -823,18 +823,19 @@ void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) 
 // OFFSET: 0x00D6BBC0
 // FUNCTION: fn_22073
 void CGameMode::ReceiveBasicInfoResult(unsigned char result) {
+  auto* volatile& equipWnd = g_windowMgr.equipWnd;
   switch (result) {
   case 1:
   case 2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_BUSY)), 0xFF, 0, 0, 0);
-    if (g_windowMgr.equipWnd) {
-      g_windowMgr.equipWnd->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
+    if (auto* window = equipWnd) {
+      window->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
     }
     break;
   }
 
-  if (g_windowMgr.equipWnd) {
-    g_windowMgr.equipWnd->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
+  if (auto* window = equipWnd) {
+    window->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
   }
 }
 
@@ -7898,4 +7899,3 @@ void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
 
   g_windowMgr.CloseWaitDBSaveWindow();
 }
-
