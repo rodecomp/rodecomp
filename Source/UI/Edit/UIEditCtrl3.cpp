@@ -83,7 +83,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       const std::size_t found = remaining.find(display);
 
       if (found != std::string::npos) {
-        this->pendingText[line].clear();
+        this->pendingText[line] = "";
         prefix = remaining.substr(0, found);
         rest = remaining.substr(found + std::strlen(display.c_str()));
 
