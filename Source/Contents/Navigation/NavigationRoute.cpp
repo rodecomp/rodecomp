@@ -612,6 +612,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     }
   }
 
+  bool succeeded = false;
   NavigationTarget target(type, nullptr);
   std::string text = info->GetName();
   if (type == 1) {
@@ -619,8 +620,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   } else if (type == 2) {
     CNavi_Object* npc = info->FindNpcAt(x, y);
     if (!npc) {
-      this->ShowRouteResult(-94, 1);
-      return false;
+      goto missingObject;
     }
     text.push_back(' ');
     text += npc->GetName();
@@ -628,8 +628,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   } else if (type == 3) {
     CNavi_Object* mob = info->FindMobByIndex(id);
     if (!mob) {
-      this->ShowRouteResult(-94, 1);
-      return false;
+      goto missingObject;
     }
     text.push_back(' ');
     text += mob->GetName();
@@ -637,7 +636,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   } else if (type == 0) {
     target.object = info;
   } else {
-    return false;
+    goto cleanup;
   }
 
   this->currentTarget = this->savedTarget = target;
@@ -651,10 +650,12 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     this->selectedPathNode = 0;
   }
 
-  const int result = this->Navigate(x, y);
-  this->ShowRouteResult(result, 1);
-  if (result < 0) {
-    return false;
+  {
+    const int result = this->Navigate(x, y);
+    this->ShowRouteResult(result, 1);
+    if (result < 0) {
+      goto cleanup;
+    }
   }
 
   if (g_windowMgr.modal) {
@@ -694,7 +695,13 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
       Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
     }
   }
-  return true;
+  succeeded = true;
+  goto cleanup;
+
+missingObject:
+  this->ShowRouteResult(-94, 1);
+cleanup:
+  return succeeded;
 }
 
 // OFFSET: 0x00B995D0
