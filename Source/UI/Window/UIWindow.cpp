@@ -4237,7 +4237,7 @@ int UIWindow::DrawWrappedFormattedText(
   this->WrapFormattedText(text, &lines, width, family, height, bold);
 
   if (width == 0) {
-    width = this->FormattedTextWidth(text, family, height, bold);
+    width = this->FormattedTextWidth(text, 0, 12, 0);
   }
 
   int totalHeight = 0;
