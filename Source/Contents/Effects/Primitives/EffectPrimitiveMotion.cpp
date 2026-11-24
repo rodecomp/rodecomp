@@ -328,15 +328,16 @@ bool CEffectPrim::MoveEffectPrimitive() {
   this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const auto totalTexture = this->state.totalTexture;
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
     if (this->state.repeatAnim == 0) {
-      if (next == this->state.totalTexture) {
+      if (next == totalTexture) {
         return false;
       }
     } else {
-      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(totalTexture);
     }
   }
 
