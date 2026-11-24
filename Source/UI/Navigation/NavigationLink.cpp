@@ -1306,11 +1306,11 @@ void OpenTextButtonLink(UITextButton* button) {
 // FUNCTION: fn_10488
 int CCreateLineInfo::ParseEmotion(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
-  std::cmatch match;
+  std::smatch match;
 
-  bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"));
+  bool missing = !std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"));
   if (missing) {
-    missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"));
+    missing = !std::regex_search(text, match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"));
     if (missing) {
       return index;
     }
