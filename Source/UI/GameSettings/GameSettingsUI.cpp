@@ -152,6 +152,18 @@ template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool 
   return index;
 }
 
+// INLINED
+template <class T, class D> void SetListSize(CUIListBoxEx<T, D>* list, int width, int height, int itemWidth, int rowHeight) {
+  list->itemWidth = itemWidth;
+  list->rowHeight = rowHeight;
+  list->SetSize(width, height);
+}
+
+// INLINED
+template <class T, class D> void SetScrollStep(CUIListBoxEx<T, D>* list, int step) {
+  list->scrollBar->step = step;
+}
+
 // OFFSET: 0x00A1C1B0
 // FUNCTION: fn_15379
 // OFFSET: 0x00A1CC90
@@ -184,13 +196,8 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
   });
   this->AddChild(this->button);
 
-  CUIListBoxEx<T, D>* listBox = new CUIListBoxEx<T, D>();
-  this->listBox = listBox;
-  const int listWidth = this->width;
-  const int listRowHeight = this->itemHeight;
-  listBox->itemWidth = listWidth;
-  listBox->rowHeight = listRowHeight;
-  listBox->SetSize(listWidth + 13, listRowHeight);
+  this->listBox = new CUIListBoxEx<T, D>();
+  SetListSize(this->listBox, this->width + 13, this->itemHeight, this->width, this->itemHeight);
   this->listBox->Move(1, 1);
   this->listBox->SetOnSelect([this](T* item, const D& value) {
     g_windowMgr.CloseDropDown();
@@ -204,7 +211,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
 
   this->listBox->scrollBar->SetSize(13, this->itemHeight);
   this->listBox->scrollBar->Move(this->width, 0);
-  this->listBox->scrollBar->step = this->itemHeight;
+  SetScrollStep(this->listBox, this->itemHeight);
 
   this->listBox->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0xC5B1BBCD9BC9C997ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0xC1BB8111EDD183E1ULL)));
 
