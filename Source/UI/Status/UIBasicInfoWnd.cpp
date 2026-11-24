@@ -218,7 +218,10 @@ void UIBasicInfoWnd::OnMouseHover(int x, int y) {
   }
 
   int top = this->geometry.height - 20;
-  if (x >= 0 && y >= top && x < 100 && y < this->geometry.height) {
+  const auto inside = [&](int left, int right) {
+    return x >= left && x < right;
+  };
+  if (inside(0, 100) && y >= top && y < this->geometry.height) {
     char text[64];
     std::sprintf(text, "Weight %d%%", g_session.m_maxWeight == 0 ? 0 : g_session.m_weight * 100 / g_session.m_maxWeight);
 
