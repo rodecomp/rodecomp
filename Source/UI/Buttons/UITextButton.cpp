@@ -2501,7 +2501,7 @@ void UIComboBox::Paint() {
 // OFFSET: 0x0088F1C0
 // FUNCTION: fn_11387
 void UIStaticItem_Illust::Paint() {
-  const std::string path = "유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath()) + ".bmp";
+  const std::string path = std::move(("유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath())).append(".bmp", 4));
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
   if (!bitmap) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\collection\\사과.bmp")));
