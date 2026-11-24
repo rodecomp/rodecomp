@@ -51,8 +51,32 @@ std::optional<std::vector<ITEM_INFO>*> CSelectPackageItemMgr::FindItems(int pack
 }
 
 // INLINED
-inline std::vector<ITEM_INFO>& CSelectPackageItemMgr::GetItems(int packageId, int tabIndex) {
+inline std::vector<ITEM_INFO>& CSelectPackageItemMgr::GetItems(const int& packageId, const int& tabIndex) {
   return this->m_packages[packageId][tabIndex].items;
+}
+
+// OFFSET: 0x0061EB70
+// FUNCTION: fn_46619
+inline void CSelectPackageItemMgr::AddItem(int packageId, int tabIndex, int slot, int itemId, int quantity, int duration, int refiningLevel, bool placeholder, short grade, unsigned char kind) {
+  std::vector<ITEM_INFO>& items = this->GetItems(packageId, tabIndex);
+  if (slot >= 0 && static_cast<std::size_t>(slot) < items.size()) {
+    ITEM_INFO& item = items[slot];
+    item.Reset();
+    item.SetItemId(itemId);
+    item.identified = 1;
+    item.quantity = quantity;
+    item.identity[0] = kind;
+    item.refiningLevel = refiningLevel;
+    item.grade = grade;
+    if (duration != 0) {
+      item.durationInHours = 1;
+      item.expireTime = duration;
+    }
+    if (placeholder) {
+      item.options[0].id = g_itemOptionPlaceholderId;
+      item.optionCount = 3;
+    }
+  }
 }
 
 // OFFSET: 0x0061EFF0
@@ -146,27 +170,10 @@ int CSelectPackageItemMgr::LuaAddItem(lua_State* L) {
   const double refine = lua_tonumber(L, -2);
   const double kind = lua_tonumber(L, -1);
 
-  std::vector<ITEM_INFO>& items = CSelectPackageItemMgr::GetInstance()->GetItems(packageId, tabIndex);
-  const int slot = static_cast<int>(index);
-  if (slot >= 0 && static_cast<std::size_t>(slot) < items.size()) {
-    ITEM_INFO& item = items[slot];
-    item.Reset();
-    item.SetItemId(static_cast<int>(itemId));
-    item.identified = 1;
-    item.quantity = static_cast<int>(quantity);
-    item.identity[0] = static_cast<unsigned char>(static_cast<int>(kind));
-    item.refiningLevel = static_cast<int>(value);
-    item.grade = static_cast<short>(static_cast<int>(refine));
-    const int optionValue = static_cast<int>(option);
-    if (optionValue != 0) {
-      item.durationInHours = 1;
-      item.expireTime = optionValue;
-    }
-    if (placeholder) {
-      item.options[0].id = g_itemOptionPlaceholderId;
-      item.optionCount = 3;
-    }
-  }
+  CSelectPackageItemMgr::GetInstance()->AddItem(packageId, tabIndex, static_cast<int>(index), static_cast<int>(itemId),
+                                                 static_cast<int>(quantity), static_cast<int>(option), static_cast<int>(value),
+                                                 placeholder, static_cast<short>(static_cast<int>(refine)),
+                                                 static_cast<unsigned char>(static_cast<int>(kind)));
 
   lua_pushboolean(L, 1);
   lua_pushstring(L, "good");
