@@ -663,25 +663,31 @@ __forceinline int UITagListBox::WrappedLineLength(const char* text, int length, 
   return static_cast<int>(current - text);
 }
 
-// OFFSET: 0x009BB8E0
-// FUNCTION: fn_13888
-void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
-  const char* buffer = text.c_str();
-  const int firstLine = static_cast<int>(this->lines.size());
-  std::size_t position = 0;
-  while (text.size() > position) {
-    const char* start = buffer + position;
-    int next = this->WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
+namespace {
+  // INLINED
+  int LineEnd(int end, const std::vector<UITagListBox::STagInfoV2>& tags) {
     for (std::size_t index = 0; index < tags.size(); ++index) {
-      if (next > tags[index].startOffset && next < tags[index].endOffset) {
-        next = tags[index].startOffset;
-        break;
+      if (end > tags[index].startOffset && end < tags[index].endOffset) {
+        return tags[index].startOffset;
       }
     }
 
-    std::string line(start, buffer + next);
+    return end;
+  }
+}
+
+// OFFSET: 0x009BB8E0
+// FUNCTION: fn_13888
+void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
+  const int firstLine = static_cast<int>(this->lines.size());
+  const char* buffer = text.c_str();
+  std::size_t position = 0;
+  while (text.size() > position) {
+    const char* start = buffer + position;
+    position = LineEnd(this->WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position), tags);
+
+    std::string line(start, buffer + position);
     this->AddLine(line.c_str());
-    position = next;
   }
 
   for (std::vector<STagInfoV2>::iterator tag = tags.begin(); tag != tags.end(); ++tag) {
