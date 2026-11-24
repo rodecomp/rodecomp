@@ -4458,16 +4458,18 @@ void CGameActor::UpdateMaxLevelAura() {
     return;
   }
 
+  bool isMaxLevel;
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
     const int skill = static_cast<std::int16_t>(this->characterLevel);
     if (g_session.m_maxBaseLevelHomun == skill) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL150_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
-    if (g_session.m_maxBaseLevel != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
+    if (g_session.m_maxBaseLevel != skill) {
       this->hasLevelAura = 0;
       return;
     }
+    isMaxLevel = g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) == 0;
   } else if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
     if (g_session.m_maxBaseLevelDoram == static_cast<std::int16_t>(this->characterLevel)) {
       this->SendMsg(nullptr, AM_MAKE_LEVEL160_EFFECT, 0, 0, 0, 0, 0, 0);
@@ -4475,12 +4477,15 @@ void CGameActor::UpdateMaxLevelAura() {
     }
     this->hasLevelAura = 0;
     return;
-  } else if (g_session.m_maxBaseLevel != static_cast<std::int16_t>(this->characterLevel)) {
-    this->hasLevelAura = 0;
-    return;
+  } else {
+    isMaxLevel = g_session.m_maxBaseLevel == static_cast<std::int16_t>(this->characterLevel);
   }
 
-  this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0);
+  if (isMaxLevel) {
+    this->SendMsg(nullptr, AM_MAKE_LEVEL99_EFFECT, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  this->hasLevelAura = 0;
 }
 
 // OFFSET: 0x00CC2340
@@ -4658,10 +4663,9 @@ void C3dGrannyGameActor::MakeCorpse() {
 __forceinline void CGameActor::RefreshBodyPaletteName() {
   const int costume = this->GetMadogearType();
   const int costumeJob = this->GetBodyCostume();
-  const std::string paletteName = g_session.GetBodyPalName(
+  this->render.name = static_cast<const std::string&>(g_session.GetBodyPalName(
     this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
-  );
-  this->render.name = paletteName;
+  ));
 }
 
 // OFFSET: 0x00CC40D0
