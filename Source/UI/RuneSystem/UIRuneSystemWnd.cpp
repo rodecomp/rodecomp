@@ -1053,8 +1053,10 @@ void UIDecomlist::Paint() {
       continue;
     }
 
-    const int y = this->m_itemHeight * row + 4;
-    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_decom_item_1_%d.bmp", index == this->m_selected);
+    const int rowHeight = this->m_itemHeight;
+    const int selected = index == this->m_selected;
+    const int y = rowHeight * row + 4;
+    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_decom_item_1_%d.bmp", selected);
     this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
 
     ITEM_INFO item = g_session.LookupClientItem(itemId, 0);
