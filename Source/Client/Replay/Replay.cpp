@@ -499,8 +499,12 @@ int Replay::SpeedLevel() const {
 // OFFSET: 0x00B846D0
 // FUNCTION: fn_19319
 void Replay::ResetFile() {
-  this->header.Reset();
+  const ReplayOptions savedOptions = this->header.options;
+  std::memset(&this->header.key0, 0, offsetof(ReplayHeader, options) - offsetof(ReplayHeader, key0));
+  this->header.signature = 0x52414705;
+  this->header.closingSignature = 0x52414705;
   this->records = 0;
+  this->header.options = savedOptions;
   this->fileMode = -1;
   this->file = nullptr;
   this->fileOffset = 0;
