@@ -13713,7 +13713,7 @@ void CRagEffect::ElementalOrbit(char kind) {
     return;
   }
 
-  for (int index = 0, phase = 0, angle = 0; index < count; ++index, phase += 360, angle += 72) {
+  for (int index = 0; index < count; ++index) {
     this->state.lastPrim = this->LaunchEffectPrim(32, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
@@ -13726,16 +13726,16 @@ void CRagEffect::ElementalOrbit(char kind) {
     this->state.lastPrim->state.slots[0].height[5] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 1) {
-      this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle);
+      this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 72);
       this->state.lastPrim->state.slots[0].height[7] = -14.0f;
       this->state.lastPrim->state.slots[0].distance = 1.3f;
       this->state.lastPrim->state.slots[0].height[10] = 1.0f;
       this->state.lastPrim->state.slots[0].flag1[0] = 0;
     } else if (kind == 3 || kind == 4) {
       if (this->state.deltaPos.x <= 5.0f) {
-        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(phase) / this->state.deltaPos.x;
+        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 360) / this->state.deltaPos.x;
       } else {
-        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle);
+        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 72);
       }
       this->state.lastPrim->state.slots[0].height[7] = -15.0f;
       this->state.lastPrim->state.slots[0].distance = 1.0f;
@@ -13749,7 +13749,7 @@ void CRagEffect::ElementalOrbit(char kind) {
       this->state.lastPrim->state.slots[0].height[10] = 0.0f;
       this->state.lastPrim->state.slots[0].flag1[0] = 1;
     } else {
-      this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle);
+      this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 72);
       this->state.lastPrim->state.slots[0].height[7] = -15.0f;
       this->state.lastPrim->state.slots[0].distance = 2.0f;
       this->state.lastPrim->state.slots[0].height[10] = 0.0f;
@@ -13757,11 +13757,11 @@ void CRagEffect::ElementalOrbit(char kind) {
 
       const float total = this->state.deltaPos.x;
       if (total > 10.0f) {
-        this->state.lastPrim->state.slots[0].distance = 2.0f;
-
         if (total - static_cast<float>(index) >= 11.0f) {
+          this->state.lastPrim->state.slots[0].distance = 2.0f;
           this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(21);
         } else {
+          this->state.lastPrim->state.slots[0].distance = 2.0f;
           this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(20);
         }
       } else if (total > 5.0f) {
@@ -13788,9 +13788,6 @@ void CRagEffect::ElementalOrbit(char kind) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
     switch (kind) {
-    case 4:
-      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\RL_richs_coin_B\\rcoin1.bmp", 0, false, true, false);
-      break;
     case 10:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\fire-1.bmp", 0, false, true, false);
       break;
@@ -13802,6 +13799,9 @@ void CRagEffect::ElementalOrbit(char kind) {
       break;
     case 13:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone-1.bmp", 0, false, true, false);
+      break;
+    case 4:
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\RL_richs_coin_B\\rcoin1.bmp", 0, false, true, false);
       break;
     default:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
@@ -14063,6 +14063,8 @@ void CRagEffect::SoulLink(int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
 
+  int index;
+
   if (this->state.stateCnt == 1) {
     this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -14075,15 +14077,13 @@ void CRagEffect::SoulLink(int) {
     this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\soul_s.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
 
-    int index;
     for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    int process = -60;
-    for (index = 0; process < 20; ++index, process += 20) {
+    for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 1;
-      this->state.lastPrim->state.slots[index].process = process;
+      this->state.lastPrim->state.slots[index].process = index * 20 - 60;
       this->state.lastPrim->state.slots[index].distance = 5.0f;
       this->state.lastPrim->state.slots[index].alphaB = 0;
       this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(-4 - index * 6);
@@ -14108,15 +14108,13 @@ void CRagEffect::SoulLink(int) {
     this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\soul_l.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
 
-    int index;
     for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    int process = -120;
-    for (index = 0; process < -40; ++index, process += 20) {
+    for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 1;
-      this->state.lastPrim->state.slots[index].process = process;
+      this->state.lastPrim->state.slots[index].process = index * 20 - 120;
       this->state.lastPrim->state.slots[index].distance = 5.0f;
       this->state.lastPrim->state.slots[index].alphaB = 0;
       this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(22 - index * 6);
@@ -16599,9 +16597,9 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     this->state.lastPrim->state.size = 1.0f;
 
-    for (int i = 0, process = 0; process > -80; ++i, process -= 20) {
+    for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
-      this->state.lastPrim->state.slots[i].process = process;
+      this->state.lastPrim->state.slots[i].process = i * -20;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].maxHeight = 10.0f;
       this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
@@ -16622,9 +16620,9 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     this->state.lastPrim->state.size = 1.0f;
 
-    for (int i = 0, process = 0; process > -80; ++i, process -= 20) {
+    for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
-      this->state.lastPrim->state.slots[i].process = process;
+      this->state.lastPrim->state.slots[i].process = i * -20;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
       this->state.lastPrim->state.slots[i].maxHeight = 10.0f;
       this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
@@ -18164,7 +18162,11 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].vecBNow.z = this->render.position.z;
   this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[4] = kind == 4 ? 1 : kind;
+  if (kind == 4) {
+    this->state.lastPrim->state.slots[0].flag1[4] = 1;
+  } else {
+    this->state.lastPrim->state.slots[0].flag1[4] = kind;
+  }
   this->state.lastPrim->state.slots[0].height[15] = this->render.position.y - this->state.lastPrim->state.slots[0].vecBPre.y;
 }
 
