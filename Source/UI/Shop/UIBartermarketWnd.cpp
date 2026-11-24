@@ -1265,16 +1265,16 @@ void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(scrollBar);
 
-  const std::string prefix = "유저인터페이스\\";
   const char* names[2][3] = {
     {"btn_buy", "btn_buy_a", "btn_buy_b"},
     {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
   };
-  const int ids[2] = {184, 185};
+  const std::string prefix = "유저인터페이스\\";
   const POINT positions[2] = {
     {this->geometry.width - 106, this->geometry.height - 24},
     {this->geometry.width - 61, this->geometry.height - 24},
   };
+  const int ids[2] = {ID_OK, ID_CANCEL};
 
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = index == 0 ? static_cast<UIBitmapButton*>(new UIPurchaseButton) : new UIBitmapButton();
