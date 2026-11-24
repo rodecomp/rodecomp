@@ -4092,33 +4092,17 @@ static void FollowGalaxyOwner(const CSevereRainStorm* effect, CEZ2STRParticle* e
 void CSevereRainStorm::OnProcess() {
   this->SpawnParticles();
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
-    CEZ2STRParticle* emitter = *it;
-    if (emitter->life >= 0.0f) {
-      if (this->id == EF_SKE_TWINKLING_GALAXY && emitter) {
-        const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-        const vector3d position = *&this->positionVector;
-
-        const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
-                         emitter->offset.x;
-        const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
-                         emitter->offset.y;
-        const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
-                         emitter->offset.z;
-
-        emitter->position = vector3d{vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9],
-                                     vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10],
-                                     vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11]};
-        emitter->Process(0.0f, 0.0f, 0.0f);
+    if ((*it)->life >= 0.0f) {
+      if (this->id == EF_SKE_TWINKLING_GALAXY) {
+        FollowGalaxyOwner(this, *it);
       }
 
-      emitter = *it;
-      if (emitter) {
-        emitter->Process(0.0f, 0.0f, 0.0f);
+      if (*it) {
+        (*it)->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
     } else {
-      FreeParticle(emitter);
+      FreeParticle(*it);
       it = this->emitters.erase(it);
     }
   }
