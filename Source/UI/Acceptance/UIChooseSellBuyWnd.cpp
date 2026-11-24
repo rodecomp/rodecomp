@@ -12408,7 +12408,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case ID_NEXT: {
-    const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
+    const int page = g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex;
     g_itemTagOwner->paragraphIndex = page + 1;
     if (g_itemTagOwner->IsLastTip() == true) {
       this->SetPageButtonEnabled(PageButton::Next, 0);
@@ -12421,7 +12421,11 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->previousButton->Enable(1);
     this->nextButton->Enable(1);
     g_itemTagOwner->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
-    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    if (g_itemTagOwner->IsLastTip() == true) {
+      this->SetPageButtonEnabled(PageButton::Next, 0);
+    } else {
+      this->SetPageButtonEnabled(PageButton::Next, 1);
+    }
     this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
@@ -12430,7 +12434,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     g_windowMgr.CloseWindow(WID_TIPBOXWND);
     break;
   case ID_PREV: {
-    const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
+    const int page = g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex;
     g_itemTagOwner->paragraphIndex = page - 1;
     this->SetPageButtonEnabled(PageButton::Next, 1);
     if (page == 1) {
@@ -12465,9 +12469,8 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->searchResults->Show(1);
       this->searchResults->Clear();
       this->tipViewer->Clear();
-      UIStaticText* const texts[2] = {this->m_titleTexts[0], this->m_titleTexts[1]};
       for (int index = 0; index < 2; ++index) {
-        texts[index]->SetText("", 0);
+        this->m_titleTexts[index]->SetText("", 0);
       }
       this->m_pageText->SetText("", 0);
       this->m_pageTotalText->SetText("", 0);
@@ -12482,7 +12485,11 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case ID_REFRESH_TIP:
-    this->SetPageButtonEnabled(PageButton::Next, !g_itemTagOwner->IsLastTip());
+    if (g_itemTagOwner->IsLastTip() == true) {
+      this->SetPageButtonEnabled(PageButton::Next, 0);
+    } else {
+      this->SetPageButtonEnabled(PageButton::Next, 1);
+    }
     this->SetPageButtonEnabled(PageButton::Previous, 0);
     this->RefreshTip();
     this->BuildAnimations();
