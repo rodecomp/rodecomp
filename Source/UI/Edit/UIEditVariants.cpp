@@ -403,11 +403,10 @@ int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ++this->historyIndex;
       if (this->historyIndex == static_cast<int>(this->history.size())) {
         this->SetText("");
-        this->OnBeginEdit();
       } else {
         this->SetText(this->history[this->historyIndex].c_str());
-        this->OnBeginEdit();
       }
+      this->OnBeginEdit();
     }
     break;
   default:
