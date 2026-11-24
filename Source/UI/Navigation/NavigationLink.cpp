@@ -248,13 +248,18 @@ static const std::string g_questCloseTag = "</QUEST>";
 // GLOBAL: gl_24836
 std::vector<LineFontState> CCreateLineInfo::s_fontStackCache;
 
+// INLINED
+static std::size_t FindParserTag(const std::string& text, const std::string& tag) {
+  return text.find(tag.data(), 0, tag.size());
+}
+
 // OFFSET: 0x00832500
 // FUNCTION: fn_10407
 bool NavigationLinkParser::HasLink(std::string text) {
-  return text.find(g_parserNaviLinkTag) != std::string::npos ||
-         text.find(g_parserNaviLinkCloseTag) != std::string::npos ||
-         text.find(g_parserItemLinkTag) != std::string::npos ||
-         text.find(g_parserItemLinkCloseTag) != std::string::npos;
+  return FindParserTag(text, g_parserNaviLinkTag) != std::string::npos ||
+         FindParserTag(text, g_parserNaviLinkCloseTag) != std::string::npos ||
+         FindParserTag(text, g_parserItemLinkTag) != std::string::npos ||
+         FindParserTag(text, g_parserItemLinkCloseTag) != std::string::npos;
 }
 
 // OFFSET: 0x00832640
@@ -270,20 +275,20 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       work = expanded;
     }
 
-    const std::size_t begin = work.find(g_parserMessageTag);
+    const std::size_t begin = FindParserTag(work, g_parserMessageTag);
     if (begin == std::string::npos) {
       break;
     }
 
     work = work.substr(begin + std::strlen(g_parserMessageTag.c_str()));
-    const std::size_t end = work.find(g_parserMessageCloseTag);
+    const std::size_t end = FindParserTag(work, g_parserMessageCloseTag);
     if (end == std::string::npos) {
       break;
     }
 
     work = work.substr(0, end);
     int messageId;
-    if (work.find(g_parserMessageIdPrefix) != std::string::npos) {
+    if (FindParserTag(work, g_parserMessageIdPrefix) != std::string::npos) {
       messageId = FindMessageId(work.c_str());
     } else {
       messageId = std::atoi(work.c_str());
@@ -297,14 +302,14 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
       work = expanded;
     }
     const std::string head = work.substr(0, begin);
-    const std::size_t close = work.find(g_parserMessageCloseTag);
+    const std::size_t close = FindParserTag(work, g_parserMessageCloseTag);
     const std::string tail = work.substr(close + std::strlen(g_parserMessageCloseTag.c_str()));
     expanded.clear();
     expanded += head;
     expanded += message;
     expanded += tail;
 
-    if (expanded.find(g_parserMessageTag) == std::string::npos) {
+    if (FindParserTag(expanded, g_parserMessageTag) == std::string::npos) {
       return expanded;
     }
   }
@@ -366,7 +371,7 @@ std::string NavigationLinkParser::EncodeNavigationNumber(int value) {
 // OFFSET: 0x00835890
 // FUNCTION: fn_10420
 bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
-  const auto end = value.find(g_parserNaviLinkCloseTag);
+  const auto end = FindParserTag(value, g_parserNaviLinkCloseTag);
 
   if (end != std::string::npos) {
     const auto coordinates = end - 4;
@@ -374,7 +379,7 @@ bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& n
     x = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(0, 2));
     y = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(2, 2));
     const std::string head = value.substr(0, coordinates);
-    const auto begin = head.find(g_parserNaviLinkTag);
+    const auto begin = FindParserTag(head, g_parserNaviLinkTag);
 
     if (begin != std::string::npos) {
       name = head.substr(begin + std::strlen(g_parserNaviLinkTag.c_str()));
@@ -418,7 +423,7 @@ std::string NavigationLinkParser::FormatNavigationLink(std::string value, bool b
 // FUNCTION: fn_10422
 std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::string value) {
   std::string text = value;
-  const std::size_t position = text.find(g_parserLineBreakTag);
+  const std::size_t position = FindParserTag(text, g_parserLineBreakTag);
 
   if (position != std::string::npos) {
     std::string head = text.substr(0, position);
@@ -435,13 +440,13 @@ std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::strin
 std::string NavigationLinkParser::DisplayNavigationLink(std::string value) {
   std::string text = value;
   std::string output = text;
-  const auto begin = text.find(g_parserNaviLinkTag);
+  const auto begin = FindParserTag(text, g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
     output.clear();
     const std::string head = text.substr(0, begin);
     text = text.substr(begin);
-    const auto end = text.find(g_parserNaviLinkCloseTag);
+    const auto end = FindParserTag(text, g_parserNaviLinkCloseTag);
 
     if (end != std::string::npos) {
       const std::string rest = text.substr(end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
@@ -465,7 +470,7 @@ void DisplayNavigationLink(std::string& output, std::string value) {
 // OFFSET: 0x00833A20
 // FUNCTION: fn_10414
 bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, const char* source) {
-  std::size_t closePos = text.find(g_itemLinkCloseTag);
+  std::size_t closePos = FindParserTag(text, g_itemLinkCloseTag);
 
   if (closePos == std::string::npos) {
     return false;
@@ -473,17 +478,17 @@ bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, con
 
   do {
     text = text.substr(0, closePos);
-    std::size_t openPos = text.find(g_itemLinkTag);
+    std::size_t openPos = FindParserTag(text, g_itemLinkTag);
 
     if (closePos == std::string::npos || openPos != std::string::npos) {
-      closePos = text.find(g_itemLinkCloseTag);
+      closePos = FindParserTag(text, g_itemLinkCloseTag);
 
       if (openPos != std::string::npos) {
         for (;;) {
           offset += openPos;
           text = text.substr(openPos + g_itemLinkTag.size());
-          openPos = text.find(g_itemLinkTag);
-          closePos = text.find(g_itemLinkCloseTag);
+          openPos = FindParserTag(text, g_itemLinkTag);
+          closePos = FindParserTag(text, g_itemLinkCloseTag);
 
           if (openPos == std::string::npos) {
             break;
@@ -511,12 +516,12 @@ bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, con
 // FUNCTION: fn_10417
 const std::string NavigationLinkParser::ExtractNavigationLink(std::string value) {
   std::string output = value;
-  const auto begin = value.find(g_parserNaviLinkTag);
+  const auto begin = FindParserTag(value, g_parserNaviLinkTag);
 
   if (begin != std::string::npos) {
     output.clear();
     output = value.substr(begin);
-    const auto end = output.find(g_parserNaviLinkCloseTag);
+    const auto end = FindParserTag(output, g_parserNaviLinkCloseTag);
 
     if (end != std::string::npos) {
       output = output.substr(0, end + std::strlen(g_parserNaviLinkCloseTag.c_str()));
