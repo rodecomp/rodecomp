@@ -351,14 +351,16 @@ void UIRoMapWnd::DrawDungeonLinks() {
       const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
       const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
       const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
-      const alignas(8) ScreenPoint start{startX, startY};
-      const alignas(8) ScreenPoint end{endX, endY};
       CTexture* const lineTexture = g_texMgr.Default();
       std::uint32_t color;
       if (isSelected) {
+        const alignas(8) ScreenPoint end{endX, endY};
+        const alignas(8) ScreenPoint start{startX, startY};
         DrawScreenLine(start, end, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
         color = 0xFFFFFFFF;
       } else {
+        const alignas(8) ScreenPoint end{endX, endY};
+        const alignas(8) ScreenPoint start{startX, startY};
         DrawScreenLine(start, end, 1, lineTexture, lineColor);
         color = rectColor;
       }
@@ -376,7 +378,11 @@ void UIRoMapWnd::DrawDungeonLinks() {
       height = map->bottom - map->top;
     }
 
-    DrawTexturedRectangle(x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture);
+    if (isSelected) {
+      DrawTexturedRectangle(x, y, width, height, 0xFFFFFFFF, selectTexture);
+    } else {
+      DrawTexturedRectangle(x, y, width, height, rectColor, selectTexture);
+    }
   }
 }
 
