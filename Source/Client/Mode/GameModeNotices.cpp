@@ -5272,10 +5272,10 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   std::string name;
   name.assign(packet->name, 24);
   std::string itemName;
-  ITEM_INFO item;
-  item.SetItemId(packet->itemId);
-  item.identified = 1;
   {
+    ITEM_INFO item;
+    item.SetItemId(packet->itemId);
+    item.identified = 1;
     itemName = item.DisplayName(0);
   }
 
@@ -5296,13 +5296,12 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
     grade = "SS";
   }
 
-  int message = MSI_BROADCASTING_GRADE_ENCHANT_FAIL;
-  if (packet->success == 1) {
-    message = MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS;
-  }
-
   std::string text;
-  text = FormatOwnedString(LookupMessage(message), name.c_str(), grade.c_str(), itemName.c_str());
+  if (packet->success == 1) {
+    text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS), name.c_str(), grade.c_str(), itemName.c_str());
+  } else {
+    text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_FAIL), name.c_str(), grade.c_str(), itemName.c_str());
+  }
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
