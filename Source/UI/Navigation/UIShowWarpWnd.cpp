@@ -12,10 +12,11 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <string_view>
 
 namespace {
   // INLINED
-  __forceinline bool MatchesWarpOption(const std::string& value, const char (&literal)[7]) {
+  __forceinline bool MatchesWarpOption(std::string_view value, const char (&literal)[7]) {
     return value.size() == sizeof(literal) - 1 && std::memcmp(value.data(), literal, sizeof(literal) - 1) == 0;
   }
 }
