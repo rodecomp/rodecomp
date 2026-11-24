@@ -89,14 +89,12 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
       const float radius = g_sinTable[this->state.slots[ec].rotStart] + this->state.slots[ec].distance;
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
-      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
       curB.x = radius * cosine;
       curB.y = 0.0f;
       curB.z = radius * sine;
-      curT.x = riseX * cosine + curB.x;
-      curT.y = -riseY;
-      curT.z = riseX * sine + curB.z;
+      curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + curB.x;
+      curT.y = -(this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle]);
+      curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + curB.z;
 
       if (i > 0) {
         int texture;
