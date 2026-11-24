@@ -10271,13 +10271,19 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (item.placeEtcTab != 0) {
         include = this->categoryFilter == 3;
       } else if (this->categoryFilter == 0) {
-        if (type <= TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
-          if (this->usableFilter == 0) {
+        if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
+          switch (this->usableFilter) {
+          case 0:
             include = type == TYPE_HEAL;
-          } else if (this->usableFilter == 2) {
+            break;
+          case 2:
             include = type == TYPE_SCHANGE || type == TYPE_SPECIAL;
-          } else if (this->usableFilter == 3) {
+            break;
+          case 3:
             include = true;
+            break;
+          default:
+            break;
           }
         }
       } else if (this->categoryFilter == 1) {
@@ -10291,12 +10297,28 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         case TYPE_ARMORMB:
         case TYPE_ARMORTMB:
         case TYPE_GUN:
-          if (this->equipmentFilter == 0) {
+          switch (this->equipmentFilter) {
+          case 0:
             include = type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW;
-          } else if (this->equipmentFilter == 1) {
-            include = type == TYPE_ARMOR || type == TYPE_ARMORTM || type == TYPE_ARMORTB || type == TYPE_ARMORMB || type == TYPE_ARMORTMB;
-          } else if (this->equipmentFilter == 3) {
+            break;
+          case 1:
+            switch (type) {
+            case TYPE_ARMOR:
+            case TYPE_ARMORTM:
+            case TYPE_ARMORTB:
+            case TYPE_ARMORMB:
+            case TYPE_ARMORTMB:
+              include = true;
+              break;
+            default:
+              break;
+            }
+            break;
+          case 3:
             include = true;
+            break;
+          default:
+            break;
           }
           break;
         default:
