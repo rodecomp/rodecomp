@@ -270,5 +270,6 @@ extern float g_effectIconRadius;
 extern float g_heightSpeedSign;
 extern float g_fireflyGroundOffset;
 extern float g_masterReachDistance;
+extern float g_fireflyArcLength;
 
 #endif

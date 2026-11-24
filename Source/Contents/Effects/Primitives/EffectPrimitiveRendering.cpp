@@ -3937,7 +3937,7 @@ void CEffectPrim::RenderGroundBar(matrix& wtm) {
     const float start = slot.height[1];
     float startX;
     float startZ;
-    if (100.0f <= start) {
+    if (g_fireflyArcLength <= start) {
       const float reach = start - slot.distance;
       startX = reach * g_cosTable[angle];
       startZ = reach * g_sinTable[angle];
@@ -3951,7 +3951,7 @@ void CEffectPrim::RenderGroundBar(matrix& wtm) {
     const float end = start + slot.height[2];
     float endX;
     float endZ;
-    if (100.0f <= end) {
+    if (g_fireflyArcLength <= end) {
       const float reach = end - slot.distance;
       endX = reach * g_cosTable[angle];
       endZ = reach * g_sinTable[angle];
