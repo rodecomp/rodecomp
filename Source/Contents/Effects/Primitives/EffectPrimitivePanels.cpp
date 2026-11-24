@@ -227,9 +227,9 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
     vec2.y = 0.0f;
     vec3.y = 0.0f;
     vec4.y = 0.0f;
-    const unsigned short red = static_cast<unsigned short>(slot.flag1[10] * 2.57f);
-    const unsigned short green = static_cast<unsigned short>(slot.flag1[11] * 2.57f);
-    const unsigned short blue = static_cast<unsigned short>(slot.flag1[12] * 2.57f);
+    const int red = static_cast<int>(slot.flag1[10] * 2.57f) & 0xffff;
+    const int green = static_cast<int>(slot.flag1[11] * 2.57f) & 0xffff;
+    const int blue = static_cast<int>(slot.flag1[12] * 2.57f) & 0xffff;
     vec1.x = slot.distance * g_cosTable[45];
     vec1.z = slot.distance * g_sinTable[45];
     vec2.x = slot.distance * g_cosTable[135];
