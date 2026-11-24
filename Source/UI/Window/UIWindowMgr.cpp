@@ -1261,7 +1261,8 @@ void UIWindowMgr::RefreshFrameSkins() {
       CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
     }
     auto& entries = CUIRegisterMgr::s_instance->entries;
-    if (entries.end() != entries.find(static_cast<int>(window->geometry.id))) {
+    const int id = window->geometry.id;
+    if (entries.end() != entries.find(id)) {
       static_cast<CUIFrameWnd*>(window)->RefreshSkinColors();
     }
   }
