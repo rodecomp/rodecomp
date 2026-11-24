@@ -15,6 +15,14 @@ struct WorldViewArea {
   WorldViewArea(int left, int top, int right, int bottom, int areaFlags) : left(left), top(top), right(right), bottom(bottom), areaFlags(areaFlags) {
   }
 
+  // INLINED
+  WorldViewArea(int left, int top, int right, int bottom) : areaFlags(1) {
+    this->left = left;
+    this->top = top;
+    this->right = right;
+    this->bottom = bottom;
+  }
+
   /* 0000 */ int left;
   /* 0004 */ int top;
   /* 0008 */ int right;

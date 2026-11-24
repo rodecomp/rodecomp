@@ -393,7 +393,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   }
 
   WorldViewArea* previous = this->previewArea;
-  this->previewArea = new WorldViewArea{x, y, x + 130, y + 130, 1};
+  this->previewArea = new WorldViewArea(x, y, x + 130, y + 130);
   if (previous != nullptr) {
     delete previous;
   }
