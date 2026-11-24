@@ -102,14 +102,10 @@ void CMode::DrawActionSprite(
 
       const float originX = static_cast<float>(x);
       const float originY = static_cast<float>(y);
-      x0 = first + originX;
-      y0 = originY + top;
-      x1 = scaleX * second + originX;
-      y1 = originY + top;
-      x2 = first + originX;
-      y2 = originY + bottom;
-      x3 = scaleX * second + originX;
-      y3 = originY + bottom;
+      x0 = x2 = first + originX;
+      y0 = y1 = originY + top;
+      x1 = x3 = scaleX * second + originX;
+      y2 = y3 = originY + bottom;
     }
 
     RenderVertex* vertices = primitive->quad;
