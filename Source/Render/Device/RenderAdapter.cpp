@@ -1,5 +1,3 @@
-#define RENDERADAPTER_OUT_OF_LINE_DESTRUCTOR
-
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/DX9/RenderSystemDX9.h"
@@ -118,9 +116,4 @@ HRESULT CRenderSystemDX9::Initialize(HWND window) {
   }
 
   return this->m_device->Initialize(window, ordinal);
-}
-
-// OFFSET: 0x00569CF0
-// FUNCTION: fn_46557
-RenderAdapter::~RenderAdapter() {
 }

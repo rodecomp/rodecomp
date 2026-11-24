@@ -33,12 +33,10 @@ struct RenderAdapter {
   /* 0040 */ GUID deviceGuid;
   /* 0050 */ std::string deviceName;
 
-#ifdef RENDERADAPTER_OUT_OF_LINE_DESTRUCTOR
-  ~RenderAdapter();
-#else
+  // OFFSET: 0x00569CF0
+  // FUNCTION: fn_46557
   ~RenderAdapter() {
   }
-#endif
   RenderAdapter(const RenderAdapter&) = default;
   RenderAdapter(RenderAdapter&&) = default;
   RenderAdapter& operator=(const RenderAdapter&) = default;
