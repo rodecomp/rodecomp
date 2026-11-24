@@ -551,7 +551,7 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
     const int y = std::atoi(button->GetString(2).c_str());
     if (count > 3) {
       const int mode = std::atoi(button->GetString(3).c_str());
-      const int code = std::atoi(button->GetString(4).c_str());
+      int code = std::atoi(button->GetString(4).c_str());
       if (code == -222) {
         std::string tag = "$$DB ";
         if (mode != 3) {
@@ -564,17 +564,16 @@ void UITagListBox::OnTagClick(std::intptr_t type, UIWindow* sender) {
         const int flag = std::atoi(button->GetString(5).c_str());
         const int id = std::atoi(button->GetString(6).c_str());
         unsigned char group = 0;
-        int remainder = code;
-        if (remainder >= 100) {
+        if (code >= 100) {
           group = 1;
-          remainder -= 100;
+          code -= 100;
         }
 
-        if (remainder >= 10) {
+        if (code >= 10) {
           group += 2;
-          remainder -= 10;
+          code -= 10;
         }
-        if (remainder >= 1) {
+        if (code >= 1) {
           group += 4;
         }
         g_navigationManager.StartNavigation(name.c_str(), mode, group, flag == 0, x, y, id);
