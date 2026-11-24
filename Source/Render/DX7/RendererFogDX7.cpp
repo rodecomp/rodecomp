@@ -83,12 +83,7 @@ void CRendererDX7::ApplyFog() {
 
   if (this->fog.enabled) {
     D3DDEVICEDESC7 empty = g_emptyCapabilitiesDX7;
-    D3DDEVICEDESC7 caps;
-    if (g_deviceOwnerDX7) {
-      caps = g_deviceOwnerDX7->caps;
-    } else {
-      caps = empty;
-    }
+    const D3DDEVICEDESC7 caps = SelectFogCaps(empty);
     const float start = g_depthStart * 1490.0f + 10.0f;
     const float end = g_depthEnd * 1490.0f + 10.0f;
     const int vertexFog = (caps.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) != 0;
