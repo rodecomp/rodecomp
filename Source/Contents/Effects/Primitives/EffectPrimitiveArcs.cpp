@@ -441,7 +441,7 @@ void CEffectPrim::RenderGroundSquare(matrix& wtm) {
       continue;
     }
 
-    int angle = this->state.slots[ec].rotStart;
+    const int angle = this->state.slots[ec].rotStart;
     float cosA = g_cosTable[angle];
     float sinA = g_sinTable[angle];
     const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
@@ -449,29 +449,37 @@ void CEffectPrim::RenderGroundSquare(matrix& wtm) {
     this->state.slots[ec].vecBPre.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecBPre.z = static_cast<float>(sinA * radius);
     this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
-    angle += angle < 270 ? 90 : -270;
-    cosA = g_cosTable[angle];
-    sinA = g_sinTable[angle];
+    const int angle2 = angle + (angle < 270 ? 90 : -270);
+    cosA = g_cosTable[angle2];
+    sinA = g_sinTable[angle2];
     this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecBNow.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecBNow.z = static_cast<float>(sinA * radius);
-    angle += angle + 90 < 360 ? 90 : -270;
-    cosA = g_cosTable[angle];
-    sinA = g_sinTable[angle];
+    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
+    cosA = g_cosTable[angle3];
+    sinA = g_sinTable[angle3];
     this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecTNow.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecTNow.z = static_cast<float>(sinA * radius);
-    angle += angle + 90 < 360 ? 90 : -270;
-    cosA = g_cosTable[angle];
-    sinA = g_sinTable[angle];
+    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
+    cosA = g_cosTable[angle4];
+    sinA = g_sinTable[angle4];
     this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecTPre.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecTPre.z = static_cast<float>(sinA * radius);
 
-    this->RenderTeiRect(
-      &rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, this->state.slots[ec].height[2] == 1.0f,
-      static_cast<char>(this->state.slots[ec].height[1]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
-    );
+    const short alpha = this->state.slots[ec].alphaB;
+    if (this->state.slots[ec].height[2] == 1.0f) {
+      this->RenderTeiRect(
+        &rpCnt, alpha, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1,
+        static_cast<char>(this->state.slots[ec].height[1]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+    } else {
+      this->RenderTeiRect(
+        &rpCnt, alpha, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0,
+        static_cast<char>(this->state.slots[ec].height[1]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+    }
   }
 }
 
