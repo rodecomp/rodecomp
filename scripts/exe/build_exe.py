@@ -78,6 +78,17 @@ class ToolchainNotFound(Exception):
     pass
 
 
+def _exists(path):
+    """Whether path exists, its file name in any case: the SDK ships Windows.h and kernel32.Lib,
+    some installers lower-case them, and the compiler finds either."""
+    if path.exists():
+        return True
+    try:
+        return any(entry.name.lower() == path.name.lower() for entry in path.parent.iterdir())
+    except OSError:
+        return False
+
+
 class Toolchain:
     """An MSVC v142 + Windows SDK pair, run natively on Windows or through wine elsewhere.
 
@@ -100,12 +111,12 @@ class Toolchain:
         missing = []
         if not (self.bin / "cl.exe").exists():
             missing.append(str(self.bin / "cl.exe"))
-        if not (self.kits / "Include" / SDK_VERSION / "um" / "windows.h").exists():
+        if not _exists(self.kits / "Include" / SDK_VERSION / "um" / "windows.h"):
             missing.append(str(self.kits / "Include" / SDK_VERSION / "um" / "windows.h"))
         if link:
-            if not (self.msvc / "lib" / "x86" / "msvcrt.lib").exists():
+            if not _exists(self.msvc / "lib" / "x86" / "msvcrt.lib"):
                 missing.append(str(self.msvc / "lib" / "x86" / "msvcrt.lib"))
-            if not (self.kits / "Lib" / SDK_VERSION / "um" / "x86" / "kernel32.Lib").exists():
+            if not _exists(self.kits / "Lib" / SDK_VERSION / "um" / "x86" / "kernel32.Lib"):
                 missing.append(str(self.kits / "Lib" / SDK_VERSION / "um" / "x86" / "kernel32.Lib"))
         return missing
 
