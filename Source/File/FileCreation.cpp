@@ -66,6 +66,8 @@ static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const jsoncons::
   return true;
 }
 
+template __declspec(noinline) jsoncons::json::object_iterator jsoncons::json::find(const jsoncons::json::string_view_type&);
+
 // OFFSET: 0x0050C2A0
 // FUNCTION: fn_00896
 bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* out) {
@@ -74,9 +76,7 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
     return false;
   }
 
-  const jsoncons::json& document = this->document;
-  const auto end = document.object_range().end();
-  if (end == document.find("EZ2STREffect")) {
+  if (this->document.object_range().end() == this->document.find("EZ2STREffect")) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "EZ2STREffect");
     return false;
   }
@@ -93,8 +93,8 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
     this->GetBoolValue(node, "IsAboveUI", &record.aboveUi);
     this->GetStringValue(node, "SoundPath", &record.soundPath);
     this->GetBoolValue(node, "IsSoundLoop", &record.soundLoop);
-    this->GetIntValue(node, "QuakeDelay", &record.delays[0]);
-    this->GetIntValue(node, "StartDelayTime", &record.delays[1]);
+    this->GetIntValue(node, "QuakeDelay", &record.quakeDelay);
+    this->GetIntValue(node, "StartDelayTime", &record.startDelayTime);
     this->GetBoolValue(node, "IsToGround", &record.toGround);
 
     if (!out->insert(std::pair<std::string, EZ2STREffectRecord>(name, record)).second) {

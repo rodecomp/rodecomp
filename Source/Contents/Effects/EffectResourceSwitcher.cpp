@@ -506,8 +506,8 @@ void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::strin
   info.flags = entry.second.aboveUi ? info.flags | 4 : info.flags;
   info.soundPath = static_cast<const std::string&>(FromUtf8(entry.second.soundPath, g_textCodePage));
   info.flags = entry.second.soundLoop ? info.flags | 8 : info.flags;
-  info.delay = entry.second.delays[0];
-  info.interval = entry.second.delays[1];
+  info.delay = entry.second.quakeDelay;
+  info.interval = entry.second.startDelayTime;
   info.flags = entry.second.toGround ? info.flags | 16 : info.flags;
 
   std::string key = FromUtf8(entry.first, g_textCodePage);

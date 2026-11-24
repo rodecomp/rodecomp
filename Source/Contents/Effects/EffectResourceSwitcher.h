@@ -33,7 +33,8 @@ struct EZ2STREffectRecord {
   /* 002A */ bool aboveUi;
   /* 002C */ std::string soundPath;
   /* 0044 */ bool soundLoop;
-  /* 0048 */ int delays[2];
+  /* 0048 */ int quakeDelay;
+  /* 004C */ int startDelayTime;
   /* 0050 */ bool toGround;
 };
 
