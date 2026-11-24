@@ -32,9 +32,12 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
     return;
   }
 
-  const auto read = [&](int id, int& value) {
-    DWORD type = REG_DWORD;
-    DWORD size = sizeof(int);
+  DWORD type;
+  DWORD size;
+  int value;
+  const auto read = [&](int id) {
+    type = REG_DWORD;
+    size = sizeof(value);
     char name[100] = {};
     const int character = g_session.selectedCharacterSlot;
     const char* skill = CSkillInfo::IdName(id);
@@ -44,8 +47,7 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
   };
 
   for (int id = 1; id < 7999; ++id) {
-    int value;
-    if (read(id, value)) {
+    if (read(id)) {
       if (CSkillInfo::UsesLevel(id)) {
         g_session.m_skillBundle.SetSkillValue(id, value);
       } else {
@@ -57,8 +59,7 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
   }
 
   for (int id = 8000; id < 8061; ++id) {
-    int value;
-    if (read(id, value)) {
+    if (read(id)) {
       if (CSkillInfo::UsesLevel(id)) {
         g_session.SetHomunSkillLevel(id, value);
       } else {
@@ -70,8 +71,7 @@ void UIWindowMgr::LoadSkillUseLevelRegistry() {
   }
 
   for (int id = 8200; id < 8458; ++id) {
-    int value;
-    if (read(id, value)) {
+    if (read(id)) {
       if (CSkillInfo::UsesLevel(id)) {
         g_session.SetMercSkillLevel(id, value);
       } else {
