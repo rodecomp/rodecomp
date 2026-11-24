@@ -619,9 +619,7 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240
 void CVolcanoEffect::AddRings() {
-  int baseAngle = 0;
-  int row = 0;
-  for (; baseAngle < 360; baseAngle += 90) {
+  for (int row = 0; row < 4; ++row) {
     for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -659,19 +657,21 @@ void CVolcanoEffect::AddRings() {
         particle->animationParameter = 0.0f;
         particle->angleParameter = 360;
         particle->alpha = 1;
-        particle->angle = static_cast<float>(baseAngle);
+        particle->angle = static_cast<float>(row * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
-      case EF_GUMGANG5:
+      case EF_GUMGANG5: {
+        const int angle = particle->rowIndex * 90;
         particle->alpha = 1;
         particle->angleParameter = 360;
         particle->speedParameter = 25.0f;
         particle->phaseParameter = 80;
-        particle->angle = static_cast<float>(particle->rowIndex * 90);
         particle->animationParameter = 0.0f;
+        particle->angle = static_cast<float>(angle);
         particle->scale = static_cast<float>(row) + 1.0f;
         particle->SetColor(0, 0, 255);
         break;
+      }
       }
 
       switch (this->id) {
@@ -707,8 +707,6 @@ void CVolcanoEffect::AddRings() {
       particle->InitParticleQuad(particle->vertices);
       this->particles.push_back(particle);
     }
-
-    ++row;
   }
 }
 
