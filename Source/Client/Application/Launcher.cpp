@@ -1637,8 +1637,9 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const int deltaX = cursor.x - g_windowDragStart.x;
     const int deltaY = cursor.y - g_windowDragStart.y;
     if (deltaX != 0 || deltaY != 0) {
-      MoveWindow(hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, g_windowDragRect.right - g_windowDragRect.left,
-                 g_windowDragRect.bottom - g_windowDragRect.top, TRUE);
+      const int height = g_windowDragRect.bottom - g_windowDragRect.top;
+      const int width = g_windowDragRect.right - g_windowDragRect.left;
+      MoveWindow(hWnd, g_windowDragRect.left + deltaX, g_windowDragRect.top + deltaY, width, height, TRUE);
     }
 
     if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0) {
