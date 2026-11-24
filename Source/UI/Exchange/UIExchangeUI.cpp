@@ -594,6 +594,11 @@ void ExchangeUI::CUIItem::OnCreate(int width, int height) {
   this->AddChild(this->itemNameText);
 }
 
+// INLINED
+static void SetSubmitHandler(CUIEditBoxEx* edit, std::function<void()> handler) {
+  edit->onSubmit.swap(handler);
+}
+
 // OFFSET: 0x00A103F0
 // FUNCTION: fn_15191
 void CUIExchangeUI::OnCreate(int width, int height) {
@@ -603,11 +608,11 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUITitleBar* titleBar = this->titleBar;
     // GLOBAL: gl_25394
-    const std::string titleRight(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x17A9E5BF39AD4737ULL));
+    const std::string titleRight(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x17A9E5BF39AD4737ULL));
     // GLOBAL: gl_25395
-    const std::string titleMiddle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x03772763F96D9DA5ULL));
+    const std::string titleMiddle(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x03772763F96D9DA5ULL));
     // GLOBAL: gl_25396
-    const std::string titleLeft(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x0B7109397F6B1387ULL));
+    const std::string titleLeft(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x0B7109397F6B1387ULL));
     titleBar->SetImages(titleLeft, titleMiddle, titleRight);
   }
   this->AddChild(this->titleBar);
@@ -657,7 +662,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticImage* background = this->backgroundImage;
     // GLOBAL: gl_25399
-    background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\exchange_bg2.bmp", 0x9949BFD527532943ULL)));
+    background->SetImage(std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\exchange_bg2.bmp", 0x9949BFD527532943ULL)));
   }
   this->AddChild(this->backgroundImage);
 
@@ -681,25 +686,25 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25400
-    const std::string down(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0xD97D5DBDBB2F2709ULL));
+    const std::string down(OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0xD97D5DBDBB2F2709ULL));
     // GLOBAL: gl_25401
-    const std::string up(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0xED796785D1DF137FULL));
+    const std::string up(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0xED796785D1DF137FULL));
     list->scrollBar->SetButtonImages(up, down);
   }
   {
     ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25402
-    const std::string background(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xA5FD29D7AB6DC59FULL));
+    const std::string background(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xA5FD29D7AB6DC59FULL));
     list->scrollBar->SetBackground(background);
   }
   {
     ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25403
-    const std::string thumbBottom(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xDD3913D5D7F97BE1ULL));
+    const std::string thumbBottom(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xDD3913D5D7F97BE1ULL));
     // GLOBAL: gl_25404
-    const std::string thumbMiddle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x050505679903579BULL));
+    const std::string thumbMiddle(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x050505679903579BULL));
     // GLOBAL: gl_25405
-    const std::string thumbTop(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xF14F79170939C7F1ULL));
+    const std::string thumbTop(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xF14F79170939C7F1ULL));
     list->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
   }
   this->firstList->AddNewItem();
@@ -783,10 +788,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->zenyEdit->SetEditBounds(0, 0, 0, 0);
   this->zenyEdit->SetMask(0);
   this->zenyEdit->SetAlignment(0);
-  {
-    std::function<void()> handler = [this]() { this->OnEditSubmit(); };
-    this->zenyEdit->onSubmit.swap(handler);
-  }
+  SetSubmitHandler(this->zenyEdit, [this]() { this->OnEditSubmit(); });
   this->AddChild(this->zenyEdit);
 
   ExchangeUI::CItemListBox* secondList = new ExchangeUI::CItemListBox();
@@ -809,25 +811,25 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25412
-    const std::string down(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0x4941FD9F21BBB9FDULL));
+    const std::string down(OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0x4941FD9F21BBB9FDULL));
     // GLOBAL: gl_25413
-    const std::string up(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0x35E5656B5DEDCD75ULL));
+    const std::string up(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0x35E5656B5DEDCD75ULL));
     list->scrollBar->SetButtonImages(up, down);
   }
   {
     ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25414
-    const std::string background(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xE7978FB5A94DD7FDULL));
+    const std::string background(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xE7978FB5A94DD7FDULL));
     list->scrollBar->SetBackground(background);
   }
   {
     ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25415
-    const std::string thumbBottom(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x7115D9F973F913C9ULL));
+    const std::string thumbBottom(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x7115D9F973F913C9ULL));
     // GLOBAL: gl_25416
-    const std::string thumbMiddle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xCB1D253B7FE1F563ULL));
+    const std::string thumbMiddle(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xCB1D253B7FE1F563ULL));
     // GLOBAL: gl_25417
-    const std::string thumbTop(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xB7FD8F670FC7B96BULL));
+    const std::string thumbTop(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xB7FD8F670FC7B96BULL));
     list->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
   }
   this->secondList->AddNewItem();
@@ -911,13 +913,13 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUICheckBox* checkBox = this->logCheckBox;
     // GLOBAL: gl_25424
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x452FEF0D7FC95565ULL));
+    const std::string disabled(OBFUSCATE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x452FEF0D7FC95565ULL));
     // GLOBAL: gl_25425
-    const std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x9FED7DA189490D5DULL));
+    const std::string pressed(OBFUSCATE_TEXT("유저인터페이스\\checkbox_0.bmp", 0x9FED7DA189490D5DULL));
     // GLOBAL: gl_25426
-    const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x839B27DF8F5967B3ULL));
+    const std::string hover(OBFUSCATE_TEXT("유저인터페이스\\checkbox_1.bmp", 0x839B27DF8F5967B3ULL));
     // GLOBAL: gl_25427
-    const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xF3CB6F7711A71B6DULL));
+    const std::string normal(OBFUSCATE_TEXT("유저인터페이스\\checkbox_0.bmp", 0xF3CB6F7711A71B6DULL));
     checkBox->SetImages(normal, hover, pressed, disabled);
   }
   {
@@ -957,13 +959,13 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIImageButton* button = this->lockButton;
     // GLOBAL: gl_25429
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok_dis.bmp", 0x4F99DF03C3EF31B7ULL));
+    const std::string disabled(OBFUSCATE_TEXT("유저인터페이스\\btn_ok_dis.bmp", 0x4F99DF03C3EF31B7ULL));
     // GLOBAL: gl_25430
-    const std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok_a.bmp", 0x2D51E3B7236175EDULL));
+    const std::string pressed(OBFUSCATE_TEXT("유저인터페이스\\btn_ok_a.bmp", 0x2D51E3B7236175EDULL));
     // GLOBAL: gl_25431
-    const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok_b.bmp", 0x0F41EBBDA32D1B17ULL));
+    const std::string hover(OBFUSCATE_TEXT("유저인터페이스\\btn_ok_b.bmp", 0x0F41EBBDA32D1B17ULL));
     // GLOBAL: gl_25432
-    const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_ok.bmp", 0xFBD599E117C547C1ULL));
+    const std::string normal(OBFUSCATE_TEXT("유저인터페이스\\btn_ok.bmp", 0xFBD599E117C547C1ULL));
     button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->lockButton);
@@ -980,13 +982,13 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIImageButton* button = this->tradeButton;
     // GLOBAL: gl_25433
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange_dis.bmp", 0x4F637DC51307B759ULL));
+    const std::string disabled(OBFUSCATE_TEXT("유저인터페이스\\btn_exchange_dis.bmp", 0x4F637DC51307B759ULL));
     // GLOBAL: gl_25434
-    const std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange_a.bmp", 0xE52DF30DCBAF7125ULL));
+    const std::string pressed(OBFUSCATE_TEXT("유저인터페이스\\btn_exchange_a.bmp", 0xE52DF30DCBAF7125ULL));
     // GLOBAL: gl_25435
-    const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange_b.bmp", 0xCFF3899D95AF355FULL));
+    const std::string hover(OBFUSCATE_TEXT("유저인터페이스\\btn_exchange_b.bmp", 0xCFF3899D95AF355FULL));
     // GLOBAL: gl_25436
-    const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_exchange.bmp", 0x9171997D6963C9F7ULL));
+    const std::string normal(OBFUSCATE_TEXT("유저인터페이스\\btn_exchange.bmp", 0x9171997D6963C9F7ULL));
     button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->tradeButton);
@@ -1003,13 +1005,13 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIImageButton* button = this->cancelButton;
     // GLOBAL: gl_25437
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x33133B977BCD03CDULL));
+    const std::string disabled(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x33133B977BCD03CDULL));
     // GLOBAL: gl_25438
-    const std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel_a.bmp", 0x8D1D0FF1AF2B13F7ULL));
+    const std::string pressed(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel_a.bmp", 0x8D1D0FF1AF2B13F7ULL));
     // GLOBAL: gl_25439
-    const std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel_b.bmp", 0xB39FA7917BCFBB8DULL));
+    const std::string hover(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel_b.bmp", 0xB39FA7917BCFBB8DULL));
     // GLOBAL: gl_25440
-    const std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x2DCB7567394DC1ABULL));
+    const std::string normal(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel.bmp", 0x2DCB7567394DC1ABULL));
     button->SetImages(normal, hover, pressed, disabled);
   }
   this->AddChild(this->cancelButton);
