@@ -6593,15 +6593,16 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (21400 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         if (header.type == 21401) {
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
+          scanning = false;
+        } else {
+          offset += header.size;
         }
-
-        offset += header.size;
       }
     }
     break;
@@ -6730,19 +6731,21 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 20800) {
+    if (20800 == header.type) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
       if (window) {
         window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
 
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
         case 20801:
-          return 0;
+          scanning = false;
+          break;
         case 20802:
           std::memcpy(&this->shopId, bytes + offset, header.size);
           offset += header.size;
@@ -7086,13 +7089,15 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (21200 == header.type || 21250 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
         case 21200:
         case 21250:
-          return 0;
+          scanning = false;
+          break;
         case 21253:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
@@ -9393,7 +9398,8 @@ void UIItemPurchaseWnd::Paint() {
   {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
+    const int slotRows = (height - 38) / 32;
+    this->FillRegion(40, 17, this->geometry.width - 50, slotRows * 32, RGB(red, green, blue));
   }
 
   int slots = (height - 58) / 32;
@@ -9452,28 +9458,28 @@ void UIItemPurchaseWnd::Paint() {
     char currency[10];
     StringFormat(currency, 10, static_cast<std::size_t>(-1), "Z");
     if (this->cashShopMode != 0) {
-      const char* name;
       if (g_serviceType == 6) {
-        name = "Koin";
+        sprintf(currency, "Koin");
       } else if (g_serviceType == 0) {
         if (g_session.m_channelCopId == 1) {
-          name = "한코인";
+          sprintf(currency, "한코인");
         } else {
-          name = LookupMessage(MSI_CASH);
+          sprintf(currency, LookupMessage(MSI_CASH));
         }
       } else {
-        name = "Point";
+        sprintf(currency, "Point");
       }
-      sprintf(currency, name);
     }
 
     char price[64];
     char text[64];
     int length;
     if (it->prices[0] != it->prices[1]) {
-      length = sprintf(text, " %d -> %s %s", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64), currency);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64);
+      length = sprintf(text, " %d -> %s %s", it->prices[0], grouped, currency);
     } else {
-      length = sprintf(text, " %s %s", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64), currency);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64);
+      length = sprintf(text, " %s %s", grouped, currency);
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
 
@@ -11172,15 +11178,15 @@ void UIItemShopWnd2::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - this->extraBottomHeight - this->bottomBarHeight - 17) / 32;
-  int slots = slotRows;
-  for (int i = 0; i < slots; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int slotRows = (this->geometry.height - this->extraBottomHeight - this->bottomBarHeight - 17) / 32;
+    int slots = slotRows;
+    for (int i = 0; i < slots; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
