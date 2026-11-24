@@ -335,16 +335,17 @@ void UIComboBoxEx2::Resize(int width, int height) {
 // FUNCTION: fn_11353
 void UIComboBoxEx2::Paint() {
   this->ClearSurface(0xC59582u);
-  this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), 0xFCF4F0u);
+  auto& geometryRef = this->geometry;
+  this->FillRegion(1, 1, (geometryRef.width - 2), (geometryRef.height - 2), 0xFCF4F0u);
 
   const int top = this->topLine;
   const int end = static_cast<int>(std::min(
-    static_cast<unsigned>((top + (this->geometry.height / this->lineHeight - this->bottomMargin))), static_cast<unsigned>(this->lines.size())
+    static_cast<unsigned>((top + (geometryRef.height / this->lineHeight - this->bottomMargin))), static_cast<unsigned>(this->lines.size())
   ));
 
   for (int row = top; row < end; ++row) {
     if (row == this->selected) {
-      this->FillRegion(3, ((this->lineHeight * (row - top)) + 1), (this->geometry.width - 6), (this->lineHeight - 2), 0xF8D5C4u);
+      this->FillRegion(3, ((this->lineHeight * (row - top)) + 1), (geometryRef.width - 6), (this->lineHeight - 2), 0xF8D5C4u);
     }
   }
 
@@ -353,7 +354,7 @@ void UIComboBoxEx2::Paint() {
       this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
     } else if (this->alignment == 1) {
       const int x = static_cast<int>(
-        static_cast<float>(this->geometry.width) * 0.5f -
+        static_cast<float>(geometryRef.width) * 0.5f -
         static_cast<float>(this->TextWidth(this->lines[row].text.c_str(), 0, 0, 12, 0, 0)) * 0.5f
       );
       this->DrawTextAt(x, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
