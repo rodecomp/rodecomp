@@ -77,6 +77,7 @@ public:
   /* 0380 */ ITEM_INFO m_additionItem;
 
   __declspec(noinline) RouletteMgr();
+  ~RouletteMgr();
   void AddItem(RouletteSlot slot);
 
   // INLINED
@@ -88,6 +89,7 @@ public:
   void Reset();
   void Draw();
   void Update();
+  void UpdateFinalCycle();
   void SetAdditionItem(int itemId);
   void StartSpin(int x, int y, int originX, int originY);
   void SetQuad(int x, int y, int originX, int originY);

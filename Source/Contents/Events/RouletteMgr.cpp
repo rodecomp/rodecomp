@@ -45,6 +45,10 @@ RouletteMgr::RouletteMgr() {
   this->m_valid = 1;
 }
 
+// OFFSET: 0x0080A7E0
+// FUNCTION: fn_46715
+RouletteMgr::~RouletteMgr() = default;
+
 // OFFSET: 0x0080A980
 // FUNCTION: fn_10072
 void RouletteMgr::AddItem(RouletteSlot slot) {
@@ -195,6 +199,40 @@ void RouletteMgr::SetResult(unsigned short index, unsigned char shown, unsigned 
   }
 }
 
+// INLINED
+static __forceinline void AdvanceRouletteFrame(RouletteMgr& roulette) {
+  for (int index = 0; index < 6; ++index) {
+    if (roulette.m_quads.current.vertices[index].x > roulette.m_quads.target.vertices[index].x) {
+      roulette.m_quads.current.vertices[index].x -= 36.0f;
+    }
+  }
+
+  const DWORD now = timeGetTime();
+  ++roulette.m_frame;
+  roulette.m_lastTick = now;
+}
+
+// OFFSET: 0x0080B050
+// FUNCTION: fn_46716
+__forceinline void RouletteMgr::UpdateFinalCycle() {
+  if (8 - this->m_stage - this->m_index <= this->m_frame) {
+    this->m_resultShown = 1;
+    const int originY = static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0);
+    const int originX = static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0);
+    this->SetQuad((this->m_stage + this->m_index) * 36 + 173, 341 - this->m_stage * 40, originX, originY);
+    g_windowMgr.roulletteWnd->m_enabled = 1;
+    g_windowMgr.roulletteWnd->Invalidate();
+    this->m_spinning = 0;
+    return;
+  }
+
+  if (this->m_interval > timeGetTime() - this->m_lastTick) {
+    return;
+  }
+
+  AdvanceRouletteFrame(*this);
+}
+
 // OFFSET: 0x0080ADC0
 // FUNCTION: fn_10077
 void RouletteMgr::Update() {
@@ -203,44 +241,24 @@ void RouletteMgr::Update() {
   }
 
   if (this->m_cycle > 6) {
-    if (8 - this->m_stage - this->m_index <= this->m_frame) {
-      this->m_resultShown = 1;
-      const int originY = static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0);
-      const int originX = static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0);
-      this->SetQuad((this->m_stage + this->m_index) * 36 + 173, 341 - this->m_stage * 40, originX, originY);
-      g_windowMgr.roulletteWnd->m_enabled = 1;
-      g_windowMgr.roulletteWnd->Invalidate();
-      this->m_spinning = 0;
-      return;
-    }
-
-    if (this->m_interval > timeGetTime() - this->m_lastTick) {
-      return;
-    }
-  } else {
-    if (this->m_interval > timeGetTime() - this->m_lastTick) {
-      return;
-    }
-
-    if (8 - this->m_stage <= this->m_frame) {
-      for (int i = 0; i < 6; ++i) {
-        this->m_quads.current.vertices[i] = this->m_quads.start.vertices[i];
-      }
-      const float interval = static_cast<float>(this->m_interval);
-      this->m_interval = static_cast<unsigned long>(interval * 0.34f + interval);
-      ++this->m_cycle;
-      this->m_frame = 0;
-      return;
-    }
+    this->UpdateFinalCycle();
+    return;
   }
 
-  for (int index = 0; index < 6; ++index) {
-    if (this->m_quads.current.vertices[index].x > this->m_quads.target.vertices[index].x) {
-      this->m_quads.current.vertices[index].x -= 36.0f;
-    }
+  if (this->m_interval > timeGetTime() - this->m_lastTick) {
+    return;
   }
 
-  const DWORD now = timeGetTime();
-  ++this->m_frame;
-  this->m_lastTick = now;
+  if (8 - this->m_stage <= this->m_frame) {
+    for (int i = 0; i < 6; ++i) {
+      this->m_quads.current.vertices[i] = this->m_quads.start.vertices[i];
+    }
+    const float interval = static_cast<float>(this->m_interval);
+    this->m_interval = static_cast<unsigned long>(interval * 0.34f + interval);
+    ++this->m_cycle;
+    this->m_frame = 0;
+    return;
+  }
+
+  AdvanceRouletteFrame(*this);
 }
