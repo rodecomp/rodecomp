@@ -502,20 +502,20 @@ void CExpandedBarterMarketItemMgr::AddEntry(const BarterMarketEntry& entry)
   for (std::vector<BarterChunk16>::const_iterator it = entry.chunks.begin(); it != entry.chunks.end(); ++it) {
     int count = entry.value;
     BarterChunk16 chunk = *it;
-    std::vector<BarterChunk16>::iterator target = this->chunks.begin();
-    for (; target != this->chunks.end(); ++target) {
+    for (std::vector<BarterChunk16>::iterator target = this->chunks.begin();; ++target) {
+      if (target == this->chunks.end()) {
+        alignas(16) BarterChunk16 added;
+        added.field_0 = chunk.field_0;
+        added.field_4 = chunk.field_4;
+        added.amount = chunk.amount * count;
+        added.field_c = chunk.field_c;
+        this->chunks.push_back(added);
+        break;
+      }
       if (target->field_0 == chunk.field_0 && target->field_4 == chunk.field_4) {
         target->amount += chunk.amount * count;
         break;
       }
-    }
-    if (target == this->chunks.end()) {
-      alignas(16) BarterChunk16 added;
-      added.field_0 = chunk.field_0;
-      added.field_4 = chunk.field_4;
-      added.amount = chunk.amount * count;
-      added.field_c = chunk.field_c;
-      this->chunks.push_back(added);
     }
   }
   this->total = 0;
