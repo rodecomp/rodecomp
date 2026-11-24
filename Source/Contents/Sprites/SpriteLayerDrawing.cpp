@@ -395,13 +395,12 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
 
       CActRes* body = static_cast<CActRes*>(this->pc->GetEquipAction(1));
-      int bodyAnimation = this->pc->render.previousAnimation;
-      int bodyFrameIndex = this->pc->render.curMotion;
+      const ActionFrame* bodyFrame;
       if (replaced == true) {
-        bodyAnimation = animation;
-        bodyFrameIndex = frameIndex;
+        bodyFrame = &body->Frame(animation, frameIndex);
+      } else {
+        bodyFrame = &body->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       }
-      const ActionFrame* bodyFrame = &body->Frame(bodyAnimation, bodyFrameIndex);
 
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
         if (frame->anchors[0].attachmentId == bodyFrame->anchors[0].attachmentId) {
