@@ -195,11 +195,8 @@ void CWorld::RemovePcPos(std::uint32_t aid, bool notify) {
 // OFFSET: 0x00ACA7B0
 // FUNCTION: fn_17696
 void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
-  for (auto entry = this->unindexedActorIds.begin(); entry != this->unindexedActorIds.end(); ++entry) {
-    if (*entry != aid) {
-      continue;
-    }
-
+  const auto entry = std::find(this->unindexedActorIds.begin(), this->unindexedActorIds.end(), aid);
+  if (entry != this->unindexedActorIds.end()) {
     if (notify && this->guildMasterNearby) {
       if (this->IsGuildMaster(aid)) {
         this->UpdateGuildMasterApproach([this]() { return false; });
@@ -207,7 +204,6 @@ void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
     }
 
     this->unindexedActorIds.erase(entry);
-    return;
   }
 }
 
@@ -283,15 +279,7 @@ void CWorld::PlayerMove(const float& x, const float& z) {
 __declspec(noinline) void CWorld::AddPcPos(std::uint32_t aid, const CellFloatPos& cell) {
   this->RemovePcPos(aid, false);
 
-  for (auto entry = this->unindexedActorIds.begin(); entry != this->unindexedActorIds.end(); ++entry) {
-    if (*entry != aid) {
-      continue;
-    }
-
-    this->unindexedActorIds.erase(entry);
-    break;
-  }
-
+  this->RemovePcPosForMove(aid, false);
   const float key = this->ActorCellKey(cell);
   this->actorCells[key].emplace_back(aid);
   this->PcApproachToPlayer(aid, cell);
@@ -312,15 +300,7 @@ void CWorld::AddPcPosFromCell(std::uint32_t aid, const int* cell) {
 __forceinline void CWorld::AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell) {
   this->RemovePcPos(aid, false);
 
-  for (auto entry = this->unindexedActorIds.begin(); entry != this->unindexedActorIds.end(); ++entry) {
-    if (*entry != aid) {
-      continue;
-    }
-
-    this->unindexedActorIds.erase(entry);
-    break;
-  }
-
+  this->RemovePcPosForMove(aid, false);
   this->unindexedActorIds.emplace_back(aid);
   this->PcApproachToPlayer(aid, cell);
 }
