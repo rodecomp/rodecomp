@@ -2357,73 +2357,58 @@ void UIBmpRadioBtn::Paint() {
 
   FontCache& fonts = g_fontCache;
   if (this->m_disabled == true) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 3) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
-        }
-        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 3; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xE2E2E2, 0, 0);
       }
+      this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
-    return;
-  }
-
-  if (this->geometry.state == 1) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 2) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
-        }
-        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+  } else if (this->geometry.state == 1) {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 2; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, 0xFFFFFF, it->bold, 0);
       }
+      this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
-    return;
-  }
-
-  if (this->m_hovered == true) {
-    for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-      if (it->id == 1) {
-        if (it->drawShadow == true) {
-          this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
-        }
-        this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-        return;
+  } else if (this->m_hovered == true) {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 1; });
+    if (it != this->m_texts.end()) {
+      if (it->drawShadow == true) {
+        this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xC7A796, it->bold, 0);
       }
+      this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
-
-    const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-    this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
-    this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
-    return;
-  }
-
-  for (auto it = this->m_texts.begin(); it != this->m_texts.end(); ++it) {
-    if (it->id == 0) {
+  } else {
+    const auto it = std::find_if(this->m_texts.begin(), this->m_texts.end(), [](const auto& text) { return text.id == 0; });
+    if (it != this->m_texts.end()) {
       if (it->drawShadow == true) {
         this->DrawTextAt(it->x + 1, it->y + 1, this->m_label.c_str(), 0, 0, it->height, 0xD7D7D7, it->bold, 0);
       }
       this->DrawTextAt(it->x, it->y, this->m_label.c_str(), 0, 0, it->height, it->color, it->bold, 0);
-      return;
+    } else {
+      const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
+      this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+      this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
     }
   }
-
-  const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->m_label.c_str(), 0, 0, 12, 0, 0)) * 0.5);
-  this->DrawTextAt(x + 1, y + 1, this->m_label.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
-  this->DrawTextAt(x, y, this->m_label.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008894A0
