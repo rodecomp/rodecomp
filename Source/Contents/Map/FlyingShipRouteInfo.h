@@ -12,13 +12,19 @@ struct WorldViewRecord;
 
 struct RoMapMarker {
   /* 0000 */ std::string name;
-  /* 0018 */ WorldViewArea area = {};
+  /* 0018 */ WorldViewArea area = {0, 0, 0, 0, 0};
   /* 002C */ float center[2];
   /* 0034 */ float width;
   /* 0038 */ float height;
 
   RoMapMarker() = default;
-  RoMapMarker(const RoMapMarker& other) = default;
+  // INLINED
+  RoMapMarker(const RoMapMarker& other) : name(other.name), area(other.area) {
+    this->center[0] = other.center[0];
+    this->center[1] = other.center[1];
+    this->width = other.width;
+    this->height = other.height;
+  }
   RoMapMarker(RoMapMarker&& other) noexcept;
   RoMapMarker& operator=(const RoMapMarker& other) = default;
   RoMapMarker& operator=(RoMapMarker&& other) = default;
