@@ -1606,7 +1606,8 @@ int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
 
   const char* result;
   if (key.empty()) {
-    g_cashEmotionMgr->AddEmotion(packId, emotionId, "", actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
+    CCashEmotionMgr* mgr = g_cashEmotionMgr;
+    mgr->AddEmotion(packId, emotionId, "", actionIndex, frameIndex, actFile.c_str(), sprFile.c_str());
     result = nullptr;
   } else {
     const char* name = g_simpleStringMgr->GetString(key.c_str());
@@ -1614,7 +1615,8 @@ int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
       name = LookupMessage(FindMessageId(key.c_str()));
     }
 
-    result = g_cashEmotionMgr->AddEmotion(packId, emotionId, name, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str()) ? name : nullptr;
+    CCashEmotionMgr* mgr = g_cashEmotionMgr;
+    result = mgr->AddEmotion(packId, emotionId, name, actionIndex, frameIndex, actFile.c_str(), sprFile.c_str()) ? name : nullptr;
   }
 
   lua_pushstring(state, result);
@@ -3754,8 +3756,9 @@ void UICashEmotionScrollBar::Paint() {
     return;
   }
 
-  const int top = this->ThumbOffset() + this->arrowLength - 2;
+  int top = this->ThumbOffset() + this->arrowLength;
   const int length = this->ThumbLength();
+  top -= 2;
   int topHeight = 0;
   auto* topBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_top.bmp")));
   if (topBar) {
@@ -3770,8 +3773,9 @@ void UICashEmotionScrollBar::Paint() {
   int end = top + (length + 4);
   if (middle) {
     const int step = middle->image.height;
-    end = (length + 4) + (top - bottomHeight);
-    for (int y = top + topHeight; y < end; y += step) {
+    int y = top + topHeight;
+    end = (top - bottomHeight) + (length + 4);
+    for (; y < end; y += step) {
       this->DrawBitmap(0, y, middle, true);
     }
   }
