@@ -6323,14 +6323,13 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
     this->state.lastPrim->state.slots[index].flag1[0] = 0;
     this->state.lastPrim->state.slots[index].flag1[1] = 0;
     this->state.lastPrim->state.slots[index].flag1[2] = flag;
-    EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
-    const float radius = g_cosTable[slot.riseAngle] * 70.0f;
-    const float z = g_sinTable[slot.riseAngle] * 70.0f;
-    const float x = radius * g_cosTable[slot.rotStart];
-    const float y = radius * g_sinTable[slot.rotStart] + slot.height[0];
-    slot.vecBNow.z = z;
-    slot.vecBNow.x = x;
-    slot.vecBNow.y = y;
+    const float radius = g_cosTable[this->state.lastPrim->state.slots[index].riseAngle] * 70.0f;
+    const float z = g_sinTable[this->state.lastPrim->state.slots[index].riseAngle] * 70.0f;
+    const float x = radius * g_cosTable[this->state.lastPrim->state.slots[index].rotStart];
+    const float y = radius * g_sinTable[this->state.lastPrim->state.slots[index].rotStart] + this->state.lastPrim->state.slots[index].height[0];
+    this->state.lastPrim->state.slots[index].vecBNow.z = z;
+    this->state.lastPrim->state.slots[index].vecBNow.x = x;
+    this->state.lastPrim->state.slots[index].vecBNow.y = y;
   }
 }
 
