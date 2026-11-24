@@ -857,7 +857,7 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     int disabledIndices[2] = {0, 2};
 
     int index = 0;
-    for (int x = 5; x < 291; x += 26, ++index) {
+    for (int x = 5; x < 291; ++index, x += 26) {
       char number[8];
       _itoa(index + 1, number, 10);
       this->buttons[index] = new UIBitmapButton();
@@ -886,7 +886,11 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       );
       this->buttons[index]->Move(x, this->geometry.height - 40);
       this->buttons[index]->SetId(ids[index]);
-      this->buttons[index]->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
+      if (this->mode == 0) {
+        this->buttons[index]->SetTooltip(friendTooltips[index]);
+      } else {
+        this->buttons[index]->SetTooltip(partyTooltips[index]);
+      }
       {
         UIBitmapButton* button = this->buttons[index];
         button->SetDisabled(disabled[index]);
