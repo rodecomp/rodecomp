@@ -5672,9 +5672,11 @@ void CEffectPrim::PrimWaveSpin() {
 
     const int process = slot.process + 1;
     slot.process = process;
-    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (this->state.accel != 99.0f ? 5 : 3));
-    if (slot.rotStart >= 360) {
-      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    const int rotStart = slot.rotStart;
+    const std::int16_t rot = static_cast<std::int16_t>(rotStart + (this->state.accel != 99.0f ? 5 : 3));
+    slot.rotStart = rot;
+    if (rot >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(rot - 360);
     }
 
     slot.distance += this->state.accel != 99.0f ? 0.3f : 0.1f;
@@ -5713,9 +5715,10 @@ void CEffectPrim::PrimWaveSpin() {
 
     const int phase = index * 90;
     for (int point = 0; point < 21; ++point) {
+      const int wave = (phase + slot.process) % 360;
       const float base = g_sinTable[9 * point] * slot.maxHeight;
       slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.15f * g_sinTable[(phase + slot.process) % 360] + base;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.15f * g_sinTable[wave] + base;
     }
   }
 }
@@ -5776,11 +5779,12 @@ void CEffectPrim::PrimBreathingWave() {
     }
 
     const int offset = index * 45;
+    float* heights = this->state.slots[index].height;
     for (int point = 0; point < 21; ++point) {
       const int angle = (offset < 90 ? this->state.slots[index].process + phase : (this->state.slots[index].process + offset) * 2) % steps;
       const float base = this->state.slots[index].maxHeight;
-      this->state.slots[index].height[point] = base;
-      this->state.slots[index].height[point] = g_sinTable[9 * point] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[angle] + base;
+      heights[point] = base;
+      heights[point] = g_sinTable[9 * point] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
@@ -6157,7 +6161,8 @@ void CEffectPrim::PrimSpiralCollapse() {
       }
     }
 
-    const float length = SquareRoot(this->state.slots[index].vecBNow.x * this->state.slots[index].vecBNow.x + this->state.slots[index].vecBNow.y * this->state.slots[index].vecBNow.y + this->state.slots[index].vecBNow.z * this->state.slots[index].vecBNow.z);
+    const vector3d& pos = this->state.slots[index].vecBNow;
+    const float length = SquareRoot(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
 
     if (this->state.slots[index].flag1[0] == 0 && length < 12.0f) {
       this->state.slots[index].flag1[0] = 1;
@@ -6220,11 +6225,10 @@ void CEffectPrim::PrimSpiralCollapse() {
       }
     }
 
+    const float horizontal = this->state.slots[index].height[1] * g_cosTable[this->state.slots[index].riseAngle];
     const float sinRise = g_sinTable[this->state.slots[index].riseAngle];
-    const float cosRise = g_cosTable[this->state.slots[index].riseAngle];
-    const float sinRot = g_sinTable[this->state.slots[index].rotStart];
-    this->state.slots[index].vecBNow.x -= this->state.slots[index].height[1] * cosRise * g_cosTable[this->state.slots[index].rotStart];
-    this->state.slots[index].vecBNow.y -= sinRot * this->state.slots[index].height[1] * cosRise + 0.0f;
+    this->state.slots[index].vecBNow.x -= horizontal * g_cosTable[this->state.slots[index].rotStart];
+    this->state.slots[index].vecBNow.y -= g_sinTable[this->state.slots[index].rotStart] * horizontal + 0.0f;
     this->state.slots[index].vecBNow.z -= sinRise * this->state.slots[index].height[1];
   }
 }

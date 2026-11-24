@@ -102,6 +102,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
 ) {
   EffectPrimitiveSlot& slot = this->state.slots[slotIndex];
   const float distance = slot.distance;
+  const float scaled = distance * scale;
   float tilt = slot.height[8];
   const int angle1 = slot.fullDisplayAngle;
   if (tilt >= 360.0f || tilt < 0.0f) {
@@ -118,7 +119,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
   vec3.y = 0.0f;
   vec4.y = 0.0f;
 
-  const float radius = distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + distance * scale;
+  const float radius = distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + scaled;
   int angle2 = angle1 - 270;
   if (angle1 < 270) {
     angle2 = angle1 + 90;
