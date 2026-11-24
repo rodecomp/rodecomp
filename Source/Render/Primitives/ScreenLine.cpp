@@ -11,6 +11,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Render/Primitives/AlphaRectangle.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Projection/ScreenGeometry.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -274,10 +275,10 @@ void UIRoMapWnd::DrawArrow(
   const float normalY = normal * sine;
   const float offsetX = static_cast<float>(bodyWidth) * normalX;
   const float offsetY = static_cast<float>(bodyWidth) * normalY;
-  ScreenPoint start = {x0, y0};
-  ScreenPoint end = {x1, y1};
   ScreenPoint sideStart = {offsetX + x0, offsetY + y0};
   ScreenPoint sideEnd = {offsetX + x1, offsetY + y1};
+  ScreenPoint start = {x0, y0};
+  ScreenPoint end = {x1, y1};
 
   while (start.x > startLeft && startRight > start.x && start.y > startTop && startBottom > start.y) {
     start.x += dirX;
@@ -300,7 +301,7 @@ void UIRoMapWnd::DrawArrow(
   mid.x = (end.x - start.x) * progress + start.x;
   mid.y = (end.y - start.y) * progress + start.y;
   ScreenPoint corner;
-  if (progress != 1.0f) {
+  if (progress != g_projectionDepthNumerator) {
     corner.x = mid.x + offsetX;
     corner.y = mid.y + offsetY;
   } else {
@@ -309,7 +310,7 @@ void UIRoMapWnd::DrawArrow(
   }
   DrawScreenQuad(start, sideStart, mid, corner, body, color);
 
-  if (progress < 1.0f) {
+  if (progress < g_projectionDepthNumerator) {
     const float width = static_cast<float>(bodyWidth);
     const float size = static_cast<float>(headWidth);
     ScreenPoint tip;
