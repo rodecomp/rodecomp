@@ -216,6 +216,9 @@ void UICashShopWnd::OnCreate(int, int) {
   int tabX = 8;
   for (int tab = 0; tab < 11; ++tab) {
     const int tooltips[11] = {0xCDA, 0xCDB, 0xCDC, 0xCDD, 0xCDE, 0xCDF, 0xCE0, 0xCE1, 0xCE2, 0xE48, 0xECE};
+    if (static_cast<unsigned int>(tab) > 10) {
+      break;
+    }
     UIBmpRadioBtn* button = nullptr;
     if (tab != 8 && tab != 10) {
       button = new UIBmpRadioBtn();
@@ -230,7 +233,7 @@ void UICashShopWnd::OnCreate(int, int) {
       this->AddChild(button);
     }
 
-    this->m_tabButtons.insert(std::make_pair(tab, button));
+    this->m_tabButtons.insert(std::make_pair(tab, static_cast<UIWindow*>(button)));
   }
 
   UIBitmapButton* previous = new UIBitmapButton();
