@@ -75,8 +75,8 @@ void FuncDrawWNDChar::Draw(bool option) {
       }
 
       g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.GetCurrentSex(), &x, &y);
-      offset.x = x;
       offset.y = y;
+      offset.x = x;
     }
 
     const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
@@ -86,8 +86,8 @@ void FuncDrawWNDChar::Draw(bool option) {
         continue;
       }
 
-      offset.x += body.x;
       offset.y += body.y;
+      offset.x += body.x;
     } else {
       switch (layer) {
         case 3:
@@ -150,8 +150,8 @@ void FuncDrawWNDChar::Draw(bool option) {
 
       float scale = g_session.GetSkillFactor(this->m_job);
       int offsetX = static_cast<int>(static_cast<float>(offset.x) * scale);
-      int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
       UIWindow* window = this->m_window;
+      int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
       window->AddSpriteCellOverlay(
         this->m_x + offsetX, this->m_y + offsetY, reinterpret_cast<int>(act), reinterpret_cast<int>(sprite), image, &cell, scale,
         static_cast<float>(cell.rotation), window->Color(), palette, 1.0f
