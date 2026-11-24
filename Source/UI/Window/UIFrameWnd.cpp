@@ -597,7 +597,6 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
   case BANK_BUTTON_DEPOSIT: {
-    PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
@@ -616,15 +615,12 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->m_status = LookupMessage(MSI_BANK_3_MINI);
       return 0;
     }
-    packet.amount = static_cast<int>(amount);
-    packet.id = ID_CZ_REQ_BANKING_DEPOSIT;
-    packet.aid = g_session.m_aid;
+    PACKET_CZ_BANK_TRANSACTION packet{ID_CZ_REQ_BANKING_DEPOSIT, g_session.m_aid, static_cast<int>(amount)};
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     this->m_status.clear();
     return 0;
   }
   case BANK_BUTTON_WITHDRAW: {
-    PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
@@ -643,9 +639,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->m_status = LookupMessage(MSI_BANK_7_MINI);
       return 0;
     }
-    packet.amount = static_cast<int>(amount);
-    packet.id = ID_CZ_REQ_BANKING_WITHDRAW;
-    packet.aid = g_session.m_aid;
+    PACKET_CZ_BANK_TRANSACTION packet{ID_CZ_REQ_BANKING_WITHDRAW, g_session.m_aid, static_cast<int>(amount)};
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     this->m_status.clear();
     return 0;
