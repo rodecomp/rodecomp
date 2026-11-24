@@ -290,15 +290,15 @@ int AiHomunAttack(lua_State* state) {
   }
 
   // GLOBAL: gl_24908
-  static std::uint32_t lastAttackTime;
-  if (g_session.m_homunStats[7] + lastAttackTime < timeGetTime()) {
+  static std::uint32_t lastHomunAttackTime;
+  if (g_session.m_homunStats[7] + lastHomunAttackTime < timeGetTime()) {
     ActionRequestPacket packet;
     packet.opcode = ID_CZ_REQUEST_ACTNPC;
     packet.aid = aid;
     packet.target = target;
     packet.action = 0;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
-    lastAttackTime = timeGetTime();
+    lastHomunAttackTime = timeGetTime();
   }
 
   return 0;
