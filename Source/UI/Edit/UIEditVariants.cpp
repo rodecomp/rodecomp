@@ -658,7 +658,9 @@ void UIEditCtrl3::PaintText() {
     }
 
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
-      this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
+      int caretRow = wrapped - first;
+      caretRow += this->textY;
+      this->DrawTextAt(x - 2 + caretX, caretRow * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
 
       if (this->manualScroll == 0) {
         if (this->movingUp != 0) {
