@@ -846,7 +846,7 @@ public:
   void LoadDamageSkinSettings();
   BOOL LoadExceptionMinimapNameTable();
   BOOL LoadMapNameTable();
-  bool LoadMapPosTable();
+  BOOL LoadMapPosTable();
   BOOL ScaleMapPositions();
   bool LoadFogParameters();
   void SetCostumeItem(unsigned int index, const ITEM_INFO& item);

@@ -33,7 +33,7 @@ BOOL CSession::LoadMapNameTable() {
 
 // OFFSET: 0x00DE8970
 // FUNCTION: fn_23499
-bool CSession::LoadMapPosTable() {
+BOOL CSession::LoadMapPosTable() {
   this->m_mapPosLists = nullptr;
   this->m_mapPositions.clear();
   this->m_mapPosBounds.clear();
@@ -47,11 +47,11 @@ bool CSession::LoadMapPosTable() {
   const char* start = cursor;
   const char* end = cursor + file.GetSize();
   int currentId = 0;
-  MapPosRect bounds = {};
   std::string name;
-  int boundsValid = 0;
   std::vector<std::string> fields;
   std::string token;
+  int boundsValid = 0;
+  MapPosRect bounds = {};
   for (; cursor < end; ++cursor) {
     switch (*cursor) {
     case '@':
@@ -81,20 +81,19 @@ bool CSession::LoadMapPosTable() {
         const int bottom = std::atoi(fields[3].c_str());
         const int right = std::atoi(fields[2].c_str());
         const int top = std::atoi(fields[1].c_str());
-        const MapPosRect rect = {std::atoi(fields[0].c_str()), top, right, bottom};
-        const MapPosEntry position = {rect, 1};
+        const MapPosEntry position = {{std::atoi(fields[0].c_str()), top, right, bottom}, 1};
         this->m_mapPosLists[currentId][name] = position;
         this->m_mapPositions[name] = position;
 
         if (boundsValid != 0) {
-          bounds.right = std::max(right, bounds.right);
-          bounds.bottom = std::max(bottom, bounds.bottom);
-          bounds.left = std::min(bounds.left, rect.left);
+          bounds.right = right > bounds.right ? right : bounds.right;
+          bounds.bottom = bottom > bounds.bottom ? bottom : bounds.bottom;
+          bounds.left = position.rect.left < bounds.left ? position.rect.left : bounds.left;
           if (top < bounds.top) {
             bounds.top = top;
           }
         } else {
-          bounds = rect;
+          bounds = position.rect;
           boundsValid = 1;
         }
 
