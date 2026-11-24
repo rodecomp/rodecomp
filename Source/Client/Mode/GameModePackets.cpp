@@ -11551,23 +11551,26 @@ void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
   guildInfo->bannedMembers.clear();
 
-  const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(packet + 1);
-  for (int i = 0; i < count; ++i) {
-    const GuildBanCharacterRecord* record = &records[i];
-    char reason[41];
-    std::memcpy(reason, record->reason, sizeof(record->reason));
-    reason[40] = '\0';
+  if (count > 0) {
+    const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(packet + 1);
+    int i = 0;
+    do {
+      const GuildBanCharacterRecord* record = &records[i];
+      char reason[41];
+      std::memcpy(reason, record->reason, sizeof(record->reason));
+      reason[40] = '\0';
 
-    GuildInfo::Unknown00ECEntry entry;
-    entry.characterId = record->characterId;
-    entry.name = LookupPlayerName(entry.characterId);
-    entry.reason = reason;
-    if (entry.name.size() == 0) {
-      entry.name = LookupMessage(MSI_NAMELESS_USER) + g_gameModeNamelessTag;
-    }
-    if (entry.characterId != 0) {
-      guildInfo->bannedMembers.push_back(entry);
-    }
+      GuildInfo::Unknown00ECEntry entry;
+      entry.characterId = record->characterId;
+      entry.name = LookupPlayerName(entry.characterId);
+      entry.reason = reason;
+      if (entry.name.size() == 0) {
+        entry.name = LookupMessage(MSI_NAMELESS_USER) + g_gameModeNamelessTag;
+      }
+      if (entry.characterId != 0) {
+        guildInfo->bannedMembers.push_back(entry);
+      }
+    } while (++i < count);
   }
 
   g_windowMgr.RefreshGuildWindows();
