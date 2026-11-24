@@ -17,7 +17,11 @@ public:
   virtual ~CMiniPartyWndSortArea();
 
   explicit CMiniPartyWndSortArea(const RECT& bounds);
-  std::list<int> GetCells() const;
+  // OFFSET: 0x00737D40
+  // FUNCTION: fn_07658
+  std::list<int> GetCells() const {
+    return this->cells;
+  }
   MiniPartyGridPoint GetWindowPosition(int index) const;
 };
 

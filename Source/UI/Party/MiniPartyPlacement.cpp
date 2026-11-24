@@ -65,9 +65,3 @@ int CMiniPartyWndAreaMgr::FindFreeCell() {
 
   return it != end ? *it : -1;
 }
-
-// OFFSET: 0x00737D40
-// FUNCTION: fn_07658
-std::list<int> CMiniPartyWndSortArea::GetCells() const {
-  return this->cells;
-}
