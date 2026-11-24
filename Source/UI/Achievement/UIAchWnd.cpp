@@ -474,6 +474,14 @@ void UIAchScrollBar::Paint() {
   this->DrawBitmap(0, end, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_thumb_down.bmp"), true);
 }
 
+// INLINED
+static unsigned LastLine(const UIAchTV* viewer, int first) {
+  if (viewer->lineHeight - viewer->bottomMargin == 0) {
+    return std::min(static_cast<unsigned>(viewer->geometry.height + first), viewer->lines.size());
+  }
+  return std::min(static_cast<unsigned>(viewer->geometry.height / viewer->lineHeight - viewer->bottomMargin + first), viewer->lines.size());
+}
+
 // OFFSET: 0x007B6DB0
 // FUNCTION: fn_09220
 void UIAchTV::Paint() {
@@ -487,8 +495,7 @@ void UIAchTV::Paint() {
   }
 
   const int first = this->topLine;
-  const int rows = this->lineHeight == this->bottomMargin ? this->geometry.height : this->geometry.height / this->lineHeight - this->bottomMargin;
-  const int end = static_cast<int>(std::min(this->lines.size(), static_cast<unsigned>(rows + first)));
+  const int end = static_cast<int>(LastLine(this, first));
 
   for (int index = first; index < end; ++index) {
     const int row = index - first;
