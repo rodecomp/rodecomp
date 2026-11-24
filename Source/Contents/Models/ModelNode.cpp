@@ -2,6 +2,7 @@
 #include "Utility/Math/ScalarConversion.h"
 
 #include <cstring>
+#include <memory>
 
 // OFFSET: 0x00AB5CE0
 // FUNCTION: fn_17464
@@ -67,7 +68,7 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
 
   const std::vector<ModelRotationKey>& rotations = resource.rotationKeys;
   if (&this->rotationKeys != &rotations) {
-    this->rotationKeys.assign(rotations.data(), rotations.data() + rotations.size());
+    this->rotationKeys.assign(rotations.data(), std::to_address(rotations.end()));
   }
 
   if (this->rotationKeys.size() == 0) {
