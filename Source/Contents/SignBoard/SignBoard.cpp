@@ -26,6 +26,10 @@
 // GLOBAL: gl_24892
 CSignBoardMgr* s_signBoardMgr = nullptr;
 
+// OFFSET: 0x0081F800
+// FUNCTION: fn_46542
+CSignBoardMgr::CSignBoardMgr() : initialized(true) {}
+
 // OFFSET: 0x0081FC30
 // FUNCTION: fn_10244
 bool CreateSignBoardMgr() {
