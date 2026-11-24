@@ -5068,7 +5068,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
   if (IsStarUnionChanged(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, IsStarUnion(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    if (IsStarUnion(this->stateFlags)) {
+      this->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+    }
   }
 
   if (IsInvisibleChanged(this->stateFlags, previousFlags)) {
@@ -5079,8 +5083,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (admin != 0) {
         this->render.visible = 1;
       } else {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         this->render.visible = 0;
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         if (this->msgEffectList.size() != 0) {
           for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
             static_cast<CMsgEffect*>(*it)->m_visible = this->render.accountId == g_session.m_aid;
@@ -5130,8 +5134,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
+  CChampionMonsterMgr* championMonsters = g_championMonsterMgr;
   const std::uint32_t accountId = this->render.accountId;
-  g_championMonsterMgr->ApplyEffects(this->GetEffectiveJob(-1), this, static_cast<int>(accountId));
+  const int job = this->GetEffectiveJob(-1);
+  championMonsters->ApplyEffects(job, this, static_cast<int>(accountId));
 
   if (previousBodyState != this->bodyState) {
     switch (previousBodyState) {
@@ -5301,7 +5307,11 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->SendMsg(nullptr, AM_DELETE_SILENCE_EFFECT, 0, 0, 0, 0, 0, 0);
   }
 
-  this->SendMsg(nullptr, (this->effectState & 0x20) ? AM_MAKE_ANGELUS_EFFECT : AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  if (this->effectState & 0x20) {
+    this->SendMsg(nullptr, AM_MAKE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(nullptr, AM_DELETE_ANGELUS_EFFECT, 0, 0, 0, 0, 0, 0);
+  }
 
   if ((this->effectState & 0x08) && notify) {
     const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
