@@ -41,10 +41,16 @@ struct MacroReporterEntry {
   /* 001C */ short reportValue;
 };
 
+struct MacroReporterRecord {
+  /* 0000 */ std::string name;
+  /* 0018 */ unsigned int id;
+  /* 001C */ short reportValue;
+};
+
 struct MacroReporterState : MacroReporterWndInfo {
   /* 0010 */ unsigned char padding_0010;
   /* 0011 */ bool activeOnly;
-  /* 0014 */ std::vector<MacroReporterEntry> entries;
+  /* 0014 */ std::vector<MacroReporterRecord> entries;
 };
 
 class UIMacroReporterWnd : public UIFrameWnd {

@@ -596,7 +596,7 @@ int UIMacroReporterWnd::SendMsg(
     this->activeCheckBox->SetChecked(this->activeOnly);
     this->m_entries.clear();
     for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
-      const MacroReporterEntry& entry = this->m_state->entries[index];
+      const MacroReporterRecord& entry = this->m_state->entries[index];
       this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.reportValue));
       this->AddActorRow(entry.id, entry.name);
     }
