@@ -1337,10 +1337,10 @@ void UIRuneSystem_DecomItemWnd::Paint() {
     return;
   }
 
-  int y = 51;
-  for (int row = 0; row < this->m_rows; ++row, y += 69) {
-    int x = 35;
-    for (int column = 0; column < this->m_columns; ++column, x += 52) {
+  for (int row = 0; row < this->m_rows; ++row) {
+    int y = 51 + row * 69;
+    for (int column = 0; column < this->m_columns; ++column) {
+      int x = 35 + column * 52;
       const std::pair<int, int>& entry = CRuneSystemMgr::GetInstance()->GetItemListEntry(this->m_listId, this->m_columns * row + column);
       const int itemId = entry.first;
       const int required = entry.second;
