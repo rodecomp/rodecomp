@@ -154,8 +154,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int cost = 0;
   int index = 1;
   for (; index < 9999; ++index) {
-    mapName = nullptr;
     name = nullptr;
+    mapName = nullptr;
     if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &mapName, &name, &id, &cell.x, &cell.y)) {
       std::sprintf(message, "Map 루아 읽기 실패 %d", index);
       MessageBoxA(hWnd, message, "Error", 0);
