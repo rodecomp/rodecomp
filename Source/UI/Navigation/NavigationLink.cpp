@@ -1437,7 +1437,15 @@ int CCreateLineInfo::ParseItemImage(int index) {
   const bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
   if (!missing && match.size() >= 2) {
     this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
-    this->AppendText(match[0].str());
+    {
+      const std::string matched = match[0].str();
+      if (this->m_segments.empty()) {
+        this->AddSegment(LINE_SEGMENT_TEXT);
+      }
+
+      this->m_segments.back().text += matched;
+    }
+
     this->m_newSegment = true;
     return index + static_cast<int>(match[0].length());
   }
