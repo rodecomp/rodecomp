@@ -10158,12 +10158,12 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
     }
     this->Move(this->saved->x, this->saved->y);
-    return 0;
+    break;
   case UM_COMMAND:
     switch (a) {
     case ID_ITEM_COMPARE:
       Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_ITEM_COMPARE_ON_OFF);
-      return 0;
+      break;
     case ID_TOGGLE_ITEM_TRADE_LOCK: {
       const char* normal;
       const char* over;
@@ -10193,21 +10193,21 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->dealLockButton->SetBitmap(press, 2, 0);
       this->dealLockButton->Invalidate();
       this->Invalidate();
-      return 0;
+      break;
     }
     case ID_EXTEND_INVENTORY:
       if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         mode->SendMsg(MM_REQ_OPEN_MSGBOX_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
       }
-      return 0;
+      break;
     case ID_SORT_ITEMS:
       if (this->categoryFilter != 3) {
-        return 0;
+        break;
       }
       g_session.m_sortPrivateTab = !g_session.m_sortPrivateTab;
       this->RefreshSortButton();
       this->RefreshItems();
-      return 0;
+      break;
     case ID_CLOSE:
       if (this->filterWindow == sender) {
         this->RemoveChild(this->filterWindow, 0);
@@ -10216,7 +10216,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       } else {
         g_windowMgr.CloseWindow(WID_ITEMWND);
       }
-      return 0;
+      break;
     case ID_MINI: {
       const int height = this->geometry.height;
       if (height == 17) {
@@ -10231,21 +10231,22 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
-      return 0;
+      break;
     }
     case ID_CHECK:
       g_session.m_lockItemDrop = !g_session.m_lockItemDrop;
-      return 0;
+      break;
     default:
-      return 0;
+      break;
     }
+    break;
   case UM_TAB:
     this->categoryFilter = static_cast<int>(a);
     this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_RESIZE: {
     if (a != 7) {
-      return 0;
+      break;
     }
     int width = b <= 320 ? b : 320;
     int height = c <= 240 ? c : 240;
@@ -10285,12 +10286,12 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->filterWindow->Move(30, this->geometry.height - 50);
     }
     this->filterButton->Move(157, this->geometry.height - 19);
-    return 0;
+    break;
   }
   case UM_REFRESHITEM: {
     if (this->categoryFilter == 3) {
       this->RefreshItems();
-      return 0;
+      break;
     }
     this->items.erase(this->items.begin(), this->items.end());
     const int count = g_session.GetNumInventoryItems();
@@ -10374,7 +10375,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     }
     this->Invalidate();
     this->UpdateScrollBar();
-    return 0;
+    break;
   }
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
@@ -10407,11 +10408,12 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       break;
     }
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return 0;
+    break;
   }
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x009957C0
