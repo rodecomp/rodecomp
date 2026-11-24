@@ -2115,10 +2115,14 @@ int UIMenuWnd::ItemAt(int x, int y) {
     return -1;
   }
 
-  int row = y / (this->m_itemHeight / 2);
-  const unsigned index = row >= 0 ? row : 0;
-  const unsigned last = static_cast<unsigned>(this->m_items.size()) - 1;
-  return index <= last ? index : last;
+  int index = y / (this->m_itemHeight / 2);
+  if (index < 0) {
+    index = 0;
+  }
+  if (static_cast<unsigned>(index) > this->m_items.size() - 1) {
+    index = static_cast<int>(this->m_items.size()) - 1;
+  }
+  return index;
 }
 
 // OFFSET: 0x008DA300
@@ -2739,18 +2743,19 @@ int UICombinedCardItemCollection_ComparisonWnd::SendMsg(UIWindow* sender, int me
 // OFFSET: 0x008F9460
 // FUNCTION: fn_12335
 int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != UM_SETINFO) {
+  switch (message) {
+  case UM_SETINFO:
+    this->m_cardPlacement = reinterpret_cast<CombinedCardItemCollectionWndInfo*>(argument1);
+    if (!this->m_cardPlacement->IsValid()) {
+      this->m_cardPlacement->Reset();
+      this->Move((g_renderer->viewport.width - 640) / 2 + this->m_cardPlacement->x, this->m_cardPlacement->y * g_renderer->viewport.height / 480);
+      return 0;
+    }
+    this->Move(this->m_cardPlacement->x, this->m_cardPlacement->y);
+    return 0;
+  default:
     return this->UIItemCollectionWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  this->m_cardPlacement = reinterpret_cast<CombinedCardItemCollectionWndInfo*>(argument1);
-  if (!this->m_cardPlacement->IsValid()) {
-    this->m_cardPlacement->Reset();
-    this->Move((g_renderer->viewport.width - 640) / 2 + this->m_cardPlacement->x, this->m_cardPlacement->y * g_renderer->viewport.height / 480);
-  } else {
-    this->Move(this->m_cardPlacement->x, this->m_cardPlacement->y);
-  }
-  return 0;
 }
 
 // OFFSET: 0x008FD640
