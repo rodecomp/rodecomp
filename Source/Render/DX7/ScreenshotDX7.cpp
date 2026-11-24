@@ -167,34 +167,32 @@ int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
 
     if (this->backBuffer.bitsPerPixel == 16) {
       for (int x = 0; x < this->viewport.width; ++x, destination += 3) {
-        int red;
-        int green;
-        int blue;
-        bool fromOverlay = false;
-
         if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
           const int overlayY = y - (this->viewport.height - overlay->image.height);
           const int overlayX = x - (this->viewport.width - overlay->image.width);
 
           if (overlayX > -1 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
             const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
-            red = (color >> 16) & 0xFF;
-            green = (color >> 8) & 0xFF;
-            blue = color & 0xFF;
-            fromOverlay = transparent != PackedColor(g_deviceOwnerDX7, red, green, blue);
+            const int red = (color >> 16) & 0xFF;
+            const int green = (color >> 8) & 0xFF;
+            const int blue = color & 0xFF;
+
+            if (transparent != PackedColor(g_deviceOwnerDX7, red, green, blue)) {
+              destination[0] = static_cast<unsigned char>(blue);
+              destination[1] = static_cast<unsigned char>(green);
+              destination[2] = static_cast<unsigned char>(red);
+              continue;
+            }
           }
         }
 
-        if (!fromOverlay) {
-          const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
-          red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
-          green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
-          blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
-        }
-
-        destination[0] = static_cast<unsigned char>(blue);
-        destination[1] = static_cast<unsigned char>(green);
-        destination[2] = static_cast<unsigned char>(red);
+        const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
+        const unsigned char red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
+        const unsigned char green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
+        const unsigned char blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
+        destination[0] = blue;
+        destination[1] = green;
+        destination[2] = red;
       }
     } else {
       const unsigned char* pixel = source;
