@@ -3803,31 +3803,33 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
+  for (int ec = 0; ec < 1; ++ec) {
+    this->state.lastPrim->state.slots[ec].life = 1;
+    this->state.lastPrim->state.slots[ec].process = 0;
 
-  if (level > 0) {
-    this->state.lastPrim->state.slots[0].distance = 5.0f;
-    this->state.lastPrim->state.slots[0].height[0] = 1.0f;
-    this->state.lastPrim->state.slots[0].flag1[4] = 4;
-  } else {
-    if (mode == 3) {
-      this->state.lastPrim->state.slots[0].distance = 7.0f;
+    if (level > 0) {
+      this->state.lastPrim->state.slots[ec].distance = 5.0f;
+      this->state.lastPrim->state.slots[ec].height[0] = 1.0f;
+      this->state.lastPrim->state.slots[ec].flag1[4] = 4;
     } else {
-      this->state.lastPrim->state.slots[0].distance = 18.0f;
+      if (mode == 3) {
+        this->state.lastPrim->state.slots[ec].distance = 7.0f;
+      } else {
+        this->state.lastPrim->state.slots[ec].distance = 18.0f;
+      }
+      this->state.lastPrim->state.slots[ec].height[0] = 0.0f;
+      this->state.lastPrim->state.slots[ec].flag1[4] = 1;
     }
-    this->state.lastPrim->state.slots[0].height[0] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[4] = 1;
+
+    this->state.lastPrim->state.slots[ec].alphaB = 0;
+    this->state.lastPrim->state.slots[ec].flag1[0] = 0;
+
+    for (int index = 1; index < 21; ++index) {
+      this->state.lastPrim->state.slots[ec].height[index] = 0.0f;
+    }
+
+    this->state.lastPrim->state.slots[ec].flag1[5] = 0;
   }
-
-  this->state.lastPrim->state.slots[0].alphaB = 0;
-  this->state.lastPrim->state.slots[0].flag1[0] = 0;
-
-  for (int index = 1; index < 21; ++index) {
-    this->state.lastPrim->state.slots[0].height[index] = 0.0f;
-  }
-
-  this->state.lastPrim->state.slots[0].flag1[5] = 0;
 }
 
 // OFFSET: 0x00C59960
@@ -4276,26 +4278,28 @@ void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
+  for (int ec = 0; ec < 1; ++ec) {
+    this->state.lastPrim->state.slots[ec].life = 1;
+    this->state.lastPrim->state.slots[ec].process = 0;
 
-  if (kind == 1) {
-    this->state.lastPrim->state.slots[0].distance = 21.0f;
-    this->state.lastPrim->state.slots[0].flag1[4] = 6;
-  } else if (kind == 2) {
-    this->state.lastPrim->state.slots[0].distance = 21.0f;
-    this->state.lastPrim->state.slots[0].flag1[4] = 7;
-  } else {
-    this->state.lastPrim->state.slots[0].distance = 13.0f;
-    this->state.lastPrim->state.slots[0].flag1[4] = 5;
-  }
+    if (kind == 1) {
+      this->state.lastPrim->state.slots[ec].distance = 21.0f;
+      this->state.lastPrim->state.slots[ec].flag1[4] = 6;
+    } else if (kind == 2) {
+      this->state.lastPrim->state.slots[ec].distance = 21.0f;
+      this->state.lastPrim->state.slots[ec].flag1[4] = 7;
+    } else {
+      this->state.lastPrim->state.slots[ec].distance = 13.0f;
+      this->state.lastPrim->state.slots[ec].flag1[4] = 5;
+    }
 
-  this->state.lastPrim->state.slots[0].height[0] = 0.0f;
-  this->state.lastPrim->state.slots[0].alphaB = 0;
-  this->state.lastPrim->state.slots[0].flag1[0] = 0;
+    this->state.lastPrim->state.slots[ec].height[0] = 0.0f;
+    this->state.lastPrim->state.slots[ec].alphaB = 0;
+    this->state.lastPrim->state.slots[ec].flag1[0] = 0;
 
-  for (int step = 1; step < 21; ++step) {
-    this->state.lastPrim->state.slots[0].height[step] = 0.0f;
+    for (int step = 1; step < 21; ++step) {
+      this->state.lastPrim->state.slots[ec].height[step] = 0.0f;
+    }
   }
 }
 
@@ -5102,15 +5106,17 @@ void CRagEffect::SaintWing(const char* name) {
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
-  this->state.lastPrim->state.slots[0].distance = 24.0f;
-  this->state.lastPrim->state.slots[0].alphaB = 0;
-  this->state.lastPrim->state.slots[0].height[0] = 0.0f;
-  this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[4] = 1;
-  for (int i = 1; i < 21; ++i) {
-    this->state.lastPrim->state.slots[0].height[i] = 0.0f;
+  for (int ec = 0; ec < 1; ++ec) {
+    this->state.lastPrim->state.slots[ec].life = 1;
+    this->state.lastPrim->state.slots[ec].process = 0;
+    this->state.lastPrim->state.slots[ec].distance = 24.0f;
+    this->state.lastPrim->state.slots[ec].alphaB = 0;
+    this->state.lastPrim->state.slots[ec].height[0] = 0.0f;
+    this->state.lastPrim->state.slots[ec].flag1[0] = 0;
+    this->state.lastPrim->state.slots[ec].flag1[4] = 1;
+    for (int i = 1; i < 21; ++i) {
+      this->state.lastPrim->state.slots[ec].height[i] = 0.0f;
+    }
   }
 }
 
@@ -15264,31 +15270,29 @@ __declspec(safebuffers) void CRagEffect::DecAgility() {
 // OFFSET: 0x00C0FD10
 // FUNCTION: fn_20032
 void CRagEffect::TexturedSkillAura(char type) {
-  if (this->state.stateCnt != 0) {
-    return;
-  }
-
-  const vector3d& playerPosition = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
-  if (type == 0) {
-    g_soundMgr->PlayWave(
-      "effect\\hunter_detecting.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
-      250, 40, 1.0f, 0
-    );
-  } else if (type == 2) {
-    g_soundMgr->PlayWave(
-      "effect\\priest_benedictio.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
-      250, 40, 1.0f, 0
-    );
-  } else if (type == 4) {
-    g_soundMgr->PlayWave(
-      "effect\\cru_grand cross.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
-      250, 40, 1.0f, 0
-    );
-  } else if (type == 5) {
-    g_soundMgr->PlayWave(
-      "effect\\ANALYZE.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z, 250, 40,
-      1.0f, 0
-    );
+  if (this->state.stateCnt == 0) {
+    const vector3d& playerPosition = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+    if (type == 0) {
+      g_soundMgr->PlayWave(
+        "effect\\hunter_detecting.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
+        250, 40, 1.0f, 0
+      );
+    } else if (type == 2) {
+      g_soundMgr->PlayWave(
+        "effect\\priest_benedictio.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
+        250, 40, 1.0f, 0
+      );
+    } else if (type == 4) {
+      g_soundMgr->PlayWave(
+        "effect\\cru_grand cross.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z,
+        250, 40, 1.0f, 0
+      );
+    } else if (type == 5) {
+      g_soundMgr->PlayWave(
+        "effect\\ANALYZE.wav", this->render.position.x - playerPosition.x, 0.0f, this->render.position.z - playerPosition.z, 250, 40,
+        1.0f, 0
+      );
+    }
   }
 
   if (this->state.stateCnt != 0) {
