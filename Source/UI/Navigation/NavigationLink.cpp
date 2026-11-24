@@ -71,7 +71,8 @@ namespace LineCutter {
         : UIWindow(0), m_style{0, 12, false, false}, m_outlined(0), m_outlineColor(0xFFFFFF), m_shadowed(0), m_shadowColor(0xFFFFFF) {
     }
 
-    // INLINED
+    // OFFSET: 0x0083DA50
+    // FUNCTION: fn_46527
     void SetText(std::string text, LineTextStyle style, unsigned char outlined, std::uint32_t outlineColor, unsigned char shadowed, std::uint32_t shadowColor) {
       this->m_text = text;
       this->m_style = style;
