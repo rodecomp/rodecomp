@@ -38,12 +38,14 @@ namespace {
     /* 0004 */ int runeId;
   };
 
+#pragma pack(push, 1)
   struct RuneSelectPacket {
     /* 0000 */ std::uint16_t id;
     /* 0002 */ std::uint16_t tagId;
     /* 0004 */ int runeId;
     /* 0008 */ std::uint8_t value;
   };
+#pragma pack(pop)
 
   struct RuneIdPacket {
     /* 0000 */ std::uint16_t id;
