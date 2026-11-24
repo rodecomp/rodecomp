@@ -3223,12 +3223,12 @@ void UIMerchantShopMakeWnd::OnProcess() {
     if (price < 0) {
       price = 0;
     } else if (price > 1000000000) {
-      const int result = g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0);
-      price = 1000000000;
-      if (result == ID_YES) {
-        edit->SetText(_itoa(1000000000, text, 10));
+      if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        price = 1000000000;
+        edit->SetText(_itoa(static_cast<int>(price), text, 10));
       } else {
-        edit->SetText(_itoa(1000000000, text, 10));
+        price = 1000000000;
+        edit->SetText(_itoa(static_cast<int>(price), text, 10));
         g_windowMgr.SetFocus(edit);
       }
     }
@@ -8813,12 +8813,13 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    switch (mode->drag.source) {
+    const ModeDragState& drag = mode->drag;
+    switch (drag.source) {
     case DRAG_ITEM_INVENTORY:
-      mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_ADD_ITEM_TO_STORE, drag.id, drag.quantity, 0, 0);
       break;
     case DRAG_ITEM_MERCHANT_INVENTORY:
-      mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, drag.id, drag.quantity, 0, 0);
       break;
     }
 
@@ -8914,7 +8915,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 }
 
 // INLINED
-static __forceinline void ToggleItemStoreTab(UIItemStoreWnd& wnd, int index, int windowId) {
+static __forceinline void ToggleItemStoreTab(UIItemStoreWnd& wnd, const int& index, int windowId) {
   UICheckBox* tab = wnd.tabs[index];
   if (!tab) {
     return;
@@ -9038,7 +9039,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       ToggleItemStoreTab(*this, a - WID_ITEMSTORESUBWND_TAB_0, a);
       break;
     case WID_ITEMSTORESUBWND_TAB_7:
-      ToggleItemStoreTab(*this, 7, a);
+      ToggleItemStoreTab(*this, 7, WID_ITEMSTORESUBWND_TAB_7);
       break;
     case 133:
       if (!this->m_searchWindow) {
@@ -9054,12 +9055,13 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    switch (mode->drag.source) {
+    const ModeDragState& drag = mode->drag;
+    switch (drag.source) {
     case DRAG_ITEM_INVENTORY:
-      mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_ADD_ITEM_TO_STORE, drag.id, drag.quantity, 0, 0);
       break;
     case DRAG_ITEM_MERCHANT_INVENTORY:
-      mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, drag.id, drag.quantity, 0, 0);
       break;
     }
 
