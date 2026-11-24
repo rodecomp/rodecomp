@@ -56,8 +56,8 @@ struct ItemListChunkHeader {
   }
 
   ~ItemListChunkHeader() {
-    this->size = 0;
     this->type = 0;
+    this->size = 0;
   }
 };
 #pragma pack(pop)
@@ -481,10 +481,12 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       return 0;
     }
 
-    for (; static_cast<unsigned>(b) > offset; offset += header.size) {
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
       header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
       offset += 6;
       if (header.type != 20701) {
+        offset += header.size;
         continue;
       }
 
@@ -496,7 +498,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
       this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      return 0;
+      scanning = false;
     }
     break;
   }
