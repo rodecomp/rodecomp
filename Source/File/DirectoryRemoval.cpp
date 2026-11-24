@@ -45,9 +45,9 @@ void RemoveDirectoryTree(const char* path) {
     std::strcat(filename, "\\");
     for (auto it = files.begin(); it != files.end(); ++it) {
       const std::string& file = *it;
+      std::string unlinkPath = filename + file;
       std::string fullPath = filename + file;
       _chmod(fullPath.c_str(), _S_IWRITE);
-      std::string unlinkPath = filename + file;
       _unlink(unlinkPath.c_str());
     }
     for (auto it = directories.begin(); it != directories.end(); ++it) {
