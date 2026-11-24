@@ -207,7 +207,7 @@ void CUserHotkeyMgr::Capture() {
       if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
         hotkey.description = description;
         if (!hotkey.description.empty()) {
-          this->m_original.emplace_back(hotkey.tab, hotkey.index, hotkey.key1, hotkey.key2, hotkey.description);
+          this->m_original.push_back(hotkey);
         }
       }
     }
@@ -227,17 +227,14 @@ bool CUserHotkeyMgr::HasUserAssignments() const {
         continue;
       }
 
-      int key1 = 0;
-      int key2 = 0;
-      std::string keyName;
-      std::string userDescription;
+      HotkeyInfo hotkey(0, 0);
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
-        userDescription = description;
-        if (!userDescription.empty() &&
-            g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
+        hotkey.description = description;
+        if (!hotkey.description.empty() &&
+            g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
           std::string originalDescription = description;
           if (!originalDescription.empty()) {
             return true;
