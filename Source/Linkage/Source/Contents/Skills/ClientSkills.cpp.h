@@ -34,4 +34,4 @@
 #include <cstring>
 
 template __declspec(noinline) std::_Tree_find_result<std::map<std::int64_t, std::int64_t>::_Mybase::_Nodeptr> std::map<std::int64_t, std::int64_t>::_Mybase::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
-template __declspec(noinline) std::pair<std::map<int, SessionRecord6144>::_Mybase::_Nodeptr, bool> std::map<int, SessionRecord6144>::_Mybase::_Emplace<std::pair<const int, SessionRecord6144>>(std::pair<const int, SessionRecord6144>&&);
+template __declspec(noinline) std::pair<std::map<int, SessionRecord6144>::_Mybase::_Nodeptr, bool> std::map<int, SessionRecord6144>::_Mybase::_Emplace<std::pair<int, SessionRecord6144>>(std::pair<int, SessionRecord6144>&&);

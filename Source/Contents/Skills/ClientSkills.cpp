@@ -617,7 +617,7 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
   ::SplitDate(packet.completedAt, record.year, record.month, record.day);
-  this->achievements.insert({packet.id, record});
+  this->achievements.insert(std::make_pair(packet.id, record));
 }
 
 // OFFSET: 0x00E08A00
