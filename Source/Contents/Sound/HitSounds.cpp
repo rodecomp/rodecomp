@@ -41,12 +41,16 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
     }
   }
 
-  const std::vector<std::string>& weaponWaves = this->m_weaponHitWaves;
-  if (weaponWaves.empty() || weaponWaves.size() <= static_cast<unsigned int>(realWeapon)) {
+  const std::string* weaponWaves = this->m_weaponHitWaves.data();
+  if (this->m_weaponHitWaves.empty() || this->m_weaponHitWaves.size() <= static_cast<unsigned int>(realWeapon)) {
     return nullptr;
   }
 
-  if (this->GetDisplayJob() == JT_TAEKWON || this->GetDisplayJob() == JT_TAEKWON_B) {
+  if (this->GetDisplayJob() == JT_TAEKWON) {
+    return weaponWaves[realWeapon].c_str();
+  }
+
+  if (this->GetDisplayJob() == JT_TAEKWON_B) {
     return weaponWaves[realWeapon].c_str();
   }
 
@@ -64,7 +68,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
     }
   }
 
-  return weaponWaves[realWeapon].c_str();
+  return this->m_weaponHitWaves[realWeapon].c_str();
 }
 
 // OFFSET: 0x00DE5BD0
