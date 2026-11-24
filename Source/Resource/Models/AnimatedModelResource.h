@@ -80,6 +80,7 @@ public:
   C3dAnimModelRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
+  AnimatedModelNode* FindNode(const char* name);
 
   /* 0110 */ int recordCount;
   /* 0114 */ AnimatedModelRecord* records;

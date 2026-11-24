@@ -252,15 +252,7 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   for (std::list<AnimatedModelNode*>::iterator it = this->nodes.begin(); it != this->nodes.end(); ++it) {
     if (!(*it)->parentName.empty()) {
-      const auto findNode = [this](const char* name) -> AnimatedModelNode* {
-        for (std::list<AnimatedModelNode*>::iterator candidate = this->nodes.begin(); candidate != this->nodes.end(); ++candidate) {
-          if ((*candidate)->name == name) {
-            return *candidate;
-          }
-        }
-        return nullptr;
-      };
-      AnimatedModelNode* parent = findNode((*it)->parentName.c_str());
+      AnimatedModelNode* parent = FindNode((*it)->parentName.c_str());
       (*it)->parent = parent;
       parent->children.push_back(*it);
     }
@@ -268,6 +260,17 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   this->rootNames.push_back(rootName.c_str());
   return true;
+}
+
+// OFFSET: 0x00759350
+// FUNCTION: fn_46702
+AnimatedModelNode* C3dAnimModelRes::FindNode(const char* name) {
+  for (std::list<AnimatedModelNode*>::iterator candidate = this->nodes.begin(); candidate != this->nodes.end(); ++candidate) {
+    if ((*candidate)->name == name) {
+      return *candidate;
+    }
+  }
+  return nullptr;
 }
 
 // OFFSET: 0x0075C9D0
