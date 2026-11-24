@@ -6703,7 +6703,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
 
     if (index == 0) {
-      this->state.lastPrim->state.slots[0].alphaB = 250;
+      this->state.lastPrim->state.slots[index].alphaB = 250;
     } else {
       this->state.lastPrim->state.slots[index].alphaB = static_cast<std::int16_t>(140 - index * 30);
     }
@@ -6721,7 +6721,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
     this->state.lastPrim->state.slots[index].vecBNow.y -= 10.0f;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
-    for (int step = 20; step > 0; --step) {
+    for (int step = 20; step >= 1; --step) {
       this->state.lastPrim->state.slots[index].height[step] = 0.0f;
       this->state.lastPrim->state.slots[index].flag1[step] = 0;
     }
