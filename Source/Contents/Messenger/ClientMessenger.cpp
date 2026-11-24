@@ -5080,9 +5080,9 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
   int subColumn;
   int subRow;
   this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
-  const int startY = *y;
   const int startX = *x;
   const int deltaX = column - startX;
+  const int startY = *y;
   const int deltaY = row - startY;
   const int offsets[9][2] = {{0, 0}, {1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
   if (std::abs(deltaX) >= std::abs(deltaY)) {
