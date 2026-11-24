@@ -1343,9 +1343,10 @@ void UIMyStyleWnd::RemoveSelectedStyle() {
 // OFFSET: 0x00823210
 // FUNCTION: fn_10291
 UIShowInfoWnd::UIShowInfoWnd()
-    : UIWindow(0), m_display(nullptr), showPayments(0), showPaymentItems(0), showDottedLines(0), m_checkTop(5), paymentFontSize(12), m_changed{},
+    : UIWindow(0), m_display(nullptr), showPayments(0), showPaymentItems(0), showDottedLines(0), m_checkTop(5), paymentFontSize(12),
+      m_changed{false, false, false, false, false, false},
       costumeChanged(0), m_offBitmap(nullptr) {
-  std::memset(&this->m_paymentLayout, 0, sizeof(this->m_paymentLayout));
+  this->m_paymentLayout = PaymentLayout{};
 }
 
 // OFFSET: 0x008232F0
