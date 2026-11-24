@@ -1730,15 +1730,20 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
   return this->data.SetDestination(info, x, y);
 }
 
+// INLINED
+static NavigationTarget ChooseTarget(CNavigationManager* manager, int nodeIndex) {
+  manager->currentTarget = manager->savedTarget;
+  if (nodeIndex >= 0 && manager->nodes.size() > static_cast<unsigned int>(nodeIndex)) {
+    manager->currentTarget.type = 6;
+    manager->currentTarget.object = manager->nodes[nodeIndex];
+  }
+  return manager->currentTarget;
+}
+
 // OFFSET: 0x00BA10C0
 // FUNCTION: fn_19637
 bool CNavigationManager::SelectTarget(int nodeIndex) {
-  this->currentTarget = this->savedTarget;
-  if (nodeIndex >= 0 && this->nodes.size() > static_cast<unsigned int>(nodeIndex)) {
-    this->currentTarget.type = 6;
-    this->currentTarget.object = this->nodes[nodeIndex];
-  }
-  this->currentTarget = NavigationTarget(this->currentTarget);
+  this->currentTarget = ChooseTarget(this, nodeIndex);
   return this->LoadTargetPreview();
 }
 
