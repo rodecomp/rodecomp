@@ -101,12 +101,12 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool) {
   TransformCorner(low.values, bounds[0], bounds[1], bounds[2], this->transform.values);
 
   for (unsigned axis = 0; axis < 3; ++axis) {
-    this->oriented.center[axis] = (high.values[axis] + low.values[axis]) * 0.5f;
+    this->oriented.center[axis] = (high.values[axis] + low.values[axis]) * g_depthAverageHalf;
   }
 
   SetComponents(
-    this->oriented.halfSize, Absolute((bounds[3] - bounds[0]) * this->scale.x) * 0.5f, Absolute((bounds[4] - bounds[1]) * this->scale.y) * 0.5f,
-    Absolute((bounds[5] - bounds[2]) * this->scale.z) * 0.5f
+    this->oriented.halfSize, Absolute((bounds[3] - bounds[0]) * this->scale.x) * g_depthAverageHalf,
+    Absolute((bounds[4] - bounds[1]) * this->scale.y) * g_depthAverageHalf, Absolute((bounds[5] - bounds[2]) * this->scale.z) * g_depthAverageHalf
   );
 
   matrix axes;
