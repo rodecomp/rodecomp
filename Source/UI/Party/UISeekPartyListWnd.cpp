@@ -280,11 +280,10 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
 
-      const int maxLevel = g_session.m_maxLevel;
-      if (packet.level < 0 || packet.level > maxLevel) {
+      if (packet.level < 0 || packet.level > g_session.m_maxLevel) {
         char buffer[260];
         std::memset(buffer, 0, sizeof(buffer));
-        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), maxLevel);
+        StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), g_session.m_maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -363,7 +362,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->SendMsg(nullptr, UM_COMMAND, SEEKPARTY_SEARCH_NEXT_PAGE, 0, 0, 0);
           g_session.m_partyBooking.EraseEntry(it->first);
         } else {
-          const std::string leaderName = entry.leaderName;
+          const std::string leaderName = it->second.leaderName;
           if (leaderName != g_session.DecodePlayerName()) {
             g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(leaderName.c_str()), 0, 0, 0, 0);
           }
