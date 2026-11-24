@@ -221,6 +221,46 @@ Replay::Replay() : cipherIndex(0), cipherBase(0), cipherKey(0), recordingState(0
   this->cachedPackets[470].enabled = true;
 }
 
+// INLINED
+static __forceinline std::size_t WriteReplaySection(Replay& replay, int id, std::uint32_t size, unsigned char* data, int event) {
+  if (event == 14) {
+    replay.sections[id].id = static_cast<std::uint16_t>(id);
+    replay.sections[id].bytes = size;
+    replay.sections[id].fileOffset = replay.fileOffset;
+    replay.fileOffset += size;
+  }
+
+  const std::uint32_t sectionBytes = replay.sections[id].bytes;
+  if (sectionBytes != 0) {
+    replay.cipherBase = replay.header.key0 >> 5;
+    const int count = sectionBytes / 4;
+    replay.cipherIndex = 0;
+    replay.cipherKey = replay.header.key1 >> 3;
+
+    for (int index = 0; index < count; ++index) {
+      ++replay.cipherIndex;
+      std::uint32_t word;
+      std::memcpy(&word, data + index * sizeof(word), sizeof(word));
+      word ^= (replay.cipherBase + replay.cipherIndex) * replay.cipherKey;
+      std::memcpy(data + index * sizeof(word), &word, sizeof(word));
+    }
+  }
+
+  std::fseek(replay.file, static_cast<long>(replay.sections[id].fileOffset), SEEK_SET);
+  return std::fwrite(data, replay.sections[id].bytes, 1, replay.file);
+}
+
+// OFFSET: 0x00B856D0
+// FUNCTION: fn_46477
+bool Replay::WriteSection(int id, std::uint32_t size, unsigned char* data, int event) {
+  if (id > 0 && id < 26 && size != 0 && data != nullptr) {
+    if (WriteReplaySection(*this, id, size, data, event) != 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x00B855B0
 // FUNCTION: fn_19326
 bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int event) {
@@ -234,31 +274,7 @@ bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int e
     return false;
   }
 
-  if (event == 14) {
-    this->sections[id].id = static_cast<std::uint16_t>(id);
-    this->sections[id].bytes = size;
-    this->sections[id].fileOffset = this->fileOffset;
-    this->fileOffset += size;
-  }
-
-  const std::uint32_t sectionBytes = this->sections[id].bytes;
-  if (sectionBytes != 0) {
-    this->cipherBase = this->header.key0 >> 5;
-    const int count = sectionBytes / 4;
-    this->cipherIndex = 0;
-    this->cipherKey = this->header.key1 >> 3;
-
-    for (int index = 0; index < count; ++index) {
-      ++this->cipherIndex;
-      std::uint32_t word;
-      std::memcpy(&word, data + index * sizeof(word), sizeof(word));
-      word ^= (this->cipherBase + this->cipherIndex) * this->cipherKey;
-      std::memcpy(data + index * sizeof(word), &word, sizeof(word));
-    }
-  }
-
-  std::fseek(this->file, static_cast<long>(this->sections[id].fileOffset), SEEK_SET);
-  return std::fwrite(data, this->sections[id].bytes, 1, this->file) != 0;
+  return WriteReplaySection(*this, id, size, data, event) != 0;
 }
 
 // OFFSET: 0x00B857E0
