@@ -1430,7 +1430,7 @@ void CEffectPrim::RenderPentaRing(matrix& wtm) {
 
         if (i > 0) {
           if (pass == 0) {
-            if (slot.height[4] == 2.0f) {
+            if (2.0f == slot.height[4]) {
               this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (slot.height[4] == 3.0f) {
               this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -2105,8 +2105,8 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
           }
         }
 
-        vec1 = vec2;
         vec3 = vec4;
+        vec1 = vec2;
       }
     }
   }
