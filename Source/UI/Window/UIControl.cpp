@@ -2588,10 +2588,8 @@ void CUIResizer::OnLBtnDown(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  this->startX = screenX;
-  this->startY = screenY;
-  this->startWidth = this->parent->geometry.width;
-  this->startHeight = this->parent->geometry.height;
+  this->startPosition = Extent{screenX, screenY};
+  this->startSize = Extent{this->parent->geometry.width, this->parent->geometry.height};
   this->deltaX = 0;
   this->deltaY = 0;
 }
@@ -2609,10 +2607,8 @@ void CUIResizer::OnLBtnUp(int x, int y) {
   int screenY = y;
   this->ToScreen(screenX, screenY);
 
-  this->startX = screenX;
-  this->startY = screenY;
-  this->startWidth = this->parent->geometry.width;
-  this->startHeight = this->parent->geometry.height;
+  this->startPosition = Extent{screenX, screenY};
+  this->startSize = Extent{this->parent->geometry.width, this->parent->geometry.height};
   this->deltaX = 0;
   this->deltaY = 0;
 }
@@ -2628,23 +2624,23 @@ void CUIResizer::OnMouseMove(int x, int y) {
   x = y;
   this->ToScreen(screenX, x);
 
-  const int rows = static_cast<int>(std::round(static_cast<float>(x - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
-  int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+  const int rows = static_cast<int>(std::round(static_cast<float>(x - this->startPosition.y) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+  int width = static_cast<int>(std::round(static_cast<float>(screenX - this->startPosition.x) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startSize.x;
   if (this->maxWidth < width) {
     width = this->maxWidth;
   } else if (width < this->minWidth) {
     width = this->minWidth;
   }
 
-  int height = rows + this->startHeight;
+  int height = rows + this->startSize.y;
   if (this->maxHeight < height) {
     height = this->maxHeight;
   } else if (height < this->minHeight) {
     height = this->minHeight;
   }
 
-  width -= this->startWidth;
-  height -= this->startHeight;
+  width -= this->startSize.x;
+  height -= this->startSize.y;
   if (width != this->deltaX || height != this->deltaY) {
     if (this->onResize) {
       this->onResize(width - this->deltaX, height - this->deltaY);
