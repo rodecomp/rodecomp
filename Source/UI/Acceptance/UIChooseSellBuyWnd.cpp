@@ -7253,11 +7253,11 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     std::list<ITEM_INFO>::iterator it = this->items.begin();
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
-        int index = row + (this->m_page - 1) * 8;
         int count = lists.GetInventoryCategorySize(this->m_tab);
         if (this->m_tab == 8) {
           count = static_cast<int>(this->items.size());
         }
+        int index = row + (this->m_page - 1) * 8;
         if (count <= index) {
           return ITEM_INFO(0);
         }
@@ -12517,9 +12517,9 @@ void UIFrameWnd::DrawItemNameText(
     return;
   }
 
+  const int colorValue = static_cast<int>(color);
   std::vector<std::pair<int, std::string>> segments;
   const int highlightValue = static_cast<int>(highlightColor);
-  const int colorValue = static_cast<int>(color);
   this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
 
   FrameTextLines lines(2);
