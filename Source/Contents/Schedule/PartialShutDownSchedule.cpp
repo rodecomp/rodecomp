@@ -51,7 +51,7 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
     return;
   }
 
-  if (static_cast<int>(_difftime32(this->endTime->seconds, this->startTime->seconds)) <= 0) {
+  if (this->IsPeriodEmpty()) {
     return;
   }
 
@@ -67,6 +67,14 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
     const std::chrono::seconds delay = std::chrono::seconds(this->seconds) - std::chrono::hours(1) + std::chrono::minutes(10);
     this->interval = std::chrono::duration_cast<std::chrono::milliseconds>(delay).count();
   }
+}
+
+// OFFSET: 0x00BA86E0
+// FUNCTION: fn_46722
+bool CPartialShutDownSchedule::IsPeriodEmpty() const {
+  const __time32_t start = this->startTime->seconds;
+  const __time32_t end = this->endTime->seconds;
+  return static_cast<int>(_difftime32(end, start)) <= 0;
 }
 
 // OFFSET: 0x00BA8710

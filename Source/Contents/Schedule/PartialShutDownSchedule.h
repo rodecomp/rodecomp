@@ -17,6 +17,7 @@ public:
 
   void SetPeriod(__time32_t endTime, __time32_t startTime);
   void UpdateNotice();
+  bool IsPeriodEmpty() const;
 
   /* 0030 */ Timestamp* startTime;
   /* 0034 */ Timestamp* endTime;
