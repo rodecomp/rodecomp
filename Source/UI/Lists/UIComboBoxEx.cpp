@@ -91,7 +91,8 @@ void UIComboBoxEx::Refresh() {
   const int count = static_cast<int>(this->lines.size());
   const int overflow = std::ranges::max(count - visible, 0);
   this->verticalOverflow = overflow != 0;
-  auto* bar = this->verticalBar;
+  auto& verticalBarRef = this->verticalBar;
+  auto* bar = verticalBarRef;
 
   if (overflow != 0) {
     SetBarRange(bar, (this->bottomMargin + overflow), visible, count);
@@ -110,12 +111,12 @@ void UIComboBoxEx::Refresh() {
       this->topLine = overflow;
     }
 
-    this->verticalBar->position = this->topLine;
+    verticalBarRef->position = this->topLine;
   } else {
     SetBarRange(bar, 0, visible, count);
   }
 
-  this->verticalBar->Invalidate();
+  verticalBarRef->Invalidate();
 
   if (this->Root()) {
     this->Root()->Invalidate();

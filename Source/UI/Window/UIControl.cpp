@@ -1123,18 +1123,19 @@ void CUITab::SelectPage(UIWindow* page) {
 // OFFSET: 0x009F10F0
 // FUNCTION: fn_14687
 bool CUITab::SelectIndex(unsigned int index) {
-  if (index >= this->m_children.size()) {
+  auto& children = this->m_children;
+  if (index >= children.size()) {
     return false;
   }
 
-  CUITabButton* button = static_cast<CUITabButton*>(*std::next(this->m_children.begin(), index));
+  CUITabButton* button = static_cast<CUITabButton*>(*std::next(children.begin(), index));
   if (this->current == button) {
     return true;
   }
 
   if (!button) {
     this->current = nullptr;
-    for (UIWindow* child : this->m_children) {
+    for (UIWindow* child : children) {
       static_cast<CUITabButton*>(child)->SetSelected(false);
     }
   } else {
@@ -1146,7 +1147,7 @@ bool CUITab::SelectIndex(unsigned int index) {
     }
 
     this->current = button;
-    for (UIWindow* child : this->m_children) {
+    for (UIWindow* child : children) {
       if (this->current != child) {
         static_cast<CUITabButton*>(child)->SetSelected(false);
       }
