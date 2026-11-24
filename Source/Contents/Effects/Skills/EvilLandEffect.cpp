@@ -43,12 +43,10 @@ void CEvilLandEffect::Open() {
 
   for (int row = 0; row < effectLevel; ++row) {
     for (int column = 0; column < effectLevel; ++column) {
-      CParticle* created = CreateMultiTexParticle(&this->positionVector, -1);
-      if (!created) {
+      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(CreateMultiTexParticle(&this->positionVector, -1));
+      if (!particle) {
         continue;
       }
-
-      CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(created);
 
       particle->effectId = this->id;
       particle->rowIndex = row;
@@ -83,7 +81,7 @@ void CEvilLandEffect::Open() {
       particle->uv2[3][1] = bottom * alphaStepV;
 
       particle->AllocateVertices(4);
-      this->particles.push_back(created);
+      this->particles.push_back(particle);
     }
   }
 }
@@ -106,7 +104,7 @@ __forceinline void CEvilLandEffect::ScrollParticleTexture(CMultiTexParticle* par
 // FUNCTION: fn_06950
 void CEvilLandEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    this->ScrollParticleTexture(static_cast<CMultiTexParticle*>(*it));
+    this->ScrollParticleTexture(*it);
   }
 }
 
@@ -129,6 +127,6 @@ __forceinline void CEvilLandEffect::RenderParticle(CMultiTexParticle* particle) 
 // FUNCTION: fn_06951
 void CEvilLandEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    this->RenderParticle(static_cast<CMultiTexParticle*>(*it));
+    this->RenderParticle(*it);
   }
 }

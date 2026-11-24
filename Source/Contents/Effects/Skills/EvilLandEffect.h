@@ -19,7 +19,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00CC */ std::vector<CMultiTexParticle*> particles;
 
 private:
   void ScrollParticleTexture(CMultiTexParticle* particle);
