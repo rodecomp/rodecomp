@@ -76,7 +76,7 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
   const std::uint16_t transparent = DeviceOwnerDX7Handle(g_deviceOwnerDX7).PackColor(255, 0, 255);
   unsigned char row[10800];
 
-  for (int y = this->viewport.height - 1; y >= 0; --y) {
+  for (int y = this->viewport.height - 1; y >= 0;) {
     const unsigned char* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
     unsigned char* destination = row;
 
@@ -134,6 +134,9 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
     }
 
     std::fwrite(row, 3 * this->viewport.width, 1, file);
+    if (--y < 0) {
+      break;
+    }
     owner = g_deviceOwnerDX7;
   }
 
