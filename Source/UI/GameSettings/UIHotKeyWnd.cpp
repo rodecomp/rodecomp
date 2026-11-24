@@ -452,14 +452,14 @@ void UIHotKeyWnd::Paint() {
     std::string text = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
     UIBitmapButton* prevButton = this->m_prevButton;
     const int pagesWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
+    int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
 
     text = static_cast<const std::string&>(FormatOwnedString("%d", this->m_page));
     this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
 
-    const int currentWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+    pageX += this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
     text = static_cast<const std::string&>(FormatOwnedString(" / %d", this->m_pageCount));
-    this->DrawOutlinedText(pageX + currentWidth, 25, text.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
+    this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
   }
 
   const int bottomY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin;
