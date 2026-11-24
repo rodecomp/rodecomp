@@ -50,7 +50,7 @@ public:
   /* 0128 */ UIHeadsprButton* m_playerHead;
   /* 012C */ UIWindow* bossButton;
   /* 0130 */ std::map<int, UIBitmapButton*> townButtons;
-  /* 0138 */ std::map<int, UIButton*> questButtons;
+  /* 0138 */ std::map<int, UIBitmapButton*> questButtons;
   /* 0140 */ std::map<int, MiniMapMark> questMarks;
   /* 0148 */ std::vector<MiniMapMark> marks[3];
 };
