@@ -241,12 +241,7 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
       if (effectId == EF_POISON_MIST || effectId == EF_VOLCANIC_ASH) {
         y += 20.0f;
       }
-      y -= static_cast<float>(rand() % 11) * 0.4f;
-
-      vector3d position;
-      position.x = x;
-      position.y = y;
-      position.z = z;
+      const vector3d position{x, y - static_cast<float>(rand() % 11) * 0.4f, z};
       g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, effectId, interval + 20, 0);
     }
   }
