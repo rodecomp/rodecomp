@@ -489,13 +489,22 @@ std::string ItemDisplayName(int id) {
   return item.DisplayName(0);
 }
 
+// INLINED
+static std::vector<const char*>& FindItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values) {
+  // GLOBAL: gl_24728
+  static std::vector<const char*> missingLines;
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  return missingLines;
+}
+
 // OFFSET: 0x006D69C0
 // FUNCTION: fn_06582
 const std::vector<const char*>& FindMetalProcessItems(int id) {
-  // GLOBAL: gl_24728
-  static std::vector<const char*> missing;
-  const auto entry = g_metalProcessItems.find(id);
-  return entry == g_metalProcessItems.end() ? missing : entry->second;
+  return FindItemDescriptionLines(id, g_metalProcessItems);
 }
 
 // INLINED
