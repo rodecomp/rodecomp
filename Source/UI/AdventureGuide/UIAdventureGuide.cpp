@@ -424,9 +424,8 @@ void CUIIntro::OnInit() {
     return;
   }
 
-  const auto end = intro.texts.end();
-  for (auto it = intro.texts.begin(); it != end; ++it) {
-    this->contents->data.emplace_back(it->second.first, it->second.second);
+  for (const auto& entry : intro.texts) {
+    this->contents->data.push_back(entry.second);
   }
 
   this->contents->UpdateScrollBar();

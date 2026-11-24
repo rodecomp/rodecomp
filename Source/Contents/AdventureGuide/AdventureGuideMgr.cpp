@@ -1443,7 +1443,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntrySubMenu(int type, int id, in
 // OFFSET: 0x00666220
 // FUNCTION: fn_05249
 AdventureGuideResult CAdventureGuideMgr::InsertIntroContents(int id, std::string_view title, std::string_view text) {
-  AdventureGuideText entry;
+  Guide_Intro::Contents entry;
   entry.first = title;
   entry.second = text;
   introPage.texts.try_emplace(id, std::as_const(entry));

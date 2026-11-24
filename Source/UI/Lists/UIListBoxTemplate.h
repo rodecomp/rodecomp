@@ -164,16 +164,6 @@ public:
 };
 }
 
-namespace Guide_Intro {
-struct Contents {
-  Contents(const std::string& first, const std::string& second) : first(first), second(second) {
-  }
-
-  /* 0000 */ std::string first;
-  /* 0018 */ std::string second;
-};
-}
-
 template <class T> class CUIListBox : public CUIControl {
 public:
   // INLINED
