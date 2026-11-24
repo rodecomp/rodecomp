@@ -78,15 +78,20 @@ class ToolchainNotFound(Exception):
     pass
 
 
+def _in_any_case(directory, name):
+    """name as directory spells it, or name itself when nothing there has it in any case."""
+    if (directory / name).exists():
+        return name
+    try:
+        return next((entry for entry in os.listdir(directory) if entry.lower() == name.lower()), name)
+    except OSError:
+        return name
+
+
 def _exists(path):
     """Whether path exists, its file name in any case: the SDK ships Windows.h and kernel32.Lib,
     some installers lower-case them, and the compiler finds either."""
-    if path.exists():
-        return True
-    try:
-        return any(entry.name.lower() == path.name.lower() for entry in path.parent.iterdir())
-    except OSError:
-        return False
+    return (path.parent / _in_any_case(path.parent, path.name)).exists()
 
 
 class Toolchain:
@@ -105,6 +110,8 @@ class Toolchain:
         self.bin = self.msvc / "bin" / "Hostx64" / "x86"
         self.env = dict(os.environ)
         self.env.update(env or {})
+        self._wine_dirs = {}
+        self._local_dirs = {}
 
     def problems(self, link=True):
         """What this toolchain lacks to compile (and, with link, to link) the exe."""
@@ -138,9 +145,36 @@ class Toolchain:
         return value.replace("${SRC}", source.replace("\\", "/"))
 
     def path(self, p):
+        """p as the compiler names it. winepath is asked once per directory: outside a running
+        wine session every call starts and stops one, about a second each, and the link names
+        every object."""
         if self.kind == "native":
             return str(p)
-        return subprocess.run(["winepath", "-w", str(p)], capture_output=True, text=True, check=True).stdout.strip()
+        p = Path(p)
+        if not p.name:
+            return self._winepath(p)
+        if p.parent not in self._wine_dirs:
+            self._wine_dirs[p.parent] = self._winepath(p.parent).rstrip("\\")
+        return self._wine_dirs[p.parent] + "\\" + p.name
+
+    @staticmethod
+    def _winepath(p, to="-w"):
+        return subprocess.run(["winepath", to, str(p)], capture_output=True, text=True, check=True).stdout.strip()
+
+    def local(self, p):
+        """A path the compiler printed, as this system names the file. Under wine that is
+        Z:\\dir/sub\\windows.h for <dir>/sub/Windows.h: the compiler ignores case, the file
+        system may not. Asked once per directory, like path()."""
+        if self.kind == "native":
+            return p
+        directory, _, name = p.replace("/", "\\").rpartition("\\")
+        if directory not in self._local_dirs:
+            found = Path("/")
+            for part in Path(self._winepath(directory + "\\", "-u")).parts[1:]:
+                found = found / _in_any_case(found, part)
+            self._local_dirs[directory] = found
+        found = self._local_dirs[directory]
+        return str(found / _in_any_case(found, name))
 
     def lib_env(self):
         sdk_lib = self.kits / "Lib" / SDK_VERSION
@@ -614,7 +648,7 @@ def compile_units(tc, config, out_dir, jobs):
         headers = []
         for line in (result.stdout + result.stderr).splitlines():
             if line.startswith(INCLUDE_NOTE):
-                headers.append(line[len(INCLUDE_NOTE):].strip())
+                headers.append(tc.local(line[len(INCLUDE_NOTE):].strip()))
             else:
                 output.append(line)
         if result.returncode == 0:
