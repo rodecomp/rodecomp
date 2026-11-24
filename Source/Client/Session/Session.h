@@ -860,7 +860,7 @@ public:
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
   void LoadDamageSkinSettings();
-  bool LoadExceptionMinimapNameTable();
+  BOOL LoadExceptionMinimapNameTable();
   BOOL LoadMapNameTable();
   bool LoadMapPosTable();
   BOOL ScaleMapPositions();

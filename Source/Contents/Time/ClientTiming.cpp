@@ -808,7 +808,7 @@ void CSession::LoadDamageSkinSettings() {
 
 // OFFSET: 0x00DE53C0
 // FUNCTION: fn_23491
-bool CSession::LoadExceptionMinimapNameTable() {
+BOOL CSession::LoadExceptionMinimapNameTable() {
   std::vector<char*> tokens;
   this->m_navigationForbiddenMaps.clear();
   this->m_navigationForbiddenMaps.reserve(512);
