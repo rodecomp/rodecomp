@@ -7,6 +7,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -143,6 +144,30 @@ static inline vector3d DropEffectPosition(float x, float y, float z) {
   return vector3d{x, y, z};
 }
 
+// OFFSET: 0x00D8B530
+// FUNCTION: fn_46711
+int CItem::GetGradeDropEffect(int grade) const {
+  int gradeEffectId = 2485;
+  switch (grade) {
+  case 1:
+    gradeEffectId = EF_DROPITEM_BLUE;
+    break;
+  case 2:
+    gradeEffectId = EF_DROPITEM_YELLOW;
+    break;
+  case 3:
+    gradeEffectId = EF_DROPITEM_PURPLE;
+    break;
+  case 4:
+    gradeEffectId = EF_DROPITEM_GREEN;
+    break;
+  case 5:
+    gradeEffectId = EF_DROPITEM_RED;
+    break;
+  }
+  return gradeEffectId;
+}
+
 // OFFSET: 0x00D8B720
 // FUNCTION: fn_22252
 void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
@@ -198,24 +223,7 @@ void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, s
     }
 
     if (static_cast<std::uint16_t>(entry->grade - 1) <= 4) {
-      int gradeEffectId = 2485;
-      switch (entry->grade) {
-      case 1:
-        gradeEffectId = 1869;
-        break;
-      case 2:
-        gradeEffectId = 1189;
-        break;
-      case 3:
-        gradeEffectId = 1190;
-        break;
-      case 4:
-        gradeEffectId = 1870;
-        break;
-      case 5:
-        gradeEffectId = 1871;
-        break;
-      }
+      const int gradeEffectId = GetGradeDropEffect(entry->grade);
 
       if (!g_effectMgr->Spawn(entry->aid, gradeEffectId, position, 0, -1, 0, 0)) {
         if (CRagEffect* effect = this->LaunchEffect(gradeEffectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
