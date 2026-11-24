@@ -944,16 +944,19 @@ void UIRenewQuestWnd::RefreshRows() {
 // OFFSET: 0x007FD420
 // FUNCTION: fn_09979
 void UIRenewQuestWnd::UpdateScroll() {
-  const auto& quests = this->m_questIds[this->m_tab];
-  if (!quests.empty() && this->m_scrollBar) {
-    int maximum = static_cast<int>(quests.size()) - 9;
+  if (!this->m_questIds[this->m_tab].empty() && this->m_scrollBar) {
+    int maximum = static_cast<int>(this->m_questIds[this->m_tab].size()) - 9;
     if (maximum < 0) {
       maximum = 0;
     }
 
-    this->m_scrollable = maximum > 0;
     if (maximum > 0) {
-      this->m_scrollBar->SetRange(maximum, 9, static_cast<int>(quests.size()));
+      this->m_scrollable = true;
+    } else {
+      this->m_scrollable = false;
+    }
+    if (maximum > 0) {
+      this->m_scrollBar->SetRange(maximum, 9, static_cast<int>(this->m_questIds[this->m_tab].size()));
       if (this->m_scroll < 0) {
         this->m_scroll = 0;
       } else if (this->m_scroll > maximum) {
@@ -962,7 +965,7 @@ void UIRenewQuestWnd::UpdateScroll() {
       this->m_scrollBar->SetPosition(this->m_scroll);
     } else {
       this->m_scroll = 0;
-      this->m_scrollBar->SetRange(0, 9, static_cast<int>(quests.size()));
+      this->m_scrollBar->SetRange(0, 9, static_cast<int>(this->m_questIds[this->m_tab].size()));
     }
 
     this->m_scrollBar->Invalidate();
