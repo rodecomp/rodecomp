@@ -3684,12 +3684,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   effectButton->Invalidate();
   effectButton->SetId(1);
   {
-    effectButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("이펙트 설정", 0xB3CF9BEB7963DB89ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("이펙트 설정", 0xB3CF9BEB7963DB89ULL));
+    effectButton->SetText(label);
   }
   effectButton->SetFitText(0);
   effectButton->SetAlign(6, 6);
   {
-    effectButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5D7B5AF4FEDFF57ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5D7B5AF4FEDFF57ULL));
+    effectButton->SetFont(font);
   }
   effectButton->SetFontHeight(12);
   effectButton->SetBold(0);
@@ -3707,12 +3709,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   controlButton->Invalidate();
   controlButton->SetId(2);
   {
-    controlButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("컨트롤 설정", 0x9B9D51AD3515F779ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("컨트롤 설정", 0x9B9D51AD3515F779ULL));
+    controlButton->SetText(label);
   }
   controlButton->SetFitText(0);
   controlButton->SetAlign(6, 6);
   {
-    controlButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x038535BB092533B7ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0x038535BB092533B7ULL));
+    controlButton->SetFont(font);
   }
   controlButton->SetFontHeight(12);
   controlButton->SetBold(0);
@@ -3730,12 +3734,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   graphicsButton->Invalidate();
   graphicsButton->SetId(3);
   {
-    graphicsButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("그래픽 설정", 0xFB2BC75769E777D3ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("그래픽 설정", 0xFB2BC75769E777D3ULL));
+    graphicsButton->SetText(label);
   }
   graphicsButton->SetFitText(0);
   graphicsButton->SetAlign(6, 6);
   {
-    graphicsButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x91493751EF33B5FDULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0x91493751EF33B5FDULL));
+    graphicsButton->SetFont(font);
   }
   graphicsButton->SetFontHeight(12);
   graphicsButton->SetBold(0);
@@ -3753,12 +3759,14 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   etcButton->Invalidate();
   etcButton->SetId(4);
   {
-    etcButton->SetText(std::string(OBFUSCATE_SOURCE_TEXT("기타 설정", 0x6BC977B3B5993503ULL)));
+    std::string label(OBFUSCATE_SOURCE_TEXT("기타 설정", 0x6BC977B3B5993503ULL));
+    etcButton->SetText(label);
   }
   etcButton->SetFitText(0);
   etcButton->SetAlign(6, 6);
   {
-    etcButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5F3F779237315F3ULL)));
+    std::string font(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB5F3F779237315F3ULL));
+    etcButton->SetFont(font);
   }
   etcButton->SetFontHeight(12);
   etcButton->SetBold(0);
@@ -3779,7 +3787,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_pageContainer;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_pageContainer);
 
@@ -3794,7 +3806,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_applyButton;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_applyButton);
 
@@ -3809,7 +3825,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_closeButton;
-    button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL)));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL));
+    std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL));
+    button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_closeButton);
 
