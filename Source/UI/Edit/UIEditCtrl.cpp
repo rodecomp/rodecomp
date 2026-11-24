@@ -6433,12 +6433,13 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    switch (mode->drag.source) {
+    const ModeDragState& drag = mode->drag;
+    switch (drag.source) {
     case 1:
-      mode->SendMsg(MM_MOVE_ITEM_FROM_BODY_TO_CART, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_MOVE_ITEM_FROM_BODY_TO_CART, drag.id, drag.quantity, 0, 0);
       break;
     case 6:
-      mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, mode->drag.id, mode->drag.quantity, 0, 0);
+      mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, drag.id, drag.quantity, 0, 0);
       break;
     }
 
