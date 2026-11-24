@@ -197,7 +197,7 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   }
 
   if (frame >= static_cast<float>(keys[count - 1].frame)) {
-    output.values[9] = keys[keys.size() - 1].rotation[0];
+    output.values[9] = keys[count - 1].rotation[0];
     output.values[10] = keys[keys.size() - 1].rotation[1];
     output.values[11] = keys[keys.size() - 1].rotation[2];
     return;
@@ -209,12 +209,16 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   for (unsigned next = 0; next < count; ++next) {
     if (static_cast<float>(keys[next].frame) > frame) {
       if (next == 0) {
-        const ModelPositionKey start{0, {base.values[9], base.values[10], base.values[11]}};
-        std::memcpy(&first, &start, sizeof(start));
-        std::memcpy(&second, &keys[0], sizeof(ModelPositionKey));
+        ModelRotationKey start;
+        start.frame = 0;
+        start.rotation[0] = base.values[9];
+        start.rotation[1] = base.values[10];
+        start.rotation[2] = base.values[11];
+        first = start;
+        second = keys[0];
       } else {
-        std::memcpy(&first, &keys[next - 1], sizeof(ModelPositionKey));
-        std::memcpy(&second, &keys[next], sizeof(ModelPositionKey));
+        first = keys[next - 1];
+        second = keys[next];
       }
 
       break;
@@ -224,9 +228,14 @@ void ModelPositionTrack::Sample(float frame, const matrix& base, matrix& output)
   const float amount = (frame - static_cast<float>(first.frame)) / static_cast<float>((second.frame - first.frame));
   const float previous = 1.0f - amount;
 
-  output.values[9] = first.rotation[0] * previous + second.rotation[0] * amount;
-  output.values[10] = first.rotation[1] * previous + second.rotation[1] * amount;
-  output.values[11] = first.rotation[2] * previous + second.rotation[2] * amount;
+  const vector3d position{
+    first.rotation[0] * previous + second.rotation[0] * amount, first.rotation[1] * previous + second.rotation[1] * amount,
+    first.rotation[2] * previous + second.rotation[2] * amount
+  };
+
+  output.values[9] = position.x;
+  output.values[10] = position.y;
+  output.values[11] = position.z;
 }
 
 // OFFSET: 0x005407A0
