@@ -652,12 +652,8 @@ void UISelCharForUServerWnd::Paint() {
         }
 
         direction += this->m_slots[index].action - this->m_slots[index].actionBase;
-        if (direction < 0) {
-          direction = 7;
-        }
-        if (direction > 7) {
-          direction = 0;
-        }
+        direction = direction < 0 ? 7 : direction;
+        direction = direction > 7 ? 0 : direction;
 
         g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", item, direction, g_session.GetCurrentSex(), &x, &y);
         offsetX = x;
