@@ -1511,8 +1511,10 @@ int CCreateLineInfo::ParseChar(int index) {
         const std::string previous = NextCharacter(previousText);
         if (previous.compare("\n") == 0) {
           this->AddSegment(LINE_SEGMENT_TEXT);
+          this->AppendText(character);
+        } else {
+          this->AppendText(character);
         }
-        this->AppendText(character);
       } else {
         this->AppendText(character);
       }
