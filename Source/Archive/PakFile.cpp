@@ -31,15 +31,7 @@ namespace {
     /* 000C */ std::uint32_t version;
   };
 
-  struct PakUsedBlock {
-    PakUsedBlock(std::uint64_t blockOffset, std::uint32_t blockSize) : offset(blockOffset), size(blockSize) {
-    }
-
-    /* 0000 */ std::uint64_t offset;
-    /* 0008 */ std::uint32_t size;
-
-    auto operator<=>(const PakUsedBlock& other) const = default;
-  };
+  using PakUsedBlock = std::pair<std::uint64_t, std::uint32_t>;
 
   static_assert(sizeof(PakTableHeader) == 12);
   static_assert(sizeof(PakEntryRecord) == 21);
@@ -548,8 +540,8 @@ namespace myGPack {
     this->m_freeBlocks.clear();
 
     for (const PakUsedBlock& block : used) {
-      const std::uint32_t size = block.size;
-      const std::uint64_t offset = block.offset;
+      const std::uint32_t size = block.second;
+      const std::uint64_t offset = block.first;
       if (position < offset) {
         const std::uint64_t gap = offset - position;
         this->m_freeBlocks.insert({static_cast<std::uint32_t>(gap), position});
