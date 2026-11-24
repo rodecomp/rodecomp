@@ -1294,7 +1294,7 @@ std::list<int> LuaScript::TableKeys(std::string_view name) {
 
 // OFFSET: 0x00AFD830
 // FUNCTION: fn_18333
-int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
+int LuaScript::TableInteger(std::string table, int keyType, const void* key) {
   if (!this->m_state) {
     return 0;
   }
@@ -1314,7 +1314,7 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
     }
 
     signature += "d";
-    this->TableField(signature.c_str(), key, &value);
+    this->TableField(signature.c_str(), reinterpret_cast<std::intptr_t>(key), &value);
   }
 
   return value;

@@ -757,8 +757,8 @@ __declspec(noinline) int CSession::IsPlayerJob(int job) const {
 // OFFSET: 0x00E19110
 // FUNCTION: fn_23835
 int CSession::InheritedJob(int job) {
-  job = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, job);
-  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, job);
+  job = this->m_hotkeyScript->TableInteger("JobInheritTable", 0, reinterpret_cast<const void*>(job));
+  const int replacement = this->m_hotkeyScript->TableInteger("JOB_INHERIT_LIST2", 0, reinterpret_cast<const void*>(job));
   return replacement != -1 ? replacement : job;
 }
 

@@ -25,7 +25,7 @@ public:
   std::string GlobalString(const char* name);
   bool HasTable(const char* name);
   std::list<int> TableKeys(std::string_view name);
-  int TableInteger(std::string table, int keyType, std::intptr_t key);
+  int TableInteger(std::string table, int keyType, const void* key);
   void Close();
   void Register(std::string name, int (*function)(lua_State*));
   // INLINED
