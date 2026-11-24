@@ -3892,9 +3892,9 @@ void CSevereRainStorm::SpawnCrystalRain() {
   particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack_bottom\\rain_of_crystal_attack_bottom.str"));
   this->emitters.push_back(std::move(particle));
 
-  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
-  particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack\\rain_of_crystal_attack.str"));
-  this->emitters.push_back(std::move(particle));
+  CEZ2STRParticle* crystal = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  crystal->Load(std::string("rain_of_crystal\\rain_of_crystal_attack\\rain_of_crystal_attack.str"));
+  this->emitters.push_back(std::move(crystal));
 
   if (rand() % 7 == 0) {
     this->AddEvent(0, "effect\\AG_RAIN_OF_CRYSTAL.wav", this->frame + 1, 0);
@@ -4286,8 +4286,8 @@ void CSvgSpiritEffect::Open() {
   this->emitter->velocity = {0.0f, 0.0f, 0.0f};
   this->effectLifetime = 16;
   const vector3d& position = this->positionVector;
-  const float deltaX = this->sourcePosition[0] - position.x;
   const float deltaZ = this->sourcePosition[2] - position.z;
+  const float deltaX = this->sourcePosition[0] - position.x;
   float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;
   if (angle < 0.0f) {
     angle += 360.0f;
