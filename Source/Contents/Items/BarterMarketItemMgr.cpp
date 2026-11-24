@@ -893,18 +893,19 @@ bool CExpandedBarterMarketItemMgr::HasRequiredItems()
   for (std::vector<BarterChunk16>::iterator chunk = this->chunks.begin(); chunk != this->chunks.end(); ++chunk) {
     int required = chunk->amount;
     std::multimap<int, ITEM_INFO>::iterator it = this->itemInfos.begin();
-    for (;;) {
-      if (it == this->itemInfos.end()) {
-        return false;
-      }
+    bool found = false;
+    while (it != this->itemInfos.end()) {
       if (std::atoi(it->second.itemId.c_str()) == chunk->field_0 && (chunk->field_4 <= 0 || it->second.refiningLevel >= chunk->field_4)) {
         const int available = it->second.quantity;
         if (available > required) {
           it->second.quantity = available - required;
+          found = true;
           break;
         }
         if (available == required) {
-          this->itemInfos.erase(it);
+          const std::multimap<int, ITEM_INFO>::const_iterator used = it;
+          this->itemInfos.erase(used);
+          found = true;
           break;
         }
         required -= available;
@@ -912,6 +913,10 @@ bool CExpandedBarterMarketItemMgr::HasRequiredItems()
       } else {
         ++it;
       }
+    }
+
+    if (!found) {
+      return false;
     }
   }
   return true;
