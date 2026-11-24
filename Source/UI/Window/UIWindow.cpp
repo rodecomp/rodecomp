@@ -1830,7 +1830,8 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
     fitted.resize(length);
     fitted += ".";
 
-    if (CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length) <= 1) {
+    const unsigned characters = static_cast<unsigned>(CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length));
+    if (characters <= 1) {
       break;
     }
 
