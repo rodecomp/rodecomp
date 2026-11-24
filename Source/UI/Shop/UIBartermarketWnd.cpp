@@ -663,7 +663,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
   }
 
   case UM_REFRESHITEM: {
-    this->entries.erase(this->entries.begin(), this->entries.end());
+    this->entries = {};
     std::vector<BarterMarketEntry>* entries = g_expandedBarterMarketItemMgr->GetEntries();
     for (std::vector<BarterMarketEntry>::iterator it = entries->begin(); it != entries->end(); ++it) {
       this->entries.push_back(*it);
