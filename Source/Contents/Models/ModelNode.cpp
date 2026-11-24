@@ -66,23 +66,25 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
     this->scaleKeys.Add(0, resource.scale[0], resource.scale[1], resource.scale[2], 1.0f, 0.0f, 0.0f, 0.0f);
   }
 
+  std::vector<ModelRotationKey>& rotationKeys = this->rotationKeys;
   const std::vector<ModelRotationKey>& rotations = resource.rotationKeys;
-  if (&this->rotationKeys != &rotations) {
-    this->rotationKeys.assign(rotations.data(), std::to_address(rotations.end()));
+  if (&rotationKeys != &rotations) {
+    rotationKeys.assign(rotations.data(), std::to_address(rotations.end()));
   }
 
   if (this->rotationKeys.size() == 0) {
     this->rotationKeys.Add(0, resource.axis[0], resource.axis[1], resource.axis[2], resource.angle);
   }
 
-  this->positionKeys = resource.legacyPositionKeys;
+  std::vector<ModelPositionKey>& positionKeys = this->positionKeys;
+  positionKeys = resource.legacyPositionKeys;
 
   if (this->positionKeys.size() == 0) {
     this->positionKeys.Add(0, resource.position[0], resource.position[1], resource.position[2]);
   }
 
   for (auto it = resource.children.begin(); it != resource.children.end(); ++it) {
-    auto* child = new C3dNodeV1;
+    C3dNode* child = new C3dNodeV1;
     this->children.push_back(child);
     child->model = this->model;
     child->parent = this;
@@ -111,10 +113,14 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
     this->localTransform.Compose(world, inverse);
   }
 
-  this->scaleKeys = resource.scaleKeys;
-  this->rotationKeys = resource.rotationKeys;
-  this->positionKeys = resource.positionKeys;
-  this->textureKeys = resource.textureKeys;
+  auto& scaleKeys = this->scaleKeys;
+  scaleKeys = resource.scaleKeys;
+  auto& rotationKeys = this->rotationKeys;
+  rotationKeys = resource.rotationKeys;
+  auto& positionKeys = this->positionKeys;
+  positionKeys = resource.positionKeys;
+  auto& textureKeys = this->textureKeys;
+  textureKeys = resource.textureKeys;
 
   for (auto resourceChildIt = resource.children.begin(); resourceChildIt != resource.children.end(); ++resourceChildIt) {
     auto* child = new C3dNodeV2;
