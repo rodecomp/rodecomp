@@ -134,6 +134,28 @@ inline void CRendererDX9::DrawTopmostAlphaQueue() {
   this->DrawDepthQueue(true, this->queue_021C);
 }
 
+// OFFSET: 0x00566C00
+// FUNCTION: fn_46701
+inline void CRendererDX9::DrawNoDepthCustomBlendQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+
+  for (const DepthPrimitive& entry : this->queue_0234) {
+    RenderCommand* command = entry.primitive;
+    const float depth = entry.depth;
+    BindQueueTexture(*this, 0, command->texture);
+    this->SetTextureMode(command->textureMode);
+
+    if (depth >= 0.99f) {
+      this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+      this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    } else {
+      this->device->SetRenderState(D3DRS_SRCBLEND, command->sourceBlend);
+      this->device->SetRenderState(D3DRS_DESTBLEND, command->destinationBlend);
+    }
+    this->DrawPrimitive(command);
+  }
+}
+
 // OFFSET: 0x00567610
 // FUNCTION: fn_02229
 void CRendererDX9::DrawQueues() {
@@ -204,23 +226,5 @@ void CRendererDX9::DrawQueues() {
 
   this->DrawNoDepthAlphaQueue();
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-
-    for (const DepthPrimitive& entry : this->queue_0234) {
-      RenderCommand* command = entry.primitive;
-      const float depth = entry.depth;
-      BindQueueTexture(*this, 0, command->texture);
-      this->SetTextureMode(command->textureMode);
-
-      if (depth >= 0.99f) {
-        this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-      } else {
-        this->device->SetRenderState(D3DRS_SRCBLEND, command->sourceBlend);
-        this->device->SetRenderState(D3DRS_DESTBLEND, command->destinationBlend);
-      }
-      this->DrawPrimitive(command);
-    }
-  }
+  this->DrawNoDepthCustomBlendQueue();
 }
