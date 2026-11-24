@@ -152,9 +152,10 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
 
     if (age > 0) {
       if (age % 3 == 0) {
-        this->trails[index][3].x = this->trails[index][2].x;
-        this->trails[index][3].y = this->trails[index][2].y;
-        this->trails[index][3].z = this->trails[index][2].z;
+        EffectPoint& oldest = this->trails[index][3];
+        oldest.x = this->trails[index][2].x;
+        oldest.y = this->trails[index][2].y;
+        oldest.z = this->trails[index][2].z;
         this->trails[index][2].x = this->trails[index][1].x;
         this->trails[index][2].y = this->trails[index][1].y;
         this->trails[index][2].z = this->trails[index][1].z;
