@@ -17,7 +17,8 @@ public:
   void Init(unsigned minimum) {
     this->m_used = 0;
     this->m_minimum = minimum;
-    this->Release();
+    DeleteBlocks(this->m_active);
+    DeleteBlocks(this->m_unused);
     this->Activate(this->m_minimum);
   }
 
@@ -49,7 +50,16 @@ private:
   /* 000C */ std::forward_list<Block*> m_unused;
   Block& Activate(unsigned capacity);
   void Release();
+  static void DeleteBlocks(std::forward_list<Block*>& blocks);
 };
+
+// INLINED
+inline void RenderVertexPool::DeleteBlocks(std::forward_list<Block*>& blocks) {
+  for (Block* block : blocks) {
+    delete block;
+  }
+  blocks.clear();
+}
 
 // INLINED
 inline void RenderVertexPool::Rewind() {
