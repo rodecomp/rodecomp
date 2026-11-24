@@ -226,35 +226,37 @@ __declspec(noinline) bool UIScrollWnd::UpdateChild(UIWindow* child, int redraw) 
   int sourceX = 0;
 
   const int right = width + x;
-  if (x < 0) {
+  if (child->geometry.x < 0) {
     x = 0;
-    if (this->geometry.width < right) {
-      width = this->geometry.width;
-      sourceX = std::abs(child->geometry.x);
-    } else {
-      sourceX = std::abs(child->geometry.x);
-      width -= sourceX;
-    }
-  } else if (this->geometry.width < right) {
+    sourceX = std::abs(child->geometry.x);
+    width = child->geometry.width - sourceX;
+  }
+  if (child->geometry.x < 0 && this->geometry.width < right) {
+    x = 0;
+    sourceX = std::abs(child->geometry.x);
+    width = this->geometry.width;
+  }
+  if (child->geometry.x >= 0 && this->geometry.width < right) {
     x = child->geometry.x;
     sourceX = 0;
-    width = this->geometry.width - std::abs(x);
+    width = this->geometry.width - std::abs(child->geometry.x);
   }
 
   const int bottom = y + height;
-  if (y < 0) {
+  if (child->geometry.y < 0) {
     y = 0;
-    if (this->geometry.height < bottom) {
-      height = this->geometry.height;
-      sourceY = std::abs(child->geometry.y);
-    } else {
-      sourceY = std::abs(child->geometry.y);
-      height -= sourceY;
-    }
-  } else if (this->geometry.height < bottom) {
+    sourceY = std::abs(child->geometry.y);
+    height = child->geometry.height - sourceY;
+  }
+  if (child->geometry.y < 0 && this->geometry.height < bottom) {
+    y = 0;
+    sourceY = std::abs(child->geometry.y);
+    height = this->geometry.height;
+  }
+  if (child->geometry.y >= 0 && this->geometry.height < bottom) {
     y = child->geometry.y;
     sourceY = 0;
-    height = this->geometry.height - std::abs(y);
+    height = this->geometry.height - std::abs(child->geometry.y);
   }
 
   this->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, *static_cast<CDCBitmap*>(child->geometry.surface));
