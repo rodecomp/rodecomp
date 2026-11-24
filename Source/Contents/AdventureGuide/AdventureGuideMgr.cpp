@@ -1465,8 +1465,8 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
 }
 
 // INLINED
-static AdventureGuideEpisodeSource MakeEpisodeSource(const char* name, AdventureGuideEpisodeInfo&& info) {
-  return AdventureGuideEpisodeSource{name, std::move(info)};
+static AdventureGuideEpisodeSource MakeEpisodeSource(const char* name, const AdventureGuideEpisodeInfo& info) {
+  return AdventureGuideEpisodeSource{name, info};
 }
 
 // OFFSET: 0x00666860
@@ -1475,7 +1475,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertMonsterContents(std::string_view 
   AdventureGuideEpisodeInfo info;
   info.order = minLevel;
   info.maxLevel = maxLevel;
-  m_episodes.emplace_back(MakeEpisodeSource(name.data(), std::move(info)));
+  m_episodes.emplace_back(MakeEpisodeSource(name.data(), info));
   return AdventureGuideResult(true, "good");
 }
 
