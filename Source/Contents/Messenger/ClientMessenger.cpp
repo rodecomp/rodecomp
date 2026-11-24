@@ -1187,8 +1187,8 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
           names.insert(definition->uniqueGroup);
           ++it;
         } else {
-          delete property;
-          it = group.second.erase(it);
+          delete it->second;
+          group.second.erase(it++);
         }
       } else {
         ++it;
