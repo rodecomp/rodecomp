@@ -81,12 +81,12 @@ void CCresciveBolt::OnProcess() {
     return;
   }
 
-  const float x = this->position[0] + 0.0f;
-  const float y = this->position[1] - 3.0f;
-  const float z = this->position[2] + 0.0f;
-  particle->position.x = x;
-  particle->position.y = y;
-  particle->position.z = z;
+  const float x = this->position[0];
+  const float y = this->position[1];
+  const float z = this->position[2];
+  particle->position.x = x + 0.0f;
+  particle->position.y = y - 3.0f;
+  particle->position.z = z + 0.0f;
 
   particle = this->particle;
   const float angle = static_cast<float>(static_cast<double>(particle->m_angle));
