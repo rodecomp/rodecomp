@@ -291,6 +291,9 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 // GLOBAL: gl_24366
 UIWindowMgr g_windowMgr;
 
+// GLOBAL: gl_24603
+CInstantVar g_modalFrameOptions;
+
 // GLOBAL: gl_24683
 const int* g_windowCloseValue;
 
@@ -4307,7 +4310,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
   }
 
-  if (static_cast<int>(g_session.m_options.Get(5)) > 0) {
+  if (static_cast<int>(g_modalFrameOptions.Get(5)) > 0) {
     return false;
   }
 
