@@ -868,20 +868,25 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       static_cast<UIButton*>(button)->Enable(enabled);
     }
     this->Invalidate();
-    break;
+    [[fallthrough]];
   }
-  }
+  default: {
+    std::string mapName = g_modeMgr.GetGameMode()->MapName();
+    CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+    TownInfo town = townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
+    if (town.image.empty()) {
+      break;
+    }
 
-  std::string mapName = g_modeMgr.GetGameMode()->MapName();
-  CTownInfoMgr* townInfoMgr = g_townInfoMgr;
-  TownInfo town = townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
-  if (!town.image.empty()) {
     const std::size_t extension = mapName.find_first_of(".");
     if (extension != std::string::npos) {
       mapName = mapName.substr(0, extension);
     }
     g_navigationManager.StartNavigation(mapName.c_str(), 0, 5, true, town.x, town.y, 1002);
+    return 0;
   }
+  }
+
   return 0;
 }
 
@@ -2227,9 +2232,8 @@ void UITipboxWnd::UpdatePageText() {
     (separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), std::strlen((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str()), 0, 12, 0
   );
 
-  const int offset = (36 - totalWidth - pageWidth) / 2;
-  this->m_pageText->Move(offset + 426, 320);
-  this->m_pageTotalText->Move(pageWidth + 426 + offset, 320);
+  this->m_pageText->Move((36 - totalWidth - pageWidth) / 2 + 426, 320);
+  this->m_pageTotalText->Move(pageWidth + 426 + (36 - totalWidth - pageWidth) / 2, 320);
 }
 
 // OFFSET: 0x008D0230
@@ -2772,7 +2776,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->m_compositionPlacement->Reset();
     }
     this->Move(this->m_compositionPlacement->x, this->m_compositionPlacement->y);
-    return 0;
+    break;
   case UM_SET_CARD_ITEM_INDEX:
     this->m_compositionState = static_cast<int>(a);
     if (a != 0) {
@@ -2780,9 +2784,8 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (item.identity[1] > 0) {
         this->m_title = static_cast<const std::string&>(FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), item.DisplayName(0).c_str()));
       }
-      return 0;
     }
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
     if (g_replayAnimationScaling != 0) {
@@ -2806,40 +2809,43 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x574E == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x574F:
-          scanning = false;
-          break;
-        case 0x5751: {
-            std::vector<unsigned char> packet(header.length, 0);
-            std::memcpy(packet.data(), records + position, header.length);
-            position += header.length;
-            g_modeMgr.GetGameMode()->ReceiveCardCompositionItemList(packet.data());
-          break;
-        }
-        default:
+    if (0x574E != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x574F:
+        scanning = false;
+        break;
+      case 0x5751: {
+          std::vector<unsigned char> packet(header.length, 0);
+          std::memcpy(packet.data(), records + position, header.length);
           position += header.length;
-          break;
-        }
+          g_modeMgr.GetGameMode()->ReceiveCardCompositionItemList(packet.data());
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIItemIdentifyWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FDA10
@@ -2852,19 +2858,20 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
-    return 0;
+    break;
   case UM_CLEAR_ITEM:
     this->m_items.clear();
-    return 0;
+    break;
   case UM_REFRESH:
     this->UpdateScroll();
     this->Invalidate();
-    return 0;
+    break;
   case UM_ADDITEM: {
-    ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(b));
+    const std::uint32_t identity = static_cast<std::uint32_t>(b);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(identity);
     this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-    return 0;
+    break;
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, this->m_selected, d);
@@ -2887,7 +2894,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
@@ -2898,7 +2905,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
-      this->m_scroll = previous + static_cast<int>(a);
+      this->m_scroll += static_cast<int>(a);
     }
     if (previous != this->m_scroll) {
       this->UpdateScroll();
@@ -2911,31 +2918,36 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x571C == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x571D:
-          return 0;
-        case 0x571F: {
-          std::vector<unsigned char> packet(header.length, 0);
-          std::memcpy(packet.data(), records + position, header.length);
-          position += header.length;
-          g_modeMgr.GetGameMode()->ReceiveItemIdentificationList(packet.data());
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x571C != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x571D:
+        scanning = false;
+        break;
+      case 0x571F: {
+        std::vector<unsigned char> packet(header.length, 0);
+        std::memcpy(packet.data(), records + position, header.length);
+        position += header.length;
+        g_modeMgr.GetGameMode()->ReceiveItemIdentificationList(packet.data());
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008FD5F0
@@ -3672,7 +3684,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_modeMgr.currentMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SET_BABY_MSG: {
     this->identity = static_cast<std::uint32_t>(a);
@@ -3682,41 +3694,44 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     text += LookupMessage(MSI_SUGGEST_BABY);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x53FC == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        std::memcpy(&header, packet + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x53FD:
-          scanning = false;
-          break;
-        case 0x53FE: {
-          char name[260];
-          std::memset(name, 0, sizeof(name));
-          std::memcpy(name, packet + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_BABY_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x53FC != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      std::memcpy(&header, packet + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x53FD:
+        scanning = false;
+        break;
+      case 0x53FE: {
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        std::memcpy(name, packet + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_BABY_MSG, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008F7050
@@ -8126,8 +8141,15 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   }
-  case UM_REFRESH: {
+  case UM_PARAM: {
     this->SumEquippedStats();
+    this->m_label = reinterpret_cast<const char*>(a);
+    this->itemIndex = static_cast<int>(b);
+    const ITEM_DESC& description = FindItemDescription(std::atoi(this->m_label.c_str()));
+    if (description.descriptionValues.size() == 2) {
+      this->itemParam = description.descriptionValues[0];
+      this->itemSecondParam = description.descriptionValues[1];
+    }
     this->equippedParam = 0;
     this->equippedSecondParam = 0;
     {
@@ -8145,15 +8167,8 @@ int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::int
     this->Invalidate();
     return 0;
   }
-  case UM_PARAM: {
+  case UM_REFRESH: {
     this->SumEquippedStats();
-    this->m_label = reinterpret_cast<const char*>(a);
-    this->itemIndex = static_cast<int>(b);
-    const ITEM_DESC& description = FindItemDescription(std::atoi(this->m_label.c_str()));
-    if (description.descriptionValues.size() == 2) {
-      this->itemParam = description.descriptionValues[0];
-      this->itemSecondParam = description.descriptionValues[1];
-    }
     this->equippedParam = 0;
     this->equippedSecondParam = 0;
     {
@@ -8282,10 +8297,11 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     return 0;
   case UM_SETTITLE: {
     this->m_kind = static_cast<int>(a);
+    const int amount = static_cast<int>(b);
     char text[128];
     if (a != 0) {
       char grouped[24];
-      std::sprintf(text, LookupMessage(MSI_GET_ZENY), FormatGroupedInteger(static_cast<int>(b), grouped, sizeof(grouped)));
+      std::sprintf(text, LookupMessage(MSI_GET_ZENY), FormatGroupedInteger(amount, grouped, sizeof(grouped)));
       this->m_message = text;
       this->m_itemId = "";
     } else {
@@ -8294,7 +8310,7 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       item.itemId = reinterpret_cast<const char*>(c);
       item.identified = this->m_identified;
       item.refiningLevel = 0;
-      std::sprintf(text, LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), static_cast<int>(b));
+      std::sprintf(text, LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), amount);
       this->m_message = text;
     }
 
@@ -8468,7 +8484,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
       break;
     }
-    return 0;
+    break;
   case UM_SET_BABY_MSG: {
     this->m_place = static_cast<char>(a);
     std::string text;
@@ -8479,38 +8495,41 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const auto* packet = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x54C4 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        std::memcpy(&header, packet + offset, sizeof(header));
-        offset += 6;
-        switch (header.type) {
-        case 0x54C5:
-          scanning = false;
-          break;
-        case 0x54C6:
-          std::memcpy(&this->m_place, packet + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
-          break;
-        default:
-          offset += header.length;
-          break;
-        }
+    if (0x54C4 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      std::memcpy(&header, packet + offset, sizeof(header));
+      offset += 6;
+      switch (header.type) {
+      case 0x54C5:
+        scanning = false;
+        break;
+      case 0x54C6:
+        std::memcpy(&this->m_place, packet + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
+        break;
+      default:
+        offset += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  return 0;
 }
 
 // OFFSET: 0x00908080
@@ -10344,7 +10363,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
       this->m_scroll = previous + this->m_rows - 1;
     } else {
-      this->m_scroll = previous + static_cast<int>(a);
+      this->m_scroll += static_cast<int>(a);
     }
     if (previous != this->m_scroll) {
       this->UpdateScroll();
@@ -10390,33 +10409,34 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x5654 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x5655:
-          scanning = false;
-          break;
-        case 0x5656: {
-          int value = 0;
-          std::memcpy(&value, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
-          break;
-        }
-        case 0x5657: {
-          int value = 0;
-          std::memcpy(&value, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x5654 != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x5655:
+        scanning = false;
+        break;
+      case 0x5656: {
+        int value = 0;
+        std::memcpy(&value, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
+        break;
+      }
+      case 0x5657: {
+        int value = 0;
+        std::memcpy(&value, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&value), 0, 0, 0);
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
     break;
@@ -10473,10 +10493,10 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   switch (message) {
   case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
@@ -10493,11 +10513,11 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_windowMgr.CloseWindow(WID_CHOOSEWARPWND);
       break;
     }
-    return 0;
+    break;
   }
   case UM_SETSKID:
     this->skillId = static_cast<int>(a);
-    return 0;
+    break;
   case UM_SETCHOOSE:
     if (a != 0) {
       const char* choice = reinterpret_cast<const char*>(a);
@@ -10510,38 +10530,43 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       this->m_choices.push_back(choice);
     }
-    return 0;
+    break;
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x55BE == header.type) {
-      while (position < static_cast<unsigned int>(b)) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case 0x55BF:
-          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
-          return 0;
-        case 0x55C1: {
-          char text[260] = {};
-          std::memcpy(text, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          break;
-        }
-        default:
-          position += header.length;
-          break;
-        }
+    if (0x55BE != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case 0x55BF:
+        this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+        scanning = false;
+        break;
+      case 0x55C1: {
+        char text[260] = {};
+        std::memcpy(text, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        break;
+      }
+      default:
+        position += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008F26B0
