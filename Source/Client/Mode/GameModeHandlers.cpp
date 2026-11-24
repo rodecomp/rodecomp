@@ -1861,7 +1861,7 @@ void CGameMode::ReceiveActorNameCard(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_ACK_REQNAMEALL2*>(packet);
   char name[25] = "";
 
-  memcpy_s(name, 24, value->name, 24);
+  memcpy_s(name, sizeof(name), value->name, 24);
   name[24] = '\0';
   this->SetActorNameCard(
     value->gid, name, value->partyName, value->guildName,
