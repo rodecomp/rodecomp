@@ -1006,9 +1006,10 @@ void UINewChatWnd::SaveChatLogs() {
 
   std::string name;
   int index = 0;
+  const auto& chatWindows = g_session.m_noSubChatWnds;
   for (std::vector<UIChatHisBox*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
-    const std::map<int, SubChatWndInfo>::iterator info = g_session.m_noSubChatWnds.find(index);
-    if (info != g_session.m_noSubChatWnds.end()) {
+    const auto info = chatWindows.find(index);
+    if (info != chatWindows.end()) {
       name = info->second.name;
     }
 
