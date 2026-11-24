@@ -323,7 +323,7 @@ public:
   void StartExpirySchedule();
   __declspec(noinline) void UpdateExpiry(int packId, Timestamp* expiry);
   __declspec(noinline) void RefreshSelection();
-  void RestartExpirySchedule();
+  __declspec(noinline) void RestartExpirySchedule();
 
 protected:
   /* 00B4 */ CashEmotionListWndInfo* m_placement;
@@ -1260,7 +1260,7 @@ void CCashEmotionMgr::AddEmotionOrder(int packId, int emotionId) {
     }
   } else {
     std::vector<int> order;
-    order.push_back(emotionId);
+    order.insert(order.end(), emotionId);
     this->emotionOrder.emplace(packId, std::move(order));
   }
 }
@@ -2345,7 +2345,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
     const char id = static_cast<char>(index + 1);
     tab->SendMsg(this, UM_SETSTATE, id == 1, 0, 0, 0);
     this->AddChild(tab);
-    this->m_tabs.insert({id, tab});
+    this->m_tabs.insert(std::make_pair(id, tab));
 
     if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(normal.c_str())))) {
       x += bitmap->image.height;
@@ -2398,7 +2398,8 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
   this->m_period->Show(0);
   this->AddChild(this->m_period);
 
-  this->RestartExpirySchedule();
+  g_timeScheduler->RemoveSchedulesByKey(7);
+  this->StartExpirySchedule();
 }
 
 // OFFSET: 0x007C7C20
