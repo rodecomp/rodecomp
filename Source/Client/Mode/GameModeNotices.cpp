@@ -7511,12 +7511,16 @@ void CGameMode::ReceiveWhisper2(const unsigned char* data) {
   this->ProcessWhisper(static_cast<int>(packet->senderGid), std::string(nameBuffer), text, packet->isAdmin);
 }
 
-#include "Contents/Events/ShowRankingScheduler.h"
+struct RankNoticeStyle {
+  /* 0000 */ const char* title;
+  /* 0004 */ std::uint32_t color;
+  /* 0008 */ std::uint32_t background;
+};
 
 // OFFSET: 0x00D06760
 // FUNCTION: fn_21576
-static std::map<int, RankingBoardStyle> RankNoticeStyles() {
-  std::map<int, RankingBoardStyle> styles;
+static std::map<int, RankNoticeStyle> RankNoticeStyles() {
+  std::map<int, RankNoticeStyle> styles;
   styles.insert({0, {"========== BLACKSMITH RANK ============", 0x9B9B9B, 0xCDCDCD}});
   styles.insert({1, {"=========== ALCHEMIST RANK =============", 0x9BCD9B, 0xCDFFCD}});
   styles.insert({2, {"============ TAEKWON RANK =============", 0xCD9B9B, 0xFFCDCD}});
@@ -7540,7 +7544,7 @@ void CGameMode::ReceiveRankingList(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RankingListPacket*>(data);
   const int kind = packet->type;
   // GLOBAL: gl_25258
-  static const std::map<int, RankingBoardStyle> styles = RankNoticeStyles();
+  static const std::map<int, RankNoticeStyle> styles = RankNoticeStyles();
 
   const char* title;
   std::uint32_t color;

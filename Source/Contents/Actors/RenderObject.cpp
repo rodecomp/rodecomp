@@ -4774,7 +4774,7 @@ bool C3dGrannyGameActor::OnProcess() {
 // FUNCTION: fn_21195
 void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int type) {
   const int value = damage >= 0 ? damage : 0;
-  std::vector<int> digits;
+  std::vector<std::uint32_t> digits;
   int remaining = value;
   if (g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF)) {
     if (value >= 100000000) {
@@ -4815,12 +4815,12 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     effect->SendMsg(nullptr, AM_SETMASTERGID, static_cast<std::uint32_t>(this->render.accountId), type, 0, 0, 0, 0);
     if (value >= 100000000 && g_session.m_damageMillionUnit == 2) {
       if (index == 0) {
-        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 + 4), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 + 4), 0, 0, 0);
       } else {
-        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 - index * 8), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 - index * 8), 0, 0, 0);
       }
     } else {
-      effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - index * 2) * 4 - 4), 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), static_cast<int>(*it), static_cast<std::uint32_t>((static_cast<int>(digits.size()) - index * 2) * 4 - 4), 0, 0, 0);
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->render.useGroundLighting = 0;
