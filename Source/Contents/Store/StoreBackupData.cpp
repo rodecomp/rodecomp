@@ -9,6 +9,12 @@
 #include <cstring>
 #include <json/value.h>
 
+// OFFSET: 0x00605E80
+// FUNCTION: fn_46720
+void CMCStoreInfoBackup::AppendItem(const ITEM_INFO& item) {
+  this->items.push_back(item);
+}
+
 // OFFSET: 0x00606190
 // FUNCTION: fn_04233
 void CMCStoreInfoBackup::ImportData(Json::Value& data) {
@@ -48,7 +54,7 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     }
 
     item.prices[0] = static_cast<std::uint32_t>((*entry).get("Price", 0).asInt());
-    this->items.push_back(item);
+    this->AppendItem(item);
   }
 
   if (g_windowMgr.merchantShopMakeWnd) {
