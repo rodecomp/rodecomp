@@ -579,8 +579,8 @@ void UIChangeMaterialWnd_List::Paint() {
 
   for (int row = 0; row < this->m_pageSize; ++row) {
     const MaterialListEntry* entry = this->GetEntry(row + this->m_scrollOffset);
-    const int index = row + this->m_scrollOffset;
     if (entry) {
+      const std::int64_t index = row + this->m_scrollOffset;
       const char* bitmap;
       if (index == this->m_selectedIndex) {
         bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
