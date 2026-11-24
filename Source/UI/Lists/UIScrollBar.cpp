@@ -819,9 +819,12 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
 // OFFSET: 0x008900D0
 // FUNCTION: fn_11399
 void UIChatHisBox::OnLBtnDblClk(int, int) {
-  const unsigned int index = static_cast<unsigned int>(this->selected);
+  if (this->selected == -1) {
+    return;
+  }
 
-  if (index != static_cast<unsigned int>(-1) && index < this->history.size() && this->history[index].size() > 0 && this->history[index].c_str() != nullptr) {
+  const unsigned int index = static_cast<unsigned int>(this->selected);
+  if (index < this->history.size() && this->history[index].size() > 0 && this->history[index].c_str() != nullptr) {
     this->parent->SendMsg(this, UM_COMMAND, ID_NAME, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
   }
 }
