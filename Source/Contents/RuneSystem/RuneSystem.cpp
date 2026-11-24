@@ -720,7 +720,7 @@ int CRuneSystemMgr::UpdateOwnedDecomItems() {
     const auto decom = this->m_itemDecoms.find(std::atoi(item.itemId.c_str()));
     const std::pair<int, int>* types = this->m_itemDecoms.end() == decom ? nullptr : &decom->second;
     if (types) {
-      this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
+      this->m_ownedDecomItems.emplace_back(static_cast<unsigned int>(std::atoi(item.itemId.c_str())));
     }
   }
   return static_cast<int>(this->m_ownedDecomItems.size());
