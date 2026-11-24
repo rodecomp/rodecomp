@@ -313,11 +313,11 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->topLine;
     if (message == UM_SCROLLVERTPAGEUP) {
-      this->topLine = previous - this->geometry.height / this->lineHeight + 1;
+      this->topLine -= this->geometry.height / this->lineHeight - 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      this->topLine = previous + this->geometry.height / this->lineHeight - 1;
+      this->topLine += this->geometry.height / this->lineHeight - 1;
     } else {
-      this->topLine = previous + static_cast<int>(argument1);
+      this->topLine += static_cast<int>(argument1);
     }
 
     if (this->topLine < 0) {
