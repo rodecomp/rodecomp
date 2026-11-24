@@ -49,7 +49,7 @@
 #include <limits>
 
 // INLINED
-inline RagEffectState::RagEffectState() : deltaPos(), deltaPos2(), deltaPos3() {
+inline RagEffectState::RagEffectState() : deltaPos{0.0f, 0.0f, 0.0f}, deltaPos2{0.0f, 0.0f, 0.0f}, deltaPos3{0.0f, 0.0f, 0.0f} {
 }
 
 // INLINED
