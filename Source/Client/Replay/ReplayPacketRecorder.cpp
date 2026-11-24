@@ -219,9 +219,9 @@ int UIWindow::RecordData(std::uint16_t type, std::vector<unsigned char> data) {
   std::vector<unsigned char> record(data.size() + 6);
   std::memcpy(record.data() + 6, data.data(), data.size());
 
-  unsigned char* buffer = record.data();
   const std::uint16_t header[2] = {ID_CC_REPLAYPACKET, type};
   const std::size_t bytes = record.size();
+  unsigned char* buffer = record.data();
   std::memcpy(buffer, header, sizeof(header));
   *reinterpret_cast<std::uint16_t*>(buffer + 4) = static_cast<std::uint16_t>(bytes);
 
