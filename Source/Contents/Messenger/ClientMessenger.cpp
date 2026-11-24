@@ -1183,7 +1183,7 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
       EquipmentProperty* property = it->second;
       EquipmentPropertyDefinition* definition = property->m_definition;
       if (definition != nullptr && definition->uniqueGroup.size() > 0) {
-        if (names.find(definition->uniqueGroup) == names.end()) {
+        if (names.end() == names.find(definition->uniqueGroup)) {
           names.insert(definition->uniqueGroup);
           ++it;
         } else {
