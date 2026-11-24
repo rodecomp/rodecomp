@@ -4141,22 +4141,25 @@ void CCrimsonArrowEffect::Open() {
     return;
   }
 
-  vector3d to = this->sourcePositionVector;
-  vector3d from = *&this->positionVector;
-  float fromReciprocalDepth = 0.0f;
-  float toReciprocalDepth = 0.0f;
-  float fromX;
-  float fromY;
-  float toX;
-  float toY;
-  g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  double angle;
+  {
+    vector3d to = this->sourcePositionVector;
+    vector3d from = this->positionVector;
+    float fromReciprocalDepth = 0.0f;
+    float toReciprocalDepth = 0.0f;
+    float fromX;
+    float fromY;
+    float toX;
+    float toY;
+    g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
-  const float dx = toX - fromX;
-  const float dy = toY - fromY;
-  const float length = SquareRoot(dy * dy + dx * dx);
-  const float degrees = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
-  const double angle = fromY > toY ? 360.0 - degrees : degrees;
+    const float dx = toX - fromX;
+    const float dy = toY - fromY;
+    const float length = SquareRoot(dy * dy + dx * dx);
+    const float degrees = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
+    angle = fromY > toY ? 360.0 - degrees : degrees;
+  }
 
   CEZ2STRParticle* emitter = arrow;
   switch (this->id) {
