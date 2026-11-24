@@ -1049,11 +1049,11 @@ std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const
     }
 
     return matched;
+  } else {
+    std::vector<int> result(packs);
+    std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
+    return result;
   }
-
-  std::vector<int> result(packs);
-  std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
-  return result;
 }
 
 // OFFSET: 0x0059ABC0
