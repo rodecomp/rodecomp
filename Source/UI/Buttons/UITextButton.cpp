@@ -2143,10 +2143,8 @@ void UIScrollBar_Custom::Paint() {
       middle = 0;
     } else {
       middle = this->m_trackMiddle->image.height;
-      int y = top;
       for (int index = 0; index < (this->geometry.height - top) / middle; ++index) {
-        this->DrawBitmap(0, y, this->m_trackMiddle, false);
-        y += middle;
+        this->DrawBitmap(0, top + index * middle, this->m_trackMiddle, false);
       }
     }
 
@@ -2162,8 +2160,16 @@ void UIScrollBar_Custom::Paint() {
       this->DrawBitmap(0, this->geometry.height - this->m_arrowDown->image.height, this->m_arrowDown, true);
     }
 
-    const int length = this->vertical == 0 ? this->geometry.width : this->geometry.height;
-    const int thumb = this->position * (length - this->arrowLength * 2 - this->ThumbLength()) / this->maximum + this->arrowLength;
+    int length = this->geometry.height;
+    switch (this->vertical) {
+    case 0:
+      length = this->geometry.width;
+      break;
+    case 1:
+      length = this->geometry.height;
+      break;
+    }
+    const int thumb = this->arrowLength + ((length - 2 * this->arrowLength - this->ThumbLength()) * this->position) / this->maximum;
     const int thumbLength = this->ThumbLength();
 
     int thumbTop = 0;
