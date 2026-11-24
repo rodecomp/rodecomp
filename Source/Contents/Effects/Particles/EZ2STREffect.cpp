@@ -1560,9 +1560,12 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
 
 // INLINED
 static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
-  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
-                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
-                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+  const float x = point.x;
+  const float y = point.y;
+  const float z = point.z;
+  return vector3d{y * transform.values[3] + x * transform.values[0] + z * transform.values[6] + transform.values[9],
+                  y * transform.values[4] + x * transform.values[1] + z * transform.values[7] + transform.values[10],
+                  y * transform.values[5] + x * transform.values[2] + z * transform.values[8] + transform.values[11]};
 }
 
 // OFFSET: 0x00B51A60
