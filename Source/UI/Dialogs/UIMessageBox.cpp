@@ -128,8 +128,8 @@ namespace {
 #pragma pack(pop)
 
   // INLINED
-  __forceinline std::vector<unsigned char> MakeChatRoomRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
-    std::vector<unsigned char> record(bytes + sizeof(ChatRoomRecordHeader));
+  inline std::vector<unsigned char> MakeChatRoomRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+    std::vector<unsigned char> record(bytes + sizeof(ChatRoomRecordHeader), 0);
     ChatRoomRecordHeader* header = reinterpret_cast<ChatRoomRecordHeader*>(record.data());
     header->id = id;
     header->bytes = bytes;
