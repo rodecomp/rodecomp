@@ -210,11 +210,11 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
     if (source->m_keys.size() != 1) {
       return this;
     }
-    const unsigned int& key = *source->m_keys.begin();
-    if (this->m_keys.contains(key)) {
+    auto keyIt = source->m_keys.begin();
+    if (this->m_keys.contains(*keyIt)) {
       return this;
     }
-    this->m_keys.insert(key);
+    this->m_keys.insert(*keyIt);
   }
 
   for (auto& entry : source->m_values) {
