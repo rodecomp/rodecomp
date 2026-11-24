@@ -9845,8 +9845,7 @@ void UIItemCollectionWnd::Paint() {
         } else {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
           if (this->m_kind == 234) {
-            const char* name = slot < this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
-                                                                   : "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp";
+            const char* name = slot >= this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp" : "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp";
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
           } else if (slot >= this->m_item.SlotCount()) {
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
@@ -9857,7 +9856,7 @@ void UIItemCollectionWnd::Paint() {
     }
   }
 
-  if (FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str())).itemId >= 1) {
+  if (FindItemMoveInfo(std::atoi(this->m_item.itemId.c_str())).itemId > 0) {
     this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_viewer->geometry.y + this->m_viewer->geometry.height);
   } else {
     this->m_moveInfo->Move(-1000, -1000);
