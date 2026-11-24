@@ -397,12 +397,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     float bottom = it->second.quad.bottomRhw;
     float top = it->second.quad.topRhw;
     if (it != quads.begin()) {
-      if (bottom <= maxBottom) {
-        bottom = maxBottom;
-      }
-      if (top <= maxTop) {
-        top = maxTop;
-      }
+      bottom = bottom > maxBottom ? bottom : maxBottom;
+      top = top > maxTop ? top : maxTop;
     }
     maxBottom = bottom;
     maxTop = top;
