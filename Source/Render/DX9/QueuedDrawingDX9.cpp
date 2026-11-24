@@ -66,6 +66,74 @@ void CRendererDX9::DrawAuxiliaryQueue() {
   }
 }
 
+// OFFSET: 0x00565C30
+// FUNCTION: fn_46690
+inline void CRendererDX9::DrawDepthSortedAlphaQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  std::sort(this->queue_0180.begin(), this->queue_0180.end());
+  this->device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+  this->device->SetRenderState(D3DRS_ZWRITEENABLE, 1);
+  this->device->SetRenderState(D3DRS_ALPHAREF, 159);
+  this->device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+  this->DrawDepthQueue(false, this->queue_0180);
+  this->device->SetRenderState(D3DRS_ZWRITEENABLE, 0);
+  this->device->SetRenderState(D3DRS_ALPHAREF, 159);
+  this->device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_LESS);
+  this->DrawDepthQueue(false, this->queue_0180);
+}
+
+// OFFSET: 0x00566120
+// FUNCTION: fn_46691
+inline void CRendererDX9::DrawNoDepthAlphaQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+  this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+  this->DrawDepthQueue(false, this->queue_0198);
+}
+
+// OFFSET: 0x00566200
+// FUNCTION: fn_46692
+inline void CRendererDX9::DrawHighAlphaRefQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_ALPHAREF, 207);
+  this->DrawDepthQueue(true, this->queue_0228);
+}
+
+// OFFSET: 0x00566440
+// FUNCTION: fn_46693
+inline void CRendererDX9::DrawDepthSortedAdditiveQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+  this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+  this->DrawDepthQueue(true, this->queue_01C8);
+}
+
+// OFFSET: 0x00566520
+// FUNCTION: fn_46694
+inline void CRendererDX9::DrawAdditiveQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+  this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+  this->DrawDepthQueue(true, this->queue_01D4);
+}
+
+// OFFSET: 0x00566600
+// FUNCTION: fn_46695
+inline void CRendererDX9::DrawNoDepthAdditiveQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+  this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+  this->DrawDepthQueue(true, this->queue_01E0);
+}
+
+// OFFSET: 0x005673F0
+// FUNCTION: fn_46696
+inline void CRendererDX9::DrawTopmostAlphaQueue() {
+  ScopedDeviceStateDX9 restore = this->device->CaptureState();
+  this->device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+  this->DrawDepthQueue(true, this->queue_021C);
+}
+
 // OFFSET: 0x00567610
 // FUNCTION: fn_02229
 void CRendererDX9::DrawQueues() {
@@ -103,50 +171,20 @@ void CRendererDX9::DrawQueues() {
     }
   }
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-    this->DrawDepthQueue(true, this->queue_021C);
-  }
+  this->DrawTopmostAlphaQueue();
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    std::sort(this->queue_0180.begin(), this->queue_0180.end());
-    this->device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-    this->device->SetRenderState(D3DRS_ZWRITEENABLE, 1);
-    this->device->SetRenderState(D3DRS_ALPHAREF, 159);
-    this->device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    this->DrawDepthQueue(false, this->queue_0180);
-    this->device->SetRenderState(D3DRS_ZWRITEENABLE, 0);
-    this->device->SetRenderState(D3DRS_ALPHAREF, 159);
-    this->device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_LESS);
-    this->DrawDepthQueue(false, this->queue_0180);
-  }
+  this->DrawDepthSortedAlphaQueue();
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-    this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(true, this->queue_01C8);
-  }
+  this->DrawDepthSortedAdditiveQueue();
 
   this->device->SetRenderState(D3DRS_ZWRITEENABLE, 0);
   this->DrawAlphaQueues();
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_ALPHAREF, 207);
-    this->DrawDepthQueue(true, this->queue_0228);
-  }
+  this->DrawHighAlphaRefQueue();
 
   this->device->SetRenderState(D3DRS_FOGENABLE, 0);
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-    this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(true, this->queue_01D4);
-  }
+  this->DrawAdditiveQueue();
 
   {
     ScopedDeviceStateDX9 restore = this->device->CaptureState();
@@ -162,19 +200,9 @@ void CRendererDX9::DrawQueues() {
 
   this->device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-    this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-    this->DrawDepthQueue(true, this->queue_01E0);
-  }
+  this->DrawNoDepthAdditiveQueue();
 
-  {
-    ScopedDeviceStateDX9 restore = this->device->CaptureState();
-    this->device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    this->device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    this->DrawDepthQueue(false, this->queue_0198);
-  }
+  this->DrawNoDepthAlphaQueue();
 
   {
     ScopedDeviceStateDX9 restore = this->device->CaptureState();

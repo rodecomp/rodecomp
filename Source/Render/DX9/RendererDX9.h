@@ -36,6 +36,13 @@ public:
 
   void SetTextureMode(int mode);
   void DrawDepthQueue(bool sort, std::vector<DepthPrimitive>& queue);
+  void DrawDepthSortedAlphaQueue();
+  void DrawNoDepthAlphaQueue();
+  void DrawHighAlphaRefQueue();
+  void DrawDepthSortedAdditiveQueue();
+  void DrawAdditiveQueue();
+  void DrawNoDepthAdditiveQueue();
+  void DrawTopmostAlphaQueue();
   void DrawOpaqueQueues();
   void DrawGroundQueues();
   void DrawAlphaQueues();
