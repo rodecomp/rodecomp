@@ -128,7 +128,7 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     float dist = this->state.slots[ec].distance;
     float cs = g_cosTable[this->state.slots[ec].rotStart];
     float sn = g_sinTable[this->state.slots[ec].rotStart];
-    const char frame = static_cast<char>(this->state.slots[ec].process % 30);
+    const int frame = this->state.slots[ec].process % 30;
     vec1.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec1.y = -dist * 2.0f;
     vec1.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
