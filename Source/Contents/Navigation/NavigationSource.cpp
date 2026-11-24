@@ -163,14 +163,15 @@ CNaviData::~CNaviData() {
     *it = nullptr;
   }
   this->objects.clear();
+  auto& destinations = this->destinations;
 
-  for (std::vector<CNaviInfo*>::iterator it = this->destinations.begin(); it != this->destinations.end(); ++it) {
+  for (std::vector<CNaviInfo*>::iterator it = destinations.begin(); it != destinations.end(); ++it) {
     if (*it != nullptr) {
       delete *it;
     }
     *it = nullptr;
   }
-  this->destinations.clear();
+  destinations.clear();
 }
 
 // OFFSET: 0x00B8CC10
