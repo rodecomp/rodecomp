@@ -799,12 +799,11 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
 }
 
 // INLINED
-static vector3d TransformPoint(const vector3d& point, const float* m) {
-  return vector3d{
-    point.x * m[0] + point.y * m[3] + point.z * m[6] + m[9],
-    point.x * m[1] + point.y * m[4] + point.z * m[7] + m[10],
-    point.x * m[2] + point.y * m[5] + point.z * m[8] + m[11]
-  };
+static void TransformPoint(vector3d& result, const float* point, const matrix& transform) {
+  const float* m = transform.values;
+  result.x = point[0] * m[0] + point[1] * m[3] + point[2] * m[6] + m[9];
+  result.y = point[0] * m[1] + point[1] * m[4] + point[2] * m[7] + m[10];
+  result.z = point[0] * m[2] + point[1] * m[5] + point[2] * m[8] + m[11];
 }
 
 // OFFSET: 0x00758710
@@ -812,10 +811,13 @@ static vector3d TransformPoint(const vector3d& point, const float* m) {
 bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const {
   matrix matrix;
   matrix.MakeZRotation(3.141592f);
-  const vector3d position = TransformPoint(vector3d{this->position[0], this->position[1], this->position[2]}, matrix.values);
+  vector3d position;
+  TransformPoint(position, this->position, matrix);
   matrix.Compose(world, view);
 
-  const vector3d projected = TransformPoint(position, matrix.values);
+  const float rotated[] = {position.x, position.y, position.z};
+  vector3d projected;
+  TransformPoint(projected, rotated, matrix);
   const float deltaX = eye[0] - position.x;
   const float deltaY = eye[1] - position.y;
   const float deltaZ = eye[2] - position.z;
