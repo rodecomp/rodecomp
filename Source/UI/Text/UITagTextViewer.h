@@ -22,6 +22,8 @@ namespace TagTextViewer {
 
   class UIScroll : public UIWindow {
   public:
+    // OFFSET: 0x0083E110
+    // FUNCTION: fn_46551
     explicit UIScroll() : UIWindow(0), m_scrollPos(0), m_scrollBar(nullptr) {
     }
     void OnCreate(int width, int height) override;
