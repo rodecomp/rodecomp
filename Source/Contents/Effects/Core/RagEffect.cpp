@@ -3626,25 +3626,25 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  const float scale = static_cast<float>(kind);
-
-  for (int index = 0; index < 4; ++index) {
-    this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].height[4] = scale;
+  for (int ec = 0; ec < 4; ++ec) {
+    this->state.lastPrim->state.slots[ec].life = 1;
+    this->state.lastPrim->state.slots[ec].height[4] = static_cast<float>(kind);
 
     if (kind == 2 || kind == 3 || kind == 6) {
-      this->state.lastPrim->state.slots[index].process = 0;
-      this->state.lastPrim->state.slots[index].distance = 2.0f;
+      this->state.lastPrim->state.slots[ec].process = 0;
     } else {
-      this->state.lastPrim->state.slots[index].process = -24;
-      this->state.lastPrim->state.slots[index].distance = 2.0f;
+      this->state.lastPrim->state.slots[ec].process = -24;
     }
+    this->state.lastPrim->state.slots[ec].distance = 2.0f;
 
-    const int phaseAngle = kind == 3 ? phase * 7 : phase * 22;
-    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(phaseAngle + index * 90);
-    this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
-    this->state.lastPrim->state.slots[index].alphaB = 0;
-    this->state.lastPrim->state.slots[index].height[0] = -12.0f;
+    if (kind == 3) {
+      this->state.lastPrim->state.slots[ec].riseAngle = static_cast<std::int16_t>(90 * ec + phase * 7);
+    } else {
+      this->state.lastPrim->state.slots[ec].riseAngle = static_cast<std::int16_t>(90 * ec + phase * 22);
+    }
+    this->state.lastPrim->state.slots[ec].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[ec].alphaB = 0;
+    this->state.lastPrim->state.slots[ec].height[0] = -12.0f;
   }
 }
 
