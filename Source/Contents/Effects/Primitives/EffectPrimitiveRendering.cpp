@@ -4343,7 +4343,7 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
           this->state.slots[ec].distance = (count2 - 1) * 1.0f;
 
           if (this->state.slots[ec].distance < 0.0f) {
-            this->state.slots[ec].distance *= g_heightSpeedSign;
+            this->state.slots[ec].distance *= -1.0f;
           }
 
           this->state.slots[ec].distance = 1.5f - this->state.slots[ec].distance + 1.5f;
@@ -4380,7 +4380,7 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
           vecM.x = rx * cs1;
           vecM.z = rx * sn1;
 
-          vecM.y += -(this->state.slots[ec].maxHeight + g_effectIconOuterRadius);
+          vecM.y += -(this->state.slots[ec].maxHeight + 2.0f);
 
           angle2 = 90 + add2;
           if (angle2 >= 360) {
@@ -6010,7 +6010,7 @@ __declspec(safebuffers) void CEffectPrim::RenderArcBand(matrix& wtm) {
   int rpCnt = 0;
   float uInc = 0.0f;
 
-  temp = g_fullCircleAngle - this->state.arcAngle;
+  temp = 360.0f - this->state.arcAngle;
 
   for (i = 0.0f; i <= temp; i += this->state.arcAngle) {
     cs1 = g_cosTable[static_cast<int>(i)];
@@ -6080,7 +6080,7 @@ __declspec(safebuffers) void CEffectPrim::RenderArcBand(matrix& wtm) {
     }
 
     uInc += 0.25f;
-    if (uInc >= g_projectionDepthNumerator) {
+    if (uInc >= 1.0f) {
       uInc = 0.0f;
     }
   }
