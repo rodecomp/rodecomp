@@ -1820,12 +1820,14 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
       angle2 += 360;
     }
 
-    vec1.x = dist * g_cosTable[angle1] * 0.5f + cosA * inner;
+    const float innerX = cosA * inner;
+    const float innerZ = sinA * inner;
+    vec1.x = dist * g_cosTable[angle1] * 0.5f + innerX;
     vec1.y = 0.0f;
-    vec1.z = dist * g_sinTable[angle1] * 0.5f + sinA * inner;
-    vec2.x = dist * g_cosTable[angle2] * 0.5f + cosA * inner;
+    vec1.z = dist * g_sinTable[angle1] * 0.5f + innerZ;
+    vec2.x = dist * g_cosTable[angle2] * 0.5f + innerX;
     vec2.y = 0.0f;
-    vec2.z = dist * g_sinTable[angle2] * 0.5f + sinA * inner;
+    vec2.z = dist * g_sinTable[angle2] * 0.5f + innerZ;
 
     int angle4 = angle - 90;
     if (angle < 90) {
