@@ -2540,9 +2540,7 @@ void CPneumaticusProcellaEffect::Open() {
                    "pneumaticusprocella\\pneumaticusprocella\\pneumaticusprocella_%d.str", std::max(rand() % 4, 1));
       emitter->Load(std::string(name));
       emitter->m_delay = delay;
-      emitter->offset.y = -25.0f;
-      emitter->offset.x = static_cast<float>(x);
-      emitter->offset.z = static_cast<float>(z);
+      emitter->offset = vector3d{static_cast<float>(x), -25.0f, static_cast<float>(z)};
       this->emitters.push_back(emitter);
     }
   }
@@ -4062,6 +4060,29 @@ bool CSevereRainStorm::IsAlive() {
     break;
   }
   return true;
+}
+
+// INLINED
+static void FollowGalaxyOwner(const CSevereRainStorm* effect, CEZ2STRParticle* emitter) {
+  if (!emitter) {
+    return;
+  }
+
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
+  const vector3d position = *&effect->positionVector;
+
+  const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
+                   emitter->offset.x;
+  const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
+                   emitter->offset.y;
+  const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
+                   emitter->offset.z;
+
+  emitter->position = vector3d{vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9],
+                               vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10],
+                               vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11]};
+  emitter->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x00727A10
