@@ -3627,11 +3627,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   this->m_tab = new CUITab();
   this->m_tab->SetSize(400, 18);
   this->m_tab->Move(0, 17);
-  {
-    CUITab* tab = this->m_tab;
-    const std::function<void(CUITabButton*)> handler = [this](CUITabButton* button) { this->OnTabChanged(button); };
-    tab->onChange = handler;
-  }
+  this->m_tab->SetOnChange([this](CUITabButton* button) { this->OnTabChanged(button); });
   this->AddChild(this->m_tab);
 
   CUITabButton* basicButton = new CUITabButton();
@@ -3647,9 +3643,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   basicButton->SetFitText(0);
   basicButton->SetAlign(6, 6);
   {
-    std::string font;
-    font = OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL);
-    basicButton->SetFont(font);
+    basicButton->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x8BBF792B47E72173ULL)));
   }
   basicButton->SetFontHeight(12);
   basicButton->SetBold(0);
@@ -3770,10 +3764,10 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_pageContainer;
-    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL));
-    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL));
-    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL));
     std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL));
     button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_pageContainer);
@@ -3789,10 +3783,10 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_applyButton;
-    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL));
-    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL));
-    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL));
     std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL));
     button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_applyButton);
@@ -3808,10 +3802,10 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   }
   {
     CUIImageButton* button = this->m_closeButton;
-    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL));
-    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL));
-    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL));
     std::string inactive(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL));
+    std::string pressed(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL));
+    std::string hover(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL));
+    std::string normal(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL));
     button->SetImages(normal, hover, pressed, inactive);
   }
   this->AddChild(this->m_closeButton);
