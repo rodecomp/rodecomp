@@ -909,9 +909,9 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
 // OFFSET: 0x00838780
 // FUNCTION: fn_10453
 __declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
-  std::cmatch match;
+  std::smatch match;
 
-  if (!std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
+  if (!std::regex_search(text, match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
     return x;
   }
 
@@ -929,13 +929,11 @@ __declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::s
   if (image->geometry.width + x > this->m_width) {
     this->NewLine();
     this->AddWindow(image);
-    x = image->geometry.width;
-  } else {
-    this->AddWindow(image);
-    x += image->geometry.width;
+    return image->geometry.width;
   }
 
-  return x;
+  this->AddWindow(image);
+  return image->geometry.width + x;
 }
 
 // OFFSET: 0x008389A0
@@ -1437,18 +1435,14 @@ int CCreateLineInfo::ParseLink(int index) {
 // FUNCTION: fn_10491
 int CCreateLineInfo::ParseItemImage(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
-  std::cmatch match;
+  std::smatch match;
 
-  const bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
+  const bool missing = !std::regex_search(text, match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
   if (!missing && match.size() >= 2) {
     this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
     {
       const std::string matched = match[0].str();
-      if (this->m_segments.empty()) {
-        this->AddSegment(LINE_SEGMENT_TEXT);
-      }
-
-      this->m_segments.back().text += matched;
+      this->AppendText(matched);
     }
 
     this->m_newSegment = true;
