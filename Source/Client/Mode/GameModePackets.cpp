@@ -295,6 +295,10 @@ namespace {
 
   using StoreItemOption = ItemOptionRecord;
 
+  struct PickupItemOptions {
+    /* 0000 */ StoreItemOption options[5];
+  };
+
   struct StoreEquipRecord {
     /* 0000 */ std::int16_t index;
     /* 0002 */ int itemId;
@@ -323,7 +327,7 @@ namespace {
     /* 0024 */ std::uint16_t bindOnEquip;
     /* 0026 */ std::uint16_t sprite;
     /* 0028 */ unsigned char optionCount;
-    /* 0029 */ StoreItemOption options[5];
+    /* 0029 */ PickupItemOptions options;
     /* 0042 */ unsigned char flags;
   };
 
@@ -485,6 +489,7 @@ namespace {
   };
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
+  static_assert(sizeof(PickupItemOptions) == 25);
   static_assert(sizeof(StoreEquipRecord) == 0x29);
   static_assert(sizeof(StoreEquipOptionRecord) == 0x43);
   static_assert(sizeof(StoreNormalRecord) == 0x22);
@@ -533,7 +538,7 @@ namespace {
     entry.index = record.index;
     entry.sprite = record.sprite;
     entry.bindOnEquip = record.bindOnEquip;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
+    std::memcpy(entry.options, record.options.options, sizeof(entry.options));
     entry.expireTime = record.expireTime;
     entry.refine = record.refine;
     entry.location = record.location;
@@ -549,24 +554,36 @@ namespace {
   }
 
   // INLINED
-  __forceinline void ReadStoreEquipOptionEntry(StoreEquipEntry& entry, const StoreEquipOptionRecord& record) {
-    entry.index = record.index;
-    entry.itemId = record.itemId;
-    entry.type = record.type;
-    entry.location = record.location;
-    entry.wearState = record.wearState;
-    entry.refine = record.refine;
-    entry.card0 = record.cards[0];
-    entry.card1 = record.cards[1];
-    entry.card2 = record.cards[2];
-    entry.card3 = record.cards[3];
-    entry.expireTime = record.expireTime;
-    entry.bindOnEquip = record.bindOnEquip;
-    entry.sprite = record.sprite;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
+  template <typename AddItem>
+  __forceinline void AddStoreEquipItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card0, std::uint32_t card1, std::uint32_t card2,
+    std::uint32_t card3, int itemId, bool identified, bool damaged, unsigned char refine, std::uint32_t expireTime, std::uint16_t bindOnEquip,
+    std::uint16_t sprite, bool placeEtcTab, PickupItemOptions options, std::int16_t grade, AddItem addItem
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    item.cards[0] = card0;
+    item.cards[1] = card1;
+    item.cards[2] = card2;
+    item.cards[3] = card3;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.placeEtcTab = placeEtcTab;
+    item.optionCount = CountStoreItemOptions(options.options);
+    item.grade = grade;
+    for (int i = 0; i < item.optionCount; ++i) {
+      item.options[i] = options.options[i];
+    }
+    addItem(item);
   }
 
   static_assert(sizeof(DispelPacket) == 6);
@@ -1168,7 +1185,7 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
     StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
+    std::memcpy(options, record->options.options, sizeof(options));
     ITEM_INFO item;
     item.identity[0] = entry.type;
     item.identity[1] = entry.index;
@@ -1653,18 +1670,14 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
   int amount;
   std::int16_t type;
   switch (variant) {
-  case 0: {
-    const auto* p = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet);
-    amount = p->amount;
-    type = p->type;
+  case 0:
+    type = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet)->type;
+    amount = reinterpret_cast<const PACKET_ZC_RECOVERY*>(packet)->amount;
     break;
-  }
-  case 1: {
-    const auto* p = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet);
-    amount = p->amount;
-    type = p->type;
+  case 1:
+    type = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet)->type;
+    amount = reinterpret_cast<const PACKET_ZC_RECOVERY2*>(packet)->amount;
     break;
-  }
   }
 
   switch (type) {
@@ -2032,10 +2045,12 @@ void CGameMode::Zc_Notify_Exp(const unsigned char* packet) {
 
   char buffer[256];
   if (data->varId == 1) {
-    std::sprintf(buffer, LookupMessage(MSI_NOTIFY_EXP), amount);
+    const char* format = LookupMessage(MSI_NOTIFY_EXP);
+    std::sprintf(buffer, format, amount);
     text += buffer;
   } else if (data->varId == 2) {
-    std::sprintf(buffer, LookupMessage(MSI_NOTIFY_JOBEXP), amount);
+    const char* format = LookupMessage(MSI_NOTIFY_JOBEXP);
+    std::sprintf(buffer, format, amount);
     text += buffer;
   }
 
@@ -2224,35 +2239,16 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   const int count = (p->length - 4) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
+  PickupItemOptions options = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5] = {0};
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddMerchantShopItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options, 0,
+      [](const ITEM_INFO& item) {
+        g_session.AddMerchantShopItem(item);
+      }
+    );
   }
 
   g_session.RefreshItem1740Window();
@@ -2266,34 +2262,14 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
     const StoreEquipOptionRecord* record = &records[i];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
-    item.identity[2] = entry.location;
-    item.identity[3] = entry.wearState;
-    item.quantity = 1;
-    item.cards[0] = entry.card0;
-    item.cards[1] = entry.card1;
-    item.cards[2] = entry.card2;
-    item.cards[3] = entry.card3;
-    item.SetItemId(entry.itemId);
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.expireTime = entry.expireTime;
-    item.bindOnEquip = entry.bindOnEquip;
-    item.sprite = entry.sprite;
-    item.placeEtcTab = entry.placeEtcTab;
-    item.grade = 0;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-    g_session.AddMerchantShopItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0,
+      [](const ITEM_INFO& item) {
+        g_session.AddMerchantShopItem(item);
+      }
+    );
   }
 
   g_session.RefreshItem1740Window();
@@ -4842,6 +4818,14 @@ void CGameMode::ShowSpecialPopup(int popupId) {
       popupWindow->SendMsg(nullptr, UM_COMMAND, 510, popupId, 0, 0);
     }
     break;
+  }
+}
+
+// INLINED
+static void SetSpiritCount(CRagEffect* effect, short value) {
+  vector3d count{static_cast<float>(value), 0.0f, 0.0f};
+  if (effect) {
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
   }
 }
 
@@ -8526,8 +8510,9 @@ void CGameMode::RefreshEmotionPurchaseSchedule() {
   manager->RemoveExpiredPacks();
   const int expiry = manager->GetEarliestExpiry();
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
+    const std::chrono::system_clock::time_point current = std::chrono::system_clock::from_time_t(manager->GetServerTime());
+    const std::uint64_t now = current.time_since_epoch().count();
+    const std::int64_t interval = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(expiry) - current).count();
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
     }
@@ -8852,8 +8837,9 @@ void CGameMode::RefreshEmotionSaleSchedule() {
   const CashEmotionPackRefresh refresh = manager->RefreshUnownedPacks();
   const int expiry = refresh.nextTime;
   if (expiry < 0x7FFFFFFF) {
-    const std::uint64_t now = static_cast<std::uint64_t>(manager->GetServerTime()) * 10000000;
-    const std::int64_t interval = static_cast<std::int64_t>(static_cast<std::uint64_t>(expiry) * 10000000 - now) / 10000;
+    const std::chrono::system_clock::time_point current = std::chrono::system_clock::from_time_t(manager->GetServerTime());
+    const std::uint64_t now = current.time_since_epoch().count();
+    const std::int64_t interval = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(expiry) - current).count();
     if (interval != 0 && interval >= 0) {
       g_timeScheduler->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
     }
@@ -8940,7 +8926,7 @@ void CGameMode::ReceiveActorMessage34(const unsigned char* packet) {
 struct AddQuestPacket {
   /* 0000 */ std::int16_t packetType;
   /* 0002 */ unsigned int questId;
-  /* 0006 */ unsigned char state;
+  /* 0006 */ char state;
   /* 0007 */ __time32_t startTime;
   /* 000B */ __time32_t endTime;
   /* 000F */ std::int16_t huntCount;
@@ -9314,7 +9300,7 @@ namespace {
     /* 0023 */ std::uint16_t bindOnEquip;
     /* 0025 */ std::uint16_t sprite;
     /* 0027 */ unsigned char optionCount;
-    /* 0028 */ StoreItemOption options[5];
+    /* 0028 */ PickupItemOptions options;
     /* 0041 */ unsigned char refine;
     /* 0042 */ unsigned char grade;
     /* 0043 */ unsigned char flags;
@@ -9322,92 +9308,6 @@ namespace {
 #pragma pack(pop)
 
   static_assert(sizeof(EquipWindowGradeRecord) == 0x44);
-
-  struct StoreEquipGradeEntry {
-    std::int16_t index;
-    int itemId;
-    unsigned char type;
-    std::uint32_t location;
-    std::uint32_t wearState;
-    unsigned char refine;
-    std::uint32_t cards[4];
-    std::uint32_t expireTime;
-    std::uint16_t bindOnEquip;
-    std::uint16_t sprite;
-    bool identified;
-    bool damaged;
-    bool placeEtcTab;
-    StoreItemOption options[5];
-    unsigned char grade;
-  };
-
-  // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipGradeEntry& entry, const EquipWindowGradeRecord& record) {
-    entry.placeEtcTab = (record.flags >> 2) & 1;
-    entry.index = record.index;
-    entry.sprite = record.sprite;
-    entry.bindOnEquip = record.bindOnEquip;
-    std::memcpy(entry.options, record.options, sizeof(entry.options));
-    entry.expireTime = record.expireTime;
-    entry.refine = record.refine;
-    entry.location = record.location;
-    entry.identified = record.flags & 1;
-    entry.damaged = (record.flags >> 1) & 1;
-    entry.itemId = record.itemId;
-    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
-    entry.wearState = record.wearState;
-    entry.type = record.type;
-    entry.grade = record.grade;
-  }
-
-  // INLINED
-  __forceinline void FillEquipWindowItem(ITEM_INFO& item, const StoreEquipEntry& record, const StoreItemOption* options) {
-    item.identity[0] = record.type;
-    item.identity[1] = record.index;
-    item.identity[2] = record.location;
-    item.identity[3] = record.wearState;
-    item.quantity = 1;
-    item.cards[0] = record.card0;
-    item.cards[1] = record.card1;
-    item.cards[2] = record.card2;
-    item.cards[3] = record.card3;
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.placeEtcTab = record.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-  }
-
-  // INLINED
-  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipGradeEntry& record, const StoreItemOption* options) {
-    item.identity[0] = record.type;
-    item.identity[1] = record.index;
-    item.identity[2] = record.location;
-    item.identity[3] = record.wearState;
-    item.quantity = 1;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.placeEtcTab = record.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(options);
-    item.grade = record.grade;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
-    }
-  }
 
   // INLINED
   __forceinline void EquipWindowItem(const ITEM_INFO& item) {
@@ -9435,8 +9335,8 @@ namespace {
         g_equipmentPropertiesMgr = manager;
       }
 
-      const int kind = 0;
       const int itemId = std::atoi(item.itemId.c_str());
+      const int kind = 0;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -9453,13 +9353,11 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipOptionEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9514,13 +9412,11 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipOptionEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9552,13 +9448,11 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipGradeEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry, options);
-    EquipWindowItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, record->grade, EquipWindowItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9611,8 +9505,8 @@ namespace {
         g_equipmentPropertiesMgr = manager;
       }
 
-      const int kind = 0;
       const int itemId = std::atoi(item.itemId.c_str());
+      const int kind = 0;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -9628,14 +9522,14 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
 
   const int count = (p->length - sizeof(PacketLengthHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
+  PickupItemOptions options = {0};
   for (int index = 0; index < count; ++index) {
     const StoreEquipRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5] = {0};
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->identified, record->damaged, record->refine, record->expireTime, record->bindOnEquip, record->sprite, record->placeEtcTab, options, 0,
+      AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9653,13 +9547,11 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
   const StoreEquipOptionRecord* records = reinterpret_cast<const StoreEquipOptionRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const StoreEquipOptionRecord* record = &records[index];
-    StoreEquipEntry entry;
-    ReadStoreEquipOptionEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, 0, AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9677,13 +9569,11 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipGradeEntry entry;
-    ReadStoreEquipEntry(entry, *record);
-    StoreItemOption options[5];
-    std::memcpy(options, record->options, sizeof(options));
-    ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry, options);
-    AddInventoryEquipItem(item);
+    AddStoreEquipItem(
+      record->type, record->location, record->index, record->wearState, record->cards[0], record->cards[1], record->cards[2], record->cards[3], record->itemId,
+      record->flags & 1, (record->flags >> 1) & 1, record->refine, record->expireTime, record->bindOnEquip, record->sprite, (record->flags >> 2) & 1,
+      record->options, record->grade, AddInventoryEquipItem
+    );
   }
 
   RefreshItemWindows(&g_windowMgr);
@@ -9695,10 +9585,6 @@ struct ItemCardSlots {
 
 namespace {
 #pragma pack(push, 1)
-  struct PickupItemOptions {
-    /* 0000 */ StoreItemOption options[5];
-  };
-
   struct ItemPickupAckPacket {
     /* 0000 */ std::uint16_t packetType;
     /* 0002 */ std::uint16_t index;
@@ -9762,7 +9648,6 @@ namespace {
   };
 #pragma pack(pop)
 
-  static_assert(sizeof(PickupItemOptions) == 25);
   static_assert(offsetof(ItemPickupAck7Packet, cards) == 0x0D);
   static_assert(offsetof(ItemPickupAck7Packet, options) == 0x29);
   static_assert(sizeof(ItemPickupAckPacket) == 0x21);
