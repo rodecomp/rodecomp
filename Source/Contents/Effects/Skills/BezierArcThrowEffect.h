@@ -10,12 +10,7 @@
 
 class CBezierArcThrowEffect : public CEffect {
 public:
-  // INLINED
-  __forceinline explicit CBezierArcThrowEffect(const std::string& name) : CEffect(-1), m_name(name) {
-    this->m_target.x = 0.0f;
-    this->m_target.y = 0.0f;
-    this->m_target.z = 0.0f;
-  }
+  explicit CBezierArcThrowEffect(const std::string& name);
 
   ~CBezierArcThrowEffect() override;
 

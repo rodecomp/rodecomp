@@ -24,6 +24,14 @@ static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   return result;
 }
 
+// OFFSET: 0x007AAE10
+// FUNCTION: fn_46533
+__forceinline CBezierArcThrowEffect::CBezierArcThrowEffect(const std::string& name) : CEffect(-1), m_name(name) {
+  this->m_target.x = 0.0f;
+  this->m_target.y = 0.0f;
+  this->m_target.z = 0.0f;
+}
+
 // OFFSET: 0x007AAEA0
 // FUNCTION: fn_09102
 CThunderingOrb::CThunderingOrb(const std::string& name) : CBezierArcThrowEffect(name) {}
