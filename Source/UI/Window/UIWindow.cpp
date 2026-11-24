@@ -2592,8 +2592,9 @@ int UIWindow::RecordEditTexts() {
   std::memset(&record, 0, sizeof(record));
 
   int count = 0;
-  for (UIWindow* child : this->m_children) {
-    if (child->GetWindowType() == 2) {
+  const std::list<UIWindow*>::iterator end = this->m_children.end();
+  for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != end; ++it) {
+    if ((*it)->GetWindowType() == 2) {
       ++count;
     }
   }
@@ -2604,12 +2605,12 @@ int UIWindow::RecordEditTexts() {
     return offset;
   }
 
-  for (UIWindow*& child : this->m_children) {
-    if (child->GetWindowType() != 2) {
+  for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != end; ++it) {
+    if ((*it)->GetWindowType() != 2) {
       continue;
     }
 
-    UIEditCtrl* edit = static_cast<UIEditCtrl*>(child);
+    UIEditCtrl* edit = static_cast<UIEditCtrl*>(*it);
     const int length = edit->Length();
     std::memcpy(reinterpret_cast<unsigned char*>(&record) + offset, &length, sizeof(length));
     offset += 4;
