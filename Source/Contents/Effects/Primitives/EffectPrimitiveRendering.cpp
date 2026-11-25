@@ -4940,13 +4940,14 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
       continue;
     }
 
+    const float rx = scale * slot.distance;
+
     if (slot.flag1[4] == 1) {
       red = 255;
       green = 20;
       blue = 20;
     }
 
-    const float rx = scale * slot.distance;
     const float firstAngle = slot.height[3];
     const int angle0 = static_cast<int>(firstAngle);
     slot.vecBPre.x = g_cosTable[angle0] * g_effectIconRadius;
