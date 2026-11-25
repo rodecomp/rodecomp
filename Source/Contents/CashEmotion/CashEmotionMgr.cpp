@@ -961,14 +961,14 @@ int CCashEmotionMgr::RegisterFileName(
   std::transform(lowered.begin(), lowered.end(), lowered.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
   auto found = ids.find(name);
-  if (found != ids.end()) {
+  if (ids.end() != found) {
     return found->second;
   }
 
   if (add == true) {
     std::function<int()> generator = nextId;
     int id = generator();
-    if (names.find(id) == names.end()) {
+    if (names.end() == names.find(id)) {
       auto inserted = ids.emplace(lowered, id);
       if (inserted.second == true) {
         names.emplace(id, inserted.first->first.c_str());
