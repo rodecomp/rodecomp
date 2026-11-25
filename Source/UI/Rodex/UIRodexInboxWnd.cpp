@@ -1086,8 +1086,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
 
-      const std::string text = FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), type.c_str());
-      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), type.c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         this->RequestAllMailActions();
       }
       break;
@@ -1158,8 +1157,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
 
-      const std::string text = FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str());
-      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         if (this->searchActive == 1) {
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
@@ -1197,8 +1195,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (g_rodexMailStore->inboxType == MAIL_INBOX_NORMAL) {
         RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
         if (mail != g_rodexMailStore->m_mails0.end() && (mail->second.type & 8) == 0 && mail->second.sender.size() != 0) {
-          const std::pair<bool, std::string> title = g_navigationLinkParser->RemoveLineBreakTag(mail->second.title);
-          if (title.first != true) {
+          if (g_navigationLinkParser->RemoveLineBreakTag(mail->second.title).first != true) {
             mode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(mail->second.sender.c_str()), 0, 0, 0);
           }
         }
