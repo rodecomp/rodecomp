@@ -117,7 +117,7 @@ static __forceinline void UpdateFlowerSegmentVertices(CFlowerCastingEffect* effe
       radius *= g_sinTable[particle->elapsedFrames];
     }
   }
-  radius = (std::max)(radius, 0.0f);
+  radius = framesFirst ? (std::max)(0.0f, radius) : (std::max)(radius, 0.0f);
 
   const float baseAngle = particle->angle;
   const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * segment + baseAngle) % 360;
