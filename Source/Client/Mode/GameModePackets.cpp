@@ -17164,9 +17164,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
-  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
-  entry.direction = packet->posDir[2] & 0x0F;
+  DecodePosDir(packet->posDir, &entry.cellX, &entry.cellY, &entry.direction);
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
