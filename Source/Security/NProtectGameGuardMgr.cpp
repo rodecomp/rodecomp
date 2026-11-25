@@ -70,6 +70,43 @@ void CNProtectGameGuardMgr::ProcessAuth(int first, int second) {
 // OFFSET: 0x0076C6E0
 // FUNCTION: fn_08207
 void CNProtectGameGuardMgr::Stop() {
+  NSyncObject lock(&this->m_lock);
+  if (this->m_tokens.empty()) {
+    return;
+  }
+
+  const CNProtectGameGuardMgr::lcCSAuthToken& token = this->m_tokens.front();
+  unsigned int counter;
+  {
+    NSyncObject managerLock(&g_nProtectGameGuardMgr->m_lock);
+    counter = g_nProtectGameGuardMgr->unknown_0008;
+  }
+
+  if (token.id == static_cast<int>(counter) && !token.bytes.empty()) {
+    struct CsAuthPacket {
+      /* 0000 */ std::uint16_t id;
+      /* 0002 */ std::uint16_t length;
+      /* 0004 */ unsigned char data[1];
+    };
+
+    const std::size_t byteCount = token.bytes.size();
+    const std::size_t allocationSize = byteCount + 12;
+    unsigned char* const allocation = static_cast<unsigned char*>(
+      allocationSize <= 0x400 ? _alloca(allocationSize) : malloc(allocationSize));
+    if (allocation != nullptr) {
+      CsAuthPacket* const packet = reinterpret_cast<CsAuthPacket*>(allocation + 8);
+      const std::uint16_t length = static_cast<std::uint16_t>(byteCount + 4);
+      packet->id = static_cast<std::uint16_t>(ID_CZ_NPROTECTGAMEGUARDCSAUTH);
+      packet->length = length;
+      memcpy_s(packet->data, byteCount, token.bytes.data(), byteCount);
+      GetRagConnection().Send(static_cast<int>(length), packet);
+      if (allocationSize > 0x400) {
+        free(allocation);
+      }
+    }
+  }
+
+  this->m_tokens.erase(this->m_tokens.begin());
 }
 
 // OFFSET: 0x0076C930
