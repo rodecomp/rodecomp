@@ -123,22 +123,25 @@ void CSteal::OnProcess() {
     const float scaleStep = params[5];
     const vector3d origin = this->positionVector;
     const int index = particle->columnIndex;
-    const float velocityX = particle->velocity.x;
-    const float velocityY = particle->velocity.y;
-    const float velocityZ = particle->velocity.z;
+    float x = particle->velocity.x;
+    float y = particle->velocity.y;
+    float z = particle->velocity.z;
     float lift = params[3] + params[4];
     const float distance = std::max(params[0] + particle->frameDelay, 0.0f);
 
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(params[1])));
 
-    this->offsets[index].x = 0.0f * rotation.values[3] + 0.0f * rotation.values[0] + distance * rotation.values[6] + rotation.values[9] + this->offsets[index].x;
-    this->offsets[index].y = lift + this->offsets[index].y;
-    this->offsets[index].z = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + this->offsets[index].z;
+    EffectPoint& offset = this->offsets[index];
+    const float moveX = 0.0f * rotation.values[3] + 0.0f * rotation.values[0] + distance * rotation.values[6] + rotation.values[9];
+    const float moveZ = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11];
+    this->offsets[index].y += lift;
+    offset.z += moveZ;
+    offset.x += moveX;
 
-    const float x = velocityX + origin.x + this->offsets[index].x;
-    const float y = velocityY + origin.y + this->offsets[index].y;
-    const float z = velocityZ + origin.z + this->offsets[index].z;
+    x = x + origin.x + offset.x;
+    y = y + origin.y + offset.y;
+    z = z + origin.z + offset.z;
     const float newScale = scaleStep + scale;
 
     if (lift > 0.0f) {
