@@ -77,7 +77,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
       std::string name("");
 
       if (!this->Name(encoded, name)) {
-        position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
+        position = static_cast<unsigned>(encoded.size()) + position + static_cast<unsigned>(g_itemLinkTagEnd.size()) + static_cast<unsigned>(g_itemLinkTagBegin.size());
         remaining = remaining.substr(position);
         return true;
       }
