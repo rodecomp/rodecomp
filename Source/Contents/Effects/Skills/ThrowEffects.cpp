@@ -49,10 +49,7 @@ void CThrowItemEffect::InitEmptyBottleParticle(CParticle* particle) {
   particle->angle = 0;
   particle->speedParameter = particle->animationParameter / 25.0f;
   particle->alpha = 255;
-  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
-  particle->offsetX = offset.x;
-  particle->offsetY = offset.y;
-  particle->offsetZ = offset.z;
+  particle->offset = vector3d{this->position[0], this->position[1] - 8.0f, this->position[2]};
   particle->destinationBlend = 6;
 }
 
@@ -78,13 +75,10 @@ void CThrowItemEffect::InitStoneParticle(CParticle* particle) {
   particle->SetTexture("유저인터페이스\\item\\돌.bmp");
   particle->scale = 1.0f;
   particle->SetColor(255, 255, 255);
-  particle->angle = 0;
+  particle->angle = 0.0f;
   particle->speedParameter = 2.0f;
   particle->alpha = 255;
-  const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
-  particle->offsetX = offset.x;
-  particle->offsetY = offset.y;
-  particle->offsetZ = offset.z;
+  particle->offset = vector3d{this->position[0], this->position[1] - 8.0f, this->position[2]};
   particle->destinationBlend = 6;
 }
 
@@ -341,10 +335,7 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
     particle->angle = 330.0f;
     particle->speedParameter = 1.5f;
     particle->alpha = 255;
-    const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
-    particle->offsetX = offset.x;
-    particle->offsetZ = offset.z;
-    particle->offsetY = offset.y;
+    particle->offset = vector3d{this->position[0], this->position[1] - 8.0f, this->position[2]};
     particle->destinationBlend = 6;
     if (this->sourceActor == 0) {
       const vector3d source = {this->position[0] - 8.0f, this->position[1], this->position[2]};
@@ -354,7 +345,7 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
     }
     break;
   }
-  case EF_THROW_MULTIPLE_COIN:
+  case EF_THROW_MULTIPLE_COIN: {
     this->effectLifetime = 200;
     this->arcHeight = 10.0f;
     particle->SetTexture("effect\\coin_a.bmp");
@@ -363,11 +354,11 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
     particle->angle = 330.0f;
     particle->speedParameter = 2.0f;
     particle->alpha = 255;
+    const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
     particle->destinationBlend = 6;
-    particle->offsetZ = this->position[2];
-    particle->offsetY = this->position[1] - 8.0f;
-    particle->offsetX = this->position[0];
+    particle->offset = offset;
     break;
+  }
   case EF_KAIHOU:
     if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
       if (owner->charmType == CHARM_TYPE_WATER) {
@@ -386,9 +377,7 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
       particle->angle = 330.0f;
       particle->speedParameter = 1.5f;
       particle->alpha = 255;
-      particle->offsetZ = this->position[2];
-      particle->offsetY = this->position[1] - 15.0f;
-      particle->offsetX = this->position[0];
+      particle->offset = vector3d{this->position[0], this->position[1] - 15.0f, this->position[2]};
     }
     break;
   }
