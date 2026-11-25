@@ -219,7 +219,8 @@ void UITextViewer::Paint() {
   const int limit = this->geometry.height / divisor + first;
   const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
 
-  for (int index = 0; index < first; ++index) {
+  int index;
+  for (index = 0; index < first; ++index) {
     const char* current = this->lines[index].c_str();
     const char* last = current + this->lines[index].size();
 
@@ -228,26 +229,17 @@ void UITextViewer::Paint() {
     }
   }
 
-  if (first >= end) {
-    return;
-  }
-
   if (this->plainTextMode == 0) {
-    for (int index = first; index < end; ++index) {
-      const auto& line = this->lines[index];
-      const unsigned bytes = static_cast<unsigned>(line.size());
-
+    for (index = first; index < end; ++index) {
       if (this->outline != 0) {
-        this->DrawOutlinedColoredText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
+        this->DrawOutlinedColoredText(3, (index - first) * this->lineHeight + 4, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, this->backgroundColor, 0, 12, this->bold);
       } else {
-        this->DrawColoredText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, color, 0, 12, false);
+        this->DrawColoredText(3, (index - first) * this->lineHeight + 4, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
       }
     }
   } else {
-    for (int index = first; index < end; ++index) {
-      const auto& line = this->lines[index];
-      const unsigned bytes = static_cast<unsigned>(line.size());
-      this->DrawOutlinedText(3, (index - first) * this->lineHeight + 4, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
+    for (index = first; index < end; ++index) {
+      this->DrawOutlinedText(3, (index - first) * this->lineHeight + 4, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), 0, 0xFFFFFF, 0, 12, 0, 0);
     }
   }
 }
