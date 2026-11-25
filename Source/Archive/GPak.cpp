@@ -164,6 +164,18 @@ void GPakEx::CipherModeBase::SetKey(std::span<const std::byte> key) {
 }
 
 // OFFSET: 0x00643600
+// FUNCTION: fn_46736
+void GPakEx::XorBuffers(std::uint8_t* buffer, const std::uint8_t* mask, unsigned int length) {
+  while (length >= 16) {
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(buffer), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer)), _mm_loadu_si128(reinterpret_cast<const __m128i*>(mask))));
+    buffer += 16;
+    mask += 16;
+    length -= 16;
+  }
+  for (unsigned int i = 0; i < length; ++i) {
+    buffer[i] ^= mask[i];
+  }
+}
 
 // OFFSET: 0x00643710
 // FUNCTION: fn_46737
