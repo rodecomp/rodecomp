@@ -1559,19 +1559,19 @@ bool PakHeaderDecryptor::Decrypt(std::shared_ptr<AES>& cipher, const PakObfuscat
   alignas(16) std::uint8_t iv[16] = {};
 
   switch (ivSource) {
-  case 0: {
+  case PAK_HEADER_IV_KEY: {
     PakKeyMaterial material = key.Unmask();
     std::memcpy(iv, material.iv, sizeof(iv));
     SecureZeroMemory(&material, sizeof(material));
     break;
   }
-  case 1: {
+  case PAK_HEADER_IV_NAME_HASH: {
     XXH128_hash_t hash = XXH3_128bits(this->source.name.data(), this->source.name.size());
     std::memcpy(iv, &hash, sizeof(iv));
     SecureZeroMemory(&hash, sizeof(hash));
     break;
   }
-  case 2: {
+  case PAK_HEADER_IV_CHECKSUM_HASH: {
     XXH128_hash_t hash = XXH3_128bits(&this->source.header->checksum, sizeof(this->source.header->checksum));
     std::memcpy(iv, &hash, sizeof(iv));
     SecureZeroMemory(&hash, sizeof(hash));
@@ -1722,20 +1722,20 @@ bool PakAuxiliary::DecodeHeader(std::span<const std::uint8_t> name, std::uint8_t
   const PakHeaderDecryptor decryptor = {source, input, output};
 
   switch (header->headerCipher) {
-  case 0:
+  case PAK_HEADER_CIPHER_NONE:
     break;
-  case 1:
-    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, 0)) {
+  case PAK_HEADER_CIPHER_AES_CBC_KEY_IV:
+    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, PAK_HEADER_IV_KEY)) {
       return false;
     }
     break;
-  case 2:
-    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, 1)) {
+  case PAK_HEADER_CIPHER_AES_CBC_NAME_IV:
+    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, PAK_HEADER_IV_NAME_HASH)) {
       return false;
     }
     break;
-  case 15:
-    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, 2)) {
+  case PAK_HEADER_CIPHER_AES_CBC_CHECKSUM_IV:
+    if (!decryptor.Decrypt(this->m_headerCipher, this->m_headerKey, AES::CBC, PAK_HEADER_IV_CHECKSUM_HASH)) {
       return false;
     }
     break;

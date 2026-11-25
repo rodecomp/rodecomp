@@ -2928,7 +2928,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
     }
 
     switch (value & 3) {
-    case 0:
+    case TETRA_BALL_FIRE:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2938,7 +2938,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
         ball->AddBall(0x4EE, index);
       }
       break;
-    case 1:
+    case TETRA_BALL_WIND:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2948,7 +2948,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
         ball->AddBall(0x4F0, index);
       }
       break;
-    case 2:
+    case TETRA_BALL_WATER:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2958,7 +2958,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
         ball->AddBall(0x4EF, index);
       }
       break;
-    case 3:
+    case TETRA_BALL_EARTH:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {

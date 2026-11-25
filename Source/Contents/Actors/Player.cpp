@@ -3589,34 +3589,34 @@ void CPlayer::ReapplySkillEffects() {
         }
         if (ball) {
           switch (value) {
-          case 0:
+          case TETRA_BALL_FIRE:
             ball->AddBall(0x4EE, type - 0x16B);
             break;
-          case 1:
+          case TETRA_BALL_WIND:
             ball->AddBall(0x4F0, type - 0x16B);
             break;
-          case 2:
+          case TETRA_BALL_WATER:
             ball->AddBall(0x4EF, type - 0x16B);
             break;
-          case 3:
+          case TETRA_BALL_EARTH:
             ball->AddBall(0x4F1, type - 0x16B);
             break;
           }
         } else {
           switch (value) {
-          case 0:
+          case TETRA_BALL_FIRE:
             ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
-          case 1:
+          case TETRA_BALL_WIND:
             ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
-          case 2:
+          case TETRA_BALL_WATER:
             ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
-          case 3:
+          case TETRA_BALL_EARTH:
             ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;

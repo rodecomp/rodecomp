@@ -52,25 +52,25 @@ void CMode::DrawCursor() {
 
   unsigned divisor;
   switch (this->cursorAction) {
-  case 2:
+  case CURSOR_ACTION_BUTTON:
     divisor = 4;
     break;
-  case 5:
+  case CURSOR_ACTION_ATTACK:
     divisor = 20;
     break;
-  case 7:
+  case CURSOR_ACTION_WARP:
     divisor = 10;
     break;
-  case 9:
+  case CURSOR_ACTION_PICKUP:
     divisor = 1;
     break;
-  case 10:
+  case CURSOR_ACTION_SKILL:
     divisor = 6;
     break;
-  case 11:
+  case CURSOR_ACTION_SKILL_TARGET:
     divisor = 3;
     break;
-  case 13:
+  case CURSOR_ACTION_MOVE_BLOCKED:
     divisor = 2;
     break;
   default:
@@ -79,8 +79,8 @@ void CMode::DrawCursor() {
   }
 
   switch (this->cursorAction) {
-  case 2:
-  case 9:
+  case CURSOR_ACTION_BUTTON:
+  case CURSOR_ACTION_PICKUP:
     if (g_mouse.buttons[0] != 0) {
       const unsigned frame = ticks / divisor;
       this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
@@ -92,7 +92,7 @@ void CMode::DrawCursor() {
       this->cursorActionFrame = 0;
     }
     break;
-  case 1: {
+  case CURSOR_ACTION_INTERACT: {
     const unsigned frame = ticks / divisor;
     this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
     if (frame / action->FrameCount(this->cursorAction) >= 1) {

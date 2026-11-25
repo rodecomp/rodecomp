@@ -151,7 +151,7 @@ bool CSoundMgr::Initialize() {
 
   SoundConfiguration& configuration = g_soundConfiguration;
 
-  if (configuration.mode == 0) {
+  if (configuration.mode == SOUND_MODE_DISABLED) {
     return true;
   }
 
@@ -175,16 +175,16 @@ bool CSoundMgr::Initialize() {
   std::atexit(&ShutdownMilesAtExit);
   AIL_startup();
 
-  this->channels = configuration.mode == 1 ? 1 : 2;
+  this->channels = configuration.mode == SOUND_MODE_2D ? 1 : 2;
 
   switch (configuration.digitalRateType) {
-  case 0:
+  case SOUND_RATE_22050:
     this->rate = 22050;
     break;
-  case 1:
+  case SOUND_RATE_11025:
     this->rate = 11025;
     break;
-  case 2:
+  case SOUND_RATE_8000:
     this->rate = 8000;
     break;
   default:
@@ -213,7 +213,7 @@ bool CSoundMgr::Initialize() {
 
   this->StopStreams();
 
-  if (configuration.mode == 1) {
+  if (configuration.mode == SOUND_MODE_2D) {
     for (int i = 0; i < this->sampleCount; ++i) {
       this->samples[i] = AIL_allocate_sample_handle(this->driver);
 
@@ -225,7 +225,7 @@ bool CSoundMgr::Initialize() {
     return true;
   }
 
-  if (configuration.mode != 2) {
+  if (configuration.mode != SOUND_MODE_3D) {
     return true;
   }
 

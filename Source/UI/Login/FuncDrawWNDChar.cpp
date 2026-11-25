@@ -90,10 +90,10 @@ void FuncDrawWNDChar::Draw(bool option) {
       offset.x += body.x;
     } else {
       switch (layer) {
-        case 3:
-        case 4:
-        case 5:
-        case 6: {
+        case WNDCHAR_LAYER_HEAD_MID:
+        case WNDCHAR_LAYER_HEAD_TOP:
+        case WNDCHAR_LAYER_HEAD_LOW:
+        case WNDCHAR_LAYER_HELM_ROBE: {
           if (!this->hideHeadLayer && this->Resource(2).second) {
             this->BodyAnchorOffset(&this->Resource(2).second->Frame(this->m_action, this->m_motion), option);
           }
@@ -198,32 +198,32 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
   for (int layer = 0; layer < 8; ++layer) {
     int priority;
     switch (layer) {
-      case 0:
+      case WNDCHAR_LAYER_ROBE_BEHIND:
         if (this->m_robe <= 0 || this->m_drawOnTop == true) {
           break;
         }
         [[fallthrough]];
-      case 1:
+      case WNDCHAR_LAYER_BODY:
         order[layer] = layer;
         break;
-      case 2:
+      case WNDCHAR_LAYER_HEAD:
         order[3] = 2;
         break;
-      case 6:
+      case WNDCHAR_LAYER_HELM_ROBE:
         if (!this->m_helmRobe) {
           break;
         }
         [[fallthrough]];
-      case 3:
-      case 4:
-      case 5:
+      case WNDCHAR_LAYER_HEAD_MID:
+      case WNDCHAR_LAYER_HEAD_TOP:
+      case WNDCHAR_LAYER_HEAD_LOW:
         if (this->m_layers[layer] > 0) {
           priority = -1;
           g_session.m_hotkeyScript->Call("GetLayerPriority", "ddd>d", 0, defaultPriorities[layer], this->m_layers[layer], &priority);
           order[priority] = layer;
         }
         break;
-      case 7:
+      case WNDCHAR_LAYER_ROBE_FRONT:
         if (this->m_robe > 0 && this->m_drawOnTop) {
           if (g_session.IsTopLayerRobe(this->m_robe) == true) {
             order[400] = layer;
@@ -390,14 +390,14 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
     std::string actName;
     (void)aligned;
     switch (layer) {
-      case 1: {
+      case WNDCHAR_LAYER_BODY: {
         int job = this->m_flags == 1 ? g_session.GetRidingJob(this->m_job) : this->m_job;
         sprName = static_cast<const std::string&>(g_session.GetBodySprName(job, this->m_sex, this->m_body, this->m_shield));
         actName = static_cast<const std::string&>(g_session.GetBodyActionResourceName(job, this->m_sex, this->m_body, this->m_shield));
         this->bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->m_sex, this->m_bodyStyle, this->m_body, this->m_shield, 0));
         break;
       }
-      case 2: {
+      case WNDCHAR_LAYER_HEAD: {
         int head = this->m_head;
         sprName = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
         actName = static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
@@ -405,15 +405,15 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
         this->headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(this->m_head, this->m_job, this->m_sex, this->m_headPalette));
         break;
       }
-      case 3:
-      case 4:
-      case 5:
-      case 6:
+      case WNDCHAR_LAYER_HEAD_MID:
+      case WNDCHAR_LAYER_HEAD_TOP:
+      case WNDCHAR_LAYER_HEAD_LOW:
+      case WNDCHAR_LAYER_HELM_ROBE:
         sprName = static_cast<const std::string&>(g_session.GetAccessorySprName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]));
         actName = static_cast<const std::string&>(g_session.GetAccessoryActName(this->m_job, this->m_sex, this->m_head, this->m_layers[layer]));
         break;
-      case 0:
-      case 7:
+      case WNDCHAR_LAYER_ROBE_BEHIND:
+      case WNDCHAR_LAYER_ROBE_FRONT:
         if (this->m_shield == 0) {
           sprName = g_session.GetRobeSprName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);
           actName = g_session.GetRobeActName(this->m_job, this->m_hairColor, this->m_sex, this->m_robe, this->m_flags, this->m_body);

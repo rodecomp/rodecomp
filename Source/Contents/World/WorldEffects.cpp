@@ -36,7 +36,7 @@ void CWorld::LoadMapEffects() {
 
   g_effectMgr->LoadMapEffectScript(true);
 
-  if (g_soundConfiguration.mode != 0) {
+  if (g_soundConfiguration.mode != SOUND_MODE_DISABLED) {
     for (auto it = resource->sounds.begin(); it != resource->sounds.end(); ++it) {
       WorldSoundRecord* record = *it;
       CSoundMaker* sound = new CSoundMaker;

@@ -283,16 +283,16 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
     value["desc"] = ToUtf8(hotkey.description, g_textCodePage);
 
     switch (hotkey.tab) {
-    case 0:
+    case HOTKEY_TAB_SKILL_BAR_1:
       skillBar1.append(value);
       break;
-    case 3:
+    case HOTKEY_TAB_SKILL_BAR_2:
       skillBar2.append(value);
       break;
-    case 1:
+    case HOTKEY_TAB_INTERFACE:
       interfaceTab.append(value);
       break;
-    case 2:
+    case HOTKEY_TAB_EMOTION:
       emotionTab.append(value);
       break;
     }

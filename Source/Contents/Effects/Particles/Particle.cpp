@@ -378,16 +378,16 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
       transform.rz += key->transform.rz;
 
       switch (key->transform.anitype) {
-      case 1:
+      case EZ_ANIMATION_FRAME_OFFSET:
         transform.aniframe += key->transform.aniframe;
         break;
-      case 2:
+      case EZ_ANIMATION_FORWARD_CLAMP:
         transform.aniframe += key->transform.anidelta;
         if (transform.aniframe >= static_cast<float>(clip->textureCount)) {
           transform.aniframe = static_cast<float>(clip->textureCount) - 1.0f;
         }
         break;
-      case 3: {
+      case EZ_ANIMATION_FORWARD_LOOP: {
         const float frame = key->transform.anidelta + transform.aniframe;
         transform.aniframe = frame;
         const float count = static_cast<float>(clip->textureCount);
@@ -396,7 +396,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
         }
         break;
       }
-      case 4: {
+      case EZ_ANIMATION_REVERSE_LOOP: {
         float frame = transform.aniframe - key->transform.anidelta;
         transform.aniframe = frame;
         if (frame < 0.0f) {
@@ -409,7 +409,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
         }
         break;
       }
-      case 5: {
+      case EZ_ANIMATION_PING_PONG: {
         const int last = clip->textureCount - 1;
         const int frame = static_cast<int>(static_cast<float>(elapsed) * key->transform.anidelta + transform.aniframe);
         const int bounce = frame / last;

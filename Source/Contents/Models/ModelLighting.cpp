@@ -143,7 +143,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
   const struct matrix rotation = combined;
 
   switch (shade) {
-  case 2: {
+  case MODEL_SHADE_SMOOTH: {
     const ModelFace* faces = this->mesh->faces;
     const ModelTextureVertex* textureVertices = this->mesh->textureVertices;
     const ShadeVector* normals = this->mesh->vertexNormals;
@@ -158,7 +158,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     }
     break;
   }
-  case 1: {
+  case MODEL_SHADE_FLAT: {
     const ModelFace* faces = this->mesh->faces;
     const ModelTextureVertex* textureVertices = this->mesh->textureVertices;
     const ShadeVector* normals = this->mesh->faceNormals;
@@ -174,7 +174,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     }
     break;
   }
-  case 0: {
+  case MODEL_SHADE_UNLIT: {
     ModelColor* color = g_modelFaceColors;
 
     for (int index = 0; index < this->mesh->faceCount; ++index) {

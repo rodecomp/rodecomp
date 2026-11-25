@@ -219,16 +219,16 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 
   for (auto& entry : source->m_values) {
     switch (this->m_definition->mode) {
-    case 0:
+    case EQUIP_PROPERTY_SUM:
       this->m_values[entry.first] += entry.second;
       break;
-    case 1:
+    case EQUIP_PROPERTY_ONE:
       ++this->m_values[entry.first];
       break;
-    case 2:
+    case EQUIP_PROPERTY_MAX:
       this->m_values[entry.first] = std::max(this->m_values[entry.first], entry.second);
       break;
-    case 3:
+    case EQUIP_PROPERTY_SUM_INDEX_AND_VALUE:
       if (this->m_values.size() == 1) {
         int index = this->m_values.begin()->first;
         auto node = this->m_values.extract(index);
@@ -237,7 +237,7 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
         this->m_values.begin()->second += entry.second;
       }
       break;
-    case 4:
+    case EQUIP_PROPERTY_NONNEGATIVE_MAX:
       this->m_values[entry.first] = entry.second < 0 ? 0 : std::max(this->m_values[entry.first], entry.second);
       break;
     }
@@ -621,7 +621,7 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
 
   const int sign = (definition->functions[0] == op) * 2 - 1;
   if (value == 0x7FFFFFFF) {
-    if (index == -1 && definition->mode == 1 && definition->functionMode == 0) {
+    if (index == -1 && definition->mode == EQUIP_PROPERTY_ONE && definition->functionMode == 0) {
       CEquipmentProperties property(definition);
       this->m_properties += &property;
     }
@@ -629,7 +629,7 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
   }
 
   if (index == -1) {
-    if (definition->mode == 1) {
+    if (definition->mode == EQUIP_PROPERTY_ONE) {
       CEquipmentProperties property(definition);
       this->m_properties += &property;
       return;
@@ -1902,92 +1902,92 @@ int GetEquipLocationIndex(const int& mask) {
   int index = 0;
   switch (mask) {
   case EQP_HEAD_LOW:
-    index = 1;
+    index = EQUIP_LOCATION_HEAD_LOW;
     break;
   case EQP_ARMOR:
-    index = 2;
+    index = EQUIP_LOCATION_ARMOR;
     break;
   case EQP_HAND_L:
-    index = 3;
+    index = EQUIP_LOCATION_HAND_L;
     break;
   case EQP_HAND_R:
   case (EQP_HAND_R | EQP_HAND_L):
-    index = 4;
+    index = EQUIP_LOCATION_HAND_R;
     break;
   case EQP_GARMENT:
-    index = 5;
+    index = EQUIP_LOCATION_GARMENT;
     break;
   case EQP_ACC_R:
-    index = 7;
+    index = EQUIP_LOCATION_ACC_R;
     break;
   case EQP_SHOES:
-    index = 6;
+    index = EQUIP_LOCATION_SHOES;
     break;
   case (EQP_HEAD_TOP | EQP_HEAD_LOW):
-    index = 1;
+    index = EQUIP_LOCATION_HEAD_LOW;
     break;
   case EQP_HEAD_TOP:
-    index = 10;
+    index = EQUIP_LOCATION_HEAD_TOP;
     break;
   case EQP_ACC_L:
-    index = 8;
+    index = EQUIP_LOCATION_ACC_L;
     break;
   case EQP_HEAD_MID:
-    index = 11;
+    index = EQUIP_LOCATION_HEAD_MID;
     break;
   case (EQP_HEAD_MID | EQP_HEAD_LOW):
-    index = 1;
+    index = EQUIP_LOCATION_HEAD_LOW;
     break;
   case (EQP_HEAD_TOP | EQP_HEAD_MID):
-    index = 10;
+    index = EQUIP_LOCATION_HEAD_TOP;
     break;
   case (EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW):
-    index = 1;
+    index = EQUIP_LOCATION_HEAD_LOW;
     break;
   case EQP_COSTUME_HEAD_TOP:
-    index = 20;
+    index = EQUIP_LOCATION_COSTUME_HEAD_TOP;
     break;
   case EQP_COSTUME_HEAD_LOW:
-    index = 22;
+    index = EQUIP_LOCATION_COSTUME_HEAD_LOW;
     break;
   case EQP_COSTUME_HEAD_MID:
-    index = 21;
+    index = EQUIP_LOCATION_COSTUME_HEAD_MID;
     break;
   case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID):
-    index = 20;
+    index = EQUIP_LOCATION_COSTUME_HEAD_TOP;
     break;
   case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW):
-    index = 20;
+    index = EQUIP_LOCATION_COSTUME_HEAD_TOP;
     break;
   case (EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
-    index = 21;
+    index = EQUIP_LOCATION_COSTUME_HEAD_MID;
     break;
   case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
-    index = 20;
+    index = EQUIP_LOCATION_COSTUME_HEAD_TOP;
     break;
   case EQP_COSTUME_GARMENT:
-    index = 23;
+    index = EQUIP_LOCATION_COSTUME_GARMENT;
     break;
   case EQP_AMMO:
     index = 0;
     break;
   case EQP_SHADOW_SHIELD:
-    index = 32;
+    index = EQUIP_LOCATION_SHADOW_SHIELD;
     break;
   case EQP_SHADOW_WEAPON:
-    index = 31;
+    index = EQUIP_LOCATION_SHADOW_WEAPON;
     break;
   case EQP_SHADOW_ARMOR:
-    index = 30;
+    index = EQUIP_LOCATION_SHADOW_ARMOR;
     break;
   case EQP_SHADOW_SHOES:
-    index = 33;
+    index = EQUIP_LOCATION_SHADOW_SHOES;
     break;
   case EQP_SHADOW_ACC_L:
-    index = 35;
+    index = EQUIP_LOCATION_SHADOW_ACC_L;
     break;
   case EQP_SHADOW_ACC_R:
-    index = 34;
+    index = EQUIP_LOCATION_SHADOW_ACC_R;
     break;
   }
   return index;
@@ -6315,8 +6315,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 definition->functionMode = value.first;
                 definition->mode = value.second;
                 if (!hasValue) {
-                  this->loadValid &= value.second == 1;
-                  if (definition->mode != 1) {
+                  this->loadValid &= value.second == EQUIP_PROPERTY_ONE;
+                  if (definition->mode != EQUIP_PROPERTY_ONE) {
                     ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'val' table must have 'ONE' type", categoryName, order), 0);
                   }
                   if (!this->loadValid) {
@@ -6533,7 +6533,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
       CEquipmentProperties2Dim* property = new CEquipmentProperties2Dim(definition);
       property->SetValue(option.parameter, option.value * multiplier, -1);
       this->m_children.push_back(property);
-    } else if (definition->mode == 1) {
+    } else if (definition->mode == EQUIP_PROPERTY_ONE) {
       this->m_children.push_back(new CEquipmentProperties(definition));
     } else {
       CEquipmentProperties1Dim* property = new CEquipmentProperties1Dim(definition);

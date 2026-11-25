@@ -3051,10 +3051,10 @@ int UICashEmotionMiniWnd::SendMsg(
 
   case UM_COMMAND:
     switch (argument1) {
-    case 1:
+    case CASH_EMOTION_MINI_PREVIOUS:
       this->Previous();
       break;
-    case 2:
+    case CASH_EMOTION_MINI_NEXT:
       this->Next();
       break;
     }

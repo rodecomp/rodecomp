@@ -79,7 +79,7 @@ void CSignBoardMgr::Initialize() {
     LowercaseText(mapName);
     if (entryMap == mapName) {
       switch (it->type) {
-      case 1: {
+      case SIGNBOARD_BITMAP: {
         C3DCooRendering* object = new C3DCooRendering();
         object->type = it->type;
         object->Create();
@@ -98,7 +98,7 @@ void CSignBoardMgr::Initialize() {
         g_modeMgr.GetGameMode()->scene->objects.push_back(object);
         break;
       }
-      case 2: {
+      case SIGNBOARD_ICON: {
         CIcon* icon = new CIcon();
         vector3d position = {0.0f, 0.0f, 0.0f};
         g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
@@ -109,7 +109,7 @@ void CSignBoardMgr::Initialize() {
         g_modeMgr.GetGameMode()->scene->objects.push_back(icon);
         break;
       }
-      case 3: {
+      case SIGNBOARD_TEXT: {
         C3DCooRendering* object = new C3DCooRendering();
         object->type = it->type;
         object->Create();

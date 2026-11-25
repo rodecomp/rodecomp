@@ -860,7 +860,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
     this->actorMenuIds.push_back(0x14);
     menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OPEN_1ON1_WINDOW)), 0, 0, 0);
-    if (!IsAdminAccount(pick->accountId) && !g_windowMgr.IsFriend(name.c_str()) && g_serviceMode != 3) {
+    if (!IsAdminAccount(pick->accountId) && !g_windowMgr.IsFriend(name.c_str()) && g_serviceMode != ServerInstantEvent) {
       this->actorMenuIds.push_back(10);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 0, 0, 0);
     }
@@ -881,7 +881,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
       this->actorMenuIds.push_back(0x2C);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REMOVE_EQUIPEDITEM)), 0, 0, 0);
-      if (g_serviceMode != 3) {
+      if (g_serviceMode != ServerInstantEvent) {
         this->actorMenuIds.push_back(0x17);
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GIVE_PLUS_MANNER_POINT)), 0, 0, 0);
         this->actorMenuIds.push_back(0x18);

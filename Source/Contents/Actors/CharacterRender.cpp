@@ -164,22 +164,22 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     const int order = GetSpriteLayerOrder(imf, index, action - action % 8, action, this->frameIndex);
     int type = order;
     if (!bodyDrawn) {
-      bodyDrawn = order == 1;
+      bodyDrawn = order == SPRITE_LAYER_HEAD;
     }
-    if (bodyDrawn == true && type == 0) {
+    if (bodyDrawn == true && type == SPRITE_LAYER_BODY) {
       ++swapCount;
-      type = 2;
+      type = SPRITE_LAYER_HEAD_LOW;
     }
-    if (swapCount == 1 && order == 2) {
-      type = 0;
+    if (swapCount == 1 && order == SPRITE_LAYER_HEAD_LOW) {
+      type = SPRITE_LAYER_BODY;
       swapCount = 2;
-    } else if (type == 2) {
-      type = 4;
-    } else if (type == 4) {
-      type = 2;
+    } else if (type == SPRITE_LAYER_HEAD_LOW) {
+      type = SPRITE_LAYER_HEAD_MID;
+    } else if (type == SPRITE_LAYER_HEAD_MID) {
+      type = SPRITE_LAYER_HEAD_LOW;
     }
 
-    if (actions[type] == nullptr || sprites[type] == nullptr || type == 5 || type == 6 || type == 7) {
+    if (actions[type] == nullptr || sprites[type] == nullptr || type == SPRITE_LAYER_WEAPON || type == SPRITE_LAYER_WEAPON_EFFECT || type == SPRITE_LAYER_SHIELD) {
       continue;
     }
 
@@ -195,10 +195,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     const ActionFrame* frame = &actions[type]->Frame(this->actionIndex, this->frameIndex);
     switch (type) {
-      case 2:
-      case 3:
-      case 4:
-      case 8: {
+      case SPRITE_LAYER_HEAD_LOW:
+      case SPRITE_LAYER_HEAD_TOP:
+      case SPRITE_LAYER_HEAD_MID:
+      case SPRITE_LAYER_ROBE: {
         const int bodyCount = actions[1]->FrameCount(this->actionIndex);
         const int layerCount = actions[type]->FrameCount(this->actionIndex);
         if (bodyCount > 0 && layerCount > 0 && bodyCount < layerCount && layerCount % bodyCount == 0) {
@@ -234,7 +234,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     }
 
     switch (type) {
-      case 1: {
+      case SPRITE_LAYER_HEAD: {
         CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(
           this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job, this->appearance[0], this->bodyCostume, 0
         )));
@@ -254,10 +254,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         }
         break;
       }
-      case 2:
-      case 3:
-      case 4:
-      case 8: {
+      case SPRITE_LAYER_HEAD_LOW:
+      case SPRITE_LAYER_HEAD_TOP:
+      case SPRITE_LAYER_HEAD_MID:
+      case SPRITE_LAYER_ROBE: {
         int syncedIndex = 0;
         const ActionFrame* layerFrame = g_session.GetSyncedFrame(actions[1], actions[type], this->actionIndex, this->frameIndex, 0, &syncedIndex);
         if (layerFrame != nullptr && syncedIndex != this->frameIndex) {
@@ -310,10 +310,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     *boundsUpdated = 1;
     ++layer;
     switch (type) {
-      case 2:
-      case 3:
-      case 4:
-      case 8:
+      case SPRITE_LAYER_HEAD_LOW:
+      case SPRITE_LAYER_HEAD_TOP:
+      case SPRITE_LAYER_HEAD_MID:
+      case SPRITE_LAYER_ROBE:
         this->OffsetLayerDepth(type, quad, bottomDepth, topDepth);
         break;
       default:
@@ -321,13 +321,13 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         break;
     }
 
-    if (trackBounds == 1 && (type == 0 || type == 1)) {
+    if (trackBounds == 1 && (type == SPRITE_LAYER_BODY || type == SPRITE_LAYER_HEAD)) {
       this->renderBounds.Include(&quad.top);
     }
 
     const std::uint32_t* palette = sprites[type]->palette;
     switch (type) {
-      case 0:
+      case SPRITE_LAYER_BODY:
         if (this->appearance[2] > 0) {
           const std::string name = g_session.GetBodyPalName(this->job, this->appearance[0], this->appearance[2], this->bodyCostume, 0, 0);
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
@@ -335,7 +335,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
           palette = sprites[0]->palette;
         }
         break;
-      case 1:
+      case SPRITE_LAYER_HEAD:
         if (this->appearance[3] > 0) {
           const std::string name = g_session.GetHeadPalName(this->appearance[1], this->job, this->appearance[0], this->appearance[3]);
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
@@ -347,12 +347,12 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     int blend;
     switch (type) {
-      case 2:
-      case 3:
-      case 8:
+      case SPRITE_LAYER_HEAD_LOW:
+      case SPRITE_LAYER_HEAD_TOP:
+      case SPRITE_LAYER_ROBE:
         blend = 1;
         break;
-      case 4:
+      case SPRITE_LAYER_HEAD_MID:
         blend = this->middleHeadgear != ACCESSORY_BATTLEONLINE;
         break;
       default:
@@ -361,10 +361,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     }
 
     switch (type) {
-      case 2:
-      case 3:
-      case 4:
-      case 8: {
+      case SPRITE_LAYER_HEAD_LOW:
+      case SPRITE_LAYER_HEAD_TOP:
+      case SPRITE_LAYER_HEAD_MID:
+      case SPRITE_LAYER_ROBE: {
         const int direction = this->actionIndex % 8;
         if (this->layerViews[type] > 0) {
           int priority = -1;
@@ -388,7 +388,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       }
     }
 
-    if (type == 0) {
+    if (type == SPRITE_LAYER_BODY) {
       this->bodyBlend = blend;
       this->bodyCellX = cell->x;
       this->bodyCellY = cell->y;

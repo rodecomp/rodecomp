@@ -840,7 +840,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     }
 
     switch (drag->source) {
-    case 4: {
+    case DRAG_ITEM_PURCHASE_CART: {
       std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
       std::vector<ITEM_INFO>::iterator entry = std::find_if(cartItems.begin(), cartItems.end(), [drag](const ITEM_INFO& item) {
         const int itemId = atoi(item.itemId.c_str());
@@ -856,7 +856,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
       break;
     }
-    case 6: {
+    case DRAG_ITEM_STORAGE: {
       if (this->m_selectedTab == 9) {
         std::list<ITEM_INFO>::iterator product = std::find_if(this->m_items.begin(), this->m_items.end(), [drag](const ITEM_INFO& item) {
           return atoi(drag->name.c_str()) == atoi(item.itemId.c_str());

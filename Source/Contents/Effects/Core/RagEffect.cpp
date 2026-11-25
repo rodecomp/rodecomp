@@ -1522,14 +1522,14 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
       current->rz += key->transform.rz;
 
       switch (key->transform.anitype) {
-      case 0:
+      case EZ_ANIMATION_NONE:
         break;
 
-      case 1:
+      case EZ_ANIMATION_FRAME_OFFSET:
         current->aniframe += key->transform.aniframe;
         break;
 
-      case 2:
+      case EZ_ANIMATION_FORWARD_CLAMP:
         current->aniframe += key->transform.anidelta;
         if (current->aniframe >= static_cast<float>(clip->textureCount)) {
           current->aniframe = static_cast<float>(clip->textureCount) - 1;
@@ -1537,7 +1537,7 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
 
         break;
 
-      case 5: {
+      case EZ_ANIMATION_PING_PONG: {
         int frame = static_cast<int>(current->aniframe + key->transform.anidelta * static_cast<float>(elapsed));
         const int count = clip->textureCount - 1;
         const int turns = frame / count;
@@ -1551,7 +1551,7 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
         current->aniframe = static_cast<float>(frame);
       } break;
 
-      case 3: {
+      case EZ_ANIMATION_FORWARD_LOOP: {
         float frame = current->aniframe += key->transform.anidelta;
 
         if (current->aniframe >= static_cast<float>(clip->textureCount)) {
@@ -1562,7 +1562,7 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
         }
       } break;
 
-      case 4: {
+      case EZ_ANIMATION_REVERSE_LOOP: {
         float frame = current->aniframe -= key->transform.anidelta;
 
         if (frame < 0.0f) {

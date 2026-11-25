@@ -128,8 +128,8 @@ const char* CSession::GetDamageSpriteName() const {
 // FUNCTION: fn_21272
 const char* CGameMode::DragItemName() {
   switch (this->drag.source) {
-  case 2:
-  case 24: {
+  case DRAG_ITEM_EQUIP:
+  case DRAG_ITEM_EQUIP_COSTUME: {
     const ITEM_INFO item = g_session.GetEquippedItemAt(this->drag.slot);
     return item.identity[1] > 0 ? item.itemId.c_str() : nullptr;
   }

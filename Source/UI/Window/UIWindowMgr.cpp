@@ -5316,25 +5316,25 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       guildInfo->Reset();
     }
     switch (guildInfo->tab) {
-    case 0:
+    case GUILD_TAB_INFO:
       window = g_windowMgr.EnsureWindow(WID_GUILDINFOMANAGEWND);
       break;
-    case 1:
+    case GUILD_TAB_MEMBERS:
       window = g_windowMgr.EnsureWindow(WID_GUILDMEMBERMANAGEWND);
       break;
-    case 2:
+    case GUILD_TAB_POSITIONS:
       window = g_windowMgr.EnsureWindow(WID_GUILDPOSITIONMANAGEWND);
       break;
-    case 3:
+    case GUILD_TAB_SKILLS:
       window = g_windowMgr.EnsureWindow(WID_GUILDSKILLWND);
       break;
-    case 4:
+    case GUILD_TAB_BANISHED:
       window = g_windowMgr.EnsureWindow(WID_GUILDBANISHEDMEMBERWND);
       break;
-    case 5:
+    case GUILD_TAB_NOTICE:
       window = g_windowMgr.EnsureWindow(WID_GUILDNOTICEWND);
       break;
-    case 6:
+    case GUILD_TAB_TOTAL_INFO:
       window = g_windowMgr.EnsureWindow(WID_GUILDTOTALINFOWND);
       break;
     }

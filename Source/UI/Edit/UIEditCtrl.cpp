@@ -2304,14 +2304,14 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     case 8: {
       int owned = 0;
       switch (mode->drag.source) {
-      case 1: {
+      case DRAG_ITEM_INVENTORY: {
         const ITEM_INFO item = g_session.LookupClientItemByIdentity(mode->drag.id);
         if (item.itemIndex > 0) {
           owned = item.quantity;
         }
         break;
       }
-      case 6: {
+      case DRAG_ITEM_STORAGE: {
         const ITEM_INFO item = g_session.FindCartItem(mode->drag.id);
         if (item.itemIndex > 0) {
           owned = item.quantity;
@@ -6520,18 +6520,18 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     CSession* lists = &g_session;
 
     switch (drag.source) {
-    case 10:
+    case DRAG_VENDING_PURCHASE_LIST:
       if (g_session.GetMerchantPurchaseSavedItemNum(drag.id)) {
         lists->AddMerchantMyShopItem(item, 0, 1);
         lists->RemoveMerchantPurchaseSavedItem(item, 0);
       }
       break;
-    case 19:
+    case DRAG_BUYINGSTORE_PURCHASE_LIST:
       if (lists->AddMerchantMyShopItem(item, this->mode, 1)) {
         lists->RemoveMerchantPurchaseSavedItem(item, this->mode != 0);
       }
       break;
-    case 21:
+    case DRAG_BUYINGSTORE_ITEM_PURCHASE:
       lists->AddMerchantMyShopItem(item, this->mode, 1);
       lists->RemoveMerchantHopeToSellItem(item);
       if (g_windowMgr.buyingShopPurchaseWnd) {
@@ -10363,27 +10363,27 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = static_cast<CGameMode*>(mode)->drag;
     switch (drag.source) {
-    case 2:
+    case DRAG_ITEM_EQUIP:
       mode->SendMsg(MM_TAKE_OFF_EQUIP, drag.slot, 0, 0, 0);
       break;
-    case 6:
+    case DRAG_ITEM_STORAGE:
       mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_BODY, static_cast<int>(drag.id), drag.quantity, 0, 0);
       break;
-    case 9:
+    case DRAG_ITEM_MERCHANT_INVENTORY:
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_BODY, static_cast<int>(drag.id), drag.quantity, 0, 0);
       break;
-    case 15:
+    case DRAG_RODEX_COMPOSE:
       if (g_windowMgr.rodexComposeWnd) {
         g_windowMgr.rodexComposeWnd->SendMsg(nullptr, UM_DECITEM, static_cast<std::intptr_t>(drag.id), drag.quantity, 0, 0);
       }
       break;
-    case 17:
+    case DRAG_SWAP_EQUIP:
       mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, drag.slot, 0, 0, 0);
       break;
-    case 18:
+    case DRAG_SWAP_EQUIP_COSTUME:
       mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, drag.slot, 1, 0, 0);
       break;
-    case 24:
+    case DRAG_ITEM_EQUIP_COSTUME:
       mode->SendMsg(MM_TAKE_OFF_EQUIP, drag.slot, 1, 0, 0);
       break;
     default:
@@ -11847,7 +11847,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ITEM_INFO item;
     item.Assign(drag);
     switch (drag.source) {
-    case 20: {
+    case DRAG_BUYINGSTORE_SHOP_LIST: {
       if (this->slotCount > g_session.GetNumMerchantPurchaseSavedItems()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {
           g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, "메시지", 280, 120, 0);
@@ -11875,7 +11875,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
       break;
     }
-    case 11: {
+    case DRAG_VENDING_SHOP_LIST: {
       char text[200];
       if (item.quantity + g_session.GetMerchantPurchaseSavedItemNum(drag.id) > 30000) {
         item.quantity = 30000 - g_session.GetMerchantPurchaseSavedItemNum(drag.id);

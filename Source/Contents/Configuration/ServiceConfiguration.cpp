@@ -219,7 +219,7 @@ void InitializeServiceStrings(char* protection) {
     g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
     break;
   }
-  case 3: {
+  case ServerInstantEvent: {
     g_clientExeName = OBFUSCATE_BYTES_TEXT("RagGuild.exe", 0x7FCD77F9C7CBD14DULL);
     g_patcherExeName = OBFUSCATE_BYTES_TEXT("Guildup.exe", 0xCB3FBD4183DB8323ULL);
     g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagGuild.exe", 0x3B915119EFD523EFULL);
@@ -477,7 +477,7 @@ void InitializeServiceConfiguration() {
     g_serviceHost = OBFUSCATE_BYTES_TEXT("192.168.5.52", 0x71B7691737C5A1AFULL);
     break;
   }
-  case 3: {
+  case ServerInstantEvent: {
     g_serviceHost = OBFUSCATE_TEXT("211.172.247.115", 0x899D11BB83695B0DULL);
     g_serviceFlag07 = 29;
     g_servicePort = OBFUSCATE_BYTES_TEXT("6900", 0x2B8725D7E95325F5ULL);

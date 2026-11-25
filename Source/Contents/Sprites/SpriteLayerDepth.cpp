@@ -52,7 +52,7 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float botto
 // FUNCTION: fn_10107
 void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
-  case 1:
+  case SPRITE_LAYER_HEAD:
     if (this->upperHeadgear != ACCESSORY_RABBIT_HEAD_DRESS) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = bottomDepth + 0.000025f;
@@ -69,7 +69,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
       quad.topRhw = topDepth - 0.0000005f;
     }
     break;
-  case 3:
+  case SPRITE_LAYER_HEAD_TOP:
     if (g_cameraDistance < robeTopLayerThreshold) {
       quad.bottomRhw = bottomDepth + 0.00004f;
       quad.topRhw = 0.0001f + topDepth;
@@ -78,7 +78,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
       quad.topRhw = 0.000045f + topDepth;
     }
     break;
-  case 4:
+  case SPRITE_LAYER_HEAD_MID:
     if (this->upperHeadgear == 1485) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.00035f + bottomDepth;
@@ -137,7 +137,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
       }
     }
     break;
-  case 2:
+  case SPRITE_LAYER_HEAD_LOW:
     switch (this->lowerHeadgear) {
     case 1041:
       if (g_cameraDistance < robeTopLayerThreshold) {
@@ -215,7 +215,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
   double farOffset = 0.0;
   g_session.m_hotkeyScript->Call("OffsetItemPos_GetUppingBottomItem", "d>bll", this->lowerHeadgear, &enabled, &nearOffset, &farOffset);
 
-  if (layer == 2 && enabled == true) {
+  if (layer == SPRITE_LAYER_HEAD_LOW && enabled == true) {
     if (0.0 == nearOffset) {
       nearOffset = 0.00025;
     }

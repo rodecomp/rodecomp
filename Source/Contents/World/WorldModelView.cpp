@@ -192,10 +192,10 @@ void CView::Render() {
       }
 
       switch (visibility) {
-      case 1:
+      case MODEL_VIEW_INSIDE:
         model->Draw(matrix, false);
         break;
-      case 2:
+      case MODEL_VIEW_CLIPPED:
         model->Draw(matrix, true);
         break;
       }

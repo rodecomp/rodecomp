@@ -340,31 +340,31 @@ void CSkillAction_SH_COLORS_OF_HYUN_ROK::OnSkillEffect(int level, CGameActor* so
 
   EffectLists* effects;
   switch (level) {
-  case 1:
+  case SKILL_ELEMENT_WATER:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_water"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 2:
+  case SKILL_ELEMENT_WIND:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_wind"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 3:
+  case SKILL_ELEMENT_EARTH:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 4:
+  case SKILL_ELEMENT_FIRE:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 5:
+  case SKILL_ELEMENT_DARKNESS:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_darkness"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 6:
+  case SKILL_ELEMENT_HOLY:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_saint"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 7:
+  case SKILL_ELEMENT_RESET:
     effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_reset"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;

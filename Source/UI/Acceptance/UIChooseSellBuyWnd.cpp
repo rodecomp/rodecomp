@@ -6816,7 +6816,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (mode->drag.source) {
-    case 4: {
+    case DRAG_ITEM_PURCHASE_CART: {
       ITEM_INFO item;
       item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
@@ -6837,7 +6837,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
       break;
     }
-    case 6: {
+    case DRAG_ITEM_STORAGE: {
       ITEM_INFO item;
       if (g_session.GetNumPurchaseItems() >= 8) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);

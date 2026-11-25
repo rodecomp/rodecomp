@@ -222,13 +222,13 @@ void UICheckAttendanceWnd::Paint() {
   if (this->m_blinking == 1) {
     CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_a.bmp")));
     switch (this->m_highlight) {
-    case 0:
+    case BUTTON_STATE_NORMAL:
       slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_a.bmp")));
       break;
-    case 1:
+    case BUTTON_STATE_HOVER:
       slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_b.bmp")));
       break;
-    case 2:
+    case BUTTON_STATE_PRESSED:
       slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_press.bmp")));
       break;
     }

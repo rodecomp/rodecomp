@@ -2357,22 +2357,22 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_REFUSE_MAKECHAR: {
       const char* message;
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
-      case 0:
+      case CHARACTER_CREATE_NAME_EXISTS:
         message = LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS);
         break;
-      case 1:
+      case CHARACTER_CREATE_AGE_LIMIT:
         message = LookupMessage(MSI_LIMIT_AGE);
         break;
-      case 2:
+      case CHARACTER_CREATE_DELETE_LIMIT:
         message = LookupMessage(MSI_LIMIT_CHAR_DELETE);
         break;
-      case 3:
+      case CHARACTER_CREATE_INVALID_SLOT:
         message = LookupMessage(MSI_FR_ERR_MKCHAR_INVALID_SLOT);
         break;
-      case 11:
+      case CHARACTER_CREATE_PREMIUM_REQUIRED:
         message = LookupMessage(MSI_NEED_PREMIUM_SERVICE);
         break;
-      case 12:
+      case CHARACTER_CREATE_INVALID_NAME:
         message = LookupMessage(MSI_CHARACTERNAME_ERROR);
         break;
       default:
@@ -2402,13 +2402,13 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_REFUSE_DELETECHAR: {
       const char* message;
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
-      case 0:
+      case CHARACTER_DELETE_REFUSE_INVALID_IDENTITY:
         message = LookupMessage(g_serviceType == ServiceKorea ? MSI_CANNOT_DELETE_CHARACTER_PEOPLE_REG_NUMBER : MSI_CANNOT_DELETE_CHARACTER_EMAIL);
         break;
-      case 1:
+      case CHARACTER_DELETE_REFUSE_INVALID_SLOT:
         message = LookupMessage(MSI_FR_ERR_DELCHAR_INVALID_SLOT);
         break;
-      case 2:
+      case CHARACTER_DELETE_REFUSE_FAILED:
         message = LookupMessage(MSI_RESULT_FAIL_CHAR_DELETE);
         break;
       default:
@@ -2514,22 +2514,22 @@ void CLoginMode::PollNetworkStatus() {
       break;
     case ID_HC_REFUSE_SELECTCHAR:
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
-      case 0:
+      case CHARACTER_SELECT_INVALID_SLOT:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_SLOT), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 1:
+      case CHARACTER_SELECT_INVALID_BASE_LEVEL:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_BASELVL), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 2:
+      case CHARACTER_SELECT_INVALID_JOB_LEVEL:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_JOBLV), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 3:
+      case CHARACTER_SELECT_INVALID_JOB:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_JOB), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 4:
+      case CHARACTER_SELECT_INVALID_MAP:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_MAP), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 5:
+      case CHARACTER_SELECT_INVALID_ZENY:
         g_windowMgr.Confirm(LookupMessage(MSI_FR_INVALID_MONEY), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
@@ -2572,26 +2572,26 @@ void CLoginMode::PollNetworkStatus() {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
-      case 0:
+      case SECOND_PASSWORD_MAKE_SUCCESS:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 1:
+      case SECOND_PASSWORD_MAKE_DUPLICATE:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_DUPLICATED_PW), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 2:
+      case SECOND_PASSWORD_MAKE_RESTRICTED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 3:
+      case SECOND_PASSWORD_MAKE_PERSONAL_NUMBER:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 4:
+      case SECOND_PASSWORD_MAKE_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
@@ -2619,21 +2619,21 @@ void CLoginMode::PollNetworkStatus() {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
-      case 0:
+      case SECOND_PASSWORD_EDIT_SUCCESS:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 1:
+      case SECOND_PASSWORD_EDIT_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 3:
+      case SECOND_PASSWORD_EDIT_PERSONAL_NUMBER:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 2:
+      case SECOND_PASSWORD_EDIT_RESTRICTED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 7;
@@ -2728,28 +2728,28 @@ void CLoginMode::PollNetworkStatus() {
       const ResultPacket* packet = reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer);
       int message = 0xC82;
       switch (packet->result) {
-      case 1:
+      case TAREN_LOGIN_ACCOUNT_NOT_FOUND:
         message = MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_NOTEXIST;
         break;
-      case 2:
+      case TAREN_LOGIN_INVALID_PASSWORD:
         message = MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD;
         break;
-      case 3:
+      case TAREN_LOGIN_INVALID_IP:
         message = MSI_TAREN_LOGINREFUSE_FAIL_IP;
         break;
-      case 4:
+      case TAREN_LOGIN_INVALID_PERSONAL_NUMBER:
         message = MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER;
         break;
-      case 5:
+      case TAREN_LOGIN_ACCOUNT_BLOCKED:
         message = MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK;
         break;
-      case 6:
+      case TAREN_LOGIN_SYSTEM_FAILURE:
         message = MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM;
         break;
-      case 7:
+      case TAREN_LOGIN_NOT_ACTIVATED:
         message = MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED;
         break;
-      case 9:
+      case TAREN_LOGIN_TEENAGER_BLOCKED:
         message = MSI_BAN_TEENAGER;
         break;
       }
@@ -3484,28 +3484,28 @@ void CLoginMode::OnChangeState(int value) {
       std::string red = "^FF0000";
       std::string purple = "^BA00FF";
       switch (server.address.userCount) {
-      case 0:
+      case SERVER_LOAD_NICE:
         status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_NICE), text));
         break;
-      case 1:
+      case SERVER_LOAD_NORMAL:
         status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_NORMAL), text));
         break;
-      case 2:
+      case SERVER_LOAD_BUSY:
         status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_BUSY), text));
         break;
-      case 3:
+      case SERVER_LOAD_VERY_BUSY:
         status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_VERY_BUSY), text));
         break;
       }
 
       switch (server.address.state) {
-      case 2:
+      case SERVER_ACCESS_ADULT:
         status.append(LookupMessage(MSI_SERVER_PROPERTY_ADULT_NO_COUNT));
         break;
-      case 3:
+      case SERVER_ACCESS_PAY:
         status.append(LookupMessage(MSI_SERVER_PROPERTY_PAY_NO_COUNT));
         break;
-      case 4:
+      case SERVER_ACCESS_FREE:
         status.append(LookupMessage(MSI_SERVER_PROPERTY_FREE_NO_COUNT));
         break;
       }

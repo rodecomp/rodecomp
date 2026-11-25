@@ -78,20 +78,20 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
   for (int index = 8; index >= 0; --index) {
     int layer = GetSpriteLayerOrder(this->imf, index, this->pc->render.animation, this->pc->render.previousAnimation, this->pc->render.curMotion);
     if (!bodyDrawn) {
-      bodyDrawn = layer == 1;
+      bodyDrawn = layer == SPRITE_LAYER_HEAD;
     }
 
-    if (layer == 0) {
+    if (layer == SPRITE_LAYER_BODY) {
       if (bodyDrawn == true) {
         swapped = true;
-        layer = 4;
+        layer = SPRITE_LAYER_HEAD_MID;
       }
-    } else if (layer == 2 && swapped == true) {
-      layer = 0;
-    } else if (layer == 2) {
-      layer = 4;
-    } else if (layer == 4) {
-      layer = 2;
+    } else if (layer == SPRITE_LAYER_HEAD_LOW && swapped == true) {
+      layer = SPRITE_LAYER_BODY;
+    } else if (layer == SPRITE_LAYER_HEAD_LOW) {
+      layer = SPRITE_LAYER_HEAD_MID;
+    } else if (layer == SPRITE_LAYER_HEAD_MID) {
+      layer = SPRITE_LAYER_HEAD_LOW;
     } else if (static_cast<unsigned int>(layer) > 8) {
       continue;
     }
@@ -358,7 +358,7 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
   int offsetY = 0;
   int offsetX = 0;
   switch (layer) {
-    case 1: {
+    case SPRITE_LAYER_HEAD: {
       const ActionFrame& body = static_cast<CActRes*>(this->pc->GetEquipAction(0))->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       if (frame->anchorCount > 0 && body.anchorCount > 0) {
         if (frame->anchors[0].attachmentId == body.anchors[0].attachmentId) {
@@ -370,10 +370,10 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
       break;
     }
-    case 2:
-    case 3:
-    case 4:
-    case 8: {
+    case SPRITE_LAYER_HEAD_LOW:
+    case SPRITE_LAYER_HEAD_TOP:
+    case SPRITE_LAYER_HEAD_MID:
+    case SPRITE_LAYER_ROBE: {
       int syncedFrame = 0;
       const ActionFrame* synced = g_session.GetSyncedFrame(
         static_cast<CActRes*>(this->pc->GetEquipAction(1)), static_cast<CActRes*>(this->pc->GetEquipAction(layer)),

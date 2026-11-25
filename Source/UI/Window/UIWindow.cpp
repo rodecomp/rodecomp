@@ -1349,10 +1349,10 @@ void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int widt
 
   int drawX = x;
   switch (align) {
-  case 2:
+  case TA_RIGHT:
     drawX -= textWidth;
     break;
-  case 6:
+  case TA_CENTER:
     drawX = static_cast<int>((width - textWidth) * g_depthAverageHalf + drawX);
     break;
   }
@@ -3823,10 +3823,10 @@ void UIWindow::DrawAlignedText(
   const int textWidth = this->TextWidth(text.c_str(), static_cast<unsigned>(text.size()), family, height, bold, 0);
   int drawX = x;
   switch (align) {
-  case 2:
+  case TA_RIGHT:
     drawX -= textWidth;
     break;
-  case 6:
+  case TA_CENTER:
     drawX = static_cast<int>((width - textWidth) * g_depthAverageHalf + drawX);
     break;
   }

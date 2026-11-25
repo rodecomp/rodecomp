@@ -1681,23 +1681,23 @@ void CNpc::SetState(int state, int) {
           this->render.isLieOnGround = false;
           this->render.trackBounds = 1;
           this->SetAction(0, 4, 0);
-          if (this->healthState != 0) {
+          if (this->healthState != OPT1_NONE) {
             int emotion;
             int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
             switch (this->healthState) {
-              case 1:
+              case OPT1_STONE:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 7, hungerLevel);
                 this->SetAction(40, 4, 1);
                 break;
-              case 2:
+              case OPT1_FREEZE:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 8, hungerLevel);
                 this->SetAction(48, 4, 1);
                 break;
-              case 3:
+              case OPT1_STUN:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 9, hungerLevel);
                 this->SetAction(56, 4, 1);
                 break;
-              case 4:
+              case OPT1_SLEEP:
                 emotion = g_session.GetPetEmotionNumber(this->GetEffectiveJob(-1), 5, hungerLevel);
                 this->SetAction(64, 4, 1);
                 break;
@@ -1708,7 +1708,7 @@ void CNpc::SetState(int state, int) {
             if (this->render.accountId == g_session.petGid) {
               g_modeMgr.GetGameMode()->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
             }
-            this->healthState = 0;
+            this->healthState = OPT1_NONE;
             this->render.isMotionFinished = false;
           } else {
             if (this->render.state != 0) {
