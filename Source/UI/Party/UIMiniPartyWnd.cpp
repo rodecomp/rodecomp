@@ -172,7 +172,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_REFRESHITEM: {
     if (this->m_owner->GetMember().valid) {
       if (!this->m_owner->GetMember().valid) {
-        return 0;
+        break;
       }
     }
     CGameMode* mode = g_modeMgr.GetGameMode();
@@ -202,13 +202,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (actor) {
         this->m_gauge->Move(52, 32);
         this->m_gauge->SetValues(current, maximum);
-        return 0;
+        break;
       }
       this->m_gauge->Move(-100, -100);
-      return 0;
+      break;
     }
     this->m_gauge->Move(-100, -100);
-    return 0;
+    break;
   }
   case UM_MAKEMENU:
     this->m_entries.erase(this->m_entries.begin(), this->m_entries.end());
@@ -251,12 +251,11 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         y = g_renderer->viewport.height - menu->geometry.height;
       }
       menu->Move(x, y);
-      return 0;
     }
-    return 0;
+    break;
   case UM_MENU_SELECTED:
     if (!this->m_owner->GetMember().valid) {
-      return 0;
+      break;
     }
     if (this->m_entries.empty()) {
       g_windowMgr.Confirm(LookupMessage(MSI_GET_OFF_MINI_PARTYWND), 0, false, false, 0, "Message", 280, 120, 0);
@@ -264,29 +263,28 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       switch (this->m_entries[argument1].value) {
     case MENUID_SEND_MSG:
       this->SendMsg(nullptr, UM_COMMAND, ID_SENDMSG, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_TALKONLYTWO:
       this->SendMsg(nullptr, UM_COMMAND, ID_TALK, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_QUERYINFO:
       this->SendMsg(nullptr, UM_COMMAND, ID_FRIEND_INFO, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_EXPEL:
     case MENUID_DELETE_WHISPER_NAME:
       this->SendMsg(nullptr, UM_COMMAND, ID_DELETE_FRIEND, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_LEAVE:
       this->SendMsg(nullptr, UM_COMMAND, ID_LEAVE, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_MAKE_WHISPER_WINDOW:
       this->SendMsg(nullptr, UM_MAKE_WHISPER_WINDOW, 0, 0, 0, 0);
-      return 0;
+      break;
     case MENUID_INVITE_IN_PARTY:
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid) {
           CMode* mode = g_modeMgr.currentMode;
           mode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
-          return 0;
         }
       }
       break;
@@ -296,13 +294,11 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
             CMode* mode = g_modeMgr.currentMode;
             mode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
-            return 0;
           }
         } else {
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
           const char* message = LookupMessage(MSI_CANNOT_YIELD_PARTYMASTER);
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 255, 3, 0, 0);
-          return 0;
         }
       }
       break;
@@ -310,7 +306,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (this->m_owner->GetMember().valid) {
         CMode* mode = g_modeMgr.currentMode;
         mode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
-        return 0;
       }
       break;
     case MENUID_CLOSE_MINIPARTY:
@@ -320,12 +315,14 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
       }
     }
-    return 0;
+    break;
   case UM_COMMAND:
     switch (argument1) {
     case ID_SENDMSG:
       if (!g_session.m_lockMouse) {
-        this->m_owner->GetMember();
+        if (!this->m_owner->GetMember().valid) {
+          break;
+        }
       }
       break;
     case ID_TALK:
@@ -348,7 +345,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid) {
           g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
-          return 0;
         }
       }
       break;
@@ -367,7 +363,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           int y = 0;
           this->ToScreen(x, y);
           window->Move(x + 2 + this->geometry.width, y);
-          return 0;
         }
       }
       break;
@@ -378,7 +373,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
             if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
               CMode* mode = g_modeMgr.currentMode;
               mode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
-              return 0;
             }
           }
         }
@@ -391,7 +385,6 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
         if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
-          return 0;
         }
       }
       break;
@@ -407,17 +400,19 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_gauge->Move(52, 32);
         this->m_gauge->SetValues(argument3, argument4);
         this->Invalidate();
-        return 0;
+        break;
       }
       this->m_gauge->Move(-100, -100);
       this->Invalidate();
       break;
     }
     }
-    return 0;
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  return 0;
 }
 
 // OFFSET: 0x00742E10
