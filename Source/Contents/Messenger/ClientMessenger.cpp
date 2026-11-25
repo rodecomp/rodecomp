@@ -6560,7 +6560,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO
   }
 
   this->m_dirty = true;
-  const int key = GetEquipLocationIndex(item->identity[3]);
+  const int key = GetEquipLocationIndex(reinterpret_cast<const int&>(item->identity[3]));
   const auto found = this->properties1.find(static_cast<int>(key));
   if (this->properties1.end() != found) {
     delete found->second;
