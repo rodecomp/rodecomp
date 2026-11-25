@@ -5719,9 +5719,12 @@ void CEffectPrim::PrimWaveSpin() {
     const int phase = index * 90;
     for (int point = 0; point < 21; ++point) {
       const int wave = (phase + slot.process) % 360;
-      const float base = g_sinTable[9 * point] * slot.maxHeight;
+      float base = g_sinTable[9 * point];
+      base *= slot.maxHeight;
       slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.15f * g_sinTable[wave] + base;
+      float swing = g_sinTable[9 * point];
+      swing *= slot.maxHeight;
+      slot.height[point] = swing * 0.15f * g_sinTable[wave] + base;
     }
   }
 }
