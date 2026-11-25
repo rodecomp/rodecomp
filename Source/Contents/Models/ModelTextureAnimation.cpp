@@ -66,7 +66,7 @@ __declspec(safebuffers) void ModelKeyList3::Read(CFile& file) {
   for (int i = 0; i < count; ++i) {
     ModelRotationKey key{0, {0.0f, 0.0f, 0.0f, 1.0f}};
     file.Read(&key, sizeof(key));
-    this->push_back(key);
+    this->emplace_back(key);
   }
 }
 
