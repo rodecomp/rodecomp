@@ -263,14 +263,18 @@ void UIRoMapWnd::DrawFieldLabels() {
       continue;
     }
 
-    for (std::vector<CWorldViewField*>::const_iterator fieldIt = map->fields.begin(); fieldIt != map->fields.end(); ++fieldIt) {
+    std::vector<CWorldViewField*>::const_iterator fieldIt = map->fields.begin();
+    const std::vector<CWorldViewField*>::const_iterator fieldEnd = map->fields.end();
+    for (; fieldIt != fieldEnd; ++fieldIt) {
       name = (*fieldIt)->fieldName;
       if (name.empty()) {
         continue;
       }
 
       const CWorldViewField* field = *fieldIt;
-      this->DrawRoundedOutline(field->left, field->top, field->right - field->left, field->bottom - field->top, borderColor);
+      const int width = field->right - field->left;
+      const int height = field->bottom - field->top;
+      this->DrawRoundedOutline(field->left, field->top, width, height, borderColor);
       int y;
       int levelY;
       if (atBottom) {
