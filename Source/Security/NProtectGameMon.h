@@ -19,5 +19,6 @@ void CloseNPGameMon();
 void PreInitNPGameMonA(const char* name);
 int InitNPGameMon();
 void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*));
+int Send_CSAuth3ToGameMon(const unsigned char* packet, unsigned long size, unsigned long serverNumber);
 
 #endif

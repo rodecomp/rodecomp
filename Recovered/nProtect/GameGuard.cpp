@@ -33,3 +33,9 @@ void SetCallbackToGameMon(int(__stdcall* callback)(int, const int*)) {
 // fn_25533 (0x00E92420): SDK shutdown; nothing was started.
 void CloseNPGameMon() {
 }
+
+// OFFSET: 0x00E92D90
+// STUB: fn_25541
+int Send_CSAuth3ToGameMon(const unsigned char*, unsigned long, unsigned long) {
+  return 0;
+}
