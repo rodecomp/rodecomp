@@ -1566,9 +1566,9 @@ void UINewChatWnd::OnCreate(int width, int height) {
   int screenY = 0;
   this->ToScreen(screenX, screenY);
   this->m_inputX = screenX + 3;
-  this->m_listFlags = 0;
-  this->m_inputY = screenY + this->m_inputOffsetY;
   this->m_listColor = 0x66000000;
+  this->m_inputY = screenY + this->m_inputOffsetY;
+  this->m_listFlags = 0;
   this->m_listWidth = this->geometry.width - 6;
   this->m_listBorderStyle = 0;
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
