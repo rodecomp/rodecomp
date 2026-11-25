@@ -59,6 +59,7 @@ void ComputeLoginDigest(std::span<std::uint8_t, 16> digest, std::span<const std:
 
 // OFFSET: 0x0061D5D0
 // FUNCTION: fn_04431
+// VIRTUALIZED: emulated 0x02786CA5
 __declspec(noinline) void GenerateLoginDigest(std::span<std::uint8_t, 16> digest, std::span<const std::uint8_t> data) {
   std::memcpy(digest.data(), "8{JBz#EcNb*<c2h{", digest.size());
 
