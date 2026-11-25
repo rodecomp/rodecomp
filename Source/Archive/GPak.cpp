@@ -962,20 +962,6 @@ GPakEx::RC6::Base::~Base() {
 GPakEx::RC5::Base::~Base() {
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // OFFSET: 0x00654400
 // FUNCTION: fn_04983
 unsigned int GPakEx::RC6::Base::BlockSize() const {
