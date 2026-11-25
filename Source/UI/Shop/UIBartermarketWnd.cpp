@@ -549,7 +549,8 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
       if (itemMgr->HasEntryByName(mode->drag.name) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_ONE_AT_A_TIME)), 255, 0, 0, 0);
+        const std::intptr_t notice = reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_ONE_AT_A_TIME));
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, notice, 255, 0, 0, 0);
         return 0;
       }
     }
