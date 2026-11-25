@@ -276,11 +276,14 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
 void UITagListBox::DecodeValues(std::vector<unsigned int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate) {
   std::string value = "";
 
-  while (++position < end + 1) {
+  for (;;) {
+    if (++position >= end + 1) {
+      break;
+    }
     const char byte = text[position];
     if (byte >= '0') {
       value += byte;
-    } else if (byte == separator || byte == alternate) {
+    } else if (separator == byte || alternate == byte) {
       values.push_back(this->DecodeNumber(value));
       value.clear();
     } else {
