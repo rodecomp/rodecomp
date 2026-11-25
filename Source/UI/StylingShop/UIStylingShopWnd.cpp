@@ -1787,28 +1787,30 @@ void UIShowInfoWnd::DrawPayments() {
   }
 
   bool favoriteVisible = false;
-  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+  auto it = shop->m_tabs.begin();
+  for (; it != shop->m_tabs.end(); ++it) {
     if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       favoriteVisible = it->second->geometry.visible != 0;
+      if (favoriteVisible) {
+        for (auto tab = it; tab != shop->m_tabs.end(); ++tab) {
+          if (tab->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
+            UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
+            bool buyable;
+            if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
+              buyable = myStyle->m_slots[myStyle->m_selectedSlot]->m_showInfo->m_buyable;
+            } else {
+              buyable = false;
+            }
+            shop->SetBuyEnabled(buyable);
+          }
+        }
+      }
       break;
     }
   }
 
   if (!favoriteVisible) {
     shop->SetBuyEnabled(this->m_buyable);
-  } else {
-    for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator tab = shop->m_tabs.begin(); tab != shop->m_tabs.end(); ++tab) {
-      if (tab->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
-        UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
-        bool buyable;
-        if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
-          buyable = myStyle->m_slots[myStyle->m_selectedSlot]->m_showInfo->m_buyable;
-        } else {
-          buyable = false;
-        }
-        shop->SetBuyEnabled(buyable);
-      }
-    }
   }
   shop->Invalidate();
 }
