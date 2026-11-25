@@ -1,6 +1,7 @@
 #include "Utility/Hash/GGHash.h"
 
 #include "Security/FileSignatureVerifier.h"
+#include "Utility/Hash/CRC32.h"
 #include "Utility/Hash/MD5.h"
 
 #include <cstdint>
@@ -155,6 +156,9 @@ int CGGHash::Check() {
   }
   return 1;
 }
+
+// GLOBAL: gl_26181
+static CRC32 s_crc;
 
 // OFFSET: 0x00401730
 // FUNCTION: fn_00112

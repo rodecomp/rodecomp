@@ -121,10 +121,17 @@ void CGGHashMgr::VerifyPendingFiles() {
 bool CGGHashMgr::Create() {
   if (g_ggHashMgr == nullptr) {
     g_ggHashMgr = new (std::nothrow) CGGHashMgr;
-    if (g_ggHashMgr && g_ggHashMgr->m_initialized) return true;
-    delete g_ggHashMgr;
-    g_ggHashMgr = nullptr;
+    if (g_ggHashMgr) {
+      if (!g_ggHashMgr->m_initialized) {
+        delete g_ggHashMgr;
+        g_ggHashMgr = nullptr;
+        return false;
+      }
+
+      return true;
+    }
   }
+
   return false;
 }
 
