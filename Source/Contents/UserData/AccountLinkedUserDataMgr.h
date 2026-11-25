@@ -23,7 +23,7 @@ public:
   static bool Initialize();
   static void Shutdown();
   std::string SaveUrl() const;
-  __declspec(noinline) std::string LoadUrl() const;
+  std::string LoadUrl() const;
   __declspec(noinline) void RefreshUrls();
 
   void CompleteLoad(
