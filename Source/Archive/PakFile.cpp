@@ -510,7 +510,7 @@ namespace myGPack {
     names.push_back("data\\texture\\유저인터페이스\\map\\yuno_in03.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\yuno_pre.bmp");
 
-    std::int64_t removed = 0;
+    int removed = 0;
 
     for (auto name = names.begin(); name != names.end(); ++name) {
       for (auto entry = this->m_entries.begin(); entry != this->m_entries.end();) {
