@@ -758,6 +758,11 @@ bool CVolcanoEffect::IsAlive() {
   return false;
 }
 
+// INLINED
+static float Grow(float step, float scale) {
+  return scale + step;
+}
+
 // OFFSET: 0x00B7F1C0
 // FUNCTION: fn_19244
 void CVolcanoEffect::OnProcess() {
@@ -772,7 +777,7 @@ void CVolcanoEffect::OnProcess() {
     particlePosition.z = this->position[2];
 
     if (particle) {
-      const float scale = particle->scale + (this->id == EF_GUMGANG2 ? 0.1f : 0.3f);
+      const float scale = Grow(this->id == EF_GUMGANG2 ? 0.1f : 0.3f, particle->scale);
       particle->scale = scale;
 
       int tilt = particle->phaseParameter - 1;
@@ -816,8 +821,8 @@ void CVolcanoEffect::OnProcess() {
 
       int alpha = particle->alpha;
       if (particle->elapsedFrames > 10) {
-        alpha -= fadeOut;
-        alpha = alpha > 0 ? alpha : 0;
+        const int faded = alpha - fadeOut;
+        alpha = faded > 0 ? faded : 0;
       } else {
         alpha += fadeIn;
       }
@@ -827,9 +832,9 @@ void CVolcanoEffect::OnProcess() {
       const float radius = g_sinTable[segment * 9] * particle->speedParameter;
       const int angle =
         static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + spin) % 360;
-      const float spread = radius * g_cosTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
+      const float spread = radius * g_cosTable[tilt];
       const float height = radius * g_sinTable[tilt];
       const float spreadX = spread * cosine;
       const float spreadZ = spread * sine;
