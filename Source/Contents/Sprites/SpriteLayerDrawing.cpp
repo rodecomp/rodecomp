@@ -126,12 +126,8 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
       StringFormat(this->pc->hitWaveName, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? this->pc->hitWaveName : name.c_str());
     }
 
-    const auto synced = this->FindSyncedFrame(layer, action);
-    const ActionFrame* drawnFrame = &frame;
-    if (synced.first == true) {
-      drawnFrame = synced.second;
-    }
-    this->DrawLayer(index, layer, drawnFrame, found.second, stanceAnimation, frameIndex, replaced);
+    const std::pair<bool, const ActionFrame*> synced = this->FindSyncedFrame(layer, action);
+    this->DrawLayer(index, layer, synced.first == true ? synced.second : &frame, found.second, stanceAnimation, frameIndex, replaced);
   }
 
   this->DrawQueuedLayers();
@@ -652,12 +648,12 @@ std::pair<bool, const ActionFrame*> SpriteLayerRenderer::FindSyncedFrame(int lay
       const int bodyCount = static_cast<CActRes*>(this->pc->GetEquipAction(1))->FrameCount(this->pc->render.previousAnimation);
       const int layerCount = static_cast<CActRes*>(this->pc->GetEquipAction(layer))->FrameCount(this->pc->render.previousAnimation);
       if (bodyCount > 0 && layerCount > 0 && layerCount > bodyCount && layerCount % bodyCount == 0) {
-        return {true, &action->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion * (layerCount / bodyCount))};
+        return std::make_pair(true, &action->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion * (layerCount / bodyCount)));
       }
       break;
     }
   }
-  return {false, nullptr};
+  return std::make_pair(false, nullptr);
 }
 
 // OFFSET: 0x00641390
