@@ -7,6 +7,30 @@
 #include "Contents/Effects/Particles/Particle.h"
 
 // INLINED
+static void TransformToView(vector3d& result, const vector3d& v, const float* view) {
+  const float y = v.y;
+  const float x = v.x;
+  const float z = v.z;
+
+  const float xFromY = y * view[3];
+  result.x = x * view[0];
+  result.x += xFromY;
+  result.x += z * view[6];
+  result.x += view[9];
+
+  const float yFromY = y * view[4];
+  result.y = x * view[1];
+  result.y += yFromY;
+  result.y += z * view[7];
+  result.y += view[10];
+
+  result.z = y * view[5];
+  result.z += x * view[2];
+  result.z += z * view[8];
+  result.z += view[11];
+}
+
+// INLINED
 static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
   return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
                   point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
@@ -86,7 +110,8 @@ void CAMachineEffect::OnProcess() {
 
   const vector3d source = this->positionVector;
   const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  vector3d viewPos = TransformPoint(view, source);
+  vector3d viewPos;
+  TransformToView(viewPos, source, view.values);
   const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   const vector3d offset{0.0f, -8.0f, 0.0f};
   viewPos += offset;
