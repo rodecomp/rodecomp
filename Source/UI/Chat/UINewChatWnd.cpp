@@ -302,8 +302,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_ADDCHAT:
   case UM_ADDCHAT2:
     if (message != UM_ADDCHAT2) {
-      std::vector<std::string> lines;
       char name[25] = {};
+      std::vector<std::string> lines;
       if (d != 0) {
         std::strcpy(name, reinterpret_cast<const char*>(d));
       }
@@ -314,8 +314,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       case 4:
       case 21: {
         std::string text(reinterpret_cast<const char*>(a));
-        const int length = static_cast<int>(std::strlen(reinterpret_cast<const char*>(a)));
         const int position = static_cast<int>(text.find(" :"));
+        const int length = static_cast<int>(std::strlen(reinterpret_cast<const char*>(a)));
         if (position > 0 && position < length && position < 24) {
           std::memcpy(name, reinterpret_cast<const char*>(a), position);
           name[position] = '\0';
@@ -324,7 +324,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       }
 
-      if (g_serviceType == ServiceGermany && std::strlen(name) > 24) {
+      const std::size_t nameLength = std::strlen(name);
+      if (g_serviceType == ServiceGermany && nameLength > 24) {
         return 0;
       }
 
@@ -333,8 +334,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       bool hasLink = false;
-      std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
       NavigationLinkParser* parser = g_navigationLinkParser;
+      std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
       if (parser->HasLink(plain)) {
         hasLink = true;
         lines.push_back(plain);
@@ -506,7 +507,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_chatEdit->PushHistory();
       this->m_inputEdit = this->m_chatEdit;
       g_windowMgr.SetFocus(this->m_chatEdit);
-      this->m_chatEdit->linkedText = "";
+      this->m_chatEdit->linkedText.clear();
       if (std::strlen(buffer) == 0) {
         return 0;
       }
