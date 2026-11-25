@@ -74,7 +74,7 @@ void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
     for (auto windowIt = line.begin(); windowIt != line.end(); ++windowIt) {
       UIWindow* window = *windowIt;
       if (window) {
-        window->Move(window->geometry.x + 12, window->geometry.y + 12);
+        (*windowIt)->Move(window->geometry.x + 12, window->geometry.y + 12);
         this->AddChild(*windowIt);
         height = std::max<unsigned int>(window->geometry.y + 12, height);
       }
