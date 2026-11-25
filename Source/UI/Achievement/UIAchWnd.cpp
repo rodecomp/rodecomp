@@ -1330,32 +1330,29 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_ACHIEVEMENTWND);
-      this->Invalidate();
-      return 0;
     }
     break;
 
   case UM_TAB:
     if (argument1 == -1 && argument2 == -1) {
       this->SelectTab(this->group, this->sub);
-      this->Invalidate();
-      return 0;
+    } else {
+      this->SelectTab(argument1, argument2);
     }
-    this->SelectTab(argument1, argument2);
-    this->Invalidate();
-    return 0;
+    break;
 
-  case UM_LIST_SELECTION:
-    if (this->achievements.find(argument1) != this->achievements.end()) {
+  case UM_LIST_SELECTION: {
+    const auto found = this->achievements.find(argument1);
+    const auto end = this->achievements.end();
+    UIAchViewWnd* view = this->view;
+    if (found != end) {
       AchievementInfo* info = &this->achievements[argument1];
-      this->view->SetAchievement(argument1, info);
-      this->Invalidate();
-      return 0;
+      view->SetAchievement(argument1, info);
+    } else {
+      view->SetAchievement(-1, nullptr);
     }
-
-    this->view->SetAchievement(-1, nullptr);
-    this->Invalidate();
-    return 0;
+    break;
+  }
 
   case UM_REFRESH: {
     this->view->UpdateInfo();
@@ -1364,13 +1361,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     const int completed = g_achievementMgr->GetCompletedCount(this->group, this->sub);
     const int total = g_achievementMgr->GetAchievementCount(this->group, this->sub);
     this->upper->SetCompletionCounts(completed, total);
-    UIAchUpperWnd* upper = this->upper;
-    upper->achievementPoints = g_session.achievementCompleted;
-    upper->levelGauge->value = g_session.achievementCompleted;
-    upper->nextLevelPoints = g_session.achievementTotal;
-    upper->levelGauge->maximum = g_session.achievementTotal;
-    upper->levelGauge->Invalidate();
-
+    this->upper->SetLevelPoints(g_session.achievementCompleted, g_session.achievementTotal);
     this->upper->Invalidate();
     this->Invalidate();
     break;
