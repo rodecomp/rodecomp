@@ -880,6 +880,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("yuno.rsw");
         route.push_back("einbroch.rsw");
         this->BuildRoute(route);
+        return true;
       } else if (name == "lighthalzen.rsw") {
         std::vector<std::string> route;
         route.push_back("lighthalzen.rsw");
@@ -890,6 +891,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("einbroch.rsw");
         route.push_back("lighthalzen.rsw");
         this->BuildRoute(route);
+        return true;
       } else if (name == "hugel.rsw") {
         std::vector<std::string> route;
         route.push_back("hugel.rsw");
@@ -900,6 +902,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("yuno.rsw");
         route.push_back("hugel.rsw");
         this->BuildRoute(route);
+        return true;
       } else if (name == "yuno.rsw") {
         std::vector<std::string> route;
         route.push_back("yuno.rsw");
@@ -910,10 +913,10 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("hugel.rsw");
         route.push_back("yuno.rsw");
         this->BuildRoute(route);
+        return true;
       } else {
         return false;
       }
-      return true;
     case 0: {
       std::vector<std::string> route;
       if (name == "izlude.rsw") {
@@ -921,21 +924,25 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
+        this->BuildRoute(route);
+        return true;
       } else if (name == "ra_fild12.rsw") {
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
+        this->BuildRoute(route);
+        return true;
       } else if (name == "yuno.rsw") {
         route.push_back("yuno.rsw");
         route.push_back("ra_fild12.rsw");
         route.push_back("izlude.rsw");
         route.push_back("yuno.rsw");
+        this->BuildRoute(route);
+        return true;
       } else {
         return false;
       }
-      this->BuildRoute(route);
-      return true;
     }
     }
 
