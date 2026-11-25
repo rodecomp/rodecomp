@@ -33,14 +33,12 @@ CThemidaMgr::~CThemidaMgr() {
 // OFFSET: 0x0076EC20
 // FUNCTION: fn_08237
 unsigned char* ThemidaKeyEncoderA::Generate(const unsigned char* input) {
-  auto* output = reinterpret_cast<unsigned char*>(this);
-  PakUniformRandom random(1, 0xfe, std::random_device{}());
-  FillRandomBytes(reinterpret_cast<char*>(output), reinterpret_cast<char*>(output) + 5, random);
-  output[5] = input[0] ^ output[1] ^ output[0];
-  output[6] = input[1] ^ output[2] ^ output[1];
-  output[7] = input[2] ^ output[3] ^ output[2];
-  output[8] = output[4] ^ input[3] ^ output[3];
-  return output;
+  PakUniformRandom random(std::random_device{}());
+  FillRandomBytes(reinterpret_cast<char*>(this->m_key), reinterpret_cast<char*>(this->m_key) + 5, random);
+  for (int index = 0; index < 4; ++index) {
+    this->m_key[index + 5] = input[index] ^ this->m_key[index + 1] ^ this->m_key[index];
+  }
+  return this->m_key;
 }
 
 // OFFSET: 0x0076ECC0
