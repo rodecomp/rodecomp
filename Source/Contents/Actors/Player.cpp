@@ -4790,11 +4790,12 @@ struct PcMoveEntry {
 void CPc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
+  const int bLow = static_cast<int>(b);
   CGameMode* mode = g_modeMgr.GetGameMode();
   switch (message) {
   case AM_SET_HEAD_DIR:
     if (this->render.state == ST_STAND || this->render.state == ST_SIT) {
-      this->render.curMotion = static_cast<int>(b);
+      this->render.curMotion = bLow;
     }
     break;
   case AM_REMOVEGAGE:
@@ -4809,7 +4810,7 @@ void CPc::SendMsg(
       this->gaugeWindow->SetSize(60, 5);
       g_windowMgr.AddRenderedFront(this->gaugeWindow);
     }
-    this->gaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
+    this->gaugeWindow->SetValues(bLow, static_cast<int>(c));
     this->gaugeWindow->SetLimits(0, 0);
     const int y = ScaleByScreenHeight(12) + this->render.screenY;
     this->gaugeWindow->Move(this->render.screenX - 30, y);
