@@ -41,7 +41,7 @@ CRenderer* RenderSystemHolder::CreateRenderer() {
 
 // OFFSET: 0x00569F20
 // FUNCTION: fn_02275
-CSurface* RenderSystemHolder::CreateSurface(std::uint32_t width, std::uint32_t height) {
+__declspec(noinline) CSurface* RenderSystemHolder::CreateSurface(std::uint32_t width, std::uint32_t height) {
   return this->system ? this->system->CreateSurface(width, height) : nullptr;
 }
 
@@ -210,7 +210,7 @@ HRESULT RenderSystemHolder::Present(bool option) const {
 // OFFSET: 0x00548E20
 // FUNCTION: fn_46357
 CDCSurface::CDCSurface(std::uint32_t width, std::uint32_t height) {
-  this->m_surface.reset(GetRenderSystemHolder()->CreateSurface(width, height));
+  this->m_surface = std::shared_ptr<CSurface>(GetRenderSystemHolder()->CreateSurface(width, height));
 }
 
 // OFFSET: 0x00548FE0
