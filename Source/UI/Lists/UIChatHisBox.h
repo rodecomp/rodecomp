@@ -33,7 +33,7 @@ public:
   void AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode);
   std::string RenderItemLinks(const char* lineText, std::string& source);
   std::string RenderNavigationLinks(const char* text, std::string& source);
-  void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
+  void RewrapLinkLines(std::vector<std::string>& wrapped, int mode);
   __declspec(noinline) const char* HistoryText(unsigned int index);
   int SaveChatLog(const char* path);
   __declspec(noinline) void PlaceNaviLinks(int line);

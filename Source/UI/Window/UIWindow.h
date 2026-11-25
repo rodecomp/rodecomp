@@ -194,7 +194,7 @@ public:
   );
   void FlushPrimitives();
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
-  void WrapLinkText(int* kind, std::vector<std::string>* lines, const std::string& text);
+  void WrapLinkText(int kind, std::vector<std::string>* lines, const std::string& text);
   void WrapTextWithBreaks(const char* text, std::vector<std::string>* lines, std::vector<bool>* breaks, int width);
   int DrawItemNameSegments(
     int x, int y, int width, const std::vector<const char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
