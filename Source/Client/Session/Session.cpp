@@ -3445,6 +3445,9 @@ void CSession::ClearAchievements() {
   this->achievementScore = 0;
   this->achievementIds.clear();
   this->jobTitle = 0;
+  for (SessionRecord6178& record : this->trackedAchievements) {
+    record.objectives.clear();
+  }
   this->trackedAchievements.clear();
 }
 
