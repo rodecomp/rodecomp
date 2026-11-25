@@ -249,6 +249,11 @@ int UIRefiningWnd::SlotAt(int x, int y) {
 }
 
 // INLINED
+static bool LacksItems(int required, const ITEM_INFO& item) {
+  return required > item.quantity;
+}
+
+// INLINED
 static __forceinline int SelectedSuccessRate(const UIRefiningWnd* window) {
   if (window->item.identity[1] > 0 && window->materials.size() != 0 && window->selectedMaterial >= 0 &&
       window->materials.size() > static_cast<unsigned>(window->selectedMaterial)) {
@@ -332,7 +337,7 @@ void UIRefiningWnd::ApplyResult() {
       }
     } else {
       this->notice->SetNoticeInline(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
-      if (this->catalystCount > g_session.LookupClientItem(this->catalystItemId, 0).quantity) {
+      if (LacksItems(this->catalystCount, g_session.LookupClientItem(this->catalystItemId, 0))) {
         this->catalystEnabled = 0;
         this->notice->SetNoticeInline(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
         {
