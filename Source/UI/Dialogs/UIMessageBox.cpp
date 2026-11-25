@@ -427,8 +427,8 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
   if (std::string(LookupMessage(MSI_BANK_MAX)) == text) {
-    const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
+    const long long cash = g_session.m_zeny;
     long long excess = 0;
     if (cash + balance > 0x7FFFFFFF) {
       excess = cash + balance - 0x7FFFFFFF;
