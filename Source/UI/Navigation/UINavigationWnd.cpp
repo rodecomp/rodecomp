@@ -899,15 +899,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 static std::string MobAmountText(int flag) {
   std::string kind = "없음";
   if (flag > 99) {
-    kind.assign(LookupMessage(MSI_NAVIGATION_NUM1));
+    kind.assign(std::string_view(LookupMessage(MSI_NAVIGATION_NUM1)));
   } else if (flag > 49) {
-    kind.assign(LookupMessage(MSI_NAVIGATION_NUM2));
+    kind.assign(std::string_view(LookupMessage(MSI_NAVIGATION_NUM2)));
   } else if (flag >= 20 && flag <= 49) {
-    kind.assign(LookupMessage(MSI_NAVIGATION_NUM3));
+    kind.assign(std::string_view(LookupMessage(MSI_NAVIGATION_NUM3)));
   } else if (flag >= 5 && flag <= 19) {
-    kind.assign(LookupMessage(MSI_NAVIGATION_NUM4));
+    kind.assign(std::string_view(LookupMessage(MSI_NAVIGATION_NUM4)));
   } else if (flag >= 1 && flag <= 4) {
-    kind.assign(LookupMessage(MSI_NAVIGATION_NUM5));
+    kind.assign(std::string_view(LookupMessage(MSI_NAVIGATION_NUM5)));
   }
   return kind;
 }
