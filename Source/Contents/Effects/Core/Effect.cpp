@@ -143,13 +143,13 @@ void CEffect::Update(std::uint32_t aid) {
     }
 
     switch (event->kind) {
-    case 0:
+    case EFFECT_EVENT_SOUND:
       if (!event->text.empty()) {
         g_soundMgr->PlayWave(event->text.c_str(), this->position[0] - player.x, event->argument,
                              this->position[2] - player.z, 250, 40, 1.0f, 0);
       }
       break;
-    case 1:
+    case EFFECT_EVENT_QUAKE:
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       break;
     }

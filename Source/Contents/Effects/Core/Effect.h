@@ -13,6 +13,11 @@ struct RenderCommand;
 
 typedef void (*ParticleSubmit)(RenderCommand* primitive, int flags);
 
+enum EffectEventKind : int {
+  EFFECT_EVENT_SOUND = 0,
+  EFFECT_EVENT_QUAKE = 1,
+};
+
 struct EffectEvent {
   /* 0000 */ int kind;
   /* 0004 */ int frame;

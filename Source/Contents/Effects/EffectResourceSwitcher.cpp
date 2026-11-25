@@ -286,11 +286,11 @@ void CEZ2STREffectEx::Open() {
   emitter->m_delay = info->interval;
   this->frameStep = info->interval / 16;
   if (!info->soundPath.empty()) {
-    this->AddEvent(0, info->soundPath.c_str(), this->frameStep + 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, info->soundPath.c_str(), this->frameStep + 1, 0);
   }
 
   if (info->delay >= 0) {
-    this->AddEvent(1, nullptr, info->delay, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, info->delay, 0);
   }
 
   if (info->flags & 2) {
