@@ -1503,8 +1503,14 @@ void UITreeView::Resize(int width, int height) {
 void UITreeView::UpdateScrollBar() {
   const int visible = this->geometry.height / this->itemHeight;
   const int count = this->itemCount;
-  const int overflow = std::max(0, count - visible);
-  this->verticalOverflow = overflow != 0;
+  const int hidden = count - visible;
+  const int overflow = hidden >= 0 ? hidden : 0;
+  if (overflow != 0) {
+    this->verticalOverflow = 1;
+  } else {
+    this->verticalOverflow = 0;
+  }
+
   if (overflow != 0) {
     SetScrollRange(this->verticalBar, overflow, visible, count);
     this->verticalBar->Invalidate();
