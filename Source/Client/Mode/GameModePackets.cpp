@@ -8,10 +8,13 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Items/ItemId.h"
 #include "Contents/Items/ItemType.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Network/Packets/ActorEntryPacket.h"
 #include "Network/Packets/PacketId.h"
@@ -19567,7 +19570,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
-        position.z -= 5.0f;
+        position.z -= g_fireflyModeFive;
         if (i == 0) {
           position.x += static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
@@ -19601,7 +19604,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
-        position.z -= 5.0f;
+        position.z -= g_fireflyModeFive;
         if (i == 0) {
           position.x += static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
@@ -19635,7 +19638,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
-        position.z -= 5.0f;
+        position.z -= g_fireflyModeFive;
         if (i == 0) {
           position.x += static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
@@ -19669,7 +19672,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
-        position.z -= 5.0f;
+        position.z -= g_fireflyModeFive;
         if (i == 0) {
           position.x += static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
@@ -19758,13 +19761,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case RK_WINDCUTTER:
     if (source != nullptr) {
       float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
-      if (angle >= 360.0f) {
-        angle -= 360.0f;
+      if (angle >= g_fullCircleAngle) {
+        angle -= g_fullCircleAngle;
       }
       int effectId;
-      if (angle > 0.0f && angle < 90.0f) {
+      if (angle > 0.0f && angle < g_cameraYawOffset) {
         effectId = EF_NEW_WINDCUTTER_BOTTOM_05;
-      } else if (angle >= 90.0f && angle < 180.0f) {
+      } else if (angle >= g_cameraYawOffset && angle < g_angleDivisor) {
         effectId = EF_NEW_WINDCUTTER_BOTTOM_01;
       } else if (angle >= 180.0f && angle < 270.0f) {
         effectId = EF_NEW_WINDCUTTER_BOTTOM_05;
