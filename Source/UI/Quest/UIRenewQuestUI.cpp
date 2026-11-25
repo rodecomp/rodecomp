@@ -1257,7 +1257,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   normalButton->disabled = 0;
   normalButton->Invalidate();
   normalButton->SetId(2);
-  normalButton->SetText(std::string(""));
+  normalButton->SetText("");
   normalButton->SetFitText(0);
   normalButton->SetAlign(0, 0);
   normalButton->SetFont(std::string(GulimFontName1().Text()));
@@ -1279,7 +1279,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   subButton->disabled = 0;
   subButton->Invalidate();
   subButton->SetId(3);
-  subButton->SetText(std::string(""));
+  subButton->SetText("");
   subButton->SetFitText(0);
   subButton->SetAlign(0, 0);
   subButton->SetFont(std::string(GulimFontName2().Text()));
@@ -1301,7 +1301,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   dailyButton->disabled = 0;
   dailyButton->Invalidate();
   dailyButton->SetId(4);
-  dailyButton->SetText(std::string(""));
+  dailyButton->SetText("");
   dailyButton->SetFitText(0);
   dailyButton->SetAlign(0, 0);
   dailyButton->SetFont(std::string(GulimFontName3().Text()));
@@ -1323,7 +1323,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   eventButton->disabled = 0;
   eventButton->Invalidate();
   eventButton->SetId(5);
-  eventButton->SetText(std::string(""));
+  eventButton->SetText("");
   eventButton->SetFitText(0);
   eventButton->SetAlign(0, 0);
   eventButton->SetFont(std::string(GulimFontName4().Text()));
@@ -1345,7 +1345,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   etcButton->disabled = 0;
   etcButton->Invalidate();
   etcButton->SetId(1);
-  etcButton->SetText(std::string(""));
+  etcButton->SetText("");
   etcButton->SetFitText(0);
   etcButton->SetAlign(0, 0);
   etcButton->SetFont(std::string(GulimFontName5().Text()));
