@@ -1866,7 +1866,7 @@ void OpenTextButtonNavigation(UITextButton* button) {
   const std::string name = button->GetLine(0);
   const int x = std::atoi(button->GetLine(1).c_str());
   const int y = std::atoi(button->GetLine(2).c_str());
-  if (button->m_lines.size() > 3) {
+  if (3 < static_cast<int>(button->m_lines.size())) {
     const int mode = std::atoi(button->GetLine(3).c_str());
     int code = std::atoi(button->GetLine(4).c_str());
     if (code == -222) {
