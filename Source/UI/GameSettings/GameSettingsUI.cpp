@@ -2967,7 +2967,7 @@ void GameSettingsUI::CUIGroupRodexSpam::OnCreate(int width, int height) {
   this->m_onText = new CUIStaticText();
   this->m_onText->SetSize(100, 13);
   this->m_onText->Move(127, 12);
-  this->m_onText->SetText(OBFUSCATE_SOURCE_TEXT("모든 유저 수신", 0x39FF7FB50DEB998FULL));
+  this->m_onText->SetText(OBFUSCATE_TEXT("모든 유저 수신", 0x39FF7FB50DEB998FULL));
   this->m_onText->SetFitText(0);
   this->m_onText->SetAlign(0, 0);
   this->m_onText->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x2FE993D1DDE1F197ULL)));
