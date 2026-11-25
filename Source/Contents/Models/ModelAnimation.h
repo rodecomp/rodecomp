@@ -6,6 +6,8 @@
 
 #include <vector>
 
+extern float g_piApprox;
+
 class LegacyPositionTrack : public std::vector<ModelPositionKey> {
 public:
   using std::vector<ModelPositionKey>::operator=;

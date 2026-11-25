@@ -104,6 +104,9 @@
 #include "UI/Replay/UIReplayRECControlWnd.h"
 #include "UI/Shop/UIMerchantMirrorItemWnd.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
+#include "Contents/Models/ModelAnimation.h"
+#include "Utility/Math/ClientAngles.h"
 
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
@@ -4151,9 +4154,9 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       const vector3d center = {x, y, z};
       int delay = 0;
       for (int degrees = 0; degrees < 1080; degrees += 72) {
-        const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + 5.0f;
+        const float radius = static_cast<float>(std::max(std::rand() % 20, 0)) + g_fireflyModeFive;
         matrix rotation;
-        rotation.MakeYRotation(static_cast<float>(degrees) / 180.0f * 3.141592f);
+        rotation.MakeYRotation(static_cast<float>(degrees) / g_angleDivisor * g_piApprox);
         vector3d position;
         position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + center.x;
         position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + center.y;
@@ -4189,8 +4192,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         return;
       }
       float angle = mode->CameraDesiredYaw() + actor->render.angle;
-      if (angle >= 360.0f) {
-        angle -= 360.0f;
+      if (angle >= g_fullCircleAngle) {
+        angle -= g_fullCircleAngle;
       }
       int effectId = 0;
       if (angle >= 0.0f && angle < 23.0f) {

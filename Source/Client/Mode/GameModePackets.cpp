@@ -171,6 +171,9 @@
 #include "UI/Shop/UIMerchantMirrorItemWnd.h"
 #include "UI/Skill/UISkillListWnd.h"
 #include "UI/Status/UIPetTamingDeceiveWnd.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
+#include "Utility/Math/ClientAngles.h"
 #include <new>
 
 // OFFSET: 0x00D7AF70
