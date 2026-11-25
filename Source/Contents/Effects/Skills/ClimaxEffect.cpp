@@ -71,10 +71,39 @@ bool CClimaxEffect::IsAlive() {
 }
 
 // INLINED
+static void TransformToView(vector3d& result, const vector3d& v, const float* view) {
+  const float y = v.y;
+  const float x = v.x;
+  const float z = v.z;
+
+  result.x = y * view[3];
+  result.x += x * view[0];
+  result.x += z * view[6];
+  result.x += view[9];
+  result.y = y * view[4];
+  result.y += x * view[1];
+  result.y += z * view[7];
+  result.y += view[10];
+  result.z = y * view[5];
+  result.z += x * view[2];
+  result.z += z * view[8];
+  result.z += view[11];
+}
+
+// INLINED
 static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
-  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
-  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
-  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+  result.x = v.y * m[3];
+  result.x += v.x * m[0];
+  result.x += v.z * m[6];
+  result.x += m[9];
+  result.y = v.x * m[1];
+  result.y += v.y * m[4];
+  result.y += v.z * m[7];
+  result.y += m[10];
+  result.z = v.x * m[2];
+  result.z += v.y * m[5];
+  result.z += v.z * m[8];
+  result.z += m[11];
 }
 
 // OFFSET: 0x00706970
@@ -85,7 +114,7 @@ __forceinline void CClimaxEffect::PositionEmitter(CEZ2STRParticle* emitter) {
     const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
     const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
     vector3d viewPosition;
-    MatrixMult(viewPosition, position, view);
+    TransformToView(viewPosition, position, view);
     viewPosition.x += 0.0f;
     viewPosition.y -= 10.0f;
     MatrixMult(position, viewPosition, inverse);
