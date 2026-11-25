@@ -12,3 +12,5 @@
 #include <timeapi.h>
 
 template __declspec(noinline) void std::deque<std::uint32_t>::pop_front() noexcept;
+template __declspec(noinline) std::map<std::uint32_t, CPlayerNameDictionary::Entry>::_Mybase::iterator
+std::map<std::uint32_t, CPlayerNameDictionary::Entry>::_Mybase::find(const std::uint32_t&);
