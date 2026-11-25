@@ -7370,12 +7370,11 @@ void CGameMode::UpdateBalloons() {
     CPlayer* player = this->scene->player;
     const int x = player->render.screenX - 30;
     const int y = player->render.screenY;
-    const int offset = static_cast<int>(static_cast<float>(12 * g_renderer->viewport.height / 480) * player->render.distanceScale);
+    int offset = static_cast<int>(static_cast<float>(12 * g_renderer->viewport.height / 480) * player->render.distanceScale);
     if (g_session.IsScreenShakeActive()) {
-      this->itemWindow->Move(x, y - offset);
-    } else {
-      this->itemWindow->Move(x, offset + y);
+      offset = -offset;
     }
+    this->itemWindow->Move(x, y + offset);
   }
 
   if (this->achievementBalloon && timeGetTime() > this->achievementBalloonTick + 10000) {
