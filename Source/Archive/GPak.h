@@ -15,6 +15,10 @@ struct PakUniformRandom {
   /* 0000 */ std::mt19937 m_engine;
   /* 1388 */ std::uniform_int_distribution<int> m_distribution;
 
+  // INLINED
+  explicit PakUniformRandom(unsigned int seed) : m_engine(seed), m_distribution(1, 254) {
+  }
+
   PakUniformRandom(int minimum, int maximum, unsigned int seed);
 };
 
