@@ -1866,7 +1866,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
       atCursor = false;
     } else {
       remaining = remaining.substr(found + bytes);
-      absolute = (absolute == found ? absolute : absolute + found) + bytes;
+      absolute += (absolute == found ? 0 : found) + bytes;
       found = static_cast<int>(remaining.find(fitted));
       continue;
     }
@@ -1878,10 +1878,12 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
         remaining = this->taggedText.substr(0, absolute);
       }
       int end = absolute;
-      if (after.find(">") != std::string::npos) {
-        ++end;
+      if (after.find(">") == std::string::npos) {
+        end += bytes;
+      } else {
+        end += bytes + 1;
       }
-      remaining += this->taggedText.substr(end + bytes);
+      remaining += this->taggedText.substr(end);
       g_serverLanguage->ReplaceInput(remaining.c_str());
       this->RemoveTagChild(entry->child);
       entry = this->tags.erase(entry);
