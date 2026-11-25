@@ -1375,11 +1375,11 @@ void CSkillAction_ABC_CHASING_BREAK::OnSkillEffect(int level, CGameActor* source
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
-  for (int angle = 0; angle < 360; angle += 45) {
+  for (int index = 0; index < 8; ++index) {
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_break"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
-      effect->SetAngle(static_cast<float>(angle));
+      effect->SetAngle(static_cast<float>(index * 45));
       effect->SetDelay(ClampedRandom(150));
       effect->SetScale(0.15f);
       effect->EnableGroundRender();
