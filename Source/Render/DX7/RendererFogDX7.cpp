@@ -9,6 +9,7 @@
 
 #include <bit>
 #include <cmath>
+#include <xmmintrin.h>
 
 // OFFSET: 0x00556E50
   // FUNCTION: fn_02039
@@ -27,7 +28,7 @@
 // OFFSET: 0x00556E60
 // FUNCTION: fn_02040
 float SquareRoot(volatile float value) {
-  value = sqrtf(value);
+  value = _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(value)));
   return value;
 }
 
