@@ -10863,15 +10863,18 @@ void UIStorePasswordInputWnd::Paint() {
 
   prefix = "유저인터페이스\\basic_interface\\";
   {
-    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
     const char* names[11][3] = {
       {"btn_num1", "btn_num1_a", "btn_num1_b"}, {"btn_num2", "btn_num2_a", "btn_num2_b"}, {"btn_num3", "btn_num3_a", "btn_num3_b"},
       {"btn_num4", "btn_num4_a", "btn_num4_b"}, {"btn_num5", "btn_num5_a", "btn_num5_b"}, {"btn_num6", "btn_num6_a", "btn_num6_b"},
       {"btn_num7", "btn_num7_a", "btn_num7_b"}, {"btn_num8", "btn_num8_a", "btn_num8_b"}, {"btn_num9", "btn_num9_a", "btn_num9_b"},
       {"btn_num0", "btn_num0_a", "btn_num0_b"}, {"btn_numR", "btn_numR_a", "btn_numR_b"}
     };
+    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
     int positions[11][2] = {{10, 25}, {40, 25}, {70, 25}, {10, 55}, {40, 55}, {70, 55}, {10, 85}, {40, 85}, {70, 85}, {10, 115}, {40, 115}};
-    int used[10] = {};
+    int used[10];
+    for (int i = 0; i < 10; ++i) {
+      used[i] = 0;
+    }
     int placed = 0;
 
     for (int i = 0; i < 11; ++i) {
@@ -10884,13 +10887,14 @@ void UIStorePasswordInputWnd::Paint() {
         button->Move(positions[10][0], positions[10][1]);
       } else {
         int slot = rand() % 10;
-        if (placed != 10) {
-          while (used[slot] != 0) {
-            slot = rand() % 10;
+        while (placed != 10) {
+          if (used[slot] == 0) {
+            used[slot] = 1;
+            button->Move(positions[slot][0], positions[slot][1]);
+            ++placed;
+            break;
           }
-          used[slot] = 1;
-          button->Move(positions[slot][0], positions[slot][1]);
-          ++placed;
+          slot = rand() % 10;
         }
       }
       button->SetId(ids[i]);
@@ -10911,7 +10915,8 @@ void UIStorePasswordInputWnd::Paint() {
     shadowColor = 0xE6E6E6;
   }
 
-  this->DrawEmboldenedText(110, 27, LookupMessage(MSI_STORE_PASSWORD), textColor, shadowColor, 0, 0, 12);
+  const char* label = LookupMessage(MSI_STORE_PASSWORD);
+  this->DrawEmboldenedText(110, 27, label, textColor, shadowColor, 0, 0, 12);
   this->FillRegion(110, 40, 100, 16, boxColor);
   this->FillRegion(111, 41, 98, 14, 0xFFFFFF);
   if (!g_session.m_passwordInputAlternate && this->isChangingPassword == 0) {
