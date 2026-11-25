@@ -27,7 +27,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
     float tilt = slot.height[8];
     const int angle1 = slot.fullDisplayAngle;
     float radius = slot.distance;
-    if (tilt >= g_fullCircleAngle || tilt < 0.0f) {
+    if (tilt >= 360.0f || tilt < 0.0f) {
       slot.height[8] = 0.0f;
       tilt = 0.0f;
     }
@@ -41,16 +41,16 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
     vec3.y = 0.0f;
     vec4.y = 0.0f;
 
-    const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
-    radius += radius * g_sinTable[static_cast<int>(tilt)] * g_fireflyNormalDrift;
+    int angle = angle1 + (angle1 < 270 ? 90 : -270);
+    radius += radius * g_sinTable[static_cast<int>(tilt)] * 0.05f;
     vec1.x = radius * g_cosTable[angle1];
     vec1.z = radius * g_sinTable[angle1];
-    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
-    vec2.x = radius * g_cosTable[angle2];
-    vec2.z = radius * g_sinTable[angle2];
-    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
-    vec3.x = radius * g_cosTable[angle3];
-    vec3.z = radius * g_sinTable[angle3];
+    vec2.x = radius * g_cosTable[angle];
+    vec2.z = radius * g_sinTable[angle];
+    angle += angle + 90 < 360 ? 90 : -270;
+    vec3.x = radius * g_cosTable[angle];
+    vec3.z = radius * g_sinTable[angle];
+    const int angle4 = angle + (angle + 90 < 360 ? 90 : -270);
     vec4.x = radius * g_cosTable[angle4];
     vec4.z = radius * g_sinTable[angle4];
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
@@ -70,25 +70,25 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 
     for (int drop = 0, turn = 0; drop < 72; drop += 2, ++turn) {
       const short spin = static_cast<short>(static_cast<short>(turn * 45 + slot.process) % 360);
-      const float offsetX = g_cosTable[spin] * g_projectionDepthOffset;
-      const float offsetZ = g_sinTable[spin] * g_projectionDepthOffset;
-      const float lift = static_cast<float>(drop);
+      const float offsetX = g_cosTable[spin] * 10.0f;
       vector3d corner1;
-      corner1.x = offsetX + vec1.x;
-      corner1.y = vec1.y - lift;
-      corner1.z = offsetZ + vec1.z;
       vector3d corner2;
-      corner2.x = offsetX + vec2.x;
-      corner2.y = vec2.y - lift;
-      corner2.z = offsetZ + vec2.z;
       vector3d corner3;
-      corner3.x = offsetX + vec3.x;
-      corner3.y = vec3.y - lift;
-      corner3.z = offsetZ + vec3.z;
       vector3d corner4;
+      corner1.x = offsetX + vec1.x;
+      corner2.x = offsetX + vec2.x;
+      corner3.x = offsetX + vec3.x;
       corner4.x = offsetX + vec4.x;
-      corner4.y = vec4.y - lift;
+      const float offsetZ = g_sinTable[spin] * 10.0f;
+      corner1.z = offsetZ + vec1.z;
+      corner2.z = offsetZ + vec2.z;
+      corner3.z = offsetZ + vec3.z;
       corner4.z = offsetZ + vec4.z;
+      const float lift = static_cast<float>(drop);
+      corner1.y = vec1.y - lift;
+      corner2.y = vec2.y - lift;
+      corner3.y = vec3.y - lift;
+      corner4.y = vec4.y - lift;
       this->RenderTeiRect(&rpCnt, slot.alphaB, corner1, corner2, corner3, corner4, wtm, 1, slot.flag1[0], 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
