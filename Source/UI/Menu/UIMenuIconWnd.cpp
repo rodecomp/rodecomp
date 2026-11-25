@@ -137,9 +137,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s.bmp", names[index].c_str()).c_str(), 1, 0);
     icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_press.bmp", names[index].c_str()).c_str(), 2, 0);
     icon->SetSize(icon->BitmapWidth(), icon->BitmapHeight());
-    const int row = position / 5 * 43;
-    const int x = position % 5 * 42 + 9;
-    icon->Move(x, row + 23);
+    icon->Move(position % 5 * 42 + 9, position / 5 * 43 + 23);
     icon->SetId(ids[index]);
     icon->Enable(0);
     this->AddChild(icon);
@@ -156,7 +154,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
       badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new.bmp", names[index].c_str()).c_str(), 1, 0);
       badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new_press.bmp", names[index].c_str()).c_str(), 2, 0);
       badge->SetSize(badge->BitmapWidth(), badge->BitmapHeight());
-      badge->Move(x, row + 17);
+      badge->Move(position % 5 * 42 + 9, position / 5 * 43 + 17);
       badge->SetId(ids[index]);
       badge->Enable(0);
       this->AddChild(badge);
