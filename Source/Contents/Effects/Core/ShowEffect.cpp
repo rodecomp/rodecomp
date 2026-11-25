@@ -6,6 +6,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/World/World.h"
 
 namespace {
@@ -38,13 +39,12 @@ CShowEffect::CShowEffect() : CEffect(0x947), effects() {
 // FUNCTION: fn_07446
 void CShowEffect::Add(int tag, int effectId) {
   const std::uint32_t actorId = this->actor;
-  const auto found = this->effects.find(tag);
-  if (found != this->effects.end() || g_effectMgr->Find(actorId, effectId)) {
+  if (HasEffect(this->effects, tag) || g_effectMgr->Find(actorId, effectId)) {
     return;
   }
 
   EffectLists* effects = g_effectMgr;
-  if (!effects->Spawn(actorId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, tag)) {
+  if (!effects->Spawn(actorId, effectId, ZeroVector3d(), 0, -1, 0, tag)) {
     if (!g_modeMgr.GetGameMode()) {
       return;
     }
