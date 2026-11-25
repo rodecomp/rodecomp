@@ -215,7 +215,7 @@ static __forceinline unsigned int CryptonKeyTransform(unsigned int value, unsign
 // INLINED
 static __forceinline void CryptonRound(unsigned int* y, const unsigned int* x, const unsigned int* key, bool alternate) {
   if (!alternate) {
-    y[0] = g_cryptonTable0[x[0] & 255] ^ g_cryptonTable1[x[1] & 255] ^ g_cryptonTable2[x[2] & 255] ^ g_cryptonTable3[x[3] & 255] ^ key[0];
+    y[0] = g_cryptonTable0[x[0] & 255] ^ g_cryptonTable3[x[3] & 255] ^ g_cryptonTable2[x[2] & 255] ^ g_cryptonTable1[x[1] & 255] ^ key[0];
     y[1] = g_cryptonTable1[(x[0] >> 8) & 255] ^ g_cryptonTable2[(x[1] >> 8) & 255] ^ g_cryptonTable3[(x[2] >> 8) & 255] ^ g_cryptonTable0[(x[3] >> 8) & 255] ^ key[1];
     y[2] = g_cryptonTable2[(x[0] >> 16) & 255] ^ g_cryptonTable3[(x[1] >> 16) & 255] ^ g_cryptonTable0[(x[2] >> 16) & 255] ^ g_cryptonTable1[(x[3] >> 16) & 255] ^ key[2];
     y[3] = g_cryptonTable3[x[0] >> 24] ^ g_cryptonTable0[x[1] >> 24] ^ g_cryptonTable1[x[2] >> 24] ^ g_cryptonTable2[x[3] >> 24] ^ key[3];
