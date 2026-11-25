@@ -12155,6 +12155,11 @@ void CGameMode::ReceiveGuildMemberAdd2(const unsigned char* data) {
   g_windowMgr.RefreshGuildWindows();
 }
 
+// INLINED
+static void LoadMemberName(GuildInfo::Member& member) {
+  member.name = LookupPlayerName(member.characterId);
+}
+
 // OFFSET: 0x00D4EBA0
 // FUNCTION: fn_21879
 void CGameMode::ReceiveGuildMemberAdd3(const unsigned char* data) {
@@ -12171,7 +12176,7 @@ void CGameMode::ReceiveGuildMemberAdd3(const unsigned char* data) {
   GuildInfo::Member member;
   member.accountId = packet->accountId;
   member.characterId = packet->characterId;
-  member.name = LookupPlayerName(member.characterId);
+  LoadMemberName(member);
   member.head = packet->head;
   member.headPalette = packet->headPalette;
   member.job = packet->job;
