@@ -12,8 +12,9 @@ function's own epilogue.
 No compiler or protector run produces those bytes again, so each marked region of the linked exe takes
 the target's (.td/target.exe), with the jump aimed at the address it reaches there. The function is
 found in the target by its decorated name (.td/symbols.json). A region whose bounds are not where the
-target's are fails the build. Without the target the regions stay as compiled, which runs: a marker is
-a jump over itself.
+target's are waits: it stays as compiled and the result names it, because its function does not match
+the target yet (the verifier is what judges that). Without the target every region stays as compiled,
+which runs: a marker is a jump over itself.
 """
 
 import json
@@ -80,6 +81,8 @@ def apply(image):
         return section is not None and section.Name.rstrip(b"\0") != b".text" and va - base - section.VirtualAddress >= section.SizeOfRawData
 
     copied = 0
+    done = 0
+    waiting = []
     for function, parts in found.items():
         originals = {known[name] for name in names[function] if name in known}
         if len(originals) != 1:
@@ -90,11 +93,17 @@ def apply(image):
             theirs = target.get_data(there - base, end - start)
             destination = there + 5 + struct.unpack_from("<i", theirs, 1)[0]
             if theirs[0] not in (0xE8, 0xE9) or not outside_the_file(destination):
-                raise PatchError(f"{start:#x}: the target has no protected region at {there:#x}")
+                waiting.append(f"{start:#x}: the target has no protected region at {there:#x}")
+                continue
             tail = theirs[-LENGTH:]
             if any(tail[i] != 0x89 or tail[i + 1] < 0xC0 or (tail[i + 1] >> 3) & 7 != tail[i + 1] & 7 for i in range(0, LENGTH, 2)):
-                raise PatchError(f"{start:#x}: the target's region at {there:#x} does not end {end - start} bytes on")
+                waiting.append(f"{start:#x}: the target's region at {there:#x} does not end {end - start} bytes on")
+                continue
             new = theirs[:1] + struct.pack("<i", destination - (start + 5)) + theirs[5:]
             image.write(start, new, image.read(start, end - start))
             copied += len(new)
-    return f"protected regions copied from the target: {count} in {len(found)} function(s), {copied} bytes"
+            done += 1
+    result = f"protected regions copied from the target: {done} of {count}, {copied} bytes"
+    if waiting:
+        result += f"; {len(waiting)} left as compiled, their bounds are not the target's: " + "; ".join(waiting)
+    return result
