@@ -897,7 +897,8 @@ __declspec(noinline) void LoadItemNameTables() {
       if (value[8] != 0) {
         flags.guildStorage = true;
       }
-      g_itemMoveInfo.insert(std::make_pair(flags.itemId, flags));
+      const std::map<int, ItemMoveInfo>::value_type entry(flags.itemId, flags);
+      g_itemMoveInfo.insert(entry);
     }
   }
 }
