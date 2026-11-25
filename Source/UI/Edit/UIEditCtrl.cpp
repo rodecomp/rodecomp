@@ -9783,30 +9783,30 @@ void UIItemStoreWnd::Paint() {
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const int visibleRows = (this->geometry.height - 74) / 32;
-  if (this->m_hideCapacity == 0) {
-    this->scrollBar->Show(0);
-    unsigned fillRed, fillGreen, fillBlue;
-    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-    this->FillRegion(40, 17, columns * 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
-    this->DrawRoundedOutline(55, 131, 187, 139, 0xCE9484);
-    this->DrawFilledRoundedOutline(56, 132, 185, 137, 0xFFE7DE);
-    this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
-    this->DrawBitmap(116, 151, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")))), 1);
-    this->DrawCenteredText(20, 210, LookupMessage(MSI_ITEMSTORE_DOWNLOADING), 257, 0, 12, 0, 0);
-    this->DrawCenteredText(20, 236, LookupMessage(MSI_RODEX_NOW_LOADING), 257, 0, 15, 0xC89482, 1);
-    this->DrawCenteredText(20, 272, LookupMessage(MSI_WARNINGMSG_LOADING), 257, 0, 12, 0x6464DC, 1);
-    return;
-  }
-
-  this->scrollBar->Show(1);
-  for (int i = 0; i < visibleRows; ++i) {
-    this->DrawItemSlotFrame(40, i * 32 + 17);
-  }
-
   {
     unsigned fillRed, fillGreen, fillBlue;
+    const int columns = (this->geometry.width - 40) / 32;
+    const int visibleRows = (this->geometry.height - 74) / 32;
+    if (this->m_hideCapacity == 0) {
+      this->scrollBar->Show(0);
+      unsigned red, green, blue;
+      g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+      this->FillRegion(40, 17, columns * 32, visibleRows * 32, RGB(red, green, blue));
+      this->DrawRoundedOutline(55, 131, 187, 139, 0xCE9484);
+      this->DrawFilledRoundedOutline(56, 132, 185, 137, 0xFFE7DE);
+      this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
+      this->DrawBitmap(116, 151, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")))), 1);
+      this->DrawCenteredText(20, 210, LookupMessage(MSI_ITEMSTORE_DOWNLOADING), 257, 0, 12, 0, 0);
+      this->DrawCenteredText(20, 236, LookupMessage(MSI_RODEX_NOW_LOADING), 257, 0, 15, 0xC89482, 1);
+      this->DrawCenteredText(20, 272, LookupMessage(MSI_WARNINGMSG_LOADING), 257, 0, 12, 0x6464DC, 1);
+      return;
+    }
+
+    this->scrollBar->Show(1);
+    for (int i = 0; i < visibleRows; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
+    }
+
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(72, 17, columns * 32 - 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
@@ -11157,7 +11157,8 @@ void UIItemSellWnd2::Paint() {
 void UIItemShopWnd2::Paint() {
   this->DrawTitleBar(false, "", 0);
 
-  if (this->geometry.height == 17) {
+  auto& heightRef = this->geometry.height;
+  if (heightRef == 17) {
     return;
   }
 
@@ -11187,7 +11188,7 @@ void UIItemShopWnd2::Paint() {
   {
     unsigned fillRed, fillGreen, fillBlue;
     const int columns = (this->geometry.width - 40) / 32;
-    const int slotRows = (this->geometry.height - this->extraBottomHeight - this->bottomBarHeight - 17) / 32;
+    const int slotRows = (heightRef - this->extraBottomHeight - this->bottomBarHeight - 17) / 32;
     int slots = slotRows;
     for (int i = 0; i < slots; ++i) {
       this->DrawItemSlotFrame(40, i * 32 + 17);
