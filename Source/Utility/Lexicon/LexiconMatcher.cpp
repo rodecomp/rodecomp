@@ -11,8 +11,11 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
   }
 
   const unsigned char* entry = data;
-  int offset = 0;
-  unsigned char* offsetBytes = reinterpret_cast<unsigned char*>(&offset);
+  union {
+    /* 0000 */ int offset;
+    /* 0000 */ unsigned char offsetBytes[4];
+  };
+  offset = 0;
   do {
     if (text >= end || failed) {
       break;
@@ -28,7 +31,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
     entry += 3;
     const unsigned char* node = data + offset;
     const int count = *node;
-    if (count < 0x20 && node[1] == *text) {
+    if (count < 0x20 && data[offset + 1] == *text) {
       ++offset;
       for (int index = 0; index < count; ++index) {
         if (data[offset++] != *text) {
