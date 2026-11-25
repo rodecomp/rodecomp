@@ -771,12 +771,14 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
 // OFFSET: 0x007688A0
 // FUNCTION: fn_08156
 void CRuneSystemMgr::SetSelectTag(int tagId) {
-  if (this->m_tags.begin() != this->m_tags.end()) {
-    if (this->GetTag(tagId)) {
-      this->m_selectTag = tagId;
-    } else {
-      this->m_selectTag = this->m_tags.front()->m_id;
-    }
+  if (this->m_tags.empty()) {
+    return;
+  }
+  const auto hasTag = [&]() { return this->GetTag(tagId) != nullptr; };
+  if (hasTag()) {
+    this->m_selectTag = tagId;
+  } else {
+    this->m_selectTag = this->m_tags.front()->m_id;
   }
 }
 
