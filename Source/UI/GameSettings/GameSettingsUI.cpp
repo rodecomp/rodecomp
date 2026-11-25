@@ -2957,7 +2957,7 @@ void GameSettingsUI::CUIGroupRodexSpam::OnCreate(int width, int height) {
     onButton->disabled = 0;
     onButton->Invalidate();
   }
-  this->m_onButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xEDC74F6D13DF71EFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xF161095D0DE18F95ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x2BAD156DE3E1F9D9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x75ADC57D87EFBD8FULL)));
+  this->m_onButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xEDC74F6D13DF71EFULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xF161095D0DE18F95ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x2BAD156DE3E1F9D9ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x75ADC57D87EFBD8FULL)));
   {
     auto* const onButton = this->m_onButton;
     onButton->checked = false;
@@ -2986,7 +2986,7 @@ void GameSettingsUI::CUIGroupRodexSpam::OnCreate(int width, int height) {
     offButton->disabled = 0;
     offButton->Invalidate();
   }
-  this->m_offButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xAD075B8DB599F1CDULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0x2F8B0F37118D157FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x35E5656B5DEDCD75ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x4941FD9F21BBB9FDULL)));
+  this->m_offButton->SetImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xAD075B8DB599F1CDULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0x2F8B0F37118D157FULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x35E5656B5DEDCD75ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x4941FD9F21BBB9FDULL)));
   {
     auto* const offButton = this->m_offButton;
     offButton->checked = false;
