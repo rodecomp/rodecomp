@@ -24,13 +24,17 @@ void UINaviLinkButton::OpenNavigation() {
   const int x = parser->DecodeNavigationNumber(coordinates.substr(0, 2));
   parser = g_navigationLinkParser;
   const int y = parser->DecodeNavigationNumber(coordinates.substr(2, 2));
+  {
   std::string map = this->link.substr(0, start);
 
   if (map.find(g_naviLinkTagBegin) != std::string::npos) {
     map = map.substr(std::strlen(g_naviLinkTagBegin.c_str()));
   }
 
-  if (!map.empty()) {
+    if (map.empty()) {
+      return;
+    }
+
     g_navigationManager.SetDestinationMap(map, x, y);
   }
 }
