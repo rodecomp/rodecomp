@@ -16,6 +16,42 @@ static vector3d Subtract(const vector3d& left, const vector3d& right) {
 }
 
 // INLINED
+static vector3d TransformToView(const matrix& view, const vector3d& point) {
+  vector3d result;
+  result.x = point.x * view.values[0];
+  result.x += point.y * view.values[3];
+  result.x += point.z * view.values[6];
+  result.x += view.values[9];
+  result.y = point.y * view.values[4];
+  result.y += point.x * view.values[1];
+  result.y += point.z * view.values[7];
+  result.y += view.values[10];
+  result.z = point.y * view.values[5];
+  result.z += point.x * view.values[2];
+  result.z += point.z * view.values[8];
+  result.z += view.values[11];
+  return result;
+}
+
+// INLINED
+static vector3d TransformToWorld(const matrix& inverse, const vector3d& point) {
+  vector3d result;
+  result.x = point.y * inverse.values[3];
+  result.x += point.x * inverse.values[0];
+  result.x += point.z * inverse.values[6];
+  result.x += inverse.values[9];
+  result.y = point.y * inverse.values[4];
+  result.y += point.x * inverse.values[1];
+  result.y += point.z * inverse.values[7];
+  result.y += inverse.values[10];
+  result.z = point.y * inverse.values[5];
+  result.z += point.x * inverse.values[2];
+  result.z += point.z * inverse.values[8];
+  result.z += inverse.values[11];
+  return result;
+}
+
+// INLINED
 static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
   vector3d result;
   result.x = point.x * transform.values[0] + point.y * transform.values[3] + point.z * transform.values[6] + transform.values[9];
@@ -84,11 +120,11 @@ void CBezierArcThrowEffect::OnProcess() {
 
   const vector3d actorPos = actor->render.position;
   const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  vector3d actorView = TransformPoint(view, actorPos);
-  float targetViewX = this->m_target.y * view.values[3] +
-                      this->m_target.x * view.values[0] +
-                      this->m_target.z * view.values[6] +
-                      view.values[9];
+  vector3d actorView = TransformToView(view, actorPos);
+  float targetViewX = this->m_target.y * view.values[3];
+  targetViewX += this->m_target.x * view.values[0];
+  targetViewX += this->m_target.z * view.values[6];
+  targetViewX += view.values[9];
 
   matrix rotation;
   if (targetViewX >= actorView.x) {
@@ -98,7 +134,7 @@ void CBezierArcThrowEffect::OnProcess() {
   }
 
   actorView.y -= 10.0f;
-  vector3d ctrlPt = TransformPoint(g_modeMgr.GetGameMode()->camera->frame.inverse, actorView);
+  vector3d ctrlPt = TransformToWorld(g_modeMgr.GetGameMode()->camera->frame.inverse, actorView);
   this->m_progress -= 0.07f;
 
   const vector3d delta = Subtract(this->m_target, ctrlPt);
