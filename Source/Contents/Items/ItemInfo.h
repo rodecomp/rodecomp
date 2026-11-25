@@ -104,7 +104,13 @@ struct ITEM_INFO {
     };
   };
   /* 0010 */ std::int32_t quantity;
-  /* 0014 */ std::uint32_t prices[2];
+  union {
+    /* 0014 */ std::uint32_t prices[2];
+    struct {
+      /* 0014 */ std::uint32_t price;
+      /* 0018 */ std::uint32_t realPrice;
+    };
+  };
   /* 001C */ std::uint32_t cards[4];
   /* 002C */ std::string itemId;
   /* 0044 */ std::string displayName;

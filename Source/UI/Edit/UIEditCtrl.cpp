@@ -1853,7 +1853,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(i);
       if (item.itemIndex > 0) {
-        total += item.quantity * item.prices[1];
+        total += item.quantity * item.realPrice;
         this->items.push_back(item);
       }
     }
@@ -6105,14 +6105,13 @@ void UISkillListWnd::OnCreate(int width, int height) {
     std::string normal("유저인터페이스\\basic_interface\\skill_up_a.bmp");
     std::string over("유저인터페이스\\basic_interface\\skill_up_b.bmp");
     std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
-    int row = 0;
-    for (int y = 21; y < 245; y += 32, ++row) {
+    for (int row = 0; row < 7; ++row) {
       this->upgradeButtons[row] = new UIBitmapButton();
       this->upgradeButtons[row]->SetBitmap(normal.c_str(), 0, 0);
       this->upgradeButtons[row]->SetBitmap(over.c_str(), 1, 0);
       this->upgradeButtons[row]->SetBitmap(pressed.c_str(), 2, 0);
       this->upgradeButtons[row]->SetSize(this->upgradeButtons[row]->BitmapWidth(), this->upgradeButtons[row]->BitmapHeight());
-      this->upgradeButtons[row]->Move(78, y);
+      this->upgradeButtons[row]->Move(78, row * 32 + 21);
       this->upgradeButtons[row]->SetId(upgradeIds[row]);
       this->AddChild(this->upgradeButtons[row]);
     }
@@ -6879,7 +6878,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
         int sum = 0;
         for (std::list<ITEM_INFO>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
           if (it->itemIndex > 0) {
-            sum += static_cast<int>(it->prices[1]) * it->quantity;
+            sum += static_cast<int>(it->realPrice) * it->quantity;
           }
         }
         if (sum > g_windowMgr.buyingShopItemsWnd->buyingZeny) {
@@ -6955,7 +6954,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetMerchantHopeToSellItemInfoBySequence(i);
       if (item.itemIndex > 0) {
-        sum += item.quantity * static_cast<int>(item.prices[1]);
+        sum += item.quantity * static_cast<int>(item.realPrice);
         this->items.push_back(item);
       }
     }
@@ -7635,12 +7634,12 @@ void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
     }
 
     char price[64];
-    if (item.prices[0] != item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+    if (item.price != item.realPrice) {
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.price,
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
     }
 
     CMode* mode = g_modeMgr.currentMode;
@@ -7661,14 +7660,14 @@ void UIItemSellWnd2::OnMouseHover(int x, int y) {
 
     std::string text;
     char price[64];
-    if (item.prices[0] != item.prices[1]) {
-      const char* groupedPrice = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64);
+    if (item.price != item.realPrice) {
+      const char* groupedPrice = FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64);
       const char* quantityLabel = LookupMessage(MSI_EA4);
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity,
-                               quantityLabel, item.prices[0], groupedPrice));
+                               quantityLabel, item.price, groupedPrice));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     }
 
     CMode* mode = g_modeMgr.currentMode;
@@ -7692,21 +7691,21 @@ void UIItemSellWnd::OnMouseHover(int x, int y) {
 
   std::string text;
   char price[64];
-  if (item.prices[0] != item.prices[1]) {
+  if (item.price != item.realPrice) {
     if (item.identified == 1 && item.optionCount != 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA9), item.DisplayName(0).c_str(), item.optionCount, item.quantity, LookupMessage(MSI_EA4),
-                               item.prices[0], FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), "Zeny"));
+                               item.price, FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), "Zeny"));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.price,
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     }
   } else {
     if (item.identified == 1 && item.optionCount != 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA10), item.DisplayName(0).c_str(), item.optionCount, item.quantity, LookupMessage(MSI_EA4),
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), "Zeny"));
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), "Zeny"));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     }
   }
 
@@ -7722,26 +7721,28 @@ void UIItemShopWnd2::OnMouseHover(int x, int y) {
     return;
   }
 
-  int tooltipX = (x - 40) / 32 * 32 + 40;
-  int tooltipY = (y - 17) / 32 * 32 + 1;
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  int tooltipX = column * 32 + 40;
+  int tooltipY = row * 32 + 1;
   this->ToScreen(tooltipX, tooltipY);
 
   std::string text;
   char price[64];
   if (this->interactionDisabled != 0) {
-    if (item.prices[0] != item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+    if (item.price != item.realPrice) {
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.price,
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     }
   } else {
-    if (item.prices[0] != item.prices[1]) {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0],
-                               FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+    if (item.price != item.realPrice) {
+      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.price,
+                               FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+      text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
     }
   }
 
@@ -7779,44 +7780,45 @@ void UIItemShopWnd::OnMouseHover(int x, int y) {
 
     char price[64];
     if (this->sellMode) {
-      if (item.prices[0] != item.prices[1]) {
+      if (item.price != item.realPrice) {
         if (item.identified == 1 && item.optionCount != 0) {
           text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA9), item.DisplayName(0).c_str(), item.optionCount, item.quantity, LookupMessage(MSI_EA4),
-                                   item.prices[0], FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+                                   item.price, FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.prices[0],
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+          text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %d -> %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4), item.price,
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         }
       } else {
         if (item.identified == 1 && item.optionCount != 0) {
           text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA10), item.DisplayName(0).c_str(), item.optionCount, item.quantity, LookupMessage(MSI_EA4),
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         } else {
           text = static_cast<const std::string&>(FormatOwnedString("%s %d %s %s %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         }
       }
     } else {
-      if (item.prices[0] != item.prices[1]) {
+      if (item.price != item.realPrice) {
         if (item.identified == 1 && item.optionCount != 0) {
-          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA11), item.DisplayName(0).c_str(), item.optionCount, item.prices[0],
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA11), item.DisplayName(0).c_str(), item.optionCount, item.price,
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s %s", item.DisplayName(0).c_str(), item.prices[0],
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+          text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s %s", item.DisplayName(0).c_str(), item.price,
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         }
       } else {
         if (item.identified == 1 && item.optionCount != 0) {
           text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA12), item.DisplayName(0).c_str(), item.optionCount,
-                                   FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
+                                   FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64), currency));
         } else {
-          text = static_cast<const std::string&>(FormatOwnedString("%s %s %s", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64),
+          text = static_cast<const std::string&>(FormatOwnedString("%s %s %s", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64),
                                    currency));
         }
       }
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7928,14 +7930,14 @@ void UIMerchantItemMyShopWnd::OnMouseHover(int x, int y) {
     std::string text;
     char price[64];
     if (this->buyingShop != 0) {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_ITEMINFO), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64),
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MYSHOPWND_ITEMINFO), item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64),
                                item.quantity));
     } else {
       if (item.identified == 1 && item.optionCount != 0) {
         text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA8), item.DisplayName(0).c_str(), item.optionCount,
-                                 FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+                                 FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
       } else {
-        text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
+        text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64)));
       }
     }
 
@@ -7961,7 +7963,7 @@ void UIMerchantItemPurchaseWnd::OnMouseHover(int x, int y) {
     int screenX = tooltipX;
     char price[64];
     mode->ShowTooltip(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
-                                 FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64))
+                                 FormatGroupedInteger(static_cast<int>(item.realPrice), price, 64))
                    .c_str(),
                screenX, screenY, color, 0, 1);
   }
@@ -7980,16 +7982,11 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
 
     if (item.identified == 1 && item.optionCount != 0) {
       CMode* mode = g_modeMgr.currentMode;
-      std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenY = tooltipY;
-      int screenX = tooltipX;
-      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
-      int screenX = tooltipX;
       CMode* mode = g_modeMgr.currentMode;
-      std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenY = tooltipY;
-      mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   } else {
     item = this->GetItemByIndex(this->GetItemIndexAt(x, y));
@@ -8003,16 +8000,11 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
 
     if (item.identified == 1 && item.optionCount != 0) {
       CMode* mode = g_modeMgr.currentMode;
-      std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenY = tooltipY + 24;
-      int screenX = tooltipX - 2;
-      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX - 2, tooltipY + 24,
+                        g_session.GetItemNameColor(item), 0, 1);
     } else {
       CMode* mode = g_modeMgr.currentMode;
-      std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenY = tooltipY + 24;
-      int screenX = tooltipX - 2;
-      mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
+      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 }
@@ -8147,12 +8139,9 @@ UIItemBaseWnd::UIItemBaseWnd()
   this->scrollOverflow = 0;
   this->showQuantity = 1;
   this->alternateButtonBar = 0;
-  this->buttons[0] = nullptr;
-  this->buttons[1] = nullptr;
-  this->buttons[2] = nullptr;
-  this->buttons[3] = nullptr;
-  this->buttons[4] = nullptr;
-  this->scroll = 0;
+  for (int index = 0; index < 6; ++index) {
+    this->buttons[index] = nullptr;
+  }
 }
 
 // OFFSET: 0x0096E750
@@ -9441,8 +9430,8 @@ void UIItemPurchaseWnd::Paint() {
     this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
 
     int nameWidth = 110;
-    const int amount = static_cast<int>(it->prices[0]);
-    if (amount != static_cast<int>(it->prices[1])) {
+    const int amount = static_cast<int>(it->price);
+    if (amount != static_cast<int>(it->realPrice)) {
       if (amount >= 10000) {
         nameWidth = 45;
       } else if (amount >= 1000) {
@@ -9484,11 +9473,11 @@ void UIItemPurchaseWnd::Paint() {
     char price[64];
     char text[64];
     int length;
-    if (it->prices[0] != it->prices[1]) {
-      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64);
-      length = sprintf(text, " %d -> %s %s", it->prices[0], grouped, currency);
+    if (it->price != it->realPrice) {
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->realPrice), price, 64);
+      length = sprintf(text, " %d -> %s %s", it->price, grouped, currency);
     } else {
-      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->price), price, 64);
       length = sprintf(text, " %s %s", grouped, currency);
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
@@ -9577,8 +9566,8 @@ void UIItemSellWnd::Paint() {
     this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
-    const int amount = static_cast<int>(it->prices[0]);
-    if (amount != static_cast<int>(it->prices[1])) {
+    const int amount = static_cast<int>(it->price);
+    if (amount != static_cast<int>(it->realPrice)) {
       if (amount >= 10000) {
         nameWidth = 45;
       } else if (amount >= 1000) {
@@ -9602,10 +9591,10 @@ void UIItemSellWnd::Paint() {
     }
 
     int length;
-    if (it->prices[0] != it->prices[1]) {
-      length = sprintf(text, " %d -> %s Zeny", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64));
+    if (it->price != it->realPrice) {
+      length = sprintf(text, " %d -> %s Zeny", it->price, FormatGroupedInteger(static_cast<int>(it->realPrice), price, 64));
     } else {
-      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64));
+      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->price), price, 64));
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
 
@@ -9691,8 +9680,8 @@ void UIItemShopWnd::Paint() {
     this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
 
     int nameWidth = 100;
-    const int amount = static_cast<int>(it->prices[0]);
-    if (amount != static_cast<int>(it->prices[1])) {
+    const int amount = static_cast<int>(it->price);
+    if (amount != static_cast<int>(it->realPrice)) {
       if (amount >= 10000) {
         nameWidth = 45;
       } else if (amount >= 1000) {
@@ -9730,11 +9719,11 @@ void UIItemShopWnd::Paint() {
     char price[64];
     char text[64];
     int length;
-    if (it->prices[0] != it->prices[1]) {
-      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64);
-      length = sprintf(text, " %d -> %s %s", it->prices[0], grouped, currency);
+    if (it->price != it->realPrice) {
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->realPrice), price, 64);
+      length = sprintf(text, " %d -> %s %s", it->price, grouped, currency);
     } else {
-      const char* grouped = FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64);
+      const char* grouped = FormatGroupedInteger(static_cast<int>(it->price), price, 64);
       length = sprintf(text, " %s %s", grouped, currency);
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
@@ -9933,10 +9922,10 @@ void UIMerchantItemPurchaseWnd::Paint() {
     char price[64];
     char text[64];
     int length;
-    if (it->prices[0] != it->prices[1]) {
-      length = sprintf(text, " %d -> %s Zeny", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64));
+    if (it->price != it->realPrice) {
+      length = sprintf(text, " %d -> %s Zeny", it->price, FormatGroupedInteger(static_cast<int>(it->realPrice), price, 64));
     } else {
-      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64));
+      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->price), price, 64));
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
     ++visible;
@@ -10599,7 +10588,7 @@ void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
     ITEM_INFO item;
     item = g_session.GetMerchantHopeToSellItemInfoBySequence(i);
     if (item.itemIndex > 0) {
-      total += item.quantity * item.prices[0];
+      total += item.quantity * item.price;
     }
   }
 
@@ -10826,13 +10815,13 @@ void UIMerchantItemShopWnd::Paint() {
     this->DrawTextAt(this->geometry.width - width - 18, top + 29, "Z", 0, 0, 12, 0, 0, 0);
 
     char text[128];
-    if (it->prices[0] != it->prices[1]) {
-      sprintf(text, " %d -> %s ", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 128));
+    if (it->price != it->realPrice) {
+      sprintf(text, " %d -> %s ", it->price, FormatGroupedInteger(static_cast<int>(it->realPrice), price, 128));
     } else {
-      sprintf(text, " %s ", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 128));
+      sprintf(text, " %s ", FormatGroupedInteger(static_cast<int>(it->price), price, 128));
     }
     width += this->TextWidth(text, 0, 0, 12, 0, 0);
-    this->DrawAmount(static_cast<int>(it->prices[0]), text, this->geometry.width - width - 18, top + 29);
+    this->DrawAmount(static_cast<int>(it->price), text, this->geometry.width - width - 18, top + 29);
 
     int nameWidth = this->geometry.width - width - left - 66;
     if (nameWidth > 130) {
@@ -11342,7 +11331,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetStorageItemInfoBySequence(i);
       if (item.itemIndex > 0) {
-        totalPrice += item.quantity * item.prices[1];
+        totalPrice += item.quantity * item.realPrice;
         this->items.push_back(item);
       }
     }
@@ -12267,7 +12256,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::int64_t total = g_session.m_zeny;
         for (std::int64_t i = 0; i < g_session.GetNumMerchantPurchaseSavedItems(); ++i) {
           ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(static_cast<int>(i));
-          const std::int64_t price = static_cast<int>(item.prices[1]);
+          const std::int64_t price = static_cast<int>(item.realPrice);
           const std::int64_t quantity = item.quantity;
           total += price * quantity;
         }
