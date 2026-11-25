@@ -12265,8 +12265,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       this->RecordText(0, this->titleEdit->Text());
-      const std::string title(this->titleEdit->Text());
-      g_session.m_storeInfoBackup.title = title;
+      g_session.m_storeInfoBackup.title = this->titleEdit->Text();
       break;
     }
     case ID_CHECK:
