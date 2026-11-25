@@ -300,6 +300,12 @@ NaviCell* CNavigationManager::MapCellToView(NaviCell* out, const char* mapName, 
   return out;
 }
 
+// INLINED
+static NaviCell* DestinationCell(CNaviData& data, NaviCell* out) {
+  data.GetCell(out);
+  return out;
+}
+
 // OFFSET: 0x00B98630
 // FUNCTION: fn_19608
 std::string CNavigationManager::RouteText() {
@@ -309,10 +315,9 @@ std::string CNavigationManager::RouteText() {
   CNaviInfo* info = this->data.GetInfo();
   if (info != nullptr) {
     NaviCell cell;
-    this->data.GetCell(&cell);
-    if (cell.x > 0) {
+    if (DestinationCell(this->data, &cell)->x > 0) {
       NaviCell cellX;
-      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_NAVIGATION_DESTINATION), info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cell)->y);
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_NAVIGATION_DESTINATION), info->GetName(), DestinationCell(this->data, &cellX)->x, DestinationCell(this->data, &cell)->y);
     } else {
       StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] %s", LookupMessage(MSI_NAVIGATION_DESTINATION), info->GetName());
     }
@@ -467,11 +472,11 @@ std::string CNavigationManager::SelectedNodeText() {
     if (info != nullptr) {
       NaviCell cellX;
       NaviCell cellY;
-      std::sprintf(buffer, "%s %d %d...", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
+      std::sprintf(buffer, "%s %d %d...", info->GetName(), DestinationCell(this->data, &cellX)->x, DestinationCell(this->data, &cellY)->y);
     }
   }
 
-  this->selectedNodeText.assign(buffer, std::strlen(buffer));
+  this->selectedNodeText = buffer;
   return this->selectedNodeText;
 }
 
@@ -484,15 +489,15 @@ std::string CNavigationManager::SubDestinationText() {
   CNaviInfo* info = this->data.GetInfo();
   if (info != nullptr) {
     NaviCell cell;
-    if (this->data.GetCell(&cell)->x > 0) {
+    if (DestinationCell(this->data, &cell)->x > 0) {
       NaviCell cellX;
-      std::sprintf(buffer, ">.%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cell)->y);
+      std::sprintf(buffer, ">.%s %d %d", info->GetName(), DestinationCell(this->data, &cellX)->x, DestinationCell(this->data, &cell)->y);
     } else {
       std::sprintf(buffer, ">.%s", info->GetName());
     }
   }
 
-  this->subDestinationText.assign(buffer, std::strlen(buffer));
+  this->subDestinationText = buffer;
   return this->subDestinationText;
 }
 
@@ -511,7 +516,7 @@ std::string CNavigationManager::DestinationText() {
     NaviCell cellX;
     NaviCell cellY;
     std::sprintf(buffer, "%s %d %d", node->GetInfo()->GetName(), node->GetCell(&cellX)->x, node->GetCell(&cellY)->y);
-    this->destinationText.assign(buffer, std::strlen(buffer));
+    this->destinationText = buffer;
     return this->destinationText;
   }
 
@@ -520,11 +525,11 @@ std::string CNavigationManager::DestinationText() {
     if (info != nullptr) {
       NaviCell cellX;
       NaviCell cellY;
-      std::sprintf(buffer, "%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
+      std::sprintf(buffer, "%s %d %d", info->GetName(), DestinationCell(this->data, &cellX)->x, DestinationCell(this->data, &cellY)->y);
     }
   }
 
-  this->destinationText.assign(buffer, std::strlen(buffer));
+  this->destinationText = buffer;
   return this->destinationText;
 }
 
@@ -936,7 +941,8 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
     if (info == nullptr) {
       continue;
     }
-    buffer.resize(it->name.size() + 0x24 + offset, 0);
+    const int size = it->name.size() + 0x24 + offset;
+    buffer.resize(size, 0);
     reinterpret_cast<NaviTargetRecord*>(buffer.data() + offset)->type = it->type;
     offset += 4;
     char* mapName = reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->mapName;
@@ -1277,6 +1283,22 @@ struct NavigationDestinationRecord {
 
 static_assert(sizeof(NavigationDestinationRecord) == 0x2C);
 
+// INLINED
+static void RecordDestination(std::string name, int x, int y) {
+  if (Replay::Instance().state == 2) {
+    char packet[100] = {};
+    NavigationDestinationRecord record = {};
+    record.header = ReplayUiRecordHeader(REPLAY_UI_NAVIGATION_DESTINATION);
+    record.length = sizeof(record);
+    std::memcpy(record.mapName, name.c_str(), name.size());
+    record.x = x;
+    record.y = y;
+    std::memcpy(packet, &record, sizeof(record));
+
+    Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+  }
+}
+
 // OFFSET: 0x00B9E290
 // FUNCTION: fn_19628
 bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
@@ -1285,21 +1307,7 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
     return false;
   }
 
-  {
-    std::string name = mapName;
-    if (Replay::Instance().state == 2) {
-      char packet[100] = {};
-      NavigationDestinationRecord record = {};
-      record.header = ReplayUiRecordHeader(REPLAY_UI_NAVIGATION_DESTINATION);
-      record.length = sizeof(record);
-      std::memcpy(record.mapName, name.c_str(), name.size());
-      record.x = x;
-      record.y = y;
-      std::memcpy(packet, &record, sizeof(record));
-
-      Replay::Instance().Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
-    }
-  }
+  RecordDestination(mapName, x, y);
 
   char text[50];
   std::memset(text, 0, sizeof(text));
