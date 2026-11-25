@@ -163,6 +163,11 @@ void RC6::Base::SetKey(std::span<const std::uint8_t> key) {
 - A marked function is not compared or peer reviewed: it goes to maintainer review, who checks it
   against the reference build.
 - Use it only for such stubs, and only with a reference build that has the real body.
+- A body recovered by emulating the protector's VM (no build has it as ordinary x86) names the VM entry instead:
+  `// VIRTUALIZED: emulated 0x00B08F6A`, the address of the stub's jump into the VM. Keep the emulation evidence
+  in the batch notes; maintainer review checks the body against it.
+- Strings such a body uses that exist only inside the protector's encrypted VM data are listed by a maintainer in
+  `vmLiterals` (`data/decomp.json`), each with its evidence; no other literal outside the executable is allowed.
 
 ## 2a. Verification uses Clank
 

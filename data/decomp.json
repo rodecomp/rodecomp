@@ -13,6 +13,11 @@
  "toolchain": "ragnarok",
  "globalRules": true,
  "offsetAnnotations": true,
+ "vmLiterals": [
+  "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dlib\\Renderer.cpp",
+  "정상적인 라그나로크 클라이언트를 실행시켜 주시기 바랍니다.",
+  "Failed to load Winsock library!"
+ ],
  "encodedLiterals": [
   {
    "macro": "CRYPT_NAME",
