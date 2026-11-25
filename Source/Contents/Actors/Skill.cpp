@@ -640,7 +640,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
         source = static_cast<CPc*>(g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->sourceActorId));
       }
       if (source != nullptr) {
-        CreateHallucinationPc(
+        this->CreateHallucinationPc(
           source->GetEffectiveJob(-1), source->sex, source->head, &this->render.position, 180, source->render.bodyPalette,
           source->headPalette, source->GetBodyCostume()
         );
@@ -757,7 +757,8 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
         if (!g_effectMgr->Has(this->render.accountId, static_cast<int>(effectId))) {
           g_effectMgr->Retire(this->render.accountId, static_cast<int>(effectId));
         }
-        CEZ2STRScreenEffect* effect = static_cast<CEZ2STRScreenEffect*>(g_effectMgr->Spawn(this->render.accountId, static_cast<int>(effectId), this->render.position, 0, unit->level, 0, 0));
+        EffectLists* effects = g_effectMgr;
+        CEZ2STRScreenEffect* effect = static_cast<CEZ2STRScreenEffect*>(effects->Spawn(this->render.accountId, static_cast<int>(effectId), this->render.position, 0, unit->level, 0, 0));
         if (effect != nullptr) {
           effect->SetAngle(90.0f);
           effect->followCamera = 1;
@@ -921,8 +922,10 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       break;
     }
 
-    this->chatTick = timeGetTime();
-    if (this->actorWindows[0] == 0) {
+    const auto now = timeGetTime();
+    const auto* balloon = this->actorWindows[0];
+    this->chatTick = now;
+    if (balloon == nullptr) {
       this->actorWindows[0] = new UITransBalloonText();
       this->actorWindows[0]->SetSize(8, 8);
       g_windowMgr.AddRenderedFront(this->actorWindows[0]);

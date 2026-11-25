@@ -311,10 +311,10 @@ public:
   int IsPlayerClass(int job);
   bool UpdateFadeOut();
   int MountedJob(int job, std::uint32_t flags);
+  void CreateHallucinationPc(int job, int sex, int head, const vector3d* position, int alpha, int weapon, int shield, int bodyPalette);
 };
 
 int ShapeShiftJob(int form, int job);
-void __stdcall CreateHallucinationPc(int job, int sex, int head, const vector3d* position, int alpha, int weapon, int shield, int bodyPalette);
 
 extern int g_maxMoveSpeed;
 extern int g_multiHitInterval;

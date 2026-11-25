@@ -1198,7 +1198,7 @@ void CGameActor::SetStackedEffect(int effectId, bool on) {
 
 // OFFSET: 0x00CAE3B0
 // FUNCTION: fn_21073
-void __stdcall CreateHallucinationPc(
+void CGameActor::CreateHallucinationPc(
   int job, int sex, int head, const vector3d* position, int alpha, int weapon, int shield, int bodyPalette
 ) {
   CPc* pc = new (std::nothrow) CPc;
