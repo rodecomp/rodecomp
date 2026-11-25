@@ -402,6 +402,7 @@ std::uint32_t CRenderer::BlendColor(std::uint32_t base, std::uint32_t overlay) {
 
 // OFFSET: 0x0055ADA0
 // FUNCTION: fn_02085
+// VIRTUALIZED: emulated 0x0278230F
 bool CRendererDX7::Draw() {
   this->screenWidth = g_deviceOwnerDX7 ? g_deviceOwnerDX7->width : 0;
   this->screenHeight = g_deviceOwnerDX7 ? g_deviceOwnerDX7->height : 0;
