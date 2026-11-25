@@ -5060,14 +5060,14 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
   for (int index = 0; index < packet->count; ++index) {
     const auto* entry = reinterpret_cast<const OngoingQuestEntry*>(cursor);
     cursor += sizeof(OngoingQuestEntry);
-    if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, entry->state)) {
+    if (g_renewQuestMgr->SetOngoingQuestState(entry->questId, QuestState(entry))) {
       cursor += entry->huntCount * sizeof(OngoingQuestHunt);
       continue;
     }
 
     RenewQuestOngoingInfo info;
     info.m_state = entry->state;
-    __time32_t endTime = entry->endTime > 0 ? entry->endTime : 0;
+    __time32_t endTime = std::max<__time32_t>(0, entry->endTime);
     const tm time = *_localtime32(&endTime);
     const int rawEndTime = entry->endTime;
     info.m_year = time.tm_year + 1900;
