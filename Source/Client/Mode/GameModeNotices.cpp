@@ -7723,7 +7723,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
       if (std::strcmp(head, notice) != 0) {
         std::string reply(LookupMessage(MSI_AUTO_MSG2));
         reply.append(g_session.autoReplyText.c_str());
-        g_windowMgr.SetChatInputText(reply.c_str());
+        g_windowMgr.chatInputText.assign(reply.c_str(), std::strlen(reply.c_str()));
         g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
     }
@@ -7821,7 +7821,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     head[length] = '\0';
     if (std::strcmp(head, notice) != 0) {
       std::string reply(LookupMessage(MSI_AUTO_MSG2));
-      reply.append(g_session.autoReplyText.c_str());
+      reply += g_session.autoReplyText.c_str();
       g_windowMgr.SetChatInputText(reply.c_str());
       g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }
