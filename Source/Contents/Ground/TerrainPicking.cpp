@@ -30,11 +30,13 @@ float C3dAttr::RayDistance(const float* ray, int column, int row) const {
   corners[1].y = cell->heights[1];
   corners[1].x = static_cast<float>(dx + 1) * size;
   corners[1].z = static_cast<float>(dz) * size;
+  const float bottomLeft = cell->heights[2];
   corners[2].x = static_cast<float>(dx) * size;
-  corners[2].y = cell->heights[2];
+  corners[2].y = bottomLeft;
   corners[2].z = static_cast<float>(dz + 1) * size;
+  const float bottomRight = cell->heights[3];
   corners[3].x = static_cast<float>(dx + 1) * size;
-  corners[3].y = cell->heights[3];
+  corners[3].y = bottomRight;
   corners[3].z = static_cast<float>(dz + 1) * size;
   float u;
   float v;
