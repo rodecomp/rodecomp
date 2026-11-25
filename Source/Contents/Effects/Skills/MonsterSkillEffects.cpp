@@ -80,6 +80,14 @@ static vector3d Add(const vector3d& left, const vector3d& right) {
   return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
 }
 
+// INLINED
+static void SetIndices(CParticle* particle, int effectId, int group, int column, int row) {
+  particle->effectId = effectId;
+  particle->columnIndex = column;
+  particle->rowIndex = row;
+  particle->groupIndex = group;
+}
+
 // OFFSET: 0x0070C070
 // FUNCTION: fn_07123
 bool CCrimsonArrowEffect::IsAlive() {
@@ -677,10 +685,7 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
   CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (particle) {
     particle->SetTexture("warning_plane.tga");
-    particle->effectId = this->id;
-    particle->columnIndex = 0;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetIndices(particle, this->id, 1, 0, 0);
     particle->scale = 2.5f;
     particle->alpha = 150;
     particle->SetColor(255, 0, 0);
