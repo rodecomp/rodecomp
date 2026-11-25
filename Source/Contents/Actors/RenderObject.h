@@ -41,7 +41,7 @@ public:
   virtual bool PrepareSprite(
     int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
     float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, tagRECT* box, std::uint32_t* color, int offsetX, int offsetY,
-    int flags
+    bool behind
   );
   virtual void RenderBlur(
     const SpriteFrameCell* cell, const tagRECT* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
