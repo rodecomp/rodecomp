@@ -31,7 +31,7 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
       result = this->lines[line];
       const std::string label = (*row)[index]->label;
 
-      if (label.find(LookupMessage(MSI_NAMELESS_USER)) != std::string::npos) {
+      if (label.find(LookupMessage(MSI_NAMELESS_USER)) < std::string::npos) {
         const std::size_t found = result.find(LookupMessage(MSI_NAMELESS_USER));
         std::string player = LookupPlayerName((*row)[index]->tipId);
 
