@@ -57,8 +57,8 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 
   marker.name = name;
   marker.area = area;
-  marker.center[0] = centerX;
-  marker.center[1] = centerY;
+  marker.center.x = centerX;
+  marker.center.y = centerY;
   marker.width = static_cast<float>(width);
   marker.height = static_cast<float>(height);
 }
@@ -651,23 +651,26 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
     RoMapMarker from = this->m_kafraMarkers.current;
     RoMapMarker to = this->m_kafraMarkers.markers[i];
     targets.insert(std::pair<std::string, RoMapMarker>(to.name, to));
-    if (to.name.size() == 10 && std::memcmp(to.name.c_str(), "izlude.rsw", 10) == 0) {
-      from.center[0] = static_cast<float>(from.area.right);
-      to.center[0] = to.width * 0.8f + static_cast<float>(to.area.left);
-      to.center[1] = static_cast<float>(to.area.top);
+    if (to.name == "izlude.rsw") {
+      from.center.x = static_cast<float>(from.area.right);
+      to.center.x = to.width * 0.8f + static_cast<float>(to.area.left);
+      to.center.y = static_cast<float>(to.area.top);
     }
 
-    const float blend = this->m_kafraMarkers.blend;
-    CTexture* head = g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false);
-    CTexture* body = g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false);
+    const ScreenPoint fromMin(static_cast<float>(from.area.left), static_cast<float>(from.area.top));
+    const ScreenPoint fromMax(static_cast<float>(from.area.right), static_cast<float>(from.area.bottom));
+    const ScreenPoint toMin(static_cast<float>(to.area.left), static_cast<float>(to.area.top));
+    const ScreenPoint toMax(static_cast<float>(to.area.right), static_cast<float>(to.area.bottom));
     this->DrawArrow(
-      from.center[0], from.center[1], to.center[0], to.center[1], static_cast<float>(from.area.left), static_cast<float>(from.area.top),
-      static_cast<float>(from.area.right), static_cast<float>(from.area.bottom), static_cast<float>(to.area.left), static_cast<float>(to.area.top),
-      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, blend, 0xAAFFFFFF
+      from.center.x, from.center.y, to.center.x, to.center.y, fromMin.x, fromMin.y, fromMax.x, fromMax.y, toMin.x, toMin.y, toMax.x, toMax.y, 10,
+      g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false), 20, g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false), this->m_kafraMarkers.blend,
+      0xAAFFFFFF
     );
   }
 
-  this->DrawKafraIcon(static_cast<float>(this->m_kafraMarkers.current.area.right), static_cast<float>(this->m_kafraMarkers.current.area.top));
+  this->DrawKafraIcon(
+    ScreenPoint{static_cast<float>(this->m_kafraMarkers.current.area.right), static_cast<float>(this->m_kafraMarkers.current.area.top)}
+  );
   for (std::map<std::string, RoMapMarker>::iterator it = targets.begin(); it != targets.end(); ++it) {
     this->DrawMapMarker(it->second, 1);
   }
@@ -954,8 +957,8 @@ __forceinline void CFlyingShipRouteInfo::UpdateAnimation(UIRoMapWnd* wnd, float 
       ++this->segmentIndex;
     }
 
-    const float dy = this->entries[this->segmentIndex].center[1] - this->entries[this->segmentIndex + 1].center[1];
-    const float dx = this->entries[this->segmentIndex].center[0] - this->entries[this->segmentIndex + 1].center[0];
+    const float dy = this->entries[this->segmentIndex].center.y - this->entries[this->segmentIndex + 1].center.y;
+    const float dx = this->entries[this->segmentIndex].center.x - this->entries[this->segmentIndex + 1].center.x;
     const float distance = SquareRoot(dx * dx + dy * dy);
     if (this->travelledDistance == 0.0f) {
       this->segmentLength = distance;

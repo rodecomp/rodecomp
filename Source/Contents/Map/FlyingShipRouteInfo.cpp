@@ -34,7 +34,7 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
     targets.insert(std::pair<std::string, RoMapMarker>(entry.name, entry));
 
     DrawScreenLine(
-      ScreenPoint{from.center[0], from.center[1]}, ScreenPoint{entry.center[0], entry.center[1]}, 2,
+      from.center, entry.center, 2,
       g_texMgr.Load(this->lineTextureName.c_str(), 0, true, true, false), static_cast<std::uint32_t>(this->lineColor)
     );
   }
@@ -42,7 +42,7 @@ void CFlyingShipRouteInfo::Draw(UIRoMapWnd* wnd) {
   const RoMapMarker& from = this->entries[this->segmentIndex];
   const RoMapMarker& to = this->entries[this->segmentIndex + 1];
   wnd->DrawDashedArrow(
-    from.center[0], from.center[1], to.center[0], to.center[1], 0x10, 0x10,
+    from.center, to.center, 0x10, 0x10,
     g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf.bmp", 0, true, true, false), 0x14,
     g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_airplen32.bmp", 0, true, true, false), this->segmentProgress, 0xFFFFFFFF, 6
   );

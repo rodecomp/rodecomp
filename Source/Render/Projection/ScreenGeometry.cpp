@@ -22,15 +22,14 @@ static void SetScreenQuadVertex(RenderVertex& vertex, float x, float y, std::uin
 // OFFSET: 0x0054E2B0
 // FUNCTION: fn_01951
 void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture* texture, std::uint32_t color) {
-  if (SquareRoot((end.y - start.y) * (end.y - start.y) + (end.x - start.x) * (end.x - start.x)) == 0.0f) {
+  if (0.0f == SquareRoot((end.y - start.y) * (end.y - start.y) + (end.x - start.x) * (end.x - start.x))) {
     return;
   }
 
-  const float deltaX = end.x - start.x;
-  const float deltaY = end.y - start.y;
-  const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX);
-  float angle = static_cast<float>(std::acos(static_cast<double>(inverseLength * deltaX)));
-  if (inverseLength * deltaY < 0.0f) {
+  ScreenPoint direction = {end.x - start.x, end.y - start.y};
+  NormalizePoint(direction);
+  float angle = static_cast<float>(std::acos(static_cast<double>(direction.x)));
+  if (direction.y < 0.0f) {
     angle = 6.283184f - angle;
   }
 
@@ -112,10 +111,11 @@ void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, 
 // FUNCTION: fn_12581
 __declspec(noinline) void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  SetScreenQuadVertex(primitive->vertices[0], p0.x, p0.y, color, 0.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[1], p1.x, p1.y, color, 1.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[2], p2.x, p2.y, color, 0.0f, 1.0f);
-  SetScreenQuadVertex(primitive->vertices[3], p3.x, p3.y, color, 1.0f, 1.0f);
+  RenderVertex* vertices = primitive->vertices;
+  SetScreenQuadVertex(vertices[0], p0.x, p0.y, color, 0.0f, 0.0f);
+  SetScreenQuadVertex(vertices[1], p1.x, p1.y, color, 1.0f, 0.0f);
+  SetScreenQuadVertex(vertices[2], p2.x, p2.y, color, 0.0f, 1.0f);
+  SetScreenQuadVertex(vertices[3], p3.x, p3.y, color, 1.0f, 1.0f);
   primitive->texture = texture;
   primitive->sourceBlend = 2;
   primitive->destinationBlend = 4;

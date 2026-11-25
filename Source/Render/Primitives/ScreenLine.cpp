@@ -41,78 +41,66 @@ float ScreenLineFullTurn = 6.283184f;
 // OFFSET: 0x00918380
 // FUNCTION: fn_12594
 void UIRoMapWnd::DrawDashedArrow(
-  float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
-  std::uint32_t color, int offset
+  ScreenPoint start, ScreenPoint end, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress, std::uint32_t color,
+  int offset
 ) {
-  const float visibleDistance = SquareRoot((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY)) * progress;
-  const float deltaY = endY - startY;
-  const float deltaX = endX - startX;
-  const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX);
-  const float directionY = inverseLength * deltaY;
-  const float directionX = inverseLength * deltaX;
-  float angle = static_cast<float>(std::acos(static_cast<double>(directionX)));
-  if (directionY < 0.0f) {
+  const float visibleDistance = PointDistance(start, end) * progress;
+  ScreenPoint direction = {end.x - start.x, end.y - start.y};
+  NormalizePoint(direction);
+  float angle = static_cast<float>(std::acos(static_cast<double>(direction.x)));
+  if (direction.y < 0.0f) {
     angle = ScreenLineFullTurn - angle;
   }
   angle += ScreenLineQuarterTurn;
 
   const float sine = ClientSin(angle);
   const float cosine = ClientCos(angle);
-  const float inverseNormal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
-  const float normalX = cosine * inverseNormal;
-  const float normalY = inverseNormal * sine;
+  ScreenPoint normal = {cosine, sine};
+  NormalizePoint(normal);
   std::uint32_t segmentColor = 0x33FFFFFF;
-  const float sideX = static_cast<float>(thickness) * normalX;
-  const float sideY = static_cast<float>(thickness) * normalY;
-  float currentX = startX - static_cast<float>(offset) * normalX;
-  float currentY = startY - static_cast<float>(offset) * normalY;
-  const float stepX = static_cast<float>(stepWidth) * directionX;
-  const float stepY = static_cast<float>(stepWidth) * directionY;
-  float nextX = stepX + currentX;
-  float nextY = stepY + currentY;
-  const float visibleEndX = directionX * visibleDistance + startX;
-  const float visibleEndY = directionY * visibleDistance + startY;
-  ScreenPoint quad[4];
+  const float sideX = static_cast<float>(thickness) * normal.x;
+  const float sideY = static_cast<float>(thickness) * normal.y;
+  ScreenPoint current = {start.x - static_cast<float>(offset) * normal.x, start.y - static_cast<float>(offset) * normal.y};
+  const float stepX = static_cast<float>(stepWidth) * direction.x;
+  const float stepY = static_cast<float>(stepWidth) * direction.y;
+  ScreenPoint next = {stepX + current.x, stepY + current.y};
+  const ScreenPoint visibleEnd = {direction.x * visibleDistance + start.x, direction.y * visibleDistance + start.y};
 
-  if (SquareRoot((nextX - startX) * (nextX - startX) + (nextY - startY) * (nextY - startY)) < visibleDistance) {
+  if (PointDistance(start, next) < visibleDistance) {
     const float halfStepX = stepX * 0.5f;
     const float halfStepY = stepY * 0.5f;
-    float distanceToNext;
     do {
-      quad[0] = {currentX, currentY};
-      quad[1] = {currentX + sideX, currentY + sideY};
-      quad[2] = {nextX, nextY};
-      quad[3] = {nextX + sideX, nextY + sideY};
-      const float remainingX = visibleEndX - currentX;
-      const float remainingY = visibleEndY - currentY;
-      if (SquareRoot(remainingX * remainingX + remainingY * remainingY) < 100.0f) {
-        DrawScreenQuad(quad[0], quad[1], quad[2], quad[3], body, segmentColor);
+      const ScreenPoint p0 = {current.x, current.y};
+      const ScreenPoint p1 = {current.x + sideX, current.y + sideY};
+      const ScreenPoint p2 = {next.x, next.y};
+      const ScreenPoint p3 = {next.x + sideX, next.y + sideY};
+      if (PointDistance(current, visibleEnd) < 100.0f) {
+        DrawScreenQuad(p0, p1, p2, p3, body, segmentColor);
         segmentColor += 0x33000000;
       }
 
-      currentX = halfStepX + nextX;
-      currentY = halfStepY + nextY;
-      nextX = currentX + stepX;
-      nextY = currentY + stepY;
-      distanceToNext = SquareRoot((nextX - startX) * (nextX - startX) + (nextY - startY) * (nextY - startY));
-    } while (distanceToNext < visibleDistance);
+      current.x = halfStepX + next.x;
+      current.y = halfStepY + next.y;
+      next.x = current.x + stepX;
+      next.y = current.y + stepY;
+    } while (PointDistance(start, next) < visibleDistance);
   }
 
   if (progress < g_projectionDepthNumerator) {
-    const float tipBaseX = (sideX * 0.5f + nextX) - static_cast<float>(thickness) * directionX;
-    const float tipBaseY = (sideY * 0.5f + nextY) - static_cast<float>(thickness) * directionY;
+    const float tipBaseX = (sideX * 0.5f + next.x) - static_cast<float>(thickness) * direction.x;
+    const float tipBaseY = (sideY * 0.5f + next.y) - static_cast<float>(thickness) * direction.y;
     const float headX = static_cast<float>(headSize);
-    const float tipX = tipBaseX + headX * normalX;
-    const float otherBaseX = tipBaseX - headX * normalX;
-    const float tipY = tipBaseY + headX * normalY;
-    const float otherBaseY = tipBaseY - headX * normalY;
-    const float doubledStepX = headX * directionX + headX * directionX;
-    const float doubledStepY = headX * directionY + headX * directionY;
-    quad[0] = {otherBaseX, otherBaseY};
-    quad[1] = {tipX, tipY};
-    quad[2] = {doubledStepX + otherBaseX, doubledStepY + otherBaseY};
-    quad[3] = {tipX + doubledStepX, tipY + doubledStepY};
-    DrawScreenQuad(quad[3], quad[2], quad[1], quad[0], head, color);
+    const float tipX = tipBaseX + headX * normal.x;
+    const float otherBaseX = tipBaseX - headX * normal.x;
+    const float tipY = tipBaseY + headX * normal.y;
+    const float otherBaseY = tipBaseY - headX * normal.y;
+    const float doubledStepX = headX * direction.x + headX * direction.x;
+    const float doubledStepY = headX * direction.y + headX * direction.y;
+    const ScreenPoint p0 = {otherBaseX, otherBaseY};
+    const ScreenPoint p1 = {tipX, tipY};
+    const ScreenPoint p2 = {doubledStepX + otherBaseX, doubledStepY + otherBaseY};
+    const ScreenPoint p3 = {tipX + doubledStepX, tipY + doubledStepY};
+    DrawScreenQuad(p3, p2, p1, p0, head, color);
   }
 }
 // GLOBAL: gl_25021
@@ -166,7 +154,7 @@ void UISubChatHisWnd::DrawTransBox() {
 
 // OFFSET: 0x009189C0
 // FUNCTION: fn_12595
-void UIRoMapWnd::DrawKafraIcon(float x, float y) {
+void UIRoMapWnd::DrawKafraIcon(ScreenPoint point) {
   const float scale = static_cast<float>(g_worldViewMgr.screenScale) * 0.2f + g_depthAverageHalf;
   CSprRes* sprite = dynamic_cast<CSprRes*>(ResourceMgr::Instance().Load("npc\\4_f_kafra6.spr"));
   CActRes* action = dynamic_cast<CActRes*>(ResourceMgr::Instance().Load("npc\\4_f_kafra6.act"));
@@ -196,7 +184,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
     return;
   }
 
-  const int top = static_cast<int>(y - (static_cast<float>(image->height) * scale + 23.0f));
+  const int top = static_cast<int>(point.y - (static_cast<float>(image->height) * scale + 23.0f));
   const int lift = top <= 0 ? top : 0;
   if (frame > 0) {
     cell = &frames[frame].Cell(0);
@@ -227,19 +215,13 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   const int halfWidth = static_cast<int>(static_cast<float>(image->width) * scale * g_depthAverageHalf);
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
-  vertices[0].x = x - static_cast<float>(halfWidth);
-  vertices[1].x = static_cast<float>(halfWidth) + x;
-  vertices[0].y = y - static_cast<float>(height) - static_cast<float>(lift);
-  vertices[2].x = x - static_cast<float>(halfWidth);
-  vertices[1].y = y - static_cast<float>(height) - static_cast<float>(lift);
-  vertices[2].y = y - static_cast<float>(lift);
-  vertices[3].y = y - static_cast<float>(lift);
-  vertices[3].x = static_cast<float>(halfWidth) + x;
-  for (int index = 0; index < 4; ++index) {
-    vertices[index].z = 0.8f;
-    vertices[index].rhw = 1.0f;
-    vertices[index].diffuse = 0xFFFFFFFF;
-  }
+  vertices[2].x = vertices[0].x = point.x - static_cast<float>(halfWidth);
+  vertices[1].y = vertices[0].y = point.y - static_cast<float>(height) - static_cast<float>(lift);
+  vertices[3].x = vertices[1].x = static_cast<float>(halfWidth) + point.x;
+  vertices[3].y = vertices[2].y = point.y - static_cast<float>(lift);
+  vertices[0].z = vertices[1].z = vertices[2].z = vertices[3].z = 0.8f;
+  vertices[0].rhw = vertices[1].rhw = vertices[2].rhw = vertices[3].rhw = 1.0f;
+  vertices[0].diffuse = vertices[1].diffuse = vertices[2].diffuse = vertices[3].diffuse = 0xFFFFFFFF;
   vertices[0].u = record.u0;
   vertices[0].v = record.v0;
   vertices[1].u = record.u1;

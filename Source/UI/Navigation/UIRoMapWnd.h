@@ -20,6 +20,7 @@ class UIBitmapButton;
 class UICheckBox;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
+struct ScreenPoint;
 
 struct RoMapTooltipBox {
   // INLINED
@@ -85,14 +86,14 @@ public:
   void DrawRecordAreas();
   void DrawSelectedMapPreview();
   void DrawPreviewTexture();
-  void DrawKafraIcon(float x, float y);
+  void DrawKafraIcon(ScreenPoint point);
   void DrawArrow(
     float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
     float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
   );
   void DrawDashedArrow(
-    float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
-    std::uint32_t color, int offset
+    ScreenPoint start, ScreenPoint end, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress, std::uint32_t color,
+    int offset
   );
   __declspec(noinline) void DrawKafraMarkers(float elapsed);
   __declspec(noinline) void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);

@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_MAP_FLYINGSHIPROUTEINFO_H
 
 #include "Contents/World/WorldViewData.h"
+#include "Render/Projection/ScreenGeometry.h"
 
 #include <cstddef>
 #include <string>
@@ -13,15 +14,15 @@ struct WorldViewRecord;
 struct RoMapMarker {
   /* 0000 */ std::string name;
   /* 0018 */ WorldViewArea area = {0, 0, 0, 0, 0};
-  /* 002C */ float center[2];
+  /* 002C */ ScreenPoint center;
   /* 0034 */ float width;
   /* 0038 */ float height;
 
   RoMapMarker() = default;
   // INLINED
   RoMapMarker(const RoMapMarker& other) : name(other.name), area(other.area) {
-    this->center[0] = other.center[0];
-    this->center[1] = other.center[1];
+    this->center.x = other.center.x;
+    this->center.y = other.center.y;
     this->width = other.width;
     this->height = other.height;
   }
