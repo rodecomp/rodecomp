@@ -65,12 +65,12 @@ namespace {
 
   // INLINED
   __forceinline void GroundColor(const C3dNode* node, const GroundGeometry& ground, const float* matrix, const std::array<float, 3>& vertex, std::uint32_t* output) {
-    vector3d position{
-      ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9],
+    const vector3d position{
+      ((vertex[1] * matrix[3] + vertex[0] * matrix[0]) + vertex[2] * matrix[6]) + matrix[9],
       ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10],
       ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]};
-    position += node->model->GetPosition();
-    ground.WorldColor(position, output);
+    const vector3d world{position.x + node->model->GetPosition().x, position.y + node->model->GetPosition().y, position.z + node->model->GetPosition().z};
+    ground.WorldColor(world, output);
   }
 
   // INLINED
