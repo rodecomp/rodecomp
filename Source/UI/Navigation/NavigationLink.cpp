@@ -758,7 +758,7 @@ CCreateLineInfo::CCreateLineInfo(
     this->outlineColor = outlineColorValue;
 
     if (!s_fontStackCache.empty()) {
-      this->m_fontStack.swap(s_fontStackCache);
+      s_fontStackCache.swap(this->m_fontStack);
     }
 
     this->Rebuild(0);
@@ -1625,10 +1625,7 @@ void CCreateLineInfo::ArrangeLines() {
     std::vector<UIWindow*>& line = *lineIt;
     unsigned lineHeight = 0;
     for (UIWindow* window : line) {
-      const unsigned height = static_cast<unsigned>(window->geometry.height);
-      if (height > lineHeight) {
-        lineHeight = height;
-      }
+      lineHeight = static_cast<unsigned>(window->geometry.height) > lineHeight ? window->geometry.height : lineHeight;
     }
 
     switch (this->m_align) {
