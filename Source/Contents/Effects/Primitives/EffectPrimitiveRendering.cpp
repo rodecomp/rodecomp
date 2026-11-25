@@ -5196,17 +5196,17 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
     }
 
     this->state.slots[ec].vecBPre.x = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecBPre.y = -1.0f;
-    this->state.slots[ec].vecBPre.z = this->state.slots[ec].height[1];
     this->state.slots[ec].vecBNow.x = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBPre.z = this->state.slots[ec].height[1];
+    this->state.slots[ec].vecBPre.y = -1.0f;
     this->state.slots[ec].vecBNow.y = -1.0f;
-    this->state.slots[ec].vecBNow.z = -this->state.slots[ec].height[1];
-    this->state.slots[ec].vecTNow.x = -this->state.slots[ec].height[0];
     this->state.slots[ec].vecTNow.y = -1.0f;
-    this->state.slots[ec].vecTNow.z = -this->state.slots[ec].height[1];
-    this->state.slots[ec].vecTPre.x = -this->state.slots[ec].height[0];
-    this->state.slots[ec].vecTPre.y = -1.0f;
     this->state.slots[ec].vecTPre.z = this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTNow.x = -this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTPre.x = -this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBNow.z = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTNow.z = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTPre.y = -1.0f;
 
     const float y = -1.0f - this->state.slots[ec].height[2];
     vec1.Set(this->state.slots[ec].vecBPre.x, y, this->state.slots[ec].vecBPre.z);
