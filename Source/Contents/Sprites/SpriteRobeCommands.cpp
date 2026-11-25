@@ -66,8 +66,8 @@ void CCharacterRender::RenderRobeCommands(
         !drawOnTop
       );
 
-      const float bottom = bottomDepth;
       const float top = topDepth;
+      const float bottom = bottomDepth;
       if (!drawOnTop && g_modeMgr.GetGameMode()->camera->camera.pitch >= -40.0f) {
         quad.bottomRhw = bottom - 0.0000065f;
         quad.topRhw = top - 0.0000065f;
