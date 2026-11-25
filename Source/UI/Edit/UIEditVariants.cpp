@@ -436,8 +436,6 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
 // OFFSET: 0x008551B0
 // FUNCTION: fn_10753
 void UIEditCtrl3::PaintText() {
-  FontCache& fonts = g_fontCache;
-
   int x = 3;
   if (this->invalidatesParent == 0 && this->firstVisible != 0) {
     x = 3 - this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
