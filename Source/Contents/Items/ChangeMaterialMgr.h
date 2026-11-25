@@ -25,17 +25,15 @@ struct ChangeMaterialEntry {
   }
 };
 
-struct ChangeMaterialProduct {
+struct ChangeMaterialProduct : ChangeMaterialEntry {
   // INLINED
-  ChangeMaterialProduct() : itemId(0), count(0), rate(0) {}
+  ChangeMaterialProduct() : rate(0) {}
   // INLINED
-  ChangeMaterialProduct(int itemId, int count, int rate) : itemId(itemId), count(count), rate(rate) {}
+  ChangeMaterialProduct(int itemId, int count, int rate) : ChangeMaterialEntry(itemId, count), rate(rate) {}
   // INLINED
-  ChangeMaterialProduct(const ChangeMaterialProduct& other) : itemId(other.itemId), count(other.count), rate(other.rate) {}
+  ChangeMaterialProduct(const ChangeMaterialProduct& other) : ChangeMaterialEntry(other.itemId, other.count), rate(other.rate) {}
   ChangeMaterialProduct& operator=(const ChangeMaterialProduct& other) = default;
 
-  /* 0000 */ int itemId;
-  /* 0004 */ int count;
   /* 0008 */ int rate;
 };
 
