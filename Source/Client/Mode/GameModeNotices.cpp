@@ -2636,9 +2636,9 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
     const int answer = g_windowMgr.Confirm(FormatOwnedString(format, name, slots, nextSlots).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
     if (answer != 187) {
       this->SendMsg(MM_CLOSE_MSGBOX_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
-    } else {
-      this->SendMsg(MM_REQ_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
+      break;
     }
+    this->SendMsg(MM_REQ_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
     break;
   }
   case 1:
@@ -3292,15 +3292,18 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
+  } else if (2 == packet->result) {
+    char text[250];
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_LOG_FINISH));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_session.guildStorageLogs[0].clear();
+    g_session.guildStorageLogs[1].clear();
+    g_session.guildStorageLogs[2].clear();
   } else {
-    char text[252];
-    if (2 == packet->result) {
-      std::memset(text, 0, 250);
-      std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_LOG_FINISH));
-    } else {
-      std::memset(text, 0, 250);
-      std::sprintf(text, LookupMessage(MSI_RESULT_FAIL_UNKNOWN));
-    }
+    char text[250];
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, LookupMessage(MSI_RESULT_FAIL_UNKNOWN));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     g_session.guildStorageLogs[0].clear();
     g_session.guildStorageLogs[1].clear();
@@ -3850,15 +3853,14 @@ void CGameMode::ReceiveVendingItemList(
   const auto* records = reinterpret_cast<const VendingItemRecord*>(data);
   if (own == 1) {
     g_session.ClearMerchantPurchaseItems();
-    for (int i = 0; i < count;) {
+    for (int i = 0; i < count; ++i) {
       const VendingItemRecord record = records[i];
       ITEM_INFO item;
-      ++i;
       item.prices[0] = record.price;
       item.prices[1] = record.price;
       item.quantity = record.amount;
       item.identity[0] = record.type;
-      item.identity[1] = i;
+      item.identity[1] = i + 1;
       item.identified = 1;
       item.SetItemId(record.itemId);
       g_session.AddMerchantPurchaseItem(item);
@@ -3875,15 +3877,14 @@ void CGameMode::ReceiveVendingItemList(
   } else {
     g_session.ClearMerchantMirrorItems();
     g_session.ClearMerchantHopeToSellItems();
-    for (int i = 0; i < count;) {
+    for (int i = 0; i < count; ++i) {
       const VendingItemRecord record = records[i];
       ITEM_INFO item;
-      ++i;
       item.prices[0] = record.price;
       item.prices[1] = record.price;
       item.quantity = record.amount;
       item.identity[0] = record.type;
-      item.identity[1] = i;
+      item.identity[1] = i + 1;
       item.identified = 1;
       item.SetItemId(record.itemId);
       g_session.AddMerchantMirrorItem(item);
