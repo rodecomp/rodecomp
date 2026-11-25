@@ -415,14 +415,14 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         AppendText(result, this->Grade(text, capacity, 0) > 0 ? text : "");
       }
 
-      if (g_serviceType == ServiceBrazil || g_serviceType == ServiceRussia) {
+      if (g_serviceType != ServiceBrazil && g_serviceType != ServiceRussia) {
+        result += this->Creator(text, capacity, 0) > 0 ? text : "";
+        result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+        result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
+      } else {
         AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
         AppendText(result, InlineElement(*this, text, capacity, 0) > 0 ? text : "");
         AppendText(result, this->Creator(text, capacity, 0) > 0 ? text : "");
-      } else {
-        result += this->Creator(text, capacity, 0) > 0 ? text : "";
-        AppendText(result, InlineElement(*this, text, capacity, 0) > 0 ? text : "");
-        result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
       }
     } else {
       bool equipment = true;
