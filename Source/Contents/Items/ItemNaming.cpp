@@ -73,6 +73,17 @@ namespace {
   }
 
   // INLINED
+  static bool IsDecimalText(const char* text) {
+    for (unsigned index = 0; index < std::strlen(text); ++index) {
+      if (text[index] < '0' || text[index] > '9') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // INLINED
   __forceinline int CopyText(char* output, int& capacity, unsigned char consume, const char* text) {
     const int error = strncpy_s(output, capacity, text, _TRUNCATE);
     if (error != 0 && error != 80) {
@@ -738,7 +749,7 @@ __declspec(noinline) void LoadItemNameTables() {
           continue;
         }
 
-        if (!IsNumericText(text)) {
+        if (!IsDecimalText(text)) {
           DecodeMessageRot(text);
           EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(*token);
         } else {
@@ -765,7 +776,7 @@ __declspec(noinline) void LoadItemNameTables() {
           continue;
         }
 
-        if (!IsNumericText(text)) {
+        if (!IsDecimalText(text)) {
           DecodeMessageRot(text);
           EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(*token);
         } else {
@@ -873,30 +884,14 @@ __declspec(noinline) void LoadItemNameTables() {
     for (std::vector<int>::iterator value = moveInfo.begin(); value != moveInfo.end(); value += 9) {
       ItemMoveInfo flags;
       flags.itemId = value[0];
-      if (value[1] != 0) {
-        flags.drop = true;
-      }
-      if (value[2] != 0) {
-        flags.trade = true;
-      }
-      if (value[3] != 0) {
-        flags.storage = true;
-      }
-      if (value[4] != 0) {
-        flags.cart = true;
-      }
-      if (value[5] != 0) {
-        flags.sellToNpc = true;
-      }
-      if (value[6] != 0) {
-        flags.mail = true;
-      }
-      if (value[7] != 0) {
-        flags.auction = true;
-      }
-      if (value[8] != 0) {
-        flags.guildStorage = true;
-      }
+      flags.drop = value[1] != 0;
+      flags.trade = value[2] != 0;
+      flags.storage = value[3] != 0;
+      flags.cart = value[4] != 0;
+      flags.sellToNpc = value[5] != 0;
+      flags.mail = value[6] != 0;
+      flags.auction = value[7] != 0;
+      flags.guildStorage = value[8] != 0;
       const std::map<int, ItemMoveInfo>::value_type entry(flags.itemId, flags);
       g_itemMoveInfo.insert(entry);
     }
