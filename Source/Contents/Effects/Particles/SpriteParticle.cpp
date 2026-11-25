@@ -142,9 +142,9 @@ struct QuadPoint : vector3d {
 
 // INLINED
 void TransformPoint(const matrix& transform, float x, float y, float z, vector3d& result) {
-  result.x = transform.values[0] * x + transform.values[3] * y + transform.values[6] * z + transform.values[9];
-  result.y = transform.values[1] * x + transform.values[4] * y + transform.values[7] * z + transform.values[10];
-  result.z = transform.values[2] * x + transform.values[5] * y + transform.values[8] * z + transform.values[11];
+  result.x = y * transform.values[3] + x * transform.values[0] + z * transform.values[6] + transform.values[9];
+  result.y = y * transform.values[4] + x * transform.values[1] + z * transform.values[7] + transform.values[10];
+  result.z = y * transform.values[5] + x * transform.values[2] + z * transform.values[8] + transform.values[11];
 }
 }
 
@@ -239,7 +239,8 @@ void CSpriteParticle::Draw(char mode) {
 
     QuadPoint cellVertices[4];
     for (int v = 0; v < 4; ++v) {
-      TransformPoint(cellMatrix, primitive->vertices[v].x, primitive->vertices[v].y, primitive->vertices[v].z, cellVertices[v]);
+      const vector3d point = {primitive->vertices[v].x, primitive->vertices[v].y, primitive->vertices[v].z};
+      TransformPoint(cellMatrix, point.x, point.y, point.z, cellVertices[v]);
     }
 
     matrix worldScale;
