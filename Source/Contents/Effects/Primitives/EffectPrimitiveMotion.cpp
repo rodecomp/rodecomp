@@ -5571,7 +5571,9 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
           const int sinLimit = 90 + (value - middle) * m2;
 
           this->state.slots[index].height[value] = this->state.slots[index].maxHeight;
-          this->state.slots[index].height[value] += g_sinTable[sinLimit] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[pr];
+          float wave = g_sinTable[sinLimit];
+          wave *= this->state.slots[index].maxHeight;
+          this->state.slots[index].height[value] += wave * 0.3f * g_sinTable[pr];
         }
       }
     }
