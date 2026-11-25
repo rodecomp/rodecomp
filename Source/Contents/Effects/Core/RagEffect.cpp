@@ -21376,7 +21376,7 @@ bool CRagEffect::OnProcess3() {
     this->ThrowItem("effect\\coin_a.bmp", 3);
     break;
   case EF_BOTTOM_SUITON:
-    this->TexturedFlare("effect\\ring_blue.tga", 14, 0, 0);
+    this->TexturedFlare("effect\\ring_blue.tga", 14, 0.0f, 0.0f);
     break;
   case EF_HYOUSENSOU:
     this->EarthSpike(2);
@@ -23557,10 +23557,11 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 25;
         sine *= 15.0f;
-        this->state.lastPrim->state.deltaPos2.x = sine;
-        this->state.lastPrim->state.deltaPos2.y = -10.0f;
+        vector3d& bodyOffset = this->state.lastPrim->state.deltaPos2;
+        bodyOffset.x = sine;
+        bodyOffset.y = -10.0f;
         cosine *= -15.0f;
-        this->state.lastPrim->state.deltaPos2.z = cosine;
+        bodyOffset.z = cosine;
         this->state.lastPrim->SetSpriteName("이팩트\\particle2.spr");
         this->state.lastPrim->SetActionName("이팩트\\particle2.act");
         this->state.lastPrim->state.size = 3.0f;
@@ -23572,9 +23573,10 @@ bool CRagEffect::OnProcess() {
 
         this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 25;
-        this->state.lastPrim->state.deltaPos2.x = sine;
-        this->state.lastPrim->state.deltaPos2.y = 0.0f;
-        this->state.lastPrim->state.deltaPos2.z = cosine;
+        vector3d& shadowOffset = this->state.lastPrim->state.deltaPos2;
+        shadowOffset.x = sine;
+        shadowOffset.y = 0.0f;
+        shadowOffset.z = cosine;
         this->state.lastPrim->SetSpriteName("Shadow.spr");
         this->state.lastPrim->SetActionName("Shadow.act");
         this->state.lastPrim->state.animSpeed = 2;
@@ -23704,8 +23706,6 @@ bool CRagEffect::OnProcess() {
           this->state.parent->SetColor(-1, 250, 250, 250);
         }
       }
-      this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
-      break;
     case EF_SLOWPOISON:
     case EF_CARTBOOST:
     case EF_SOULBURN:
@@ -23738,15 +23738,15 @@ bool CRagEffect::OnProcess() {
     case EF_SMOKE:
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        const int count = std::max(rand() % 4, 0) + 1;
+        const int count = ClampedRandom(4) + 1;
         for (int index = 0; index < count; ++index) {
           this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
           this->state.lastPrim->state.duration = this->state.duration;
-          this->state.lastPrim->state.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
-          this->state.lastPrim->state.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
+          this->state.lastPrim->state.transform.MakeXRotation(GetRadian(ClampedRandom(30) + 75));
+          this->state.lastPrim->state.transform.AppendYRotation(GetRadian(ClampedRandom(360)));
           this->state.lastPrim->state.deltaPos2.y = -9.0f;
           this->state.lastPrim->state.rollSpeed = 0.75f;
-          this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
+          this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(3) + 3) / 10.0f;
           this->state.lastPrim->state.size = 1.5f;
           EffectPrimitiveState& fade = this->state.lastPrim->state;
           fade.fadeOutCnt = fade.duration - fade.duration / 3;
@@ -23802,7 +23802,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->SetSpriteName("이팩트\\크리스마스.spr");
         this->state.lastPrim->SetActionName("이팩트\\크리스마스.act");
         const int kind = rand() % 10;
-        this->state.lastPrim->state.size = kind % 3 == 1 ? 0.01f : 1.0f;
+        EffectPrimitiveState& ornament = this->state.lastPrim->state;
+        ornament.size = kind % 3 == 1 ? 0.01f : 1.0f;
         this->state.lastPrim->SetAction(kind / 2, 1, 1);
         this->state.lastPrim->InitSegment();
       }
@@ -23867,7 +23868,7 @@ bool CRagEffect::OnProcess() {
     case EF_FIRESPLASHHIT:
     {
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+      ProjectedVertex vertex;
       g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
@@ -23880,7 +23881,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.heightSize = 10.0f;
         this->state.lastPrim->state.widthSpeed = 5.7f;
         this->state.lastPrim->state.heightSpeed = 5.7f;
-        this->state.lastPrim->state.roll = static_cast<float>(std::max(roll, 0));
+        this->state.lastPrim->state.roll = static_cast<float>(roll >= 0 ? roll : 0);
         this->state.lastPrim->state.rollSpeed = -18.0f;
         EffectPrimitiveState& spin = this->state.lastPrim->state;
         spin.rollAccel = -(spin.rollSpeed / static_cast<float>(spin.duration)) / 2.5f;
@@ -24023,7 +24024,7 @@ bool CRagEffect::OnProcess() {
       this->TexturedMark("effect\\storm2.tga", 0);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
-      if (this->state.stateCnt < 48) {
+      if (this->state.stateCnt <= 47) {
         this->state.parent->render.angle += 30.0f;
         if (this->state.parent->render.angle > 360.0f) {
           this->state.parent->render.angle -= 360.0f;
@@ -24122,7 +24123,7 @@ bool CRagEffect::OnProcess() {
         if ((this->state.parent->render.flags & 1) == 0) {
           this->state.parent->render.flags += 1;
         }
-        this->state.parent->SetColor(-1, std::max(rand() % 255, 0), std::max(rand() % 255, 0), std::max(rand() % 255, 0));
+        this->state.parent->SetColor(-1, ClampedRandom(255), ClampedRandom(255), ClampedRandom(255));
       }
       break;
     case EF_MAGICCRASHER2:
@@ -24131,7 +24132,7 @@ bool CRagEffect::OnProcess() {
         PlayEffectWaveInline(*this, "effect\\swordman_provoke.wav");
       }
       if (this->state.stateCnt >= 0 && this->state.stateCnt <= 60) {
-        this->state.parent->SetColor(-1, std::max(rand() % 255, 0), std::max(rand() % 255, 0), std::max(rand() % 255, 0));
+        this->state.parent->SetColor(-1, ClampedRandom(255), ClampedRandom(255), ClampedRandom(255));
       }
       break;
     case EF_FALCONASSAULT:
@@ -24156,7 +24157,7 @@ bool CRagEffect::OnProcess() {
     case EF_SONICBLOW:
     {
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+      ProjectedVertex vertex;
       g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
@@ -24329,13 +24330,13 @@ bool CRagEffect::OnProcess() {
       this->TexturedPulseKind("effect\\ring_white.tga", 2);
       break;
     case EF_BOTTOM_VO:
-      this->TexturedFlare("effect\\ring_red.tga", 0, 0, 0);
+      this->TexturedFlare("effect\\ring_red.tga", 0, 0.0f, 0.0f);
       break;
     case EF_BOTTOM_DE:
-      this->TexturedFlare("effect\\ring_blue.tga", 0, 0, 0);
+      this->TexturedFlare("effect\\ring_blue.tga", 0, 0.0f, 0.0f);
       break;
     case EF_BOTTOM_VI:
-      this->TexturedFlare("effect\\magic_green.tga", 0, 0, 0);
+      this->TexturedFlare("effect\\magic_green.tga", 0, 0.0f, 0.0f);
       break;
     case EF_BOTTOM_LA:
       this->TexturedHalo("effect\\aaa copy.bmp", 1);
@@ -24449,7 +24450,6 @@ bool CRagEffect::OnProcess() {
       this->StoneSpike();
       break;
     case EF_TOPRANK:
-    {
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 9998) {
         this->state.stateCnt = 0;
@@ -24462,24 +24462,21 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.roll = 90.0f;
         this->state.lastPrim->state.widthSize = 4.0f;
         this->state.lastPrim->state.heightSize = 4.0f;
-        if (this->state.count == 11) {
-          this->state.lastPrim->state.red = 0;
-          this->state.lastPrim->state.blue = 0;
-          this->state.lastPrim->state.green = 250;
-        } else {
+        if (this->state.count != 11) {
           this->state.lastPrim->state.red = 250;
           this->state.lastPrim->state.blue = (10 - this->state.count) * 25;
           this->state.lastPrim->state.green = (10 - this->state.count) * 25;
+        } else {
+          this->state.lastPrim->state.red = 0;
+          this->state.lastPrim->state.blue = 0;
+          this->state.lastPrim->state.green = 250;
         }
         this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
         this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
       }
-      CWorld* world = g_modeMgr.GetGameMode()->scene;
-      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
+      this->render.position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
-    }
     case EF_PARTY:
-    {
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 9998) {
         this->state.stateCnt = 0;
@@ -24497,10 +24494,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
         this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
       }
-      CWorld* world = g_modeMgr.GetGameMode()->scene;
-      this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
+      this->render.position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
-    }
     case EF_STATUS_STATE:
       this->StatusIconColumn();
       break;
@@ -24869,7 +24864,11 @@ bool CRagEffect::OnProcess() {
     case EF_ASURABODY:
       if ((this->state.parent->render.flags & 0x800) == 0) {
         this->state.parent->render.flags += 0x800;
-        this->state.parent->render.outlineAlpha = this->state.stateCnt < 200 ? static_cast<unsigned char>(this->state.stateCnt) : 200;
+        if (this->state.stateCnt < 200) {
+          this->state.parent->render.outlineAlpha = static_cast<unsigned char>(this->state.stateCnt);
+        } else {
+          this->state.parent->render.outlineAlpha = 200;
+        }
       }
       break;
     case EF_ASURABODY_MONSTER:
@@ -24998,9 +24997,9 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt % 5 == 0) {
         this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 10;
-        this->state.lastPrim->state.transform.MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+        this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
         this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
-        this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 20, 0) + 20) / 80.0f;
+        this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(20) + 20) / 80.0f;
         EffectPrimitiveState& moving = this->state.lastPrim->state;
         moving.accel = -(moving.speed / static_cast<float>(moving.duration)) * g_depthAverageHalf;
         this->state.lastPrim->state.size = 0.8f;
@@ -25364,10 +25363,10 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_FIREHIT:
       if (this->state.stateCnt == 0) {
-        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-        g_soundMgr->PlayWave(
-          g_session.GetEnemyHitWaveName(3), this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250,
-          40, 1.0f, 0
+        const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
+        CSoundMgr* soundMgr = g_soundMgr;
+        soundMgr->PlayWave(
+          g_session.GetEnemyHitWaveName(3), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
         );
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
@@ -25437,11 +25436,11 @@ bool CRagEffect::OnProcess() {
       EffectActor* parent = this->state.parent;
       this->state.deltaPos2 = parent->render.position;
       this->state.parent->render.position = this->state.deltaPos;
-      const bool alive = this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
-      this->state.parent->render.position = this->state.deltaPos2;
-      if (!alive) {
+      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+        this->state.parent->render.position = this->state.deltaPos2;
         return false;
       }
+      this->state.parent->render.position = this->state.deltaPos2;
       break;
     }
     case EF_STONECURSE:
