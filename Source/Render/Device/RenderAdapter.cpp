@@ -10,6 +10,17 @@
 #include <atlbase.h>
 #include <cstring>
 
+// OFFSET: 0x005699A0
+// FUNCTION: fn_02268
+RenderSystemHolder::RenderSystemHolder() : system(nullptr) {
+}
+
+// OFFSET: 0x00569F20
+// FUNCTION: fn_02275
+CSurface* RenderSystemHolder::CreateSurface(std::uint32_t width, std::uint32_t height) {
+  return this->system ? this->system->CreateSurface(width, height) : nullptr;
+}
+
 // OFFSET: 0x00569FF0
 // FUNCTION: fn_02283
 std::vector<RenderAdapter> EnumerateRenderAdapters(int backend) {
