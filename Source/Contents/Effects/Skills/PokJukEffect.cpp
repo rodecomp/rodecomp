@@ -196,17 +196,19 @@ __forceinline void CPokJukEffect::UpdateParticle(CParticle* particle) {
         const int phase = particle->phaseParameter;
         const float flat = speed * g_cosTable[heading];
         this->trails[index][0].y += speed * g_sinTable[heading];
-        Shift(this->trails[index][0], flat * g_cosTable[phase], g_sinTable[phase] * flat);
+        const float offsetX = flat * g_cosTable[phase];
+        const float sine = g_sinTable[phase];
+        Shift(this->trails[index][0], offsetX, sine * flat);
         this->trails[index][0].y += 0.02f;
         particle->scale = speed * 0.98f;
 
         int alpha = particle->alpha;
         if (ClampedRandom(2) == 0) {
           const int faded = alpha - 2;
-          alpha = faded < 0 ? 0 : faded;
+          alpha = faded >= 0 ? faded : 0;
         } else {
           const int faded = alpha - 1;
-          alpha = faded < 0 ? 0 : faded;
+          alpha = faded >= 0 ? faded : 0;
         }
         particle->alpha = alpha;
       }
