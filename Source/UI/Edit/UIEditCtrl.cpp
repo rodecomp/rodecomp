@@ -8119,7 +8119,7 @@ bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item)
     int optionCount = item.optionCount + 1;
     for (int i = 1; i < optionCount; ++i) {
       const int base = cardCount + 9 + (i - 1) * 3;
-      ItemOption option;
+      ItemOptionRecord option;
       option.id = static_cast<std::int16_t>(values[base]);
       option.parameter = static_cast<unsigned char>(values[base + 1]);
       option.value = static_cast<std::int16_t>(values[base + 2]);

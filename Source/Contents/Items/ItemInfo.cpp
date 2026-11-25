@@ -554,7 +554,7 @@ int ITEM_INFO::GetItemId() const {
 
 // OFFSET: 0x006D9070
 // FUNCTION: fn_06611
-void ITEM_INFO::SetOption(ItemOption option, const int& index) {
+void ITEM_INFO::SetOption(ItemOptionRecord option, const int& index) {
   if (index < 5) {
     this->options[index].id = option.id;
     this->options[index].parameter = option.parameter;

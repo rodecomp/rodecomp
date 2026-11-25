@@ -80,7 +80,7 @@ struct ITEM_INFO {
   int Star(char* output, int& capacity, unsigned char consume) const;
   int Apprentice(char* output, int& capacity, unsigned char consume) const;
   void SetItemId(int value);
-  void SetOption(ItemOption option, const int& index);
+  void SetOption(ItemOptionRecord option, const int& index);
   void SetCard(const int& card, const int& index);
   int GetItemId() const;
   bool HasSpecialCard() const;
