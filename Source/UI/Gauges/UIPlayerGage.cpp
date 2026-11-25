@@ -3,28 +3,6 @@
 
 #include <algorithm>
 
-// INLINED
-static __forceinline void DrawGageBar(UIPlayerGage* gage, int y, std::function<std::int64_t()>& current, std::function<std::int64_t()>& maximum,
-                                     const std::uint32_t& color, const std::uint32_t& alternateColor, bool thresholdColor, bool wideDenominator,
-                                     bool backgroundBeforeRatio = false) {
-  const std::int64_t maximumValue = MaxIntAndInt64(1, maximum());
-  const std::int64_t currentValue = current();
-  const std::int64_t& denominator = (std::max)(currentValue, maximumValue);
-  const std::int64_t numerator = current();
-  if (backgroundBeforeRatio) {
-    gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
-  }
-  const double divisor =
-      wideDenominator ? static_cast<double>(denominator) : static_cast<double>(static_cast<int>(denominator));
-  const float ratio = static_cast<float>(static_cast<double>(numerator) / divisor);
-
-  if (!backgroundBeforeRatio) {
-    gage->FillRegion(1, y, gage->geometry.width - 2, 3, gage->colors[1]);
-  }
-  gage->FillRegion(1, y, static_cast<int>(static_cast<float>(gage->geometry.width - 2) * ratio), 3,
-                   thresholdColor && ratio < 0.25f ? alternateColor : color);
-}
-
 // OFFSET: 0x0086D2D0
 // FUNCTION: fn_11044
 UIGage::UIGage() : UIWindow(0) {
@@ -121,38 +99,113 @@ void UIPlayerGage::Paint() {
   switch (this->actorKind) {
     case 7:
       if (this->m_thirdCurrent && this->m_thirdMaximum) {
-        DrawGageBar(this, 1, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
+        const std::int64_t maxVal = MaxIntAndInt64(1, this->m_thirdMaximum());
+        const std::int64_t curVal = this->m_thirdCurrent();
+        const std::int64_t den = (std::max)(curVal, maxVal);
+        const double num = static_cast<double>(this->m_thirdCurrent());
+        const float ratio = static_cast<float>(num / static_cast<double>(den));
+        this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < 0.25f ? this->colors[6] : this->colors[5]);
       }
-      break;
+      return;
     case 9:
     case 10:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
-        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false);
+        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
+        const std::int64_t curVal1 = this->m_firstCurrent();
+        const std::int64_t den1 = (std::max)(curVal1, maxVal1);
+        const double num1 = static_cast<double>(this->m_firstCurrent());
+        const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
+        this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
+                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+
+        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
+        const std::int64_t curVal2 = this->m_secondCurrent();
+        const int den2 = static_cast<int>((std::max)(curVal2, maxVal2));
+        const double num2 = static_cast<double>(this->m_secondCurrent());
+        const float ratio2 = static_cast<float>(num2 / static_cast<double>(den2));
+        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+                         this->colors[3]);
       }
-      break;
+      return;
     case 13:
     case 14:
       if (this->m_firstCurrent && this->m_firstMaximum) {
-        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
+        const std::int64_t maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
+        const std::int64_t curVal = this->m_firstCurrent();
+        const std::int64_t den = curVal > maxVal ? curVal : maxVal;
+        const double num = static_cast<double>(this->m_firstCurrent());
+        const float ratio = static_cast<float>(num / static_cast<double>(den));
+        this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < 0.25f ? this->colors[4] : this->colors[2]);
       }
-      break;
+      return;
     case 8:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum &&
           this->m_thirdCurrent && this->m_thirdMaximum) {
-        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, true);
-        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, true);
-        DrawGageBar(this, 9, this->m_thirdCurrent, this->m_thirdMaximum, this->colors[5], this->colors[6], true, true);
+        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
+        const std::int64_t curVal1 = this->m_firstCurrent();
+        const std::int64_t den1 = (std::max)(curVal1, maxVal1);
+        const double num1 = static_cast<double>(this->m_firstCurrent());
+        const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
+        this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
+                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+
+        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
+        const std::int64_t curVal2 = this->m_secondCurrent();
+        const std::int64_t den2 = (std::max)(curVal2, maxVal2);
+        const double num2 = static_cast<double>(this->m_secondCurrent());
+        const float ratio2 = static_cast<float>(num2 / static_cast<double>(den2));
+        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+                         this->colors[3]);
+
+        const std::int64_t maxVal3 = MaxIntAndInt64(1, this->m_thirdMaximum());
+        const std::int64_t curVal3 = this->m_thirdCurrent();
+        const std::int64_t den3 = (std::max)(curVal3, maxVal3);
+        const double num3 = static_cast<double>(this->m_thirdCurrent());
+        const float ratio3 = static_cast<float>(num3 / static_cast<double>(den3));
+        this->FillRegion(1, 9, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio3), 3,
+                         ratio3 < 0.25f ? this->colors[6] : this->colors[5]);
       }
-      break;
+      return;
     default:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        DrawGageBar(this, 1, this->m_firstCurrent, this->m_firstMaximum, this->colors[2], this->colors[4], true, false);
-        DrawGageBar(this, 5, this->m_secondCurrent, this->m_secondMaximum, this->colors[3], this->colors[3], false, false, true);
+        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
+        const std::int64_t curVal1 = this->m_firstCurrent();
+        const std::int64_t den1 = curVal1 > maxVal1 ? curVal1 : maxVal1;
+        const double num1 = static_cast<double>(this->m_firstCurrent());
+        const float ratio1 = static_cast<float>(num1 / static_cast<double>(static_cast<int>(den1)));
+        this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
+                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+
+        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
+        const std::int64_t curVal2 = this->m_secondCurrent();
+        const std::int64_t den2 = curVal2 > maxVal2 ? curVal2 : maxVal2;
+        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
+        const double num2 = static_cast<double>(this->m_secondCurrent());
+        const float ratio2 = static_cast<float>(num2 / static_cast<double>(static_cast<int>(den2)));
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+                         this->colors[3]);
+
         if (this->m_fourthCurrent && this->m_fourthMaximum) {
-          DrawGageBar(this, 9, this->m_fourthCurrent, this->m_fourthMaximum, this->colors[7], this->colors[7], false, false);
+          const std::int64_t maxVal4 = MaxIntAndInt64(1, this->m_fourthMaximum());
+          const std::int64_t curVal4 = this->m_fourthCurrent();
+          const std::int64_t den4 = (std::max)(curVal4, maxVal4);
+          const double num4 = static_cast<double>(this->m_fourthCurrent());
+          const float ratio4 = static_cast<float>(num4 / static_cast<double>(static_cast<int>(den4)));
+          this->FillRegion(1, 9, this->geometry.width - 2, 3, this->colors[1]);
+          this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio4), 3,
+                           this->colors[7]);
         }
       }
-      break;
+      return;
   }
 }
