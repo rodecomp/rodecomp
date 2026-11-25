@@ -844,7 +844,7 @@ __declspec(noinline) void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short 
 // OFFSET: 0x00CC2240
 // FUNCTION: fn_21138
 void CRenderObject::SetInstantValue(int key, std::int64_t value) {
-  this->render.instant.Values()[key] = value;
+  this->render.instant.Values()[static_cast<int>(key)] = value;
 }
 
 // OFFSET: 0x00CC2060
@@ -1355,8 +1355,8 @@ void CGameActor::SetSprWeapon(int, int) {
 
 // INLINED
 static bool HasEffectOfType(const std::list<CRagEffect*>& effects, int type) {
-  for (CRagEffect* effect : effects) {
-    if (effect && effect->state.type == type) {
+  for (auto it = effects.begin(); it != effects.end(); ++it) {
+    if (*it && (*it)->state.type == type) {
       return true;
     }
   }
