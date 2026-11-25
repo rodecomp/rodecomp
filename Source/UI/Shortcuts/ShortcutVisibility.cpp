@@ -67,7 +67,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
   switch (id) {
   case WID_CHATWND: {
     if (g_replayAnimationScaling && !Replay::Instance().header.options.recordRestricted) {
-      return false;
+      break;
     }
 
     this->chatWndVisible = visible;
@@ -103,7 +103,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
 
   case WID_SHORTCUTWND:
     if (g_replayAnimationScaling && !Replay::Instance().header.options.showItemSlots) {
-      return false;
+      break;
     }
 
     this->m_normalItemSlotWindow.show = visible;
@@ -180,4 +180,6 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
   default:
     return false;
   }
+
+  return false;
 }
