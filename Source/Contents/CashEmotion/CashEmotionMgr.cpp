@@ -1156,7 +1156,8 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
     int emotionId;
     {
       std::string key("ET_DICE1");
-      emotionId = this->FindEmotionIdByKey(key);
+      auto it = this->m_emotionIds.find(key);
+      emotionId = it != this->m_emotionIds.end() ? it->second : -1;
     }
     this->m_specials.emplace(type, emotionId);
     return emotionId;
