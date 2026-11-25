@@ -10,6 +10,10 @@
 class CooldownOwner;
 
 struct ShortcutCooldownIcon {
+  // INLINED
+  ShortcutCooldownIcon(int id, int slot, int x, int y) : id(id), slot(slot), x(x), y(y) {
+  }
+
   /* 0000 */ int id;
   /* 0004 */ int slot;
   /* 0008 */ int x;
