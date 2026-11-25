@@ -18,6 +18,7 @@
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -886,7 +887,7 @@ UIWindowMgr::UIWindowMgr()
   this->chatWndStickOn = 1;
   this->onStSubChat = 0;
   this->battleSubChatEnabled = 0;
-  this->compactCompositionLayout = g_language == 2;
+  this->compactCompositionLayout = g_language == LANGUAGE_JAPANESE;
   this->skillDescriptionVisible = 0;
   this->loginGridX = 0;
   if (g_serviceType == 0) {
