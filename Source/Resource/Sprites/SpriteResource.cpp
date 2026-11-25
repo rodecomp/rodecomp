@@ -116,7 +116,7 @@ bool CSprRes::Load(const char* name) {
         std::uint16_t zeroCount = 0;
         std::uint8_t* row = pixels;
 
-        for (unsigned y = height; y != 0; --y) {
+        for (unsigned y = height; y > 0; --y) {
           std::uint8_t* pixel = row;
           if (pixel) {
             for (unsigned x = width; x != 0; --x) {
