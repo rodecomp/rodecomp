@@ -4,6 +4,15 @@
 #include <bit>
 #include <cmath>
 #include <cstring>
+#include <immintrin.h>
+
+namespace {
+  // INLINED
+  __forceinline float LengthRoot(volatile float value) {
+    value = _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(value)));
+    return value;
+  }
+}
 
 // OFFSET: 0x00555110
 // FUNCTION: fn_02033
@@ -12,7 +21,7 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float dx = target[0] - origin[0];
   const float dy = target[1] - origin[1];
   const float dz = target[2] - origin[2];
-  const float forwardLength = SquareRoot((dy * dy + dx * dx) + dz * dz);
+  const float forwardLength = LengthRoot((dy * dy + dx * dx) + dz * dz);
   const float numerator = g_projectionDepthNumerator;
   const float forwardInverse = numerator / forwardLength;
   const float forwardY = dy * forwardInverse;
@@ -22,7 +31,7 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float sideX = forwardZ * up[1] - forwardY * up[2];
   const float sideY = forwardX * up[2] - forwardZ * up[0];
   const float sideZ = forwardY * up[0] - forwardX * up[1];
-  const float sideLength = SquareRoot((sideY * sideY + sideX * sideX) + sideZ * sideZ);
+  const float sideLength = LengthRoot((sideY * sideY + sideX * sideX) + sideZ * sideZ);
   const float sideInverse = numerator / sideLength;
   const float rightX = sideX * sideInverse;
   const float rightY = sideY * sideInverse;
@@ -31,7 +40,7 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float crossX = rightZ * forwardY - rightY * forwardZ;
   const float crossY = rightX * forwardZ - rightZ * forwardX;
   const float crossZ = rightY * forwardX - rightX * forwardY;
-  const float upLength = SquareRoot((crossY * crossY + crossX * crossX) + crossZ * crossZ);
+  const float upLength = LengthRoot((crossY * crossY + crossX * crossX) + crossZ * crossZ);
   const float upInverse = numerator / upLength;
 
   const float upX = crossX * upInverse;
