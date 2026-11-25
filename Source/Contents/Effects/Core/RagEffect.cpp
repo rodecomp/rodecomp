@@ -19709,11 +19709,11 @@ bool CRagEffect::OnProcess3() {
   case EF_PRESSURE2:
     if (this->state.stateCnt == 3) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\프레셔.wav");
+      PlayEffectWaveInline(*this, "effect\\프레셔.wav");
     }
     if (this->state.stateCnt == 25) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\LG_SHIELDPRESS.wav");
+      PlayEffectWaveInline(*this, "effect\\LG_SHIELDPRESS.wav");
     }
     this->TexturedRain("effect\\shield.bmp", 0);
     this->TexturedLevelRing("effect\\explosive_1_128.bmp", -28, 0);
@@ -19721,11 +19721,11 @@ bool CRagEffect::OnProcess3() {
   case EF_PRESSURE3:
     if (this->state.stateCnt == 3) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\프레셔.wav");
+      PlayEffectWaveInline(*this, "effect\\프레셔.wav");
     }
     if (this->state.stateCnt == 22) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\S바레티르스피어.wav");
+      PlayEffectWaveInline(*this, "effect\\S바레티르스피어.wav");
     }
     this->TexturedRain("유저인터페이스\\item\\스피어.bmp", 4);
     this->TexturedRain("유저인터페이스\\item\\파이크.bmp", 4);
@@ -19803,7 +19803,7 @@ bool CRagEffect::OnProcess3() {
   case EF_TEIHIT1T:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\mon_맹룡과강.wav");
+      PlayEffectWaveInline(*this, "effect\\mon_맹룡과강.wav");
     }
     {
       const int count = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 6 : 20;
@@ -19897,7 +19897,7 @@ bool CRagEffect::OnProcess3() {
   case EF_BASH3D6:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\mon_맹룡과강.wav");
+      PlayEffectWaveInline(*this, "effect\\mon_맹룡과강.wav");
     }
     for (int index = 0; index < 8; ++index) {
       this->TexturedQuadSpin("effect\\alpha_center.tga", index, 6);
@@ -19906,7 +19906,7 @@ bool CRagEffect::OnProcess3() {
   case EF_PRIMECHARGE:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\LG_EXEEDBREAK.wav");
+      PlayEffectWaveInline(*this, "effect\\LG_EXEEDBREAK.wav");
     }
     for (int index = 0; index < 40; ++index) {
       this->TexturedScatterSphere("effect\\alpha_center.tga", 0, 0);
@@ -19923,7 +19923,7 @@ bool CRagEffect::OnProcess3() {
   case EF_PRIMECHARGE3:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\LG_BANDING.wav");
+      PlayEffectWaveInline(*this, "effect\\LG_BANDING.wav");
     }
     for (int index = 0; index < 40; ++index) {
       this->TexturedScatterSphere("effect\\alpha_center.tga", 2, 0);
@@ -19932,7 +19932,7 @@ bool CRagEffect::OnProcess3() {
   case EF_PRIMECHARGE4:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\LG_INSPIRATION.wav");
+      PlayEffectWaveInline(*this, "effect\\LG_INSPIRATION.wav");
     }
     for (int index = 0; index < 40; ++index) {
       this->TexturedScatterSphere("effect\\alpha_center.tga", 3, 0);
@@ -20235,19 +20235,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     this->TexturedSprayKind("유저인터페이스\\item\\갈색반지.bmp", 5.0f, 1);
     this->TexturedSprayKind("유저인터페이스\\item\\금반지.bmp", 5.0f, 1);
@@ -20264,19 +20264,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     for (int index = 0; index < 2; ++index) {
       this->TexturedSprayKind("effect\\melody_a.bmp", 6.0f, 1);
@@ -20376,7 +20376,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_INTIMIDATE4:
     if (this->state.stateCnt == 25) {
-      PlayEffectWave(*this, "effect\\triangle.wav");
+      PlayEffectWaveInline(*this, "effect\\triangle.wav");
     }
     for (int index = 0; index < 10; ++index) {
       this->WhiteSpray(4);
@@ -20385,10 +20385,10 @@ bool CRagEffect::OnProcess3() {
   case EF_INTIMIDATE3:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_Bash.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_Bash.wav");
     }
     if (this->state.stateCnt == 35) {
-      PlayEffectWave(*this, "effect\\rog_intimidate.wav");
+      PlayEffectWaveInline(*this, "effect\\rog_intimidate.wav");
     }
     for (int index = 0; index < 20; ++index) {
       this->WhiteSpray(3);
@@ -20612,7 +20612,7 @@ bool CRagEffect::OnProcess3() {
   case EF_ELECTRIC3:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\MAGNETICFIELD.wav");
+      PlayEffectWaveInline(*this, "effect\\MAGNETICFIELD.wav");
     }
     this->ElectricRingEarly(0, 0);
     this->ElectricRingEarly(0, 180);
@@ -20658,7 +20658,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CASTSPIN2:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     }
     if (this->state.parent->render.state == 0 || this->state.parent->render.state == 2) {
       if (this->state.stateCnt <= 15) {
@@ -20702,19 +20702,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     this->TexturedSprayKind("유저인터페이스\\item\\루드라의활.bmp", 5.0f, 0);
     this->TexturedSprayKind("유저인터페이스\\item\\아트로스의흉기.bmp", 5.0f, 0);
@@ -20803,7 +20803,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_CLEARTIME:
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "effect\\샤프슈팅.wav");
+      PlayEffectWaveInline(*this, "effect\\샤프슈팅.wav");
     }
     this->TexturedRisingOrbs("effect\\white02.bmp", 1);
     this->TexturedMark("effect\\storm2.tga", 8);
@@ -20827,14 +20827,14 @@ bool CRagEffect::OnProcess3() {
   case EF_AIMED_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "aimed.wav");
+      PlayEffectWaveInline(*this, "aimed.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
   case EF_ARROWSTORM_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "arrowstorm.wav");
+      PlayEffectWaveInline(*this, "arrowstorm.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -20842,7 +20842,7 @@ bool CRagEffect::OnProcess3() {
   case EF_LAUAGNUS_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "lauagnus.wav");
+      PlayEffectWaveInline(*this, "lauagnus.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -20889,7 +20889,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SOULBREAKER4:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\기공포.wav");
+      PlayEffectWaveInline(*this, "effect\\기공포.wav");
     }
     if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
       if ((this->state.parent->render.flags & 1) == 0) {
@@ -20914,7 +20914,7 @@ bool CRagEffect::OnProcess3() {
   case EF_FROSTMYSTY:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\t_에너지방출.wav");
+      PlayEffectWaveInline(*this, "effect\\t_에너지방출.wav");
     }
     this->SaintWing("effect\\freeze_a.bmp");
     this->SnowFall("", 1);
@@ -20925,7 +20925,7 @@ bool CRagEffect::OnProcess3() {
   case EF_WINDCUTTER:
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\wl_siennaexecrate.wav");
+      PlayEffectWaveInline(*this, "effect\\wl_siennaexecrate.wav");
     }
     this->TexturedSkillAura(8);
     break;
@@ -20936,28 +20936,28 @@ bool CRagEffect::OnProcess3() {
   case EF_CRIMSON_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "crimson_r.wav");
+      PlayEffectWaveInline(*this, "crimson_r.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
   case EF_HELL_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "hell_in.wav");
+      PlayEffectWaveInline(*this, "hell_in.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
   case EF_CHAINL_STR:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 1) {
-      PlayEffectWave(*this, "chainlight.wav");
+      PlayEffectWaveInline(*this, "chainlight.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
   case EF_SOULBREAKER3:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\기공포.wav");
+      PlayEffectWaveInline(*this, "effect\\기공포.wav");
     }
     if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
       if ((this->state.parent->render.flags & 1) == 0) {
@@ -21010,7 +21010,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_STORM_MIN:
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\wizard_stormgust.wav");
+      PlayEffectWaveInline(*this, "effect\\wizard_stormgust.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -21126,7 +21126,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CRITICALWOUND:
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\wideb.wav");
+      PlayEffectWaveInline(*this, "effect\\wideb.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -21134,7 +21134,7 @@ bool CRagEffect::OnProcess3() {
     this->TexturedAura("effect\\blast_mine##clock.bmp", 4);
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_DecAgility.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_DecAgility.wav");
     }
     break;
   case EF_GUARD3:
@@ -21162,7 +21162,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NPC_EARTHQUAKE:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\earth_quake.wav");
+      PlayEffectWaveInline(*this, "effect\\earth_quake.wav");
     }
     this->TexturedClassChange(31);
     if (this->state.stateCnt != 0) {
@@ -21197,28 +21197,28 @@ bool CRagEffect::OnProcess3() {
   case EF_ISSEN:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\일섬.wav");
+      PlayEffectWaveInline(*this, "effect\\일섬.wav");
     }
     this->TexturedClassChange(18);
     break;
   case EF_KASUMIKIRI:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\안개베기.wav");
+      PlayEffectWaveInline(*this, "effect\\안개베기.wav");
     }
     this->TexturedClassChange(17);
     break;
   case EF_KIRIKAGE:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\그림자베기.wav");
+      PlayEffectWaveInline(*this, "effect\\그림자베기.wav");
     }
     this->TexturedClassChange(15);
     break;
   case EF_DAMAGE1:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_hit2.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
       this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
@@ -21238,14 +21238,14 @@ bool CRagEffect::OnProcess3() {
   case EF_RAPIDSHOWER:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\래피드샤워.wav");
+      PlayEffectWaveInline(*this, "effect\\래피드샤워.wav");
     }
     this->TexturedClassChange(26);
     break;
   case EF_MAGICALBULLET:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\매지컬블릿.wav");
+      PlayEffectWaveInline(*this, "effect\\매지컬블릿.wav");
     }
     this->TexturedClassChange(27);
     break;
@@ -21303,14 +21303,14 @@ bool CRagEffect::OnProcess3() {
   case EF_BAKU:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\폭염룡.wav");
+      PlayEffectWaveInline(*this, "effect\\폭염룡.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
   case EF_HYOUSYOURAKU:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\빙정락.wav");
+      PlayEffectWaveInline(*this, "effect\\빙정락.wav");
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -21320,7 +21320,7 @@ bool CRagEffect::OnProcess3() {
   case EF_DESPERADO:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\데스페라도.wav");
+      PlayEffectWaveInline(*this, "effect\\데스페라도.wav");
     }
     this->TexturedClassChange(20);
     break;
@@ -21330,7 +21330,7 @@ bool CRagEffect::OnProcess3() {
   case EF_BASH3D5:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\더스트샷.wav");
+      PlayEffectWaveInline(*this, "effect\\더스트샷.wav");
     }
     for (int index = 0; index < 6; ++index) {
       this->TexturedQuadSpin("effect\\alpha_center.tga", index, 5);
@@ -21339,7 +21339,7 @@ bool CRagEffect::OnProcess3() {
   case EF_RG_COIN3:
     if (this->state.stateCnt == 21) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\디스암.wav");
+      PlayEffectWaveInline(*this, "effect\\디스암.wav");
     }
     this->TexturedSprayKind("유저인터페이스\\item\\골드룩스.bmp", 5.0f, 0);
     this->TexturedSprayKind("유저인터페이스\\item\\더개리슨.bmp", 5.0f, 0);
@@ -21349,14 +21349,14 @@ bool CRagEffect::OnProcess3() {
   case EF_STIN5:
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\t_바람방출.wav");
+      PlayEffectWaveInline(*this, "effect\\t_바람방출.wav");
     }
     this->TexturedSlashCross("effect\\270바람.tga");
     break;
   case EF_CHEMICAL4:
     if (this->state.stateCnt == 28) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\피어싱샷.wav");
+      PlayEffectWaveInline(*this, "effect\\피어싱샷.wav");
     }
     for (int index = 0; index < 4; ++index) {
       this->LineStreakLayered(20);
@@ -21366,7 +21366,7 @@ bool CRagEffect::OnProcess3() {
   case EF_THUNDERSTORM2:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_ThunderStorm.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_ThunderStorm.wav");
       this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
@@ -21382,7 +21382,7 @@ bool CRagEffect::OnProcess3() {
   case EF_STIN4:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\풍인.wav");
+      PlayEffectWaveInline(*this, "effect\\풍인.wav");
     }
     for (int index = 0; index < static_cast<int>(this->state.count); ++index) {
       this->TexturedSlashWave("effect\\270바람.tga", index % 2);
@@ -21424,7 +21424,7 @@ bool CRagEffect::OnProcess3() {
   case EF_COOKING_OK:
     if (this->state.stateCnt == 45) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "_heal_effect.wav");
+      PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -21454,7 +21454,7 @@ bool CRagEffect::OnProcess3() {
   case EF_COOKING_FAIL:
     if (this->state.stateCnt == 50) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "caramel_die.wav");
+      PlayEffectWaveInline(*this, "caramel_die.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -21463,14 +21463,14 @@ bool CRagEffect::OnProcess3() {
   case EF_TEMP_OK:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "_heal_effect.wav");
+      PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
     this->TexturedAura("effect\\success.bmp", 3);
     break;
   case EF_TEMP_FAIL:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "caramel_die.wav");
+      PlayEffectWaveInline(*this, "caramel_die.wav");
     }
     this->TexturedAura("effect\\failed.bmp", 3);
     break;
@@ -21578,7 +21578,7 @@ bool CRagEffect::OnProcess3() {
   case EF_HATED2:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\T_따듯한마법.wav");
+      PlayEffectWaveInline(*this, "effect\\T_따듯한마법.wav");
     }
     this->ParticleTime("effect\\white02.bmp", 3);
     break;
@@ -21709,7 +21709,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CARTTER:
     if (this->state.stateCnt == 30) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\wizard_fire_pillar_b.wav");
+      PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_b.wav");
     }
     for (int index = 0; index < 4; ++index) {
       this->TexturedTumble("effect\\whitelight.tga", 0);
@@ -21726,7 +21726,7 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 44) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\연주붕격.wav");
+      PlayEffectWaveInline(*this, "effect\\연주붕격.wav");
     }
     if (this->state.stateCnt >= 20 && this->state.stateCnt <= 100) {
       if ((this->state.parent->render.flags & 8) == 0) {
@@ -21752,7 +21752,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_MEMORIZE:
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\priest_suffragium.wav");
+      PlayEffectWaveInline(*this, "effect\\priest_suffragium.wav");
     }
     if (this->state.stateCnt >= 10 && this->state.stateCnt <= 35) {
       if (this->state.stateCnt % 2 == 0) {
@@ -21767,7 +21767,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_SHRINK:
     if (this->state.stateCnt == 5) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     }
     if (this->state.stateCnt >= 5 && this->state.stateCnt <= 25) {
       if (this->state.stateCnt % 2 == 0) {
@@ -21819,7 +21819,7 @@ bool CRagEffect::OnProcess3() {
   case EF_AUTOSHADOWSPELL_ACTIVE:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     }
     if (this->state.parent->render.enabled != 0 && this->state.parent->render.state == 0) {
       if (this->state.stateCnt <= 15) {
@@ -21839,7 +21839,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CASTSPIN:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     }
     if (this->state.parent->render.state == 0) {
       if (this->state.stateCnt <= 15) {
@@ -21859,7 +21859,7 @@ bool CRagEffect::OnProcess3() {
   case EF_PIERCEBODY:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     }
     if (this->state.stateCnt >= 0 && this->state.stateCnt <= 140) {
       if ((this->state.parent->render.flags & 8) == 0) {
@@ -21894,19 +21894,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     for (int index = 0; index < 4; ++index) {
       this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 0);
@@ -21976,7 +21976,7 @@ bool CRagEffect::OnProcess3() {
   case EF_STIN3:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\T_에너지방출.wav");
+      PlayEffectWaveInline(*this, "effect\\T_에너지방출.wav");
     }
     this->SMA(1);
     break;
@@ -21998,7 +21998,7 @@ bool CRagEffect::OnProcess3() {
   case EF_QUAKEBODY4:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\ef_hit6.wav");
+      PlayEffectWaveInline(*this, "effect\\ef_hit6.wav");
     }
     if (this->state.stateCnt > 20) {
       this->state.parent->render.flags |= 0x2000;
@@ -22042,7 +22042,7 @@ bool CRagEffect::OnProcess3() {
   case EF_STIN:
     if (this->state.stateCnt == 10) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\T_바람마법.wav");
+      PlayEffectWaveInline(*this, "effect\\T_바람마법.wav");
     }
     this->TexturedSlashFan("effect\\270바람.tga");
     break;
@@ -22063,7 +22063,7 @@ bool CRagEffect::OnProcess3() {
   case EF_HFLIMOON1:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\h_moonlight_1.wav");
+      PlayEffectWaveInline(*this, "effect\\h_moonlight_1.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22072,7 +22072,7 @@ bool CRagEffect::OnProcess3() {
   case EF_HFLIMOON2:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\h_moonlight_2.wav");
+      PlayEffectWaveInline(*this, "effect\\h_moonlight_2.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22081,7 +22081,7 @@ bool CRagEffect::OnProcess3() {
   case EF_HFLIMOON3:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\h_moonlight_3.wav");
+      PlayEffectWaveInline(*this, "effect\\h_moonlight_3.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22090,7 +22090,7 @@ bool CRagEffect::OnProcess3() {
   case EF_HO_UP:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "levelup.wav");
+      PlayEffectWaveInline(*this, "levelup.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22107,7 +22107,7 @@ bool CRagEffect::OnProcess3() {
   case EF_FOOD06:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "_heal_effect.wav");
+      PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22143,7 +22143,7 @@ bool CRagEffect::OnProcess3() {
   case EF_M02:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\풀버스터.wav");
+      PlayEffectWaveInline(*this, "effect\\풀버스터.wav");
     }
     this->TexturedClassChange(8);
     break;
@@ -22169,7 +22169,7 @@ bool CRagEffect::OnProcess3() {
   case EF_DRAGONFEAR:
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\dragonfear.wav");
+      PlayEffectWaveInline(*this, "effect\\dragonfear.wav");
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
@@ -22196,7 +22196,7 @@ bool CRagEffect::OnProcess3() {
   case EF_BLEEDING:
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\wideb.wav");
+      PlayEffectWaveInline(*this, "effect\\wideb.wav");
     }
     this->ColoredFlash(1, 255, 0, 0);
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
@@ -22205,7 +22205,7 @@ bool CRagEffect::OnProcess3() {
   case EF_MIRESULT_MAKE_OK:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\p_success.wav");
+      PlayEffectWaveInline(*this, "effect\\p_success.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22215,7 +22215,7 @@ bool CRagEffect::OnProcess3() {
   case EF_MIRESULT_MAKE_FAIL:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\p_failed.wav");
+      PlayEffectWaveInline(*this, "effect\\p_failed.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -22344,7 +22344,7 @@ bool CRagEffect::OnProcess3() {
   case EF_JUMPBODY1:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\T_회피2.wav");
+      PlayEffectWaveInline(*this, "effect\\T_회피2.wav");
     }
     if ((this->state.parent->render.flags & 0x10000) == 0 && this->state.stateCnt > 10) {
       this->state.parent->render.flags += 0x10000;
@@ -22376,7 +22376,7 @@ bool CRagEffect::OnProcess3() {
   case EF_XENO_SLASHER:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\기공포.wav");
+      PlayEffectWaveInline(*this, "effect\\기공포.wav");
     }
     if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
       if ((this->state.parent->render.flags & 1) == 0) {
@@ -22416,7 +22416,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SU_STOOP:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\mon_금강불괴.wav");
+      PlayEffectWaveInline(*this, "effect\\mon_금강불괴.wav");
     }
     break;
   case EF_RL_B_TRAP:
@@ -22504,7 +22504,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SOLAR_EXPLOSION:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\mon_침투경.wav");
+      PlayEffectWaveInline(*this, "effect\\mon_침투경.wav");
     }
     if ((this->state.parent->render.flags & 0x40) == 0 && this->state.stateCnt >= 14 && this->GetDuration() > this->state.stateCnt) {
       this->state.parent->render.flags += 0x40;
@@ -22527,7 +22527,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_CART_TORNADO:
     if (this->state.stateCnt == 5) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\T_회오리차기.wav");
+      PlayEffectWaveInline(*this, "effect\\T_회오리차기.wav");
     }
     if (this->state.stateCnt <= 47) {
       this->state.parent->render.angle += 30.0f;
@@ -22548,7 +22548,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_MOON_SLASH:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\new_comet\\new_comet_cast_ring\\ring_rainbow.tga", 20);
     }
     break;
@@ -22565,7 +22565,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_FROSTMISTY:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->QuadRingStackSized("effect\\new_jackfrost\\ring_ice.tga", 2);
     }
     break;
@@ -22671,7 +22671,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_HEAL_WHITE:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 22);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 22);
     }
@@ -22679,7 +22679,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_HEAL_YELLOW:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_yellow.tga", 23);
       this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 23);
     }
@@ -22817,7 +22817,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_SANCTUARY:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->QuadRingStackSized("effect\\ring_yellow.tga", 33);
     }
     break;
@@ -22841,7 +22841,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_EARTHDRIVE_CAST:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         this->QuadRingStackSized("effect\\mineffect\\new_earthdrive\\ring_brown.tga", 33);
       } else {
@@ -22852,7 +22852,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_PNEUMA:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 42);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 42);
     }
@@ -22860,7 +22860,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_SW_CAST:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 43);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 43);
     }
@@ -22869,7 +22869,7 @@ bool CRagEffect::OnProcess3() {
     if (this->state.parent != nullptr) {
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+        PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
         this->TexturedQuadRingSized(45, "effect\\new_abr_infinity\\ring_infinty.tga", 0);
         this->TexturedQuadRingSized(25, "effect\\new_abr_infinity\\ring_infinty.tga", 0);
       }
@@ -22878,7 +22878,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_BATTLE_W_ENTITY:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\new_battle_w\\ABR_BATTLE_WARIOR.tga", 0);
       this->TexturedQuadRingSized(25, "effect\\new_battle_w\\ABR_BATTLE_WARIOR.tga", 0);
     }
@@ -22886,7 +22886,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_D_CANNON_ENTITY:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\new_d_cannon\\ABR_DUAL_CANNON.tga", 0);
       this->TexturedQuadRingSized(25, "effect\\new_d_cannon\\ABR_DUAL_CANNON.tga", 0);
     }
@@ -22894,7 +22894,7 @@ bool CRagEffect::OnProcess3() {
   case EF_PNEUMATICUS_PROCELLA_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\pneumaticusprocella\\pneumaticusprocella_cast\\ring_yellow.tga", 0);
       this->TexturedQuadRingSized(25, "effect\\pneumaticusprocella\\pneumaticusprocella_cast\\ring_yellow.tga", 0);
     }
@@ -22902,7 +22902,7 @@ bool CRagEffect::OnProcess3() {
   case EF_ABR_MOTHER:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\new_abr_mother\\abr_mother.tga", 0);
       this->TexturedQuadRingSized(25, "effect\\new_abr_mother\\abr_mother.tga", 0);
     }
@@ -22910,7 +22910,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SINCERE_FAITH_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 45);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 45);
     }
@@ -22918,7 +22918,7 @@ bool CRagEffect::OnProcess3() {
   case EF_POWERFUL_FAITH_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 46);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 46);
     }
@@ -22926,7 +22926,7 @@ bool CRagEffect::OnProcess3() {
   case EF_FIRM_FAITH_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 47);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 47);
     }
@@ -22934,7 +22934,7 @@ bool CRagEffect::OnProcess3() {
   case EF_RESEARCH_REPORT_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 48);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 48);
     }
@@ -22942,7 +22942,7 @@ bool CRagEffect::OnProcess3() {
   case EF_WOODEN_WARRIOR_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 49);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 49);
     }
@@ -22950,7 +22950,7 @@ bool CRagEffect::OnProcess3() {
   case EF_WOODEN_FAIRY_RING:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 50);
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 50);
     }
@@ -23032,7 +23032,7 @@ bool CRagEffect::OnProcess3() {
   case EF_BEGINSPELL_RING_YELLOW:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
       this->TexturedQuadRingSized(45, "effect\\ring_yellow.tga", 0);
       this->TexturedQuadRingSized(25, "effect\\ring_yellow.tga", 0);
     }
@@ -23133,19 +23133,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     for (int index = 0; index < 4; ++index) {
       this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 8);
@@ -23158,19 +23158,19 @@ bool CRagEffect::OnProcess3() {
         if (this->state.stateCnt != 21) {
           if (this->state.stateCnt == 31) {
             this->render.position = this->state.parent->render.position;
-            PlayEffectWave(*this, "effect\\복호격.wav");
+            PlayEffectWaveInline(*this, "effect\\복호격.wav");
           }
         } else {
           this->render.position = this->state.parent->render.position;
-          PlayEffectWave(*this, "effect\\복호격.wav");
+          PlayEffectWaveInline(*this, "effect\\복호격.wav");
         }
       } else {
         this->render.position = this->state.parent->render.position;
-        PlayEffectWave(*this, "effect\\복호격.wav");
+        PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
     } else {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\복호격.wav");
+      PlayEffectWaveInline(*this, "effect\\복호격.wav");
     }
     for (int index = 0; index < 4; ++index) {
       this->TexturedSprayKind("effect\\shield.bmp", 5.0f, 9);
