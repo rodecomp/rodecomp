@@ -38,7 +38,7 @@ std::map<int, std::vector<const char*>> g_bookItemNames;
 
 // OFFSET: 0x006D8810
 // FUNCTION: fn_06597
-bool ITEM_INFO::IsEquipment() const {
+__declspec(noinline) bool ITEM_INFO::IsEquipment() const {
   switch (this->identity[0]) {
   case TYPE_ARMOR:
   case TYPE_WEAPON:
@@ -414,7 +414,24 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
       }
     } else {
-      if (!this->IsEquipment() && detailed == 0) {
+      bool equipment = true;
+      switch (this->identity[0]) {
+      case TYPE_ARMOR:
+      case TYPE_WEAPON:
+      case TYPE_BOW:
+      case TYPE_BOTHHAND:
+      case TYPE_ARMORTM:
+      case TYPE_ARMORTB:
+      case TYPE_ARMORMB:
+      case TYPE_ARMORTMB:
+      case TYPE_GUN:
+      case 21:
+        break;
+      default:
+        equipment = false;
+        break;
+      }
+      if (!equipment && detailed == 0) {
         AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
       } else {
         if (this->refiningLevel > 0) {
