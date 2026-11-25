@@ -934,70 +934,61 @@ void CGameMode::UpdateMiniMapTooltip() {
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
     id = this->miniMapTooltipId;
-    if (id != -1) {
-      return;
-    }
-
-    if (g_windowMgr.illustWnd != nullptr) {
+    if (id == -1 && g_windowMgr.illustWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
-    return;
-  }
-
-  if (this->miniMapTooltipText.size() == 0) {
-    return;
-  }
-
-  int& tooltipId = this->miniMapTooltipId;
-  const std::string& tooltipText = this->miniMapTooltipText;
-  UIWindow* window = g_windowMgr.illustWnd;
-  if (window == nullptr) {
-    window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
-    g_miniMapTooltipId = tooltipId;
-  } else {
-    if (id == g_miniMapTooltipId && std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) == 0) {
-      return;
+  } else if (this->miniMapTooltipText.size() != 0) {
+    const std::string& tooltipText = this->miniMapTooltipText;
+    UIWindow* window = g_windowMgr.illustWnd;
+    if (window == nullptr) {
+      window = g_windowMgr.EnsureWindow(WID_ILLUSTWND);
+      g_miniMapTooltipId = this->miniMapTooltipId;
+      std::sprintf(g_miniMapTooltipText, this->miniMapTooltipText.c_str());
+    } else {
+      if (id == g_miniMapTooltipId && std::strcmp(g_miniMapTooltipText, this->miniMapTooltipText.c_str()) == 0) {
+        return;
+      }
+      g_miniMapTooltipId = id;
+      std::sprintf(g_miniMapTooltipText, this->miniMapTooltipText.c_str());
     }
-    g_miniMapTooltipId = id;
+
+    int x = 160;
+    int y = 0;
+    window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
+
+    switch (this->miniMapTooltipId) {
+    case 0:
+      window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = 200;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case 1:
+      window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = g_renderer->viewport.centerX;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case 2:
+      window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      x = g_renderer->viewport.width - 200;
+      y = g_renderer->viewport.height - window->geometry.height;
+      break;
+    case 3:
+      window->SendMsg(nullptr, UM_SETINFO, -2, 0, 0, 0);
+      window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, 3, 0, 0, 0);
+      x = g_renderer->viewport.centerX;
+      y = g_renderer->viewport.centerY - window->geometry.height / 2;
+      break;
+    case 4:
+      window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, 4, 0, 0, 0);
+      x = g_renderer->viewport.centerX;
+      y = g_renderer->viewport.centerY - window->geometry.height / 2;
+      break;
+    default:
+      break;
+    }
+
+    window->Move(x - window->geometry.width / 2, y);
   }
-  std::sprintf(g_miniMapTooltipText, tooltipText.c_str());
-
-  int x = 160;
-  int y = 0;
-  window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
-
-  switch (tooltipId) {
-  case 0:
-    window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
-    x = 200;
-    y = g_renderer->viewport.height - window->geometry.height;
-    break;
-  case 1:
-    window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
-    x = g_renderer->viewport.centerX;
-    y = g_renderer->viewport.height - window->geometry.height;
-    break;
-  case 2:
-    window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
-    x = g_renderer->viewport.width - 200;
-    y = g_renderer->viewport.height - window->geometry.height;
-    break;
-  case 3:
-    window->SendMsg(nullptr, UM_SETINFO, -2, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETINFO, 3, 0, 0, 0);
-    x = g_renderer->viewport.centerX;
-    y = g_renderer->viewport.centerY - window->geometry.height / 2;
-    break;
-  case 4:
-    window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(tooltipText.c_str()), 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETINFO, 4, 0, 0, 0);
-    x = g_renderer->viewport.centerX;
-    y = g_renderer->viewport.centerY - window->geometry.height / 2;
-    break;
-  default:
-    break;
-  }
-
-  window->Move(x - window->geometry.width / 2, y);
 }
