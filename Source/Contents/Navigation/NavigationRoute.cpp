@@ -539,27 +539,27 @@ std::string CNavigationManager::DestinationTitle() {
   char buffer[0x32];
   std::memset(buffer, 0, sizeof(buffer));
 
-  if (!this->nodes.empty() && this->selectedNode >= 0) {
-    if (this->nodes.size() <= static_cast<unsigned>(this->selectedNode)) {
-      this->destinationTitle.assign(buffer, std::strlen(buffer));
+  if (this->nodes.empty() || this->selectedNode < 0) {
+    if (this->viewMode == 2) {
+      NaviCell cell;
+      this->data.GetCell(&cell);
+      CNaviInfo* info = this->data.GetInfo();
+      if (info != nullptr) {
+        this->destinationTitle.assign(info->GetTitle());
+      }
       return this->destinationTitle;
     }
 
-    this->destinationTitle.assign(this->nodes[this->selectedNode]->GetInfo()->GetTitle());
+    this->destinationTitle.assign(buffer, std::strlen(buffer));
     return this->destinationTitle;
   }
 
-  if (this->viewMode == 2) {
-    NaviCell cell;
-    this->data.GetCell(&cell);
-    CNaviInfo* info = this->data.GetInfo();
-    if (info != nullptr) {
-      this->destinationTitle.assign(info->GetTitle());
-    }
+  if (this->nodes.size() <= static_cast<unsigned>(this->selectedNode)) {
+    this->destinationTitle.assign(buffer, std::strlen(buffer));
     return this->destinationTitle;
   }
 
-  this->destinationTitle.assign(buffer, std::strlen(buffer));
+  this->destinationTitle.assign(this->nodes[this->selectedNode]->GetInfo()->GetTitle());
   return this->destinationTitle;
 }
 
