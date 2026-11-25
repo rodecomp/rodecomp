@@ -105,27 +105,35 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
       break;
 
     case JT_EP21_YORTUS_B:
-    case JT_EP21_YORTUS_B_H:
       action = "몬스터\\EP21_YORTUS_Bullet.act";
       sprite = "몬스터\\EP21_YORTUS_Bullet.spr";
       break;
 
     case JT_EP21_B_YORTUS_B:
-    case JT_EP21_B_YORTUS_B_H:
       action = "몬스터\\EP21_B_YORTUS_Bullet.act";
       sprite = "몬스터\\EP21_B_YORTUS_Bullet.spr";
       break;
 
-    case JT_MEDJED:
-    case JT_CP_MEDJED:
-      action = "몬스터\\MEDJED_bullet.act";
-      sprite = "몬스터\\MEDJED_bullet.spr";
+    case JT_EP21_YORTUS_B_H:
+      action = "몬스터\\EP21_YORTUS_Bullet.act";
+      sprite = "몬스터\\EP21_YORTUS_Bullet.spr";
+      break;
+
+    case JT_EP21_B_YORTUS_B_H:
+      action = "몬스터\\EP21_B_YORTUS_Bullet.act";
+      sprite = "몬스터\\EP21_B_YORTUS_Bullet.spr";
       break;
 
     case JT_HEKA:
     case JT_CP_HEKA:
       action = "몬스터\\mg_corruption_root_h_bullet.act";
       sprite = "몬스터\\mg_corruption_root_h_bullet.spr";
+      break;
+
+    case JT_MEDJED:
+    case JT_CP_MEDJED:
+      action = "몬스터\\MEDJED_bullet.act";
+      sprite = "몬스터\\MEDJED_bullet.spr";
       break;
 
     case JT_GUIDE_OF_DEAD:
@@ -138,15 +146,15 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
       sprite = "몬스터\\E_SMART_ANDRE_Bullet.spr";
       break;
 
-    case JT_CH1_FIRE_FLOWER:
-      action = "몬스터\\CH1_FIRE_FLOWER_bullet.act";
-      sprite = "몬스터\\CH1_FIRE_FLOWER_bullet.spr";
-      break;
-
     case JT_CH1_SHADIEST:
     case JT_CP_CH1_SHADIEST:
       action = "몬스터\\CH1_SHADIEST_bullet.act";
       sprite = "몬스터\\CH1_SHADIEST_bullet.spr";
+      break;
+
+    case JT_CH1_FIRE_FLOWER:
+      action = "몬스터\\CH1_FIRE_FLOWER_bullet.act";
+      sprite = "몬스터\\CH1_FIRE_FLOWER_bullet.spr";
       break;
 
     default:
