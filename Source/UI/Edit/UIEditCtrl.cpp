@@ -4709,12 +4709,12 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       if (g_itemTagOwner->maxTipId >= id) {
         std::string name;
         const std::string title = g_itemTagOwner->Title(id, &name, 17);
-        if (name.size() + 2 + result.size() > std::strlen(line)) {
+        if (title.size() + 2 + result.size() > std::strlen(line)) {
           start = previous + static_cast<int>(chunk.size());
           break;
         }
 
-        if (title.size() != 0) {
+        if (name.size() != 0) {
           UIItemTagButton* button = this->CreateItemTagButton(title, name, id, this, 0x7F00E4);
           if (button) {
             buttons.push_back(button);
