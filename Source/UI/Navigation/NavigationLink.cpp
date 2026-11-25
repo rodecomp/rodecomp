@@ -930,22 +930,16 @@ UIWindow* CCreateLineInfo::CreateItemImageWindow(std::string itemId) {
 
 // OFFSET: 0x00838780
 // FUNCTION: fn_10453
-__declspec(safebuffers) int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
+int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
   std::smatch match;
 
   if (!std::regex_search(text, match, std::regex("^\\^i\\[(\\d{1,7})\\]*"))) {
     return x;
   }
 
-  UIItemImage* image;
-  {
-    const std::string itemId = match[1].str();
-    image = new (std::nothrow) UIItemImage();
-    if (!image) {
-      return x;
-    }
-    image->SetSize(25, 25);
-    image->SetItemId(itemId);
+  UIWindow* image = this->CreateItemImageWindow(match[1].str());
+  if (!image) {
+    return x;
   }
 
   if (image->geometry.width + x > this->m_width) {
