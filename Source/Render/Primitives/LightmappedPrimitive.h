@@ -86,14 +86,16 @@ inline void LightmappedPrimitivePool::Rewind() {
 
 // INLINED
 inline LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
-  if (this->m_current == this->m_commands.end()) {
+  if (this->m_commands.end() == this->m_current) {
     this->m_commands.emplace_back();
     this->m_current = this->m_commands.end();
     return &this->m_commands.back();
   }
 
-  LightmappedPrimitive* primitive = &*this->m_current++;
-  return new (primitive) LightmappedPrimitive;
+  LightmappedPrimitive* primitive = &*this->m_current;
+  ++this->m_current;
+  new (primitive) LightmappedPrimitive;
+  return primitive;
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
