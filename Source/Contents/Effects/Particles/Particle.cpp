@@ -209,9 +209,7 @@ void CEZ2STRParticle::Clear() {
   this->m_windowId = -1;
   this->m_attachToWindow = false;
   this->m_visible = true;
-  this->m_windowOffset.x = 0;
-  this->m_windowOffset.y = 0;
-  this->m_windowOffset.z = 0;
+  this->m_windowOffset = vector3d{0.0f, 0.0f, 0.0f};
   this->m_shiftX = 0;
   this->m_shiftY = 0;
   this->m_lift = 0;
