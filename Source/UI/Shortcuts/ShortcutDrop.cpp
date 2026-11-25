@@ -253,7 +253,7 @@ namespace {
         continue;
       }
 
-      for (std::list<CooldownState>::iterator state = record->alternate.begin(); state != record->alternate.end(); ++state) {
+      for (std::list<CooldownState>::iterator state = record->alternate.begin(), stop = record->alternate.end(); state != stop; ++state) {
         if (state->slot == slot) {
           record->alternate.erase(state);
           return;
@@ -343,8 +343,8 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       case TYPE_CANNONBALL: {
         const int slot = this->SlotAt(x, y);
         if (slot != -1) {
-          const int itemId = item.GetItemId();
-          g_session.SetHotkeyEntry(0, itemId, 0, slot);
+          argument = item.GetItemId();
+          g_session.SetHotkeyEntry(0, argument, 0, slot);
           RemoveAlternate(g_session.m_requestTimers, value, slot);
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->Invalidate();
