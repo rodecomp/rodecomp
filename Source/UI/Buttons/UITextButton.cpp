@@ -916,28 +916,37 @@ int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     }
 
     this->Invalidate();
-    return 0;
+    break;
   }
 
   case UM_SETID:
     this->geometry.id = argument1;
-    return 0;
+    break;
 
   case UM_SET_CALLER_WID:
     this->callerWindowId = argument1;
-    return 0;
+    break;
 
   case UM_SET_PRESSED:
-    this->pressedItems[argument1 - 1] = argument2 != 0;
-    return 0;
+    if (argument2) {
+      this->pressedItems[argument1 - 1] = true;
+    } else {
+      this->pressedItems[argument1 - 1] = false;
+    }
+    break;
 
   case UM_SET_DISABLE:
-    this->disabledItems[argument1 - 1] = argument2 != 0;
-    return 0;
+    if (argument2) {
+      this->disabledItems[argument1 - 1] = true;
+    } else {
+      this->disabledItems[argument1 - 1] = false;
+    }
+    break;
 
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+  return 0;
 }
 
 // OFFSET: 0x00897BF0
