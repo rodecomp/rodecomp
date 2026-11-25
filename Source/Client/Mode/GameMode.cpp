@@ -6916,10 +6916,13 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
   }
   case REPLAY_UI_STORE_TITLE: {
     const GameModeUiKindTextMessage* text = reinterpret_cast<const GameModeUiKindTextMessage*>(message);
-    if (text->kind == WID_MERCHANTSHOPMAKEWND) {
+    switch (text->kind) {
+    case WID_MERCHANTSHOPMAKEWND_MODE_1:
       g_session.storeTitle.assign(text->text, std::strlen(text->text));
-    } else if (text->kind == WID_MERCHANTSHOPMAKEWND_MODE_1) {
+      break;
+    case WID_MERCHANTSHOPMAKEWND:
       g_session.storeTitle.assign(text->text, std::strlen(text->text));
+      break;
     }
     break;
   }
