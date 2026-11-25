@@ -1,0 +1,55 @@
+{
+ "image": {
+  "id": "2026-02-19-clean",
+  "sha256": "aff91c5630148ca3aa68ebefb11c711c9defb36f6e5e761b606ecc1604046ac4",
+  "bytes": 16750080,
+  "what": "The 2026-02-19 client as a memory dump: the protector unpacked it at run time and the import table was rebuilt afterwards (section .SCY). It is not the linker's output and cannot be: the sections below say what in it comes from elsewhere."
+ },
+ "sections": [
+  {
+   "name": ".data1",
+   "class": "protector",
+   "note": "added by the protector"
+  },
+  {
+   "name": ".data2",
+   "class": "protector",
+   "note": "added by the protector"
+  },
+  {
+   "name": ".data3",
+   "class": "protector",
+   "note": "the packed file's own import stub"
+  },
+  {
+   "name": ".data4",
+   "class": "protector",
+   "note": "where protected regions jump to; 39 MB in memory, 71 KB in the file"
+  },
+  {
+   "name": ".rdata2",
+   "class": "protector",
+   "note": "no bytes in the file"
+  },
+  {
+   "name": ".rdata3",
+   "class": "protector",
+   "note": "no bytes in the file"
+  },
+  {
+   "name": ".SCY",
+   "class": "dump",
+   "note": "import directory rebuilt by the dumping tool"
+  },
+  {
+   "name": ".xdiff",
+   "class": "patch",
+   "note": "added by a client patching tool; 512 bytes"
+  },
+  {
+   "name": ".rsrc",
+   "class": "resources",
+   "note": "icons, version, manifest: built from resource files, not from this tree"
+  }
+ ]
+}
