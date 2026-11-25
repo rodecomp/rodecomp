@@ -47,3 +47,13 @@ float ScreenAngle(const float* from, const float* to, const float* matrix) {
   const float angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
   return fromScreen[1] > toScreen[1] ? 360.0f - angle : angle;
 }
+
+// OFFSET: 0x006FFA00
+// FUNCTION: fn_06967
+unsigned char CEZ2STREffectEx::IsFinished() {
+  if (!this->emitter) {
+    return false;
+  }
+
+  return this->emitter->m_finishedClips >= this->emitter->m_clipLimit;
+}

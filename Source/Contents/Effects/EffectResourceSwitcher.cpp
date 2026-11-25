@@ -252,16 +252,6 @@ void EffectResourceSwitcher::SetDelay(int argument) {
 void CEffect::SetResource(int) {
 }
 
-// OFFSET: 0x006FFA00
-// FUNCTION: fn_06967
-__declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {
-  if (!this->emitter) {
-    return false;
-  }
-
-  return this->emitter->m_finishedClips >= this->emitter->m_clipLimit;
-}
-
 // OFFSET: 0x006FFA20
 // FUNCTION: fn_06968
 void CEZ2STREffectEx::Open() {
