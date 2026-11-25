@@ -1582,30 +1582,31 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_MY_SHOP_BEGIN == static_cast<std::uint16_t>(header.type) || REPLAY_CHUNK_MY_BUYING_SHOP_BEGIN == static_cast<std::uint16_t>(header.type)) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        switch (header.type) {
-        case REPLAY_CHUNK_MY_SHOP_END:
-        case REPLAY_CHUNK_MY_BUYING_SHOP_END:
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
-          scanning = false;
-          break;
-        case REPLAY_CHUNK_MY_BUYING_SHOP_ZENY:
-          std::memcpy(&this->buyingZeny, bytes + offset, header.size);
-          offset += header.size;
-          this->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, this->buyingZeny, 0, 0, 0);
-          break;
-        default:
-          offset += header.size;
-          break;
-        }
+    if (REPLAY_CHUNK_MY_SHOP_BEGIN != static_cast<std::uint16_t>(header.type) && REPLAY_CHUNK_MY_BUYING_SHOP_BEGIN != static_cast<std::uint16_t>(header.type)) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case REPLAY_CHUNK_MY_SHOP_END:
+      case REPLAY_CHUNK_MY_BUYING_SHOP_END:
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
+        scanning = false;
+        break;
+      case REPLAY_CHUNK_MY_BUYING_SHOP_ZENY:
+        std::memcpy(&this->buyingZeny, bytes + offset, header.size);
+        offset += header.size;
+        this->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, this->buyingZeny, 0, 0, 0);
+        break;
+      default:
+        offset += header.size;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
@@ -6599,17 +6600,18 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_MERCHANT_MIRROR_BEGIN == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        if (header.type == REPLAY_CHUNK_MERCHANT_MIRROR_END) {
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          scanning = false;
-        } else {
-          offset += header.size;
-        }
+    if (REPLAY_CHUNK_MERCHANT_MIRROR_BEGIN != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      if (header.type == REPLAY_CHUNK_MERCHANT_MIRROR_END) {
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        scanning = false;
+      } else {
+        offset += header.size;
       }
     }
     break;
@@ -6738,30 +6740,31 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_ITEM_SELL2_BEGIN == header.type) {
-      UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
-      if (window) {
-        window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
-        window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      }
+    if (REPLAY_CHUNK_ITEM_SELL2_BEGIN != header.type) {
+      break;
+    }
+    UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
+    if (window) {
+      window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    }
 
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        switch (header.type) {
-        case REPLAY_CHUNK_ITEM_SELL2_END:
-          scanning = false;
-          break;
-        case REPLAY_CHUNK_ITEM_SELL2_SHOP_ID:
-          std::memcpy(&this->shopId, bytes + offset, header.size);
-          offset += header.size;
-          window->SendMsg(nullptr, UM_REFRESHITEM, this->shopId, 0, 0, 0);
-          break;
-        default:
-          offset += header.size;
-          break;
-        }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case REPLAY_CHUNK_ITEM_SELL2_END:
+        scanning = false;
+        break;
+      case REPLAY_CHUNK_ITEM_SELL2_SHOP_ID:
+        std::memcpy(&this->shopId, bytes + offset, header.size);
+        offset += header.size;
+        window->SendMsg(nullptr, UM_REFRESHITEM, this->shopId, 0, 0, 0);
+        break;
+      default:
+        offset += header.size;
+        break;
       }
     }
     break;
@@ -7098,24 +7101,25 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_MERCHANT_SHOP_BEGIN == header.type || REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        switch (header.type) {
-        case REPLAY_CHUNK_MERCHANT_SHOP_BEGIN:
-        case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN:
-          scanning = false;
-          break;
-        case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_ZENY:
-          std::memcpy(&this->buyingZeny, bytes + offset, header.size);
-          offset += header.size;
-          break;
-        default:
-          offset += header.size;
-          break;
-        }
+    if (REPLAY_CHUNK_MERCHANT_SHOP_BEGIN != header.type && REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case REPLAY_CHUNK_MERCHANT_SHOP_BEGIN:
+      case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN:
+        scanning = false;
+        break;
+      case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_ZENY:
+        std::memcpy(&this->buyingZeny, bytes + offset, header.size);
+        offset += header.size;
+        break;
+      default:
+        offset += header.size;
+        break;
       }
     }
     break;

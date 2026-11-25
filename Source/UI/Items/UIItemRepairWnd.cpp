@@ -314,29 +314,30 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes);
     unsigned offset = 6;
 
-    if (REPLAY_CHUNK_ITEM_REPAIR_BEGIN == header.id) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes + offset);
-        offset += 6;
+    if (REPLAY_CHUNK_ITEM_REPAIR_BEGIN != header.id) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes + offset);
+      offset += 6;
 
-        switch (header.id) {
-        case REPLAY_CHUNK_ITEM_REPAIR_END:
-          scanning = false;
-          break;
+      switch (header.id) {
+      case REPLAY_CHUNK_ITEM_REPAIR_END:
+        scanning = false;
+        break;
 
-        case REPLAY_CHUNK_ITEM_REPAIR_ITEM: {
-          UIItemRepairEntry entry;
-          std::memcpy(&entry, bytes + offset, header.bytes);
-          offset += header.bytes;
-          this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
-          break;
-        }
+      case REPLAY_CHUNK_ITEM_REPAIR_ITEM: {
+        UIItemRepairEntry entry;
+        std::memcpy(&entry, bytes + offset, header.bytes);
+        offset += header.bytes;
+        this->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&entry), 0, 0, 0);
+        break;
+      }
 
-        default:
-          offset += header.bytes;
-          break;
-        }
+      default:
+        offset += header.bytes;
+        break;
       }
     }
     break;

@@ -153,29 +153,30 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes);
     unsigned offset = 6;
 
-    if (REPLAY_CHUNK_WEAPON_REFINE_BEGIN == header.id) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes + offset);
-        offset += 6;
+    if (REPLAY_CHUNK_WEAPON_REFINE_BEGIN != header.id) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes + offset);
+      offset += 6;
 
-        switch (header.id) {
-        case REPLAY_CHUNK_WEAPON_REFINE_END:
-          scanning = false;
-          break;
+      switch (header.id) {
+      case REPLAY_CHUNK_WEAPON_REFINE_END:
+        scanning = false;
+        break;
 
-        case REPLAY_CHUNK_WEAPON_REFINE_ITEM: {
-          int values[2] = {};
-          std::memcpy(values, bytes + offset, header.bytes);
-          offset += header.bytes;
-          this->SendMsg(nullptr, UM_ADDITEM, values[0], values[1], 0, 0);
-          break;
-        }
+      case REPLAY_CHUNK_WEAPON_REFINE_ITEM: {
+        int values[2] = {};
+        std::memcpy(values, bytes + offset, header.bytes);
+        offset += header.bytes;
+        this->SendMsg(nullptr, UM_ADDITEM, values[0], values[1], 0, 0);
+        break;
+      }
 
-        default:
-          offset += header.bytes;
-          break;
-        }
+      default:
+        offset += header.bytes;
+        break;
       }
     }
     break;

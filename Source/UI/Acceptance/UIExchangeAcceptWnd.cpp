@@ -125,29 +125,30 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     ExchangeRecordHeader header;
     header = *reinterpret_cast<const ExchangeRecordHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_EXCHANGE_ACCEPT_BEGIN == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ExchangeRecordHeader*>(bytes + offset);
-        offset += 6;
-        switch (header.type) {
-        case REPLAY_CHUNK_EXCHANGE_ACCEPT_END:
-          scanning = false;
-          break;
-        case REPLAY_CHUNK_EXCHANGE_ACCEPT_TEXT: {
-          char text[260] = {};
-          std::memcpy(text, bytes + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-          const std::string name = text;
-          CGameMode* mode = g_modeMgr.GetGameMode();
-          SetExchangeName(mode, name);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    if (REPLAY_CHUNK_EXCHANGE_ACCEPT_BEGIN != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ExchangeRecordHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case REPLAY_CHUNK_EXCHANGE_ACCEPT_END:
+        scanning = false;
+        break;
+      case REPLAY_CHUNK_EXCHANGE_ACCEPT_TEXT: {
+        char text[260] = {};
+        std::memcpy(text, bytes + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        const std::string name = text;
+        CGameMode* mode = g_modeMgr.GetGameMode();
+        SetExchangeName(mode, name);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
     break;

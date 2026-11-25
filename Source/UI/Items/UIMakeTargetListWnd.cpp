@@ -87,16 +87,16 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     item.refiningLevel = 0;
     item.identified = 1;
     this->m_list->AddLine(item.DisplayName(0).c_str());
-    return 0;
+    break;
   }
 
   case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
 
   case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
 
   case UM_COMMAND: {
     const int response = static_cast<int>(a);
@@ -114,7 +114,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (list->LineCount() == 0) {
         g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
         g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
-        return 0;
+        break;
       }
 
       if (list->selected >= 0) {
@@ -128,7 +128,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
             g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, this->itemIds[this->m_list->selected], reinterpret_cast<int>(materials), 0, 0);
           }
           g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
-          return 0;
+          break;
         }
 
         default: {
@@ -136,7 +136,7 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           window->SendMsg(this, UM_SETCURITEM, this->itemIds[this->m_list->selected], 0, 0, 0);
           window->Move(this->geometry.x, this->geometry.y);
           g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
-          return 0;
+          break;
         }
         }
       }
@@ -146,11 +146,11 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       ITEM_INFO materials[3];
       g_modeMgr.GetGameMode()->SendMsg(MM_REQ_MAKING_ITEM, 0, reinterpret_cast<int>(materials), 0, 0);
       g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
-      return 0;
+      break;
     }
     }
 
-    return 0;
+    break;
   }
 
   case UM_REPLAY_FRAMED_DATA: {
@@ -175,34 +175,37 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     std::memcpy(&tag, bytes, sizeof(tag));
     unsigned offset = sizeof(tag);
 
-    if (REPLAY_CHUNK_MAKE_TARGET_LIST_BEGIN == tag.id) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        std::memcpy(&tag, bytes + offset, sizeof(tag));
-        offset += sizeof(tag);
+    if (REPLAY_CHUNK_MAKE_TARGET_LIST_BEGIN != tag.id) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      std::memcpy(&tag, bytes + offset, sizeof(tag));
+      offset += sizeof(tag);
 
-        switch (tag.id) {
-        case REPLAY_CHUNK_MAKE_TARGET_LIST_END:
-          scanning = false;
-          break;
+      switch (tag.id) {
+      case REPLAY_CHUNK_MAKE_TARGET_LIST_END:
+        scanning = false;
+        break;
 
-        case REPLAY_CHUNK_MAKE_TARGET_LIST_ITEM:
-          itemId = ITEMID_NONE;
-          std::memcpy(&itemId, bytes + offset, tag.bytes);
-          offset += tag.bytes;
-          this->SendMsg(nullptr, UM_ADDITEM, itemId, 0, 0, 0);
-          break;
+      case REPLAY_CHUNK_MAKE_TARGET_LIST_ITEM:
+        itemId = ITEMID_NONE;
+        std::memcpy(&itemId, bytes + offset, tag.bytes);
+        offset += tag.bytes;
+        this->SendMsg(nullptr, UM_ADDITEM, itemId, 0, 0, 0);
+        break;
 
-        default:
-          offset += tag.bytes;
-          break;
-        }
+      default:
+        offset += tag.bytes;
+        break;
       }
     }
-
-    return 0;
-  }
+    break;
   }
 
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }

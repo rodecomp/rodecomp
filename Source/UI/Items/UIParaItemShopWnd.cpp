@@ -483,7 +483,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (20700 != header.type) {
-      return 0;
+      break;
     }
 
     bool scanning = true;

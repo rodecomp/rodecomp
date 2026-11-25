@@ -250,27 +250,28 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     header = *reinterpret_cast<const UIMakeTargetProcessRecordHeader*>(bytes);
     unsigned offset = 6;
 
-    if (REPLAY_CHUNK_MAKE_TARGET_PROCESS_BEGIN == header.id) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const UIMakeTargetProcessRecordHeader*>(bytes + offset);
-        offset += 6;
+    if (REPLAY_CHUNK_MAKE_TARGET_PROCESS_BEGIN != header.id) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const UIMakeTargetProcessRecordHeader*>(bytes + offset);
+      offset += 6;
 
-        switch (header.id) {
-        case REPLAY_CHUNK_MAKE_TARGET_PROCESS_END:
-          scanning = false;
-          break;
+      switch (header.id) {
+      case REPLAY_CHUNK_MAKE_TARGET_PROCESS_END:
+        scanning = false;
+        break;
 
-        case REPLAY_CHUNK_MAKE_TARGET_PROCESS_TYPE:
-          std::memcpy(&this->makeType, bytes + offset, header.bytes);
-          offset += header.bytes;
-          this->SendMsg(nullptr, UM_SETCURITEM, this->makeType, 0, 0, 0);
-          break;
+      case REPLAY_CHUNK_MAKE_TARGET_PROCESS_TYPE:
+        std::memcpy(&this->makeType, bytes + offset, header.bytes);
+        offset += header.bytes;
+        this->SendMsg(nullptr, UM_SETCURITEM, this->makeType, 0, 0, 0);
+        break;
 
-        default:
-          offset += header.bytes;
-          break;
-        }
+      default:
+        offset += header.bytes;
+        break;
       }
     }
     break;
