@@ -2922,7 +2922,9 @@ void CPlayer::UpdatePendingAction() {
     } else if ((this->GetEffectiveJob(-1) >= JT_TAEKWON && this->GetEffectiveJob(-1) < JT_2004_JOB_LAST) || this->GetEffectiveJob(-1) == JT_GUNSLINGER ||
                this->GetEffectiveJob(-1) == JT_NINJA) {
       const int state = static_cast<int>(this->render.state);
-      if (state != ST_MOVE && state != ST_STAND && state != ST_DAMAGE && state != ST_SKILL && state != ST_BEGIN_SKILL && state < 16) {
+      const bool stateOk = state == ST_MOVE || state == ST_STAND || state == ST_DAMAGE || state == ST_SKILL ||
+                           state == ST_BEGIN_SKILL || state >= 16;
+      if (!stateOk) {
         return;
       }
     } else {
