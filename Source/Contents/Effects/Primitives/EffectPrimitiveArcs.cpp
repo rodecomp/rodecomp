@@ -861,11 +861,11 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
 // OFFSET: 0x00BF0370
 // FUNCTION: fn_19985
 void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
+  int rpCnt = 0;
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
   vector3d vec4{};
-  int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
@@ -932,13 +932,13 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
       vector3d bend0{};
-      if (dist > g_fireflyGroundOffset) {
+      if (dist > 20.0f) {
         remain = dist - g_fireflyGroundOffset;
         bend0.x = g_cosTable[dir] * g_fireflyGroundOffset;
         bend0.z = g_sinTable[dir] * g_fireflyGroundOffset;
       }
       vector3d bend1{};
-      if (dist > g_fireflyArcStep33) {
+      if (dist > 33.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -948,7 +948,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend1.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend2{};
-      if (dist > g_fireflyArcStep46) {
+      if (dist > 46.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -958,7 +958,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend2.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend3{};
-      if (dist > g_fireflyArcStep59) {
+      if (dist > 59.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -968,7 +968,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend3.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend4{};
-      if (dist > g_fireflyArcStep71) {
+      if (dist > 71.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -978,7 +978,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend4.z = g_sinTable[dir] * g_fireflyModeTwelve;
       }
       vector3d bend5{};
-      if (dist > g_fireflyArcStep84) {
+      if (dist > 84.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -1084,13 +1084,13 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
       vector3d bend0{};
-      if (dist > g_fireflyGroundOffset) {
+      if (dist > 20.0f) {
         remain = dist - g_fireflyGroundOffset;
         bend0.x = g_cosTable[dir] * g_fireflyGroundOffset;
         bend0.z = g_sinTable[dir] * g_fireflyGroundOffset;
       }
       vector3d bend1{};
-      if (dist > g_fireflyArcStep33) {
+      if (dist > 33.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -1100,7 +1100,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend1.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend2{};
-      if (dist > g_fireflyArcStep46) {
+      if (dist > 46.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -1110,7 +1110,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend2.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend3{};
-      if (dist > g_fireflyArcStep59) {
+      if (dist > 59.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -1120,7 +1120,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend3.z = g_sinTable[dir] * g_fireflyModeThirteen;
       }
       vector3d bend4{};
-      if (dist > g_fireflyArcStep71) {
+      if (dist > 71.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
@@ -1130,7 +1130,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
         bend4.z = g_sinTable[dir] * g_fireflyModeTwelve;
       }
       vector3d bend5{};
-      if (dist > g_fireflyArcStep84) {
+      if (dist > 84.0f) {
         dir += 5;
         if (dir >= 360) {
           dir -= 360;
