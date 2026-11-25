@@ -5239,7 +5239,6 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
-  bool poisonSound = false;
   if (this->effectState & 0x80) {
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
@@ -5248,7 +5247,16 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     color.green = 0x32;
     color.red = 0xFF;
     color.blue = 0xFF;
-    poisonSound = true;
+    if (notify) {
+      CGameMode* mode = g_modeMgr.GetGameMode();
+      const vector3d& player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(EF_POISON)) {
+        this->LaunchEffect(EF_POISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
   } else if (this->effectState & 0x01) {
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
@@ -5259,23 +5267,21 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       color.red = 0xFF;
       color.blue = 0xFF;
     }
-    poisonSound = true;
+    if (notify) {
+      CGameMode* mode = g_modeMgr.GetGameMode();
+      const vector3d& player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(EF_POISON)) {
+        this->LaunchEffect(EF_POISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
   } else if (this->render.accountId == g_session.m_aid) {
     if (g_playerPoisoned == 1) {
       this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_POISON, 0, 0, 0, 0, 0);
     }
     g_playerPoisoned = 0;
-  }
-
-  if (poisonSound && notify) {
-    CGameMode* mode = g_modeMgr.GetGameMode();
-    const vector3d& player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
-    g_soundMgr->PlayWave(
-      "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
-    );
-    if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(EF_POISON)) {
-      this->LaunchEffect(EF_POISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    }
   }
 
   if (this->effectState & 0x02) {
