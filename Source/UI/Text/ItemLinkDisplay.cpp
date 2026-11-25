@@ -7,6 +7,9 @@
 
 #include <mbstring.h>
 
+// GLOBAL: gl_13419
+char g_emptyText[4] = {};
+
 // OFFSET: 0x008816E0
 // FUNCTION: fn_11299
 bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
@@ -51,7 +54,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
     remaining = remaining.substr(0, close);
     std::size_t begin = remaining.find(g_itemLinkTagBegin);
 
-    if (begin == std::string::npos && close != std::string::npos) {
+    if (close != std::string::npos && begin == std::string::npos) {
       position += static_cast<unsigned>(g_itemLinkTagEnd.size());
       remaining = original;
       remaining = remaining.substr(position);
@@ -74,7 +77,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
 
       encoded = remaining;
       remaining = original;
-      std::string name("");
+      std::string name(g_emptyText);
 
       if (!this->Name(encoded, name)) {
         position = static_cast<unsigned>(encoded.size()) + position + static_cast<unsigned>(g_itemLinkTagEnd.size()) + static_cast<unsigned>(g_itemLinkTagBegin.size());
