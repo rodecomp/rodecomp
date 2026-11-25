@@ -87,15 +87,17 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float radius = g_sinTable[this->state.slots[ec].rotStart] + this->state.slots[ec].distance;
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      curB.x = radius * cosine;
+      const float radius = g_sinTable[this->state.slots[ec].rotStart] + this->state.slots[ec].distance;
+      const float baseX = radius * cosine;
+      const float baseZ = radius * sine;
+      curB.x = baseX;
       curB.y = 0.0f;
-      curB.z = radius * sine;
-      curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + curB.x;
+      curB.z = baseZ;
+      curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + baseX;
       curT.y = -(this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle]);
-      curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + curB.z;
+      curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + baseZ;
 
       if (i > 0) {
         int texture;
@@ -713,27 +715,29 @@ void CEffectPrim::RenderFanWedge(matrix& wtm) {
     }
     const float leftSpread = dist * g_cosTable[leftAngle];
     left.z = dist * g_sinTable[leftAngle];
-    left.x = leftSpread * g_cosTable[this->state.slots[ec].rotStart];
-    left.y = leftSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
+    const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
+    left.x = leftSpread * rotCos;
+    left.y = leftSpread * rotSin + base;
     const float rightSpread = dist * g_cosTable[rightAngle];
     right.z = dist * g_sinTable[rightAngle];
-    right.x = rightSpread * g_cosTable[this->state.slots[ec].rotStart];
-    right.y = rightSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    right.x = rightSpread * rotCos;
+    right.y = rightSpread * rotSin + base;
     const float backSpread = 7.0f * g_cosTable[backAngle];
     back.z = 7.0f * g_sinTable[backAngle];
-    back.x = backSpread * g_cosTable[this->state.slots[ec].rotStart];
-    back.y = backSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    back.x = backSpread * rotCos;
+    back.y = backSpread * rotSin + base;
     int tipAngle = angle - 90;
     if (tipAngle < 0) {
       tipAngle += 360;
     }
     const float tipSpread = 7.0f * g_cosTable[tipAngle];
     tip.z = 7.0f * g_sinTable[tipAngle];
-    tip.x = tipSpread * g_cosTable[this->state.slots[ec].rotStart];
-    tip.y = tipSpread * g_sinTable[this->state.slots[ec].rotStart] + base;
+    tip.x = tipSpread * rotCos;
+    tip.y = tipSpread * rotSin + base;
 
     this->RenderTeiRect(
-      &rpCnt, this->state.slots[ec].alphaB, tip, left, right, back, wtm, 0, static_cast<unsigned char>(static_cast<int>(this->state.slots[ec].height[1])), 0, 105,
+      &rpCnt, this->state.slots[ec].alphaB, tip, left, right, back, wtm, 0, static_cast<unsigned char>(this->state.slots[ec].height[1]), 0, 105,
       105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
     );
   }
@@ -749,14 +753,13 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
-    const int angle = slot.riseAngle;
-    const float dist = slot.distance;
-    const float base = slot.height[0];
+    const int angle = this->state.slots[ec].riseAngle;
+    const float dist = this->state.slots[ec].distance;
+    const float base = this->state.slots[ec].height[0];
     int leftAngle = angle - 5;
     if (leftAngle < 0) {
       leftAngle += 360;
@@ -765,12 +768,16 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
     if (rightAngle >= 360) {
       rightAngle -= 360;
     }
-    left.x = dist * g_cosTable[leftAngle] * g_cosTable[slot.rotStart];
-    left.y = dist * g_cosTable[leftAngle] * g_sinTable[slot.rotStart] + base;
+    const float leftSpread = dist * g_cosTable[leftAngle];
     left.z = dist * g_sinTable[leftAngle];
-    right.x = dist * g_cosTable[rightAngle] * g_cosTable[slot.rotStart];
-    right.y = dist * g_cosTable[rightAngle] * g_sinTable[slot.rotStart] + base;
+    const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
+    const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
+    left.x = leftSpread * rotCos;
+    left.y = leftSpread * rotSin + base;
+    const float rightSpread = dist * g_cosTable[rightAngle];
     right.z = dist * g_sinTable[rightAngle];
+    right.x = rightSpread * rotCos;
+    right.y = rightSpread * rotSin + base;
     center.x = 0.0f;
     center.y = base;
     center.z = 0.0f;
@@ -778,7 +785,7 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
     center2.y = base;
     center2.z = 0.0f;
 
-    this->RenderTeiRect(&rpCnt, slot.alphaB, left, right, center, center2, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, left, right, center, center2, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }
 
