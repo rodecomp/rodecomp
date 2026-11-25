@@ -1133,10 +1133,10 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   }
   case WZ_STORMGUST:
   case NPC_STORMGUST2: {
-    dummyEffect = 0x59;
+    dummyEffect = 0x2C4;
     dummyLifetime = 0x59;
-    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      dummyEffect = 0x2C4;
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == false) {
+      dummyEffect = 0x59;
     }
     break;
   }
