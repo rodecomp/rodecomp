@@ -3850,12 +3850,12 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       this->m_balloon = nullptr;
     }
 
-    int page = static_cast<int>(a);
-    if (page == 0) {
-      page = this->LoadBookmark(this->m_bookName);
+    if (a == 0) {
+      this->m_page = this->LoadBookmark(this->m_bookName);
+    } else {
+      this->m_page = static_cast<int>(a);
     }
-    this->m_page = page;
-    if (page > this->m_pageCount) {
+    if (this->m_page > this->m_pageCount) {
       this->m_page = 0;
     }
 
@@ -3884,16 +3884,15 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->Show(WINDOW_HIDDEN);
     if (this->m_autoRead) {
       this->m_autoTick = timeGetTime() - 4000;
-      int page = static_cast<int>(a);
-      if (page == 0) {
-        page = this->LoadBookmark(this->m_bookName);
+      if (a == 0) {
+        this->m_page = this->LoadBookmark(this->m_bookName);
+      } else {
+        this->m_page = static_cast<int>(a);
       }
-      this->m_page = page;
-      if (page > this->m_pageCount) {
+      if (this->m_page > this->m_pageCount) {
         this->m_page = 0;
-        page = 0;
       }
-      this->m_autoLine = page * 19 - 19;
+      this->m_autoLine = this->m_page * 19 - 19;
       if (this->m_autoLine > this->m_lineCount) {
         this->m_autoLine = 0;
       }
@@ -4943,28 +4942,30 @@ int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 // FUNCTION: fn_12374
 int UIRestartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   CGameMode* mode = g_modeMgr.GetGameMode();
-  if (message != UM_COMMAND) {
+  switch (message) {
+  case UM_COMMAND:
+    switch (argument1) {
+    case ID_TO_CHARACTER_SELECT:
+      mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_RESTARTWND);
+      g_windowMgr.CloseWindow(WID_ROULLETTEWND);
+      break;
+    case ID_RESTART:
+      mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(WID_RESTARTWND);
+      break;
+    case ID_QUIT:
+      g_windowMgr.CloseWindow(WID_RESTARTWND);
+      mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
+      break;
+    case ID_CANCEL:
+      g_windowMgr.CloseWindow(WID_RESTARTWND);
+      break;
+    }
+    break;
+  default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-
-  switch (argument1) {
-  case ID_TO_CHARACTER_SELECT:
-    mode->SendMsg(MM_RESTART, 1, 0, 0, 0);
-    g_windowMgr.CloseWindow(WID_RESTARTWND);
-    g_windowMgr.CloseWindow(WID_ROULLETTEWND);
-    break;
-  case ID_RESTART:
-    mode->SendMsg(MM_RESTART, 0, 0, 0, 0);
-    [[fallthrough]];
-  case ID_CANCEL:
-    g_windowMgr.CloseWindow(WID_RESTARTWND);
-    break;
-  case ID_QUIT:
-    g_windowMgr.CloseWindow(WID_RESTARTWND);
-    mode->SendMsg(MM_QUIT_GAME, 0, 0, 0, 0);
-    break;
-  }
-
   return 0;
 }
 
