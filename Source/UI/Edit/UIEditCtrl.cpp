@@ -6846,7 +6846,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       const long long pending = g_session.GetMerchantHopeToSellItemTotalPrice();
       const int price = static_cast<int>(drag.price);
       if (this->buyingStore) {
-        if (static_cast<long long>(price * item.quantity) + g_session.m_zeny + pending <= 0x7FFFFFFF) {
+        const long long cost = price * item.quantity;
+        if (g_session.m_zeny + cost + pending <= 0x7FFFFFFF) {
           g_session.AddMerchantHopeToSellItem(item);
           g_session.RemoveMerchantMyShopItem(item, 2, 1);
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -6857,7 +6858,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_OR_LOW_MONEY)), 255, 0, 0, 0);
         }
-      } else if (g_session.m_zeny >= static_cast<long long>(price) * item.quantity + pending) {
+      } else if (g_session.m_zeny >= static_cast<long long>(item.quantity) * price + pending) {
         g_session.AddMerchantHopeToSellItem(item);
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       } else {
@@ -6948,8 +6949,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
     return 0;
   case UM_REFRESHITEM: {
-    this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
+    this->items.erase(this->items.begin(), this->items.end());
     const int count = g_session.GetNumMerchantHopeToSellItems();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetMerchantHopeToSellItemInfoBySequence(i);
