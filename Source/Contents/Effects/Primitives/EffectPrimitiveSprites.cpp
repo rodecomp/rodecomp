@@ -201,7 +201,7 @@ static __declspec(safebuffers) __forceinline void DrawTrailSpriteQuad(
 void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
   CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
-  const std::uint32_t alpha = static_cast<unsigned short>(static_cast<short>(this->state.alpha));
+  const unsigned short alpha = static_cast<unsigned short>(this->state.alpha);
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life <= 0 || !(this->state.alpha > 0.0f)) {
@@ -264,7 +264,7 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
           sprite->palette, 5, g_effectIconOuterRadius
         );
 
-        const std::uint8_t halfAlphaByte = static_cast<unsigned char>(alpha / 2);
+        const std::uint8_t halfAlphaByte = static_cast<unsigned char>(static_cast<short>(alpha) / 2);
         const std::uint32_t halfColor = (((((halfAlphaByte << 8) + red) << 8) + green) << 8) + blue;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, angle, halfColor, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
