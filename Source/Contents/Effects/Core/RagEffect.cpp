@@ -18962,7 +18962,7 @@ void CRagEffect::BlackSpellRings(char silent) {
 void CRagEffect::TexturedClassChange(char kind) {
   this->render.position = this->state.parent->render.position;
 
-  const int stage = kind != 30 ? 0 : 30;
+  const int stage = kind != TCC_TRIPLEACTION ? 0 : 30;
   if (this->state.stateCnt == 0x5F5E0FE) {
     this->state.stateCnt = 0;
   }
@@ -18980,36 +18980,36 @@ void CRagEffect::TexturedClassChange(char kind) {
   this->state.lastPrim->state.alphaSpeed = 0.0f;
 
   switch (kind) {
-  case 0:
+  case TCC_HAMICASTLE:
     this->state.lastPrim->SetSpriteName("이팩트\\캐슬링.spr");
     this->state.lastPrim->SetActionName("이팩트\\캐슬링.act");
     break;
-  case 1:
+  case TCC_HAMIBLOOD:
     PlayEffectWaveInline(*this, "effect\\h_blood_lust.wav");
     this->state.lastPrim->SetSpriteName("이팩트\\블러드러스트.spr");
     this->state.lastPrim->SetActionName("이팩트\\블러드러스트.act");
     break;
-  case 2:
+  case TCC_ITEM_THUNDER:
     this->state.lastPrim->SetSpriteName("이팩트\\item_thunder.spr");
     this->state.lastPrim->SetActionName("이팩트\\item_thunder.act");
     break;
-  case 3:
+  case TCC_ITEM_CLOUD:
     this->state.lastPrim->SetSpriteName("이팩트\\item_cloud.spr");
     this->state.lastPrim->SetActionName("이팩트\\item_cloud.act");
     break;
-  case 4:
+  case TCC_ITEM_CURSE:
     this->state.lastPrim->SetSpriteName("이팩트\\item_curse.spr");
     this->state.lastPrim->SetActionName("이팩트\\item_curse.act");
     break;
-  case 5:
+  case TCC_ITEM_ZZZ:
     this->state.lastPrim->SetSpriteName("이팩트\\item_zzz.spr");
     this->state.lastPrim->SetActionName("이팩트\\item_zzz.act");
     break;
-  case 6:
+  case TCC_ITEM_RAIN:
     this->state.lastPrim->SetSpriteName("이팩트\\item_rain.spr");
     this->state.lastPrim->SetActionName("이팩트\\item_rain.act");
     break;
-  case 7:
+  case TCC_M01:
     PlayEffectWaveInline(*this, "effect\\ef_firehit.wav");
     this->state.lastPrim->state.animSpeed = 3;
     this->state.lastPrim->state.pattern = 0;
@@ -19017,7 +19017,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef01.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef01.act");
     break;
-  case 8: {
+  case TCC_M02: {
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef02.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef02.act");
@@ -19040,37 +19040,37 @@ void CRagEffect::TexturedClassChange(char kind) {
     }
     break;
   }
-  case 10:
+  case TCC_M04:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef04.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef04.act");
     this->state.lastPrim->state.repeatAnim = 1;
     break;
-  case 9:
+  case TCC_M03:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef03.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef03.act");
     break;
-  case 11:
+  case TCC_M05:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef05.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef05.act");
     break;
-  case 12:
+  case TCC_M06:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef06.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef06.act");
     break;
-  case 13:
+  case TCC_M07:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef07.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef07.act");
     break;
-  case 14:
+  case TCC_HAPGYEOK:
     this->state.lastPrim->SetSpriteName("이팩트\\합격_.spr");
     this->state.lastPrim->SetActionName("이팩트\\합격_.act");
     break;
-  case 15:
+  case TCC_KIRIKAGE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\그림자베기.spr");
     this->state.lastPrim->SetActionName("이팩트\\그림자베기.act");
@@ -19080,7 +19080,7 @@ void CRagEffect::TexturedClassChange(char kind) {
       this->state.lastPrim->SetAction(0, 16, 1);
     }
     break;
-  case 16:
+  case TCC_TATAMI:
     this->state.lastPrim->state.deltaPos2.y = -6.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.animSpeed = 6;
@@ -19088,7 +19088,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\다다미.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 17:
+  case TCC_KASUMIKIRI:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\안개베기.spr");
     this->state.lastPrim->SetActionName("이팩트\\안개베기.act");
@@ -19098,14 +19098,14 @@ void CRagEffect::TexturedClassChange(char kind) {
       this->state.lastPrim->SetAction(0, 16, 1);
     }
     break;
-  case 18:
+  case TCC_ISSEN:
     this->state.lastPrim->state.deltaPos2.y = -6.0f;
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->SetSpriteName("이팩트\\일섬.spr");
     this->state.lastPrim->SetActionName("이팩트\\일섬.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 19:
+  case TCC_KAEN:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.animSpeed = ClampedRandom(5) + 3;
@@ -19114,13 +19114,13 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\화염진.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 20:
+  case TCC_DESPERADO:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\데스페라도.spr");
     this->state.lastPrim->SetActionName("이팩트\\데스페라도.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 21:
+  case TCC_LIGHTNING_S:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19128,7 +19128,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\라이트닝스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 22:
+  case TCC_BLIND_S:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19136,7 +19136,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\블라인드스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 23:
+  case TCC_POISON_S:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19144,7 +19144,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\포이즌스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 24:
+  case TCC_FREEZING_S:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19152,7 +19152,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\프리징스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 25:
+  case TCC_FLARE_S:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19160,19 +19160,19 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\플레어스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 26:
+  case TCC_RAPIDSHOWER:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\래피드샤워.spr");
     this->state.lastPrim->SetActionName("이팩트\\래피드샤워.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 27:
+  case TCC_MAGICALBULLET:
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->SetSpriteName("이팩트\\매지컬불릿.spr");
     this->state.lastPrim->SetActionName("이팩트\\매지컬불릿.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 28: {
+  case TCC_SPREADATTACK: {
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\스프레드.spr");
     this->state.lastPrim->SetActionName("이팩트\\스프레드.act");
@@ -19195,80 +19195,80 @@ void CRagEffect::TexturedClassChange(char kind) {
     }
     break;
   }
-  case 29:
+  case TCC_TRACKING:
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->SetSpriteName("이팩트\\트래킹.spr");
     this->state.lastPrim->SetActionName("이팩트\\트래킹.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 30:
+  case TCC_TRIPLEACTION:
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->SetSpriteName("이팩트\\트리플액션.spr");
     this->state.lastPrim->SetActionName("이팩트\\트리플액션.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 31:
+  case TCC_NPC_EARTHQUAKE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\어스퀘이크.spr");
     this->state.lastPrim->SetActionName("이팩트\\어스퀘이크.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 32:
+  case TCC_POK_LOVE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\폭죽_러브.spr");
     this->state.lastPrim->SetActionName("이팩트\\폭죽_러브.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 33:
+  case TCC_POK_WHITE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\폭죽_화이트데이.spr");
     this->state.lastPrim->SetActionName("이팩트\\폭죽_화이트데이.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 34:
+  case TCC_POK_VALEN:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\폭죽_발렌타인.spr");
     this->state.lastPrim->SetActionName("이팩트\\폭죽_발렌타인.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 35:
+  case TCC_POK_BIRTH:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\폭죽_생일.spr");
     this->state.lastPrim->SetActionName("이팩트\\폭죽_생일.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 36:
+  case TCC_POK_CHRISTMAS:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\폭죽_크리스마스.spr");
     this->state.lastPrim->SetActionName("이팩트\\폭죽_크리스마스.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 37:
+  case TCC_ITEM318:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\mobile_ef04.spr");
     this->state.lastPrim->SetActionName("이팩트\\mobile_ef04.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 38:
+  case TCC_SPR_MASH:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\mashofa.spr");
     this->state.lastPrim->SetActionName("이팩트\\mashofa.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\t_에너지방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 39:
+  case TCC_SPR_SOULE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\soule.spr");
     this->state.lastPrim->SetActionName("이팩트\\soule.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\매직 크래쉬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 50:
+  case TCC_NORMAL_TRAP:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19276,7 +19276,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\기본트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 51:
+  case TCC_MAIZE_TRAP:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19284,7 +19284,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\담황색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 52:
+  case TCC_COBALT_TRAP:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19292,7 +19292,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\암청색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 53:
+  case TCC_MAGENTA_TRAP:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19300,7 +19300,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\자홍색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 54:
+  case TCC_VERDURE_TRAP:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19308,7 +19308,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\청록색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 60:
+  case TCC_STONERING:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("몬스터\\stapo.spr");
     this->state.lastPrim->SetActionName("몬스터\\stapo.act");
@@ -19319,7 +19319,7 @@ void CRagEffect::TexturedClassChange(char kind) {
       this->state.lastPrim->SetAction(7, 16, 1);
     }
     break;
-  case 61:
+  case TCC_WALLOFTHORN:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19334,7 +19334,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("몬스터\\Ancient_tree.act");
     this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
-  case 62:
+  case TCC_IFRIT:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19349,7 +19349,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("몬스터\\ifrit.act");
     this->state.lastPrim->SetAction(rand() % 8 + 0x20, 16, 1);
     break;
-  case 63:
+  case TCC_MAVKA_BULLET:
     this->state.lastPrim->state.deltaPos2.y = -12.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19364,7 +19364,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("몬스터\\mavka_bullet.act");
     this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
-  case 64:
+  case TCC_VACUUM_ACTION0:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19379,7 +19379,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("몬스터\\breeze.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 65:
+  case TCC_VACUUM_ACTION4:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19394,79 +19394,79 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("몬스터\\breeze.act");
     this->state.lastPrim->SetAction(4, 16, 1);
     break;
-  case 70:
+  case TCC_EL_GUST:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\거스트.spr");
     this->state.lastPrim->SetActionName("이팩트\\거스트.act");
     break;
-  case 71:
+  case TCC_EL_BLAST:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\블래스트.spr");
     this->state.lastPrim->SetActionName("이팩트\\블래스트.act");
     break;
-  case 72:
+  case TCC_EL_AQUAPLAY:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\아쿠아플레이.spr");
     this->state.lastPrim->SetActionName("이팩트\\아쿠아플레이.act");
     break;
-  case 73:
+  case TCC_EL_UPHEAVAL:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\업히벌.spr");
     this->state.lastPrim->SetActionName("이팩트\\업히벌.act");
     break;
-  case 74:
+  case TCC_EL_WILD_STORM:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\와일드스톰.spr");
     this->state.lastPrim->SetActionName("이팩트\\와일드스톰.act");
     break;
-  case 75:
+  case TCC_EL_CHILLY_AIR:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\칠리에어.spr");
     this->state.lastPrim->SetActionName("이팩트\\칠리에어.act");
     break;
-  case 76:
+  case TCC_EL_CURSED_SOIL:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\커즈드소일.spr");
     this->state.lastPrim->SetActionName("이팩트\\커즈드소일.act");
     break;
-  case 77:
+  case TCC_EL_COOLER:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\쿨러.spr");
     this->state.lastPrim->SetActionName("이팩트\\쿨러.act");
     break;
-  case 78:
+  case TCC_EL_TROPIC:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\트로픽.spr");
     this->state.lastPrim->SetActionName("이팩트\\트로픽.act");
     break;
-  case 79:
+  case TCC_EL_PYROTECHNIC:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\파이로테크닉.spr");
     this->state.lastPrim->SetActionName("이팩트\\파이로테크닉.act");
     break;
-  case 80:
+  case TCC_EL_PETROLOGY:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\페트롤로지.spr");
     this->state.lastPrim->SetActionName("이팩트\\페트롤로지.act");
     break;
-  case 81:
+  case TCC_EL_HEATER:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\히터.spr");
     this->state.lastPrim->SetActionName("이팩트\\히터.act");
     break;
-  case 82:
+  case TCC_SILENT_BREEZE:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\silent_brz.spr");
     this->state.lastPrim->SetActionName("이팩트\\silent_brz.act");
     break;
-  case 83:
+  case TCC_MAGMA_FLOW:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 0;
     this->state.lastPrim->SetSpriteName("이팩트\\magma_flow.spr");
     this->state.lastPrim->SetActionName("이팩트\\magma_flow.act");
     break;
-  case 84:
+  case TCC_ICEMINE:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.animSpeed = 10;
@@ -19474,7 +19474,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetSpriteName("이팩트\\icemine.spr");
     this->state.lastPrim->SetActionName("이팩트\\icemine.act");
     break;
-  case 85:
+  case TCC_ICEMINE_1:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.animSpeed = 10;
@@ -19483,23 +19483,23 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\icemine_.act");
     this->state.lastPrim->SetAction(0, 10, 1);
     break;
-  case 86:
+  case TCC_RK_DRAGONBREATH_WATER:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\RK_DRAGONBREATH_WATER.spr");
     this->state.lastPrim->SetActionName("이팩트\\RK_DRAGONBREATH_WATER.act");
     break;
-  case 87:
+  case TCC_NPC_WIDEWEB:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\wideweb.spr");
     this->state.lastPrim->SetActionName("이팩트\\wideweb.act");
     break;
-  case 88:
+  case TCC_NPC_BURNT:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\burnt.spr");
     this->state.lastPrim->SetActionName("이팩트\\burnt.act");
     break;
-  case 90:
+  case TCC_SU_LUNATIC_CARROT_BEAT:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA;
     this->state.lastPrim->state.repeatAnim = 1;
@@ -19507,91 +19507,91 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\그라운드드리프트.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
-  case 91:
+  case TCC_POK_THUNDER:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
     this->state.lastPrim->SetSpriteName("이팩트\\나뭇잎_완성.spr");
     this->state.lastPrim->SetActionName("이팩트\\나뭇잎_완성.act");
     break;
-  case 94:
+  case TCC_BLACK_THUNDER:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
     this->state.lastPrim->SetSpriteName("이팩트\\Black_Thunder\\Black_Thunder.spr");
     this->state.lastPrim->SetActionName("이팩트\\Black_Thunder\\Black_Thunder.act");
     break;
-  case 95:
+  case TCC_BLACK_THUNDER_DARK:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
     this->state.lastPrim->SetSpriteName("이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
     this->state.lastPrim->SetActionName("이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
     break;
-  case 96:
+  case TCC_ANGEL_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
     break;
-  case 97:
+  case TCC_ANIMAL_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
     break;
-  case 98:
+  case TCC_DEVIL_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
     break;
-  case 99:
+  case TCC_DRAGON_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
     break;
-  case 100:
+  case TCC_FISH_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
     break;
-  case 101:
+  case TCC_HUMAN_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
     break;
-  case 102:
+  case TCC_INSECT_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
     break;
-  case 103:
+  case TCC_NOTHING_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
     break;
-  case 104:
+  case TCC_PLANT_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
     this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
     break;
-  case 105:
+  case TCC_UNDEAD_MAGIC_CIRCLE:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     this->state.lastPrim->state.animSpeed = 4;

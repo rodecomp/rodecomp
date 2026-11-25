@@ -57,30 +57,30 @@ void CHealEffect::AddSparks(int kind) {
     this->sparkParticles.push_back(particle);
 
     switch (kind) {
-    case 0:
-    case 3:
-    case 6:
+    case HEAL_PARTICLE_HEAL2:
+    case HEAL_PARTICLE_HEAL3:
+    case HEAL_PARTICLE_PURPLE:
       particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       break;
-    case 1:
+    case HEAL_PARTICLE_HEAL4_RING:
       particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.6f;
       break;
-    case 2:
+    case HEAL_PARTICLE_HEAL4_DOWN:
       particle->scale = static_cast<float>(ClampedRandom(40)) * 0.1f + 0.4f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       break;
-    case 4:
+    case HEAL_PARTICLE_HEAL:
       particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.3f;
       break;
-    case 7:
+    case HEAL_PARTICLE_CYAN:
       particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       particle->SetColor(0, 255, 255);
       break;
-    case 8:
+    case HEAL_PARTICLE_YELLOW:
       particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
       particle->animationParameter = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
       particle->SetColor(255, 255, 0);
@@ -115,7 +115,7 @@ void CHealEffect::AddColumn(int kind) {
 
       float& baseAngle = particle->angle;
       switch (kind) {
-      case 0:
+      case HEAL_PARTICLE_HEAL2:
         particle->SetTexture("effect\\ring_white.tga");
         particle->speedParameter = 60.0f;
         baseAngle = static_cast<float>(angle);
@@ -123,7 +123,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(140, 210, 140);
         this->columnLifetime = 60;
         break;
-      case 1:
+      case HEAL_PARTICLE_HEAL4_RING:
         particle->SetTexture("effect\\ring_white.tga");
         particle->speedParameter = 60.0f;
         baseAngle = static_cast<float>(angle);
@@ -131,7 +131,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(140, 210, 140);
         this->columnLifetime = 40;
         break;
-      case 2:
+      case HEAL_PARTICLE_HEAL4_DOWN:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = 90.0f;
         baseAngle = static_cast<float>(angle);
@@ -139,7 +139,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(140, 210, 140);
         this->columnLifetime = 40;
         break;
-      case 3:
+      case HEAL_PARTICLE_HEAL3:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = randomHeight;
         baseAngle = randomAngle;
@@ -147,7 +147,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(255, 255, 255);
         this->columnLifetime = 30;
         break;
-      case 4:
+      case HEAL_PARTICLE_HEAL:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
         baseAngle = randomAngle;
@@ -155,7 +155,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(140, 210, 140);
         this->columnLifetime = 60;
         break;
-      case 5:
+      case HEAL_PARTICLE_ABSORB_SPIRITS:
         particle->SetTexture("effect\\ring_blue.tga");
         particle->speedParameter = 60.0f;
         baseAngle = static_cast<float>(angle);
@@ -163,7 +163,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(100, 100, 255);
         this->columnLifetime = 40;
         break;
-      case 6:
+      case HEAL_PARTICLE_PURPLE:
         particle->SetTexture("effect\\ring_white.tga");
         particle->speedParameter = 60.0f;
         baseAngle = static_cast<float>(angle);
@@ -171,7 +171,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(115, 25, 115);
         this->columnLifetime = 60;
         break;
-      case 7:
+      case HEAL_PARTICLE_CYAN:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
         baseAngle = randomAngle;
@@ -179,7 +179,7 @@ void CHealEffect::AddColumn(int kind) {
         particle->SetColor(0, 255, 255);
         this->columnLifetime = 60;
         break;
-      case 8:
+      case HEAL_PARTICLE_YELLOW:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->speedParameter = static_cast<float>(ClampedRandom(20) * row) + 40.0f;
         baseAngle = randomAngle;
@@ -216,7 +216,7 @@ void CHealEffect::AddCone(int kind) {
       particle->animationParameter = 0.0f;
 
       switch (kind) {
-      case 0:
+      case HEAL_PARTICLE_HEAL2:
         particle->SetTexture("effect\\ring_white.tga");
         particle->angle = randomAngle;
         particle->speedParameter = 12.0f;
@@ -225,7 +225,7 @@ void CHealEffect::AddCone(int kind) {
         particle->SetColor(140, 210, 140);
         this->coneLifetime = 60;
         break;
-      case 1:
+      case HEAL_PARTICLE_HEAL4_RING:
         particle->SetTexture("effect\\ring_white.tga");
         particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
@@ -234,7 +234,7 @@ void CHealEffect::AddCone(int kind) {
         particle->SetColor(140, 210, 140);
         this->coneLifetime = 40;
         break;
-      case 2:
+      case HEAL_PARTICLE_HEAL4_DOWN:
         particle->SetTexture("effect\\alpha_down.tga");
         particle->angle = randomAngle;
         particle->speedParameter = 10.0f;
@@ -243,7 +243,7 @@ void CHealEffect::AddCone(int kind) {
         particle->SetColor(140, 210, 140);
         this->coneLifetime = 30;
         break;
-      case 5:
+      case HEAL_PARTICLE_ABSORB_SPIRITS:
         particle->SetTexture("effect\\ring_blue.tga");
         particle->angle = randomAngle;
         particle->speedParameter = 18.0f;
@@ -358,73 +358,73 @@ void CHealEffect::SpawnParticles() {
   switch (this->id) {
   case EF_HEAL:
     if (this->spawnTick == 0) {
-      this->AddColumn(4);
+      this->AddColumn(HEAL_PARTICLE_HEAL);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(4);
+      this->AddSparks(HEAL_PARTICLE_HEAL);
     }
     break;
   case EF_HEAL2:
     if (this->spawnTick == 0) {
-      this->AddColumn(0);
-      this->AddCone(0);
+      this->AddColumn(HEAL_PARTICLE_HEAL2);
+      this->AddCone(HEAL_PARTICLE_HEAL2);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(0);
+      this->AddSparks(HEAL_PARTICLE_HEAL2);
     }
     break;
   case EF_HEAL3:
     if (this->spawnTick == 0) {
-      this->AddColumn(3);
+      this->AddColumn(HEAL_PARTICLE_HEAL3);
     }
     if (this->spawnTick <= 25 && this->spawnTick % 6 == 0) {
-      this->AddSparks(3);
+      this->AddSparks(HEAL_PARTICLE_HEAL3);
     }
     break;
   case EF_ABSORBSPIRITS:
     if (this->spawnTick == 0) {
-      this->AddColumn(5);
-      this->AddCone(5);
+      this->AddColumn(HEAL_PARTICLE_ABSORB_SPIRITS);
+      this->AddCone(HEAL_PARTICLE_ABSORB_SPIRITS);
     }
     break;
   case EF_HEAL4:
     if (this->spawnTick == 0) {
-      this->AddColumn(1);
-      this->AddCone(1);
+      this->AddColumn(HEAL_PARTICLE_HEAL4_RING);
+      this->AddCone(HEAL_PARTICLE_HEAL4_RING);
     }
     if (this->spawnTick == 1) {
-      this->AddColumn(2);
-      this->AddCone(2);
+      this->AddColumn(HEAL_PARTICLE_HEAL4_DOWN);
+      this->AddCone(HEAL_PARTICLE_HEAL4_DOWN);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(1);
+      this->AddSparks(HEAL_PARTICLE_HEAL4_RING);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 9 == 2) {
-      this->AddSparks(2);
+      this->AddSparks(HEAL_PARTICLE_HEAL4_DOWN);
     }
     break;
   case EF_UNK_1113:
     if (this->spawnTick == 0) {
-      this->AddColumn(6);
+      this->AddColumn(HEAL_PARTICLE_PURPLE);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(6);
+      this->AddSparks(HEAL_PARTICLE_PURPLE);
     }
     break;
   case EF_UNK_1143:
     if (this->spawnTick == 0) {
-      this->AddColumn(7);
+      this->AddColumn(HEAL_PARTICLE_CYAN);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(7);
+      this->AddSparks(HEAL_PARTICLE_CYAN);
     }
     break;
   case EF_UNK_1144:
     if (this->spawnTick == 0) {
-      this->AddColumn(8);
+      this->AddColumn(HEAL_PARTICLE_YELLOW);
     }
     if (this->spawnTick <= 50 && this->spawnTick % 6 == 0) {
-      this->AddSparks(8);
+      this->AddSparks(HEAL_PARTICLE_YELLOW);
     }
     break;
   }

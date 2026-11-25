@@ -48,15 +48,15 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position
   }
 
   switch (type) {
-  case 1:
+  case CANE_OF_EVIL_EYE_START:
     eye->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye\\npc_cane_of_evil_eye_start.str");
     eye->m_loop = false;
     break;
-  case 2:
+  case CANE_OF_EVIL_EYE_LOOP:
     eye->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye\\npc_cane_of_evil_eye.str");
     eye->m_loop = true;
     break;
-  case 3:
+  case CANE_OF_EVIL_EYE_END:
     eye->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye\\npc_cane_of_evil_eye_end.str");
     eye->m_loop = false;
     break;
@@ -78,13 +78,13 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateLight(int type, const float* positi
   }
 
   switch (type) {
-  case 1:
+  case CANE_OF_EVIL_EYE_START:
     light->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye_light\\npc_cane_of_evil_eye_light_03c_start.str");
     break;
-  case 2:
+  case CANE_OF_EVIL_EYE_LOOP:
     light->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye_light_loop\\npc_cane_of_evil_eye_light_03c_loop.str");
     break;
-  case 3:
+  case CANE_OF_EVIL_EYE_END:
     light->Open("NPC_CANE_OF_EVIL_EYE\\npc_cane_of_evil_eye_light\\npc_cane_of_evil_eye_light_03c_end.str");
     break;
   }
@@ -106,7 +106,7 @@ void CCaneOfEvilEyeEffect::SpawnLights() {
       position[0] = eye->offsetX + 0.0f;
       position[1] = eye->offsetY + 3.5f;
       position[2] = eye->offsetZ + 0.0f;
-      this->lights.push_back(this->CreateLight(1, position));
+      this->lights.push_back(this->CreateLight(CANE_OF_EVIL_EYE_START, position));
     }
   }
 }
@@ -155,7 +155,7 @@ void CCaneOfEvilEyeEffect::Finish() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
-      *it = this->CreateEye(3, &eye->offsetX);
+      *it = this->CreateEye(CANE_OF_EVIL_EYE_END, &eye->offsetX);
       FreeParticle(eye);
     }
   }
@@ -166,10 +166,10 @@ void CCaneOfEvilEyeEffect::Finish() {
       continue;
     }
     const signed char state = light->animationState;
-    if (state == 3) {
+    if (state == CANE_OF_EVIL_EYE_END) {
       continue;
     }
-    *it = this->CreateLight(3, &light->originX);
+    *it = this->CreateLight(CANE_OF_EVIL_EYE_END, &light->originX);
     FreeParticle(light);
   }
 }
@@ -191,7 +191,7 @@ void CCaneOfEvilEyeEffect::Open() {
   offsets[7] = {20.0f, -12.0f, 20.0f};
 
   for (unsigned int index = 0; index < 8; ++index) {
-    this->eyes.push_back(this->CreateEye(1, &offsets[index].x));
+    this->eyes.push_back(this->CreateEye(CANE_OF_EVIL_EYE_START, &offsets[index].x));
   }
 
   this->SpawnLights();

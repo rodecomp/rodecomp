@@ -108,7 +108,7 @@ void CTalismanMarkEffect::PlayEnd() {
     particle->m_actorId = this->actor;
     particle->Load(s_talismanEndEffects.at(index));
     particle->phaseParameter = angle;
-    particle->animationState = 2;
+    particle->animationState = TALISMAN_MARK_END;
     *it = particle;
   }
 }
@@ -130,7 +130,7 @@ void CTalismanMarkEffect::Open() {
     particle->m_actorId = this->actor;
     particle->Load(s_talismanStartEffects.at(i));
     particle->phaseParameter = (i / 2 + i % 2 * 2) * 90;
-    particle->animationState = 0;
+    particle->animationState = TALISMAN_MARK_START;
     this->particles.push_back(particle);
   }
 }
@@ -145,7 +145,7 @@ void CTalismanMarkEffect::OnProcess() {
     }
 
     switch (particle->animationState) {
-    case 0:
+    case TALISMAN_MARK_START:
       if (IsParticleActive(particle)) {
         break;
       }
@@ -169,14 +169,14 @@ void CTalismanMarkEffect::OnProcess() {
         particle->m_actorId = this->actor;
         particle->Load(s_talismanLoopEffects.at(index));
         particle->phaseParameter = angle;
-        particle->animationState = 1;
+        particle->animationState = TALISMAN_MARK_LOOP;
         particle->m_loop = true;
         *it = particle;
       }
       break;
-    case 1:
+    case TALISMAN_MARK_LOOP:
       break;
-    case 2:
+    case TALISMAN_MARK_END:
       if (IsParticleActive(particle)) {
         break;
       }
@@ -218,7 +218,7 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
 
   const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   int angle = particle->phaseParameter;
-  if (particle->animationState == 1) {
+  if (particle->animationState == TALISMAN_MARK_LOOP) {
     angle = (angle + 1) % 360;
     particle->phaseParameter = angle;
   }

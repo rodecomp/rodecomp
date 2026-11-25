@@ -10,6 +10,18 @@
 
 class CParticle;
 
+enum HealParticleKind : int {
+  HEAL_PARTICLE_HEAL2 = 0,
+  HEAL_PARTICLE_HEAL4_RING = 1,
+  HEAL_PARTICLE_HEAL4_DOWN = 2,
+  HEAL_PARTICLE_HEAL3 = 3,
+  HEAL_PARTICLE_HEAL = 4,
+  HEAL_PARTICLE_ABSORB_SPIRITS = 5,
+  HEAL_PARTICLE_PURPLE = 6,
+  HEAL_PARTICLE_CYAN = 7,
+  HEAL_PARTICLE_YELLOW = 8,
+};
+
 class CHealEffect : public CEffect {
 public:
   CHealEffect();

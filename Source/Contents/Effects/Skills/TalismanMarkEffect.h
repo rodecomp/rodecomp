@@ -8,6 +8,12 @@
 
 class CEZ2STRParticle;
 
+enum TalismanMarkPhase : signed char {
+  TALISMAN_MARK_START = 0,
+  TALISMAN_MARK_LOOP = 1,
+  TALISMAN_MARK_END = 2,
+};
+
 class CTalismanMarkEffect : public CEffect {
 public:
   /* 00CC */ std::vector<CEZ2STRParticle*> particles;

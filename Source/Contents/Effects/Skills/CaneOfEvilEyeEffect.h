@@ -8,6 +8,12 @@
 #include <cstdint>
 #include <vector>
 
+enum CaneOfEvilEyePhase : signed char {
+  CANE_OF_EVIL_EYE_START = 1,
+  CANE_OF_EVIL_EYE_LOOP = 2,
+  CANE_OF_EVIL_EYE_END = 3,
+};
+
 class CCaneOfEvilEyeEffect : public CEffect {
 public:
   CCaneOfEvilEyeEffect();

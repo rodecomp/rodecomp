@@ -12,6 +12,15 @@
 #include <cstdint>
 #include <string>
 
+enum EZeffectAnimationType : std::uint32_t {
+  EZ_ANIMATION_NONE = 0,
+  EZ_ANIMATION_FRAME_OFFSET = 1,
+  EZ_ANIMATION_FORWARD_CLAMP = 2,
+  EZ_ANIMATION_FORWARD_LOOP = 3,
+  EZ_ANIMATION_REVERSE_LOOP = 4,
+  EZ_ANIMATION_PING_PONG = 5,
+};
+
 class CTexture;
 
 struct vector2d {

@@ -279,6 +279,13 @@ public:
   /* 016C */ vector3d lastPosition;
 };
 
+enum AbyssParticlePhase : int {
+  ABYSS_PARTICLE_INACTIVE = 0,
+  ABYSS_PARTICLE_CREATE = 1,
+  ABYSS_PARTICLE_LOOP = 2,
+  ABYSS_PARTICLE_DIE = 3,
+};
+
 class CFromTheAbyssEffect : public CEffect {
 public:
   struct AbyssParticle {
@@ -311,6 +318,13 @@ public:
 };
 
 class CParticle;
+
+enum FullScreenEffectQuadrant : int {
+  FULL_SCREEN_EFFECT_TOP_LEFT = 0,
+  FULL_SCREEN_EFFECT_TOP_RIGHT = 1,
+  FULL_SCREEN_EFFECT_BOTTOM_LEFT = 2,
+  FULL_SCREEN_EFFECT_BOTTOM_RIGHT = 3,
+};
 
 class CFullScreenEffect : public CEffect {
 public:
