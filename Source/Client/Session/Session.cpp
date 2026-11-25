@@ -4338,6 +4338,12 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\AdventureGuide\\AvailableJobList", true, false);
 }
+// OFFSET: 0x00DCC480
+// FUNCTION: fn_46760
+static EncryptedName<14, 0x5FFD7FABB5D1EF57ULL>& AcolyteBodyPath3Encrypted() {
+  OBFUSCATE_ARRAY_BODY("성직자\\성직자", 0x5FFD7FABB5D1EF57ULL, char);
+}
+
 // OFFSET: 0x00DE98B0
 // FUNCTION: fn_23502
 void CSession::InitResourceNameTables() {
@@ -5276,7 +5282,7 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[74] = SwordmanBodyPath3().Text();
   shieldJobNames[75] = MagicianBodyPath3().Text();
   shieldJobNames[76] = ArcherBodyPath3().Text();
-  shieldJobNames[77] = OBFUSCATE_ARRAY("성직자\\성직자", 0x5FFD7FABB5D1EF57ULL, char).Text();
+  shieldJobNames[77] = AcolyteBodyPath3Encrypted().Text();
   shieldJobNames[78] = MerchantBodyPath3().Text();
   shieldJobNames[79] = ThiefBodyPath4().Text();
   shieldJobNames[80] = KnightBodyPath2().Text();
