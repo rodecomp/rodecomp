@@ -89,5 +89,5 @@ int CMapPropertyMgr::GetValue(int mapId, int key) {
 
 // OFFSET: 0x00CA7C70
 // FUNCTION: fn_46526
-CMapPropertyMgr::~CMapPropertyMgr() {
+__declspec(noinline) CMapPropertyMgr::~CMapPropertyMgr() {
 }
