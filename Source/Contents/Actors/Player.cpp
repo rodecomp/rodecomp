@@ -12,6 +12,7 @@
 #include "Contents/Skills/SkillUnitId.h"
 
 #include "Client/Mode/CGameMode.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
@@ -36,6 +37,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobNames.h"
+#include "Contents/Models/ModelAnimation.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -4084,11 +4086,7 @@ void CPlayer::SendMsg(
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       this->tickOfMoveForAttack = timeGetTime() - 1200;
-      if (this->proceedType == 1) {
-        this->proceedType = 5;
-      } else {
-        this->proceedType = 1;
-      }
+      this->proceedType = this->proceedType == 1 ? 5 : 1;
       this->proceedTargetGid = bLow;
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
