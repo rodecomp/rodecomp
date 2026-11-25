@@ -109,15 +109,17 @@ void CCharacterLinkedUserDataMgr::Save() {
   data["SortPrivateTab"] = g_session.m_sortPrivateTab;
   this->ExportNormalItemSlots(data);
 
-  if (data.isNull() != true) {
-    root["data"] = data;
-    Json::StyledWriter writer;
-    const std::string response = writer.write(root);
-    CAsyncWorkMgr* mgr = g_asyncWorkMgr;
-    mgr->SaveCharacter(this->m_accountId, this->m_characterId, this->m_accountName, this->SaveUrl(),
-                       std::string(g_session.m_webAuthToken, 16), response);
-
-    ++this->m_pendingSaves;
+  if (data.isNull() == true) {
+    return;
   }
+
+  root["data"] = data;
+  Json::StyledWriter writer;
+  const std::string response = writer.write(root);
+  CAsyncWorkMgr* mgr = g_asyncWorkMgr;
+  mgr->SaveCharacter(this->m_accountId, this->m_characterId, this->m_accountName, this->SaveUrl(),
+                     std::string(g_session.m_webAuthToken, 16), response);
+
+  ++this->m_pendingSaves;
 }
 
