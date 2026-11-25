@@ -34,6 +34,8 @@ static const char g_devClientTag[] = "Dev";
 static const char g_nprotectSource[] =
     "C:\\repositories\\RagnarokClient\\RagnarokClient\\Security Solution\\nProtectGameGuard\\CNProtectGameGuardMgr.cpp";
 
+int sub_E92400();
+
 class CNPGameLib {
 public:
   // INLINED
@@ -112,6 +114,10 @@ void CNProtectGameGuardMgr::Stop() {
 // OFFSET: 0x0076C930
 // FUNCTION: fn_08208
 void CNProtectGameGuardMgr::Tick() {
+  NSyncObject lock(&this->m_lock);
+  if (sub_E92400() != NPGAMEMON_SUCCESS) {
+    this->SetError(g_nprotectSource, 0x1E4, std::string());
+  }
 }
 
 // OFFSET: 0x0076CD60
