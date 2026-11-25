@@ -339,9 +339,9 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->frameDelay = 8.0f;
     break;
   case EF_C_2025ROSFESTA: {
-    particle->SetSprite(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL));
+    particle->SetSprite(OBFUSCATE_SOURCE_TEXT("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL));
 
-    particle->SetAction(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL));
+    particle->SetAction(OBFUSCATE_SOURCE_TEXT("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL));
     particle->depthOffset = 0.0015f;
     particle->flags = RSF_ALPHA;
     particle->loopMode = 0;
