@@ -1829,8 +1829,8 @@ struct NavigationReplayHeader {
   }
 
   void Read(const unsigned char* source) {
-    this->size = 0;
     this->tag = 0;
+    this->size = 0;
     std::memcpy(this, source, sizeof(*this));
   }
 };
@@ -1938,8 +1938,8 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         const int* route = reinterpret_cast<const int*>(buffer.data());
-        int y = -1;
-        int x = -1;
+        int x = route[2];
+        int y = route[3];
         if (this->savedTarget.object != nullptr) {
           const int type = this->savedTarget.type;
           CNaviInfo* info;
@@ -1953,14 +1953,16 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
             y = position->y;
           } else if (type == 3) {
             info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
+            x = -1;
+            y = -1;
           } else if (type == 1) {
             info = static_cast<CNaviInfo*>(this->savedTarget.object);
-          } else if (type == 0) {
-            info = static_cast<CNaviInfo*>(this->savedTarget.object);
-            x = route[2];
-            y = route[3];
-          } else {
+            x = -1;
+            y = -1;
+          } else if (type != 0) {
             found = false;
+          } else {
+            info = static_cast<CNaviInfo*>(this->savedTarget.object);
           }
           if (found) {
             this->data.SetDestination(info, x, y);
