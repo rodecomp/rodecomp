@@ -161,7 +161,7 @@ void CNProtectGameGuardMgr::Destroy() {
 
 // OFFSET: 0x0076CEC0
 // FUNCTION: fn_08213
-int CNProtectGameGuardMgr::HasError() {
+bool CNProtectGameGuardMgr::HasError() {
   NSyncObject lock(&this->m_lock);
   return this->m_hasError;
 }

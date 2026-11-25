@@ -41,7 +41,7 @@ public:
   void ProcessAuth(int first, int second);
   void Stop();
   void Tick();
-  int HasError();
+  bool HasError();
   std::string ErrorMessage();
   void SetHwnd(HWND window);
   bool Initialize();

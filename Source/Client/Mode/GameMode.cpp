@@ -6729,10 +6729,10 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       record.packetType = 0;
       record.aid = (*it)->render.accountId;
       record.statusType = 0x47D;
-      record.total = 9999;
       record.remaining = 9999;
       record.count = count;
       record.value2 = 0;
+      record.total = 9999;
       record.value3 = 0;
 
       const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x191, record);
