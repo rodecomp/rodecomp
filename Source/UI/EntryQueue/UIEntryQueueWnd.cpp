@@ -113,6 +113,16 @@ UIEntryQueueRequestWnd::UIEntryQueueRequestWnd()
 // FUNCTION: fn_46460
 __declspec(noinline) UIEntryQueueRequestWnd::~UIEntryQueueRequestWnd() = default;
 
+// INLINED
+static int QueueWindowLeft() {
+  return (g_renderer->viewport.width - 640) / 2 + 185;
+}
+
+// INLINED
+static int QueueWindowTop() {
+  return (g_renderer->viewport.height - 480) / 2 + 180;
+}
+
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
 bool UIEntryQueueRequestWnd::Create() {
@@ -122,15 +132,16 @@ bool UIEntryQueueRequestWnd::Create() {
   this->SetSize(300, 250);
   this->OnCreate(300, 250);
   this->OnSize(300, 250);
-  int top = (g_renderer->viewport.height - 480) / 2 + 180;
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, top);
+  this->Move(QueueWindowLeft(), QueueWindowTop());
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 280, 305, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = ((blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF)) | 0xFF000000u;
-  this->m_viewer->Invalidate();
+  UITextViewer* viewer = this->m_viewer;
+  const COLORREF rgb = RGB(red, green, blue);
+  viewer->backgroundColor = rgb | 0xFF000000u;
+  viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
   char message[0x104];
@@ -252,15 +263,16 @@ bool UIEntryQueueStandByWnd::Create() {
   this->SetSize(280, 120);
   this->OnCreate(280, 120);
   this->OnSize(280, 120);
-  int top = (g_renderer->viewport.height - 480) / 2 + 180;
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, top);
+  this->Move(QueueWindowLeft(), QueueWindowTop());
 
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, 260, 65, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = ((blue & 0xFF) << 16 | (green & 0xFF) << 8 | (red & 0xFF)) | 0xFF000000u;
-  this->m_viewer->Invalidate();
+  UITextViewer* viewer = this->m_viewer;
+  const COLORREF rgb = RGB(red, green, blue);
+  viewer->backgroundColor = rgb | 0xFF000000u;
+  viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
   const std::string path = "유저인터페이스\\";
