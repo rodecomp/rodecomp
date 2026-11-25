@@ -874,9 +874,9 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
       const vector3d v2 = transform(vertices[face.vertices[2]].position);
       const vector3d a{v2.x - v0.x, v2.y - v0.y, v2.z - v0.z};
       const vector3d b{v2.x - v1.x, v2.y - v1.y, v2.z - v1.z};
-      const float nx = b.y * a.z - b.z * a.y;
       const float ny = b.z * a.x - b.x * a.z;
       const float nz = b.x * a.y - b.y * a.x;
+      const float nx = b.y * a.z - b.z * a.y;
       const float inverse = 1.0f / SquareRoot(ny * ny + nx * nx + nz * nz);
       const float dot = nx * inverse * light[0] + ny * inverse * light[1] + nz * inverse * light[2];
       const float intensity = std::max(0.0f, dot);
