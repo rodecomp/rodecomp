@@ -126,6 +126,16 @@ struct UIRegistration {
 // FUNCTION: fn_45550
 static UIRegistration registered(10005, CreateMacroReport);
 
+// INLINED
+static void SetClickHandler(CUIImageButton* button, std::function<void()> handler) {
+  button->onClick = handler;
+}
+
+// INLINED
+static void SetSubmitHandler(CUIEditBox* edit, std::function<void()> handler) {
+  edit->onSubmit = handler;
+}
+
 // OFFSET: 0x00A44240
 // FUNCTION: fn_16053
 void CUIMacroReport::OnCreate(int width, int height) {
@@ -174,10 +184,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
-  {
-    const std::function<void()> onClick = [this]() { this->OnButtonClick(); };
-    menuButton->onClick = onClick;
-  }
+  SetClickHandler(menuButton, [this]() { this->OnButtonClick(); });
   menuButton->disabled = 0;
   menuButton->Invalidate();
   {
@@ -218,10 +225,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_messageEdit->SetBorderWidth(1);
   this->m_messageEdit->SetMaximum(100);
   this->m_messageEdit->SetEditBounds(0, 5, 0, 0);
-  {
-    const std::function<void()> onSubmit = [this]() { this->OnEditSubmit(); };
-    this->m_messageEdit->onSubmit = onSubmit;
-  }
+  SetSubmitHandler(this->m_messageEdit, [this]() { this->OnEditSubmit(); });
   this->AddChild(this->m_messageEdit);
 
   this->firstTypeText = new CUIStaticText();
