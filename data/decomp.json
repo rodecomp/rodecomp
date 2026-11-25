@@ -169,5 +169,6 @@
   "maxFiles": 2048
  },
  "compileCommands": "data/compile.json",
+ "targetManifest": "data/target.json",
  "unitPrelude": "Source/Linkage"
 }
