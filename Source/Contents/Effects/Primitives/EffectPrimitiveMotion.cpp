@@ -7908,7 +7908,7 @@ namespace {
       float height = point.y;
 
       if (height > 0.0f) {
-        point.x = static_cast<float>(ClampedRandom(35) - 17);
+        point.x = static_cast<float>(ClampedRandom(35)) - 17.0f;
         point.z = 0.0f;
         height = -40.0f;
       }
