@@ -16,10 +16,6 @@
 class UIWindow;
 struct ITEM_INFO;
 
-struct EquipmentValueA {
-  /* 0000 */ int value;
-};
-
 struct EquipmentValueC {
   /* 0000 */ int value;
 };
@@ -87,14 +83,14 @@ namespace EquipmentProperties {
     /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
     /* 0044 */ std::unordered_map<unsigned int, CEquipmentExpansion*> properties2;
     /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
-    /* 0084 */ std::multiset<unsigned long> activeItems;
+    /* 0084 */ std::multiset<unsigned int> activeItems;
     /* 008C */ std::map<unsigned int, EquipmentPropertyGroup> propertyGroups;
     /* 0094 */ std::unordered_map<unsigned int, CEquipmentInfo> equipmentInfo;
-    /* 00B4 */ std::unordered_map<int, EquipmentValueA> statVariables;
+    /* 00B4 */ std::unordered_map<unsigned int, unsigned int> statVariables;
     /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
     /* 00F4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_combinationItems;
     /* 0114 */ std::unordered_map<unsigned int, std::list<unsigned int>> skillGroups;
-    /* 0134 */ std::unordered_map<int, EquipmentValueA> constantValues;
+    /* 0134 */ std::unordered_map<unsigned int, unsigned int> constantValues;
     /* 0154 */ std::unordered_map<std::uint64_t, EquipmentPropertyDefinition*> m_definitionsByName;
     /* 0174 */ std::unordered_map<int, EquipmentPropertyDefinition*> randomOptionDefinitions;
     /* 0194 */ std::set<std::uint64_t> functionPairs;
@@ -108,7 +104,7 @@ namespace EquipmentProperties {
     virtual ~CEquipmentPropertiesMgr();
     void Clear();
     void SetWindow(UIWindow* window);
-    const int& GetConstantValue(const int& key);
+    const unsigned int& GetConstantValue(const unsigned int& key);
     CEquipment* GetCurrentEquipment();
     CEquipmentWearable* FindProperty1(const int& key);
     CEquipmentInfo* FindEquipmentInfo(const unsigned int& key);

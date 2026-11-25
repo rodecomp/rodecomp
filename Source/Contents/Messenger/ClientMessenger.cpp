@@ -1080,7 +1080,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
       break;
     case 0xA2AF91ED: {
       CEquipmentPropertiesMgr* manager = CEquipmentPropertiesMgr::GetInstance();
-      const int key = entry->first;
+      const unsigned int key = entry->first;
       const int skillId = manager->GetConstantValue(key);
       if (skillId == 0) {
         continue;
@@ -1199,12 +1199,12 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
 
 // OFFSET: 0x006AC2A0
 // FUNCTION: fn_06172
-__declspec(noinline) const int& EquipmentProperties::CEquipmentPropertiesMgr::GetConstantValue(const int& key) {
+__declspec(noinline) const unsigned int& EquipmentProperties::CEquipmentPropertiesMgr::GetConstantValue(const unsigned int& key) {
   auto found = this->constantValues.find(key);
   if (this->constantValues.end() == found) {
     return key;
   }
-  return found->second.value;
+  return found->second;
 }
 
 // OFFSET: 0x006AC3B0
@@ -2019,7 +2019,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
   if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
-      int key = 0;
+      unsigned int key = 0;
       int result;
       int type = lua_type(this->script.GetState(), -2);
       if (type == LUA_TNUMBER) {
@@ -2033,7 +2033,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
         ShowErrorDialog(fmt::format("{0} table has invalid key({1})", name, static_cast<int>(result)), 0);
       }
       if (this->loadValid) {
-        int value = 0;
+        unsigned int value = 0;
         type = lua_type(this->script.GetState(), -1);
         if (type == LUA_TNUMBER) {
           value = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -1));
@@ -2152,7 +2152,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
       }
       if (values.size() > 1) {
         unsigned int hash = HashName(key.c_str());
-        unsigned int variable;
+        int variable;
         switch (hash) {
         case 0x617FECDF:
           variable = 6;
@@ -3830,8 +3830,8 @@ int __stdcall AddDamage_Size(lua_State* state) {
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
                                                                const int& indexPosition, const int& keyPosition) {
   int value = 0x7FFFFFFF;
-  int index = -1;
   int key = -1;
+  int index = -1;
   std::string text = fmt::format("{0}", name);
   for (int argument = 0; argument < count; ++argument) {
     const int position = argument + 1;
@@ -3886,7 +3886,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, 
       continue;
     }
 
-    if (this->properties3.find(combinationId) == this->properties3.end()) {
+    auto combination = this->properties3.find(combinationId);
+    if (this->properties3.end() == combination) {
       this->properties3.emplace(combinationId, new CEquipmentCombiitem(combinationId));
       this->properties3[combinationId]->Load(notify);
     }
@@ -3915,7 +3916,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipItem(const int& itemId
       }
 
       auto combination = this->properties3.find(combinationId);
-      if (combination != this->properties3.end()) {
+      if (this->properties3.end() != combination) {
         if (notify == true) {
           combination->second->Clear();
         } else {
@@ -6822,9 +6823,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       }
 
       int count = 0;
-      const char* typeName = itemType.c_str();
       if (hasType == true) {
-        unsigned int hash = HashName(typeName);
+        unsigned int hash = HashName(itemType.c_str());
         switch (hash) {
         case 0x0F1AAAA6:
           info.kind = 1;
@@ -6857,77 +6857,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
         continue;
       }
 
-      unsigned int hash = HashName(typeName);
+      unsigned int hash = HashName(itemType.c_str());
       switch (hash) {
-      case 0x47F48D1C:
-        for (int index = 0; index < count; ++index) {
-          if (stats[index] == 0) {
-            continue;
-          }
-          int variable;
-          switch (index) {
-          case 2:
-            variable = 41;
-            break;
-          case 3:
-            variable = 200;
-            break;
-          case 4:
-            variable = 13;
-            break;
-          case 5:
-            variable = 16;
-            break;
-          case 6:
-            variable = 15;
-            break;
-          case 7:
-            variable = 17;
-            break;
-          case 8:
-            variable = 14;
-            break;
-          case 9:
-            variable = 18;
-            break;
-          case 11:
-            variable = 219;
-            break;
-          case 12:
-            variable = 222;
-            break;
-          case 13:
-            variable = 220;
-            break;
-          case 14:
-            variable = 221;
-            break;
-          case 15:
-            variable = 223;
-            break;
-          case 16:
-            variable = 224;
-            break;
-          case 0:
-            info.values.try_emplace(0, stats[index]);
-            continue;
-          case 1:
-            info.values.try_emplace(1, stats[index]);
-            continue;
-          case 10:
-            info.values.try_emplace(2, stats[index]);
-            continue;
-          default:
-            continue;
-          }
-          auto found = this->statVariables.find(variable);
-          if (found == this->statVariables.end()) {
-            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-          } else {
-            info.statProperties.try_emplace(found->second.value, stats[index]);
-          }
-        }
-        break;
       case 0x0F1AAAA6:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
@@ -6990,34 +6921,79 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             continue;
           }
           auto found = this->statVariables.find(variable);
-          if (found == this->statVariables.end()) {
+          if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second.value, stats[index]);
+            info.statProperties.try_emplace(found->second, stats[index]);
           }
         }
         break;
-      case 0x7C941E6F:
+      case 0x47F48D1C:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
             continue;
           }
           int variable;
           switch (index) {
+          case 2:
+            variable = 41;
+            break;
+          case 3:
+            variable = 200;
+            break;
+          case 4:
+            variable = 13;
+            break;
+          case 5:
+            variable = 16;
+            break;
+          case 6:
+            variable = 15;
+            break;
+          case 7:
+            variable = 17;
+            break;
+          case 8:
+            variable = 14;
+            break;
+          case 9:
+            variable = 18;
+            break;
+          case 11:
+            variable = 219;
+            break;
+          case 12:
+            variable = 222;
+            break;
+          case 13:
+            variable = 220;
+            break;
+          case 14:
+            variable = 221;
+            break;
+          case 15:
+            variable = 223;
+            break;
+          case 16:
+            variable = 224;
+            break;
           case 0:
             info.values.try_emplace(0, stats[index]);
             continue;
           case 1:
-            variable = 41;
-            break;
+            info.values.try_emplace(1, stats[index]);
+            continue;
+          case 10:
+            info.values.try_emplace(2, stats[index]);
+            continue;
           default:
             continue;
           }
           auto found = this->statVariables.find(variable);
-          if (found == this->statVariables.end()) {
+          if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second.value, stats[index]);
+            info.statProperties.try_emplace(found->second, stats[index]);
           }
         }
         break;
@@ -7077,10 +7053,32 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             continue;
           }
           auto found = this->statVariables.find(variable);
-          if (found == this->statVariables.end()) {
+          if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second.value, stats[index]);
+            info.statProperties.try_emplace(found->second, stats[index]);
+          }
+        }
+        break;
+      case 0x7C941E6F:
+        for (int index = 0; index < count; ++index) {
+          if (stats[index] == 0) {
+            continue;
+          }
+          switch (index) {
+          case 0:
+            info.values.try_emplace(0, stats[index]);
+            break;
+          case 1: {
+            const int variable = 41;
+            auto found = this->statVariables.find(variable);
+            if (this->statVariables.end() == found) {
+              ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
+            } else {
+              info.statProperties.try_emplace(found->second, stats[index]);
+            }
+            break;
+          }
           }
         }
         break;
