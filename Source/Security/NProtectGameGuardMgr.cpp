@@ -136,14 +136,18 @@ int CNProtectGameGuardMgr::Create() {
     InitializeCriticalSection(&manager->m_lock);
     if (manager->Initialize()) {
       manager->m_initialized = true;
-    } else {
-      delete manager;
-      manager = nullptr;
     }
   }
 
   g_nProtectGameGuardMgr = manager;
-  return g_nProtectGameGuardMgr != nullptr;
+  if (manager != nullptr) {
+    if (manager->m_initialized) {
+      return 1;
+    }
+    delete manager;
+    g_nProtectGameGuardMgr = nullptr;
+  }
+  return 0;
 }
 
 // OFFSET: 0x0076CEA0
