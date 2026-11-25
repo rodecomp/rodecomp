@@ -513,6 +513,16 @@ static void SetViewerBackground(UITagTextViewer* viewer, std::uint32_t color) {
   viewer->Invalidate();
 }
 
+// INLINED
+static int RightAligned(const UIWindow* parent, const UIWindow* child, int margin) {
+  return parent->geometry.width - child->geometry.width - margin;
+}
+
+// INLINED
+static int BottomAligned(const UIWindow* parent, const UIWindow* child, int margin) {
+  return parent->geometry.height - child->geometry.height - margin;
+}
+
 // OFFSET: 0x007FB190
 // FUNCTION: fn_09956
 void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
@@ -554,8 +564,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   if (!quest.npcSprite.empty()) {
     UINpcSprWnd* npc = new UINpcSprWnd();
     npc->SetSprite(75, 145, quest.npcSprite);
-    const int y = this->geometry.height - npc->geometry.height - 10;
-    npc->Move(this->geometry.width - npc->geometry.width - 40, y);
+    npc->Move(RightAligned(this, npc, 40), BottomAligned(this, npc, 10));
     if (!quest.destinationMap.empty()) {
       npc->SetDestination(quest.destinationMap, quest.destinationX, quest.destinationY);
     }
