@@ -905,8 +905,8 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
       x = 0;
     }
 
-    if (!display.empty() && !parts.empty()) {
-      UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
+    UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
+    if (button) {
       this->AddWindow(button);
       x += button->geometry.width;
     }
