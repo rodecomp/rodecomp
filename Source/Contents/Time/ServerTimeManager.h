@@ -31,7 +31,7 @@ public:
   std::chrono::system_clock::duration* GetAbsoluteTimeSinceEpoch(std::chrono::system_clock::duration* out);
   std::chrono::system_clock::time_point* GetCurrentTime(std::chrono::system_clock::time_point* out);
   std::chrono::system_clock::duration* GetAbsoluteTimeAfter(std::chrono::system_clock::duration* out, const std::chrono::milliseconds& after);
-  std::string* FormatDateTime(std::string* out);
+  void FormatDateTime(std::string* out);
   void Reset();
   void Update();
 };

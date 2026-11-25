@@ -81,11 +81,10 @@ std::chrono::system_clock::duration* ServerTimeManager::GetAbsoluteTimeAfter(std
 
 // OFFSET: 0x0053E8A0
 // FUNCTION: fn_46678
-std::string* ServerTimeManager::FormatDateTime(std::string* out) {
+void ServerTimeManager::FormatDateTime(std::string* out) {
   char buffer[1024];
   wsprintfA(buffer, "%04d/%02d/%02d %02d:%02d:%02d", this->year, this->month, this->day, this->hour, this->minute, this->second);
   out->assign(buffer, std::strlen(buffer));
-  return out;
 }
 
 // OFFSET: 0x0053E910
