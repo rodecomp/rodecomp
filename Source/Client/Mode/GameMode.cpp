@@ -6376,7 +6376,7 @@ void CGameMode::TargetActorByAid(int aid) {
     }
   }
 
-  if (allowed && g_mouse.buttons[0] == 1 && force != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  if (allowed && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED && force != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
     this->SendMsg(MM_SETLOCKONMOUSE, 1, 0, 0, 0);
     this->isAutoMoveClickOn = 0;
     if (g_session.GetSiegeMode() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
@@ -8186,7 +8186,7 @@ void CGameMode::InitializeState() {
 // FUNCTION: fn_21337
 void CGameMode::ProcessRightButtonDrag() {
   switch (g_mouse.buttons[1]) {
-  case 1: {
+  case MOUSE_BUTTON_PRESSED: {
     if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
@@ -8215,9 +8215,9 @@ void CGameMode::ProcessRightButtonDrag() {
     shortcuts->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, 8, 0, 0, 0);
     return;
   }
-  case 2:
+  case MOUSE_BUTTON_HELD:
     if (!HIBYTE(GetAsyncKeyState(VK_MENU)) && !HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      this->SetCursorAction(4);
+      this->SetCursorAction(CURSOR_ACTION_ROTATE_CAMERA);
       if (this->hasViewParameters) {
         float yaw = static_cast<float>(g_mouse.x) + this->camera->camera.desiredYaw - static_cast<float>(this->oldMouseX);
         const float low = static_cast<float>(this->viewParameters[3]);
@@ -8306,7 +8306,7 @@ void CGameMode::ProcessRightButtonDrag() {
       this->camera->camera.desiredDistance = g_cameraDistance;
     }
     return;
-  case 4:
+  case MOUSE_BUTTON_DOUBLE_CLICKED:
     if (this->hasViewParameters) {
       return;
     }
@@ -9728,7 +9728,7 @@ void CGameMode::ProcessInput() {
     g_session.m_mapTransitionFlag = 0;
   }
 
-  if (g_mouse.buttons[0] == 3) {
+  if (g_mouse.buttons[0] == MOUSE_BUTTON_RELEASED) {
     if (this->scene->player) {
       this->scene->player->SendMsg(nullptr, AM_ATTACKCLICKUP, 0, 0, 0, 0, 0, 0);
     }
@@ -9759,18 +9759,18 @@ void CGameMode::ProcessInput() {
     if (pick) {
       int offset;
       if (this->skillId == AM_POTIONPITCHER) {
-        offset = g_session.IsCompanionJob(pick->job) && pick->kind == 4;
+        offset = g_session.IsCompanionJob(pick->job) && pick->kind == ACTOR_PICK_COMPANION;
       } else {
         int eligible = 0;
         if (g_session.monsterInfoEnabled && g_session.IsMonsterClass(pick->job)) {
           eligible = 1;
-        } else if (g_serviceOptions.Get(TT_ITEM_SNAP_ON_OFF) && pick->kind == 1) {
+        } else if (g_serviceOptions.Get(TT_ITEM_SNAP_ON_OFF) && pick->kind == ACTOR_PICK_ITEM) {
           eligible = 1;
         }
         offset = 0;
         switch (pick->kind) {
-        case 3:
-        case 4:
+        case ACTOR_PICK_PET:
+        case ACTOR_PICK_COMPANION:
           break;
         default:
           offset = eligible;
@@ -9792,14 +9792,14 @@ void CGameMode::ProcessInput() {
       !g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
     handled = this->ProcessGroundClick(this->ProcessMousePick(handled, pick));
     this->UpdateHoverNameBalloon();
-    if (handled != 1 && g_mouse.buttons[0] == 1) {
+    if (handled != 1 && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
       g_windowMgr.SetFocus(nullptr);
     }
   } else if (pick && handled == 0) {
     this->ShowActorNameBalloon(pick->accountId);
   }
 
-  if ((handled == 1 || g_mouse.buttons[0] == 1) && g_mouse.buttons[0] == 1) {
+  if ((handled == 1 || g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
     g_moveRequestPending = false;
     this->SendMsg(MM_CANCEL_USE_SKILL, 0, 0, 0, 0);
     if (timeGetTime() > this->noMoveStartTick + 5000) {
@@ -9815,16 +9815,16 @@ void CGameMode::ProcessInput() {
 
   if (handled == 0) {
     if (this->skillUseType != 0) {
-      this->SetCursorAction(10);
-    } else if (g_mouse.buttons[1] != 2) {
+      this->SetCursorAction(CURSOR_ACTION_SKILL);
+    } else if (g_mouse.buttons[1] != MOUSE_BUTTON_HELD) {
       int column = -1;
       int row = -1;
       this->PickScreenTerrain(column, row);
       const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
       if (cell && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
-        this->SetCursorAction(0);
+        this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       } else {
-        this->SetCursorAction(13);
+        this->SetCursorAction(CURSOR_ACTION_MOVE_BLOCKED);
       }
     }
   }

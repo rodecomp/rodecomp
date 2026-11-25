@@ -12,6 +12,19 @@ class UITransBalloonText;
 struct TextureRegion;
 struct tagRECT;
 
+enum CursorAction : int {
+  CURSOR_ACTION_DEFAULT = 0,
+  CURSOR_ACTION_INTERACT = 1,
+  CURSOR_ACTION_BUTTON = 2,
+  CURSOR_ACTION_ROTATE_CAMERA = 4,
+  CURSOR_ACTION_ATTACK = 5,
+  CURSOR_ACTION_WARP = 7,
+  CURSOR_ACTION_PICKUP = 9,
+  CURSOR_ACTION_SKILL = 10,
+  CURSOR_ACTION_SKILL_TARGET = 11,
+  CURSOR_ACTION_MOVE_BLOCKED = 13,
+};
+
 class CMode {
 public:
   /* 0004 */ int cursorType;

@@ -1,3 +1,4 @@
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Contents/Actors/Skill.h"
 #include "Contents/CombatTypes.h"
@@ -568,13 +569,13 @@ void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y,
 // FUNCTION: fn_22044
 void CGameMode::NotifyCaptchaRegistrationResult(int result) {
   switch (result) {
-  case 0:
+  case CAPTCHA_REGISTRATION_SEND_CAPTCHA:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_SEND_MACRO)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case CAPTCHA_REGISTRATION_REGISTER_DATA:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_REGISTER_DATA)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case CAPTCHA_REGISTRATION_ALREADY_DETECTING:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_ALREADY_DETECTING)), 0xFF, 0, 0, 0);
     break;
   }
@@ -645,19 +646,19 @@ void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
 // FUNCTION: fn_22052
 void CGameMode::NotifyInventoryExpansionResult(const unsigned char* packet) {
   switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
-  case 0:
+  case INVENTORY_EXPANSION_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_SUCCESS)), 0xFFFF00, 0, 0, 0);
     break;
-  case 1:
+  case INVENTORY_EXPANSION_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case INVENTORY_EXPANSION_BUSY:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_ANOTHER_WORK)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case INVENTORY_EXPANSION_NO_ITEM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_NO_ITEM)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case INVENTORY_EXPANSION_MAXIMUM_EXCEEDED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_MAX_OVER)), 0xFF, 0, 0, 0);
     break;
   }
@@ -727,24 +728,24 @@ void CGameMode::NotifyMacroBlacklistCheckResult(unsigned char result, unsigned s
   char text[256];
 
   switch (result) {
-  case 0:
+  case MACRO_BLACKLIST_CHECK_SUCCESS:
     std::memset(text, 0, sizeof(text));
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_SUCCESS), value);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
     break;
-  case 1:
+  case MACRO_BLACKLIST_CHECK_COOLDOWN:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case MACRO_BLACKLIST_CHECK_INVALID_MAP:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case MACRO_BLACKLIST_CHECK_INVALID_PARAMETER:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_PARAM)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case MACRO_BLACKLIST_CHECK_INVALID_QUESTION:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_QUESTION)), 0xFF, 0, 0, 0);
     break;
-  case 5:
+  case MACRO_BLACKLIST_CHECK_MAP_COUNT_EXCEEDED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME_COUNT)), 0xFF, 0, 0, 0);
     break;
   }
@@ -787,10 +788,10 @@ void CGameMode::NotifyPrivateAirplaneResult(int result) {
 // FUNCTION: fn_22071
 void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) {
   switch (result) {
-  case 0:
+  case MACRO_REPORT_COUNT_LIMIT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_COUNTLIMIT)), 0x64FFFF, 0, 0, 0);
     break;
-  case 1: {
+  case MACRO_REPORT_SUCCESS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_MACRO_USER_REPORT_SUCCESS), name.c_str()).c_str()), 0x64FFFF, 0, 0, 0);
 
     CWorld* scene = g_modeMgr.GetGameMode()->scene;
@@ -799,22 +800,22 @@ void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) 
     }
     break;
   }
-  case 2:
+  case MACRO_REPORT_COOLDOWN:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_COOLTIME)), 0x64FFFF, 0, 0, 0);
     break;
-  case 3:
+  case MACRO_REPORT_STATUS_ACTIVE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_EFST_ACTIVATED)), 0x64FFFF, 0, 0, 0);
     break;
-  case 4:
+  case MACRO_REPORT_PENALTY_LIMIT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_PENALTY_COUNTMAX)), 0x64FFFF, 0, 0, 0);
     break;
-  case 5:
+  case MACRO_REPORT_ALREADY_REPORTED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_REPORTED)), 0x64FFFF, 0, 0, 0);
     break;
-  case 6:
+  case MACRO_REPORT_UNAVAILABLE_AREA:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_NOT_USE_AREA)), 0x64FFFF, 0, 0, 0);
     break;
-  case 7:
+  case MACRO_REPORT_INVALID_AID:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_INVALID_AID)), 0x64FFFF, 0, 0, 0);
     break;
   }
@@ -845,22 +846,22 @@ void CGameMode::ReceiveRodexComposeResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ByteValuePacket*>(data);
 
   switch (packet->value) {
-  case 0:
+  case MAIL_COMPOSE_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MAIL_SENT)), 0x64FFFF, 0, 0, 0);
     break;
-  case 1:
+  case MAIL_COMPOSE_FAILED:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_WRITE_RODEX, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL)), 0x64FFFF, 0, 0, 0);
     break;
-  case 2:
+  case MAIL_COMPOSE_COUNT_LIMIT:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_WRITE_RODEX, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT)), 0x64FFFF, 0, 0, 0);
     break;
-  case 3:
+  case MAIL_COMPOSE_INVALID_ITEM:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_WRITE_RODEX, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
     break;
-  case 4:
+  case MAIL_COMPOSE_INVALID_RECIPIENT:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_WRITE_RODEX, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIELD_SEND_MAIL_TO)), 0x64FFFF, 0, 0, 0);
     break;
@@ -906,13 +907,13 @@ void CGameMode::ReceiveWindow154Result(std::int16_t value) {
 // FUNCTION: fn_22087
 void CGameMode::ReceiveResultNotice(int result) {
   switch (result) {
-  case 0:
+  case SELLING_SLOT_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELLINGSLOT_SUCCESS)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case SELLING_SLOT_SYSTEM_ERROR:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELLINGSLOT_ERROR_SYSTEM)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case SELLING_SLOT_MAXIMUM_EXCEEDED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELLINGSLOT_ERROR_MAXSLOT)), 0xFF, 0, 0, 0);
     break;
   }
@@ -1190,22 +1191,22 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
 // FUNCTION: fn_22135
 void CGameMode::NotifyMacroCheckRemovalResult(unsigned char result) {
   switch (result) {
-  case 0:
+  case MACRO_CHECK_REMOVAL_RUNNING:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_RUNNING)), 0xFFFF, 0, 0, 0);
     break;
-  case 1:
+  case MACRO_CHECK_REMOVAL_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_SUCCESS)), 0xFFFF, 0, 0, 0);
     break;
-  case 2:
+  case MACRO_CHECK_REMOVAL_NOT_FOUND:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_NOT_EXISTS)), 0xFFFF, 0, 0, 0);
     break;
-  case 3:
+  case MACRO_CHECK_REMOVAL_DISABLED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_OFF_SUCCESS)), 0xFFFF, 0, 0, 0);
     break;
-  case 4:
+  case MACRO_CHECK_REMOVAL_TIME_EXPIRED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_TIMESUP)), 0xFFFF, 0, 0, 0);
     break;
-  case 5:
+  case MACRO_CHECK_REMOVAL_INVALID_AID:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECK_REMOVE_INVALID_AID)), 0xFFFF, 0, 0, 0);
     break;
   }
@@ -1566,43 +1567,43 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
   std::string text;
 
   switch (packet->type) {
-  case 0:
+  case ITEM_CREATION_FORGE_SUCCESS:
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()));
     break;
-  case 1:
+  case ITEM_CREATION_FORGE_FAILED:
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()));
     break;
-  case 2:
+  case ITEM_CREATION_PHARMACY_SUCCESS:
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_PHARMACY_OK)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_OK, 0, 0, 0, 0, 0);
     }
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_PHARMACY_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
-  case 3:
+  case ITEM_CREATION_PHARMACY_FAILED:
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_PHARMACY_FAIL)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_FAIL, 0, 0, 0, 0, 0);
     }
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_PHARMACY_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
-  case 4:
+  case ITEM_CREATION_RUNE_SUCCESS:
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_RUN_MAKE_OK)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_OK, 0, 0, 0, 0, 0);
     }
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_RUN_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
-  case 5:
+  case ITEM_CREATION_RUNE_FAILED:
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_RUN_MAKE_FAILURE)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_FAILURE, 0, 0, 0, 0, 0);
     }
     g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_RUN_MAKE_FAILURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
-  case 6: {
+  case ITEM_CREATION_CHANGE_MATERIAL_SUCCESS: {
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_MIRESULT_MAKE_OK)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_OK, 0, 0, 0, 0, 0);
     }
@@ -1614,7 +1615,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     }
     break;
   }
-  case 7: {
+  case ITEM_CREATION_CHANGE_MATERIAL_FAILED: {
     if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_MIRESULT_MAKE_FAIL)) {
       g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_FAIL, 0, 0, 0, 0, 0);
     }
@@ -1896,7 +1897,7 @@ void CGameMode::ReceiveAchievementList(int count, int score, short achievementLe
 // FUNCTION: fn_21615
 void CGameMode::OpenServiceWindow(unsigned char type) {
   switch (type) {
-  case 0:
+  case SERVICE_WINDOW_BANK:
     if (!g_windowMgr.LookupWindow(static_cast<WindowId>(251))) {
       AccountRequestPacket request;
       request.id = ID_CZ_REQ_BANKING_CHECK;
@@ -1904,7 +1905,7 @@ void CGameMode::OpenServiceWindow(unsigned char type) {
       GetRagConnection().Send(6, &request);
     }
     break;
-  case 1:
+  case SERVICE_WINDOW_STYLING:
     if (g_windowMgr.LookupWindow(WID_SAYDIALOGWND)) {
       this->SendMsg(MM_CLOSE_DIALOG, 0, 0, 0, 0);
     }
@@ -1912,13 +1913,13 @@ void CGameMode::OpenServiceWindow(unsigned char type) {
       g_windowMgr.EnsureWindow(WID_STYLINGSHOPWND);
     }
     break;
-  case 2:
+  case SERVICE_WINDOW_CAPTCHA_REGISTRATION:
     g_windowMgr.EnsureWindow(WID_CAPTCHAREGISTERWND);
     break;
-  case 3:
+  case SERVICE_WINDOW_MACRO_REPORT:
     g_windowMgr.EnsureWindow(WID_MACROREPORTERWND);
     break;
-  case 9:
+  case SERVICE_WINDOW_CHANGE_MATERIAL:
     g_windowMgr.EnsureWindow(WID_CHANGEMATERIALWND);
     break;
   }
@@ -2476,16 +2477,16 @@ struct ExtraInventoryResultPacket {
 void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const TypedNoticePacket*>(data);
   switch (packet->type) {
-  case 0:
+  case RANKING_POINT_BLACKSMITH:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BLACKSMITH_POINT), packet->first, packet->second).c_str()), 0xCDCDCD, 0, 0, 0);
     break;
-  case 1:
+  case RANKING_POINT_ALCHEMIST:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ALCHEMIST_POINT), packet->first, packet->second).c_str()), 0xCDFFCD, 0, 0, 0);
     break;
-  case 2:
+  case RANKING_POINT_TAEKWON:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_TAEKWON_POINT), packet->first, packet->second).c_str()), 0xFFCDCD, 0, 0, 0);
     break;
-  case 3:
+  case RANKING_POINT_KILLER:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_KILLER_POINT), packet->first, packet->second).c_str()), 0xCDCDCD, 0, 0, 0);
     break;
   }
@@ -2500,7 +2501,7 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
   switch (packet->result) {
-  case 0: {
+  case MAIL_ZENY_CLAIM_SUCCESS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ZENY_FROM_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
 
     switch (packet->type) {
@@ -2532,10 +2533,10 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
     }
     break;
   }
-  case 1:
+  case MAIL_ZENY_CLAIM_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ZENY_FROM_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
     break;
-  case 2:
+  case MAIL_ZENY_CLAIM_ZENY_LIMIT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ZENY_FROM_MAIL_OVERAMOUNT)), 0x64FFFF, 0, 0, 0);
     break;
   }
@@ -2628,7 +2629,7 @@ void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int 
 void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ExtraInventoryResultPacket*>(data);
   switch (packet->result) {
-  case 0: {
+  case INVENTORY_EXPANSION_SUCCESS: {
     const int nextSlots = g_session.extraInventorySlots + 110;
     const int slots = g_session.extraInventorySlots + 100;
     const char* name = FindItemDescription(packet->itemId).identifiedName;
@@ -2641,16 +2642,16 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
     this->SendMsg(MM_REQ_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
     break;
   }
-  case 1:
+  case INVENTORY_EXPANSION_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case INVENTORY_EXPANSION_BUSY:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_ANOTHER_WORK)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case INVENTORY_EXPANSION_NO_ITEM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_NO_ITEM)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case INVENTORY_EXPANSION_MAXIMUM_EXCEEDED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_MAX_OVER)), 0xFF, 0, 0, 0);
     break;
   }
@@ -2692,7 +2693,7 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
   switch (packet->result) {
-  case 0: {
+  case MAIL_ITEM_CLAIM_SUCCESS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ITEMS_FROM_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
     g_session.ClearItemQuantities();
 
@@ -2729,10 +2730,10 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
     }
     break;
   }
-  case 1:
+  case MAIL_ITEM_CLAIM_FAILED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ITEMS_FROM_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
     break;
-  case 2:
+  case MAIL_ITEM_CLAIM_OVERWEIGHT:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ITEMS_FROM_MAIL_OVERWEIGHT)), 0x64FFFF, 0, 0, 0);
     break;
   }
@@ -4970,11 +4971,11 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
   }
   case 2:
     switch (g_stoveMgr->m_pendingOperation) {
-    case 2:
+    case STOVE_OPERATION_TERMS_AGREEMENT:
       g_stoveMgr->FetchStoveTermsAgreement();
       break;
-    case 3: {
-      g_stoveMgr->m_pendingOperation = 0;
+    case STOVE_OPERATION_PURCHASE: {
+      g_stoveMgr->m_pendingOperation = STOVE_OPERATION_NONE;
       UICashShopWnd* window = static_cast<UICashShopWnd*>(g_windowMgr.LookupWindow(WID_CASHSHOP_WND));
       g_stoveMgr->StartPurchase(window->m_cart->m_cartItems);
       break;
@@ -4998,7 +4999,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     break;
   }
 
-  g_stoveMgr->m_pendingOperation = 0;
+  g_stoveMgr->m_pendingOperation = STOVE_OPERATION_NONE;
   if (message.size() != 0) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
   }

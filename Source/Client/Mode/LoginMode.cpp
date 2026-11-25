@@ -758,7 +758,7 @@ __declspec(noinline) void CLoginMode::ReceiveCharacterList(const CharacterListPa
   this->characterCount = (packet->length - 4) / sizeof(CharacterInfo);
   g_session.characterSlotState = this->characterCount;
   memcpy_s(this->characters, sizeof(this->characters), packet->characters, this->characterCount * sizeof(CharacterInfo));
-  this->pendingCursorType = 7;
+  this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
 }
 
 // OFFSET: 0x00D8FA00
@@ -971,7 +971,7 @@ void CLoginMode::OnUpdateEx(int value) {
         g_serviceType == ServiceAmerica || g_serviceType == ServiceIndia || g_serviceType == ServiceBrazil || g_serviceType == ServiceThai || g_serviceType == ServicePhilippine || g_serviceType == ServiceRussia ||
         g_serviceType == ServiceEu) {
       g_windowMgr.DrawLoginOverlay();
-      if (this->cursorType == 0) {
+      if (this->cursorType == LOGIN_STATE_WARNING) {
         g_windowMgr.DrawCenteredBackground();
       }
     } else {
@@ -1119,7 +1119,7 @@ void CLoginMode::Update() {
         g_serviceType == ServiceAmerica || g_serviceType == ServiceIndia || g_serviceType == ServiceBrazil || g_serviceType == ServiceThai || g_serviceType == ServicePhilippine || g_serviceType == ServiceRussia ||
         g_serviceType == ServiceEu || g_serviceType == ServiceVietnam) {
       g_windowMgr.DrawLoginOverlay();
-      if (this->cursorType == 0) {
+      if (this->cursorType == LOGIN_STATE_WARNING) {
         g_windowMgr.DrawCenteredBackground();
       }
     } else {
@@ -1498,7 +1498,7 @@ void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::
   memcpy_s(g_zoneServerEndpoint.overrideAddress, sizeof(g_zoneServerEndpoint.overrideAddress), host.c_str(), std::min<std::size_t>(sizeof(g_zoneServerEndpoint.overrideAddress), host.size() + 1));
 
   GetRagConnection().Close();
-  this->pendingCursorType = 12;
+  this->pendingCursorType = LOGIN_STATE_CONNECT_ZONE_SERVER;
 }
 
 // OFFSET: 0x00D90740

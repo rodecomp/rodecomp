@@ -1,3 +1,4 @@
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeDragState.h"
 #include "UI/GameSettings/TalkType.h"
@@ -1289,19 +1290,19 @@ namespace {
 void CGameMode::ReceiveEquipAck(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_ACTION_FAILURE*>(packet);
   switch (p->type) {
-  case 0:
+  case ACTION_NOTICE_NO_ARROW:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ERR_ATTACK_ARROW)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case ACTION_NOTICE_ATTACK_OVERWEIGHT:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ERR_ATTACK_WEIGHT)), 0xFFFF64, 0, 0, 0);
     break;
-  case 2:
+  case ACTION_NOTICE_SKILL_OVERWEIGHT:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ERR_SKILL_WEIGHT)), 0xFFFF64, 0, 0, 0);
     break;
-  case 3:
+  case ACTION_NOTICE_AMMO_EQUIPPED:
     switch (g_session.GetDisplayJob()) {
     case JT_ASSASSIN:
     case JT_ASSASSIN_H:
@@ -2060,18 +2061,18 @@ __declspec(noinline) void CGameMode::ReceiveActorStatusBlock(const unsigned char
 __declspec(noinline) void CGameMode::ReceiveActorStatusUpdate(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const HomunculusPropertyPacket*>(packet);
   if (g_session.elementalGid != -1) {
-    const unsigned int field = p->type - 5;
+    const unsigned int field = p->type - SP_HP;
     switch (field) {
-    case 0:
+    case SP_HP - SP_HP:
       g_session.elementalHp = p->value;
       break;
-    case 2:
+    case SP_SP - SP_HP:
       g_session.elementalSp = p->value;
       break;
-    case 1:
+    case SP_MAXHP - SP_HP:
       g_session.elementalMaxHp = p->value;
       break;
-    case 3:
+    case SP_MAXSP - SP_HP:
       g_session.elementalMaxSp = p->value;
       break;
     }
@@ -2751,10 +2752,10 @@ void CGameMode::ReceiveShopItemList(
 // FUNCTION: fn_22177
 __declspec(noinline) void CGameMode::ReceiveGuildAgitMoveResult(short result) {
   switch (result) {
-  case 1:
+  case GUILD_AGIT_MOVE_NO_MONEY:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_BUY_FALSE_MONEY)), 0xff, 0, 0, 0);
     break;
-  case 2:
+  case GUILD_AGIT_MOVE_INVALID_MAP:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_AGIT_MOVE_FAIL_MAP)), 0xff, 0, 0, 0);
     break;
   }
@@ -3349,13 +3350,13 @@ namespace {
 __declspec(noinline) void CGameMode::ReceiveRouletteBonusPoints(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_UPDATE_ROULETTE_COIN*>(packet);
   switch (p->type) {
-  case 0:
+  case ROULETTE_COIN_GOLD:
     g_rouletteMgr->m_goldPoint = p->point;
     break;
-  case 1:
+  case ROULETTE_COIN_SILVER:
     g_rouletteMgr->m_silverPoint = p->point;
     break;
-  case 2:
+  case ROULETTE_COIN_BRONZE:
     g_rouletteMgr->m_bronzePoint = p->point;
     break;
   }
@@ -8195,14 +8196,14 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_FAILED_OPEN_BUYING_STORE_TO_BUYER*>(packet);
   char text[128];
   switch (p->result) {
-  case 1:
+  case BUYING_STORE_OPEN_FAILED:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUYINGSTORE_OPEN_FAILED)), 0xFF, 0, 0, 0);
     g_session.ClearMerchantPurchaseSavedItems();
     g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
     g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
     break;
-  case 2:
+  case BUYING_STORE_OPEN_OVERWEIGHT:
     {
       const int overweight = static_cast<int>(
         static_cast<float>(p->weight / 10 + g_session.m_weight) - static_cast<float>(g_session.m_maxWeight) * 0.9f
@@ -8211,11 +8212,11 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
     }
     g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 9:
+  case BUYING_STORE_OPEN_UNAVAILABLE:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_OPEN_STORE)), 0xFF, 0, 0, 0);
     break;
-  case 10:
+  case BUYING_STORE_OPEN_INVALID_POSITION:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MERCHANTSHOP_FAIL_POSITION)), 0xFF, 0, 0, 0);
     g_session.ClearMerchantPurchaseSavedItems();
@@ -12634,13 +12635,13 @@ void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
   const EquipItemNoticePacket* packet = reinterpret_cast<const EquipItemNoticePacket*>(data);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   switch (packet->result) {
-  case 6:
+  case VENDING_PURCHASE_INVALID_STORE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_BUY_ITEM_INVALID_MCSTORE)), 0x6464FF, 0, 0, 0);
     return;
-  case 7:
+  case VENDING_PURCHASE_STORE_UNAVAILABLE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_OPEN_STORE)), 0xFF, 0, 0, 0);
     return;
-  case 15:
+  case VENDING_PURCHASE_BUYING_STORE_RESTRICTED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESTRICT_OPENING_BUYINGSTORE_FAIL_OPEN_BUYINGSTORE)), 0xFF, 0, 0, 0);
     return;
   }
@@ -12648,27 +12649,27 @@ void CGameMode::ReceiveEquipItemNotice(const unsigned char* data) {
   ITEM_INFO item = g_session.FindFilteredInventoryItem(packet->index);
   if (item.identity[1] > 0) {
     switch (packet->result) {
-    case 1:
+    case PURCHASE_FAIL_MONEY:
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_BUY_ITEM_FROM_MERCHANT), item.DisplayName(0).c_str(), LookupMessage(MSI_INSUFFICIENT_MONEY)).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
-    case 2:
+    case PURCHASE_FAIL_WEIGHT:
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_BUY_ITEM_FROM_MERCHANT), item.DisplayName(0).c_str(), LookupMessage(MSI_OVER_WEIGHT)).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
-    case 4:
+    case VENDING_PURCHASE_NO_STOCK:
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_BUY_ITEM_FROM_MERCHANT_NO_STOCK), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
-    case 5:
+    case VENDING_PURCHASE_EXCHANGING:
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_BUY_ITEM_ITEM_EXCHANGING), item.DisplayName(0).c_str(), packet->value).c_str()), 0x6464FF, 0, 0, 0
       );
       break;
-    case 8:
+    case VENDING_PURCHASE_SELLER_ZENY_LIMIT:
       g_windowMgr.SendNotice(
         UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_FAIL_BUY_ITEM_FROM_MERCHANT), item.DisplayName(0).c_str(), LookupMessage(MSI_MCSTORE_FAIL_SELLER_MONEY_GIVE)).c_str()), 0x6464FF, 0, 0, 0
       );

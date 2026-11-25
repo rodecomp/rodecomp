@@ -1,3 +1,4 @@
+#include "Client/Mode/GameModeEnums.h"
 #include <new>
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -709,7 +710,7 @@ void CGameMode::DrawTimeAttackTimer() {
     return;
   }
 
-  this->DrawTimeAttackCountdown(g_session.m_timeAttackStart, 1);
+  this->DrawTimeAttackCountdown(g_session.m_timeAttackStart, TIME_ATTACK_ELAPSED);
 
   if (g_session.m_timeAttackStart != 0 && timeGetTime() - g_session.m_timeAttackStart < 3000) {
     this->DrawTimeAttackTitle();
@@ -721,7 +722,7 @@ void CGameMode::DrawTimeAttackTimer() {
 void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   std::uint32_t current = 0;
   switch (mode) {
-    case 0:
+    case TIME_ATTACK_STATIC:
       current = value;
       if (this->countdownStartTick == 0) {
         this->countdownStartTick = timeGetTime();
@@ -731,19 +732,19 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
-    case 1:
+    case TIME_ATTACK_ELAPSED:
       current = timeGetTime() - value;
       if (value == 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
-    case 2:
+    case TIME_ATTACK_REMAINING:
       current = value - timeGetTime();
       if (current == 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
-    case 3:
+    case TIME_ATTACK_FRAME_COUNTDOWN:
       current = g_session.m_timeAttackCountdown / 30;
       --g_session.m_timeAttackCountdown;
       if (current <= 0) {

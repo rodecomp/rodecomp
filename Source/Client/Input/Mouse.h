@@ -4,6 +4,14 @@
 #include <cstdint>
 #include <windows.h>
 
+enum MouseButtonState : int {
+  MOUSE_BUTTON_IDLE = 0,
+  MOUSE_BUTTON_PRESSED = 1,
+  MOUSE_BUTTON_HELD = 2,
+  MOUSE_BUTTON_RELEASED = 3,
+  MOUSE_BUTTON_DOUBLE_CLICKED = 4,
+};
+
 class CMouse {
 public:
   virtual ~CMouse();
