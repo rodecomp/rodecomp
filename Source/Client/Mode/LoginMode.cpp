@@ -3173,11 +3173,10 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     case 300:
       std::sprintf(output, LookupMessage(MSI_BILLING_300));
       return 0;
-    case 400: {
-      const std::uint32_t value = this->slotExtension.time2 - this->slotExtension.time1;
-      std::sprintf(output, LookupMessage(MSI_BILLING_400), value / 3600, (value / 60) % 60, value % 60);
+    case 400:
+      std::sprintf(output, LookupMessage(MSI_BILLING_400), (this->slotExtension.time2 - this->slotExtension.time1) / 3600,
+        ((this->slotExtension.time2 - this->slotExtension.time1) / 60) % 60, (this->slotExtension.time2 - this->slotExtension.time1) % 60);
       return 0;
-    }
     case 500: {
       const std::uint32_t value = this->slotExtension.time1 != 0 ? this->slotExtension.time1 : this->slotExtension.time2;
       const int messageId = this->slotExtension.time1 != 0 ? 0x219 : 0x21A;
