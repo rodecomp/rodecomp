@@ -18244,14 +18244,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     primaryEffects[0x14E2] = EF_WOODEN_WARRIOR_CAST;
     secondaryEffects[0x14E2] = EF_WOODEN_WARRIOR_CAST_BOTTOM;
 
-    if (primaryEffects.find(skillId) != primaryEffects.end()) {
+    if (primaryEffects.end() != primaryEffects.find(skillId)) {
       EffectLists* effects = g_effectMgr;
       effect = effects->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    if (secondaryEffects.find(skillId) != secondaryEffects.end()) {
+    if (secondaryEffects.end() != secondaryEffects.find(skillId)) {
       EffectLists* effects = g_effectMgr;
       effect = effects->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
