@@ -1912,7 +1912,7 @@ namespace {
   // INLINED
   template <class CIPHER, bool BY_NAME, std::size_t IV_OFFSET>
   inline void DataHashTransform(
-    std::span<const std::uint8_t> name, std::span<const std::uint8_t, 60> parameters, std::span<const std::uint8_t, 16> hash, std::span<std::uint8_t, 16> output
+    std::span<const std::uint8_t> name, std::span<const std::uint8_t, 60> parameters, std::span<const std::uint8_t, 16> hash, std::array<std::uint8_t, 16>& output
   ) {
     if constexpr (BY_NAME) {
       DataHashBlockTransform<CIPHER, IV_OFFSET>(name, parameters, hash, output);
