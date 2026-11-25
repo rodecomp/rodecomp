@@ -68,9 +68,9 @@ void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
   this->Resize(257, 127);
   unsigned int height = this->geometry.height;
   CCreateLineInfo info(this, text.c_str(), this->geometry.width - 20, 4, LineTextStyle{0, 12, false, false}, false, 0, false, 0xFFFFFF, 0);
-  std::vector<std::vector<UIWindow*>> lines = info.m_lines;
+  std::vector<LineWindows> lines = info.m_lines;
   for (auto lineIt = lines.begin(); lineIt != lines.end(); ++lineIt) {
-    std::vector<UIWindow*> line = *lineIt;
+    std::vector<UIWindow*> line = lineIt->windows;
     for (auto windowIt = line.begin(); windowIt != line.end(); ++windowIt) {
       UIWindow* window = *windowIt;
       if (window) {

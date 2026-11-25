@@ -809,7 +809,7 @@ void CCreateLineInfo::AddWindow(UIWindow* window) {
   if (this->m_lines.empty()) {
     this->NewLine();
   }
-  this->m_lines.rbegin()->push_back(window);
+  this->m_lines.rbegin()->windows.push_back(window);
 }
 
 // OFFSET: 0x00837BC0
@@ -1233,7 +1233,7 @@ UIWindow* CCreateLineInfo::CreateTextWindow(std::string text, const LineTextStyl
 // OFFSET: 0x0083AA40
 // FUNCTION: fn_10465
 void CCreateLineInfo::NewLine() {
-  std::vector<UIWindow*> line;
+  LineWindows line;
   this->m_lines.push_back(line);
 }
 
@@ -1618,7 +1618,7 @@ void CCreateLineInfo::ArrangeLines() {
   int y = 0;
 
   for (auto lineIt = this->m_lines.begin(); lineIt != this->m_lines.end(); ++lineIt) {
-    std::vector<UIWindow*>& line = *lineIt;
+    std::vector<UIWindow*>& line = lineIt->windows;
     unsigned lineHeight = 0;
     for (UIWindow* window : line) {
       lineHeight = static_cast<unsigned>(window->geometry.height) > lineHeight ? window->geometry.height : lineHeight;

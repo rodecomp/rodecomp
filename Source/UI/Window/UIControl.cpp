@@ -3756,7 +3756,7 @@ void CUITextViewer::AddLine(const std::string& text) {
     this->lines.push_back(text);
     this->contentHeight += this->childPositions.empty() ? 0 : this->lineSpacing;
     for (const auto& row : lineInfo.m_lines) {
-      for (UIWindow* child : row) {
+      for (UIWindow* child : row.windows) {
         this->AddLineChild(child);
       }
     }

@@ -57,6 +57,14 @@ struct LineFontState {
   /* 0004 */ std::uint32_t color;
 };
 
+struct LineWindows {
+  // INLINED
+  LineWindows() {
+  }
+
+  /* 0000 */ std::vector<UIWindow*> windows;
+};
+
 // VTABLE: vt_00879
 class CCreateLineInfo {
 public:
@@ -90,7 +98,7 @@ public:
   /* 0048 */ bool m_newSegment;
   /* 004C */ std::string m_text;
   /* 0064 */ std::vector<LineTextSegment> m_segments;
-  /* 0070 */ std::vector<std::vector<UIWindow*>> m_lines;
+  /* 0070 */ std::vector<LineWindows> m_lines;
   /* 007C */ int m_height;
 
   CCreateLineInfo(
