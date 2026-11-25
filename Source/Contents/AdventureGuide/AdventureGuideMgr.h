@@ -13,6 +13,14 @@
 #include <utility>
 #include <vector>
 
+enum AdventureGuideCategory : int {
+  ADVENTURE_GUIDE_EPISODE = 1,
+  ADVENTURE_GUIDE_QUEST = 3,
+  ADVENTURE_GUIDE_DUNGEON = 4,
+  ADVENTURE_GUIDE_ITEM = 5,
+  ADVENTURE_GUIDE_EQUIPMENT = 6,
+};
+
 struct AdventureGuideDetail {
   /* 0000 */ int minLevel;
   /* 0004 */ int maxLevel;

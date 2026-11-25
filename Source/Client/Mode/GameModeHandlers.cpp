@@ -848,13 +848,13 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   std::uint32_t color = 0xFF;
   switch (value->result) {
   case ERROR_TYPE_NONE:
-  case 8:
+  case ERROR_TYPE_PURCHASE_PARTIAL:
     g_session.m_pendingAid = value->cashPoints;
     g_session.m_pendingGid = value->kafraPoints;
     if (g_windowMgr.itemShopWnd) {
       g_windowMgr.itemShopWnd->Invalidate();
     }
-    if (value->result == 8) {
+    if (value->result == ERROR_TYPE_PURCHASE_PARTIAL) {
       text = LookupMessage(MSI_CASH_FAILED_BUY_SOME);
     } else {
       color = 0xFFFF00;
@@ -882,7 +882,7 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   case ERROR_TYPE_AMOUNT:
     text = LookupMessage(MSI_CASH_FAILED_TOTAL_CNT);
     break;
-  case 9:
+  case ERROR_TYPE_KIND_COUNT_OVER:
     text = LookupMessage(MSI_SKILL_INVENTORY_KINDCNT_OVER);
     break;
   }
@@ -952,23 +952,23 @@ void CGameMode::ReceiveItem1718Result(const unsigned char* packet) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASE_FAIL_EACHITEM_COUNT)), 0xFF, 0, 0, 0);
     break;
-  case 10:
+  case PURCHASE_SENT_BY_RODEX:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_PURCHASES_BY_RODEX)), 0xFFFF00, 0, 0, 0);
     break;
-  case 11:
+  case PURCHASE_EXCHANGE_FAILED:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 0xFF, 0, 0, 0);
     break;
-  case 12:
+  case PURCHASE_EXCHANGE_SUCCEEDED:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_SUCCEEDED)), 0xFFFF00, 0, 0, 0);
     break;
-  case 13:
+  case PURCHASE_OUT_OF_STOCK:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 0xFF, 0, 0, 0);
     break;
-  case 14:
+  case PURCHASE_NO_EXCHANGE_ITEM:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 0xFF, 0, 0, 0);
     break;
@@ -1830,10 +1830,10 @@ void CGameMode::ReceiveSummonHpUpdate(const unsigned char* buffer) {
   }
 
   switch (packet->varId) {
-  case 5:
+  case SP_HP:
     g_session.summonHp[packet->summonId] = packet->value;
     break;
-  case 6:
+  case SP_MAXHP:
     g_session.summonMaxHp[packet->summonId] = packet->value;
     break;
   }
@@ -2350,10 +2350,10 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
 // FUNCTION: fn_22035
 void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
   switch (type) {
-  case 0:
-  case 1:
-  case 2:
-  case 3:
+  case SERVICE_WINDOW_BANK:
+  case SERVICE_WINDOW_STYLING:
+  case SERVICE_WINDOW_CAPTCHA_REGISTRATION:
+  case SERVICE_WINDOW_MACRO_REPORT:
   case 4:
     this->OpenServiceWindow(type);
     break;

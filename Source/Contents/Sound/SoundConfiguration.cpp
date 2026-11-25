@@ -88,7 +88,7 @@ int ReadSetup() {
 
     if (RegQueryValueExA(settingsKey, OBFUSCATE_TEXT("NUMSAMPLETYPE", 0x0753A7E1EFA9E139ULL), nullptr, &type,
                          reinterpret_cast<BYTE*>(&g_soundConfiguration.numSampleType), &size) != ERROR_SUCCESS) {
-      g_soundConfiguration.numSampleType = 2;
+      g_soundConfiguration.numSampleType = SOUND_SAMPLES_16;
     }
 
     type = REG_SZ;

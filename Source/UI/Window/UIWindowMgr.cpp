@@ -1663,14 +1663,14 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
           forward = true;
           break;
         }
-      } else if (this->modifierKey == 0x10) {
+      } else if (this->modifierKey == VK_SHIFT) {
         forward = true;
-      } else if (this->modifierKey == 0x11) {
+      } else if (this->modifierKey == VK_CONTROL) {
         switch (this->keyCode) {
-        case 0x41:
-        case 0x43:
-        case 0x56:
-        case 0x58:
+        case 'A':
+        case 'C':
+        case 'V':
+        case 'X':
           forward = true;
           break;
         }
@@ -2694,7 +2694,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
     break;
 
-  case 70:
+  case 'F':
     if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->keyboardCommandRootWnd) {
       this->keyboardCommandRootWnd->SendMsg(nullptr, UM_FINDPUSH, 0, 0, 0, 0);
       return false;

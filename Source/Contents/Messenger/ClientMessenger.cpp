@@ -1,4 +1,5 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -5308,7 +5309,7 @@ bool CGameMode::IsAllowedPair(int kind, int value) {
   bool result = false;
   switch (kind) {
   case WID_ITEMWND:
-    if (value == 6 || value == 9) {
+    if (value == DRAG_ITEM_STORAGE || value == DRAG_ITEM_MERCHANT_INVENTORY) {
       result = true;
     }
     break;
@@ -5317,7 +5318,7 @@ bool CGameMode::IsAllowedPair(int kind, int value) {
       break;
     }
   case WID_ITEMSHOPWND2:
-    if (value == 4 || value == 5) {
+    if (value == DRAG_ITEM_PURCHASE_CART || value == DRAG_ITEM_SELL) {
       result = true;
     }
     break;
@@ -5327,45 +5328,45 @@ bool CGameMode::IsAllowedPair(int kind, int value) {
     }
   case WID_ITEMPURCHASEWND:
   case WID_ITEMSELLWND2:
-    result = value == 3;
+    result = value == DRAG_ITEM_NPC_SHOP;
     break;
   case WID_ITEMSTOREWND:
-    if (value == 9 || value == 1) {
+    if (value == DRAG_ITEM_MERCHANT_INVENTORY || value == DRAG_ITEM_INVENTORY) {
       result = true;
     }
     break;
   case WID_MERCHANTITEMWND:
-    if (value == 1 || value == 6) {
+    if (value == DRAG_ITEM_INVENTORY || value == DRAG_ITEM_STORAGE) {
       result = true;
     }
     break;
   case WID_MERCHANTSHOPMAKEWND:
-    result = value == 0xB;
+    result = value == DRAG_VENDING_SHOP_LIST;
     break;
   case WID_MERCHANTMIRRORITEMWND:
-    result = value == 0xA;
+    result = value == DRAG_VENDING_PURCHASE_LIST;
     break;
   case WID_MERCHANTITEMSHOPWND:
-    result = value == 0xD;
+    result = value == DRAG_VENDING_ITEM_PURCHASE;
     break;
   case WID_MERCHANTITEMPURCHASEWND:
   case WID_MERCHANTITEMPURCHASEWND_MODE_1:
-    if (value == 0xC || value == 0x16) {
+    if (value == DRAG_VENDING_ITEM_SHOP || value == DRAG_PURCHASE_MIRROR_LIST) {
       result = true;
     }
     break;
   case WID_MERCHANTMIRRORITEMWND_MODE_1:
-    result = value == 0x15;
+    result = value == DRAG_BUYINGSTORE_ITEM_PURCHASE;
     break;
   case WID_NCASHWND:
   case WID_CASHSHOP_WND:
-    if (value == 6 || value == 4) {
+    if (value == DRAG_ITEM_STORAGE || value == DRAG_ITEM_PURCHASE_CART) {
       result = true;
     }
     break;
-  case 0x1F:
+  case WID_EXCHANGEWND:
   case WID_EXCHANGEUI:
-    if (value == 1) {
+    if (value == DRAG_ITEM_INVENTORY) {
       result = true;
     }
     break;

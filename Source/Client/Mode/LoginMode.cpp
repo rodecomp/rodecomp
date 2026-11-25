@@ -354,18 +354,18 @@ void CLoginMode::SubD8D4F0(int) {
 void CLoginMode::SubD8D500(const char* packet) {
   UIWindow* window = g_windowMgr.newSelectCharWnd;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
-  case 0:
+  case CHARACTER_RENAME_SUCCESS:
     g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME_SUCCESS, 0, 0, 0);
     }
     return;
-  case 1:
+  case CHARACTER_RENAME_ALREADY_CHANGED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
-  case 2:
+  case CHARACTER_RENAME_USER_NOT_REGISTERED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "메시지", 280, 120, 0) != ID_OK) {
       return;
     }
@@ -373,12 +373,12 @@ void CLoginMode::SubD8D500(const char* packet) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     return;
-  case 3:
+  case CHARACTER_RENAME_FAILED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
-  case 4:
+  case CHARACTER_RENAME_DUPLICATE_NAME:
     if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "메시지", 280, 120, 0) != ID_OK) {
       return;
     }
@@ -386,17 +386,17 @@ void CLoginMode::SubD8D500(const char* packet) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
-  case 5:
+  case CHARACTER_RENAME_IN_GUILD:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
-  case 6:
+  case CHARACTER_RENAME_IN_PARTY:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
     return;
-  case 7:
+  case CHARACTER_RENAME_NAME_TOO_LONG:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_OVER_LENGTH), 0, true, true, 0, "메시지", 280, 120, 0) != ID_OK) {
       return;
     }
@@ -404,7 +404,7 @@ void CLoginMode::SubD8D500(const char* packet) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
-  case 8:
+  case CHARACTER_RENAME_PREVENTED_NAME:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_PREVENTNAM), 0, true, true, 0, "메시지", 280, 120, 0) != ID_OK) {
       return;
     }
@@ -412,7 +412,7 @@ void CLoginMode::SubD8D500(const char* packet) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
-  case 9:
+  case CHARACTER_RENAME_FORBIDDEN_NAME:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_FORBIDDEN), 0, true, true, 0, "메시지", 280, 120, 0) != ID_OK) {
       return;
     }
@@ -420,7 +420,7 @@ void CLoginMode::SubD8D500(const char* packet) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     return;
-  case 10:
+  case CHARACTER_RENAME_UNKNOWN_FAILURE:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && g_windowMgr.changeNameWnd) {
       g_windowMgr.CloseWindow(WID_CHANGENAMEWND);
     }
@@ -744,7 +744,7 @@ void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
       char* mapName = this->characters[i].mapName;
       StringFormat(mapName, sizeof(this->characters[i].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
     }
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
   }
 }
 
@@ -803,7 +803,7 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
   }
   if (this->characterDeleted != true) {
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
   }
 }
 
@@ -822,7 +822,7 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
         break;
       }
     }
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case CHARACTER_DELETE_CANCEL_DATABASE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
@@ -842,10 +842,10 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
 void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
-  case 0:
+  case CHARACTER_DELETE_RESERVE_UNKNOWN_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
-  case 1:
+  case CHARACTER_DELETE_RESERVE_SUCCESS:
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].gid == packet->gid) {
         __time32_t now;
@@ -854,23 +854,23 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
         break;
       }
     }
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
-  case 2:
+  case CHARACTER_DELETE_RESERVE_PENDING:
     break;
-  case 3:
+  case CHARACTER_DELETE_RESERVE_DATABASE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
     break;
-  case 4:
+  case CHARACTER_DELETE_RESERVE_GUILD_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_GUILD);
     break;
-  case 5:
+  case CHARACTER_DELETE_RESERVE_PARTY_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_PARTY);
     break;
-  case 6:
+  case CHARACTER_DELETE_RESERVE_ASSISTANT_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_ASSISTANT);
     break;
-  case 7:
+  case CHARACTER_DELETE_RESERVE_ZENYLOTTO_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_ZENYLOTTO);
     break;
   default:
@@ -892,7 +892,7 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
     char text[256];
     sprintf(text, OBFUSCATE_DECRYPT(0x792FFD1325418FB5ULL, source), sizeof(MapStateInfo));
     g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 280, 120, 0);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     return;
   }
 
@@ -910,11 +910,11 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
 
   if (this->mapStates.size() == 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_EXIST_ENTRYMAP), 0, true, false, 0, "메시지", 280, 120, 0);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     return;
   }
 
-  this->pendingCursorType = 30;
+  this->pendingCursorType = LOGIN_STATE_SELECT_MAP;
 }
 
 // OFFSET: 0x00D91780
@@ -995,7 +995,7 @@ void CLoginMode::SubD97780(int value) {
   const int timeout = g_serviceType == ServiceThai || g_serviceType == ServicePhilippine ? 0x1D4C0 : 0x3A98;
 
   switch (value) {
-  case 4:
+  case LOGIN_STATE_CONNECT_ACCOUNT_SERVER:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + timeout) {
       this->SendMsg(LMM_DISCONNECT_ACSVR, 0, 0, 0, 0);
     }
@@ -1012,27 +1012,27 @@ void CLoginMode::SubD97780(int value) {
       }
     }
     break;
-  case 5:
+  case LOGIN_STATE_CONNECT_CHARACTER_SERVER:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
     }
     break;
-  case 12:
+  case LOGIN_STATE_CONNECT_ZONE_SERVER:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
     }
     break;
-  case 6:
+  case LOGIN_STATE_SELECT_SERVER:
     if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
@@ -1040,7 +1040,7 @@ void CLoginMode::SubD97780(int value) {
       }
     }
     break;
-  case 38:
+  case LOGIN_STATE_CONNECT_AGENCY:
     if (this->otpPending == true) {
       if (static_cast<int>(timeGetTime()) >= this->otpStarted + 0xEA60) {
         GetRagConnection().Close();
@@ -1052,7 +1052,7 @@ void CLoginMode::SubD97780(int value) {
               this->otpTimedOut = false;
               this->loginResponseReceived = false;
               this->otpStarted = timeGetTime();
-              this->pendingCursorType = 3;
+              this->pendingCursorType = LOGIN_STATE_LOGIN;
             }
           }
         }
@@ -1064,7 +1064,7 @@ void CLoginMode::SubD97780(int value) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC), 0, true, false, 0, "메시지", 280, 120, 0) == ID_OK) {
             this->loginResponseReceived = false;
             this->otpStarted = timeGetTime();
-            this->pendingCursorType = 3;
+            this->pendingCursorType = LOGIN_STATE_LOGIN;
           }
         }
       }
@@ -1240,7 +1240,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x050505679903579BULL);
   g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x050505679903579BULL, source), text, result), 0, true, false, 0, "메시지", 280, 120, 0);
   g_charServerAccountIdPending = 0;
-  this->pendingCursorType = 3;
+  this->pendingCursorType = LOGIN_STATE_LOGIN;
 }
 
 // OFFSET: 0x00D93B10
@@ -1322,7 +1322,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
         this->otpPending = false;
         GetRagConnection().Close();
         this->otpStarted = timeGetTime();
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
     }
   }
@@ -1396,7 +1396,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
         this->otpPending = false;
         GetRagConnection().Close();
         this->otpStarted = timeGetTime();
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
     }
   }
@@ -1523,12 +1523,12 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
   switch (packet->mode) {
   case PINCODE_OK:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    g_session.m_passwordWndMode = 0;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_OK;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_PASSED:
-    g_session.m_passwordWndMode = 1;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_PASSED;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_WRONG:
     if (packet->count <= 0) {
@@ -1537,40 +1537,40 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else {
       g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_SECOND_PASSWORD_LOGIN_FAILED), packet->count).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
     }
     break;
   case PINCODE_ILLEGAL:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case PINCODE_KSSN:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case PINCODE_NOTSET:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 4;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_NOTSET;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_EXPIRED:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 3;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_EXPIRED;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_NEW:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 5;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_NEW;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_ASK:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 2;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_ASK;
     this->passwordRetryCount = 0;
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case 9: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
@@ -1603,17 +1603,17 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   switch (packet->mode) {
   case PINCODE_OK:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    g_session.m_passwordWndMode = 0;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_OK;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_PASSED:
-    g_session.m_passwordWndMode = 1;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_PASSED;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_WRONG: {
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
     ++this->passwordRetryCount;
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     if (3 - this->passwordRetryCount <= 0) {
       g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_3), 0, true, false, 0, "메시지", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
@@ -1625,34 +1625,34 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
   }
   case PINCODE_ILLEGAL:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case PINCODE_KSSN:
     g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case PINCODE_NOTSET:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 4;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_NOTSET;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_EXPIRED:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 3;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_EXPIRED;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_NEW:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 5;
-    this->pendingCursorType = 7;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_NEW;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case PINCODE_ASK:
     g_session.m_passwordWndAccountId = packet->value;
-    g_session.m_passwordWndMode = 2;
+    g_session.m_passwordWndMode = PASSWORDWND_MODE_ASK;
     this->passwordRetryCount = 0;
-    this->pendingCursorType = 7;
+    this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
   case 9: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
@@ -2100,7 +2100,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
 
   if (g_session.m_loginModeFlag == true) {
-    this->pendingCursorType = 3;
+    this->pendingCursorType = LOGIN_STATE_LOGIN;
   } else {
     g_modeMgr.Quit();
   }
@@ -2147,20 +2147,20 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
   }
 
   switch (notice) {
-  case 45:
+  case LOGIN_NOTICE_RESERVE_CHANGE_CHARACTER_SLOT:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESERVE_CHANGE_CHARACTER_SLOT)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->noticeCommands.push_back(45);
+    this->noticeCommands.push_back(LOGIN_NOTICE_RESERVE_CHANGE_CHARACTER_SLOT);
     break;
-  case 46:
+  case LOGIN_NOTICE_CHARACTER_SLOT_CHANGE:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARACTER_SLOT_CHANGE)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->noticeCommands.push_back(46);
+    this->noticeCommands.push_back(LOGIN_NOTICE_CHARACTER_SLOT_CHANGE);
     break;
-  case 47:
+  case LOGIN_NOTICE_CHANGE_CHARACTER_NAME:
     window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHANGE_CHARACTER_NAME)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    this->noticeCommands.push_back(47);
+    this->noticeCommands.push_back(LOGIN_NOTICE_CHANGE_CHARACTER_NAME);
     break;
   }
 
@@ -2272,7 +2272,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   gameGuard->Send(FormatString(format.Text(), aid));
   GetRagConnection().Close();
   g_loginFailCount = 0;
-  this->pendingCursorType = 6;
+  this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
 }
 
 static void IgnoreRemovedPacket(const unsigned char* packet) {
@@ -2331,26 +2331,26 @@ void CLoginMode::PollNetworkStatus() {
       case REFUSE_ENTER_ID_MISMATCH:
         g_windowMgr.Confirm(LookupMessage(MSI_ID_MISMATCH), 0, true, true, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
         break;
       case REFUSE_ENTER_OVER_CONNECT_USER:
         g_windowMgr.Confirm(LookupMessage(MSI_OVER_CONNECT_USER), 0, true, false, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
         break;
       case REFUSE_ENTER_RESTRICTED_MAKE_CHAR:
         g_windowMgr.Confirm(LookupMessage(MSI_BAN_THAI_GGT_RESTRICTED_MAKE_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 6;
+        this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
         break;
       case REFUSE_ENTER_LIMIT_USER:
         g_windowMgr.Confirm(LookupMessage(MSI_LIMIT_USER_MSG), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 6;
+        this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
         break;
       case REFUSE_ENTER_ACCESS_DENIED:
       default:
         g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
         break;
       }
       break;
@@ -2380,7 +2380,7 @@ void CLoginMode::PollNetworkStatus() {
         break;
       }
       g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 280, 120, 0);
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       break;
     }
     case ID_HC_ACCEPT_DELETECHAR: {
@@ -2396,7 +2396,7 @@ void CLoginMode::PollNetworkStatus() {
       --g_session.characterSlotState;
       memcpy_s(this->characters, sizeof(this->characters), remaining, this->characterCount * sizeof(CharacterInfo));
       delete[] remaining;
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       break;
     }
     case ID_HC_REFUSE_DELETECHAR: {
@@ -2416,7 +2416,7 @@ void CLoginMode::PollNetworkStatus() {
         break;
       }
       g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 280, 120, 0);
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       break;
     }
     case ID_HC_NOTIFY_ZONESVR:
@@ -2429,7 +2429,7 @@ void CLoginMode::PollNetworkStatus() {
       g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "메시지", 280, 120, 0);
       GetRagConnection().Close();
       g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
+      this->pendingCursorType = LOGIN_STATE_LOGIN;
       break;
     case ID_SC_NOTIFY_BAN:
       this->ReceiveNotifyBan(g_gameModePacketBuffer);
@@ -2457,7 +2457,7 @@ void CLoginMode::PollNetworkStatus() {
       } else {
         GetRagConnection().Close();
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
       break;
     case ID_SC_ACK_ENCRYPTION: {
@@ -2470,7 +2470,7 @@ void CLoginMode::PollNetworkStatus() {
       message.assign(packet->text, reinterpret_cast<const char*>(packet) + packet->length - packet->text);
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "메시지", 280, 120, 0);
       g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
+      this->pendingCursorType = LOGIN_STATE_LOGIN;
       break;
     }
     case ID_HC_CHARNOTBEENSELECTED: {
@@ -2485,7 +2485,7 @@ void CLoginMode::PollNetworkStatus() {
       const unsigned char* characters =
         reinterpret_cast<const unsigned char*>(packet->characters) + (packet->length - offsetof(AcceptEnterNeoUnionPacket, characters)) % sizeof(CharacterInfo);
       memcpy_s(this->characters, sizeof(this->characters), characters, this->characterCount * sizeof(CharacterInfo));
-      this->pendingCursorType = 19;
+      this->pendingCursorType = LOGIN_STATE_SELECT_UNION_CHARACTER;
       break;
     }
     case ID_HC_ACK_IS_VALID_CHARNAME: {
@@ -2579,22 +2579,22 @@ void CLoginMode::PollNetworkStatus() {
       case SECOND_PASSWORD_MAKE_DUPLICATE:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_DUPLICATED_PW), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       case SECOND_PASSWORD_MAKE_RESTRICTED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       case SECOND_PASSWORD_MAKE_PERSONAL_NUMBER:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       case SECOND_PASSWORD_MAKE_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_MAKE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       }
       break;
@@ -2603,14 +2603,14 @@ void CLoginMode::PollNetworkStatus() {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
-      case 0:
+      case SECOND_PASSWORD_TOGGLE_SUCCESS:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_DEL_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
-      case 1:
+      case SECOND_PASSWORD_TOGGLE_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDEDITWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_DEL_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       }
       break;
@@ -2626,17 +2626,17 @@ void CLoginMode::PollNetworkStatus() {
       case SECOND_PASSWORD_EDIT_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       case SECOND_PASSWORD_EDIT_PERSONAL_NUMBER:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       case SECOND_PASSWORD_EDIT_RESTRICTED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       }
       break;
@@ -2645,31 +2645,31 @@ void CLoginMode::PollNetworkStatus() {
       const SecondPasswordResultPacket* packet = reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer);
       g_session.m_loginAccountId = packet->accountId;
       switch (packet->result) {
-      case 0:
+      case SECOND_PASSWORD_TOGGLE_SUCCESS:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
         g_windowMgr.newSelectCharWnd->EnableButtonById(0x1A2);
-        g_session.m_passwordWndMode = 1;
+        g_session.m_passwordWndMode = PASSWORDWND_MODE_PASSED;
         break;
-      case 1:
+      case SECOND_PASSWORD_TOGGLE_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       }
       break;
     }
     case ID_HC_AVAILABLE_SECOND_PASSWD:
       switch (reinterpret_cast<const SecondPasswordResultPacket*>(g_gameModePacketBuffer)->result) {
-      case 0:
+      case SECOND_PASSWORD_TOGGLE_SUCCESS:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
         g_windowMgr.newSelectCharWnd->DisableButtonById(0x1A2);
         break;
-      case 1:
+      case SECOND_PASSWORD_TOGGLE_FAILED:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
         break;
       }
       break;
@@ -2707,7 +2707,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case ID_AC_REQ_MOBILE_OTP:
       this->authChallengeId = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
-      this->pendingCursorType = 24;
+      this->pendingCursorType = LOGIN_STATE_MOBILE_OTP;
       break;
     case ID_HC_CHARLIST_NOTIFY:
       for (int i = 1; i <= reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value; ++i) {
@@ -2758,7 +2758,7 @@ void CLoginMode::PollNetworkStatus() {
       const char* text = LookupMessage(message);
       g_windowMgr.Confirm(FormatString(OBFUSCATE_BYTES_TEXT("%s(%d)", 0xDD3913D5D7F97BE1ULL), text, code), 0, true, false, 0, "메시지", 280, 120, 0);
       g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
+      this->pendingCursorType = LOGIN_STATE_LOGIN;
       break;
     }
     case ID_AC_REFUSE_LOGIN_EX: {
@@ -2804,7 +2804,7 @@ void CLoginMode::PollNetworkStatus() {
       StringFormat(mapName, sizeof(this->characters[this->characterCount].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
       ++this->characterCount;
       ++g_session.characterSlotState;
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       break;
     }
     case 0xC05: {
@@ -2828,7 +2828,7 @@ void CLoginMode::PollNetworkStatus() {
       if (character && character->gid == g_session.m_renameGid) {
         *character = packet->info;
         StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));
-        this->pendingCursorType = 7;
+        this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       }
       break;
     }
@@ -2852,13 +2852,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
       g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
+      this->pendingCursorType = LOGIN_STATE_LOGIN;
     }
     return 0;
   resetToLogin:
   case LMM_RESET_TO_LOGIN:
     g_charServerAccountIdPending = 0;
-    this->pendingCursorType = 3;
+    this->pendingCursorType = LOGIN_STATE_LOGIN;
     return 0;
   case LMM_SEND_CHARACTER_AUTH_CODE: {
     unsigned char* buffer = static_cast<unsigned char*>(
@@ -2891,22 +2891,22 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   case MM_COMMAND:
     switch (argument1) {
     case LMM_SELECTCHARACTER:
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       return 0;
     case LMM_DELETE_CHARACTER:
-      this->pendingCursorType = 11;
+      this->pendingCursorType = LOGIN_STATE_REQUEST_DELETE_CHARACTER;
       return 0;
     case LMM_MAKECHARACTER:
-      this->pendingCursorType = 8;
+      this->pendingCursorType = LOGIN_STATE_CREATE_CHARACTER;
       return 0;
     case LMM_TRANSFERCHARACTER:
-      this->pendingCursorType = 9;
+      this->pendingCursorType = LOGIN_STATE_REQUEST_SELECT_CHARACTER;
       return 0;
     case LMM_CANCEL:
       if (this->cursorType == 7) {
         g_windowMgr.Shutdown();
         GetRagConnection().Close();
-        this->pendingCursorType = 6;
+        this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
       }
       return 0;
     default:
@@ -2914,17 +2914,17 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
   case LMM_DISPATCH_CHARACTER_SLOT_ACTION:
     switch (this->noticeCommands[argument1]) {
-    case 45:
+    case LOGIN_NOTICE_RESERVE_CHANGE_CHARACTER_SLOT:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
         window->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
       }
       return 0;
-    case 46:
+    case LOGIN_NOTICE_CHARACTER_SLOT_CHANGE:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
         window->SendMsg(nullptr, UM_COMMAND, 0x1B1, 0, 0, 0);
       }
       return 0;
-    case 47:
+    case LOGIN_NOTICE_CHANGE_CHARACTER_NAME:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
         window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
       }
@@ -2951,7 +2951,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   }
   case LMM_CONNECT_TO_ACSVR:
-    this->pendingCursorType = 4;
+    this->pendingCursorType = LOGIN_STATE_CONNECT_ACCOUNT_SERVER;
     return 0;
   case LMM_SET_STATE_GET_EMAIL_ADDRESS:
     this->pendingCursorType = argument1;
@@ -3076,7 +3076,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       return 0;
     }
-    this->pendingCursorType = 2;
+    this->pendingCursorType = LOGIN_STATE_SELECT_ACCOUNT;
     return 0;
   case LMM_SELECTACCOUNT:
     this->selectedAccount = argument1;
@@ -3104,7 +3104,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->selectedSecondaryAccount = argument1;
     this->accountInfo.clear();
     TraceSelectionRange(this->selectedAccount, this->selectedSecondaryAccount);
-    this->pendingCursorType = 3;
+    this->pendingCursorType = LOGIN_STATE_LOGIN;
     return 0;
   case LMM_GOTO_LOGIN:
     GetRagConnection().Close();
@@ -3128,7 +3128,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     ServerAddress2* servers = this->serverList;
     if (servers[argument1].address.state == 3) {
       g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "메시지", 280, 120, 0);
-      this->pendingCursorType = 6;
+      this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
       return 0;
     }
 
@@ -3144,11 +3144,11 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_session.m_serverName = servers[this->selectedServer].address.name;
     CCheckAttendanceMgr* attendanceMgr = g_checkAttendanceMgr;
     attendanceMgr->LoadLocal(g_session.m_serverName);
-    this->pendingCursorType = 5;
+    this->pendingCursorType = LOGIN_STATE_CONNECT_CHARACTER_SERVER;
     return 0;
   }
   case LMM_SENDCHARINFO:
-    this->pendingCursorType = 10;
+    this->pendingCursorType = LOGIN_STATE_REQUEST_CREATE_CHARACTER;
     return 0;
   case LMM_CANCEL:
     if (this->cursorType == 6 || this->cursorType == 27) {
@@ -3156,7 +3156,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       goto resetToLogin;
     }
     if (this->cursorType == 30) {
-      this->pendingCursorType = 7;
+      this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     }
     return 0;
   case LMM_GET_BILLING_INFO: {
@@ -3200,17 +3200,17 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   }
   case LMM_SELECT_REPLAY_DATA:
     GetRagConnection().m_replayMode = 1;
-    this->pendingCursorType = 27;
+    this->pendingCursorType = LOGIN_STATE_SELECT_REPLAY;
     return 0;
   case LMM_START_REPLAY:
     g_session.SetFlag(Replay::Instance().header.sessionSyncValue);
-    this->pendingCursorType = 28;
+    this->pendingCursorType = LOGIN_STATE_PLAY_REPLAY;
     return 0;
   case LMM_REPLAY_SELECT_SERVER:
     GetRagConnection().m_replayMode = 0;
     g_session.m_aid = ReplayFileList::Instance().selectionState;
     g_session.SetFlag(ReplayFileList::Instance().dialogState);
-    this->pendingCursorType = 6;
+    this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
     return 0;
   case LMM_SELECT_MAP:
     if (argument1 != -1) {
@@ -3218,7 +3218,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       entry.index = this->mapStates[argument1].index;
       this->mapStates.clear();
       this->mapStates.push_back(entry);
-      this->pendingCursorType = 31;
+      this->pendingCursorType = LOGIN_STATE_REQUEST_SELECT_MAP;
     }
     return 0;
   default:
@@ -3351,7 +3351,7 @@ void CLoginMode::OnChangeState(int value) {
   this->connectionReady = 1;
 
   switch (value) {
-  case 0:
+  case LOGIN_STATE_WARNING:
     if (g_serviceType == ServiceKorea) {
       constexpr std::array<char, 44> source = OBFUSCATE_SOURCE("유저인터페이스\\login_interface\\warning2.bmp", 0xF3CB6F7711A71B6DULL);
       this->wallpaperName = std::string(OBFUSCATE_DECRYPT(0xF3CB6F7711A71B6DULL, source));
@@ -3367,7 +3367,7 @@ void CLoginMode::OnChangeState(int value) {
       g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, LMM_GOTOSELECTACCOUNT, 0, 0, 0);
     }
     break;
-  case 1: {
+  case LOGIN_STATE_LICENSE: {
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     this->wallpaperName = g_loginWallpaperName;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_SAYDIALOGWND);
@@ -3385,11 +3385,11 @@ void CLoginMode::OnChangeState(int value) {
     window->SendMsg(nullptr, UM_SET_TARGET, LMM_GOTOSELECTACCOUNT, 0, 0, 0);
     break;
   }
-  case 2:
-  case 13:
+  case LOGIN_STATE_SELECT_ACCOUNT:
+  case LOGIN_STATE_RESET_LOGIN:
     this->SendMsg(LMM_RESET_TO_LOGIN, 0, 0, 0, 0);
     break;
-  case 38: {
+  case LOGIN_STATE_CONNECT_AGENCY: {
     ConnectionEndpoint endpoint;
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
@@ -3423,12 +3423,12 @@ void CLoginMode::OnChangeState(int value) {
     } else {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
     }
     break;
   }
-  case 3:
+  case LOGIN_STATE_LOGIN:
     g_accountLinkedUserDataMgr->Reset();
     g_characterLinkedUserDataMgr->Reset();
     g_session.m_storeInfoBackup.Reset();
@@ -3460,9 +3460,9 @@ void CLoginMode::OnChangeState(int value) {
         break;
       }
     }
-    this->pendingCursorType = 4;
+    this->pendingCursorType = LOGIN_STATE_CONNECT_ACCOUNT_SERVER;
     break;
-  case 6: {
+  case LOGIN_STATE_SELECT_SERVER: {
     Replay::Instance().SetState(1);
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
@@ -3519,7 +3519,7 @@ void CLoginMode::OnChangeState(int value) {
     window->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
     break;
   }
-  case 7:
+  case LOGIN_STATE_SELECT_CHARACTER:
     g_screenShakeDuration = 0;
     g_statusRefreshSuppressed = 0;
     g_skillTooltipActive = 0;
@@ -3550,24 +3550,24 @@ void CLoginMode::OnChangeState(int value) {
     g_session.ResetSwapCostumeItems();
     g_session.ResetSwapEquippedItems();
     switch (g_session.m_passwordWndMode) {
-    case 2:
+    case PASSWORDWND_MODE_ASK:
       g_session.m_passwordInputAlternate = false;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       break;
-    case 4:
+    case PASSWORDWND_MODE_NOTSET:
       g_session.m_passwordInputAlternate = true;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
-    case 5:
+    case PASSWORDWND_MODE_NEW:
       g_session.m_passwordInputAlternate = true;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       break;
-    case 3:
+    case PASSWORDWND_MODE_EXPIRED:
       g_session.m_passwordInputAlternate = false;
       g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
@@ -3575,12 +3575,12 @@ void CLoginMode::OnChangeState(int value) {
       break;
     }
     break;
-  case 8:
+  case LOGIN_STATE_CREATE_CHARACTER:
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND);
     break;
-  case 4: {
+  case LOGIN_STATE_CONNECT_ACCOUNT_SERVER: {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
@@ -3598,7 +3598,7 @@ void CLoginMode::OnChangeState(int value) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
       break;
     }
@@ -3666,10 +3666,10 @@ void CLoginMode::OnChangeState(int value) {
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
-  case 24:
+  case LOGIN_STATE_MOBILE_OTP:
     g_windowMgr.EnsureWindow(WID_LOGINOTPWND);
     break;
-  case 5: {
+  case LOGIN_STATE_CONNECT_CHARACTER_SERVER: {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_session.m_partyBooking.Reset();
@@ -3679,7 +3679,7 @@ void CLoginMode::OnChangeState(int value) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
       break;
     }
@@ -3699,7 +3699,7 @@ void CLoginMode::OnChangeState(int value) {
     userDataMgr->Load(g_session.m_aid, g_session.m_accountName);
     break;
   }
-  case 10: {
+  case LOGIN_STATE_REQUEST_CREATE_CHARACTER: {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     MakeCharacterPacket packet;
@@ -3716,7 +3716,7 @@ void CLoginMode::OnChangeState(int value) {
     }
     break;
   }
-  case 11: {
+  case LOGIN_STATE_REQUEST_DELETE_CHARACTER: {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     DeleteCharacterPacket packet;
@@ -3742,7 +3742,7 @@ void CLoginMode::OnChangeState(int value) {
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_DELETING_CHARACTER), 17, 1);
     break;
   }
-  case 9: {
+  case LOGIN_STATE_REQUEST_SELECT_CHARACTER: {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     SelectCharacterPacket packet;
@@ -3753,7 +3753,7 @@ void CLoginMode::OnChangeState(int value) {
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
-  case 12: {
+  case LOGIN_STATE_CONNECT_ZONE_SERVER: {
     g_characterLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_gid, g_session.m_accountName);
     g_runeSystemMgr->Reset();
     g_session.memorialWindowOpen = 0;
@@ -3764,7 +3764,7 @@ void CLoginMode::OnChangeState(int value) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
-        this->pendingCursorType = 3;
+        this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
       break;
     }
@@ -3795,7 +3795,7 @@ void CLoginMode::OnChangeState(int value) {
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
-  case 19:
+  case LOGIN_STATE_SELECT_UNION_CHARACTER:
     g_screenShakeDuration = 0;
     g_statusRefreshSuppressed = 0;
     g_skillTooltipActive = 0;
@@ -3805,7 +3805,7 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_SELCHARFORUSERVERWND);
     break;
-  case 29: {
+  case LOGIN_STATE_REPLAY_WARNING: {
     if (g_serviceType == ServiceIndonesia || g_serviceType == ServiceGermany || g_serviceType == ServiceBrazil) {
       g_serviceOptions.Set(TT_BOLD_NAME_TYPE_ON_OFF, 0);
     }
@@ -3817,15 +3817,15 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, 10026, 0, 0, 0);
     break;
   }
-  case 25:
+  case LOGIN_STATE_OPEN_REPLAY:
     if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
-      this->pendingCursorType = 28;
+      this->pendingCursorType = LOGIN_STATE_PLAY_REPLAY;
     } else {
       g_windowMgr.Confirm(LookupMessage(MSI_NOT_FOUND_REPLAY_FILE), 4, true, true, 0, "메시지", 280, 120, 0);
-      this->pendingCursorType = 26;
+      this->pendingCursorType = LOGIN_STATE_REPLAY_SERVER_LIST;
     }
     break;
-  case 26:
+  case LOGIN_STATE_REPLAY_SERVER_LIST:
     this->serverCount = ReplayFileList::Instance().fileState;
     if (this->serverCount > 100) {
       this->serverCount = 0;
@@ -3835,7 +3835,7 @@ void CLoginMode::OnChangeState(int value) {
       std::memcpy(&this->serverList[i], &reinterpret_cast<const ServerAddress2*>(ReplayFileList::Instance().buffer)[i], sizeof(ServerAddress2));
     }
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
-  case 27: {
+  case LOGIN_STATE_SELECT_REPLAY: {
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectReplayDataWnd* window = static_cast<UISelectReplayDataWnd*>(g_windowMgr.EnsureWindow(WID_SELECTREPLAYDATAWND));
@@ -3856,7 +3856,7 @@ void CLoginMode::OnChangeState(int value) {
     }
     break;
   }
-  case 28: {
+  case LOGIN_STATE_PLAY_REPLAY: {
     std::string key = GenerateRandomKey(47, std::_Random_device());
     unsigned char digest[16] = {};
     ComputeLoginDigest(digest, std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(key.data()), key.size()));
@@ -3887,7 +3887,7 @@ void CLoginMode::OnChangeState(int value) {
     g_modeMgr.Switch(1, mapName);
     break;
   }
-  case 30: {
+  case LOGIN_STATE_SELECT_MAP: {
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
     window->SendMsg(nullptr, UM_SET_TARGET, 10028, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMZONE", 0x9171997D6963C9F7ULL)), 0, 0);
     for (unsigned int i = 0; i < this->mapStates.size(); ++i) {
@@ -3898,7 +3898,7 @@ void CLoginMode::OnChangeState(int value) {
     window->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
     break;
   }
-  case 31: {
+  case LOGIN_STATE_REQUEST_SELECT_MAP: {
     SelectMapPacket packet;
     packet.id = ID_CH_SELECT_ACCESSIBLE_MAPNAME;
     packet.slot = g_charInfo.slot;

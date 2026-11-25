@@ -2,6 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "UI/Items/UIItemRepairWnd.h"
 
 #include "Client/Input/InputCharset.h"
@@ -313,18 +314,18 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes);
     unsigned offset = 6;
 
-    if (22150 == header.id) {
+    if (REPLAY_CHUNK_ITEM_REPAIR_BEGIN == header.id) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes + offset);
         offset += 6;
 
         switch (header.id) {
-        case 22151:
+        case REPLAY_CHUNK_ITEM_REPAIR_END:
           scanning = false;
           break;
 
-        case 22152: {
+        case REPLAY_CHUNK_ITEM_REPAIR_ITEM: {
           UIItemRepairEntry entry;
           std::memcpy(&entry, bytes + offset, header.bytes);
           offset += header.bytes;
@@ -424,10 +425,10 @@ __declspec(noinline) UIItemRepairWnd::~UIItemRepairWnd() = default;
 // FUNCTION: fn_13599
 std::vector<unsigned char> UIItemRepairWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22150, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_REPAIR_BEGIN, nullptr, 0));
   for (auto it = this->entries.begin(); it != this->entries.end(); ++it) {
-    AppendReplayRecord(records, MakeReplayTaggedRecord(22152, &*it, sizeof(*it)));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_ITEM_REPAIR_ITEM, &*it, sizeof(*it)));
   }
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22151, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_REPAIR_END, nullptr, 0));
   return records;
 }

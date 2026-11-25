@@ -1,5 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Jobs/JobId.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -474,7 +475,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     this->nameBalloon->SetName(
       card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, actor->GetEffectiveJob(-1) == 20269 ? 0 : actor->hpGaugeFlags
     );
-  } else if (actor->objectType == 7 || actor->objectType == 8) {
+  } else if (actor->objectType == NPC_PET_TYPE || actor->objectType == NPC_HO_TYPE) {
     CActorNameCard masked = card;
     char name[24] = {};
     strncpy_s(name, sizeof(name), card.name.c_str(), card.name.size());
@@ -721,7 +722,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
         menu->Move(g_mouse.x + 1, g_mouse.y + 1);
         return;
       }
-      if (pick->accountId == g_session.petGid && actor->objectType == 7) {
+      if (pick->accountId == g_session.petGid && actor->objectType == NPC_PET_TYPE) {
         if (g_windowMgr.menuWnd != nullptr) {
           g_windowMgr.CloseWindow(WID_MENUWND);
         }

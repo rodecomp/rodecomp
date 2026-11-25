@@ -15,6 +15,17 @@ enum SoundDigitalRate : int {
   SOUND_RATE_8000 = 2,
 };
 
+enum SoundSampleCount : int {
+  SOUND_SAMPLES_48 = 0,
+  SOUND_SAMPLES_32 = 1,
+  SOUND_SAMPLES_16 = 2,
+};
+
+enum SoundDigitalBits : int {
+  SOUND_BITS_16 = 0,
+  SOUND_BITS_8 = 1,
+};
+
 struct SoundConfiguration {
   /* 0173A924 */ int mode = SOUND_MODE_DISABLED;
   /* 0173A928 */ int speakerType = 0;

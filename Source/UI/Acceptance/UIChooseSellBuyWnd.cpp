@@ -570,17 +570,17 @@ void UIEquipWnd::Paint() {
     this->DrawBitmap(0, this->m_contentTop + 17, bitmap, false);
   }
 
-  if (this->m_page == 2) {
+  if (this->m_page == EQUIPMENT_PAGE_TITLE) {
     this->FillRegion(1, this->m_contentTop + 15, this->geometry.width - 2, 131, 0xFFFFFF);
     this->DrawRectOutline(2, this->m_contentTop + 38, this->geometry.width - 4, 107, 0x646464);
     const std::string jobTitle = g_session.GetJobTitleString(g_session.jobTitle);
     this->DrawCenteredText(1, this->m_contentTop + 20, jobTitle.c_str(), this->geometry.width - 2, 0, 13, 0, 1);
   }
-  if (this->m_page == 3) {
+  if (this->m_page == EQUIPMENT_PAGE_DAMAGE_SKIN) {
     this->DrawDamageSkinPage();
   }
 
-  if (this->m_page == 0 || this->m_page == 1) {
+  if (this->m_page == EQUIPMENT_PAGE_NORMAL || this->m_page == EQUIPMENT_PAGE_COSTUME) {
     if (CBitmapRes* invert = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_invert.bmp")))) {
       int columns[2] = {4, 248};
       for (int i = 0; i < 3; ++i) {
@@ -625,7 +625,7 @@ void UIEquipWnd::Paint() {
     ).Draw(false);
 
     if (this->m_viewOther == 0) {
-      if (this->m_page == 0) {
+      if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
         ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (dragItem.identity[1] != 0) {
           this->DrawItemIcon(this->geometry.width / 2 - 25, this->m_contentTop + 44, dragItem, 0);
@@ -2291,10 +2291,10 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   if (item.identity[1] > 0) {
     switch (item.identity[0]) {
-    case 10:
-    case 16:
-    case 17:
-    case 19:
+    case TYPE_ARROW:
+    case TYPE_AMMO:
+    case TYPE_THROWWEAPON:
+    case TYPE_CANNONBALL:
       mode->SendMsg(MM_WEAR_EQUIP_ARROW, drag->id, item.identity[2], 0, 0);
       break;
     default:
@@ -3023,7 +3023,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
 
     if (this->m_viewOther == 0) {
-      if (this->m_page == 3) {
+      if (this->m_page == EQUIPMENT_PAGE_DAMAGE_SKIN) {
         static_cast<UIButton*>(this->damageSkinButtons[0])->Enable(1);
         static_cast<UIButton*>(this->damageSkinButtons[1])->Enable(1);
         if (g_session.damageSkinCount > 4) {
@@ -3047,7 +3047,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->allowViewCheck->Show(1);
       }
 
-      if (this->m_page == 1) {
+      if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         this->swapModeCheck->Show(1);
         this->allowViewCheck->Show(0);
       } else {
@@ -3056,7 +3056,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
     }
 
-    if (this->m_page == 2 || this->m_page == 3) {
+    if (this->m_page == EQUIPMENT_PAGE_TITLE || this->m_page == EQUIPMENT_PAGE_DAMAGE_SKIN) {
       if (this->swapWindow && this->swapWindow->geometry.state != 0) {
         this->SendMsg(nullptr, UM_COMMAND, ID_SWAP_EQUIPMENT, 0, 0, 0);
       }
@@ -3078,20 +3078,20 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     if (this->m_viewOther == 0) {
       switch (this->m_page) {
-      case 0:
+      case EQUIPMENT_PAGE_NORMAL:
         this->allowViewCheck->Show(1);
         this->swapModeCheck->Show(0);
         this->swapButton->Enable(1);
         this->unequipButton->Enable(1);
         break;
-      case 1:
+      case EQUIPMENT_PAGE_COSTUME:
         this->allowViewCheck->Show(0);
         this->swapModeCheck->Show(1);
         this->swapButton->Enable(1);
         this->unequipButton->Enable(1);
         break;
-      case 2:
-      case 3:
+      case EQUIPMENT_PAGE_TITLE:
+      case EQUIPMENT_PAGE_DAMAGE_SKIN:
         this->allowViewCheck->Show(0);
         this->swapModeCheck->Show(0);
         this->swapButton->Enable(0);
@@ -3102,12 +3102,12 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     if (this->m_viewOther == 0) {
       switch (this->m_page) {
-      case 0:
-      case 1:
+      case EQUIPMENT_PAGE_NORMAL:
+      case EQUIPMENT_PAGE_COSTUME:
         this->abilityButton->Enable(1);
         break;
-      case 2:
-      case 3:
+      case EQUIPMENT_PAGE_TITLE:
+      case EQUIPMENT_PAGE_DAMAGE_SKIN:
         this->abilityButton->Enable(0);
         break;
       }
@@ -3131,7 +3131,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   case UM_REFRESH: {
-    if (this->m_page == 2) {
+    if (this->m_page == EQUIPMENT_PAGE_TITLE) {
       this->RefreshTitleList();
       this->Invalidate();
       return 0;
@@ -3156,7 +3156,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (this->m_viewOther != 0) {
         return 0;
       }
-      if (this->m_page == 1) {
+      if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         g_modeMgr.currentMode->SendMsg(MM_CONFIG_CALL, b, 0, 0, 0);
         return 0;
       }
@@ -3291,9 +3291,9 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         UISwapEquipmentWnd* created = new (std::nothrow) UISwapEquipmentWnd();
         this->swapWindow = created;
         created->SetSize(280, 179);
-        if (this->m_page == 0) {
+        if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
           this->swapWindow->equipmentPage = 1;
-        } else if (this->m_page == 1) {
+        } else if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
           this->swapWindow->equipmentPage = 2;
         }
         this->AddChild(this->swapWindow);
@@ -3314,9 +3314,9 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     case ID_TAKEOFF_ALL: {
       TakeoffEquipAllPacket packet;
-      if (this->m_page == 1) {
+      if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         packet.location = 0x3F7C00;
-      } else if (this->m_page == 0) {
+      } else if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
         packet.location = 0x83FF;
       } else {
         return 0;
@@ -3336,13 +3336,13 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     return 0;
   case UM_SET_DISABLE:
     if (a == 575) {
-      if (this->m_page == 1) {
+      if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         UIBitmapButton* button = this->unequipButton;
         button->SetDisabled(g_session.CountDistinctCostumeItems() == 0);
         button->Invalidate();
         return 0;
       }
-      if (this->m_page == 0) {
+      if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
         UIBitmapButton* button = this->unequipButton;
         button->SetDisabled(g_session.CountDistinctEquippedItems() == 0);
         button->Invalidate();
@@ -8868,7 +8868,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_OK:
       switch (this->passwordStage) {
-      case 0:
+      case PASSWORD_INPUT_CURRENT:
         if (std::strlen(this->currentPassword) < 9 && std::strlen(this->currentPassword) > 3) {
           int password = std::atoi(this->currentPassword);
           for (unsigned i = 0; i < std::strlen(this->currentPassword); ++i) {
@@ -8879,7 +8879,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 0;
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -8889,9 +8889,9 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->Paint();
         break;
 
-      case 1:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         if (std::strlen(this->currentPassword) < 9 && std::strlen(this->currentPassword) > 3) {
-          this->passwordStage = 2;
+          this->passwordStage = PASSWORD_INPUT_NEW;
           this->activeInputY = this->newPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
@@ -8901,7 +8901,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 1;
+        this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -8911,10 +8911,10 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->Paint();
         break;
 
-      case 2:
+      case PASSWORD_INPUT_NEW:
         if (std::strlen(this->newPassword) < 9 && std::strlen(this->newPassword) > 3) {
           this->activeInputY = this->confirmPasswordY;
-          this->passwordStage = 3;
+          this->passwordStage = PASSWORD_INPUT_CONFIRM;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
           std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
@@ -8922,7 +8922,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         } else {
           g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
           this->activeInputY = this->newPasswordY;
-          this->passwordStage = 2;
+          this->passwordStage = PASSWORD_INPUT_NEW;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
           std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
@@ -8932,7 +8932,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         }
         break;
 
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         if (std::strlen(this->confirmPassword) < 9 && std::strlen(this->confirmPassword) > 3) {
           if (std::strcmp(this->newPassword, this->confirmPassword) == 0) {
             int password = std::atoi(this->currentPassword);
@@ -8947,7 +8947,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
-            this->passwordStage = 2;
+            this->passwordStage = PASSWORD_INPUT_NEW;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
             this->maskTextX = 0;
@@ -8959,7 +8959,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 3;
+        this->passwordStage = PASSWORD_INPUT_CONFIRM;
         this->activeInputY = this->confirmPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -8974,7 +8974,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_CHANGE_STORE_PASSWORD:
       g_session.m_storePasswordMode = 2;
       this->isChangingPassword = 1;
-      this->passwordStage = 1;
+      this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
       this->maskTextX = 0;
@@ -8990,14 +8990,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "1");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "1");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "1");
         break;
       }
@@ -9014,14 +9014,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "0");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "0");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "0");
         break;
       }
@@ -9035,14 +9035,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "2");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "2");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "2");
         break;
       }
@@ -9056,14 +9056,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "3");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "3");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "3");
         break;
       }
@@ -9077,14 +9077,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "4");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "4");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "4");
         break;
       }
@@ -9098,14 +9098,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "5");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "5");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "5");
         break;
       }
@@ -9119,14 +9119,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "6");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "6");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "6");
         break;
       }
@@ -9140,14 +9140,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "7");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "7");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "7");
         break;
       }
@@ -9161,14 +9161,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "8");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "8");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "8");
         break;
       }
@@ -9182,14 +9182,14 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, "9");
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, "9");
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, "9");
         break;
       }
@@ -9198,8 +9198,8 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
 
     case ID_STORE_PASSWORD_NUM_RESET:
-      if (this->passwordStage == 0) {
-        this->passwordStage = 0;
+      if (this->passwordStage == PASSWORD_INPUT_CURRENT) {
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -9207,7 +9207,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       } else if (g_session.m_passwordInputAlternate) {
-        this->passwordStage = 2;
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -9215,7 +9215,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         std::memset(this->newPassword, 0, sizeof(this->newPassword));
         std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       } else {
-        this->passwordStage = 1;
+        this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -10110,7 +10110,7 @@ UIPetEggListWnd::UIPetEggListWnd()
 // OFFSET: 0x008D1E80
 // FUNCTION: fn_12096
 void UIEquipWnd::DrawEquipSlots() {
-  if (this->m_page == 1) {
+  if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
     auto* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\equipwin_special.bmp")));
     if (frame) {
       this->DrawBitmap(0, this->m_contentTop + 14, frame, false);
@@ -10127,7 +10127,7 @@ void UIEquipWnd::DrawEquipSlots() {
 
   for (int slot = 0; slot < 10; ++slot) {
     ITEM_INFO item;
-    if (this->m_page == 1) {
+    if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
       if (this->m_viewOther == 0) {
         item = g_session.GetCostumeItemAt(slot);
       } else {
@@ -10994,7 +10994,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-      this->passwordStage = 0;
+      this->passwordStage = PASSWORD_INPUT_CURRENT;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
       this->maskTextX = 0;
@@ -11012,7 +11012,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
     case ID_OK:
     case ID_NEXT:
       switch (this->passwordStage) {
-      case 0:
+      case PASSWORD_INPUT_CURRENT:
         if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
@@ -11024,7 +11024,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 0;
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11036,9 +11036,9 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->Invalidate();
         break;
 
-      case 1:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
-          this->passwordStage = 2;
+          this->passwordStage = PASSWORD_INPUT_NEW;
           this->activeInputY = this->newPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
@@ -11049,7 +11049,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->activeInputY = this->currentPasswordY;
-        this->passwordStage = 1;
+        this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
         std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
@@ -11058,9 +11058,9 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->Invalidate();
         break;
 
-      case 2:
+      case PASSWORD_INPUT_NEW:
         if (std::strlen(this->newPassword) == static_cast<std::size_t>(this->passwordLength)) {
-          this->passwordStage = 3;
+          this->passwordStage = PASSWORD_INPUT_CONFIRM;
           this->activeInputY = this->confirmPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
@@ -11071,7 +11071,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 2;
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11081,7 +11081,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->Invalidate();
         break;
 
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         if (std::strlen(this->confirmPassword) == static_cast<std::size_t>(this->passwordLength)) {
           if (std::strcmp(this->newPassword, this->confirmPassword) == 0) {
             std::atoi(this->currentPassword);
@@ -11095,7 +11095,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             this->DisableButtons();
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
-            this->passwordStage = 2;
+            this->passwordStage = PASSWORD_INPUT_NEW;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
             this->maskTextX = 0;
@@ -11109,7 +11109,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 3;
+        this->passwordStage = PASSWORD_INPUT_CONFIRM;
         this->activeInputY = this->confirmPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11123,7 +11123,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
     case ID_CHANGE_STORE_PASSWORD:
       g_session.m_storePasswordMode = 2;
       this->isChangingPassword = 1;
-      this->passwordStage = 1;
+      this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
       this->maskTextX = 0;
@@ -11151,16 +11151,16 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
+      case PASSWORD_INPUT_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 1:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       }
@@ -11177,14 +11177,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
@@ -11197,14 +11197,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       }
@@ -11217,14 +11217,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       }
@@ -11237,14 +11237,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       }
@@ -11257,14 +11257,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       }
@@ -11277,14 +11277,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       }
@@ -11297,14 +11297,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       }
@@ -11317,14 +11317,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       }
@@ -11337,14 +11337,14 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       }
@@ -11353,8 +11353,8 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
 
     case ID_STORE_PASSWORD_NUM_RESET:
-      if (this->passwordStage == 0) {
-        this->passwordStage = 0;
+      if (this->passwordStage == PASSWORD_INPUT_CURRENT) {
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11364,7 +11364,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else if (g_session.m_passwordInputAlternate) {
-        this->passwordStage = 2;
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11374,7 +11374,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
-        this->passwordStage = 1;
+        this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11410,7 +11410,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-      this->passwordStage = 0;
+      this->passwordStage = PASSWORD_INPUT_CURRENT;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
       this->maskTextX = 0;
@@ -11428,7 +11428,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_OK:
     case ID_NEXT:
       switch (this->passwordStage) {
-      case 0:
+      case PASSWORD_INPUT_CURRENT:
         if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
@@ -11440,7 +11440,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 0;
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11451,8 +11451,8 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->actionButtons[3]->Enable(1);
         break;
 
-      case 1:
-        this->passwordStage = 2;
+      case PASSWORD_INPUT_CHANGE_CURRENT:
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11461,9 +11461,9 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
         break;
 
-      case 2:
+      case PASSWORD_INPUT_NEW:
         if (std::strlen(this->newPassword) == static_cast<std::size_t>(this->passwordLength)) {
-          this->passwordStage = 3;
+          this->passwordStage = PASSWORD_INPUT_CONFIRM;
           this->activeInputY = this->confirmPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
@@ -11474,7 +11474,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-        this->passwordStage = 2;
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11483,7 +11483,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
         break;
 
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         if (std::strlen(this->confirmPassword) == static_cast<std::size_t>(this->passwordLength)) {
           if (std::strcmp(this->newPassword, this->confirmPassword) == 0) {
             std::atoi(this->currentPassword);
@@ -11496,7 +11496,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             this->DisableButtons();
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
-            this->passwordStage = 2;
+            this->passwordStage = PASSWORD_INPUT_NEW;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
             this->maskTextX = 0;
@@ -11509,7 +11509,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           }
         } else {
           g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
-          this->passwordStage = 3;
+          this->passwordStage = PASSWORD_INPUT_CONFIRM;
           this->activeInputY = this->confirmPasswordY;
           this->inputDigitCount = 0;
           this->maskTextX = 0;
@@ -11523,7 +11523,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_CHANGE_STORE_PASSWORD:
       g_session.m_storePasswordMode = 2;
       this->isChangingPassword = 1;
-      this->passwordStage = 1;
+      this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
       this->maskTextX = 0;
@@ -11551,16 +11551,16 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
+      case PASSWORD_INPUT_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 1:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
       }
@@ -11577,14 +11577,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(0), 0).c_str());
         break;
       }
@@ -11597,14 +11597,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(2), 0).c_str());
         break;
       }
@@ -11617,14 +11617,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(3), 0).c_str());
         break;
       }
@@ -11637,14 +11637,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(4), 0).c_str());
         break;
       }
@@ -11657,14 +11657,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(5), 0).c_str());
         break;
       }
@@ -11677,14 +11677,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(6), 0).c_str());
         break;
       }
@@ -11697,14 +11697,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(7), 0).c_str());
         break;
       }
@@ -11717,14 +11717,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(8), 0).c_str());
         break;
       }
@@ -11737,14 +11737,14 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       switch (this->passwordStage) {
-      case 0:
-      case 1:
+      case PASSWORD_INPUT_CURRENT:
+      case PASSWORD_INPUT_CHANGE_CURRENT:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
-      case 2:
+      case PASSWORD_INPUT_NEW:
         std::strcat(this->newPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
-      case 3:
+      case PASSWORD_INPUT_CONFIRM:
         std::strcat(this->confirmPassword, IntToString(this->FindKeypadDigit(9), 0).c_str());
         break;
       }
@@ -11753,8 +11753,8 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
 
     case ID_STORE_PASSWORD_NUM_RESET:
-      if (this->passwordStage == 0) {
-        this->passwordStage = 0;
+      if (this->passwordStage == PASSWORD_INPUT_CURRENT) {
+        this->passwordStage = PASSWORD_INPUT_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11764,7 +11764,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else if (g_session.m_passwordInputAlternate) {
-        this->passwordStage = 2;
+        this->passwordStage = PASSWORD_INPUT_NEW;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -11774,7 +11774,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->actionButtons[0]->Enable(1);
         this->actionButtons[3]->Enable(0);
       } else {
-        this->passwordStage = 1;
+        this->passwordStage = PASSWORD_INPUT_CHANGE_CURRENT;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
         this->maskTextX = 0;
@@ -12976,19 +12976,19 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       std::string state;
       const std::uint32_t* cards = item->cards;
       switch (cards[2]) {
-      case 1:
+      case PET_RELATIONSHIP_VERY_AWKWARD:
         state = FormatOwnedString(LookupMessage(MSI_WRITE_PET_RELATION_SHIP), LookupMessage(MSI_VERY_AWKWARD));
         break;
-      case 2:
+      case PET_RELATIONSHIP_AWKWARD:
         state = FormatOwnedString(LookupMessage(MSI_WRITE_PET_RELATION_SHIP), LookupMessage(MSI_AWKWARD));
         break;
-      case 3:
+      case PET_RELATIONSHIP_NORMAL:
         state = FormatOwnedString(LookupMessage(MSI_WRITE_PET_RELATION_SHIP), LookupMessage(MSI_NORMAL));
         break;
-      case 4:
+      case PET_RELATIONSHIP_FRIENDLY:
         state = FormatOwnedString(LookupMessage(MSI_WRITE_PET_RELATION_SHIP), LookupMessage(MSI_FRIENDLY));
         break;
-      case 5:
+      case PET_RELATIONSHIP_VERY_FRIENDLY:
         state = FormatOwnedString(LookupMessage(MSI_WRITE_PET_RELATION_SHIP), LookupMessage(MSI_VERY_FRIENDLY));
         break;
       default:
@@ -13045,18 +13045,18 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     case EQP_HEAD_LOW:
     case EQP_GARMENT:
     case EQP_HEAD_TOP:
-    case 0x101:
+    case EQP_HEAD_TOP | EQP_HEAD_LOW:
     case EQP_HEAD_MID:
-    case 0x201:
-    case 0x300:
-    case 0x301:
+    case EQP_HEAD_MID | EQP_HEAD_LOW:
+    case EQP_HEAD_TOP | EQP_HEAD_MID:
+    case EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW:
     case EQP_COSTUME_HEAD_TOP:
     case EQP_COSTUME_HEAD_MID:
-    case 0xC00:
+    case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
     case EQP_COSTUME_HEAD_LOW:
-    case 0x1400:
-    case 0x1800:
-    case 0x1C00:
+    case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
+    case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
+    case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
     case EQP_COSTUME_GARMENT:
       break;
     default:

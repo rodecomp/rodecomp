@@ -8,6 +8,17 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+enum AgencyServiceOperation : int {
+  AGENCY_SERVICE_REGISTER = 0,
+  AGENCY_SERVICE_LIST = 1,
+  AGENCY_SERVICE_ADD = 2,
+  AGENCY_SERVICE_SEARCH = 3,
+  AGENCY_SERVICE_DELETE = 4,
+  AGENCY_SERVICE_MY_PARTY = 5,
+  AGENCY_SERVICE_CHANGE_MASTER = 6,
+  AGENCY_SERVICE_INFO = 7,
+};
+
 class CAdventurerAgencyMgr {
 public:
   CAdventurerAgencyMgr();

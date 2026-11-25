@@ -9150,11 +9150,11 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   if (lockedPick == 0) {
     if (clickTarget != 0) {
       if (pick) {
-        if (pick->kind == 3) {
+        if (pick->kind == ACTOR_PICK_PET) {
           this->SetCursorAction(0);
           return 0;
         }
-        if (pick->kind == 4) {
+        if (pick->kind == ACTOR_PICK_COMPANION) {
           this->SetCursorAction(0);
           this->ShowActorNameBalloon(pick->accountId);
           return this->HandleActorPick(pick, result);
@@ -11302,7 +11302,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
   if (pick->accountId != g_session.m_aid) {
     switch (pick->kind) {
-    case 0:
+    case ACTOR_PICK_CHARACTER:
       if (pick->job != JT_WARPNPC && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
         this->SetCursorAction(1);
         if (g_mouse.buttons[0] == 2) {
@@ -11442,7 +11442,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         result = 2;
       }
       break;
-    case 2: {
+    case ACTOR_PICK_GROUND_SKILL: {
       result = 1;
       int action;
       if (g_session.GetSiegeMode()) {
@@ -11516,18 +11516,18 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
       break;
     }
-    case 1:
+    case ACTOR_PICK_ITEM:
       result = 1;
       this->SetCursorAction(9);
       if (g_mouse.buttons[0] == 2) {
         result = 2;
       }
       break;
-    case 3:
+    case ACTOR_PICK_PET:
       result = 0;
       this->SetCursorAction(0);
       break;
-    case 4: {
+    case ACTOR_PICK_COMPANION: {
       result = 0;
       this->SetCursorAction(0);
       CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
@@ -11563,7 +11563,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   }
 
   switch (pick->kind) {
-  case 4: {
+  case ACTOR_PICK_COMPANION: {
     this->SetCursorAction(0);
     if (g_session.IsMercenaryJob(pick->job)) {
       CWorld* scene = this->scene;
@@ -11599,7 +11599,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
     return 0;
   }
-  case 0: {
+  case ACTOR_PICK_CHARACTER: {
     if (pick->job == JT_WARPNPC) {
       return result;
     }
@@ -11827,7 +11827,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     this->forcedAttack = 0;
     return result;
   }
-  case 2:
+  case ACTOR_PICK_GROUND_SKILL:
     switch (pick->job) {
     case UNT_ICEWALL:
     case UNT_BLASTMINE:
@@ -11863,10 +11863,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
       return result;
     }
-  case 3:
+  case ACTOR_PICK_PET:
     this->SetCursorAction(0);
     return 0;
-  case 1:
+  case ACTOR_PICK_ITEM:
     if (g_mouse.buttons[0] == 1 && this->skillUseType == 0) {
       this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);
     }

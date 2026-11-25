@@ -8,6 +8,11 @@
 #include <vector>
 #include <windows.h>
 
+enum GifExtensionLabel : std::uint8_t {
+  GIF_EXTENSION_GRAPHIC_CONTROL = 0xF9,
+  GIF_EXTENSION_APPLICATION = 0xFF,
+};
+
 class CGifRes : public CBitmapRes {
 public:
   using Frame = std::pair<std::uint16_t, std::uint32_t*>;

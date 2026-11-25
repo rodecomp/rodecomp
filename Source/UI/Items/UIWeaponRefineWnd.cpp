@@ -2,6 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/ReplayChunkTag.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
@@ -49,13 +50,13 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 // FUNCTION: fn_13602
 std::vector<unsigned char> UIWeaponRefineWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22200, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_WEAPON_REFINE_BEGIN, nullptr, 0));
   const int count = static_cast<int>(this->itemIds.size());
   for (int index = 0; index < count; ++index) {
     const int values[2] = {this->itemIds[index], this->indices[index]};
-    AppendReplayRecord(records, MakeReplayTaggedRecord(22202, values, sizeof(values)));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_WEAPON_REFINE_ITEM, values, sizeof(values)));
   }
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22201, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_WEAPON_REFINE_END, nullptr, 0));
   return records;
 }
 
@@ -152,18 +153,18 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes);
     unsigned offset = 6;
 
-    if (22200 == header.id) {
+    if (REPLAY_CHUNK_WEAPON_REFINE_BEGIN == header.id) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes + offset);
         offset += 6;
 
         switch (header.id) {
-        case 22201:
+        case REPLAY_CHUNK_WEAPON_REFINE_END:
           scanning = false;
           break;
 
-        case 22202: {
+        case REPLAY_CHUNK_WEAPON_REFINE_ITEM: {
           int values[2] = {};
           std::memcpy(values, bytes + offset, header.bytes);
           offset += header.bytes;

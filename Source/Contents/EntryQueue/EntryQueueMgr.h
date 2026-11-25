@@ -34,6 +34,13 @@ struct EntryQueueInfo {
   /* 0634 */ char bitmapName[0x104];
 };
 
+enum EntryQueueNoticeResult : std::uint8_t {
+  ENTRYQUEUE_NOTICE_CANCELLED = 1,
+  ENTRYQUEUE_NOTICE_WRONG_NAME = 3,
+  ENTRYQUEUE_NOTICE_NOT_RANKED = 11,
+  ENTRYQUEUE_NOTICE_FAIL_CHOICE = 14,
+};
+
 struct EntryQueueNotice {
   /* 0000 */ std::uint16_t id;
   /* 0002 */ std::uint8_t result;

@@ -856,7 +856,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   };
 
   switch (shadeType) {
-  case 0: {
+  case ANIMATED_MODEL_SHADE_NONE: {
     for (int index = 0; index < this->faceCount; ++index) {
       const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
       this->faceColors[index][0] = color;
@@ -865,7 +865,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     }
     break;
   }
-  case 1: {
+  case ANIMATED_MODEL_SHADE_FLAT: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const AnimatedModelVertex* vertices = this->frames[frame].vertices;
@@ -895,7 +895,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     }
     break;
   }
-  case 2: {
+  case ANIMATED_MODEL_SHADE_SMOOTH: {
     for (int index = 0; index < this->faceCount; ++index) {
       const AnimatedModelFace& face = this->faces[index];
       const AnimatedModelVertex* vertices = this->frames[frame].vertices;

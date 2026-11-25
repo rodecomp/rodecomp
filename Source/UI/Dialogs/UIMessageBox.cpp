@@ -81,6 +81,7 @@
 #include "UI/Lists/UIComboBox.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Items/UIItemWnd.h"
 #include "Contents/Sound/SoundMaker.h"
@@ -2883,22 +2884,22 @@ bool UISelectReplayDataWnd::UpdateInfo() {
       std::memset(buffer, 0, sizeof(buffer));
       std::string service;
       switch (Replay::Instance().header.serviceType) {
-      case 0:
+      case ServerPrimary:
         service = "Primary";
         break;
-      case 1:
+      case ServerSakray:
         service = "Sakray";
         break;
-      case 2:
+      case ServerLocal:
         service = "Local";
         break;
-      case 3:
+      case ServerInstantEvent:
         service = "InstantEvent";
         break;
-      case 4:
+      case ServerPvp:
         service = "PVP";
         break;
-      case 5:
+      case ServerPk:
         service = "PK";
         break;
       default:

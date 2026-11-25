@@ -376,7 +376,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       ++cursor;
 
       switch (label) {
-      case 0xF9: {
+      case GIF_EXTENSION_GRAPHIC_CONTROL: {
         GifGraphicControl control;
         memcpy_s(&control, sizeof(control), cursor, sizeof(control));
         cursor += sizeof(control);
@@ -385,7 +385,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
         delay = std::max<unsigned int>(10, control.delay);
         break;
       }
-      case 0xFF: {
+      case GIF_EXTENSION_APPLICATION: {
         std::uint8_t blockSize;
         memcpy_s(&blockSize, sizeof(blockSize), cursor, sizeof(blockSize));
         ++cursor;

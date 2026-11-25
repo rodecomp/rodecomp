@@ -3899,7 +3899,7 @@ void CPlayer::SendMsg(
     break;
   case AM_REQ_ATTACK_REPEAT: {
     CRenderObject* target = mode->scene->GetGameActorByAID(this->proceedTargetGid);
-    if (target == nullptr || static_cast<CGameActor*>(target)->objectType != 7) {
+    if (target == nullptr || static_cast<CGameActor*>(target)->objectType != NPC_PET_TYPE) {
       mode->SendMsg(MM_REQUEST_ACT, 7, this->proceedTargetGid, 0, 0);
     }
     break;

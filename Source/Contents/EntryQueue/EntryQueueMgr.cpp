@@ -183,18 +183,18 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
 // FUNCTION: fn_19668
 void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   switch (notice->result) {
-  case 1:
+  case ENTRYQUEUE_NOTICE_CANCELLED:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOINWAIT), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
-  case 3:
+  case ENTRYQUEUE_NOTICE_WRONG_NAME:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     break;
-  case 11:
+  case ENTRYQUEUE_NOTICE_NOT_RANKED:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     break;
-  case 14:
+  case ENTRYQUEUE_NOTICE_FAIL_CHOICE:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_FAIL_CHOICE), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
@@ -273,10 +273,10 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
 // FUNCTION: fn_19673
 void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
   switch (notice->result) {
-  case 3:
+  case ENTRYQUEUE_NOTICE_WRONG_NAME:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     break;
-  case 11:
+  case ENTRYQUEUE_NOTICE_NOT_RANKED:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
   }
 }

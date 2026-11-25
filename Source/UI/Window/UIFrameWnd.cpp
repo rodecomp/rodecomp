@@ -3,6 +3,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
@@ -1117,7 +1118,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     ChatRoomRecordHeader header;
     std::memcpy(&header, data, sizeof(header));
     unsigned offset = sizeof(header);
-    if (0x5014 == header.tag) {
+    if (REPLAY_CHUNK_CHAT_ROOM_BEGIN == header.tag) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ROOM_IS_MADE)), 0xFFFF00, 0, 0, 0);
       ChatRoomTitleInfo* settings = &g_modeMgr.GetGameMode()->chatRoom;
@@ -1126,14 +1127,14 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::memcpy(&header, data + offset, sizeof(header));
         offset += sizeof(header);
         switch (header.tag) {
-        case 0x5015:
+        case REPLAY_CHUNK_CHAT_ROOM_END:
           scanning = false;
           break;
-        case 0x5016:
+        case REPLAY_CHUNK_CHAT_ROOM_SAVED:
           std::memcpy(this->saved, data + offset, header.size);
           offset += header.size;
           break;
-        case 0x5017: {
+        case REPLAY_CHUNK_CHAT_ROOM_TITLE: {
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
@@ -1141,7 +1142,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           settings->title = this->info.title = value;
           break;
         }
-        case 0x5018: {
+        case REPLAY_CHUNK_CHAT_ROOM_PASSWORD: {
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
@@ -1149,28 +1150,28 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           settings->password = this->info.password = value;
           break;
         }
-        case 0x5019:
+        case REPLAY_CHUNK_CHAT_ROOM_TYPE:
         std::memcpy(&this->info.type, data + offset, header.size);
           offset += header.size;
         settings->type = this->info.type;
           break;
-        case 0x501A:
+        case REPLAY_CHUNK_CHAT_ROOM_MEMBER_COUNT:
           std::memcpy(&this->info.memberCount, data + offset, header.size);
           offset += header.size;
           settings->memberCount = this->info.memberCount;
           break;
-        case 0x501B:
+        case REPLAY_CHUNK_CHAT_ROOM_MEMBER_LIMIT:
           std::memcpy(&this->info.memberLimit, data + offset, header.size);
           offset += header.size;
           settings->memberLimit = this->info.memberLimit;
           break;
-        case 0x501C:
+        case REPLAY_CHUNK_CHAT_ROOM_ID:
           std::memcpy(&this->info.id, data + offset, header.size);
           offset += header.size;
           settings->id = this->info.id;
           this->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(settings), 0, 0, 0);
           break;
-        case 0x501E: {
+        case REPLAY_CHUNK_CHAT_ROOM_OWNER: {
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
@@ -1179,7 +1180,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           this->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(value), 0, 0, 0);
           break;
         }
-        case 0x501F: {
+        case REPLAY_CHUNK_CHAT_ROOM_MEMBER: {
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);

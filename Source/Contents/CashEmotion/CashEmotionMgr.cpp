@@ -3062,13 +3062,13 @@ int UICashEmotionMiniWnd::SendMsg(
 
   case UM_CASH_EMOTION_KEY:
     switch (argument1) {
-    case 13:
+    case VK_RETURN:
       data = this->GetSelectedEmotion();
       break;
-    case 37:
+    case VK_LEFT:
       this->Previous();
       return 0;
-    case 39:
+    case VK_RIGHT:
       this->Next();
       return 0;
     default:

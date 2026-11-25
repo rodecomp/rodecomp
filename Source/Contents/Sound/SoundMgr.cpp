@@ -156,11 +156,11 @@ bool CSoundMgr::Initialize() {
   }
 
   switch (configuration.numSampleType) {
-  case 0:
+  case SOUND_SAMPLES_48:
     this->sampleCount = 48;
     this->sample3DCount = 48;
     break;
-  case 1:
+  case SOUND_SAMPLES_32:
     this->sampleCount = 32;
     this->sample3DCount = 32;
     break;
@@ -193,10 +193,10 @@ bool CSoundMgr::Initialize() {
   }
 
   switch (configuration.digitalBitsType) {
-  case 0:
+  case SOUND_BITS_16:
     this->bits = 16;
     break;
-  case 1:
+  case SOUND_BITS_8:
     this->bits = 8;
     break;
   default:

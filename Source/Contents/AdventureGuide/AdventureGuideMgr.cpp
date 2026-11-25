@@ -1232,13 +1232,13 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
 
   std::optional<std::map<int, AdventureGuideContents>*> contents;
   switch (type) {
-  case 1:
+  case ADVENTURE_GUIDE_EPISODE:
     contents = FindMapped(episodeContents, id);
     break;
-  case 3:
+  case ADVENTURE_GUIDE_QUEST:
     contents = FindMapped(questContents, id);
     break;
-  case 4:
+  case ADVENTURE_GUIDE_DUNGEON:
     contents = FindMapped(dungeonContents, id);
     break;
   default:
@@ -1267,10 +1267,10 @@ void CAdventureGuideMgr::GetEntryList(std::list<std::pair<int, AdventureGuideEnt
 
   std::optional<std::map<int, AdventureGuideEntry>*> entries;
   switch (type) {
-  case 5:
+  case ADVENTURE_GUIDE_ITEM:
     entries = FindMapped(itemEntries, id);
     break;
-  case 6:
+  case ADVENTURE_GUIDE_EQUIPMENT:
     entries = FindMapped(equipmentEntries, id);
     break;
   default:
@@ -1324,7 +1324,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonSubMenu(int id, int minLev
   detail.questId = 0;
   detail.text = text;
   for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
-    if (it->second.type == 4) {
+    if (it->second.type == ADVENTURE_GUIDE_DUNGEON) {
       it->second.details.try_emplace(id, std::as_const(detail));
       break;
     }
@@ -1370,7 +1370,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeSubMenu(int id, int minLev
   detail.questId = questId;
   detail.text = text;
   for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
-    if (it->second.type == 1) {
+    if (it->second.type == ADVENTURE_GUIDE_EPISODE) {
       it->second.details.try_emplace(id, std::as_const(detail));
       break;
     }
@@ -1390,10 +1390,10 @@ AdventureGuideResult CAdventureGuideMgr::InsertEntryContents(int type, int id, i
   entry.thirdFlag = flag2;
   entry.text = text;
   switch (type) {
-  case 5:
+  case ADVENTURE_GUIDE_ITEM:
     itemEntries[menu].try_emplace(id, std::as_const(entry));
     break;
-  case 6:
+  case ADVENTURE_GUIDE_EQUIPMENT:
     equipmentEntries[menu].try_emplace(id, std::as_const(entry));
     break;
   }
@@ -1407,7 +1407,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertObtainGuide(int type, int id, std
   std::map<int, std::map<int, AdventureGuideEntry>>::iterator it{};
 
   switch (type) {
-  case 5:
+  case ADVENTURE_GUIDE_ITEM:
     it = std::find_if(itemEntries.begin(), itemEntries.end(), [id](const auto& entry) {
       return entry.second.end() != entry.second.find(id);
     });
@@ -1415,7 +1415,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertObtainGuide(int type, int id, std
       return FailedResult(FormatOwnedString("[%d] cannot be find", id));
     }
     break;
-  case 6:
+  case ADVENTURE_GUIDE_EQUIPMENT:
     it = std::find_if(equipmentEntries.begin(), equipmentEntries.end(), [id](const auto& entry) {
       return entry.second.end() != entry.second.find(id);
     });
@@ -1535,7 +1535,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestSubMenu(int id, int minLevel
   detail.questId = 0;
   detail.text = text;
   for (auto it = m_intros.begin(); it != m_intros.end(); ++it) {
-    if (it->second.type == 3) {
+    if (it->second.type == ADVENTURE_GUIDE_QUEST) {
       it->second.details.try_emplace(id, std::as_const(detail));
       break;
     }
@@ -1649,7 +1649,7 @@ bool CAdventureGuideMgr::Load() {
 // FUNCTION: fn_05256
 bool CAdventureGuideMgr::IsAvailable(int type, int id) {
   switch (type) {
-  case 1: {
+  case ADVENTURE_GUIDE_EPISODE: {
     const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->episodeContents, id);
     if (!found) {
       return true;
@@ -1658,7 +1658,7 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
       return entry.second.IsAvailable();
     });
   }
-  case 4: {
+  case ADVENTURE_GUIDE_DUNGEON: {
     const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->dungeonContents, id);
     if (!found) {
       return true;
@@ -1667,7 +1667,7 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
       return entry.second.IsAvailable();
     });
   }
-  case 3: {
+  case ADVENTURE_GUIDE_QUEST: {
     const std::optional<std::map<int, AdventureGuideContents>*> found = FindMapped(this->questContents, id);
     if (!found) {
       return true;
@@ -1676,14 +1676,14 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) {
       return entry.second.IsAvailable();
     });
   }
-  case 5: {
+  case ADVENTURE_GUIDE_ITEM: {
     const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->itemEntries, id);
     if (!found) {
       return true;
     }
     return std::any_of((*found)->begin(), (*found)->end(), [](const auto& entry) { return entry.second.IsAvailable(entry.first); });
   }
-  case 6: {
+  case ADVENTURE_GUIDE_EQUIPMENT: {
     const std::optional<std::map<int, AdventureGuideEntry>*> found = FindMapped(this->equipmentEntries, id);
     if (!found) {
       return true;

@@ -2750,13 +2750,13 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
           if (g_guildInfo.masterCharacterId != 0) {
             if (g_guildInfo.masterCharacterId == static_cast<int>(g_session.m_gid)) {
               this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), 59));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), MENUID_CHANGE_GUILD_MASTER));
             } else if (g_guildInfo.canExpel != 0 && member.characterId != g_guildInfo.masterCharacterId) {
               this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
             }
           } else if (g_guildInfo.masterName == g_session.DecodePlayerName()) {
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), 59));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), MENUID_CHANGE_GUILD_MASTER));
           } else if (g_guildInfo.canExpel != 0 && !(member.name == g_guildInfo.masterName)) {
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
           }
@@ -2852,7 +2852,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
       break;
     }
-    case 59: {
+    case MENUID_CHANGE_GUILD_MASTER: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_CHANGING_GUILD_MASTER), target.name.c_str(), target.name.c_str());

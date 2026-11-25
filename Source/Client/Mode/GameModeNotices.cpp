@@ -708,13 +708,13 @@ void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
       static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
     break;
   }
-  case 4:
+  case GENERATE_ROULETTE_NO_ENOUGH_INVENTORY_SPACE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_ENOUGH_SPACE_IN_ITEM_BODY)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();
     }
     break;
-  case 5:
+  case GENERATE_ROULETTE_ALREADY_LOSING:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_ALREADY_LOSING_IDX)), 0x64FFFF, 0, 0, 0);
     if (g_windowMgr.roulletteWnd) {
       g_windowMgr.EnableRouletteWnd();

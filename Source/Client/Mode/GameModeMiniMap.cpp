@@ -966,29 +966,29 @@ void CGameMode::UpdateMiniMapTooltip() {
     window->SendMsg(nullptr, UM_SETINFO, -1, 0, 0, 0);
 
     switch (this->miniMapTooltipId) {
-    case 0:
+    case ILLUSTRATION_BOTTOM_LEFT_INSET:
       window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(this->miniMapTooltipText.c_str()), 0, 0, 0);
       x = 200;
       y = g_renderer->viewport.height - window->geometry.height;
       break;
-    case 1:
+    case ILLUSTRATION_BOTTOM_CENTER:
       window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(this->miniMapTooltipText.c_str()), 0, 0, 0);
       x = g_renderer->viewport.centerX;
       y = g_renderer->viewport.height - window->geometry.height;
       break;
-    case 2:
+    case ILLUSTRATION_BOTTOM_RIGHT_INSET:
       window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(this->miniMapTooltipText.c_str()), 0, 0, 0);
       x = g_renderer->viewport.width - 200;
       y = g_renderer->viewport.height - window->geometry.height;
       break;
-    case 3:
+    case ILLUSTRATION_CENTER_TITLED:
       window->SendMsg(nullptr, UM_SETINFO, -2, 0, 0, 0);
       window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(this->miniMapTooltipText.c_str()), 0, 0, 0);
       window->SendMsg(nullptr, UM_SETINFO, 3, 0, 0, 0);
       x = g_renderer->viewport.centerX;
       y = g_renderer->viewport.centerY - window->geometry.height / 2;
       break;
-    case 4:
+    case ILLUSTRATION_CENTER_CLOSABLE:
       window->SendMsg(nullptr, UM_SET_BITMAP, reinterpret_cast<std::intptr_t>(this->miniMapTooltipText.c_str()), 0, 0, 0);
       window->SendMsg(nullptr, UM_SETINFO, 4, 0, 0, 0);
       x = g_renderer->viewport.centerX;

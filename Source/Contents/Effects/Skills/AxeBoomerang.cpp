@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/AxeBoomerang.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/GameSettings/TalkType.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -54,7 +55,7 @@ void CAxeBoomerang::Close() {
 void CAxeBoomerang::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->particlePosition, 5));
   switch (this->id) {
-  case 0x887:
+  case EF_SHIELD_SHOOTING:
     particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
     break;
   default:

@@ -246,7 +246,7 @@ bool C3dWorldRes::Load(const char* name) {
     input.Read(&type, sizeof(type));
 
     switch (type) {
-    case 1: {
+    case WORLD_OBJECT_MODEL: {
       int animation;
       int animationType;
       float speed;
@@ -300,20 +300,20 @@ bool C3dWorldRes::Load(const char* name) {
       break;
     }
 
-    case 2: {
+    case WORLD_OBJECT_LIGHT: {
       WorldLightFileRecord light;
       input.Read(&light, sizeof(light));
       break;
     }
 
-    case 4: {
+    case WORLD_OBJECT_EFFECT: {
       auto* record = new WorldEffectRecord;
       input.Read(record, sizeof(*record));
       this->effects.push_back(record);
       break;
     }
 
-    case 3: {
+    case WORLD_OBJECT_SOUND: {
       if (major >= 2) {
         auto* record = new WorldSoundRecord;
         input.Read(record, sizeof(*record));

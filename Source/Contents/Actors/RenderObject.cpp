@@ -668,7 +668,7 @@ void CGameActor::SetHealthState(int value) {
 // OFFSET: 0x00CBF970
 // FUNCTION: fn_21117
 void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
-  if (this->objectType == 7) {
+  if (this->objectType == NPC_PET_TYPE) {
     if (!this->render.action || static_cast<int>(this->render.action->animations.size()) <= static_cast<int>(animation)) {
       return;
     }
@@ -899,7 +899,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 200.0f;
+          depth = this->objectType == NPC_PET_TYPE ? 50.0f : 200.0f;
         } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -909,7 +909,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 200.0f;
+          depth = this->objectType == NPC_PET_TYPE ? 50.0f : 200.0f;
         } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -921,7 +921,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 400.0f;
+          depth = this->objectType == NPC_PET_TYPE ? 50.0f : 400.0f;
         } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -931,7 +931,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
         } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 400.0f;
+          depth = this->objectType == NPC_PET_TYPE ? 50.0f : 400.0f;
         } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
           depth = 200.0f;
         }
@@ -963,7 +963,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       info->accountId = this->render.accountId;
       info->job = this->GetEffectiveJob(-1);
       info->healthState = this->healthState;
-      if (this->objectType == 7) {
+      if (this->objectType == NPC_PET_TYPE) {
         info->kind = 3;
       } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1))) {
         info->kind = 4;
@@ -1431,8 +1431,8 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
     this->SetAction(action, 5, 1);
     switch (this->GetEffectiveJob(-1)) {
-    case 0x8d:
-    case 0xe6:
+    case JT_ICEWALL:
+    case JT_WALLOFTHORN:
       break;
     default:
       this->RegisterPos();

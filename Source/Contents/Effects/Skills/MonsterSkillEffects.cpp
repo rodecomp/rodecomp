@@ -1547,19 +1547,19 @@ void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> par
   }
 
   switch (particle.second.kind) {
-  case 3:
+  case ABYSS_PARTICLE_DIE:
     if (IsEmitterAlive(emitter) != true) {
       FreeParticle(emitter);
-      this->particles[id].kind = 0;
+      this->particles[id].kind = ABYSS_PARTICLE_INACTIVE;
       this->particles[id].emitter = nullptr;
       return;
     }
     FollowAbyssOwner(this, emitter);
     break;
-  case 2:
+  case ABYSS_PARTICLE_LOOP:
     FollowAbyssOwner(this, emitter);
     break;
-  case 1:
+  case ABYSS_PARTICLE_CREATE:
     if (IsEmitterAlive(emitter) != true) {
       const double scale = emitter->m_scale;
       const vector3d offset = emitter->offset;
@@ -1574,7 +1574,7 @@ void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> par
       }
 
       AbyssParticle& entry = this->particles[id];
-      entry.kind = 2;
+      entry.kind = ABYSS_PARTICLE_LOOP;
       entry.emitter = dying;
       return;
     }
@@ -1622,7 +1622,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
         emitter->offset.z = this->waves[i].offset.z;
         AbyssParticle& entry = this->particles[i];
         entry.emitter = emitter;
-        entry.kind = 1;
+        entry.kind = ABYSS_PARTICLE_CREATE;
       }
     }
   } else if (level < this->level) {
@@ -1643,7 +1643,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
           emitter->offset.z = offset.z;
         }
 
-        this->particles[i].kind = 3;
+        this->particles[i].kind = ABYSS_PARTICLE_DIE;
         this->particles[i].emitter = emitter;
       }
     }
@@ -1715,25 +1715,25 @@ void CFullScreenEffect::Render() {
 
     RenderVertex* vertices = primitive.quad;
     switch (particle->columnIndex) {
-    case 0:
+    case FULL_SCREEN_EFFECT_TOP_LEFT:
       SetScreenVertex(vertices[0], 0.0f, 0.0f, color, right, top);
       SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.centerX), 0.0f, color, left, top);
       SetScreenVertex(vertices[2], 0.0f, static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
       SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
       break;
-    case 1:
+    case FULL_SCREEN_EFFECT_TOP_RIGHT:
       SetScreenVertex(vertices[0], static_cast<float>(g_renderer->viewport.centerX), 0.0f, color, left, top);
       SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.width), 0.0f, color, right, top);
       SetScreenVertex(vertices[2], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
       SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
       break;
-    case 2:
+    case FULL_SCREEN_EFFECT_BOTTOM_LEFT:
       SetScreenVertex(vertices[0], 0.0f, static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
       SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
       SetScreenVertex(vertices[2], 0.0f, static_cast<float>(g_renderer->viewport.height), color, right, top);
       SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.height), color, left, top);
       break;
-    case 3:
+    case FULL_SCREEN_EFFECT_BOTTOM_RIGHT:
       SetScreenVertex(vertices[0], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
       SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
       SetScreenVertex(vertices[2], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.height), color, left, top);

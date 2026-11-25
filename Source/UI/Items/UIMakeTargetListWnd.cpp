@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
+#include "UI/Window/ReplayChunkTag.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
@@ -56,11 +57,11 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 // FUNCTION: fn_13600
 std::vector<unsigned char> UIMakeTargetListWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22050, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MAKE_TARGET_LIST_BEGIN, nullptr, 0));
   for (auto it = this->itemIds.begin(); it != this->itemIds.end(); ++it) {
-    AppendReplayRecord(records, MakeReplayTaggedRecord(22052, &*it, sizeof(*it)));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_MAKE_TARGET_LIST_ITEM, &*it, sizeof(*it)));
   }
-  AppendReplayRecord(records, BuildReplayTaggedRecord(22051, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MAKE_TARGET_LIST_END, nullptr, 0));
   return records;
 }
 
@@ -174,18 +175,18 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     std::memcpy(&tag, bytes, sizeof(tag));
     unsigned offset = sizeof(tag);
 
-    if (22050 == tag.id) {
+    if (REPLAY_CHUNK_MAKE_TARGET_LIST_BEGIN == tag.id) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&tag, bytes + offset, sizeof(tag));
         offset += sizeof(tag);
 
         switch (tag.id) {
-        case 22051:
+        case REPLAY_CHUNK_MAKE_TARGET_LIST_END:
           scanning = false;
           break;
 
-        case 22052:
+        case REPLAY_CHUNK_MAKE_TARGET_LIST_ITEM:
           itemId = ITEMID_NONE;
           std::memcpy(&itemId, bytes + offset, tag.bytes);
           offset += tag.bytes;

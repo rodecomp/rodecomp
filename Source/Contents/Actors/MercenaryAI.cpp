@@ -977,7 +977,7 @@ int AiIsMonster(lua_State* state) {
   if (actor) {
     int job = actor->GetEffectiveJob(-1);
     bool checkState = false;
-    if (((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned>(job - 20021) <= 11978) && actor->objectType != 7) {
+    if (((job > JT_MON_BEGIN && job < JT_MONSTER_LAST) || static_cast<unsigned>(job - 20021) <= 11978) && actor->objectType != NPC_PET_TYPE) {
       switch (actor->objectType) {
       case NPC_MERSOL_TYPE:
       case NPC_ELEMENTAL_TYPE:

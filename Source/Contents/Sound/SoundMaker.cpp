@@ -776,7 +776,7 @@ void CNpc::SendMsg(
             this->playerGaugeWindow->actorKind = 8;
             break;
           }
-          case 7: {
+          case NPC_PET_TYPE: {
             this->playerGaugeWindow->SetThirdValues(
               [] { return static_cast<std::int64_t>(g_session.petHunger); },
               [] { return static_cast<std::int64_t>(g_session.m_petMaxHunger); }
@@ -1414,7 +1414,7 @@ bool CNpc::OnProcess() {
       break;
   }
 
-  if (this->objectType != 7) {
+  if (this->objectType != NPC_PET_TYPE) {
     this->PlayFrameSounds();
   }
 
@@ -1484,7 +1484,7 @@ bool CNpc::OnProcess() {
   this->UpdateMinimapMarker();
 
   switch (this->objectType) {
-    case 7:
+    case NPC_PET_TYPE:
     case NPC_HO_TYPE:
     case NPC_MERSOL_TYPE:
     case NPC_ELEMENTAL_TYPE:

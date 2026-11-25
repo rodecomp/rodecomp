@@ -167,7 +167,7 @@ bool CGameActor::ProcessState() {
   case ST_STAND:
     if (this->render.motionType == 1 && this->render.isMotionFinished) {
       this->SetState(ST_STAND, 1);
-    } else if (this->objectType == 7 && this->render.accountId == g_session.petGid && static_cast<std::uint32_t>(this->petEmotionStartTick) > 0 &&
+    } else if (this->objectType == NPC_PET_TYPE && this->render.accountId == g_session.petGid && static_cast<std::uint32_t>(this->petEmotionStartTick) > 0 &&
                timeGetTime() > static_cast<std::uint32_t>(this->petEmotionStartTick) + 3000) {
       if (rand() % 100 < 25) {
         const int hungry = g_session.GetPetHungryState(g_session.petHunger);

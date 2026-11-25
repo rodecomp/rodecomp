@@ -31,37 +31,37 @@ void ReceivePartyJoinResult(const void* packet) {
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   switch (ack->status) {
-  case 5:
-  case 6:
+  case PARTY_JOIN_USER_NOT_FOUND:
+  case PARTY_JOIN_USER_NOT_FOUND2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_FIND_REQUEST_USER)), 0xFF, 0, 0, 0);
     break;
-  case 9: {
+  case PARTY_JOIN_MASTER_NOT_FOUND: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_FIND_PARTYMASTER)), 0xFF, 0, 0, 0);
     g_adventurerAgencyMgr->RequestStop(ack->masterAid);
     break;
   }
-  case 10:
+  case PARTY_JOIN_NO_PARTY:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_PARTY_FOUND)), 0xFF, 0, 0, 0);
     break;
-  case 11:
+  case PARTY_JOIN_LOW_LEVEL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_JOIN_PARTY_BECAUSE_LOW_LEVEL)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case PARTY_JOIN_INVALID_MAPPROPERTY_USER:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAPPROPERTY_REQUEST_USER)), 0xFF, 0, 0, 0);
     break;
-  case 8: {
+  case PARTY_JOIN_INVALID_MAPPROPERTY: {
     char text[500] = {};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_REQUEST_REJECTED_BECAUSE_INVALID_MAPPROPERTY), ack->partyName);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
-  case 3:
+  case PARTY_JOIN_MASTER_UNAVAILABLE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case PARTY_JOIN_FULL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCEEDED_NUMBER_OF_PARTYMEMBERS)), 0xFF, 0, 0, 0);
     break;
-  case 0: {
+  case PARTY_JOIN_ACCEPTED: {
     char text[500] = {};
 
     if (g_session.partyLeader == 1) {
@@ -74,7 +74,7 @@ void ReceivePartyJoinResult(const void* packet) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     break;
   }
-  case 1: {
+  case PARTY_JOIN_REFUSED: {
     char text[500] = {};
 
     if (g_session.partyLeader == 1) {
@@ -87,16 +87,16 @@ void ReceivePartyJoinResult(const void* packet) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
-  case 7: {
+  case PARTY_JOIN_ALREADY_JOINED: {
     char text[500] = {};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_ALREADY_JOINED_REQUEST_USER), ack->partyName);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
-  case 13:
+  case PARTY_JOIN_UNKNOWN_FAILURE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_FAIL_UNKNOWN)), 0xFF, 0, 0, 0);
     break;
-  case 12: {
+  case PARTY_JOIN_SAME_AID_JOINED: {
     char text[500] = {};
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_ALREADY_SAME_AID_JOINED), ack->partyName);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
