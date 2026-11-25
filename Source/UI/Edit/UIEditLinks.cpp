@@ -91,7 +91,14 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
       remaining = current.substr(0, position);
     }
 
-    remaining += current.substr((after.find(">") != std::string::npos ? position + 1 : position) + bytes);
+    int tail = position;
+
+    if (after.find(">") != std::string::npos) {
+      ++tail;
+    }
+
+    tail += bytes;
+    remaining += current.substr(tail);
     g_serverLanguage->ResetInput();
     g_serverLanguage->Insert(remaining.c_str());
     this->RemoveChild(*entry, 1);
