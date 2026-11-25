@@ -15672,9 +15672,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.virtue = packet->virtue;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
-  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
-  entry.direction = packet->posDir[2] & 0x0F;
+  DecodePosDir(packet->posDir, &entry.cellX, &entry.cellY, &entry.direction);
   entry.state = 0;
 
   CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
@@ -15923,9 +15921,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.virtue = packet->virtue;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.aid = packet->aid;
-  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
-  entry.direction = packet->posDir[2] & 0x0F;
+  DecodePosDir(packet->posDir, &entry.cellX, &entry.cellY, &entry.direction);
   entry.state = 0;
 
   CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
@@ -16156,16 +16152,14 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.headDirection = packet->headDir;
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
-  entry.virtue = packet->virtue;
   entry.shield = static_cast<int>(weapon >> 32);
+  entry.virtue = packet->virtue;
   entry.guildVersion = packet->guildVersion;
   entry.aid = packet->aid;
   if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
-  entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
-  entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
-  entry.direction = packet->posDir[2] & 0x0F;
+  DecodePosDir(packet->posDir, &entry.cellX, &entry.cellY, &entry.direction);
 
   int created = 0;
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
