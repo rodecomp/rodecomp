@@ -693,9 +693,14 @@ public:
       /* 61B0 */ bool m_guildMemberListSort;
       /* 61B1 */ unsigned char showCameraInfo;
       /* 61B2 */ bool m_blockPrivateTab;
-      /* 61B3 */ bool m_itemDefaultSort;
-      /* 61B4 */ bool m_itemAscendingOrder;
-      /* 61B5 */ bool m_itemDescendingOrder;
+      union {
+        /* 61B3 */ bool m_itemSortModes[3];
+        struct {
+          /* 61B3 */ bool m_itemDefaultSort;
+          /* 61B4 */ bool m_itemAscendingOrder;
+          /* 61B5 */ bool m_itemDescendingOrder;
+        };
+      };
       /* 61B6 */ unsigned char padding_61B6[2];
     };
   };

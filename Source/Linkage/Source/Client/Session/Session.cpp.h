@@ -118,6 +118,8 @@ using PendingActorNameTree = std::_Tree<std::_Tset_traits<
 template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::uint32_t, void*>*>
 PendingActorNameTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
 template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
+template __forceinline void std::_Tree<std::_Tmap_traits<
+  int, SessionRecord6144, std::less<int>, std::allocator<std::pair<const int, SessionRecord6144>>, false>>::clear() noexcept;
 template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
 template __declspec(noinline) std::_Tree_node<std::pair<const int, float>, void*>*
 std::allocator<std::_Tree_node<std::pair<const int, float>, void*>>::allocate(const std::size_t);
