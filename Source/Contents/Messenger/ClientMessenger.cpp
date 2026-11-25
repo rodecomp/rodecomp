@@ -254,7 +254,7 @@ namespace EquipmentProperties {
 
     /* 0000 */ int kind;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
-    /* 0024 */ std::unordered_map<unsigned int, int> statProperties;
+    /* 0024 */ std::unordered_map<int, EquipmentValueC> statProperties;
   };
 
   class CEquipment {
@@ -822,7 +822,8 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
     lua_pushinteger(state, this->m_id);
     lua_gettable(state, 1);
     if (lua_type(state, -1) == LUA_TTABLE) {
-      for (auto& entry : this->m_info->statProperties) {
+      auto& statProperties = *reinterpret_cast<std::unordered_map<unsigned int, int>*>(&this->m_info->statProperties);
+      for (auto& entry : statProperties) {
         this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", entry.first), "AddExtParam", -1, entry.second, -1);
       }
 
@@ -6921,7 +6922,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second, stats[index]);
+            info.statProperties.try_emplace(found->second, EquipmentValueC{stats[index]});
           }
         }
         break;
@@ -6990,7 +6991,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second, stats[index]);
+            info.statProperties.try_emplace(found->second, EquipmentValueC{stats[index]});
           }
         }
         break;
@@ -7053,7 +7054,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           if (this->statVariables.end() == found) {
             ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
           } else {
-            info.statProperties.try_emplace(found->second, stats[index]);
+            info.statProperties.try_emplace(found->second, EquipmentValueC{stats[index]});
           }
         }
         break;
@@ -7072,7 +7073,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             if (this->statVariables.end() == found) {
               ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);
             } else {
-              info.statProperties.try_emplace(found->second, stats[index]);
+              info.statProperties.try_emplace(found->second, EquipmentValueC{stats[index]});
             }
             break;
           }
