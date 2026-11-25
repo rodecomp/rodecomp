@@ -159,7 +159,7 @@ void UIWindowMgr::RestoreInput() {
       }
 
       if (this->hoverWindow) {
-        this->hoverWindow->OnFinishEdit(child->GetEditWindow() == this->hoverWindow);
+        this->hoverWindow->OnFinishEdit(child == nullptr ? false : child->GetEditWindow() == this->hoverWindow);
       }
 
       this->hoverWindow = child->GetEditWindow();

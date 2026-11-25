@@ -1066,7 +1066,7 @@ void UIEditCtrl_OldList::OnWheel(int value) {
 
 // OFFSET: 0x0085E3D0
 // FUNCTION: fn_10827
-void UIEditCtrlVarId::OnFinishEdit(int) {
+void UIEditCtrlVarId::OnFinishEdit(bool) {
   this->Synchronize();
   this->Invalidate();
   this->SendMsg(this, UM_DEFPUSH, 0, 0, 0, 0);

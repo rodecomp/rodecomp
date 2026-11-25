@@ -517,7 +517,7 @@ void UIWindow::OnBeginEdit() {
 
 // OFFSET: 0x005C6F00
 // FUNCTION: fn_03591
-void UIWindow::OnFinishEdit(int) {
+void UIWindow::OnFinishEdit(bool) {
 }
 
 // OFFSET: 0x005FDA50

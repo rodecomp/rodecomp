@@ -29,7 +29,7 @@ public:
   bool IsEditable() override;
   void Paint() override;
   void OnBeginEdit() override;
-  void OnFinishEdit(int retained) override;
+  void OnFinishEdit(bool retained) override;
   void OnLBtnDown(int x, int y) override;
   void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -245,7 +245,7 @@ class UIWhisperEditCtrl : public UIEditCtrl {
 public:
   UIWhisperEditCtrl();
   void OnBeginEdit() override;
-  void OnFinishEdit(int retained) override;
+  void OnFinishEdit(bool retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
   void AddHistory();
@@ -257,7 +257,7 @@ class UIEditCtrlVarId : public UIEditCtrl {
 public:
   // INLINED
   UIEditCtrlVarId() : UIEditCtrl() {}
-  void OnFinishEdit(int retained) override;
+  void OnFinishEdit(bool retained) override;
   void OnWheel(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetText(const char* value) override;

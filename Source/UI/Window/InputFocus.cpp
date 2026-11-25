@@ -5,7 +5,7 @@
 // FUNCTION: fn_17256
 void UIWindowMgr::SetFocus(UIWindow* value) {
   if (this->hoverWindow) {
-    this->hoverWindow->OnFinishEdit(value == nullptr ? false : (value->GetEditWindow() == this->hoverWindow ? true : false));
+    this->hoverWindow->OnFinishEdit(value == nullptr ? false : value->GetEditWindow() == this->hoverWindow);
   }
 
   if (value) {

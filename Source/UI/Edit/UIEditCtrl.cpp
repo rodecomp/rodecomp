@@ -321,14 +321,14 @@ void UIEditCtrl::OnBeginEdit() {
 
 // OFFSET: 0x0085E3B0
 // FUNCTION: fn_10826
-void UIEditCtrl::OnFinishEdit(int) {
+void UIEditCtrl::OnFinishEdit(bool) {
   this->Synchronize();
   this->Invalidate();
 }
 
 // OFFSET: 0x0085E400
 // FUNCTION: fn_10828
-void UIWhisperEditCtrl::OnFinishEdit(int retained) {
+void UIWhisperEditCtrl::OnFinishEdit(bool retained) {
   this->AddHistory();
   this->Synchronize();
   this->Invalidate();

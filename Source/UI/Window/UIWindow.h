@@ -67,7 +67,7 @@ public:
   virtual void OnRun();
   virtual void OnSize(int width, int height);
   virtual void OnBeginEdit();
-  virtual void OnFinishEdit(int argument);
+  virtual void OnFinishEdit(bool argument);
   virtual void OnLBtnDown(int argument1, int argument2);
   virtual void OnLBtnDblClk(int argument1, int argument2);
   virtual void OnMouseMove(int argument1, int argument2);
