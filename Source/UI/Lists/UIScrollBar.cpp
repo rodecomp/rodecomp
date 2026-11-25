@@ -2061,7 +2061,8 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
 
     NavigationLinkParser* const parser = g_navigationLinkParser;
     const std::string name = parser->FormatNavigationLink(link, false);
-    std::string label = "<";
+    std::string label("");
+    label += "<";
     const int width = this->geometry.width / 2;
     label += this->FitTextToWidth(name, width);
     label += ">";
