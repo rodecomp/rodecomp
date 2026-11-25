@@ -4,7 +4,9 @@
 #include <algorithm>
 
 #include "Contents/Map/MapSkyMgr.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/CreateLineInfo.h"
 
@@ -200,6 +202,20 @@ int UITagTextViewer::SendMsg(
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
+    if (this->parent && this->parent->geometry.id == WID_SAYDIALOGWND) {
+      bool hasPageButton = false;
+      for (UIBitmapButton* button : static_cast<UISayDialogWnd*>(this->parent)->m_buttons) {
+        if (button->geometry.id == ID_NEXT || button->geometry.id == ID_CLOSE) {
+          hasPageButton = true;
+          break;
+        }
+      }
+
+      if (!hasPageButton) {
+        return 0;
+      }
+    }
+
     const int previous = this->m_scrollPos;
     if (message == UM_SCROLLVERTPAGEUP) {
       this->m_scrollPos -= 30;
