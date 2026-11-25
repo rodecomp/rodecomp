@@ -143,10 +143,8 @@ void UIRoMapWnd::DrawHoverTooltip() {
   bool leftSide = false;
   int maxWidth = 0;
   const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
-  const WorldViewRecord* record = this->hoveredRecord;
+  const WorldViewArea rect = this->hoveredRecord->area;
   const WorldViewArea* anchor = this->previewArea;
-  RECT rect;
-  std::memcpy(&rect, &record->area, sizeof(rect));
   int x = anchor->right;
   if (x < rect.right) {
     leftSide = true;
@@ -157,7 +155,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
 
   int y = anchor->top;
   int count = 0;
-  for (std::list<std::string>::const_iterator it = record->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
+  for (std::list<std::string>::const_iterator it = this->hoveredRecord->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
     const int width = this->TextWidth(it->c_str(), 0, 0, 12, 1, 0);
     if (maxWidth < width) {
       maxWidth = width;
