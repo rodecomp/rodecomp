@@ -1390,14 +1390,19 @@ bool CCashEmotionMgr::RemoveExpiredPacks() {
   return expired;
 }
 
+// INLINED
+static void RemovePack(std::vector<int>& packs, int packId) {
+  auto found = std::find(packs.begin(), packs.end(), packId);
+
+  if (packs.end() != found) {
+    packs.erase(found);
+  }
+}
+
 // OFFSET: 0x0059C730
 // FUNCTION: fn_02978
 void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry) {
-  auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
-
-  if (this->m_ownedPacks.end() != owned) {
-    this->m_ownedPacks.erase(owned);
-  }
+  RemovePack(this->m_ownedPacks, packId);
 
   auto unowned = std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId);
 
