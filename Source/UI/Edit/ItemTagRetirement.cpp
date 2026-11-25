@@ -380,7 +380,7 @@ void UIItemTagCtrl::UpdateItemTags() {
 
         std::string visible = head;
         std::size_t firstVisible = 0;
-        int x = 0;
+        int x;
         UIWindow* hover = g_windowMgr.GetHoverWindow();
         if (hover != nullptr) {
           switch (hover->geometry.id) {
@@ -396,13 +396,16 @@ void UIItemTagCtrl::UpdateItemTags() {
             visible = prefix.substr(firstVisible);
           }
 
-          x = 0;
           if (firstVisible != 0) {
             x = 1000;
             if (prefix.size() > firstVisible) {
               x = 0;
             }
+          } else {
+            x = 0;
           }
+        } else {
+          x = 0;
         }
 
         this->PlaceTagButton(current->child, visible, x, 0);
