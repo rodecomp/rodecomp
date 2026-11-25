@@ -1328,17 +1328,17 @@ int CCreateLineInfo::ParseEmotion(int index) {
     }
   }
 
-  if (match.size() >= 2) {
-    this->AddSegment(LINE_SEGMENT_EMOTION);
-    {
-      const std::string matched = match[0].str();
-      this->AppendText(matched);
-    }
-    this->m_newSegment = true;
-    return index + static_cast<int>(match[0].length());
+  if (match.size() < 2) {
+    return index;
   }
 
-  return index;
+  this->AddSegment(LINE_SEGMENT_EMOTION);
+  {
+    const std::string matched = match[0].str();
+    this->AppendText(matched);
+  }
+  this->m_newSegment = true;
+  return index + static_cast<int>(match[0].length());
 }
 
 // OFFSET: 0x0083A100
@@ -1458,19 +1458,21 @@ int CCreateLineInfo::ParseItemImage(int index) {
   const std::string text = this->m_text.substr(index, this->m_text.size() - index);
   std::smatch match;
 
-  const bool missing = !std::regex_search(text, match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
-  if (!missing && match.size() >= 2) {
-    this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
-    {
-      const std::string matched = match[0].str();
-      this->AppendText(matched);
-    }
-
-    this->m_newSegment = true;
-    return index + static_cast<int>(match[0].length());
+  if (!std::regex_search(text, match, std::regex("^\\^i(\\[\\d{1,7}\\])*"))) {
+    return index;
+  }
+  if (match.size() < 2) {
+    return index;
   }
 
-  return index;
+  this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
+  {
+    const std::string matched = match[0].str();
+    this->AppendText(matched);
+  }
+
+  this->m_newSegment = true;
+  return index + static_cast<int>(match[0].length());
 }
 
 // OFFSET: 0x0083C890
