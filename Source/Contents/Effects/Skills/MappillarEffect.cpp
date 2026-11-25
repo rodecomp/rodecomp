@@ -140,12 +140,11 @@ bool CMappillarEffect::IsAlive() {
 // FUNCTION: fn_18958
 void CMappillarEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
-    this->UpdateParticleTransform(particle);
-    ++particle->elapsedFrames;
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
+    this->UpdateParticleTransform(*it);
+    ++(*it)->elapsedFrames;
   }
 }
 
