@@ -702,9 +702,11 @@ void UIMenuWnd::Paint() {
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(6, 6, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
   this->DrawBitmap(0, 0, leftUp, false);
@@ -718,24 +720,32 @@ void UIMenuWnd::Paint() {
   g_skinInfo.PaletteChannels(6, 2, red, green, blue);
   const int count = static_cast<int>(this->m_items.size());
   for (int index = 0; index < count; ++index) {
-    const std::string& item = this->m_items[index];
-    const bool separator = this->IsSeparator(index);
-    int unique = 1;
-    if (index != 0 && this->m_items[index - 1] == item) {
-      unique = 0;
+    int separator;
+    if (this->m_items[index] == g_menuSeparator) {
+      separator = 1;
+    } else {
+      separator = 0;
     }
-    if (!separator) {
-      if (index == this->m_selected) {
+    int unique = 1;
+    if (index > 0) {
+      if (this->m_items[index - 1] == this->m_items[index]) {
+        unique = 0;
+      }
+    }
+    if (index == this->m_selected) {
+      if (!separator) {
         if (unique) {
           this->FillRegion(3, this->m_itemHeight / 2 * index + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
         } else {
-          this->FillRegion(3, (index - 1) * (this->m_itemHeight / 2) + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+          this->FillRegion(3, this->m_itemHeight / 2 * (index - 1) + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
         }
       }
+    }
+    if (!separator) {
       if (unique) {
         this->DrawTextAt(3, this->m_itemHeight * index / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
       } else {
-        this->DrawTextAt(3, (index - 1) * this->m_itemHeight / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+        this->DrawTextAt(3, this->m_itemHeight * (index - 1) / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
       }
     } else {
       unsigned lineRed, lineGreen, lineBlue;
