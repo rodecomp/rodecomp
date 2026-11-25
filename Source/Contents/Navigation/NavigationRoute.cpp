@@ -1762,15 +1762,15 @@ void CNavigationManager::CancelRoute() {
 // OFFSET: 0x00B97B90
 // FUNCTION: fn_19602
 __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
+  int x = cellX;
   int y = cellY;
   if (this->savedTarget.object != nullptr) {
     const int type = this->savedTarget.type;
     CNaviInfo* info;
-    int x = cellX;
+    NaviCell cell;
     if (type == 2) {
       CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
       info = object->GetInfo();
-      NaviCell cell;
       const NaviCell* position = object->GetCell(&cell);
       x = position->x;
       y = position->y;
