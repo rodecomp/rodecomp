@@ -298,21 +298,21 @@ int FuncDrawWNDChar::IsSpecialLayer(int layer) {
 FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool keepScale) {
   FuncDrawOffset offset;
 
-  int layer = 1;
-  CActRes* act = this->m_resources.end() != this->m_resources.find(layer) ? this->m_resources[layer].second : nullptr;
+  CActRes* act = this->Resource(1).second;
   const ActionFrame& base = act->Frame(this->m_action, this->m_motion);
   if (frame->anchorCount > 0 && base.anchorCount > 0) {
-    const ActionAnchor* frameAnchor = frame->anchors.data();
     const ActionAnchor* baseAnchor = base.anchors.data();
+    const ActionAnchor* frameAnchor = frame->anchors.data();
     if (frameAnchor->attachmentId == baseAnchor->attachmentId) {
+      const int baseX = baseAnchor->x;
       if (this->m_shield != 0) {
         if (keepScale == true) {
-          offset.x += baseAnchor->x - frameAnchor->x;
+          offset.x += baseX - frameAnchor->x;
           offset.y += baseAnchor->y - frameAnchor->y;
           this->offsetY = offset.y;
           this->offsetX = offset.x;
         } else {
-          offset.x = static_cast<int>(static_cast<float>(baseAnchor->x) / base.Cell(0).scaleX - static_cast<float>(frameAnchor->x) + static_cast<float>(offset.x));
+          offset.x = static_cast<int>(static_cast<float>(baseX) / base.Cell(0).scaleX - static_cast<float>(frameAnchor->x) + static_cast<float>(offset.x));
           float baseY = static_cast<float>(base.anchors.data()->y);
           const ActionAnchor* currentAnchor = frame->anchors.data();
           offset.y = static_cast<int>(baseY / base.Cell(0).scaleY - static_cast<float>(currentAnchor->y) + static_cast<float>(offset.y));
@@ -320,7 +320,7 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
           this->offsetX = offset.x;
         }
       } else {
-        offset.x = baseAnchor->x - frameAnchor->x;
+        offset.x = baseX - frameAnchor->x;
         offset.y = baseAnchor->y - frameAnchor->y;
         this->offsetY = offset.y;
         this->offsetX = offset.x;
