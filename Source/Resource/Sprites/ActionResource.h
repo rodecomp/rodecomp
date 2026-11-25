@@ -31,6 +31,10 @@ struct ActionFrame {
   const SpriteFrameCell& Cell(unsigned index) const;
 };
 
+struct ActionAnimation {
+  /* 0000 */ std::vector<ActionFrame> frames;
+};
+
 class CActRes : public CRes {
 public:
   CActRes();
@@ -47,7 +51,7 @@ public:
   float Speed(unsigned index) const;
   const char* Sound(unsigned index) const;
 
-  /* 0110 */ std::vector<std::vector<ActionFrame>> animations;
+  /* 0110 */ std::vector<ActionAnimation> animations;
   /* 011C */ int maximumCells;
   /* 0120 */ std::vector<std::string> sounds;
   /* 012C */ std::vector<float> speeds;
@@ -57,6 +61,7 @@ public:
 static_assert(sizeof(ActionAnchor) == 12);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ActionFrame) == 68);
+static_assert(sizeof(ActionAnimation) == 12);
 static_assert(sizeof(CActRes) == 312);
 static_assert(offsetof(ActionAnchor, y) == 0x0004);
 static_assert(offsetof(ActionAnchor, attachmentId) == 0x0008);
