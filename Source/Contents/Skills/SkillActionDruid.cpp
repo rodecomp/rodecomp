@@ -602,7 +602,8 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
         angleOffset = -270.0f;
       }
     }
-    const int rotation = (static_cast<int>(angle + angleOffset) + 360) % 360;
+    const auto rotated = [&angleOffset](const float& value) { return (static_cast<int>(value + angleOffset) + 360) % 360; };
+    const int rotation = rotated(angle);
     effect->SetAngle(static_cast<float>(rotation));
   }
 
