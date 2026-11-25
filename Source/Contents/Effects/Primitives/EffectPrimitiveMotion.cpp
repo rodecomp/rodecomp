@@ -5439,27 +5439,26 @@ __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
   FaceCamera(stateRef.slots);
   this->render.position = stateRef.master->render.position;
 
-  if (stateRef.slots[0].life != 1) {
-    return;
-  }
+  for (int ec = 0; ec < 1; ++ec) {
+    if (this->state.slots[ec].life == 1) {
+      ++this->state.slots[ec].process;
 
-  ++stateRef.slots[0].process;
-  stateRef.slots[0].height[8] += 5.0f;
-  if (stateRef.slots[0].height[8] >= 360.0f) {
-    stateRef.slots[0].height[8] -= 360.0f;
-  }
+      this->state.slots[ec].height[8] += 5.0f;
+      if (this->state.slots[ec].height[8] >= 360.0f) {
+        this->state.slots[ec].height[8] -= 360.0f;
+      }
 
-  const std::int16_t rotStart = static_cast<std::int16_t>(stateRef.slots[0].rotStart + 1);
-  stateRef.slots[0].rotStart = rotStart;
-  if (rotStart >= 360) {
-    stateRef.slots[0].rotStart = static_cast<std::int16_t>(rotStart - 360);
-  }
+      ++this->state.slots[ec].rotStart;
+      if (this->state.slots[ec].rotStart >= 360) {
+        this->state.slots[ec].rotStart -= 360;
+      }
 
-  stateRef.slots[0].vecBNow.x = this->render.position.x;
-  stateRef.slots[0].vecBNow.z = this->render.position.z;
-  const float base = this->render.position.y - g_effectPrimitiveOuterSpan;
-  stateRef.slots[0].vecBPre.y = base;
-  stateRef.slots[0].vecBNow.y = g_sinTable[stateRef.slots[0].rotStart] * g_masterReachDistance + base;
+      this->state.slots[ec].vecBNow.x = this->render.position.x;
+      this->state.slots[ec].vecBNow.z = this->render.position.z;
+      this->state.slots[ec].vecBPre.y = this->render.position.y - g_effectPrimitiveOuterSpan;
+      this->state.slots[ec].vecBNow.y = g_sinTable[this->state.slots[ec].rotStart] * g_masterReachDistance + this->state.slots[ec].vecBPre.y;
+    }
+  }
 }
 
 // OFFSET: 0x00BE9690
@@ -6854,127 +6853,125 @@ void CEffectPrim::PrimFadingColumns() {
 // OFFSET: 0x00BBCC20
 // FUNCTION: fn_19801
 void CEffectPrim::PrimAuraGlow() {
-  auto& stateRef = this->state;
-  EffectPrimitiveSlot* slots = stateRef.slots;
-  FaceCamera(slots);
+  FaceCamera(this->state.slots);
+  FollowMaster(*this);
 
-  const CRagEffect* master = stateRef.master;
-  this->render.position = master->render.position;
+  for (int ec = 0; ec < 1; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-  EffectPrimitiveSlot& slot = slots[0];
+    if (slot.life != 1) {
+      continue;
+    }
 
-  if (slot.life != 1) {
-    return;
-  }
+    if (++slot.process < 300) {
+      const char kind = slot.flag1[4];
 
-  if (++slot.process < 300) {
-    const char kind = slot.flag1[4];
+      if (kind == 1 || kind == 3) {
+        if (slot.process < 200) {
+          slot.alphaB += 10;
 
-    if (kind == 1 || kind == 3) {
-      if (slot.process < 200) {
+          if (slot.alphaB >= 220) {
+            slot.alphaB = 220;
+          }
+        } else {
+          slot.alphaB -= 5;
+
+          if (slot.alphaB < 0) {
+            slot.alphaB = 0;
+          }
+        }
+      } else if (kind == 22) {
         slot.alphaB += 10;
 
         if (slot.alphaB >= 220) {
           slot.alphaB = 220;
         }
-      } else {
-        slot.alphaB -= 5;
+      } else if (kind == 0) {
+        ++slot.alphaB;
+      } else if (kind == 20) {
+        slot.alphaB += 5;
 
-        if (slot.alphaB < 0) {
-          slot.alphaB = 0;
+        if (slot.alphaB >= 200) {
+          slot.alphaB = 200;
+        }
+      } else if (kind >= 16 && kind <= 18) {
+        slot.alphaB = 100;
+      } else if (kind >= 10 && kind <= 12) {
+        slot.alphaB = 150;
+      } else if (kind == 14) {
+        slot.alphaB = 50;
+      } else if (kind >= 10) {
+        slot.alphaB = 250;
+      }
+    }
+
+    const char kind = slot.flag1[4];
+
+    if (kind == 2) {
+      if (slot.process > 40) {
+        const short alpha = static_cast<short>(slot.alphaB + (slot.process >= 62 ? -8 : 8));
+        slot.alphaB = alpha;
+
+        if (alpha > 0) {
+          slot.distance += 0.7f;
         }
       }
-    } else if (kind == 22) {
-      slot.alphaB += 10;
 
-      if (slot.alphaB >= 220) {
-        slot.alphaB = 220;
+      if (slot.process > 300 && slot.alphaB > 0) {
+        --slot.alphaB;
       }
-    } else if (kind == 0) {
-      ++slot.alphaB;
-    } else if (kind == 20) {
-      slot.alphaB += 5;
-
-      if (slot.alphaB >= 200) {
-        slot.alphaB = 200;
-      }
-    } else if (kind >= 16 && kind <= 18) {
-      slot.alphaB = 100;
-    } else if (kind >= 10 && kind <= 12) {
-      slot.alphaB = 150;
-    } else if (kind == 14) {
-      slot.alphaB = 50;
-    } else if (kind >= 10) {
-      slot.alphaB = 250;
-    }
-  }
-
-  const char kind = slot.flag1[4];
-
-  if (kind == 2) {
-    if (slot.process > 40) {
-      const short alpha = static_cast<short>(slot.alphaB + (slot.process >= 62 ? -8 : 8));
-      slot.alphaB = alpha;
-
-      if (alpha > 0) {
-        slot.distance += 0.7f;
-      }
-    }
-
-    if (slot.process > 300 && slot.alphaB > 0) {
-      --slot.alphaB;
-    }
-  } else if (kind == 16 || kind == 17) {
-    if ((slot.process & 1) == 0) {
-      --slot.fullDisplayAngle;
-    }
-
-    if (slot.fullDisplayAngle < 0) {
-      slot.fullDisplayAngle += 360;
-    }
-  } else if (kind < 20) {
-    if (kind == 18) {
-      if (slot.fullDisplayAngle < 0) {
-        slot.fullDisplayAngle += 360;
-      }
-    } else if (kind == 10 || kind >= 13) {
+    } else if (kind == 16 || kind == 17) {
       if ((slot.process & 1) == 0) {
-        ++slot.fullDisplayAngle;
+        --this->state.slots[ec].fullDisplayAngle;
       }
 
-      if (slot.fullDisplayAngle >= 360) {
-        slot.fullDisplayAngle -= 360;
+      if (this->state.slots[ec].fullDisplayAngle < 0) {
+        this->state.slots[ec].fullDisplayAngle += 360;
       }
-    } else if (kind == 11 || kind == 12) {
-      if ((slot.process & 1) == 0) {
-        --slot.fullDisplayAngle;
-      }
+    } else if (kind < 20) {
+      if (kind == 18) {
+        if (this->state.slots[ec].fullDisplayAngle < 0) {
+          this->state.slots[ec].fullDisplayAngle += 360;
+        }
+      } else if (kind == 10 || kind >= 13) {
+        if ((slot.process & 1) == 0) {
+          ++this->state.slots[ec].fullDisplayAngle;
+        }
 
-      if (slot.fullDisplayAngle < 0) {
-        slot.fullDisplayAngle += 360;
+        if (this->state.slots[ec].fullDisplayAngle >= 360) {
+          this->state.slots[ec].fullDisplayAngle -= 360;
+        }
+      } else if (kind == 11 || kind == 12) {
+        if ((slot.process & 1) == 0) {
+          --this->state.slots[ec].fullDisplayAngle;
+        }
+
+        if (this->state.slots[ec].fullDisplayAngle < 0) {
+          this->state.slots[ec].fullDisplayAngle += 360;
+        }
+      } else if (slot.process > 300 && slot.alphaB > 0) {
+        --slot.alphaB;
       }
-    } else if (slot.process > 300 && slot.alphaB > 0) {
-      --slot.alphaB;
     }
-  }
 
-  if (slot.alphaB >= 255) {
-    slot.alphaB = 255;
-  } else if (slot.alphaB < 0) {
-    slot.alphaB = 0;
-  }
+    if (slot.alphaB >= 255) {
+      slot.alphaB = 255;
+    } else if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
 
-  if (slot.flag1[4] < 30) {
-    slot.height[8] += 2.0f;
-  }
+    if (slot.flag1[4] < 30) {
+      slot.height[8] += 2.0f;
+    }
 
-  if (slot.height[8] >= 360.0f) {
-    slot.height[8] -= 360.0f;
-  }
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
 
-  slot.vecBNow.y = this->render.position.y - slot.height[15];
-  slot.vecBNow.x = this->render.position.x;
-  slot.vecBNow.z = this->render.position.z;
+    slot.vecBNow.y = this->render.position.y - slot.height[15];
+    slot.vecBNow.x = this->render.position.x;
+    slot.vecBNow.z = this->render.position.z;
+  }
 }
 
 // OFFSET: 0x00BC1080
