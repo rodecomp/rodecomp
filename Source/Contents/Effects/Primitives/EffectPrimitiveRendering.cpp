@@ -7984,6 +7984,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
   ZeroVector3d vec2;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
+  RenderVertex projected;
   int rpCnt = 0;
   float incU = 1.0f / (360.0f / this->state.arcAngle);
   float incV = 1.0f / (180.0f / this->state.arcAngle);
@@ -8022,7 +8023,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       vec3 += this->render.position;
       vec4 += this->render.position;
 
-      RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
+      projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->Project(&vec1.x, wtm.values, projected);
       this->state.triangles[rpCnt].vertices[0] = projected;
       this->state.triangles[rpCnt].vertices[0].diffuse = this->state.argb;
