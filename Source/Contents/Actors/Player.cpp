@@ -3852,6 +3852,11 @@ struct PlayerSkillRequest {
   int level;
 };
 
+struct RouteClearProxy {
+  /* 0000 */ MovementRouteInterpolation route;
+  __declspec(noinline) void Clear();
+};
+
 // OFFSET: 0x00DB9A00
 // FUNCTION: fn_22672
 void CPlayer::SendMsg(
@@ -4078,12 +4083,12 @@ void CPlayer::SendMsg(
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      int attackMode = 1;
-      if (this->proceedType == 1) {
-        attackMode = 5;
-      }
       this->tickOfMoveForAttack = timeGetTime() - 1200;
-      this->proceedType = attackMode;
+      if (this->proceedType == 1) {
+        this->proceedType = 5;
+      } else {
+        this->proceedType = 1;
+      }
       this->proceedTargetGid = bLow;
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
@@ -4126,7 +4131,7 @@ void CPlayer::SendMsg(
     }
     break;
   case AM_CLEAR_ROUTE:
-    this->route.points.clear();
+    reinterpret_cast<RouteClearProxy*>(&this->route)->Clear();
     break;
   default:
     this->CPc::SendMsg(sender, message, b, c, d, e, f, g);
@@ -5638,4 +5643,11 @@ void CPlayer::SetState(int state, int resetPosition) {
   }
 
   CPc::SetState(state, resetPosition);
+}
+
+// FOLDED: fn_17886
+void RouteClearProxy::Clear() {
+  if (this->route.points.begin() != this->route.points.end()) {
+    this->route.points.clear();
+  }
 }
