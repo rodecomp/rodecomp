@@ -550,7 +550,11 @@ void NavigationLinkParser::SplitMessageArguments(const char* text, std::vector<s
   }
 }
 
-using MessageArgumentSubstring = std::string (std::string::*)(std::size_t, std::size_t) const;
+// INLINED
+static void StripMessageString(std::vector<std::string>& arguments, std::size_t index) {
+  arguments[index] = arguments[index].substr(7);
+  arguments[index] = arguments[index].substr(0, arguments[index].size() - 1);
+}
 
 // OFFSET: 0x00834C30
 // FUNCTION: fn_10418
@@ -588,9 +592,7 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
           if (arguments[index].find("MsgStr(") != std::string::npos) {
-            const MessageArgumentSubstring substring = &std::string::substr;
-            arguments[index] = (arguments[index].*substring)(7, std::string::npos);
-            arguments[index] = (arguments[index].*substring)(0, arguments[index].size() - 1);
+            StripMessageString(arguments, index);
             const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
           } else {
@@ -1589,7 +1591,7 @@ static int ParseColorCode(CCreateLineInfo& info, int index) {
 // FUNCTION: fn_10495
 int CCreateLineInfo::ParseTag(int index) {
   int next = index;
-  if (this->m_text.at(index) == '^') {
+  if (this->m_text.at(next) == '^') {
     next = ParseColorCode(*this, index);
   }
 
