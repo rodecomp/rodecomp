@@ -192,8 +192,8 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
     return true;
   }
 
-  int titleColumn = 0;
   int titleRow = 0;
+  int titleColumn = 0;
   int actorColumn = 0;
   int actorRow = 0;
   C3dAttr*& terrain = g_modeMgr.GetGameMode()->scene->terrain;
