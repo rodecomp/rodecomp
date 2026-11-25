@@ -54,8 +54,9 @@ void UIEditCtrl::Synchronize() {
       }
 
       const auto tail = static_cast<std::uint32_t>(std::strlen(next));
-      const int candidate = this->firstVisible + this->cursor - previousCursor;
-      this->firstVisible = static_cast<int>(std::min(static_cast<std::uint32_t>(candidate), static_cast<std::uint32_t>(this->cursor) - tail));
+      this->firstVisible = static_cast<int>(
+        std::min(static_cast<std::uint32_t>(this->firstVisible + (this->cursor - previousCursor)), static_cast<std::uint32_t>(this->cursor) - tail)
+      );
     }
   } else if (this->cursor < previousCursor) {
     if (measure(this->text.c_str(), static_cast<unsigned>(this->cursor)) + 3 < this->geometry.width - 7 && this->firstVisible > this->cursor) {
