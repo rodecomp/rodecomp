@@ -10,6 +10,14 @@
 #include <algorithm>
 #include <cstring>
 
+// INLINED
+static void SetIndices(CParticle* particle, int effectId, int column, int row, int group) {
+  particle->effectId = effectId;
+  particle->columnIndex = column;
+  particle->rowIndex = row;
+  particle->groupIndex = group;
+}
+
 // OFFSET: 0x00701BB0
 // FUNCTION: fn_06999
 CFriggSongEffect::CFriggSongEffect() : CEffect(0x423) {
@@ -112,10 +120,7 @@ void CFriggSongEffect::Open() {
     }
 
     particle->SetTexture("effect\\ring_blue.tga");
-    particle->effectId = this->id;
-    particle->columnIndex = column;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    SetIndices(particle, this->id, column, 0, 1);
     particle->alpha = 50;
     particle->SetColor(50, 200, 50);
     const int row = particle->rowIndex;
@@ -139,7 +144,6 @@ void CFriggSongEffect::Open() {
     const float spread = speed * g_cosTable[tilt];
     const float height = speed * g_sinTable[tilt];
     const float offsetX = spread * cosine;
-
     EffectPoint points[2];
     const float innerX = particle->scale * cosine;
     const float innerY = 0.0f;
