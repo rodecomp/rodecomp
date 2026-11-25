@@ -116,7 +116,6 @@ void UIAccountLimitedToolWnd::OnCreate(int, int) {
   accountIdText->Invalidate();
   this->AddChild(this->m_accountIdText);
 
-  const int buttonPositions[3][2] = {{this->geometry.width - 70, 22}, {15, 184}, {260, 184}};
   this->m_message0 = 561;
   {
     const char* buttonNames[3][4] = {
@@ -125,6 +124,7 @@ void UIAccountLimitedToolWnd::OnCreate(int, int) {
       {"btn_deleteItem", "btn_deleteItem_a", "btn_deleteItem_b", "btn_deleteItem_c"},
     };
     const int buttonIds[3] = {321, 561, 211};
+    const int buttonPositions[3][2] = {{this->geometry.width - 70, 22}, {15, 184}, {260, 184}};
     const std::string prefix = "유저인터페이스\\";
     for (int i = 0; i < 3; ++i) {
       this->m_buttons[i] = new UIBitmapButton();

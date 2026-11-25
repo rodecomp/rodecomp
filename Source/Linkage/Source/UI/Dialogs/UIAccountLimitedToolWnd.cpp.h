@@ -24,3 +24,4 @@
 #include <string>
 
 template __declspec(noinline) std::string::basic_string(const std::string&);
+template std::string& std::string::operator=(std::string&&) noexcept;
