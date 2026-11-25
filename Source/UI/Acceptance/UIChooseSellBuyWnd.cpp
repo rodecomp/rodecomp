@@ -1382,11 +1382,8 @@ void UISkillDescribeWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const UIWindow* text = this->m_text;
-  this->FillRegion(
-    text->geometry.width + text->geometry.x, text->geometry.y, this->geometry.width - text->geometry.width - text->geometry.x - 3, text->geometry.height,
-    RGB(red, green, blue)
-  );
+  const auto& area = this->m_text->geometry;
+  this->FillRegion(area.x + area.width, area.y, this->geometry.width - area.x - area.width - 3, area.height, RGB(red, green, blue));
   this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
   this->DrawRoundedOutline(2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
 }
@@ -7073,6 +7070,21 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   }
 }
 
+// INLINED
+static void HighlightDraggedItemSlots(UIEquipWnd* window, unsigned int identity) {
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(identity);
+  if (item.identity[1] > 0 && item.identity[2] != 0) {
+    const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[2]));
+    window->m_highlight[0] = std::get<0>(slots);
+    if (std::get<1>(slots) != -1) {
+      window->m_highlight[1] = std::get<1>(slots);
+    }
+    if (std::get<2>(slots) != -1) {
+      window->m_highlight[2] = std::get<2>(slots);
+    }
+  }
+}
+
 // OFFSET: 0x008F3DD0
 // FUNCTION: fn_12286
 void UIEquipWnd::OnMouseHover(int x, int y) {
@@ -7114,17 +7126,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == DRAG_ITEM_INVENTORY && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
-    ITEM_INFO dragged = g_session.LookupClientItemByIdentity(mode->drag.id);
-    if (dragged.identity[1] > 0 && dragged.identity[2] != 0) {
-      const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.identity[2]));
-      this->m_highlight[0] = std::get<0>(slots);
-      if (std::get<1>(slots) != -1) {
-        this->m_highlight[1] = std::get<1>(slots);
-      }
-      if (std::get<2>(slots) != -1) {
-        this->m_highlight[2] = std::get<2>(slots);
-      }
-    }
+    HighlightDraggedItemSlots(this, mode->drag.id);
   }
 
   if (previous0 != this->m_highlight[0] || previous1 != this->m_highlight[1] || previous2 != this->m_highlight[2]) {
@@ -10312,7 +10314,7 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
   g_modeMgr.GetGameMode();
   this->m_selected = ~this->m_selected;
   g_session.RemoveItem1720ByName(item);
-  this->m_totalPrice -= item.quantity * item.prices[1];
+  this->m_totalPrice -= item.realPrice * item.quantity;
   this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
 
   const CSession& lists = g_session;
@@ -12418,12 +12420,13 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
     this->SetPageButtonEnabled(PageButton::Previous, 1);
     this->RefreshTip();
-    break;
+    return 0;
   }
-  case ID_OK:
+  case ID_OK: {
     this->previousButton->Enable(1);
     this->nextButton->Enable(1);
-    g_itemTagOwner->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
+    CTipBoxMgr* tips = g_itemTagOwner;
+    tips->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
     if (g_itemTagOwner->IsLastTip() == true) {
       this->SetPageButtonEnabled(PageButton::Next, 0);
     } else {
@@ -12433,6 +12436,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->RefreshTip();
     this->BuildAnimations();
     break;
+  }
   case ID_CLOSE:
     g_windowMgr.CloseWindow(WID_TIPBOXWND);
     break;
