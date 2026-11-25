@@ -1677,8 +1677,8 @@ void UIShowInfoWnd::DrawPayments() {
       this->DrawBitmap(this->m_checks[row]->geometry.x, this->m_checks[row]->geometry.y, off, false);
     }
 
-    int zeny = 0;
     int itemId = 0;
+    int zeny = 0;
     int costumeItemId = 0;
     this->GetPayment(*it, &zeny, &itemId, &costumeItemId);
 
