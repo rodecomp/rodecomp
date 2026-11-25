@@ -149,6 +149,25 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
 }
 
 // INLINED
+static void TransformVector(vector3d& result, const vector3d& v, const float* m) {
+  float x = v.y * m[3];
+  x += v.x * m[0];
+  x += v.z * m[6];
+  x += m[9];
+  result.x = x;
+  float y = v.y * m[4];
+  y += v.x * m[1];
+  y += v.z * m[7];
+  y += m[10];
+  result.y = y;
+  float z = v.y * m[5];
+  z += v.x * m[2];
+  z += v.z * m[8];
+  z += m[11];
+  result.z = z;
+}
+
+// INLINED
 static void PlayEffectWave(const CRagEffect& effect, const char* name) {
   const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
@@ -543,7 +562,7 @@ void CRagEffect::GrimTooth() {
     this->Face(this->state.deltaPos.x, this->state.deltaPos.z);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
-    MatrixMult(this->state.deltaPos2, vector3d{0.0f, 0.0f, 2.0f}, rotation.values);
+    TransformVector(this->state.deltaPos2, vector3d{0.0f, 0.0f, 2.0f}, rotation.values);
     this->state.deltaPos3 -= this->state.deltaPos2;
   }
 
@@ -1924,7 +1943,7 @@ void CRagEffect::Bottom2() {
       this->state.lastPrim->state.commonPattern = 1;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
-      MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, widthSize * static_cast<float>(i)}, yaw.values);
+      TransformVector(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, widthSize * static_cast<float>(i)}, yaw.values);
       this->state.lastPrim->state.longitude = static_cast<float>(angle + 90);
       this->state.lastPrim->state.widthSize = widthSize;
       this->state.lastPrim->state.heightSize = 15.0f;
@@ -1976,7 +1995,7 @@ void CRagEffect::Bottom() {
     this->state.lastPrim->state.commonPattern = 1;
     this->state.lastPrim->state.pattern = 40;
     this->state.lastPrim->state.type = 50;
-    MatrixMult(this->state.lastPrim->state.deltaPos2, {0.0f, 0.0f, static_cast<float>(side) * 5.0f}, m);
+    TransformVector(this->state.lastPrim->state.deltaPos2, {0.0f, 0.0f, static_cast<float>(side) * 5.0f}, m);
     this->state.lastPrim->state.longitude = static_cast<float>(angle + 90);
     this->state.lastPrim->state.widthSize = 5.0f;
     this->state.lastPrim->state.heightSize = 15.0f;
@@ -11164,7 +11183,7 @@ bool CRagEffect::GlassWall() {
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
-      MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, 2.6f * static_cast<float>(side)}, rotation.values);
+      TransformVector(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, 2.6f * static_cast<float>(side)}, rotation.values);
       this->state.lastPrim->state.longitude = static_cast<float>(angle + 90);
       this->state.lastPrim->state.widthSize = 3.0f;
       this->state.lastPrim->state.heightSize = 40.0f;
