@@ -363,14 +363,8 @@ int UIWindowMgr::ProcessMouse() {
         this->CloseWindow(WID_COMBOBOXWND);
       }
 
-      if (this->comboBoxIDWnd) {
-        if (window) {
-          if (window != this->comboBoxIDWnd && !window->IsDescendantOf(this->comboBoxIDWnd)) {
-            this->CloseWindow(WID_COMBOBOXIDWND);
-          }
-        } else {
-          this->CloseWindow(WID_COMBOBOXIDWND);
-        }
+      if (this->comboBoxIDWnd && (!window || (window != this->comboBoxIDWnd && !window->IsDescendantOf(this->comboBoxIDWnd)))) {
+        this->CloseWindow(WID_COMBOBOXIDWND);
       }
       if (!window && this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible != 0) {
         this->dropDownBoxWnd->Detach();
