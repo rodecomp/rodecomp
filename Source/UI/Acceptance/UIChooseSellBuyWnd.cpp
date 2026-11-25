@@ -3145,7 +3145,8 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
 
     const int height = this->contentOffset + 167;
-    this->m_viewButton->Move(this->geometry.width / 2 - 18, IsEquipViewHidden() * 230 + height - this->contentOffset - 40);
+    const int viewButtonY = IsEquipViewHidden() * 230 + height - this->contentOffset - 40;
+    this->m_viewButton->Move((this->geometry.width - viewButtonY) / 2 - 18, viewButtonY);
     this->m_otherButton->Move(this->geometry.width / 2 - 14, height - this->contentOffset + (g_session.replayPacketMode > 0 ? -60 : 170));
     this->Invalidate();
     return 0;
@@ -3170,10 +3171,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
 
       std::string notice("");
-      bool enabled = false;
-      if (g_session.replayPacketMode > 0) {
-        enabled = true;
-      }
+      const bool enabled = g_session.replayPacketMode > 0;
       if (IsRidingPeco(g_session.m_jobFlags)) {
         notice = LookupMessage(g_session.GetDisplayJob() == JT_ROYAL_CHICKEN || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_H || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_B
                                  ? MSI_ROYAL_CHIKENOFF
