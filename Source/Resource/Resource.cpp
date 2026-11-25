@@ -75,12 +75,6 @@ std::uint32_t CRes::Unlock() {
   return --this->references;
 }
 
-// OFFSET: 0x00AEF380
-// FUNCTION: fn_18177
-int __stdcall sub_AEF380(void*) {
-  return 0;
-}
-
 // OFFSET: 0x00AEF390
 // FUNCTION: fn_18178
 const char* CRes::GetName() {

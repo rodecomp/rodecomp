@@ -5782,16 +5782,6 @@ ClientMessengerSelf* ClientMessengerSelf::Self69ACC0() {
   return this;
 }
 
-// OFFSET: 0x0068DAF0
-// FUNCTION: fn_05656
-void sub_68DAF0() {
-}
-
-// OFFSET: 0x006A2170
-// FUNCTION: fn_06015
-void sub_6A2170() {
-}
-
 // OFFSET: 0x006BD660
 // FUNCTION: fn_06278
 int GetEquipGrade(lua_State* state) {

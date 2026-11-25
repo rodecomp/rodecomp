@@ -1183,12 +1183,6 @@ void CLoginMode::OpenAccountRegistration() {
   }
 }
 
-// OFFSET: 0x00D92B70
-// FUNCTION: fn_22292
-bool sub_D92B70() {
-  return false;
-}
-
 // OFFSET: 0x00D92D90
 // FUNCTION: fn_22294
 void __stdcall nullsub_486(int) {
@@ -1252,12 +1246,6 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
 // OFFSET: 0x00D93B10
 // FUNCTION: fn_22296
 void __stdcall nullsub_487(int) {
-}
-
-// OFFSET: 0x00D92B60
-// FUNCTION: fn_22291
-bool sub_D92B60(int) {
-  return false;
 }
 
 // OFFSET: 0x00D9A230

@@ -27,12 +27,6 @@ short s_screenShakeStep;
 // GLOBAL: gl_24885
 int s_hourlyBannerAlpha;
 
-// OFFSET: 0x00544A60
-// FUNCTION: fn_01820
-std::uint32_t __fastcall sub_544A60(const CRenderer* renderer) {
-  return std::bit_cast<std::uint32_t>(renderer->viewDirectionZ);
-}
-
 // OFFSET: 0x0055D150
 // FUNCTION: fn_02097
 float CRenderer::ScaleDistance(float distance) const {

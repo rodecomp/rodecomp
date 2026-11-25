@@ -177,30 +177,6 @@ inline std::uint32_t WindowGeometry::Color() {
 // GLOBAL: gl_24364
 std::uint32_t g_windowUid = 0xFFFFFFFFu;
 
-// OFFSET: 0x005C2260
-// FUNCTION: fn_03528
-int __fastcall sub_5C2260(const int* object) {
-  return object[0];
-}
-
-// OFFSET: 0x005C22D0
-// FUNCTION: fn_03529
-int __fastcall sub_5C22D0(const int* object) {
-  return object[8];
-}
-
-// OFFSET: 0x005C22E0
-// FUNCTION: fn_03530
-int __fastcall sub_5C22E0(const int* object) {
-  return object[7];
-}
-
-// OFFSET: 0x005C22F0
-// FUNCTION: fn_03531
-int __fastcall sub_5C22F0(const int* object) {
-  return object[9];
-}
-
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
 UIWindow::UIWindow(unsigned char cached)
