@@ -645,7 +645,7 @@ public:
   UIWindowMgr();
 
   void InitializeWindowPolicy();
-  int WindowPolicy(int action, unsigned int id) const;
+  int WindowPolicy(int action, int id) const;
   void ResetWindows();
   void Shutdown();
   void ClearMapWindows();

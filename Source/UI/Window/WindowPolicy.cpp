@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00A970E0
 // FUNCTION: fn_17200
-int UIWindowMgr::WindowPolicy(int action, unsigned int id) const {
+int UIWindowMgr::WindowPolicy(int action, int id) const {
   if (action == 3) {
     if (g_replayAnimationScaling == 0) {
       return 1;
@@ -18,7 +18,7 @@ int UIWindowMgr::WindowPolicy(int action, unsigned int id) const {
     }
   }
 
-  if (id <= 10040) {
+  if (id >= 0 && id <= 10040) {
     return this->policy[id].actions[action];
   }
 
