@@ -261,19 +261,22 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
 
   SurfaceDescription(&this->primaryDescription, DDSD_CAPS, 0);
   this->primary->GetSurfaceDesc(&this->primaryDescription);
-  this->bitDepth = this->primaryDescription.ddpfPixelFormat.dwRGBBitCount;
   this->redMask = this->primaryDescription.ddpfPixelFormat.dwRBitMask;
-  this->greenMask = this->primaryDescription.ddpfPixelFormat.dwGBitMask;
-  this->blueMask = this->primaryDescription.ddpfPixelFormat.dwBBitMask;
-  this->alphaMask = this->primaryDescription.ddpfPixelFormat.dwRGBAlphaBitMask;
+  this->bitDepth = this->primaryDescription.ddpfPixelFormat.dwRGBBitCount;
+  const DWORD greenBits = this->primaryDescription.ddpfPixelFormat.dwGBitMask;
+  const DWORD blueBits = this->primaryDescription.ddpfPixelFormat.dwBBitMask;
+  const DWORD alphaBits = this->primaryDescription.ddpfPixelFormat.dwRGBAlphaBitMask;
   this->red = {0, 8};
   this->green = {0, 8};
   this->blue = {0, 8};
   this->alpha = {0, 8};
+  this->alphaMask = alphaBits;
+  this->greenMask = greenBits;
+  this->blueMask = blueBits;
   ChannelMask(this->red, this->primaryDescription.ddpfPixelFormat.dwRBitMask);
-  ChannelMask(this->green, this->primaryDescription.ddpfPixelFormat.dwGBitMask);
-  ChannelMask(this->blue, this->primaryDescription.ddpfPixelFormat.dwBBitMask);
-  ChannelMask(this->alpha, this->primaryDescription.ddpfPixelFormat.dwRGBAlphaBitMask);
+  ChannelMask(this->green, greenBits);
+  ChannelMask(this->blue, blueBits);
+  ChannelMask(this->alpha, alphaBits);
   if (flags & 2) {
     this->renderTarget = this->backBuffer;
   } else {
