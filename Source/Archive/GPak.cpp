@@ -1794,7 +1794,7 @@ __declspec(noinline) bool PakAuxiliary::Apply(std::span<const std::uint8_t> data
   return valid;
 }
 
-// OFFSET: 0x00AEC92F
+// OFFSET: 0x00AEC820
 // FUNCTION: fn_18136
 bool CGPak::ApplyAuxiliary(std::span<const std::uint8_t> data) {
   std::vector<std::uint8_t> auxiliary;
