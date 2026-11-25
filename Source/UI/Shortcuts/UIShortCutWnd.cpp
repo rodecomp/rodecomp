@@ -727,13 +727,17 @@ void UINewChatWnd::OnLBtnUp(int x, int y) {
 // OFFSET: 0x009313F0
 // FUNCTION: fn_12704
 void UIRoMapWnd::OnLBtnUp(int x, int y) {
+  const int& mouseX = x;
+  const int& mouseY = y;
   this->fieldNames.clear();
 
-  unsigned int mapIndex = 0;
-  if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, x, y)) {
-    this->selectedMapIndex = mapIndex;
-    for (CWorldViewField* field : map->fields) {
-      this->fieldNames.push_back(field->fieldName);
+  {
+    unsigned int mapIndex = 0;
+    if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, mouseX, mouseY)) {
+      this->selectedMapIndex = mapIndex;
+      for (std::vector<CWorldViewField*>::iterator field = map->fields.begin(), last = map->fields.end(); field != last; ++field) {
+        this->fieldNames.push_back((*field)->fieldName);
+      }
     }
   }
 
@@ -758,8 +762,8 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
       menu->Resize(width, height);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 140, 0, 0, 0);
 
-      const int below = y + 1;
-      const int right = x + 2;
+      const int below = mouseY + 1;
+      const int right = mouseX + 2;
       const int menuX = this->geometry.width - right - width < 0 ? this->geometry.width - width : right;
       const int menuY = this->geometry.height - below - height < 0 ? this->geometry.height - height : below;
       menu->Move(menuX, menuY);
