@@ -10,10 +10,23 @@
 #include <timeapi.h>
 
 // INLINED
-static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
-  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
-                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
-                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  const float y = v.y;
+  const float x = v.x;
+  const float z = v.z;
+
+  result.x = y * m[3];
+  result.x += x * m[0];
+  result.x += z * m[6];
+  result.x += m[9];
+  result.y = y * m[4];
+  result.y += x * m[1];
+  result.y += z * m[7];
+  result.y += m[10];
+  result.z = y * m[5];
+  result.z += x * m[2];
+  result.z += z * m[8];
+  result.z += m[11];
 }
 
 // INLINED
@@ -22,24 +35,6 @@ static __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
     return true;
   }
   return static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f;
-}
-
-// INLINED
-static __forceinline void PlaceParticle(CEZ2STRParticle* particle, const float* position) {
-  particle->position.x = position[0];
-  particle->position.y = position[1];
-  particle->position.z = position[2];
-
-  const vector3d pos = particle->position;
-  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-
-  vector3d viewPos = TransformPoint(view, pos);
-  viewPos.y -= 8.0f;
-  const vector3d worldPos = TransformPoint(inverse, viewPos);
-  particle->position = worldPos;
-
-  particle->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x006F7360
@@ -138,12 +133,14 @@ __forceinline void CBlastForge::UpdateParticle(CEZ2STRParticle* particle) {
   particle->position.y = this->positionVector.y;
   particle->position.z = this->positionVector.z;
 
-  const vector3d pos = particle->position;
-  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-  vector3d viewPos = TransformPoint(view, pos);
-  viewPos.y -= 8.0f;
-  particle->position = TransformPoint(inverse, viewPos);
+  vector3d position = particle->position;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+  vector3d viewPosition;
+  MatrixMult(viewPosition, position, view);
+  viewPosition.y -= 8.0f;
+  MatrixMult(position, viewPosition, inverse);
+  particle->position = position;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
