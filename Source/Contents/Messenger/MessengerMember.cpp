@@ -1590,10 +1590,15 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 0x22, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-      menu->Move(
-        std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-        std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
-      );
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      x = std::max(x, 1);
+      const int maxX = g_renderer->viewport.width - menu->geometry.width;
+      x = std::min(maxX, x);
+      y = std::max(y, 1);
+      const int maxY = g_renderer->viewport.height - menu->geometry.height;
+      y = std::min(maxY, y);
+      menu->Move(x, y);
     }
     return 0;
   case UM_MENU_SELECTED: {
@@ -1939,7 +1944,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       int height = static_cast<int>(c);
       if (this->iconIndex == 0) {
         width = 0x111;
-        height = std::max(height, 0x146);
+        height = std::max(0x146, height);
       } else if (this->iconIndex == 1) {
         width = 0xF3;
         if (height < 0xB3) {
