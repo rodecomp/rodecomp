@@ -194,6 +194,11 @@ void UIParaResultWnd::OnLBtnDown(int x, int y) {
   }
 }
 
+// INLINED
+static void SetPriceChange(std::string& text, const std::string& name, const std::uint32_t& price, const char* amount) {
+  text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", name.c_str(), price, amount));
+}
+
 // OFFSET: 0x009A9710
 // FUNCTION: fn_13755
 void UIParaResultWnd::OnMouseHover(int x, int y) {
@@ -210,7 +215,7 @@ void UIParaResultWnd::OnMouseHover(int x, int y) {
     std::memset(price, 0, sizeof(price));
     if (item.prices[0] != item.prices[1]) {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
-      text = static_cast<const std::string&>(FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0], amount));
+      SetPriceChange(text, item.DisplayName(0), item.prices[0], amount);
     } else {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
       text = static_cast<const std::string&>(FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount));
