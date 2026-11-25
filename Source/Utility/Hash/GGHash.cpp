@@ -26,6 +26,23 @@ static const DWORD* FindHash(const DWORD* table, DWORD count, DWORD value) {
   return nullptr;
 }
 
+// OFFSET: 0x004016E0
+// FUNCTION: fn_46728
+const GGHashEntry* FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
+  while (count != 0) {
+    const GGHashEntry* mid = &table[count >> 1];
+    if (nameHash == mid->nameHash && fileHash == mid->fileHash) {
+      return mid;
+    }
+    if (fileHash > mid->fileHash || (fileHash == mid->fileHash && nameHash > mid->nameHash)) {
+      table = mid + 1;
+      --count;
+    }
+    count >>= 1;
+  }
+  return nullptr;
+}
+
 // OFFSET: 0x004012B0
 // FUNCTION: fn_00109
 CGGHash::CGGHash() : m_error(0), m_size(0), m_data(nullptr) {
