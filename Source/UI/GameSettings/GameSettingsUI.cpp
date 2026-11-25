@@ -3508,14 +3508,14 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     graphics->m_adapter = graphics->m_pendingAdapter;
     graphics->m_mode = graphics->m_pendingMode;
     switch (g_configuredRenderBackend) {
-    case 1:
+    case RENDER_BACKEND_DX7:
       strncpy_s(g_deviceName, sizeof(g_deviceName), graphics->m_pendingAdapter.description.c_str(), _TRUNCATE);
       std::memcpy(g_guidDevice, &graphics->m_pendingAdapter.renderGuid, sizeof(GUID));
       std::memcpy(g_guidDriver, &graphics->m_pendingAdapter.drawGuid, sizeof(GUID));
       g_configuredDeviceCount = graphics->m_adapterCombo->listBox->selected;
       g_configuredModeCount = graphics->m_modeCombo->listBox->selected;
       break;
-    case 2:
+    case RENDER_BACKEND_DX9:
       g_configuredDeviceGuid = graphics->m_pendingAdapter.deviceGuid;
       strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), graphics->m_pendingAdapter.deviceName.c_str(), _TRUNCATE);
       break;

@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "UI/Buttons/ButtonState.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"

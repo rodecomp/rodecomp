@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/Buttons/ButtonState.h"
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
@@ -99,13 +100,13 @@ void UIPartyInfoWnd::Paint() {
   CBitmapRes* background = nullptr;
 
   switch (this->geometry.state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str())));
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str())));
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str())));
     break;
   }

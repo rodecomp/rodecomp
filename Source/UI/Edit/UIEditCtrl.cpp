@@ -1015,8 +1015,8 @@ void UIItemStoreSubWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 1:
-  case 9:
+  case DRAG_ITEM_INVENTORY:
+  case DRAG_ITEM_MERCHANT_INVENTORY:
     break;
   default:
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1064,8 +1064,8 @@ void UIItemStoreWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 1:
-  case 9:
+  case DRAG_ITEM_INVENTORY:
+  case DRAG_ITEM_MERCHANT_INVENTORY:
     break;
   default:
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -4512,8 +4512,8 @@ void UIMerchantItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 1:
-  case 6:
+  case DRAG_ITEM_INVENTORY:
+  case DRAG_ITEM_STORAGE:
     break;
   default:
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -5286,8 +5286,8 @@ void UIItemShopWnd2::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 4:
-  case 5:
+  case DRAG_ITEM_PURCHASE_CART:
+  case DRAG_ITEM_SELL:
     if (this->interactionDisabled == 0) {
       return;
     }
@@ -5316,7 +5316,7 @@ void UIItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 4:
+  case DRAG_ITEM_PURCHASE_CART:
     if (this->sellMode != 0) {
       return;
     }
@@ -5329,7 +5329,7 @@ void UIItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
     g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 3, 0, 0, 0);
     return;
-  case 5:
+  case DRAG_ITEM_SELL:
     if (this->sellMode == 0) {
       return;
     }
@@ -5410,8 +5410,8 @@ void UIMerchantMirrorItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 10:
-  case 21:
+  case DRAG_VENDING_PURCHASE_LIST:
+  case DRAG_BUYINGSTORE_ITEM_PURCHASE:
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
@@ -5425,7 +5425,7 @@ void UIMerchantMirrorItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
     g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 10, 0, 0, 0);
     return;
-  case 19:
+  case DRAG_BUYINGSTORE_PURCHASE_LIST:
     this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
   default:
@@ -5444,7 +5444,7 @@ void UIMerchantShopMakeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 11:
+  case DRAG_VENDING_SHOP_LIST:
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
@@ -5453,7 +5453,7 @@ void UIMerchantShopMakeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
     g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 9, 0, 0, 0);
     return;
-  case 20:
+  case DRAG_BUYINGSTORE_SHOP_LIST:
     this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
   default:
@@ -6440,10 +6440,10 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     CGameMode* mode = g_modeMgr.GetGameMode();
     const ModeDragState& drag = mode->drag;
     switch (drag.source) {
-    case 1:
+    case DRAG_ITEM_INVENTORY:
       mode->SendMsg(MM_MOVE_ITEM_FROM_BODY_TO_CART, drag.id, drag.quantity, 0, 0);
       break;
-    case 6:
+    case DRAG_ITEM_STORAGE:
       mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, drag.id, drag.quantity, 0, 0);
       break;
     }

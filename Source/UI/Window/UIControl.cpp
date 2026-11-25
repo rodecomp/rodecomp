@@ -2,6 +2,7 @@
 #include "Client/Session/Session.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Buttons/UIRadioButton.h"
+#include "UI/Buttons/ButtonState.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIThumb.h"
@@ -3230,15 +3231,15 @@ void CUIBasicButton::DrawLabel() {
   }
 
   switch (this->state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
     this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
     this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     this->DrawTextAt(this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
     this->DrawTextAt(this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
     break;

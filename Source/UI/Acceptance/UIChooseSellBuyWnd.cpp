@@ -2276,14 +2276,14 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   bool fromStorage = false;
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 1:
+  case DRAG_ITEM_INVENTORY:
     item = g_session.LookupClientItemByIdentity(drag->id);
     break;
-  case 17:
+  case DRAG_SWAP_EQUIP:
     fromStorage = true;
     item = g_session.GetSwapCostumeItem(drag->slot);
     break;
-  case 18:
+  case DRAG_SWAP_EQUIP_COSTUME:
     fromStorage = true;
     item = g_session.GetSwapEquippedItem(drag->slot);
     break;
@@ -2324,14 +2324,14 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   default:
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
-  case 6:
+  case DRAG_ITEM_STORAGE:
     if (x > 444) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
       g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
       return;
     }
     break;
-  case 4:
+  case DRAG_ITEM_PURCHASE_CART:
     if (x < 445) {
       const int quantity = g_session.GetPurchaseItemNumByItemId(drag->name.c_str());
       if (quantity <= 1) {
