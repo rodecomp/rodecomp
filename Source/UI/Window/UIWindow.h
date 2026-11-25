@@ -290,6 +290,12 @@ inline void UIWindow::SetId(int value) {
   this->geometry.SetId(value);
 }
 
+// OFFSET: 0x005C9630
+// FUNCTION: fn_03632
+inline void UIWindow::Show(int visible) {
+  this->geometry.Show(visible);
+}
+
 extern std::uint32_t g_windowUid;
 
 #if defined(_WIN32) && !defined(_WIN64)

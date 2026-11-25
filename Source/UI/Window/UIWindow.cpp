@@ -463,12 +463,6 @@ void UIWindow::StoreMoveOrigin() {
 void UIWindow::MoveFromOrigin(int, int) {
 }
 
-// OFFSET: 0x005C9630
-// FUNCTION: fn_03632
-void UIWindow::Show(int visible) {
-  this->geometry.Show(visible);
-}
-
 // OFFSET: 0x005C6070
 // FUNCTION: fn_03584
 void UIWindow::OnCreate(int, int) {
