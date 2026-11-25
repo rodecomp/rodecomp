@@ -300,15 +300,18 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
   std::string value = "";
   int count = 1;
   std::vector<std::int32_t> cards;
+  bool done = false;
 
   while (++position < end + 1) {
     const char byte = text[position];
     if (byte >= '0') {
       value.push_back(byte);
-    } else if (byte == separator) {
+      continue;
+    } else if (separator == byte) {
       ++count;
       cards.push_back(this->DecodeNumber(value));
       value = "";
+      continue;
     } else {
       --position;
       cards.push_back(this->DecodeNumber(value));
@@ -316,6 +319,9 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
       for (unsigned int card = 0; card < cards.size(); ++card) {
         fields[index + 1 + card] = cards[card];
       }
+      done = true;
+    }
+    if (done) {
       break;
     }
   }
