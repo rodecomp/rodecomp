@@ -8,6 +8,12 @@
 using MilesProvider = std::uint32_t;
 using MilesEnumeration = std::uint32_t;
 
+enum MilesFileType : int {
+  AILFILETYPE_PCM_WAV = 1,
+  AILFILETYPE_ADPCM_WAV = 2,
+  AILFILETYPE_MPEG_L3_AUDIO = 13
+};
+
 struct MilesSoundInfo {
   int format;
   const void* data;

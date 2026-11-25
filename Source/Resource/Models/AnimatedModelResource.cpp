@@ -100,7 +100,7 @@ C3dAnimModelRes::C3dAnimModelRes() {
   this->frameCount = 0;
   this->animationLength = 0;
   this->speed = 1.0f;
-  this->shade = 2;
+  this->shade = ANIMATED_MODEL_SHADE_SMOOTH;
   this->origin.x = 0.0f;
   this->origin.y = 0.0f;
   this->origin.z = 0.0f;

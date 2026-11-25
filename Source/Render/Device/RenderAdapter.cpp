@@ -14,9 +14,9 @@
 // FUNCTION: fn_02283
 std::vector<RenderAdapter> EnumerateRenderAdapters(int backend) {
   switch (backend) {
-  case 1:
+  case RENDER_BACKEND_DX7:
     return EnumerateAdaptersDX7();
-  case 2:
+  case RENDER_BACKEND_DX9:
     return EnumerateAdaptersDX9();
   default:
     return {};
@@ -31,9 +31,9 @@ bool RenderAdapter::Matches(const RenderAdapter& selected) const {
   }
 
   switch (this->backend) {
-  case 1:
+  case RENDER_BACKEND_DX7:
     return std::memcmp(&this->drawGuid, &selected.drawGuid, sizeof(GUID)) == 0 && std::memcmp(&this->renderGuid, &selected.renderGuid, sizeof(GUID)) == 0;
-  case 2:
+  case RENDER_BACKEND_DX9:
     return std::memcmp(&this->deviceGuid, &selected.deviceGuid, sizeof(GUID)) == 0 && this->deviceName == selected.deviceName;
   default:
     return false;
@@ -48,16 +48,16 @@ RenderAdapter SelectedRenderAdapter() {
   RenderAdapter selected{};
   selected.backend = g_configuredRenderBackend;
 
-  if (selected.backend == 0) {
+  if (selected.backend == RENDER_BACKEND_DEFAULT) {
     selected.backend = RenderSystemHolder::PreferredBackend();
   }
 
   switch (selected.backend) {
-  case 1:
+  case RENDER_BACKEND_DX7:
     std::memcpy(&selected.drawGuid, g_guidDriver, sizeof(GUID));
     std::memcpy(&selected.renderGuid, g_guidDevice, sizeof(GUID));
     break;
-  case 2:
+  case RENDER_BACKEND_DX9:
     selected.deviceGuid = g_configuredDeviceGuid;
     selected.deviceName = g_configuredDeviceName;
     break;

@@ -1,6 +1,7 @@
 #include "Render/DX9/RenderSystemDX9.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Render/Primitives/TextureQuad.h"
+#include "Render/Device/RenderBackends.h"
 
 #include <new>
 
@@ -20,7 +21,7 @@ CRenderSystemDX9::~CRenderSystemDX9() {
 // OFFSET: 0x0056E250
 // FUNCTION: fn_02373
 std::int32_t CRenderSystemDX9::Backend() {
-  return 2;
+  return RENDER_BACKEND_DX9;
 }
 
 // OFFSET: 0x0056D670

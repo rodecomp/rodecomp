@@ -1,6 +1,7 @@
 #include "Client/Application/Registry.h"
 #include "Render/Device/DeviceSelection.h"
 #include "Render/Device/DisplayMode.h"
+#include "Render/Device/RenderBackends.h"
 
 #include <algorithm>
 #include <atlbase.h>
@@ -19,9 +20,9 @@ bool DisplayMode::Matches(const DisplayMode& other) const {
 // FUNCTION: fn_02291
 std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex) {
   switch (backend) {
-  case 1:
+  case RENDER_BACKEND_DX7:
     return EnumerateDisplayModesDX7(deviceIndex);
-  case 2:
+  case RENDER_BACKEND_DX9:
     return EnumerateDisplayModesDX9(deviceIndex);
   default:
     return {};

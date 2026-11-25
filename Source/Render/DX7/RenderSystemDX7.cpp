@@ -128,7 +128,7 @@ std::shared_ptr<CSurface> CRenderSystemDX7::BackBufferSurface() {
 // OFFSET: 0x0056C290
 // FUNCTION: fn_02332
 std::int32_t CRenderSystemDX7::Backend() {
-  return 1;
+  return RENDER_BACKEND_DX7;
 }
 
 // OFFSET: 0x0056C2A0

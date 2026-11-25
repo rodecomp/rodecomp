@@ -28,7 +28,7 @@ namespace {
 
 // OFFSET: 0x00737200
 // FUNCTION: fn_07643
-NThread::NThread(std::string name) : m_state(0), m_name(name) {
+NThread::NThread(std::string name) : m_state(NTHREAD_STATE_STOPPED), m_name(name) {
   this->m_handle = nullptr;
   this->m_threadId = 0;
   this->m_initFlag = true;
@@ -45,7 +45,7 @@ NThread::~NThread() {
 unsigned __stdcall NThread::Entry(void* parameter) {
   NThread* thread = static_cast<NThread*>(parameter);
   unsigned result = thread->Run();
-  thread->m_state = 3;
+  thread->m_state = NTHREAD_STATE_FINISHED;
 
   return result;
 }
@@ -53,7 +53,7 @@ unsigned __stdcall NThread::Entry(void* parameter) {
 // OFFSET: 0x00737420
 // FUNCTION: fn_45543
 bool NThread::Start() {
-  if (this->m_handle || this->m_state) {
+  if (this->m_handle || this->m_state != NTHREAD_STATE_STOPPED) {
     return false;
   }
 
@@ -63,7 +63,7 @@ bool NThread::Start() {
   }
 
   ResumeThread(this->m_handle);
-  this->m_state = 1;
+  this->m_state = NTHREAD_STATE_RUNNING;
   SetDebuggerThreadName(this->m_threadId, this->m_name.c_str());
 
   return true;
@@ -73,23 +73,23 @@ bool NThread::Start() {
 // FUNCTION: fn_45509
 void NThread::Stop() {
   switch (this->m_state) {
-  case 0:
+  case NTHREAD_STATE_STOPPED:
     return;
-  case 2:
+  case NTHREAD_STATE_SUSPENDED:
     if (ResumeThread(this->m_handle) != static_cast<DWORD>(-1)) {
-      this->m_state = 1;
+      this->m_state = NTHREAD_STATE_RUNNING;
     }
     [[fallthrough]];
-  case 1:
+  case NTHREAD_STATE_RUNNING:
     this->RequestStop();
     WaitForSingleObject(this->m_handle, 3000);
     [[fallthrough]];
-  case 3:
+  case NTHREAD_STATE_FINISHED:
     if (this->m_handle) {
       CloseHandle(this->m_handle);
       this->m_handle = nullptr;
     }
-    this->m_state = 0;
+    this->m_state = NTHREAD_STATE_STOPPED;
     break;
   }
 }
@@ -97,7 +97,7 @@ void NThread::Stop() {
 // OFFSET: 0x007374F0
 // FUNCTION: fn_07646
 void NThread::Resume() {
-  if (this->m_state == 2 && ResumeThread(this->m_handle) != static_cast<DWORD>(-1)) {
-    this->m_state = 1;
+  if (this->m_state == NTHREAD_STATE_SUSPENDED && ResumeThread(this->m_handle) != static_cast<DWORD>(-1)) {
+    this->m_state = NTHREAD_STATE_RUNNING;
   }
 }

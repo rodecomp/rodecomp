@@ -11,6 +11,13 @@
 
 class CFile;
 
+enum WorldObjectType : int {
+  WORLD_OBJECT_MODEL = 1,
+  WORLD_OBJECT_LIGHT = 2,
+  WORLD_OBJECT_SOUND = 3,
+  WORLD_OBJECT_EFFECT = 4
+};
+
 struct WorldModelRecord {
   WorldModelRecord() : position{0.0f, 0.0f, 0.0f}, rotation{0.0f, 0.0f, 0.0f}, scale{0.0f, 0.0f, 0.0f} {}
 

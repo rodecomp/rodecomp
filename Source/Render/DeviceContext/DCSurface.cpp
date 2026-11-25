@@ -99,13 +99,13 @@ void RenderSystemHolder::PrepareErrorDialog() {
 // FUNCTION: fn_46359
 const char* RenderSystemHolder::BackendNameFor(std::int32_t backend) {
   switch (backend) {
-  case -1:
+  case RENDER_BACKEND_NOT_INITIALIZED:
     return "NotInitialized";
-  case 0:
+  case RENDER_BACKEND_DEFAULT:
     return "Default";
-  case 1:
+  case RENDER_BACKEND_DX7:
     return "DirectX 7";
-  case 2:
+  case RENDER_BACKEND_DX9:
     return "DirectX 9";
   default:
     return "";
@@ -115,7 +115,7 @@ const char* RenderSystemHolder::BackendNameFor(std::int32_t backend) {
 // OFFSET: 0x0056A230
 // FUNCTION: fn_02285
 std::int32_t RenderSystemHolder::Backend() const {
-  return this->system ? this->system->Backend() : -1;
+  return this->system ? this->system->Backend() : RENDER_BACKEND_NOT_INITIALIZED;
 }
 
 // OFFSET: 0x0056A0A0
@@ -169,16 +169,16 @@ HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
   }
 
   int type = backend;
-  if (type == 0) {
+  if (type == RENDER_BACKEND_DEFAULT) {
     type = PreferredBackend();
   }
 
   CRenderSystemBase* renderSystem;
   switch (type) {
-  case 1:
+  case RENDER_BACKEND_DX7:
     renderSystem = new CRenderSystemDX7();
     break;
-  case 2:
+  case RENDER_BACKEND_DX9:
     renderSystem = new CRenderSystemDX9();
     break;
   default:

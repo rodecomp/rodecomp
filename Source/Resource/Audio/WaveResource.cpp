@@ -51,11 +51,11 @@ bool CWave::Load(const char* name) {
   const int type = AIL_file_type(raw, size);
 
   switch (type) {
-  case 1:
+  case AILFILETYPE_PCM_WAV:
     this->data = raw;
     break;
 
-  case 2: {
+  case AILFILETYPE_ADPCM_WAV: {
     this->milesAllocated = 1;
     AIL_WAV_info(raw, &info);
     AIL_decompress_ADPCM(&info, &this->data, nullptr);
@@ -63,7 +63,7 @@ bool CWave::Load(const char* name) {
     break;
   }
 
-  case 13:
+  case AILFILETYPE_MPEG_L3_AUDIO:
     this->milesAllocated = 1;
     AIL_decompress_ASI(raw, size, name, &this->data, nullptr, nullptr);
     delete[] raw;

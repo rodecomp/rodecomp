@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_RENDER_DEVICECONTEXT_DCSURFACE_H
 
 #include "Client/Session/Session.h"
+#include "Render/Device/RenderBackends.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/RenderSystemBase.h"
 
@@ -38,12 +39,12 @@ struct RenderSystemHolder {
   // FUNCTION: fn_46361
   static int PreferredBackend() {
     switch (g_session.DefaultRenderBackend()) {
-    case 1:
-      return 1;
-    case 2:
-      return 2;
+    case RENDER_BACKEND_DX7:
+      return RENDER_BACKEND_DX7;
+    case RENDER_BACKEND_DX9:
+      return RENDER_BACKEND_DX9;
     default:
-      return 2;
+      return RENDER_BACKEND_DX9;
     }
   }
 

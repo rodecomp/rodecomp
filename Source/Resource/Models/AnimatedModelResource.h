@@ -3,6 +3,12 @@
 
 #include "Resource/Models/ModelResource.h"
 
+enum AnimatedModelShadeType : int {
+  ANIMATED_MODEL_SHADE_NONE = 0,
+  ANIMATED_MODEL_SHADE_FLAT = 1,
+  ANIMATED_MODEL_SHADE_SMOOTH = 2
+};
+
 struct AnimatedModelFace {
   /* 0000 */ std::uint16_t vertices[3];
   /* 0006 */ std::uint16_t textureVertices[3];

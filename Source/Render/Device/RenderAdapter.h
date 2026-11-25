@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_RENDER_DEVICE_RENDERADAPTER_H
 #define RAGNAROK_SOURCE_RENDER_DEVICE_RENDERADAPTER_H
 
+#include "Render/Device/RenderBackends.h"
+
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -11,7 +13,7 @@ class DeviceOwnerDX9;
 struct RenderAdapter {
   // OFFSET: 0x00A3D0A0
   // FUNCTION: fn_15905
-  RenderAdapter() : backend(0), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
+  RenderAdapter() : backend(RENDER_BACKEND_DEFAULT), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
   }
 
   // INLINED

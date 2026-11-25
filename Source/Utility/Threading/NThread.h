@@ -5,6 +5,13 @@
 #include <string>
 #include <windows.h>
 
+enum NThreadState : std::uint32_t {
+  NTHREAD_STATE_STOPPED = 0,
+  NTHREAD_STATE_RUNNING = 1,
+  NTHREAD_STATE_SUSPENDED = 2,
+  NTHREAD_STATE_FINISHED = 3
+};
+
 class NThread {
 public:
   explicit NThread(std::string name);

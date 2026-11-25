@@ -5,6 +5,13 @@
 #include <string>
 #include <vector>
 
+enum RenderBackendType : std::int32_t {
+  RENDER_BACKEND_NOT_INITIALIZED = -1,
+  RENDER_BACKEND_DEFAULT = 0,
+  RENDER_BACKEND_DX7 = 1,
+  RENDER_BACKEND_DX9 = 2
+};
+
 struct RenderBackend {
   /* 0000 */ std::int32_t identity;
   /* 0004 */ std::string name;
