@@ -18,6 +18,7 @@
 #include <cstring>
 #include <emmintrin.h>
 #include <functional>
+#include <intrin.h>
 #include <random>
 #include <span>
 #include <unordered_map>
@@ -106,6 +107,88 @@ namespace {
       dest[i] = SwapNibbles(src[i]);
     }
   }
+}
+
+namespace GPakEx {
+
+  class BlockCipher {
+  public:
+    virtual ~BlockCipher() = default;
+    virtual bool IsForwardTransformation() const = 0;
+    virtual unsigned int BlockSize() const = 0;
+    virtual unsigned int OptimalDataAlignment() const = 0;
+    virtual void SetKey(std::span<const std::byte>) = 0;
+  };
+
+  class CipherModeBase {
+  public:
+    virtual ~CipherModeBase() = 0;
+
+    void SetKey(std::span<const std::byte> key);
+
+    /* 0004 */ BlockCipher* m_cipher;
+  };
+
+  void XorBuffers(std::uint8_t* dest, const std::uint8_t* src, unsigned int size);
+  void ByteReverse(std::uint32_t* dest, const std::uint32_t* src, unsigned int size);
+
+  namespace GOST {
+    namespace Base {
+      // GLOBAL: gl_25481
+      const std::uint8_t s_sbox[8][16] = {
+        { 0x0b, 0x04, 0x0c, 0x07, 0x0c, 0x00, 0x09, 0x0d, 0x03, 0x0e, 0x0b, 0x0b, 0x09, 0x08, 0x00, 0x04 },
+        { 0x0c, 0x01, 0x04, 0x05, 0x0e, 0x03, 0x04, 0x0c, 0x07, 0x04, 0x0a, 0x0e, 0x07, 0x0f, 0x0e, 0x00 },
+        { 0x0e, 0x0b, 0x02, 0x0a, 0x02, 0x0b, 0x0b, 0x07, 0x05, 0x0a, 0x00, 0x0f, 0x07, 0x00, 0x09, 0x00 },
+        { 0x04, 0x08, 0x0c, 0x07, 0x09, 0x03, 0x06, 0x04, 0x0c, 0x0e, 0x0a, 0x0f, 0x0d, 0x00, 0x08, 0x01 },
+        { 0x06, 0x0f, 0x00, 0x04, 0x00, 0x0b, 0x00, 0x03, 0x0a, 0x0e, 0x06, 0x0c, 0x07, 0x03, 0x05, 0x03 },
+        { 0x03, 0x04, 0x0f, 0x0d, 0x03, 0x03, 0x0d, 0x04, 0x01, 0x06, 0x0f, 0x0a, 0x0d, 0x06, 0x0c, 0x0f },
+        { 0x02, 0x0a, 0x04, 0x0c, 0x01, 0x00, 0x0e, 0x00, 0x09, 0x0c, 0x0b, 0x0b, 0x09, 0x05, 0x03, 0x09 },
+        { 0x0e, 0x09, 0x08, 0x07, 0x00, 0x0f, 0x03, 0x07, 0x04, 0x07, 0x0f, 0x0d, 0x0b, 0x0a, 0x06, 0x02 }
+      };
+
+      // GLOBAL: gl_25483
+      bool s_sTableCalculated = false;
+
+      // GLOBAL: gl_25484
+      std::uint32_t s_sTable[4][256] = {};
+
+      void PrecalculateSTable();
+    }
+  }
+}
+
+// OFFSET: 0x00643460
+// FUNCTION: fn_46735
+void GPakEx::CipherModeBase::SetKey(std::span<const std::byte> key) {
+  this->m_cipher->SetKey(key);
+}
+
+// OFFSET: 0x00643600
+
+// OFFSET: 0x00643710
+// FUNCTION: fn_46737
+void GPakEx::ByteReverse(std::uint32_t* dest, const std::uint32_t* src, unsigned int size) {
+  const unsigned int count = size / 4;
+  for (unsigned int i = 0; i < count; ++i) {
+    dest[i] = _byteswap_ulong(src[i]);
+  }
+}
+
+// OFFSET: 0x006437F0
+// FUNCTION: fn_46738
+void GPakEx::GOST::Base::PrecalculateSTable() {
+  if (s_sTableCalculated) {
+    return;
+  }
+
+  for (unsigned int table = 0; table < 4; ++table) {
+    for (unsigned int index = 0; index < 256; ++index) {
+      const unsigned int value = (static_cast<unsigned int>(s_sbox[table * 2 + 1][index >> 4]) << 4) | s_sbox[table * 2][index & 0x0F];
+      s_sTable[table][index] = _rotl(value, 11 + 8 * table);
+    }
+  }
+
+  s_sTableCalculated = true;
 }
 
 // OFFSET: 0x00AE97D0
