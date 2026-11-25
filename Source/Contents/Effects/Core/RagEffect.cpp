@@ -23738,7 +23738,9 @@ bool CRagEffect::OnProcess() {
     case EF_CARTBOOST:
     case EF_SOULBURN:
     case EF_SOULCHANGE:
-      this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+        return false;
+      }
       break;
     case EF_DECAGILITY:
       this->DecAgility();
@@ -24342,7 +24344,9 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\black_overthrust.wav");
       }
-      this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+        return false;
+      }
       break;
     case EF_TWOHANDQUICKEN:
     case EF_SPEARQUICKEN:
@@ -24706,7 +24710,9 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\아숨프티오.wav");
       }
-      this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+      if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+        return false;
+      }
       break;
     case EF_SOULBREAKER2:
       if (this->state.stateCnt == 0) {
