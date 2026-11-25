@@ -371,13 +371,12 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   UIItemReformWnd_Item* resultIcon = this->resultIcon;
   resultIcon->item = nullptr;
   resultIcon->Invalidate();
-  for (auto iconIt = this->materialIcons.begin(); iconIt != this->materialIcons.end(); ++iconIt) {
-    UIItemReformWnd_Item* icon = *iconIt;
+  std::for_each(this->materialIcons.begin(), this->materialIcons.end(), [](UIItemReformWnd_Item* icon) {
     if (icon) {
       icon->item = nullptr;
       icon->Invalidate();
     }
-  }
+  });
   this->warning.clear();
   this->materials.clear();
   this->selectedItem = item;
@@ -394,7 +393,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   this->resultItem.identity[0] = 5;
   this->resultItem.identified = 1;
   this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
-  std::memset(this->resultItem.options, 0, sizeof(this->resultItem.options));
+  SecureZeroMemory(this->resultItem.options, sizeof(this->resultItem.options));
   if (info->randomOptionCode.size() == 0) {
     this->resultItem.optionCount = this->selectedItem->optionCount;
     memcpy_s(this->resultItem.options, sizeof(this->resultItem.options), this->selectedItem->options, this->selectedItem->optionCount * 5);
