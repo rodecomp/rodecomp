@@ -11354,35 +11354,44 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
     this->state.lastPrim->state.slots[ec].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
 
     if (kind == 0) {
-      this->state.lastPrim->state.slots[ec].maxHeight = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10.0f : 50.0f;
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
+        this->state.lastPrim->state.slots[ec].maxHeight = 10.0f;
+      } else {
+        this->state.lastPrim->state.slots[ec].maxHeight = 50.0f;
+      }
       this->state.lastPrim->state.slots[ec].rotStart = 0;
       this->state.lastPrim->state.slots[ec].alphaB = 30;
       this->state.lastPrim->state.slots[ec].alphaT = 864;
       this->state.lastPrim->state.slots[ec].height[0] = 5.0f;
       this->state.lastPrim->state.slots[ec].height[1] = 5.0f;
+    } else if (kind == 1) {
+      this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].alphaB = 120;
+      this->state.lastPrim->state.slots[ec].alphaT = 1880;
+      this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
+      this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
+    } else if (kind == 2) {
+      this->state.lastPrim->state.slots[ec].maxHeight = 32.0f;
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].alphaB = 30;
+      this->state.lastPrim->state.slots[ec].alphaT = 29999;
+      this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
+      this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
+    } else if (kind == 3) {
+      this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
+      this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
+    } else if (kind == 4) {
+      this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].alphaB = 120;
+      this->state.lastPrim->state.slots[ec].alphaT = 1880;
+      this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
+      this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
     } else {
-      if (kind == 1) {
-        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
-        this->state.lastPrim->state.slots[ec].rotStart = 0;
-        this->state.lastPrim->state.slots[ec].alphaB = 120;
-        this->state.lastPrim->state.slots[ec].alphaT = 1880;
-      } else if (kind == 2) {
-        this->state.lastPrim->state.slots[ec].maxHeight = 32.0f;
-        this->state.lastPrim->state.slots[ec].rotStart = 0;
-        this->state.lastPrim->state.slots[ec].alphaB = 30;
-        this->state.lastPrim->state.slots[ec].alphaT = 29999;
-      } else if (kind == 3) {
-        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
-        this->state.lastPrim->state.slots[ec].rotStart = 0;
-      } else if (kind == 4) {
-        this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
-        this->state.lastPrim->state.slots[ec].rotStart = 0;
-        this->state.lastPrim->state.slots[ec].alphaB = 120;
-        this->state.lastPrim->state.slots[ec].alphaT = 1880;
-      } else {
-        this->state.lastPrim->state.slots[ec].rotStart = 0;
-      }
-
+      this->state.lastPrim->state.slots[ec].rotStart = 0;
       this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
       this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
     }
