@@ -1560,13 +1560,39 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
 }
 
 // INLINED
-static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
-  const float x = point.x;
-  const float y = point.y;
-  const float z = point.z;
-  return vector3d{y * transform.values[3] + x * transform.values[0] + z * transform.values[6] + transform.values[9],
-                  y * transform.values[4] + x * transform.values[1] + z * transform.values[7] + transform.values[10],
-                  y * transform.values[5] + x * transform.values[2] + z * transform.values[8] + transform.values[11]};
+static void TransformToView(vector3d& result, const vector3d& v, const float* view) {
+  const float y = v.y;
+  const float x = v.x;
+  const float z = v.z;
+
+  result.x = y * view[3];
+  result.x += x * view[0];
+  result.x += z * view[6];
+  result.x += view[9];
+  result.y = y * view[4];
+  result.y += x * view[1];
+  result.y += z * view[7];
+  result.y += view[10];
+  result.z = y * view[5];
+  result.z += x * view[2];
+  result.z += z * view[8];
+  result.z += view[11];
+}
+
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.y * m[3];
+  result.x += v.x * m[0];
+  result.x += v.z * m[6];
+  result.x += m[9];
+  result.y = v.x * m[1];
+  result.y += v.y * m[4];
+  result.y += v.z * m[7];
+  result.y += m[10];
+  result.z = v.x * m[2];
+  result.z += v.y * m[5];
+  result.z += v.z * m[8];
+  result.z += m[11];
 }
 
 // OFFSET: 0x00B51A60
@@ -1598,13 +1624,14 @@ bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
   float shiftX = offsetX * factor;
   if (shiftX >= 0.0f || shiftY >= 0.0f) {
     vector3d position = particle->position;
-    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
-    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-
-    vector3d viewPos = TransformPoint(view, position);
-    viewPos.x += shiftX;
-    viewPos.y -= shiftY;
-    particle->position = TransformPoint(inverse, viewPos);
+    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+    vector3d viewPosition;
+    TransformToView(viewPosition, position, view);
+    viewPosition.x += shiftX;
+    viewPosition.y -= shiftY;
+    MatrixMult(position, viewPosition, inverse);
+    particle->position = position;
     return true;
   }
 
