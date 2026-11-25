@@ -72,6 +72,8 @@ struct PakObfuscated {
     *this = value;
   }
 
+  // OFFSET: 0x00657840
+  // FUNCTION: fn_46759
   PakObfuscated& operator=(const T& value) {
     PakUniformRandom random(1, 0xfe, std::random_device{}());
     FillRandomBytes(reinterpret_cast<char*>(this->m_mask), reinterpret_cast<char*>(this->m_mask) + sizeof(this->m_mask), random);
