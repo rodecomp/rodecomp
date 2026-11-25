@@ -2229,11 +2229,8 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
   case UM_RUNE_SELECT_TAB:
-    {
-      auto* tab = this->m_tab;
-      tab->geometry.state = argument1;
-      tab->Invalidate();
-    }
+    this->m_tab->geometry.state = argument1;
+    this->m_tab->Invalidate();
     this->SelectTab();
     switch (argument1) {
     case 0:
