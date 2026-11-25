@@ -924,9 +924,11 @@ void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
 // FUNCTION: fn_12232
 void UIMonsterDisplayWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  }
 
   char spriteName[128];
   char actionName[128];
