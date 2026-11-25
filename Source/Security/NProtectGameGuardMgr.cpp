@@ -21,8 +21,6 @@
 #include <new>
 #include <string>
 
-bool sub_E92D90(int first, int second, unsigned int third);
-
 // GLOBAL: gl_24848
 CNProtectGameGuardMgr* g_nProtectGameGuardMgr;
 
@@ -63,7 +61,7 @@ CNProtectGameGuardMgr::~CNProtectGameGuardMgr() {
 // FUNCTION: fn_08205
 void CNProtectGameGuardMgr::ProcessAuth(int first, int second) {
   NSyncObject lock(&this->m_lock);
-  sub_E92D90(first, second, this->unknown_0008);
+  Send_CSAuth3ToGameMon(reinterpret_cast<const unsigned char*>(first), second, this->unknown_0008);
 }
 
 // OFFSET: 0x0076C6E0
