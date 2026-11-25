@@ -36,10 +36,12 @@ bool CNavigationManager::LoadStates(std::vector<char> packet) {
     }
 
     CNaviInfo* info = this->FindObject(map);
-    if (info != nullptr) {
-      target.object = info;
-      this->states.push_back(target);
+    if (info == nullptr) {
+      continue;
     }
+
+    target.object = info;
+    this->states.push_back(target);
   }
 
   return true;
