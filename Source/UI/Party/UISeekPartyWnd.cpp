@@ -45,7 +45,7 @@ void UISeekPartyWnd::OnCreate(int, int) {
     maximum = minimum + 0xF;
   }
   const char* message = LookupMessage(MSI_PARTY_BOOKING_REQURT);
-  std::sprintf(text, "%s - %d~%d", message, minimum, maximum);
+  std::sprintf(text, "%s - %d~%d", message, minimum, const_cast<const int&>(maximum));
 
   this->m_label = new UIStaticText();
   this->m_label->SetSize(this->geometry.width - 0x20, 0xF);
