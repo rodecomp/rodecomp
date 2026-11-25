@@ -2831,20 +2831,18 @@ void UISkillListWnd::Paint() {
   CFile file;
   char text[80];
 
-  CBitmapRes* left;
   if (g_skillTooltipActive == 0) {
-    left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp"))), false);
   } else {
-    left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left2.bmp")));
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left2.bmp"))), false);
   }
-  this->DrawBitmap(0, 0, left, false);
-  CBitmapRes* right;
   if (g_skillTooltipActive == 0) {
-    right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   } else {
-    right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right2.bmp")));
+    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right2.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   }
-  this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
   const int count = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
   for (int i = 0; i < count; ++i) {
     CBitmapRes* middle;
@@ -2877,9 +2875,8 @@ void UISkillListWnd::Paint() {
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     const int gap = (this->geometry.width - 60) % 32;
     this->FillRegion(20, 17, gap, this->geometry.height - 38, RGB(red, green, blue));
-    const int height = this->geometry.height - 38;
-    const int remainder = height % 32;
-    const int bottom = height / 32 * 32 + 17;
+    const int remainder = (this->geometry.height - 38) % 32;
+    const int bottom = (this->geometry.height - 38) / 32 * 32 + 17;
     this->FillRegion(20, bottom, this->geometry.width - 24, remainder, RGB(red, green, blue));
   }
   this->DrawButtonBar(2, 0, 1);
@@ -2941,7 +2938,7 @@ void UISkillListWnd::Paint() {
       const char* format;
       int levelX;
       if (CSkillInfo::UsesLevel(static_cast<int>(it->id))) {
-        std::sprintf(text, g_serviceType != 12 ? "Lv :" : "Nv :");
+        std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
         this->DrawTextAt(x + 124, top + 34, text, 0, 0, 12, 0, 0, 0);
         if (this->skillTab == 0) {
           skillLevel = g_session.HomunSkillLevel(static_cast<int>(it->id));
@@ -2956,7 +2953,7 @@ void UISkillListWnd::Paint() {
         format = "/ %2d";
         levelX = 168;
       } else {
-        format = g_serviceType != 12 ? "Lv : %d" : "Nv : %d";
+        format = g_serviceType == 12 ? "Nv : %d" : "Lv : %d";
         levelX = 113;
       }
       std::sprintf(text, format, it->level);
@@ -9979,8 +9976,6 @@ void UIMerchantShopMakeWnd::Paint() {
     }
   }
 
-  const char* message;
-  int messageY;
   if (this->mode != 0) {
     int count = this->items.size();
     if (static_cast<unsigned>(count) < static_cast<unsigned>(this->minimumRows)) {
@@ -10027,9 +10022,9 @@ void UIMerchantShopMakeWnd::Paint() {
     const int labelWidth = this->TextWidth(LookupMessage(MSI_BUYINGSTORE_MAKEWND_LIMITZENY), 0, 0, 12, 0, 0) + 10;
     this->zenyLimitEdit->Move(labelWidth, this->geometry.height - barHeight + 5);
     this->DrawTextAt(5, this->geometry.height - barHeight + 5, LookupMessage(MSI_BUYINGSTORE_MAKEWND_LIMITZENY), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(this->zenyLimitEdit->geometry.width + this->zenyLimitEdit->geometry.x + 5, this->geometry.height - barHeight + 5,
-      "Zeny", 0, 0, 12, 0, 0, 0
-    );
+    const int unitX = this->zenyLimitEdit->geometry.width + (this->zenyLimitEdit->geometry.x + 5);
+    const int unitY = this->geometry.height - barHeight;
+    this->DrawTextAt(unitX, unitY + 5, "Zeny", 0, 0, 12, 0, 0, 0);
 
     char grouped[16] = {};
     char text[32] = {};
@@ -10046,10 +10041,10 @@ void UIMerchantShopMakeWnd::Paint() {
       sprintf(text, "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
       color = g_session.m_weight * 100 / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight) < 50 ? 0 : 0xFF;
     }
-    this->DrawRightAlignedText(this->geometry.width - 20, this->geometry.height - barHeight * 2 + 5, text, 0, 0, 12, color, 0);
+    const int weightY = this->geometry.height - barHeight * 2;
+    this->DrawRightAlignedText(this->geometry.width - 20, weightY + 5, text, 0, 0, 12, color, 0);
 
-    message = LookupMessage(MSI_WARNING_METCHANT_SHOP_BUY);
-    messageY = this->geometry.height - 72;
+    this->DrawTextAt(5, this->geometry.height - 72, LookupMessage(MSI_WARNING_METCHANT_SHOP_BUY), 0, 0, 12, 0xFF, 0, 0);
   } else {
     for (int i = 0, y = 72; i < this->visibleRows; ++i, y += 42) {
       this->DrawTextAt(this->geometry.width - 165, y - 15, LookupMessage(MSI_SELLPRICE), 0, 0, 12, 0, 0, 0);
@@ -10087,14 +10082,11 @@ void UIMerchantShopMakeWnd::Paint() {
     this->DrawTextAt(16, 3, LookupMessage(MSI_MERCHANTSHOPMAKER), 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(2, 25, LookupMessage(MSI_STALL_NAME), 0, 0, 12, 0, 0, 0);
 
-    message = LookupMessage(MSI_WARNING_METCHANT_SHOP_SELL);
-    messageY = this->geometry.height - 43;
+    this->DrawTextAt(5, this->geometry.height - 43, LookupMessage(MSI_WARNING_METCHANT_SHOP_SELL), 0, 0, 12, 0xFF, 0, 0);
   }
-  this->DrawTextAt(5, messageY, message, 0, 0, 12, 0xFF, 0, 0);
-
-  int index = 0;
 
   int visible = 0;
+  int index = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
@@ -10104,15 +10096,14 @@ void UIMerchantShopMakeWnd::Paint() {
       continue;
     }
 
-    const int top = visible / this->columns * 42;
-    const int column = visible % this->columns * 42;
-    const int x = column + 7;
-    this->DrawItemAndQuantity(x, top + 48, *it, 0, 0);
-    this->DrawWrappedItemName(column + 39, top + 57, 100, &*it, 0, 0, 12);
+    const int y = visible / this->columns * 42 + 48;
+    const int x = visible % this->columns * 42 + 7;
+    this->DrawItemAndQuantity(x, y, *it, 0, 0);
+    this->DrawWrappedItemName(x + 32, y + 9, 100, &*it, 0, 0, 12);
 
     if (0 < it->grade) {
       this->DrawBitmap(
-        x, top + 60,
+        x, y + 12,
         static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
         ),
@@ -11285,7 +11276,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.CloseWindow(WID_ITEMSELLWND);
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
-      return 0;
+      break;
     }
     break;
   }
@@ -11351,7 +11342,8 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
     if (20750 == header.type) {
-      while (static_cast<unsigned>(b) > offset) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         if (header.type == 20751) {
@@ -11362,13 +11354,13 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           }
 
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
+          scanning = false;
+        } else {
+          offset += header.size;
         }
-
-        offset += header.size;
       }
     }
-    break;
+    return 0;
   }
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
@@ -11408,11 +11400,10 @@ void UIItemWnd::Paint() {
   } else {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    const int height = this->geometry.height - 38;
-    const int bottom = height / 32 * 32 + 17;
+    const int bottom = (this->geometry.height - 38) / 32 * 32 + 17;
     const int gap = (this->geometry.width - 60) % 32;
-    const int remainder = height % 32;
-    this->FillRegion(20, 17, gap, height, RGB(red, green, blue));
+    const int remainder = (this->geometry.height - 38) % 32;
+    this->FillRegion(20, 17, gap, this->geometry.height - 38, RGB(red, green, blue));
     this->FillRegion(20, bottom, this->geometry.width - 24, remainder, RGB(red, green, blue));
   }
 
@@ -11491,14 +11482,13 @@ void UIItemWnd::Paint() {
       continue;
     }
 
-    const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
-    const int y = top + 21;
+    const int y = visible / this->columns * 32 + 21;
     this->DrawItemAndQuantity(x, y, *it, 0, 0);
 
     if (0 < it->grade) {
       this->DrawBitmap(
-        x, top + 33,
+        x, y + 12,
         static_cast<CBitmapRes*>(
           ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
         ),
