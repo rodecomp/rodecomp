@@ -256,8 +256,8 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
           SetTileCoordinates(tile, tileRecord, this->lightmapSet);
 
-          SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] > record.heights[2] ? -1.0f : 1.0f);
           cell.side2 = &tile;
+          SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] > record.heights[2] ? -1.0f : 1.0f);
         }
       }
 
