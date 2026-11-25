@@ -49,14 +49,13 @@ void CBash::Close() {
 __forceinline void CBash::CreateRays() {
   const int fadeFrame = this->effectLifetime - 10;
   const vector3d* origin = &this->positionVector;
-  int index = 0;
-  for (int angle = 0; angle < 360; angle += 36) {
+  for (int index = 0; index < 10; ++index) {
     CParticle* particle = CreateParticle(origin, 1);
     particle->effectId = this->id;
     particle->columnIndex = index;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
-    particle->angle = static_cast<float>(angle);
+    particle->angle = static_cast<float>(index * 36);
     particle->scale = 100.0f;
     particle->speedParameter = 28.333334f;
     particle->animationValues[0] = 28.333334f;
@@ -65,7 +64,6 @@ __forceinline void CBash::CreateRays() {
     particle->alpha = 0;
     particle->SetTexture("effect\\alpha_down.tga");
     this->rays.push_back(particle);
-    ++index;
   }
 }
 
