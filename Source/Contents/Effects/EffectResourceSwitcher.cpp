@@ -356,9 +356,19 @@ void CEZ2STREffectEx::OnProcess() {
     const float viewX = position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] + emitter->offsetX;
     const float viewY = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] - emitter->offsetY;
 
-    const vector3d world = {viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9],
-                            viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10],
-                            viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11]};
+    vector3d world;
+    world.x = viewY * inverse.values[3];
+    world.x += viewX * inverse.values[0];
+    world.x += viewZ * inverse.values[6];
+    world.x += inverse.values[9];
+    world.y = viewX * inverse.values[1];
+    world.y += viewY * inverse.values[4];
+    world.y += viewZ * inverse.values[7];
+    world.y += inverse.values[10];
+    world.z = viewX * inverse.values[2];
+    world.z += viewY * inverse.values[5];
+    world.z += viewZ * inverse.values[8];
+    world.z += inverse.values[11];
     emitter->position = world;
     static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
