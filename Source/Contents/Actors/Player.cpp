@@ -3212,28 +3212,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     }
-    case EFST_ONEHANDQUICKEN: {
-      CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
-      }
-      break;
-    }
-    case EFST_NJ_BUNSINJYUTSU: {
-      CRagEffect* effect = this->LaunchEffect(EF_BUNSINJYUTSU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_BUNSINJYUTSU, 0, 0, 0);
-      }
-      break;
-    }
     case EFST_OVERTHRUST: {
-      CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
-      }
-      break;
-    }
-    case EFST_OVERTHRUSTMAX: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
@@ -3261,29 +3240,32 @@ void CPlayer::ReapplySkillEffects() {
       this->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(EF_SU_STOOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case EFST_SG_SUN_WARM:
-    case EFST_SG_MOON_WARM:
-    case EFST_SG_STAR_WARM:
-      this->LaunchEffect(EF_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->LaunchEffect(EF_REDLIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_KAITE:
-      this->LaunchEffect(EF_REFLECTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    case EFST_PROPERTYUNDEAD:
+      this->LaunchEffect(EF_UNDEADBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_AURABLADE:
       this->LaunchEffect(EF_AURABLADE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
+    case EFST_LKCONCENTRATION:
+      this->LaunchEffect(EF_LKCONCENTRATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
     case EFST_BERSERK:
       this->LaunchEffect(EF_REDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
-    case EFST_LKCONCENTRATION:
-      this->LaunchEffect(EF_LKCONCENTRATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    case EFST_ASSUMPTIO:
+    case EFST_ASSUMPTIO2:
+    case EFST_ASSUMPTIO_BUFF:
+      this->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_MAGICPOWER:
       this->LaunchEffect(EF_LIGHTBLADE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_MOON:
       this->LaunchEffect(EF_SPHEREWIND2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_SOULLINK:
+      g_weatherEffect.StartDarken();
+      this->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_DEVIL1: {
       CSkillInfo skill = g_session.m_skillBundle.Lookup(0x1B9);
@@ -3309,16 +3291,39 @@ void CPlayer::ReapplySkillEffects() {
       this->skillEffect = this->LaunchEffect(EF_STATUS_STATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     }
-    case EFST_SOULLINK:
-      g_weatherEffect.StartDarken();
-      this->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_PROPERTYUNDEAD:
-      this->LaunchEffect(EF_UNDEADBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    case EFST_KAITE:
+      this->LaunchEffect(EF_REFLECTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case EFST_SKE:
       g_weatherEffect.StartDarken();
       break;
+    case EFST_ONEHANDQUICKEN: {
+      CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
+      }
+      break;
+    }
+    case EFST_SG_SUN_WARM:
+    case EFST_SG_MOON_WARM:
+    case EFST_SG_STAR_WARM:
+      this->LaunchEffect(EF_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_REDLIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_OVERTHRUSTMAX: {
+      CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
+      }
+      break;
+    }
+    case EFST_NJ_BUNSINJYUTSU: {
+      CRagEffect* effect = this->LaunchEffect(EF_BUNSINJYUTSU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect) {
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_BUNSINJYUTSU, 0, 0, 0);
+      }
+      break;
+    }
     case EFST_DAURA:
       this->LaunchEffect(EF_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(EF_REDLIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3326,6 +3331,191 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_DBARRIER:
       this->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(EF_SU_STOOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_ALL_RIDING:
+      this->SetRiding(1);
+      this->SetSprJob(this->GetEffectiveJob(-1));
+      this->SetBodyPalette(this->render.bodyPalette);
+      break;
+    case EFST_EQUIPPED_DIVINE_ARMOR:
+    case EFST_EQUIPPED_HOLY_ARMOR:
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, type, 1, 0, 0, 0, 0);
+      break;
+    case EFST_KAGEMUSYA:
+      while (this->HasId(EF_KAGEMUSYA)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_KAGEMUSYA, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_KAGEMUSYA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_ZANGETSU:
+      while (this->HasId(EF_BLUELIGHTBODY)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_BLUELIGHTBODY, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_BLUELIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_GENSOU:
+      g_effectMgr->Retire(this->render.accountId, 0x3ED);
+      if (g_effectMgr->HasAllocator(0x3ED)) {
+        CEffect* orb = g_effectMgr->Spawn(this->render.accountId, EF_OB_GENSOU, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        if (orb) {
+          static_cast<CEnergyOrbEffect*>(orb)->SetCount(10);
+        }
+      }
+      while (this->HasId(EF_GRAYBODY)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GRAYBODY, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_ON_PUSH_CART:
+      this->SendMsg(nullptr, AM_STATUS_CHANGE, type, 1, g_session.replayPacketMode, 0, 0, 0);
+      break;
+    case EFST_FLOWER_LEAF:
+      g_effectMgr->Retire(this->render.accountId, 0x3F5);
+      if (g_effectMgr->HasAllocator(0x3F5) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_CHERRYBLOSSOM, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_OFFERTORIUM:
+      while (this->HasId(EF_AB_OFFERTORIUM_RING)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_AB_OFFERTORIUM_RING, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_AB_OFFERTORIUM_RING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_TELEKINESIS_INTENSE:
+      while (this->HasId(EF_WL_TELEKINESIS_INTENSE)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_WL_TELEKINESIS_INTENSE, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_WL_TELEKINESIS_INTENSE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_DARKCROW:
+      while (this->HasId(EF_GC_DARKCROW)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GC_DARKCROW, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_WIDEWEB:
+      while (this->HasId(EF_BOTTOM_SPIDER)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_BOTTOM_SPIDER, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_BOTTOM_SPIDER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_CHILL:
+      while (this->HasId(EF_NPC_CHILL)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_NPC_CHILL, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_NPC_CHILL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_BURNT:
+      while (this->HasId(EF_NPC_BURNT)) {
+        this->SendMsg(this, AM_DELETE_EFFECT, EF_NPC_BURNT, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(EF_NPC_BURNT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_ANTI_M_BLAST:
+      g_effectMgr->Retire(this->render.accountId, 0x470);
+      if (g_effectMgr->HasAllocator(0x470) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_RL_ANTI_MATERIAL_BLAST, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_SV_ROOTTWIST:
+      g_effectMgr->Retire(this->render.accountId, 0x456);
+      if (g_effectMgr->HasAllocator(0x456) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_SU_SV_ROOTTWIST, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_BITESCAR:
+      g_effectMgr->Retire(this->render.accountId, 0x45F);
+      if (g_effectMgr->HasAllocator(0x45F) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_BITE_SCAR, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_TUNAPARTY:
+      g_effectMgr->Retire(this->render.accountId, 0x449);
+      if (g_effectMgr->HasAllocator(0x449) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_TUNAPARTY, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_SUHIDE:
+      this->SetState(ST_SU_HIDE, 1);
+      this->render.isMotionFreezed = true;
+      break;
+    case EFST_SPRITEMABLE:
+      g_effectMgr->Retire(this->render.accountId, 0x448);
+      if (g_effectMgr->HasAllocator(0x448) == true) {
+        g_effectMgr->Spawn(this->render.accountId, EF_SPRITEMABLE, this->render.position, 0, -1, 0, 0);
+      }
+      break;
+    case EFST_SOULATTACK:
+      this->alternateDoramAppearance[0] = 1;
+      break;
+    case EFST_IMMUNE_PROPERTY_NOTHING:
+    case EFST_IMMUNE_PROPERTY_WATER:
+    case EFST_IMMUNE_PROPERTY_GROUND:
+    case EFST_IMMUNE_PROPERTY_FIRE:
+    case EFST_IMMUNE_PROPERTY_WIND:
+    case EFST_IMMUNE_PROPERTY_POISON:
+    case EFST_IMMUNE_PROPERTY_SAINT:
+    case EFST_IMMUNE_PROPERTY_DARKNESS:
+    case EFST_IMMUNE_PROPERTY_TELEKINESIS:
+    case EFST_IMMUNE_PROPERTY_UNDEAD:
+      g_effectMgr->Spawn(this->render.accountId, type + 0x87, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_LUNARSTANCE:
+      if (g_effectMgr->Has(this->render.accountId, EF_LUNAR_STANCE) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4BF);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_LUNAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_UNIVERSESTANCE:
+      if (g_effectMgr->Has(this->render.accountId, EF_UNIVERSE_STANCE) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C1);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_UNIVERSE_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_SUNSTANCE:
+      if (g_effectMgr->Has(this->render.accountId, EF_SUN_STANCE) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4BE);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_SUN_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_FLASHKICK:
+      if (g_effectMgr->Has(this->render.accountId, EF_FLASH_KICK) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C5);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_FLASH_KICK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_STARSTANCE:
+      if (g_effectMgr->Has(this->render.accountId, EF_STAR_STANCE) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C0);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_STAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      break;
+    case EFST_GRAVITYCONTROL:
+      if (g_effectMgr->Has(this->render.accountId, EF_UNK_1201) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4B1);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1201, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\t_캐스팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case EFST_SOULUNITY:
+      if (g_effectMgr->Has(this->render.accountId, EF_SOUL_UNITY) == true) {
+        g_effectMgr->Retire(this->render.accountId, 0x4C6);
+      }
+      g_effectMgr->Spawn(this->render.accountId, EF_SOUL_UNITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\t_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case EFST_SOULSHADOW:
+    case EFST_SOULFAIRY:
+    case EFST_SOULFALCON:
+    case EFST_SOULGOLEM:
+      g_weatherEffect.StartDarken();
+      this->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      break;
+    case EFST_SOUND_OF_DESTRUCTION:
+      g_effectMgr->Retire(this->render.accountId, 0x66C);
+      g_effectMgr->Spawn(this->render.accountId, EF_NEW_SOUNDOFDESTRUCTION_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       break;
     case EFST_DA_CONTRACT:
       this->LaunchEffect(EF_M04, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3462,89 +3652,6 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_EQUIPED_FLOOR:
       this->SendMsg(nullptr, AM_STATUS_CHANGE, 0x23B, 1, value, 0, 0, 0);
       break;
-    case EFST_ALL_RIDING:
-      this->SetRiding(1);
-      this->SetSprJob(this->GetEffectiveJob(-1));
-      this->SetBodyPalette(this->render.bodyPalette);
-      break;
-    case EFST_ON_PUSH_CART:
-      this->SendMsg(nullptr, AM_STATUS_CHANGE, type, 1, g_session.replayPacketMode, 0, 0, 0);
-      break;
-    case EFST_TELEKINESIS_INTENSE:
-      while (this->HasId(EF_WL_TELEKINESIS_INTENSE)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_WL_TELEKINESIS_INTENSE, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_WL_TELEKINESIS_INTENSE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_WIDEWEB:
-      while (this->HasId(EF_BOTTOM_SPIDER)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_BOTTOM_SPIDER, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_BOTTOM_SPIDER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_BURNT:
-      while (this->HasId(EF_NPC_BURNT)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_NPC_BURNT, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_NPC_BURNT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_CHILL:
-      while (this->HasId(EF_NPC_CHILL)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_NPC_CHILL, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_NPC_CHILL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_OFFERTORIUM:
-      while (this->HasId(EF_AB_OFFERTORIUM_RING)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_AB_OFFERTORIUM_RING, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_AB_OFFERTORIUM_RING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_ZANGETSU:
-      while (this->HasId(EF_BLUELIGHTBODY)) {
-        this->SendMsg(this, AM_DELETE_EFFECT, EF_BLUELIGHTBODY, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_BLUELIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_GENSOU:
-      g_effectMgr->Retire(this->render.accountId, 0x3ED);
-      if (g_effectMgr->HasAllocator(0x3ED)) {
-        CEffect* orb = g_effectMgr->Spawn(this->render.accountId, EF_OB_GENSOU, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        if (orb) {
-          static_cast<CEnergyOrbEffect*>(orb)->SetCount(10);
-        }
-      }
-      while (this->HasId(EF_GRAYBODY)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GRAYBODY, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_KAGEMUSYA:
-      while (this->HasId(EF_KAGEMUSYA)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_KAGEMUSYA, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_KAGEMUSYA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_ANTI_M_BLAST:
-      g_effectMgr->Retire(this->render.accountId, 0x470);
-      if (g_effectMgr->HasAllocator(0x470) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_RL_ANTI_MATERIAL_BLAST, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_FLOWER_LEAF:
-      g_effectMgr->Retire(this->render.accountId, 0x3F5);
-      if (g_effectMgr->HasAllocator(0x3F5) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_CHERRYBLOSSOM, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_DARKCROW:
-      while (this->HasId(EF_GC_DARKCROW)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GC_DARKCROW, 0, 0, 0, 0, 0);
-      }
-      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->LaunchEffect(EF_GC_DARKCROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
     case EFST_HALLUCINATIONWALK:
     case EFST_NPC_HALLUCINATIONWALK: {
       while (this->HasId(EF_MAKEHALLU)) {
@@ -3556,109 +3663,6 @@ void CPlayer::ReapplySkillEffects() {
       }
       break;
     }
-    case EFST_ASSUMPTIO:
-    case EFST_ASSUMPTIO2:
-    case EFST_ASSUMPTIO_BUFF:
-      this->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_SPRITEMABLE:
-      g_effectMgr->Retire(this->render.accountId, 0x448);
-      if (g_effectMgr->HasAllocator(0x448) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SPRITEMABLE, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_SUHIDE:
-      this->SetState(ST_SU_HIDE, 1);
-      this->render.isMotionFreezed = true;
-      break;
-    case EFST_TUNAPARTY:
-      g_effectMgr->Retire(this->render.accountId, 0x449);
-      if (g_effectMgr->HasAllocator(0x449) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_TUNAPARTY, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_SV_ROOTTWIST:
-      g_effectMgr->Retire(this->render.accountId, 0x456);
-      if (g_effectMgr->HasAllocator(0x456) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SU_SV_ROOTTWIST, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_BITESCAR:
-      g_effectMgr->Retire(this->render.accountId, 0x45F);
-      if (g_effectMgr->HasAllocator(0x45F) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_BITE_SCAR, this->render.position, 0, -1, 0, 0);
-      }
-      break;
-    case EFST_SOULATTACK:
-      this->alternateDoramAppearance[0] = 1;
-      break;
-    case EFST_IMMUNE_PROPERTY_NOTHING:
-    case EFST_IMMUNE_PROPERTY_WATER:
-    case EFST_IMMUNE_PROPERTY_GROUND:
-    case EFST_IMMUNE_PROPERTY_FIRE:
-    case EFST_IMMUNE_PROPERTY_WIND:
-    case EFST_IMMUNE_PROPERTY_POISON:
-    case EFST_IMMUNE_PROPERTY_SAINT:
-    case EFST_IMMUNE_PROPERTY_DARKNESS:
-    case EFST_IMMUNE_PROPERTY_TELEKINESIS:
-    case EFST_IMMUNE_PROPERTY_UNDEAD:
-      g_effectMgr->Spawn(this->render.accountId, type + 0x87, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_GRAVITYCONTROL:
-      if (g_effectMgr->Has(this->render.accountId, EF_UNK_1201) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4B1);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1201, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_soundMgr->PlayWave("effect\\t_캐스팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      break;
-    case EFST_SUNSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, EF_SUN_STANCE) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4BE);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_SUN_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_LUNARSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, EF_LUNAR_STANCE) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4BF);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_LUNAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_STARSTANCE:
-      if (g_effectMgr->Has(this->render.accountId, EF_STAR_STANCE) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4C0);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_STAR_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_UNIVERSESTANCE:
-      if (g_effectMgr->Has(this->render.accountId, EF_UNIVERSE_STANCE) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4C1);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_UNIVERSE_STANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_FLASHKICK:
-      if (g_effectMgr->Has(this->render.accountId, EF_FLASH_KICK) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4C5);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_FLASH_KICK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
-    case EFST_SOULUNITY:
-      if (g_effectMgr->Has(this->render.accountId, EF_SOUL_UNITY) == true) {
-        g_effectMgr->Retire(this->render.accountId, 0x4C6);
-      }
-      g_effectMgr->Spawn(this->render.accountId, EF_SOUL_UNITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_soundMgr->PlayWave("effect\\t_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      break;
-    case EFST_SOULSHADOW:
-    case EFST_SOULFAIRY:
-    case EFST_SOULFALCON:
-    case EFST_SOULGOLEM:
-      g_weatherEffect.StartDarken();
-      this->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case EFST_SOUND_OF_DESTRUCTION:
-      g_effectMgr->Retire(this->render.accountId, 0x66C);
-      g_effectMgr->Spawn(this->render.accountId, EF_NEW_SOUNDOFDESTRUCTION_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      break;
     case EFST_DEADLY_DEFEASANCE:
       if (!g_effectMgr->Has(this->render.accountId, EF_DEADLY_PROJECTION)) {
         g_effectMgr->Spawn(this->render.accountId, EF_DEADLY_PROJECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -3800,10 +3804,6 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_HOLY_OIL:
     case EFST_FIRST_BRAND:
     case EFST_SECOND_BRAND:
-      break;
-    case EFST_EQUIPPED_DIVINE_ARMOR:
-    case EFST_EQUIPPED_HOLY_ARMOR:
-      this->SendMsg(nullptr, AM_STATUS_CHANGE, type, 1, 0, 0, 0, 0);
       break;
     default:
       switch (type) {
