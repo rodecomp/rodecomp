@@ -5197,7 +5197,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_NEXT: {
       const DWORD tick = GetTickCount();
       if (tick - g_session.m_itemSendTick < 300) {
-        return 0;
+        break;
       }
       g_session.m_itemSendTick = tick;
       g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, 218, 0, 0);
@@ -12260,10 +12260,12 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   const char* text = reinterpret_cast<const char*>(a);
   if (message == UM_SETCHOOSE && text != nullptr) {
+    int length;
+    int itemId;
     const std::string_view value(text);
     if (!value.empty() && value != LookupMessage(MSI_REF_UNEQUIP)) {
-      int length = 0;
-      int itemId = 0;
+      length = 0;
+      itemId = 0;
       const char* line = text;
       if (ParseItemIdTag(text, text + value.size(), length, itemId) == 1 && itemId > 0) {
         line = FindItemDescription(itemId).identifiedName;
