@@ -6983,30 +6983,33 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (REPLAY_CHUNK_MERCHANT_PURCHASE_BEGIN == header.type || REPLAY_CHUNK_MERCHANT_BUYING_STORE_BEGIN == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        switch (header.type) {
-        case REPLAY_CHUNK_MERCHANT_BUYING_STORE_END:
-          this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
-          [[fallthrough]];
-        case REPLAY_CHUNK_MERCHANT_PURCHASE_END:
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          scanning = false;
-          break;
-        default:
-          offset += header.size;
-          break;
-        }
+    if (REPLAY_CHUNK_MERCHANT_PURCHASE_BEGIN != header.type && REPLAY_CHUNK_MERCHANT_BUYING_STORE_BEGIN != header.type) {
+      break;
+    }
+    bool scanning = true;
+    while (scanning && static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case REPLAY_CHUNK_MERCHANT_BUYING_STORE_END:
+        this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
+        [[fallthrough]];
+      case REPLAY_CHUNK_MERCHANT_PURCHASE_END:
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        scanning = false;
+        break;
+      default:
+        offset += header.size;
+        break;
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00991370
