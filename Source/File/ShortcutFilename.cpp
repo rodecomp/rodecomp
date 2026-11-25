@@ -9,7 +9,7 @@ std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
   std::uint32_t divisor = 1000000000;
   do {
     if (!result.empty() && divisor == 100) {
-      result.push_back('-');
+      result += '-';
     }
 
     std::uint32_t digit = identifier / divisor;
