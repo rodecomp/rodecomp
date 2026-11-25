@@ -136,7 +136,7 @@ void UINavigationWnd::OnCreate(int width, int height) {
   UIEditCtrl* edit = this->m_titleBar;
   const char* tooltip = LookupMessage(MSI_NAVIGATION_SETSTRING);
   if (tooltip) {
-    edit->tooltip = tooltip;
+    edit->tooltip = std::string_view(tooltip);
   }
   this->AddChild(this->m_titleBar);
   if (g_replayAnimationScaling) {
@@ -222,15 +222,15 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
       } else {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETUNKNOWN));
       }
-      this->m_title = LookupMessage(MSI_NAVIGATION_GOING);
-      this->m_subtitle = text;
+      this->m_title.assign(LookupMessage(MSI_NAVIGATION_GOING));
+      this->m_subtitle.assign(text);
     } else {
-      this->m_title = LookupMessage(MSI_NAVIGATION_SEARCHING);
-      this->m_subtitle = LookupMessage(MSI_NAVIGATION_UN);
+      this->m_title.assign(LookupMessage(MSI_NAVIGATION_SEARCHING));
+      this->m_subtitle.assign(LookupMessage(MSI_NAVIGATION_UN));
     }
   } else {
-    this->m_title = LookupMessage(MSI_NAVIGATION_NAVI);
-    this->m_subtitle = LookupMessage(MSI_NAVIGATION_UN);
+    this->m_title.assign(LookupMessage(MSI_NAVIGATION_NAVI));
+    this->m_subtitle.assign(LookupMessage(MSI_NAVIGATION_UN));
   }
 
   this->Invalidate();
@@ -245,13 +245,13 @@ void UIRoMapWnd::RefreshWorldMapMarks() {
     for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
       CNavi_Link* node = g_navigationManager.GetNode(index);
       if (node) {
-        name = node->GetInfo()->GetName();
+        name.assign(node->GetInfo()->GetName());
         name += ".rsw";
         g_worldViewMgr.AddMark(name.c_str());
       }
     }
 
-    name = g_navigationManager.GetDestinationInfo()->GetName();
+    name.assign(g_navigationManager.GetDestinationInfo()->GetName());
     name += ".rsw";
     g_worldViewMgr.AddMark(name.c_str());
     this->Invalidate();
@@ -332,16 +332,18 @@ void UINavigationWnd::RefreshRouteList() {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
-    std::string kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
-    std::memset(text, 0, sizeof(text));
-    std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_S), mob->GetName(), kind.c_str());
-    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    {
+      std::string kind;
+      kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
+      std::memset(text, 0, sizeof(text));
+      std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_S), mob->GetName(), kind.c_str());
+      this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
+    }
     lineOffset = 5;
   } else if (target.type == 1) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), map->GetTitle(), map->GetName());
-    std::string kind;
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 4;
   } else if (target.type == 0) {
@@ -364,11 +366,13 @@ void UINavigationWnd::RefreshRouteList() {
   this->m_searchPanel->SetLineOffset(lineOffset);
 
   CNavi_Link* previous = nullptr;
+  NaviCell firstX;
+  NaviCell firstY;
+  NaviCell cellX;
+  NaviCell cellY;
   for (int index = 0; index < nodeCount; ++index) {
     std::memset(text, 0, 64);
     CNavi_Link* node = g_navigationManager.GetNode(index);
-    NaviCell cellX;
-    NaviCell cellY;
     if (index == 0) {
       if (node->GetType() == 400) {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_ITEM_S_S), index, node->GetName(), node->GetLinkedName());
@@ -377,7 +381,7 @@ void UINavigationWnd::RefreshRouteList() {
         int row = 0;
         g_navigationManager.PlayerCell(&column, &row);
         std::sprintf(
-          text, LookupMessage(MSI_NAVIGATION_D_S_D_D_D_D), index, node->GetInfo()->GetName(), column, row, node->GetCell(&cellX)->x, node->GetCell(&cellY)->y
+          text, LookupMessage(MSI_NAVIGATION_D_S_D_D_D_D), index, node->GetInfo()->GetName(), column, row, node->GetCell(&firstX)->x, node->GetCell(&firstY)->y
         );
       }
     } else {
@@ -392,8 +396,8 @@ void UINavigationWnd::RefreshRouteList() {
         node->GetCell(&cellY)->y
       );
     }
-    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     previous = node;
+    this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
   }
 
   const int savedType = g_navigationManager.GetSavedTarget().type;
@@ -402,15 +406,17 @@ void UINavigationWnd::RefreshRouteList() {
   int startY;
   NaviCell cell;
   int destinationX;
+  int destinationY;
   if (nodeCount == 0) {
     g_navigationManager.PlayerCell(&startX, &startY);
     destinationX = g_navigationManager.GetDestinationCell(&cell)->x;
+    destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
   } else {
     startX = previous->GetLinkedCell().x;
     startY = previous->GetLinkedCell().y;
     destinationX = g_navigationManager.GetDestinationCell(&cell)->x;
+    destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
   }
-  const int destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
 
   if (savedType == 2 || savedType == 0) {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_E_D_S_D_D_D_D), nodeCount, destination.c_str(), startX, startY, destinationX, destinationY);
@@ -425,7 +431,8 @@ void UINavigationWnd::RefreshRouteList() {
       this->m_searchPanel->Invalidate();
     }
   } else {
-    this->m_searchPanel->SetLineColor(g_navigationManager.GetSelectedNode(), 1);
+    const int selected = g_navigationManager.GetSelectedNode();
+    this->m_searchPanel->SetLineColor(selected, 1);
     this->m_searchPanel->Invalidate();
   }
 }
@@ -892,15 +899,15 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 static std::string MobAmountText(int flag) {
   std::string kind = "없음";
   if (flag > 99) {
-    kind = LookupMessage(MSI_NAVIGATION_NUM1);
+    kind.assign(LookupMessage(MSI_NAVIGATION_NUM1));
   } else if (flag > 49) {
-    kind = LookupMessage(MSI_NAVIGATION_NUM2);
+    kind.assign(LookupMessage(MSI_NAVIGATION_NUM2));
   } else if (flag >= 20 && flag <= 49) {
-    kind = LookupMessage(MSI_NAVIGATION_NUM3);
+    kind.assign(LookupMessage(MSI_NAVIGATION_NUM3));
   } else if (flag >= 5 && flag <= 19) {
-    kind = LookupMessage(MSI_NAVIGATION_NUM4);
+    kind.assign(LookupMessage(MSI_NAVIGATION_NUM4));
   } else if (flag >= 1 && flag <= 4) {
-    kind = LookupMessage(MSI_NAVIGATION_NUM5);
+    kind.assign(LookupMessage(MSI_NAVIGATION_NUM5));
   }
   return kind;
 }
