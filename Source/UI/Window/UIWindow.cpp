@@ -4031,8 +4031,7 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
   }
 
   CNavi_Object* target = static_cast<CNavi_Object*>(g_navigationManager.GetCurrentTarget().object);
-  NavigationTargetLook look;
-  std::memcpy(&look, &target->look, sizeof(look));
+  NavigationTargetLook look = *reinterpret_cast<const NavigationTargetLook*>(&target->look);
   if (!look.job) {
     owner->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, x, y, width, height, 1500, true, background);
     return;
