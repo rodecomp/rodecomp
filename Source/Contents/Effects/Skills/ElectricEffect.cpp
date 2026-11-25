@@ -27,6 +27,19 @@ static void SetParticleIndices(CParticle& particle, int group, int column, int r
 }
 
 // INLINED
+static int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+
+// INLINED
+static void Shift(vector3d& point, float x, float y, float z) {
+  point.x += x;
+  point.y += y;
+  point.z += z;
+}
+
+// INLINED
 static short HeadingOf(float nx, float nz) {
   for (short step = 0; step <= 180; ++step) {
     if (nx >= g_cosTable[step]) {
@@ -34,6 +47,14 @@ static short HeadingOf(float nx, float nz) {
     }
   }
   return 180;
+}
+
+// INLINED
+static short HeadingFromVector(float x, float z) {
+  const float length = SquareRoot(x * x + z * z);
+  const float nz = z / length;
+  const float nx = x / length;
+  return HeadingOf(nx, nz);
 }
 
 // OFFSET: 0x00B4E7A0
@@ -262,21 +283,13 @@ void CElectricEffect::OnProcess() {
         this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * particle->angle;
         this->path[index].z = radius * g_sinTable[particle->phaseParameter];
 
-        const int jitterZ = rand() % 7;
-        const int jitterY = rand() % 7;
-        const int jitterX = rand() % 7;
-        this->path[index].x += static_cast<float>(jitterX >= 0 ? jitterX : 0) * 0.1f - 2.3f;
-        this->path[index].y += static_cast<float>(jitterY >= 0 ? jitterY : 0) * 0.1f - 0.3f;
-        this->path[index].z += static_cast<float>(jitterZ >= 0 ? jitterZ : 0) * 0.1f - 0.3f;
+        Shift(
+          this->path[index], static_cast<float>(ClampedRandom(7)) * 0.1f - 2.3f, static_cast<float>(ClampedRandom(7)) * 0.1f - 0.3f,
+          static_cast<float>(ClampedRandom(7)) * 0.1f - 0.3f
+        );
       }
 
-      const float dz = this->path[0].z - this->path[1].z;
-      const float dx = this->path[0].x - this->path[1].x;
-      const float length = SquareRoot(dx * dx + dz * dz);
-      const float nz = dz / length;
-      const float nx = dx / length;
-
-      const short heading = HeadingOf(nx, nz);
+      const short heading = HeadingFromVector(this->path[0].x - this->path[1].x, this->path[0].z - this->path[1].z);
       this->angle = static_cast<short>((heading + 90) % 360);
     }
 
