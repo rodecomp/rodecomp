@@ -10,6 +10,7 @@ struct NavigationLinkParser {
   ~NavigationLinkParser();
 
   bool HasUnownedItemLink(std::string text);
+  bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, const char* source);
   bool HasLink(std::string text);
   __declspec(noinline) std::string ExpandMessages(std::string text);
   std::string EncodeNavigationNumber(int value);
