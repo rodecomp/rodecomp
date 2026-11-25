@@ -319,11 +319,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
       &quad, &cell, 0, &box, this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
     );
     if (drawOnTop && g_session.IsTopLayerRobe(this->pc->robe)) {
-      SpriteLayerQuad entry;
-      entry.quad = quad;
-      entry.palette = sprite->palette;
-      entry.blend = blend;
-      this->quads.emplace(std::piecewise_construct, std::forward_as_tuple(400), std::forward_as_tuple(entry));
+      this->quads.insert(std::make_pair(400u, SpriteLayerQuad{quad, sprite->palette, blend}));
     } else {
       this->QueueQuad(0, &quad, sprite->palette, blend);
     }
