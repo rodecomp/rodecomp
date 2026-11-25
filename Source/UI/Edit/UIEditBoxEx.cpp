@@ -217,8 +217,8 @@ void CUIEditCtrlEx::Synchronize() {
 
   this->lines.clear();
   if (!lines.empty()) {
-    int cursor = 0;
     int anchor = 0;
+    int cursor = 0;
     g_serverLanguage->Selection(anchor, cursor);
     if (anchor > cursor) {
       std::swap(anchor, cursor);
@@ -265,9 +265,9 @@ void CUIEditCtrlEx::Synchronize() {
     }
 
     const EditLine& current = this->lines[this->line];
+    const auto fullLength = [&current] { return static_cast<int>(current.text.size()) + (current.hasCarriageReturn ? 2 : 0); };
     if (current.hasCarriageReturn != 0 || this->wrapPending == 0) {
-      int fullLen = static_cast<int>(current.text.size()) + (current.hasCarriageReturn ? 2 : 0);
-      if (remaining == fullLen && static_cast<std::size_t>(this->line) < this->lines.size() - 1) {
+      if (remaining == fullLength() &&static_cast<std::size_t>(this->line) < this->lines.size() - 1) {
         this->column = 0;
         this->line++;
       }
