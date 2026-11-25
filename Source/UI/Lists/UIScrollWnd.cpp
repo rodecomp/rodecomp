@@ -343,10 +343,10 @@ void UIScrollWnd::UpdateScrollRange() {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
     UIWindow* child = it->first;
     if (child->geometry.visible != 0) {
-      const int childBottom = it->second.y + child->geometry.height;
-      const int childRight = child->geometry.width + it->second.x;
-      right = right >= childRight ? right : childRight;
-      bottom = bottom >= childBottom ? bottom : childBottom;
+      right = right >= child->geometry.width + it->second.x ? right : child->geometry.width + it->second.x;
+      if (bottom < it->second.y + child->geometry.height) {
+        bottom = it->second.y + child->geometry.height;
+      }
     }
   }
 
@@ -458,18 +458,18 @@ void UIScrollWnd::Resize(int width, int height) {
 // OFFSET: 0x009AD940
 // FUNCTION: fn_13789
 int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  int delta = argument1;
   switch (message) {
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->scrollPosition;
     if (message == UM_SCROLLVERTPAGEUP) {
-      delta = -1;
+      this->scrollPosition += -1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      delta = 1;
+      this->scrollPosition += 1;
+    } else {
+      this->scrollPosition += argument1;
     }
-    this->scrollPosition = previous + delta;
     if (this->scrollPosition < 0) {
       this->scrollPosition = 0;
     }
@@ -486,11 +486,12 @@ int UIScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_SCROLLHORZPAGEDOWN: {
     const int previous = this->horizontalScrollPosition;
     if (message == UM_SCROLLHORZPAGEUP) {
-      delta = -1;
+      this->horizontalScrollPosition += -1;
     } else if (message == UM_SCROLLHORZPAGEDOWN) {
-      delta = 1;
+      this->horizontalScrollPosition += 1;
+    } else {
+      this->horizontalScrollPosition += argument1;
     }
-    this->horizontalScrollPosition = previous + delta;
     if (this->horizontalScrollPosition < 0) {
       this->horizontalScrollPosition = 0;
     }
