@@ -1332,15 +1332,13 @@ void UINewSkillListWnd::LayoutButtons() {
 // OFFSET: 0x009B3580
 // FUNCTION: fn_13825
 int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  int& gate = g_session.m_simplifiedSkillList;
-
   switch (message) {
   case UM_SETINFO:
     this->m_saved = reinterpret_cast<SkillListWndInfo*>(a);
     if (this->m_saved->IsValid() == 0) {
       this->m_saved->Reset();
     }
-    if (gate != 0) {
+    if (g_session.m_simplifiedSkillList != 0) {
       this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
       return 0;
     } else {
@@ -1349,7 +1347,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
   case UM_RESIZE:
     if (a == 3) {
-      if (gate != 0) {
+      if (g_session.m_simplifiedSkillList != 0) {
         const int minimum = this->m_tabs->geometry.height + 12;
         if (c < minimum) {
           c = minimum;
@@ -1393,9 +1391,8 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case ID_MINI: {
       this->StoreInfo();
       this->m_needsRedraw = 1;
-      const bool simplified = gate == 0;
-      gate = simplified;
-      if (simplified) {
+      g_session.m_simplifiedSkillList = g_session.m_simplifiedSkillList == 0;
+      if (g_session.m_simplifiedSkillList != 0) {
         this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
@@ -1403,8 +1400,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     case ID_CHECK: {
-      int& flag = g_session.m_showSkillDescription;
-      flag = flag == 0;
+      g_session.m_showSkillDescription = g_session.m_showSkillDescription == 0;
       return 0;
     }
     case ID_LVLUP1:
