@@ -759,9 +759,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
   particle.auxiliaryIndex = 0;
   particle.elapsedFrames = 0;
   particle.renderOptions = 0;
-  particle.offsetX = 0;
-  particle.offsetY = 0;
-  particle.offsetZ = 0;
+  particle.offset = vector3d{0.0f, 0.0f, 0.0f};
   particle.sourceBlend = 5;
   particle.destinationBlend = 2;
   particle.primitive = RenderPrimitive();
@@ -773,10 +771,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
     vertex.x = 0;
     vertex.y = 0;
     vertex.z = 0;
-    vector3d& corner = particle.corners[i];
-    corner.x = 0;
-    corner.y = 0;
-    corner.z = 0;
+    particle.corners[i] = vector3d{0.0f, 0.0f, 0.0f};
   }
 
   particle.InitParticleQuad(particle.vertices);
