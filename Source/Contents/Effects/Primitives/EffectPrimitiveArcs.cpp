@@ -1025,7 +1025,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
 
     for (short step = 0; step < 7; ++step) {
       const float size = this->state.slots[ec].maxHeight;
-      const float dist = step * size + this->state.slots[ec].height[10];
+      const float dist = step * size + this->state.slots[ec].height[4];
       short angle = this->state.slots[ec].riseAngle;
       if (dist > 20.0f) {
         angle += 5;
