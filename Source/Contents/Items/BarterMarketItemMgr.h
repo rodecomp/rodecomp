@@ -41,6 +41,12 @@ public:
   void Clear();
   static bool CreateInstance();
   void AddItem(const BarterMarketItem& item);
+
+  // INLINED
+  __declspec(noinline) void PushItem(const BarterMarketItem& item) {
+    this->items.push_back(item);
+  }
+
   void RemoveItem(const BarterMarketItem& item);
   bool HasItemByName(std::string name);
   std::pair<bool, BarterMarketItem> FindItem(int id);

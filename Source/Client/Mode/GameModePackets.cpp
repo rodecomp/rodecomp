@@ -9045,14 +9045,14 @@ void CGameMode::ReceiveBarterMarketItemList(const unsigned char* data) {
     item.itemType = record.type;
     item.currencyItemId = record.currencyItemId;
     item.currencyAmount = record.currencyAmount;
-    item.amount = record.weight / 10;
     item.value = record.amount;
     item.flag_24 = true;
+    item.amount = record.weight / 10;
     item.flag_38 = record.amount == -1;
     item.id = record.index;
     item.location = record.location;
     item.viewSprite = record.viewSprite;
-    g_barterMarketItemMgr->items.push_back(item);
+    g_barterMarketItemMgr->PushItem(item);
   }
 
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BARTERMARKETWND)) {
