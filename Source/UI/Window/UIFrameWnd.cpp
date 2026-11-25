@@ -502,8 +502,8 @@ void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  int screenX = 0;
   int screenY = 0;
+  int screenX = 0;
   this->ToScreen(screenX, screenY);
   std::string name = g_modeMgr.GetGameMode()->ActorName(g_session.m_monsterInfoActorId);
   const std::size_t mark = name.find("#", 0);
