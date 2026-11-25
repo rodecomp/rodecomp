@@ -2104,10 +2104,12 @@ void UIMyStyleWnd::LoadLikeList() {
         if (_mbsstr(reinterpret_cast<const unsigned char*>("characterName"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
           ++i;
           char value[24] = {};
-          if (data[i] != '\n') {
-            for (char* out = value; data[i] != '\r'; ++i, ++out) {
-              *out += data[i];
-              if (data[i] == '\n') {
+          char ch = data[i];
+          if (ch != '\n') {
+            for (char* out = value; ch != '\r'; ++out) {
+              *out += ch;
+              ch = data[++i];
+              if (ch == '\n') {
                 break;
               }
             }
