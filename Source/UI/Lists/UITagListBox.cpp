@@ -701,13 +701,15 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
 // FUNCTION: fn_45779
 __forceinline std::pair<unsigned int, int> UITagListBox::FindTagPosition(int offset, int lineCount) {
   std::pair<unsigned int, int> position;
+  const std::string* text = this->lines.data();
   const unsigned int count = static_cast<unsigned int>(this->lines.size());
   int bytes = 0;
   for (unsigned int index = count - lineCount; index < count; ++index) {
-    bytes += static_cast<int>(this->lines[index].size());
+    const int length = static_cast<int>(text[index].size());
+    bytes += length;
     if (bytes > offset) {
-      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + offset;
-      const std::string stripped = StripColorTokens(std::string_view(this->lines[index].c_str(), prefixLength));
+      const int prefixLength = length - bytes + offset;
+      const std::string stripped = StripColorTokens(std::string_view(text[index].c_str(), prefixLength));
       position.first = index;
       position.second = this->TextWidth(stripped.substr(0, prefixLength).c_str(), 0, 0, 12, 0, 0) + 2;
       break;
