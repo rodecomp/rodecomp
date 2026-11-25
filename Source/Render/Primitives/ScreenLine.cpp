@@ -243,11 +243,11 @@ void UIRoMapWnd::DrawKafraIcon(ScreenPoint point) {
 // OFFSET: 0x00917D70
 // FUNCTION: fn_12590
 void UIRoMapWnd::DrawArrow(
-  float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
-  float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
+  ScreenPoint from, ScreenPoint to, ScreenPoint startMin, ScreenPoint startMax, ScreenPoint endMin, ScreenPoint endMax, int bodyWidth, CTexture* body,
+  int headWidth, CTexture* head, float progress, std::uint32_t color
 ) {
-  float dx = x1 - x0;
-  float dy = y1 - y0;
+  float dx = to.x - from.x;
+  float dy = to.y - from.y;
   const float length = 1.0f / SquareRoot(dy * dy + dx * dx);
   const float dirX = length * dx;
   const float dirY = length * dy;
@@ -263,24 +263,24 @@ void UIRoMapWnd::DrawArrow(
   const float offsetX = static_cast<float>(bodyWidth) * normalX;
   const float normalY = normal * sine;
   const float offsetY = static_cast<float>(bodyWidth) * normalY;
-  ScreenPoint sideStart = {offsetX + x0, offsetY + y0};
-  ScreenPoint sideEnd = {offsetX + x1, offsetY + y1};
-  ScreenPoint start = {x0, y0};
-  ScreenPoint end = {x1, y1};
+  ScreenPoint sideStart = {offsetX + from.x, offsetY + from.y};
+  ScreenPoint sideEnd = {offsetX + to.x, offsetY + to.y};
+  ScreenPoint start = {from.x, from.y};
+  ScreenPoint end = {to.x, to.y};
 
-  while (start.x > startLeft && startRight > start.x && start.y > startTop && startBottom > start.y) {
+  while (start.x > startMin.x && startMax.x > start.x && start.y > startMin.y && startMax.y > start.y) {
     start.x += dirX;
     start.y += dirY;
   }
-  while (end.x > endLeft && endRight > end.x && end.y > endTop && endBottom > end.y) {
+  while (end.x > endMin.x && endMax.x > end.x && end.y > endMin.y && endMax.y > end.y) {
     end.x -= dirX;
     end.y -= dirY;
   }
-  while (sideStart.x > startLeft && startRight > sideStart.x && sideStart.y > startTop && startBottom > sideStart.y) {
+  while (sideStart.x > startMin.x && startMax.x > sideStart.x && sideStart.y > startMin.y && startMax.y > sideStart.y) {
     sideStart.x += dirX;
     sideStart.y += dirY;
   }
-  while (sideEnd.x > endLeft && endRight > sideEnd.x && sideEnd.y > endTop && endBottom > sideEnd.y) {
+  while (sideEnd.x > endMin.x && endMax.x > sideEnd.x && sideEnd.y > endMin.y && endMax.y > sideEnd.y) {
     sideEnd.x -= dirX;
     sideEnd.y -= dirY;
   }

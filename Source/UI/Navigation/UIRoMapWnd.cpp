@@ -667,7 +667,7 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
     const ScreenPoint toMin(static_cast<float>(to.area.left), static_cast<float>(to.area.top));
     const ScreenPoint toMax(static_cast<float>(to.area.right), static_cast<float>(to.area.bottom));
     this->DrawArrow(
-      from.center.x, from.center.y, to.center.x, to.center.y, fromMin.x, fromMin.y, fromMax.x, fromMax.y, toMin.x, toMin.y, toMax.x, toMax.y, 10,
+      from.center, to.center, fromMin, fromMax, toMin, toMax, 10,
       g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false), 20, g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false), this->m_kafraMarkers.blend,
       0xAAFFFFFF
     );

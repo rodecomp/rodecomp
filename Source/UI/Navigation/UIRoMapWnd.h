@@ -88,8 +88,8 @@ public:
   void DrawPreviewTexture();
   void DrawKafraIcon(ScreenPoint point);
   void DrawArrow(
-    float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
-    float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
+    ScreenPoint from, ScreenPoint to, ScreenPoint startMin, ScreenPoint startMax, ScreenPoint endMin, ScreenPoint endMax, int bodyWidth, CTexture* body,
+    int headWidth, CTexture* head, float progress, std::uint32_t color
   );
   void DrawDashedArrow(
     ScreenPoint start, ScreenPoint end, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress, std::uint32_t color,
