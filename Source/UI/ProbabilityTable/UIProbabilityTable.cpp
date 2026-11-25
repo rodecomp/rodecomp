@@ -513,12 +513,12 @@ void CUIProbabilityTable::BindItem(ProbabilityTable::CUIItem* item, const Probab
 
 // INLINED
 static void SetClickHandler(CUIImageButton* button, std::function<void()> handler) {
-  button->onClick.swap(handler);
+  button->onClick = handler;
 }
 
 // INLINED
 static void SetSubmitHandler(CUIEditBoxEx* edit, std::function<void()> handler) {
-  edit->onSubmit.swap(handler);
+  edit->onSubmit = handler;
 }
 
 // OFFSET: 0x00A493D0
