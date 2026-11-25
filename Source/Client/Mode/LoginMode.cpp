@@ -2705,9 +2705,7 @@ void CLoginMode::PollNetworkStatus() {
       memset(text, 0, sizeof(text));
       _snprintf(text, sizeof(text), LookupMessage(MSI_SHOUTDOWN_TIME), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
       g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
-      const std::uint64_t timestamp = static_cast<std::int64_t>(startTime) * 10000000;
-      const std::int64_t interval = 3600000;
-      CPartialShutDownSchedule* schedule = new CPartialShutDownSchedule(timestamp, interval, 1);
+      CPartialShutDownSchedule* schedule = new CPartialShutDownSchedule(static_cast<std::int64_t>(startTime) * 10000000LL, static_cast<std::int64_t>(3600000), 1);
       schedule->SetPeriod(endTime, startTime);
       g_timeScheduler->AddSchedule(schedule);
       break;
