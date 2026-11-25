@@ -1168,17 +1168,15 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   }
   case CR_SLIMPITCHER: {
     g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
+    vector3d position{x, height, z};
     if (level < 6) {
-      dummyEffect = 0x1F1;
-      dummyLifetime = 0x1F1;
+      mode->LaunchDummyEffect(&position, 0x1F1, EffectLifetime(0x1F1) + 10, 0);
     } else if (level < 10) {
-      dummyEffect = 0x1F2;
-      dummyLifetime = 0x1F2;
+      mode->LaunchDummyEffect(&position, 0x1F2, EffectLifetime(0x1F2) + 10, 0);
     } else {
-      dummyEffect = 0x1F3;
-      dummyLifetime = 0x1F3;
+      mode->LaunchDummyEffect(&position, 0x1F3, EffectLifetime(0x1F3) + 10, 0);
     }
-    break;
+    return;
   }
   case HW_GANBANTEIN: {
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
