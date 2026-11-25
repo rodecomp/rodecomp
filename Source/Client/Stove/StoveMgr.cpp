@@ -446,11 +446,10 @@ EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator
 void InitializeCallback::operator()(Stove::PCSDK::CallbackResult callbackResult) const {
   g_stoveWaitingCallback = false;
   if (!callbackResult.GetResult().IsSuccessful()) {
-    const char captionSource[] = OBFUSCATE_SOURCE_CHARS(7, "메시지", 0x31D7C1EDA345E36DULL);
-    const char* caption = OBFUSCATE_DECRYPT(0x31D7C1EDA345E36DULL, captionSource);
-    const char messageSource[] = OBFUSCATE_SOURCE_CHARS(45, "필수 사전 작업이 실패하여 게임을 종료합니다.", 0xD3755DD95F47A909ULL);
-    const char* message = OBFUSCATE_DECRYPT(0xD3755DD95F47A909ULL, messageSource);
-    MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
+    MessageBoxA(
+      hWnd, FormatOwnedString(OBFUSCATE_TEXT("필수 사전 작업이 실패하여 게임을 종료합니다.", 0xD3755DD95F47A909ULL)).c_str(),
+      OBFUSCATE_TEXT("메시지", 0x31D7C1EDA345E36DULL), MB_OK
+    );
     PostQuitMessage(0);
   }
 }
@@ -523,9 +522,10 @@ bool CStoveMgr::Initialize() {
 
   const char* skipRestart = OBFUSCATE_TEXT("/stove_cag_tool", 0x73D1674B61DF7B0BULL);
   if (std::strstr(g_commandLine, skipRestart) == nullptr && Base_RestartAppIfNecessary(&param) == true) {
-    const char* caption = OBFUSCATE_TEXT("메시지", 0x0F0F8B6B8F9D19D1ULL);
-    const char* message = OBFUSCATE_ARRAY_TEXT("Stove 클라이언트를 통해 실행해 주세요", 0xD98F03A52D35636DULL, char);
-    MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
+    MessageBoxA(
+      hWnd, FormatOwnedString(OBFUSCATE_ARRAY_TEXT("Stove 클라이언트를 통해 실행해 주세요", 0xD98F03A52D35636DULL, char)).c_str(),
+      OBFUSCATE_TEXT("메시지", 0x0F0F8B6B8F9D19D1ULL), MB_OK
+    );
     return false;
   }
 
@@ -539,9 +539,10 @@ bool CStoveMgr::Initialize() {
     return true;
   }
 
-  const char* caption = OBFUSCATE_TEXT("메시지", 0x812BE72BCD5707B7ULL);
-  const char* message = OBFUSCATE_ARRAY_TEXT("필수 사전 작업이 실패하여 게임을 종료합니다.", 0x59278F63D79F3DA1ULL, char);
-  MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
+  MessageBoxA(
+    hWnd, FormatOwnedString(OBFUSCATE_ARRAY_TEXT("필수 사전 작업이 실패하여 게임을 종료합니다.", 0x59278F63D79F3DA1ULL, char)).c_str(),
+    OBFUSCATE_TEXT("메시지", 0x812BE72BCD5707B7ULL), MB_OK
+  );
   return false;
 }
 
