@@ -48,6 +48,7 @@
 #include "Security/ProcessSecurity.h"
 #include "Security/ReassemblyPacketMgr.h"
 #include "Security/ThemidaMgr.h"
+#include "Security/ThemidaSDK.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Party/UIRequestJoinPartyMgr.h"
 #include "UI/Navigation/NavigationLink.h"
@@ -581,7 +582,13 @@ void ApplyAiPatch() {
 // INLINED
 void ExitForProtectionCheck(const char* commandLine) {
   if (std::strstr(commandLine, OBFUSCATE_BYTES_TEXT("/check_themida", 0xC7FB6DF18577D34BULL))) {
-    ExitProcess(0);
+    // The target has a region here that the protector removed (UNPROTECTED, 10 bytes of code):
+    // what it held is not known. This stand-in gives the region its place and length only.
+    volatile int exitCode = 0;
+    UNPROTECTED_START
+    exitCode = 1;
+    UNPROTECTED_END
+    ExitProcess(exitCode);
   }
 }
 
