@@ -471,12 +471,13 @@ void UIEditCtrl3::PaintText() {
     ++this->lineCount;
   }
 
+  const int rows = this->geometry.height / this->lineHeight;
+
   if (this->wrappedLines.size() == 0) {
     this->DrawBlinkingCaret(color);
     return;
   }
 
-  const int rows = this->geometry.height / this->lineHeight;
   const int first = this->firstVisibleLine;
   const int last = std::min<std::size_t>(rows + first, this->wrappedLines.size());
 
@@ -661,10 +662,10 @@ void UIEditCtrl3::PaintText() {
         if (this->movingUp != 0) {
           const int current = this->textY;
           if (current - wrapped < this->firstVisibleLine) {
-            if (current < this->lineCount - rows) {
-              this->firstVisibleLine = current + wrapped;
-            } else {
+            if (current >= this->lineCount - rows) {
               this->firstVisibleLine = this->lineCount - rows;
+            } else {
+              this->firstVisibleLine = current + wrapped;
             }
           }
         } else if (this->movingDown != 0) {
@@ -690,17 +691,7 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  if (this->wrappedLines.size() < 2 || this->textY < 1) {
-    if ((this->wrappedLines.size() == 1 || (this->wrappedLines.size() > 1 && this->textY == 0)) && this->lineBreaks[0]) {
-      const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
-      if (this->previousLineText) {
-        delete[] this->previousLineText;
-        this->previousLineText = nullptr;
-      }
-      this->previousLineText = new char[length + 1];
-      std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
-    }
-  } else {
+  if (this->wrappedLines.size() > 1 && this->textY > 0) {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY - 1].c_str());
     if (this->previousLineText) {
       delete[] this->previousLineText;
@@ -708,19 +699,17 @@ void UIEditCtrl3::PaintText() {
     }
     this->previousLineText = new char[length + 1];
     std::strcpy(this->previousLineText, this->wrappedLines[this->textY - 1].c_str());
+  } else if ((this->wrappedLines.size() == 1 || (this->wrappedLines.size() > 1 && this->textY == 0)) && this->lineBreaks[0]) {
+    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+    if (this->previousLineText) {
+      delete[] this->previousLineText;
+      this->previousLineText = nullptr;
+    }
+    this->previousLineText = new char[length + 1];
+    std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
   }
 
-  if (this->wrappedLines.size() < 2 || static_cast<unsigned>(this->textY) >= this->wrappedLines.size() - 1) {
-    if (this->wrappedLines.size() == 1 && this->lineBreaks[0]) {
-      const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
-      if (this->nextLineText) {
-        delete[] this->nextLineText;
-        this->nextLineText = nullptr;
-      }
-      this->nextLineText = new char[length + 1];
-      std::strcpy(this->nextLineText, this->wrappedLines[0].c_str());
-    }
-  } else {
+  if (this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY + 1].c_str());
     if (this->nextLineText) {
       delete[] this->nextLineText;
@@ -728,6 +717,14 @@ void UIEditCtrl3::PaintText() {
     }
     this->nextLineText = new char[length + 1];
     std::strcpy(this->nextLineText, this->wrappedLines[this->textY + 1].c_str());
+  } else if (this->wrappedLines.size() == 1 && this->lineBreaks[0]) {
+    const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
+    if (this->nextLineText) {
+      delete[] this->nextLineText;
+      this->nextLineText = nullptr;
+    }
+    this->nextLineText = new char[length + 1];
+    std::strcpy(this->nextLineText, this->wrappedLines[0].c_str());
   }
 
   this->UpdateScrollBar();
