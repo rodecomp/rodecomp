@@ -288,39 +288,67 @@ void SnapObject::MoveBranch(int dx, int dy, int side) {
   }
 }
 
+// INLINED
+static __forceinline bool ContainsAbove(SnapObject* self, SnapObject* target) {
+  if (self == target) {
+    return false;
+  }
+
+  for (auto next = self->edges[1].begin(); next != self->edges[1].end(); ++next) {
+    if ((*next)->ContainsUpward(target)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// INLINED
+static __forceinline bool AtTop(SnapObject* object) {
+  int up = 0;
+  object->AccumulateHeight(up, 1);
+  return object->window->geometry.y + object->window->geometry.height - up == 0;
+}
+
+// INLINED
+static __forceinline bool AtBottom(SnapObject* object, int dy) {
+  int down = 0;
+  object->AccumulateHeight(down, 3);
+  return object->window->geometry.y - dy + down == g_renderer->viewport.height;
+}
+
 // OFFSET: 0x007E2FD0
 // FUNCTION: fn_09716
 void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side) {
   this->ResetVisited();
-  SnapObject* object = this->Find(window);
+  SnapObject* object = nullptr;
+  for (SnapObject* entry : this->objects) {
+    if (window == entry->window) {
+      object = entry;
+      break;
+    }
+  }
   if (!object) {
     return;
   }
 
   if (side != -1 && object->visited != 1) {
     object->visited = 1;
-    int up = 0;
-    object->AccumulateHeight(up, 1);
-    int down = 0;
-    const int y = object->window->geometry.y;
-    const int height = object->window->geometry.height;
-    object->AccumulateHeight(down, 3);
-    UIWindow* movedWindow = object->window;
-    const int candidateBottom = down + (movedWindow->geometry.y - dy);
-    const int screenHeight = g_renderer->viewport.height;
+    const bool top = AtTop(object);
+    const bool bottom = AtBottom(object, dy);
+    if (!top) {
+      SnapObject* root = g_snapMgr.root;
+      if (!root || root != object || bottom) {
+        if (side == 3 && (ContainsAbove(root, object) || bottom)) {
+          side = g_snapDirection;
+          dy = -dy;
+        }
 
-    SnapObject* root = g_snapMgr.root;
-    if ((height - up + y) != 0 && (!root || root != object || candidateBottom == screenHeight)) {
-      if (side == 3 && ((root != object && root->ContainsUpward(object)) || candidateBottom == screenHeight)) {
-        side = g_snapDirection;
-        dy = -dy;
-        movedWindow = object->window;
-      }
-
-      if (side == 1 && movedWindow) {
-        movedWindow->geometry.x += dx;
-        object->window->geometry.y = (object->window->geometry.y + dy);
-        g_windowMgr.StoreSnapRectangle(object->window);
+        if (side == 1 && object->window) {
+          object->window->geometry.x += dx;
+          object->window->geometry.y = (object->window->geometry.y + dy);
+          g_windowMgr.StoreSnapRectangle(object->window);
+        }
       }
     }
 
