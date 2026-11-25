@@ -130,7 +130,8 @@ const char* GetLicenceText() {
   if (text.empty()) {
     CFile file;
     if (file.Open(g_licenceFileName, 0, true, false)) {
-      text.assign(static_cast<const char*>(file.GetData()), file.GetSize());
+      const char* data = static_cast<const char*>(file.GetData());
+      text.assign(data, data + file.GetSize());
       file.Close();
     } else {
       text = OBFUSCATE_TEXT("No EULA text file. (licence.txt)", 0xBDADDD87C5A50B6BULL);
