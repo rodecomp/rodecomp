@@ -819,49 +819,69 @@ void CWorldViewMgr::Load(LuaScript& script) {
   int fifth = 0;
   int sixth = 0;
   int alpha = 0;
-  if (script.Call("Get_Worldview_info_Dungeon", ">dddd", &red, &green, &blue, &this->dungeonOverlayColor)) {
+  if (script.Call(std::string("Get_Worldview_info_Dungeon",
+                              "Get_Worldview_info_Dungeon" + sizeof("Get_Worldview_info_Dungeon") - 1),
+                  ">dddd", &red, &green, &blue, &this->dungeonOverlayColor)) {
     const std::uint32_t opacity = g_worldViewMgr.dungeonOverlayColor << 24;
     this->dungeonColor = opacity + RGB(blue, green, red);
     this->dungeonOverlayColor = opacity + 0xFFFFFF;
   }
-  if (script.Call("Get_Worldview_info_Dungeon_FontColor", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
+  if (script.Call(std::string("Get_Worldview_info_Dungeon_FontColor",
+                              "Get_Worldview_info_Dungeon_FontColor" + sizeof("Get_Worldview_info_Dungeon_FontColor") - 1),
+                  ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
     this->dungeonFontColor = RGB(red, green, blue);
     this->dungeonFontOutline = RGB(fourth, fifth, sixth);
   }
-  if (script.Call("Get_Worldview_info_Dungeon_FontSize", ">dddd", &red, &green, &blue, &fourth)) {
+  if (script.Call(std::string("Get_Worldview_info_Dungeon_FontSize",
+                              "Get_Worldview_info_Dungeon_FontSize" + sizeof("Get_Worldview_info_Dungeon_FontSize") - 1),
+                  ">dddd", &red, &green, &blue, &fourth)) {
     this->dungeonFontSize[0] = red;
     this->dungeonFontSize[1] = green;
     this->dungeonFontSize[2] = blue;
     this->dungeonFontSize[3] = fourth;
   }
-  if (script.Call("Get_Worldview_info_Dungeon_SelectColor", ">ddd", &red, &green, &blue)) {
+  if (script.Call(std::string("Get_Worldview_info_Dungeon_SelectColor",
+                              "Get_Worldview_info_Dungeon_SelectColor" + sizeof("Get_Worldview_info_Dungeon_SelectColor") - 1),
+                  ">ddd", &red, &green, &blue)) {
     this->dungeonSelectTextColor = RGB(red, green, blue);
     this->dungeonSelectColor = RGB(blue, green, red);
   }
-  if (script.Call("Get_Worldview_info_Mob_Color", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
+  if (script.Call(std::string("Get_Worldview_info_Mob_Color",
+                              "Get_Worldview_info_Mob_Color" + sizeof("Get_Worldview_info_Mob_Color") - 1),
+                  ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
     this->mobColor = RGB(red, green, blue);
     this->mobOutline = RGB(fourth, fifth, sixth);
   }
-  if (script.Call("Get_Worldview_info_Mob_font", ">dddd", &red, &green, &blue, &fourth)) {
+  if (script.Call(std::string("Get_Worldview_info_Mob_font",
+                              "Get_Worldview_info_Mob_font" + sizeof("Get_Worldview_info_Mob_font") - 1),
+                  ">dddd", &red, &green, &blue, &fourth)) {
     this->mobFont[0] = red;
     this->mobFont[1] = green;
     this->mobFont[2] = blue;
     this->mobFont[3] = fourth;
   }
-  if (script.Call("Get_Worldview_info_MobLv_Color", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
+  if (script.Call(std::string("Get_Worldview_info_MobLv_Color",
+                              "Get_Worldview_info_MobLv_Color" + sizeof("Get_Worldview_info_MobLv_Color") - 1),
+                  ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
     this->mobLevelColor = RGB(red, green, blue);
     this->mobLevelOutline = RGB(fourth, fifth, sixth);
   }
-  if (script.Call("Get_Worldview_info_MobLv_font", ">dddd", &red, &green, &blue, &fourth)) {
+  if (script.Call(std::string("Get_Worldview_info_MobLv_font",
+                              "Get_Worldview_info_MobLv_font" + sizeof("Get_Worldview_info_MobLv_font") - 1),
+                  ">dddd", &red, &green, &blue, &fourth)) {
     this->mobLevelFont[0] = red;
     this->mobLevelFont[1] = green;
     this->mobLevelFont[2] = blue;
     this->mobLevelFont[3] = fourth;
   }
-  if (script.Call("Get_Worldview_info_BoxLine_Color", ">ddd", &red, &green, &blue)) {
+  if (script.Call(std::string("Get_Worldview_info_BoxLine_Color",
+                              "Get_Worldview_info_BoxLine_Color" + sizeof("Get_Worldview_info_BoxLine_Color") - 1),
+                  ">ddd", &red, &green, &blue)) {
     this->boxLineColor = RGB(blue, green, red);
   }
-  if (script.Call("Get_Worldview_info_Sreach_Alpha", ">ddddddd", &red, &green, &blue, &fourth, &fifth, &sixth, &alpha)) {
+  if (script.Call(std::string("Get_Worldview_info_Sreach_Alpha",
+                              "Get_Worldview_info_Sreach_Alpha" + sizeof("Get_Worldview_info_Sreach_Alpha") - 1),
+                  ">ddddddd", &red, &green, &blue, &fourth, &fifth, &sixth, &alpha)) {
     this->searchColors[0] = static_cast<std::uint32_t>(red) << 24;
     this->searchColors[1] = static_cast<std::uint32_t>(green) << 24;
     this->searchColors[2] = static_cast<std::uint32_t>(blue) << 24;
@@ -871,26 +891,36 @@ void CWorldViewMgr::Load(LuaScript& script) {
     this->searchColors[10] = static_cast<std::uint32_t>(alpha) << 24;
     std::uint32_t* searchColor = this->searchColors;
     for (int index = 0; index < 16; ++index, ++searchColor) {
-      if (script.Call("Get_Worldview_info_Sreach_Color", "d>ddd", index, &red, &green, &blue)) {
+      if (script.Call(std::string("Get_Worldview_info_Sreach_Color",
+                                  "Get_Worldview_info_Sreach_Color" + sizeof("Get_Worldview_info_Sreach_Color") - 1),
+                      "d>ddd", index, &red, &green, &blue)) {
         *searchColor += RGB(blue, green, red);
       }
     }
     std::memcpy(this->searchColors + 11, this->searchColors + 1, 5 * sizeof(this->searchColors[0]));
   }
-  if (script.Call("Get_Worldview_info_Run", ">dddd", &red, &green, &blue, &alpha)) {
+  if (script.Call(std::string("Get_Worldview_info_Run",
+                              "Get_Worldview_info_Run" + sizeof("Get_Worldview_info_Run") - 1),
+                  ">dddd", &red, &green, &blue, &alpha)) {
     this->runColor = (static_cast<std::uint32_t>(alpha) << 24) + RGB(blue, green, red);
   }
-  if (script.Call("Get_Worldview_info_Run_fontColor", ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
+  if (script.Call(std::string("Get_Worldview_info_Run_fontColor",
+                              "Get_Worldview_info_Run_fontColor" + sizeof("Get_Worldview_info_Run_fontColor") - 1),
+                  ">dddddd", &red, &green, &blue, &fourth, &fifth, &sixth)) {
     this->runFontColor = RGB(red, green, blue);
     this->runFontOutline = RGB(fourth, fifth, sixth);
   }
-  if (script.Call("Get_Worldview_info_Run_font", ">dddd", &red, &green, &blue, &fourth)) {
+  if (script.Call(std::string("Get_Worldview_info_Run_font",
+                              "Get_Worldview_info_Run_font" + sizeof("Get_Worldview_info_Run_font") - 1),
+                  ">dddd", &red, &green, &blue, &fourth)) {
     this->runFont[0] = red;
     this->runFont[1] = green;
     this->runFont[2] = blue;
     this->runFont[3] = fourth;
   }
-  if (script.Call("Get_Worldview_info_SelectBox_Color", ">dddd", &red, &green, &blue, &fourth)) {
+  if (script.Call(std::string("Get_Worldview_info_SelectBox_Color",
+                              "Get_Worldview_info_SelectBox_Color" + sizeof("Get_Worldview_info_SelectBox_Color") - 1),
+                  ">dddd", &red, &green, &blue, &fourth)) {
     this->selectBoxColor = (static_cast<std::uint32_t>(fourth) << 24) + RGB(blue, green, red);
   }
 }
