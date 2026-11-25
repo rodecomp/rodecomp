@@ -19,9 +19,9 @@ namespace {
   struct WorldModelFileRecord {
     /* 0000 */ char model[80];
     /* 0050 */ char node[80];
-    /* 00A0 */ vector3d position{};
-    /* 00AC */ vector3d rotation{};
-    /* 00B8 */ vector3d scale{};
+    /* 00A0 */ vector3d position;
+    /* 00AC */ vector3d rotation;
+    /* 00B8 */ vector3d scale;
   };
 
   struct WorldLightFileRecord {
@@ -280,6 +280,9 @@ bool C3dWorldRes::Load(const char* name) {
       }
 
       WorldModelFileRecord wire;
+      wire.position = {};
+      wire.rotation = {};
+      wire.scale = {};
       input.Read(&wire, sizeof(wire));
       auto* record = new WorldModelRecord;
 
