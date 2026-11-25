@@ -80,7 +80,7 @@ SessionShopTree::_Find_lower_bound<int>(const int&) const;
 extern template void std::list<CSkillInfo>::clear() noexcept;
 using NameToIdTree = std::_Tree<std::_Tmap_traits<
   std::string, int, std::less<std::string>, std::allocator<std::pair<const std::string, int>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const std::string, int>, void*>*>
 NameToIdTree::_Find_lower_bound<std::string>(const std::string&) const;
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
