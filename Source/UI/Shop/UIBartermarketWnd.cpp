@@ -1333,18 +1333,15 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     CBarterMarketItemMgr* itemMgr = g_barterMarketItemMgr;
     if (itemMgr->HasItemByName(mode->drag.name) == true) {
-      int notice = 0;
       if (g_session.IsEquipItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-        notice = 119;
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EQUIPITEM_OLNY_ONE)), 255, 0, 0, 0);
+        return 0;
       } else if (g_session.IsShadowItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-        notice = 3569;
-      }
-
-      if (notice != 0) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_ONE_AT_A_TIME)), 255, 0, 0, 0);
         return 0;
       }
     }
