@@ -85,14 +85,13 @@ __forceinline void CScatterEffect::UpdateParticle(CSpriteParticle* particle) {
     const float rise = particle->frameDelay;
     const float driftX = g_cosTable[angle] * 0.2f;
     const float driftZ = g_sinTable[angle] * 0.2f;
-    auto& velocityRef = particle->velocity;
-    velocityRef.y += rise;
-    velocityRef.x += driftX;
-    velocityRef.z += driftZ;
+    vector3d velocity{driftX, rise, driftZ};
+    velocity += particle->velocity;
+    particle->velocity = velocity;
 
     matrix translate;
     std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-    translate.MakeTranslate(velocityRef.x + 0.0f, velocityRef.y - 40.0f, velocityRef.z + 0.0f);
+    translate.MakeTranslate(velocity.x + 0.0f, velocity.y - 40.0f, velocity.z + 0.0f);
     particle->transform = translate;
   }
 }
