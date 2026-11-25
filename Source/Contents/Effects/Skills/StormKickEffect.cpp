@@ -19,6 +19,17 @@ __forceinline int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
 }
+
+// INLINED
+void SetCloudSegment(CParticle* particle, int effectId, int column, int row, int angle) {
+  particle->effectId = effectId;
+  particle->columnIndex = column;
+  particle->rowIndex = row;
+  particle->groupIndex = 1;
+  particle->alpha = 0;
+  particle->angleParameter = 30;
+  particle->angle = static_cast<float>(angle);
+}
 }
 
 // OFFSET: 0x00B7B340
@@ -105,13 +116,7 @@ void CStormKickEffect::CreateClouds(int layer) {
       }
 
       particle->SetTexture("effect\\cloud11.tga");
-      particle->effectId = this->id;
-      particle->columnIndex = segment;
-      particle->rowIndex = ring;
-      particle->groupIndex = 1;
-      particle->alpha = 0;
-      particle->angleParameter = 30;
-      particle->angle = static_cast<float>(ring * 90);
+      SetCloudSegment(particle, this->id, segment, ring, ring * 90);
       particle->phaseParameter = ClampedRandom(21) + 80;
       particle->animationParameter = 1.0f;
 
