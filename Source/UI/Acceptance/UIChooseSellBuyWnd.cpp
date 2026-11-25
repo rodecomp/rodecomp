@@ -12307,6 +12307,11 @@ void UITipboxWnd::Search(std::string& keyword) {
   this->searchResults->Invalidate();
 }
 
+// INLINED
+static unsigned char IsCurrentTipSearchable() {
+  return g_itemTagOwner->m_currentEntry.searchable;
+}
+
 // OFFSET: 0x008D9FE0
 // FUNCTION: fn_12140
 void UITipboxWnd::RefreshTip() {
@@ -12316,7 +12321,7 @@ void UITipboxWnd::RefreshTip() {
 
   std::string title = g_itemTagOwner->m_currentEntry.title;
   this->TrimAt(title, "#");
-  this->tagButton->Enable(g_itemTagOwner->m_currentEntry.searchable);
+  this->tagButton->Enable(IsCurrentTipSearchable());
 
   std::vector<std::string> lines;
   WrapPlainText(title.c_str(), lines, 30);
@@ -12334,15 +12339,13 @@ void UITipboxWnd::RefreshTip() {
       this->m_titleTexts[index]->Show(1);
     }
 
-    int height;
     if (count <= 1) {
       this->tipViewer->Move(250, 70);
-      height = 245;
+      this->tipViewer->Resize(226, 245);
     } else {
       this->tipViewer->Move(250, 90);
-      height = 225;
+      this->tipViewer->Resize(226, 225);
     }
-    this->tipViewer->Resize(226, height);
     this->refreshPending = true;
   }
 }
