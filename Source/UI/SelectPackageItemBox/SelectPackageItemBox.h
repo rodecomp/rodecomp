@@ -16,6 +16,10 @@ class CUIStaticText;
 namespace SelectPackageItemBox {
 class CTabInfoData {
 public:
+  // INLINED
+  CTabInfoData(int packageId, int tabIndex, const std::string& name) : packageId(packageId), tabIndex(tabIndex), name(name) {
+  }
+
   /* 0000 */ int packageId;
   /* 0004 */ int tabIndex;
   /* 0008 */ std::string name;
