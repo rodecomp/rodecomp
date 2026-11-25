@@ -488,6 +488,45 @@ void DecryptAES(const char* input, char* output, unsigned int length) {
   std::memcpy(output, buffer, length);
 }
 
+// OFFSET: 0x00B0A8B0
+// FUNCTION: fn_46754
+void CAES::Decrypt(const char* in, char* result, std::size_t n, int iMode) {
+  if (!this->m_bKeyInit) {
+    throw std::exception(sm_szErrorMsg1);
+  }
+
+  if (n == 0 || n % this->m_blockSize != 0) {
+    throw std::exception(sm_szErrorMsg2);
+  }
+
+  int i;
+  const char* pin;
+  char* presult;
+  if (iMode == CBC) {
+    for (i = 0, pin = in, presult = result; i < n / this->m_blockSize; ++i) {
+      this->DecryptBlock(pin, presult);
+      this->Xor(reinterpret_cast<unsigned char*>(presult), reinterpret_cast<const unsigned char*>(this->m_chain));
+      std::memcpy(this->m_chain, pin, this->m_blockSize);
+      pin += this->m_blockSize;
+      presult += this->m_blockSize;
+    }
+  } else if (iMode == CFB) {
+    for (i = 0, pin = in, presult = result; i < n / this->m_blockSize; ++i) {
+      this->EncryptBlock(this->m_chain, presult);
+      this->Xor(reinterpret_cast<unsigned char*>(presult), reinterpret_cast<const unsigned char*>(pin));
+      std::memcpy(this->m_chain, pin, this->m_blockSize);
+      pin += this->m_blockSize;
+      presult += this->m_blockSize;
+    }
+  } else {
+    for (i = 0, pin = in, presult = result; i < n / this->m_blockSize; ++i) {
+      this->DecryptBlock(pin, presult);
+      pin += this->m_blockSize;
+      presult += this->m_blockSize;
+    }
+  }
+}
+
 // OFFSET: 0x00B0AA40
 // FUNCTION: fn_18394
 void CAES::DecryptBlock(const char* in, char* result) {
@@ -712,6 +751,113 @@ void CAES::EncryptBlock(const char* in, char* result) {
     result[j++] = static_cast<char>(sm_S[(this->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8));
     result[j++] = static_cast<char>(sm_S[this->t[(i + s3) % BC] & 0xFF] ^ tt);
   }
+}
+
+// OFFSET: 0x00B0B910
+// FUNCTION: fn_46755
+void CAES::MakeKey(const char* key, const char* chain, int keylength, int blockSize) {
+  if (key == nullptr) {
+    throw std::exception("Empty key");
+  }
+
+  if (keylength != 16 && keylength != 24 && keylength != 32) {
+    throw std::exception("Incorrect key length");
+  }
+
+  if (blockSize != 16 && blockSize != 24 && blockSize != 32) {
+    throw std::exception("Incorrect block length");
+  }
+
+  this->m_keylength = keylength;
+  this->m_blockSize = blockSize;
+
+  std::memcpy(this->m_chain0, chain, this->m_blockSize);
+  std::memcpy(this->m_chain, chain, this->m_blockSize);
+
+  switch (this->m_keylength) {
+  case 16:
+    this->m_iROUNDS = this->m_blockSize == 16 ? 10 : (this->m_blockSize == 24 ? 12 : 14);
+    break;
+  case 24:
+    this->m_iROUNDS = this->m_blockSize != 32 ? 12 : 14;
+    break;
+  default:
+    this->m_iROUNDS = 14;
+  }
+
+  const int BC = this->m_blockSize / 4;
+
+  for (int i = 0; i <= this->m_iROUNDS; ++i) {
+    for (int j = 0; j < BC; ++j) {
+      this->m_Ke[i][j] = 0;
+    }
+  }
+
+  for (int i = 0; i <= this->m_iROUNDS; ++i) {
+    for (int j = 0; j < BC; ++j) {
+      this->m_Kd[i][j] = 0;
+    }
+  }
+
+  const int roundKeyCount = (this->m_iROUNDS + 1) * BC;
+  const int KC = this->m_keylength / 4;
+
+  int* pi = this->tk;
+  const char* pc = key;
+
+  for (int i = 0; i < KC; ++i) {
+    *pi = static_cast<unsigned char>(*pc++) << 24;
+    *pi |= static_cast<unsigned char>(*pc++) << 16;
+    *pi |= static_cast<unsigned char>(*pc++) << 8;
+    *pi++ |= static_cast<unsigned char>(*pc++);
+  }
+
+  int t = 0;
+
+  for (int j = 0; j < KC && t < roundKeyCount; ++j, ++t) {
+    this->m_Ke[t / BC][t % BC] = this->tk[j];
+    this->m_Kd[this->m_iROUNDS - (t / BC)][t % BC] = this->tk[j];
+  }
+
+  int rconPointer = 0;
+
+  while (t < roundKeyCount) {
+    int tt = this->tk[KC - 1];
+    this->tk[0] ^= ((sm_S[(tt >> 16) & 0xFF] & 0xFF) << 24) ^ ((sm_S[(tt >> 8) & 0xFF] & 0xFF) << 16) ^ ((sm_S[tt & 0xFF] & 0xFF) << 8) ^
+                   (sm_S[(tt >> 24) & 0xFF] & 0xFF) ^ ((sm_rcon[rconPointer++] & 0xFF) << 24);
+
+    if (KC != 8) {
+      for (int i = 1, j = 0; i < KC;) {
+        this->tk[i++] ^= this->tk[j++];
+      }
+    } else {
+      for (int i = 1, j = 0; i < KC / 2;) {
+        this->tk[i++] ^= this->tk[j++];
+      }
+
+      tt = this->tk[KC / 2 - 1];
+      this->tk[KC / 2] ^=
+        (sm_S[tt & 0xFF] & 0xFF) ^ ((sm_S[(tt >> 8) & 0xFF] & 0xFF) << 8) ^ ((sm_S[(tt >> 16) & 0xFF] & 0xFF) << 16) ^ ((sm_S[(tt >> 24) & 0xFF] & 0xFF) << 24);
+
+      for (int j = KC / 2, i = j + 1; i < KC;) {
+        this->tk[i++] ^= this->tk[j++];
+      }
+    }
+
+    for (int j = 0; j < KC && t < roundKeyCount; ++j, ++t) {
+      this->m_Ke[t / BC][t % BC] = this->tk[j];
+      this->m_Kd[this->m_iROUNDS - (t / BC)][t % BC] = this->tk[j];
+    }
+  }
+
+  for (int r = 1; r < this->m_iROUNDS; ++r) {
+    for (int j = 0; j < BC; ++j) {
+      int tt = this->m_Kd[r][j];
+      this->m_Kd[r][j] = sm_U1[(tt >> 24) & 0xFF] ^ sm_U2[(tt >> 16) & 0xFF] ^ sm_U3[(tt >> 8) & 0xFF] ^ sm_U4[tt & 0xFF];
+    }
+  }
+
+  this->m_bKeyInit = true;
 }
 
 // OFFSET: 0x00B0BD70

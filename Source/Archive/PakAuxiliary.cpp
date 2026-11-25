@@ -31,7 +31,8 @@ __declspec(noinline) void FillRandomBytes(char* first, char* last, PakUniformRan
 
 // OFFSET: 0x00656C70
 // FUNCTION: fn_05080
-PakAuxiliary::PakAuxiliary() {
+PakAuxiliary::PakAuxiliary() : m_archiveKeys(), m_headerKey(), m_archiveKeyBlockKey(), m_streamKey() {
+  this->Initialize();
 }
 
 // OFFSET: 0x00657640

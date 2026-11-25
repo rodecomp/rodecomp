@@ -22,7 +22,7 @@ bool CGPak::Extract(const myGPack::PakEntry* entry, void* buffer) {
   }
   if (static_cast<signed char>(entry->flags) < 0) {
     return this->m_auxiliary.Extract(
-      std::string_view(entry->name.m_name), mapped, entry->alignedSize, this->m_scratch, buffer, entry->originalSize, 0
+      std::string_view(entry->name.m_name), mapped, entry->alignedSize, this->m_scratch, buffer, entry->originalSize, false
     );
   }
 

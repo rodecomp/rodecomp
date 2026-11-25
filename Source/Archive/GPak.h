@@ -4,12 +4,28 @@
 #include "Archive/PakFile.h"
 #include "Archive/PakName.h"
 
+#include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <memory>
 #include <span>
 #include <string_view>
 #include <random>
+#include <unordered_map>
 #include <vector>
+
+class AES;
+
+namespace GPakEx {
+  class CipherModeBase;
+  class CrypterBase;
+}
+
+using PakCrypterMap = std::unordered_map<std::uint16_t, GPakEx::CrypterBase*>;
+using PakDecryptFunction = std::function<
+  bool(std::string_view, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<const std::uint8_t>, std::span<std::uint8_t>)>;
+using PakDecryptFunctionMap = std::unordered_map<std::uint16_t, PakDecryptFunction>;
 
 struct PakUniformRandom {
   /* 0000 */ std::mt19937 m_engine;
@@ -44,17 +60,86 @@ namespace myGPack {
 
 }
 
+template <class T>
+struct PakObfuscated {
+  /* 0000 */ std::uint8_t m_mask[5];
+  /* 0005 */ std::uint8_t m_data[sizeof(T)];
+
+  PakObfuscated() = default;
+
+  // INLINED
+  explicit PakObfuscated(const T& value) : m_mask{}, m_data{} {
+    *this = value;
+  }
+
+  PakObfuscated& operator=(const T& value) {
+    PakUniformRandom random(1, 0xfe, std::random_device{}());
+    FillRandomBytes(reinterpret_cast<char*>(this->m_mask), reinterpret_cast<char*>(this->m_mask) + sizeof(this->m_mask), random);
+
+    const std::uint8_t* bytes = reinterpret_cast<const std::uint8_t*>(&value);
+    for (std::size_t i = 0; i < sizeof(T); ++i) {
+      this->m_data[i] = bytes[i] ^ this->m_mask[i % 4 + 1] ^ this->m_mask[i % 4];
+    }
+
+    return *this;
+  }
+
+  // INLINED
+  T Unmask() const {
+    std::uint8_t bytes[sizeof(T)];
+    for (std::size_t i = 0; i < sizeof(T); ++i) {
+      bytes[i] = this->m_data[i] ^ this->m_mask[i % 4] ^ this->m_mask[i % 4 + 1];
+    }
+
+    return std::bit_cast<T>(bytes);
+  }
+};
+
+struct PakKeyMaterial {
+  /* 0000 */ std::uint8_t key[16];
+  /* 0010 */ std::uint8_t iv[16];
+  /* 0020 */ std::uint8_t reserved[16];
+};
+
+static_assert(sizeof(PakObfuscated<PakKeyMaterial>) == 53);
+
+struct PakArchiveKeyRecord {
+  /* 0000 */ std::uint32_t id;
+  /* 0004 */ std::uint8_t material[60];
+};
+
+static_assert(sizeof(PakObfuscated<PakArchiveKeyRecord>) == 69);
+
+using PakArchiveKeyMap = std::unordered_map<std::uint16_t, PakObfuscated<PakArchiveKeyRecord>>;
+
+struct PakAuxiliaryHeader;
+
 struct PakAuxiliary {
   PakAuxiliary();
   ~PakAuxiliary();
 
-  void Apply(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
-  bool Extract(std::string_view name, const std::uint8_t* data, std::uint32_t size, std::span<const std::uint8_t> scratch, void* output, std::uint32_t outputSize, unsigned flags);
+  bool Apply(std::span<const std::uint8_t> data, std::span<const std::uint8_t> auxiliary);
+  bool Extract(std::string_view name, const std::uint8_t* data, std::uint32_t size, std::span<const std::uint8_t> scratch, void* output, std::uint32_t outputSize, bool verify);
+  bool DecodeHeader(std::span<const std::uint8_t> name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header);
+  void Initialize();
 
-  /* 0000 */ std::uint8_t padding_0000[244];
+  /* 0000 */ PakArchiveKeyMap m_archiveKeys;
+  /* 0020 */ PakObfuscated<PakKeyMaterial> m_headerKey;
+  /* 0055 */ PakObfuscated<PakKeyMaterial> m_archiveKeyBlockKey;
+  /* 008A */ PakObfuscated<PakKeyMaterial> m_streamKey;
+  /* 00C0 */ std::shared_ptr<AES> m_headerCipher;
+  /* 00C8 */ std::shared_ptr<AES> m_archiveKeyCipher;
+  /* 00D0 */ std::shared_ptr<GPakEx::CipherModeBase> m_ideaDecryption;
+  /* 00D8 */ std::shared_ptr<GPakEx::CipherModeBase> m_gostDecryption;
+  /* 00E0 */ std::shared_ptr<GPakEx::CipherModeBase> m_gostStreamDecryption;
+  /* 00E8 */ std::shared_ptr<GPakEx::CipherModeBase> m_threeWayStreamDecryption;
 };
 
-static_assert(sizeof(PakAuxiliary) == 244);
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PakAuxiliary, m_headerKey) == 0x20);
+static_assert(offsetof(PakAuxiliary, m_headerCipher) == 0xC0);
+static_assert(sizeof(PakAuxiliary) == 240);
+#endif
 
 class CGPak {
 public:
@@ -66,6 +151,7 @@ public:
   bool Find(const myGPack::PakName& name, myGPack::PakEntry* entry) const;
   bool Extract(const myGPack::PakEntry* entry, void* buffer);
   void ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* identifier = nullptr);
+  bool ApplyAuxiliary(std::span<const std::uint8_t> data);
   void ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
 
 protected:

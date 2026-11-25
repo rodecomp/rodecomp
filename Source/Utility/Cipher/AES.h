@@ -10,14 +10,18 @@ public:
 
   enum { MAX_BLOCK_SIZE = 32, MAX_ROUNDS = 14, MAX_KC = 8, MAX_BC = 8 };
 
+  enum { ECB = 0, CBC = 1, CFB = 2 };
+
   CAES(int keyLength, int blockSize);
   virtual ~CAES();
 
+  void MakeKey(const char* key, const char* chain, int keylength = DEFAULT_BLOCK_SIZE, int blockSize = DEFAULT_BLOCK_SIZE);
   void EncryptBlock(const char* in, char* result);
   void DecryptBlock(const char* in, char* result);
   void DefEncryptBlock(const char* in, char* result);
   void DefDecryptBlock(const char* in, char* result);
   void Xor(unsigned char* destination, const unsigned char* source);
+  void Decrypt(const char* in, char* result, std::size_t n, int iMode = ECB);
 
   // INLINED
   void Encrypt(const char* in, char* result, std::size_t n) {

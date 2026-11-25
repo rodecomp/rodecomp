@@ -10,4 +10,8 @@ namespace utility {
 
 }
 
+void DeriveAuxiliaryKey(const std::uint8_t* digest, std::uint8_t* key);
+void GenerateLoginDigest(std::span<std::uint8_t, 16> digest, std::span<const std::uint8_t> data);
+void ComputeLoginDigest(std::span<std::uint8_t, 16> digest, std::span<const std::uint8_t> data);
+
 #endif

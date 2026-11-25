@@ -2,6 +2,9 @@
 #include "File/ResourcePath.h"
 #include "Utility/Hash/GGHashMgr.h"
 
+#include <cstdint>
+#include <vector>
+
 // STATIC: 0x016D5688
 // GLOBAL: gl_24380
 PakRegistry g_pakRegistry;
@@ -28,10 +31,12 @@ bool PakRegistry::Add(const char* filename) {
 
 // OFFSET: 0x00AE9BF0
 // FUNCTION: fn_18112
-void* PakRegistry::Read(const char* filename, std::uint32_t* size, bool) {
-  void* result = this->ReadArchive(filename, size);
-  if (result) {
-    return result;
+void* PakRegistry::Read(const char* filename, std::uint32_t* size, bool looseOnly) {
+  if (!looseOnly) {
+    void* result = this->ReadArchive(filename, size);
+    if (result) {
+      return result;
+    }
   }
 
   return this->ReadLooseResource(filename, size);
@@ -88,7 +93,24 @@ bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
 
 // OFFSET: 0x00AEA1F0
 // FUNCTION: fn_18116
-void PakRegistry::ApplyAuxiliary(const void*, std::uint32_t) {
+void PakRegistry::ApplyAuxiliary(const void* data, std::uint32_t size) {
+  std::vector<std::uint8_t> best;
+  std::int64_t bestIdentifier = 0;
+  for (const auto& archive : this->m_archives) {
+    std::vector<std::uint8_t> auxiliary;
+    std::int64_t identifier = 0;
+    archive.second->ReadAuxiliary(auxiliary, reinterpret_cast<std::uint64_t*>(&identifier));
+    if (bestIdentifier < identifier) {
+      best = auxiliary;
+      bestIdentifier = identifier;
+    }
+  }
+
+  if (!best.empty() && bestIdentifier > 0) {
+    for (const auto& archive : this->m_archives) {
+      archive.second->ApplyAuxiliary(data, size, best.data(), best.size());
+    }
+  }
 }
 
 // OFFSET: 0x00AEA400

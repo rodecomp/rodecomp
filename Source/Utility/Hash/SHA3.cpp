@@ -32,6 +32,12 @@ namespace {
   }
 }
 
+// OFFSET: 0x0061B570
+// FUNCTION: fn_46756
+SHA3::SHA3(int bits) : blockSize(200 - 2 * (bits / 8)), digestBits(bits) {
+  this->Reset();
+}
+
 // OFFSET: 0x0061B740
 // FUNCTION: fn_04423
 void SHA3::Add(const unsigned char* data, unsigned int length) {
@@ -113,6 +119,42 @@ std::string SHA3::GetHash() {
   }
 
   return result;
+}
+
+// OFFSET: 0x0061C100
+// FUNCTION: fn_46757
+bool SHA3::GetHash(unsigned char* hash, unsigned int size) {
+  if (this->digestBits / 8 > size) {
+    return false;
+  }
+
+  std::uint64_t oldHash[25];
+  for (unsigned int i = 0; i < 25; ++i) {
+    oldHash[i] = this->state[i];
+  }
+
+  this->ProcessBuffer();
+
+  const unsigned int hashLength = this->digestBits / 64;
+  unsigned char* current = hash;
+  for (unsigned int i = 0; i < hashLength; ++i) {
+    for (unsigned int j = 0; j < 8; ++j) {
+      *current++ = static_cast<unsigned char>(this->state[i] >> (8 * j));
+    }
+  }
+
+  const unsigned int remainder = this->digestBits - hashLength * 64;
+  unsigned int processed = 0;
+  while (processed < remainder) {
+    *current++ = static_cast<unsigned char>(this->state[hashLength] >> processed);
+    processed += 8;
+  }
+
+  for (unsigned int i = 0; i < 25; ++i) {
+    this->state[i] = oldHash[i];
+  }
+
+  return true;
 }
 
 // OFFSET: 0x0061C2C0
@@ -223,4 +265,15 @@ void SHA3::ProcessBlock(const unsigned char* data) {
 
     this->state[0] ^= sha3RoundConstants[round];
   }
+}
+
+// OFFSET: 0x0061CB90
+// FUNCTION: fn_46758
+void SHA3::Reset() {
+  for (unsigned int i = 0; i < 25; ++i) {
+    this->state[i] = 0;
+  }
+
+  this->processedBytes = 0;
+  this->bufferedBytes = 0;
 }
