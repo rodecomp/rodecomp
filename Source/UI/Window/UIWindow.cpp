@@ -1746,7 +1746,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   }
 
   std::string fitted(display);
-  std::wstring remaining(ATL::CA2WEX<128>(fitted.c_str(), CP_THREAD_ACP));
+  std::wstring remaining(ATL::CA2WEX<128>(display.c_str(), CP_THREAD_ACP));
 
   while (width < extent) {
     if (remaining.size() <= 1) {
