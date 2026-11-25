@@ -34,8 +34,9 @@ int InsertIntro(lua_State* state) {
     const std::string_view name = lua_tostring(state, -3);
     const std::string_view title = lua_tostring(state, -2);
     const std::string_view text = lua_tostring(state, -1);
-    g_adventureGuideMgr->SetIntroTitle(title);
-    const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(0, static_cast<int>(id), name, text);
+    CAdventureGuideMgr* const mgr = g_adventureGuideMgr;
+    mgr->SetIntroTitle(title);
+    const AdventureGuideResult result = mgr->InsertGuideMenu(0, static_cast<int>(id), name, text);
 
     if (!result.ok) {
       lua_pushboolean(state, 0);
