@@ -1,4 +1,3 @@
-#define BITMAPRESOURCE_NOINLINE_DTOR
 #include "Client/Application/ErrorDialog.h"
 #include "File/File.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -23,14 +22,20 @@ CBitmapRes* CBitmapRes::Create() {
 // FUNCTION: fn_07848
 bool CBitmapRes::Load(const char* name) {
   CFile file;
-  if (name && file.Open(name, 0, true, false)) {
-    if (this->Decode(name, file.GetData(), file.GetSize(), false)) {
-      file.Close();
-      return true;
-    }
-    file.Close();
+  if (!name) {
+    return false;
   }
 
+  if (!file.Open(name, 0, true, false)) {
+    return false;
+  }
+
+  if (this->Decode(name, file.GetData(), file.GetSize(), false)) {
+    file.Close();
+    return true;
+  }
+
+  file.Close();
   return false;
 }
 
