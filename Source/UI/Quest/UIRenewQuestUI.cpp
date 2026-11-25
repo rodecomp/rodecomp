@@ -286,7 +286,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -323,14 +323,14 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -660,7 +660,7 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 template <>
 void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -720,8 +720,8 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->icon->tooltip = info.m_iconTooltip;
     item->titleText->SetText(info.m_title);
     item->descriptionText->SetText(info.summary);
-    item->simpleViewCheckBox->Show(0);
-    item->activeCheckBox->Show(1);
+    item->simpleViewCheckBox->Show(WINDOW_HIDDEN);
+    item->activeCheckBox->Show(WINDOW_VISIBLE);
     CUICheckBox* activeCheckBox = item->activeCheckBox;
     activeCheckBox->checked = info.m_active;
     activeCheckBox->Invalidate();
@@ -1426,7 +1426,7 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddNewItem() {
     for (RenewQuestUI::CUIQuestItem*& slot : this->items) {
       RenewQuestUI::CUIQuestItem* item = new RenewQuestUI::CUIQuestItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (RenewQuestUI::CUIQuestItem* other : this->items) {

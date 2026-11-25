@@ -80,8 +80,8 @@ inline void UINoteWnd_Scroll::SetNote(std::string text) {
   this->m_text->Move(0, 0);
   this->m_text->SetText(text);
   this->AddScrollChild(this->m_text);
-  this->horizontalBar->Show(0);
-  this->scrollBar->Show(0);
+  this->horizontalBar->Show(WINDOW_HIDDEN);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->Invalidate();
 }
 

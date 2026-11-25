@@ -20,7 +20,7 @@ void UIOpenMailBoxWnd::OnCreate(int width, int height) {
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->SetId(192);
+  button->SetId(ID_STATUS);
   this->AddChild(button);
 }
 
@@ -36,7 +36,7 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a != 192) {
+  if (a != ID_STATUS) {
     return 0;
   }
 

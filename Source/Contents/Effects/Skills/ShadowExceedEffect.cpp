@@ -104,7 +104,7 @@ void CShadowExceed::Open() {
     }
   });
 
-  this->AddEvent(0, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
 }
 
 // OFFSET: 0x007289C0

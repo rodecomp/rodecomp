@@ -142,7 +142,7 @@ UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int heig
 void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (this->items.size() >= static_cast<unsigned>(this->maxItems) || drag->source != 27) {
+  if (this->items.size() >= static_cast<unsigned>(this->maxItems) || drag->source != DRAG_LAPINE_INGREDIENT) {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
@@ -158,7 +158,7 @@ void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
 void UILapineBox_IngredientListWnd::DragAndDrop(int, int, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 26) {
+  if (drag->source == DRAG_LAPINE_BOX) {
     if (this->AddIngredient(drag->id) == 1) {
       this->parent->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0);
     }
@@ -342,7 +342,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   if (entry != this->items.end()) {
     (*entry)->item.quantity += it->quantity;
     (*entry)->insufficient = 0;
-    (*entry)->Show(1);
+    (*entry)->Show(WINDOW_VISIBLE);
     (*entry)->Invalidate();
     this->Invalidate();
     return 1;

@@ -368,7 +368,7 @@ int UIWindowMgr::ProcessMouse() {
       }
       if (!window && this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible != 0) {
         this->dropDownBoxWnd->Detach();
-        this->dropDownBoxWnd->Show(0);
+        this->dropDownBoxWnd->Show(WINDOW_HIDDEN);
       }
     }
 

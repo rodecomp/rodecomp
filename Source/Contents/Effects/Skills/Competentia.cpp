@@ -76,7 +76,7 @@ void CCompetentia::Open() {
     }
   }
 
-  this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_BeginSpell.wav", 0, 0);
 }
 
 // OFFSET: 0x00708CB0

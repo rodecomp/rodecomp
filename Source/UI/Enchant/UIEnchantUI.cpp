@@ -41,7 +41,7 @@ inline CEnchantMgr* EnchantManager() {
 // FUNCTION: fn_14815
 template <class T, class D> void CUIListBoxEx<T, D>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -52,7 +52,7 @@ template <>
 EnchantUI::CUIEnchantItem* CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CreateItem() {
   EnchantUI::CUIEnchantItem* item = new EnchantUI::CUIEnchantItem();
   item->SetSize(this->itemWidth, this->rowHeight);
-  item->Show(0);
+  item->Show(WINDOW_HIDDEN);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->SetOnHover([this](CUIListItem* listItem) {
     for (EnchantUI::CUIEnchantItem* other : this->items) {
@@ -148,7 +148,7 @@ template <>
 EnchantUI::CUITargetItem* CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CreateItem() {
   EnchantUI::CUITargetItem* item = new EnchantUI::CUITargetItem();
   item->SetSize(this->itemWidth, this->rowHeight);
-  item->Show(0);
+  item->Show(WINDOW_HIDDEN);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->SetOnHover([this](CUIListItem* listItem) {
     for (EnchantUI::CUITargetItem* other : this->items) {
@@ -1253,7 +1253,7 @@ void CUIReset::OnInit() {
 void CUIEnchantPage::UpdateEnchantInfo() {
   this->enchantList->ClearData();
   for (CUIIngredient* ingredient : this->ingredients) {
-    ingredient->Show(0);
+    ingredient->Show(WINDOW_HIDDEN);
   }
 
   this->costText->SetText(std::to_string(0));
@@ -1276,7 +1276,7 @@ void CUIEnchantPage::UpdateEnchantInfo() {
 // FUNCTION: fn_15003
 void CUIReset::UpdateEnchantInfo() {
   for (CUIIngredient* ingredient : this->ingredients) {
-    ingredient->Show(0);
+    ingredient->Show(WINDOW_HIDDEN);
   }
 
   this->costText->SetText(std::to_string(0));
@@ -1295,11 +1295,11 @@ namespace EnchantUI {
 // FUNCTION: fn_15004
 void CUIEnchantPage::ResetSlots() {
   std::for_each(this->slots.begin(), this->slots.end(), [](std::pair<const int, CUISlot*> slot) {
-    slot.second->Show(0);
+    slot.second->Show(WINDOW_HIDDEN);
   });
 
   for (CUIIngredient* ingredient : this->ingredients) {
-    ingredient->Show(0);
+    ingredient->Show(WINDOW_HIDDEN);
   }
 
   this->enchantList->ClearData();
@@ -1361,7 +1361,7 @@ inline int CUISlot::GetItemId() const {
 // FUNCTION: fn_14975
 void CUINormalPerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
   for (CUIIngredient* ingredient : this->ingredients) {
-    ingredient->Show(0);
+    ingredient->Show(WINDOW_HIDDEN);
   }
 
   this->costText->SetText(std::to_string(0));
@@ -1380,7 +1380,7 @@ void CUINormalPerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemD
 // FUNCTION: fn_14976
 void CUIUpgradePerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItemData& data) {
   for (CUIIngredient* ingredient : this->ingredients) {
-    ingredient->Show(0);
+    ingredient->Show(WINDOW_HIDDEN);
   }
 
   this->costText->SetText(std::to_string(0));
@@ -1455,11 +1455,11 @@ bool CUIEnchantPage::SetItem(const ITEM_INFO& item) {
           slot->description->Clear();
           slot->description->AddLine(cardInfo.DisplayName(0));
         }
-        entry.second->Show(1);
+        entry.second->Show(WINDOW_VISIBLE);
         continue;
       }
     }
-    slot->Show(0);
+    slot->Show(WINDOW_HIDDEN);
   }
   return true;
 }
@@ -1491,11 +1491,11 @@ void CUIEnchantPage::SetCost(const EnchantPerfectInfo& info) {
   auto material = info.materials.begin();
   for (CUIIngredient* ingredient : this->ingredients) {
     if (material != info.materials.end()) {
-      ingredient->Show(1);
+      ingredient->Show(WINDOW_VISIBLE);
       ingredient->SetMaterial(material->first, material->second);
       ++material;
     } else {
-      ingredient->Show(0);
+      ingredient->Show(WINDOW_HIDDEN);
     }
   }
 

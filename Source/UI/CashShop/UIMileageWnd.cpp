@@ -16,6 +16,7 @@
 #include "Client/Mode/CMode.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Window/UIEnums.h"
 #include <cstddef>
 #include <cstdint>
 #include <windows.h>
@@ -125,7 +126,7 @@ void UIMileageWnd::OnCreate(int width, int height) {
 // OFFSET: 0x00950690
 // FUNCTION: fn_12942
 int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 34) {
+  if (message != UM_SETINFO) {
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 

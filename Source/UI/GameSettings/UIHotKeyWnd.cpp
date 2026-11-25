@@ -72,7 +72,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->m_balloon = new UITransBalloonText();
   this->m_balloon->SetSize(this->geometry.width, 20);
   this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE1), 60);
-  this->m_balloon->Show(0);
+  this->m_balloon->Show(WINDOW_HIDDEN);
   g_windowMgr.AddRendered(this->m_balloon);
 
   this->m_tabs = new UITabControl();
@@ -270,10 +270,10 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
         (this->geometry.width - this->m_balloon->geometry.width) / 2 + screenX,
         (this->m_selectedRow % this->m_rowsPerPage - 1) * this->m_rowHeight + this->m_verticalMargin + this->m_tabHeight + screenY + this->m_titleHeight
       );
-      this->m_balloon->Show(1);
+      this->m_balloon->Show(WINDOW_VISIBLE);
       g_windowMgr.Promote(this->m_balloon);
     } else {
-      this->m_balloon->Show(0);
+      this->m_balloon->Show(WINDOW_HIDDEN);
     }
 
     if (previous == this->m_selectedRow) {

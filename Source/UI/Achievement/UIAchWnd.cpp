@@ -324,7 +324,7 @@ void UIAchViewWnd::OnCreate(int, int) {
   for (int y = 99; y < 289; y += 19) {
     *condition = new (std::nothrow) UIAchTV();
     (*condition)->Configure(28, y, 280, 40, 1);
-    (*condition)->Show(0);
+    (*condition)->Show(WINDOW_HIDDEN);
     this->AddChild(*condition);
     ++condition;
   }
@@ -340,13 +340,13 @@ void UIAchViewWnd::OnCreate(int, int) {
     this->gauges[index]->backgroundColor = 0xFFFFFF;
     this->gauges[index]->outerBorderColor = 0xFFFFFF;
     this->gauges[index]->innerBorderColor = 0xDAA896;
-    this->gauges[index]->Show(0);
+    this->gauges[index]->Show(WINDOW_HIDDEN);
     this->AddChild(this->gauges[index]);
   }
 
   for (int index = 0; index < 3; ++index) {
     this->rewards[index] = new (std::nothrow) UIToolTipBitmapWnd();
-    this->rewards[index]->Show(0);
+    this->rewards[index]->Show(WINDOW_HIDDEN);
     this->AddChild(this->rewards[index]);
   }
 }
@@ -573,10 +573,10 @@ void UIAchUpperWnd::Paint() {
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.achievementScore).c_str(), 46, 0, 12, 0x582708, 1);
     this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.achievementLevel).c_str(), 15, 0, 12, 0x44C58, 1);
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index]->Show(0);
+      this->buttons[index]->Show(WINDOW_HIDDEN);
     }
 
-    this->completionGauge->Show(0);
+    this->completionGauge->Show(WINDOW_HIDDEN);
   } else {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawBitmap(575, 3, AchievementBitmap("유저인터페이스\\achievement_re\\upper_trophy.bmp"), true);
@@ -588,10 +588,10 @@ void UIAchUpperWnd::Paint() {
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.achievementScore).c_str(), 46, 0, 12, 0x582708, 1);
     this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.achievementLevel).c_str(), 15, 0, 12, 0x44C58, 1);
     for (int index = 0; index < 2; ++index) {
-      this->buttons[index]->Show(1);
+      this->buttons[index]->Show(WINDOW_VISIBLE);
     }
 
-    this->completionGauge->Show(1);
+    this->completionGauge->Show(WINDOW_VISIBLE);
   }
 }
 
@@ -926,7 +926,7 @@ int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 474) {
+    if (argument1 == ID_RECEIVE_ACHIEVEMENT_REWARD) {
       PACKET_CZ_REQ_ACH_REWARD packet;
       packet.packetType = ID_CZ_REQ_ACH_REWARD;
       packet.achievementId = this->achievementId;
@@ -1027,13 +1027,13 @@ void UIAchSummaryWnd::Show(int visible) {
 // FUNCTION: fn_09253
 void UIAchievementWnd::SelectTab(int group, int sub) {
   if (group == 0) {
-    this->view->Show(0);
-    this->list->Show(0);
-    this->summary->Show(1);
+    this->view->Show(WINDOW_HIDDEN);
+    this->list->Show(WINDOW_HIDDEN);
+    this->summary->Show(WINDOW_VISIBLE);
   } else {
-    this->view->Show(1);
-    this->list->Show(1);
-    this->summary->Show(0);
+    this->view->Show(WINDOW_VISIBLE);
+    this->list->Show(WINDOW_VISIBLE);
+    this->summary->Show(WINDOW_HIDDEN);
   }
 
   this->group = group;
@@ -1434,12 +1434,12 @@ void UIAchViewWnd::UpdateInfo() {
   for (int index = 0; index <= 9; ++index) {
     this->conditions[index]->Clear();
     this->conditions[index]->Invalidate();
-    this->conditions[index]->Show(0);
-    this->gauges[index]->Show(0);
+    this->conditions[index]->Show(WINDOW_HIDDEN);
+    this->gauges[index]->Show(WINDOW_HIDDEN);
   }
 
   for (int index = 0; index < 3; ++index) {
-    this->rewards[index]->Show(0);
+    this->rewards[index]->Show(WINDOW_HIDDEN);
   }
 
   this->receiveButton->Enable(0);
@@ -1461,7 +1461,7 @@ void UIAchViewWnd::UpdateInfo() {
     }
 
     for (unsigned int index = 0; index < this->info->rewards.size(); ++index) {
-      this->conditions[index]->Show(1);
+      this->conditions[index]->Show(WINDOW_VISIBLE);
       this->conditions[index]->SetId(this->info->rewards[index].conditionId);
 
       if (this->info->progressMode == 1) {
@@ -1469,13 +1469,13 @@ void UIAchViewWnd::UpdateInfo() {
         const int target = this->info->rewards[index].targetCount;
         const std::string text = FormatOwnedString("%s ( %d / %d )", this->info->rewards[index].text.c_str(), progress, target);
         this->conditions[index]->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 56, 0, 0);
-        this->gauges[index]->Show(1);
+        this->gauges[index]->Show(WINDOW_VISIBLE);
         this->gauges[index]->value = progress;
         this->gauges[index]->maximum = target;
         this->gauges[index]->Invalidate();
       } else {
         this->conditions[index]->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->info->rewards[index].text.c_str()), 56, 0, 0);
-        this->gauges[index]->Show(0);
+        this->gauges[index]->Show(WINDOW_HIDDEN);
       }
 
       if (this->info->progressMode == 0) {
@@ -1511,7 +1511,7 @@ void UIAchViewWnd::UpdateInfo() {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
         const std::string title = g_session.GetJobTitleString(this->info->reward.titleId);
         AssignReward(this->rewards[0], bitmap.c_str(), title.c_str(), 0);
-        this->rewards[0]->Show(1);
+        this->rewards[0]->Show(WINDOW_VISIBLE);
       }
 
       if (this->info->reward.buffId > 0) {
@@ -1519,13 +1519,13 @@ void UIAchViewWnd::UpdateInfo() {
         const char* description = nullptr;
         g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", this->info->reward.buffId, 1, &description);
         this->rewards[1]->Set(bitmap.c_str(), description, 0);
-        this->rewards[1]->Show(1);
+        this->rewards[1]->Show(WINDOW_VISIBLE);
       }
 
       if (this->info->reward.itemId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_item.bmp";
         this->rewards[2]->Set(bitmap.c_str(), nullptr, this->info->reward.itemId);
-        this->rewards[2]->Show(1);
+        this->rewards[2]->Show(WINDOW_VISIBLE);
       }
     }
   }

@@ -431,7 +431,7 @@ public:
     if (this->data.size() == 0) {
       for (T* item : this->items) {
         item->index = -1;
-        item->Show(0);
+        item->Show(WINDOW_HIDDEN);
       }
       return;
     }
@@ -468,14 +468,14 @@ public:
         }
         item->SetSelected(row == this->selected);
         item->Move(this->itemX, y);
-        item->Show(1);
+        item->Show(WINDOW_VISIBLE);
       }
     }
 
     for (const auto end = this->items.end(); it != end; ++it) {
       T* item = *it;
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
   }
 

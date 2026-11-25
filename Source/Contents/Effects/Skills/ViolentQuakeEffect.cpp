@@ -69,7 +69,7 @@ void CViolentQuakeEffect::InitAllBloom() {
   }
   }
 
-  this->AddEvent(0, "effect\\AG_ALL_BLOOM.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_ALL_BLOOM.wav", 0, 0);
 }
 
 // OFFSET: 0x0072FBA0
@@ -92,7 +92,7 @@ __forceinline void CViolentQuakeEffect::InitViolentQuake() {
   emitter->offsetY = -8.0f;
   emitter->offsetZ = 0.0f;
   this->emitters.push_back(emitter);
-  this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
 }
 
 // OFFSET: 0x0072FBE0

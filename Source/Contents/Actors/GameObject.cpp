@@ -2220,7 +2220,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->actorWindows[2]->SendMsg(nullptr, UM_SETNAID, this->render.accountId, 0, 0, 0);
     this->actorWindows[2]->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
     if (!g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF)) {
-      this->actorWindows[2]->Show(0);
+      this->actorWindows[2]->Show(WINDOW_HIDDEN);
     }
     break;
   case AM_MAKE_CHAT_TITLE:
@@ -4447,7 +4447,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF)) {
       break;
     }
-    this->actorWindows[4]->Show(0);
+    this->actorWindows[4]->Show(WINDOW_HIDDEN);
     break;
   }
   case AM_FASTMOVE:

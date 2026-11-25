@@ -1114,7 +1114,7 @@ void UILoginOTPWnd::OnCreate(int, int) {
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(2, 12, 0x313131, 1, 1, -1000, -1000);
   this->AddChild(button);
-  this->m_message0 = 382;
+  this->m_message0 = ID_OTP_CONFIRM;
 }
 
 // OFFSET: 0x008B84B0

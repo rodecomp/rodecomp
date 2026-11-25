@@ -3816,7 +3816,7 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::pair<const char*, int>("/rkfanfl", 51));
   this->m_commandIds.push_back(std::pair<const char*, int>("/savechat", 51));
   this->m_commandIds.push_back(std::pair<const char*, int>("/miss", 53));
-  if (g_serviceMode != 3) {
+  if (g_serviceMode != ServerInstantEvent) {
     this->m_commandIds.push_back(std::pair<const char*, int>("/noshift", 105));
     this->m_commandIds.push_back(std::pair<const char*, int>("/noctrl", 109));
     this->m_commandIds.push_back(std::pair<const char*, int>("/ns", 105));

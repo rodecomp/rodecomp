@@ -1110,7 +1110,7 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
       return 0;
     case ID_CLOSE:
-      this->Show(0);
+      this->Show(WINDOW_HIDDEN);
       if (g_session.memorialDungeonState == 2) {
         g_session.memorialWindowOpen = 0;
       }
@@ -1591,7 +1591,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
       this->m_suggestions->Move(this->m_chatEdit->geometry.x, this->m_chatEdit->geometry.y - this->m_suggestions->geometry.height);
       this->AddChild(this->m_suggestions);
       if (this->m_suggestions) {
-        this->m_suggestions->Show(0);
+        this->m_suggestions->Show(WINDOW_HIDDEN);
       }
     }
   }

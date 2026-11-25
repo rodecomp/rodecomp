@@ -43,7 +43,7 @@ void UICaptchaPreviewWnd::AddImageData(const void* data, int size) {
     if (image) {
       delete[] image;
     }
-    this->Show(1);
+    this->Show(WINDOW_VISIBLE);
   }
 }
 

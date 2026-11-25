@@ -9,6 +9,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
+#include "UI/Window/UIEnums.h"
 
 #include <cstdio>
 #include <cstring>
@@ -146,7 +147,7 @@ void UIKeyStrokeWnd::Paint() {
 // OFFSET: 0x0096DD40
 // FUNCTION: fn_13206
 int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 65) {
+  if (message != UM_IME_SET_CANDIDATE) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   const std::string* candidates = reinterpret_cast<const std::string*>(argument1);

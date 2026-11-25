@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
@@ -144,7 +145,7 @@ bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
     }
 
     CRenderObject* actor = g_session.FindGameActor(aid);
-    if (actor->render.state == 1) {
+    if (actor->render.state == ST_MOVE) {
       float center[2] = {0.0f, 0.0f};
       int column = 0;
       int row = 0;

@@ -5798,19 +5798,19 @@ void CEZ2STRScreenEffect::Open() {
     break;
 
   case EF_MYSTERY_ILLUSION_BOTTOM:
-    this->AddEvent(0, "effect\\AG_MYSTERY_ILLUSION.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_MYSTERY_ILLUSION.wav", 0, 0);
     this->retained = 1;
     particle->m_loop = true;
     break;
 
   case EF_TORNADO_STORM:
-    this->AddEvent(0, "effect\\AG_TORNADO_STORM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_TORNADO_STORM.wav", 0, 0);
     this->retained = 1;
     particle->m_loop = true;
     break;
 
   case EF_MEDIALE_VOTUM:
-    this->AddEvent(0, "effect\\CD_MEDIALE_VOTUM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_MEDIALE_VOTUM.wav", 0, 0);
     break;
 
   default:
@@ -5843,61 +5843,61 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_POTION3:
   case EF_POTION4:
   case EF_POTION7:
-    this->AddEvent(0, "_heal_effect.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "_heal_effect.wav", 0, 0);
     break;
 
   case EF_POTION5:
   case EF_POTION6:
   case EF_POTION8:
-    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\흡기.wav", 0, 0);
     break;
 
   case EF_HAMMER_OF_GOD:
-    this->AddEvent(0, "effect\\RL_HAMMER_OF_GOD.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\RL_HAMMER_OF_GOD.wav", 0, 0);
     break;
 
   case EF_SU_TUNABELLY:
-    this->AddEvent(0, "effect\\su_tunabelly.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_tunabelly.wav", 0, 0);
     break;
 
   case EF_SU_SV_STEMSPEAR:
-    this->AddEvent(0, "effect\\su_stemspear.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_stemspear.wav", 0, 0);
     break;
 
   case EF_SU_SCRATCH:
-    this->AddEvent(0, "effect\\su_scratch.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_scratch.wav", 0, 0);
     break;
 
   case EF_SU_SCAROFTAROU:
-    this->AddEvent(0, "effect\\su_scaroftarou.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_scaroftarou.wav", 0, 0);
     break;
 
   case EF_SU_PICKYPECK:
-    this->AddEvent(0, "effect\\su_pickypeck.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_pickypeck.wav", 0, 0);
     break;
 
   case EF_SU_BUNCHOFSHRIMP:
-    this->AddEvent(0, "effect\\su_brunchofshrimp.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_brunchofshrimp.wav", 0, 0);
     break;
 
   case EF_SU_GROOMING:
-    this->AddEvent(0, "effect\\su_grooming.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_grooming.wav", 0, 0);
     break;
 
   case EF_SU_CHATTERING:
-    this->AddEvent(0, "effect\\su_chattering.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_chattering.wav", 0, 0);
     break;
 
   case EF_SU_HISS:
-    this->AddEvent(0, "effect\\su_hiss.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_hiss.wav", 0, 0);
     break;
 
   case EF_SU_POWEROFFLOCK:
-    this->AddEvent(0, "effect\\su_powerofflock.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_powerofflock.wav", 0, 0);
     break;
 
   case EF_SU_SVG_SPIRIT:
-    this->AddEvent(0, "effect\\su_svg_spirit.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_svg_spirit.wav", 0, 0);
     break;
 
   case EF_QUAGMIRE_VISUAL: {
@@ -5906,33 +5906,33 @@ void CEZ2STRScreenEffect::InitEvents() {
       random = 0;
     }
     if (random == 0) {
-      this->AddEvent(0, "effect\\wizard_quagmire.wav", 0, -100.0f);
+      this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_quagmire.wav", 0, -100.0f);
     }
     break;
   }
 
   case EF_LORD_OF_VERMILLION_VISUAL:
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0, 0);
-    this->AddEvent(0, "effect\\hunter_blastmine.wav", 0, 0);
-    this->AddEvent(0, "effect\\hunter_blastmine.wav", 0xa, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x14, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x32, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x50, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x64, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x82, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x8c, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0xb4, 0);
-    this->AddEvent(0, "effect\\wizard_meteo.wav", 0xc8, 0);
-    this->AddEvent(1, nullptr, 0x32, 0);
-    this->AddEvent(1, nullptr, 0x64, 0);
-    this->AddEvent(1, nullptr, 0x96, 0);
-    this->AddEvent(1, nullptr, 0xc8, 0);
-    this->AddEvent(1, nullptr, 0xfa, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\hunter_blastmine.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\hunter_blastmine.wav", 0xa, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x32, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x50, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x64, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x82, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0x8c, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0xb4, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteo.wav", 0xc8, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x32, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x64, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x96, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0xc8, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0xfa, 0);
     break;
 
   case EF_METEOR_STORM_VISUAL:
-    this->AddEvent(0, "effect\\wizard_meteor.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0x28, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_meteor.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x28, 0);
     break;
 
   case EF_NEW_CART_CANNON_CAST_BOTTOM:
@@ -5952,42 +5952,42 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_VENOM_SWAMP_CAST_BOTTOM:
   case EF_LIGHTNING_LAND_CAST_BOTTOM:
   case EF_ELEMENTAL_BUSTER_CAST:
-    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_BeginSpell.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_NEW_AXETORNADO_BOTTOM:
   case EF_MINEFFECT_AXETORNADO_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "ice_titan_attack.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "ice_titan_attack.wav", 5, 0);
     break;
 
   case EF_NEW_FATAL_MENACE_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EF_Bash.wav", 0, 0);
-    this->AddEvent(0, "effect\\rog_intimidate.wav", 0x23, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_Bash.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\rog_intimidate.wav", 0x23, 0);
     break;
 
   case EF_NEW_CANNON_SPEAR_BOTTOM:
   case EF_MINEFFECT_CANNON_SPEAR_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EF_hit2.wav", 0xa, 0);
-    this->AddEvent(0, "effect\\EF_hit4.wav", 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_hit2.wav", 0xa, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_hit4.wav", 0x14, 0);
     break;
 
   case EF_NEW_CRITICALATTACK:
-    this->AddEvent(0, "effect\\EF_hit2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_hit2.wav", 0, 0);
     break;
 
   case EF_NEW_RAYOFGENESIS:
-    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
-    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
-    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\mon_맹룡과강.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\mon_맹룡과강.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\mon_맹룡과강.wav", 5, 0);
     break;
 
   case EF_NEW_COMET:
   case EF_MINEFFECT_COMET:
-    this->AddEvent(0, "effect\\g크레이지위드.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\g크레이지위드.wav", 0, 0);
     break;
 
   case EF_NEW_POISONSMOKE_1:
@@ -6002,30 +6002,30 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_NEW_FEARBREEZE:
-    this->AddEvent(0, "effect\\EF_Bash.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_Bash.wav", 0, 0);
     break;
 
   case EF_NEW_HELLINFERNO:
-    this->AddEvent(0, "hell_in.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "hell_in.wav", 0, 0);
     break;
 
   case EF_NEW_CLEARANCE:
-    this->AddEvent(0, "effect\\샤프슈팅.wav", 0, 0);
-    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\샤프슈팅.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\흡기.wav", 0, 0);
     break;
 
   case EF_NEW_VARETYRSPEAR:
-    this->AddEvent(0, "effect\\프레셔.wav", 3, 0);
-    this->AddEvent(0, "effect\\S바레티르스피어.wav", 0x16, 0);
-    this->AddEvent(1, nullptr, 0x16, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\프레셔.wav", 3, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\S바레티르스피어.wav", 0x16, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x16, 0);
     break;
 
   case EF_NEW_CROSSIMPACT:
-    this->AddEvent(0, "effect\\EF_StoneCurse.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_StoneCurse.wav", 0, 0);
     break;
 
   case EF_NEW_SOULEXPANSION_HIT_BOTTOM:
-    this->AddEvent(0, "effect\\매직 크래쉬.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\매직 크래쉬.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
@@ -6049,15 +6049,15 @@ void CEZ2STRScreenEffect::InitEvents() {
 
   case EF_GRADE_ENCHANT_FAILED:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_NO_DEPTH;
-    this->AddEvent(1, nullptr, 0xb4, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0xb4, 0);
     break;
 
   case EF_NEW_CHAINLIGHTNING_TARGET:
-    this->AddEvent(0, "chainlight.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "chainlight.wav", 0, 0);
     break;
 
   case EF_NEW_SOUNDOFDESTRUCTION_TARGET:
-    this->AddEvent(0, "effect\\priest_lexaeterna.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\priest_lexaeterna.wav", 0, 0);
     break;
 
   case EF_NEW_AIMEDBOLT_CAST_BOTTOM:
@@ -6069,85 +6069,85 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_FROZEN_SLASH_CAST_BOTTOM:
   case EF_FLORAL_FLARE_ROAD_CAST_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_BeginSpell.wav", 0, 0);
     break;
 
   case EF_NEW_EPICLESIS:
-    this->AddEvent(0, "effect\\EF_GlassWall.wav", 0x1e, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_GlassWall.wav", 0x1e, 0);
     break;
 
   case EF_HACKANDSLASH_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\DK_HACKANDSLASHER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_HACKANDSLASHER.wav", 0, 0);
     break;
 
   case EF_NEW_WINDCUTTER:
-    this->AddEvent(0, "effect\\wl_siennaexecrate.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wl_siennaexecrate.wav", 0, 0);
     break;
 
   case EF_NEW_POWERSWING_BOTTOM:
   case EF_NEW_RUSH_QUAKE_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
-    this->AddEvent(1, nullptr, 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x14, 0);
     break;
 
   case EF_NEW_EARTHDRIVE:
-    this->AddEvent(0, "effect\\wizard_earthspike.wav", 0x14, 0);
-    this->AddEvent(1, nullptr, 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_earthspike.wav", 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x14, 0);
     break;
 
   case EF_SERVANT_SIGN_DOWN_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\DK_SERVANT_W_SIGN.wav", 0x28, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_SERVANT_W_SIGN.wav", 0x28, 0);
     break;
 
   case EF_SERVANT_PHANTOM_HIT:
-    this->AddEvent(0, "effect\\DK_SERVANT_W_PHANTOM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_SERVANT_W_PHANTOM.wav", 0, 0);
     break;
 
   case EF_DRAGONIC_AURA:
-    this->AddEvent(0, "effect\\DK_DRAGONIC_AURA1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_DRAGONIC_AURA1.wav", 0, 0);
     break;
 
   case EF_DRAGONIC_AURA_HIT:
-    this->AddEvent(0, "effect\\DK_DRAGONIC_AURA2.wav", 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_DRAGONIC_AURA2.wav", 1, 0);
     break;
 
   case EF_MADNESS_CRUSHER:
-    this->AddEvent(0, "effect\\DK_MADNESS_CRUSHER.wav", 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_MADNESS_CRUSHER.wav", 1, 0);
     break;
 
   case EF_DESTRUCTIVE_HURRICANE:
-    this->AddEvent(0, "effect\\AG_DESTRUCTIVE_HURRICANE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_DESTRUCTIVE_HURRICANE.wav", 0, 0);
     break;
 
   case EF_DEADLY_PROJECTION_HIT: {
     CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
     if (actor && actor->bodyState == 0 && actor->effectState == 0) {
-      this->AddEvent(0, "effect\\AG_DEADLY_PROJECTION.wav", 0, 0);
+      this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_DEADLY_PROJECTION.wav", 0, 0);
     }
     break;
   }
 
   case EF_ROCKDOWN:
-    this->AddEvent(0, "effect\\AG_ROCK_DOWN.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_ROCK_DOWN.wav", 0, 0);
     break;
 
   case EF_NEW_CHARGINGPIERCE_HIT:
-    this->AddEvent(0, "effect\\DK_CHARGINGPIERCE1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_CHARGINGPIERCE1.wav", 0, 0);
     break;
 
   case EF_FROZEN_SLASH:
-    this->AddEvent(0, "effect\\AG_FROZEN_SLASH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_FROZEN_SLASH.wav", 0, 0);
     break;
 
   case EF_VIGOR_CAST:
-    this->AddEvent(0, "effect\\DK_VIGOR.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_VIGOR.wav", 0, 0);
     break;
 
   case EF_SERVANT_DEMOLITION_HIT:
-    this->AddEvent(0, "effect\\DK_SERVANT_W_DEMOL.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_SERVANT_W_DEMOL.wav", 0, 0);
     break;
 
   case EF_STORMSLASH_1:
@@ -6156,53 +6156,53 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_STORMSLASH_4:
   case EF_STORMSLASH_5:
     for (int i = 0; i <= id - 0x686; ++i) {
-      this->AddEvent(0, FormatOwnedString("effect\\DK_STORMSLASH%d.wav", rand() % 4 + 1).c_str(), i * 15, 0);
+      this->AddEvent(EFFECT_EVENT_SOUND, FormatOwnedString("effect\\DK_STORMSLASH%d.wav", rand() % 4 + 1).c_str(), i * 15, 0);
     }
     break;
 
   case EF_ABR_MOTHER_01:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\MT_ABR_NET_REPAIR.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\MT_ABR_NET_REPAIR.wav", 0, 0);
     break;
 
   case EF_ABR_MOTHER_02:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\MT_ABR_NET_SUPPORT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\MT_ABR_NET_SUPPORT.wav", 0, 0);
     break;
 
   case EF_NEW_D_MACHINE_START:
-    this->AddEvent(0, "effect\\MT_D_MACHINE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\MT_D_MACHINE.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_NEW_AXE_STOMP_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(1, nullptr, 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x14, 0);
     break;
 
   case EF_SECOND_FLAME_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
-    this->AddEvent(1, nullptr, 0x28, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0x28, 0);
     break;
 
   case EF_ARBITRIUM_BOTTOM:
-    this->AddEvent(0, "effect\\CD_ARBITRIUM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_ARBITRIUM.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM:
-    this->AddEvent(0, "effect\\CD_DILECTIO_HEAL.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_DILECTIO_HEAL.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_COMPETENTIA_BOTTOM:
-    this->AddEvent(0, "effect\\CD_COMPETENTIA.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_COMPETENTIA.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_CRYSTAL_IMPACT:
-    this->AddEvent(0, "effect\\AG_CRYSTAL_IMPACT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_CRYSTAL_IMPACT.wav", 0, 0);
     break;
 
   case EF_CALUMITYGALE_CAST:
@@ -6259,31 +6259,31 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_SHIELD_SHOOTING_CAST:
   case EF_JUDGEMENT_CROSS_CAST:
   case EF_REBOUND_SHIELD_CAST:
-    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_BeginSpell.wav", 0, 0);
     break;
 
   case EF_MASSIVE_FLAME_BLASTER:
-    this->AddEvent(0, "effect\\IQ_MASSIVE_F_BLASTER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_MASSIVE_F_BLASTER.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_THIRD_FLAME_BOMB_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\IQ_THIRD_FLAME_BOMB.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_THIRD_FLAME_BOMB.wav", 0, 0);
     break;
 
   case EF_THIRD_PUNISH_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\IQ_THIRD_PUNISH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_THIRD_PUNISH.wav", 0, 0);
     break;
 
   case EF_KVASIRSONATA_CAST_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\TR_KVASIR_SONATA.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_KVASIR_SONATA.wav", 0, 0);
     break;
 
   case EF_STRATUM_TREMOR:
-    this->AddEvent(0, "effect\\AG_STRANTUM_TREMOR1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_STRANTUM_TREMOR1.wav", 0, 0);
     [[fallthrough]];
 
   case EF_STRATUM_TREMOR_BOTTOM:
@@ -6328,12 +6328,12 @@ void CEZ2STRScreenEffect::InitEvents() {
 
   case EF_POWERFUL_FAITH:
   case EF_FIRM_FAITH:
-    this->AddEvent(0, "effect\\IQ_FAITH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_FAITH.wav", 0, 0);
     break;
 
   case EF_INCREASING_ACTIVITY:
     this->particle->m_repeat = 2;
-    this->AddEvent(0, "effect\\EM_INCREASING_ACTIVITY.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_INCREASING_ACTIVITY.wav", 0, 0);
     break;
 
   case EF_CHAIN_REACTION_SHOT: {
@@ -6383,68 +6383,68 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_ACIDIFIED_ZONE_WIND_CAST:
   case EF_ACIDIFIED_ZONE_GROUND_CAST:
   case EF_RESEARCH_REPORT_CAST:
-    this->AddEvent(0, "effect\\ef_beginspell.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ef_beginspell.wav", 0, 0);
     break;
 
   case EF_SERPENS_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_SERPENS_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SUMMON_ELEMENTAL_SERPENS_2.wav", 0, 0);
     break;
 
   case EF_RELIGIO:
-    this->AddEvent(0, "effect\\CD_RELIGIO.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_RELIGIO.wav", 0, 0);
     break;
 
   case EF_BENEDICTUM:
-    this->AddEvent(0, "effect\\CD_BENEDICTUM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_BENEDICTUM.wav", 0, 0);
     break;
 
   case EF_ARGUTUS_VITA:
   case EF_ARGUTUS_TELUM:
-    this->AddEvent(0, "effect\\CD_ARGUTUS_VITA.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_ARGUTUS_VITA.wav", 0, 0);
     break;
 
   case EF_EFFLIGO_BOTTOM:
-    this->AddEvent(0, "effect\\CD_EFFLIGO.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_EFFLIGO.wav", 0, 0);
     break;
 
   case EF_PRESENS_ACIES:
-    this->AddEvent(0, "effect\\CD_PRESENS_ACIES.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_PRESENS_ACIES.wav", 0, 0);
     break;
 
   case EF_NEW_PRAMEN_BOTTOM:
-    this->AddEvent(0, "effect\\CD_FRAMEN.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_FRAMEN.wav", 0, 0);
     break;
 
   case EF_DILUVIO_ICE:
-    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_DILUVIO_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SUMMON_ELEMENTAL_DILUVIO_2.wav", 0, 0);
     break;
 
   case EF_DIAMOND_STORM_BOTTOM: {
     CEZ2STRParticle* particle = this->particle;
     particle->life = EffectLifetime(EF_DIAMOND_STORM_BOTTOM) / 60.0f;
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EM_DIAMOND_STORM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_DIAMOND_STORM.wav", 0, 0);
     break;
   }
 
   case EF_DIAMOND_STORM_CAST_BOTTOM:
   case EF_CONFLAGRATION_CAST_BOTTOM:
-    this->AddEvent(0, "effect\\ef_beginspell.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ef_beginspell.wav", 0, 0);
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
     break;
 
   case EF_VENOM_SWAMP_BOTTOM:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\EM_VENOM_SWAMP.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_VENOM_SWAMP.wav", 0, 0);
     break;
 
   case EF_ARDOR:
-    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_ARDOR_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SUMMON_ELEMENTAL_ARDOR_2.wav", 0, 0);
     break;
 
   case EF_LIGHTNING_LAND:
-    this->AddEvent(0, "effect\\EM_LIGHTNING_LAND.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_LIGHTNING_LAND.wav", 0, 0);
     break;
 
   case EF_ROSEBLOSSOM_SHOT: {
@@ -6466,328 +6466,328 @@ void CEZ2STRScreenEffect::InitEvents() {
       this->particle->m_angle = static_cast<float>(angle);
     }
 
-    this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_SHOT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_ROSEBLOSSOM_SHOT.wav", 0, 0);
     break;
   }
 
   case EF_CONFLAGRATION:
-    this->AddEvent(0, "effect\\EM_CONFLAGRATION.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_CONFLAGRATION.wav", 0, 0);
     break;
 
   case EF_JAWAII_SERENADE:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\TR_JAWAII_SERENADE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_JAWAII_SERENADE.wav", 0, 0);
     break;
 
   case EF_PROCELLA:
-    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_PROCELLA_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SUMMON_ELEMENTAL_PROCELLA_2.wav", 0, 0);
     break;
 
   case EF_TERREMOTUS:
-    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_2.wav", 0, 0);
     break;
 
   case EF_FROM_THE_ABYSS:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
-    this->AddEvent(0, "effect\\ABC_FROM_THE_ABYSS.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ABC_FROM_THE_ABYSS.wav", 0, 0);
     break;
 
   case EF_HAWK_RUSH:
-    this->AddEvent(0, "effect\\WH_HAWKRUSH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_HAWKRUSH.wav", 0, 0);
     break;
 
   case EF_WIND_SIGN:
-    this->AddEvent(0, "effect\\WH_WIND_SIGN.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_WIND_SIGN.wav", 0, 0);
     break;
 
   case EF_CALUMITYGALE:
-    this->AddEvent(0, "effect\\WH_CALAMITYGALE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_CALAMITYGALE.wav", 0, 0);
     break;
 
   case EF_DEEP_BLIND_TRAP:
   case EF_SWIFT_TRAP:
   case EF_SOLID_TRAP:
   case EF_FLAME_TRAP:
-    this->AddEvent(0, "effect\\WH_TRAP.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_TRAP.wav", 0, 0);
     break;
 
   case EF_DEEP_BLIND_TRAP_HIT:
-    this->AddEvent(0, "effect\\WH_DEEP_BLIND_TRAP_HIT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_DEEP_BLIND_TRAP_HIT.wav", 0, 0);
     break;
 
   case EF_SOLID_TRAP_HIT:
-    this->AddEvent(0, "effect\\WH_SOLID_TRAP_HIT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_SOLID_TRAP_HIT.wav", 0, 0);
     break;
 
   case EF_SWIFT_TRAP_HIT:
-    this->AddEvent(0, "effect\\WH_SWIFT_TRAP_HIT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_SWIFT_TRAP_HIT.wav", 0, 0);
     break;
 
   case EF_FLAME_TRAP_HIT:
-    this->AddEvent(0, "effect\\WH_FLAMETRAP_HIT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_FLAMETRAP_HIT.wav", 0, 0);
     break;
 
   case EF_TERRA_DRIVE:
-    this->AddEvent(0, "effect\\EM_TERRA_DRIVE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_TERRA_DRIVE.wav", 0, 0);
     break;
 
   case EF_ETERNAL_SLASH_HIT:
-    this->AddEvent(0, "effect\\SHC_SHADOW_STAB.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_SHADOW_STAB.wav", 0, 0);
     break;
 
   case EF_ETERNAL_SLASH_HIT_2:
-    this->AddEvent(0, "effect\\SHC_ETERNAL_SLASH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_ETERNAL_SLASH.wav", 0, 0);
     break;
 
   case EF_IMPACT_CRATER_HIT:
-    this->AddEvent(0, "effect\\SHC_IMPACT_CRATER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_IMPACT_CRATER.wav", 0, 0);
     break;
 
   case EF_FATAL_SHADOW_CROW:
-    this->AddEvent(0, "effect\\SHC_FATAL_SHADOW_CROW.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_FATAL_SHADOW_CROW.wav", 0, 0);
     break;
 
   case EF_NEW_POTENT_VENOM:
-    this->AddEvent(0, "effect\\SHC_POTENT_VENOM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_POTENT_VENOM.wav", 0, 0);
     break;
 
   case EF_NEW_AXE_STOMP:
-    this->AddEvent(0, "effect\\MT_AXE_STOMP.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\MT_AXE_STOMP.wav", 0, 0);
     break;
 
   case EF_NEW_RUSH_QUAKE_HIT:
-    this->AddEvent(0, "effect\\MT_RUSH_QUAKE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\MT_RUSH_QUAKE.wav", 0, 0);
     break;
 
   case EF_WOODEN_WARRIOR_THROWROCK: {
     const double angle = ScreenAngle(this->positionVector, this->sourcePositionVector);
     this->particle->m_angle = static_cast<float>(angle + 180.0);
-    this->AddEvent(0, "effect\\BO_THROWROCK.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_THROWROCK.wav", 0, 0);
     break;
   }
 
   case EF_WOODEN_WARRIOR_ATTACK: {
     const double angle = ScreenAngle(this->positionVector, this->sourcePositionVector);
     this->particle->m_angle = static_cast<float>(angle + 180.0);
-    this->AddEvent(0, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
     break;
   }
 
   case EF_ROSEBLOSSOM_ROSE:
-    this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_ROSE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_ROSEBLOSSOM_ROSE.wav", 0, 0);
     break;
 
   case EF_SOUND_BLEND:
-    this->AddEvent(0, "effect\\TR_SOUNDBLEND_SHOT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_SOUNDBLEND_SHOT.wav", 0, 0);
     break;
 
   case EF_SOUND_BLEND_RED:
-    this->AddEvent(0, "effect\\TR_SOUNDBLEND_HIT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_SOUNDBLEND_HIT.wav", 0, 0);
     break;
 
   case EF_METALLIC_FURY:
-    this->AddEvent(0, "effect\\TR_METALIC_FURY.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_METALIC_FURY.wav", 0, 0);
     break;
 
   case EF_GEF_NOCTURN:
-    this->AddEvent(0, "effect\\TR_GEF_NOCTURN.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_GEF_NOCTURN.wav", 0, 0);
     break;
 
   case EF_ROKI_CAPRICCIO:
-    this->AddEvent(0, "effect\\TR_ROKI_CAPRICCIO.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_ROKI_CAPRICCIO.wav", 0, 0);
     break;
 
   case EF_AIN_RHAPSODY:
-    this->AddEvent(0, "effect\\TR_AIN_RHAPSODY.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_AIN_RHAPSODY.wav", 0, 0);
     break;
 
   case EF_MUSICAL_INTERLUDE:
-    this->AddEvent(0, "effect\\TR_MUSICAL_INTERLUDE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_MUSICAL_INTERLUDE.wav", 0, 0);
     break;
 
   case EF_NIFLHEIM:
-    this->AddEvent(0, "effect\\TR_NIPELHEIM_REQUIEM.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_NIPELHEIM_REQUIEM.wav", 0, 0);
     break;
 
   case EF_PRONMARCH:
-    this->AddEvent(0, "effect\\TR_PRON_MARCH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_PRON_MARCH.wav", 0, 0);
     break;
 
   case EF_MYSTICSYMPHONY:
-    this->AddEvent(0, "effect\\TR_MYSTIC_SYMPHONY.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_MYSTIC_SYMPHONY.wav", 0, 0);
     break;
 
   case EF_OLEUM_SANCTUM:
-    this->AddEvent(0, "effect\\IQ_OLEUM_SANCTUM.wav", 0x32, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_OLEUM_SANCTUM.wav", 0x32, 0);
     break;
 
   case EF_EXPLOSION_BLASTER:
-    this->AddEvent(0, "effect\\IQ_EXPOSION_BLASTER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_EXPOSION_BLASTER.wav", 0, 0);
     break;
 
   case EF_FIRST_FAITH_POWER_START:
-    this->AddEvent(0, "effect\\IQ_FIRST_FAITH_POWER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_FIRST_FAITH_POWER.wav", 0, 0);
     break;
 
   case EF_JUDGE_START:
-    this->AddEvent(0, "effect\\IQ_JUDGE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_JUDGE.wav", 0, 0);
     break;
 
   case EF_THIRD_EXOR_FLAME_START:
-    this->AddEvent(0, "effect\\IQ_THIRD_EXOR_FLAME.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_THIRD_EXOR_FLAME.wav", 0, 0);
     break;
 
   case EF_FIRST_BRAND_START:
-    this->AddEvent(0, "effect\\IQ_FIRST_BRAND.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_FIRST_BRAND.wav", 0, 0);
     break;
 
   case EF_SECOND_FAITH:
-    this->AddEvent(0, "effect\\IQ_SECOND_FAITH.wav", 0x14, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_SECOND_FAITH.wav", 0x14, 0);
     break;
 
   case EF_SECOND_FLAME:
-    this->AddEvent(0, "effect\\IQ_SECOND_FLAME.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_SECOND_FLAME.wav", 0, 0);
     break;
 
   case EF_THIRD_CONSECRATION:
-    this->AddEvent(0, "effect\\IQ_THIRD_CONSECRATION.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IQ_THIRD_CONSECRATION.wav", 0, 0);
     break;
 
   case EF_THE_W_PROTECTION:
-    this->AddEvent(0, "apocalips_attack.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "apocalips_attack.wav", 0, 0);
     break;
 
   case EF_ADVANCED_PROTECTION:
-    this->AddEvent(0, "effect\\BO_ADVANCE_PROTECTION.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_ADVANCE_PROTECTION.wav", 0, 0);
     break;
 
   case EF_WOODEN_FAIRY_DUSTY:
-    this->AddEvent(0, "effect\\BO_FAIRY_DUSTY.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_FAIRY_DUSTY.wav", 0, 0);
     break;
 
   case EF_RESEARCH_REPORT:
-    this->AddEvent(0, "effect\\BO_RESEARCHREPORT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_RESEARCHREPORT.wav", 0, 0);
     break;
 
   case EF_HELLTREE_HOWLING:
-    this->AddEvent(0, "effect\\BO_HELL_HOWLING.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\BO_HELL_HOWLING.wav", 0, 0);
     break;
 
   case EF_ABYSS_DAGGER:
-    this->AddEvent(0, "effect\\ABC_ABYSS_DAGGER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ABC_ABYSS_DAGGER.wav", 0, 0);
     break;
 
   case EF_ABYSS_STRIKE:
-    this->AddEvent(0, "effect\\ABC_ABYSS_STRIKE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ABC_ABYSS_STRIKE.wav", 0, 0);
     break;
 
   case EF_DEFT_STAB:
-    this->AddEvent(0, "effect\\ABC_DEFT_STAB1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ABC_DEFT_STAB1.wav", 0, 0);
     break;
 
   case EF_SPELL_ENCHANTING:
-    this->AddEvent(0, "effect\\EM_SPELL_ENCHANTING.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_SPELL_ENCHANTING.wav", 0, 0);
     break;
 
   case EF_ACTIVITY_BURN:
-    this->AddEvent(0, "effect\\EM_ACTIVITY_BURN.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ACTIVITY_BURN.wav", 0, 0);
     break;
 
   case EF_ELEMENTAL_BUSTER_FIRE:
-    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_FIRE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ELEMETAL_BUSTER_FIRE.wav", 0, 0);
     break;
 
   case EF_ELEMENTAL_BUSTER_WATER:
-    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_WATER.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ELEMETAL_BUSTER_WATER.wav", 0, 0);
     break;
 
   case EF_ELEMENTAL_BUSTER_POISON:
-    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_POISON.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ELEMETAL_BUSTER_POISON.wav", 0, 0);
     break;
 
   case EF_ELEMENTAL_BUSTER_LAND:
-    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_GROUND.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ELEMETAL_BUSTER_GROUND.wav", 0, 0);
     break;
 
   case EF_ELEMENTAL_BUSTER_WIND:
-    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_WIND.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EM_ELEMETAL_BUSTER_WIND.wav", 0, 0);
     break;
 
   case EF_ARDOR_FLAMETECHNIC:
-    this->AddEvent(0, "effect\\EF_FireArrow1.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_FireArrow1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_DILUVIO_COLD_FORCE:
-    this->AddEvent(0, "effect\\EF_IceArrow1.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_IceArrow1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_PROCELLA_GRACE_BREEZE:
-    this->AddEvent(0, "effect\\EF_LightBolt3.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_LightBolt3.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_TERREMOTUS_EARTH_CARE:
-    this->AddEvent(0, "effect\\wizard_earthspike.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_earthspike.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_SERPENS_DEEP_POISONING:
-    this->AddEvent(0, "effect\\ef_detoxication.wav", 0, 0);
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ef_detoxication.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_GUARD_STANCE:
   case EF_ATTACK_STANCE:
-    this->AddEvent(0, "effect\\IG_GUARD_STANCE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_GUARD_STANCE.wav", 0, 0);
     break;
 
   case EF_GUARDIANSHIELD_SUB:
-    this->AddEvent(0, "effect\\IG_GUARDIAN_SHIELD.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_GUARDIAN_SHIELD.wav", 0, 0);
     break;
 
   case EF_REBOUND_SHIELD:
-    this->AddEvent(0, "effect\\IG_REBOUND_SHIELD.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_REBOUND_SHIELD.wav", 0, 0);
     break;
 
   case EF_ULTIMATESACRIFICE:
-    this->AddEvent(0, "effect\\IG_ULTIMATE_SACRIFICE.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_ULTIMATE_SACRIFICE.wav", 0, 0);
     break;
 
   case EF_HOLY_SHIELD:
-    this->AddEvent(0, "effect\\IG_HOLY_SHIELD1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_HOLY_SHIELD1.wav", 0, 0);
     break;
 
   case EF_HOLY_SHIELD_LOOP:
-    this->AddEvent(0, "effect\\IG_HOLY_SHIELD2.wav", 0x22, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_HOLY_SHIELD2.wav", 0x22, 0);
     break;
 
   case EF_GRAND_JUDGEMENT:
-    this->AddEvent(0, "effect\\IG_GRAND_JUDGEMENT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_GRAND_JUDGEMENT.wav", 0, 0);
     break;
 
   case EF_OVERSLASH:
-    this->AddEvent(0, "effect\\IG_OVERSLASH.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\IG_OVERSLASH.wav", 0, 0);
     break;
 
   case EF_UI_ENCHANT_FAIL:
   case EF_UI_LEVELUP_FAIL:
   case EF_UI_RESET_FAIL:
     this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_NO_DEPTH;
-    this->AddEvent(1, nullptr, 0, 0);
+    this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 0, 0);
     break;
 
   case EF_TETRA_VORTEX_WATER_SUB_2:
-    this->AddEvent(0, "effect\\drop_effect_1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\drop_effect_1.wav", 0, 0);
     break;
 
   case EF_TETRA_VORTEX_EARTH_SUB_2:
-    this->AddEvent(0, "effect\\drop_effect_2.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\drop_effect_2.wav", 0, 0);
     break;
 
   case EF_20TH_FIREWORK:
-    this->AddEvent(0, "effect\\pokjuk_jap.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\pokjuk_jap.wav", 0, 0);
     break;
 
   case EF_NPC_GATE_GREEN_2:

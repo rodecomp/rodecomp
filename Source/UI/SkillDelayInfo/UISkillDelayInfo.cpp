@@ -116,7 +116,7 @@ __forceinline void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CD
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -224,7 +224,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
     for (SkillDelayInfo::CUIDelayItem*& slot : this->items) {
       SkillDelayInfo::CUIDelayItem* item = new SkillDelayInfo::CUIDelayItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (SkillDelayInfo::CUIDelayItem* row : this->items) {
@@ -303,7 +303,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
   if (this->data.size() == 0) {
     for (SkillDelayInfo::CUIDelayItem* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -340,14 +340,14 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     SkillDelayInfo::CUIDelayItem* item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -560,10 +560,10 @@ void CUISkillDelayInfo::SetSkill(void* skill) {
 
   this->delayList->Resize(this->delayList->geometry.width, this->delayList->data.size() * this->delayList->rowHeight + this->delayList->itemY);
   if (this->description->lines.empty()) {
-    this->description->Show(0);
+    this->description->Show(WINDOW_HIDDEN);
     this->Resize(this->geometry.width, this->delayList->geometry.y + this->delayList->geometry.height + 10);
   } else {
-    this->description->Show(1);
+    this->description->Show(WINDOW_VISIBLE);
     this->description->Resize(this->description->geometry.width, this->description->contentHeight + this->description->paddingBottom + this->description->paddingTop);
     this->description->Move(this->description->geometry.x, this->delayList->geometry.y + this->delayList->geometry.height + 10);
     this->Resize(this->geometry.width, this->description->geometry.y + this->description->geometry.height + 10);

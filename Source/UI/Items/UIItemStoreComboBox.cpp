@@ -34,7 +34,7 @@ void UIItemStoreComboBoxWnd::OnCreate(int, int) {
   items->pink = this->pink != 0;
   this->list->SetSize(62, 45);
   this->list->Move(0, 0);
-  this->list->Show(0);
+  this->list->Show(WINDOW_HIDDEN);
   this->AddChild(this->list);
 
   {

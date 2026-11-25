@@ -10,6 +10,7 @@
 #include "Network/TextEncoding.h"
 #include "UI/Edit/UIEditBoxEx.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "UI/Window/UIEnums.h"
 
 #include <algorithm>
 #include <atlconv.h>
@@ -43,7 +44,7 @@ bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Rebin
 // OFFSET: 0x00A4E490
 // FUNCTION: fn_16207
 int CUIProbabilityTable::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 177) {
+  if (message == UM_FINDPUSH) {
     this->m_searchEdit->SetFocus();
   }
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);

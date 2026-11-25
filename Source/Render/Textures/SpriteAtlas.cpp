@@ -1,4 +1,5 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Texture.h"
@@ -213,7 +214,7 @@ CTexture* SpriteAtlas::Insert(const SpriteRleImage* image, const std::uint32_t* 
   record.image = image;
   record.palette = palette;
   float u1 = static_cast<float>(record.x + image->width) / width;
-  if (g_serviceType != 10) {
+  if (g_serviceType != ServiceGermany) {
     record.u1 = u1;
     record.v1 = static_cast<float>(record.y + image->height) / height;
   } else {

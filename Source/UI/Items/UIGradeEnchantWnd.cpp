@@ -108,7 +108,7 @@ UIGradeEnchant_BtnStart::UIGradeEnchant_BtnStart() : UIBitmapButton() {
 // FUNCTION: fn_09749
 void UIGradeEnchantWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (x >= 53 && x <= 99 && y >= 114 && y <= 160 && drag->source == 1) {
+  if (x >= 53 && x <= 99 && y >= 114 && y <= 160 && drag->source == DRAG_ITEM_INVENTORY) {
     this->SendMsg(this, UM_REFRESHITEM, drag->id, 0, 0, 0);
   }
 

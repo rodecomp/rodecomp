@@ -4,6 +4,7 @@
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIEnums.h"
 
 #include <cstdint>
 
@@ -28,7 +29,7 @@ void UIOpenRoulletteWnd::OnCreate(int width, int height) {
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 1, 0);
   button->SetBitmap("유저인터페이스\\basic_interface\\roullette\\RoulletteIcon.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-  button->SetId(192);
+  button->SetId(ID_STATUS);
   this->AddChild(button);
 }
 
@@ -40,11 +41,11 @@ void UIOpenRoulletteWnd::Paint() {
 // OFFSET: 0x00950B60
 // FUNCTION: fn_12946
 int UIOpenRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 192 && g_windowMgr.roulletteWnd == nullptr) {
+  if (a == ID_STATUS && g_windowMgr.roulletteWnd == nullptr) {
     RouletteOpenPacket packet;
     packet.id = ID_CZ_REQ_OPEN_ROULETTE;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);

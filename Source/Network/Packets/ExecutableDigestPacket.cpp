@@ -4,6 +4,7 @@
 #include "Utility/Hash/Md5State.h"
 #include "Network/Packets/PacketId.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Client/Application/Launcher.h"
 
 #include <cstdio>
@@ -23,7 +24,7 @@ namespace {
 // OFFSET: 0x00D8D790
 // FUNCTION: fn_22267
 void SendExecutableDigest() {
-  if (g_serviceType != 6 && (g_serviceType != 0 || g_serviceMode != 1)) {
+  if (g_serviceType != ServiceIndonesia && (g_serviceType != ServiceKorea || g_serviceMode != ServerSakray)) {
     return;
   }
 
@@ -45,17 +46,17 @@ void SendExecutableDigest() {
   }
   md5.Finish(packet.digest);
 
-  if (g_serviceType == 0) {
-    if (g_serviceMode == 1) {
+  if (g_serviceType == ServiceKorea) {
+    if (g_serviceMode == ServerSakray) {
       const std::uint32_t digest[4] = {0x912CD182, 0x8FD45A4F, 0x7ECF6FD9, 0x2D49CCF4};
       std::memcpy(packet.digest, digest, sizeof(digest));
-    } else if (g_serviceMode == 0) {
+    } else if (g_serviceMode == ServerPrimary) {
       const std::uint32_t digest[4] = {0x3164E365, 0x11031C03, 0x136D501E, 0x7A2D6939};
       std::memcpy(packet.digest, digest, sizeof(digest));
     } else {
       std::memset(packet.digest, 0, sizeof(packet.digest));
     }
-  } else if (g_serviceType == 6 && g_serviceMode == 1) {
+  } else if (g_serviceType == ServiceIndonesia && g_serviceMode == ServerSakray) {
     const std::uint32_t digest[4] = {0xC2940AC7, 0x9A38CC7A, 0x3954F547, 0x39D0A47C};
     std::memcpy(packet.digest, digest, sizeof(digest));
   }

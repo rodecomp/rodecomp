@@ -188,7 +188,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   this->AddCloseButton("", 0);
   this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
   g_windowMgr.SetFocus(this->m_edits[1]);
-  this->m_message0 = 0x16D;
+  this->m_message0 = ID_FIND;
 }
 
 // OFFSET: 0x009331F0

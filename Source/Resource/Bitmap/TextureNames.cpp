@@ -1,6 +1,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "File/ResourcePath.h"
@@ -12,7 +13,7 @@
 // OFFSET: 0x00ACE510
 // FUNCTION: fn_17788
 const char* CLanguageBase::ServiceName(const char* name) {
-  if (g_serviceType != 0 && g_serviceType != 2 && g_serviceType != 20) {
+  if (g_serviceType != ServiceKorea && g_serviceType != ServiceJapan && g_serviceType != ServiceEu) {
     // STATIC: 0x016D3860
     // GLOBAL: gl_24372
     static char path[260];
@@ -59,7 +60,7 @@ const char* Resolve(const char* name) {
       }
     }
 
-    if (g_serviceType != 0) {
+    if (g_serviceType != ServiceKorea) {
       if (ResourceMgr::Instance().Exists(g_serverLanguage->ServiceName(name))) {
         return g_serverLanguage->ServiceName(name);
       }

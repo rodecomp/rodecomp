@@ -3,6 +3,7 @@
 
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Events/ShowRankingScheduler.h"
 #include "Network/Connection/Connection.h"
@@ -39,7 +40,7 @@ void CCheckGDISchedule::Process(const std::uint64_t& now) {
   }
 
 perform_check:
-  if (g_serviceType != 0) {
+  if (g_serviceType != ServiceKorea) {
     return;
   }
 

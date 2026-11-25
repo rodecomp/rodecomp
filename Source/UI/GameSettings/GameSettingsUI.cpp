@@ -497,7 +497,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -538,7 +538,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -579,7 +579,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -620,7 +620,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
     for (GameSettingsUI::CUIComboItem*& slot : this->items) {
       GameSettingsUI::CUIComboItem* item = new GameSettingsUI::CUIComboItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
@@ -690,7 +690,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
     for (GameSettingsUI::CUIOptionItem*& slot : this->items) {
       GameSettingsUI::CUIOptionItem* item = new GameSettingsUI::CUIOptionItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIOptionItem* other : this->items) {
@@ -730,7 +730,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -767,14 +767,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnScroll(int pos
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -788,7 +788,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -825,14 +825,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnScroll(int posit
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -846,7 +846,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -883,14 +883,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnScroll(int pos
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -904,7 +904,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -941,14 +941,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnScroll(int posit
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -962,7 +962,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -999,14 +999,14 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -1015,7 +1015,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnScroll(int positio
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -1025,7 +1025,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::OnCreate(int wid
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -1035,7 +1035,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::OnCreate(int width
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -1045,7 +1045,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::OnCreate(int wid
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -1055,7 +1055,7 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::OnCreate(int width
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }

@@ -721,7 +721,7 @@ void CGameActor::UpdateHpGauge() {
   if (g_serviceOptions.Get(TT_MONSTERHP_ON_OFF) && this->hpGaugeWindow->displayMode != 0 &&
       !IsHiding(this->stateFlags) && !IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags) &&
       g_windowMgr.windowVisibilityState != 2) {
-    this->hpGaugeWindow->Show(1);
+    this->hpGaugeWindow->Show(WINDOW_VISIBLE);
     if (this->render.state == ST_DEAD && this->hpGaugeWindow->current != 0) {
       this->hpGaugeWindow->SetValues(0, this->hpGaugeWindow->maximum);
     }
@@ -732,7 +732,7 @@ void CGameActor::UpdateHpGauge() {
     return;
   }
 
-  this->hpGaugeWindow->Show(0);
+  this->hpGaugeWindow->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x00CB0A90

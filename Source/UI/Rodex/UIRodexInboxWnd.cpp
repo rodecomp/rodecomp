@@ -232,7 +232,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
     this->checks[row]->Move(0x11, row * 0x2C + 0x6C);
     this->checks[row]->SetChecked(0);
     this->checks[row]->m_message = 0;
-    this->checks[row]->Show(0);
+    this->checks[row]->Show(WINDOW_HIDDEN);
     this->AddChild(this->checks[row]);
 
     this->subjectButtons[row] = new UITextButton();
@@ -400,7 +400,7 @@ void UIRodexInboxWnd::Paint() {
           }
         }
       } else {
-        this->checks[row]->Show(0);
+        this->checks[row]->Show(WINDOW_HIDDEN);
         this->checks[row]->SetChecked(0);
         this->checks[row]->m_message = 0;
         this->senderButtons[row]->Enable(0);
@@ -410,7 +410,7 @@ void UIRodexInboxWnd::Paint() {
   } else {
     unsigned int index = this->page * 6;
     for (int row = 0; row < 6; ++row, ++index) {
-      this->checks[row]->Show(0);
+      this->checks[row]->Show(WINDOW_HIDDEN);
       this->senderButtons[row]->Enable(0);
       this->subjectButtons[row]->Enable(0);
       switch (g_rodexMailStore->inboxType) {
@@ -424,7 +424,7 @@ void UIRodexInboxWnd::Paint() {
                 this->expired = 0;
                 g_rodexMailStore->m_mails1.erase(it);
               } else {
-                this->checks[row]->Show(1);
+                this->checks[row]->Show(WINDOW_VISIBLE);
                 this->senderButtons[row]->Enable(1);
                 this->subjectButtons[row]->Enable(1);
                 this->SetMailRow(row, it->first, it->second.sender, it->second.title, it->second.isRead, it->second.isReturned, -1);
@@ -442,7 +442,7 @@ void UIRodexInboxWnd::Paint() {
                 this->expired = 0;
                 g_rodexMailStore->m_mails2.erase(it);
               } else {
-                this->checks[row]->Show(1);
+                this->checks[row]->Show(WINDOW_VISIBLE);
                 this->senderButtons[row]->Enable(1);
                 this->subjectButtons[row]->Enable(1);
                 this->SetMailRow(row, it->first, it->second.sender, it->second.title, it->second.isRead, it->second.isReturned, -1);
@@ -525,7 +525,7 @@ void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name,
   nameText = GetNavigationLinkParser()->ExpandMessages(nameText);
   subjectText = GetNavigationLinkParser()->ExpandMessages(subjectText);
 
-  this->checks[row]->Show(1);
+  this->checks[row]->Show(WINDOW_VISIBLE);
   this->checks[row]->m_message = static_cast<int>(mailId);
 
   this->senderButtons[row]->SetLabel(nameText.c_str());
@@ -708,11 +708,11 @@ void UIRodexInboxWnd::RequestMailAttachments(int type, std::int64_t mailId) {
   }
 
   RodexMailMap* mails = nullptr;
-  if (type == 0) {
+  if (type == MAIL_INBOX_NORMAL) {
     mails = &g_rodexMailStore->m_mails0;
-  } else if (type == 1) {
+  } else if (type == MAIL_INBOX_ACCOUNT) {
     mails = &g_rodexMailStore->m_mails1;
-  } else if (type == 2) {
+  } else if (type == MAIL_INBOX_RETURNED) {
     mails = &g_rodexMailStore->m_mails2;
   }
   unsigned char flags = 0;
@@ -893,11 +893,11 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->page = 0;
 
         if (this->mailTab == sender) {
-          g_rodexMailStore->inboxType = 0;
+          g_rodexMailStore->inboxType = MAIL_INBOX_NORMAL;
         } else if (this->accountTab == sender) {
-          g_rodexMailStore->inboxType = 1;
+          g_rodexMailStore->inboxType = MAIL_INBOX_ACCOUNT;
         } else if (this->returnTab == sender) {
-          g_rodexMailStore->inboxType = 2;
+          g_rodexMailStore->inboxType = MAIL_INBOX_RETURNED;
         }
         this->searchActive = this->searchTab == sender;
         this->Invalidate();

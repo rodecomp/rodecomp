@@ -21,6 +21,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -1038,7 +1039,7 @@ void CHalluNPC::Render(int argument) {
   }
 
   if (this->render.visible) {
-    if (this->render.state != 6 && this->render.state != 3) {
+    if (this->render.state != ST_SIT && this->render.state != ST_DEAD) {
       this->DrawShadow(argument, this->render.scale);
     }
     if (this->render.enabled) {
@@ -1513,11 +1514,11 @@ void CBlurPC::Render(int argument) {
   rand();
 
   if (this->render.visible) {
-    if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+    if (g_serviceType == ServiceTaiwan && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
       return;
     }
 
-    if (this->render.state != 6 && this->render.state != 3) {
+    if (this->render.state != ST_SIT && this->render.state != ST_DEAD) {
       this->DrawShadow(argument, this->render.scale);
     }
     if (this->render.enabled) {
@@ -1587,11 +1588,11 @@ void CHalluPC::Render(int argument) {
   rand();
 
   if (this->render.visible) {
-    if (g_serviceType == 4 && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
+    if (g_serviceType == ServiceTaiwan && IsAdminAccount(this->render.accountId) && this->render.accountId != g_session.m_aid) {
       return;
     }
 
-    if (this->render.state != 6 && this->render.state != 3) {
+    if (this->render.state != ST_SIT && this->render.state != ST_DEAD) {
       this->DrawShadow(argument, this->render.scale);
     }
     if (this->render.enabled) {
@@ -1671,7 +1672,7 @@ void CNpc::SetState(int state, int) {
         break;
       }
 
-      if (this->render.state == 4) {
+      if (this->render.state == ST_DAMAGE) {
         this->render.position.x = this->damageDestX;
         this->render.position.z = this->damageDestZ;
       }
@@ -1711,7 +1712,7 @@ void CNpc::SetState(int state, int) {
             this->healthState = OPT1_NONE;
             this->render.isMotionFinished = false;
           } else {
-            if (this->render.state != 0) {
+            if (this->render.state != ST_STAND) {
               this->petEmotionStartTick = timeGetTime();
             }
             if (g_session.moveHomunEnemy) {
@@ -1728,7 +1729,7 @@ void CNpc::SetState(int state, int) {
           this->RegisterPos();
           break;
         case ST_MOVE:
-          if (this->bodyState != 1 && this->bodyState != 2) {
+          if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
             this->render.isMotionFreezed = false;
           }
           if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
@@ -1755,7 +1756,7 @@ void CNpc::SetState(int state, int) {
           }
           break;
         case ST_ATTACK:
-          if (this->bodyState != 1 && this->bodyState != 2) {
+          if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
             this->render.isMotionFreezed = false;
           }
           if (this->objectType == NPC_HO_TYPE) {
@@ -1795,7 +1796,7 @@ void CNpc::SetState(int state, int) {
           this->render.animationSequenceActive = 0;
           this->render.timedSequenceActive = 0;
           this->render.isMotionFreezed = false;
-          if (this->bodyState == 2) {
+          if (this->bodyState == OPT1_FREEZE) {
             this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
             this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
           }
@@ -1811,7 +1812,7 @@ void CNpc::SetState(int state, int) {
           }
           break;
         case ST_SLEEP:
-          if (this->bodyState == 2) {
+          if (this->bodyState == OPT1_FREEZE) {
             this->SendMsg(nullptr, AM_DELETE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
             this->SendMsg(nullptr, AM_MAKE_ICEBREAKE_FFECT, 0, 0, 0, 0, 0, 0);
           }

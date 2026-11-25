@@ -61,7 +61,7 @@ void TagTextViewer::UIScroll::OnCreate(int width, int height) {
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(width - 13, 0, 1, height);
   this->AddChild(this->m_scrollBar);
-  this->m_scrollBar->Show(0);
+  this->m_scrollBar->Show(WINDOW_HIDDEN);
   this->UpdateScroll();
 }
 
@@ -102,7 +102,7 @@ void TagTextViewer::UIScroll::UpdateScroll() {
   }
 
   if (height > this->geometry.height) {
-    this->m_scrollBar->Show(1);
+    this->m_scrollBar->Show(WINDOW_VISIBLE);
     this->m_scrollBar->SetRange(height - this->geometry.height, this->geometry.height, height);
     const int position = std::max(0, this->m_scrollPos);
     const int range = height - this->geometry.height;
@@ -112,7 +112,7 @@ void TagTextViewer::UIScroll::UpdateScroll() {
       it->first->Move(static_cast<int>(it->second.x), static_cast<int>(it->second.y - static_cast<float>(this->m_scrollPos)));
     }
   } else {
-    this->m_scrollBar->Show(0);
+    this->m_scrollBar->Show(WINDOW_HIDDEN);
   }
 
   this->Invalidate();

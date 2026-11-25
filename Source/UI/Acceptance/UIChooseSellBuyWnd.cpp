@@ -176,6 +176,7 @@
 #include "UI/Dialogs/UICntWnd.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Edit/ItemDropCountMode.h"
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 #pragma pack(push, 1)
@@ -350,7 +351,7 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 224;
+  this->m_message0 = ID_BUY;
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
@@ -2246,14 +2247,14 @@ void UIExchangeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 1) {
+  if (drag->source == DRAG_ITEM_INVENTORY) {
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_EXCHANGE, 0, 0, 0);
     return;
   }
 
@@ -2328,7 +2329,7 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   case DRAG_ITEM_STORAGE:
     if (x > 444) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_CASH_PURCHASE, 0, 0, 0);
       return;
     }
     break;
@@ -2341,7 +2342,7 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       }
 
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 20, quantity, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_CASH_SHOP, quantity, 0, 0);
       return;
     }
     break;
@@ -3017,10 +3018,10 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_TAB:
     this->m_page = a;
     if (a == 2) {
-      this->m_titleList->Show(1);
+      this->m_titleList->Show(WINDOW_VISIBLE);
       this->RefreshTitleList();
     } else {
-      this->m_titleList->Show(0);
+      this->m_titleList->Show(WINDOW_HIDDEN);
     }
 
     if (this->m_viewOther == 0) {
@@ -3028,32 +3029,32 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         static_cast<UIButton*>(this->damageSkinButtons[0])->Enable(1);
         static_cast<UIButton*>(this->damageSkinButtons[1])->Enable(1);
         if (g_session.damageSkinCount > 4) {
-          this->m_scrollBar->Show(1);
+          this->m_scrollBar->Show(WINDOW_VISIBLE);
         }
         for (int index = 2; index < 6; ++index) {
-          this->damageSkinButtons[index]->Show(1);
+          this->damageSkinButtons[index]->Show(WINDOW_VISIBLE);
         }
-        this->allowViewCheck->Show(0);
+        this->allowViewCheck->Show(WINDOW_HIDDEN);
         this->unequipButton->Enable(0);
         this->m_viewButton->Enable(0);
         this->m_otherButton->Enable(0);
       } else {
         static_cast<UIButton*>(this->damageSkinButtons[0])->Enable(0);
         static_cast<UIButton*>(this->damageSkinButtons[1])->Enable(0);
-        this->m_scrollBar->Show(0);
+        this->m_scrollBar->Show(WINDOW_HIDDEN);
         for (int index = 2; index < 6; ++index) {
-          this->damageSkinButtons[index]->Show(0);
+          this->damageSkinButtons[index]->Show(WINDOW_HIDDEN);
         }
         this->unequipButton->Enable(1);
-        this->allowViewCheck->Show(1);
+        this->allowViewCheck->Show(WINDOW_VISIBLE);
       }
 
       if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
-        this->swapModeCheck->Show(1);
-        this->allowViewCheck->Show(0);
+        this->swapModeCheck->Show(WINDOW_VISIBLE);
+        this->allowViewCheck->Show(WINDOW_HIDDEN);
       } else {
-        this->swapModeCheck->Show(0);
-        this->allowViewCheck->Show(1);
+        this->swapModeCheck->Show(WINDOW_HIDDEN);
+        this->allowViewCheck->Show(WINDOW_VISIBLE);
       }
     }
 
@@ -3080,21 +3081,21 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     if (this->m_viewOther == 0) {
       switch (this->m_page) {
       case EQUIPMENT_PAGE_NORMAL:
-        this->allowViewCheck->Show(1);
-        this->swapModeCheck->Show(0);
+        this->allowViewCheck->Show(WINDOW_VISIBLE);
+        this->swapModeCheck->Show(WINDOW_HIDDEN);
         this->swapButton->Enable(1);
         this->unequipButton->Enable(1);
         break;
       case EQUIPMENT_PAGE_COSTUME:
-        this->allowViewCheck->Show(0);
-        this->swapModeCheck->Show(1);
+        this->allowViewCheck->Show(WINDOW_HIDDEN);
+        this->swapModeCheck->Show(WINDOW_VISIBLE);
         this->swapButton->Enable(1);
         this->unequipButton->Enable(1);
         break;
       case EQUIPMENT_PAGE_TITLE:
       case EQUIPMENT_PAGE_DAMAGE_SKIN:
-        this->allowViewCheck->Show(0);
-        this->swapModeCheck->Show(0);
+        this->allowViewCheck->Show(WINDOW_HIDDEN);
+        this->swapModeCheck->Show(WINDOW_HIDDEN);
         this->swapButton->Enable(0);
         this->unequipButton->Enable(0);
         break;
@@ -3336,7 +3337,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     return 0;
   case UM_SET_DISABLE:
-    if (a == 575) {
+    if (a == ID_TAKEOFF_ALL) {
       if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         UIBitmapButton* button = this->unequipButton;
         button->SetDisabled(g_session.CountDistinctCostumeItems() == 0);
@@ -3397,7 +3398,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
     this->swapModeCheck->SetSize(80, 12);
     this->swapModeCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_VIEW_COSTUME));
     this->swapModeCheck->SetChecked(g_session.m_hideCostumes == 0);
-    this->swapModeCheck->Show(0);
+    this->swapModeCheck->Show(WINDOW_HIDDEN);
     this->swapModeCheck->Move(10, this->geometry.height - 15);
     this->AddChild(this->swapModeCheck);
   }
@@ -3488,7 +3489,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
   background[1] = 225;
   background[2] = 225;
   this->m_titleList->SetId(ID_TITLE_LIST);
-  this->m_titleList->Show(0);
+  this->m_titleList->Show(WINDOW_HIDDEN);
   this->AddChild(this->m_titleList);
 
   if (this->m_viewOther == 0 && this->swapButton == nullptr) {
@@ -3555,7 +3556,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
 
     this->m_scrollBar = new UIScrollBar();
     this->m_scrollBar->Configure(1, 153, 0, width);
-    this->m_scrollBar->Show(0);
+    this->m_scrollBar->Show(WINDOW_HIDDEN);
     this->m_scrollBar->SetRange(std::max(0, count - 4), 4, count);
     this->AddChild(this->m_scrollBar);
 
@@ -3579,7 +3580,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
         button->uncheckedBitmap = unchecked;
         button->Invalidate();
       }
-      radio->Show(0);
+      radio->Show(WINDOW_HIDDEN);
       this->AddChild(radio);
     }
 
@@ -3786,7 +3787,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     const char* title = FindItemDescription(std::atoi(name)).identifiedName;
     std::intptr_t page;
     if (std::strcmp(this->m_bookName, title) == 0) {
-      if (this->m_autoRead == 0 && b == 287) {
+      if (this->m_autoRead == 0 && b == ID_BOOKITEM) {
         break;
       }
       page = this->m_page;
@@ -3833,7 +3834,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (this->m_lineCount % 19 > 0) {
         ++this->m_pageCount;
       }
-      if (b == 287) {
+      if (b == ID_BOOKITEM) {
         this->SendMsg(this, UM_READBOOK, page, 0, 0, 0);
       } else {
         this->SendMsg(this, UM_AUTOREAD, page, 0, 0, 0);
@@ -3843,7 +3844,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
   }
   case UM_READBOOK: {
     this->m_autoRead = 0;
-    this->Show(1);
+    this->Show(WINDOW_VISIBLE);
     if (this->m_balloon) {
       g_windowMgr.Schedule(this->m_balloon);
       this->m_balloon = nullptr;
@@ -3880,7 +3881,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 
   case UM_AUTOREAD:
     this->m_autoRead = this->m_autoRead == 0;
-    this->Show(0);
+    this->Show(WINDOW_HIDDEN);
     if (this->m_autoRead) {
       this->m_autoTick = timeGetTime() - 4000;
       int page = static_cast<int>(a);
@@ -3928,11 +3929,11 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         break;
       case ID_BUY:
         g_modeMgr.currentMode->SendMsg(MM_ACK_BUY, this->identity, 0, 0, 0);
-        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
+        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(WINDOW_HIDDEN);
         break;
       case ID_SELL:
         g_modeMgr.currentMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
-        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
+        g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(WINDOW_HIDDEN);
         break;
       default:
         return 0;
@@ -5224,13 +5225,13 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->m_responseId = static_cast<int>(b);
     break;
   case UM_ENABLENEXTBUTTON:
-    this->m_message0 = 218;
+    this->m_message0 = ID_NEXT;
     this->m_responseMessage = 22;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_next"), 0, 0);
     this->Invalidate();
     break;
   case UM_ENABLECLOSEBUTTON:
-    this->m_message0 = 201;
+    this->m_message0 = ID_CLOSE;
     this->m_responseMessage = 89;
     this->SendMsg(nullptr, UM_ADD_BUTTON, 218, reinterpret_cast<std::intptr_t>("btn_close"), 0, 0);
     this->Invalidate();
@@ -6521,7 +6522,7 @@ void UInCashWnd::OnCreate(int width, int height) {
   this->m_firstOther = 0;
   this->m_otherScroll->SetPosition(0);
   this->AddChild(this->m_otherScroll);
-  this->m_otherScroll->Show(0);
+  this->m_otherScroll->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x00908260
@@ -6645,7 +6646,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->m_firstOther = 0;
       this->m_otherScroll->SetPosition(0);
       this->m_otherScroll->Invalidate();
-      this->m_otherScroll->Show(0);
+      this->m_otherScroll->Show(WINDOW_HIDDEN);
       this->Invalidate();
       return 0;
 
@@ -6827,7 +6828,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         this->m_otherScroll->SetPosition(0);
         this->m_otherScroll->SetRange(4, 4, 4);
         this->m_otherScroll->Invalidate();
-        this->m_otherScroll->Show(0);
+        this->m_otherScroll->Show(WINDOW_HIDDEN);
       } else if (g_session.GetNumPurchaseItems() > 3 && g_session.GetNumPurchaseItems() < 7) {
         this->m_otherScroll->SetRange(4, 4, g_session.GetNumPurchaseItems() + 1);
         if (this->m_firstOther > g_session.GetNumPurchaseItems() - 3) {
@@ -6871,7 +6872,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         int total;
         if (g_session.GetNumPurchaseItems() == 4) {
           this->m_firstOther = 1;
-          this->m_otherScroll->Show(1);
+          this->m_otherScroll->Show(WINDOW_VISIBLE);
           total = 5;
         } else {
           this->m_firstOther = g_session.GetNumPurchaseItems() - 3;
@@ -8024,7 +8025,7 @@ void UIQuitWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 221;
+  this->m_message0 = ID_EXIT;
 }
 
 // OFFSET: 0x008E7CB0
@@ -8047,7 +8048,7 @@ void UIRestartWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 252;
+  this->m_message0 = ID_TO_CHARACTER_SELECT;
 }
 
 // OFFSET: 0x008EAE30
@@ -10273,15 +10274,15 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
-      if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+      if (g_windowMgr.GetHoverWindow()->geometry.id == ID_NPC_TEXT_EDIT) {
         g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_WHISPER_EDIT) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHAT_EDIT) {
         static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_RODEX_COMPOSE_EDIT) {
         g_windowMgr.rodexComposeWnd->InsertItemTag(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHATROOM_EDIT) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }
     }
@@ -10334,7 +10335,7 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
     this->m_otherScroll->SetPosition(0);
     this->m_otherScroll->SetRange(4, 4, 4);
     this->m_otherScroll->Invalidate();
-    this->m_otherScroll->Show(0);
+    this->m_otherScroll->Show(WINDOW_HIDDEN);
   } else if (lists.GetNumPurchaseItems() > 3 && lists.GetNumPurchaseItems() < 7) {
     this->m_otherScroll->SetRange(4, 4, lists.GetNumPurchaseItems() + 1);
     if (this->m_firstOther > lists.GetNumPurchaseItems() - 3) {
@@ -10661,7 +10662,7 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 246;
+  this->m_message0 = ID_PREV;
 
   this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
@@ -10695,7 +10696,7 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12204
 void UITipboxWnd::OnCreate(int width, int) {
   this->showAtStartup = g_window315Enabled;
-  this->m_message0 = 365;
+  this->m_message0 = ID_FIND;
 
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
@@ -10711,7 +10712,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->tipViewer->m_textWidth = 188;
   this->tipViewer->Move(250, 70);
   this->AddChild(this->tipViewer);
-  this->tipViewer->Show(1);
+  this->tipViewer->Show(WINDOW_VISIBLE);
 
   int y = 50;
   for (UIStaticText** titles = this->m_titleTexts; y < 90; ++titles) {
@@ -10807,7 +10808,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->searchResults->backgroundColor[2] = 240;
   this->searchResults->SetId(ID_OK);
   this->AddChild(this->searchResults);
-  this->searchResults->Show(0);
+  this->searchResults->Show(WINDOW_HIDDEN);
 
   this->tagButton = new UIBitmapButton();
   this->tagButton->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_normal.bmp", 0, 0);
@@ -12328,7 +12329,7 @@ static unsigned char IsCurrentTipSearchable() {
 void UITipboxWnd::RefreshTip() {
   this->UpdatePageText();
   this->BuildAnimations();
-  this->searchResults->Show(0);
+  this->searchResults->Show(WINDOW_HIDDEN);
 
   std::string title = g_itemTagOwner->m_currentEntry.title;
   this->TrimAt(title, "#");
@@ -12339,7 +12340,7 @@ void UITipboxWnd::RefreshTip() {
 
   for (int index = 0; index < 2; ++index) {
     this->m_titleTexts[index]->SetText("", 0);
-    this->m_titleTexts[index]->Show(0);
+    this->m_titleTexts[index]->Show(WINDOW_HIDDEN);
   }
 
   const unsigned count = static_cast<unsigned>(lines.size());
@@ -12347,7 +12348,7 @@ void UITipboxWnd::RefreshTip() {
     const int shown = (count > 1 ? 1 : 0) + 1;
     for (int index = 0; index < shown; ++index) {
       this->m_titleTexts[index]->SetText(lines[index].c_str(), 0);
-      this->m_titleTexts[index]->Show(1);
+      this->m_titleTexts[index]->Show(WINDOW_VISIBLE);
     }
 
     if (count <= 1) {
@@ -12482,7 +12483,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case ID_FIND: {
     std::string keyword(this->searchEdit->Text());
     if (keyword.size() != 0) {
-      this->searchResults->Show(1);
+      this->searchResults->Show(WINDOW_VISIBLE);
       this->searchResults->Clear();
       this->tipViewer->Clear();
       for (int index = 0; index < 2; ++index) {

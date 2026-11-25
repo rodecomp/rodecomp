@@ -174,7 +174,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_09902
 void UIRefiningWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46 && drag->source == 1) {
+  if (static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46 && drag->source == DRAG_ITEM_INVENTORY) {
     this->SendMsg(this, UM_REFRESHITEM, drag->id, 0, 0, 0);
   }
   g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);

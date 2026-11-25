@@ -1451,11 +1451,11 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
             costume->m_hideCheckBox->SetChecked(costume->m_display->job == JT_NOVICE);
             costume->m_showCheckBox->SetChecked(costume->m_hideCheckBox->geometry.state == 0);
           }
-          it->second->Show(1);
+          it->second->Show(WINDOW_VISIBLE);
           it->second->InvalidateChildren();
         } else {
           static_cast<UIButton*>(it->first)->SetState(0);
-          it->second->Show(0);
+          it->second->Show(WINDOW_HIDDEN);
         }
       }
       this->Invalidate();
@@ -1530,7 +1530,7 @@ void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char*
   int right = button->geometry.x + button->BitmapWidth();
   tab->SetSize(this->geometry.width - right, this->geometry.height - 47);
   tab->Move(static_cast<int>(this->geometry.width * 0.1), 17);
-  tab->Show(0);
+  tab->Show(WINDOW_HIDDEN);
   this->AddChild(tab);
   this->m_tabs.insert(std::make_pair(static_cast<UIWindow*>(button), tab));
 }
@@ -1563,7 +1563,7 @@ void UIStylingShopWnd::OnCreate(int, int) {
   UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", ID_BASE, basic,
                LookupMessage(MSI_STYLING_SHOP_BASICSTYLE));
-  basic->Show(1);
+  basic->Show(WINDOW_VISIBLE);
   static_cast<UIButton*>(this->m_tabs.begin()->first)->SetState(2);
 
   UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd();
@@ -1586,7 +1586,7 @@ void UIStylingShopWnd::OnCreate(int, int) {
 
   this->m_preview = new UIDisplayCharacter();
   this->m_preview->SetSize(120, 120);
-  this->m_preview->Show(0);
+  this->m_preview->Show(WINDOW_HIDDEN);
   this->AddChild(this->m_preview);
 
   this->m_buyButton = new (std::nothrow) UIBitmapButton();

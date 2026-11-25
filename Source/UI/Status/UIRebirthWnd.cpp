@@ -38,7 +38,7 @@ void UIRebirthWnd::OnCreate(int width, int height) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 252;
+  this->m_message0 = ID_TO_CHARACTER_SELECT;
 }
 
 // OFFSET: 0x00938E30

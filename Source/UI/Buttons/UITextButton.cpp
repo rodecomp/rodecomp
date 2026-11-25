@@ -3056,20 +3056,20 @@ void UISlotBmpButton::SetSlot(int slot, int fallback) {
   this->m_slot = slot;
   this->m_inRange = g_session.IsRestrictedCharacterSlot(slot == -1 ? fallback : slot);
   if (this->m_slot < 0) {
-    this->icon->Show(0);
+    this->icon->Show(WINDOW_HIDDEN);
     return;
   }
 
   const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
   if (!info) {
-    this->icon->Show(0);
+    this->icon->Show(WINDOW_HIDDEN);
     return;
   }
 
   const std::string directory = "유저인터페이스\\renewalparty\\";
   char path[256];
   std::sprintf(path, "%sicon_jobs_%d.bmp", directory.c_str(), info->job);
-  this->icon->Show(1);
+  this->icon->Show(WINDOW_VISIBLE);
   this->icon->SetBitmap(path);
 }
 
@@ -3420,7 +3420,7 @@ void UITextViewEX::Paint() {
         do {
           UIString* text = *buttonIt;
           if (StringText(*text) != "\n") {
-            text->Show(1);
+            text->Show(WINDOW_VISIBLE);
             x = text->enabled == 0 ? x : x - 5;
             if (x < 0) {
               x = 0;
@@ -3439,7 +3439,7 @@ void UITextViewEX::Paint() {
     } else {
       for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
         UIString* button = *buttonIt;
-        button->Show(0);
+        button->Show(WINDOW_HIDDEN);
       }
     }
   }

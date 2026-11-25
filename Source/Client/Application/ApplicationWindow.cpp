@@ -11,6 +11,7 @@
 #include "Client/Session/Session.h"
 #include "Client/Application/Timer.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
@@ -157,7 +158,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     if (g_modeMgr.GetGameMode()) {
       g_adventurerAgencyMgr->RequestStop();
     }
-    if (g_serviceType == 11) {
+    if (g_serviceType == ServiceIndia) {
       ShellExecuteA(hWnd, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
     }
     return 0;
@@ -192,7 +193,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       g_windowMgr.RefreshWindow01C8Edits();
       return 0;
     }
-    if (g_windowMgr.IsHoverOnWindow01C8Button() && g_serviceType != 15 && g_windowMgr.ProcessDialogKey(wParam, lParam)) {
+    if (g_windowMgr.IsHoverOnWindow01C8Button() && g_serviceType != ServiceVietnam && g_windowMgr.ProcessDialogKey(wParam, lParam)) {
       return 0;
     }
     if (!g_windowMgr.GetHoverWindow() || g_windowMgr.GetHoverWindow()->SendMsg(nullptr, WM_KEYDOWN, wParam, lParam, 0, 0) != 3) {

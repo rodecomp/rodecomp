@@ -86,7 +86,7 @@ UIItemTagCtrl::~UIItemTagCtrl() {
 // OFFSET: 0x00879830
 // FUNCTION: fn_11218
 bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
-  if (g_windowMgr.GetHoverWindow()->geometry.id != 490 && g_windowMgr.GetHoverWindow()->geometry.id != 494 &&
+  if (g_windowMgr.GetHoverWindow()->geometry.id != ID_WHISPER_EDIT && g_windowMgr.GetHoverWindow()->geometry.id != ID_CHATROOM_EDIT &&
       !g_windowMgr.inputSuggestionsEnabled) {
     this->ClearTags();
     return false;

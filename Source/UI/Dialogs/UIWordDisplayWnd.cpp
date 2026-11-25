@@ -8,6 +8,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Dialogs/UIWordDisplayWnd.h"
+#include "UI/Window/UIEnums.h"
 
 // OFFSET: 0x00851FC0
 // FUNCTION: fn_45648
@@ -53,7 +54,7 @@ void UIWordDisplayWnd::OnProcess() {
 // OFFSET: 0x00865360
 // FUNCTION: fn_10923
 int UIWordDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == 34) {
+  if (message == UM_SETINFO) {
     this->aid = argument1;
   }
 

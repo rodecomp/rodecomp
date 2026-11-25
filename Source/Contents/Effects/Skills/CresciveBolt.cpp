@@ -56,7 +56,7 @@ void CCresciveBolt::Open() {
     this->particle = bolt;
   }
 
-  this->AddEvent(0, "effect\\WH_CRESCIVE_BOLT.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_CRESCIVE_BOLT.wav", 0, 0);
 }
 
 // OFFSET: 0x0070AE90

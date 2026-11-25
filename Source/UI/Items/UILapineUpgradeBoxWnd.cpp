@@ -180,7 +180,7 @@ void UILapineUpgradeBoxWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 27) {
+  if (drag->source == DRAG_LAPINE_INGREDIENT) {
     this->SendMsg(this, UM_ADDITEM, drag->id, 0, 0, 0);
   }
   mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -321,7 +321,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
 void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 26) {
+  if (drag->source == DRAG_LAPINE_BOX) {
     this->SendMsg(this, UM_ADDITEM, drag->id, 0, 0, 0);
   }
   mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -343,7 +343,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
     for (auto it = this->items.begin(); it != this->items.end(); ++it) {
       const ITEM_INFO owned = g_session.LookupClientItemByIdentity((*it)->item.identity[1]);
       if (owned.identity[1] <= 0) {
-        (*it)->Show(0);
+        (*it)->Show(WINDOW_HIDDEN);
       }
     }
     this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
@@ -607,7 +607,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     return false;
   }
 
-  (*entryIt)->Show(0);
+  (*entryIt)->Show(WINDOW_HIDDEN);
   this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
   return true;
 }

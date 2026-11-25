@@ -49,7 +49,7 @@ void UIRune_Decom::Reset() {
 
   this->m_decomType = 0;
   for (int index = 0; index < 2; ++index) {
-    this->m_radioButtons[index]->Show(0);
+    this->m_radioButtons[index]->Show(WINDOW_HIDDEN);
     this->m_radioButtons[index]->Invalidate();
     this->m_radioButtons[index]->SendMsg(nullptr, UM_SETSTATE, this->m_decomType != index, 0, 0, 0);
   }
@@ -495,10 +495,10 @@ void UIRuneSetList::OnWheel(int delta) {
 // OFFSET: 0x0081D460
 // FUNCTION: fn_10220
 void UIRune_Info::UpdateActivation() {
-  this->m_activeWnd->Show(0);
+  this->m_activeWnd->Show(WINDOW_HIDDEN);
   this->m_activateButton->Enable(0);
   if (this->m_rune && !this->m_rune->GetActiveState()) {
-    this->m_activeWnd->Show(1);
+    this->m_activeWnd->Show(WINDOW_VISIBLE);
     this->m_activateButton->Enable(1);
     UIBitmapButton* button = this->m_activateButton;
     button->SetDisabled(!CRuneSystemMgr::GetInstance()->HasRequiredItems(this->m_rune->GetActiveType()));
@@ -746,16 +746,16 @@ void UIRuneSet_Info::UpdateRewards() {
 // OFFSET: 0x0081D0B0
 // FUNCTION: fn_10219
 void UIRuneSet_Info::Refresh() {
-  this->m_activeWnd->Show(0);
+  this->m_activeWnd->Show(WINDOW_HIDDEN);
   this->m_activateButton->Enable(0);
   this->m_equipButton->Enable(0);
   this->m_unequipButton->Enable(0);
-  this->m_tab->Show(0);
-  this->m_gauge->Show(0);
-  this->m_gradeText->Show(0);
-  this->m_gradeItems->Show(0);
+  this->m_tab->Show(WINDOW_HIDDEN);
+  this->m_gauge->Show(WINDOW_HIDDEN);
+  this->m_gradeText->Show(WINDOW_HIDDEN);
+  this->m_gradeItems->Show(WINDOW_HIDDEN);
   this->m_gradeButton->Enable(0);
-  this->m_infoList->Show(0);
+  this->m_infoList->Show(WINDOW_HIDDEN);
   for (UIRuneSetReWard* reward : this->m_rewards) {
     reward->Enable(0);
   }
@@ -769,7 +769,7 @@ void UIRuneSet_Info::Refresh() {
         this->m_equipButton->Enable(1);
       }
     } else {
-      this->m_activeWnd->Show(1);
+      this->m_activeWnd->Show(WINDOW_VISIBLE);
       this->m_activeWnd->Invalidate();
       this->m_activateButton->Enable(1);
       UIBitmapButton* button = this->m_activateButton;
@@ -781,7 +781,7 @@ void UIRuneSet_Info::Refresh() {
       this->m_tab->Invalidate();
     }
 
-    this->m_tab->Show(1);
+    this->m_tab->Show(WINDOW_VISIBLE);
     const std::uint32_t tab = this->m_tab->geometry.state;
     if (tab == 1) {
       if (this->m_runeSet->m_reward.values[0] == 1) {
@@ -792,19 +792,19 @@ void UIRuneSet_Info::Refresh() {
       }
     } else if (tab == 2) {
       if (this->m_runeSet->m_grade < 15) {
-        this->m_gradeText->Show(1);
+        this->m_gradeText->Show(WINDOW_VISIBLE);
         this->m_gauge->m_max = false;
       } else {
-        this->m_gradeText->Show(0);
+        this->m_gradeText->Show(WINDOW_HIDDEN);
         this->m_gauge->m_max = true;
       }
       this->m_gauge->m_value = CRuneSystemMgr::GetInstance()->GetGradeValue(this->m_runeSet);
-      this->m_gauge->Show(1);
+      this->m_gauge->Show(WINDOW_VISIBLE);
       this->m_gauge->Invalidate();
       this->m_gradeText->Invalidate();
 
       if (this->m_runeSet->m_grade < 15) {
-        this->m_gradeItems->Show(1);
+        this->m_gradeItems->Show(WINDOW_VISIBLE);
         UIRuneSystem_ActiveWnd* items = this->m_gradeItems;
         items->m_listId = this->m_runeSet->GetGradeValue();
         items->Invalidate();
@@ -824,7 +824,7 @@ void UIRuneSet_Info::Refresh() {
         button->Invalidate();
       }
     } else {
-      this->m_infoList->Show(1);
+      this->m_infoList->Show(WINDOW_VISIBLE);
       this->m_infoList->Invalidate();
     }
   }
@@ -868,26 +868,26 @@ void UIRuneSystemWnd::SelectTab() {
   }
   this->m_equipRuneSet->Show(this->m_tab->geometry.state == RUNESYSTEM_TAB_RUNESET);
   this->m_tagList->SendMsg(this, UM_RUNE_SELECT_TAB, this->m_tab->geometry.state, this->m_equipRuneSet->geometry.height, 0, 0);
-  this->m_tagList->Show(1);
+  this->m_tagList->Show(WINDOW_VISIBLE);
   this->m_tagList->Invalidate();
 
   switch (this->m_tab->geometry.state) {
   case RUNESYSTEM_TAB_RUNESET:
-    this->m_runeSetInfo->Show(1);
+    this->m_runeSetInfo->Show(WINDOW_VISIBLE);
     this->m_runeSetInfo->RefreshDescription();
-    this->m_runeInfo->Show(0);
-    this->m_runeDecom->Show(0);
+    this->m_runeInfo->Show(WINDOW_HIDDEN);
+    this->m_runeDecom->Show(WINDOW_HIDDEN);
     break;
   case RUNESYSTEM_TAB_RUNE:
-    this->m_runeSetInfo->Show(0);
-    this->m_runeInfo->Show(1);
-    this->m_runeDecom->Show(0);
+    this->m_runeSetInfo->Show(WINDOW_HIDDEN);
+    this->m_runeInfo->Show(WINDOW_VISIBLE);
+    this->m_runeDecom->Show(WINDOW_HIDDEN);
     break;
   case RUNESYSTEM_TAB_DECOMPOSE: {
-    this->m_runeSetInfo->Show(0);
-    this->m_runeInfo->Show(0);
-    this->m_runeDecom->Show(1);
-    this->m_tagList->Show(0);
+    this->m_runeSetInfo->Show(WINDOW_HIDDEN);
+    this->m_runeInfo->Show(WINDOW_HIDDEN);
+    this->m_runeDecom->Show(WINDOW_VISIBLE);
+    this->m_tagList->Show(WINDOW_HIDDEN);
     const int count = CRuneSystemMgr::GetInstance()->UpdateOwnedDecomItems();
     this->m_lists[2]->SetRange(std::max(count - 10, 0), 10, count);
     break;
@@ -1787,7 +1787,7 @@ void UIRune_Decom::OnCreate(int, int) {
     this->m_radioButtons[index]->SetBitmaps("유저인터페이스\\runesystem\\btn_radio_on.bmp", "유저인터페이스\\runesystem\\btn_radio_off.bmp");
     this->m_radioButtons[index]->SetDisabledBitmap("유저인터페이스\\runesystem\\btn_radio_disable.bmp");
     this->m_radioButtons[index]->value = index;
-    this->m_radioButtons[index]->Show(0);
+    this->m_radioButtons[index]->Show(WINDOW_HIDDEN);
     this->AddChild(this->m_radioButtons[index]);
   }
 
@@ -1801,7 +1801,7 @@ void UIRuneSystemWnd::OnCreate(int, int) {
   this->AddChild(this->m_tab);
   this->m_tab->SetSize(0x109, 0x1A);
   this->m_tab->Move(9, 0x12);
-  this->m_tab->Show(1);
+  this->m_tab->Show(WINDOW_VISIBLE);
   const int top = this->m_tab->geometry.height + this->m_tab->geometry.y;
 
   this->m_equipRuneSet = new UIEquipRuneSetWnd();

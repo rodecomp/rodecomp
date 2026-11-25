@@ -418,7 +418,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     break;
   case ST_MOVE:
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
     this->headDir = 0;
@@ -457,7 +457,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     break;
   case ST_ATTACK: {
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(
@@ -477,7 +477,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
   }
   case ST_ATTACK2: {
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(
@@ -2940,14 +2940,14 @@ void CPlayer::UpdatePendingAction() {
     const float distance = this->AdjustFollowDistance(target, targetDistance);
     const bool inRange = static_cast<float>(g_session.storeItemLimit * 5) + 5.5f >= distance;
     if ((this->destCellX != column || this->destCellZ != row) && !inRange) {
-      const std::uint32_t delay = this->proceedType != 5 ? 450 : 1200;
+      const std::uint32_t delay = this->proceedType != PT_ATTACK_2 ? 450 : 1200;
       const bool elapsed = timeGetTime() > this->tickOfMoveForAttack + delay;
       const int state = static_cast<int>(this->render.state);
       int cellX = target->movementState[5];
       int cellY = target->destCellY;
       float x;
       float z;
-      if (this->proceedType == 5) {
+      if (this->proceedType == PT_ATTACK_2) {
         x = target->render.position.x;
         z = target->render.position.z;
       } else {
@@ -4048,12 +4048,12 @@ void CPlayer::SendMsg(
     break;
   case AM_ATTACKCLICKUP: {
     const int attackMode = this->proceedType;
-    if (attackMode != 1 && attackMode != 5) {
-      if (attackMode == 3) {
+    if (attackMode != PT_ATTACK && attackMode != PT_ATTACK_2) {
+      if (attackMode == PT_SKILL) {
         mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
         break;
       }
-      if (attackMode != 6) {
+      if (attackMode != PT_TOUCH_SKILL) {
         break;
       }
     }
@@ -4072,7 +4072,7 @@ void CPlayer::SendMsg(
   case AM_PROCEEDGROUNDSKILL:
     if (this->render.state != ST_SIT &&
         (!IsHiding(this->stateFlags) || b == 0x89 || b == 0xD4 || b == 0x211 || b == 0x212)) {
-      this->proceedType = 4;
+      this->proceedType = PT_GROUNDSKILL;
       this->skillId = bLow;
       this->gSkillDx = cLow;
       this->gSkillDy = static_cast<int>(d);
@@ -4082,19 +4082,19 @@ void CPlayer::SendMsg(
   case AM_PROCEEDSKILL:
     if (this->render.state != ST_SIT &&
         (!IsHiding(this->stateFlags) || c == 0x89 || c == 0xD4 || c == 0x211 || c == 0x212 || c == 0x250)) {
-      this->proceedType = 3;
+      this->proceedType = PT_SKILL;
       this->proceedTargetGid = bLow;
       this->skillId = cLow;
     }
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      if (this->proceedType == 1) {
+      if (this->proceedType == PT_ATTACK) {
         this->tickOfMoveForAttack = timeGetTime() - 1200;
-        this->proceedType = 5;
+        this->proceedType = PT_ATTACK_2;
       } else {
         this->tickOfMoveForAttack = timeGetTime() - 1200;
-        this->proceedType = 1;
+        this->proceedType = PT_ATTACK;
       }
       this->proceedTargetGid = bLow;
       this->isAttackRequest = 0;
@@ -4109,9 +4109,9 @@ void CPlayer::SendMsg(
       if (target != nullptr) {
         if (static_cast<std::uint32_t>(static_cast<CGameActor*>(target)->moveSpeed) >
             static_cast<std::uint32_t>(g_session.m_moveSpeed * 4 / 3)) {
-          this->proceedType = 5;
+          this->proceedType = PT_ATTACK_2;
         } else {
-          this->proceedType = 1;
+          this->proceedType = PT_ATTACK;
         }
         this->proceedTargetGid = bLow;
         this->isAttackRequest = 0;
@@ -4122,14 +4122,14 @@ void CPlayer::SendMsg(
     break;
   case AM_PROCEEDPICKUPITEM:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      this->proceedType = 2;
+      this->proceedType = PT_PICKUPITEM;
       this->proceedTargetGid = bLow;
     }
     break;
   case AM_PROCEEDTOUCHSKILL:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       const int* skill = reinterpret_cast<const int*>(static_cast<std::intptr_t>(c));
-      this->proceedType = 6;
+      this->proceedType = PT_TOUCH_SKILL;
       this->skillId = skill[1];
       this->skillUseLevel = skill[3];
       this->proceedTargetGid = bLow;
@@ -4431,7 +4431,7 @@ void CPc::SetState(int state, int resetPosition) {
     break;
   case ST_MOVE:
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
     this->headDir = 0;
@@ -4519,7 +4519,7 @@ void CPc::SetState(int state, int resetPosition) {
     break;
   case ST_ATTACK: {
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
 
@@ -4587,7 +4587,7 @@ void CPc::SetState(int state, int resetPosition) {
   }
   case ST_ATTACK2: {
     this->isCounter = 0;
-    if (this->bodyState != 1 && this->bodyState != 2) {
+    if (this->bodyState != OPT1_STONE && this->bodyState != OPT1_FREEZE) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->weaponPair);

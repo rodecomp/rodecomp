@@ -47,15 +47,15 @@ template <> void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>
 // FUNCTION: fn_13994
 template <class T> void CUIListBox<T>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) {
     int y = 0;
     for (T* item : this->items) {
       if (position <= item->geometry.height + y && y < this->geometry.height + position) {
-        item->Show(1);
+        item->Show(WINDOW_VISIBLE);
         item->Move(this->itemX, this->itemY - position + y);
       } else {
-        item->Show(0);
+        item->Show(WINDOW_HIDDEN);
       }
       y += item->geometry.height;
     }
@@ -73,7 +73,7 @@ template <class T> void CUIListBox<T>::OnCreate(int width, int height) {
 // FUNCTION: fn_13998
 template <class T, class D> void CUIListBoxEx<T, D>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -399,14 +399,14 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
     owner->SetStatusLine(data.contents.second);
-    owner->stampImage->Show(0);
+    owner->stampImage->Show(WINDOW_HIDDEN);
     return;
   case 4:
     owner->SetTip(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
     owner->SetStatusLine(data.contents.second);
-    owner->stampImage->Show(0);
+    owner->stampImage->Show(WINDOW_HIDDEN);
     return;
   }
 }
@@ -475,9 +475,9 @@ void CUIItemInfo::OnInit() {
 void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& description) {
   this->descriptionViewer->Clear();
 
-  if (type == 5) {
+  if (type == ADVENTURE_GUIDE_ITEM) {
     this->type = 5;
-  } else if (type == 6) {
+  } else if (type == ADVENTURE_GUIDE_EQUIPMENT) {
     this->type = 4;
   }
 
@@ -541,7 +541,7 @@ void CUIQuestInfo::OnInit() {
 // OFFSET: 0x009DD720
 // FUNCTION: fn_14340
 void CUISubTab::OnInit() {
-  this->stampImage->Show(0);
+  this->stampImage->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x009DD730
@@ -653,14 +653,14 @@ void CUIItem::LoadPage(int type, int id) {
     this->itemList->data.push_back(data);
   }
   this->itemList->UpdateScrollBar();
-  this->findButton->Show(0);
-  this->navigationButton->Show(0);
+  this->findButton->Show(WINDOW_HIDDEN);
+  this->navigationButton->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x009DDE50
 // FUNCTION: fn_14350
 void CUIMonster::LoadPage(int, int) {
-  this->navigationButton->Show(0);
+  this->navigationButton->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x009DDE60
@@ -675,16 +675,16 @@ void CUIQuest::LoadPage(int type, int id) {
     data.contents = content;
     data.type = type;
     this->questList->data.push_back(data);
-    if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.questId)) {
+    if (type == ADVENTURE_GUIDE_EPISODE && !g_renewQuestMgr->IsNewQuest(content.questId)) {
       g_renewQuestMgr->AddStatusRequest(content.questId);
     }
   }
   this->questList->UpdateScrollBar();
-  if (type == 1) {
+  if (type == ADVENTURE_GUIDE_EPISODE) {
     g_renewQuestMgr->SendQuestStatusRequest();
   }
-  this->findButton->Show(0);
-  this->navigationButton->Show(0);
+  this->findButton->Show(WINDOW_HIDDEN);
+  this->navigationButton->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x009DE410
@@ -829,7 +829,7 @@ void CUIAdventureGuide::OnInit() {
         subTab->labelText->SetText(detail.text);
         subTab->id = id;
         subTab->questId = detail.questId;
-        if (tab->type == 1) {
+        if (tab->type == ADVENTURE_GUIDE_EPISODE) {
           const bool isNew = g_renewQuestMgr->IsNewQuest(detail.questId);
           subTab->stampImage->Show(isNew);
           if (!isNew) {
@@ -888,7 +888,7 @@ void AdventureGuide::CUIQuest::MarkQuest(int questId) {
     return item->questId == questId;
   });
   if (found != items.end()) {
-    (*found)->stampImage->Show(1);
+    (*found)->stampImage->Show(WINDOW_VISIBLE);
   }
 }
 
@@ -896,7 +896,7 @@ void AdventureGuide::CUIQuest::MarkQuest(int questId) {
 // FUNCTION: fn_14357
 void CUIAdventureGuide::MarkQuest(int questId) {
   for (AdventureGuide::CUITab* tab : this->tabs->items) {
-    if (tab->type != 1) {
+    if (tab->type != ADVENTURE_GUIDE_EPISODE) {
       continue;
     }
 
@@ -907,7 +907,7 @@ void CUIAdventureGuide::MarkQuest(int questId) {
         return subTab->questId == static_cast<unsigned int>(questId);
       });
       if (found != subTabs.end()) {
-        (*found)->stampImage->Show(1);
+        (*found)->stampImage->Show(WINDOW_VISIBLE);
       }
     }
 
@@ -1563,7 +1563,7 @@ template <>
 AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
   AdventureGuide::CUISubTab* item = new AdventureGuide::CUISubTab();
   item->SetSize(this->itemWidth, this->rowHeight);
-  item->Show(0);
+  item->Show(WINDOW_HIDDEN);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->SetOnHover([this](CUIListItem* listItem) {
     for (AdventureGuide::CUISubTab* other : this->items) {
@@ -1586,7 +1586,7 @@ template <>
 AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
   AdventureGuide::CUITab* item = new AdventureGuide::CUITab();
   item->SetSize(this->itemWidth, this->rowHeight);
-  item->Show(0);
+  item->Show(WINDOW_HIDDEN);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->SetOnHover([this](CUIListItem* listItem) {
     for (AdventureGuide::CUITab* other : this->items) {

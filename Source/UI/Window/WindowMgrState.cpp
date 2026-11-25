@@ -169,7 +169,7 @@ int UIWindowMgr::GetRenderedWindowIds(int* ids) {
 // FUNCTION: fn_17170
 void UIWindowMgr::HideChatWnd() {
   if (this->chatWnd) {
-    this->chatWnd->Show(0);
+    this->chatWnd->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -1224,7 +1224,7 @@ void __stdcall Nullsub369(int, int, int, int) {
 void UIWindowMgr::RestoreHiddenWindows() {
   for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     if (this->hiddenWindows.end() != std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), *it)) {
-      (*it)->Show(1);
+      (*it)->Show(WINDOW_VISIBLE);
     }
   }
 
@@ -1282,7 +1282,7 @@ int UIWindowMgr::RunEmailAddress() {
 
     if (this->activeWindowId != 0) {
       if (UIWindow* active = this->Top()) {
-        active->Show(0);
+        active->Show(WINDOW_HIDDEN);
         this->Schedule(active);
         this->modalWindows.pop_back();
       }
@@ -1298,7 +1298,7 @@ int UIWindowMgr::RunEmailAddress() {
 
     if (this->modalResponse != 0) {
       if (UIWindow* active = this->Top()) {
-        active->Show(0);
+        active->Show(WINDOW_HIDDEN);
         this->Schedule(active);
         this->modalWindows.pop_back();
       }

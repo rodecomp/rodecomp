@@ -637,7 +637,7 @@ int g_minimapCoordinateDigitValues[4];
 // OFFSET: 0x00CD2A10
 // FUNCTION: fn_21261
 void CGameMode::DrawMiniMapNumber() {
-  if (this->skillUseType == 0 || this->skillUseLevel == 0) {
+  if (this->skillUseType == SUT_NOSKILL || this->skillUseLevel == 0) {
     return;
   }
 

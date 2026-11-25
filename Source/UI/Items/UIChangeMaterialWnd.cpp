@@ -103,7 +103,7 @@ UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar() : UIScrollBar() {
 void UIChangeMaterialWnd_List::OnCreate(int width, int height) {
   this->m_scrollBar = new UIChangeMaterialWnd_ScrollBar();
   this->m_scrollBar->Configure(width - this->scrollBarWidth, 0, 1, height);
-  this->m_scrollBar->Show(0);
+  this->m_scrollBar->Show(WINDOW_HIDDEN);
   this->AddChild(this->m_scrollBar);
   this->m_pageSize = height / this->rowHeight;
   this->UpdateScrollBar();
@@ -241,7 +241,7 @@ void UIChangeMaterialWnd_List::OnWheel(int argument) {
 void UIChangeMaterialWnd_List::UpdateScrollBar() {
   const int count = static_cast<int>(this->m_items.size());
   if (count > this->m_pageSize) {
-    this->m_scrollBar->Show(1);
+    this->m_scrollBar->Show(WINDOW_VISIBLE);
     this->m_scrollBar->SetRange(count - this->m_pageSize, this->m_pageSize, count);
 
     this->m_scrollOffset = std::max(0, this->m_scrollOffset);
@@ -249,7 +249,7 @@ void UIChangeMaterialWnd_List::UpdateScrollBar() {
     this->m_scrollBar->SetPosition(this->m_scrollOffset);
   } else {
     this->m_scrollOffset = 0;
-    this->m_scrollBar->Show(0);
+    this->m_scrollBar->Show(WINDOW_HIDDEN);
   }
 
   this->Invalidate();
@@ -266,7 +266,7 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   this->m_selectedIndex = 0;
   this->m_scrollOffset = 0;
   this->m_previousScrollOffset = 0;
-  this->m_scrollBar->Show(0);
+  this->m_scrollBar->Show(WINDOW_HIDDEN);
   this->m_items.clear();
 
   std::string filter = text;

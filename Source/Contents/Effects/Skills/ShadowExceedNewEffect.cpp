@@ -32,7 +32,7 @@ void CShadowExceedNew::Close() {
 // FUNCTION: fn_07432
 void CShadowExceedNew::Open() {
   this->retained = 1;
-  this->AddEvent(0, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
 
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {

@@ -1512,7 +1512,7 @@ bool CGameMode::IsMenuWindowOpen() const {
 // OFFSET: 0x00CF0B30
 // FUNCTION: fn_21422
 bool CGameMode::ShowRestrictedNotice(int grade) {
-  if (g_serviceMode == 3 || g_serviceType == ServiceGermany || grade < 2) {
+  if (g_serviceMode == ServerInstantEvent || g_serviceType == ServiceGermany || grade < 2) {
     return false;
   }
 
@@ -1800,7 +1800,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_GIVE_MANNER_POINT:
-      if (g_serviceMode != 3) {
+      if (g_serviceMode != ServerInstantEvent) {
         int duration = argument3;
         if (duration < 0) {
           duration = 0;
@@ -2145,12 +2145,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       g_modeMgr.GetGameMode()->UpdateReplayActionSpeeds();
       return 0;
     case MM_RESTART_REPLAY:
-      g_loginStartMode = 0x19;
+      g_loginStartMode = LOGIN_STATE_OPEN_REPLAY;
       Replay::Instance().SetState(6);
       g_modeMgr.Switch(0, "login.rsw");
       return 0;
     case MM_EXIT_REPLAY:
-      g_loginStartMode = 0x1A;
+      g_loginStartMode = LOGIN_STATE_REPLAY_SERVER_LIST;
       Replay::Instance().SetState(6);
       g_modeMgr.Switch(0, "login.rsw");
       return 0;
@@ -2426,7 +2426,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->partyPosList.clear();
       return 0;
     case MM_CANCEL_USE_SKILL:
-      this->skillUseType = 0;
+      this->skillUseType = SUT_NOSKILL;
       this->skillId = 0;
       this->skillUseLevel = 0;
       g_pickInvert = 0;
@@ -2454,7 +2454,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_QUIT_TO_IDENTRY:
       g_charServerAccountIdPending = 0;
-      g_loginStartMode = 3;
+      g_loginStartMode = LOGIN_STATE_LOGIN;
       g_modeMgr.Switch(0, "login.rsw");
       return 0;
     case MM_NPC_TRADE_QUIT: {
@@ -2630,7 +2630,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
               std::sprintf(last, GetMessageString(0x319));
             }
             if (this->recordChat[9] == last && this->recordChat[7] == first &&
-                this->scene->player->render.state != 3) {
+                this->scene->player->render.state != ST_DEAD) {
               if ((g_session.IsSuperNoviceJob(g_session.GetDisplayJob()) &&
                    g_session.m_level >= g_session.m_maxBaseLevel) ||
                   (g_session.IsSuperNovice2Job(g_session.GetDisplayJob()) &&
@@ -3380,7 +3380,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         }
       }
       if ((!g_session.IsHomunculusSkill(argument1) && !g_session.IsMercenarySkill(argument1) &&
-           this->scene->player->render.state == 6) || g_windowMgr.chatRoomWnd != nullptr) {
+           this->scene->player->render.state == ST_SIT) || g_windowMgr.chatRoomWnd != nullptr) {
         g_session.m_automaticSkills.Complete(argument1);
         return 0;
       }
@@ -3460,7 +3460,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         if (this->isPlayerDead == 0) {
           GetRagConnection().Send(static_cast<std::int16_t>(packetLength), packet);
         }
-        g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND)->Show(0);
+        g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND)->Show(WINDOW_HIDDEN);
         g_windowMgr.CloseWindow(WID_ITEMCOLLECTIONWND);
       } else {
         g_windowMgr.CloseWindow(WID_PARAITEMPURCHASEWND);
@@ -3782,7 +3782,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           GetRagConnection().Send(static_cast<std::int16_t>(length), packet);
         }
         if (UIWindow* window = g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND)) {
-          window->Show(0);
+          window->Show(WINDOW_HIDDEN);
         }
         g_windowMgr.CloseWindow(WID_ITEMCOLLECTIONWND);
       } else {
@@ -3796,7 +3796,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_CLICK_TO_BUYING_STORE: {
-      if ((this->scene != nullptr && this->scene->player != nullptr && this->scene->player->render.state == 3) ||
+      if ((this->scene != nullptr && this->scene->player != nullptr && this->scene->player->render.state == ST_DEAD) ||
           static_cast<std::uint32_t>(argument1) == g_session.m_aid || g_windowMgr.buyingShopItemsWnd != nullptr) {
         return 0;
       }
@@ -4653,7 +4653,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PACKAGEITEM_SLEEPSTONECURSEFAIL)), 0xFF, 0, 0, 0);
         return 0;
       }
-      if (this->scene->player->render.state == 6) {
+      if (this->scene->player->render.state == ST_SIT) {
         const int itemId = item.GetItemId();
         if (itemId == ITEMID_WING_OF_FLY || itemId == ITEMID_WING_OF_BUTTERFLY || itemId == ITEMID_MAGNIFIER || itemId == ITEMID_ANODYNE || itemId == ITEMID_ALOEBERA || itemId == ITEMID_ANODYNE_B) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_SITDOWN)), 0xFF, 0, 0, 0);
@@ -4721,7 +4721,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_BUY_FROMMC: {
-      if (this->scene != nullptr && this->scene->player != nullptr && this->scene->player->render.state == 3) {
+      if (this->scene != nullptr && this->scene->player != nullptr && this->scene->player->render.state == ST_DEAD) {
         return 0;
       }
       if (static_cast<std::uint32_t>(argument1) == g_session.m_aid || g_windowMgr.merchantItemShopWnd != nullptr) {
@@ -5345,7 +5345,7 @@ void CGameMode::RequestAdminStatus() {
     return;
   }
 
-  if (g_serviceMode == 3) {
+  if (g_serviceMode == ServerInstantEvent) {
     return;
   }
 
@@ -6659,7 +6659,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   std::vector<char> scratch;
   for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
     if ((*it)->storedActorEntry == 0) {
-      if ((*it)->render.state == 1) {
+      if ((*it)->render.state == ST_MOVE) {
         AppendChunk(data, MakeDataChunk(0xD6, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_MOVEENTRY11)));
       } else {
         AppendChunk(data, MakeDataChunk(0xD9, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_STANDENTRY11)));
@@ -7315,7 +7315,7 @@ void CGameMode::UpdateBalloons() {
   UITransBalloonText*& skillBalloon = this->skillBalloon;
   UITransBalloonText*& hintBalloon = this->skillHintBalloon;
   int& shownSkill = this->shownSkillId;
-  if (this->skillUseType == 0) {
+  if (this->skillUseType == SUT_NOSKILL) {
     if (skillBalloon) {
       g_windowMgr.Schedule(skillBalloon);
       skillBalloon = nullptr;
@@ -8032,7 +8032,7 @@ void CGameMode::InitializeState() {
   this->sameChatRepeatCount = 0;
   this->serverTimeSyncCount = 0;
   this->lastChat = "";
-  this->skillUseType = 0;
+  this->skillUseType = SUT_NOSKILL;
   this->skillId = 0;
   g_pickInvert = 0;
   this->cardItemIndex = 0;
@@ -8333,7 +8333,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   }
 
   this->wheelTick = timeGetTime();
-  if (g_mouse.wheel == 0 || this->skillUseType != 0) {
+  if (g_mouse.wheel == 0 || this->skillUseType != SUT_NOSKILL) {
     return;
   }
 
@@ -8435,7 +8435,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
     }
   } else {
     bool extendedZoom = false;
-    if (zoomSkill.level <= 0 && this->scene->player->render.state == 6 && !this->scene->player->HasId(EF_BLIND)) {
+    if (zoomSkill.level <= 0 && this->scene->player->render.state == ST_SIT && !this->scene->player->HasId(EF_BLIND)) {
       switch (g_session.m_job) {
       case JT_STAR:
       case JT_STAR_B:
@@ -8890,18 +8890,18 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   if (mode == 2 || mode == 4) {
     const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     attack = IsSupportSkill(this->skillId) ? shiftHeld : shiftHeld == 0;
-    this->SetCursorAction(11);
+    this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
   } else {
     attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
     if (actor->objectType == NPC_PET_TYPE) {
-      this->SetCursorAction(0);
+      this->SetCursorAction(CURSOR_ACTION_DEFAULT);
     } else if (g_session.GetMapProperty08() != 0 || this->scene->isSiegeMode != 0) {
       if (g_session.IsLocalPlayerAid(actor->GetGdid())) {
         attack = 0;
-        this->SetCursorAction(0);
+        this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       }
     } else {
-      this->SetCursorAction(5);
+      this->SetCursorAction(CURSOR_ACTION_ATTACK);
 
     }
   }
@@ -8919,7 +8919,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
-          message.type = 3;
+          message.type = ATTACK_OBJECT_CMD;
           message.target = actor->render.accountId;
           homun->SetResMsg2AI(&message, 0);
         }
@@ -8927,13 +8927,13 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
-          message.type = 3;
+          message.type = ATTACK_OBJECT_CMD;
           message.target = g_session.homunEnemyGid;
           homun->SetMsg2AI(&message, 0);
         }
         g_session.attackHomunEnemy = 0;
       } else {
-        this->SetCursorAction(11);
+        this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
         g_session.homunEnemyGid = actor->render.accountId;
         g_session.homunEnemyX = 0;
         g_session.homunEnemyY = 0;
@@ -8947,7 +8947,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
-        message.type = 7;
+        message.type = SKILL_OBJECT_CMD;
         message.level = this->skillUseLevel;
         message.skill = this->skillId;
         message.target = actor->render.accountId;
@@ -8962,7 +8962,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = actor->render.accountId;
         mercenary->SetResMsg2AI(&message, 1);
       }
@@ -8970,13 +8970,13 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = g_session.mercenaryEnemyGid;
         mercenary->SetMsg2AI(&message, 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
-      this->SetCursorAction(11);
+      this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
       g_session.mercenaryEnemyX = 0;
       g_session.mercenaryEnemyY = 0;
       g_session.mercenaryEnemyGid = actor->render.accountId;
@@ -8992,7 +8992,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
     if (mercenary && mercenary->HasActiveMercenaryAI()) {
       AiMessage message = {};
-      message.type = 7;
+      message.type = SKILL_OBJECT_CMD;
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
@@ -9021,7 +9021,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   }
 
   this->ShowActorNameBalloon(targetAid);
-  if (actor->render.state == 3) {
+  if (actor->render.state == ST_DEAD) {
     targetAid = 0;
   }
 }
@@ -9116,12 +9116,12 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   int& clickTarget = this->lastMonGid;
 
   if (this->lockOnMouse != 0) {
-    this->SetCursorAction(5);
+    this->SetCursorAction(CURSOR_ACTION_ATTACK);
     if (lockedPick != 0) {
       if (g_mouse.buttons[0] == 1) {
         this->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
       } else {
-        this->SetCursorAction(0);
+        this->SetCursorAction(CURSOR_ACTION_DEFAULT);
         if (!pick) {
           return result;
         }
@@ -9151,11 +9151,11 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     if (clickTarget != 0) {
       if (pick) {
         if (pick->kind == ACTOR_PICK_PET) {
-          this->SetCursorAction(0);
+          this->SetCursorAction(CURSOR_ACTION_DEFAULT);
           return 0;
         }
         if (pick->kind == ACTOR_PICK_COMPANION) {
-          this->SetCursorAction(0);
+          this->SetCursorAction(CURSOR_ACTION_DEFAULT);
           this->ShowActorNameBalloon(pick->accountId);
           return this->HandleActorPick(pick, result);
         }
@@ -9267,7 +9267,7 @@ int CGameMode::ProcessGroundClick(int result) {
         if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
           if (homun && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
-            message.type = 1;
+            message.type = MOVE_CMD;
             message.x = column;
             message.y = row;
             homun->SetResMsg2AI(&message, 0);
@@ -9281,7 +9281,7 @@ int CGameMode::ProcessGroundClick(int result) {
         g_session.attackHomunEnemy = 0;
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
-          message.type = 1;
+          message.type = MOVE_CMD;
           message.x = column;
           message.y = row;
           homun->SetMsg2AI(&message, 0);
@@ -9309,7 +9309,7 @@ int CGameMode::ProcessGroundClick(int result) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           AiMessage message = {};
-          message.type = 1;
+          message.type = MOVE_CMD;
           message.x = column;
           message.y = row;
           mercenary->SetResMsg2AI(&message, 1);
@@ -9323,7 +9323,7 @@ int CGameMode::ProcessGroundClick(int result) {
       g_session.attackMercenaryEnemy = 0;
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
-        message.type = 1;
+        message.type = MOVE_CMD;
         message.x = column;
         message.y = row;
         mercenary->SetMsg2AI(&message, 1);
@@ -9338,9 +9338,9 @@ int CGameMode::ProcessGroundClick(int result) {
         CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           const std::uint32_t state = mercenary->render.state;
-          if (state == 1 || state == 0 || state == 4) {
+          if (state == ST_MOVE || state == ST_STAND || state == ST_DAMAGE) {
             AiMessage message;
-            message.type = 8;
+            message.type = SKILL_AREA_CMD;
             message.x = column;
             message.y = row;
             message.skill = this->skillId;
@@ -9364,7 +9364,7 @@ int CGameMode::ProcessGroundClick(int result) {
         case 1:
         case 4: {
           AiMessage message;
-          message.type = 8;
+          message.type = SKILL_AREA_CMD;
           message.x = column;
           message.y = row;
           message.level = this->skillUseLevel;
@@ -9438,7 +9438,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
   g_windowMgr.UpdateNavigationList();
   clickTick = timeGetTime();
-  if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) || g_windowMgr.chatRoomWnd || this->scene->player->render.state == 6) {
+  if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) || g_windowMgr.chatRoomWnd || this->scene->player->render.state == ST_SIT) {
     this->scene->player->SendMsg(nullptr, AM_REQ_CHANGE_DIR, column, row, 0, 0, 0, 0);
     return result;
   }
@@ -9560,7 +9560,7 @@ void CGameMode::Update() {
             int y = actor->destCellY;
             int cellX = x;
             int cellY = y;
-            if (g_windowMgr.chatRoomWnd == nullptr && this->scene->player->render.state != 6) {
+            if (g_windowMgr.chatRoomWnd == nullptr && this->scene->player->render.state != ST_SIT) {
               bool reachable = true;
               if (!this->IsValidCell(x, y)) {
                 reachable = this->GetClosestValidCell(&cellX, &cellY);
@@ -9718,7 +9718,7 @@ void CGameMode::ProcessInput() {
     handled = 0;
   }
 
-  if (this->skillUseType != 0) {
+  if (this->skillUseType != SUT_NOSKILL) {
     if (g_session.m_mapTransitionFlag == 0) {
       if (g_mouse.wheel > 0) {
         this->SendMsg(MM_USESKILL_LEVEL_PLUS, 1, 0, 0, 0);
@@ -9815,7 +9815,7 @@ void CGameMode::ProcessInput() {
   }
 
   if (handled == 0) {
-    if (this->skillUseType != 0) {
+    if (this->skillUseType != SUT_NOSKILL) {
       this->SetCursorAction(CURSOR_ACTION_SKILL);
     } else if (g_mouse.buttons[1] != MOUSE_BUTTON_HELD) {
       int column = -1;
@@ -11002,23 +11002,23 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     }
   }
 
-  if (attack && actor->render.state != 3) {
-    this->SetCursorAction(skillMode == 0 ? 5 : 11);
+  if (attack && actor->render.state != ST_DEAD) {
+    this->SetCursorAction(skillMode == 0 ? CURSOR_ACTION_ATTACK : CURSOR_ACTION_SKILL_TARGET);
     handled = 1;
-  } else if (skillMode && actor->render.state != 3) {
-    this->SetCursorAction(10);
+  } else if (skillMode && actor->render.state != ST_DEAD) {
+    this->SetCursorAction(CURSOR_ACTION_SKILL);
   } else {
-    this->SetCursorAction(0);
+    this->SetCursorAction(CURSOR_ACTION_DEFAULT);
   }
 
   const std::uint32_t homunAid = g_session.m_homunAid;
   const std::uint32_t mercenaryAid = g_session.m_mercenaryAid;
-  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != ST_DEAD && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = actor->render.accountId;
         homun->SetResMsg2AI(&message, 0);
       }
@@ -11026,13 +11026,13 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = g_session.homunEnemyGid;
         homun->SetMsg2AI(&message, 0);
       }
       g_session.attackHomunEnemy = 0;
     } else {
-      this->SetCursorAction(11);
+      this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
       g_session.homunEnemyGid = actor->render.accountId;
       g_session.homunEnemyX = 0;
       g_session.homunEnemyY = 0;
@@ -11046,7 +11046,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
     if (homun && homun->homunAI && homun->homunAI->state) {
       AiMessage message = {};
-      message.type = 7;
+      message.type = SKILL_OBJECT_CMD;
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
@@ -11055,12 +11055,12 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     return;
   }
 
-  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
+  if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != ST_DEAD && !skillMode && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = actor->render.accountId;
         mercenary->SetResMsg2AI(&message, 1);
       }
@@ -11068,13 +11068,13 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
-        message.type = 3;
+        message.type = ATTACK_OBJECT_CMD;
         message.target = g_session.mercenaryEnemyGid;
         mercenary->SetMsg2AI(&message, 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
-      this->SetCursorAction(11);
+      this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
       g_session.mercenaryEnemyGid = actor->render.accountId;
       g_session.mercenaryEnemyX = 0;
       g_session.mercenaryEnemyY = 0;
@@ -11088,7 +11088,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
     if (mercenary && mercenary->HasActiveMercenaryAI()) {
       AiMessage message = {};
-      message.type = 7;
+      message.type = SKILL_OBJECT_CMD;
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
@@ -11135,7 +11135,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
 // FUNCTION: fn_21434
 void CGameMode::ProcessStatusIconTooltip(int x, int y) {
   if (this->statusIconTooltip) {
-    this->statusIconTooltip->Show(0);
+    this->statusIconTooltip->Show(WINDOW_HIDDEN);
   }
 
   if (g_activeSkillEffects.begin() == g_activeSkillEffects.end()) {
@@ -11263,7 +11263,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     }
 
     if (this->statusIconTooltip->GetLine(0) != " ") {
-      this->statusIconTooltip->Show(1);
+      this->statusIconTooltip->Show(WINDOW_VISIBLE);
       const UITransBalloonText* tooltip = this->statusIconTooltip;
       const int windowHeight = tooltip->geometry.height;
       const int left = right - 30 + (slot / rows) * -45 - tooltip->geometry.width;
@@ -11276,7 +11276,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     this->hoveredStatusIconId = id;
   } else {
     if (this->statusIconTooltip->GetLine(0).size() != 0) {
-      this->statusIconTooltip->Show(1);
+      this->statusIconTooltip->Show(WINDOW_VISIBLE);
     }
   }
 
@@ -11304,7 +11304,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     switch (pick->kind) {
     case ACTOR_PICK_CHARACTER:
       if (pick->job != JT_WARPNPC && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
-        this->SetCursorAction(1);
+        this->SetCursorAction(CURSOR_ACTION_INTERACT);
         if (g_mouse.buttons[0] == 2) {
           result = 2;
         } else {
@@ -11372,19 +11372,19 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
 
           const int state = actor != nullptr ? actor->render.state : 3;
-          if (attack && state != 3) {
-            this->SetCursorAction(skillMode ? 11 : 5);
+          if (attack && state != ST_DEAD) {
+            this->SetCursorAction(skillMode ? CURSOR_ACTION_SKILL_TARGET : CURSOR_ACTION_ATTACK);
             result = 1;
             this->lastPcGid = pick->accountId;
           } else {
-            this->SetCursorAction(skillMode && state != 3 ? 10 : 0);
+            this->SetCursorAction(skillMode && state != ST_DEAD ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT);
             result = 0;
             if (g_mouse.buttons[0] == 0 && this->lockOnMouse == 0 && this->lastMonGid == 0) {
               this->lastPcGid = pick->accountId;
             }
           }
         } else if (g_session.IsNpcJob(pick->job) == true) {
-          this->SetCursorAction(1);
+          this->SetCursorAction(CURSOR_ACTION_INTERACT);
           if (g_mouse.buttons[0] == 2) {
             result = 2;
           }
@@ -11419,14 +11419,14 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           if (this->isAutoMoveClickOn != 0) {
             if (attack) {
               if (skillMode) {
-                this->SetCursorAction(11);
+                this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
               } else if (actor != nullptr && actor->objectType == NPC_PET_TYPE) {
-                this->SetCursorAction(0);
+                this->SetCursorAction(CURSOR_ACTION_DEFAULT);
               } else {
-                this->SetCursorAction(5);
+                this->SetCursorAction(CURSOR_ACTION_ATTACK);
               }
             } else {
-              this->SetCursorAction(skillMode ? 10 : 0);
+              this->SetCursorAction(skillMode ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT);
             }
           }
 
@@ -11438,7 +11438,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
         }
       } else {
-        this->SetCursorAction(7);
+        this->SetCursorAction(CURSOR_ACTION_WARP);
         result = 2;
       }
       break;
@@ -11485,10 +11485,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = this->skillUseType == 5 ? 10 : 5;
+          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
           break;
         default:
-          action = this->skillUseType == 5 ? 10 : 0;
+          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
           break;
         }
       } else {
@@ -11503,10 +11503,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = this->skillUseType == 5 ? 10 : 5;
+          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
           break;
         default:
-          action = this->skillUseType == 5 ? 10 : 0;
+          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
           break;
         }
       }
@@ -11518,24 +11518,24 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
     case ACTOR_PICK_ITEM:
       result = 1;
-      this->SetCursorAction(9);
+      this->SetCursorAction(CURSOR_ACTION_PICKUP);
       if (g_mouse.buttons[0] == 2) {
         result = 2;
       }
       break;
     case ACTOR_PICK_PET:
       result = 0;
-      this->SetCursorAction(0);
+      this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       break;
     case ACTOR_PICK_COMPANION: {
       result = 0;
-      this->SetCursorAction(0);
+      this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
-      if (actor != nullptr && actor->render.state != 3) {
+      if (actor != nullptr && actor->render.state != ST_DEAD) {
         if (g_session.m_aid == static_cast<std::uint32_t>(actor->emblemVersion)) {
           if (actor->objectType == NPC_HO_TYPE && this->skillId == AM_POTIONPITCHER) {
             result = 1;
-            this->SetCursorAction(11);
+            this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
             this->lastMonGid = pick->accountId;
           }
         } else {
@@ -11548,7 +11548,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
               }
             }
             result = 1;
-            this->SetCursorAction(5);
+            this->SetCursorAction(CURSOR_ACTION_ATTACK);
             this->lastMonGid = pick->accountId;
           }
         }
@@ -11564,12 +11564,12 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
   switch (pick->kind) {
   case ACTOR_PICK_COMPANION: {
-    this->SetCursorAction(0);
+    this->SetCursorAction(CURSOR_ACTION_DEFAULT);
     if (g_session.IsMercenaryJob(pick->job)) {
       CWorld* scene = this->scene;
       if (this->skillId == AM_POTIONPITCHER || ((scene->isPKZone != 0 || scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
         if ((this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
-          this->SetCursorAction(5);
+          this->SetCursorAction(CURSOR_ACTION_ATTACK);
         }
         this->RequestPlayerAction(pick->accountId, 1);
         this->forcedAttack = 0;
@@ -11593,7 +11593,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       attack = 1;
     }
 
-    const bool allowed = pick->accountId != mercenaryAid || this->skillUseType == 4;
+    const bool allowed = pick->accountId != mercenaryAid || this->skillUseType == SUT_TO_ALL;
     if (allowed && attack) {
       this->RequestPlayerAction(pick->accountId, 1);
     }
@@ -11606,7 +11606,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
     if (g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
       const int state = this->scene->player->render.state;
-      if (state != 0 && state != 6) {
+      if (state != ST_STAND && state != ST_SIT) {
         return result;
       }
       if (this->IsMenuWindowOpen() == true) {
@@ -11655,7 +11655,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
           if (homun != nullptr && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
-            message.type = 3;
+            message.type = ATTACK_OBJECT_CMD;
             message.target = pick->accountId;
             homun->SetResMsg2AI(&message, 0);
           }
@@ -11663,13 +11663,13 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
           if (homun != nullptr && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
-            message.type = 3;
+            message.type = ATTACK_OBJECT_CMD;
             message.target = g_session.homunEnemyGid;
             homun->SetMsg2AI(&message, 0);
           }
           g_session.attackHomunEnemy = 0;
         } else {
-          this->SetCursorAction(11);
+          this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
           g_session.homunEnemyGid = pick->accountId;
           g_session.homunEnemyX = 0;
           g_session.homunEnemyY = 0;
@@ -11683,7 +11683,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun != nullptr && homun->HasActiveHomunculusAI()) {
           AiMessage message;
-          message.type = 7;
+          message.type = SKILL_OBJECT_CMD;
           message.x = 0;
           message.y = 0;
           message.level = this->skillUseLevel;
@@ -11699,7 +11699,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
           if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
             AiMessage message = {};
-            message.type = 3;
+            message.type = ATTACK_OBJECT_CMD;
             message.target = pick->accountId;
             mercenary->SetResMsg2AI(&message, 1);
           }
@@ -11707,13 +11707,13 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
           if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
             AiMessage message = {};
-            message.type = 3;
+            message.type = ATTACK_OBJECT_CMD;
             message.target = g_session.mercenaryEnemyGid;
             mercenary->SetMsg2AI(&message, 1);
           }
           g_session.attackMercenaryEnemy = 0;
         } else {
-          this->SetCursorAction(11);
+          this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
           g_session.mercenaryEnemyGid = pick->accountId;
           g_session.mercenaryEnemyX = 0;
           g_session.mercenaryEnemyY = 0;
@@ -11727,7 +11727,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
         if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
           AiMessage message;
-          message.type = 7;
+          message.type = SKILL_OBJECT_CMD;
           message.x = 0;
           message.y = 0;
           message.level = this->skillUseLevel;
@@ -11798,7 +11798,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
       if (companion != nullptr) {
         AiMessage message;
-        message.type = 7;
+        message.type = SKILL_OBJECT_CMD;
         message.x = 0;
         message.y = 0;
         message.level = this->skillUseLevel;
@@ -11809,7 +11809,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
     }
 
-    const bool allowed = pick->accountId != g_session.m_aid || this->skillUseType == 4;
+    const bool allowed = pick->accountId != g_session.m_aid || this->skillUseType == SUT_TO_ALL;
     if (!allowed || !attack) {
       return result;
     }
@@ -11864,10 +11864,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       return result;
     }
   case ACTOR_PICK_PET:
-    this->SetCursorAction(0);
+    this->SetCursorAction(CURSOR_ACTION_DEFAULT);
     return 0;
   case ACTOR_PICK_ITEM:
-    if (g_mouse.buttons[0] == 1 && this->skillUseType == 0) {
+    if (g_mouse.buttons[0] == 1 && this->skillUseType == SUT_NOSKILL) {
       this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);
     }
     break;

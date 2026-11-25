@@ -73,7 +73,7 @@ void UIReputeWnd::OnCreate(int width, int height) {
   search->Move(336, 25);
   search->SetId(ID_SEARCH);
   this->AddChild(search);
-  this->m_message0 = 321;
+  this->m_message0 = ID_SEARCH;
 
   this->m_prevButton = new UIBitmapButton();
   this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 0, 0);

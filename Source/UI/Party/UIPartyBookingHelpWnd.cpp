@@ -49,7 +49,7 @@ int UIPartyBookingHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  if (argument1 == 201) {
+  if (argument1 == ID_CLOSE) {
     g_windowMgr.CloseWindow(WID_PARTYBOOKINGHELPWND);
   }
   return 0;

@@ -329,27 +329,27 @@ void InitializeLanguage() {
 
   switch (g_serviceType) {
   case ServiceKorea:
-    g_language = 0;
+    g_language = LANGUAGE_KOREAN;
     g_textCodePage = 949;
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceJapan:
-    g_language = 2;
+    g_language = LANGUAGE_JAPANESE;
     g_textCodePage = 932;
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceChina:
-    g_language = 3;
+    g_language = LANGUAGE_CHINESE;
     g_serverLanguage = &traditionalChineseCharset;
     g_textCodePage = 936;
     break;
   case ServiceTaiwan:
-    g_language = 4;
+    g_language = LANGUAGE_TAIWANESE;
     g_serverLanguage = &traditionalChineseCharset;
     g_textCodePage = 950;
     break;
   case ServiceThai:
-    g_language = 5;
+    g_language = LANGUAGE_THAI;
     g_serverLanguage = &thaiCharset;
     g_textCodePage = 874;
     break;
@@ -379,7 +379,7 @@ void InitializeLanguage() {
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceVietnam:
-    g_language = 7;
+    g_language = LANGUAGE_VIETNAMESE;
     g_inlineCharset = 0;
     g_textCodePage = 1258;
     g_serverLanguage = &defaultCharset;
@@ -391,7 +391,7 @@ void InitializeLanguage() {
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceUae:
-    g_language = 12;
+    g_language = LANGUAGE_ARABIC;
     g_serverLanguage = &arabicCharset;
     g_textCodePage = 1256;
     break;

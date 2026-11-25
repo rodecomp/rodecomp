@@ -1,5 +1,6 @@
 #include "Contents/Map/MapInfoMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -50,7 +51,7 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
 
     TextContext text(*this->m_dc);
     text.SetColor(0xFFFFFF);
-    const int family = g_serviceType != 0 ? 0 : 29;
+    const int family = g_serviceType != ServiceKorea ? 0 : 29;
 
     text.SetFont(family, static_cast<int>(scale * 16.0f), 1, 0);
     SIZE nameSize;

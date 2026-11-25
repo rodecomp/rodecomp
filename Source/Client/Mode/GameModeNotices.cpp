@@ -1729,7 +1729,7 @@ void CGameMode::BeginCaptchaImage(unsigned short size, const char* key) {
     if (std::strncmp(window->m_captchaKey, key, 4) != 0) {
       window->ClearImageData();
     }
-    window->Show(0);
+    window->Show(WINDOW_HIDDEN);
     memcpy_s(window->m_captchaKey, 4, key, 4);
     window->InitImageData(size);
   }
@@ -2054,7 +2054,7 @@ void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const cha
     if (std::strncmp(window->m_captchaKey, key, 4) != 0) {
       window->ClearImageData();
     }
-    window->Show(0);
+    window->Show(WINDOW_HIDDEN);
     memcpy_s(window->m_captchaKey, 4, key, 4);
     window->InitImageData(size);
     break;

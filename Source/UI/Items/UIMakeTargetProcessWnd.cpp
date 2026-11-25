@@ -47,7 +47,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 1) {
+  if (drag->source == DRAG_ITEM_INVENTORY) {
     int emptySlot = 3;
     bool hasElementalStone = false;
     for (int index = 0; index < 3; ++index) {

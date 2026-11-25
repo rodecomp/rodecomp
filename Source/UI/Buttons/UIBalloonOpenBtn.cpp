@@ -74,7 +74,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
 
       this->m_balloon->Move(g_renderer->viewport.centerX + 40, g_renderer->viewport.centerY);
-      this->Show(0);
+      this->Show(WINDOW_HIDDEN);
       this->m_openTime = timeGetTime();
     }
   }

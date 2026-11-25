@@ -128,8 +128,8 @@ void CStarEmperorEffect::Open() {
 // FUNCTION: fn_07479
 void CStarEmperorEffect::InitEvents() {
   if (this->id == EF_STAR_EMPEROR) {
-    this->AddEvent(0, "effect\\wizard_fire_pillar_a.wav", 1, 0);
-    this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 31, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_fire_pillar_a.wav", 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wizard_fire_pillar_b.wav", 31, 0);
   }
 }
 

@@ -32,7 +32,7 @@ __declspec(noinline) CRectUpEffect::~CRectUpEffect() {
 // FUNCTION: fn_07100
 void CRectUpEffect::InitEvents() {
   if (this->id == 1088) {
-    this->AddEvent(0, "effect\\EF_FireWall.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_FireWall.wav", 0, 0);
   }
 }
 

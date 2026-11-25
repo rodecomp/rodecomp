@@ -176,14 +176,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
     this->change->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REWRITE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REWRITE));
     this->change->Move(108, 165);
     this->change->SetId(ID_EDIT_OWN_PARTY_LISTING);
-    this->m_message0 = 564;
+    this->m_message0 = ID_EDIT_OWN_PARTY_LISTING;
     this->AddChild(this->change);
   } else {
     this->recruit = new UIBasicButton();
     this->recruit->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REGISTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REGISTER));
     this->recruit->Move(108, 165);
     this->recruit->SetId(ID_REGISTER_PARTY_LISTING);
-    this->m_message0 = 565;
+    this->m_message0 = ID_REGISTER_PARTY_LISTING;
     this->AddChild(this->recruit);
   }
 
@@ -574,7 +574,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->minimum->SetText(minimumText);
   this->minimum->Move(10, 24);
   this->minimum->Background(242, 242, 242);
-  this->minimum->Show(1);
+  this->minimum->Show(WINDOW_VISIBLE);
   this->AddChild(this->minimum);
 
   this->maximum = new UIEditCtrl2();
@@ -587,7 +587,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->maximum->SetText(maximumText);
   this->maximum->Move(46, 24);
   this->maximum->Background(242, 242, 242);
-  this->maximum->Show(1);
+  this->maximum->Show(WINDOW_VISIBLE);
   this->AddChild(this->maximum);
 
   const int positions[][2] = {{160, 23}, {178, 23}, {196, 23}, {214, 23}};
@@ -729,7 +729,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->pageText->Move(this->geometry.width / 2 - halfWidth, 319);
   this->AddChild(this->pageText);
   this->LoadPage(1);
-  this->m_message0 = 365;
+  this->m_message0 = ID_FIND;
 
   auto* close = new UIBasicButton();
   close->Configure(42, LookupMessage(MSI_CLOSE));

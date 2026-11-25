@@ -129,7 +129,7 @@ void UIParaItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 3) {
+  if (drag->source == DRAG_ITEM_NPC_SHOP) {
     switch (drag->type) {
     case TYPE_ARMOR:
     case TYPE_WEAPON:
@@ -161,7 +161,7 @@ void UIParaItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 4) {
+  if (drag->source != DRAG_ITEM_PURCHASE_CART) {
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }

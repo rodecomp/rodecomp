@@ -193,7 +193,7 @@ void UIClanInfoManageWnd::OnLBtnDown(int x, int y) {
 int UIClanInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
   case UM_COMMAND:
-    if (a1 == 201) {
+    if (a1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_CLANINFOMANAGEWND);
     }
     return 0;

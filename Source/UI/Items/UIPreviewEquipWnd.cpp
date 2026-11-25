@@ -215,7 +215,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_HEAD_TOP:
       case EQP_COSTUME_HEAD_TOP:
         this->m_render->upperHeadgear = item->sprite;
-        this->m_render->upperHeadgearLocation = 0x100;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP;
         if ((this->m_render->lowerHeadgearLocation & 0x100) != 0) {
           this->m_render->lowerHeadgearLocation = 0;
           this->m_render->lowerHeadgear = 0;
@@ -228,7 +228,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_HEAD_MID:
       case EQP_COSTUME_HEAD_MID:
         this->m_render->middleHeadgear = item->sprite;
-        this->m_render->middleHeadgearLocation = 0x200;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID;
         if ((this->m_render->lowerHeadgearLocation & 0x200) != 0) {
           this->m_render->lowerHeadgearLocation = 0;
           this->m_render->lowerHeadgear = 0;
@@ -242,8 +242,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
         this->m_render->upperHeadgear = item->sprite;
         this->m_render->middleHeadgear = 0;
-        this->m_render->upperHeadgearLocation = 0x300;
-        this->m_render->middleHeadgearLocation = 0x300;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
         if (this->m_render->lowerHeadgearLocation != EQP_HEAD_LOW) {
           this->m_render->lowerHeadgearLocation = 0;
           this->m_render->lowerHeadgear = 0;
@@ -254,16 +254,16 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->m_render->lowerHeadgear = item->sprite;
         this->m_render->upperHeadgear = 0;
         this->m_render->middleHeadgear = 0;
-        this->m_render->lowerHeadgearLocation = 0x301;
-        this->m_render->upperHeadgearLocation = 0x301;
-        this->m_render->middleHeadgearLocation = 0x301;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
         break;
       case EQP_HEAD_MID | EQP_HEAD_LOW:
       case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
         this->m_render->middleHeadgear = item->sprite;
         this->m_render->lowerHeadgear = 0;
-        this->m_render->middleHeadgearLocation = 0x201;
-        this->m_render->lowerHeadgearLocation = 0x201;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
         if (this->m_render->upperHeadgearLocation != EQP_HEAD_TOP) {
           this->m_render->upperHeadgearLocation = 0;
           this->m_render->upperHeadgear = 0;
@@ -273,8 +273,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
         this->m_render->upperHeadgear = item->sprite;
         this->m_render->lowerHeadgear = 0;
-        this->m_render->upperHeadgearLocation = 0x101;
-        this->m_render->lowerHeadgearLocation = 0x101;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
         if (this->m_render->middleHeadgearLocation != EQP_HEAD_MID) {
           this->m_render->middleHeadgearLocation = 0;
           this->m_render->middleHeadgear = 0;
@@ -283,7 +283,7 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_HEAD_LOW:
       case EQP_COSTUME_HEAD_LOW:
         this->m_render->lowerHeadgear = item->sprite;
-        this->m_render->lowerHeadgearLocation = 1;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_LOW;
         if (0 != (this->m_render->upperHeadgearLocation & 1)) {
           this->m_render->upperHeadgearLocation = 0;
           this->m_render->upperHeadgear = 0;
@@ -318,21 +318,21 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
   if (this->m_render->lowerHeadgear) {
     ITEM_INFO equipped = g_session.GetEquippedItemAt(0);
     if (this->m_render->lowerHeadgear == equipped.sprite) {
-      this->m_render->lowerHeadgearLocation = 1;
+      this->m_render->lowerHeadgearLocation = EQP_HEAD_LOW;
       if (equipped.identity[2] == 0x301) {
-        this->m_render->lowerHeadgearLocation = 0x301;
-        this->m_render->upperHeadgearLocation = 0x301;
-        this->m_render->middleHeadgearLocation = 0x301;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
 
     ITEM_INFO costume = g_session.GetCostumeItemAt(0);
     if (this->m_render->lowerHeadgear == costume.sprite) {
-      this->m_render->lowerHeadgearLocation = 1;
+      this->m_render->lowerHeadgearLocation = EQP_HEAD_LOW;
       if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
-        this->m_render->lowerHeadgearLocation = 0x301;
-        this->m_render->upperHeadgearLocation = 0x301;
-        this->m_render->middleHeadgearLocation = 0x301;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
   }
@@ -341,46 +341,46 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
     ITEM_INFO equipped = g_session.GetEquippedItemAt(8);
     if (this->m_render->upperHeadgear == equipped.sprite) {
       if (equipped.identity[2] == 0x100) {
-        this->m_render->upperHeadgearLocation = 0x100;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP;
       }
 
       if (equipped.identity[2] == 0x101) {
-        this->m_render->upperHeadgearLocation = 0x101;
-        this->m_render->lowerHeadgearLocation = 0x101;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
       }
 
       if (equipped.identity[2] == 0x300) {
-        this->m_render->upperHeadgearLocation = 0x300;
-        this->m_render->middleHeadgearLocation = 0x300;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
       }
 
       if (equipped.identity[2] == 0x301) {
-        this->m_render->lowerHeadgearLocation = 0x301;
-        this->m_render->upperHeadgearLocation = 0x301;
-        this->m_render->middleHeadgearLocation = 0x301;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
 
     ITEM_INFO costume = g_session.GetCostumeItemAt(8);
     if (this->m_render->upperHeadgear == costume.sprite) {
       if (costume.identity[2] == 0x400) {
-        this->m_render->upperHeadgearLocation = 0x100;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP;
       }
 
       if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW)) {
-        this->m_render->upperHeadgearLocation = 0x101;
-        this->m_render->lowerHeadgearLocation = 0x101;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_LOW;
       }
 
       if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID)) {
-        this->m_render->upperHeadgearLocation = 0x300;
-        this->m_render->middleHeadgearLocation = 0x300;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID;
       }
 
       if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
-        this->m_render->lowerHeadgearLocation = 0x301;
-        this->m_render->upperHeadgearLocation = 0x301;
-        this->m_render->middleHeadgearLocation = 0x301;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->upperHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
   }
@@ -389,24 +389,24 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
     ITEM_INFO equipped = g_session.GetEquippedItemAt(9);
     if (this->m_render->middleHeadgear == equipped.sprite) {
       if (equipped.identity[2] == 0x200) {
-        this->m_render->middleHeadgearLocation = 0x200;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID;
       }
 
       if (equipped.identity[2] == 0x201) {
-        this->m_render->middleHeadgearLocation = 0x201;
-        this->m_render->lowerHeadgearLocation = 0x201;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
 
     ITEM_INFO costume = g_session.GetCostumeItemAt(9);
     if (this->m_render->middleHeadgear == costume.sprite) {
       if (costume.identity[2] == 0x800) {
-        this->m_render->middleHeadgearLocation = 0x200;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID;
       }
 
       if (costume.identity[2] == (EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
-        this->m_render->middleHeadgearLocation = 0x201;
-        this->m_render->lowerHeadgearLocation = 0x201;
+        this->m_render->middleHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
+        this->m_render->lowerHeadgearLocation = EQP_HEAD_MID | EQP_HEAD_LOW;
       }
     }
   }

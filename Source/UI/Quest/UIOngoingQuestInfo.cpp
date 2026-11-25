@@ -103,7 +103,7 @@ void CUIOngoingQuestInfo::Initialize() {
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -136,7 +136,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
   if (this->data.size() == 0) {
     for (OngoingQuestInfo::CUIRewardItem* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -173,14 +173,14 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     OngoingQuestInfo::CUIRewardItem* item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -347,7 +347,7 @@ void CUIRewards::OnInit() {
   list->Invalidate();
   this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
-  this->npcSprite->Show(0);
+  this->npcSprite->Show(WINDOW_HIDDEN);
   this->AddChild(this->npcSprite);
 }
 
@@ -400,7 +400,7 @@ namespace OngoingQuestInfo {
 // FUNCTION: fn_46620
 inline void CUIRewards::SetRewardNpc(const std::string& sprite, const std::string& map, int x, int y) {
   if (sprite.empty()) {
-    this->npcSprite->Show(0);
+    this->npcSprite->Show(WINDOW_HIDDEN);
     return;
   }
 
@@ -409,7 +409,7 @@ inline void CUIRewards::SetRewardNpc(const std::string& sprite, const std::strin
     this->npcSprite->SetDestination(map, x, y);
   }
   this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 23, 9);
-  this->npcSprite->Show(1);
+  this->npcSprite->Show(WINDOW_VISIBLE);
 }
 
 // OFFSET: 0x00A56150
@@ -769,7 +769,7 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
     for (OngoingQuestInfo::CUIRewardItem*& slot : this->items) {
       OngoingQuestInfo::CUIRewardItem* item = new OngoingQuestInfo::CUIRewardItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (OngoingQuestInfo::CUIRewardItem* other : this->items) {

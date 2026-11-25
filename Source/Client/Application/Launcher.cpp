@@ -3,6 +3,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Contents/AdventureGuide/AdventureGuideMgr.h"
 #include "Contents/Async/AsyncWorkMgr.h"
@@ -655,7 +656,7 @@ bool ReplaceClientExecutable(char* executable, const char* update) {
   }
 
   const char* format;
-  if (g_serviceType == 12) {
+  if (g_serviceType == ServiceBrazil) {
     const std::array<char, 48> messageSource = OBFUSCATE_SOURCE_ARRAY_CHAR("%s foi modificada. Clique em Ok para continuar.", 0x91E147EBBD47C39FULL);
     EncryptedName<sizeof(messageSource), 0x91E147EBBD47C39FULL>& message = OBFUSCATE_DECRYPT_NAME(0x91E147EBBD47C39FULL, messageSource);
     format = message.Text();
@@ -1437,13 +1438,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_skinInfo.Refresh();
   CreateTrigonometricTable();
 
-  if (g_serviceType == 4 || g_serviceType == 8 || g_serviceType == 9 || (g_serviceType == 6 && g_serviceMode == 0) || g_serviceType == 12) {
-    g_loginStartMode = 1;
-  } else if (g_serviceType != 0 && ((g_serviceMode == 0 && g_serviceType != 6) || g_serviceType == 2 || g_serviceMode == 5 || g_serviceType == 3 ||
-                                      g_serviceType == 19)) {
-    g_loginStartMode = 2;
+  if (g_serviceType == ServiceTaiwan || g_serviceType == ServiceMalaysia || g_serviceType == ServiceSingapore ||
+      (g_serviceType == ServiceIndonesia && g_serviceMode == ServerPrimary) || g_serviceType == ServiceBrazil) {
+    g_loginStartMode = LOGIN_STATE_LICENSE;
+  } else if (g_serviceType != ServiceKorea && ((g_serviceMode == ServerPrimary && g_serviceType != ServiceIndonesia) || g_serviceType == ServiceJapan ||
+                                               g_serviceMode == ServerPk || g_serviceType == ServiceChina || g_serviceType == ServiceUae)) {
+    g_loginStartMode = LOGIN_STATE_SELECT_ACCOUNT;
   } else {
-    g_loginStartMode = 0;
+    g_loginStartMode = LOGIN_STATE_WARNING;
   }
 
   const std::array<char, 5> memoSource = OBFUSCATE_SOURCE_ARRAY_CHAR("memo", 0xC5995F4B9FE96B89ULL);
@@ -1546,7 +1548,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const std::array<char, 4> devServerSource = OBFUSCATE_SOURCE_ARRAY_CHAR("Dev", 0x4B755DB19953E311ULL);
     EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL>& devServer = OBFUSCATE_DECRYPT_NAME(0x4B755DB19953E311ULL, devServerSource);
     if (std::strstr(g_launchServerName, devServer.Text())) {
-      if (g_serviceMode == 0) {
+      if (g_serviceMode == ServerPrimary) {
       const std::array<char, 62> parametersSource = OBFUSCATE_SOURCE_ARRAY_CHAR("http://admtools.gnjoy.com/gamestarter/devro.asp?GameCode=4011", 0xFD69A9B3F311818DULL);
       EncryptedName<sizeof(parametersSource), 0xFD69A9B3F311818DULL>& parameters = OBFUSCATE_DECRYPT_NAME(0xFD69A9B3F311818DULL, parametersSource);
       const char* arguments = parameters.Text();

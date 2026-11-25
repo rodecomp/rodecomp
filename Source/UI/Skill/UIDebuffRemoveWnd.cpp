@@ -3,6 +3,7 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
+#include "UI/Window/UIEnums.h"
 
 #include <cstdint>
 
@@ -40,11 +41,11 @@ void UIDebuffRemoveWnd::OnMouseMove(int x, int y) {
 // OFFSET: 0x00950400
 // FUNCTION: fn_12940
 int UIDebuffRemoveWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message != 6) {
+  if (message != UM_COMMAND) {
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  if (a == 184) {
+  if (a == ID_OK) {
     DebuffRemovePacket packet = {0xC2A};
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }

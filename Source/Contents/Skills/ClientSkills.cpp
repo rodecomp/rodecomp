@@ -11,6 +11,7 @@
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/ClientState.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Map/MapPropertyMgr.h"
@@ -40,7 +41,7 @@ char g_decodedPlayerName[64];
 void CSession::InitMapTypeInfoTable() {
   CFile file;
   if (!file.Open("MapInfoTable.scp", 0, true, false)) {
-    if (g_serviceType == 0) {
+    if (g_serviceType == ServiceKorea) {
       ShowErrorDialog("Load MapInfoTable Failed!", 0);
     } else {
       g_mapPropertyMgr->Clear();

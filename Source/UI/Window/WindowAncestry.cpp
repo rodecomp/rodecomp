@@ -51,7 +51,7 @@ void UIWindowMgr::DeferDeletion(UIWindow* window) {
 
   this->ForgetWindowReferences(window);
   this->deferredDeletion.insert(window);
-  window->Show(0);
+  window->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x00AA8F30

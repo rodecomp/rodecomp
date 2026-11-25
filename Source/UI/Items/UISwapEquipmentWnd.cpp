@@ -456,15 +456,15 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
-      if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+      if (g_windowMgr.GetHoverWindow()->geometry.id == ID_NPC_TEXT_EDIT) {
         g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_WHISPER_EDIT) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHAT_EDIT) {
         static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_RODEX_COMPOSE_EDIT) {
         g_windowMgr.rodexComposeWnd->InsertItemTag(item);
-      } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+      } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHATROOM_EDIT) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }
     }

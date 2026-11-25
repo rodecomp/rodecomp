@@ -61,7 +61,7 @@ void CClimaxEffect::Open() {
 
   static_cast<CEZ2STRParticle*>(bottom)->m_loop = true;
   this->particles[1] = bottom;
-  this->AddEvent(0, "effect\\AG_CLIMAX.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_CLIMAX.wav", 0, 0);
 }
 
 // OFFSET: 0x00706F00

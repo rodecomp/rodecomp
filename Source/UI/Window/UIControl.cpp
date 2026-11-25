@@ -635,7 +635,7 @@ void CUIVScrollBar::SetButtonImages(const std::string& up, const std::string& do
     this->upButton->Resize(image->image.width, image->image.height);
     this->upButton->Move(0, 0);
     this->upButton->SetImages(up, up, up, up);
-    this->upButton->Show(1);
+    this->upButton->Show(WINDOW_VISIBLE);
   }
 
   image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(down));
@@ -643,7 +643,7 @@ void CUIVScrollBar::SetButtonImages(const std::string& up, const std::string& do
     this->downButton->Resize(image->image.width, image->image.height);
     this->downButton->Move(0, this->geometry.height - image->image.height);
     this->downButton->SetImages(down, down, down, down);
-    this->downButton->Show(1);
+    this->downButton->Show(WINDOW_VISIBLE);
   }
 
   this->Invalidate();
@@ -665,7 +665,7 @@ void CUIVScrollBar::SetThumbImages(const std::string& top, const std::string& mi
   const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
   this->thumb->Resize(this->geometry.width, length > 1 ? length : 1);
   this->thumb->Move(0, this->upButton->geometry.height);
-  this->thumb->Show(1);
+  this->thumb->Show(WINDOW_VISIBLE);
 
   CUIThumb* bar = this->thumb;
   bar->resizable = 1;
@@ -686,7 +686,7 @@ void CUIVScrollBar::SetThumbImage(const std::string& name) {
   if (image) {
     this->thumb->Resize(image->image.width, image->image.height);
     this->thumb->Move(0, this->upButton->geometry.height);
-    this->thumb->Show(1);
+    this->thumb->Show(WINDOW_VISIBLE);
 
     CUIThumb* bar = this->thumb;
     bar->resizable = 0;
@@ -1823,7 +1823,7 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
     for (AdventureGuide::CUIItemInfo*& slot : this->items) {
       AdventureGuide::CUIItemInfo* item = new AdventureGuide::CUIItemInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (AdventureGuide::CUIItemInfo* other : this->items) {
@@ -1889,7 +1889,7 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
     for (AdventureGuide::CUIMonsterInfo*& slot : this->items) {
       AdventureGuide::CUIMonsterInfo* item = new AdventureGuide::CUIMonsterInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (AdventureGuide::CUIMonsterInfo* other : this->items) {
@@ -1955,7 +1955,7 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
     for (AdventureGuide::CUIQuestInfo*& slot : this->items) {
       AdventureGuide::CUIQuestInfo* item = new AdventureGuide::CUIQuestInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (AdventureGuide::CUIQuestInfo* other : this->items) {
@@ -2021,7 +2021,7 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
     for (AdventureGuide::CUITabInfo*& slot : this->items) {
       AdventureGuide::CUITabInfo* item = new AdventureGuide::CUITabInfo();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (AdventureGuide::CUITabInfo* other : this->items) {
@@ -2222,7 +2222,7 @@ int CUIVScrollBar::PositionFromOffset(int offset) {
 // FUNCTION: fn_14722
 void CUIVScrollBar::SetHidden(int) {
   this->hidden = 1;
-  this->Show(0);
+  this->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x009EDF80
@@ -2303,7 +2303,7 @@ void CUIHScrollBar::SetButtonImages(const std::string& left, const std::string& 
     this->upButton->Resize(image->image.width, image->image.height);
     this->upButton->Move(0, 0);
     this->upButton->SetImages(left, left, left, left);
-    this->upButton->Show(1);
+    this->upButton->Show(WINDOW_VISIBLE);
   }
 
   image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(right));
@@ -2311,7 +2311,7 @@ void CUIHScrollBar::SetButtonImages(const std::string& left, const std::string& 
     this->downButton->Resize(image->image.width, image->image.height);
     this->downButton->Move(this->geometry.width - image->image.width, 0);
     this->downButton->SetImages(right, right, right, right);
-    this->downButton->Show(1);
+    this->downButton->Show(WINDOW_VISIBLE);
   }
 
   this->Invalidate();
@@ -2324,7 +2324,7 @@ void CUIHScrollBar::SetThumbImages(const std::string& top, const std::string& mi
   const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
   this->thumb->Resize(length > 1 ? length : 1, this->geometry.height);
   this->thumb->Move(this->upButton->geometry.width, 0);
-  this->thumb->Show(1);
+  this->thumb->Show(WINDOW_VISIBLE);
   this->thumb->SetImages(top, middle, bottom);
   this->Invalidate();
 }
@@ -3374,7 +3374,7 @@ void CUITextViewer::OnCreate(int width, int height) {
   this->AddChild(this->padding);
 
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) {
     int y = this->paddingTop;
     const CUIVScrollBar* bar = this->scrollBar;
@@ -3638,19 +3638,19 @@ __forceinline CUIHThumb::CUIHThumb() : CUIVThumb() {
 void CUIHScrollBar::OnCreate(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton();
-    this->upButton->Show(0);
+    this->upButton->Show(WINDOW_HIDDEN);
     this->upButton->SetOnClick([this]() { this->PageUp(); });
     this->AddChild(this->upButton);
   }
   if (!this->downButton) {
     this->downButton = new CUIImageButton();
-    this->downButton->Show(0);
+    this->downButton->Show(WINDOW_HIDDEN);
     this->downButton->SetOnClick([this]() { this->PageDown(); });
     this->AddChild(this->downButton);
   }
   if (!this->thumb) {
     this->thumb = new CUIHThumb();
-    this->thumb->Show(0);
+    this->thumb->Show(WINDOW_HIDDEN);
     auto& onDrag = this->thumb->onDrag;
     AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
@@ -3662,19 +3662,19 @@ void CUIHScrollBar::OnCreate(int, int) {
 void CUIVScrollBar::OnCreate(int, int) {
   if (!this->upButton) {
     this->upButton = new CUIImageButton();
-    this->upButton->Show(0);
+    this->upButton->Show(WINDOW_HIDDEN);
     this->upButton->SetOnClick([this]() { this->SetPosition(this->position - this->step); });
     this->AddChild(this->upButton);
   }
   if (!this->downButton) {
     this->downButton = new CUIImageButton();
-    this->downButton->Show(0);
+    this->downButton->Show(WINDOW_HIDDEN);
     this->downButton->SetOnClick([this]() { this->SetPosition(this->position + this->step); });
     this->AddChild(this->downButton);
   }
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
-    this->thumb->Show(0);
+    this->thumb->Show(WINDOW_HIDDEN);
     auto& onDrag = this->thumb->onDrag;
     AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);

@@ -4,6 +4,7 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Session/Session.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
@@ -46,7 +47,7 @@ void CMode::TakeScreenshot() {
 
     const char* dayNames[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
-    if (g_serviceType != 0) {
+    if (g_serviceType != ServiceKorea) {
       std::sprintf(
         text, "%d/%02d/%02d/%s  %02d: %02d: %02d", time.wYear, time.wMonth, time.wDay, dayNames[time.wDayOfWeek],
         time.wHour, time.wMinute, time.wSecond

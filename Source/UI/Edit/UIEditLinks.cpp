@@ -8,6 +8,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Buttons/UINaviLinkButton.h"
+#include "UI/Window/UIEnums.h"
 
 #include <algorithm>
 #include <cstring>
@@ -156,7 +157,7 @@ void UIEditCtrl::UpdateLinks() {
   for (auto it = this->links.begin(); it != this->links.end();) {
     UIWindow* window = *it;
     ++it;
-    if (window->geometry.id == 438) {
+    if (window->geometry.id == ID_NAVI_LINK) {
       hasLink = true;
     }
   }

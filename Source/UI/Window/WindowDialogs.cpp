@@ -181,7 +181,7 @@ static __forceinline int WaitModal(UIWindowMgr* manager) {
     do {
       if (manager->activeWindowId != 0) {
         if (UIWindow* active = manager->Top()) {
-          active->Show(0);
+          active->Show(WINDOW_HIDDEN);
           manager->Schedule(active);
           manager->modalWindows.pop_back();
         }
@@ -197,7 +197,7 @@ static __forceinline int WaitModal(UIWindowMgr* manager) {
 
       if (manager->modalResponse != 0) {
         if (UIWindow* active = manager->Top()) {
-          active->Show(0);
+          active->Show(WINDOW_HIDDEN);
           manager->Schedule(active);
           manager->modalWindows.pop_back();
         }
@@ -281,7 +281,7 @@ int UIWindowMgr::Confirm(
       do {
         if (this->activeWindowId != 0) {
           if (UIWindow* active = this->Top()) {
-            active->Show(0);
+            active->Show(WINDOW_HIDDEN);
             this->Schedule(active);
             this->modalWindows.pop_back();
           }
@@ -298,7 +298,7 @@ int UIWindowMgr::Confirm(
 
         if (this->modalResponse != 0) {
           if (UIWindow* active = this->Top()) {
-            active->Show(0);
+            active->Show(WINDOW_HIDDEN);
             this->Schedule(active);
             this->modalWindows.pop_back();
           }

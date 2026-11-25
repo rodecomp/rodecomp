@@ -1,6 +1,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 
 #include <cstring>
 #include <shellapi.h>
@@ -12,7 +13,7 @@ void CModeMgr::Quit() {
     this->currentMode->running = 0;
   }
 
-  if (g_serviceType == 11) {
+  if (g_serviceType == ServiceIndia) {
     ShellExecuteA(hWnd, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
   }
   this->running = 0;

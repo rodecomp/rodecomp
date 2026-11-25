@@ -32,6 +32,11 @@ class UIItemTagButton;
 struct PriceColors;
 struct TextLink;
 
+enum WindowVisibility : int {
+  WINDOW_HIDDEN = 0,
+  WINDOW_VISIBLE = 1,
+};
+
 class UIWindow : public UIRPData {
   friend class UIWindowMgr;
   friend class CUIDropDownBox;

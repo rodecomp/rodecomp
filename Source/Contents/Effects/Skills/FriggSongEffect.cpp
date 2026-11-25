@@ -180,7 +180,7 @@ void CFriggSongEffect::Open() {
 // OFFSET: 0x007021A0
 // FUNCTION: fn_07003
 void CFriggSongEffect::InitEvents() {
-  this->AddEvent(0, "effect\\wm_frigg_song.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\wm_frigg_song.wav", 0, 0);
 }
 
 // OFFSET: 0x007023D0

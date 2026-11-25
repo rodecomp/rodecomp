@@ -229,7 +229,7 @@ void CUIScrollWindow::OnCreate(int width, int height) {
 void CUIScrollWindow::OnInit() {
   this->npcSprite = new UINpcSprWnd();
   this->npcSprite->SetSize(75, 145);
-  this->npcSprite->Show(0);
+  this->npcSprite->Show(WINDOW_HIDDEN);
   this->AddChild(this->npcSprite);
 }
 
@@ -296,7 +296,7 @@ namespace RecommendedQuestInfo {
 // FUNCTION: fn_46599
 inline void CUIScrollWindow::SetQuestNpc(const std::string& sprite, const std::string& map, int x, int y) {
   if (sprite.size() == 0) {
-    this->npcSprite->Show(0);
+    this->npcSprite->Show(WINDOW_HIDDEN);
     return;
   }
 
@@ -305,7 +305,7 @@ inline void CUIScrollWindow::SetQuestNpc(const std::string& sprite, const std::s
     this->npcSprite->SetDestination(map, x, y);
   }
   this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 40, this->geometry.height - this->npcSprite->geometry.height - 10);
-  this->npcSprite->Show(1);
+  this->npcSprite->Show(WINDOW_VISIBLE);
 }
 
 // OFFSET: 0x00A58E80

@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Guild/GuildMgr.h"
@@ -100,7 +101,7 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
   std::vector<char> packet;
   std::string name = this->nameCard.Name(actor->render.accountId);
 
-  if (actor->render.state == 1) {
+  if (actor->render.state == ST_MOVE) {
     packet.resize(sizeof(ActorMoveEntryPacket), 0);
     ActorMoveEntryPacket* entry = reinterpret_cast<ActorMoveEntryPacket*>(packet.data());
     entry->hp = actor->GetGaugeCurrent();
@@ -196,9 +197,9 @@ std::vector<char> CGameMode::BuildActorEntryPacket(CGameActor* actor, std::uint1
     entry->posDir[1] = static_cast<std::uint8_t>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry->posDir[2] = static_cast<std::uint8_t>((cellY << 4) | (direction & 0x0F));
 
-    if (actor->render.state == 3) {
+    if (actor->render.state == ST_DEAD) {
       entry->state = 1;
-    } else if (actor->render.state == 6) {
+    } else if (actor->render.state == ST_SIT) {
       entry->state = 2;
     } else {
       entry->state = 0;
@@ -312,7 +313,7 @@ namespace {
 std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
   std::vector<char> packet;
   const std::string name = this->nameCard.Name(actor->render.accountId);
-  if (actor->render.state == 1) {
+  if (actor->render.state == ST_MOVE) {
     packet.resize(sizeof(ActorMoveEntryNamedPacket), 0);
     ActorMoveEntryNamedPacket& entry = *reinterpret_cast<ActorMoveEntryNamedPacket*>(packet.data());
     FillLegacyActorEntry(entry, actor, ID_ZC_NOTIFY_MOVEENTRY8, name);
@@ -349,9 +350,9 @@ std::vector<char> CGameMode::BuildLegacyActorEntryPacket(CGameActor* actor) {
     entry.posDir[0] = static_cast<unsigned char>(cellX >> 2);
     entry.posDir[1] = static_cast<unsigned char>((cellX << 6) | ((cellY >> 4) & 0x3F));
     entry.posDir[2] = static_cast<unsigned char>((cellY << 4) | (direction & 0x0F));
-    if (actor->render.state == 3) {
+    if (actor->render.state == ST_DEAD) {
       entry.state = 1;
-    } else if (actor->render.state == 6) {
+    } else if (actor->render.state == ST_SIT) {
       entry.state = 2;
     } else {
       entry.state = 0;

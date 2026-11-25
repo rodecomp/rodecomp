@@ -3,6 +3,7 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 #include "UI/Navigation/NavigationLink.h"
+#include "UI/Window/UIEnums.h"
 
 // OFFSET: 0x00861AB0
 // FUNCTION: fn_10902
@@ -43,7 +44,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
   for (auto entry = this->links.begin(); entry != this->links.end(); ++entry) {
     UIWindow* window = *entry;
 
-    if (window->geometry.id != 438) {
+    if (window->geometry.id != ID_NAVI_LINK) {
       continue;
     }
 

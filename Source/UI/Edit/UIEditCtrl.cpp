@@ -395,7 +395,7 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     std::size_t oldBytes = 0;
 
     for (auto entry = this->links.begin(); entry != this->links.end();) {
-      if ((*entry)->geometry.id == 438) {
+      if ((*entry)->geometry.id == ID_NAVI_LINK) {
         removed = true;
         const std::string linkName = GetNavigationLinkParser()->FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
         this->FitTextToWidth(linkName, this->geometry.width / 2);
@@ -1034,7 +1034,7 @@ void UIItemStoreSubWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 7, 0, 0, 0);
+  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_STORAGE, 0, 0, 0);
 }
 
 // OFFSET: 0x00972630
@@ -1083,7 +1083,7 @@ void UIItemStoreWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 7, 0, 0, 0);
+  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_STORAGE, 0, 0, 0);
 }
 
 // OFFSET: 0x009727F0
@@ -1120,7 +1120,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 6, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_INVENTORY, 0, 0, 0);
     return;
   case DRAG_METAL_PROCESS: {
     UIWindow* target = static_cast<UIWindow*>(g_windowMgr.makeTargetProcessWnd);
@@ -1506,7 +1506,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
         UIWindow* window = g_windowMgr.EnsureWindow(258);
         if (window) {
-          window->Show(1);
+          window->Show(WINDOW_VISIBLE);
           window->Move(this->geometry.x, this->geometry.y);
         }
       } else {
@@ -1521,7 +1521,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
         UIWindow* window = g_windowMgr.EnsureWindow(257);
         if (window) {
-          window->Show(1);
+          window->Show(WINDOW_VISIBLE);
           window->Move(this->geometry.x, this->geometry.y);
         }
       }
@@ -1926,12 +1926,12 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     break;
   case UM_SETSTATE:
     this->geometry.state = static_cast<std::uint32_t>(a);
-    if (a == 20) {
+    if (a == ITEM_DROP_COUNT_CASH_SHOP) {
       char text[24];
       std::sprintf(text, "%d", b);
       this->m_edit->SetText(text);
     }
-    if (this->geometry.state == 20) {
+    if (this->geometry.state == ITEM_DROP_COUNT_CASH_SHOP) {
       this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
     }
     break;
@@ -2173,9 +2173,9 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         quantity = owned;
       }
       mode->drag.quantity = quantity;
-      if (this->geometry.state == 2) {
+      if (this->geometry.state == ITEM_DROP_COUNT_NPC_SELL) {
         window = g_windowMgr.itemSellWnd;
-      } else if (this->geometry.state == 16) {
+      } else if (this->geometry.state == ITEM_DROP_COUNT_NPC_SELL2) {
         window = g_windowMgr.itemSellWnd2;
       } else {
         break;
@@ -2218,9 +2218,9 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         quantity = owned;
       }
       mode->drag.quantity = quantity;
-      if (this->geometry.state == 4) {
+      if (this->geometry.state == ITEM_DROP_COUNT_STORAGE_SHOP) {
         window = g_windowMgr.itemShopWnd;
-      } else if (this->geometry.state == 15) {
+      } else if (this->geometry.state == ITEM_DROP_COUNT_STORAGE_SHOP2) {
         window = g_windowMgr.itemShopWnd2;
       } else {
         break;
@@ -3836,15 +3836,15 @@ void UIMerchantShopMakeWnd::SetSuspended(unsigned char suspend) {
 
   if (suspend == 1) {
     this->suspended = 1;
-    this->Show(0);
-    window->Show(0);
+    this->Show(WINDOW_HIDDEN);
+    window->Show(WINDOW_HIDDEN);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELECT_SHOP_POSITION)), 0xFFFF, 0, 0, 0);
     return;
   }
 
   this->suspended = 0;
-  this->Show(1);
-  window->Show(1);
+  this->Show(WINDOW_VISIBLE);
+  window->Show(WINDOW_VISIBLE);
   this->selectedRow = -1;
   this->selectedColumn = -1;
 }
@@ -3880,7 +3880,7 @@ void UIMerchantItemMyShopWnd::OpenShop() {
   }
 
   g_session.m_muteSellSound = false;
-  this->saleAlarm->Show(0);
+  this->saleAlarm->Show(WINDOW_HIDDEN);
 
   const int previousHeight = this->footerHeight;
   this->footerHeight = 57;
@@ -4412,7 +4412,7 @@ void UIItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 3) {
+  if (drag->source == DRAG_ITEM_NPC_SHOP) {
     switch (drag->type) {
     case TYPE_ARMOR:
     case TYPE_WEAPON:
@@ -4427,7 +4427,7 @@ void UIItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       return;
     default:
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 1, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_NPC_PURCHASE, 0, 0, 0);
       return;
     }
   }
@@ -4445,10 +4445,10 @@ void UIItemSellWnd2::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 3) {
+  if (drag->source == DRAG_ITEM_NPC_SHOP) {
     if (drag->quantity != 1 && g_windowMgr.dragAllItems == 0) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 16, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_NPC_SELL2, 0, 0, 0);
     } else {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     }
@@ -4467,10 +4467,10 @@ void UIItemSellWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 3) {
+  if (drag->source == DRAG_ITEM_NPC_SHOP) {
     if (drag->quantity != 1 && g_windowMgr.dragAllItems == 0) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 2, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_NPC_SELL, 0, 0, 0);
     } else {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     }
@@ -4488,7 +4488,7 @@ void UIMerchantItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 13) {
+  if (drag->source != DRAG_VENDING_ITEM_PURCHASE) {
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
@@ -4499,7 +4499,7 @@ void UIMerchantItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 11, 0, 0, 0);
+  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_VENDING_SHOP, 0, 0, 0);
 }
 
 // OFFSET: 0x00972C00
@@ -4531,7 +4531,7 @@ void UIMerchantItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 8, 0, 0, 0);
+  g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_CART, 0, 0, 0);
 }
 
 // OFFSET: 0x0097BC00
@@ -5154,7 +5154,7 @@ void UIMerchantItemWnd::OnCreate(int width, int height) {
   this->columns = (width - 40) / 32;
   this->visibleRows = (height - 38) / 32;
   this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  this->info->Show(0);
+  this->info->Show(WINDOW_HIDDEN);
 }
 
 // OFFSET: 0x0097BFF0
@@ -5299,7 +5299,7 @@ void UIItemShopWnd2::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 15, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_STORAGE_SHOP2, 0, 0, 0);
     return;
   default:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -5328,7 +5328,7 @@ void UIItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 3, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_NPC_SHOP, 0, 0, 0);
     return;
   case DRAG_ITEM_SELL:
     if (this->sellMode == 0) {
@@ -5341,7 +5341,7 @@ void UIItemShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 4, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_STORAGE_SHOP, 0, 0, 0);
     return;
   default:
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -5359,7 +5359,7 @@ void UIMerchantItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 12) {
+  if (drag->source == DRAG_VENDING_ITEM_SHOP) {
     switch (drag->type) {
     case TYPE_ARMOR:
     case TYPE_WEAPON:
@@ -5381,15 +5381,15 @@ void UIMerchantItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       return;
     default:
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 12, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_VENDING_PURCHASE, 0, 0, 0);
       return;
     }
   }
 
-  if (drag->source == 22) {
+  if (drag->source == DRAG_PURCHASE_MIRROR_LIST) {
     if (drag->quantity > 1) {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 17, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_BUYINGSTORE_PURCHASE, 0, 0, 0);
       return;
     }
 
@@ -5420,11 +5420,11 @@ void UIMerchantMirrorItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
     if (this->mode == 2) {
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 18, 0, 0, 0);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_BUYINGSTORE_MIRROR, 0, 0, 0);
       return;
     }
 
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 10, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_VENDING_MIRROR, 0, 0, 0);
     return;
   case DRAG_BUYINGSTORE_PURCHASE_LIST:
     this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
@@ -5452,7 +5452,7 @@ void UIMerchantShopMakeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 9, 0, 0, 0);
+    g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_VENDING_MAKE, 0, 0, 0);
     return;
   case DRAG_BUYINGSTORE_SHOP_LIST:
     this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
@@ -9791,7 +9791,7 @@ void UIItemStoreWnd::Paint() {
     const int columns = (this->geometry.width - 40) / 32;
     const int visibleRows = (this->geometry.height - 74) / 32;
     if (this->m_hideCapacity == 0) {
-      this->scrollBar->Show(0);
+      this->scrollBar->Show(WINDOW_HIDDEN);
       unsigned red, green, blue;
       g_skinInfo.PaletteChannels(2, 2, red, green, blue);
       this->FillRegion(40, 17, columns * 32, visibleRows * 32, RGB(red, green, blue));
@@ -9805,7 +9805,7 @@ void UIItemStoreWnd::Paint() {
       return;
     }
 
-    this->scrollBar->Show(1);
+    this->scrollBar->Show(WINDOW_VISIBLE);
     for (int i = 0; i < visibleRows; ++i) {
       this->DrawItemSlotFrame(40, i * 32 + 17);
     }
@@ -9956,16 +9956,16 @@ void UIMerchantShopMakeWnd::Paint() {
   for (int i = 0; i < this->slotCount; ++i) {
     if (this->mode != 0) {
       if (i < this->visibleRows) {
-        this->priceEdits[i]->Show(1);
-        this->quantityEdits[i]->Show(1);
+        this->priceEdits[i]->Show(WINDOW_VISIBLE);
+        this->quantityEdits[i]->Show(WINDOW_VISIBLE);
       } else {
-        this->priceEdits[i]->Show(0);
-        this->quantityEdits[i]->Show(0);
+        this->priceEdits[i]->Show(WINDOW_HIDDEN);
+        this->quantityEdits[i]->Show(WINDOW_HIDDEN);
       }
     } else if (i < this->visibleRows) {
-      this->priceEdits[i]->Show(1);
+      this->priceEdits[i]->Show(WINDOW_VISIBLE);
     } else {
-      this->priceEdits[i]->Show(0);
+      this->priceEdits[i]->Show(WINDOW_HIDDEN);
     }
   }
 
@@ -10982,15 +10982,15 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
 
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
-          if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+          if (g_windowMgr.GetHoverWindow()->geometry.id == ID_NPC_TEXT_EDIT) {
             g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
-          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_WHISPER_EDIT) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
-          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHAT_EDIT) {
             static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
-          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_RODEX_COMPOSE_EDIT) {
             g_windowMgr.rodexComposeWnd->InsertItemTag(item);
-          } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+          } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHATROOM_EDIT) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           }
         }
@@ -11019,15 +11019,15 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
-        if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
+        if (g_windowMgr.GetHoverWindow()->geometry.id == ID_NPC_TEXT_EDIT) {
           g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
-        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_WHISPER_EDIT) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
-        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHAT_EDIT) {
           static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
-        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_RODEX_COMPOSE_EDIT) {
           g_windowMgr.rodexComposeWnd->InsertItemTag(item);
-        } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
+        } else if (g_windowMgr.GetHoverWindow()->geometry.id == ID_CHATROOM_EDIT) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         }
       }
@@ -11412,9 +11412,9 @@ void UIItemWnd::Paint() {
 
   if (this->filterWindow) {
     if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE && g_session.m_blockPrivateTab == 1) {
-      this->filterWindow->Show(1);
+      this->filterWindow->Show(WINDOW_VISIBLE);
     } else {
-      this->filterWindow->Show(0);
+      this->filterWindow->Show(WINDOW_HIDDEN);
     }
   }
   if (this->dealLockButton) {
@@ -11589,7 +11589,7 @@ void UIItemPurchaseWnd::OnCreate(int width, int height) {
   this->quantityEdit->SetText("0");
   this->AddChild(this->quantityEdit);
   g_windowMgr.SetFocus(this->quantityEdit);
-  this->m_message0 = 271;
+  this->m_message0 = ID_APPLY;
 
   this->title = new UIStaticText();
   this->title->SetSize(160, 15);
@@ -11708,9 +11708,9 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == 1) {
+    if (mode->drag.source == DRAG_ITEM_INVENTORY) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 9) {
+    } else if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
       mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
     }
 

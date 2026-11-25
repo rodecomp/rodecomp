@@ -149,7 +149,7 @@ void UIItemReformWnd::OnCreate(int width, int height) {
 void UIItemReformWnd_List::OnCreate(int width, int height) {
   this->scrollBar = new UIScrollBar();
   this->scrollBar->Configure(width - 13, 0, 1, height);
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->AddChild(this->scrollBar);
   this->visibleCount = height / this->itemHeight;
   this->UpdateScrollBar();
@@ -346,14 +346,14 @@ void UIItemReformWnd_List::OnWheel(int delta) {
 void UIItemReformWnd_List::UpdateScrollBar() {
   const unsigned int count = this->items.size();
   if (count > this->visibleCount) {
-    this->scrollBar->Show(1);
+    this->scrollBar->Show(WINDOW_VISIBLE);
     this->scrollBar->SetRange(count - this->visibleCount, this->visibleCount, count);
     this->scrollPosition = std::max(0, this->scrollPosition);
     this->scrollPosition = std::min<unsigned int>(count - this->visibleCount, this->scrollPosition);
     this->scrollBar->SetPosition(this->scrollPosition);
   } else {
     this->scrollPosition = 0;
-    this->scrollBar->Show(0);
+    this->scrollBar->Show(WINDOW_HIDDEN);
   }
 
   this->Invalidate();

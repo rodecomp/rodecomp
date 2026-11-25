@@ -235,13 +235,13 @@ int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       this->expanded = this->expanded == 0;
 
       if (this->expanded) {
-        this->list->Show(1);
+        this->list->Show(WINDOW_VISIBLE);
         this->Resize(this->geometry.width, this->list->geometry.height + this->geometry.height);
         this->Move(214, this->geometry.y - this->list->geometry.height);
         this->button->Move(this->geometry.width - this->button->BitmapWidth(), this->geometry.height - this->button->BitmapHeight());
         this->label->Move(2, this->list->geometry.height + 3);
       } else {
-        this->list->Show(0);
+        this->list->Show(WINDOW_HIDDEN);
         this->Resize(this->geometry.width, this->geometry.height - this->list->geometry.height);
         this->Move(214, this->list->geometry.height + this->geometry.y);
         this->button->Move(this->geometry.width - this->button->BitmapWidth(), 0);
@@ -725,7 +725,7 @@ void UITextViewEX::SetText(std::string text) {
     segment = text.substr(tag, close - tag);
     UIString* link = new UIString();
     link->SetText(100, 100, segment);
-    link->Show(0);
+    link->Show(WINDOW_HIDDEN);
     this->AddChild(link);
     this->extraLinks.push_back(link);
     position = close + 6;
@@ -761,7 +761,7 @@ int UITextViewEX::AddWords(std::string text, int attached, int red, int green, i
 
     UIString* label = new UIString();
     label->SetText(100, 100, word);
-    label->Show(0);
+    label->Show(WINDOW_HIDDEN);
     label->enabled = attached;
     label->red = red;
     label->green = green;

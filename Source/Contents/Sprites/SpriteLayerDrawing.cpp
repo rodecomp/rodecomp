@@ -240,7 +240,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
 // OFFSET: 0x00640510
 // FUNCTION: fn_04810
 void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
-  if (this->pc->robe <= 0 || this->pc->isHelmRobe == true || this->pc->render.state == 3 ||
+  if (this->pc->robe <= 0 || this->pc->isHelmRobe == true || this->pc->render.state == ST_DEAD ||
       (this->pc->blend == -1 && this->pc->layerCellX == -1 && this->pc->layerCellY == -1)) {
     return;
   }

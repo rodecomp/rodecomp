@@ -678,8 +678,8 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
   this->m_questId = questId;
   this->m_timeText = "";
   if (recommended) {
-    this->m_ongoingWnd->Show(0);
-    this->m_recommendedWnd->Show(1);
+    this->m_ongoingWnd->Show(WINDOW_HIDDEN);
+    this->m_recommendedWnd->Show(WINDOW_VISIBLE);
     this->m_recommendedWnd->SetQuest(this->m_questId);
     this->m_imageName = g_renewQuestMgr->GetRecommendedQuest(questId).backgroundImage;
     if (!this->m_imageName.empty()) {
@@ -692,8 +692,8 @@ void UIRenewDetailQuestInfoWnd::SetQuest(unsigned int questId, bool recommended)
       return;
     }
 
-    this->m_recommendedWnd->Show(0);
-    this->m_ongoingWnd->Show(1);
+    this->m_recommendedWnd->Show(WINDOW_HIDDEN);
+    this->m_ongoingWnd->Show(WINDOW_VISIBLE);
     this->m_ongoingWnd->SetQuest(this->m_questId);
     if (quest.m_year > 1970) {
       this->m_timeText = static_cast<const std::string&>(
@@ -774,7 +774,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
     this->m_rows.icons[index]->SetBitmap("유저인터페이스\\renew_questui\\ico_nq.bmp");
     this->m_rows.icons[index]->SetSize(this->m_rows.icons[index]->geometry.width, this->m_rows.icons[index]->geometry.height);
     this->m_rows.icons[index]->Move(46, index * 46 + 31);
-    this->m_rows.icons[index]->Show(0);
+    this->m_rows.icons[index]->Show(WINDOW_HIDDEN);
     this->AddChild(this->m_rows.icons[index]);
   }
 
@@ -913,7 +913,7 @@ void UIRenewQuestWnd::RefreshRows() {
         std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
         this->m_rows.icons[i]->SetBitmap(bitmap.c_str());
         this->m_rows.icons[i]->SetTooltip(quest.m_iconTooltip.c_str());
-        this->m_rows.icons[i]->Show(1);
+        this->m_rows.icons[i]->Show(WINDOW_VISIBLE);
         this->m_rows.icons[i]->Invalidate();
         continue;
       }
@@ -938,7 +938,7 @@ void UIRenewQuestWnd::RefreshRows() {
         std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
         this->m_rows.icons[i]->SetBitmap(bitmap.c_str());
         this->m_rows.icons[i]->SetTooltip(quest.m_iconTooltip.c_str());
-        this->m_rows.icons[i]->Show(1);
+        this->m_rows.icons[i]->Show(WINDOW_VISIBLE);
         this->m_rows.icons[i]->Invalidate();
         continue;
       }
@@ -946,7 +946,7 @@ void UIRenewQuestWnd::RefreshRows() {
 
     this->m_rows.checkBoxes[i]->SetHidden(true);
     this->m_rows.lockBoxes[i]->SetHidden(true);
-    this->m_rows.icons[i]->Show(0);
+    this->m_rows.icons[i]->Show(WINDOW_HIDDEN);
   }
 }
 

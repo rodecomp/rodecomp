@@ -5,6 +5,7 @@
 #include "Client/Input/Language.h"
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Lexicon/LexiconBoundary.h"
 #include "Utility/Text/LanguageCharset.h"
@@ -457,7 +458,7 @@ CLanguageBase::CLanguageBase()
     break;
   }
 
-  if (g_serviceType == 15) {
+  if (g_serviceType == ServiceVietnam) {
     this->codePage = 0x4EA;
   }
 }

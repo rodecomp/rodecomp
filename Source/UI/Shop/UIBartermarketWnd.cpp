@@ -68,7 +68,7 @@ void UIBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 31) {
+  if (drag->source == DRAG_BARTER_MARKET) {
     if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
@@ -92,7 +92,7 @@ void UIBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 4) {
+  if (drag->source != DRAG_ITEM_PURCHASE_CART) {
     if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     }
@@ -237,7 +237,7 @@ int UIBarterItemPurchaseWnd::GetInventoryItemCount(int itemId) {
 void UIExpandedBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 31) {
+  if (drag->source == DRAG_BARTER_MARKET) {
     if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
       this->SendMsg(0, UM_DROP, 0, 0, 0, 0);
       return;
@@ -253,7 +253,7 @@ void UIExpandedBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t va
 // FUNCTION: fn_10577
 void UIExpandedBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source != 32) {
+  if (drag->source != DRAG_EXPANDED_BARTER) {
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }

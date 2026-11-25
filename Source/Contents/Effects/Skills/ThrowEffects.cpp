@@ -462,13 +462,13 @@ void CThrowItemEffect::InitEvents() {
   case EF_THROWITEM8:
   case EF_THROWITEM9:
   case EF_THROWITEM10:
-    this->AddEvent(0, "effect\\닌자_던지기.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\닌자_던지기.wav", 0, 0);
     break;
   case EF_THROWITEM:
-    this->AddEvent(0, "_heal_effect.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "_heal_effect.wav", 0, 0);
     break;
   case EF_THROWITEM11:
-    this->AddEvent(0, "effect\\G스포어익스플로젼.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\G스포어익스플로젼.wav", 0, 0);
     break;
   }
 }

@@ -403,11 +403,11 @@ int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->m_banner->CreateButtons();
     }
     if (this->m_banner->HasEntries()) {
-      this->m_banner->Show(1);
+      this->m_banner->Show(WINDOW_VISIBLE);
       this->Resize(488, 455);
       this->m_notice->Move(170, 418);
     } else {
-      this->m_banner->Show(0);
+      this->m_banner->Show(WINDOW_HIDDEN);
       this->Resize(488, 413);
       this->m_notice->Move(170, 376);
     }

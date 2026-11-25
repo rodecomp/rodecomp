@@ -267,13 +267,13 @@ void CStormKickEffect::Open() {
 void CStormKickEffect::InitEvents() {
   switch (this->id) {
   case EF_STORMKICK:
-    this->AddEvent(0, "effect\\T_회오리차기.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\T_회오리차기.wav", 5, 0);
     break;
   case EF_STORMKICK2:
-    this->AddEvent(0, "ice_titan_attack.wav", 5, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "ice_titan_attack.wav", 5, 0);
     break;
   case EF_STORMKICK6:
-    this->AddEvent(0, "effect\\REVERBERATION.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\REVERBERATION.wav", 0, 0);
     break;
   }
 }

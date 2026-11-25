@@ -409,7 +409,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
       ITEM_INFO owned = g_session.LookupClientItemByIdentity((*it)->item.identity[1]);
       if (owned.identity[1] <= 0) {
-        (*it)->Show(0);
+        (*it)->Show(WINDOW_HIDDEN);
       }
     }
     this->SendMsg(this, UM_SETPOS, 0, 0, 0, 0);
@@ -459,7 +459,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 
     selected->item.quantity -= need;
     if (selected->item.quantity <= 0) {
-      (*it)->Show(0);
+      (*it)->Show(WINDOW_HIDDEN);
     } else {
       (*it)->insufficient = 1;
       (*it)->Invalidate();

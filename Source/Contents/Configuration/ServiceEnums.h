@@ -29,6 +29,9 @@ enum Language : signed char {
   LANGUAGE_JAPANESE = 2,
   LANGUAGE_CHINESE = 3,
   LANGUAGE_TAIWANESE = 4,
+  LANGUAGE_THAI = 5,
+  LANGUAGE_VIETNAMESE = 7,
+  LANGUAGE_ARABIC = 12,
 };
 
 enum ServerType : int {

@@ -77,7 +77,7 @@ void CStormCannonEffect::Open() {
   this->distance = Distance(sourcePositionVectorRef, this->positionVector);
   this->Alpha() = 255;
 
-  this->AddEvent(0, "effect\\AG_STORM_CANNON.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_STORM_CANNON.wav", 0, 0);
 }
 
 // OFFSET: 0x0072D350

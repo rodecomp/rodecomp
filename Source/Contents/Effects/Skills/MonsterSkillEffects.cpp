@@ -143,7 +143,7 @@ void CCrimsonArrowEffect::Render() {
 // FUNCTION: fn_07130
 void CRootTwistEffect::InitEvents() {
   if (this->id == EF_SU_SV_ROOTTWIST) {
-    this->AddEvent(0, "effect\\su_roottwist.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_roottwist.wav", 0, 0);
   }
 }
 
@@ -1109,7 +1109,7 @@ void CFloralFlareRoad::Open() {
     flare->Load(std::string("froral_flareroad\\froral_flareroad\\froral_flareroad.str"));
     flare->m_delay = delay;
     this->emitters.push_back(flareEmitter);
-    this->AddEvent(0, "effect\\AG_ALL_BLOOM.wav", delay / 16, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_ALL_BLOOM.wav", delay / 16, 0);
   }
 }
 
@@ -1935,7 +1935,7 @@ void CDropItemEffect::InitEvents() {
     }
   }
 
-  this->AddEvent(0, (this->soundPath + this->soundName).c_str(), 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, (this->soundPath + this->soundName).c_str(), 0, 0);
 }
 
 // OFFSET: 0x00719660
@@ -2456,8 +2456,8 @@ void CPetitioEffect::Open() {
   petitio->Load(std::string("petitio\\petitio\\petitio.str"));
   this->emitters.push_back(petitioEmitter);
 
-  this->AddEvent(1, nullptr, 6, 0);
-  this->AddEvent(0, "effect\\CD_PETITIO.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_QUAKE, nullptr, 6, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_PETITIO.wav", 0, 0);
 }
 
 // OFFSET: 0x0071FA30
@@ -2557,7 +2557,7 @@ void CPneumaticusProcellaEffect::Open() {
     }
   }
 
-  this->AddEvent(0, "effect\\CD_PNEUMATICUS_PROCELLA.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\CD_PNEUMATICUS_PROCELLA.wav", 0, 0);
 }
 
 // OFFSET: 0x00720410
@@ -3023,7 +3023,7 @@ void CServantWeaponNewEffect::AddWeapon() {
       particle->angle = angle;
       CEZ2STRParticle* emitter = particle;
       this->emitters.push_back(std::move(emitter));
-      this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
+      this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
     }
   }
 }
@@ -3317,7 +3317,7 @@ void CServantWeaponNewEffect::Shoot(int skill) {
       FreeParticle(weapon);
       this->emitters.pop_back();
       this->trails.push_back(std::move(shot));
-      this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
+      this->AddEvent(EFFECT_EVENT_SOUND, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
     }
   }
 }
@@ -3906,7 +3906,7 @@ void CSevereRainStorm::SpawnCrystalRain() {
   this->emitters.push_back(std::move(crystal));
 
   if (rand() % 7 == 0) {
-    this->AddEvent(0, "effect\\AG_RAIN_OF_CRYSTAL.wav", this->frame + 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_RAIN_OF_CRYSTAL.wav", this->frame + 1, 0);
   }
 }
 
@@ -3953,7 +3953,7 @@ __declspec(noinline) void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
     this->emitters.push_back(std::move(emitter));
   }
 
-  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
 }
 
 // OFFSET: 0x00727050
@@ -3985,7 +3985,7 @@ void CSevereRainStorm::SpawnStarCannon() {
     this->emitters.push_back(std::move(emitter));
   }
 
-  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
 }
 
 // OFFSET: 0x00727450
@@ -4017,7 +4017,7 @@ void CSevereRainStorm::SpawnGalaxyStar() {
     this->emitters.push_back(std::move(emitter));
   }
 
-  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
 }
 
 // OFFSET: 0x00727850
@@ -4181,13 +4181,13 @@ void CCrimsonArrowEffect::Open() {
     arrow->Load("crimsonarrow\\crimsonarrow\\crimsonarrow.str");
     emitter->offset = vector3d{0.0f, -13.0f, 0.0f};
     arrow->m_angle = static_cast<float>(angle);
-    this->AddEvent(0, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
     break;
   case EF_RHYTHMSHOOTING_SHOT:
     arrow->Load("rhythmshooting\\rhythmshooting_shot\\rhythmshooting_shot.str");
     emitter->offset = vector3d{0.0f, -8.0f, 0.0f};
     arrow->m_angle = static_cast<float>(angle + 180.0);
-    this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
     break;
   case EF_UNLUCKY_RUSH:
     arrow->Load("unlucky_rush\\unlucky_rush\\unlucky_rush.str");
@@ -4203,7 +4203,7 @@ void CCrimsonArrowEffect::Open() {
     emitter->offset.y = -4.0f;
     emitter->offset.z = 0.0f;
     arrow->m_angle = static_cast<float>(angle);
-    this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
     break;
   }
 
@@ -4461,7 +4461,7 @@ void CDancingKnifeEffect::SpawnSecondStrike() {
 void CDancingKnifeEffect::Open() {
   this->secondStrike = 0;
   this->SpawnFirstStrike();
-  this->AddEvent(0, "effect\\SHC_DANCING_KNIFE.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_DANCING_KNIFE.wav", 0, 0);
 }
 
 // OFFSET: 0x00710840
@@ -4807,7 +4807,7 @@ void CGaleStorm::SpawnArrow() {
   }
 
   if (rand() % 7 == 0) {
-    this->AddEvent(0, "effect\\WH_GALESTORM.wav", this->frame + 1, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_GALESTORM.wav", this->frame + 1, 0);
   }
 }
 
@@ -4899,7 +4899,7 @@ void CHawkVumerangEffect::Open() {
     this->emitters.push_back(particle);
   }
 
-  this->AddEvent(0, "effect\\WH_HAWKBOOMERANG.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\WH_HAWKBOOMERANG.wav", 0, 0);
 }
 
 // OFFSET: 0x00721AF0
@@ -4985,7 +4985,7 @@ void CSavageImpactEffect::Open() {
 
   this->emitter->Load(std::string("savage_impact\\savage_impact\\savage_impact.str"));
   this->emitter->m_angle = static_cast<float>(angle);
-  this->AddEvent(0, "effect\\SHC_SAVAGE_IMPACT.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHC_SAVAGE_IMPACT.wav", 0, 0);
 }
 
 // OFFSET: 0x0070C550

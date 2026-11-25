@@ -1095,7 +1095,7 @@ int AiSkillGround(lua_State* state) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
-  if (actor->render.state == 1 || actor->render.state == 0 || actor->render.state == 4) {
+  if (actor->render.state == ST_MOVE || actor->render.state == ST_STAND || actor->render.state == ST_DAMAGE) {
     mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(skillArgs), 0, 0, 0);
   }
   mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);
@@ -1137,7 +1137,7 @@ int AiSkillObject(lua_State* state) {
   }
 
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
-  if (targetActor && (actor->render.state == 1 || actor->render.state == 0 || actor->render.state == 4)) {
+  if (targetActor && (actor->render.state == ST_MOVE || actor->render.state == ST_STAND || actor->render.state == ST_DAMAGE)) {
     mode->SendMsg(MM_USE_SKILL, skillId, target, level, 0);
   }
   mode->SendMsg(MM_SETLOCKONMOUSE, 0, 0, 0, 0);

@@ -1028,7 +1028,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->m_agitMenu = new UIListBoxAgitMenu();
   this->m_agitMenu->SetSize(120, 35);
   this->m_agitMenu->SetId(ID_AGIT_MENU);
-  this->m_agitMenu->Show(0);
+  this->m_agitMenu->Show(WINDOW_HIDDEN);
   this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_MOVE_AGIT));
   this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO));
   this->AddChild(this->m_agitMenu);
@@ -1039,7 +1039,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
 // FUNCTION: fn_13051
 void UIGuildInfoManageWnd::HideAgitMenu() {
   if (this->m_agitMenu && this->m_agitMenu->geometry.visible) {
-    this->m_agitMenu->Show(0);
+    this->m_agitMenu->Show(WINDOW_HIDDEN);
     this->m_agitMenu->m_agitIndex = -1;
     this->Invalidate();
   }
@@ -3224,7 +3224,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_SHOW_AGIT_MENU:
     if (this->m_agitMenu) {
       this->m_agitMenu->Move(a1, a2);
-      this->m_agitMenu->Show(1);
+      this->m_agitMenu->Show(WINDOW_VISIBLE);
       this->m_agitMenu->m_agitIndex = this->m_agitList->selected;
       this->Invalidate();
       return 0;

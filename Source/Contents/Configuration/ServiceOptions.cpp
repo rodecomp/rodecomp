@@ -1128,7 +1128,7 @@ void ApplyServiceOptionHideWindow(int id, bool value, bool notify, int enabledMe
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode && mode->statusIconTooltip && !g_serviceOptions.Get(id)) {
-    mode->statusIconTooltip->Show(0);
+    mode->statusIconTooltip->Show(WINDOW_HIDDEN);
   }
 }
 

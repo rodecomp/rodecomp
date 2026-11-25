@@ -5,6 +5,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Render/Primitives/TextureQuad.h"
@@ -163,7 +164,7 @@ void CRenderer::DrawHourlyBanner() {
 // OFFSET: 0x0055E840
 // FUNCTION: fn_02112
 void CRenderer::DrawOverlays() {
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     this->DrawHourlyBanner();
   }
 

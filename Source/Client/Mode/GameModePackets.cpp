@@ -2258,7 +2258,7 @@ __declspec(noinline) void CGameMode::ReceiveDebuffRemovalResult(const unsigned c
 
   switch (p->result - 1) {
   case 0: {
-    window->Show(0);
+    window->Show(WINDOW_HIDDEN);
     const char* text = LookupMessage(MSI_PENALTY_DEBUFF_REMOVE_NPC_ON);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     return;
@@ -2272,7 +2272,7 @@ __declspec(noinline) void CGameMode::ReceiveDebuffRemovalResult(const unsigned c
     return;
   }
   case 3:
-    window->Show(1);
+    window->Show(WINDOW_VISIBLE);
     return;
   }
 }
@@ -2840,7 +2840,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Baby(const unsigned char*) {
   this->skillId = 20001;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = 2;
+  this->skillUseType = SUT_TO_CHARACTER;
 }
 
 // OFFSET: 0x00D7AEE0
@@ -2849,7 +2849,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Capture(const unsigned char*) {
   this->skillId = 10000;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = 2;
+  this->skillUseType = SUT_TO_CHARACTER;
 }
 
 // OFFSET: 0x00D7AF10
@@ -2858,7 +2858,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Collection(const unsigned char*) {
   this->skillId = 40000;
   this->skillAttackRange = 1;
   this->skillUseLevel = 0;
-  this->skillUseType = 2;
+  this->skillUseType = SUT_TO_CHARACTER;
 }
 
 // OFFSET: 0x00D7AF40
@@ -2867,7 +2867,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Couple(const unsigned char*) {
   this->skillId = 20000;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = 2;
+  this->skillUseType = SUT_TO_CHARACTER;
 }
 
 // OFFSET: 0x00D591A0
@@ -3177,7 +3177,7 @@ __declspec(noinline) void CGameMode::ActivateMacroBlackListCheck(unsigned char s
 // FUNCTION: fn_22179
 __declspec(noinline) void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration) {
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_MACRODETECTORWND)) {
-    window->Show(1);
+    window->Show(WINDOW_VISIBLE);
     static_cast<UIMacroDetectorWnd*>(window)->SetCountdown(count, duration);
   }
 }
@@ -4405,7 +4405,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
     this->scene->player->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
     this->scene->player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
     CPlayer* player = this->scene->player;
-    if (player->render.state == 8) {
+    if (player->render.state == ST_BEGIN_SKILL) {
       player->SetState(ST_STAND, 1);
     }
     return;
@@ -4420,7 +4420,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
   actor->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
   actor->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
   g_effectMgr->Retire(dispel->aid, 1114);
-  if (actor->render.state == 8) {
+  if (actor->render.state == ST_BEGIN_SKILL) {
     actor->SetState(ST_STAND, 1);
   }
 }
@@ -18323,7 +18323,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         int effectId;
         int motion;
         g_session.GetSkillActionInfo2(skillId, effectId, motion);
-        if (source->render.state != 1 && motion == 1) {
+        if (source->render.state != ST_MOVE && motion == 1) {
           source->SetState(ST_SKILL, motion);
         } else {
           if (motion == 2 || motion == 9) {
@@ -25276,7 +25276,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_PROGRESS_CANCEL:
       if (CPlayer *player = this->scene->player) {
         player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
-        if (player->render.state == 8) {
+        if (player->render.state == ST_BEGIN_SKILL) {
           player->SetState(ST_STAND, 1);
         }
       }

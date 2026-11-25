@@ -213,7 +213,7 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (IsParticleActive(eye) != true) {
-      *it = eye->animationState == 1 ? this->CreateEye(2, &eye->offsetX) : nullptr;
+      *it = eye->animationState == CANE_OF_EVIL_EYE_START ? this->CreateEye(CANE_OF_EVIL_EYE_LOOP, &eye->offsetX) : nullptr;
       FreeParticle(eye);
     }
   }
@@ -259,10 +259,10 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
     CEZ2STRParticle* light = *it;
     if (IsParticleActive(light) != true) {
       CEZ2STRParticle* next;
-      if (light->animationState == 1) {
-        next = this->CreateLight(3, &light->originX);
-      } else if (light->animationState == 2) {
-        next = this->CreateLight(3, &light->originX);
+      if (light->animationState == CANE_OF_EVIL_EYE_START) {
+        next = this->CreateLight(CANE_OF_EVIL_EYE_END, &light->originX);
+      } else if (light->animationState == CANE_OF_EVIL_EYE_LOOP) {
+        next = this->CreateLight(CANE_OF_EVIL_EYE_END, &light->originX);
       } else {
         next = nullptr;
       }

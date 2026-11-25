@@ -31,6 +31,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "UI/Login/UIPasswordWnd.h"
+#include "UI/Edit/ItemDropCountMode.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -84,7 +85,7 @@ void CUIExchangeUI::Initialize() {
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->Show(0);
+  this->scrollBar->Show(WINDOW_HIDDEN);
   this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
@@ -117,7 +118,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
   if (this->data.size() == 0) {
     for (auto* item : this->items) {
       item->index = -1;
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
     }
     return;
   }
@@ -154,14 +155,14 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
       }
       item->SetSelected(row == this->selected);
       item->Move(this->itemX, y);
-      item->Show(1);
+      item->Show(WINDOW_VISIBLE);
     }
   }
 
   for (const auto end = this->items.end(); it != end; ++it) {
     auto* const item = *it;
     item->index = -1;
-    item->Show(0);
+    item->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -264,13 +265,13 @@ void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
   }
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
-  if (drag->source == 1) {
+  if (drag->source == DRAG_ITEM_INVENTORY) {
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     } else {
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
       if (g_windowMgr.itemDropCntWnd != nullptr) {
-        g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 5, 0, 0, 0);
+        g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, ITEM_DROP_COUNT_EXCHANGE, 0, 0, 0);
       }
     }
   } else {
@@ -429,7 +430,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     }
     break;
   case UM_MYDRAGCLOSED:
-    this->zenyEdit->Show(0);
+    this->zenyEdit->Show(WINDOW_HIDDEN);
     this->FreezeItems(true);
     this->UpdateZeny(true);
     {
@@ -511,7 +512,7 @@ void CUIExchangeUI::BindItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemD
 
   if (data.frozen) {
     item->SetFrozen(true);
-    item->slotBackground->Show(0);
+    item->slotBackground->Show(WINDOW_HIDDEN);
   }
 }
 
@@ -1081,7 +1082,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
     for (ExchangeUI::CUIItem*& slot : this->items) {
       ExchangeUI::CUIItem* item = new ExchangeUI::CUIItem();
       item->SetSize(this->itemWidth, this->rowHeight);
-      item->Show(0);
+      item->Show(WINDOW_HIDDEN);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->SetOnHover([this](CUIListItem* listItem) {
         for (ExchangeUI::CUIItem* other : this->items) {

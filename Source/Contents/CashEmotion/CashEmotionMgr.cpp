@@ -2468,7 +2468,7 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
   this->m_period->SetSize(200, 14);
   this->m_period->Move(39, 359);
   this->m_period->SetColor(214, 24, 16);
-  this->m_period->Show(0);
+  this->m_period->Show(WINDOW_HIDDEN);
   this->AddChild(this->m_period);
 
   g_timeScheduler->RemoveSchedulesByKey(7);
@@ -2576,9 +2576,9 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
     int days = period / 24;
     const std::string text = fmt::format(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE"), days);
     this->m_period->SetTextFitted(text.c_str());
-    this->m_period->Show(1);
+    this->m_period->Show(WINDOW_VISIBLE);
   } else {
-    this->m_period->Show(0);
+    this->m_period->Show(WINDOW_HIDDEN);
   }
 
   return this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
@@ -3904,7 +3904,7 @@ void UICashEmotionScrollWnd::UpdateScrollRange() {
   UIScrollWnd::UpdateScrollRange();
   UIScrollBar* bar = this->scrollBar;
   if (bar) {
-    bar->Show(1);
+    bar->Show(WINDOW_VISIBLE);
     static_cast<UICashEmotionScrollBar*>(bar)->SetDisabled(this->wheelScroll == 0);
   }
 }

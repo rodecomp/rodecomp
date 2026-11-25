@@ -40,7 +40,7 @@ void CAstralStrikeEffect::Init() {
   bottom->Load(std::string("astralstrike\\astralstrike_bottom\\astralstrike_bottom.str"));
   this->emitters.push_back(bottom);
 
-  this->AddEvent(0, "effect\\AG_ASTRAL_STRIKE1.wav", 0, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_ASTRAL_STRIKE1.wav", 0, 0);
 
   CEZ2STRParticle* strike = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   strike->Load(std::string("astralstrike\\astralstrike\\astralstrike.str"));
@@ -96,7 +96,7 @@ void CAstralStrikeEffect::SpawnStrike() {
   }
   }
 
-  this->AddEvent(0, "effect\\AG_ASTRAL_STRIKE2.wav", this->frame + 1, 0);
+  this->AddEvent(EFFECT_EVENT_SOUND, "effect\\AG_ASTRAL_STRIKE2.wav", this->frame + 1, 0);
 }
 
 // OFFSET: 0x006F5430

@@ -275,7 +275,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_MAKEMENU: {
     this->m_menuItems.erase(this->m_menuItems.begin(), this->m_menuItems.end());
     if (g_windowMgr.menuWnd != 0) {
-      this->Show(0);
+      this->Show(WINDOW_HIDDEN);
     }
     if (this->m_selectedIndex != -1) {
       this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_VIEW_QUEST_INFO_MSG)).c_str(), MENUID_VIEW_QUEST_INFO));

@@ -228,7 +228,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
 // FUNCTION: fn_07091
 void CPowderingEffect::InitEvents() {
   if (this->id == 1104) {
-    this->AddEvent(0, "effect\\su_cn_powdering.wav", 0, 0);
+    this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_cn_powdering.wav", 0, 0);
   }
 }
 

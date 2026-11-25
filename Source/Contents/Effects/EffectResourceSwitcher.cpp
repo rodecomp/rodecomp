@@ -481,7 +481,7 @@ void CEZ2STREffectEx::SetDelay(int argument) {
   }
 
   this->frameStep = argument / 16;
-  this->SetEventFrame(0, this->frameStep + 1);
+  this->SetEventFrame(EFFECT_EVENT_SOUND, this->frameStep + 1);
 }
 
 // INLINED

@@ -3,6 +3,7 @@
 
 #include "Contents/Rodex/RodexMailStore.h"
 #include "UI/Items/UIItemWnd.h"
+#include "Network/Packets/NoticeEnums.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -32,13 +33,13 @@ using RodexMailEntry = std::pair<int, std::int64_t>;
 
 // INLINED
 inline RodexMailMap* RodexMailsOfType(int type) {
-  if (type == 0) {
+  if (type == MAIL_INBOX_NORMAL) {
     return &g_rodexMailStore->m_mails0;
   }
-  if (type == 1) {
+  if (type == MAIL_INBOX_ACCOUNT) {
     return &g_rodexMailStore->m_mails1;
   }
-  if (type == 2) {
+  if (type == MAIL_INBOX_RETURNED) {
     return &g_rodexMailStore->m_mails2;
   }
   return nullptr;

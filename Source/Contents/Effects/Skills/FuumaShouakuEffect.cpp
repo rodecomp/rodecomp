@@ -93,7 +93,7 @@ void CFuumaShouakuEffect::OnProcess() {
       if (this->second) {
         this->second->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku_00\\fuumashouaku_00.str"));
         this->second->m_loop = true;
-        this->AddEvent(0, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->travelFrames + 1, 0);
+        this->AddEvent(EFFECT_EVENT_SOUND, "effect\\SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU.wav", this->travelFrames + 1, 0);
       }
     } else if (this->second->m_frame == 1) {
       this->frame = this->travelFrames;

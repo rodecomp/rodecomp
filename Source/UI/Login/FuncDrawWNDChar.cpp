@@ -80,7 +80,7 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
-    if (layer == 2) {
+    if (layer == WNDCHAR_LAYER_HEAD) {
       FuncDrawOffset body = this->BodyAnchorOffset(frame, option);
       if (this->customRendering == 1) {
         continue;
@@ -104,7 +104,7 @@ void FuncDrawWNDChar::Draw(bool option) {
           break;
         }
         default:
-          if (layer == 0 || layer == 7) {
+          if (layer == WNDCHAR_LAYER_ROBE_BEHIND || layer == WNDCHAR_LAYER_ROBE_FRONT) {
             int baseMotion = this->m_motion;
             int syncedMotion = this->m_motion;
             CActRes* layerAct = this->Resource(layer).second;
@@ -363,7 +363,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
     offset.y += this->offsetY;
   }
 
-  if (layer == 4) {
+  if (layer == WNDCHAR_LAYER_HEAD_TOP) {
     switch (this->m_topAccessory) {
     case 181:
     case 197:

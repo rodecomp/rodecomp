@@ -117,7 +117,7 @@ void CJupitelThunderStormEffect::Open() {
     this->particles.push_back(bolt);
 
     if (corner == 0) {
-      this->AddEvent(0, "effect\\HYPER_NOVICE\\hu_jupitel_thunder_storm.wav", delay / 16 + 1, 0);
+      this->AddEvent(EFFECT_EVENT_SOUND, "effect\\HYPER_NOVICE\\hu_jupitel_thunder_storm.wav", delay / 16 + 1, 0);
     }
   }
 }
