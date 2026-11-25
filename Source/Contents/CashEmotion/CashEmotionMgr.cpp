@@ -1193,6 +1193,13 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type, const char* n
   return emotionId;
 }
 
+// INLINED
+static void InsertShortcut(std::unordered_map<std::string, CashEmotionCommand*>& shortcuts, const std::string& name, CashEmotionCommand* shortcut) {
+  if (shortcut) {
+    shortcuts.try_emplace(name, shortcut);
+  }
+}
+
 // OFFSET: 0x0059B820
 // FUNCTION: fn_02969
 void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emotionId) {
@@ -1202,9 +1209,7 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
     return;
   }
 
-  if (CashEmotionCommand* shortcut = new (std::nothrow) CashEmotionCommand(name, packId, emotionId)) {
-    this->m_shortcuts.try_emplace(name, shortcut);
-  }
+  InsertShortcut(this->m_shortcuts, name, new (std::nothrow) CashEmotionCommand(name, packId, emotionId));
 }
 
 // OFFSET: 0x0059B8F0
@@ -3818,10 +3823,10 @@ void UICashEmotionScrollBar::Paint() {
     return;
   }
 
-  int top = this->ThumbOffset() + this->arrowLength;
+  const int offset = this->ThumbOffset() + this->arrowLength;
   const int length = this->ThumbLength();
-  top -= 2;
   int topHeight = 0;
+  const int top = offset - 2;
   auto* topBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_top.bmp")));
   if (topBar) {
     topHeight = topBar->image.height;
@@ -3835,9 +3840,9 @@ void UICashEmotionScrollBar::Paint() {
   int end = top + (length + 4);
   if (middle) {
     const int step = middle->image.height;
-    int y = top + topHeight;
-    end = (top - bottomHeight) + (length + 4);
-    for (; y < end; y += step) {
+    end = top - bottomHeight;
+    end += length + 4;
+    for (int y = top + topHeight; y < end; y += step) {
       this->DrawBitmap(0, y, middle, true);
     }
   }
