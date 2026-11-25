@@ -50,9 +50,9 @@ void CSession::InitMapTypeInfoTable() {
     char* buffer = new char[size];
     file.Read(buffer, size);
 
-    int index = 0;
     int mapId = 0;
     int propertyId = 0;
+    int index = 0;
 
     do {
       char character = buffer[index++];
@@ -76,17 +76,19 @@ void CSession::InitMapTypeInfoTable() {
           } else {
             char valueText[16] = {};
             int textIndex = 0;
+            bool reading = true;
 
-            while (character != ' ' && character != '\t') {
+            while (reading && character != ' ' && character != '\t') {
               valueText[textIndex++] = character;
               character = buffer[index++];
               if (character == '\r') {
+                reading = false;
                 index += 1;
-                break;
               }
             }
 
-            g_mapPropertyMgr->SetValue(mapId, propertyId, std::atoi(valueText));
+            CMapPropertyMgr* mapPropertyMgr = g_mapPropertyMgr;
+            mapPropertyMgr->SetValue(mapId, propertyId, std::atoi(valueText));
             ++propertyId;
             if (propertyId >= 27) {
               ++mapId;
