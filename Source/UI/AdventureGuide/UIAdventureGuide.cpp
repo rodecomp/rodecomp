@@ -900,8 +900,9 @@ void CUIAdventureGuide::MarkQuest(int questId) {
       continue;
     }
 
-    if (tab->subTabs) {
-      std::list<AdventureGuide::CUISubTab*> subTabs = tab->subTabs->items;
+    if (auto* subTabList = tab->subTabs) {
+      const std::list<AdventureGuide::CUISubTab*>& source = subTabList->items;
+      std::list<AdventureGuide::CUISubTab*> subTabs = source;
       auto found = std::find_if(subTabs.begin(), subTabs.end(), [questId](AdventureGuide::CUISubTab* subTab) {
         return subTab->questId == static_cast<unsigned int>(questId);
       });
