@@ -503,19 +503,19 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
     this->state.slots[ec].vecBPre.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecBPre.z = static_cast<float>(sinA * radius);
     this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
-    const int angle2 = angle + (angle < 270 ? 90 : -270);
+    int angle2 = angle + (angle < 270 ? 90 : -270);
     cosA = g_cosTable[angle2];
     sinA = g_sinTable[angle2];
     this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecBNow.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecBNow.z = static_cast<float>(sinA * radius);
-    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
-    cosA = g_cosTable[angle3];
-    sinA = g_sinTable[angle3];
+    angle2 += angle2 + 90 < 360 ? 90 : -270;
+    cosA = g_cosTable[angle2];
+    sinA = g_sinTable[angle2];
     this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
     this->state.slots[ec].vecTNow.x = static_cast<float>(cosA * radius);
     this->state.slots[ec].vecTNow.z = static_cast<float>(sinA * radius);
-    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
+    const int angle4 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
     cosA = g_cosTable[angle4];
     sinA = g_sinTable[angle4];
     this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
@@ -1266,18 +1266,18 @@ __declspec(safebuffers) void CEffectPrim::RenderTwinFacingSquares(matrix& wtm) {
   vec4.z = radius * g_sinTable[angle];
   this->Tei_TowardScreen(vec1, vec2, vec3, vec4, slot.alphaT, this->state.slots[1].alphaT);
 
-  vec1.x = vec1.x + slot.vecBNow.x;
-  vec1.y = vec1.y + slot.vecBNow.y;
-  vec1.z = slot.vecBNow.z + vec1.z;
-  vec2.x = vec2.x + slot.vecBNow.x;
-  vec2.y = vec2.y + slot.vecBNow.y;
-  vec2.z = vec2.z + slot.vecBNow.z;
-  vec3.x = vec3.x + slot.vecBNow.x;
-  vec3.y = vec3.y + slot.vecBNow.y;
-  vec3.z = vec3.z + slot.vecBNow.z;
-  vec4.x = vec4.x + slot.vecBNow.x;
-  vec4.y = vec4.y + slot.vecBNow.y;
-  vec4.z = vec4.z + slot.vecBNow.z;
+  vec1.x += slot.vecBNow.x;
+  vec1.y += slot.vecBNow.y;
+  vec1.z += slot.vecBNow.z;
+  vec2.x += slot.vecBNow.x;
+  vec2.y += slot.vecBNow.y;
+  vec2.z += slot.vecBNow.z;
+  vec3.x += slot.vecBNow.x;
+  vec3.y += slot.vecBNow.y;
+  vec3.z += slot.vecBNow.z;
+  vec4.x += slot.vecBNow.x;
+  vec4.y += slot.vecBNow.y;
+  vec4.z += slot.vecBNow.z;
 
   if (slot.flag1[0] == 10) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 1, 0, 255, 20, 20, 0.0f, 1.0f, 0.0f, 1.0f, 0);
