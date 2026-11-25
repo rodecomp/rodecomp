@@ -3962,39 +3962,44 @@ void CPlayer::SendMsg(
     } else if (direction >= 8) {
       direction -= 8;
     }
-    if (direction == 0 || direction == 4) {
+    if (direction == 0) {
       this->headDir = 0;
       this->render.angle = facing;
-    } else if (direction == 1) {
+    }
+    if (direction == 4) {
+      this->headDir = 0;
+      this->render.angle = facing;
+    }
+    if (direction == 1) {
       if (this->headDir != 1) {
         this->headDir = 1;
       } else {
         this->headDir = 0;
         this->render.angle = facing;
       }
-    } else {
-      if (direction == 2 || direction == 3) {
-        this->headDir = 1;
-        const float angle = facing + 45.0f;
-        this->render.angle = angle;
-        if (angle >= 360.0f) {
-          this->render.angle = angle - 360.0f;
-        }
+    }
+    if (direction == 2 || direction == 3) {
+      this->headDir = 1;
+      const float angle = facing + 45.0f;
+      this->render.angle = angle;
+      if (angle >= 360.0f) {
+        this->render.angle = angle - 360.0f;
       }
-      if (direction == 7) {
-        if (this->headDir != 2) {
-          this->headDir = 2;
-        } else {
-          this->headDir = 0;
-          this->render.angle = facing;
-        }
-      } else if (direction == 5 || direction == 6) {
-        const float angle = facing - 45.0f;
+    }
+    if (direction == 7) {
+      if (this->headDir != 2) {
         this->headDir = 2;
-        this->render.angle = angle;
-        if (angle < 0.0f) {
-          this->render.angle = angle + 360.0f;
-        }
+      } else {
+        this->headDir = 0;
+        this->render.angle = facing;
+      }
+    }
+    if (direction == 5 || direction == 6) {
+      const float angle = facing - 45.0f;
+      this->headDir = 2;
+      this->render.angle = angle;
+      if (angle < 0.0f) {
+        this->render.angle = angle + 360.0f;
       }
     }
     const int motion = this->headDir;
@@ -4084,8 +4089,13 @@ void CPlayer::SendMsg(
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
-      this->tickOfMoveForAttack = timeGetTime() - 1200;
-      this->proceedType = this->proceedType == 1 ? 5 : 1;
+      if (this->proceedType == 1) {
+        this->tickOfMoveForAttack = timeGetTime() - 1200;
+        this->proceedType = 5;
+      } else {
+        this->tickOfMoveForAttack = timeGetTime() - 1200;
+        this->proceedType = 1;
+      }
       this->proceedTargetGid = bLow;
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
@@ -4097,11 +4107,12 @@ void CPlayer::SendMsg(
     if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       CRenderObject* target = mode->scene->GetGameActorByAID(static_cast<std::uint32_t>(b));
       if (target != nullptr) {
-        this->proceedType =
-          static_cast<std::uint32_t>(g_session.m_moveSpeed * 4 / 3) <
-              static_cast<std::uint32_t>(static_cast<CGameActor*>(target)->moveSpeed)
-            ? 5
-            : 1;
+        if (static_cast<std::uint32_t>(static_cast<CGameActor*>(target)->moveSpeed) >
+            static_cast<std::uint32_t>(g_session.m_moveSpeed * 4 / 3)) {
+          this->proceedType = 5;
+        } else {
+          this->proceedType = 1;
+        }
         this->proceedTargetGid = bLow;
         this->isAttackRequest = 0;
         this->attackMode = cLow;
