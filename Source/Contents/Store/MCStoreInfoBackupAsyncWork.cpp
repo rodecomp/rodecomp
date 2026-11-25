@@ -98,7 +98,7 @@ void CMCStoreInfoBackupLoadAsyncWork::Complete() {
 // FUNCTION: fn_04247
 CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
     : NAsyncWork(g_mcStoreInfoBackupSavePoolName), m_accountId(0), m_characterId(0),
-      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x3FAF85D995034FD7ULL)), saveSource, 30), m_type(0) {
+      m_diagnostic(false, std::string(OBFUSCATE_SOURCE_TEXT("unknwon", 0x3FAF85D995034FD7ULL)), saveSource, 30), m_type(0) {
 }
 
 // OFFSET: 0x00609080
