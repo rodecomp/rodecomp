@@ -654,7 +654,7 @@ void UINavigationWnd::Paint() {
 
 // INLINED
 static int NavigateTo(const NavigationTarget& target) {
-  return g_navigationManager.Navigate(target.x, target.y);
+  return g_navigationManager.Navigate(target.cell.first, target.cell.second);
 }
 
 // OFFSET: 0x00935A00
@@ -940,9 +940,9 @@ void UINavigationWnd::FillRouteList() {
     } else if (state.type == 0) {
       CNaviInfo* info = static_cast<CNaviInfo*>(state.object);
       if (state.name.empty()) {
-        std::sprintf(text, LookupMessage(MSI_NAVIGATION_ALL_S), info->GetName(), state.x, state.y);
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_ALL_S), info->GetName(), state.cell.first, state.cell.second);
       } else {
-        std::sprintf(text, LookupMessage(MSI_NAVIGATION_ALL_SD), state.name.c_str(), info->GetName(), state.x, state.y);
+        std::sprintf(text, LookupMessage(MSI_NAVIGATION_ALL_SD), state.name.c_str(), info->GetName(), state.cell.first, state.cell.second);
       }
     }
     this->SendMsg(nullptr, UM_ADDITEM, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);

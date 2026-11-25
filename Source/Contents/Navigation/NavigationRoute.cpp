@@ -947,8 +947,8 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
     offset += 4;
     char* mapName = reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->mapName;
     std::memcpy(mapName, info->GetName(), info->GetNameLength());
-    reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->x = it->x;
-    reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->y = it->y;
+    reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->x = it->cell.first;
+    reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->y = it->cell.second;
     const int length = static_cast<int>(it->name.size());
     reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->nameLength = length;
     offset += 0x20;
@@ -1316,13 +1316,13 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
   this->currentTarget.object = info;
   if (x == 1000) {
     this->currentTarget.type = 1;
-    this->currentTarget.x = -1;
-    this->currentTarget.y = -1;
+    this->currentTarget.cell.first = -1;
+    this->currentTarget.cell.second = -1;
     std::sprintf(text, "%s", info->GetName());
   } else {
-    this->currentTarget.x = x;
+    this->currentTarget.cell.first = x;
     this->currentTarget.type = 0;
-    this->currentTarget.y = y;
+    this->currentTarget.cell.second = y;
     const char* name = info->GetName();
     std::sprintf(text, "%s %d,%d", name, x, y);
   }
@@ -1465,7 +1465,7 @@ bool CNavigationManager::LoadTargetPreview() {
         this->previewX = viewX;
         this->previewY = viewY;
       } else if (targetType == 0) {
-        if (this->currentTarget.x < 0) {
+        if (this->currentTarget.cell.first < 0) {
           NaviCell cellY;
           NaviCell cellX;
           const int cellRow = this->data.GetCell(&cellY)->y;
@@ -1483,8 +1483,8 @@ bool CNavigationManager::LoadTargetPreview() {
           this->previewY = viewY;
           this->previewX = viewX;
         } else {
-          const int cellColumn = this->currentTarget.x;
-          const int cellRow = this->currentTarget.y;
+          const int cellColumn = this->currentTarget.cell.first;
+          const int cellRow = this->currentTarget.cell.second;
           CNaviInfo* info = static_cast<CNaviInfo*>(this->currentTarget.object);
           int viewY = -1;
           int viewX = -1;
@@ -1600,7 +1600,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
     }
   } else if (type == 0) {
     this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
-    std::sprintf(text, "( %d %d )", this->currentTarget.x, this->currentTarget.y);
+    std::sprintf(text, "( %d %d )", this->currentTarget.cell.first, this->currentTarget.cell.second);
     this->routeLines.push_back({1, 142, 149, text, 0xDCDCDC, 0xCB6B54});
   }
   return true;
@@ -1822,18 +1822,20 @@ struct NavigationReplayHeader {
   /* 0000 */ std::int16_t tag;
   /* 0002 */ int size;
 
-  NavigationReplayHeader() : tag(0), size(0) {
+  // INLINED
+  NavigationReplayHeader() {
+    this->Clear();
   }
 
+  // INLINED
   ~NavigationReplayHeader() {
-    this->tag = 0;
-    this->size = 0;
+    this->Clear();
   }
 
-  void Read(const unsigned char* source) {
+  // INLINED
+  void Clear() {
     this->tag = 0;
     this->size = 0;
-    std::memcpy(this, source, sizeof(*this));
   }
 };
 #pragma pack(pop)
@@ -1853,17 +1855,16 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
   NavigationReplayHeader header;
   unsigned offset = 0;
 
-  header.Read(data.data() + offset);
+  header.Clear();
+  header = *reinterpret_cast<const NavigationReplayHeader*>(data.data() + offset);
   offset += 6;
   if (8000 != header.tag) {
     offset = static_cast<unsigned>(-1);
     return static_cast<int>(offset);
   }
-  if (data.size() <= 6) {
-    return static_cast<int>(offset);
-  }
-  do {
-      header.Read(data.data() + offset);
+  while (data.size() > offset) {
+      header.Clear();
+      header = *reinterpret_cast<const NavigationReplayHeader*>(data.data() + offset);
       offset += 6;
 
       switch (header.tag) {
@@ -2033,7 +2034,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       }
-  } while (data.size() > offset);
+  }
   return static_cast<int>(offset);
 }
 

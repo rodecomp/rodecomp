@@ -3037,7 +3037,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       if (result == 0) {
         {
           const NavigationTarget target = g_navigationManager.GetSavedTarget();
-          result = g_navigationManager.Navigate(target.x, target.y);
+          result = g_navigationManager.Navigate(target.cell.first, target.cell.second);
         }
         if (result >= 0) {
           g_navigationManager.displayMode = 1;
@@ -3559,14 +3559,14 @@ void UINavigationV4Wnd::SelectRoute(int route) {
   std::string text;
   for (int index = 0; index < count; ++index) {
     NavigationTarget target = g_navigationManager.GetState(g_navigationManager.nodePaths[route][index]);
-    const bool cellUnset = target.x == -1000 && target.y == -1000;
+    const bool cellUnset = target.cell.first == -1000 && target.cell.second == -1000;
     if (cellUnset) {
       text = this->MobName(static_cast<CNavi_Object*>(target.object));
     } else {
       text = this->ObjectLabel(target.type, target.object);
       if (target.type == 0) {
         char coords[30] = {};
-        std::sprintf(coords, " [%d,%d]", target.x, target.y);
+        std::sprintf(coords, " [%d,%d]", target.cell.first, target.cell.second);
         text += coords;
       }
     }

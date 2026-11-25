@@ -453,8 +453,8 @@ void CNaviInfo::SearchMobs(const std::vector<std::string>& keywords, std::vector
 
     NaviCell cell;
     const NaviCell* position = (*mobIt)->GetCell(&cell);
-    target.x = position->x;
-    target.y = position->y;
+    target.cell.first = position->x;
+    target.cell.second = position->y;
     target.name = (*mobIt)->GetName();
     target.object = *mobIt;
     out.push_back(target);
@@ -490,8 +490,8 @@ void CNaviInfo::SearchNpcs(const std::vector<std::string>& keywords, std::vector
 
     NaviCell cell;
     const NaviCell* position = (*npcIt)->GetCell(&cell);
-    target.x = position->x;
-    target.y = position->y;
+    target.cell.first = position->x;
+    target.cell.second = position->y;
     target.name = (*npcIt)->GetName();
     target.object = *npcIt;
     out.push_back(target);

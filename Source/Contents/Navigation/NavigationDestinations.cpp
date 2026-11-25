@@ -21,10 +21,10 @@ bool CNavigationManager::LoadStates(std::vector<char> packet) {
     std::memset(map, 0, sizeof(map));
     std::memcpy(map, packet.data() + offset, sizeof(map));
     offset += sizeof(map);
-    std::memcpy(&target.x, packet.data() + offset, sizeof(target.x));
-    offset += sizeof(target.x);
-    std::memcpy(&target.y, packet.data() + offset, sizeof(target.y));
-    offset += sizeof(target.y);
+    std::memcpy(&target.cell.first, packet.data() + offset, sizeof(target.cell.first));
+    offset += sizeof(target.cell.first);
+    std::memcpy(&target.cell.second, packet.data() + offset, sizeof(target.cell.second));
+    offset += sizeof(target.cell.second);
     int nameLength;
     std::memcpy(&nameLength, packet.data() + offset, sizeof(nameLength));
     offset += sizeof(nameLength);

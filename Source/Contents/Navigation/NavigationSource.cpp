@@ -20,8 +20,7 @@ CNavigationManager g_navigationManager;
 // OFFSET: 0x00B96980
 // FUNCTION: fn_19588
 NavigationTarget CNavigationManager::GetCurrentTarget() const {
-  NavigationTarget target = this->currentTarget;
-  return target;
+  return this->currentTarget;
 }
 
 // OFFSET: 0x00B96A10
@@ -42,8 +41,7 @@ std::string CNavigationManager::GetCurrentTargetName() const {
 // OFFSET: 0x00B96AE0
 // FUNCTION: fn_19590
 NavigationTarget CNavigationManager::GetSavedTarget() const {
-  NavigationTarget target = this->savedTarget;
-  return target;
+  return this->savedTarget;
 }
 
 // OFFSET: 0x00B96B70
@@ -545,8 +543,8 @@ void CNaviInfo::CollectMobsInRange(int minimum, int maximum, std::vector<Navigat
     if (minimum <= (*it)->GetCell(&lower)->x && maximum >= (*it)->GetCell(&upper)->x) {
       NaviCell cell;
       const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
+      target.cell.first = position->x;
+      target.cell.second = position->y;
       target.name = (*it)->GetName();
       target.object = *it;
       out.push_back(target);
@@ -562,8 +560,8 @@ void CNaviInfo::CollectMobsByTitle(std::string title, std::vector<NavigationTarg
     if (std::strcmp((*it)->GetTitle(), title.c_str()) == 0) {
       NaviCell cell;
       const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
+      target.cell.first = position->x;
+      target.cell.second = position->y;
       target.name = (*it)->GetName();
       target.object = *it;
       out.push_back(target);
@@ -589,8 +587,8 @@ void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
     for (std::vector<CNavi_Object*>::iterator it = this->npcs.begin(); it != end; ++it) {
       NaviCell cell;
       const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
+      target.cell.first = position->x;
+      target.cell.second = position->y;
       target.name = (*it)->GetName();
       target.object = *it;
       out.push_back(target);
@@ -603,8 +601,8 @@ void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
     for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != end; ++it) {
       NaviCell cell;
       const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
+      target.cell.first = position->x;
+      target.cell.second = position->y;
       target.name = (*it)->GetName();
       target.object = *it;
       out.push_back(target);
@@ -651,8 +649,8 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
 
   target.type = 3;
   for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
-    target.x = -1000;
-    target.y = -1000;
+    target.cell.first = -1000;
+    target.cell.second = -1000;
     target.name = (*it)->GetName();
     target.object = *it;
     out.push_back(target);
@@ -956,7 +954,7 @@ int CNavigationManager::FindNodePath(unsigned int index) {
     }
 
     NavigationTarget& target = this->states[index];
-    if (target.type == 3 && target.x == -1000 && target.y == -1000) {
+    if (target.type == 3 && target.cell.first == -1000 && target.cell.second == -1000) {
       if (this->states[first].type != 1) {
         continue;
       }
