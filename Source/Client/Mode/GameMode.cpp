@@ -9190,27 +9190,23 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
 // OFFSET: 0x00CE0210
 // FUNCTION: fn_21329
 int CGameMode::ProcessGroundClick(int result) {
-  const auto drawCell = [](GroundGeometry* ground, const float* matrix, int column, int row, std::uint32_t color) {
-    ground->DrawGrid(matrix, column, row, color);
-  };
-
-  int row;
   int column;
+  int row;
   UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
   if (reporter) {
     if (reporter->activeOnly == true && reporter->m_mode == 1) {
       row = -1;
       column = -1;
-      this->PickScreenTerrain(column, row);
+      this->PickScreenTerrain(row, column);
       const int radius = reporter->reportCount;
       for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
-          drawCell(this->scene->ground, this->camera->frame.view.values, column + dx, row + dy, 0x660000FF);
+          this->scene->ground->DrawGrid(this->camera->frame.view.values, row + dx, column + dy, 0x660000FF);
         }
       }
 
       if (g_mouse.buttons[1] == 1) {
-        reporter->SendMacroUserInfoPacket(static_cast<std::uint16_t>(column), static_cast<std::uint16_t>(row), static_cast<std::uint8_t>(radius));
+        reporter->SendMacroUserInfoPacket(static_cast<std::uint16_t>(row), static_cast<std::uint16_t>(column), static_cast<std::uint8_t>(radius));
         return -1;
       }
     }
@@ -9228,10 +9224,11 @@ int CGameMode::ProcessGroundClick(int result) {
       column = -1;
       row = -1;
       this->PickScreenTerrain(column, row);
-      drawCell(this->scene->ground, this->camera->frame.view.values, column, row, 0x66FF0000);
+      const int pickedRow = row;
+      this->scene->ground->DrawGrid(this->camera->frame.view.values, column, pickedRow, 0x66FF0000);
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
-        shop->SetSelection(static_cast<short>(column), static_cast<short>(row));
+        shop->SetSelection(static_cast<short>(column), static_cast<short>(pickedRow));
         if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
           shop->SendShopRequest();
           return -1;
@@ -9239,7 +9236,7 @@ int CGameMode::ProcessGroundClick(int result) {
         shop->SetSuspended(1);
       }
     } else if (shop->HasSelection() == true) {
-      drawCell(this->scene->ground, this->camera->frame.view.values, shop->selectedRow, shop->selectedColumn, 0x66FF0000);
+      this->scene->ground->DrawGrid(this->camera->frame.view.values, shop->selectedRow, shop->selectedColumn, 0x66FF0000);
     }
   }
 
