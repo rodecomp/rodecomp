@@ -487,13 +487,11 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   case UM_MINIMAP_SET_PLAYER_POS:
     this->m_playerHead->Move(this->MapToWindowX(static_cast<float>(argument1), 13), this->MapToWindowY(static_cast<float>(argument2), 13));
-    this->Invalidate();
-    return 0;
+    break;
 
   case UM_MINIMAP_SET_BOSS_POS:
     this->bossButton->Move(this->MapToWindowX(static_cast<float>(argument1), 12), this->MapToWindowY(static_cast<float>(argument2), 12));
-    this->Invalidate();
-    return 0;
+    break;
 
   case UM_MINIMAP_SET_MARK_POS:
     if (static_cast<unsigned>(argument1) <= 2 && argument2 >= 0) {
@@ -512,8 +510,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     if (argument2 >= 0) {
       if (static_cast<unsigned>(argument2) != this->marks[argument1].size()) {
         this->marks[argument1].resize(argument2, MiniMapMark{-100, -100});
-        this->Invalidate();
-        return 0;
+        break;
       }
     }
     return 0;
