@@ -5008,8 +5008,8 @@ void CPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
-    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
-    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
+    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubX - 8);
+    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
@@ -5041,8 +5041,8 @@ void CPc::SendMsg(
     this->SetGuildInfo(entry->guildId, entry->guildVersion);
     this->SetPropensityInfo(entry->honor, entry->virtue);
     mode->CellCenter(entry->startX, entry->startY, this->render.position.x, this->render.position.z);
-    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubX - 8);
-    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * 0.0625f * static_cast<float>(entry->startSubY - 8);
+    this->render.position.x += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubX - 8);
+    this->render.position.z += static_cast<float>(mode->scene->terrain->cellSize) * terrainSubcellFraction * static_cast<float>(entry->startSubY - 8);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     if (this->FindRoute(entry->startX, entry->startY, entry->startSubX, entry->startSubY, entry->destX, entry->destY, entry->speed)) {
