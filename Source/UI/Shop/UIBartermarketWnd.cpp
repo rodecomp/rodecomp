@@ -1109,6 +1109,22 @@ void UIExpandedBartermarketWnd::OnMouseHover(int x, int y) {
   }
 }
 
+// INLINED
+static __forceinline ITEM_DESC CopyItemDesc(const ITEM_DESC& src) {
+  ITEM_DESC result;
+  result.identifiedName = src.identifiedName;
+  result.identifiedResource = src.identifiedResource;
+  result.identifiedDescription = src.identifiedDescription;
+  result.unidentifiedName = src.unidentifiedName;
+  result.unidentifiedResource = src.unidentifiedResource;
+  result.unidentifiedDescription = src.unidentifiedDescription;
+  result.descriptionFlags = src.descriptionFlags;
+  result.slots = src.slots;
+  result.descriptionValues = src.descriptionValues;
+  result.viewId = src.viewId;
+  return result;
+}
+
 // OFFSET: 0x00843910
 // FUNCTION: fn_10560
 void UIPurchaseButton::OnMouseHover(int x, int y) {
@@ -1117,7 +1133,7 @@ void UIPurchaseButton::OnMouseHover(int x, int y) {
   int count = 0;
   for (std::map<int, int>::iterator it = totals.begin(); it != totals.end();) {
     const int amount = it->second;
-    ITEM_DESC description = FindItemDescription(it->first);
+    ITEM_DESC description = CopyItemDesc(FindItemDescription(it->first));
     ++it;
     ++count;
     if (count == 30) {
