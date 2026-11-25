@@ -110,6 +110,11 @@ public:
 class UIRenewQuestScrollBar : public UIScrollBar {
 public:
   __declspec(noinline) UIRenewQuestScrollBar();
+  // INLINED
+  explicit UIRenewQuestScrollBar(int) : UIScrollBar() {
+    this->arrowLength = 3;
+    this->thickness = 7;
+  }
   void Paint() override;
 };
 

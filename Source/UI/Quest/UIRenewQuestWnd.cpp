@@ -749,7 +749,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
   this->m_closeButton->SetId(ID_CLOSE);
   this->AddChild(this->m_closeButton);
 
-  this->m_scrollBar = new UIRenewQuestScrollBar();
+  this->m_scrollBar = new UIRenewQuestScrollBar(0);
   this->m_scrollBar->Configure(374, 17, 1, 422);
   this->m_scroll = 0;
   this->AddChild(this->m_scrollBar);
