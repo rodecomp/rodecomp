@@ -393,10 +393,7 @@ void UIHotKeyWnd::Paint() {
   this->m_buttonBarHeight = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 
-  int visibleRow = 0;
-  const int count = g_session.HotkeyCount(this->m_tab);
-
-  for (int row = 0; row < count; ++row) {
+  for (int row = 0, visibleRow = 0, count = g_session.HotkeyCount(this->m_tab); row < count; ++row) {
     if (this->m_paged && row < 36 * this->m_page - 36) {
       continue;
     }
@@ -418,8 +415,7 @@ void UIHotKeyWnd::Paint() {
       const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
       const int textX = (keyColumnWidth - textWidth) / 2;
       const int column = visibleRow / this->m_rowsPerPage;
-      const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
-                       (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
+      const int rowY = this->m_rowHeight * (visibleRow % this->m_rowsPerPage) + this->m_verticalMargin + this->m_tabHeight + this->m_titleHeight;
       const int halfWidth = this->geometry.width / 2;
 
       const int backgroundX = column ? this->geometry.width - keyColumnWidth - this->m_horizontalMargin
@@ -431,7 +427,7 @@ void UIHotKeyWnd::Paint() {
       this->FillRegion(backgroundX, rowY, keyColumnWidth, this->m_rowHeight - 1, color);
 
       if (visibleRow == this->m_selectedRow) {
-        this->FillRegion(keyX + 1, rowY, halfWidth - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
+        this->FillRegion(keyX + 1, rowY, this->geometry.width / 2 - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
       }
 
       this->FillRegion(keyX, rowY - 1 + this->m_rowHeight, this->m_keyColumnWidth + this->m_descriptionColumnWidth, 1, 0xC0C0C0);
@@ -439,9 +435,8 @@ void UIHotKeyWnd::Paint() {
 
       const std::string fitted = this->FitDisplayText(130, info.description.c_str(), 0, 12, 0);
       const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
-      const int descriptionX = keyX + (this->geometry.width / 2 - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
-
-      this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
+      const int indent = (this->geometry.width / 2 - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
+      this->DrawTextAt(indent + keyX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawTextAt(textX + backgroundX, rowY + 5, info.text.c_str(), 0, 0, 12, 0, 0, 0);
 
       ++visibleRow;
@@ -452,7 +447,9 @@ void UIHotKeyWnd::Paint() {
     std::string text = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
     UIBitmapButton* prevButton = this->m_prevButton;
     const int pagesWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
+    const int indent = (prevButton->geometry.width - pagesWidth + 60) / 2;
+    int pageX = prevButton->geometry.x;
+    pageX += indent;
 
     text = static_cast<const std::string&>(FormatOwnedString("%d", this->m_page));
     this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
