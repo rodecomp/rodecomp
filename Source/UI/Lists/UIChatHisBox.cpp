@@ -17,6 +17,11 @@
 #include <new>
 #include <string>
 
+// INLINED
+static const std::string ButtonLabel(const UIItemTagButton* button) {
+  return button->label;
+}
+
 // OFFSET: 0x00881BB0
 // FUNCTION: fn_11300
 std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
@@ -27,13 +32,16 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
     const int count = static_cast<int>(row->size());
 
     for (int index = 0; index < count; ++index) {
-      const int line = (*row)[index]->line;
+      const auto button = [row, index]() {
+        return (*row)[index];
+      };
+      const int line = button()->line;
       result = this->lines[line];
-      const std::string label = (*row)[index]->label;
+      const std::string& label = ButtonLabel(button());
 
-      if (label.find(LookupMessage(MSI_NAMELESS_USER)) < std::string::npos) {
+      if (label.find(LookupMessage(MSI_NAMELESS_USER)) != std::string::npos) {
         const std::size_t found = result.find(LookupMessage(MSI_NAMELESS_USER));
-        std::string player = LookupPlayerName((*row)[index]->tipId);
+        std::string player = LookupPlayerName(button()->tipId);
 
         if (std::strcmp(player.c_str(), name) == 0) {
           result.replace(found, std::strlen(LookupMessage(MSI_NAMELESS_USER)), name);
@@ -43,25 +51,23 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           const std::size_t start = tail.find(opening);
           std::string head = result.substr(0, position + start);
           position += static_cast<int>(start + std::strlen(opening.c_str())) + 1;
-          const int column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-          UIItemTagButton* const button = (*row)[index];
-          button->column = column;
+          UIItemTagButton* const matched = button();
+          matched->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
-          std::string bracket = this->BracketName((*row)[index]->item.DisplayName(0));
-          (*row)[index]->SetTooltip(bracket.c_str());
-          (*row)[index]->SetLabel(bracket.c_str());
-          (*row)[index]->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, (*row)[index]->geometry.height);
+          std::string bracket = this->BracketName(button()->item.DisplayName(0));
+          button()->SetTooltip(bracket.c_str());
+          button()->SetLabel(bracket.c_str());
+          button()->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, button()->geometry.height);
           this->lines[line] = result;
         }
       } else {
-        std::string bracket = this->BracketName((*row)[index]->item.DisplayName(0));
+        std::string bracket = this->BracketName(button()->item.DisplayName(0));
         std::string tail = result.substr(position);
         const std::size_t found = tail.find(bracket);
         std::string head = result.substr(0, position + found);
         position += found + std::strlen(bracket.c_str());
-        const int column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
-        UIItemTagButton* const button = (*row)[index];
-        button->column = column;
+        UIItemTagButton* const matched = button();
+        matched->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
       }
     }
   }
