@@ -750,7 +750,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     case ID_CLOSE:
       if (g_navigationManager.viewMode == 2) {
-        const int response = g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 280, 120, 0);
+        const int response = g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "메시지", 280, 120, 0);
         if (response != 0xBB) {
           break;
         }

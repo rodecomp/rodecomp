@@ -552,7 +552,7 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
     message = "채팅 로그 삭제 성공";
   }
 
-  g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 280, 120, 0);
 }
 
 // OFFSET: 0x00E08690

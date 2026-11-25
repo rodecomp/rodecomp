@@ -980,7 +980,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case ID_FIRE_MER: {
       CGameMode* mode = g_modeMgr.GetGameMode();
 
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_MER, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
@@ -2333,13 +2333,13 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       break;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       if (this->filenameEdit->Length() <= 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
 
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
 
@@ -2660,7 +2660,7 @@ UINoticeWnd::UINoticeWnd() : UIFrameWnd(0) {
 // OFFSET: 0x008AD190
 // FUNCTION: fn_11737
 void UIBank_NewWnd::OnCreate(int, int) {
-  this->AddCloseButton("Exit", 0);
+  this->AddCloseButton("닫기", 0);
   this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(MSI_BANK_4));
   this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(MSI_BANK_5));
   this->AddBitmapButton(279, 177, 89, "bank\\btn_upper", LookupMessage(MSI_BANK_6));
@@ -2856,14 +2856,14 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             return 0;
           }
           Replay::Instance().CloseFile();
-          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_SERVERNOMATCH), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_SERVERNOMATCH), 0, true, true, 0, "메시지", 280, 120, 0);
         } else {
-          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_NOREPLAYFILE), 0, true, true, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_NOREPLAYFILE), 0, true, true, 0, "메시지", 280, 120, 0);
         }
       }
       break;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3042,7 +3042,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_modeMgr.currentMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
       return 0;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3293,7 +3293,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           ShellExecuteA(hWnd, OBFUSCATE_TEXT_NAMED("open", 0x839B27DF8F5967B3ULL, verbName), url, nullptr, nullptr, SW_SHOWNORMAL);
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_CREATE_ACCOUNT), 2, true, false, 0, "Message", 280, 120, 0) != ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_CREATE_ACCOUNT), 2, true, false, 0, "메시지", 280, 120, 0) != ID_YES) {
           break;
         }
       }
@@ -3304,7 +3304,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       CSoundMgr* const soundMgr = g_soundMgr;
       soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
-        g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_SET_STATE_GET_EMAIL_ADDRESS, 38, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
         CMode* passwordMode = g_modeMgr.currentMode;
         passwordMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
@@ -3315,10 +3315,10 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
         const char* format = LookupMessage(MSI_MUST_ID_EXCEED_CHAR);
-        g_windowMgr.Confirm(FormatOwnedString(format, 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(format, 4).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
       } else {
         const char* format = LookupMessage(MSI_MUST_PASSWORD_EXCEED_CHAR);
-        g_windowMgr.Confirm(FormatOwnedString(format, 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(FormatOwnedString(format, 6).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
       }
       break;
     }
@@ -3327,7 +3327,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     case ID_EXIT:
       this->SaveLogin();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         goto quit;
       }
       break;
@@ -3380,7 +3380,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         break;
       }
       default: {
-        g_windowMgr.Confirm(OBFUSCATE_TEXT("unknown account class found!", 0x176F138D5DD7F365ULL), 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(OBFUSCATE_TEXT("unknown account class found!", 0x176F138D5DD7F365ULL), 0, false, false, 0, "메시지", 280, 120, 0);
         goto quit;
       }
       }
@@ -3405,7 +3405,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_COMMAND: {
     switch (a) {
     case ID_CANCEL:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -3423,7 +3423,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_modeMgr.currentMode->SendMsg(LMM_SEND_LOGIN_AUTH_CODE, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINOTPWND);
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_OTP_MUST_8_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_OTP_MUST_8_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
       }
       break;
     }
@@ -3628,21 +3628,21 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_OK: {
       char* const name = g_session.m_homunName;
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_HOMUN_NAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_HOMUN_NAME_IN23), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       char text[512];
       std::sprintf(text, LookupMessage(MSI_CHANGE_HOMUN_NAME), this->nameEdit->Text());
-      const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0);
+      const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0);
       UIEditCtrl* edit = this->nameEdit;
       if (response != ID_NO) {
         if (g_forbiddenWords.Contains(edit->Text()) == true) {
-          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
           edit = this->nameEdit;
         } else {
           g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
@@ -3679,7 +3679,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     case ID_DELETE_HOMUN: {
       CGameMode* mode = g_modeMgr.GetGameMode();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_HOMUN, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
@@ -3843,18 +3843,18 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     switch (a) {
     case ID_OK:
       if (std::strlen(this->nameEdit->Text()) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_PETNAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_PETNAME_IN23), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       {
         char text[512];
         std::sprintf(text, LookupMessage(MSI_CHANGE_PETNAME), this->nameEdit->Text());
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(g_session.petName, this->nameEdit->Text());
@@ -3862,7 +3862,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
             return 0;
           }
 
-          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         }
 
         this->nameEdit->SetText(g_session.petName);
@@ -4207,7 +4207,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case ID_OK: {
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         this->m_nameEdit->SetText("");
         return 0;
       }
@@ -4233,16 +4233,16 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
         if (badName || !valid || blank) {
           if (badName) {
-            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
           }
           if (!valid) {
-            g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "메시지", 280, 120, 0);
           }
           if (blank) {
-            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
           }
         } else if (this->m_nameEdit->Length() >= 24) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
           this->m_nameEdit->SetText("");
           return 0;
         } else {
@@ -4267,7 +4267,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           g_windowMgr.Schedule(this);
         }
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
       }
 
       CMode* mode = g_modeMgr.currentMode;

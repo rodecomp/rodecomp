@@ -394,7 +394,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       char line[260];
       std::memset(line, 0, sizeof(line));
       if (g_serviceType == ServiceKorea) {
-        sprintf_s(line, sizeof(line), "%s (%s) ", name.c_str(), party);
+        sprintf_s(line, sizeof(line), "%s『%s』", name.c_str(), party);
       } else {
         sprintf_s(line, sizeof(line), "%s (%s)", name.c_str(), party);
       }
@@ -421,7 +421,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       char line[260];
       std::memset(line, 0, sizeof(line));
       if (g_serviceType == ServiceKorea) {
-        sprintf_s(line, sizeof(line), "%s (%s) ", guild, position);
+        sprintf_s(line, sizeof(line), "%s『%s』", guild, position);
       } else {
         sprintf_s(line, sizeof(line), "%s [%s]", guild, position);
       }

@@ -858,7 +858,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.EnsureWindow(WID_CHATROOMCHANGEWND)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&mode->chatRoom), 0, 0, 0);
       break;
     case MENUID_QUERYINFO:
-      g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "메시지", 280, 120, 0);
       break;
     case MENUID_WRITE_CHAT_TO_FILE:
       this->SaveChatLog();

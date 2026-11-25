@@ -1426,7 +1426,7 @@ void CGameMode::NotifyCaptchaRegistered() {
   UIWindow* window = g_windowMgr.LookupWindow(WID_CAPTCHAREGISTERWND);
   if (window) {
     static_cast<UICaptchaRegisterWnd*>(window)->SetRegisterDisabled(0);
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_COMPLETE_REGISTER_CAPTCHA), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_COMPLETE_REGISTER_CAPTCHA), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 }
 
@@ -1637,13 +1637,13 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
     PacketIdOnly request;
     request.id = ID_CZ_CLOSE_UI_STYLINGSHOP;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
-    g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
     g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
     break;
   }
   case 1:
   case 2:
-    g_windowMgr.Confirm(LookupMessage(MSI_SKILL_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SKILL_FAIL), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 }
@@ -1776,18 +1776,18 @@ void CloseAccountLimitedTool() {
 void CGameMode::ReceiveMacroBlackListResult(int result) {
   switch (result) {
   case MCD_TIMEOUT:
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_TIME_OVER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_TIME_OVER), 0, true, false, 0, "메시지", 280, 120, 0);
     GetRagConnection().Close();
     g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER), 0, true, false, 0, "메시지", 280, 120, 0);
     GetRagConnection().Close();
     g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACROBLACKLISTCHECKWND);
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_CORRECT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_CORRECT_ANSWER), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 }
@@ -1797,18 +1797,18 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
 void CGameMode::ReceiveMacroDetectorResult(int result) {
   switch (result) {
   case MCD_TIMEOUT:
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_TIME_OVER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_TIME_OVER), 0, true, false, 0, "메시지", 280, 120, 0);
     GetRagConnection().Close();
     g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER), 0, true, false, 0, "메시지", 280, 120, 0);
     GetRagConnection().Close();
     g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACRODETECTORWND);
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_CORRECT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_CORRECT_ANSWER), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 }
@@ -1857,7 +1857,7 @@ void CGameMode::ReceiveMacroReporterList(int count, const int* aids) {
 // FUNCTION: fn_21624
 void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
   if (2 == packet->type) {
-    g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_CLOSE_TIMEOUT), 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_CLOSE_TIMEOUT), 0, true, true, 0, "메시지", 280, 120, 0);
     g_windowMgr.LookupWindow(WID_ITEMSTOREWND)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_ITEMSTOREWND);
   } else if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMSTOREWND)) {
@@ -2633,7 +2633,7 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
     const int slots = g_session.extraInventorySlots + 100;
     const char* name = FindItemDescription(packet->itemId).identifiedName;
     const char* format = LookupMessage(MSI_INVENTORY_EXTEND);
-    const int answer = g_windowMgr.Confirm(FormatOwnedString(format, name, slots, nextSlots).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+    const int answer = g_windowMgr.Confirm(FormatOwnedString(format, name, slots, nextSlots).c_str(), 2, false, false, 0, "메시지", 280, 120, 0);
     if (answer != 187) {
       this->SendMsg(MM_CLOSE_MSGBOX_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
       break;
@@ -5000,7 +5000,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
 
   g_stoveMgr->m_pendingOperation = 0;
   if (message.size() != 0) {
-    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 }
 

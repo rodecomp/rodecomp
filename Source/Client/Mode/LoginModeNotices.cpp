@@ -93,7 +93,7 @@ void CLoginMode::ReceiveBillingInfo(const unsigned char* data) {
   }
 
   this->otpStarted = timeGetTime() + 90000;
-  g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(text, 0, true, true, 0, "메시지", 280, 120, 0);
 }
 
 // OFFSET: 0x00D9A9F0
@@ -126,7 +126,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     break;
   case BAN_NOT_SETTLED:
     strcpy(text, LookupMessage(MSI_NOT_SETTLED));
-    if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) == ID_YES) {
+    if (g_windowMgr.Confirm(text, 2, true, true, 0, "메시지", 280, 120, 0) == ID_YES) {
       g_modeMgr.Quit();
       this->OpenAccountRegistration();
     }
@@ -217,7 +217,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     char message[256];
     // GLOBAL: gl_25060
     sprintf(message, OBFUSCATE_ARRAY("%s(%d)", 0xBD2BA1C11B01E73BULL, std::uint8_t).Text(), text, packet->errorCode);
-    g_windowMgr.Confirm(message, 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message, 0, true, true, 0, "메시지", 280, 120, 0);
   }
 
   if (g_session.m_loginModeFlag == true) {

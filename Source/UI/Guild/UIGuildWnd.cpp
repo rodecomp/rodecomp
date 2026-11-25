@@ -2068,11 +2068,11 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       std::string body;
       body.assign(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (g_forbiddenWords.Contains(body.c_str()) == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (g_guildInfo.isMaster) {
@@ -2856,7 +2856,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_CHANGING_GUILD_MASTER), target.name.c_str(), target.name.c_str());
-        if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+        if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
           this->membersByCharacterId[static_cast<int>(target.characterId)].accountId = target.accountId;
@@ -3167,7 +3167,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     case ID_DISBAND_GUILD:
-      g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_WARNING), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_WARNING), 0, false, false, 0, "메시지", 280, 120, 0);
       g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_1);
       return 0;
     }
@@ -3193,7 +3193,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string path = FormatOwnedString("..\\..\\emblem\\%s", name.c_str());
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       if (!bitmap) {
-        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
 
@@ -3201,16 +3201,16 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         CFile file;
         if (file.Open(FormatOwnedString("..\\emblem\\%s", name.c_str()).c_str(), 0, true, false) == true) {
           if (g_guildMgr->m_timeout < file.GetSize()) {
-            g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
           } else {
             std::string uploadPath = FormatOwnedString("emblem\\%s", name.c_str());
             if (!g_emblemDataMgr->Upload(this->m_guildId, uploadPath)) {
-              g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "Message", 280, 120, 0);
+              g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "메시지", 280, 120, 0);
             }
           }
         }
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
       }
     }
     return 0;

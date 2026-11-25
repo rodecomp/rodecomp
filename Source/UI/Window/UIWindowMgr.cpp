@@ -1675,23 +1675,20 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
       }
     }
 
-    if (!forward) {
-      int& lastKey = g_session.m_currentHotkey;
-      if (lastKey == key || pressed != 0) {
-        if (lastKey != key) {
-          g_session.m_automaticSkills.DisableAll();
-        }
-        lastKey = key;
+    if (!forward && pressed != 0) {
+      if (g_session.automaticSkillHotkey != key) {
+        g_session.m_automaticSkills.DisableAll();
+      }
+      g_session.m_currentHotkey = key;
 
-        if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
-          return true;
+      if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
+        return true;
+      }
+      if (this->ProcessShortcutKey(action)) {
+        if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
+          this->imeInputActive = 0;
         }
-        if (this->ProcessShortcutKey(action)) {
-          if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
-            this->imeInputActive = 1;
-          }
-          return true;
-        }
+        return true;
       }
     }
   }
@@ -1709,7 +1706,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   if (UIBasicInfoWnd* basicInfoWnd = g_windowMgr.basicInfoWnd) {
     const bool linked = basicInfoWnd->HasTextLinks(std::string(text));
     if (linked) {
-      g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "메시지", 280, 120, 0);
       return;
     }
   }
@@ -2565,7 +2562,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (id == -1) {
       if (g_navigationManager.viewMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
           g_navigationManager.displayMode = 0;
           g_navigationManager.expandedMap = false;
           g_navigationManager.Reset(true);
@@ -2603,13 +2600,13 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->LookupWindow(WID_NEWSELECTCHARWND) && g_session.m_loginModeFlag == 1) {
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
       }
       return false;
     }
 
-    if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+    if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
       GetRagConnection().Close();
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
@@ -4642,7 +4639,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_SINGLEMAP_ONOFF + 100:
     if (g_modeMgr.GetGameMode()->canRotateView != 0) {
       if (!g_session.IsNavigationAllowed()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_16), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_16), 0, true, false, 0, "메시지", 280, 120, 0);
       } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
         g_windowMgr.EnsureWindow(WID_MINIMAPWND);
       }
@@ -4911,7 +4908,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   }
   case WID_NEWMAKECHARWND: {
     window = new UINewMakeCharWnd();
-    UIWindow* background = new UIRPImageWnd("", 1);
+    UIWindow* background = new UIRPImageWnd("유저인터페이스\\make_character_ver2\\bg_back2.tga", 1);
     background->SetSize(1028, 768);
     background->Move((g_renderer->viewport.width - 1028) / 2 - 2, (g_renderer->viewport.height - 768) / 2);
     this->AddRendered(background);

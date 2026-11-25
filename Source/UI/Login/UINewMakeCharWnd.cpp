@@ -557,10 +557,10 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
 
     if (this->m_nameEdit->Length() < 4) {
-      g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
     } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_makeCharItemLinkOpen.c_str())) != nullptr ||
         _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_makeCharItemLinkClose.c_str())) != nullptr) {
-      g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
     } else {
       int valid = TRUE;
       if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
@@ -575,7 +575,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
       if (!hasControlCharacter && allowed == TRUE && valid == TRUE && blank == FALSE) {
         if (this->m_nameEdit->Length() >= 24) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
           this->m_nameEdit->SetText("");
           return 0;
         }
@@ -600,13 +600,13 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         g_windowMgr.Schedule(this);
       } else {
         if (hasControlCharacter || !allowed) {
-          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         }
         if (!valid) {
-          g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "메시지", 280, 120, 0);
         }
         if (blank == TRUE) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         }
       }
 

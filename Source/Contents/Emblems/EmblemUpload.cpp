@@ -52,7 +52,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   case 2:
   case 3:
   case 4: {
-    g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
   default:

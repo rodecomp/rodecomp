@@ -496,7 +496,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       {
         const char* text = LookupMessage(error);
-        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "메시지", 280, 120, 0);
       }
       return 0;
     case 1:
@@ -518,7 +518,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       {
         const char* text = LookupMessage(error);
-        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "메시지", 280, 120, 0);
       }
       return 0;
     case 2: {
@@ -543,7 +543,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       {
         const char* text = LookupMessage(error);
-        g_windowMgr.Confirm(text, 0, false, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(text, 0, false, false, 0, "메시지", 280, 120, 0);
       }
       return 0;
     }
@@ -560,7 +560,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     default:
       return 0;
     }
-    g_windowMgr.Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(error), 0, false, false, 0, "메시지", 280, 120, 0);
     return 0;
   }
   case UM_SETINFO:
@@ -650,7 +650,7 @@ bool UIEntryQueueWnd::ConfirmApply(const char* type) {
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
-    return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES;
+    return g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES;
   }
 
   return false;

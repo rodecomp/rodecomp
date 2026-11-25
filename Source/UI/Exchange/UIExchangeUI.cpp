@@ -232,7 +232,7 @@ void CUIExchangeUI::SubmitZeny() {
     button->disabled = 1;
     button->Invalidate();
   } else {
-    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 }
 
@@ -372,7 +372,7 @@ void CUIExchangeUI::OnProcess() {
     amount = amount < 0 ? 0 : amount;
 
     if (amount > 1000000000) {
-      g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "메시지", 280, 120, 0);
       FormatGroupedInteger(1000000000, text, sizeof(text));
       this->zenyEdit->SetText(text);
       this->SetZeny(1000000000);
@@ -385,7 +385,7 @@ void CUIExchangeUI::OnProcess() {
 
     this->zenyEdit->SetCursor(this->zenyEdit->Length());
   } else {
-    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
     this->zenyEdit->SetText(this->zenyText);
   }
 }

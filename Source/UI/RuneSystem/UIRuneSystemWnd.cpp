@@ -1456,7 +1456,7 @@ void UIRune_Info::Paint() {
     this->geometry.surface->Dim(225, 84, bitmap->image.width, bitmap->image.height, 55);
   }
 
-  const std::string name = FormatOwnedString("Rune of %s", this->m_rune->GetName());
+  const std::string name = FormatOwnedString("%s의 룬 조각", this->m_rune->GetName());
   const int width = this->TextWidth(name.c_str(), name.size(), 0, 13, 1, 0);
   const int x = static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f + 2.0f);
   this->DrawTextAt(x, 25, name.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
@@ -1591,7 +1591,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       UIRuneSystemTab* tab = this->m_tab;
       tab->geometry.state = 0;
       tab->Invalidate();
-      g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_UNACTIVEDESC), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_UNACTIVEDESC), 0, true, false, 0, "메시지", 280, 120, 0);
     }
     this->Refresh();
     break;
@@ -1622,14 +1622,14 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     case RUNE_BUTTON_ACTIVATE:
       if (!this->m_runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "메시지", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_ACTIVATE, this->m_runeSet, -1);
       }
       break;
     case RUNE_BUTTON_GRADE:
       if (!this->m_runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "메시지", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, UM_SET_DISABLE, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_UPGRADE, this->m_runeSet, -1);
       }
@@ -1739,7 +1739,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems() + 8 >=
               g_session.extraInventorySlots + 100) {
-          g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_FAILED_ITEMCREATE), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_FAILED_ITEMCREATE), 0, true, false, 0, "메시지", 280, 120, 0);
         } else {
           ITEM_INFO item = g_session.LookupClientItem(this->m_itemId, 0);
           RuneDecomRequestPacket packet;
@@ -2213,7 +2213,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
   case UM_TEXT_LBTN_DblClk:
     if (CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2)) {
-      g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "메시지", 280, 120, 0);
     }
     break;
   case UM_SET_PRESSED:
@@ -2319,9 +2319,9 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     case ID_EQUIP:
       if (CRuneSystemMgr::GetInstance()->GetCurRuneSet()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_PUTERR), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_PUTERR), 0, true, false, 0, "메시지", 280, 120, 0);
       } else if (!argument2) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT), 0, true, false, 0, "메시지", 280, 120, 0);
       } else {
         RuneData* rune = reinterpret_cast<RuneData*>(argument2);
         RuneSetEquipPacket packet;
@@ -2334,8 +2334,8 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case RUNE_BUTTON_UNEQUIP: {
       RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
       if (!runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "메시지", 280, 120, 0);
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT), 2, true, false, 0, "메시지", 280, 120, 0) != ID_NO) {
         RuneSetEquipPacket packet;
         packet.id = ID_CZ_RUNESET_REQ_EQUIP;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());

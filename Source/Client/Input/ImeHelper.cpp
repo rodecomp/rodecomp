@@ -28,19 +28,19 @@ void NotifyImeHelper() {
 void HandleImeError(const int* error) {
   switch (*error) {
   case 0x8000E001:
-    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_ALREADY_RUNNING), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_ALREADY_RUNNING), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 0x8000E003:
-    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_MACRO), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_MACRO), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 0x8000E004:
-    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_SPEEDHACK), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_SPEEDHACK), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 0x8000E005:
-    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_APIHOOK), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_APIHOOK), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 0x8000E006:
-    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_MSGHOOK), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_SGP_CODE_DETECTED_MSGHOOK), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 

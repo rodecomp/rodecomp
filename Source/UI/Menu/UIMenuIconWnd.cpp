@@ -424,7 +424,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       case MENUICON_REC:
         if (Replay::Instance().state != 1) {
-          g_windowMgr.Confirm("REC End please", 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm("REC End please", 0, true, false, 0, "메시지", 280, 120, 0);
         } else {
           this->ToggleWindow(WID_REPLAYRECCONTROLWND);
         }
@@ -487,7 +487,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(WID_ADVENTUREGUIDE);
         break;
       case MENUICON_PROBABILITY:
-        if (g_windowMgr.Confirm(LookupMessage(MSI_ETC_PROBABILITY_WEB_CONNECT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ETC_PROBABILITY_WEB_CONNECT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
           ShellExecuteA(hWnd, "open", LookupMessage(MSI_ETC_PROBABILITY_URL), nullptr, nullptr, SW_SHOWNORMAL);
         }
         break;

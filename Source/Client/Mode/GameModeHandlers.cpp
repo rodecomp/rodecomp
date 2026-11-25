@@ -740,10 +740,10 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_DELETE*>(packet);
   switch (value->result) {
   case 2:
-    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_AD_DELETE_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_AD_DELETE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 3:
-    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_NOT_EXIST_AD), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_NOT_EXIST_AD), 0, true, false, 0, "메시지", 280, 120, 0);
     [[fallthrough]];
   case 0:
   case 1:
@@ -769,9 +769,9 @@ void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
       }
     }
   } else if (result == 2) {
-    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_FAILED_TIMEOUT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_FAILED_TIMEOUT), 0, true, false, 0, "메시지", 280, 120, 0);
   } else {
-    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_REGISTRATION_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_REGISTRATION_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 }
 
@@ -790,7 +790,7 @@ void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
   }
 
   if (size == 0) {
-    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_SEARCH_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_PARTY_SEARCH_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
     g_session.m_partyBooking.m_lastPage = false;
     window->Invalidate();
     return;
@@ -1995,31 +1995,31 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
     break;
   case 2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 3:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 4:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_HEAVY_INVENTORY)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_HEAVY_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_HEAVY_INVENTORY), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 5:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 7:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 8:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 
@@ -2201,7 +2201,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
   }
 
   const char* text = LookupMessage(message);
-  g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, false);
+  g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 280, 120, false);
   const char* notice = LookupMessage(message);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0x64FFFF, 0, 0, 0);
 }
@@ -2247,48 +2247,48 @@ int CGameMode::HandleRuneResult(int result) {
     return 0;
   case 1:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 3:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 4:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 5:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 6:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_ID)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_ID), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_ID), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 7:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 8:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 10:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 11:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 12:
   case 13:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
 

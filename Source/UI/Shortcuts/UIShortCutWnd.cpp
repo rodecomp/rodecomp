@@ -424,7 +424,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case TYPE_HEAL:
     case TYPE_SCHANGE:
     case TYPE_SPECIAL:
-      if (item.GetItemId() != ITEMID_TIME_GUARDIAN_BOX || g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+      if (item.GetItemId() != ITEMID_TIME_GUARDIAN_BOX || g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
         mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
       }
 
@@ -433,7 +433,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case TYPE_CASH_POINT_ITEM:
       if (g_session.m_manner >= 0) {
         const int result =
-          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0);
         if (result == ID_YES) {
           mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
         }
@@ -1262,7 +1262,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
       if (this->TextWidth(local.c_str(), 0, 0, 12, 0, 0) + 10 >= this->geometry.width - 0x32) {
-        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       }
       this->m_edit->Move(-100, -100);
       this->m_edit->SetText("");

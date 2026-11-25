@@ -692,7 +692,7 @@ int UIMacroReporterWnd::SendMsg(
           }
         }
         const int result = g_windowMgr
-                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0);
         if (result == ID_NO) {
           break;
         }

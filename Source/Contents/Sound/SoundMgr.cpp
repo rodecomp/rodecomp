@@ -179,7 +179,7 @@ bool CSoundMgr::Initialize() {
 
   switch (configuration.digitalRateType) {
   case 0:
-    this->rate = 44100;
+    this->rate = 22050;
     break;
   case 1:
     this->rate = 11025;

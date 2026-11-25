@@ -651,7 +651,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
         }
 
         StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
-        if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(message, 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
           info.key1 = 0;
           info.key2 = 0;
           info.text = "";

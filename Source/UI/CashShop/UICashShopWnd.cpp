@@ -465,7 +465,7 @@ void UICashShopWnd::Paint() {
     this->DrawTextAt(0x226, 0x1C2, LookupMessage(MSI_CASHSHOP_FREE_POINT_TO_USE), 0, 0, 0xC, 0, 0, 0);
     this->DrawRightAlignedText(0x2C4, 0x1C2, "C", 0, 0, 0xC, 0, 0);
     this->DrawTextAt(0x226, 0x1D2, LookupMessage(MSI_CASHSHOP_CASH_POINT), 0, 0, 0xC, 0, 0, 0);
-    this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", 0).c_str(), 0, 0, 0xC, 0, 0);
+    this->DrawRightAlignedText(0x2C4, 0x1D2, FormatOwnedString("%d C", this->m_cashPoints).c_str(), 0, 0, 0xC, 0, 0);
   }
 
   this->DrawCenteredText(0x228, 0x1EC, FormatOwnedString("%d C", this->m_totalPrice).c_str(), 0x9A, 0, 0xE, 0xFFFFFF, 1);
@@ -864,7 +864,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
         if (product != this->m_items.end()) {
           if (static_cast<int>(product->saleData.purchaseCount) <= 0) {
-            g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_DONT_MOVE_CART), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_DONT_MOVE_CART), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
             mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
             break;
           }
@@ -976,7 +976,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           break;
         }
 
-        g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       }
       return 0;
     }
@@ -1010,7 +1010,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         const ITEM_INFO& item = cartItems.front();
         const int itemCount = lists.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems() + item.quantity;
         if (g_session.m_weight > g_session.m_maxWeight * 0.7f || itemCount > g_session.extraInventorySlots + 100) {
-          g_windowMgr.Confirm(LookupMessage(MSI_PICKUP_FAILED_ITEMCREATE), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_PICKUP_FAILED_ITEMCREATE), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
           return 0;
         }
 
@@ -1021,7 +1021,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       const int points = atoi(this->m_pointsEdit->Text());
       const int price = this->m_totalPrice;
       if (price < points) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BUY_CASH_FAIL2), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BUY_CASH_FAIL2), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         return 0;
       }
 
@@ -1037,11 +1037,11 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
 
       if (this->m_totalPrice > available) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BUY_CASH_FAIL_MONEY), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BUY_CASH_FAIL_MONEY), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         return 0;
       }
 
-      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 0x118, 0x78, 0) != ID_YES) {
+      if (g_windowMgr.Confirm(text, 2, true, true, 0, "메시지", 0x118, 0x78, 0) != ID_YES) {
         return 0;
       }
 
@@ -1120,7 +1120,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
     const ITEM_INFO& item = *reinterpret_cast<const ITEM_INFO*>(argument1);
     if (argument2 == 0) {
-      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_DONT_MOVE_CART), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_DONT_MOVE_CART), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       return -1;
     }
 
@@ -1136,7 +1136,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_cartItems.end() == it) {
       if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
         const int result =
-          g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.displayName.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.displayName.c_str()).c_str(), 2, true, false, 0, "메시지", 0x118, 0x78, 0);
         if (result != ID_YES) {
           break;
         }
@@ -1144,14 +1144,14 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if (this->m_cartItems.size() >= 8) {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CASHSHOP_CANNOT_BUY_OVER), 8).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CASHSHOP_CANNOT_BUY_OVER), 8).c_str(), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         return -1;
       }
 
       ITEM_INFO entry(item);
       if (entry.saleData.purchaseCount != 0) {
         if (argument2 > entry.saleData.purchaseCount) {
-          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), entry.saleData.purchaseCount).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), entry.saleData.purchaseCount).c_str(), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         }
         if (argument2 > entry.saleData.purchaseCount) {
           argument2 = entry.saleData.purchaseCount;
@@ -1162,7 +1162,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SendMsg(this, UM_SCROLLVERT, 1, 0, 0, 0);
     } else {
       if (it->saleData.purchaseCount != 0 && it->quantity + argument2 > it->saleData.purchaseCount) {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), it->saleData.purchaseCount).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), it->saleData.purchaseCount).c_str(), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         argument2 = it->saleData.purchaseCount - it->quantity;
         if (argument2 == 0) {
           return -1;
@@ -1171,7 +1171,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       const int total = it->quantity + argument2;
       if (total > 100) {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         it->quantity = 100;
         this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
       } else {

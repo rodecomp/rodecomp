@@ -349,13 +349,13 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_CNT);
         break;
       case SSI_FAILED_LIMIT_SEARCH_TIME:
-        g_windowMgr.Confirm(LookupMessage(MSI_SSI_FAILED_LIMIT_SERACH_TIME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_SSI_FAILED_LIMIT_SERACH_TIME), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       case SSI_FAILED_SSILIST_CLICK_TO_OPEN_STORE:
         g_session.storeSearchX = -1;
         g_session.storeSearchY = -1;
         g_session.storeSearchOwnerAid = INVALID_AID;
-        g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAIL_OPEN_STORE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       this->m_searchPending = 0;
@@ -433,7 +433,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   }
 
   if (g_session.m_storeSearchPage != 0 &&
-      g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "Message", 0x118, 0x78, 0) != ID_YES) {
+      g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "메시지", 0x118, 0x78, 0) != ID_YES) {
     return;
   }
 

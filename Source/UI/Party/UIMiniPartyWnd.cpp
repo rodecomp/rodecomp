@@ -258,7 +258,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
     if (this->m_entries.empty()) {
-      g_windowMgr.Confirm(LookupMessage(MSI_GET_OFF_MINI_PARTYWND), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_GET_OFF_MINI_PARTYWND), 0, false, false, 0, "메시지", 280, 120, 0);
     } else {
       switch (this->m_entries[argument1].value) {
     case MENUID_SEND_MSG:
@@ -291,7 +291,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case MENUID_YIELD_PARTYMASTER:
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
             CMode* mode = g_modeMgr.currentMode;
             mode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
           }
@@ -344,7 +344,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_FRIEND_INFO:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "메시지", 280, 120, 0);
         }
       }
       break;
@@ -370,7 +370,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid) {
           if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
               CMode* mode = g_modeMgr.currentMode;
               mode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
             }
@@ -383,7 +383,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (!this->m_owner->GetMember().valid || !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
         }
       }
@@ -432,7 +432,7 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
         this->m_cell = cell;
         g_session.SetRecord0734Value(this->m_member.accountId, cell);
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_MOVE_MINI_PARTYWND), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_MOVE_MINI_PARTYWND), 0, true, false, 0, "메시지", 280, 120, 0);
       }
     }
   }

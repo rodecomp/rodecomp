@@ -438,7 +438,7 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
 
     this->rewards->SetRewardNpc(quest.npcSprite, quest.destinationMap, quest.destinationX, quest.destinationY);
   } else {
-    g_windowMgr.Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 
   this->firstContents->UpdateHeight();

@@ -237,7 +237,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else if (g_modeMgr.state == 0) {
-      g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "메시지", 280, 120, 0);
     } else {
       UIBroadcastBalloon* balloonWindow = g_modeMgr.GetGameMode()->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
@@ -625,7 +625,7 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     const auto& verbSource = verbSourceText.data;
     const char* verb = OBFUSCATE_DECRYPT(0x9B17C9EFDBB39F2FULL, verbSource);
     ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
-    if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == ID_YES) {
+    if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "메시지", 250, 170, 0) == ID_YES) {
       IAP_ConfirmPurchase(this->m_purchaseId, OnStovePurchaseConfirmed);
       g_stoveWaitingCallback = true;
       do {

@@ -1181,7 +1181,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
       if (!found) {
-        g_windowMgr.Confirm("not found quest info", 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm("not found quest info", 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
     }

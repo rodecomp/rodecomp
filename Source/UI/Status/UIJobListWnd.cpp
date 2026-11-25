@@ -134,7 +134,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     if (selected == 0) {
-      g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR1), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR1), 0, true, false, 0, "메시지", 280, 120, 0);
       return 0;
     }
 

@@ -194,7 +194,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           break;
         case UM_UPPUSH:
           if (g_session.m_manner >= 0) {
-            if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
             }
           }

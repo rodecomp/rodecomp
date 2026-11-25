@@ -3608,7 +3608,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonError(const unsigned 
   if (g_windowMgr.memorialDunWnd) {
     g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
     GetRagConnection().Close();
-    if (g_windowMgr.Confirm(LookupMessage(MSI_MEMORIAL_DUN_ERROR), 0, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_MEMORIAL_DUN_ERROR), 0, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
       this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
     }
   }
@@ -5465,7 +5465,7 @@ __declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packe
     return;
   }
 
-  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
   this->SendMsg(MM_REQ_CLOSE_BUYING_STORE, 0, 0, 0, 0);
 }
 
@@ -7485,7 +7485,7 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   const std::int64_t count = (p->length - 4) / sizeof(UIItemRepairEntry);
   if (count == 0) {
-    g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
     return;
   }
 
@@ -7708,7 +7708,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
     return;
   }
 
-  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
   this->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
 }
 
@@ -7739,7 +7739,7 @@ __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, in
     return;
   }
 
-  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
   this->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
 }
 
@@ -7754,7 +7754,7 @@ __declspec(noinline) void CGameMode::ReceiveAgitNotice(unsigned char agitId, int
   const char* agitName = nullptr;
   g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
   sprintf_s(text, LookupMessage(MSI_GUILD_AGIT_SHOW_INVESTMENT_INFO), agitName, second, 100, first, 100);
-  g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
+  g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 250, 130, 0);
 }
 
 struct ItemFallEntry {
@@ -8209,7 +8209,7 @@ void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
       );
       std::sprintf(text, LookupMessage(MSI_BUYINGSTORE_OVERWEIGHT), overweight);
     }
-    g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case 9:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -9123,7 +9123,7 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
   if (text.size() == 0) {
     text = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
   }
-  g_windowMgr.Confirm(text.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(text.c_str(), 0, true, true, 0, "메시지", 280, 120, 0);
   this->SendMsg(MM_QUIT, 0, 0, 0, 0);
 }
 
@@ -11805,7 +11805,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
         g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
       }
     } else {
-      g_windowMgr.Confirm(LookupMessage(MSI_PRESS_ESC_TO_RESTART), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_PRESS_ESC_TO_RESTART), 0, true, false, 0, "메시지", 280, 120, 0);
     }
     RefreshPartyWindows(&g_session);
     break;
@@ -23423,8 +23423,8 @@ static_assert(sizeof(PACKET_ZC_AUTOSPELLLIST) == 0x1E);
 void CGameMode::ProcessIncomingPackets() {
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!g_replayAnimationScaling) {
-    const std::uint32_t elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
-    if (elapsedHours != 0 && g_playTimeNoticeHours != elapsedHours) {
+    const int elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
+    if (elapsedHours > 0 && g_playTimeNoticeHours != elapsedHours) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
         std::uint32_t color = 0x62B0FF;
         BroadcastBalloonMessage message;
@@ -25967,7 +25967,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       g_session.ClearMerchantPurchaseSavedItems();
       if (g_windowMgr.chatRoomWnd || g_windowMgr.chatRoomMakeWnd) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
         this->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
       } else if (UIMerchantShopMakeWnd *window = static_cast<UIMerchantShopMakeWnd *>(g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND))) {
         window->AddActionButton();
@@ -25993,7 +25993,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEWND);
         g_session.ClearItems1760And1748();
         g_session.ClearMerchantPurchaseItems();
-        g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_MAKING_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_MAKING_FAIL), 0, true, false, 0, "메시지", 280, 120, 0);
         g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         break;
       case OPENSTORE2_NOVENDING:
@@ -26620,7 +26620,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       unsigned int count = static_cast<unsigned int>(packet->length - 4) >> 4;
       if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       g_windowMgr.CloseWindow(WID_MAKETARGETLISTWND);
@@ -26665,7 +26665,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       const int count = static_cast<unsigned int>(packet->length - 4) / 23;
       if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
@@ -26680,7 +26680,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       const int count = static_cast<unsigned int>(packet->length - 4) / 23;
       if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       if (g_windowMgr.LookupWindow(WID_WEAPONREFINEWND)) {

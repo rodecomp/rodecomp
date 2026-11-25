@@ -1019,7 +1019,7 @@ void ApplyServiceOptionAskOnDisable(int id, bool value, bool notify, int enabled
   }
 
   if (!value &&
-      g_windowMgr.Confirm(LookupMessage(MSI_PETINFO_ALERT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_NO) {
+      g_windowMgr.Confirm(LookupMessage(MSI_PETINFO_ALERT), 2, true, false, 0, "메시지", 0x118, 0x78, 0) == ID_NO) {
     g_serviceOptions.Set(TT_PETINFO_ALERT_ONOFF, 1);
     g_windowMgr.RefreshGameSettingOption(0x128);
     return;
@@ -1189,7 +1189,7 @@ void ApplyServiceOptionWeatherFlag(int id, bool value, bool notify, int enabledM
 // FUNCTION: fn_06364
 void ApplyServiceOptionWindow27() {
   if (g_windowMgr.merchantItemMyShopWnd != 0) {
-    g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
     return;
   }
 
@@ -1219,7 +1219,7 @@ void ApplyServiceOptionJitterScale(int id, bool value, bool notify, int enabledM
   }
 
   if (value) {
-    g_serviceOptionJitterScale = 730.0f;
+    g_serviceOptionJitterScale = 480.0f;
   } else {
     g_serviceOptionJitterScale = g_jitterDistanceScale;
   }
@@ -1429,7 +1429,7 @@ void CSession::LoadOptionInfo() {
 
   Singleton<CGameSettingsMgr>::GetInstance();
   ::SetOption(LookupMessage(MSI_EXPAND_SIGHT), this->GetOptionInteger(LookupMessage(MSI_EXPAND_SIGHT), 0) != 0);
-  g_serviceOptionJitterScale = g_serviceOptions.Get(TT_EXPAND_SIGHT_ON_OFF) ? 730.0f : g_jitterDistanceScale;
+  g_serviceOptionJitterScale = g_serviceOptions.Get(TT_EXPAND_SIGHT_ON_OFF) ? 480.0f : g_jitterDistanceScale;
 
   if (g_outdoorCameraPitch < -65.0f) {
     g_outdoorCameraPitch = -65.0f;

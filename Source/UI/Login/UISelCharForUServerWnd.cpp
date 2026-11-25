@@ -141,7 +141,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
   switch (argument1) {
   case ID_OK: {
-    if (g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_SELECT_CHARACTERS), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_SELECT_CHARACTERS), 2, false, false, 0, "메시지", 280, 120, 0) != ID_YES) {
       return 0;
     }
 
@@ -168,14 +168,14 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       return 0;
     }
 
-    g_windowMgr.Confirm(LookupMessage(MSI_NO_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NO_SELECT_CHARACTERS), 0, true, true, 0, "메시지", 280, 120, 0);
     break;
   }
   case ID_CHECK:
     const int checkedCount = this->m_checkedCount + (sender->geometry.state != 0 ? 1 : -1);
     this->m_checkedCount = checkedCount;
     if (checkedCount > 9) {
-      g_windowMgr.Confirm(LookupMessage(MSI_ERROR_SELECT_CHARACTERS), 0, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_ERROR_SELECT_CHARACTERS), 0, true, true, 0, "메시지", 280, 120, 0);
       static_cast<UICheckBox*>(sender)->SetChecked(0);
     }
     break;

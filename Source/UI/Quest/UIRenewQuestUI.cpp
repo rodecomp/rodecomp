@@ -955,7 +955,7 @@ void CUIRenewQuestUI::SelectQuest(unsigned int questId) {
   }
 
   std::string text = std::format("Not found Quest Info = %lu", questId);
-  g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
 }
 
 // OFFSET: 0x00A59940

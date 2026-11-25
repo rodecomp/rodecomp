@@ -1100,7 +1100,7 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     }
 
     if ((this->tabPadding + this->TextWidth(text.c_str(), 0, 0, this->fontSize, 0, 0)) * this->TabCount() >= this->parent->geometry.width - 90) {
-      g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "메시지", 280, 120, 0);
     } else {
       this->labels[this->activeTabIndex] = text;
       const int previousWidth = this->geometry.width;

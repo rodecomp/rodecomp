@@ -302,7 +302,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         if (!g_windowMgr.merchantShopMakeWnd && !g_windowMgr.merchantItemMyShopWnd) {
           g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
         } else {
-          g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
         }
       }
       break;

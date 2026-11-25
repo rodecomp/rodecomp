@@ -98,20 +98,20 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
     switch (a) {
     case ID_OK: {
       if (GetNavigationLinkParser()->HasLink(this->m_edit->Text()) == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       std::string name(this->m_edit->Text());
       if (name.find('\n', 0) != std::string::npos) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS), 0, true, false, 0, "메시지", 280, 120, 0);
         this->m_edit->SetText("");
         break;
       }
 
       if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_edit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "메시지", 280, 120, 0);
         this->m_edit->SetText("");
         break;
       }
@@ -121,13 +121,13 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         const int blank = g_session.IsBlankString(this->m_edit->Text());
         if (allowed && !blank) {
           if (this->m_edit->Length() >= 24) {
-            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
             this->m_edit->SetText("");
             break;
           }
 
           if (!this->IsNameWithinLimit(this->m_edit->Text(), 24)) {
-            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
             this->m_edit->SetText("");
             break;
           }
@@ -159,7 +159,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
 
           char text[300];
           std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
-          if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+          if (g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
             CharacterRenamePacket packet;
             packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
             packet.gid = this->m_character->gid;
@@ -171,14 +171,14 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
           }
         } else {
           if (!allowed) {
-            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
           }
           if (blank) {
-            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
           }
         }
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
       }
       break;
     }

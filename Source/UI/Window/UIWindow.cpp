@@ -3211,7 +3211,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     case ID_CLOSE:
       if (g_navigationManager.viewMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
           g_navigationManager.SetViewMode(1);
           g_navigationManager.displayMode = 0;
           g_navigationManager.ClearSavedTarget();

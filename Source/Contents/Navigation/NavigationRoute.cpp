@@ -434,7 +434,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
   }
 
   if (mode == 0 || mode == 2) {
-    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
     if (mode == 4) {
       const int count = static_cast<int>(g_navigationManager.nodes.size());
       CNavi_Object* node = count == 0 ? nullptr : g_navigationManager.nodes[0];
@@ -442,7 +442,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
       text += node->GetName();
       text += " ";
       text += static_cast<CNavi_Link*>(node)->GetLinkedName();
-      g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
     }
   }
 }
@@ -1614,7 +1614,7 @@ bool CNavigationManager::CollectStartLinks() {
     const std::string resolved = ResourceMgr::Instance().ResolveMapName(g_session.m_navigationPlayerMap);
     info = this->FindObject(resolved.c_str());
     if (info == nullptr) {
-      g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_UNKNOWNMAP), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_UNKNOWNMAP), 0, true, false, 0, "메시지", 280, 120, 0);
       return false;
     }
   }

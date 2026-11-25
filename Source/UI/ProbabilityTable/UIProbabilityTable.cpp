@@ -474,7 +474,7 @@ void CUIProbabilityTable::Search() {
     current->SelectIndex(index);
     this->m_list->RebindIndex(this->m_list->selected);
   } else {
-    g_windowMgr.Confirm(LookupMessage(MSI_NO_SEARCH_RESULTS), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NO_SEARCH_RESULTS), 0, true, false, 0, "메시지", 280, 120, 0);
   }
 
   this->m_lastSearch = keyword;

@@ -1806,7 +1806,7 @@ void CUIGameSettingsUI::OnTitleIconClick() {
 // FUNCTION: fn_45480
 void CUIGameSettingsUI::OnApply() {
   const bool modified = this->m_graphicsPage->IsModified();
-  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_WARNING_RESTART : MSI_GRAPHIC_SETTING_APPLY), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
+  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_WARNING_RESTART : MSI_GRAPHIC_SETTING_APPLY), 2, true, false, 0, "메시지", 280, 120, 0) != ID_NO) {
     this->m_graphicsPage->ApplySettings();
     this->UpdateApplyButton();
   }
@@ -3447,7 +3447,7 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
 // OFFSET: 0x00A3F180
 // FUNCTION: fn_15940
 void CUIGameSettingsUI::ResetToDefaults() {
-  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_WARNING_RESET), 2, true, false, 0, "Message", 280, 120, 0) == ID_NO) {
+  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_WARNING_RESET), 2, true, false, 0, "메시지", 280, 120, 0) == ID_NO) {
     return;
   }
 

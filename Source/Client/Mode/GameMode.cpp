@@ -2774,7 +2774,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       const char* name = reinterpret_cast<const char*>(argument1);
       if (std::strlen(name) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       PACKET_CZ_REQ_JOIN_GUILD2 packet;
@@ -2823,7 +2823,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_REQ_JOIN_GROUP: {
       const char* name = reinterpret_cast<const char*>(argument1);
       if (std::strlen(name) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       PACKET_CZ_PARTY_JOIN_REQ packet;
@@ -2877,7 +2877,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_CONFORM_MAKEGROUP: {
       if (g_forbiddenWords.Contains(g_session.partyRequestName.c_str())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       unsigned char packet[28];
@@ -2947,7 +2947,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (result == -2) {
         Replay::Instance().SetState(1);
-        g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_THESAMEFILEEXISTS), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_THESAMEFILEEXISTS), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       char message[50]{};
@@ -3200,7 +3200,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(packet.key, name, 39);
       packet.key[39] = 0;
       if (std::strcmp(name, g_guildInfo.guildName.c_str()) != 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_DISORGANIZE_GUILD_FAILURE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_DISORGANIZE_GUILD_FAILURE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
@@ -3297,7 +3297,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
               g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARTY_NOT_LEAVE_PARTY_UNTIL_YIELD_PARTYMASTER)), 0xFF, 0, 0, 0);
               return 0;
             }
-            if (g_windowMgr.Confirm(LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_PARTY_DO_YOU_WANT_BREAKING_UP), 2, false, false, 0, "메시지", 280, 120, 0) != ID_YES) {
               return 0;
             }
           }
@@ -3678,7 +3678,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (argument1 != 0) {
         const std::string text(reinterpret_cast<const char*>(argument1));
         if (text.size() >= 24) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
           return 0;
         }
         std::memcpy(packet.receiveName, text.c_str(), 24);
@@ -4132,7 +4132,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             return 0;
           }
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CONFIRM), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CONFIRM), 2, false, false, 0, "메시지", 280, 120, 0) != ID_YES) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_CANCEL)), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -4153,11 +4153,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       const char* name = reinterpret_cast<const char*>(argument1);
       if (_mbsstr(reinterpret_cast<const unsigned char*>(name), reinterpret_cast<const unsigned char*>("#"))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (std::strlen(name) >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
@@ -4562,11 +4562,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       if (g_serviceType == ServiceBrazil && std::strchr(name, 0x2323)) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BILLING_1), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BILLING_1), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (length >= 24) {
-        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (g_modeMgr.GetGameMode()->scene->player->hasSp == 1) {
@@ -4737,7 +4737,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_SEND_MAIL: {
       const auto& request = *reinterpret_cast<const RodexSendMailRequest*>(argument1);
       if (g_forbiddenWords.Contains(request.title.c_str()) || g_forbiddenWords.Contains(request.body.c_str())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ERROR_INCLUDE_VALGARISM), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ERROR_INCLUDE_VALGARISM), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         return 0;
       }
       g_session.RestoreSelectionItems();
@@ -5103,7 +5103,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->noMove = 1;
       this->noMoveStartTick = timeGetTime();
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER), 0, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
       }
       return 0;
@@ -5594,7 +5594,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
         this->isDragAllowed = 0;
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      g_windowMgr.Confirm(LookupMessage(MSI_UNEQUIP_ARROW), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_UNEQUIP_ARROW), 0, true, false, 0, "메시지", 280, 120, 0);
       return true;
     }
   }
@@ -7251,7 +7251,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
       GetRagConnection().SetBlock(1);
     } else {
       GetRagConnection().Close();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
       }
       return;
@@ -7967,7 +7967,6 @@ void CGameMode::InitializeState() {
   if (g_session.m_searchStoreInfoCreated) {
     g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
   }
-  g_windowMgr.EnsureWindow(WID_OPENROULLETTEWND);
 
   if (g_session.showCameraInfo) {
     g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
@@ -9236,7 +9235,7 @@ int CGameMode::ProcessGroundClick(int result) {
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
         shop->SetSelection(static_cast<short>(column), static_cast<short>(pickedRow));
-        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
           shop->SendShopRequest();
           return -1;
         }
@@ -10716,11 +10715,11 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SHOW_BUILD_INFO: {
     char text[1024];
     std::memset(text, 0, sizeof(text));
-    sprintf_s(text, sizeof(text), "build : %s - %s", "Feb 11 2026", "10:21:26");
+    sprintf_s(text, sizeof(text), "build : %s - %s", "Feb 11 2026", "10:22:12");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     sprintf_s(text, sizeof(text), "ver : %d.%d.%d", 14, 2, 3);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
-    sprintf_s(text, sizeof(text), "s/n : %s", "");
+    sprintf_s(text, sizeof(text), "s/n : %s", "XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     _snprintf_s(text, _TRUNCATE, "verification : %s", "XXXXXXX");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);

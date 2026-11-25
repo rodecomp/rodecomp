@@ -410,7 +410,7 @@ void UIGradeEnchantWnd::OnLBtnUp(int x, int y) {
 
   if (this->selectedMaterial != row) {
     if (this->blessingAmount > 0) {
-      g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), 0, true, false, 0, "메시지", 280, 120, 0);
     }
 
     this->selectedMaterial = row;
@@ -575,7 +575,7 @@ int UIGradeEnchantWnd::SendMsg(
         if (g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity >= this->materials[this->selectedMaterial].amount) {
           if (g_session.m_zeny >= this->SelectedMaterialZeny()) {
             if (this->protect != 0 || this->blessingAmount != 0 ||
-                g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
+                g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT), 2, true, false, 0, "메시지", 280, 120, 0) != ID_NO) {
               this->requestPending = 1;
 
               GradeEnchantRequestPacket packet;

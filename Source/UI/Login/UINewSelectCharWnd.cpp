@@ -361,7 +361,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
       char message[260];
       std::memset(message, 0, sizeof(message));
       std::sprintf(message, LookupMessage(MSI_CHARACTERERROR_JOB), index, 0x9C41);
-      g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       break;
     }
@@ -582,7 +582,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
             char text[260];
             std::memset(text, 0, sizeof(text));
             std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
-            g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(text, 0, true, true, 0, "메시지", 0x118, 0x78, 0);
             this->m_navigationBlocked = false;
             return 0;
           }
@@ -644,12 +644,12 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           char text[260];
           std::memset(text, 0, sizeof(text));
           std::sprintf(text, LookupMessage(MSI_BLOCKED), blocked[index].expireDate);
-          g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(text, 0, true, true, 0, "메시지", 0x118, 0x78, 0);
           return 0;
         }
       }
 
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
         this->m_navigationBlocked = true;
         if (g_windowMgr.RunEmailAddress() == ID_OK) {
           g_modeMgr.currentMode->SendMsg(MM_COMMAND, LMM_DELETE_CHARACTER, 0, 0, 0);
@@ -662,10 +662,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CANCEL:
       g_accountLinkedUserDataMgr->Save();
       if (g_session.m_loginModeFlag == 1) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
         }
-      } else if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -721,7 +721,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       char text[260];
       std::memset(text, 0, sizeof(text));
       g_modeMgr.currentMode->SendMsg(LMM_GET_BILLING_INFO, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-      g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(text, 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       break;
     }
     case ID_CHANGE_NAME: {
@@ -784,7 +784,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case SELECTCHAR_BUTTON_SLOT_MOVE_CONFIRM: {
       const int selected = g_charInfo.slot;
-      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;

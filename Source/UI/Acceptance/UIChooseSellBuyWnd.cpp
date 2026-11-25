@@ -816,7 +816,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (argument1) {
   case ID_BUTTON1:
     if (!g_session.IsNavigationAllowed()) {
-      g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_16), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_16), 0, true, false, 0, "메시지", 280, 120, 0);
     } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
       g_windowMgr.EnsureWindow(WID_MINIMAPWND);
     }
@@ -3191,7 +3191,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           return 0;
         }
         menu->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>("Cart Off"), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>("카트 해제"), 0, 0, 0);
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(notice.c_str()), 0, 0, 0);
         menu->SendMsg(nullptr, UM_SET_CALLER_WID, 10, 0, 0, 0);
         menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
@@ -5339,7 +5339,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         char text[24];
         std::sprintf(text, "%s ", this->zenyEdit->Text());
         if (!g_session.IsNumberWithCommas(text)) {
-          g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
           break;
         }
 
@@ -5930,20 +5930,20 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
 
       if (this->m_titleEdit->Length() == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ROOM_TITLE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ROOM_TITLE), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
         const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
-        g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       ChatRoomSetting setting;
@@ -6034,20 +6034,20 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     switch (a) {
     case ID_OK: {
       if (this->m_titleEdit->Length() == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ROOM_TITLE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ROOM_TITLE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       if (this->m_passwordEdit->Length() < 4 && this->m_public == 1) {
         const char* message = LookupMessage(this->m_passwordEdit->Length() != 0 ? 16 : 15);
-        g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(message, 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       ChatRoomSetting setting;
@@ -6671,7 +6671,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       } else {
         FormatMessageBuffer(text, LookupMessage(MSI_BUY_RECONFIRM1_2019), this->m_totalPrice);
       }
-      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) != ID_YES) {
+      if (g_windowMgr.Confirm(text, 2, true, true, 0, "메시지", 280, 120, 0) != ID_YES) {
         break;
       }
 
@@ -6722,7 +6722,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           }
         }
         if (g_session.GetInventoryCategorySize(10) == 0) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
         }
         this->m_searchEdit->SetText("");
         this->SendMsg(this, UM_COMMAND, 398, 0, 0, 0);
@@ -6846,13 +6846,13 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         for (ITEM_INFO& entry : this->items) {
           if (std::atoi(entry.itemId.c_str()) == std::atoi(mode->drag.name.c_str())) {
             if (entry.quantity <= 0) {
-              g_windowMgr.Confirm(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_MSG), 0, true, false, 0, "Message", 280, 120, 0);
+              g_windowMgr.Confirm(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_MSG), 0, true, false, 0, "메시지", 280, 120, 0);
               mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
               return 0;
             }
             if (mode->drag.quantity + owned > entry.quantity) {
               ModeDragState saved = mode->drag;
-              g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), entry.quantity).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+              g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), entry.quantity).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
               mode->drag = saved;
               mode->drag.quantity = entry.quantity - owned;
               break;
@@ -8876,7 +8876,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 0;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
@@ -8898,7 +8898,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 1;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
@@ -8918,7 +8918,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
           this->FillRegion(111, 118, 98, 14, 0xFFFFFF);
         } else {
-          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
           this->activeInputY = this->newPasswordY;
           this->passwordStage = 2;
           this->inputDigitCount = 0;
@@ -8944,7 +8944,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             mode->SendMsg(MM_STORE_PASSWORD, password, g_session.m_storePasswordMode, newPassword, 0);
             g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           } else {
-            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
             this->passwordStage = 2;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
@@ -8956,7 +8956,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           }
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 3;
         this->activeInputY = this->confirmPasswordY;
         this->inputDigitCount = 0;
@@ -8984,7 +8984,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM1:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9008,7 +9008,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM0:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9029,7 +9029,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM2:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9050,7 +9050,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM3:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9071,7 +9071,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM4:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9092,7 +9092,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM5:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9113,7 +9113,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM6:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9134,7 +9134,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM7:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9155,7 +9155,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM8:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9176,7 +9176,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM9:
       if (++this->inputDigitCount > 8) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -9723,7 +9723,7 @@ void UIExchangeWnd::OnProcess() {
   char text[24];
   std::sprintf(text, "%s ", this->zenyEdit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
-    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
     this->zenyEdit->SetText(this->m_moneyText.c_str());
     g_windowMgr.SetFocus(this->zenyEdit);
     return;
@@ -9731,7 +9731,7 @@ void UIExchangeWnd::OnProcess() {
 
   std::int64_t money = std::max<std::int64_t>(_atoi64(text), 0);
   if (money > 1000000000) {
-    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
       FormatGroupedInteger(1000000000LL, text, sizeof(text));
       this->zenyEdit->SetText(text);
       money = 1000000000;
@@ -10991,7 +10991,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->DisableButtons();
         break;
       }
-      g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
       this->passwordStage = 0;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
@@ -11001,7 +11001,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       break;
     case ID_CANCEL:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -11021,7 +11021,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         this->DisableButtons();
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 0;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
@@ -11045,7 +11045,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->activeInputY = this->currentPasswordY;
         this->passwordStage = 1;
         this->inputDigitCount = 0;
@@ -11068,7 +11068,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           this->actionButtons[3]->Enable(0);
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 2;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
@@ -11092,7 +11092,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
             this->DisableButtons();
           } else {
-            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
             this->passwordStage = 2;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
@@ -11106,7 +11106,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
           }
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 3;
         this->activeInputY = this->confirmPasswordY;
         this->inputDigitCount = 0;
@@ -11145,7 +11145,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
 
     case ID_STORE_PASSWORD_NUM1:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11171,7 +11171,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
 
     case ID_STORE_PASSWORD_NUM0:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11191,7 +11191,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM2:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11211,7 +11211,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM3:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11231,7 +11231,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM4:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11251,7 +11251,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM5:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11271,7 +11271,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM6:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11291,7 +11291,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM7:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11311,7 +11311,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM8:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11331,7 +11331,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_STORE_PASSWORD_NUM9:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11407,7 +11407,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->DisableButtons();
         break;
       }
-      g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
       this->passwordStage = 0;
       this->activeInputY = this->currentPasswordY;
       this->inputDigitCount = 0;
@@ -11417,7 +11417,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       break;
     case ID_CANCEL:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -11437,7 +11437,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->DisableButtons();
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 0;
         this->activeInputY = this->currentPasswordY;
         this->inputDigitCount = 0;
@@ -11471,7 +11471,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->actionButtons[3]->Enable(0);
           break;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         this->passwordStage = 2;
         this->activeInputY = this->newPasswordY;
         this->inputDigitCount = 0;
@@ -11493,7 +11493,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
             this->DisableButtons();
           } else {
-            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "메시지", 280, 120, 0);
             this->passwordStage = 2;
             this->activeInputY = this->newPasswordY;
             this->inputDigitCount = 0;
@@ -11506,7 +11506,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             this->actionButtons[3]->Enable(1);
           }
         } else {
-          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
           this->passwordStage = 3;
           this->activeInputY = this->confirmPasswordY;
           this->inputDigitCount = 0;
@@ -11545,7 +11545,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM1:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11571,7 +11571,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     case ID_STORE_PASSWORD_NUM0:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11591,7 +11591,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM2:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11611,7 +11611,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM3:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11631,7 +11631,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM4:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11651,7 +11651,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM5:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11671,7 +11671,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM6:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11691,7 +11691,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM7:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11711,7 +11711,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM8:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -11731,7 +11731,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_STORE_PASSWORD_NUM9:
       if (++this->inputDigitCount > this->passwordLength) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_6), 0, true, false, 0, "메시지", 280, 120, 0);
         break;
       }
       switch (this->passwordStage) {
@@ -12272,8 +12272,7 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       const int scrollBarWidth = list->verticalBar ? list->verticalBar->geometry.width : 0;
       const int listWidth = list->geometry.width;
       const int overflowWidth = list->contentWidth + list->textInset * 2 - listWidth + scrollBarWidth;
-      const int maximumGrowWidth = 0;
-      const int growWidth = std::min(std::max(0, overflowWidth), maximumGrowWidth);
+      const int growWidth = std::max(0, overflowWidth);
       int growHeight;
       if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
         growHeight = list->lineHeight;

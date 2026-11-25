@@ -25,7 +25,7 @@ void CRenderer::SetSize(int columns, int rows) {
 
   this->viewport.uiScaleX = static_cast<float>(columns) / 640.0f;
   const float height = (static_cast<float>(rows) * 1.34f) / 768.0f;
-  this->viewport.uiScaleY = static_cast<float>(rows) / 730.0f;
+  this->viewport.uiScaleY = static_cast<float>(rows) / 480.0f;
   g_heightScale = height;
   g_tangent = g_projectionScale / this->viewport.uiScaleY;
   g_cotangent = g_projectionScale / this->viewport.uiScaleY;

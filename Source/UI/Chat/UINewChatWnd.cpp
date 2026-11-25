@@ -549,7 +549,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int subCount = static_cast<int>(g_session.m_subChatWnds.size());
       const int total = noSubCount + subCount;
       if (total == this->m_maxTabs) {
-        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_ADD_TAB), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_FAILED_ADD_TAB), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         return 0;
       }
 

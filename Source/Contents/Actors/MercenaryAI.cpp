@@ -815,7 +815,7 @@ int AiTraceAI(lua_State* state) {
   const int hour = (time >> 16) & 0xFF;
   const int minute = (time >> 8) & 0xFF;
   const int second = time & 0xFF;
-  sprintf(stamp, "%d/%d/%d - %d:%d:%d", year, month, day, hour, minute, second);
+  sprintf(stamp, "%d년 %d월 %d일 %d시 %d분 %d초 ", year, month, day, hour, minute, second);
   file.Write(stamp, std::strlen(stamp));
   file.Write(text, std::strlen(text));
   file.Write("\r\n", 2);

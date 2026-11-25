@@ -1373,7 +1373,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_SKILLLISTWND);
       break;
     case ID_APPLY:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         this->ApplySkillPoints();
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {

@@ -113,7 +113,7 @@ void UIPetEvolutionWnd::Paint() {
   int index = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++index) {
     std::memset(text, 0, sizeof(text));
-    std::sprintf(text, "%dea", it->second);
+    std::sprintf(text, "%d개", it->second);
     UITextButton* button = this->m_materialButtons[index];
     this->DrawTextAt(button->geometry.width + button->geometry.x + 10, button->geometry.y + 1, text, 0, 0, 12, 0, 1, 0
     );

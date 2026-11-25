@@ -142,7 +142,7 @@ void CRenderer::DrawHourlyBanner() {
     return;
   }
 
-  CTexture* texture = g_texMgr.Load("유저인터페이스\\", 0, false, true, false);
+  CTexture* texture = g_texMgr.Load("유저인터페이스\\T_GameGrade.tga", 0, false, true, false);
   if (texture != nullptr) {
     RECT rect;
     rect.bottom = texture->Height() + 45;

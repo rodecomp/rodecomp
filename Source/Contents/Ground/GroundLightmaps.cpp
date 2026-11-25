@@ -71,7 +71,7 @@ void GroundLightmapSet::Build(CGndRes& resource) {
       }
     }
 
-    this->lightmapTextures.push_back(g_texMgr.Upload(256, 256, pixels.data(), 4, 0, false, false, false));
+    this->lightmapTextures.push_back(g_texMgr.Upload(256, 256, pixels.data(), 1, 0, false, false, false));
   }
 
   for (int index = 0; index < this->lightmapCount; ++index) {

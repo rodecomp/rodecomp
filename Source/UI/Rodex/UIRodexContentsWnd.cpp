@@ -314,7 +314,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(mailId);
         if (mail != g_rodexMailStore->m_mails0.end()) {
           if ((mail->second.type & 6) == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->inboxType, 0, 0);
               if (g_windowMgr.rodexContentsWnd != 0) {
                 g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
@@ -329,7 +329,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         RodexMailMap::iterator mail = g_rodexMailStore->m_mails1.find(mailId);
         if (mail != g_rodexMailStore->m_mails1.end()) {
           if ((mail->second.type & 6) == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->inboxType, 0, 0);
               if (g_windowMgr.rodexContentsWnd != 0) {
                 g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
@@ -344,7 +344,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         RodexMailMap::iterator mail = g_rodexMailStore->m_mails2.find(mailId);
         if (mail != g_rodexMailStore->m_mails2.end()) {
           if ((mail->second.type & 6) == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.GetGameMode()->SendMsg(MM_DELETE_MAIL, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->inboxType, 0, 0);
               if (g_windowMgr.rodexContentsWnd != 0) {
                 g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);

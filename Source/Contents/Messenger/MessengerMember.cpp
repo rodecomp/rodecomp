@@ -1607,7 +1607,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     MessengerMember member = this->MemberAtIndex(this->selected);
     if (member.name.find(g_messengerNamelessTag, 0) != std::string::npos) {
-      g_windowMgr.Confirm(LookupMessage(MSI_CALLING_USERNAME), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_CALLING_USERNAME), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
       return 0;
     }
     if (!member.valid) {
@@ -1645,7 +1645,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid && !target.offline) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_GROUP_CHANGE_MASTER, target.accountId, 0, 0, 0);
           }
         } else {
@@ -1709,7 +1709,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
-          g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         }
       }
       return 0;
@@ -1747,11 +1747,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == 0) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.currentMode->SendMsg(MM_DELETE_FRIEND, member.accountId, member.characterId, 0, 0);
             }
           } else if (!(member.name == g_session.DecodePlayerName())) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
               g_modeMgr.currentMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
             }
           }
@@ -1765,7 +1765,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           }
         }
@@ -1880,7 +1880,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_LEAVE_PARTY:
       if (!g_session.m_lockMouse) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           if (g_windowMgr.partyInvitationToWnd) {
             g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
@@ -1900,7 +1900,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           if (g_session.partyLeader) {
             g_windowMgr.EnsureWindow(WID_PARTYINVITATIONTOWND);
           } else {
-            g_windowMgr.Confirm(LookupMessage(MSI_YOU_ARE_NOT_PARTYMASTER), 4, true, false, 0, "Message", 0x118, 0x78, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_YOU_ARE_NOT_PARTYMASTER), 4, true, false, 0, "메시지", 0x118, 0x78, 0);
           }
         }
         if (this->mode == 1) {
