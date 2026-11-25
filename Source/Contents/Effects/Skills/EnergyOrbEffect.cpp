@@ -165,9 +165,10 @@ __forceinline void CEnergyOrbEffect::UpdateParticle(CParticle* particle) {
       const float wave = g_sinTable[particle->phaseParameter] * 0.6f;
       const int index = static_cast<int>(particle->angle);
       const float radius = wave + particle->animationParameter;
+      const vector3d offset = {radius * g_cosTable[index], wave * particle->animationParameters[0] + particle->animationParameters[1], radius * g_sinTable[index]};
       matrix translation;
       std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
-      translation.MakeTranslate(radius * g_cosTable[index], wave * particle->animationParameters[0] + particle->animationParameters[1], radius * g_sinTable[index]);
+      translation.MakeTranslate(offset.x, offset.y, offset.z);
 
       matrix scaled;
       scaled.Compose(scaling, rotation);
