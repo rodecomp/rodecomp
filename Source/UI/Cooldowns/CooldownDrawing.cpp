@@ -17,7 +17,7 @@ namespace {
 
   // INLINED
   static void QueueReverse(CooldownOwner& owner, RenderCommand* command) {
-    owner.m_reverse.push_back(command);
+    owner.m_reverse.emplace_back(command);
   }
 }
 
@@ -176,59 +176,58 @@ void CooldownOwner::DrawReverse(CooldownState& value) {
     return;
   }
 
-  RenderVertex* vertices = value.vertices;
   switch (value.segment) {
   case 0:
-    vertices[2].x = value.Update();
+    value.vertices[2].x = value.Update();
     if (value.segment != 0) {
-      vertices[5] = vertices[4];
-      vertices[2] = vertices[4];
+      value.vertices[5] = value.vertices[4];
+      value.vertices[2] = value.vertices[4];
     }
     break;
   case 1:
-    vertices[5].y = value.Update();
+    value.vertices[5].y = value.Update();
     if (value.segment != 1) {
-      vertices[8] = vertices[7];
-      vertices[5] = vertices[7];
+      value.vertices[8] = value.vertices[7];
+      value.vertices[5] = value.vertices[7];
     }
     break;
   case 2:
-    vertices[8].y = value.Update();
+    value.vertices[8].y = value.Update();
     if (value.segment != 2) {
-      vertices[11] = vertices[10];
-      vertices[8] = vertices[10];
+      value.vertices[11] = value.vertices[10];
+      value.vertices[8] = value.vertices[10];
     }
     break;
   case 3:
-    vertices[11].x = value.Update();
+    value.vertices[11].x = value.Update();
     if (value.segment != 3) {
-      vertices[14] = vertices[13];
-      vertices[11] = vertices[13];
+      value.vertices[14] = value.vertices[13];
+      value.vertices[11] = value.vertices[13];
     }
     break;
   case 4:
-    vertices[14].x = value.Update();
+    value.vertices[14].x = value.Update();
     if (value.segment != 4) {
-      vertices[17] = vertices[16];
-      vertices[14] = vertices[16];
+      value.vertices[17] = value.vertices[16];
+      value.vertices[14] = value.vertices[16];
     }
     break;
   case 5:
-    vertices[17].y = value.Update();
+    value.vertices[17].y = value.Update();
     if (value.segment != 5) {
-      vertices[20] = vertices[19];
-      vertices[17] = vertices[19];
+      value.vertices[20] = value.vertices[19];
+      value.vertices[17] = value.vertices[19];
     }
     break;
   case 6:
-    vertices[20].y = value.Update();
+    value.vertices[20].y = value.Update();
     if (value.segment != 6) {
-      vertices[23] = vertices[22];
-      vertices[20] = vertices[22];
+      value.vertices[23] = value.vertices[22];
+      value.vertices[20] = value.vertices[22];
     }
     break;
   case 7:
-    vertices[23].x = value.Update();
+    value.vertices[23].x = value.Update();
     break;
   }
 
