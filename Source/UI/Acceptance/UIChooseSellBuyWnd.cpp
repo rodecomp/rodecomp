@@ -12579,10 +12579,8 @@ void UIFrameWnd::DrawItemNameText(
     return;
   }
 
-  const int colorValue = static_cast<int>(color);
   std::vector<std::pair<int, std::string>> segments;
-  const int highlightValue = static_cast<int>(highlightColor);
-  this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
+  this->SplitHighlightText(text, highlight, static_cast<int>(highlightColor), static_cast<int>(color), *breaks, segments);
 
   FrameTextLines lines(2);
   this->WrapTextSegments(width, 2, segments, lines);
