@@ -3,6 +3,7 @@
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/DX7/SurfaceDX7.h"
 #include "Render/DX7/TextureDX7.h"
+#include "Render/Projection/ScreenGeometry.h"
 
 #include <bit>
 #include <cstring>
@@ -35,7 +36,7 @@ DWORD DeviceOwnerDX7::UnpackRed(std::uint16_t pixel) const {
 // OFFSET: 0x0054B040
 // FUNCTION: fn_01905
 bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
-  const std::uint32_t pattern[16] = {0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0};
+  std::uint32_t pattern[16] = {0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0, 0};
   CSurfaceDX7 readback(*this, this->width, this->height);
   CTextureDX7 texture(*this, 4, 4, TextureFormat::A1R5G5B5);
   texture.Upload(0, 0, 4, 4, pattern, 0, 0);
@@ -46,101 +47,95 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
   this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   this->device->SetTexture(0, texture.NativeSurface());
 
-  unsigned first = 0;
-  const unsigned columns = this->width >> 2;
-  const unsigned capacity = columns * (this->height >> 2);
+  unsigned i = 0, columns = this->width >> 2;
+  unsigned rows = this->height >> 2;
   int bestScore = -1024;
-  int best = 32896;
+  int best = 0x8080;
 
-  do {
-    this->device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1, 0);
-
+  while (i < 0x10000) {
+    DDSURFACEDESC2 locked;
+    unsigned j;
+    int pixelBytes;
+    this->device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
     if (FAILED(this->device->BeginScene())) {
       return false;
     }
 
-    for (unsigned index = 0; index < capacity; ++index) {
-      const int candidate = first + index;
-      if (candidate > 65535) {
+    for (j = 0; j < columns * rows; ++j) {
+      if (static_cast<int>(i + j) > 0xFFFF) {
         break;
       }
 
-      const int left = 4 * (index % columns);
-      const int top = 4 * (index / columns);
-      const float offsetX = static_cast<float>(candidate % 256) * (1.0f / 256.0f);
-      const float offsetY = static_cast<float>(candidate / 256) * (1.0f / 256.0f);
-      const float textureWidth = static_cast<float>(texture.TextureWidth());
-      const float textureHeight = static_cast<float>(texture.TextureHeight());
-      const float u0 = (offsetX + 0.0f) / textureWidth;
-      const float v0 = (offsetY + 0.0f) / textureHeight;
-      const float u1 = (offsetX + g_effectIconRadius) / textureWidth;
-      const float v1 = (offsetY + g_effectIconRadius) / textureHeight;
-      constexpr float z = 0.00001f;
-      constexpr float rhw = 0.99999f;
+      int x = static_cast<int>(j % columns) * 4;
+      int y = static_cast<int>(j / columns) * 4;
+      float tu = static_cast<float>(static_cast<int>(i + j) % 256) * 0.00390625f;
+      float tv = static_cast<float>(static_cast<int>(i + j) / 256) * 0.00390625f;
+
+      ScreenPoint xy[2] = {ScreenPoint(static_cast<float>(x), static_cast<float>(y)), ScreenPoint(static_cast<float>(x + 4), static_cast<float>(y + 4))};
+      ScreenPoint uv[2] = {
+        ScreenPoint((tu + 0.0f) / texture.TextureWidth(), (tv + 0.0f) / texture.TextureHeight()),
+        ScreenPoint((tu + g_effectIconRadius) / texture.TextureWidth(), (tv + g_effectIconRadius) / texture.TextureHeight())};
       RenderVertex vertices[4] = {
-        {static_cast<float>(left), static_cast<float>(top), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u0, v0},
-        {static_cast<float>(left), static_cast<float>(top + 4), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u0, v1},
-        {static_cast<float>(left + 4), static_cast<float>(top), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u1, v0},
-        {static_cast<float>(left + 4), static_cast<float>(top + 4), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u1, v1}
+        {xy[0].x, xy[0].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[0].x, uv[0].y},
+        {xy[0].x, xy[1].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[0].x, uv[1].y},
+        {xy[1].x, xy[0].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[1].x, uv[0].y},
+        {xy[1].x, xy[1].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[1].x, uv[1].y}
       };
+
       this->device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, vertices, 4, 0);
     }
 
     this->device->EndScene();
     readback.m_surface->Blt(nullptr, this->renderTarget, nullptr, DDBLT_WAIT, nullptr);
-    DDSURFACEDESC2 locked = {sizeof(DDSURFACEDESC2)};
 
+    locked.dwSize = sizeof(locked);
+    locked.dwFlags = 0;
+    ZeroMemory(&locked.dwHeight, sizeof(locked) - 8);
     if (FAILED(readback.m_surface->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
       return false;
     }
 
-    const unsigned pixelBytes = locked.ddpfPixelFormat.dwRGBBitCount >> 3;
-
-    for (unsigned index = 0; index < capacity; ++index) {
-      const int candidate = first + index;
-      if (candidate > 65535) {
+    pixelBytes = locked.ddpfPixelFormat.dwRGBBitCount >> 3;
+    for (j = 0; j < columns * rows; ++j) {
+      if (static_cast<int>(i + j) > 0xFFFF) {
         break;
       }
 
-      const unsigned x = 4 * (index % columns);
-      const unsigned y = 4 * (index / columns);
-      int dark = 0;
       int bright = 0;
+      int dark = 0;
 
-      for (int sample = 0; sample < 16; ++sample) {
-        const auto* source = static_cast<const unsigned char*>(locked.lpSurface) + (y + sample / 4) * locked.lPitch + (x + sample % 4) * pixelBytes;
-        unsigned pixel;
-
+      for (int k = 0; k < 16; ++k) {
+        int x = static_cast<int>(j % columns) * 4 + k % 4;
+        int y = static_cast<int>(j / columns) * 4 + k / 4;
+        DWORD pixel;
         if (pixelBytes == 2) {
-          std::uint16_t value;
-          std::memcpy(&value, source, 2);
-          pixel = value;
+          pixel = *reinterpret_cast<WORD*>(static_cast<BYTE*>(locked.lpSurface) + y * locked.lPitch + x * 2);
         } else {
-          std::memcpy(&pixel, source, 4);
+          pixel = *reinterpret_cast<DWORD*>(static_cast<BYTE*>(locked.lpSurface) + y * locked.lPitch + x * pixelBytes);
         }
 
-        const auto packed = static_cast<std::uint16_t>(pixel);
-        const int value = this->UnpackGreen(packed) + this->UnpackBlue(packed) + this->UnpackRed(packed);
-
-        if (pattern[sample] == 0) {
-          dark += value;
+        if (pattern[k]) {
+          bright += this->UnpackBlue(static_cast<WORD>(pixel)) + this->UnpackGreen(static_cast<WORD>(pixel)) + this->UnpackRed(static_cast<WORD>(pixel));
         } else {
-          bright += value;
+          dark += this->UnpackBlue(static_cast<WORD>(pixel)) + this->UnpackGreen(static_cast<WORD>(pixel)) + this->UnpackRed(static_cast<WORD>(pixel));
         }
       }
 
-      if (bright >= 5760 && dark <= 384 && bright - dark > bestScore) {
-        bestScore = bright - dark;
-        best = candidate;
+      if (bright >= 0x1680 && dark <= 0x180) {
+        int difference = bright - dark;
+        if (difference > bestScore) {
+          bestScore = difference;
+          best = static_cast<int>(i + j);
+        }
       }
     }
-
     readback.m_surface->Unlock(nullptr);
-    first += capacity;
-  } while (first < 65536);
 
-  g_textureOffsetX = static_cast<float>(best % 256) * (1.0f / 256.0f);
-  g_textureOffsetY = static_cast<float>(best / 256) * (1.0f / 256.0f);
+    i += columns * rows;
+  }
+
+  g_textureOffsetX = static_cast<float>(best % 256) * 0.00390625f;
+  g_textureOffsetY = static_cast<float>(best / 256) * 0.00390625f;
   this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
   this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   return true;
