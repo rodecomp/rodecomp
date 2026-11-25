@@ -10587,7 +10587,7 @@ void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
     ITEM_INFO item;
     item = g_session.GetMerchantHopeToSellItemInfoBySequence(i);
     if (item.itemIndex > 0) {
-      total += item.quantity * item.price;
+      total += item.price * item.quantity;
     }
   }
 
