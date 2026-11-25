@@ -1613,7 +1613,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 // OFFSET: 0x0098B980
 // FUNCTION: fn_13420
 int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  char amountText[12];
+  char applyText[12];
   char limitText[200];
   char priceText[80];
   char titleText[16];
@@ -1722,7 +1722,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.currentMode;
     switch (a) {
-    case ID_OK:
+    case ID_OK: {
       if (!this->cashShopMode) {
         mode->SendMsg(MM_REQ_PURCHASE, 0, 0, 0, 0);
       } else {
@@ -1730,6 +1730,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           return 0;
         }
 
+        char amountText[12];
         int amount = std::atoi(this->quantityEdit->Text());
         if (amount < 0) {
           amount = 0;
@@ -1775,12 +1776,12 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         return 0;
       }
       break;
+    }
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
       g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
       break;
     case ID_APPLY: {
-      char applyText[12];
       if (this->cashShopMode) {
         int amount = std::atoi(this->quantityEdit->Text());
         if (amount < 0) {
