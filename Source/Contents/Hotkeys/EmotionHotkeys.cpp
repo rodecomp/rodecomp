@@ -60,17 +60,19 @@ void CSession::SaveEmotionHotkeys() const {
   }
   output += "}\r\n";
 
-  if (!output.empty()) {
-    const std::string directory = "savedata\\shortcutlist";
-    if (_access_s(directory.c_str(), 0) != 0) {
-      _mkdir(directory.c_str());
-    }
+  if (output.empty()) {
+    return;
+  }
 
-    CFile file;
-    if (file.Open(std::format("{}\\{}.lua", directory, this->ShortcutFilename(this->m_aid)).c_str(), 0x1001, false, true)) {
-      file.Write(output.data(), static_cast<std::uint32_t>(output.size()));
-      file.Close();
-    }
+  const std::string directory = "savedata\\shortcutlist";
+  if (_access_s(directory.c_str(), 0) != 0) {
+    _mkdir(directory.c_str());
+  }
+
+  CFile file;
+  if (file.Open(std::format("{}\\{}.lua", directory, this->ShortcutFilename(this->m_aid)).c_str(), 0x1001, false, true)) {
+    file.Write(output.data(), static_cast<std::uint32_t>(output.size()));
+    file.Close();
   }
 }
 
