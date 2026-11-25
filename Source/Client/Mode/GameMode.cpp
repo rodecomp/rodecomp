@@ -6723,12 +6723,15 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
 
     const int count = (*it)->GetMadogearType();
     if (count > 0) {
-      GameModeStoredRecord0191 record = {};
-      record.remaining = 9999;
-      record.count = count;
-      record.total = 9999;
+      GameModeStoredRecord0191 record;
+      record.packetType = 0;
       record.aid = (*it)->render.accountId;
       record.statusType = 0x47D;
+      record.total = 9999;
+      record.remaining = 9999;
+      record.count = count;
+      record.value2 = 0;
+      record.value3 = 0;
 
       const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x191, record);
       data.insert(data.end(), chunk.begin(), chunk.end());
@@ -7065,6 +7068,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     packet.x = static_cast<std::int16_t>(column);
     packet.y = static_cast<std::int16_t>(row);
     packet.subX = static_cast<unsigned char>(subColumn);
+    packet.subY = static_cast<unsigned char>(subRow);
 
     const int length = static_cast<int>(item->name.size());
     std::size_t digits = 0;
@@ -7078,7 +7082,6 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     std::memcpy(text, static_cast<CItem*>(*it)->name.c_str() + (length - 3) - digits, digits);
     packet.count = static_cast<std::int16_t>(std::atoi(text));
 
-    packet.subY = static_cast<unsigned char>(subRow);
     const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0xCF, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
