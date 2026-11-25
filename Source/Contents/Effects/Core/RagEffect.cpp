@@ -224,19 +224,16 @@ static std::list<CGameObject*>& WorldObjects() {
 }
 
 // INLINED
-static int BlendTintChannel(unsigned char tint, float value) {
-  return static_cast<int>(tint + value) >> 1;
-}
-
-// INLINED
 static bool HasTint(const EffectActor& parent) {
   return parent.render.savedTintChannels.alpha != 0;
 }
 
 // INLINED
-static void SetBlendedTint(CRenderObject& target, const EffectActor& parent, const vector3d& color) {
-  const ActorTintColor& tint = parent.render.targetTintChannels;
-  target.SetColor(-1, BlendTintChannel(tint.red, color.x), BlendTintChannel(tint.green, color.y), BlendTintChannel(tint.blue, color.z));
+static __forceinline void SetBlendedTint(CRenderObject& target, const EffectActor& parent, const vector3d& color) {
+  target.SetColor(
+    -1, static_cast<int>(parent.render.targetTintChannels.red + color.x) >> 1, static_cast<int>(parent.render.targetTintChannels.green + color.y) >> 1,
+    static_cast<int>(parent.render.targetTintChannels.blue + color.z) >> 1
+  );
 }
 
 // INLINED
@@ -10191,14 +10188,15 @@ void CRagEffect::SpawnActorHallucination() {
       return;
     }
 
-    CRenderObject* hallu;
     if (!g_session.IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
-      hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
+      CRenderObject* hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
+      SetBlendedTint(*hallu, *this->state.parent, this->render.position);
+      WorldObjects().push_back(hallu);
     } else {
-      hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
+      CRenderObject* hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
+      SetBlendedTint(*hallu, *this->state.parent, this->render.position);
+      WorldObjects().push_back(hallu);
     }
-    SetBlendedTint(*hallu, *this->state.parent, this->render.position);
-    WorldObjects().push_back(hallu);
     return;
   }
 
@@ -10213,14 +10211,15 @@ void CRagEffect::SpawnActorHallucination() {
     return;
   }
 
-  CRenderObject* hallu;
   if (!g_session.IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
-    hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
+    CRenderObject* hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
+    SendAfterimageColor(*hallu, *this, this->render.position);
+    WorldObjects().push_back(hallu);
   } else {
-    hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
+    CRenderObject* hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
+    SendAfterimageColor(*hallu, *this, this->render.position);
+    WorldObjects().push_back(hallu);
   }
-  SendAfterimageColor(*hallu, *this, this->render.position);
-  WorldObjects().push_back(hallu);
 }
 
 // OFFSET: 0x00C1FE80
