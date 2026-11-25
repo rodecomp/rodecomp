@@ -5438,73 +5438,74 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     FramedMessageHeader header{};
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (REPLAY_CHUNK_EXCHANGE_BEGIN == header.type) {
-      int number = 0;
-      short level = 0;
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > position) {
-        std::memcpy(&header, records + position, sizeof(header));
-        position += sizeof(header);
-        switch (header.type) {
-        case REPLAY_CHUNK_EXCHANGE_PARTNER_ID:
-          std::memcpy(&number, records + position, header.length);
-          position += header.length;
-          break;
-        case REPLAY_CHUNK_EXCHANGE_PARTNER_LEVEL:
-          std::memcpy(&level, records + position, header.length);
-          position += header.length;
-          break;
-        case REPLAY_CHUNK_EXCHANGE_PARTNER_NAME: {
-          char name[260];
-          std::memset(name, 0, sizeof(name));
-          std::memcpy(name, records + position, header.length);
-          position += header.length;
-          this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), number, level, 0);
-          break;
+    if (REPLAY_CHUNK_EXCHANGE_BEGIN != header.type) {
+      break;
+    }
+    int number = 0;
+    short level = 0;
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > position) {
+      std::memcpy(&header, records + position, sizeof(header));
+      position += sizeof(header);
+      switch (header.type) {
+      case REPLAY_CHUNK_EXCHANGE_PARTNER_ID:
+        std::memcpy(&number, records + position, header.length);
+        position += header.length;
+        break;
+      case REPLAY_CHUNK_EXCHANGE_PARTNER_LEVEL:
+        std::memcpy(&level, records + position, header.length);
+        position += header.length;
+        break;
+      case REPLAY_CHUNK_EXCHANGE_PARTNER_NAME: {
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        std::memcpy(name, records + position, header.length);
+        position += header.length;
+        this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), number, level, 0);
+        break;
+      }
+      case REPLAY_CHUNK_EXCHANGE_IS_LOCAL_TRADER:
+        std::memcpy(&this->isLocalTrader, records + position, header.length);
+        position += header.length;
+        if (this->isLocalTrader != 0) {
+          this->SendMsg(nullptr, UM_MYDRAGCLOSED, 0, 0, 0, 0);
         }
-        case REPLAY_CHUNK_EXCHANGE_IS_LOCAL_TRADER:
-          std::memcpy(&this->isLocalTrader, records + position, header.length);
-          position += header.length;
-          if (this->isLocalTrader != 0) {
-            this->SendMsg(nullptr, UM_MYDRAGCLOSED, 0, 0, 0, 0);
-          }
-          break;
-        case REPLAY_CHUNK_EXCHANGE_LOCAL_CONFIRMED:
-          std::memcpy(&this->localConfirmed, records + position, header.length);
-          position += header.length;
-          if (this->localConfirmed != 0) {
-            this->SendMsg(nullptr, UM_OTHERDRAGCLOSED, 0, 0, 0, 0);
-          }
-          break;
-        case REPLAY_CHUNK_EXCHANGE_REMOTE_CONFIRMED:
-          std::memcpy(&this->remoteConfirmed, records + position, header.length);
-          position += header.length;
-          if (this->remoteConfirmed != 0) {
-            this->SendMsg(nullptr, UM_COMMAND, ID_OK, 0, 0, 0);
-          }
-          break;
-        case REPLAY_CHUNK_EXCHANGE_LOCAL_ACCEPTED:
-          std::memcpy(&this->localAccepted, records + position, header.length);
-          position += header.length;
-          if (this->localAccepted != 0) {
-            this->SendMsg(nullptr, UM_COMMAND, ID_EXCHANGE, 0, 0, 0);
-          }
-          break;
-        case REPLAY_CHUNK_EXCHANGE_REMOTE_ACCEPTED:
-          std::memcpy(&this->remoteAccepted, records + position, header.length);
-          position += header.length;
-          if (this->remoteAccepted != 0) {
-            this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
-          }
-          break;
-        case REPLAY_CHUNK_EXCHANGE_END:
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          scanning = false;
-          break;
-        default:
-          position += header.length;
-          break;
+        break;
+      case REPLAY_CHUNK_EXCHANGE_LOCAL_CONFIRMED:
+        std::memcpy(&this->localConfirmed, records + position, header.length);
+        position += header.length;
+        if (this->localConfirmed != 0) {
+          this->SendMsg(nullptr, UM_OTHERDRAGCLOSED, 0, 0, 0, 0);
         }
+        break;
+      case REPLAY_CHUNK_EXCHANGE_REMOTE_CONFIRMED:
+        std::memcpy(&this->remoteConfirmed, records + position, header.length);
+        position += header.length;
+        if (this->remoteConfirmed != 0) {
+          this->SendMsg(nullptr, UM_COMMAND, ID_OK, 0, 0, 0);
+        }
+        break;
+      case REPLAY_CHUNK_EXCHANGE_LOCAL_ACCEPTED:
+        std::memcpy(&this->localAccepted, records + position, header.length);
+        position += header.length;
+        if (this->localAccepted != 0) {
+          this->SendMsg(nullptr, UM_COMMAND, ID_EXCHANGE, 0, 0, 0);
+        }
+        break;
+      case REPLAY_CHUNK_EXCHANGE_REMOTE_ACCEPTED:
+        std::memcpy(&this->remoteAccepted, records + position, header.length);
+        position += header.length;
+        if (this->remoteAccepted != 0) {
+          this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
+        }
+        break;
+      case REPLAY_CHUNK_EXCHANGE_END:
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        scanning = false;
+        break;
+      default:
+        position += header.length;
+        break;
       }
     }
     break;
