@@ -715,33 +715,33 @@ unsigned int GPakEx::CipherModeBase::Process(std::span<const std::uint8_t> input
     output = output.subspan(length);
     processed = length;
   }
-  if (!pad) {
-    if (!input.empty()) {
-      return static_cast<unsigned int>(-1);
+  if (pad) {
+    if (forward) {
+      memcpy(this->m_buffer.data(), input.data(), input.size());
+      const std::uint8_t padding = static_cast<std::uint8_t>(blockSize - input.size());
+      memset(PtrAdd(this->m_buffer.data(), input.size()), padding, padding);
+      if (output.size() < blockSize) {
+        return static_cast<unsigned int>(-1);
+      }
+      this->ProcessData(this->m_buffer.data(), output.data(), blockSize);
+      processed += blockSize;
+    } else {
+      if (input.size() != blockSize) {
+        return static_cast<unsigned int>(-1);
+      }
+      this->ProcessData(input.data(), this->m_buffer.data(), blockSize);
+      const std::uint8_t padding = this->m_buffer[blockSize - 1];
+      const unsigned int length = blockSize - padding;
+      if (padding < 1 || blockSize < padding || output.size() < length) {
+        return static_cast<unsigned int>(-1);
+      }
+      memcpy(output.data(), this->m_buffer.data(), length);
+      processed += length;
     }
-    return processed;
-  }
-  if (forward) {
-    memcpy(this->m_buffer.data(), input.data(), input.size());
-    const std::uint8_t padding = static_cast<std::uint8_t>(blockSize - input.size());
-    memset(PtrAdd(this->m_buffer.data(), input.size()), padding, padding);
-    if (output.size() < blockSize) {
-      return static_cast<unsigned int>(-1);
-    }
-    this->ProcessData(this->m_buffer.data(), output.data(), blockSize);
-    return processed + blockSize;
-  }
-  if (input.size() != blockSize) {
+  } else if (!input.empty()) {
     return static_cast<unsigned int>(-1);
   }
-  this->ProcessData(input.data(), this->m_buffer.data(), blockSize);
-  const std::uint8_t padding = this->m_buffer[blockSize - 1];
-  const unsigned int length = blockSize - padding;
-  if (padding < 1 || padding > blockSize || output.size() < length) {
-    return static_cast<unsigned int>(-1);
-  }
-  memcpy(output.data(), this->m_buffer.data(), length);
-  return processed + length;
+  return processed;
 }
 
 // OFFSET: 0x006432C0
