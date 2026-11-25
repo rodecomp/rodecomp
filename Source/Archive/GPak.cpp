@@ -1141,7 +1141,7 @@ void GPakEx::IDEA::Base::EnKey(const std::uint8_t* userKey) {
   }
   for (; i < 6 * ROUNDS + 4; ++i) {
     const unsigned int j = (i & ~7u) - 8;
-    this->m_key[i] = ((this->m_key[j + (i + 1) % 8] << 9) | (this->m_key[j + (i + 2) % 8] >> 7)) & 0xFFFF;
+    this->m_key[i] = static_cast<std::uint16_t>(this->m_key[j + (i + 1) % 8] << 9) | (this->m_key[j + (i + 2) % 8] >> 7);
   }
 }
 
