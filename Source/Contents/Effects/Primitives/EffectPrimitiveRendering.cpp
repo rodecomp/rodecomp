@@ -94,6 +94,12 @@ static void SetVector(vector3d& v, float x, float y, float z) {
 }
 
 // INLINED
+static void RotatePoint(float& rotatedX, float& rotatedY, float x, float y, float cs, float sn) {
+  rotatedX = x * cs - y * sn;
+  rotatedY = x * sn + y * cs;
+}
+
+// INLINED
 static vector3d Sum(const vector3d& left, const vector3d& right) {
   return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
 }
@@ -2218,37 +2224,34 @@ void CEffectPrim::RenderMagnum2(matrix& wtm) {
 // OFFSET: 0x00BD8870
 // FUNCTION: fn_19889
 __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     for (int ring = 10; ring >= 1; --ring) {
-      const char kind = slot.flag1[4];
+      const char kind = this->state.slots[ec].flag1[4];
       int spread = 10 - ring;
       if (kind != 2) {
         spread *= 3;
       }
 
-      const float rx = static_cast<float>(spread) + slot.distance;
-      slot.vecBPre = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
-      slot.vecBNow = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
-      slot.vecTNow = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
-      slot.vecTPre = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
+      const float rx = static_cast<float>(spread) + this->state.slots[ec].distance;
+      this->state.slots[ec].vecBPre = {rx * g_cosTable[45], 0.0f, g_sinTable[45] * rx};
+      this->state.slots[ec].vecBNow = {rx * g_cosTable[135], 0.0f, g_sinTable[135] * rx};
+      this->state.slots[ec].vecTNow = {rx * g_cosTable[225], 0.0f, g_sinTable[225] * rx};
+      this->state.slots[ec].vecTPre = {rx * g_cosTable[315], 0.0f, g_sinTable[315] * rx};
 
-      const float base = slot.height[0];
-      vec1.Set(slot.vecBPre.x + base, slot.vecBPre.y, slot.vecBPre.z);
-      vec2.Set(slot.vecBNow.x + base, slot.vecBNow.y, slot.vecBNow.z);
-      vec3.Set(slot.vecTNow.x + base, slot.vecTNow.y, slot.vecTNow.z);
-      vec4.Set(slot.vecTPre.x + base, slot.vecTPre.y, slot.vecTPre.z);
+      SetVector(vec1, this->state.slots[ec].height[0] + this->state.slots[ec].vecBPre.x, 0.0f, this->state.slots[ec].vecBPre.z);
+      SetVector(vec2, this->state.slots[ec].height[0] + this->state.slots[ec].vecBNow.x, 0.0f, this->state.slots[ec].vecBNow.z);
+      SetVector(vec3, this->state.slots[ec].height[0] + this->state.slots[ec].vecTNow.x, 0.0f, this->state.slots[ec].vecTNow.z);
+      SetVector(vec4, this->state.slots[ec].height[0] + this->state.slots[ec].vecTPre.x, 0.0f, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
       const float drop = kind == 2 ? 40.0f : 30.0f;
@@ -2257,12 +2260,16 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
       vec3.y -= drop;
       vec4.y -= drop;
 
-      const int alpha = static_cast<int>(slot.height[ring]);
+      const int alpha = static_cast<int>(this->state.slots[ec].height[ring]);
       if (alpha > 0) {
         if (ring == 10) {
-          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(
+            &rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+          );
         } else {
-          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(
+            &rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+          );
         }
       }
     }
@@ -4004,10 +4011,10 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
 // FUNCTION: fn_19877
 void CEffectPrim::RenderGroundBar(matrix& wtm) {
   int rpCnt = 0;
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -4017,48 +4024,54 @@ void CEffectPrim::RenderGroundBar(matrix& wtm) {
     }
 
     const int angle = slot.riseAngle;
+    const int side = angle + (angle >= 90 ? -90 : 270);
+    const float baseX = slot.height[0] * g_cosTable[side];
+    const float baseZ = slot.height[0] * g_sinTable[side];
     const float width = slot.maxHeight;
     const int back = angle + (angle >= 90 ? -90 : 270);
-    const float baseX = slot.height[0] * g_cosTable[back];
-    const float baseZ = slot.height[0] * g_sinTable[back];
     const float farX = width * g_cosTable[back] + baseX;
     const float farZ = width * g_sinTable[back] + baseZ;
 
-    const float start = slot.height[1];
-    float startX;
-    float startZ;
-    if (g_fireflyArcLength <= start) {
-      const float reach = start - slot.distance;
-      startX = reach * g_cosTable[angle];
-      startZ = reach * g_sinTable[angle];
-    } else {
+    float length = slot.height[1];
+    float reach;
+    float cs;
+    float sn;
+    if (100.0f > length) {
       const int opposite = angle < 180 ? angle + 180 : angle - 180;
-      const float reach = slot.distance - start;
-      startX = reach * g_cosTable[opposite];
-      startZ = reach * g_sinTable[opposite];
+      cs = g_cosTable[opposite];
+      sn = g_sinTable[opposite];
+      reach = slot.distance - length;
+    } else {
+      cs = g_cosTable[angle];
+      sn = g_sinTable[angle];
+      reach = length - slot.distance;
     }
 
-    const float end = start + slot.height[2];
-    float endX;
-    float endZ;
-    if (g_fireflyArcLength <= end) {
-      const float reach = end - slot.distance;
-      endX = reach * g_cosTable[angle];
-      endZ = reach * g_sinTable[angle];
-    } else {
+    const float startX = reach * cs;
+    const float startZ = reach * sn;
+    vec3 = {startX + farX, -6.0f, startZ + farZ};
+
+    length += slot.height[2];
+    if (100.0f > length) {
       const int opposite = angle + (angle >= 180 ? -180 : 180);
-      const float reach = slot.distance - end;
-      endX = reach * g_cosTable[opposite];
-      endZ = reach * g_sinTable[opposite];
+      cs = g_cosTable[opposite];
+      sn = g_sinTable[opposite];
+      reach = slot.distance - length;
+    } else {
+      cs = g_cosTable[angle];
+      sn = g_sinTable[angle];
+      reach = length - slot.distance;
     }
+
+    const float endX = reach * cs;
+    const float endZ = reach * sn;
+    vec4 = {endX + farX, -6.0f, endZ + farZ};
 
     const int front = angle + (angle < 270 ? 90 : -270);
     const float nearX = width * g_cosTable[front] + baseX;
     const float nearZ = width * g_sinTable[front] + baseZ;
-    vec1 = {nearX + endX, -6.0f, nearZ + endZ};
     vec2 = {nearX + startX, -6.0f, nearZ + startZ};
-    vec3 = {startX + farX, -6.0f, startZ + farZ};
-    vec4 = {endX + farX, -6.0f, endZ + farZ};
+    vec1 = {nearX + endX, -6.0f, nearZ + endZ};
 
     if (slot.flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 225, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -5400,10 +5413,10 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
 void CEffectPrim::RenderSMA2(matrix& wtm) {
   float cs1;
   float sn1;
-  ZeroVector3d vec1;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
-  ZeroVector3d vec2;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   int order;
   int angle;
