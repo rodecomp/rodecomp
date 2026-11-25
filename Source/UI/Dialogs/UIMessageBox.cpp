@@ -4290,11 +4290,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_modeMgr.currentMode->SendMsg(MM_COMMAND, 10004, 0, 0, 0);
       return 0;
     case ID_LEFT: {
-      int action = this->m_view.action + 1;
-      if (action >= this->m_view.actionBase + 8) {
-        action = this->m_view.actionBase;
+      const int action = this->m_view.action + 1;
+      if (action < this->m_view.actionBase + 8) {
+        this->m_view.action = action;
+      } else {
+        this->m_view.action = this->m_view.actionBase;
       }
-      this->m_view.action = action;
       this->Invalidate();
       return 0;
     }
@@ -4321,7 +4322,8 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_SCROLLHORZPAGEUP:
   case UM_SCROLLHORZPAGEDOWN: {
     const int sex = this->m_info.sex;
-    if (sender == this->m_hairStyleBar) {
+    UIScrollBar* bar = this->m_hairStyleBar;
+    if (bar == sender) {
       const int previous = this->m_hairStyle;
       if (message == UM_SCROLLHORZPAGEUP) {
         this->m_hairStyle = previous - 1;
@@ -4335,7 +4337,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       } else if (this->m_hairStyle > 22) {
         this->m_hairStyle = 22;
       }
-      this->m_hairStyleBar->SetPosition(this->m_hairStyle);
+      bar->SetPosition(this->m_hairStyle);
       this->m_hairStyleBar->Invalidate();
       this->Invalidate();
 
@@ -4351,7 +4353,8 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return this->m_hairStyle - previous;
     }
 
-    if (sender == this->m_hairColorBar) {
+    bar = this->m_hairColorBar;
+    if (bar == sender) {
       const int previous = this->m_hairColor;
       if (message == UM_SCROLLHORZPAGEUP) {
         this->m_hairColor = previous - 1;
@@ -4365,7 +4368,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       } else if (this->m_hairColor > 8) {
         this->m_hairColor = 8;
       }
-      this->m_hairColorBar->SetPosition(this->m_hairColor);
+      bar->SetPosition(this->m_hairColor);
       this->m_hairColorBar->Invalidate();
       this->Invalidate();
 
