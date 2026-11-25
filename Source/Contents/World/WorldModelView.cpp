@@ -72,14 +72,14 @@ int WorldViewSpatial::ClassifyOriented(const OrientedBounds& bounds) const {
       const float negative = -radius;
 
       if (!(distance > negative)) {
-        return 0;
+        return MODEL_VIEW_OUTSIDE;
       }
 
       clipped = true;
     }
   }
 
-  return clipped ? 2 : 1;
+  return clipped ? MODEL_VIEW_CLIPPED : MODEL_VIEW_INSIDE;
 }
 
 // INLINED
@@ -99,14 +99,14 @@ int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& plane
       const float negative = -radius;
 
       if (!(distance > negative)) {
-        return 0;
+        return MODEL_VIEW_OUTSIDE;
       }
 
       clipped = true;
     }
   }
 
-  return clipped ? 2 : 1;
+  return clipped ? MODEL_VIEW_CLIPPED : MODEL_VIEW_INSIDE;
 }
 
 // INLINED
@@ -129,8 +129,8 @@ void DrawWorldModelLeaves(
         model->Update();
       }
 
-      if (visibility == 1 || visibility == 2) {
-        model->Draw(matrix, visibility == 2);
+      if (visibility == MODEL_VIEW_INSIDE || visibility == MODEL_VIEW_CLIPPED) {
+        model->Draw(matrix, visibility == MODEL_VIEW_CLIPPED);
       }
 
       model->renderFrame = frame;

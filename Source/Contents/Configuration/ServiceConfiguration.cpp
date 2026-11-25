@@ -410,7 +410,7 @@ void InitializeLanguage() {
     break;
   }
 
-  if (g_serviceMode == 3) {
+  if (g_serviceMode == ServerInstantEvent) {
     g_inlineCharset = 1;
   }
 }

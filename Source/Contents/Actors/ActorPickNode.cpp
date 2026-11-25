@@ -147,15 +147,15 @@ int CActorPickNode::QuadrantAt(int x, int y) const {
   const int centerX = this->bounds.right / 2;
   const int centerY = this->bounds.bottom / 2;
   if (x <= centerX && y <= centerY) {
-    return 0;
+    return ACTOR_PICK_TOP_LEFT;
   }
   if (x > centerX && y <= centerY) {
-    return 1;
+    return ACTOR_PICK_TOP_RIGHT;
   }
   if (x > centerX && y > centerY) {
-    return 2;
+    return ACTOR_PICK_BOTTOM_RIGHT;
   }
-  return 3;
+  return ACTOR_PICK_BOTTOM_LEFT;
 }
 
 // OFFSET: 0x00ADAA20
@@ -182,19 +182,19 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
 // FUNCTION: fn_45897
 ActorPickBounds CActorPickNode::ChildBounds(ActorPickBounds bounds, int quadrant) const {
   switch (quadrant) {
-  case 0:
+  case ACTOR_PICK_TOP_LEFT:
     bounds.right /= 2;
     bounds.bottom /= 2;
     break;
-  case 1:
+  case ACTOR_PICK_TOP_RIGHT:
     bounds.left = bounds.right / 2 + 1;
     bounds.bottom /= 2;
     break;
-  case 2:
+  case ACTOR_PICK_BOTTOM_RIGHT:
     bounds.left = bounds.right / 2 + 1;
     bounds.top = bounds.bottom / 2 + 1;
     break;
-  case 3:
+  case ACTOR_PICK_BOTTOM_LEFT:
     bounds.right /= 2;
     bounds.top = bounds.bottom / 2 + 1;
     break;

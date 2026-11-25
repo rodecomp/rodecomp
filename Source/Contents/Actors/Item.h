@@ -7,6 +7,14 @@
 #include <cstdint>
 #include <string>
 
+enum ItemDropGrade : std::uint16_t {
+  ITEM_DROP_GRADE_BLUE = 1,
+  ITEM_DROP_GRADE_YELLOW = 2,
+  ITEM_DROP_GRADE_PURPLE = 3,
+  ITEM_DROP_GRADE_GREEN = 4,
+  ITEM_DROP_GRADE_RED = 5,
+};
+
 class CItem : public EffectActor {
 public:
   CItem();

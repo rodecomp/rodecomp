@@ -2870,9 +2870,9 @@ void CCharacterNpc::SendMsg(
 // FUNCTION: fn_21044
 int CGameActor::GetShapeShiftJob() const {
   switch (this->shapeShift) {
-  case 1:
+  case SHAPESHIFT_WEREWOLF:
     return 0x1104;
-  case 2:
+  case SHAPESHIFT_WERERAPTOR:
     return 0x1105;
   default:
     return this->job;
@@ -3066,9 +3066,9 @@ int CGameActor::ActionBase(int state) {
 // FUNCTION: fn_21043
 int ShapeShiftJob(int form, int job) {
   switch (form) {
-  case 1:
+  case SHAPESHIFT_WEREWOLF:
     return JT_WEREWOLF;
-  case 2:
+  case SHAPESHIFT_WERERAPTOR:
     return JT_WERERAPTOR;
   default:
     return job;
@@ -3079,7 +3079,7 @@ int ShapeShiftJob(int form, int job) {
 // FUNCTION: fn_21045
 static std::string ShapeShiftName(int form, int job) {
   switch (form) {
-  case 1:
+  case SHAPESHIFT_WEREWOLF:
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
@@ -3092,7 +3092,7 @@ static std::string ShapeShiftName(int form, int job) {
       return OBFUSCATE_BYTES_TEXT("WEREWOLF", 0xED796785D1DF137FULL);
     }
     }
-  case 2:
+  case SHAPESHIFT_WERERAPTOR:
     switch (job) {
     case JT_KARNOS:
     case JT_KARNOS_B: {
@@ -4589,10 +4589,10 @@ void CGameActor::SetActorJob(int job) {
     slotJob = this->GetEffectiveJob(-1);
   } else {
     switch (this->shapeShift) {
-    case 1:
+    case SHAPESHIFT_WEREWOLF:
       slotJob = 0x1104;
       break;
-    case 2:
+    case SHAPESHIFT_WERERAPTOR:
       slotJob = 0x1105;
       break;
     default:

@@ -106,17 +106,17 @@ void CGuildMgr::StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t
 void __stdcall CGuildMgr::ReceiveEmblem(std::uint16_t state, std::uint32_t guild, std::uint32_t revision, const unsigned char* bytes, int size) {
   CGuildMgr* manager = g_guildMgr;
   switch (static_cast<std::int16_t>(state)) {
-  case 0:
+  case EMBLEM_RECEIVE_BEGIN:
     manager->m_receivedEmblem.guildId = guild;
     manager->m_receivedEmblem.version = revision;
     manager->m_receivedEmblem.data.clear();
     break;
-  case 1:
+  case EMBLEM_RECEIVE_DATA:
     if (guild == manager->m_receivedEmblem.guildId && revision == manager->m_receivedEmblem.version) {
       manager->m_receivedEmblem.data.insert(manager->m_receivedEmblem.data.end(), reinterpret_cast<const char*>(bytes), reinterpret_cast<const char*>(bytes) + size);
     }
     break;
-  case 2:
+  case EMBLEM_RECEIVE_END:
     if (guild == manager->m_receivedEmblem.guildId && revision == manager->m_receivedEmblem.version) {
       StoreEmblem(manager->m_receivedEmblem.data.data(), static_cast<std::uint32_t>(manager->m_receivedEmblem.data.size()), guild, revision);
       RefreshEmblem(guild);

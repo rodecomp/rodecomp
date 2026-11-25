@@ -66,14 +66,14 @@ int WorldViewSpatial::ClassifyAxisAligned(const WorldSpatialTree& bounds) const 
       const float negative = -radius;
 
       if (!(distance > negative)) {
-        return 0;
+        return MODEL_VIEW_OUTSIDE;
       }
 
       clipped = true;
     }
   }
 
-  return clipped ? 2 : 1;
+  return clipped ? MODEL_VIEW_CLIPPED : MODEL_VIEW_INSIDE;
 }
 
 // OFFSET: 0x00ADB910
@@ -95,9 +95,9 @@ void WorldViewSpatial::CollectNode(WorldSpatialTree* node, int depth, bool fully
     } else {
       const int visibility = this->ClassifyAxisAligned(*child);
 
-      if (visibility == 2) {
+      if (visibility == MODEL_VIEW_CLIPPED) {
         this->CollectNode(child, depth + 1, false);
-      } else if (visibility == 1) {
+      } else if (visibility == MODEL_VIEW_INSIDE) {
         this->CollectNode(child, depth + 1, true);
       }
     }

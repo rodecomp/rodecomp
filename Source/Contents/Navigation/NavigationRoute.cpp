@@ -332,70 +332,70 @@ std::string CNavigationManager::RouteText() {
 __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mode) {
   std::string message;
   switch (result) {
-  case -100:
+  case NAVIGATION_RESULT_UNKNOWN:
     message = LookupMessage(MSI_NAVIGATION_RS_UNKNOWN);
     break;
-  case -99:
+  case NAVIGATION_RESULT_NOT_SAME_MAP:
     message = LookupMessage(MSI_NAVIGATION_RS_NOTSAMEMAP);
     break;
-  case -98:
+  case NAVIGATION_RESULT_FAIL_START_DATA:
     message = LookupMessage(MSI_NAVIGATION_RS_FAILSTARTDATA);
     break;
-  case -97:
+  case NAVIGATION_RESULT_FAIL_TARGET:
     message = LookupMessage(MSI_NAVIGATION_RS_FAILTARGET);
     break;
-  case -96:
+  case NAVIGATION_RESULT_FAIL_ROUTE:
     message = LookupMessage(MSI_NAVIGATION_RS_FAILROUTE);
     break;
-  case -95:
+  case NAVIGATION_RESULT_FAIL_PLAYER:
     message = LookupMessage(MSI_NAVIGATION_RS_FAILPLAYER);
     break;
-  case -94:
+  case NAVIGATION_RESULT_NO_DATA:
     message = LookupMessage(MSI_NAVIGATION_RS_NODATA);
     break;
-  case -93:
+  case NAVIGATION_RESULT_MAP_NOT_NAVIGATION:
     message = LookupMessage(MSI_NAVIGATION_RS_MAPNOTNAVIGATION);
     break;
-  case -92:
+  case NAVIGATION_RESULT_FAIL_TARGET_ROUTE:
     message = LookupMessage(MSI_NAVIGATION_RS_FAILTARGETROUTE);
     break;
-  case 0:
+  case NAVIGATION_RESULT_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_SUCCESS);
     break;
-  case 1:
+  case NAVIGATION_RESULT_START:
     message = LookupMessage(MSI_NAVIGATION_RS_START);
     break;
-  case 2:
+  case NAVIGATION_RESULT_MOB_TARGET_MAP:
     message = LookupMessage(MSI_NAVIGATION_RS_MOBTARGETMAP);
     break;
-  case 3:
+  case NAVIGATION_RESULT_TARGET_MAP:
     message = LookupMessage(MSI_NAVIGATION_RS_TARGETMAP);
     break;
-  case 4:
+  case NAVIGATION_RESULT_SCROLL:
     message = LookupMessage(MSI_NAVIGATION_RS_SCROLL);
     break;
-  case 5:
+  case NAVIGATION_RESULT_ROUTE_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_ROUTE_SUCCESS);
     break;
-  case 6:
+  case NAVIGATION_RESULT_MAP_TO_MAP_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_MAPTMAP_SUCCESS);
     break;
-  case 7:
+  case NAVIGATION_RESULT_NPC_TO_MAP_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_NPCTMAP_SUCCESS);
     break;
-  case 8:
+  case NAVIGATION_RESULT_MOB_TO_MAP_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_MOBTMAP_SUCCESS);
     break;
-  case 10:
+  case NAVIGATION_RESULT_POST_MAP_SUCCESS:
     message = LookupMessage(MSI_NAVIGATION_RS_POSTMAP_SUCCESS);
     break;
-  case 9:
+  case NAVIGATION_RESULT_SAME_TARGET:
     message = LookupMessage(MSI_NAVIGATION_RS_SAMETARGET);
     break;
-  case 11:
+  case NAVIGATION_RESULT_HERE:
     message = LookupMessage(MSI_NAVIGATION_RS_HERE);
     break;
-  case -90:
+  case NAVIGATION_RESULT_UNABLE_TO_GUIDE_MAP:
     message = LookupMessage(MSI_NAVIGATION_UNABLETOGUIDEMAP);
     break;
   default:
@@ -409,7 +409,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_S), message.c_str());
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
-    if (result == 5 && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
+    if (result == NAVIGATION_RESULT_ROUTE_SUCCESS && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
       const int type = this->nodes[this->selectedNode]->GetType();
       if (type == 201 || type == 202 || type == 203 || type == 204) {
         std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_GO_S), this->nodes[this->selectedNode]->GetName());

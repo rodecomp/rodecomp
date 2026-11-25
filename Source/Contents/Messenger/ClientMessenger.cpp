@@ -1238,64 +1238,64 @@ __declspec(noinline) EquipmentProperties::CEquipmentInfo* EquipmentProperties::C
 int GetEquipLocationMask(const unsigned int& location) {
   int mask = 0;
   switch (location) {
-  case 1:
+  case EQUIP_LOCATION_HEAD_LOW:
     mask = EQP_HEAD_LOW;
     break;
-  case 2:
+  case EQUIP_LOCATION_ARMOR:
     mask = EQP_ARMOR;
     break;
-  case 3:
+  case EQUIP_LOCATION_HAND_L:
     mask = EQP_HAND_L;
     break;
-  case 4:
+  case EQUIP_LOCATION_HAND_R:
     mask = EQP_HAND_R;
     break;
-  case 5:
+  case EQUIP_LOCATION_GARMENT:
     mask = EQP_GARMENT;
     break;
-  case 6:
+  case EQUIP_LOCATION_SHOES:
     mask = EQP_SHOES;
     break;
-  case 7:
+  case EQUIP_LOCATION_ACC_R:
     mask = EQP_ACC_R;
     break;
-  case 8:
+  case EQUIP_LOCATION_ACC_L:
     mask = EQP_ACC_L;
     break;
-  case 10:
+  case EQUIP_LOCATION_HEAD_TOP:
     mask = EQP_HEAD_TOP;
     break;
-  case 11:
+  case EQUIP_LOCATION_HEAD_MID:
     mask = EQP_HEAD_MID;
     break;
-  case 20:
+  case EQUIP_LOCATION_COSTUME_HEAD_TOP:
     mask = EQP_COSTUME_HEAD_TOP;
     break;
-  case 21:
+  case EQUIP_LOCATION_COSTUME_HEAD_MID:
     mask = EQP_COSTUME_HEAD_MID;
     break;
-  case 22:
+  case EQUIP_LOCATION_COSTUME_HEAD_LOW:
     mask = EQP_COSTUME_HEAD_LOW;
     break;
-  case 23:
+  case EQUIP_LOCATION_COSTUME_GARMENT:
     mask = EQP_COSTUME_GARMENT;
     break;
-  case 30:
+  case EQUIP_LOCATION_SHADOW_ARMOR:
     mask = EQP_SHADOW_ARMOR;
     break;
-  case 31:
+  case EQUIP_LOCATION_SHADOW_WEAPON:
     mask = EQP_SHADOW_WEAPON;
     break;
-  case 32:
+  case EQUIP_LOCATION_SHADOW_SHIELD:
     mask = EQP_SHADOW_SHIELD;
     break;
-  case 33:
+  case EQUIP_LOCATION_SHADOW_SHOES:
     mask = EQP_SHADOW_SHOES;
     break;
-  case 34:
+  case EQUIP_LOCATION_SHADOW_ACC_R:
     mask = EQP_SHADOW_ACC_R;
     break;
-  case 35:
+  case EQUIP_LOCATION_SHADOW_ACC_L:
     mask = EQP_SHADOW_ACC_L;
     break;
   }
@@ -4365,10 +4365,10 @@ int GetCategoryJob(lua_State* state) {
 
   int job = 0;
   switch (args[0]) {
-  case 1:
+  case EQUIP_JOB_CATEGORY_FIRST:
     job = GetFirstJob(g_session.m_job);
     break;
-  case 2:
+  case EQUIP_JOB_CATEGORY_CLASS_LINE:
     job = g_session.m_job;
     switch (job) {
     case JT_NOVICE:
@@ -4579,10 +4579,10 @@ int GetCategoryJob(lua_State* state) {
       break;
     }
     break;
-  case 3:
+  case EQUIP_JOB_CATEGORY_NORMAL:
     job = GetNormalJob(g_session.m_job);
     break;
-  case 4:
+  case EQUIP_JOB_CATEGORY_NORMAL_THIRD:
     job = GetNormalThirdJob(g_session.m_job);
     break;
   }
@@ -5627,16 +5627,16 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
   }
 
   switch (this->m_definition->mode) {
-  case 0:
+  case EQUIP_PROPERTY_SUM:
     this->m_value += source->m_value;
     break;
-  case 1:
+  case EQUIP_PROPERTY_ONE:
     ++this->m_value;
     break;
-  case 2:
+  case EQUIP_PROPERTY_MAX:
     this->m_value = std::max(this->m_value, source->m_value);
     break;
-  case 4:
+  case EQUIP_PROPERTY_NONNEGATIVE_MAX:
     this->m_value = source->m_value < 0 ? 0 : std::max(this->m_value, source->m_value);
     break;
   }

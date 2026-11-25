@@ -149,19 +149,19 @@ static inline vector3d DropEffectPosition(float x, float y, float z) {
 int CItem::GetGradeDropEffect(int grade) const {
   int gradeEffectId = 2485;
   switch (grade) {
-  case 1:
+  case ITEM_DROP_GRADE_BLUE:
     gradeEffectId = EF_DROPITEM_BLUE;
     break;
-  case 2:
+  case ITEM_DROP_GRADE_YELLOW:
     gradeEffectId = EF_DROPITEM_YELLOW;
     break;
-  case 3:
+  case ITEM_DROP_GRADE_PURPLE:
     gradeEffectId = EF_DROPITEM_PURPLE;
     break;
-  case 4:
+  case ITEM_DROP_GRADE_GREEN:
     gradeEffectId = EF_DROPITEM_GREEN;
     break;
-  case 5:
+  case ITEM_DROP_GRADE_RED:
     gradeEffectId = EF_DROPITEM_RED;
     break;
   }

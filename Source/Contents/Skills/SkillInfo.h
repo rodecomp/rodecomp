@@ -11,6 +11,16 @@
 #include <utility>
 #include <vector>
 
+enum SkillElementSelection : int {
+  SKILL_ELEMENT_WATER = 1,
+  SKILL_ELEMENT_WIND = 2,
+  SKILL_ELEMENT_EARTH = 3,
+  SKILL_ELEMENT_FIRE = 4,
+  SKILL_ELEMENT_DARKNESS = 5,
+  SKILL_ELEMENT_HOLY = 6,
+  SKILL_ELEMENT_RESET = 7,
+};
+
 class CGameActor;
 class CRenderObject;
 class LuaScript;

@@ -2951,7 +2951,7 @@ void UICashEmotionMiniWnd::OnCreate(int width, int height) {
     this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_press.bmp", 2, 0);
     this->m_previous->SetSize(this->m_previous->BitmapWidth(), this->m_previous->BitmapHeight());
     this->m_previous->Move(0, 0);
-    this->m_previous->SetId(1);
+    this->m_previous->SetId(CASH_EMOTION_MINI_PREVIOUS);
     this->AddChild(this->m_previous);
   }
 
@@ -2963,7 +2963,7 @@ void UICashEmotionMiniWnd::OnCreate(int width, int height) {
     int buttonWidth = this->m_next->BitmapWidth();
     this->m_next->SetSize(buttonWidth, this->m_next->BitmapHeight());
     this->m_next->Move(this->geometry.width - buttonWidth, 0);
-    this->m_next->SetId(2);
+    this->m_next->SetId(CASH_EMOTION_MINI_NEXT);
     this->AddChild(this->m_next);
   }
 }

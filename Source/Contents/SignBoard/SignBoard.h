@@ -8,6 +8,12 @@
 #include <string>
 #include <vector>
 
+enum SignBoardType : int {
+  SIGNBOARD_BITMAP = 1,
+  SIGNBOARD_ICON = 2,
+  SIGNBOARD_TEXT = 3,
+};
+
 class UIStaticText;
 
 class CBmpObjWnd : public UIWindow {

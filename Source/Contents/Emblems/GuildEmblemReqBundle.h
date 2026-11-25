@@ -6,6 +6,12 @@
 #include <string>
 #include <utility>
 
+enum EmblemReceiveState : std::uint16_t {
+  EMBLEM_RECEIVE_BEGIN = 0,
+  EMBLEM_RECEIVE_DATA = 1,
+  EMBLEM_RECEIVE_END = 2,
+};
+
 class CEmblemDataMgr;
 class CConnection;
 class CAsyncWorkMgr;

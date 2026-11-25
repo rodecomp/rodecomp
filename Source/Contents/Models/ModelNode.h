@@ -6,6 +6,12 @@
 
 #include <array>
 
+enum ModelShade : int {
+  MODEL_SHADE_UNLIT = 0,
+  MODEL_SHADE_FLAT = 1,
+  MODEL_SHADE_SMOOTH = 2,
+};
+
 class C3dActor;
 
 struct ModelTextureTransform {

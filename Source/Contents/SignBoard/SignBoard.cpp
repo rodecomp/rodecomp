@@ -152,11 +152,11 @@ void CSignBoardMgr::LoadList() {
       &info.color
     );
     switch (info.type) {
-    case 2:
-      info.type = 2;
+    case SIGNBOARD_ICON:
+      info.type = SIGNBOARD_ICON;
       break;
-    case 3:
-      info.type = 3;
+    case SIGNBOARD_TEXT:
+      info.type = SIGNBOARD_TEXT;
       if (info.text == nullptr) {
         info.text = defaults.text;
       }
@@ -164,9 +164,9 @@ void CSignBoardMgr::LoadList() {
         info.color = defaults.color;
       }
       break;
-    case 1:
+    case SIGNBOARD_BITMAP:
     default:
-      info.type = 1;
+      info.type = SIGNBOARD_BITMAP;
       break;
     }
 
@@ -286,12 +286,12 @@ void CSignBoardWnd::Paint() {
 // FUNCTION: fn_10267
 void C3DCooRendering::Create() {
   switch (this->type) {
-  case 1:
+  case SIGNBOARD_BITMAP:
     this->window = new (std::nothrow) CBmpObjWnd();
     this->window->SetSize(0xaa, 0xaa);
     g_windowMgr.AddRenderedFront(this->window);
     break;
-  case 3:
+  case SIGNBOARD_TEXT:
     this->window = new (std::nothrow) CSignBoardWnd();
     this->window->SetSize(0xa2, 0x24);
     g_windowMgr.AddRenderedFront(this->window);
@@ -403,13 +403,13 @@ __declspec(noinline) void C3DCooRendering::SetWindowImage(const std::string& nam
   }
 
   switch (this->type) {
-  case 1: {
+  case SIGNBOARD_BITMAP: {
     static_cast<CBmpObjWnd*>(this->window)->path = name;
     CBmpObjWnd* window = static_cast<CBmpObjWnd*>(this->window);
     window->ResizeToBitmap();
     break;
   }
-  case 3:
+  case SIGNBOARD_TEXT:
     static_cast<CSignBoardWnd*>(this->window)->iconPath = name;
     break;
   }

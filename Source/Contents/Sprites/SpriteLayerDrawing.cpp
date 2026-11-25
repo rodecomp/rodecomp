@@ -460,12 +460,12 @@ std::pair<int, int> SpriteLayerRenderer::GetItemOffset(int layer) {
 // FUNCTION: fn_04814
 const std::uint32_t* SpriteLayerRenderer::GetPalette(int layer, CSprRes* sprite, CActRes*) {
   switch (layer) {
-    case 0:
+    case SPRITE_LAYER_BODY:
       if (static_cast<int>(this->pc->render.bodyPalette) > 0) {
         return static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->pc->render.name))->palette;
       }
       break;
-    case 1:
+    case SPRITE_LAYER_HEAD:
       if (this->pc->headPalette > 0) {
         return static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->pc->headPaletteName))->palette;
       }
@@ -489,7 +489,7 @@ std::pair<bool, SpriteLayerResources> SpriteLayerRenderer::FindLayer(int layer) 
 // OFFSET: 0x00641620
 // FUNCTION: fn_04816
 std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActRes* action, int sound) {
-  if (layer != 6) {
+  if (layer != SPRITE_LAYER_WEAPON_EFFECT) {
     return std::make_pair(false, "");
   }
 
@@ -517,7 +517,7 @@ void SpriteLayerRenderer::DrawLayer(
     cellIndex = GetSlotLayer(layer);
   }
   for (int i = 0; i < frame->cellCount; ++i) {
-    if (layer == 7) {
+    if (layer == SPRITE_LAYER_SHIELD) {
       cellIndex = i;
     } else if (cellIndex != i) {
       continue;
@@ -552,7 +552,7 @@ void SpriteLayerRenderer::DrawLayer(
       continue;
     }
 
-    if (layer == 0) {
+    if (layer == SPRITE_LAYER_BODY) {
       const float depthScale = (quad.bottomRhw - quad.topRhw) / (quad.bottom - quad.top);
       this->depthScale = depthScale;
       this->depthBias = ((quad.topRhw + quad.bottomRhw) - (quad.top + quad.bottom) * depthScale) * g_depthAverageHalf;
@@ -563,7 +563,7 @@ void SpriteLayerRenderer::DrawLayer(
                    (quad.color & 0xFFFFFF);
     }
 
-    if (layer == 1) {
+    if (layer == SPRITE_LAYER_HEAD) {
       CPc* pc = pcRef;
       const float right = static_cast<float>(resolved.cell->x + this->swingX);
       const float bottom = static_cast<float>(resolved.cell->y + this->swingY);
@@ -590,7 +590,7 @@ void SpriteLayerRenderer::DrawLayer(
     );
     this->QueueQuad(layer, &quad, palette, blend);
     pcRef->DrawStatusOverlays(quad, palette);
-    if (layer == 0) {
+    if (layer == SPRITE_LAYER_BODY) {
       pcRef->blend = blend;
       pcRef->layerCellX = resolved.cell->x;
       pcRef->layerCellY = resolved.cell->y;
@@ -609,7 +609,7 @@ void SpriteLayerRenderer::LoadLayers() {
       continue;
     }
 
-    if (layer == 1) {
+    if (layer == SPRITE_LAYER_HEAD) {
       const ActionFrame& frame = static_cast<CActRes*>(action)->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
       if (frame.Cell(GetSlotLayer(1)).image == -1) {
         this->hideAccessories = true;
@@ -641,10 +641,10 @@ void SpriteLayerRenderer::LoadLayers() {
 // FUNCTION: fn_45587
 std::pair<bool, const ActionFrame*> SpriteLayerRenderer::FindSyncedFrame(int layer, CActRes* action) const {
   switch (layer) {
-    case 2:
-    case 3:
-    case 4:
-    case 8: {
+    case SPRITE_LAYER_HEAD_LOW:
+    case SPRITE_LAYER_HEAD_TOP:
+    case SPRITE_LAYER_HEAD_MID:
+    case SPRITE_LAYER_ROBE: {
       const int bodyCount = static_cast<CActRes*>(this->pc->GetEquipAction(1))->FrameCount(this->pc->render.previousAnimation);
       const int layerCount = static_cast<CActRes*>(this->pc->GetEquipAction(layer))->FrameCount(this->pc->render.previousAnimation);
       if (bodyCount > 0 && layerCount > 0 && layerCount > bodyCount && layerCount % bodyCount == 0) {
@@ -660,11 +660,11 @@ std::pair<bool, const ActionFrame*> SpriteLayerRenderer::FindSyncedFrame(int lay
 // FUNCTION: fn_45588
 int SpriteLayerRenderer::GetLayerBlend(int layer, std::uint32_t color) const {
   switch (layer) {
-    case 2:
-    case 3:
-    case 8:
+    case SPRITE_LAYER_HEAD_LOW:
+    case SPRITE_LAYER_HEAD_TOP:
+    case SPRITE_LAYER_ROBE:
       return 1;
-    case 4:
+    case SPRITE_LAYER_HEAD_MID:
       if (this->pc->accessory3 == ACCESSORY_BATTLEONLINE) {
         return 0x11;
       }
@@ -672,13 +672,13 @@ int SpriteLayerRenderer::GetLayerBlend(int layer, std::uint32_t color) const {
   }
   if (color >= 0xFF000000 && this->blendMode == 1) {
     switch (this->blendVariant) {
-      case 1:
-        if (layer == 5) {
+      case SPRITE_BLEND_CUSTOM_WEAPON:
+        if (layer == SPRITE_LAYER_WEAPON) {
           return 5;
         }
         break;
-      case 2:
-        if (layer == 0 || layer == 1) {
+      case SPRITE_BLEND_BODY_HEAD_HIGH_ALPHA_REF:
+        if (layer == SPRITE_LAYER_BODY || layer == SPRITE_LAYER_HEAD) {
           return 0x11;
         }
         break;
@@ -707,25 +707,25 @@ void SpriteLayerRenderer::PrepareLayers() {
 // OFFSET: 0x00641570
 // FUNCTION: fn_45590
 bool SpriteLayerRenderer::ShouldDrawLayer(int layer) const {
-  if (layer == 5 || layer == 6 || layer == 7) {
+  if (layer == SPRITE_LAYER_WEAPON || layer == SPRITE_LAYER_WEAPON_EFFECT || layer == SPRITE_LAYER_SHIELD) {
     if (this->pc->IsCostumeOutfit() == true || !IsReadyOrAttackAction(this->pc->render.previousAnimation)) {
       return false;
     }
 
-    if (layer == 7) {
+    if (layer == SPRITE_LAYER_SHIELD) {
       const int job = this->pc->GetEffectiveJob(-1);
       return job != JT_MADOGEAR && job != JT_MADOGEAR_H && job != JT_MADOGEAR_B;
     }
-    if ((layer == 5 || layer == 6) && this->pc->isRiding == 1) {
+    if ((layer == SPRITE_LAYER_WEAPON || layer == SPRITE_LAYER_WEAPON_EFFECT) && this->pc->isRiding == 1) {
       return false;
     }
   }
 
-  if ((layer == 2 || layer == 3 || layer == 4) && this->hideAccessories == true) {
+  if ((layer == SPRITE_LAYER_HEAD_LOW || layer == SPRITE_LAYER_HEAD_TOP || layer == SPRITE_LAYER_HEAD_MID) && this->hideAccessories == true) {
     return false;
   }
 
-  if (layer == 8 && this->pc->isHelmRobe == false) {
+  if (layer == SPRITE_LAYER_ROBE && this->pc->isHelmRobe == false) {
     return false;
   }
   return true;
@@ -760,7 +760,7 @@ void SpriteLayerRenderer::QueueOutline(int layer, float yOffset, float xOffset, 
 // OFFSET: 0x00642130
 // FUNCTION: fn_45593
 void SpriteLayerRenderer::IncludeLayerBounds(int layer, const float* box) {
-  if ((layer == 0 || layer == 1) && this->pc->render.trackBounds == 1) {
+  if ((layer == SPRITE_LAYER_BODY || layer == SPRITE_LAYER_HEAD) && this->pc->render.trackBounds == 1) {
     this->bounds.Include(box);
   }
 }

@@ -11,6 +11,11 @@
 #include <string>
 #include <utility>
 
+enum SpriteBlendVariant : char {
+  SPRITE_BLEND_CUSTOM_WEAPON = 1,
+  SPRITE_BLEND_BODY_HEAD_HIGH_ALPHA_REF = 2,
+};
+
 class CActRes;
 class CImfRes;
 class CPc;

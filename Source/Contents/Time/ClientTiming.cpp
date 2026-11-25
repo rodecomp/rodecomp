@@ -4,6 +4,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Achievement/AchievementMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Map/MapInfoMgr.h"
 #include "Contents/Navigation/NavigationManager.h"
 #include "File/CommonObject.h"
@@ -644,7 +645,7 @@ bool CSession::AddShopName(std::string name, int shopId) {
 // OFFSET: 0x00E00910
 // FUNCTION: fn_23644
 void CSession::LoadNavigationScripts() {
-  if (g_serviceMode == 0) {
+  if (g_serviceMode == ServerPrimary) {
     if (!this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_f_krpri", true, false)) {
       return;
     }
@@ -656,7 +657,7 @@ void CSession::LoadNavigationScripts() {
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_NpcDistance_krpri", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_Scroll_krpri", true, false);
     this->m_hotkeyScript->Load("Lua Files\\Navigation\\navi_picknpc_krpri", true, false);
-  } else if (g_serviceMode == 1) {
+  } else if (g_serviceMode == ServerSakray) {
     if (!this->m_hotkeyScript->Load("Lua Files\\Navigation\\Navi_f_krSak", true, false)) {
       return;
     }

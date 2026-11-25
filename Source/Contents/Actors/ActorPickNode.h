@@ -5,6 +5,13 @@
 #include <cstdint>
 #include <list>
 
+enum ActorPickQuadrant : int {
+  ACTOR_PICK_TOP_LEFT = 0,
+  ACTOR_PICK_TOP_RIGHT = 1,
+  ACTOR_PICK_BOTTOM_RIGHT = 2,
+  ACTOR_PICK_BOTTOM_LEFT = 3,
+};
+
 struct vector2d;
 
 struct ActorPickPoint {

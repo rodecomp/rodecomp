@@ -16,6 +16,14 @@
 class UIWindow;
 struct ITEM_INFO;
 
+enum EquipmentPropertyAccumulation : int {
+  EQUIP_PROPERTY_SUM = 0,
+  EQUIP_PROPERTY_ONE = 1,
+  EQUIP_PROPERTY_MAX = 2,
+  EQUIP_PROPERTY_SUM_INDEX_AND_VALUE = 3,
+  EQUIP_PROPERTY_NONNEGATIVE_MAX = 4,
+};
+
 struct EquipmentValueC {
   /* 0000 */ int value;
 };

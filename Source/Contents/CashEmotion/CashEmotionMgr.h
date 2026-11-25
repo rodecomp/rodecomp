@@ -12,6 +12,11 @@
 #include <utility>
 #include <vector>
 
+enum CashEmotionMiniButtonId : int {
+  CASH_EMOTION_MINI_PREVIOUS = 1,
+  CASH_EMOTION_MINI_NEXT = 2,
+};
+
 class CCashEmotionMgr;
 class ICashEmotionAction;
 struct lua_State;

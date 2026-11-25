@@ -54,7 +54,7 @@ namespace {
 // OFFSET: 0x00E12E50
 // FUNCTION: fn_23820
 int CSession::HotkeyIndex(int tab, int index) const {
-  if (tab == 1) {
+  if (tab == HOTKEY_TAB_INTERFACE) {
     for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
       if (HiddenInterfaceIndex(candidate) == true) {
         ++index;
@@ -72,7 +72,7 @@ int CSession::HotkeyIndex(int tab, int index) const {
 
 // INLINED
 static int HiddenHotkeyCount(int tab, int count) {
-  if (tab != 1) {
+  if (tab != HOTKEY_TAB_INTERFACE) {
     return 0;
   }
 
@@ -144,16 +144,16 @@ void CUserHotkeyMgr::Shutdown() {
 // OFFSET: 0x005F80A0
 // FUNCTION: fn_04058
 int CUserHotkeyMgr::TabAt(int position) const {
-  int tab = 0;
+  int tab = HOTKEY_TAB_SKILL_BAR_1;
   switch (position) {
   case 1:
-    tab = 3;
+    tab = HOTKEY_TAB_SKILL_BAR_2;
     break;
   case 2:
-    tab = 1;
+    tab = HOTKEY_TAB_INTERFACE;
     break;
   case 3:
-    tab = 2;
+    tab = HOTKEY_TAB_EMOTION;
     break;
   }
   return tab;

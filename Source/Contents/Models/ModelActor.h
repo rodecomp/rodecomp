@@ -5,6 +5,11 @@
 #include "Contents/Models/ModelSpatial.h"
 #include "Utility/Math/Vector3d.h"
 
+enum ModelPlayback : int {
+  MODEL_PLAYBACK_ONCE = 1,
+  MODEL_PLAYBACK_LOOP = 2,
+};
+
 class C3dActor {
 public:
   C3dActor();

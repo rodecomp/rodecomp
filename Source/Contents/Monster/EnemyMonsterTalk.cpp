@@ -1,5 +1,6 @@
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
+#include "Contents/Monster/EnemyMonsterTalk.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -39,9 +40,9 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
 
   BOOL bySkill = FALSE;
   switch (event) {
-  case 1:
-  case 2:
-  case 3:
+  case MONSTER_TALK_CAST_SKILL:
+  case MONSTER_TALK_USE_SKILL:
+  case MONSTER_TALK_SKILL_ATTACKED:
     bySkill = TRUE;
     break;
   }
@@ -75,19 +76,19 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
 // FUNCTION: fn_23834
 const char* CSession::GetMonsterTalkEventName(int event) {
   switch (event) {
-  case 0:
+  case MONSTER_TALK_ATTACK:
     return "attack";
-  case 1:
+  case MONSTER_TALK_CAST_SKILL:
     return "castskill";
-  case 2:
+  case MONSTER_TALK_USE_SKILL:
     return "useskill";
-  case 3:
+  case MONSTER_TALK_SKILL_ATTACKED:
     return "skillattacked";
-  case 4:
+  case MONSTER_TALK_HP_50:
     return "hp50";
-  case 5:
+  case MONSTER_TALK_HP_25:
     return "hp25";
-  case 6:
+  case MONSTER_TALK_DEAD:
     return "dead";
   default:
     return nullptr;

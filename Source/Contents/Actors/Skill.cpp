@@ -452,7 +452,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
 
     if (this->m_model != nullptr) {
-      this->m_model->playback = 1;
+      this->m_model->playback = MODEL_PLAYBACK_ONCE;
     }
     break;
   }
@@ -480,7 +480,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     this->m_effectTimer = 36000;
     this->ShowModel(this->GetTrapModelName());
     if (this->m_model != nullptr) {
-      this->m_model->playback = 1;
+      this->m_model->playback = MODEL_PLAYBACK_ONCE;
     }
     break;
   case AM_SKILLSTANDENTRY: {

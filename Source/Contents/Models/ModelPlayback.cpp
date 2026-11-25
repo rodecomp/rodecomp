@@ -18,7 +18,7 @@ namespace {
 // FUNCTION: fn_17493
 void C3dActorV1::Update() {
   switch (this->playback) {
-    case 1: {
+    case MODEL_PLAYBACK_ONCE: {
       const unsigned tick = GetTickCount();
       if (tick - this->lastTick == 0) {
         return;
@@ -33,7 +33,7 @@ void C3dActorV1::Update() {
       this->lastTick = tick;
       break;
     }
-    case 2: {
+    case MODEL_PLAYBACK_LOOP: {
       const unsigned tick = GetTickCount();
       if (tick - this->lastTick == 0) {
         return;
@@ -55,7 +55,7 @@ void C3dActorV1::Update() {
 // FUNCTION: fn_17494
 void C3dActorV2::Update() {
   switch (this->playback) {
-    case 1: {
+    case MODEL_PLAYBACK_ONCE: {
       const unsigned tick = GetTickCount();
       unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
       if (static_cast<double>(frame) >= this->duration) {
@@ -64,7 +64,7 @@ void C3dActorV2::Update() {
       this->Animate(static_cast<double>(frame));
       break;
     }
-    case 2: {
+    case MODEL_PLAYBACK_LOOP: {
       const unsigned tick = GetTickCount();
       unsigned frame = static_cast<unsigned>(static_cast<float>(tick - this->startTick) * this->speed);
       if (static_cast<double>(frame) >= this->duration) {

@@ -5,6 +5,7 @@
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
 #include "Script/LuaScript.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 
 constexpr float robeTopLayerThreshold = 320.0f;
 
@@ -15,7 +16,7 @@ float g_cameraDistance = 300.0f;
 // FUNCTION: fn_10103
 void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
-  case 2:
+  case SPRITE_LAYER_HEAD_LOW:
     if (g_cameraDistance < robeTopLayerThreshold) {
       quad.bottomRhw = bottomDepth + 0.000027f;
       quad.topRhw = topDepth + 0.000027f;
@@ -24,7 +25,7 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float botto
       quad.topRhw = topDepth;
     }
     break;
-  case 3:
+  case SPRITE_LAYER_HEAD_TOP:
     if (g_cameraDistance < robeTopLayerThreshold) {
       quad.bottomRhw = bottomDepth + 0.00004f;
       quad.topRhw = 0.0001f + topDepth;
@@ -33,7 +34,7 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float botto
       quad.topRhw = 0.000045f + topDepth;
     }
     break;
-  case 4: {
+  case SPRITE_LAYER_HEAD_MID: {
     float& bottom = quad.bottomRhw;
     float& top = quad.topRhw;
     if (g_cameraDistance < robeTopLayerThreshold) {

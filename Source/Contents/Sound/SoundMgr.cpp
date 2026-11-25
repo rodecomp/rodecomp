@@ -317,7 +317,7 @@ void CSoundMgr::Update() {
 // OFFSET: 0x006396B0
 // FUNCTION: fn_45423
 void CSoundMgr::Shutdown() {
-  if (g_soundConfiguration.mode == 0) {
+  if (g_soundConfiguration.mode == SOUND_MODE_DISABLED) {
     return;
   }
 
@@ -432,7 +432,7 @@ int CSoundMgr::Volume() const {
 // OFFSET: 0x00639A70
 // FUNCTION: fn_04757
 bool CSoundMgr::IsComplete() const {
-  if (g_soundConfiguration.mode == 0 || !this->stream || !this->secondaryStream || this->fadeExit != 0) {
+  if (g_soundConfiguration.mode == SOUND_MODE_DISABLED || !this->stream || !this->secondaryStream || this->fadeExit != 0) {
     return false;
   }
 
@@ -580,7 +580,7 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
 // OFFSET: 0x00639F00
 // FUNCTION: fn_04763
 void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
-  if (g_soundConfiguration.mode == 0) {
+  if (g_soundConfiguration.mode == SOUND_MODE_DISABLED) {
     return;
   }
 
@@ -625,7 +625,7 @@ void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
 void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximumDistance, int minimumDistance, float scale, int unused) {
   const unsigned char enabled = g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
 
-  if (g_soundConfiguration.mode == 0 || !enabled) {
+  if (g_soundConfiguration.mode == SOUND_MODE_DISABLED || !enabled) {
     return;
   }
 
@@ -642,10 +642,10 @@ void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximu
   }
 
   switch (g_soundConfiguration.mode) {
-  case 1:
+  case SOUND_MODE_2D:
     this->PlayData2D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
     break;
-  case 2:
+  case SOUND_MODE_3D:
     this->PlayData3D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
     break;
   }

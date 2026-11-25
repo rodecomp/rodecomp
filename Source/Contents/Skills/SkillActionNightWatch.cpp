@@ -250,31 +250,31 @@ void CSkillAction_NW_GRENADE_FRAGMENT::OnSkillEffect(int level, CGameActor* sour
 
   EffectLists* effectLists;
   switch (level) {
-  case 1:
+  case SKILL_ELEMENT_WATER:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_water"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 2:
+  case SKILL_ELEMENT_WIND:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_wind"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 3:
+  case SKILL_ELEMENT_EARTH:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 4:
+  case SKILL_ELEMENT_FIRE:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 5:
+  case SKILL_ELEMENT_DARKNESS:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_darkness"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 6:
+  case SKILL_ELEMENT_HOLY:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_saint"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
-  case 7:
+  case SKILL_ELEMENT_RESET:
     effectLists = g_effectMgr;
     effectLists->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("grenade_fragment_reset"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;

@@ -6,6 +6,13 @@
 #include <cstddef>
 #include <string>
 
+enum UserHotkeyTab : int {
+  HOTKEY_TAB_SKILL_BAR_1 = 0,
+  HOTKEY_TAB_INTERFACE = 1,
+  HOTKEY_TAB_EMOTION = 2,
+  HOTKEY_TAB_SKILL_BAR_2 = 3,
+};
+
 class LuaScript;
 
 struct HotkeyInfo {

@@ -4,6 +4,12 @@
 #include <cstddef>
 #include <list>
 
+enum ModelViewVisibility : int {
+  MODEL_VIEW_OUTSIDE = 0,
+  MODEL_VIEW_INSIDE = 1,
+  MODEL_VIEW_CLIPPED = 2,
+};
+
 struct OrientedBounds;
 struct WorldSpatialTree;
 class GroundGeometry;

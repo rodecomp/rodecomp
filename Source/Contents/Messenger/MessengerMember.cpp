@@ -15,6 +15,7 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/ButtonState.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Gauges/UIPcGage.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -595,13 +596,13 @@ void UIJobIconButton::Paint() {
     name = this->m_disabledName;
   } else {
     switch (this->geometry.state) {
-    case 0:
+    case BUTTON_STATE_NORMAL:
       name = this->m_normalName;
       break;
-    case 1:
+    case BUTTON_STATE_HOVER:
       name = this->m_hoverName;
       break;
-    case 2:
+    case BUTTON_STATE_PRESSED:
       name = this->m_pressedName;
       break;
     }

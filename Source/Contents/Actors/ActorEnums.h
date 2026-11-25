@@ -8,6 +8,13 @@ enum ShapeShiftType : int {
   SHAPESHIFT_NATURE_PROTECTION = 3,
 };
 
+enum TetraBallElement : int {
+  TETRA_BALL_FIRE = 0,
+  TETRA_BALL_WIND = 1,
+  TETRA_BALL_WATER = 2,
+  TETRA_BALL_EARTH = 3,
+};
+
 enum EffectSetCountCommand : int {
   SETCOUNT_EFFECT_COLOR = 0xFFFF,
   SETCOUNT_EFFECT_COLOR_RESET = 0xFFFE,
