@@ -103,7 +103,7 @@ namespace EquipmentProperties {
     /* 0174 */ std::unordered_map<int, EquipmentPropertyDefinition*> randomOptionDefinitions;
     /* 0194 */ std::set<std::uint64_t> functionPairs;
     /* 019C */ std::unordered_map<int, EquipmentValueC> displayValues;
-    /* 01BC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<unsigned int, float>>, CEquipmentValueHash> levelRates;
+    /* 01BC */ std::unordered_map<int, std::unordered_map<unsigned int, std::unordered_map<unsigned int, float>>, CEquipmentValueHash> levelRates;
     /* 01DC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, EquipmentEntryB, CEquipmentValueHash>, CEquipmentValueHash>, CEquipmentValueHash> categoryValues;
 
     static CEquipmentPropertiesMgr* GetInstance();
@@ -122,7 +122,7 @@ namespace EquipmentProperties {
     std::unordered_map<int, EquipmentValueC>& GetDisplayValues();
     bool HasFunctionPair(const std::uint64_t& key);
     EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
-    int GetRefiningBonus(const int& first, const int& second, const unsigned int& third);
+    int GetRefiningBonus(const int& first, const unsigned int& second, const unsigned int& third);
     __declspec(noinline) void SetCurrentEquipment(CEquipment* equipment);
     void RefreshPretend();
     __declspec(noinline) void RefreshShop();

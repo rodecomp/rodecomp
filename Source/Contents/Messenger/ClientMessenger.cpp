@@ -830,7 +830,7 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
       if (!g_session.IsCostumeLocation(this->m_type) && this->m_info != nullptr) {
         const ITEM_INFO equipped = g_session.GetEquippedItemAt(this->inventoryIndex);
         if (equipped.identity[1] > 0) {
-          const unsigned int key = this->GetValue(2);
+          const int key = this->GetValue(2);
           const int level = equipped.refiningLevel;
           if (level > 0) {
             switch (this->m_info->kind) {
@@ -2546,7 +2546,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
         if (!this->loadValid) {
           continue;
         }
-        int level;
+        unsigned int level;
         int type = lua_type(this->script.GetState(), -2);
         if (type == LUA_TNUMBER) {
           level = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
@@ -3973,7 +3973,7 @@ __declspec(noinline) EquipmentPropertyDefinition* EquipmentProperties::CEquipmen
 
 // OFFSET: 0x006AD580
 // FUNCTION: fn_06185
-int EquipmentProperties::CEquipmentPropertiesMgr::GetRefiningBonus(const int& first, const int& second, const unsigned int& third) {
+int EquipmentProperties::CEquipmentPropertiesMgr::GetRefiningBonus(const int& first, const unsigned int& second, const unsigned int& third) {
   auto outer = this->levelRates.find(first);
   if (this->levelRates.end() == outer) {
     return 0;
