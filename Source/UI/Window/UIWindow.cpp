@@ -1865,7 +1865,7 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
       std::memcpy(buffer, text, bytes);
       buffer[bytes] = '\0';
       // GLOBAL: gl_25070
-      static std::string truncated;
+      static std::string truncated = "";
       truncated = buffer;
       delete[] buffer;
       return truncated.c_str();
