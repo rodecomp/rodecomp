@@ -1144,6 +1144,18 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   return 0;
 }
 
+struct LikeStyle {
+  /* 0000 */ int slotNum = 0;
+  /* 0004 */ int padding_0004 = 0;
+  /* 0008 */ int robe = 0;
+  /* 000C */ int headStyle = 0;
+  /* 0010 */ int bodyStyle = 0;
+  /* 0014 */ int headPaletteNum = 0;
+  /* 0018 */ int bodyPaletteNum = 0;
+  /* 001C */ int topAccNum = 0;
+  /* 0020 */ int midAccNum = 0;
+  /* 0024 */ int bottomAccNum = 0;
+};
 
 // OFFSET: 0x0082A350
 // FUNCTION: fn_10361
@@ -1160,19 +1172,7 @@ void UIMyStyleWnd::SaveLikeList() {
     data[size] = '\0';
     file.Close();
 
-    struct LikeStyle {
-      int slotNum;
-      int padding_0004;
-      int robe;
-      int headStyle;
-      int bodyStyle;
-      int headPaletteNum;
-      int bodyPaletteNum;
-      int topAccNum;
-      int midAccNum;
-      int bottomAccNum;
-    };
-    LikeStyle style = {};
+    LikeStyle style;
     char characterName[24] = {};
     char* line = data;
     for (int i = 0; i < size; ++i) {
@@ -1197,8 +1197,8 @@ void UIMyStyleWnd::SaveLikeList() {
         if (_mbsstr(reinterpret_cast<const unsigned char*>("characterName"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
           ++i;
           char value[24] = {};
-          for (char* out = value; data[i] != '\n' && data[i] != '\r'; ++i, ++out) {
-            *out += data[i];
+          for (int length = 0; data[i] != '\n' && data[i] != '\r'; ++i, ++length) {
+            value[length] += data[i];
           }
           strcpy_s(characterName, sizeof(characterName), value);
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>("slotNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
@@ -2165,8 +2165,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateLeftButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_over.bmp", 1, 0);
     this->rotateLeftButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_press.bmp", 2, 0);
     this->rotateLeftButtons[i]->SetSize(this->rotateLeftButtons[i]->BitmapWidth(), this->rotateLeftButtons[i]->BitmapHeight());
-    float ratio = static_cast<float>(i) * 0.5f + 0.25f;
-    this->rotateLeftButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)) - this->rotateLeftButtons[i]->BitmapWidth(), 213);
+    this->rotateLeftButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * (static_cast<float>(i) * 0.5f + 0.25f))) - this->rotateLeftButtons[i]->BitmapWidth(), 213);
     this->rotateLeftButtons[i]->SetId(ID_LEFT);
     if (this->m_slots[i] == nullptr) {
       this->rotateLeftButtons[i]->Enable(0);
@@ -2178,7 +2177,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateRightButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_over.bmp", 1, 0);
     this->rotateRightButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
     this->rotateRightButtons[i]->SetSize(this->rotateRightButtons[i]->BitmapWidth(), this->rotateRightButtons[i]->BitmapHeight());
-    this->rotateRightButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)), 213);
+    this->rotateRightButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * (static_cast<float>(i) * 0.5f + 0.25f))), 213);
     this->rotateRightButtons[i]->SetId(ID_RIGHT);
     if (this->m_slots[i] == nullptr) {
       this->rotateRightButtons[i]->Enable(0);
