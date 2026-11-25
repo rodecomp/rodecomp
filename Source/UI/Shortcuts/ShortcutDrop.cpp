@@ -155,7 +155,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         record = std::find_if(records.begin(), records.end(), CooldownIdMatches{skill.id});
       } else {
         const int group = 9999;
-        record = std::find_if(records.begin(), records.end(), CooldownIdMatches{group});
+        record = std::find_if(records.begin(), records.end(), [&group](const ShortcutCooldownRecord& entry) { return entry.id == group; });
       }
 
       if (record != records.end()) {
