@@ -44,10 +44,3 @@ void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
   }
 }
 
-void CDCBitmap::CopyRegion(
-  int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
-  bool transparent, bool alpha
-) {
-  this->m_bitmap.CopyRegion(x, y, sourceLeft, sourceTop, sourceRight, sourceBottom, source, sourceWidth, sourceHeight, transparent, alpha);
-}
-

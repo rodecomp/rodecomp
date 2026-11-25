@@ -310,23 +310,23 @@ void CDCBitmap::Dim(int x, int y, int copyWidth, int copyHeight, int percent) {
 
 // OFFSET: 0x00548780
 // FUNCTION: fn_01856
-void BitmapPixels::CopyRegion(
+void CDCBitmap::CopyRegion(
   int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
   bool transparent, bool alpha
 ) {
-  if (!this->pixels || !source) {
+  if (!this->m_bitmap.pixels || !source) {
     return;
   }
 
-  this->dirty = true;
+  this->m_bitmap.dirty = true;
 
   for (int sourceY = sourceTop, destinationY = y; sourceY < sourceBottom; ++sourceY, ++destinationY) {
-    if (sourceY < 0 || sourceHeight <= sourceY || destinationY < 0 || this->height <= static_cast<unsigned>(destinationY)) {
+    if (sourceY < 0 || sourceHeight <= sourceY || destinationY < 0 || this->m_bitmap.height <= static_cast<unsigned>(destinationY)) {
       continue;
     }
 
     for (int sourceX = sourceLeft, destinationX = x; sourceX < sourceRight; ++sourceX, ++destinationX) {
-      if (sourceX < 0 || sourceWidth <= sourceX || destinationX < 0 || this->width <= static_cast<unsigned>(destinationX)) {
+      if (sourceX < 0 || sourceWidth <= sourceX || destinationX < 0 || this->m_bitmap.width <= static_cast<unsigned>(destinationX)) {
         continue;
       }
 
@@ -336,7 +336,7 @@ void BitmapPixels::CopyRegion(
       }
 
       if (alpha) {
-        const std::uint32_t target = this->pixels[destinationX + destinationY * this->width];
+        const std::uint32_t target = this->m_bitmap.pixels[destinationX + destinationY * this->m_bitmap.width];
         const std::int64_t targetAlpha = target >> 24;
         const std::int64_t targetChannels[3] = {GetBValue(target), GetGValue(target), GetRValue(target)};
         const std::int64_t sourceAlpha = input >> 24;
@@ -348,10 +348,10 @@ void BitmapPixels::CopyRegion(
         }
 
         const std::uint32_t outputAlpha = static_cast<std::uint32_t>(std::max(sourceAlpha, targetAlpha));
-        this->pixels[destinationX + destinationY * this->width] =
+        this->m_bitmap.pixels[destinationX + destinationY * this->m_bitmap.width] =
           (outputAlpha << 24) + (static_cast<BYTE>(channels[0]) << 16) + (static_cast<BYTE>(channels[1]) << 8) + static_cast<BYTE>(channels[2]);
       } else {
-        this->pixels[destinationX + destinationY * this->width] = input;
+        this->m_bitmap.pixels[destinationX + destinationY * this->m_bitmap.width] = input;
       }
     }
   }
