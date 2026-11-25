@@ -3354,15 +3354,14 @@ void UIListBox_NaviSearch::Refresh() {
   const int count = static_cast<int>(this->lines.size());
   const int excess = count - visible;
   const int overflow = excess >= 0 ? excess : 0;
-  int maximum = 0;
   if (overflow != 0) {
     this->verticalOverflow = 1;
-    maximum = this->bottomMargin + overflow;
+    this->verticalBar->SetRange(this->bottomMargin + overflow, visible, static_cast<int>(this->lines.size()));
   } else {
     this->verticalOverflow = 0;
+    this->verticalBar->SetRange(0, visible, static_cast<int>(this->lines.size()));
   }
 
-  this->verticalBar->SetRange(maximum, visible, static_cast<int>(this->lines.size()));
   this->verticalBar->Invalidate();
 }
 
