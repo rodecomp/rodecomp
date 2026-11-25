@@ -864,6 +864,19 @@ struct MoveNpcPacket {
 
 static_assert(sizeof(MoveNpcPacket) == 9);
 
+// INLINED
+CGameActor* FindAiActor(std::uint32_t aid, int& index) {
+  if (g_session.IsHomunAid(aid)) {
+    index = 0;
+  } else if (g_session.IsMercenaryAid(aid)) {
+    index = 1;
+  } else {
+    return nullptr;
+  }
+
+  return g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
+}
+
 }
 
 // OFFSET: 0x00D9EEF0
@@ -871,23 +884,16 @@ static_assert(sizeof(MoveNpcPacket) == 9);
 int AiGetMsg(lua_State* state) {
   std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   int index;
-  if (g_session.IsHomunAid(aid)) {
-    index = 0;
-  } else if (g_session.IsMercenaryAid(aid)) {
-    index = 1;
-  } else {
-    return 0;
-  }
-
-  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
+  CGameActor* actor = FindAiActor(aid, index);
   if (!actor) {
     return 0;
   }
 
   AiMessage message = *actor->GetMsg2AI(index);
   lua_newtable(state);
+  const int type = message.type;
   lua_pushnumber(state, 1);
-  lua_pushnumber(state, message.type);
+  lua_pushnumber(state, type);
   lua_settable(state, -3);
   switch (message.type) {
   case MOVE_CMD:
