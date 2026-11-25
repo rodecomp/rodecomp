@@ -482,27 +482,25 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
   }
 
   int lines = 0;
-  for (const char* value : description) {
+  for (const char* const& value : description) {
     if (lines > 6) {
       break;
     }
 
     std::string text(value);
     constexpr char highlight[] = {'^', '7', '7', '7', '7', '7', '7'};
-    if (text.find(highlight, 0, sizeof(highlight)) == std::string::npos) {
-      continue;
-    }
-
-    std::smatch match;
-    std::regex pattern("\\^000000");
-    std::regex_search(text, match, pattern);
-    while (match.size() > 0) {
-      std::string line = std::string(match.prefix().first, match.prefix().second) + match.str();
-      this->descriptionViewer->AddLine(line);
-      ++lines;
-      text = match.suffix();
-      text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+    if (text.find(highlight, 0, sizeof(highlight)) != std::string::npos) {
+      std::smatch match;
+      std::regex pattern("\\^000000");
       std::regex_search(text, match, pattern);
+      while (match.size() > 0) {
+        std::string line = std::string(match.prefix().first, match.prefix().second) + match.str();
+        this->descriptionViewer->AddLine(line);
+        ++lines;
+        text = match.suffix();
+        text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+        std::regex_search(text, match, pattern);
+      }
     }
   }
 }
