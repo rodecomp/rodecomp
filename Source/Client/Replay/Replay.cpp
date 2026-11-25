@@ -1402,11 +1402,9 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
   std::vector<unsigned char> records;
   AppendRecord(records, MakeReplayRecord(7500, nullptr, 0));
   for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
-    ReplayShopNameRecord value;
-    value.reserved = 0;
+    ReplayShopNameRecord value = {0};
     value.shopId = it->second;
     const std::size_t length = (std::min)(it->first.size(), sizeof(value.name));
-    std::memset(value.name, 0, sizeof(value.name));
     std::memcpy(value.name, it->first.c_str(), length);
     AppendRecord(records, MakeReplayRecord(7502, &value, sizeof(value)));
   }
