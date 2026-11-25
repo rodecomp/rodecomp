@@ -3122,21 +3122,17 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case NC_AXETORNADO:
-    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      if (g_effectMgr->Find(source->render.accountId, EF_MINEFFECT_AXETORNADO)) {
-        return;
-      }
-      g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_AXETORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_AXETORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    } else {
-      if (g_effectMgr->Find(source->render.accountId, EF_NEW_AXETORNADO)) {
-        return;
-      }
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXETORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXETORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  case NC_AXETORNADO: {
+    const bool minEffect = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF);
+    const int castEffect = minEffect ? EF_MINEFFECT_AXETORNADO : EF_NEW_AXETORNADO;
+    const int bottomEffect = minEffect ? EF_MINEFFECT_AXETORNADO_BOTTOM : EF_NEW_AXETORNADO_BOTTOM;
+    if (g_effectMgr->Find(source->render.accountId, castEffect)) {
+      return;
     }
+    g_effectMgr->Spawn(source->render.accountId, castEffect, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, bottomEffect, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
+  }
   case NC_POWERSWING: {
     float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
