@@ -178,7 +178,8 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
       return std::make_pair(false, "duplicate material ITID");
     }
 
-    it->materials.push_back(std::make_pair(material, count));
+    std::pair<int, int> entry(material, count);
+    it->materials.emplace_back(entry);
     return std::make_pair(true, "good");
   }
 

@@ -12,7 +12,8 @@ struct PetEvolutionRecipe {
   // INLINED
   PetEvolutionRecipe(int target, int material, int count) {
     this->target = target;
-    this->materials.push_back(std::make_pair(material, count));
+    std::pair<int, int> entry(material, count);
+    this->materials.emplace_back(entry);
   }
 
   /* 0000 */ int target;
