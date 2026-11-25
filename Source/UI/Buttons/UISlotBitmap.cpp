@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "UI/Buttons/UISlotBitmap.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -18,10 +19,10 @@ struct SlotAddButton : UIBitmapButton {
         this->m_bitmapHeight = bitmap->image.height;
       }
       switch (state) {
-      case 0: this->m_normalName = name; break;
-      case 1: this->m_hoverName = name; break;
-      case 2: this->m_pressedName = name; break;
-      case 3: this->m_disabledName = name; break;
+      case BUTTON_STATE_NORMAL: this->m_normalName = name; break;
+      case BUTTON_STATE_HOVER: this->m_hoverName = name; break;
+      case BUTTON_STATE_PRESSED: this->m_pressedName = name; break;
+      case BUTTON_STATE_DISABLED: this->m_disabledName = name; break;
       }
     }
   }
@@ -33,9 +34,9 @@ struct SlotAddButton : UIBitmapButton {
 void UISlotBitmap::OnCreate(int, int) {
   if (this->showAddButton == 1) {
     this->addButton = new UIBitmapButton();
-    static_cast<SlotAddButton*>(this->addButton)->LoadState(0, "유저인터페이스\\select_character\\btn_add_out.bmp");
-    static_cast<SlotAddButton*>(this->addButton)->LoadState(1, "유저인터페이스\\select_character\\btn_add_over.bmp");
-    static_cast<SlotAddButton*>(this->addButton)->LoadState(2, "유저인터페이스\\select_character\\btn_add_press.bmp");
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(BUTTON_STATE_NORMAL, "유저인터페이스\\select_character\\btn_add_out.bmp");
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(BUTTON_STATE_HOVER, "유저인터페이스\\select_character\\btn_add_over.bmp");
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(BUTTON_STATE_PRESSED, "유저인터페이스\\select_character\\btn_add_press.bmp");
     this->addButton->SetSize(this->addButton->BitmapWidth(), this->addButton->BitmapHeight());
     this->addButton->Move(
       static_cast<int>((this->geometry.width - this->addButton->geometry.width) * 0.5),

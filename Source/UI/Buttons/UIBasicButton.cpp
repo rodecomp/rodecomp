@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -64,7 +65,7 @@ void UIBasicButton::Paint() {
     this->DrawTextAt(x + 1, y + 1, this->text.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
   } else {
     switch (this->geometry.state) {
-    case 0: {
+    case BUTTON_STATE_NORMAL: {
       DrawButtonSkin(this, "유저인터페이스\\basic_interface\\btn_out_left.bmp", "유저인터페이스\\basic_interface\\btn_out_mid.bmp", "유저인터페이스\\basic_interface\\btn_out_right.bmp");
       const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
       const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
@@ -72,7 +73,7 @@ void UIBasicButton::Paint() {
       this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0, 0, 0);
       break;
     }
-    case 1: {
+    case BUTTON_STATE_HOVER: {
       DrawButtonSkin(this, "유저인터페이스\\basic_interface\\btn_over_left.bmp", "유저인터페이스\\basic_interface\\btn_over_mid.bmp", "유저인터페이스\\basic_interface\\btn_over_right.bmp");
       const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
       const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
@@ -80,7 +81,7 @@ void UIBasicButton::Paint() {
       this->DrawTextAt(x, y, this->text.c_str(), 0, 0, 12, 0, 0, 0);
       break;
     }
-    case 2: {
+    case BUTTON_STATE_PRESSED: {
       DrawButtonSkin(this, "유저인터페이스\\basic_interface\\btn_press_left.bmp", "유저인터페이스\\basic_interface\\btn_press_mid.bmp", "유저인터페이스\\basic_interface\\btn_press_right.bmp");
       const int x = static_cast<int>((this->geometry.width - this->TextWidth(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);
       const int y = static_cast<int>((this->geometry.height - this->TextHeight(this->text.c_str(), 0, 0, 12, 0, 0)) * 0.5);

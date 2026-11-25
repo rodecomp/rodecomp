@@ -1,3 +1,4 @@
+#include "UI/Dialogs/MessageBoxType.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skin/SkinMgr.h"

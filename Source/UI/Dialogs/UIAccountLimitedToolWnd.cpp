@@ -1,3 +1,4 @@
+#include "UI/Dialogs/AccountLimitedOperation.h"
 #include "UI/Dialogs/UIAccountLimitedToolWnd.h"
 #include "UI/Window/UIEnums.h"
 
@@ -313,7 +314,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     break;
   case UM_PARAM:
     switch (argument1) {
-    case 1:
+    case ACCOUNT_LIMITED_APPLY:
       switch (argument2) {
       case 3: {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
@@ -370,7 +371,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
       }
       break;
-    case 2:
+    case ACCOUNT_LIMITED_DELETE:
       if (argument2 == 1) {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
@@ -405,7 +406,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         this->InvalidateChildren();
       }
       break;
-    case 0: {
+    case ACCOUNT_LIMITED_SEARCH: {
       this->m_accountIdText->SetNumber(argument2);
       UIBitmapButton* addButton = this->m_buttons[1];
       addButton->SetDisabled(0);

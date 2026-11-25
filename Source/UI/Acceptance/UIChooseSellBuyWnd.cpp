@@ -1,3 +1,5 @@
+#include "UI/Acceptance/AcceptanceEnums.h"
+#include "UI/Dialogs/TipBoxImageKind.h"
 #include "Client/Mode/CMode.h"
 #include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
@@ -260,7 +262,7 @@ UIEquipWnd::UIEquipWnd() : UIFrameWnd(0), swapWindow(nullptr), swapState(0), swa
   this->m_placement = nullptr;
   this->m_updateTick = timeGetTime();
   this->contentOffset = 0;
-  this->m_page = 0;
+  this->m_page = EQUIPMENT_PAGE_NORMAL;
   this->m_contentTop = 20;
   for (int index = 0; index < 8; ++index) {
     this->appearance[index] = 0;
@@ -1953,7 +1955,7 @@ __forceinline int UIEquipWnd::DamageSkinSlotAt(int x, int y) const {
 void UIEquipWnd::OnLBtnUp(int x, int y) {
   this->UIFrameWnd::OnLBtnUp(x, y);
 
-  if (this->m_page != 3) {
+  if (this->m_page != EQUIPMENT_PAGE_DAMAGE_SKIN) {
     return;
   }
 
@@ -2591,7 +2593,7 @@ void UIExchangeWnd::OnWheel(int delta) {
 // OFFSET: 0x008F59C0
 // FUNCTION: fn_12309
 void UIEquipWnd::OnWheel(int delta) {
-  if (g_session.damageSkinCount > 4 && this->m_page == 3) {
+  if (g_session.damageSkinCount > 4 && this->m_page == EQUIPMENT_PAGE_DAMAGE_SKIN) {
     if (delta < 0) {
       this->SendMsg(this->m_scrollBar, UM_SCROLLHORZ, 1, 0, 0, 0);
     } else {
@@ -6981,14 +6983,14 @@ ITEM_INFO UIEquipWnd::GetSlotItem(int slot) {
     return ITEM_INFO(0);
   }
 
-  if (this->m_page == 1) {
+  if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
     if (this->m_viewOther == 0) {
       return g_session.GetCostumeItemAt(slot);
     }
     return g_session.GetAlternateCostumeItemAt(slot);
   }
 
-  if (this->m_page == 0) {
+  if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
     if (this->m_viewOther == 0) {
       return g_session.GetEquippedItemAt(slot);
     }
@@ -7062,7 +7064,7 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemIconAt(x, y);
   if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
-    if (this->m_page == 1) {
+    if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
       g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, std::get<0>(slots), 1, 0, 0);
     } else {
       g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, std::get<0>(slots), 0, 0, 0);
@@ -7512,14 +7514,14 @@ UIStorePasswordInputWnd::UIStorePasswordInputWnd()
   std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
   this->maskTextX = 0;
   this->isChangingPassword = 0;
-  this->passwordStage = 0;
+  this->passwordStage = PASSWORD_INPUT_CURRENT;
   this->inputDigitCount = 0;
   this->activeInputY = 40;
   this->currentPasswordY = 40;
   this->newPasswordY = 80;
   this->confirmPasswordY = 119;
   if (g_session.m_passwordInputAlternate) {
-    this->passwordStage = 2;
+    this->passwordStage = PASSWORD_INPUT_NEW;
     this->activeInputY = 80;
     this->inputDigitCount = 0;
     this->maskTextX = 0;
@@ -9655,10 +9657,10 @@ void UISecondPasswordInputWnd::Paint() {
   }
 
   switch (this->passwordStage) {
-  case 3:
+  case PASSWORD_INPUT_CONFIRM:
     this->FillRegion(415, 167, 98, 14, 0xFFFFFF);
     [[fallthrough]];
-  case 2:
+  case PASSWORD_INPUT_NEW:
     this->FillRegion(415, 128, 98, 14, 0xFFFFFF);
     break;
   }
@@ -10261,7 +10263,7 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (item.quantity > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-    if (this->m_page == 1) {
+    if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
       mode->BeginDragItem(DRAG_ITEM_EQUIP_COSTUME, item, item.quantity, std::get<0>(slots));
     } else {
       mode->BeginDragItem(DRAG_ITEM_EQUIP, item, item.quantity, std::get<0>(slots));
@@ -10596,7 +10598,7 @@ void UITipboxWnd::Paint() {
   } else {
     CTipBoxMgr* manager = g_itemTagOwner;
     switch (manager->m_image.kind) {
-    case 0:
+    case TIP_BOX_IMAGE_BITMAP:
       if (manager->m_currentEntry.imageCell == 5 && manager->m_currentEntry.imageScalePercent == 100) {
         this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((manager->m_currentEntry.bitmapName + ".bmp").c_str()))), false);
       } else {
@@ -10608,7 +10610,7 @@ void UITipboxWnd::Paint() {
         );
       }
       break;
-    case 1: {
+    case TIP_BOX_IMAGE_SPRITE: {
       auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".act"));
       auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(manager->m_image.path + ".spr"));
       if (!action || !sprite) {
@@ -10626,7 +10628,7 @@ void UITipboxWnd::Paint() {
       );
       break;
     }
-    case 2:
+    case TIP_BOX_IMAGE_NONE:
       this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\tipbox\\img_noImage.bmp"))), false);
       break;
     }
@@ -12635,7 +12637,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_COMBOBOX_SELECTED: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
-    case 0: {
+    case PROHIBIT_ACTION_DECREASE_MANNER: {
       if (!IsMonsterJob(g_session.m_aid)) {
         return 0;
       }
@@ -12648,12 +12650,12 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       counter->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
       break;
     }
-    case 1:
+    case PROHIBIT_ACTION_CLEAR_MANNER:
       if (IsAdminAccount(g_session.m_aid)) {
         mode->SendMsg(MM_REQ_GIVE_MANNER_POINT_PLUS, 30000, 0, 0, 0);
       }
       break;
-    case 2: {
+    case PROHIBIT_ACTION_INCREASE_MANNER: {
       if (!IsAdminAccount(g_session.m_aid)) {
         return 0;
       }

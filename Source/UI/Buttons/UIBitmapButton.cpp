@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -49,10 +50,10 @@ bool UITextureButton::SetTexture(const char* name, int state) {
   }
 
   switch (state) {
-  case 0: this->normalTexture.assign(name, std::strlen(name)); break;
-  case 1: this->hoverTexture.assign(name, std::strlen(name)); break;
-  case 2: this->pressedTexture.assign(name, std::strlen(name)); break;
-  case 3: this->disabledTexture.assign(name, std::strlen(name)); break;
+  case BUTTON_STATE_NORMAL: this->normalTexture.assign(name, std::strlen(name)); break;
+  case BUTTON_STATE_HOVER: this->hoverTexture.assign(name, std::strlen(name)); break;
+  case BUTTON_STATE_PRESSED: this->pressedTexture.assign(name, std::strlen(name)); break;
+  case BUTTON_STATE_DISABLED: this->disabledTexture.assign(name, std::strlen(name)); break;
   }
 
   return true;
@@ -77,10 +78,10 @@ bool UIBitmapButton::SetBitmap(const char* name, int state, unsigned char exactS
     this->m_bitmapHeight = bitmap->image.height;
   }
   switch (state) {
-  case 0: this->m_normalName = name; break;
-  case 1: this->m_hoverName = name; break;
-  case 2: this->m_pressedName = name; break;
-  case 3: this->m_disabledName = name; break;
+  case BUTTON_STATE_NORMAL: this->m_normalName = name; break;
+  case BUTTON_STATE_HOVER: this->m_hoverName = name; break;
+  case BUTTON_STATE_PRESSED: this->m_pressedName = name; break;
+  case BUTTON_STATE_DISABLED: this->m_disabledName = name; break;
   }
 
   return true;
@@ -92,13 +93,13 @@ void UIBitmapButton::Paint() {
   CBitmapRes* bitmap;
 
   switch (this->geometry.state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str())));
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str())));
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str())));
     break;
   }

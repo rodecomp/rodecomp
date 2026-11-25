@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
@@ -153,27 +154,27 @@ void UITextButton::OnMouseMove(int x, int y) {
   if (g_windowMgr.Capture() == this) {
     if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
       this->m_color = this->m_hoverColor;
-      if (this->geometry.state != 2) {
-        this->geometry.state = 2;
+      if (this->geometry.state != BUTTON_STATE_PRESSED) {
+        this->geometry.state = BUTTON_STATE_PRESSED;
         this->Invalidate();
       }
     } else {
       this->m_color = this->m_normalColor;
-      if (this->geometry.state != 0) {
-        this->geometry.state = 0;
+      if (this->geometry.state != BUTTON_STATE_NORMAL) {
+        this->geometry.state = BUTTON_STATE_NORMAL;
         this->Invalidate();
       }
     }
   } else if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
     this->m_color = this->m_hoverColor;
-    if (this->geometry.state != 1) {
-      this->geometry.state = 1;
+    if (this->geometry.state != BUTTON_STATE_HOVER) {
+      this->geometry.state = BUTTON_STATE_HOVER;
       this->Invalidate();
     }
   } else {
     this->m_color = this->m_normalColor;
-    if (this->geometry.state != 0) {
-      this->geometry.state = 0;
+    if (this->geometry.state != BUTTON_STATE_NORMAL) {
+      this->geometry.state = BUTTON_STATE_NORMAL;
       this->Invalidate();
     }
   }
@@ -197,9 +198,9 @@ void UITextButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, 0, 0);
@@ -233,9 +234,9 @@ void UITextButton::OnRBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_TEXT_RBTN_UP, this->geometry.id, this->m_value, 0, 0);
@@ -318,16 +319,16 @@ bool UIBmpRadioBtn::SetBitmap(const char* name, int state) {
   this->Resize(this->geometry.width, this->geometry.height);
 
   switch (state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     this->m_names[0] = name;
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     this->m_names[1] = name;
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     this->m_names[2] = name;
     break;
-  case 3:
+  case BUTTON_STATE_DISABLED:
     this->m_names[3] = name;
     break;
   }
@@ -1014,15 +1015,15 @@ void UITVTextButton::OnMouseMove(int x, int y) {
   }
 
   if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
-    if (this->geometry.state != 1) {
-      this->geometry.state = 1;
+    if (this->geometry.state != BUTTON_STATE_HOVER) {
+      this->geometry.state = BUTTON_STATE_HOVER;
 
       if (this->parent && this->mousePressed == 0) {
         this->parent->SendMsg(this, UM_MOUSE_HOVER_BTN, this->m_value, 0, 0, 0);
       }
     }
-  } else if (this->geometry.state != 0) {
-    this->geometry.state = 0;
+  } else if (this->geometry.state != BUTTON_STATE_NORMAL) {
+    this->geometry.state = BUTTON_STATE_NORMAL;
     this->Invalidate();
     this->drawBackground = 0;
     this->highlighted = 0;
@@ -1220,9 +1221,9 @@ void UIBitmapButton2::OnRBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->geometry.id, 0, 0, 0);
@@ -1271,9 +1272,9 @@ void UITVBitmapButton::OnRBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_BMP_RBTN_UP, this->m_value, 0, 0, 0);
@@ -1641,7 +1642,7 @@ void UITVTextButton::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  this->geometry.state = 1;
+  this->geometry.state = BUTTON_STATE_HOVER;
 
   if (this->parent) {
     this->parent->SendMsg(this, UM_TEXT_LBTN_DblClk, this->m_value, x, y, 0);
@@ -1725,7 +1726,7 @@ void UITVTextButton::OnLBtnDown(int, int) {
     return;
   }
 
-  this->geometry.state = 2;
+  this->geometry.state = BUTTON_STATE_PRESSED;
   this->Invalidate();
 
   if (this->parent) {
@@ -1775,9 +1776,9 @@ void UIBitmapButton2::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_BMP_LBTN_UP, this->geometry.id, 0, 0, 0);
@@ -1821,9 +1822,9 @@ void UITVBitmapButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
 
     if (this->parent) {
       this->parent->SendMsg(this, UM_BMP_LBTN_UP, this->m_value, 0, 0, 0);

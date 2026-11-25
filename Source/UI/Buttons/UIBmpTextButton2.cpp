@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
@@ -16,16 +17,16 @@ void UIBmpTextButton2::Paint() {
   CBitmapRes* bitmap;
 
   if (this->m_disabled != 0) {
-    this->geometry.state = 3;
+    this->geometry.state = BUTTON_STATE_DISABLED;
   } else {
     switch (this->geometry.state) {
-    case 0:
+    case BUTTON_STATE_NORMAL:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str())));
       break;
-    case 1:
+    case BUTTON_STATE_HOVER:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str())));
       break;
-    case 2:
+    case BUTTON_STATE_PRESSED:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str())));
       break;
     }

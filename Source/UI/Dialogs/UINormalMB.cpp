@@ -1,3 +1,4 @@
+#include "UI/Dialogs/MessageBoxType.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "UI/Dialogs/UINormalMB.h"
@@ -109,17 +110,17 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->m_message.c_str()), static_cast<int>(width / 7.5), 0, 0);
 
   switch (type) {
-  case 4:
+  case MESSAGE_BOX_CANCEL:
     this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 185);
     this->m_message0 = ID_CANCEL;
     break;
 
-  case 0:
+  case MESSAGE_BOX_OK:
     this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 46, height - 24, 184);
     this->m_message0 = ID_OK;
     break;
 
-  case 2:
+  case MESSAGE_BOX_YES_NO:
     this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 91, height - 24, 187);
     this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 188);
     this->m_message1 = 188;

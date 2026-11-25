@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Resource/ResourceMgr.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Resource/Bitmap/SkinPalette.h"
@@ -28,13 +29,13 @@ void UIColorButton::Paint() {
 
   std::uint32_t color;
   switch (this->geometry.state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     color = static_cast<unsigned char>(this->normalRed) | (static_cast<unsigned char>(this->normalGreen) << 8) | (static_cast<unsigned char>(this->normalBlue) << 16);
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     color = static_cast<unsigned char>(this->activeRed) | (static_cast<unsigned char>(this->activeGreen) << 8) | (static_cast<unsigned char>(this->activeBlue) << 16);
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     color = static_cast<unsigned char>(this->activeRed) | (static_cast<unsigned char>(this->activeGreen) << 8) | (static_cast<unsigned char>(this->activeBlue) << 16);
     this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, color);
     this->DrawTextAt((this->geometry.width - textWidth) / 2 + 2, (this->geometry.height - 12) / 2 + 2, this->label.c_str(), 0, 0, 12,

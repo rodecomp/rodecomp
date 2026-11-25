@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIColorButton.h"
 #include "UI/Buttons/UINoneVisibleButton.h"
@@ -26,7 +27,7 @@
 // OFFSET: 0x0084EDD0
 // FUNCTION: fn_10653
 UIButton::UIButton() : UIWindow(0) {
-  this->geometry.state = 0;
+  this->geometry.state = BUTTON_STATE_NORMAL;
   this->m_disabled = 0;
   this->m_argument = 0;
 }
@@ -61,13 +62,13 @@ void UIButton::Paint() {
   CBitmapRes* bitmap;
 
   switch (this->geometry.state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_up.bmp")));
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_act.bmp")));
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sml_button_down.bmp")));
     break;
   }
@@ -84,7 +85,7 @@ void UIButton::OnLBtnDown(int, int) {
   }
 
   g_windowMgr.SetCapture(this);
-  this->geometry.state = 2;
+  this->geometry.state = BUTTON_STATE_PRESSED;
   this->Invalidate();
 }
 
@@ -119,26 +120,26 @@ void UIButton::OnMouseMove(int x, int y) {
 
   if (g_windowMgr.Capture() == this) {
     if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
-      if (this->geometry.state != 2) {
-        this->geometry.state = 2;
+      if (this->geometry.state != BUTTON_STATE_PRESSED) {
+        this->geometry.state = BUTTON_STATE_PRESSED;
         this->Invalidate();
       }
-    } else if (this->geometry.state != 0) {
-      this->geometry.state = 0;
+    } else if (this->geometry.state != BUTTON_STATE_NORMAL) {
+      this->geometry.state = BUTTON_STATE_NORMAL;
       this->Invalidate();
     }
   } else if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
-    if (this->geometry.state != 1) {
-      this->geometry.state = 1;
+    if (this->geometry.state != BUTTON_STATE_HOVER) {
+      this->geometry.state = BUTTON_STATE_HOVER;
       this->Invalidate();
     }
-  } else if (this->geometry.state != 0) {
-    this->geometry.state = 0;
+  } else if (this->geometry.state != BUTTON_STATE_NORMAL) {
+    this->geometry.state = BUTTON_STATE_NORMAL;
     this->Invalidate();
   }
 
   if (this->parent == g_windowMgr.basicInfoWnd) {
-    if (this->geometry.state == 0) {
+    if (this->geometry.state == BUTTON_STATE_NORMAL) {
       this->parent->SendMsg(this, UM_COMMAND, ID_APPLY, 0, 0, 0);
     } else {
       this->parent->SendMsg(this, UM_COMMAND, ID_APPLY, 1, 0, 0);
@@ -185,8 +186,8 @@ void UIButton::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10874
 void UIButton::OnMouseCheck(int x, int y) {
   if (x < this->geometry.x || (this->geometry.x + this->geometry.width) < x || y < this->geometry.y || (this->geometry.y + this->geometry.height) < y) {
-    if (this->geometry.state != 0) {
-      this->geometry.state = 0;
+    if (this->geometry.state != BUTTON_STATE_NORMAL) {
+      this->geometry.state = BUTTON_STATE_NORMAL;
       this->Invalidate();
     }
   }
@@ -219,9 +220,9 @@ void UIButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
     if (this->parent) {
       if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) != 0) {
         int id = this->geometry.id;

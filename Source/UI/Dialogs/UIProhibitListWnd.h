@@ -3,6 +3,12 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+enum ProhibitAction : int {
+  PROHIBIT_ACTION_DECREASE_MANNER = 0,
+  PROHIBIT_ACTION_CLEAR_MANNER = 1,
+  PROHIBIT_ACTION_INCREASE_MANNER = 2,
+};
+
 class UIProhibitListWnd : public UIFrameWnd {
 public:
   UIProhibitListWnd();

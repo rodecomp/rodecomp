@@ -1,3 +1,4 @@
+#include "UI/Chat/ChatTarget.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"

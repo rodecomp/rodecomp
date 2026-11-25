@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Render/Text/FontCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -29,7 +30,7 @@ void UIBmpTextButton::Paint() {
         found = true;
         break;
       }
-    } else if (this->m_disabled == 1 && style->state == 3) {
+    } else if (this->m_disabled == 1 && style->state == BUTTON_STATE_DISABLED) {
       found = true;
       break;
     }
@@ -54,7 +55,7 @@ void UIBmpTextButton::Paint() {
     }
   } else {
     switch (this->geometry.state) {
-    case 0: {
+    case BUTTON_STATE_NORMAL: {
       this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str()))), false);
 
       if (this->text.size() > 0) {
@@ -73,7 +74,7 @@ void UIBmpTextButton::Paint() {
       }
       break;
     }
-    case 1: {
+    case BUTTON_STATE_HOVER: {
       this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str()))), false);
 
       if (this->text.size() > 0) {
@@ -92,7 +93,7 @@ void UIBmpTextButton::Paint() {
       }
       break;
     }
-    case 2: {
+    case BUTTON_STATE_PRESSED: {
       this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str()))), false);
 
       if (this->text.size() > 0) {

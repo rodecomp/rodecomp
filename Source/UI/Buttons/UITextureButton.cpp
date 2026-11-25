@@ -1,3 +1,4 @@
+#include "UI/Buttons/ButtonState.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Replay/Replay.h"
@@ -39,13 +40,13 @@ void UITextureButton::OnLBtnUp(int x, int y) {
   }
 
   if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
-    this->geometry.state = 0;
+    this->geometry.state = BUTTON_STATE_NORMAL;
   } else {
     if (this->toggleEnabled == 1) {
       this->toggled = this->toggled == 0;
     }
 
-    this->geometry.state = 1;
+    this->geometry.state = BUTTON_STATE_HOVER;
     if (this->parent) {
       if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) > 0) {
         int id = this->geometry.id;

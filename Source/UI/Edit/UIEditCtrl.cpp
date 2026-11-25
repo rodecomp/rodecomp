@@ -1,3 +1,6 @@
+#include "UI/Buttons/ButtonState.h"
+#include "UI/Edit/ItemFilterEnums.h"
+#include "UI/Edit/ItemDropCountMode.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
@@ -833,24 +836,24 @@ void UIBmpTextButton2::DrawLabels() {
     std::uint32_t shadowColor = 0xE6E6E6;
 
     switch (this->geometry.state) {
-    case 0:
+    case BUTTON_STATE_NORMAL:
       shadowX = x + 1;
       shadowY = y + 1;
       shadowColor = 0xD7D7D7;
       break;
-    case 1:
+    case BUTTON_STATE_HOVER:
       shadowX = x + 1;
       shadowY = y + 1;
       shadowColor = 0xC7A796;
       break;
-    case 2:
+    case BUTTON_STATE_PRESSED:
       shadowX = x;
       shadowY = y;
       shadowColor = 0xFFFFFF;
       ++x;
       ++y;
       break;
-    case 3:
+    case BUTTON_STATE_DISABLED:
       color = 0xADADAD;
       shadowX = x + 1;
       shadowY = y + 1;
@@ -872,17 +875,17 @@ void UITextureButton::VisitChildren() {
   CTexture* texture = nullptr;
 
   switch (this->geometry.state) {
-  case 0:
+  case BUTTON_STATE_NORMAL:
     if (this->toggleEnabled == 1 && this->toggled == 1) {
       texture = g_texMgr.Load(this->pressedTexture.c_str(), 0, false, true, false);
     } else {
       texture = g_texMgr.Load(this->normalTexture.c_str(), 0, false, true, false);
     }
     break;
-  case 1:
+  case BUTTON_STATE_HOVER:
     texture = g_texMgr.Load(this->hoverTexture.c_str(), 0, false, true, false);
     break;
-  case 2:
+  case BUTTON_STATE_PRESSED:
     texture = g_texMgr.Load(this->pressedTexture.c_str(), 0, false, true, false);
     break;
   }
@@ -1092,7 +1095,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
-  case 1:
+  case DRAG_ITEM_INVENTORY:
     if (drag->sourceWindow == this->tabs) {
       PACKET_CZ_INVENTORY_TAB packet;
       packet.packetType = ID_CZ_INVENTORY_TAB;
@@ -1101,15 +1104,15 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     }
     break;
-  case 2:
-  case 17:
-  case 18:
-  case 24:
+  case DRAG_ITEM_EQUIP:
+  case DRAG_SWAP_EQUIP:
+  case DRAG_SWAP_EQUIP_COSTUME:
+  case DRAG_ITEM_EQUIP_COSTUME:
     this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
     return;
-  case 6:
-  case 9:
-  case 15:
+  case DRAG_ITEM_STORAGE:
+  case DRAG_ITEM_MERCHANT_INVENTORY:
+  case DRAG_RODEX_COMPOSE:
     if (drag->quantity == 1) {
       this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       return;
@@ -1118,7 +1121,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
     g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 6, 0, 0, 0);
     return;
-  case 14: {
+  case DRAG_METAL_PROCESS: {
     UIWindow* target = static_cast<UIWindow*>(g_windowMgr.makeTargetProcessWnd);
 
     if (target) {
@@ -1126,7 +1129,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
     break;
   }
-  case 28: {
+  case DRAG_REFINING: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_REFININGWND);
 
     if (window) {
@@ -1134,7 +1137,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
     break;
   }
-  case 33: {
+  case DRAG_GRADE_ENCHANT: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_GRADEENCHANTWND);
 
     if (window) {
@@ -1274,7 +1277,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILIED_ONECLICK_ITEMIDENTIFY_NO_MAGNIFIER)), 255, 0, 0, 0);
         }
 
-        if (this->categoryFilter == 1 && !item.identified) {
+        if (this->categoryFilter == INVENTORY_ITEM_TAB_EQUIPMENT && !item.identified) {
           struct {
             unsigned short packetType;
             unsigned short index;
@@ -3908,23 +3911,23 @@ bool UIItemStoreSubWnd::FilterItem(ITEM_INFO& item) {
   CItemInfoMgr* itemInfoMgr = g_itemInfoMgr;
   item.saleData.costume = itemInfoMgr->IsCostume(std::stoi(item.itemId));
   if (item.saleData.costume != 0) {
-    if (this->tabIndex == 4) {
+    if (this->tabIndex == STORAGE_ITEM_TAB_COSTUME) {
       return true;
     }
   } else {
     const int type = static_cast<int>(item.itemType);
     switch (this->tabIndex) {
-    case 0:
+    case STORAGE_ITEM_TAB_USABLE:
       if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
         return true;
       }
       break;
-    case 1:
+    case STORAGE_ITEM_TAB_CASH:
       if (type == TYPE_CASH_POINT_ITEM) {
         return true;
       }
       break;
-    case 2:
+    case STORAGE_ITEM_TAB_ARMOR:
       switch (type) {
       case TYPE_ARMOR:
       case TYPE_ARMORTM:
@@ -3934,7 +3937,7 @@ bool UIItemStoreSubWnd::FilterItem(ITEM_INFO& item) {
         return true;
       }
       break;
-    case 3:
+    case STORAGE_ITEM_TAB_WEAPON:
       switch (type) {
       case TYPE_WEAPON:
       case TYPE_BOW:
@@ -3943,17 +3946,17 @@ bool UIItemStoreSubWnd::FilterItem(ITEM_INFO& item) {
         return true;
       }
       break;
-    case 5:
+    case STORAGE_ITEM_TAB_AMMO:
       if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
         return true;
       }
       break;
-    case 6:
+    case STORAGE_ITEM_TAB_CARD:
       if (type == TYPE_CARD) {
         return true;
       }
       break;
-    case 7:
+    case STORAGE_ITEM_TAB_MISC:
       if (type == TYPE_EVENT || type == TYPE_PETEGG) {
         return true;
       }
@@ -3969,23 +3972,23 @@ bool UIItemStoreWnd::FilterItem(ITEM_INFO& item) {
   CItemInfoMgr* itemInfoMgr = g_itemInfoMgr;
   item.saleData.costume = itemInfoMgr->IsCostume(std::stoi(item.itemId));
   if (item.saleData.costume != 0) {
-    if (this->m_sortMode == 4) {
+    if (this->m_sortMode == STORAGE_ITEM_TAB_COSTUME) {
       return true;
     }
   } else {
     const int type = static_cast<int>(item.itemType);
     switch (this->m_sortMode) {
-    case 0:
+    case STORAGE_ITEM_TAB_USABLE:
       if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
         return true;
       }
       break;
-    case 1:
+    case STORAGE_ITEM_TAB_CASH:
       if (type == TYPE_CASH_POINT_ITEM) {
         return true;
       }
       break;
-    case 2:
+    case STORAGE_ITEM_TAB_ARMOR:
       switch (type) {
       case TYPE_ARMOR:
       case TYPE_ARMORTM:
@@ -3995,7 +3998,7 @@ bool UIItemStoreWnd::FilterItem(ITEM_INFO& item) {
         return true;
       }
       break;
-    case 3:
+    case STORAGE_ITEM_TAB_WEAPON:
       switch (type) {
       case TYPE_WEAPON:
       case TYPE_BOW:
@@ -4004,17 +4007,17 @@ bool UIItemStoreWnd::FilterItem(ITEM_INFO& item) {
         return true;
       }
       break;
-    case 5:
+    case STORAGE_ITEM_TAB_AMMO:
       if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
         return true;
       }
       break;
-    case 6:
+    case STORAGE_ITEM_TAB_CARD:
       if (type == TYPE_CARD) {
         return true;
       }
       break;
-    case 7:
+    case STORAGE_ITEM_TAB_MISC:
       if (type == TYPE_EVENT || type == TYPE_PETEGG) {
         return true;
       }
@@ -4028,31 +4031,31 @@ bool UIItemStoreWnd::FilterItem(ITEM_INFO& item) {
 // FUNCTION: fn_45729
 bool UIItemWnd::FilterItem(ITEM_INFO& item) {
   if (item.placeEtcTab != 0) {
-    if (this->categoryFilter == 3) {
+    if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE) {
       return true;
     }
   } else {
     const int type = static_cast<int>(item.itemType);
     switch (this->categoryFilter) {
-    case 0:
+    case INVENTORY_ITEM_TAB_USABLE:
       if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
         switch (this->usableFilter) {
-        case 0:
+        case INVENTORY_USABLE_FILTER_HEAL:
           if (type == TYPE_HEAL) {
             return true;
           }
           break;
-        case 2:
+        case INVENTORY_USABLE_FILTER_OTHER:
           if (type == TYPE_SCHANGE || type == TYPE_SPECIAL) {
             return true;
           }
           break;
-        case 3:
+        case INVENTORY_USABLE_FILTER_ALL:
           return true;
         }
       }
       break;
-    case 1:
+    case INVENTORY_ITEM_TAB_EQUIPMENT:
       switch (type) {
       case TYPE_ARMOR:
       case TYPE_ARMORTM:
@@ -4064,12 +4067,12 @@ bool UIItemWnd::FilterItem(ITEM_INFO& item) {
       case TYPE_BOTHHAND:
       case TYPE_GUN:
         switch (this->equipmentFilter) {
-        case 0:
+        case INVENTORY_EQUIPMENT_FILTER_WEAPON:
           if (type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW) {
             return true;
           }
           return false;
-        case 1:
+        case INVENTORY_EQUIPMENT_FILTER_ARMOR:
           switch (type) {
           case TYPE_ARMOR:
           case TYPE_ARMORTM:
@@ -4079,13 +4082,13 @@ bool UIItemWnd::FilterItem(ITEM_INFO& item) {
             return true;
           }
           break;
-        case 3:
+        case INVENTORY_EQUIPMENT_FILTER_ALL:
           return true;
         }
         break;
       }
       break;
-    case 2:
+    case INVENTORY_ITEM_TAB_MISC:
       if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO ||
           type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
         if (this->miscFilter == 4) {
@@ -8229,7 +8232,7 @@ UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
   this->m_sortOptionA = 0;
   this->m_sortOptionB = 0;
   this->m_sortOptionC = 0;
-  this->m_sortMode = 0;
+  this->m_sortMode = STORAGE_ITEM_TAB_USABLE;
   this->showQuantity = 1;
   this->alternateButtonBar = 1;
   this->saved = nullptr;
@@ -8448,10 +8451,10 @@ UIItemWnd::UIItemWnd() : UIItemBaseWnd() {
   this->resizer = nullptr;
   this->scrollBar = nullptr;
   this->saved = nullptr;
-  this->usableFilter = 0;
-  this->equipmentFilter = 0;
+  this->usableFilter = INVENTORY_USABLE_FILTER_HEAL;
+  this->equipmentFilter = INVENTORY_EQUIPMENT_FILTER_WEAPON;
   this->miscFilter = 0;
-  this->categoryFilter = 0;
+  this->categoryFilter = INVENTORY_ITEM_TAB_USABLE;
   this->scroll = 0;
   this->scrollOverflow = 0;
 }
