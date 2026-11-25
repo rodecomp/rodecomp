@@ -1100,7 +1100,7 @@ void UIEditCtrl_Currency::OnProcess() {
   int separators = 0;
   int index = 0;
 
-  for (std::string::iterator it = digits.begin(); it != digits.end(); ++it, ++index) {
+  for (std::string::iterator it = digits.begin(); it != digits.end(); ++index, ++it) {
     if (this->text[index] == ',' && anchor > index) {
       ++separators;
     }
