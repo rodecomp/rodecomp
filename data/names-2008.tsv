@@ -1,0 +1,1515 @@
+id	addr	name	name_2008	evidence	confidence
+fn_01214	0x00524440	sub_524440	luaL_checkany	strings	high
+fn_01219	0x00524660	sub_524660	luaL_checkstack	strings	high
+fn_01239	0x00525440	sub_525440	luaB_print	strings	high
+fn_01240	0x00525510	sub_525510	luaB_tonumber	strings	high
+fn_01243	0x005256E0	sub_5256E0	luaB_setmetatable	strings	high
+fn_01257	0x00525C10	sub_525C10	luaB_assert	strings	high
+fn_01262	0x00525E40	sub_525E40	luaB_tostring	strings	high
+fn_01269	0x00526130	sub_526130	luaB_coresume	strings	high
+fn_01272	0x00526320	sub_526320	luaB_getfenv	strings	high
+fn_01276	0x00526500	sub_526500	luaB_newproxy	strings	high
+fn_01278	0x00526620	sub_526620	luaopen_base	strings	high
+fn_01328	0x00529660	sub_529660	getinfo	strings	high
+fn_01334	0x00529CF0	sub_529CF0	gethook	strings	high
+fn_01335	0x00529DE0	sub_529DE0	debug	strings	high
+fn_01336	0x00529F20	sub_529F20	errorfb	strings	high
+fn_01341	0x0052A2E0	sub_52A2E0	lua_getinfo	strings	high
+fn_01348	0x0052A8C0	sub_52A8C0	luaG_aritherror	strings	high
+fn_01350	0x0052A960	sub_52A960	luaG_concaterror	strings	high
+fn_01352	0x0052AA20	sub_52AA20	luaG_ordererror	strings	high
+fn_01353	0x0052AA70	sub_52AA70	luaG_runerror	calls	moderate
+fn_01366	0x0052B660	sub_52B660	luaD_precall	strings	high
+fn_01379	0x0052C030	sub_52C030	lua_resume	strings	high
+fn_01380	0x0052C120	sub_52C120	lua_yield	strings	high
+fn_01419	0x0052E490	sub_52E490	io_type	strings	high
+fn_01443	0x0052EFC0	sub_52EFC0	g_read	strings	high
+fn_01448	0x0052F3D0	sub_52F3D0	io_readline	strings	high
+fn_01449	0x0052F480	sub_52F480	luaopen_io	strings	high
+fn_01463	0x00530270	sub_530270	read_long_string	strings	high
+fn_01464	0x005304D0	sub_5304D0	read_numeral	strings	high
+fn_01465	0x00530660	sub_530660	luaX_lex	strings	high
+fn_01494	0x00531360	sub_531360	math_random	strings	high
+fn_01512	0x00531FE0	sub_531FE0	luaB_require	strings	high
+fn_01514	0x00532170	sub_532170	loadlib	strings	high
+fn_01516	0x00532300	sub_532300	luaO_chunkid	strings	high
+fn_01539	0x00533270	sub_533270	assignment	strings	high
+fn_01542	0x00533780	sub_533780	breakstat	strings	high
+fn_01553	0x005341B0	sub_5341B0	forstat	strings	high
+fn_01554	0x00534410	sub_534410	funcargs	strings	high
+fn_01560	0x00534B60	sub_534B60	primaryexp	strings	high
+fn_01590	0x00536C30	sub_536C30	str_char	strings	high
+fn_01591	0x00536CF0	sub_536CF0	str_dump	strings	high
+fn_01597	0x00536FF0	sub_536FF0	str_format	strings	high
+fn_01601	0x00537920	sub_537920	luaopen_string	strings	high
+fn_01602	0x005379B0	sub_5379B0	match	strings	high
+fn_01609	0x00538380	_mtx_do_lock	str_find	strings	high
+fn_01628	0x00539360	sub_539360	setnodevector	strings	high
+fn_01638	0x00539950	sub_539950	auxsort	strings	high
+fn_01661	0x0053B550	sub_53B550	luaU_undump	strings	high
+fn_01672	0x0053D650	sub_53D650	luaV_settable	strings	high
+fn_01896	0x0054A380	DeviceOwnerDX7::CreateRenderer	C3dDevice::CreateRenderer	strings	high
+fn_02080	0x0055A500	CRendererDX7::ApplyFog	CRenderer::DoFog	strings	high
+fn_02081	0x0055A920	CRenderer::DrawBattleFieldIcon	CRenderer::DrawBattleFieldIcon	strings	high
+fn_02106	0x0055D650	CRenderer::Project	CRenderer::ProjectVertex	calls	moderate
+fn_02112	0x0055E840	CRenderer::DrawOverlays	CGameMode::DrawTime	strings	high
+fn_02273	0x00569E90	CreateBitmapDC	C3dDevice::CreateDCBuffer	calls	moderate
+fn_02454	0x005717A0	TextureCache::Load	CTexMgr::GetTexture	calls, one vote	moderate
+fn_02592	0x0057B940	CFile::Close	CFile::Close	calls, one vote	moderate
+fn_03044	0x005A12A0	CGameActor::GetStateFlags	C3dGrannyGameActor::SetAction	vtable slot pattern (shared)	high
+fn_03044	0x005A12A0	CGameActor::GetStateFlags	CGameActor::SetAction	vtable slot pattern (shared)	high
+fn_03044	0x005A12A0	CGameActor::GetStateFlags	CGrannyPc::SetAction	vtable slot pattern (shared)	high
+fn_03051	0x005A13D0	CGameActor::GetWeapon	CGameActor::GetWeapon	vtable slot pattern	high
+fn_45476	0x005A1940	CGameActor::SetBodyPalette	CGameActor::SetBodyPalette	vtable slot pattern	high
+fn_45475	0x005A1950	CGameActor::SetBodyPaletteName	CGameActor::SetBodyPaletteName	vtable slot pattern	high
+fn_03055	0x005A1970	CGameActor::SetHeadPalette	CGameActor::SetHeadPalette	vtable slot pattern	high
+fn_03056	0x005A1980	CGameActor::SetHeadPaletteName	CGameActor::SetHeadPaletteName	vtable slot pattern	high
+fn_03057	0x005A1990	CGameActor::SetHonor	CGameActor::SetHonor	vtable slot pattern	high
+fn_03058	0x005A19A0	CNpc::SetImfFileName	CNpc::SetImfFileName	vtable slot pattern	high
+fn_03061	0x005A19D0	CGameActor::SetPropensityInfo	CGameActor::SetPropensityInfo	vtable slot pattern	high
+fn_03063	0x005A19F0	CGameActor::SetSprAccessory2	CGameActor::SetSprAccessory2	vtable slot pattern	high
+fn_03064	0x005A1A00	CGameActor::SetSprAccessory3	CGameActor::SetSprAccessory3	vtable slot pattern	high
+fn_03065	0x005A1A10	CNpc::SetSprAccessory	CNpc::SetSprAccessory	vtable slot pattern	high
+fn_03066	0x005A1A20	CGameActor::SetSprAct2	CGameActor::SetSprAct2	vtable slot pattern	high
+fn_03067	0x005A1A30	CGameActor::SetSprActFull	CGameActor::SetSprAct	vtable slot voted	high
+fn_03069	0x005A1A50	CNpc::SetSprHead	CNpc::SetSprJobDye	vtable slot pattern	high
+fn_03072	0x005A1A80	CGameActor::SetSprShield	CGameActor::SetSprShield	vtable slot pattern	high
+fn_03073	0x005A1A90	nullsub_124	CGameActor::SetSprShoe	vtable slot pattern	high
+fn_03074	0x005A1AA0	CGameActor::SetSprWeapon2	CGameActor::SetSprWeapon2	vtable slot pattern	high
+fn_03075	0x005A1AB0	CNpc::SetSprWeapon	CNpc::SetSprWeapon	vtable slot pattern	high
+fn_03546	0x005C2EC0	sub_5C2EC0	UIBitmapEditCtrl::`scalar deleting destructor'	vtable slot pattern	high
+fn_03552	0x005C3210	UIEditCtrl::IsEditable	UIEditCtrl::CanGetFocus	vtable slot pattern	high
+fn_03553	0x005C3220	UIWindow::IsEditable	UIWindow::CanGetFocus	vtable slot pattern	high
+fn_03567	0x005C45C0	UIWindow::GetTransBoxInfo	UIWindow::GetTransBoxInfo	vtable slot pattern	high
+fn_03571	0x005C4650	UIWindow::IsFrameWnd	UIWindow::IsFrameWnd	vtable slot pattern	high
+fn_03573	0x005C4670	UIWindow::NeedsFrameRefresh	UIWindow::IsUpdateNeed	vtable slot pattern	high
+fn_03574	0x005C4680	UIWindow::MoveFromOrigin	UIWindow::MoveDelta	vtable slot pattern	high
+fn_03578	0x005C4C70	UIWindow::OnBeginEdit	UIWindow::OnBeginEdit	vtable slot pattern	high
+fn_03585	0x005C6080	UIWindow::OnDestroy	UIWindow::OnDestroy	vtable slot pattern	high
+fn_03591	0x005C6F00	UIWindow::OnFinishEdit	UIWindow::OnFinishEdit	vtable slot pattern	high
+fn_03606	0x005C72D0	UIWindow::OnProcess	UISelectCartWnd::OnProcess	vtable slot pattern	high
+fn_03607	0x005C72E0	UIWindow::OnRBtnDblClk	UIWindow::OnRBtnDblClk	vtable slot between	high
+fn_03620	0x005C7AB0	UIWindow::RefreshSnap	UIWindow::RefreshSnap	vtable slot pattern	high
+fn_03623	0x005C7B40	UIWindow::StoreMoveOrigin	UIWindow::SaveOriginalPos	vtable slot pattern	high
+fn_03632	0x005C9630	UIWindow::Show	UIWindow::SetShow	vtable slot pattern	high
+fn_03638	0x005CA050	UIWindow::CanHitTest	UIWindow::ShouldDoHitTest	vtable slot pattern	high
+fn_03640	0x005CA0F0	UIWindow::StoreInfo	UIWindow::StoreInfo	vtable slot pattern	high
+fn_04106	0x005FCCF0	ITEM_INFO::GetItemId	ITEM_INFO::GetItemName	calls	moderate
+fn_04116	0x005FDA50	UIWindow::OnLBtnDown	UIWindow::OnLBtnDown	vtable slot pattern	high
+fn_04159	0x006006C0	UIWindow::Paint	UIWindow::OnDraw	vtable slot voted	high
+fn_04339	0x00612010	CRagEffect::GetStateFlags	CRenderObject::SetAction	vtable slot pattern	high
+fn_04709	0x00635F00	TopLevelExceptionFilter	ExceptionFilter	strings	high
+fn_04750	0x00639070	CSoundMgr::Initialize	InitMSS	strings	high
+fn_04764	0x0063A130	CSoundMgr::PlayWave	PlayWave	calls	moderate
+fn_04818	0x00641E40	SpriteLayerRenderer::LoadLayers	CPc::RenderBodyLayer	strings	high
+fn_06596	0x006D78C0	LoadItemNameTables	ITEM_INFO::InitItemInfoTables	strings	high
+fn_07680	0x00738EC0	UIFriendOptionWnd::`scalar deleting destructor'	UIFriendOptionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_07681	0x00738F30	UIFriendOptionWnd::OnCreate	UIFriendOptionWnd::OnCreate	vtable slot voted	high
+fn_07682	0x007391C0	UIFriendOptionWnd::Paint	UIFriendOptionWnd::OnDraw	vtable slot voted	high
+fn_07683	0x00739220	UIFriendOptionWnd::SendMsg	UIFriendOptionWnd::SendMsg	vtable slot voted	high
+fn_07684	0x007392F0	UIFriendOptionWnd::StoreInfo	UIFriendOptionWnd::StoreInfo	vtable slot pattern	high
+fn_07701	0x0073A110	sub_73A110	UIMessengerGroupWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_07704	0x0073A3F0	UIMessengerGroupWnd::MemberAt	UIMessengerGroupWnd::GetItemInfo	calls, one vote	moderate
+fn_07706	0x0073A630	UIMessengerGroupWnd::OnCreate	UIMessengerGroupWnd::OnCreate	vtable slot voted	high
+fn_07707	0x0073B9D0	UIMessengerGroupWnd::Paint	UIMessengerGroupWnd::OnDraw	strings	high
+fn_07708	0x0073CD30	UIMessengerGroupWnd::OnLBtnDblClk	UIMessengerGroupWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_07709	0x0073CD60	UIMessengerGroupWnd::OnLBtnDown	UIMessengerGroupWnd::OnLBtnDown	vtable slot pattern	high
+fn_07713	0x0073D460	UIMessengerGroupWnd::OnRBtnUp	UIMessengerGroupWnd::OnRBtnUp	vtable slot pattern	high
+fn_07714	0x0073D530	UIMessengerGroupWnd::OnWheel	UIMessengerGroupWnd::OnWheel	vtable slot pattern	high
+fn_07718	0x0073D980	UIMessengerGroupWnd::SendMsg	UIMessengerGroupWnd::SendMsg	vtable slot voted	high
+fn_07719	0x0073FD90	UIMessengerGroupWnd::StoreInfo	UIMessengerGroupWnd::StoreInfo	vtable slot pattern	high
+fn_07748	0x00743680	sub_743680	CRmaRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07749	0x007436B0	CActRes::Create	CActRes::Clone	vtable slot pattern	high
+fn_07750	0x007437B0	CActRes::Load	CActRes::Load	strings	high
+fn_07751	0x007445A0	CActRes::Unload	CActRes::Reset	vtable slot pattern	high
+fn_07752	0x00744660	sub_744660	CActRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07753	0x007446F0	CRmaRes::Create	CRmaRes::Clone	vtable slot pattern	high
+fn_07754	0x00744820	CRmaRes::Load	CRmaRes::Load	strings	high
+fn_07755	0x00745190	CRmaRes::Unload	CRmaRes::Reset	vtable slot pattern	high
+fn_07789	0x00747540	CRes::Unload	CRes::Reset	vtable slot pattern	high
+fn_07829	0x007484E0	C3dAttr::Load	C3dAttr::Load	strings	high
+fn_07838	0x00748D80	C3dAttr::Height	C3dAttr::GetHeight	calls	moderate
+fn_07847	0x00749580	CBitmapRes::Create	CBitmapRes::Clone	vtable slot pattern	high
+fn_07848	0x00749630	CBitmapRes::Load	CBitmapRes::Load	vtable slot voted	high
+fn_07850	0x00749850	CBitmapRes::Unload	CBitmapRes::Reset	vtable slot pattern	high
+fn_07851	0x007498B0	sub_7498B0	CBitmapRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07869	0x0074AB00	CBitmapRes::DecodeBitmap	CBitmapRes::LoadBMPData	strings	high
+fn_45860	0x0074C570	CBitmapRes::LoadAlphaBitmap	CBitmapRes::SetAlphaWithBMP	strings	high
+fn_07880	0x0074C9F0	CEmblemRes::Create	CEmblemRes::Clone	vtable slot pattern	high
+fn_07881	0x0074CA90	CEmblemRes::Load	CEmblemRes::Load	strings	high
+fn_07882	0x0074CD00	CEmblemRes::Unload	CEmblemRes::Reset	vtable slot pattern	high
+fn_07886	0x0074CD50	sub_74CD50	CEmblemRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07889	0x0074CEE0	CEZeffectRes::Create	CEZeffectRes::Clone	vtable slot pattern	high
+fn_07890	0x0074CFF0	CEZeffectRes::Load	CEZeffectRes::Load	strings	high
+fn_07891	0x0074D320	CEZeffectRes::Unload	CEZeffectRes::Reset	vtable slot pattern	high
+fn_07892	0x0074D330	sub_74D330	CEZeffectRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07899	0x0074DB10	CGndRes::Create	CGndRes::Clone	vtable slot pattern	high
+fn_07900	0x0074DC80	CGndRes::Load	CGndRes::Load	vtable slot voted	high
+fn_07901	0x0074DCE0	CGndRes::Unload	CGndRes::Reset	vtable slot pattern	high
+fn_07902	0x0074DD10	sub_74DD10	CGndRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07924	0x0074F0A0	CImfRes::Create	CImfRes::Clone	vtable slot pattern	high
+fn_07925	0x0074F190	CImfRes::Load	CImfRes::Load	vtable slot voted	high
+fn_07926	0x0074F8C0	sub_74F8C0	CImfRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07948	0x00750950	C3dModelRes::Unload	C3dModelRes::Reset	vtable slot pattern	high
+fn_07956	0x007521F0	C3dAnimModelRes::Create	C3dAnimModelRes::Clone	vtable slot pattern	high
+fn_07957	0x00752380	sub_752380	C3dAnimModelRes::Reset	vtable slot pattern	high
+fn_07958	0x00752390	C3dAnimModelRes::Load	C3dAnimModelRes::Load	strings	high
+fn_07960	0x00753510	sub_753510	C3dAnimModelRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_07963	0x00753620	C3dGrannyModelRes::Load	C3dGrannyModelRes::Load	strings	high
+fn_08000	0x00757090	sub_757090	C3dModelRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_08004	0x00757270	C3dGrannyModelRes::PlayAnimation	C3dGrannyBoneRes::GetAnimation	strings	high
+fn_08007	0x00757850	AnimatedModelNode::Shade	C3dAnimNodeRes::CalcFaceLight	strings	high
+fn_08018	0x00759830	C3dModelRes::Load	C3dModelRes::Load	vtable slot voted, against its strings	high
+fn_08023	0x0075C710	C3dAnimModelRes::Unload	C3dAnimModelRes::Release	calls, one vote	moderate
+fn_08029	0x0075CFC0	C3dGrannyModelRes::Animate	C3dGrannyModelRes::UpdateAni	calls, one vote	moderate
+fn_08039	0x0075D730	CPaletteRes::Create	CPaletteRes::Clone	vtable slot pattern	high
+fn_08040	0x0075D7D0	CPaletteRes::Load	CPaletteRes::Load	strings	high
+fn_08041	0x0075DAF0	CPaletteRes::Unload	CPaletteRes::Reset	vtable slot pattern	high
+fn_08042	0x0075DB00	sub_75DB00	CPaletteRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_45841	0x0075DE20	CSkyBox::CSkyBox	CSkyBoxEllipse::CSkyBoxEllipse	strings	high
+fn_08052	0x0075ECC0	CLensFlare::Render	CFlare::Render	strings	high
+fn_46310	0x0075F080	CSkyCube::Render	CSkyBox::Render	strings	high
+fn_08053	0x0075FE90	CSprRes::Create	CSprRes::Clone	vtable slot pattern	high
+fn_08054	0x0075FF40	CSprRes::Load	CSprRes::Load	strings	high
+fn_08055	0x00760B10	CSprRes::Unload	CSprRes::Reset	vtable slot pattern	high
+fn_08056	0x00760BB0	sub_760BB0	CSprRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_08066	0x007613D0	CWave::Create	CWave::Clone	vtable slot pattern	high
+fn_08067	0x00761470	CWave::Load	CWave::Load	strings	high
+fn_08068	0x00761830	CWave::Unload	CWave::Reset	vtable slot pattern	high
+fn_08069	0x00761870	sub_761870	CWave::`scalar deleting destructor'	vtable slot pattern	high
+fn_08071	0x00761940	C3dWorldRes::Create	C3dWorldRes::Clone	vtable slot pattern	high
+fn_08072	0x00761B40	C3dWorldRes::Unload	C3dWorldRes::Reset	vtable slot pattern	high
+fn_08073	0x00761CC0	C3dWorldRes::Load	C3dWorldRes::Load	strings	high
+fn_08074	0x00762FE0	sub_762FE0	C3dWorldRes::`scalar deleting destructor'	vtable slot pattern	high
+fn_09227	0x007B78C0	UITextViewer::OnLBtnDblClk	UITextViewer::OnLBtnDblClk	vtable slot pattern	high
+fn_09233	0x007B7A10	UITextViewer::OnLBtnUp	UITextViewer::OnLBtnUp	vtable slot pattern	high
+fn_09683	0x007E0C40	CSkinMgr::Prepare	CSkinMgr::ExtractFilesIfZipSkin	strings	high
+fn_09685	0x007E0FC0	CSkinMgr::PaletteChannels	CSkinMgr::GetColorChipColor	calls	moderate
+fn_09689	0x007E1120	CSkinMgr::Refresh	CSkinMgr::Init	strings	high
+fn_09692	0x007E2170	sub_7E2170	std::vector<int,std::allocator<int> >::insert	calls, one vote	moderate
+fn_09702	0x007E2720	CSnapMgr::CaptureOrigins	CSnapMgr::BeginMove	calls, one vote	moderate
+fn_09716	0x007E2FD0	CSnapMgr::MoveEdge	CSnapMgr::MoveConnectedObject	calls	moderate
+fn_09718	0x007E3390	CSnapMgr::MoveConnected	CSnapMgr::MoveDelta	calls, one vote	moderate
+fn_10046	0x008058B0	UIRodexInboxWnd::NeedsFrameRefresh	UIItemWnd::IsUpdateNeed	vtable slot pattern	high
+fn_10630	0x0084D0D0	UIClanInfoManageWnd::Paint	CSession::GetPetIllustName	strings	high
+fn_10654	0x0084EE90	UIChatEditCtrl::UIChatEditCtrl	UIChatEditCtrl::UIChatEditCtrl	calls	moderate
+fn_10656	0x0084F010	UICheckBox::UICheckBox	UICheckBox::UICheckBox	calls	moderate
+fn_10663	0x0084FAE0	UIEditCtrl::UIEditCtrl	UIEditCtrl::UIEditCtrl	calls	moderate
+fn_10671	0x00850120	UIResizer::UIResizer	UIResizer::UIResizer	vtable writer	low
+fn_10678	0x00850550	UIStaticText::UIStaticText	UIStaticText::UIStaticText	calls	moderate
+fn_10679	0x00850680	UITab::UITab	UITab::UITab	vtable writer	low
+fn_10681	0x00850890	UIWhisperEditCtrl::UIWhisperEditCtrl	UIWhisperEditCtrl::UIWhisperEditCtrl	vtable writer	low
+fn_10703	0x008520F0	sub_8520F0	UIBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_10705	0x00852220	sub_852220	UIBitmapButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_10709	0x008523F0	sub_8523F0	UIButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_10710	0x00852480	sub_852480	UIChatEditCtrl::`scalar deleting destructor'	vtable slot pattern	high
+fn_10711	0x00852520	sub_852520	UIChatRoomTitle::`scalar deleting destructor'	vtable slot pattern	high
+fn_10712	0x008525B0	sub_8525B0	UICheckBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_10713	0x00852670	sub_852670	UIColorButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_10714	0x00852700	sub_852700	UIEditCtrl2::`scalar deleting destructor'	vtable slot pattern	high
+fn_10715	0x00852770	UIEditCtrl3::`scalar deleting destructor'	UIEditCtrl3::`scalar deleting destructor'	vtable slot pattern	high
+fn_10720	0x00852A40	sub_852A40	UIEmblemWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_10722	0x00852B20	sub_852B20	UIMerchantShopTitle::`scalar deleting destructor'	vtable slot pattern	high
+fn_10723	0x00852B90	sub_852B90	UINameBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_10724	0x00852C30	sub_852C30	UINoneVisibleButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_10725	0x00852CC0	sub_852CC0	UIRadioBtn::`scalar deleting destructor'	vtable slot pattern	high
+fn_10726	0x00852D70	sub_852D70	UIResizer::`scalar deleting destructor'	vtable slot pattern	high
+fn_10727	0x00852DE0	sub_852DE0	UISlotBitmap::`scalar deleting destructor'	vtable slot pattern	high
+fn_10729	0x00852EF0	sub_852EF0	UISpriteButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_10730	0x00852F20	sub_852F20	UIStaticBitmap::`scalar deleting destructor'	vtable slot pattern	high
+fn_10732	0x00853050	sub_853050	UIStaticText::`scalar deleting destructor'	vtable slot pattern	high
+fn_10733	0x008530E0	sub_8530E0	UITab::`scalar deleting destructor'	vtable slot pattern	high
+fn_10735	0x00853210	sub_853210	UITransBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_10736	0x008532B0	sub_8532B0	UIWhisperEditCtrl::`scalar deleting destructor'	vtable slot pattern	high
+fn_10737	0x00853330	sub_853330	UIWordDisplayWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_10753	0x008551B0	UIEditCtrl3::PaintText	UIEditCtrl3::SetTextByMaxChar	vtable slot pattern	high
+fn_10755	0x00856980	UIEditCtrl::PaintText	UIEditCtrl::SetTextByMaxChar	vtable slot pattern	high
+fn_10767	0x00858D20	UIEditCtrl::Text	UIEditCtrl::GetText	calls	moderate
+fn_10770	0x00858F00	UITransBalloonText::GetTransBoxInfo	UITransBalloonText::GetTransBoxInfo	vtable slot pattern	high
+fn_10778	0x0085A590	UIEditCtrl::SelectAll	UIEditCtrl3::DrawEditText	vtable slot between (shared)	high
+fn_10778	0x0085A590	UIEditCtrl::SelectAll	UIEditCtrl::DrawEditText	vtable slot between (shared)	high
+fn_10781	0x0085AA10	UITransBalloonText::Move	UITransBalloonText::Move	vtable slot pattern	high
+fn_10783	0x0085AAB0	UIEditCtrl::OnBeginEdit	UIEditCtrl::OnBeginEdit	vtable slot pattern	high
+fn_10784	0x0085AB10	UIWhisperEditCtrl::OnBeginEdit	UIWhisperEditCtrl::OnBeginEdit	vtable slot pattern	high
+fn_10785	0x0085AB80	UIChatRoomTitle::OnCreate	UIChatRoomTitle::OnCreate	vtable slot voted	high
+fn_10786	0x0085AC40	UIEditCtrl3::OnCreate	UIEditCtrl3::OnCreate	vtable slot voted	high
+fn_10787	0x0085ACD0	UIEmblemWnd::OnCreate	UIEmblemWnd::OnCreate	vtable slot voted	high
+fn_10788	0x0085ACE0	UIMerchantShopTitle::OnCreate	UIMerchantShopTitle::OnCreate	vtable slot voted	high
+fn_10790	0x0085AFB0	UITransBalloonText::OnCreate	UITransBalloonText::OnCreate	vtable slot voted	high
+fn_10791	0x0085B000	UIWordDisplayWnd::OnCreate	UIWordDisplayWnd::OnCreate	vtable slot voted	high
+fn_10793	0x0085B140	UIBalloonText::Paint	UIBalloonText::OnDraw	vtable slot voted	high
+fn_10795	0x0085BA90	UIBitmapButton::Paint	UIBitmapButton::OnDraw	vtable slot voted	high
+fn_10796	0x0085BB60	UIBitmapEditCtrl::Paint	UIBitmapEditCtrl::OnDraw	vtable slot voted	high
+fn_10800	0x0085C450	UIButton::Paint	UIButton::OnDraw	strings	high
+fn_10802	0x0085C690	UIChatRoomTitle::Paint	UIChatRoomTitle::OnDraw	strings	high
+fn_10803	0x0085C8C0	UICheckBox::Paint	UICheckBox::OnDraw	vtable slot voted	high
+fn_10804	0x0085C9A0	UIColorButton::Paint	UIColorButton::OnDraw	vtable slot voted	high
+fn_10805	0x0085CBA0	UIColorTransBalloonText::Paint	UIColorTransBalloonText::OnDraw	vtable slot voted	high
+fn_10806	0x0085CBF0	UIEditCtrl3::Paint	UIEditCtrl3::OnDraw	vtable slot voted	high
+fn_10809	0x0085CE40	UIEmblemWnd::Paint	UIEmblemWnd::OnDraw	vtable slot voted	high
+fn_10811	0x0085D150	UIMerchantShopTitle::Paint	UIMerchantShopTitle::OnDraw	vtable slot voted	high
+fn_10812	0x0085D1F0	UINameBalloonText::Paint	UINameBalloonText::OnDraw	vtable slot voted	high
+fn_10813	0x0085D460	UINoneVisibleButton::Paint	UINoneVisibleButton::OnDraw	vtable slot voted	high
+fn_10814	0x0085D470	UIRadioBtn::Paint	UIRadioBtn::OnDraw	strings	high
+fn_10815	0x0085D650	UIResizer::Paint	UIResizer::OnDraw	vtable slot voted	high
+fn_10816	0x0085D6C0	UISpriteButton::Paint	UISpriteButton::OnDraw	vtable slot voted	high
+fn_10817	0x0085DA90	UIStaticBitmap::Paint	UIStaticBitmap::OnDraw	vtable slot voted	high
+fn_10820	0x0085DE70	UIStaticText::Paint	UIStaticText::OnDraw	vtable slot voted	high
+fn_10821	0x0085DFC0	UITab::Paint	UITab::OnDraw	strings	high
+fn_10823	0x0085E080	UITransBalloonText::Paint	UITransBalloonText::OnDraw	vtable slot voted	high
+fn_10824	0x0085E280	UIVerticalNameBalloonText::Paint	UIVerticalNameBalloonText::OnDraw	vtable slot voted	high
+fn_10825	0x0085E370	UIWordDisplayWnd::Paint	UIWordDisplayWnd::OnDraw	strings	high
+fn_10826	0x0085E3B0	UIEditCtrl::OnFinishEdit	UIEditCtrl::OnFinishEdit	vtable slot pattern	high
+fn_10827	0x0085E3D0	UIEditCtrlVarId::OnFinishEdit	UIEditCtrlVarId::OnFinishEdit	vtable slot pattern	high
+fn_10828	0x0085E400	UIWhisperEditCtrl::OnFinishEdit	UIWhisperEditCtrl::OnFinishEdit	vtable slot pattern	high
+fn_10831	0x0085E8C0	UIChatRoomTitle::OnLBtnDblClk	UIChatRoomTitle::OnLBtnDblClk	vtable slot pattern	high
+fn_10832	0x0085E920	UIMerchantShopTitle::OnLBtnDblClk	UIMerchantShopTitle::OnLBtnDblClk	vtable slot pattern	high
+fn_10833	0x0085E980	UISlotBitmap::OnLBtnDblClk	UISlotBitmap::OnLBtnDblClk	vtable slot pattern	high
+fn_10837	0x0085EA60	UIStaticText::OnLBtnDblClk	UIStaticText::OnLBtnDblClk	vtable slot pattern	high
+fn_10839	0x0085EB20	UIButton::OnLBtnDown	UIButton::OnLBtnDown	vtable slot pattern	high
+fn_10840	0x0085EB50	UIChatEditCtrl::OnLBtnDown	UIChatEditCtrl::OnLBtnDown	vtable slot pattern	high
+fn_10841	0x0085EB90	UICheckBox::OnLBtnDown	UICheckBox::OnLBtnDown	vtable slot pattern	high
+fn_10842	0x0085EC20	UIEditCtrl::OnLBtnDown	UIEditCtrl::OnLBtnDown	vtable slot pattern	high
+fn_10843	0x0085EC40	UIMerchantShopTitle::OnLBtnDown	UIMerchantShopTitle::OnLBtnDown	vtable slot pattern	high
+fn_10844	0x0085ECB0	UIRadioBtn::OnLBtnDown	UIRadioBtn::OnLBtnDown	vtable slot pattern	high
+fn_10845	0x0085ECE0	UIResizer::OnLBtnDown	UIResizer::OnLBtnDown	vtable slot pattern	high
+fn_10846	0x0085ED30	UISlotBitmap::OnLBtnDown	UISlotBitmap::OnLBtnDown	vtable slot pattern	high
+fn_10848	0x0085EDC0	UISpriteButton::OnLBtnDown	UISpriteButton::OnLBtnDown	vtable slot pattern	high
+fn_10849	0x0085EE10	UIStaticBitmap::OnLBtnDown	UIStaticBitmap::OnLBtnDown	vtable slot pattern	high
+fn_10850	0x0085EE40	UIStaticText::OnLBtnDown	UIStaticText::OnLBtnDown	vtable slot pattern	high
+fn_10851	0x0085EE70	UITab::OnLBtnDown	UITab::OnLBtnDown	vtable slot pattern	high
+fn_10852	0x0085EED0	UIButton::OnLBtnUp	UIButton::OnLBtnUp	vtable slot pattern	high
+fn_10853	0x0085EFD0	UIResizer::OnLBtnUp	UIResizer::OnLBtnUp	vtable slot pattern	high
+fn_10854	0x0085F000	UIStaticBitmap::OnLBtnUp	UIStaticBitmap::OnLBtnUp	vtable slot pattern	high
+fn_10855	0x0085F030	UIStaticText::OnLBtnUp	UIStaticText::OnLBtnUp	vtable slot pattern	high
+fn_10858	0x0085F180	UIButton::OnMouseHover	UIButton::OnMouseHover	calls, one vote	moderate
+fn_10862	0x0085F470	UIResizer::OnMouseHover	UIResizer::OnMouseHover	vtable slot voted	high
+fn_10866	0x0085F580	UIStaticText::OnMouseHover	UIStaticText::OnMouseHover	vtable slot voted	high
+fn_10868	0x0085F600	UIButton::OnMouseMove	UIButton::OnMouseMove	vtable slot pattern	high
+fn_10869	0x0085F6D0	UIResizer::OnMouseMove	UIResizer::OnMouseMove	vtable slot pattern	high
+fn_10871	0x0085F870	UISpriteButton::OnMouseMove	UISpriteButton::OnMouseMove	vtable slot pattern	high
+fn_10872	0x0085F8A0	UIStaticBitmap::OnMouseMove	UIStaticBitmap::OnMouseMove	vtable slot pattern	high
+fn_10873	0x0085F8D0	UIStaticText::OnMouseMove	UIStaticText::OnMouseMove	vtable slot pattern	high
+fn_10875	0x0085F950	UIButton::ResetCursor	UIButton::OnMouseShape	vtable slot pattern	high
+fn_10876	0x0085F980	UIChatRoomTitle::ResetCursor	UIChatRoomTitle::OnMouseShape	vtable slot pattern	high
+fn_10877	0x0085F9C0	UICheckBox::ResetCursor	UICheckBox::OnMouseShape	vtable slot pattern	high
+fn_10878	0x0085F9E0	UIMerchantShopTitle::ResetCursor	UIMerchantShopTitle::OnMouseShape	vtable slot pattern	high
+fn_10879	0x0085FA20	UIResizer::ResetCursor	UIResizer::OnMouseShape	vtable slot pattern	high
+fn_10881	0x0085FAB0	UIStaticText::ResetCursor	UIStaticText::OnMouseShape	vtable slot pattern	high
+fn_10883	0x0085FAF0	UIEmblemWnd::OnProcess	UIEmblemWnd::OnProcess	vtable slot pattern	high
+fn_10885	0x0085FD30	UIWordDisplayWnd::OnProcess	UIWordDisplayWnd::OnProcess	vtable slot pattern	high
+fn_10886	0x0085FE20	UIMerchantShopTitle::OnRBtnDown	UIMerchantShopTitle::OnRBtnDown	vtable slot pattern	high
+fn_10889	0x0085FED0	UIStaticText::OnRBtnDown	UIStaticText::OnRBtnDown	vtable slot pattern	high
+fn_10891	0x0085FF30	UIStaticText::OnRBtnUp	UIStaticText::OnRBtnUp	vtable slot pattern	high
+fn_10892	0x0085FF60	UIEditCtrl3::OnWheel	UIEditCtrl3::OnWheel	vtable slot pattern	high
+fn_10893	0x0085FFA0	UIEditCtrlVarId::OnWheel	UIEditCtrlVarId::OnWheel	vtable slot pattern	high
+fn_10897	0x00860020	UIStaticText::OnWheel	UIStaticText::OnWheel	vtable slot pattern	high
+fn_10906	0x00863280	UIEditCtrl3::Resize	UIEditCtrl3::Resize	vtable slot pattern	high
+fn_10907	0x008632D0	UITransBalloonText::Resize	UITransBalloonText::Resize	vtable slot pattern	high
+fn_10909	0x00863640	UIChatEditCtrl::SendMsg	UIChatEditCtrl::SendMsg	vtable slot voted	high
+fn_10910	0x008637A0	UIChatRoomTitle::SendMsg	UIChatRoomTitle::SendMsg	strings	high
+fn_10911	0x00863BF0	UIEditCtrl2::SendMsg	UIEditCtrl2::SendMsg	vtable slot voted	high
+fn_10912	0x00863C70	UIEditCtrl3::SendMsg	UIEditCtrl3::SendMsg	vtable slot voted	high
+fn_10914	0x008641C0	UIEditCtrl::SendMsg	UIEditCtrl::SendMsg	vtable slot voted	high
+fn_10915	0x00864CE0	UIEditCtrlVarId::SendMsg	UIEditCtrlVarId::SendMsg	vtable slot voted	high
+fn_10917	0x00864D60	UIEmblemWnd::SendMsg	UIEmblemWnd::SendMsg	vtable slot voted	high
+fn_10918	0x00864DB0	UIMerchantShopTitle::SendMsg	UIMerchantShopTitle::SendMsg	vtable slot voted	high
+fn_10919	0x00865180	UIRadioBtn::SendMsg	UIRadioBtn::SendMsg	vtable slot voted	high
+fn_10920	0x008651A0	UISlotBitmap::SendMsg	UISlotBitmap::SendMsg	vtable slot voted	high
+fn_10921	0x00865200	UITab::SendMsg	UITab::SendMsg	vtable slot voted	high
+fn_10922	0x00865220	UIWhisperEditCtrl::SendMsg	UIWhisperEditCtrl::SendMsg	vtable slot voted	high
+fn_10923	0x00865360	UIWordDisplayWnd::SendMsg	UIWordDisplayWnd::SendMsg	vtable slot voted	high
+fn_10926	0x00865450	UICheckBox::SetImages	UICheckBox::SetBitmap2	calls	moderate
+fn_10927	0x00865590	UIBitmapEditCtrl::SetBitmapName	UIBitmapEditCtrl::SetBitmap	calls, one vote	moderate
+fn_10929	0x008656E0	UIResizer::SetBitmapName	UIResizer::SetBitmap	calls	moderate
+fn_10932	0x008658D0	UICheckBox::SetChecked	UICheckBox::SetCheck	calls	moderate
+fn_10933	0x00865970	UIResizer::SetColors	UIResizer::SetColor	calls	moderate
+fn_10934	0x008659A0	UINameBalloonText::SetIcon	UINameBalloonText::SetEmblemResName	vtable slot pattern (shared)	high
+fn_10934	0x008659A0	UINameBalloonText::SetIcon	UIVerticalNameBalloonText::SetEmblemResName	vtable slot pattern (shared)	high
+fn_10936	0x00865CE0	UIStaticText::SetFont	UIStaticText::SetFont	calls	moderate
+fn_10937	0x00865DD0	UIEditCtrl::Background	UIEditCtrl::SetFrameColor	calls	moderate
+fn_10940	0x00865EB0	UINameBalloonText::SetName	UINameBalloonText::SetNameText	vtable slot between (shared)	high
+fn_10940	0x00865EB0	UINameBalloonText::SetName	UIVerticalNameBalloonText::SetNameText	vtable slot between (shared)	high
+fn_10941	0x00866DE0	UINameBalloonText::AddNameLine	UINameBalloonText::SetNameText	vtable slot pattern	high
+fn_10942	0x00867740	UIVerticalNameBalloonText::AddNameLine	UIVerticalNameBalloonText::SetNameText	vtable slot pattern	high
+fn_10950	0x00867F20	UIBalloonText::SetText	UIBalloonText::SetText	calls, one vote	moderate
+fn_10953	0x00868160	UIEditCtrlVarId::SetText	UIEditCtrlVarId::SetText	vtable slot pattern	high
+fn_10954	0x00868180	UIRadioBtn::SetText	UIRadioBtn::SetText	calls, one vote	moderate
+fn_10955	0x008681C0	UIStaticText::SetText	UIStaticText::SetText	calls	moderate
+fn_10956	0x00868230	UIWhisperEditCtrl::SetText	UIWhisperEditCtrl::SetText	vtable slot pattern	high
+fn_10963	0x00868750	UIStaticText::SetTextAutoWidth	UIStaticText::SetTextWithNewWidth	calls	moderate
+fn_10965	0x00868880	UIStaticText::SetTextFitted	UIStaticText::SetTextWithShorten	calls	moderate
+fn_10967	0x00869730	UIButton::SetTooltip	UIButton::SetToolTip	calls	moderate
+fn_10971	0x008697F0	UIResizer::SetDirection	UIResizer::SetType	calls	moderate
+fn_10974	0x00869E20	UIBalloonText::CanHitTest	UIBalloonText::ShouldDoHitTest	vtable slot pattern	high
+fn_11070	0x0086E410	UIScrollBar2::UIScrollBar2	UIScrollBar2::UIScrollBar2	vtable writer	low
+fn_11072	0x0086E4D0	UIScrollBar4::UIScrollBar4	UIScrollBar4::UIScrollBar4	vtable writer	low
+fn_11086	0x0086F0A0	UITextViewer::UITextViewer	UITextViewer::UITextViewer	calls	moderate
+fn_11118	0x008723D0	sub_8723D0	UIBarGraph2::`scalar deleting destructor'	vtable slot pattern	high
+fn_11119	0x00872440	sub_872440	UIBarGraph3::`scalar deleting destructor'	vtable slot pattern	high
+fn_11120	0x008724B0	sub_8724B0	UIBarGraph::`scalar deleting destructor'	vtable slot pattern	high
+fn_11125	0x00872730	sub_872730	UIBitmapButton2::`scalar deleting destructor'	vtable slot pattern	high
+fn_11128	0x00872870	sub_872870	UIChatHisBox2::`scalar deleting destructor'	vtable slot pattern	high
+fn_11129	0x008728E0	sub_8728E0	UIChatHisBox3::`scalar deleting destructor'	vtable slot pattern	high
+fn_11130	0x00872950	sub_872950	UIChatHisBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11131	0x00872980	sub_872980	UIColorTransBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_11132	0x008729E0	sub_8729E0	UIComboBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11141	0x00872F00	sub_872F00	UIEditCtrlVarId::`scalar deleting destructor'	vtable slot pattern	high
+fn_11144	0x00873050	sub_873050	UIGage::`scalar deleting destructor'	vtable slot pattern	high
+fn_11146	0x00873130	sub_873130	UIImgMenu::`scalar deleting destructor'	vtable slot pattern	high
+fn_11156	0x00873690	sub_873690	UIListBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11161	0x008739A0	sub_8739A0	UIMemberListBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11166	0x00873C50	sub_873C50	UIPcGage::`scalar deleting destructor'	vtable slot pattern	high
+fn_11168	0x00873D30	sub_873D30	UIPlayerGage::`scalar deleting destructor'	vtable slot pattern	high
+fn_11170	0x00873DE0	sub_873DE0	UIRechargeGage::`scalar deleting destructor'	vtable slot pattern	high
+fn_11171	0x00873E50	sub_873E50	UIScrollBar2::`scalar deleting destructor'	vtable slot pattern	high
+fn_11172	0x00873EC0	sub_873EC0	UIScrollBar3::`scalar deleting destructor'	vtable slot pattern	high
+fn_11173	0x00873F30	sub_873F30	UIScrollBar4::`scalar deleting destructor'	vtable slot pattern	high
+fn_11177	0x008740F0	sub_8740F0	UIServerListBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11185	0x00874550	sub_874550	UITabControl::`scalar deleting destructor'	vtable slot pattern	high
+fn_11187	0x00874690	sub_874690	UITextButton::`scalar deleting destructor'	vtable slot pattern	high
+fn_11189	0x008747F0	sub_8747F0	UITextViewer::`scalar deleting destructor'	vtable slot pattern	high
+fn_11222	0x00879F10	UIChatHisBox::Clear	UIChatHisBox::ClearAllItems	vtable slot pattern	high
+fn_11240	0x0087B4B0	UIChatHisBox2::Configure	UIChatHisBox2::Create2	vtable slot pattern	high
+fn_11241	0x0087B500	UIChatHisBox::Configure	UIChatHisBox::Create2	vtable slot pattern	high
+fn_11242	0x0087B550	UIComboBox::Configure	UIComboBox::Create2	vtable slot pattern	high
+fn_11245	0x0087B640	UIListBox::Configure	UIListBox::Create2	vtable slot pattern	high
+fn_11249	0x0087B780	UITextViewer::Configure	UITextViewer::Create2	vtable slot pattern	high
+fn_11263	0x0087E190	UIBitmapButton2::DragAndDrop	UIBitmapButton2::DragAndDrop	vtable slot pattern	high
+fn_11278	0x008806E0	UIScrollBar::Part	UIScrollBar::HitTest	calls	moderate
+fn_11287	0x00880C50	?GetNumExternalThreads@SchedulerProxy@details@Concurrency@@QAEIXZ	UIScrollBar4::GetThumbSize	vtable slot pattern	high
+fn_11288	0x00880C60	UIScrollBar::ThumbLength	UIScrollBar::GetThumbSize	vtable slot pattern	high
+fn_11301	0x00882410	UIChatHisBox2::IsTransmitMouseInput	UIChatHisBox2::IsTransmitMouseInput	vtable slot pattern	high
+fn_11302	0x00882420	UIChatHisBox::IsTransmitMouseInput	UIChatHisBox::IsTransmitMouseInput	vtable slot pattern	high
+fn_11303	0x00882430	UIScrollBar::IsTransmitMouseInput	UIScrollBar::IsTransmitMouseInput	vtable slot pattern	high
+fn_11304	0x00882450	UIPlayerGage::NeedsFrameRefresh	UIPlayerGage::IsUpdateNeed	vtable slot pattern	high
+fn_11308	0x00884700	UIImgMenu::Move	UIImgMenu::Move	vtable slot pattern	high
+fn_11314	0x00884DE0	UIChatHisBox2::OnCreate	UIChatHisBox2::OnCreate	vtable slot voted	high
+fn_11315	0x00884F40	UIChatHisBox3::OnCreate	UIChatHisBox3::OnCreate	vtable slot voted	high
+fn_11316	0x008850C0	UIChatHisBox::OnCreate	UIChatHisBox::OnCreate	vtable slot voted	high
+fn_11317	0x00885240	UIComboBox::OnCreate	UIComboBox::OnCreate	vtable slot voted	high
+fn_11326	0x00886840	UIListBox::OnCreate	UIListBox::OnCreate	vtable slot voted	high
+fn_11334	0x008872A0	UITextViewer::OnCreate	UITextViewer::OnCreate	vtable slot voted	high
+fn_11337	0x00887440	UIBarGraph2::Paint	UIBarGraph2::OnDraw	strings	high
+fn_11338	0x00887600	UIBarGraph4::Paint	UIBarGraph4::OnDraw	vtable slot voted	high
+fn_11339	0x00887790	UIBarGraph::Paint	UIBarGraph::OnDraw	vtable slot voted	high
+fn_11347	0x008894B0	UIChatHisBox2::Paint	UIChatHisBox2::OnDraw	vtable slot voted	high
+fn_11348	0x00889600	UIChatHisBox3::Paint	UIChatHisBox3::OnDraw	vtable slot voted	high
+fn_11349	0x00889710	UIChatHisBox::Paint	UIChatHisBox::OnDraw	vtable slot voted	high
+fn_11350	0x00889900	UIComboBox::Paint	UIComboBox::OnDraw	vtable slot voted	high
+fn_11360	0x0088AEC0	UIImgMenu::Paint	UIImgMenu::OnDraw	strings	high
+fn_11366	0x0088B770	UIListBox::Paint	UIListBox::OnDraw	vtable slot voted	high
+fn_11371	0x0088C530	UIMemberListBox::Paint	UIMemberListBox::OnDraw	vtable slot voted	high
+fn_11374	0x0088C750	UIPcGage::Paint	UIPcGage::OnDraw	vtable slot voted	high
+fn_45488	0x0088CB50	UIPlayerGage::Paint	UIPlayerGage::OnDraw	vtable slot voted	high
+fn_11377	0x0088D6C0	UIRechargeGage::Paint	UIRechargeGage::OnDraw	vtable slot voted	high
+fn_11378	0x0088D750	UIScrollBar2::Paint	UIScrollBar2::OnDraw	strings	high
+fn_11379	0x0088DBF0	UIScrollBar3::Paint	UIScrollBar3::OnDraw	strings	high
+fn_11380	0x0088E0B0	UIScrollBar4::Paint	UIScrollBar4::OnDraw	strings	high
+fn_11381	0x0088E310	UIScrollBar::Paint	UIScrollBar::OnDraw	strings	high
+fn_11390	0x0088F6C0	UITabControl::Paint	UITabControl::OnDraw	vtable slot voted	high
+fn_11392	0x0088F820	UITextButton::Paint	UITextButton::OnDraw	vtable slot voted	high
+fn_11394	0x0088FBB0	UITextViewer::Paint	UITextViewer::OnDraw	vtable slot voted	high
+fn_11399	0x008900D0	UIChatHisBox::OnLBtnDblClk	UIChatHisBox::OnLBtnDblClk	vtable slot pattern	high
+fn_11400	0x00890150	UIComboBox::OnLBtnDblClk	UIComboBox::OnLBtnDblClk	vtable slot pattern	high
+fn_11403	0x00890180	UIListBox::OnLBtnDblClk	UIListBox::OnLBtnDblClk	vtable slot pattern	high
+fn_11407	0x00890260	UIScrollBar::OnLBtnDblClk	UIScrollBar::OnLBtnDblClk	vtable slot pattern	high
+fn_11412	0x00890430	UIChatHisBox::OnLBtnDown	UIChatHisBox::OnLBtnDown	vtable slot pattern	high
+fn_11413	0x00890450	UIComboBox::OnLBtnDown	UIComboBox::OnLBtnDown	vtable slot pattern	high
+fn_11418	0x00890570	UIListBox::OnLBtnDown	UIListBox::OnLBtnDown	vtable slot pattern	high
+fn_11422	0x00890690	UIMemberListBox::OnLBtnDown	UIMemberListBox::OnLBtnDown	vtable slot pattern	high
+fn_11425	0x00890720	UIScrollBar::OnLBtnDown	UIScrollBar::OnLBtnDown	vtable slot pattern	high
+fn_11428	0x00890940	UITabControl::OnLBtnDown	UITabControl::OnLBtnDown	vtable slot pattern	high
+fn_11429	0x008909F0	UITextViewer::OnLBtnDown	UITextViewer::OnLBtnDown	vtable slot pattern	high
+fn_11431	0x00890A30	UIBitmapButton2::OnLBtnUp	UIBitmapButton2::OnLBtnUp	vtable slot pattern	high
+fn_11432	0x00890AB0	UIChatHisBox::OnLBtnUp	UIChatHisBox::OnLBtnUp	vtable slot pattern	high
+fn_11433	0x00890AC0	UIComboBox::OnLBtnUp	UIComboBox::OnLBtnUp	vtable slot pattern	high
+fn_11438	0x00890DC0	UIImgMenu::OnLBtnUp	UIImgMenu::OnLBtnUp	vtable slot pattern	high
+fn_11440	0x00890E90	UIScrollBar::OnLBtnUp	UIScrollBar::OnLBtnUp	vtable slot pattern	high
+fn_11445	0x00891140	UITextButton::OnLBtnUp	UITextButton::OnLBtnUp	vtable slot pattern	high
+fn_11447	0x00891240	UIBarGraph4::OnMouseHover	UIBarGraph4::OnMouseHover	vtable slot voted	high
+fn_11453	0x00891A10	UIImgMenu::OnMouseHover	UIImgMenu::OnMouseHover	vtable slot voted	high
+fn_11456	0x00891BC0	UIMemberListBox::OnMouseHover	UIMemberListBox::OnMouseHover	vtable slot voted	high
+fn_11457	0x00891CC0	UIServerListBox::OnMouseHover	UIServerListBox::OnMouseHover	vtable slot voted	high
+fn_11461	0x00892000	UITextButton::OnMouseHover	UITextButton::OnMouseHover	vtable slot voted	high
+fn_11463	0x00892060	UIComboBox::OnMouseMove	UIComboBox::OnMouseMove	vtable slot pattern	high
+fn_11466	0x00892160	UIImgMenu::OnMouseMove	UIImgMenu::OnMouseMove	vtable slot pattern	high
+fn_11468	0x008921D0	UIScrollBar::OnMouseMove	UIScrollBar::OnMouseMove	vtable slot pattern	high
+fn_11471	0x00892450	UITextButton::OnMouseMove	UITextButton::OnMouseMove	vtable slot pattern	high
+fn_11473	0x00892560	UIImgMenu::ResetCursor	UIImgMenu::OnMouseShape	vtable slot pattern	high
+fn_11474	0x00892570	UIScrollBar::ResetCursor	UIScrollBar::OnMouseShape	vtable slot pattern	high
+fn_11481	0x00892A10	UIBitmapButton2::OnRBtnDown	UIBitmapButton2::OnRBtnDown	vtable slot pattern	high
+fn_11482	0x00892A50	UIMemberListBox::OnRBtnDown	UIMemberListBox::OnRBtnDown	vtable slot pattern	high
+fn_11487	0x00892B60	UITextButton::OnRBtnDown	UITextButton::OnRBtnDown	vtable slot pattern	high
+fn_11488	0x00892BA0	UIBitmapButton2::OnRBtnUp	UIBitmapButton2::OnRBtnUp	vtable slot pattern	high
+fn_11489	0x00892C20	UIChatHisBox2::OnRBtnUp	UIChatHisBox2::OnRBtnUp	vtable slot pattern	high
+fn_11490	0x00892C50	UIMemberListBox::OnRBtnUp	UIMemberListBox::OnRBtnUp	vtable slot pattern	high
+fn_11491	0x00892C70	UIScrollBar::OnRBtnUp	UIScrollBar::OnRBtnUp	vtable slot pattern	high
+fn_11494	0x00892D60	UITextButton::OnRBtnUp	UITextButton::OnRBtnUp	vtable slot pattern	high
+fn_11496	0x00892E60	UIListBox::OnWheel	UIListBox::OnWheel	vtable slot pattern	high
+fn_11499	0x00892F20	UIScrollBar::OnWheel	UIScrollBar::OnWheel	vtable slot pattern	high
+fn_11526	0x00897370	UIChatHisBox3::Resize	UIChatHisBox3::Resize	vtable slot pattern	high
+fn_11527	0x008973E0	UIChatHisBox::Resize	UIChatHisBox::Resize	vtable slot pattern	high
+fn_11528	0x008974A0	UIComboBox::Resize	UIComboBox::Resize	vtable slot pattern	high
+fn_11532	0x008976E0	UIListBox::Resize	UIListBox::Resize	vtable slot pattern	high
+fn_11535	0x00897830	UIScrollBar::Resize	UIScrollBar::Resize	vtable slot pattern	high
+fn_11542	0x00897C10	UIChatHisBox::SendMsg	UIChatHisBox::SendMsg	vtable slot voted	high
+fn_11543	0x00897C20	UIComboBox::SendMsg	UIComboBox::SendMsg	vtable slot voted	high
+fn_11550	0x00898730	UIImgMenu::SendMsg	UIImgMenu::SendMsg	vtable slot voted	high
+fn_11552	0x00898B00	UIListBox::SendMsg	UIListBox::SendMsg	vtable slot voted	high
+fn_11562	0x00899E90	UITextViewer::SendMsg	UITextViewer::SendMsg	vtable slot voted	high
+fn_11565	0x0089B4F0	UIBarGraph::SetValue	UIBarGraph::SetAmount	calls, one vote	moderate
+fn_11583	0x0089C210	UIScrollBar::SetPosition	UIScrollBar::SetPos	calls, one vote	moderate
+fn_11584	0x0089C220	UIScrollBar::SetRange	UIScrollBar::SetRange	calls, one vote	moderate
+fn_11585	0x0089C340	UIChatHisBox::Show	UIChatHisBox::SetShow	vtable slot pattern	high
+fn_11600	0x0089E470	UIGage::CanHitTest	UIGage::ShouldDoHitTest	vtable slot pattern	high
+fn_11644	0x008A2980	UIEmotionWnd::OnCreate	UIEmotionWnd::OnCreate	strings	high
+fn_11645	0x008A3000	UIEmotionWnd::Paint	UIEmotionWnd::OnDraw	vtable slot voted	high
+fn_11646	0x008A3040	UIEmotionWnd::OnLBtnDown	UIEmotionWnd::OnLBtnDown	vtable slot pattern	high
+fn_11647	0x008A3060	UIEmotionWnd::SendMsg	UIEmotionWnd::SendMsg	vtable slot voted	high
+fn_11649	0x008A31E0	UIEmotionWnd::StoreInfo	UIEmotionWnd::StoreInfo	vtable slot pattern	high
+fn_11687	0x008A5DB0	sub_8A5DB0	UIAllyGuildAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11689	0x008A5ED0	sub_8A5ED0	UIBarGraph4::`scalar deleting destructor'	vtable slot pattern	high
+fn_11690	0x008A5F40	sub_8A5F40	UIChatRoomWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11691	0x008A6040	sub_8A6040	UICntWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11692	0x008A60E0	sub_8A60E0	UIFrameWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11693	0x008A6180	sub_8A6180	UIHomunInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11695	0x008A62E0	sub_8A62E0	UILoginWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11696	0x008A6390	sub_8A6390	UIMakeCharWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11697	0x008A6440	sub_8A6440	UIMerInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11698	0x008A64E0	sub_8A64E0	UIMessageBox::`scalar deleting destructor'	vtable slot pattern	high
+fn_11699	0x008A6510	sub_8A6510	UIMessageBoxAutoreturn::`scalar deleting destructor'	vtable slot pattern	high
+fn_11700	0x008A65D0	sub_8A65D0	UIMonsterInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11701	0x008A6680	sub_8A6680	UINoticeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11702	0x008A6720	sub_8A6720	UIPetInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11708	0x008A6AD0	sub_8A6AD0	UISelectServerWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11709	0x008A6B80	sub_8A6B80	UITalkboxTrapInputWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_11721	0x008A91E0	UIFrameWnd::DrawBorder	UIFrameWnd::DrawLatticeFrame	strings	high
+fn_11733	0x008AC490	UIMakeCharWnd::InitHairControls	UIMakeCharWnd::MakeButton	calls, one vote	moderate
+fn_11734	0x008AD130	UIChatRoomWnd::Move	UIChatRoomWnd::Move	vtable slot pattern	high
+fn_11735	0x008AD150	UIFrameWnd::Move	UIFrameWnd::Move	calls	moderate
+fn_11738	0x008AD3C0	UIChatRoomWnd::OnCreate	UIChatRoomWnd::OnCreate	vtable slot voted	high
+fn_11739	0x008AD770	UICntWnd::OnCreate	UICntWnd::OnCreate	vtable slot voted	high
+fn_11740	0x008ADC80	UIHomunInfoWnd::OnCreate	UIHomunInfoWnd::OnCreate	strings	high
+fn_11742	0x008AF190	UILoginWnd::OnCreate	UILoginWnd::OnCreate	vtable slot voted	high
+fn_11743	0x008B0B60	UIMakeCharWnd::OnCreate	UIMakeCharWnd::OnCreate	vtable slot voted	high
+fn_11744	0x008B0CA0	UIMerInfoWnd::OnCreate	UIMerInfoWnd::OnCreate	strings	high
+fn_11745	0x008B1240	UIMonsterInfoWnd::OnCreate	UIMonsterInfoWnd::OnCreate	vtable slot voted	high
+fn_11746	0x008B1760	UINoticeWnd::OnCreate	UINoticeWnd::OnCreate	strings	high
+fn_11747	0x008B2820	UIPetInfoWnd::OnCreate	UIPetInfoWnd::OnCreate	strings	high
+fn_11751	0x008B6520	UISelectServerWnd::OnCreate	UISelectServerWnd::OnCreate	strings	high
+fn_11752	0x008B7040	UITalkboxTrapInputWnd::OnCreate	UITalkboxTrapInputWnd::OnCreate	vtable slot voted	high
+fn_11754	0x008B7A70	UILoginWnd::OnDestroy	UILoginWnd::OnDestroy	vtable slot pattern	high
+fn_11755	0x008B7A80	UIMakeCharWnd::OnDestroy	UIMakeCharWnd::OnDestroy	vtable slot pattern	high
+fn_11756	0x008B7A90	UIMessageBox::OnDestroy	UIMessageBox::OnDestroy	vtable slot pattern	high
+fn_11757	0x008B7AA0	UINoticeWnd::OnDestroy	UINoticeWnd::OnDestroy	vtable slot pattern	high
+fn_11759	0x008B7AC0	UISelectServerWnd::OnDestroy	UISelectServerWnd::OnDestroy	vtable slot pattern	high
+fn_11761	0x008B7CF0	UIChatRoomWnd::Paint	UIChatRoomWnd::OnDraw	vtable slot voted	high
+fn_11762	0x008B7DA0	UICntWnd::Paint	UICntWnd::OnDraw	vtable slot voted	high
+fn_11763	0x008B7DB0	UIHomunInfoWnd::Paint	UIHomunInfoWnd::OnDraw	vtable slot voted	high
+fn_11765	0x008B8610	UILoginWnd::Paint	UILoginWnd::OnDraw	vtable slot voted	high
+fn_11766	0x008B8620	UIMakeCharWnd::Paint	UIMakeCharWnd::OnDraw	vtable slot voted	high
+fn_11767	0x008B88F0	UIMerInfoWnd::Paint	UIMerInfoWnd::OnDraw	vtable slot voted	high
+fn_11768	0x008B8E60	UIMessageBox::Paint	UIMessageBox::OnDraw	vtable slot voted	high
+fn_11769	0x008B8E90	UIMessageBoxAutoreturn::Paint	UIMessageBoxAutoreturn::OnDraw	vtable slot voted	high
+fn_11770	0x008B8ED0	UIMonsterInfoWnd::Paint	UIMonsterInfoWnd::OnDraw	vtable slot voted, against its strings	high
+fn_11771	0x008B9790	UINoticeWnd::Paint	UINoticeWnd::OnDraw	vtable slot voted	high
+fn_11773	0x008B99A0	UIPetInfoWnd::Paint	UIPetInfoWnd::OnDraw	strings	high
+fn_11777	0x008BA0B0	UISelectServerWnd::Paint	UISelectServerWnd::OnDraw	vtable slot voted	high
+fn_11778	0x008BA110	UITalkboxTrapInputWnd::Paint	UITalkboxTrapInputWnd::OnDraw	vtable slot voted	high
+fn_11779	0x008BA1E0	UIFrameWnd::OnLBtnDown	UIFrameWnd::OnLBtnDown	calls	moderate
+fn_11781	0x008BA2C0	UIFrameWnd::OnLBtnUp	UIFrameWnd::OnLBtnUp	calls, one vote	moderate
+fn_11785	0x008BA500	UINoticeWnd::OnMouseHover	UINoticeWnd::OnMouseHover	vtable slot voted	high
+fn_11786	0x008BA510	UIFrameWnd::OnMouseMove	UIFrameWnd::OnMouseMove	calls	moderate
+fn_11790	0x008BADB0	UIMakeCharWnd::OnProcess	UIMakeCharWnd::OnProcess	vtable slot pattern	high
+fn_11791	0x008BADC0	UIMessageBox::OnProcess	UIMessageBox::OnProcess	vtable slot pattern	high
+fn_11792	0x008BAEF0	UIMessageBoxAutoreturn::OnProcess	UIMessageBoxAutoreturn::OnProcess	vtable slot pattern	high
+fn_11793	0x008BB070	UINoticeWnd::OnWheel	UINoticeWnd::OnWheel	vtable slot pattern	high
+fn_11795	0x008BB0D0	UINoticeWnd::LoadNotice	UINoticeWnd::PrintNotice	calls, one vote	moderate
+fn_11798	0x008BB410	UIAllyGuildAcceptWnd::SendMsg	UIAllyGuildAcceptWnd::SendMsg	vtable slot voted	high
+fn_11800	0x008BB9E0	UIChatRoomWnd::SendMsg	UIChatRoomWnd::SendMsg	strings	high
+fn_11801	0x008BDB00	UICntWnd::SendMsg	UICntWnd::SendMsg	vtable slot voted	high
+fn_11802	0x008BDC90	UIFrameWnd::SendMsg	UIFrameWnd::SendMsg	vtable slot voted (shared)	high
+fn_11802	0x008BDC90	UIFrameWnd::SendMsg	UIMiniBtnWnd::SendMsg	vtable slot voted (shared)	high
+fn_11803	0x008BDD10	UIHomunInfoWnd::SendMsg	UIHomunInfoWnd::SendMsg	vtable slot voted	high
+fn_11805	0x008BE490	UILoginWnd::SendMsg	UILoginWnd::SendMsg	vtable slot voted	high
+fn_11806	0x008BEE20	UIMakeCharWnd::SendMsg	UIMakeCharWnd::SendMsg	vtable slot voted	high
+fn_11807	0x008BF720	UIMerInfoWnd::SendMsg	UIMerInfoWnd::SendMsg	vtable slot voted	high
+fn_11808	0x008BF950	UIMessageBox::SendMsg	UIMessageBox::SendMsg	vtable slot voted	high
+fn_11809	0x008BFB70	UIMessageBoxAutoreturn::SendMsg	UIMessageBoxAutoreturn::SendMsg	vtable slot voted	high
+fn_11810	0x008BFBA0	UIMonsterInfoWnd::SendMsg	UIMonsterInfoWnd::SendMsg	vtable slot voted	high
+fn_11811	0x008BFC20	UINoticeWnd::SendMsg	UINoticeWnd::SendMsg	vtable slot voted	high
+fn_11812	0x008BFE80	UIPetInfoWnd::SendMsg	UIPetInfoWnd::SendMsg	vtable slot voted	high
+fn_11816	0x008C18C0	UISelectServerWnd::SendMsg	UISelectServerWnd::SendMsg	vtable slot voted	high
+fn_11817	0x008C1DB0	UITalkboxTrapInputWnd::SendMsg	UITalkboxTrapInputWnd::SendMsg	vtable slot voted	high
+fn_11824	0x008C35A0	UIChatRoomWnd::StoreInfo	UIChatRoomWnd::StoreInfo	vtable slot pattern	high
+fn_11825	0x008C35E0	UIHomunInfoWnd::StoreInfo	UIHomunInfoWnd::StoreInfo	vtable slot pattern	high
+fn_11826	0x008C3620	UILoginWnd::StoreInfo	UILoginWnd::StoreInfo	vtable slot pattern	high
+fn_11827	0x008C3630	UIMerInfoWnd::StoreInfo	UIMerInfoWnd::StoreInfo	vtable slot pattern	high
+fn_11828	0x008C3670	UIPetInfoWnd::StoreInfo	UIPetInfoWnd::StoreInfo	vtable slot pattern	high
+fn_11830	0x008C36F0	UIChatRoomWnd::SaveChatLog	UIChatRoomWnd::WriteChatToFile	strings	high
+fn_11831	0x008C39E0	UILoginWnd::SaveLogin	UILoginWnd::WriteToReg	calls, one vote	moderate
+fn_12003	0x008CC110	sub_8CC110	UIAutoMessageWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12004	0x008CC180	sub_8CC180	UIBabyAcceptWnd2::`scalar deleting destructor'	vtable slot pattern	high
+fn_12005	0x008CC200	sub_8CC200	UIBabyAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12006	0x008CC280	sub_8CC280	UIBookWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12007	0x008CC300	sub_8CC300	UICardItemIllustWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12008	0x008CC390	sub_8CC390	UIChatRoomChangeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12009	0x008CC400	sub_8CC400	UIChatRoomMakeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12010	0x008CC430	sub_8CC430	UIChooseSellBuyWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12011	0x008CC4A0	sub_8CC4A0	UIChooseWarpWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12012	0x008CC520	sub_8CC520	UIChooseWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12013	0x008CC5A0	sub_8CC5A0	UICombinedCardItemCollectionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12016	0x008CC700	sub_8CC700	UIComboBoxWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12017	0x008CC770	sub_8CC770	UICoupleAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12019	0x008CC860	sub_8CC860	UIEmailAddressWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12020	0x008CC8D0	sub_8CC8D0	UIEquipWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12021	0x008CC9C0	sub_8CC9C0	UIExchangeAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12022	0x008CCA30	sub_8CCA30	UIExchangeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12023	0x008CCB00	sub_8CCB00	UIGraffiStrboxWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12024	0x008CCB70	sub_8CCB70	UIItemCollectionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12026	0x008CCC10	sub_8CCC10	UIItemCompositionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12027	0x008CCCC0	sub_8CCCC0	UIItemIdentifyWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12028	0x008CCD60	sub_8CCD60	UIItemParamChangeDisplayWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12029	0x008CCDE0	sub_8CCDE0	UIJoinFriendAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12030	0x008CCE60	sub_8CCE60	UIJoinGuildAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12031	0x008CCEE0	sub_8CCEE0	UIJoinPartyAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12032	0x008CCF60	sub_8CCF60	UILoadingWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12033	0x008CCFD0	sub_8CCFD0	UIMakingArrowListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12034	0x008CD080	sub_8CD080	UIMenuWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12035	0x008CD110	sub_8CD110	UIMinimapZoomWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12038	0x008CD2B0	sub_8CD2B0	UINoticeConfirmWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12039	0x008CD320	sub_8CD320	UINotifyItemObtainWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12040	0x008CD3D0	sub_8CD3D0	UINotifyLevelUpWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12041	0x008CD440	sub_8CD440	UINotifyQuestWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12042	0x008CD4B0	sub_8CD4B0	UINpcEditDialogWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12043	0x008CD520	sub_8CD520	UINpcTextEditDialogWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12045	0x008CD620	sub_8CD620	UIPartySettingWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12046	0x008CD690	sub_8CD690	UIPasswordWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12047	0x008CD700	sub_8CD700	UIPetEggListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12048	0x008CD7B0	sub_8CD7B0	UIPetTamingDeceiveWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12049	0x008CD820	sub_8CD820	UIProhibitListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12050	0x008CD890	sub_8CD890	UIQuitWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12051	0x008CD900	sub_8CD900	UIRestartWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12052	0x008CD970	sub_8CD970	UISayDialogWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12054	0x008CDAE0	sub_8CDAE0	UISelectCartWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12055	0x008CDB60	sub_8CDB60	UISkillDescribeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12056	0x008CDC00	sub_8CDC00	UISkillNameChangeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12057	0x008CDC80	sub_8CDC80	UISpellListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12058	0x008CDD50	sub_8CDD50	UIStarPlaceAcceptWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12059	0x008CDDD0	sub_8CDDD0	UIStatusWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12061	0x008CDEB0	sub_8CDEB0	UITipOfTheDayWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12063	0x008CDFB0	sub_8CDFB0	UIToolTipWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12064	0x008CE020	sub_8CE020	UIWaitWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12065	0x008CE090	sub_8CE090	UIWhisperWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12066	0x008CE140	sub_8CE140	UIYourItemWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12070	0x008CEA60	UIMenuWnd::AddItem	UIMenuWnd::AddMenu	calls, one vote	moderate
+fn_12082	0x008D0010	UIEquipWnd::DragAndDrop	UIEquipWnd::DragAndDrop	vtable slot pattern	high
+fn_12083	0x008D0230	UIExchangeWnd::DragAndDrop	UIExchangeWnd::DragAndDrop	vtable slot pattern	high
+fn_12128	0x008D86D0	UIExchangeWnd::ItemAt	UIExchangeWnd::GetItemInfo	calls	moderate
+fn_12131	0x008D8D90	UIEquipWnd::ItemEntryAt	UIEquipWnd::GetItemInfo	calls, one vote	moderate
+fn_12144	0x008DA430	UIEquipWnd::NeedsFrameRefresh	UIEquipWnd::IsUpdateNeed	vtable slot pattern	high
+fn_12145	0x008DA440	UIStatusWnd::NeedsFrameRefresh	UIStatusWnd::IsUpdateNeed	vtable slot pattern	high
+fn_12154	0x008DAFE0	UIMenuWnd::Move	UIMenuWnd::Move	vtable slot pattern	high
+fn_12155	0x008DB030	UIWhisperWnd::Move	UIWhisperWnd::Move	vtable slot pattern	high
+fn_12158	0x008DB1F0	UIAutoMessageWnd::OnCreate	UIAutoMessageWnd::OnCreate	vtable slot voted	high
+fn_12159	0x008DB750	UIBookWnd::OnCreate	UIBookWnd::OnCreate	strings	high
+fn_12160	0x008DBD00	UICardItemIllustWnd::OnCreate	UICardItemIllustWnd::OnCreate	vtable slot voted	high
+fn_12161	0x008DBD50	UIChatRoomMakeWnd::OnCreate	UIChatRoomMakeWnd::OnCreate	vtable slot voted	high
+fn_12162	0x008DD290	UIChooseSellBuyWnd::OnCreate	UIChooseSellBuyWnd::OnCreate	vtable slot voted	high
+fn_12163	0x008DD9A0	UIChooseWarpWnd::OnCreate	UIChooseWarpWnd::OnCreate	vtable slot voted	high
+fn_12164	0x008DE0E0	UIChooseWnd::OnCreate	UIChooseWnd::OnCreate	vtable slot voted	high
+fn_12165	0x008DE360	UICombinedCardItemCollectionWnd::OnCreate	UICombinedCardItemCollectionWnd::OnCreate	vtable slot voted	high
+fn_12168	0x008DE490	UIComboBoxWnd::OnCreate	UIComboBoxWnd::OnCreate	vtable slot voted	high
+fn_12170	0x008DE6D0	UIEmailAddressWnd::OnCreate	UIEmailAddressWnd::OnCreate	vtable slot voted	high
+fn_12171	0x008DEC50	UIEquipWnd::OnCreate	UIEquipWnd::OnCreate	strings	high
+fn_12172	0x008E0380	UIExchangeAcceptWnd::OnCreate	UIExchangeAcceptWnd::OnCreate	vtable slot voted	high
+fn_12173	0x008E0A20	UIExchangeWnd::OnCreate	UIExchangeWnd::OnCreate	vtable slot voted	high
+fn_12174	0x008E1210	UIGraffiStrboxWnd::OnCreate	UIGraffiStrboxWnd::OnCreate	vtable slot voted	high
+fn_12175	0x008E1890	UIItemCollectionWnd::OnCreate	UIItemCollectionWnd::OnCreate	vtable slot voted	high
+fn_12177	0x008E2540	UIItemCompositionWnd::OnCreate	UIItemCompositionWnd::OnCreate	vtable slot voted	high
+fn_12178	0x008E2590	UIItemIdentifyWnd::OnCreate	UIItemIdentifyWnd::OnCreate	vtable slot voted	high
+fn_12179	0x008E3090	UIItemParamChangeDisplayWnd::OnCreate	UIItemParamChangeDisplayWnd::OnCreate	vtable slot voted	high
+fn_12180	0x008E30B0	UILoadingWnd::OnCreate	UILoadingWnd::OnCreate	strings	high
+fn_12181	0x008E3330	UIMenuWnd::OnCreate	UIMenuWnd::OnCreate	vtable slot voted	high
+fn_12182	0x008E3340	UIMinimapZoomWnd::OnCreate	UIMinimapZoomWnd::OnCreate	vtable slot voted	high
+fn_12184	0x008E3CD0	UINoticeConfirmWnd::OnCreate	UINoticeConfirmWnd::OnCreate	vtable slot voted	high
+fn_12185	0x008E4380	UINotifyItemObtainWnd::OnCreate	UINotifyItemObtainWnd::OnCreate	vtable slot voted	high
+fn_12186	0x008E4390	UINotifyLevelUpWnd::OnCreate	UINotifyLevelUpWnd::OnCreate	vtable slot voted	high
+fn_12187	0x008E4970	UINotifyQuestWnd::OnCreate	UINotifyQuestWnd::OnCreate	vtable slot voted	high
+fn_12188	0x008E4F50	UINpcEditDialogWnd::OnCreate	UINpcEditDialogWnd::OnCreate	vtable slot voted	high
+fn_12189	0x008E54B0	UINpcTextEditDialogWnd::OnCreate	UINpcTextEditDialogWnd::OnCreate	vtable slot voted	high
+fn_12191	0x008E60A0	UIPartySettingWnd::OnCreate	UIPartySettingWnd::OnCreate	vtable slot voted	high
+fn_12192	0x008E6B40	UIPasswordWnd::OnCreate	UIPasswordWnd::OnCreate	vtable slot voted	high
+fn_12193	0x008E7120	UIPetTamingDeceiveWnd::OnCreate	UIPetTamingDeceiveWnd::OnCreate	vtable slot voted	high
+fn_12194	0x008E7130	UIProhibitListWnd::OnCreate	UIProhibitListWnd::OnCreate	vtable slot voted	high
+fn_12195	0x008E7660	UIQuitWnd::OnCreate	UIQuitWnd::OnCreate	vtable slot voted	high
+fn_12196	0x008E7CB0	UIRestartWnd::OnCreate	UIRestartWnd::OnCreate	vtable slot voted	high
+fn_12197	0x008E8390	UISayDialogWnd::OnCreate	UISayDialogWnd::OnCreate	vtable slot voted	high
+fn_12198	0x008E8480	UISelectCartWnd::OnCreate	UISelectCartWnd::OnCreate	vtable slot voted	high
+fn_12199	0x008E85C0	UISkillDescribeWnd::OnCreate	UISkillDescribeWnd::OnCreate	vtable slot voted	high
+fn_12200	0x008E8860	UISkillNameChangeWnd::OnCreate	UISkillNameChangeWnd::OnCreate	vtable slot voted	high
+fn_12201	0x008E8DC0	UIStatusWnd::OnCreate	UIStatusWnd::OnCreate	strings	high
+fn_12203	0x008E9370	UITipOfTheDayWnd::OnCreate	UITipOfTheDayWnd::OnCreate	vtable slot voted	high
+fn_12205	0x008EA780	UIToolTipWnd::OnCreate	UIToolTipWnd::OnCreate	strings	high
+fn_12206	0x008EAE30	UIWaitWnd::OnCreate	UIWaitWnd::OnCreate	vtable slot voted	high
+fn_12207	0x008EB010	UIWhisperWnd::OnCreate	UIWhisperWnd::OnCreate	vtable slot voted	high
+fn_12210	0x008ECE20	UIAutoMessageWnd::Paint	UIAutoMessageWnd::OnDraw	vtable slot voted	high
+fn_12211	0x008ECE60	UIBookWnd::Paint	UIBookWnd::OnDraw	vtable slot voted	high
+fn_12212	0x008ECF50	UICardItemIllustWnd::Paint	UICardItemIllustWnd::OnDraw	vtable slot voted	high
+fn_12213	0x008ED080	UIChatRoomMakeWnd::Paint	UIChatRoomMakeWnd::OnDraw	strings	high
+fn_12214	0x008ED130	UIChooseSellBuyWnd::Paint	UIChooseSellBuyWnd::OnDraw	vtable slot voted	high
+fn_12215	0x008ED170	UIChooseWarpWnd::Paint	UIChooseWarpWnd::OnDraw	vtable slot voted	high
+fn_12216	0x008ED180	UIChooseWnd::Paint	UIChooseWnd::OnDraw	vtable slot voted	high
+fn_12218	0x008ED1A0	UIComboBoxWnd::Paint	UIComboBoxWnd::OnDraw	vtable slot voted	high
+fn_12220	0x008ED1F0	UIEmailAddressWnd::Paint	UIEmailAddressWnd::OnDraw	vtable slot voted	high
+fn_12221	0x008ED240	UIEquipWnd::Paint	UIEquipWnd::OnDraw	strings	high
+fn_12222	0x008ED760	UIExchangeWnd::Paint	UIExchangeWnd::OnDraw	strings	high
+fn_12223	0x008EE230	UIGraffiStrboxWnd::Paint	UIGraffiStrboxWnd::OnDraw	vtable slot voted	high
+fn_12224	0x008EE2B0	UIItemCollectionWnd::Paint	UIItemCollectionWnd::OnDraw	strings	high
+fn_12225	0x008EE7E0	sub_8EE7E0	UIItemCompositionWnd::OnDraw	vtable slot voted	high
+fn_12226	0x008EE7F0	UIItemIdentifyWnd::Paint	UIItemIdentifyWnd::OnDraw	vtable slot voted	high
+fn_12227	0x008EE9D0	UIItemParamChangeDisplayWnd::Paint	UIItemParamChangeDisplayWnd::OnDraw	vtable slot voted	high
+fn_12228	0x008EECD0	UILoadingWnd::Paint	UILoadingWnd::OnDraw	vtable slot voted	high
+fn_12229	0x008EECE0	UIMakingArrowListWnd::Paint	UIMakingArrowListWnd::OnDraw	vtable slot voted	high
+fn_12230	0x008EED00	UIMenuWnd::Paint	UIMenuWnd::OnDraw	vtable slot voted	high
+fn_12231	0x008EF0A0	UIMinimapZoomWnd::Paint	UIMinimapZoomWnd::OnDraw	vtable slot voted	high
+fn_12233	0x008EF590	UINoticeConfirmWnd::Paint	UINoticeConfirmWnd::OnDraw	vtable slot voted	high
+fn_12234	0x008EF5D0	UINotifyItemObtainWnd::Paint	UINotifyItemObtainWnd::OnDraw	vtable slot voted	high
+fn_12235	0x008EF7F0	UINotifyLevelUpWnd::Paint	UINotifyLevelUpWnd::OnDraw	vtable slot voted	high
+fn_12236	0x008EF800	UINotifyQuestWnd::Paint	UINotifyQuestWnd::OnDraw	vtable slot voted	high
+fn_12237	0x008EF810	UINpcEditDialogWnd::Paint	UINpcEditDialogWnd::OnDraw	strings	high
+fn_12238	0x008EF850	UINpcTextEditDialogWnd::Paint	UINpcTextEditDialogWnd::OnDraw	vtable slot voted	high
+fn_12240	0x008EFA00	UIPartySettingWnd::Paint	UIPartySettingWnd::OnDraw	vtable slot voted	high
+fn_12241	0x008EFAF0	UIPasswordWnd::Paint	UIPasswordWnd::OnDraw	vtable slot voted	high
+fn_12242	0x008EFB00	UIPetEggListWnd::Paint	UIPetEggListWnd::OnDraw	vtable slot voted	high
+fn_12243	0x008EFB40	UIPetTamingDeceiveWnd::Paint	UIPetTamingDeceiveWnd::OnDraw	strings	high
+fn_12244	0x008EFCF0	UIProhibitListWnd::Paint	UIProhibitListWnd::OnDraw	strings	high
+fn_12245	0x008EFF60	UIQuitWnd::Paint	UIQuitWnd::OnDraw	vtable slot voted	high
+fn_12246	0x008EFFA0	UIRestartWnd::Paint	UIRestartWnd::OnDraw	vtable slot voted	high
+fn_12247	0x008EFFE0	UISayDialogWnd::Paint	UISayDialogWnd::OnDraw	vtable slot voted	high
+fn_12249	0x008F0350	UISelectCartWnd::Paint	UISelectCartWnd::OnDraw	vtable slot voted	high
+fn_12250	0x008F0400	UISkillDescribeWnd::Paint	UISkillDescribeWnd::OnDraw	vtable slot voted	high
+fn_12251	0x008F04B0	UISkillNameChangeWnd::Paint	UISkillNameChangeWnd::OnDraw	vtable slot voted	high
+fn_12252	0x008F04F0	UISpellListWnd::Paint	UISpellListWnd::OnDraw	vtable slot voted	high
+fn_12253	0x008F0750	UIStatusWnd::Paint	UIStatusWnd::OnDraw	strings	high
+fn_12255	0x008F2460	UITipOfTheDayWnd::Paint	UITipOfTheDayWnd::OnDraw	vtable slot voted	high
+fn_12257	0x008F2A80	UIToolTipWnd::Paint	UIToolTipWnd::OnDraw	vtable slot voted	high
+fn_12258	0x008F2A90	UIWaitWnd::Paint	UIWaitWnd::OnDraw	vtable slot voted	high
+fn_12259	0x008F2AD0	UIWhisperWnd::Paint	UIWhisperWnd::OnDraw	strings	high
+fn_12263	0x008F31C0	UIEquipWnd::OnLBtnDblClk	UIEquipWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_12264	0x008F32D0	UIItemIdentifyWnd::OnLBtnDblClk	UIItemIdentifyWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_12265	0x008F3300	UIStatusWnd::OnLBtnDblClk	UIStatusWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_12268	0x008F3630	UIBookWnd::OnLBtnDown	UIBookWnd::OnLBtnDown	vtable slot pattern	high
+fn_12270	0x008F3660	UIEquipWnd::OnLBtnDown	UIEquipWnd::OnLBtnDown	vtable slot pattern	high
+fn_12271	0x008F3860	UIItemCollectionWnd::OnLBtnDown	UIItemCollectionWnd::OnLBtnDown	vtable slot pattern	high
+fn_12273	0x008F38E0	UIItemIdentifyWnd::OnLBtnDown	UIItemIdentifyWnd::OnLBtnDown	vtable slot pattern	high
+fn_12275	0x008F39C0	UIPartySettingWnd::OnLBtnDown	UIPartySettingWnd::OnLBtnDown	vtable slot pattern	high
+fn_12276	0x008F39E0	UIPetTamingDeceiveWnd::OnLBtnDown	UIPetTamingDeceiveWnd::OnLBtnDown	vtable slot pattern	high
+fn_12277	0x008F3A40	UISelectCartWnd::OnLBtnDown	UISelectCartWnd::OnLBtnDown	vtable slot pattern	high
+fn_12278	0x008F3A60	UIStatusWnd::OnLBtnDown	UIStatusWnd::OnLBtnDown	vtable slot pattern	high
+fn_12285	0x008F3C60	UIMenuWnd::OnLBtnUp	UIMenuWnd::OnLBtnUp	vtable slot pattern	high
+fn_12286	0x008F3DD0	UIEquipWnd::OnMouseHover	UIEquipWnd::OnMouseHover	vtable slot voted	high
+fn_12287	0x008F4300	UIExchangeWnd::OnMouseHover	UIExchangeWnd::OnMouseHover	vtable slot voted	high
+fn_12288	0x008F4520	UIItemCollectionWnd::OnMouseHover	UIItemCollectionWnd::OnMouseHover	vtable slot voted	high
+fn_12289	0x008F4680	UIMenuWnd::OnMouseHover	UIMenuWnd::OnMouseHover	vtable slot voted	high
+fn_12290	0x008F46C0	UIStatusWnd::OnMouseHover	UIStatusWnd::OnMouseHover	vtable slot voted	high
+fn_12291	0x008F4A80	UIEquipWnd::OnMouseMove	UIEquipWnd::OnMouseMove	vtable slot pattern	high
+fn_12292	0x008F4AB0	UIMenuWnd::OnMouseMove	UIMenuWnd::OnMouseMove	vtable slot pattern	high
+fn_12293	0x008F4AC0	UIBookWnd::OnProcess	UIBookWnd::OnProcess	vtable slot pattern	high
+fn_12296	0x008F4F80	UIItemCollectionWnd::OnProcess	UIItemCollectionWnd::OnProcess	vtable slot pattern	high
+fn_12297	0x008F4FC0	UINotifyItemObtainWnd::OnProcess	UINotifyItemObtainWnd::OnProcess	vtable slot pattern	high
+fn_12298	0x008F4FF0	UIPetTamingDeceiveWnd::OnProcess	UIPetTamingDeceiveWnd::OnProcess	vtable slot pattern	high
+fn_12299	0x008F5070	UIProhibitListWnd::OnProcess	UIProhibitListWnd::OnProcess	vtable slot pattern	high
+fn_12302	0x008F5400	UIEquipWnd::OnRBtnDown	UIEquipWnd::OnRBtnDown	vtable slot pattern	high
+fn_12303	0x008F54C0	UIExchangeWnd::OnRBtnDown	UIExchangeWnd::OnRBtnDown	vtable slot pattern	high
+fn_12304	0x008F5580	UIItemCollectionWnd::OnRBtnDown	UIItemCollectionWnd::OnRBtnDown	vtable slot pattern	high
+fn_12307	0x008F5990	UIItemIdentifyWnd::OnRBtnUp	UIItemIdentifyWnd::OnRBtnUp	vtable slot pattern	high
+fn_12308	0x008F59A0	UIWhisperWnd::OnRBtnUp	UIWhisperWnd::OnRBtnUp	vtable slot pattern	high
+fn_12311	0x008F5A50	UIItemIdentifyWnd::OnWheel	UIItemIdentifyWnd::OnWheel	vtable slot pattern	high
+fn_12321	0x008F6700	UIComboBoxWnd::Resize	UIComboBoxWnd::Resize	vtable slot pattern	high
+fn_12322	0x008F6750	UISayDialogWnd::Resize	UISayDialogWnd::Resize	vtable slot pattern	high
+fn_12324	0x008F6A30	UIAutoMessageWnd::SendMsg	UIAutoMessageWnd::SendMsg	vtable slot voted	high
+fn_12325	0x008F6AC0	UIBabyAcceptWnd2::SendMsg	UIBabyAcceptWnd2::SendMsg	vtable slot voted	high
+fn_12326	0x008F6D00	UIBabyAcceptWnd::SendMsg	UIBabyAcceptWnd::SendMsg	vtable slot voted	high
+fn_12327	0x008F7050	UIBookWnd::SendMsg	UIBookWnd::SendMsg	vtable slot voted	high
+fn_12328	0x008F79C0	UICardItemIllustWnd::SendMsg	UICardItemIllustWnd::SendMsg	strings	high
+fn_12329	0x008F7B10	UIChatRoomChangeWnd::SendMsg	UIChatRoomChangeWnd::SendMsg	vtable slot voted	high
+fn_12330	0x008F80B0	UIChatRoomMakeWnd::SendMsg	UIChatRoomMakeWnd::SendMsg	vtable slot voted	high
+fn_12332	0x008F8860	UIChooseSellBuyWnd::SendMsg	UIChooseSellBuyWnd::SendMsg	vtable slot voted	high
+fn_12333	0x008F8A40	UIChooseWarpWnd::SendMsg	UIChooseWarpWnd::SendMsg	vtable slot voted	high
+fn_12334	0x008F8ED0	UIChooseWnd::SendMsg	UIChooseWnd::SendMsg	vtable slot voted	high
+fn_12335	0x008F9460	UICombinedCardItemCollectionWnd::SendMsg	UICombinedCardItemCollectionWnd::SendMsg	vtable slot voted	high
+fn_12338	0x008F95B0	UIComboBoxWnd::SendMsg	UIComboBoxWnd::SendMsg	vtable slot voted	high
+fn_12339	0x008F95F0	UICoupleAcceptWnd::SendMsg	UICoupleAcceptWnd::SendMsg	vtable slot voted	high
+fn_12341	0x008F9820	UIEmailAddressWnd::SendMsg	UIEmailAddressWnd::SendMsg	vtable slot voted	high
+fn_12342	0x008F9880	UIEquipWnd::SendMsg	UIEquipWnd::SendMsg	vtable slot voted	high
+fn_12343	0x008FA8C0	UIExchangeAcceptWnd::SendMsg	UIExchangeAcceptWnd::SendMsg	vtable slot voted	high
+fn_12344	0x008FAF50	UIExchangeWnd::SendMsg	UIExchangeWnd::SendMsg	vtable slot voted	high
+fn_12345	0x008FB850	UIGraffiStrboxWnd::SendMsg	UIGraffiStrboxWnd::SendMsg	vtable slot voted	high
+fn_12346	0x008FB960	UIItemCollectionWnd::SendMsg	UIItemCollectionWnd::SendMsg	strings	high
+fn_12348	0x008FD640	UIItemCompositionWnd::SendMsg	UIItemCompositionWnd::SendMsg	vtable slot voted	high
+fn_12349	0x008FDA10	UIItemIdentifyWnd::SendMsg	UIItemIdentifyWnd::SendMsg	vtable slot voted	high
+fn_12350	0x008FDE10	UIItemParamChangeDisplayWnd::SendMsg	UIItemParamChangeDisplayWnd::SendMsg	vtable slot voted	high
+fn_12351	0x008FE0E0	UIJoinFriendAcceptWnd::SendMsg	UIJoinFriendAcceptWnd::SendMsg	vtable slot voted	high
+fn_12352	0x008FE310	UIJoinGuildAcceptWnd::SendMsg	UIJoinGuildAcceptWnd::SendMsg	vtable slot voted	high
+fn_12353	0x008FE780	UIJoinPartyAcceptWnd::SendMsg	UIJoinPartyAcceptWnd::SendMsg	vtable slot voted	high
+fn_12354	0x008FEAA0	UILoadingWnd::SendMsg	UILoadingWnd::SendMsg	strings	high
+fn_12355	0x008FEB00	UIMakingArrowListWnd::SendMsg	UIMakingArrowListWnd::SendMsg	vtable slot voted	high
+fn_12356	0x008FEF80	UIMenuWnd::SendMsg	UIMenuWnd::SendMsg	vtable slot voted	high
+fn_12357	0x008FF130	UIMinimapZoomWnd::SendMsg	UIMinimapZoomWnd::SendMsg	vtable slot voted	high
+fn_12360	0x008FF8A0	UINoticeConfirmWnd::SendMsg	UINoticeConfirmWnd::SendMsg	vtable slot voted	high
+fn_12361	0x008FF910	UINotifyItemObtainWnd::SendMsg	UINotifyItemObtainWnd::SendMsg	vtable slot voted	high
+fn_12362	0x008FFBA0	UINotifyJobLevelUpWnd::SendMsg	UINotifyJobLevelUpWnd::SendMsg	vtable slot voted	high
+fn_12363	0x008FFBE0	UINotifyLevelUpWnd::SendMsg	UINotifyLevelUpWnd::SendMsg	vtable slot voted	high
+fn_12364	0x008FFC40	UINotifyQuestWnd::SendMsg	UINotifyQuestWnd::SendMsg	vtable slot voted	high
+fn_12365	0x008FFC90	UINpcEditDialogWnd::SendMsg	UINpcEditDialogWnd::SendMsg	vtable slot voted	high
+fn_12366	0x008FFD70	UINpcTextEditDialogWnd::SendMsg	UINpcTextEditDialogWnd::SendMsg	vtable slot voted	high
+fn_12368	0x00900490	UIPartySettingWnd::SendMsg	UIPartySettingWnd::SendMsg	vtable slot voted	high
+fn_12369	0x00900A80	UIPasswordWnd::SendMsg	UIPasswordWnd::SendMsg	vtable slot voted	high
+fn_12370	0x00900B10	UIPetEggListWnd::SendMsg	UIPetEggListWnd::SendMsg	vtable slot voted	high
+fn_12371	0x00900D50	UIPetTamingDeceiveWnd::SendMsg	UIPetTamingDeceiveWnd::SendMsg	vtable slot voted	high
+fn_12372	0x00900D90	UIProhibitListWnd::SendMsg	UIProhibitListWnd::SendMsg	vtable slot voted	high
+fn_12373	0x00901370	UIQuitWnd::SendMsg	UIQuitWnd::SendMsg	vtable slot voted	high
+fn_12374	0x009013F0	UIRestartWnd::SendMsg	UIRestartWnd::SendMsg	vtable slot voted	high
+fn_12375	0x00901520	UISayDialogWnd::SendMsg	UISayDialogWnd::SendMsg	vtable slot voted	high
+fn_12378	0x00904810	UISelectCartWnd::SendMsg	UISelectCartWnd::SendMsg	vtable slot voted	high
+fn_12379	0x00904960	UISkillDescribeWnd::SendMsg	UISkillDescribeWnd::SendMsg	strings	high
+fn_12380	0x00905210	UISkillNameChangeWnd::SendMsg	UISkillNameChangeWnd::SendMsg	vtable slot voted	high
+fn_12381	0x00905320	UISpellListWnd::SendMsg	UISpellListWnd::SendMsg	vtable slot voted	high
+fn_12382	0x00905590	UIStarPlaceAcceptWnd::SendMsg	UIStarPlaceAcceptWnd::SendMsg	vtable slot voted	high
+fn_12383	0x00905830	UIStatusWnd::SendMsg	UIStatusWnd::SendMsg	vtable slot voted	high
+fn_12385	0x00906DE0	UITipOfTheDayWnd::SendMsg	UITipOfTheDayWnd::SendMsg	vtable slot voted	high
+fn_12387	0x00907610	UIToolTipWnd::SendMsg	UIToolTipWnd::SendMsg	vtable slot voted	high
+fn_12388	0x00907650	UIWaitWnd::SendMsg	UIWaitWnd::SendMsg	vtable slot voted	high
+fn_12389	0x009076C0	UIWhisperWnd::SendMsg	UIWhisperWnd::SendMsg	vtable slot voted	high
+fn_12390	0x00908080	UIYourItemWnd::SendMsg	UIYourItemWnd::SendMsg	vtable slot voted	high
+fn_12398	0x00909CD0	UIPasswordWnd::Show	UIPasswordWnd::SetShow	vtable slot pattern	high
+fn_12399	0x00909CE0	UINotifyItemObtainWnd::CanHitTest	UINotifyItemObtainWnd::ShouldDoHitTest	vtable slot pattern	high
+fn_12402	0x00909DF0	UIChooseWnd::StoreInfo	UIChooseWnd::StoreInfo	vtable slot pattern	high
+fn_12403	0x00909E30	UICombinedCardItemCollectionWnd::StoreInfo	UICombinedCardItemCollectionWnd::StoreInfo	vtable slot pattern	high
+fn_12404	0x00909E70	UIEquipWnd::StoreInfo	UIEquipWnd::StoreInfo	vtable slot pattern	high
+fn_12405	0x00909EC0	UIExchangeAcceptWnd::StoreInfo	UIExchangeAcceptWnd::StoreInfo	vtable slot pattern	high
+fn_12406	0x00909F00	UIItemCollectionWnd::StoreInfo	UIItemCollectionWnd::StoreInfo	vtable slot pattern	high
+fn_12407	0x00909F40	UIItemCompositionWnd::StoreInfo	UIItemCompositionWnd::StoreInfo	vtable slot pattern	high
+fn_12408	0x00909F80	UIItemIdentifyWnd::StoreInfo	UIItemIdentifyWnd::StoreInfo	vtable slot pattern	high
+fn_12409	0x00909FC0	UIItemParamChangeDisplayWnd::StoreInfo	UIItemParamChangeDisplayWnd::StoreInfo	vtable slot pattern	high
+fn_12410	0x0090A000	UIPartySettingWnd::StoreInfo	UIPartySettingWnd::StoreInfo	vtable slot pattern	high
+fn_12411	0x0090A040	UISayDialogWnd::StoreInfo	UISayDialogWnd::StoreInfo	vtable slot pattern	high
+fn_12412	0x0090A080	UIStatusWnd::StoreInfo	UIStatusWnd::StoreInfo	vtable slot pattern	high
+fn_12413	0x0090A0E0	UIWhisperWnd::StoreInfo	UIWhisperWnd::StoreInfo	vtable slot pattern	high
+fn_12419	0x0090B080	UIWhisperWnd::SaveChatLog	UIWhisperWnd::WriteChatToFile	strings	high
+fn_12557	0x00915350	sub_915350	UIBattleMsgOptionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12558	0x009153E0	sub_9153E0	UIChangeNameWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12559	0x00915450	sub_915450	UICharInfoBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_12563	0x00915680	sub_915680	UIMemorialDunWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12564	0x009156F0	sub_9156F0	UIMiniBtnWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12567	0x00915890	sub_915890	UINewChatWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12570	0x009159F0	sub_9159F0	UIRebirthWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12571	0x00915A60	sub_915A60	UIRoMapWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12575	0x00915C70	sub_915C70	UISelCharForUServerWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12577	0x00915D90	UIShortCutWnd::`scalar deleting destructor'	UIShortCutWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12578	0x00915E00	sub_915E00	UISubChatHisWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12579	0x00915E80	sub_915E80	UISubChatMiniWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_12589	0x00917640	UIShortCutWnd::DragAndDrop	UIShortCutWnd::DragAndDrop	vtable slot pattern	high
+fn_12616	0x0091C540	UIShortCutWnd::HitTestSlot	UIShortCutWnd::GetSlot	calls, one vote	moderate
+fn_12623	0x0091CFB0	CFlyingShipRouteInfo::UpdateRoute	CGameMode::Initialize	strings	high
+fn_12629	0x0091E800	UIShortCutWnd::NeedsFrameRefresh	UIShortCutWnd::IsUpdateNeed	vtable slot pattern	high
+fn_12630	0x0091E960	UIMemorialDunWnd::Move	UIMemorialDunWnd::Move	vtable slot pattern	high
+fn_12631	0x0091E9C0	UINewChatWnd::Move	UINewChatWnd::Move	vtable slot pattern	high
+fn_12633	0x0091EA90	UISubChatHisWnd::Move	UISubChatHisWnd::Move	vtable slot pattern	high
+fn_12636	0x0091EC40	UIBattleMsgOptionWnd::OnCreate	UIBattleMsgOptionWnd::OnCreate	vtable slot voted	high
+fn_12637	0x0091EDA0	UIChangeNameWnd::OnCreate	UIChangeNameWnd::OnCreate	vtable slot voted	high
+fn_12641	0x00921260	UIMemorialDunWnd::OnCreate	UIMemorialDunWnd::OnCreate	vtable slot voted	high
+fn_12644	0x009230A0	UINewChatWnd::OnCreate	UINewChatWnd::OnCreate	strings	high
+fn_12647	0x00924A60	UIRebirthWnd::OnCreate	UIRebirthWnd::OnCreate	strings	high
+fn_12648	0x00925530	UIRoMapWnd::OnCreate	UIRoMapWnd::OnCreate	strings	high
+fn_12652	0x00928A60	UISelCharForUServerWnd::OnCreate	UISelCharForUServerWnd::OnCreate	vtable slot voted	high
+fn_12654	0x0092A190	UIShortCutWnd::OnCreate	UIShortCutWnd::OnCreate	vtable slot voted	high
+fn_12655	0x0092A710	UISubChatHisWnd::OnCreate	UISubChatHisWnd::OnCreate	strings	high
+fn_12656	0x0092AFE0	UISubChatMiniWnd::OnCreate	UISubChatMiniWnd::OnCreate	vtable slot voted	high
+fn_12659	0x0092B9C0	UIBattleMsgOptionWnd::Paint	UIBattleMsgOptionWnd::OnDraw	vtable slot voted	high
+fn_12660	0x0092BCA0	UIChangeNameWnd::Paint	UIChangeNameWnd::OnDraw	strings	high
+fn_12661	0x0092BCE0	UICharInfoBalloonText::Paint	UICharInfoBalloonText::OnDraw	vtable slot voted	high
+fn_12665	0x0092C6B0	UIMemorialDunWnd::Paint	UIMemorialDunWnd::OnDraw	vtable slot voted	high
+fn_12666	0x0092CE50	UIMiniBtnWnd::Paint	UIMiniBtnWnd::OnDraw	vtable slot voted	high
+fn_12669	0x0092D420	UINewChatWnd::Paint	UINewChatWnd::OnDraw	vtable slot voted	high
+fn_12673	0x0092DDE0	UIRebirthWnd::Paint	UIRebirthWnd::OnDraw	strings	high
+fn_12674	0x0092DE20	UIRoMapWnd::Paint	UIRoMapWnd::OnDraw	vtable slot voted	high
+fn_12678	0x0092E570	UISelCharForUServerWnd::Paint	UISelCharForUServerWnd::OnDraw	strings	high
+fn_12680	0x0092F8E0	UIShortCutWnd::Paint	UIShortCutWnd::OnDraw	vtable slot voted	high
+fn_12682	0x00930370	UISubChatHisWnd::Paint	UISubChatHisWnd::OnDraw	vtable slot voted	high
+fn_12683	0x00930550	UISubChatMiniWnd::Paint	UISubChatMiniWnd::OnDraw	strings	high
+fn_12685	0x009305F0	UIBattleMsgOptionWnd::OnLBtnDblClk	UIBattleMsgOptionWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_12689	0x00930900	UIShortCutWnd::OnLBtnDblClk	UIShortCutWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_12692	0x00930A80	UIBattleMsgOptionWnd::OnLBtnDown	UIBattleMsgOptionWnd::OnLBtnDown	vtable slot pattern	high
+fn_12694	0x00930CD0	UIMiniBtnWnd::OnLBtnDown	UIMiniBtnWnd::OnLBtnDown	vtable slot pattern	high
+fn_12695	0x00930D40	UINewChatWnd::OnLBtnDown	UINewChatWnd::OnLBtnDown	vtable slot pattern	high
+fn_12697	0x00931080	UIRoMapWnd::OnLBtnDown	UIRoMapWnd::OnLBtnDown	vtable slot pattern	high
+fn_12699	0x009310E0	UIShortCutWnd::OnLBtnDown	UIShortCutWnd::OnLBtnDown	vtable slot pattern	high
+fn_12700	0x009312E0	UISubChatHisWnd::OnLBtnDown	UISubChatHisWnd::OnLBtnDown	vtable slot pattern	high
+fn_12701	0x00931330	UISubChatMiniWnd::OnLBtnDown	UISubChatMiniWnd::OnLBtnDown	vtable slot pattern	high
+fn_12703	0x009313E0	UINewChatWnd::OnLBtnUp	UINewChatWnd::OnLBtnUp	vtable slot pattern	high
+fn_12706	0x00931710	UISubChatHisWnd::OnLBtnUp	UISubChatHisWnd::OnLBtnUp	vtable slot pattern	high
+fn_12707	0x009317A0	UIBattleMsgOptionWnd::OnMouseHover	UIBattleMsgOptionWnd::OnMouseHover	vtable slot voted	high
+fn_12711	0x00932050	UIShortCutWnd::OnMouseHover	UIShortCutWnd::OnMouseHover	vtable slot voted, against its strings	high
+fn_12712	0x009328F0	UINewChatWnd::OnMouseMove	UINewChatWnd::OnMouseMove	vtable slot pattern	high
+fn_12713	0x00932920	UIRoMapWnd::OnMouseMove	UIRoMapWnd::OnMouseMove	vtable slot pattern	high
+fn_12714	0x00932B40	UISelCharForUServerWnd::OnMouseMove	UISelCharForUServerWnd::OnMouseMove	vtable slot pattern	high
+fn_12715	0x00932B70	UISubChatHisWnd::OnMouseMove	UISubChatHisWnd::OnMouseMove	vtable slot pattern	high
+fn_12720	0x00932F30	UIShortCutWnd::OnProcess	UIShortCutWnd::OnProcess	vtable slot pattern	high
+fn_12724	0x009332D0	UIShortCutWnd::OnRBtnDown	UIShortCutWnd::OnRBtnDown	vtable slot pattern	high
+fn_12726	0x009335E0	UIBattleMsgOptionWnd::OnWheel	UIBattleMsgOptionWnd::OnWheel	vtable slot pattern	high
+fn_12728	0x00933680	UIBattleMsgOptionWnd::UpdateScrollBar	UIBattleMsgOptionWnd::RecalcScrbarPos	vtable slot pattern	high
+fn_12737	0x00933D20	UINewChatWnd::Resize	UINewChatWnd::Resize	vtable slot pattern	high
+fn_12738	0x00933D60	UISubChatHisWnd::Resize	UISubChatHisWnd::Resize	vtable slot pattern	high
+fn_12742	0x00934780	UIBattleMsgOptionWnd::SendMsg	UIBattleMsgOptionWnd::SendMsg	vtable slot voted	high
+fn_12743	0x00934A10	UIChangeNameWnd::SendMsg	UIChangeNameWnd::SendMsg	vtable slot voted	high
+fn_12747	0x00935850	UIMemorialDunWnd::SendMsg	UIMemorialDunWnd::SendMsg	vtable slot voted	high
+fn_12750	0x00936360	UINewChatWnd::SendMsg	UINewChatWnd::SendMsg	vtable slot voted	high
+fn_12753	0x00938E30	UIRebirthWnd::SendMsg	UIRebirthWnd::SendMsg	vtable slot voted	high
+fn_12754	0x00938FF0	UIRoMapWnd::SendMsg	UIRoMapWnd::SendMsg	vtable slot voted	high
+fn_12758	0x0093A7F0	UISelCharForUServerWnd::SendMsg	UISelCharForUServerWnd::SendMsg	vtable slot voted	high
+fn_12760	0x0093B450	UIShortCutWnd::SendMsg	UIShortCutWnd::SendMsg	vtable slot voted	high
+fn_12761	0x0093C210	UISubChatHisWnd::SendMsg	UISubChatHisWnd::SendMsg	vtable slot voted	high
+fn_12762	0x0093CA50	UISubChatMiniWnd::SendMsg	UISubChatMiniWnd::SendMsg	vtable slot voted	high
+fn_12765	0x0093D090	UINewChatWnd::Show	UINewChatWnd::SetShow	vtable slot pattern	high
+fn_12766	0x0093D220	UIShortCutWnd::Show	UIShortCutWnd::SetShow	vtable slot pattern	high
+fn_12777	0x0093F1F0	UISelCharForUServerWnd::UpdateCharInfoBalloon	UISelCharForUServerWnd::ShowCharInfoBalloon	calls, one vote	moderate
+fn_12782	0x00940EB0	UINewChatWnd::StoreInfo	UINewChatWnd::StoreInfo	vtable slot pattern	high
+fn_12787	0x00940FE0	UIShortCutWnd::StoreInfo	UIShortCutWnd::StoreInfo	vtable slot pattern	high
+fn_12788	0x00941020	UISubChatHisWnd::StoreInfo	UISubChatHisWnd::StoreInfo	vtable slot pattern	high
+fn_13021	0x00955900	sub_955900	UIGuildBanReasonDescWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13022	0x00955970	sub_955970	UIGuildBanishedMemberWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13024	0x00955A50	sub_955A50	UIGuildInfoManageWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13025	0x00955B10	sub_955B10	UIGuildLeaveReasonDescWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13026	0x00955B80	sub_955B80	UIGuildMemberManageWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13027	0x00955C50	sub_955C50	UIGuildNoticeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13028	0x00955CC0	sub_955CC0	UIGuildPositionManageWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13029	0x00955D80	sub_955D80	UIGuildSkillWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13031	0x00955E90	sub_955E90	UIGuildTotalInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13032	0x00955F00	sub_955F00	UIGuildWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13038	0x00957850	UIGuildPositionManageWnd::PositionIndexAt	UIGuildPositionManageWnd::GetCurItem	calls	moderate
+fn_13039	0x009578F0	UIGuildSkillWnd::SkillIndexAt	UIGuildSkillWnd::GetCurItem	calls, one vote	moderate
+fn_13044	0x00957D30	UIGuildBanishedMemberWnd::Tab	UIGuildBanishedMemberWnd::GetTab	vtable slot pattern	high
+fn_13045	0x00957D40	UIGuildInfoManageWnd::Tab	UIGuildInfoManageWnd::GetTab	vtable slot pattern	high
+fn_13046	0x00957D50	UIGuildMemberManageWnd::Tab	UIGuildMemberManageWnd::GetTab	vtable slot pattern	high
+fn_13047	0x00957D60	__RTC_NumErrors_1	UIGuildNoticeWnd::GetTab	vtable slot pattern	high
+fn_13048	0x00957D70	?_None@_CancellationTokenState@details@Concurrency@@SAPAV123@XZ_58	UIGuildPositionManageWnd::GetTab	vtable slot pattern	high
+fn_13049	0x00957D80	UIGuildSkillWnd::Tab	UIGuildSkillWnd::GetTab	vtable slot pattern	high
+fn_13050	0x00957D90	UIGuildTotalInfoWnd::Tab	UIGuildTotalInfoWnd::GetTab	vtable slot pattern	high
+fn_13056	0x00958700	UIGuildBanReasonDescWnd::OnCreate	UIGuildBanReasonDescWnd::OnCreate	vtable slot voted	high
+fn_13057	0x00958740	UIGuildBanishedMemberWnd::OnCreate	UIGuildBanishedMemberWnd::OnCreate	vtable slot voted	high
+fn_13059	0x00958FF0	UIGuildInfoManageWnd::OnCreate	UIGuildInfoManageWnd::OnCreate	strings	high
+fn_13060	0x009597E0	UIGuildLeaveReasonDescWnd::OnCreate	UIGuildLeaveReasonDescWnd::OnCreate	vtable slot voted	high
+fn_13061	0x00959F10	UIGuildMemberManageWnd::OnCreate	UIGuildMemberManageWnd::OnCreate	vtable slot voted	high
+fn_13062	0x0095ACC0	UIGuildNoticeWnd::OnCreate	UIGuildNoticeWnd::OnCreate	strings	high
+fn_13063	0x0095B380	UIGuildPositionManageWnd::OnCreate	UIGuildPositionManageWnd::OnCreate	vtable slot voted	high
+fn_13064	0x0095BF90	UIGuildSkillWnd::OnCreate	UIGuildSkillWnd::OnCreate	vtable slot voted (shared)	high
+fn_13066	0x0095D3A0	UIGuildTotalInfoWnd::OnCreate	UIGuildTotalInfoWnd::OnCreate	vtable slot voted	high
+fn_13070	0x0095D640	UIGuildBanishedMemberWnd::Paint	UIGuildBanishedMemberWnd::OnDraw	vtable slot voted	high
+fn_13072	0x0095DB80	UIGuildInfoManageWnd::Paint	UIGuildInfoManageWnd::OnDraw	strings	high
+fn_13073	0x0095E310	UIGuildLeaveReasonDescWnd::Paint	UIGuildLeaveReasonDescWnd::OnDraw	vtable slot voted	high
+fn_13074	0x0095E320	UIGuildMemberManageWnd::Paint	UIGuildMemberManageWnd::OnDraw	vtable slot voted	high
+fn_13075	0x0095E8A0	UIGuildNoticeWnd::Paint	UIGuildNoticeWnd::OnDraw	vtable slot voted	high
+fn_13076	0x0095E9B0	UIGuildPositionManageWnd::Paint	UIGuildPositionManageWnd::OnDraw	strings	high
+fn_13077	0x0095F130	UIGuildSkillWnd::Paint	UIGuildSkillWnd::OnDraw	strings	high
+fn_13079	0x0095F460	UIGuildTotalInfoWnd::Paint	UIGuildTotalInfoWnd::OnDraw	vtable slot voted	high
+fn_13080	0x0095F860	UIGuildWnd::Paint	UIGuildWnd::OnDraw	vtable slot voted	high
+fn_13083	0x0095FBF0	UIGuildBanishedMemberWnd::OnLBtnDown	UIGuildBanishedMemberWnd::OnLBtnDown	vtable slot pattern	high
+fn_13085	0x0095FCF0	UIGuildInfoManageWnd::OnLBtnDown	UIGuildInfoManageWnd::OnLBtnDown	vtable slot pattern	high
+fn_13086	0x0095FD40	UIGuildMemberManageWnd::OnLBtnDown	UIGuildMemberManageWnd::OnLBtnDown	vtable slot pattern	high
+fn_13087	0x0095FE10	UIGuildNoticeWnd::OnLBtnDown	UIGuildNoticeWnd::OnLBtnDown	vtable slot pattern	high
+fn_13088	0x0095FE20	UIGuildPositionManageWnd::OnLBtnDown	UIGuildPositionManageWnd::OnLBtnDown	vtable slot pattern	high
+fn_13089	0x0095FE70	UIGuildSkillWnd::OnLBtnDown	UIGuildSkillWnd::OnLBtnDown	vtable slot pattern	high
+fn_13090	0x0095FF60	UIGuildTotalInfoWnd::OnLBtnDown	UIGuildTotalInfoWnd::OnLBtnDown	vtable slot pattern	high
+fn_13091	0x00960020	UIGuildWnd::OnLBtnDown	UIGuildWnd::OnLBtnDown	vtable slot pattern	high
+fn_13103	0x009603C0	UIGuildMemberManageWnd::OnRBtnDown	UIGuildMemberManageWnd::OnRBtnDown	vtable slot pattern	high
+fn_13104	0x00960430	UIGuildPositionManageWnd::OnRBtnDown	UIGuildPositionManageWnd::OnRBtnDown	vtable slot pattern	high
+fn_13105	0x00960470	UIGuildSkillWnd::OnRBtnDown	UIGuildSkillWnd::OnRBtnDown	vtable slot pattern	high
+fn_13107	0x00960540	UIGuildInfoManageWnd::OnRBtnUp	UIGuildInfoManageWnd::OnRBtnUp	vtable slot pattern	high
+fn_13108	0x00960620	UIGuildMemberManageWnd::OnRBtnUp	UIGuildMemberManageWnd::OnRBtnUp	vtable slot pattern	high
+fn_13109	0x00960640	UIGuildSkillWnd::OnRBtnUp	UIGuildSkillWnd::OnRBtnUp	vtable slot pattern	high
+fn_13110	0x00960660	UIGuildMemberManageWnd::SortMembers	UIGuildMemberManageWnd::GetCurItem	calls, one vote	moderate
+fn_13111	0x00960960	UIGuildBanishedMemberWnd::OnWheel	UIGuildBanishedMemberWnd::OnWheel	vtable slot pattern	high
+fn_13112	0x009609B0	UIGuildMemberManageWnd::OnWheel	UIGuildMemberManageWnd::OnWheel	vtable slot pattern	high
+fn_13113	0x00960A00	UIGuildPositionManageWnd::OnWheel	UIGuildPositionManageWnd::OnWheel	vtable slot pattern	high
+fn_13114	0x00960A50	UIGuildSkillWnd::OnWheel	UIGuildSkillWnd::OnWheel	vtable slot pattern	high
+fn_13115	0x00960AA0	UIGuildTotalInfoWnd::OnWheel	UIGuildTotalInfoWnd::OnWheel	vtable slot pattern	high
+fn_13116	0x00960AF0	UIGuildBanishedMemberWnd::UpdateScroll	UIGuildBanishedMemberWnd::RecalcScrbarPos	calls, one vote	moderate
+fn_13120	0x00960DE0	UIGuildTotalInfoWnd::UpdateScroll	UIGuildTotalInfoWnd::RecalcScrbarPos	calls	moderate
+fn_13124	0x00961540	UIGuildBanReasonDescWnd::SendMsg	UIGuildBanReasonDescWnd::SendMsg	vtable slot voted	high
+fn_13125	0x00961600	UIGuildBanishedMemberWnd::SendMsg	UIGuildBanishedMemberWnd::SendMsg	vtable slot voted	high
+fn_13127	0x00961880	UIGuildInfoManageWnd::SendMsg	UIGuildInfoManageWnd::SendMsg	strings	high
+fn_13128	0x00962310	UIGuildLeaveReasonDescWnd::SendMsg	UIGuildLeaveReasonDescWnd::SendMsg	vtable slot voted	high
+fn_13129	0x00962380	UIGuildMemberManageWnd::SendMsg	UIGuildMemberManageWnd::SendMsg	vtable slot voted	high
+fn_13130	0x00963BF0	UIGuildNoticeWnd::SendMsg	UIGuildNoticeWnd::SendMsg	vtable slot voted	high
+fn_13131	0x00963E10	UIGuildPositionManageWnd::SendMsg	UIGuildPositionManageWnd::SendMsg	vtable slot voted	high
+fn_13132	0x00964500	UIGuildSkillWnd::SendMsg	UIGuildSkillWnd::SendMsg	vtable slot voted	high
+fn_13134	0x00964C90	UIGuildTotalInfoWnd::SendMsg	UIGuildTotalInfoWnd::SendMsg	vtable slot voted	high
+fn_13135	0x00964D50	UIGuildWnd::SendMsg	UIGuildWnd::SendMsg	vtable slot voted	high
+fn_13140	0x009656A0	UIGuildWnd::StoreInfo	UIGuildWnd::StoreInfo	vtable slot pattern	high
+fn_13179	0x0096CAD0	sub_96CAD0	UIIllustWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13181	0x0096CBD0	UIIllustWnd::OnCreate	UIIllustWnd::OnCreate	vtable slot voted	high
+fn_13183	0x0096CBF0	UIIllustWnd::OnDestroy	UIIllustWnd::OnDestroy	vtable slot pattern	high
+fn_13185	0x0096CC90	UIIllustWnd::Paint	UIIllustWnd::OnDraw	vtable slot voted	high
+fn_13188	0x0096CD80	UIIllustWnd::OnMouseMove	UIIllustWnd::OnMouseMove	vtable slot pattern	high
+fn_13190	0x0096CDC0	UIIllustWnd::SendMsg	UIIllustWnd::SendMsg	vtable slot voted, against its strings	high
+fn_13192	0x0096D2C0	UIIllustWnd::CanHitTest	UIIllustWnd::ShouldDoHitTest	vtable slot pattern	high
+fn_13197	0x0096D570	sub_96D570	UICandidateWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13198	0x0096D600	sub_96D600	UICompositionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13200	0x0096D6F0	UICandidateWnd::OnCreate	UICandidateWnd::OnCreate	vtable slot voted	high
+fn_13201	0x0096D700	UICompositionWnd::OnCreate	UICompositionWnd::OnCreate	vtable slot voted	high
+fn_13203	0x0096D720	UICandidateWnd::Paint	UICandidateWnd::OnDraw	vtable slot voted	high
+fn_13204	0x0096DB20	UICompositionWnd::Paint	UICompositionWnd::OnDraw	vtable slot voted	high
+fn_13206	0x0096DD40	UICandidateWnd::SendMsg	UICandidateWnd::SendMsg	vtable slot voted	high
+fn_13207	0x0096DED0	UICompositionWnd::SendMsg	UICompositionWnd::SendMsg	vtable slot voted	high
+fn_13241	0x009701B0	sub_9701B0	UIEditCtrlWheel::`scalar deleting destructor'	vtable slot pattern	high
+fn_13242	0x00970220	sub_970220	UIItemBaseWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13243	0x009702B0	sub_9702B0	UIItemDropCntWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13244	0x00970320	sub_970320	UIItemPurchaseWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13246	0x00970460	sub_970460	UIItemSellWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13248	0x009705A0	sub_9705A0	UIItemShopWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13251	0x009707C0	sub_9707C0	UIItemStoreWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13252	0x00970880	sub_970880	UIItemWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13253	0x00970920	sub_970920	UIMerchantItemMyShopWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13255	0x00970A30	sub_970A30	UIMerchantItemPurchaseWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13256	0x00970AD0	sub_970AD0	UIMerchantItemShopWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13257	0x00970B70	sub_970B70	UIMerchantItemWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13258	0x00970C10	sub_970C10	UIMerchantMirrorItemWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13259	0x00970CB0	sub_970CB0	UIMerchantShopMakeWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13261	0x00970DD0	sub_970DD0	UISkillListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13266	0x00972100	UIItemBaseWnd::DragAndDrop	UIItemBaseWnd::DragAndDrop	vtable slot pattern	high
+fn_13267	0x00972120	UIItemPurchaseWnd::DragAndDrop	UIItemPurchaseWnd::DragAndDrop	vtable slot pattern	high
+fn_13269	0x009722A0	UIItemSellWnd::DragAndDrop	UIItemSellWnd::DragAndDrop	vtable slot pattern	high
+fn_13271	0x00972410	UIItemShopWnd::DragAndDrop	UIItemShopWnd::DragAndDrop	vtable slot pattern	high
+fn_13274	0x00972630	UIItemStoreWnd::DragAndDrop	UIItemStoreWnd::DragAndDrop	vtable slot pattern	high
+fn_13275	0x009727F0	UIItemWnd::DragAndDrop	UIItemWnd::DragAndDrop	vtable slot pattern	high
+fn_13276	0x009729C0	UIMerchantItemPurchaseWnd::DragAndDrop	UIMerchantItemPurchaseWnd::DragAndDrop	vtable slot pattern	high
+fn_13277	0x00972B50	UIMerchantItemShopWnd::DragAndDrop	UIMerchantItemShopWnd::DragAndDrop	vtable slot pattern	high
+fn_13278	0x00972C00	UIMerchantItemWnd::DragAndDrop	UIMerchantItemWnd::DragAndDrop	vtable slot pattern	high
+fn_13279	0x00972CE0	UIMerchantMirrorItemWnd::DragAndDrop	UIMerchantMirrorItemWnd::DragAndDrop	vtable slot pattern	high
+fn_13280	0x00972DB0	UIMerchantShopMakeWnd::DragAndDrop	UIMerchantShopMakeWnd::DragAndDrop	vtable slot pattern	high
+fn_13290	0x009738A0	UIItemBaseWnd::GetItemIndexAt	UIItemBaseWnd::GetCurItem	calls, one vote	moderate
+fn_13291	0x009739A0	UISkillListWnd::SkillAt	UISkillListWnd::GetCurItem	calls, one vote	moderate
+fn_13293	0x00973AB0	UIItemBaseWnd::GetItemAt	UIItemBaseWnd::GetItemInfo	calls	moderate
+fn_13296	0x00973EA0	UIItemStoreWnd::GetItemAt	UIItemStoreWnd::GetItemInfo	calls, one vote	moderate
+fn_13297	0x00973FE0	UIItemWnd::GetItemAt	UIItemWnd::GetItemInfo	calls	moderate
+fn_13302	0x00974560	UISkillListWnd::NeedsFrameRefresh	UISkillListWnd::IsUpdateNeed	vtable slot pattern	high
+fn_13307	0x00974900	UIItemBaseWnd::OnCreate	UIItemBaseWnd::OnCreate	vtable slot voted	high
+fn_13308	0x00974910	UIItemDropCntWnd::OnCreate	UIItemDropCntWnd::OnCreate	vtable slot voted	high
+fn_13309	0x00975050	UIItemPurchaseWnd::OnCreate	UIItemPurchaseWnd::OnCreate	vtable slot voted	high
+fn_13311	0x009768A0	UIItemSellWnd::OnCreate	UIItemSellWnd::OnCreate	vtable slot voted	high
+fn_13313	0x009777B0	UIItemShopWnd::OnCreate	UIItemShopWnd::OnCreate	vtable slot voted	high
+fn_13316	0x00977E10	UIItemStoreWnd::OnCreate	UIItemStoreWnd::OnCreate	vtable slot voted	high
+fn_13317	0x009792B0	UIItemWnd::OnCreate	UIItemWnd::OnCreate	strings	high
+fn_13318	0x00979920	UIMerchantItemMyShopWnd::OnCreate	UIMerchantItemMyShopWnd::OnCreate	vtable slot voted	high
+fn_13320	0x0097AA00	UIMerchantItemPurchaseWnd::OnCreate	UIMerchantItemPurchaseWnd::OnCreate	vtable slot voted	high
+fn_13321	0x0097BC00	UIMerchantItemShopWnd::OnCreate	UIMerchantItemShopWnd::OnCreate	vtable slot voted	high
+fn_13322	0x0097BD30	UIMerchantItemWnd::OnCreate	UIMerchantItemWnd::OnCreate	vtable slot voted	high
+fn_13323	0x0097BFF0	UIMerchantMirrorItemWnd::OnCreate	UIMerchantMirrorItemWnd::OnCreate	vtable slot voted	high
+fn_13324	0x0097C230	UIMerchantShopMakeWnd::OnCreate	UIMerchantShopMakeWnd::OnCreate	vtable slot voted	high
+fn_13326	0x0097D300	UISkillListWnd::OnCreate	UISkillListWnd::OnCreate	vtable slot voted, against its strings	high
+fn_13327	0x0097E3E0	UIItemWnd::OnDestroy	UIItemWnd::OnDestroy	vtable slot pattern	high
+fn_13329	0x0097E790	UIItemDropCntWnd::Paint	UIItemDropCntWnd::OnDraw	vtable slot voted	high
+fn_13330	0x0097E7A0	UIItemPurchaseWnd::Paint	UIItemPurchaseWnd::OnDraw	vtable slot voted	high
+fn_13332	0x0097F220	UIItemSellWnd::Paint	UIItemSellWnd::OnDraw	vtable slot voted	high
+fn_13334	0x0097FBF0	UIItemShopWnd::Paint	UIItemShopWnd::OnDraw	vtable slot voted	high
+fn_13337	0x009808E0	UIItemStoreWnd::Paint	UIItemStoreWnd::OnDraw	vtable slot voted	high
+fn_13338	0x00980F50	UIItemWnd::Paint	UIItemWnd::OnDraw	vtable slot voted	high
+fn_13341	0x009819C0	UIMerchantItemPurchaseWnd::Paint	UIMerchantItemPurchaseWnd::OnDraw	vtable slot voted	high
+fn_13342	0x00981EE0	UIMerchantItemShopWnd::Paint	UIMerchantItemShopWnd::OnDraw	strings	high
+fn_13344	0x00982A80	UIMerchantShopMakeWnd::Paint	UIMerchantShopMakeWnd::OnDraw	vtable slot voted	high
+fn_13346	0x00983550	UISkillListWnd::Paint	UISkillListWnd::OnDraw	strings	high
+fn_13348	0x00983FF0	UIItemSellWnd::OnLBtnDblClk	UIItemSellWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_13350	0x009840C0	UIItemShopWnd::OnLBtnDblClk	UIItemShopWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_13353	0x00984170	UIItemWnd::OnLBtnDblClk	UIItemWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_13354	0x009844E0	UISkillListWnd::OnLBtnDblClk	UISkillListWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_13355	0x009845A0	UIItemPurchaseWnd::OnLBtnDown	UIItemPurchaseWnd::OnLBtnDown	vtable slot pattern	high
+fn_13357	0x009848E0	UIItemSellWnd::OnLBtnDown	UIItemSellWnd::OnLBtnDown	vtable slot pattern	high
+fn_13359	0x00984CA0	UIItemShopWnd::OnLBtnDown	UIItemShopWnd::OnLBtnDown	vtable slot pattern	high
+fn_13362	0x00985030	UIItemStoreWnd::OnLBtnDown	UIItemStoreWnd::OnLBtnDown	vtable slot pattern	high
+fn_13363	0x00985160	UIItemWnd::OnLBtnDown	UIItemWnd::OnLBtnDown	vtable slot pattern	high
+fn_13364	0x00985380	UIMerchantItemMyShopWnd::OnLBtnDown	UIMerchantItemMyShopWnd::OnLBtnDown	vtable slot pattern	high
+fn_13365	0x009853A0	UIMerchantItemPurchaseWnd::OnLBtnDown	UIMerchantItemPurchaseWnd::OnLBtnDown	vtable slot pattern	high
+fn_13366	0x00985510	UIMerchantItemShopWnd::OnLBtnDown	UIMerchantItemShopWnd::OnLBtnDown	vtable slot pattern	high
+fn_13367	0x00985610	UIMerchantItemWnd::OnLBtnDown	UIMerchantItemWnd::OnLBtnDown	vtable slot pattern	high
+fn_13368	0x00985830	UIMerchantMirrorItemWnd::OnLBtnDown	UIMerchantMirrorItemWnd::OnLBtnDown	vtable slot pattern	high
+fn_13369	0x00985970	UIMerchantShopMakeWnd::OnLBtnDown	UIMerchantShopMakeWnd::OnLBtnDown	vtable slot pattern	high
+fn_13370	0x00985AA0	UISkillListWnd::OnLBtnDown	UISkillListWnd::OnLBtnDown	vtable slot pattern	high
+fn_13371	0x00985B90	UIItemPurchaseWnd::OnMouseHover	UIItemPurchaseWnd::OnMouseHover	vtable slot voted	high
+fn_13373	0x00986190	UIItemSellWnd::OnMouseHover	UIItemSellWnd::OnMouseHover	vtable slot voted	high
+fn_13375	0x00986970	UIItemShopWnd::OnMouseHover	UIItemShopWnd::OnMouseHover	strings	high
+fn_13378	0x00987400	UIItemStoreWnd::OnMouseHover	UIItemStoreWnd::OnMouseHover	vtable slot voted	high
+fn_13379	0x00987600	UIItemWnd::OnMouseHover	UIItemWnd::OnMouseHover	vtable slot voted	high
+fn_13380	0x00987850	UIMerchantItemMyShopWnd::OnMouseHover	UIMerchantItemMyShopWnd::OnMouseHover	vtable slot voted	high
+fn_13381	0x00987B90	UIMerchantItemPurchaseWnd::OnMouseHover	UIMerchantItemPurchaseWnd::OnMouseHover	vtable slot voted	high
+fn_13382	0x00987D40	UIMerchantItemShopWnd::OnMouseHover	UIMerchantItemShopWnd::OnMouseHover	vtable slot voted	high
+fn_13383	0x009880F0	UIMerchantItemWnd::OnMouseHover	UIMerchantItemWnd::OnMouseHover	vtable slot voted	high
+fn_13384	0x00988340	UIMerchantMirrorItemWnd::OnMouseHover	UIMerchantMirrorItemWnd::OnMouseHover	vtable slot voted	high
+fn_13385	0x00988590	UISkillListWnd::OnMouseHover	UISkillListWnd::OnMouseHover	vtable slot voted	high
+fn_13391	0x00988C60	UIItemPurchaseWnd::OnRBtnDown	UIItemPurchaseWnd::OnRBtnDown	vtable slot pattern	high
+fn_13393	0x00988E10	UIItemSellWnd::OnRBtnDown	UIItemSellWnd::OnRBtnDown	vtable slot pattern	high
+fn_13395	0x00988F90	UIItemShopWnd::OnRBtnDown	UIItemShopWnd::OnRBtnDown	vtable slot pattern	high
+fn_13398	0x009893A0	UIItemStoreWnd::OnRBtnDown	UIItemStoreWnd::OnRBtnDown	vtable slot pattern	high
+fn_13399	0x00989520	UIItemWnd::OnRBtnDown	UIItemWnd::OnRBtnDown	vtable slot pattern	high
+fn_13400	0x009898A0	UIMerchantItemMyShopWnd::OnRBtnDown	UIMerchantItemMyShopWnd::OnRBtnDown	vtable slot pattern	high
+fn_13401	0x00989960	UIMerchantItemPurchaseWnd::OnRBtnDown	UIMerchantItemPurchaseWnd::OnRBtnDown	vtable slot pattern	high
+fn_13402	0x00989B00	UIMerchantItemShopWnd::OnRBtnDown	UIMerchantItemShopWnd::OnRBtnDown	vtable slot pattern	high
+fn_13403	0x00989C40	UIMerchantItemWnd::OnRBtnDown	UIMerchantItemWnd::OnRBtnDown	vtable slot pattern	high
+fn_13404	0x00989DF0	UIMerchantMirrorItemWnd::OnRBtnDown	UIMerchantMirrorItemWnd::OnRBtnDown	vtable slot pattern	high
+fn_13406	0x0098A1E0	UISkillListWnd::OnRBtnDown	UISkillListWnd::OnRBtnDown	vtable slot pattern	high
+fn_13407	0x0098A220	UISkillListWnd::OnRBtnUp	UISkillListWnd::OnRBtnUp	vtable slot pattern	high
+fn_13408	0x0098A240	UIEditCtrlWheel::OnWheel	UIEditCtrlWheel::OnWheel	vtable slot pattern	high
+fn_13409	0x0098A260	UIItemBaseWnd::OnWheel	UIItemBaseWnd::OnWheel	vtable slot pattern	high
+fn_13412	0x0098A350	UIMerchantShopMakeWnd::OnWheel	UIMerchantShopMakeWnd::OnWheel	vtable slot pattern	high
+fn_13413	0x0098A3A0	UISkillListWnd::OnWheel	UISkillListWnd::OnWheel	vtable slot pattern	high
+fn_13415	0x0098A5A0	UIItemBaseWnd::UpdateScrollBar	UIItemBaseWnd::RecalcScrbarPos	calls	moderate
+fn_13418	0x0098A920	UIItemBaseWnd::SendMsg	UIItemBaseWnd::SendMsg	vtable slot voted	high
+fn_13419	0x0098AB40	UIItemDropCntWnd::SendMsg	UIItemDropCntWnd::SendMsg	vtable slot voted	high
+fn_13420	0x0098B980	UIItemPurchaseWnd::SendMsg	UIItemPurchaseWnd::SendMsg	strings	high
+fn_13422	0x0098CBF0	UIItemSellWnd::SendMsg	UIItemSellWnd::SendMsg	vtable slot voted	high
+fn_13424	0x0098D690	UIItemShopWnd::SendMsg	UIItemShopWnd::SendMsg	vtable slot voted	high
+fn_45490	0x0098E6C0	UIItemStoreWnd::SendMsg	UIItemStoreWnd::SendMsg	vtable slot voted	high
+fn_13426	0x0098F700	UIItemWnd::SendMsg	UIItemWnd::SendMsg	vtable slot voted	high
+fn_13427	0x00990090	UIMerchantItemMyShopWnd::SendMsg	UIMerchantItemMyShopWnd::SendMsg	vtable slot voted	high
+fn_13429	0x00990880	UIMerchantItemPurchaseWnd::SendMsg	UIMerchantItemPurchaseWnd::SendMsg	vtable slot voted	high
+fn_13430	0x00991370	UIMerchantItemShopWnd::SendMsg	UIMerchantItemShopWnd::SendMsg	vtable slot voted	high
+fn_13431	0x00991880	UIMerchantItemWnd::SendMsg	UIMerchantItemWnd::SendMsg	vtable slot voted	high
+fn_13432	0x00991C40	UIMerchantMirrorItemWnd::SendMsg	UIMerchantMirrorItemWnd::SendMsg	vtable slot voted	high
+fn_13433	0x00992130	UIMerchantShopMakeWnd::SendMsg	UIMerchantShopMakeWnd::SendMsg	vtable slot voted, against its strings	high
+fn_13435	0x00993A80	UISkillListWnd::SendMsg	UISkillListWnd::SendMsg	vtable slot voted	high
+fn_13438	0x009948E0	UIItemDropCntWnd::Show	UIItemDropCntWnd::SetShow	vtable slot pattern	high
+fn_13444	0x00995320	UIItemBaseWnd::StoreInfo	UIItemBaseWnd::StoreInfo	vtable slot pattern	high
+fn_13445	0x00995330	UIItemPurchaseWnd::StoreInfo	UIItemPurchaseWnd::StoreInfo	vtable slot pattern	high
+fn_13447	0x009953B0	UIItemSellWnd::StoreInfo	UIItemSellWnd::StoreInfo	vtable slot pattern	high
+fn_13449	0x00995430	UIItemShopWnd::StoreInfo	UIItemShopWnd::StoreInfo	vtable slot pattern	high
+fn_13452	0x009954F0	UIItemStoreWnd::StoreInfo	UIItemStoreWnd::StoreInfo	vtable slot pattern	high
+fn_13453	0x00995530	UIItemWnd::StoreInfo	UIItemWnd::StoreInfo	vtable slot pattern	high
+fn_13454	0x009955C0	UIMerchantItemMyShopWnd::StoreInfo	UIMerchantItemMyShopWnd::StoreInfo	vtable slot pattern	high
+fn_13455	0x00995600	UIMerchantItemPurchaseWnd::StoreInfo	UIMerchantItemPurchaseWnd::StoreInfo	vtable slot pattern	high
+fn_13456	0x00995640	UIMerchantItemShopWnd::StoreInfo	UIMerchantItemShopWnd::StoreInfo	vtable slot pattern	high
+fn_13457	0x00995680	UIMerchantItemWnd::StoreInfo	UIMerchantItemWnd::StoreInfo	vtable slot pattern	high
+fn_13458	0x009956C0	UIMerchantMirrorItemWnd::StoreInfo	UIMerchantMirrorItemWnd::StoreInfo	vtable slot pattern	high
+fn_13459	0x00995700	UIMerchantShopMakeWnd::StoreInfo	UIMerchantShopMakeWnd::StoreInfo	vtable slot pattern	high
+fn_13460	0x00995740	UISkillListWnd::StoreInfo	UISkillListWnd::StoreInfo	vtable slot pattern	high
+fn_13486	0x00997460	sub_997460	UIBasicInfoWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13489	0x00998190	UIBasicInfoWnd::NeedsFrameRefresh	UIBasicInfoWnd::IsUpdateNeed	vtable slot pattern	high
+fn_13491	0x009983C0	UIBasicInfoWnd::OnCreate	UIBasicInfoWnd::OnCreate	vtable slot voted, against its strings	high
+fn_13492	0x00998810	UIBasicInfoWnd::Paint	UIBasicInfoWnd::OnDraw	strings	high
+fn_13493	0x00999330	UIBasicInfoWnd::OnLBtnDblClk	UIBasicInfoWnd::OnLBtnDblClk	vtable slot pattern	high
+fn_13495	0x00999380	UIBasicInfoWnd::OnMouseHover	UIBasicInfoWnd::OnMouseHover	strings	high
+fn_13498	0x009995A0	UIBasicInfoWnd::SendMsg	UIBasicInfoWnd::SendMsg	vtable slot voted	high
+fn_13499	0x00999BC0	UIBasicInfoWnd::StoreInfo	UIBasicInfoWnd::StoreInfo	vtable slot pattern	high
+fn_13593	0x0099FDB0	sub_99FDB0	UIItemRepairWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13594	0x0099FE80	sub_99FE80	UIMakeTargetListWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13595	0x0099FF00	sub_99FF00	UIMakeTargetProcessWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13596	0x0099FF90	sub_99FF90	UIMakeTargetResultWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13597	0x009A0000	sub_9A0000	UIWeaponRefineWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_13598	0x009A0090	UIMakeTargetProcessWnd::DragAndDrop	UIMakeTargetProcessWnd::DragAndDrop	vtable slot pattern	high
+fn_13603	0x009A09E0	UIMakeTargetProcessWnd::GetItemAt	UIMakeTargetProcessWnd::GetItemInfo	calls, one vote	moderate
+fn_13604	0x009A0B00	UIItemRepairWnd::OnCreate	UIItemRepairWnd::OnCreate	vtable slot voted	high
+fn_13605	0x009A1590	UIMakeTargetListWnd::OnCreate	UIMakeTargetListWnd::OnCreate	vtable slot voted	high
+fn_13606	0x009A2020	UIMakeTargetProcessWnd::OnCreate	UIMakeTargetProcessWnd::OnCreate	vtable slot voted	high
+fn_13607	0x009A29B0	UIMakeTargetResultWnd::OnCreate	UIMakeTargetResultWnd::OnCreate	vtable slot voted	high
+fn_13608	0x009A2DD0	UIWeaponRefineWnd::OnCreate	UIWeaponRefineWnd::OnCreate	vtable slot voted	high
+fn_13609	0x009A3860	UIItemRepairWnd::Paint	UIItemRepairWnd::OnDraw	vtable slot voted	high
+fn_13610	0x009A38A0	UIMakeTargetListWnd::Paint	UIMakeTargetListWnd::OnDraw	vtable slot voted	high
+fn_13611	0x009A38E0	UIMakeTargetProcessWnd::Paint	UIMakeTargetProcessWnd::OnDraw	vtable slot voted	high
+fn_13612	0x009A3B50	UIMakeTargetResultWnd::Paint	UIMakeTargetResultWnd::OnDraw	vtable slot voted	high
+fn_13613	0x009A3CD0	UIWeaponRefineWnd::Paint	UIWeaponRefineWnd::OnDraw	vtable slot voted	high
+fn_13614	0x009A3D10	UIMakeTargetProcessWnd::OnLBtnDown	UIMakeTargetProcessWnd::OnLBtnDown	vtable slot pattern	high
+fn_13615	0x009A3DE0	UIItemRepairWnd::SendMsg	UIItemRepairWnd::SendMsg	vtable slot voted	high
+fn_13616	0x009A42E0	UIMakeTargetListWnd::SendMsg	UIMakeTargetListWnd::SendMsg	vtable slot voted	high
+fn_13617	0x009A48C0	UIMakeTargetProcessWnd::SendMsg	UIMakeTargetProcessWnd::SendMsg	vtable slot voted	high
+fn_13618	0x009A4C50	UIMakeTargetResultWnd::SendMsg	UIMakeTargetResultWnd::SendMsg	vtable slot voted	high
+fn_13619	0x009A4CA0	UIWeaponRefineWnd::SendMsg	UIWeaponRefineWnd::SendMsg	vtable slot voted	high
+fn_16914	0x00A79A90	UIWindow::UIWindow	UIWindow::UIWindow	calls	moderate
+fn_16917	0x00A79E90	UIWindow::~UIWindow	UIWindow::~UIWindow	vtable writer	low
+fn_16919	0x00A7A050	sub_A7A050	UIWindow::`scalar deleting destructor'	vtable slot pattern	high
+fn_16920	0x00A7A080	UIWindow::AddChild	UIWindow::AddChild	calls	moderate
+fn_16927	0x00A7B430	UIWindow::ClearSurface	UIWindow::ClearDC	calls	moderate
+fn_16929	0x00A7B470	UIWindow::SetSize	UIWindow::Create	calls	moderate
+fn_16933	0x00A7BB00	UIWindow::DragAndDrop	UIWindow::DragAndDrop	calls, one vote	moderate
+fn_16938	0x00A7BD60	UIWindow::FillRegion	UIWindow::DrawBox	calls	moderate
+fn_16946	0x00A7C4E0	UIWindow::FillTriangleRegion	UIWindow::DrawTriangleDC	calls, one vote	moderate
+fn_16953	0x00A7D6D0	UIWindow::Root	UIWindow::GetAncestor	calls	moderate
+fn_16956	0x00A7D870	UIWindow::ToScreen	UIWindow::GetGlobalCoor	calls	moderate
+fn_16971	0x00A80170	UIWindow::TextHeight	UIWindow::GetTextHeight	calls, one vote	moderate
+fn_16975	0x00A80580	UIWindow::TextWidth	UIWindow::GetTextWidth	calls	moderate
+fn_16987	0x00A81D40	UIWindow::Move	UIWindow::Move	vtable slot pattern	high
+fn_16988	0x00A81D60	UIWindow::ResetCursor	UIWindow::OnMouseShape	calls	moderate
+fn_16998	0x00A82EB0	UIWindow::Resize	UIWindow::Resize	vtable slot pattern	high
+fn_17005	0x00A83660	UIWindow::SendMsg	UIWindow::SendMsg	calls	moderate
+fn_17009	0x00A84360	UIWindow::DrawTextAt	UIWindow::TextOutA	calls	moderate
+fn_17015	0x00A84E30	UIWindow::DrawColoredText	UIWindow::TextOutWithDecoration	calls	moderate
+fn_17016	0x00A85720	UIWindow::DrawOutlinedText	UIWindow::TextOutWithOutline	calls	moderate
+fn_17022	0x00A86510	UIWindow::DrawShadowedText	UIWindow::TextOutWithShadow	calls, one vote	moderate
+fn_17112	0x00A8ABE0	sub_A8ABE0	UIEmotionWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_17113	0x00A8AC50	sub_A8AC50	UINotifyJobLevelUpWnd::`scalar deleting destructor'	vtable slot pattern	high
+fn_17140	0x00A8CD70	UIWindowMgr::RemoveSnapRectangle	UIWindowMgr::DeleteSnapInfo	calls, one vote	moderate
+fn_17143	0x00A8CF20	UIWindowMgr::CloseWindow	UIWindowMgr::DeleteWindow	calls	moderate
+fn_17153	0x00A901E0	UIWindowMgr::Confirm	UIWindowMgr::ErrorMsg	calls	moderate
+fn_17155	0x00A91120	UIWindowMgr::RestoreInput	UIWindowMgr::FindFocusEditAndSetFocus	calls, one vote	moderate
+fn_17158	0x00A913F0	UIWindowMgr::Capture	UIWindowMgr::GetCapture	calls	moderate
+fn_17206	0x00A976C0	UIWindowMgr::Promote	UIWindowMgr::MakeTopLayer	calls	moderate
+fn_17207	0x00A978D0	UIWindowMgr::EnsureWindow	UIWindowMgr::MakeWindow	calls	moderate
+fn_17219	0x00AA2C90	UIWindowMgr::Schedule	UIWindowMgr::PostQuit	calls	moderate
+fn_17227	0x00AA5F70	UIWindowMgr::LookupWindow	UIWindowMgr::QueryWindow	calls, one vote	moderate
+fn_17232	0x00AA66C0	UIWindowMgr::ReleaseCapture	UIWindowMgr::ReleaseCapture	calls	moderate
+fn_17253	0x00AA9100	UIWindowMgr::SendNotice	UIWindowMgr::SendMsg	strings	high
+fn_17255	0x00AA9B30	UIWindowMgr::SetCapture	UIWindowMgr::SetCapture	calls	moderate
+fn_17256	0x00AA9B40	UIWindowMgr::SetFocus	UIWindowMgr::SetFocusEdit	calls	moderate
+fn_17269	0x00AAA310	UIWindowMgr::ShowWindowById	UIWindowMgr::ShowWindow	calls	moderate
+fn_17280	0x00AAB0D0	UIWindowMgr::StoreSnapRectangle	UIWindowMgr::UpdateSnapInfo	calls	moderate
+fn_17284	0x00AABB40	UIWindowMgr::SaveUIRectInfo	UIWindowMgr::WriteUIRectInfoToReg	strings	high
+fn_17587	0x00AC16D0	GroundGeometry::DrawGrid	C3dGround15::RenderAttrTile	strings	high
+fn_17588	0x00AC1710	GroundBase::DrawGrid	C3dGround::RenderAttrTile	vtable slot voted	high
+fn_17632	0x00AC4A40	LexiconBoundary::Load	ThaiBreakIterator::InitializeLexicon	strings	high
+fn_17668	0x00AC8260	CWorld::GetGameActorByAID	CWorld::GetGameActorByAID	calls	moderate
+fn_17684	0x00AC94C0	CWorld::InitWorld	CWorld::OnEnterFrame	strings	high
+fn_17750	0x00ACC7F0	CLanguageBase::CLanguageBase	CLanguage::CLanguage	strings	high
+fn_17752	0x00ACCD30	CLanguageTC::CLanguageTC	CLanguageTC::CLanguageTC	strings	high
+fn_17753	0x00ACCF00	CLanguageTH::CLanguageTH	CLanguageTH::CLanguageTH	vtable writer	low
+fn_17810	0x00AD1270	LoadEtcInfo	InitDefaultServiceType	strings	high
+fn_17814	0x00AD1C20	IsMonsterJob	IsNameYellow	calls, one vote	moderate
+fn_17831	0x00AD6450	CModeMgr::GetGameMode	CModeMgr::GetGameMode	calls	moderate
+fn_17834	0x00AD6510	CMode::ShowTooltip	CMode::MakeHelpBalloon	calls	moderate
+fn_17847	0x00AD6960	CMode::FadeOutMode	CMode::RunFadeOut	strings	high
+fn_17848	0x00AD6A40	CMode::TakeScreenshot	CMode::ScreenShot	strings	high
+fn_17850	0x00AD75E0	CMode::SetCursorAction	CMode::SetCursorAction	calls	moderate
+fn_18037	0x00AE4690	GuildInfo::CountRelatedGuilds	GuildInfo::GetNumRelatedGuild	calls, one vote	moderate
+fn_18079	0x00AE7760	CTipOfTheDay::Load	CTipOfTheDay::Load	strings	high
+fn_18122	0x00AEA780	RemoveProtectionTools	DeleteHack	strings	high
+fn_18187	0x00AEFE50	ResourceMgr::LoadAliases	CResMgr::ReadResNameTable	strings	high
+fn_18250	0x00AF6140	FormatGroupedInteger	GetNumberText	calls, one vote	moderate
+fn_18307	0x00AFBB20	TELEXInputMode::TELEXInputMode	TELEXInputMode::TELEXInputMode	vtable writer	low
+fn_18313	0x00AFBE40	CVietnameseInput::Compose	CVietLang::FindOffsetMBCS	strings	high
+fn_18317	0x00AFC1F0	VNIInputMode::VNIInputMode	VNIInputMode::VNIInputMode	vtable writer	low
+fn_18376	0x00B00F00	LookupMessage	MsgStr	calls	moderate
+fn_19763	0x00BAE2C0	sub_BAE2C0	CEffectPrim::`scalar deleting destructor'	vtable slot pattern	high
+fn_19769	0x00BAE7D0	CEffectPrim::OnProcess	CEffectPrim::OnProcess	strings	high
+fn_19780	0x00BB75B0	CEffectPrim::Prim3DParticleGravity	CEffectPrim::Prim3DParticleGravity	strings	high
+fn_19866	0x00BCE350	CEffectPrim::Render	CEffectPrim::Render	vtable slot pattern	high
+fn_20016	0x00C0B360	CRagEffect::Aspersio	CRagEffect::Aspersio	strings	high
+fn_20019	0x00C0C550	CRagEffect::Blessing	CRagEffect::Blessing	strings	high
+fn_20020	0x00C0CAC0	CRagEffect::BlitzBeat	CRagEffect::BlitzBeat	strings	high
+fn_20023	0x00C0DA60	CRagEffect::Bottom	CRagEffect::Bottom	calls, one vote	moderate
+fn_20027	0x00C0E820	CRagEffect::Coin	CRagEffect::Coin	strings	high
+fn_20028	0x00C0EBE0	CRagEffect::ColdHit	CRagEffect::ColdHit	strings	high
+fn_20031	0x00C0F7E0	CRagEffect::DecAgility	CRagEffect::DecAgility	strings	high
+fn_20032	0x00C0FD10	CRagEffect::TexturedSkillAura	CRagEffect::Detecting	strings	high
+fn_20033	0x00C10180	CRagEffect::Detoxication	CRagEffect::Detoxication	strings	high
+fn_20039	0x00C11C60	CRagEffect::Endure	CRagEffect::Endure	strings	high
+fn_20041	0x00C12500	CRagEffect::Enhance	CRagEffect::Enhance	calls, one vote	moderate
+fn_20044	0x00C134B0	CRagEffect::FireArrow	CRagEffect::FireArrow	strings	high
+fn_20050	0x00C153D0	CRagEffect::Flasher	CRagEffect::Flasher	strings	high
+fn_20060	0x00C17500	CRagEffect::HasteUp	CRagEffect::HasteUp	strings	high
+fn_20065	0x00C191D0	CRagEffect::Hit3	CRagEffect::Hit3	strings	high
+fn_20066	0x00C19980	CRagEffect::Hit4	CRagEffect::Hit4	calls, one vote	moderate
+fn_20067	0x00C19FC0	CRagEffect::Hit5	CRagEffect::Hit5	strings	high
+fn_20068	0x00C1A2C0	CRagEffect::Hit6	CRagEffect::Hit6	strings	high
+fn_20070	0x00C1AF10	CRagEffect::IceArrow	CRagEffect::IceArrow	strings	high
+fn_20072	0x00C1B8B0	CRagEffect::IncAgiDex	CRagEffect::IncAGIDEX	strings	high
+fn_20073	0x00C1BDC0	CRagEffect::IncAgility	CRagEffect::IncAgility	strings	high
+fn_20074	0x00C1C2D0	CRagEffect::Init	CRagEffect::Init	strings	high
+fn_20077	0x00C1E050	CRagEffect::LexDivina	CRagEffect::LexDivina	strings	high
+fn_20085	0x00C1FE80	CRagEffect::NapalmFragments	CRagEffect::NapalmBeat	strings	high
+fn_20086	0x00C20240	CRagEffect::OnProcess2	CRagEffect::OnProcess2	strings	high
+fn_20087	0x00C213C0	CRagEffect::OnProcess3	CRagEffect::OnProcess3	strings	high
+fn_20088	0x00C2CF20	CRagEffect::OnProcess	CRagEffect::OnProcess	strings	high
+fn_20090	0x00C35610	CRagEffect::RingBurstSparks	CRagEffect::Pierce	calls, one vote	moderate
+fn_20095	0x00C36FC0	CRagEffect::ProcessEZ2STR	CRagEffect::ProcessEZ2STR	calls, one vote	moderate
+fn_20096	0x00C37A60	CRagEffect::RemoveTrap	CRagEffect::RemoveTrap	strings	high
+fn_20099	0x00C38AD0	CRagEffect::SandScatter	CRagEffect::SandWind	strings	high
+fn_20102	0x00C39730	CRagEffect::Sightrasher	CRagEffect::Sightrasher	strings	high
+fn_20103	0x00C39EC0	CRagEffect::Signum	CRagEffect::Signum	strings	high
+fn_20104	0x00C3A920	CRagEffect::Snow	CRagEffect::Snow	strings	high
+fn_20105	0x00C3AF00	CRagEffect::SonicBlowHit	CRagEffect::SonicBlowHit	strings	high
+fn_20106	0x00C3B2E0	CRagEffect::SoulStrike	CRagEffect::SoulStrike	strings	high
+fn_20107	0x00C3B730	CRagEffect::SpearBmr	CRagEffect::SpearBmr	strings	high
+fn_20109	0x00C3BD40	CRagEffect::SprayPond	CRagEffect::SprayPond	strings	high
+fn_20111	0x00C3C7E0	CRagEffect::Steal	CRagEffect::Steal	strings	high
+fn_20116	0x00C3DF90	CRagEffect::TurnUndead	CRagEffect::TurnUndead	strings	high
+fn_20118	0x00C3E9C0	CRagEffect::Warp	CRagEffect::Warp	strings	high
+fn_20120	0x00C3F440	CRagEffect::WaterBall2	CRagEffect::WaterBall2	strings	high
+fn_20122	0x00C3FBD0	CRagEffect::WaterOut	CRagEffect::WaterBall	strings	high
+fn_20124	0x00C3FE30	CRagEffect::Yufitel	CRagEffect::Yufitel	strings	high
+fn_20125	0x00C40450	CRagEffect::YufitelHit	CRagEffect::YufitelHit	strings	high
+fn_20138	0x00C423D0	CRagEffect::BLIND	CRagEffect::BLIND	strings	high
+fn_20140	0x00C42E80	CRagEffect::SoulLink	CRagEffect::BeginAsura2	strings	high
+fn_20141	0x00C43430	CRagEffect::AsuraStrike	CRagEffect::BeginAsura	strings	high
+fn_20146	0x00C44C20	CRagEffect::WaterfallSheets	CRagEffect::WaterFall	strings	high
+fn_20151	0x00C45B90	CRagEffect::Bottom_Music	CRagEffect::Bottom_Music	strings	high
+fn_20161	0x00C47F70	CRagEffect::CHIMTO	CRagEffect::CHIMTO	strings	high
+fn_20166	0x00C49300	CRagEffect::SkyCloud	CRagEffect::Cloud	strings	high
+fn_20172	0x00C4AD80	CRagEffect::Demonstration	CRagEffect::Demonstration	strings	high
+fn_20173	0x00C4AF00	CRagEffect::SuperSlashSpread	CRagEffect::GumGang	strings	high
+fn_20175	0x00C4BB00	CRagEffect::TorchDust	CRagEffect::EffectTextureSet_Animation	strings	high
+fn_20176	0x00C4C730	CRagEffect::TexturedClassChange	CRagEffect::Effect_SPR	strings	high
+fn_20194	0x00C52490	CRagEffect::Ghost	CRagEffect::Ghost	strings	high
+fn_20200	0x00C54BE0	CRagEffect::KyrieGuard	CRagEffect::Guard	strings	high
+fn_20211	0x00C592E0	CRagEffect::JobLvUp50	CRagEffect::JobLvUp50	calls, one vote	moderate
+fn_20219	0x00C5A760	CRagEffect::FreezingCircle	CRagEffect::Level99_3	strings	high
+fn_20222	0x00C5B8B0	CRagEffect::SageMagicRod	CRagEffect::MagicRod	strings	high
+fn_20223	0x00C5B940	CRagEffect::Magnum2	CRagEffect::Magnum2	strings	high
+fn_20230	0x00C5CC00	CRagEffect::Maple	CRagEffect::Maple	strings	high
+fn_20231	0x00C5CEA0	CRagEffect::NpcStop	CRagEffect::NpcStop	strings	high
+fn_20233	0x00C5D390	CRagEffect::POISON	CRagEffect::POISON	strings	high
+fn_20235	0x00C5D810	CRagEffect::TexturedComet	CRagEffect::ParticlePath	strings	high
+fn_20241	0x00C5EFA0	CRagEffect::Fireworks	CRagEffect::PokJuk_Sound	strings	high
+fn_20263	0x00C649E0	CRagEffect::Sakura	CRagEffect::Sakura	calls, one vote	moderate
+fn_20264	0x00C64CA0	CPc::SetSprShoe	CPc::SetSprShoe	vtable slot pattern	high
+fn_20275	0x00C666B0	CRagEffect::SuperAngel	CRagEffect::SuperAngel	strings	high
+fn_20281	0x00C67970	CRagEffect::TeleportRings	CRagEffect::TELEPORTATION2	calls, one vote	moderate
+fn_20287	0x00C68F20	CRagEffect::ScatterItemIcons	CRagEffect::Twilight	strings	high
+fn_20290	0x00C69910	CRagEffect::Vallentine	CRagEffect::Vallentine	strings	high
+fn_20349	0x00C77F50	CRagEffect::MonsterSpriteBurst	Tetris::Tetris	strings	high
+fn_20356	0x00C7A170	CRagEffect::FrostSplash	CRagEffect::WaterFallParticle	strings	high
+fn_20389	0x00C7C4D0	CConnection::Connect	CConnection::Connect	strings	high
+fn_20408	0x00C7D020	InitializeConnections	CConnection::CheckModulePt	strings	high
+fn_20987	0x00CA82E0	EffectActor::EffectActor	CAbleToMakeEffect::CAbleToMakeEffect	calls, one vote	moderate
+fn_21000	0x00CA90A0	sub_CA90A0	CAbleToMakeEffect::`scalar deleting destructor'	vtable slot pattern	high
+fn_21001	0x00CA90D0	sub_CA90D0	CGameActor::`scalar deleting destructor'	vtable slot pattern	high
+fn_21002	0x00CA9230	??_GRealizedChore@details@Concurrency@@UAEPAXI@Z_0	CGameObject::`scalar deleting destructor'	vtable slot pattern	high
+fn_21004	0x00CA92D0	sub_CA92D0	CMousePointer::`scalar deleting destructor'	vtable slot pattern	high
+fn_21005	0x00CA9340	sub_CA9340	CRenderObject::`scalar deleting destructor'	vtable slot pattern	high
+fn_21008	0x00CA9610	CRenderObject::Face	CRenderObject::CalcDir	calls, one vote	moderate
+fn_21030	0x00CAB7F0	CGameActor::Get8Dir	CGameActor::Get8Dir	vtable slot pattern	high
+fn_21031	0x00CAB920	CGameObject::Get8Dir	CGameObject::Get8Dir	vtable slot pattern	high
+fn_21037	0x00CABD40	CGameActor::GetAttackMotion	CGameActor::GetAttackMotion	vtable slot between	high
+fn_21042	0x00CABFA0	CGameActor::GetEffectiveJob	CGameActor::GetJob	calls	moderate
+fn_21050	0x00CACFE0	CGameActor::MountedJob	CGameActor::GetProperJob	calls	moderate
+fn_21074	0x00CAE500	CGameActor::MakeCorpse	CGameActor::MakeCorpse	vtable slot between	high
+fn_21087	0x00CAFD20	CGameObject::OnProcess	CGameObject::OnProcess	vtable slot voted	high
+fn_21088	0x00CAFD30	CMousePointer::OnProcess	CMousePointer::OnProcess	vtable slot voted	high
+fn_21089	0x00CAFDC0	CRenderObject::OnProcess	CRenderObject::OnProcess	vtable slot voted	high
+fn_21095	0x00CB0A90	CGameActor::ProcessMotionWithDist	CGameActor::ProcessMotionWithDist	vtable slot between	high
+fn_21097	0x00CB0FD0	CGameActor::ProcessState	CGameActor::ProcessState	vtable slot pattern	high
+fn_21098	0x00CB18E0	CGameActor::UpdateFadeOut	CGameActor::ProcessVanish	calls	moderate
+fn_21100	0x00CB2040	CGameActor::RegisterPos	CGameActor::RegisterPos	vtable slot between	high
+fn_21101	0x00CB20A0	CGameObject::Render	CGameObject::Render	vtable slot pattern	high
+fn_21104	0x00CB2830	CGameActor::RenderMercenary	CRenderObject::RenderMercenary	strings	high
+fn_21112	0x00CB4800	CGameActor::SendMsg	CGameActor::SendMsg	strings	high
+fn_21113	0x00CBF850	CGameObject::SendMsg	CGameObject::SendMsg	vtable slot voted	high
+fn_21114	0x00CBF860	CMousePointer::SendMsg	CMousePointer::SendMsg	vtable slot voted	high
+fn_21115	0x00CBF920	CRenderObject::SendMsg	CEffectPrim::SendMsg	vtable slot voted	high
+fn_21119	0x00CBFC00	CRenderObject::SetColor	CRenderObject::SetArgb	calls, one vote	moderate
+fn_21120	0x00CBFC40	CGameActor::SetStatusStates	CGameActor::SetAttrState	strings	high
+fn_46352	0x00CC1A00	CRenderObject::GetSequenceSpriteOverride	CRenderObject::SetCharacterSprRes	strings	high
+fn_21136	0x00CC21F0	CGameActor::SetImfFileName	CGameActor::SetImfFileName	vtable slot pattern	high
+fn_21142	0x00CC2810	CGameActor::SetHealthState	CGameActor::SetPKState	calls	moderate
+fn_21143	0x00CC2820	CGameActor::SetRenderInfo	CGameActor::SetRenderInfo	vtable slot pattern	high
+fn_21144	0x00CC2D40	CRenderObject::SetRenderInfo	CRenderObject::SetRenderInfo	vtable slot pattern	high
+fn_21147	0x00CC2DC0	CGameActor::SetSprAccessory	CGameActor::SetSprAccessory	vtable slot pattern	high
+fn_21148	0x00CC2DD0	CGameActor::SetSprAct	CGameActor::SetSprAct	vtable slot between	high
+fn_21149	0x00CC2DE0	CGameActor::SetSprHead	CGameActor::SetSprJobDye	vtable slot pattern	high
+fn_21150	0x00CC2DF0	CGameActor::SetSprJob	CGameActor::SetSprJob	vtable slot voted	high
+fn_21152	0x00CC2E40	CGameActor::SetSprWeapon	CGameActor::SetSprWeapon	vtable slot pattern	high
+fn_21153	0x00CC2E50	CGameActor::SetState	CGameActor::SetState	vtable slot pattern	high
+fn_21159	0x00CC41E0	CGameActor::UnRegisterPos	CGameActor::UnRegisterPos	vtable slot between	high
+fn_21174	0x00CC5450	sub_CC5450	C3dGrannyGameActor::`scalar deleting destructor'	vtable slot pattern	high
+fn_21175	0x00CC5580	sub_CC5580	CGrannyCorpse3d::`scalar deleting destructor'	vtable slot pattern	high
+fn_21176	0x00CC5650	C3dGrannyGameActor::GetAttackMotion	C3dGrannyGameActor::GetAttackMotion	vtable slot between	high
+fn_21177	0x00CC5750	C3dGrannyGameActor::MakeCorpse	C3dGrannyGameActor::MakeCorpse	vtable slot between	high
+fn_21178	0x00CC59B0	C3dGrannyGameActor::OnProcess	C3dGrannyGameActor::OnProcess	vtable slot voted	high
+fn_21179	0x00CC5B00	CGrannyCorpse3d::OnProcess	CGrannyCorpse3d::OnProcess	vtable slot voted	high
+fn_21181	0x00CC5D70	C3dGrannyGameActor::ProcessMotionWithDist	C3dGrannyGameActor::ProcessMotionWithDist	vtable slot between	high
+fn_21182	0x00CC5D80	C3dGrannyGameActor::Render	C3dGrannyGameActor::Render	vtable slot pattern	high
+fn_21183	0x00CC5EE0	CGrannyCorpse3d::Render	CGrannyCorpse3d::Render	vtable slot pattern	high
+fn_21189	0x00CC7ED0	C3dGrannyGameActor::SetSprAct	C3dGrannyGameActor::SetSprAct	vtable slot between	high
+fn_21193	0x00CC8230	CGameActor::ProcessHitMessage	CGameActor::Am_Action	calls, one vote	moderate
+fn_21194	0x00CC8970	CGameActor::PlayGroundSkillEffect	CGameActor::Am_Groundskill	strings	high
+fn_21199	0x00CCCAF0	CGameActor::SetModifyFactorOfmotionSpeed	CGameActor::SetModifyFactorOfmotionSpeed	vtable slot pattern	high
+fn_21217	0x00CCD880	CGameMode::CGameMode	CGameMode::CGameMode	vtable writer	low
+fn_21219	0x00CCDFF0	UIVerticalNameBalloonText::UIVerticalNameBalloonText	CGameMode::MakeNameBalloonTextWindow	vtable writer	low
+fn_21237	0x00CCF2C0	sub_CCF2C0	CDummyEffectLauncher::`scalar deleting destructor'	vtable slot pattern	high
+fn_21238	0x00CCF320	sub_CCF320	CGameMode::`scalar deleting destructor'	vtable slot between	high
+fn_21241	0x00CCF420	sub_CCF420	UIVerticalNameBalloonText::`scalar deleting destructor'	vtable slot pattern	high
+fn_21255	0x00CD0DD0	CGameMode::DrawMiniMap	CGameMode::DrawMiniMap	strings	high
+fn_21264	0x00CD3470	CGameMode::ActorName	CGameMode::GetActorName	calls	moderate
+fn_21270	0x00CD36E0	CGameMode::CellCenter	CGameMode::GetClientCoor	calls, one vote	moderate
+fn_21278	0x00CD5230	CGameMode::WorldCell	CGameMode::GetServerCoor	calls, one vote	moderate
+fn_21305	0x00CD8E00	CGameMode::SpawnGrannyCorpse	CGameMode::MakeGrannyCorpse3d	calls, one vote	moderate
+fn_21307	0x00CD8FE0	CGameMode::OpenActorMenu	CGameMode::MakeMenu	strings	high
+fn_21309	0x00CDA580	CGameMode::SpawnMsgEffect	CGameMode::MakeMsgEffect	strings	high
+fn_21314	0x00CDBEB0	CGameMode::PlayItemUseEffect	CGameMode::MakePotionEffect	strings	high
+fn_21320	0x00CDDA50	CGameMode::Initialize	CGameMode::OnInit	strings	high
+fn_21322	0x00CDEF00	CGameMode::Run	CGameMode::OnRun	vtable slot between	high
+fn_21324	0x00CDFA00	CGameMode::LaunchDummyEffect	CGameMode::PlaceEffect	vtable writer	low
+fn_21338	0x00CE4B90	CGameMode::ExecuteTalkType	CGameMode::ProcessTalkType	strings	high
+fn_21394	0x00CEF3E0	sub_CEF3E0	std::vector<int,std::allocator<int> >::_Destroy	calls, one vote	moderate
+fn_45487	0x00CF10B0	CGameMode::SendMsg	CGameMode::SendMsg	strings	high
+fn_21595	0x00D08910	CGameMode::ProcessIncomingPackets	CGameMode::Zc_Info_RemainTime	strings	high
+fn_21618	0x00D1A520	CGameMode::ProcessWhisper	CGameMode::Zc_Whisper	strings	high
+fn_21634	0x00D1E610	CGameMode::ReceiveStatDump	CGameMode::Zc_Ack_Status_GM	strings	high
+fn_21677	0x00D25E90	CGameMode::ReceiveHomunculusChange	CGameMode::Zc_Change_Mer_Status	strings	high
+fn_21705	0x00D2A990	CGameMode::ReceiveFormatStringMessage	CGameMode::Zc_Formatstring_Msg	strings	high
+fn_21715	0x00D2C2B0	CGameMode::ReceiveHuntingList	CGameMode::Zc_HuntingList	strings	high
+fn_21764	0x00D37700	CGameMode::ReceiveEffectNumber	CGameMode::Zc_Notify_Ranking	strings	high
+fn_21809	0x00D3E0C0	CGameMode::ReceiveBillingInfo	CGameMode::Zc_Reply_RemainTime	strings	high
+fn_22147	0x00D742B0	CGameMode::ReceiveNotifyGroundSkill	CGameMode::Zc_Notify_Groundskill	strings	high
+fn_22208	0x00D7B640	CGameMode::ReceiveSkillUse	CGameMode::Zc_Use_Skill	strings	high
+fn_22247	0x00D8B440	sub_D8B440	CItem::`scalar deleting destructor'	vtable slot pattern	high
+fn_22250	0x00D8B5D0	CItem::OnProcess	CItem::OnProcess	vtable slot voted	high
+fn_22251	0x00D8B6D0	CItem::Render	CItem::Render	vtable slot pattern	high
+fn_22252	0x00D8B720	CItem::SendMsg	CItem::SendMsg	vtable slot voted	high
+fn_22253	0x00D8BE00	CItem::SetRenderInfo	CItem::SetRenderInfo	vtable slot pattern	high
+fn_22352	0x00DA0DE0	CBlowEffect::CBlowEffect	CBlowEffect::CBlowEffect	strings	high
+fn_22365	0x00DA2370	sub_DA2370	CBlowEffect::`scalar deleting destructor'	vtable slot pattern (shared)	high
+fn_22365	0x00DA2370	sub_DA2370	CBlowEffect::~CBlowEffect	vtable writer (shared)	low
+fn_22366	0x00DA23E0	sub_DA23E0	CBlurPC::`scalar deleting destructor'	vtable slot pattern	high
+fn_22367	0x00DA2450	sub_DA2450	CCorpse::`scalar deleting destructor'	vtable slot pattern	high
+fn_22368	0x00DA24C0	sub_DA24C0	CGndRiser::`scalar deleting destructor'	vtable slot pattern	high
+fn_22373	0x00DA2720	sub_DA2720	CMasterChaser::`scalar deleting destructor'	vtable slot pattern	high
+fn_22374	0x00DA2790	sub_DA2790	CNpc::`scalar deleting destructor'	vtable slot pattern	high
+fn_22375	0x00DA27C0	sub_DA27C0	CNumEffect::`scalar deleting destructor'	vtable slot pattern	high
+fn_22376	0x00DA2830	sub_DA2830	CSoundMaker::`scalar deleting destructor'	vtable slot pattern	high
+fn_22383	0x00DA2B70	CPc::GetWeapon	CPc::GetWeapon	vtable slot pattern	high
+fn_22396	0x00DA2F00	CBlowEffect::OnProcess	CBlowEffect::OnProcess	vtable slot voted	high
+fn_22397	0x00DA2FA0	CBlurPC::OnProcess	CBlurPC::OnProcess	vtable slot voted	high
+fn_22398	0x00DA3010	CCorpse::OnProcess	CCorpse::OnProcess	vtable slot voted	high
+fn_22399	0x00DA30B0	CGndRiser::OnProcess	CGndRiser::OnProcess	vtable slot voted	high
+fn_22404	0x00DA3360	CNpc::OnProcess	CNpc::OnProcess	vtable slot voted	high
+fn_22405	0x00DA3980	CNumEffect::OnProcess	CNumEffect::OnProcess	vtable slot voted	high
+fn_22406	0x00DA3A60	CSoundMaker::OnProcess	CSoundMaker::OnProcess	vtable slot voted	high
+fn_22408	0x00DA3F50	CNpc::RegisterPos	CNpc::RegisterPos	vtable slot between	high
+fn_22409	0x00DA3FD0	CBlurPC::Render	CBlurPC::Render	vtable slot pattern	high
+fn_22411	0x00DA4150	CGndRiser::Render	CGndRiser::Render	vtable slot pattern	high
+fn_22416	0x00DA44D0	CNpc::Render	CNpc::Render	vtable slot pattern	high
+fn_22417	0x00DA4960	CSoundMaker::Render	CSoundMaker::Render	vtable slot pattern	high
+fn_22418	0x00DA4970	CBlowEffect::SendMsg	CBlowEffect::SendMsg	vtable slot voted	high
+fn_22419	0x00DA4A00	CBlurPC::SendMsg	CBlurPC::SendMsg	vtable slot voted	high
+fn_22420	0x00DA4AD0	CCorpse::SendMsg	CCorpse::SendMsg	vtable slot voted	high
+fn_22421	0x00DA4B10	CGndRiser::SendMsg	CGndRiser::SendMsg	vtable slot voted	high
+fn_22426	0x00DA4EF0	CNpc::SendMsg	CNpc::SendMsg	vtable slot voted	high
+fn_22427	0x00DA5610	CNumEffect::SendMsg	CNumEffect::SendMsg	vtable slot voted	high
+fn_22428	0x00DA56E0	CSoundMaker::SendMsg	CSoundMaker::SendMsg	vtable slot voted	high
+fn_22431	0x00DA5820	CNpc::SetSprAct	CNpc::SetSprAct	vtable slot between	high
+fn_22432	0x00DA58A0	CNpc::SetSprJob	CNpc::SetSprJob	strings	high
+fn_22433	0x00DA59B0	CNpc::SetState	CNpc::SetState	vtable slot pattern	high
+fn_22434	0x00DA61C0	CNpc::UnRegisterPos	CNpc::UnRegisterPos	vtable slot between	high
+fn_22561	0x00DA7D20	sub_DA7D20	CGrannyPc::`scalar deleting destructor'	vtable slot pattern	high
+fn_22562	0x00DA7DF0	sub_DA7DF0	CPc::`scalar deleting destructor'	vtable slot pattern	high
+fn_22580	0x00DAB160	CGrannyPc::GetWeapon	CGrannyPc::GetWeapon	vtable slot pattern	high
+fn_22586	0x00DAB980	CGrannyPc::OnProcess	CGrannyPc::OnProcess	vtable slot voted	high
+fn_22587	0x00DABBE0	CPc::OnProcess	CPc::OnProcess	vtable slot voted	high
+fn_22592	0x00DAC080	CGrannyPc::ProcessState	CGrannyPc::ProcessState	vtable slot pattern	high
+fn_22593	0x00DAC200	CPc::ProcessState	CPc::ProcessState	vtable slot pattern (shared)	high
+fn_22593	0x00DAC200	CPc::ProcessState	CPlayer::ProcessState	vtable slot pattern (shared)	high
+fn_22594	0x00DAC400	CGrannyPc::Render	CGrannyPc::Render	vtable slot pattern	high
+fn_22595	0x00DAC580	CPc::Render	CPc::Render	vtable slot pattern	high
+fn_22601	0x00DADE30	CGrannyPc::SendMsg	CGrannyPc::SendMsg	vtable slot voted	high
+fn_22602	0x00DAE890	CPc::SendMsg	CPc::SendMsg	vtable slot voted	high
+fn_22603	0x00DAFB60	CPc::LoadEquipAction	CPc::SetActNameList	strings	high
+fn_22608	0x00DB0000	CPc::SetBodyPalette	CPc::SetBodyPalette	vtable slot pattern	high
+fn_22609	0x00DB0040	CPc::SetBodyPaletteName	CPc::SetBodyPaletteName	vtable slot pattern	high
+fn_22612	0x00DB0280	CPc::SetHeadPalette	CPc::SetHeadPalette	vtable slot pattern	high
+fn_22613	0x00DB02A0	CGrannyPc::SetHeadPaletteName	CGrannyPc::SetHeadPaletteName	vtable slot pattern	high
+fn_22614	0x00DB0350	CPc::SetHeadPaletteName	CPc::SetHeadPaletteName	vtable slot pattern	high
+fn_22615	0x00DB0400	CGrannyPc::SetHonor	CGrannyPc::SetHonor	vtable slot pattern	high
+fn_22616	0x00DB0480	CPc::SetHonor	CPc::SetHonor	vtable slot pattern	high
+fn_22617	0x00DB0500	CGrannyPc::SetImfFileName	CGrannyPc::SetImfFileName	vtable slot pattern	high
+fn_22618	0x00DB05E0	CPc::SetImfFileName	CPc::SetImfFileName	vtable slot pattern	high
+fn_22619	0x00DB06C0	CGrannyPc::SetModifyFactorOfmotionSpeed	CGrannyPc::SetModifyFactorOfmotionSpeed	vtable slot pattern	high
+fn_22620	0x00DB0710	CPc::SetModifyFactorOfmotionSpeed	CPc::SetModifyFactorOfmotionSpeed	vtable slot pattern	high
+fn_22621	0x00DB0760	CGrannyPc::SetPropensityInfo	CGrannyPc::SetPropensityInfo	vtable slot pattern	high
+fn_22622	0x00DB0780	CPc::SetPropensityInfo	CPc::SetPropensityInfo	vtable slot pattern	high
+fn_22626	0x00DB07E0	CGrannyPc::SetSprAccessory2	CGrannyPc::SetSprAccessory2	vtable slot pattern	high
+fn_22627	0x00DB07F0	CPc::SetSprAccessory2	CPc::SetSprAccessory2	vtable slot pattern	high
+fn_22628	0x00DB09D0	CGrannyPc::SetSprAccessory3	CGrannyPc::SetSprAccessory3	vtable slot pattern	high
+fn_22629	0x00DB09E0	CPc::SetSprAccessory3	CPc::SetSprAccessory3	vtable slot pattern	high
+fn_22630	0x00DB0B40	CGrannyPc::SetSprAccessory	CGrannyPc::SetSprAccessory	vtable slot pattern	high
+fn_22631	0x00DB0B50	CPc::SetSprAccessory	CPc::SetSprAccessory	vtable slot pattern	high
+fn_22632	0x00DB0CB0	CGrannyPc::SetSprAct2	CGrannyPc::SetSprAct2	vtable slot pattern	high
+fn_22633	0x00DB0CE0	CPc::SetSprAct2	CPc::SetSprAct2	vtable slot pattern	high
+fn_22634	0x00DB0FC0	CGrannyPc::SetSprActFull	CGrannyPc::SetSprAct	strings	high
+fn_22635	0x00DB1760	CPc::SetSprActFull	CPc::SetSprAct	vtable slot voted	high
+fn_22637	0x00DB1980	CGrannyPc::SetSprHead	CGrannyPc::SetSprJobDye	vtable slot pattern	high
+fn_22638	0x00DB1990	CPc::SetSprHead	CPc::SetSprJobDye	vtable slot pattern	high
+fn_22639	0x00DB1AC0	CGrannyPc::SetSprJob	CGrannyPc::SetSprJob	vtable slot voted	high
+fn_22640	0x00DB1AE0	CPc::SetSprJob	CPc::SetSprJob	vtable slot voted	high
+fn_22641	0x00DB2230	CPc::LoadEquipSprite	CPc::SetSprNameList	strings	high
+fn_22644	0x00DB2660	CGrannyPc::SetSprShield	CGrannyPc::SetSprShield	vtable slot pattern	high
+fn_22645	0x00DB2670	CPc::SetSprShield	CPc::SetSprShield	vtable slot pattern	high
+fn_22646	0x00DB2830	CGrannyPc::SetSprWeapon2	CGrannyPc::SetSprWeapon2	vtable slot pattern	high
+fn_22647	0x00DB2840	CPc::SetSprWeapon2	CPc::SetSprWeapon2	vtable slot pattern	high
+fn_22648	0x00DB3720	CGrannyPc::SetSprWeapon	CGrannyPc::SetSprWeapon	vtable slot pattern	high
+fn_22649	0x00DB3740	CPc::SetSprWeapon	CPc::SetSprWeapon	vtable slot pattern	high
+fn_22650	0x00DB3C30	CGrannyPc::SetState	CGrannyPc::SetState	vtable slot pattern	high
+fn_22651	0x00DB4290	CPc::SetState	CPc::SetState	vtable slot pattern	high
+fn_22661	0x00DB5170	sub_DB5170	CPlayer::`scalar deleting destructor'	vtable slot pattern	high
+fn_22666	0x00DB5710	CPlayer::OnProcess	CPlayer::OnProcess	vtable slot voted	high
+fn_22671	0x00DB99F0	CPlayer::RegisterPos	CPlayer::RegisterPos	vtable slot between	high
+fn_22672	0x00DB9A00	CPlayer::SendMsg	CPlayer::SendMsg	vtable slot voted	high
+fn_22673	0x00DBA5D0	CPlayer::SetState	CPlayer::SetState	vtable slot pattern	high
+fn_22674	0x00DBA6C0	CPlayer::UnRegisterPos	CPlayer::UnRegisterPos	vtable slot between	high
+fn_23337	0x00DD9D50	CSession::InitClientData	FontInfo::CreateEotFont	strings	high
+fn_23357	0x00DDBA70	CSession::GetAccessoryActName	CSession::GetAccessoryActName	calls	moderate
+fn_23363	0x00DDC0F0	CSession::GetEnemyHitWaveName	CSession::GetAttrWaveName	strings	high
+fn_23393	0x00DDDFE0	CSession::GetDisplayJob	CSession::GetJob	calls, one vote	moderate
+fn_23418	0x00DDF0F0	CSession::GetMerchantHopeToSellItemNum	CSession::GetMerchantPurchaseItemNumByIndex	calls, one vote	moderate
+fn_23458	0x00DE0770	CSession::GetPurchaseItemNumByItemId	CSession::GetPurchaseItemNum	calls, one vote	moderate
+fn_23462	0x00DE08E0	CSession::GetMonsterRmaName	CSession::GetRmaName	strings	high
+fn_23466	0x00DE0A50	CSession::GetServerTime	CSession::GetServerTime	calls, one vote	moderate
+fn_23467	0x00DE0A70	CSession::GetNpcLocationRadius	CSession::GetShadowFactorWithJob	calls, one vote	moderate
+fn_23478	0x00DE1010	CSession::GetTalkType	CSession::GetTalkType	strings	high
+fn_23480	0x00DE3670	CSession::GetMonsterW3dName	CSession::GetW3DName	strings	high
+fn_23492	0x00DE5620	CSession::LoadFogParameters	CSession::InitFogParameterTable	strings	high
+fn_23494	0x00DE5BD0	CSession::InitJobHitWaveNames	CSession::InitJobHitWaveName	strings	high
+fn_23495	0x00DE67E0	CSession::InitJobNameTable	CSession::InitJobNameTable	strings	high
+fn_23499	0x00DE8970	CSession::LoadMapPosTable	CSession::InitMapPosTable	strings	high
+fn_23500	0x00DE93F0	CSession::ResetMercenaryStats	CSession::InitMerTargetInfo	calls, one vote	moderate
+fn_23502	0x00DE98B0	CSession::InitResourceNameTables	CSession::InitPcNameTable	strings	high
+fn_23506	0x00DF33B0	CSession::LoadSessionTables	CSession::InitMp3NameTable	strings	high
+fn_23507	0x00DF3850	CSession::InitCommandTables	CSession::InitTalkTypeTable	strings	high
+fn_23508	0x00DF7C40	CSession::ResetCharacterState	CSession::InitVariables	strings	high
+fn_23509	0x00DF8150	CSession::LoadMapViewParameters	CSession::InitViewPointTable	strings	high
+fn_23510	0x00DF8670	CSession::InitWeaponHitWaveNames	CSession::InitWeaponHitWaveName	strings	high
+fn_23620	0x00DFF600	CSession::StoreEmblem	CSession::SetCompressedEmblemImage	strings	high
+fn_23651	0x00E01770	CSession::SaveOptionInfo	ReadRegistry	strings	high
+fn_23763	0x00E085A0	CSession::DeleteProhibitionLog	CSession::EraseProhibit	strings	high
+fn_23771	0x00E08C70	CSession::DecodePlayerName	CSession::GetCharName	calls, one vote	moderate
+fn_23778	0x00E094E0	CSession::FindGameActor	CSession::GetGameActorByAid	calls, one vote	moderate
+fn_23789	0x00E09B50	CSession::GetMonsterSkillInfo	CSession::GetMonsterSkillInfo	strings	high
+fn_23804	0x00E0AC40	CSession::GetPetAccActName	CSession::GetPetAccActName	strings	high
+fn_23805	0x00E0AD10	CSession::GetPetTalkActionName	CSession::GetPetSpeak	strings	high
+fn_23809	0x00E0AF00	CSession::GetPetFriendlyStateString	CSession::GetPetFriendlyStateText	strings	high
+fn_23811	0x00E0B040	CSession::GetPetHungryStateString	CSession::GetPetHungryStateText	strings	high
+fn_23833	0x00E166E0	CSession::GetEFSTImgFileName	CSession::GetStateFileName	strings	high
+fn_23834	0x00E19090	CSession::GetMonsterTalkEventName	CSession::GetMonsterTalkInfo	strings	high
+fn_23841	0x00E19530	CSession::GetWeaponViewValue	CSession::GetWeaponType	calls, one vote	moderate
+fn_23844	0x00E198F0	CSession::InitMapTypeInfoTable	CSession::InitMapTypeInfoTable	strings	high
+fn_23848	0x00E1A2B0	CSession::LoadXmlTables	CSession::InitPetTalkTable	strings	high
+fn_23859	0x00E1DA70	CSession::IsTrickDeadActive	CSession::IsEFST_TrickDead	calls, one vote	moderate
+fn_23879	0x00E1DD50	CSession::IsMonsterActor	CSession::IsMonster	calls	moderate
+fn_23895	0x00E1E690	CSession::PlaySkillEffect	CSession::LaunchSkillSpecialEffect	strings	high
+fn_24253	0x00E4A450	CGroundScope::CGroundScope	CGroundScope::CGroundScope	vtable writer	low
+fn_24260	0x00E4AB10	sub_E4AB10	CArrowEffect::`scalar deleting destructor'	vtable slot pattern	high
+fn_24261	0x00E4AB80	sub_E4AB80	CEffectMaker::`scalar deleting destructor'	vtable slot pattern	high
+fn_24262	0x00E4ABF0	sub_E4ABF0	CGraffiSkill::`scalar deleting destructor'	vtable slot pattern	high
+fn_24263	0x00E4AC70	sub_E4AC70	CGroundScope::`scalar deleting destructor'	vtable slot pattern	high
+fn_24264	0x00E4ACD0	sub_E4ACD0	CMandraAttackEffect::`scalar deleting destructor'	vtable slot pattern	high
+fn_24265	0x00E4AD40	sub_E4AD40	CMsgEffect::`scalar deleting destructor'	vtable slot pattern	high
+fn_24266	0x00E4ADE0	sub_E4ADE0	CSkill::`scalar deleting destructor'	vtable slot pattern	high
+fn_24279	0x00E4BAD0	CGraffiSkill::BuildTexture	CGraffiSkill::OnInit	strings	high
+fn_24280	0x00E4BE60	CArrowEffect::OnProcess	CArrowEffect::OnProcess	vtable slot voted	high
+fn_24281	0x00E4C1C0	CDummyEffectLauncher::OnProcess	CDummyEffectLauncher::OnProcess	vtable slot voted	high
+fn_24282	0x00E4C210	CEffectMaker::OnProcess	CEffectMaker::OnProcess	vtable slot voted	high
+fn_24283	0x00E4C2E0	CGraffiSkill::OnProcess	CGraffiSkill::OnProcess	vtable slot voted	high
+fn_24284	0x00E4C2F0	CGroundScope::OnProcess	CGroundScope::OnProcess	vtable slot voted	high
+fn_24285	0x00E4C310	CMandraAttackEffect::OnProcess	CMandraAttackEffect::OnProcess	vtable slot voted	high
+fn_24286	0x00E4C3E0	CMsgEffect::OnProcess	CMsgEffect::OnProcess	vtable slot voted	high
+fn_24287	0x00E4D6A0	CSkill::OnProcess	CSkill::OnProcess	vtable slot voted	high
+fn_24290	0x00E4FD60	CEffectMaker::Render	CEffectMaker::Render	vtable slot pattern	high
+fn_24291	0x00E4FD70	CGraffiSkill::Render	CGraffiSkill::Render	vtable slot pattern	high
+fn_24292	0x00E50000	CGroundScope::Render	CGroundScope::Render	vtable slot pattern	high
+fn_24294	0x00E503F0	CSkill::Render	CSkill::Render	vtable slot pattern	high
+fn_24295	0x00E50500	CArrowEffect::SendMsg	CArrowEffect::SendMsg	strings	high
+fn_24297	0x00E50BB0	CEffectMaker::SendMsg	CEffectMaker::SendMsg	vtable slot voted	high
+fn_24298	0x00E50D10	CGraffiSkill::SendMsg	CGraffiSkill::SendMsg	vtable slot voted	high
+fn_24299	0x00E50DB0	CGroundScope::SendMsg	CGroundScope::SendMsg	vtable slot voted	high
+fn_24300	0x00E50F30	CMandraAttackEffect::SendMsg	CMandraAttackEffect::SendMsg	strings	high
+fn_24301	0x00E512B0	CMsgEffect::SendMsg	CMsgEffect::SendMsg	vtable slot voted	high
+fn_24302	0x00E51BD0	CSkill::SendMsg	CSkill::SendMsg	vtable slot voted, against its strings	high
+fn_24303	0x00E55100	CSkill::SetRenderInfo	CSkill::SetRenderInfo	vtable slot pattern	high
