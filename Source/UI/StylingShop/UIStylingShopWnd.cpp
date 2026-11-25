@@ -1742,8 +1742,8 @@ void UIShowInfoWnd::DrawPayments() {
       }
     } else {
       char text[260];
-      std::memset(text, 0, sizeof(text));
       CBitmapRes* icon = nullptr;
+      std::memset(text, 0, sizeof(text));
       if (*it == 1) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_color_off.bmp")));
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_STYLINGSHOP_COLOR_RESET));
