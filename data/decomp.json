@@ -31,6 +31,10 @@
   "init_seg",
   "message"
  ],
+ "vendored": {
+  "ThirdParty/lz4/lz4.c": "b6a85fd8f9be0fedb568abd1338719b23b999583ccda6f3404d5ae11e4ce7b8e",
+  "ThirdParty/lz4/lz4.h": "c1614ecf7ada7b0be1acb560d4239595f96fbb7aa6a79a7c40cb358753830be6"
+ },
  "vmLiterals": [
   "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dlib\\Renderer.cpp",
   "정상적인 라그나로크 클라이언트를 실행시켜 주시기 바랍니다.",
