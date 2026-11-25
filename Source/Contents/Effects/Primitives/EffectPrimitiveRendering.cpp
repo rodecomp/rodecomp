@@ -6131,14 +6131,17 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     }
 
     const float size = this->state.size;
-    int angle = ec * 23;
+    int angle;
     if (size == 100.0f || size >= 110.0f || (size == 4.0f && this->state.slots[ec].height[4] == 4.0f) || size == 10.0f || size == 0.0f) {
       angle = this->state.slots[ec].rotStart;
+    } else {
+      angle = ec * 23;
     }
 
-    const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
+    const float rx = this->state.slots[ec].distance * 0.1f * (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f);
     float cs = g_cosTable[angle];
     float sn = g_sinTable[angle];
+    const double radius = this->state.slots[ec].distance * 0.8 + rx;
     this->state.slots[ec].vecBPre.x = static_cast<float>(cs * radius);
     this->state.slots[ec].vecBPre.z = static_cast<float>(sn * radius);
     this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
@@ -6195,10 +6198,10 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else if (mode == 18.0f) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 35, 35, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 0.0f) {
-      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else {
+    } else if (mode != 0.0f) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else {
+      this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }
