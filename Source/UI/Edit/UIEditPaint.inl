@@ -12,6 +12,11 @@
 #include <string>
 
 // INLINED
+static int SelectedLength(const CLanguageBase& language) {
+  return std::abs(language.cursor - language.anchor);
+}
+
+// INLINED
 __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled) {
   int x = 3;
   if (this->invalidatesParent == 0 && this->firstVisible != 0) {
@@ -37,7 +42,7 @@ __forceinline void UIEditCtrl::PaintTextWithPolicy(const std::string* placeholde
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
     const int right = end ? this->TextWidth(display.c_str(), end, 0, 12, 0, 0) : 0;
 
-    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
+    if (SelectedLength(*g_serverLanguage) != 0) {
       this->DrawSelection(left + x, right - left);
       if (this->secondColor == 0xFFFFFFFF) {
         this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);

@@ -9397,8 +9397,7 @@ void UIItemPurchaseWnd::Paint() {
   {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    const int slotRows = (height - 38) / 32;
-    this->FillRegion(40, 17, this->geometry.width - 50, slotRows * 32, RGB(red, green, blue));
+    this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
   }
 
   int slots = (height - 58) / 32;
