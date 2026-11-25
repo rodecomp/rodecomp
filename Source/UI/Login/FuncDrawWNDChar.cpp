@@ -150,8 +150,8 @@ void FuncDrawWNDChar::Draw(bool option) {
 
       float scale = g_session.GetSkillFactor(this->m_job);
       int offsetX = static_cast<int>(static_cast<float>(offset.x) * scale);
-      UIWindow* window = this->m_window;
       int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
+      UIWindow* window = this->m_window;
       window->AddSpriteCellOverlay(
         this->m_x + offsetX, this->m_y + offsetY, reinterpret_cast<int>(act), reinterpret_cast<int>(sprite), image, &cell, scale,
         static_cast<float>(cell.rotation), window->Color(), palette, 1.0f
@@ -425,8 +425,8 @@ void FuncDrawWNDChar::LoadResources(const std::list<int>& layers) {
     CActRes* act = static_cast<CActRes*>(ResourceMgr::Instance().Load(actName));
     if (sprite && act) {
       std::pair<CSprRes*, CActRes*>& entry = this->m_resources.try_emplace(layer).first->second;
-      entry.first = sprite;
       entry.second = act;
+      entry.first = sprite;
     }
   }
 
