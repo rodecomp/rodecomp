@@ -175,8 +175,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     title = nullptr;
     name = nullptr;
     mapName = nullptr;
-    cell.x = 0;
     cell.y = 0;
+    cell.x = 0;
     objectIndex = 0;
     if (!script->Call("queryNavi_NpcInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y)) {
       std::sprintf(message, "Npc 루아 읽기 실패 %d", index);
@@ -199,8 +199,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     title = nullptr;
     name = nullptr;
     mapName = nullptr;
-    cell.x = 0;
     cell.y = 0;
+    cell.x = 0;
     objectIndex = 0;
     if (!script->Call("queryNavi_MobInfo", "d>sdddssdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y)) {
       std::sprintf(message, "몬스터 루아 읽기 실패 %d", index);
@@ -224,10 +224,10 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     title = nullptr;
     name = nullptr;
     mapName = nullptr;
-    linkedX = 0;
     linkedY = 0;
-    cell.x = 0;
+    linkedX = 0;
     cell.y = 0;
+    cell.x = 0;
     objectIndex = 0;
     if (!script->Call(
           "queryNavi_LinkInfo", "d>sdddssddsdd", index, &mapName, &id, &objectType, &objectIndex, &name, &title, &cell.x, &cell.y, &linkedMap, &linkedX,
@@ -260,8 +260,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   int robe = 0;
   for (index = 1; index < 9999; ++index) {
     mapName = nullptr;
-    cell.x = 0;
     cell.y = 0;
+    cell.x = 0;
     objectIndex = 0;
     if (!script->Call(
           "queryNavi_PickNpc", "d>sddddddddddd", index, &mapName, &cell.x, &cell.y, &job, &sex, &bodyPalette, &head, &headPalette, &accessory0, &accessory1,
@@ -384,12 +384,12 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   }
 
   for (index = 1; index < 200; ++index) {
-    name = nullptr;
     linkedMap = nullptr;
-    id = 0;
-    objectIndex = 0;
-    linkedX = 0;
+    name = nullptr;
     linkedY = 0;
+    linkedX = 0;
+    objectIndex = 0;
+    id = 0;
     if (!script->Call("queryNavi_Scroll", "d>sddsdd", index, &name, &id, &objectIndex, &linkedMap, &linkedX, &linkedY)) {
       char text[260];
       std::memset(text, 0, sizeof(text));
@@ -409,19 +409,22 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
       link->SetId(id);
       this->data.AddObject(link);
       link->ClearLinkedLinks();
-      for (int pass = 1;; ++pass) {
+      int pass = 1;
+      while (true) {
         targetId = -1;
         cost = 0;
-        if (!script->Call("queryNavi_Scroll_Pass", "dd>dd", index, pass, &targetId, &cost)) {
-          continue;
-        }
-        if (targetId == 0 && cost == 0) {
-          break;
-        }
-        CNavi_Link* target = info->FindLink(targetId, true);
-        if (target) {
+        if (script->Call("queryNavi_Scroll_Pass", "dd>dd", index, pass, &targetId, &cost)) {
+          if (targetId == 0 && cost == 0) {
+            break;
+          }
+          CNavi_Link* target = info->FindLink(targetId, true);
+          if (!target) {
+            ++pass;
+            continue;
+          }
           link->AddLinkedLink(NaviLink{target, cost});
         }
+        ++pass;
       }
     }
   }
