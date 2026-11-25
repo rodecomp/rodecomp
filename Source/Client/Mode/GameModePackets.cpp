@@ -12509,23 +12509,23 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
-    return;
-  }
-
-  char text[250];
-  int messageId;
-  if (2 == result) {
+  } else if (2 == result) {
+    char text[250];
     std::memset(text, 0, sizeof(text));
-    messageId = MSI_GUILD_STORAGE_LOG_FINISH;
+    sprintf_s(text, sizeof(text), LookupMessage(MSI_GUILD_STORAGE_LOG_FINISH));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_session.guildStorageLogs[0].clear();
+    g_session.guildStorageLogs[1].clear();
+    g_session.guildStorageLogs[2].clear();
   } else {
+    char text[250];
     std::memset(text, 0, sizeof(text));
-    messageId = MSI_RESULT_FAIL_UNKNOWN;
+    sprintf_s(text, sizeof(text), LookupMessage(MSI_RESULT_FAIL_UNKNOWN));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_session.guildStorageLogs[0].clear();
+    g_session.guildStorageLogs[1].clear();
+    g_session.guildStorageLogs[2].clear();
   }
-  sprintf_s(text, sizeof(text), LookupMessage(messageId));
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-  g_session.guildStorageLogs[0].clear();
-  g_session.guildStorageLogs[1].clear();
-  g_session.guildStorageLogs[2].clear();
 }
 
 // OFFSET: 0x00D5E930
