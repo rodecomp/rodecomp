@@ -334,6 +334,11 @@ UINameBalloonText::UINameBalloonText() : UIBalloonText(), monsterType(0), framed
 UIVerticalNameBalloonText::UIVerticalNameBalloonText() : UINameBalloonText() {
 }
 
+// INLINED
+static int LargerHeight(std::size_t imageHeight, std::size_t textHeight) {
+  return static_cast<int>(textHeight < imageHeight ? imageHeight : textHeight);
+}
+
 // OFFSET: 0x00865EB0
 // FUNCTION: fn_10940
 void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsigned char monsterType) {
@@ -446,11 +451,9 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
     if (path) {
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
       if (bitmap) {
-        std::size_t height = this->m_lines.size() * (g_nameBalloonFontHeight + 2) + 6;
-        if (height < static_cast<std::size_t>(bitmap->image.height)) {
-          height = bitmap->image.height;
-        }
-        this->Resize(bitmap->image.width + this->nameWidth, static_cast<int>(height));
+        this->Resize(
+          bitmap->image.width + this->nameWidth, LargerHeight(bitmap->image.height, this->m_lines.size() * (g_nameBalloonFontHeight + 2) + 6)
+        );
       }
     }
   }
