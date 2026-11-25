@@ -4125,6 +4125,16 @@ void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int heig
   }
 }
 
+// INLINED
+static int AutoreturnLeft(int x) {
+  return (g_renderer->viewport.width - 640) / 2 + x;
+}
+
+// INLINED
+static int AutoreturnTop(int y) {
+  return (g_renderer->viewport.height - 480) / 2 + y;
+}
+
 // OFFSET: 0x008A8280
 // FUNCTION: fn_11714
 void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
@@ -4132,8 +4142,7 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->format = text;
   this->started = timeGetTime();
   this->deadline = timeGetTime() + static_cast<unsigned>(timeout);
-  const unsigned fraction = (this->deadline - this->started) % 1000 ? 1 : 0;
-  const unsigned seconds = (this->deadline - this->started) / 1000 + fraction;
+  const unsigned seconds = (this->deadline - this->started) / 1000 + ((this->deadline - this->started) % 1000 ? 1 : 0);
   this->remaining = seconds;
   this->seconds = seconds;
 
@@ -4149,16 +4158,16 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->SetSize(280, 120);
   this->OnCreate(280, 120);
   this->OnSize(280, 120);
-  const int y = (g_renderer->viewport.height - 480) / 2 + 180;
-  const int x = (g_renderer->viewport.width - 640) / 2 + 185;
-  this->Move(x, y);
+  this->Move(AutoreturnLeft(185), AutoreturnTop(180));
 
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, 260, 48, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
-  this->viewer->Invalidate();
+  UITextViewer* const view = this->viewer;
+  const unsigned rgb = RGB(red, green, blue);
+  view->backgroundColor = rgb | 0xFF000000u;
+  view->Invalidate();
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.c_str()), 38, 0, 0);
 
