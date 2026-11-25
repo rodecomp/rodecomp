@@ -241,6 +241,7 @@ void UIChatEditCtrl::InsertItemTag(int tagId) {
 
   const std::string tag = this->itemTags->AddSkillTag(tagId, 0x7F00E4);
   g_serverLanguage->ReplaceInput((this->text + tag).c_str());
-  this->itemTags->taggedText = this->text;
+  UIItemTagOnChat* const tags = this->itemTags;
+  tags->taggedText = this->text;
 }
 
