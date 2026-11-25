@@ -512,13 +512,15 @@ namespace myGPack {
 
     int removed = 0;
 
-    for (auto name = names.begin(); name != names.end(); ++name) {
-      for (auto entry = this->m_entries.begin(); entry != this->m_entries.end();) {
-        if (std::strcmp(entry->name.m_name, name->c_str()) == 0) {
-          entry = this->m_entries.erase(entry);
-          ++removed;
-        } else {
-          ++entry;
+    if (names.size() > 0) {
+      for (auto name = names.begin(); name != names.end(); ++name) {
+        for (auto entry = this->m_entries.begin(); entry != this->m_entries.end();) {
+          if (std::strcmp(entry->name.m_name, name->c_str()) == 0) {
+            entry = this->m_entries.erase(entry);
+            ++removed;
+          } else {
+            ++entry;
+          }
         }
       }
     }
