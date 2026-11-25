@@ -1041,11 +1041,9 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   this->tab->Select(group, sub);
 
   if (group == 0) {
-    const std::string title = LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL);
-    this->upper->SetTitle(title);
+    this->upper->SetTitle(LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL));
   } else {
-    const std::string title = this->tab->Label(this->group, this->sub);
-    this->upper->SetTitle(title);
+    this->upper->SetTitle(this->tab->Label(this->group, this->sub));
   }
   this->upper->Invalidate();
 

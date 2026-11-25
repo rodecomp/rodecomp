@@ -134,7 +134,7 @@ public:
   void ClearGroups();
   void DrawGroup(int group);
   void NotifySelection(int group, int sub);
-  __declspec(noinline) std::string Label(int group, int sub);
+  std::string Label(int group, int sub);
   __declspec(noinline) bool HitTestTab(int x, int y, int* a, int* b);
   __declspec(noinline) void UpdateScrollBar();
   void Refresh();
@@ -228,7 +228,7 @@ public:
   /* 00B4 */ int selected;
 
   // INLINED
-  void SetTitle(const std::string& text) {
+  void SetTitle(std::string text) {
     this->title = text;
   }
 
