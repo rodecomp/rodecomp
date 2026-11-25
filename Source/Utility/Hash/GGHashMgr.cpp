@@ -1,10 +1,25 @@
 #include "Utility/Hash/GGHashMgr.h"
 
+#include "Client/Session/Session.h"
+#include "Contents/Tables/MessageTable.h"
+#include "Resource/MSGSTRINGID.h"
+#include "Security/NProtectGameGuardMgr.h"
+#include "Utility/Text/FormatString.h"
+#include "Utility/Threading/NSyncObject.h"
+
 #include <new>
 #include <string>
+#include <vector>
 
 // GLOBAL: gl_24843
 CGGHashMgr* g_ggHashMgr = nullptr;
+
+// STRING: st_02588
+static const char g_ggHashMgrSource[] =
+    "C:\\repositories\\RagnarokClient\\RagnarokClient\\Security Solution\\GGHash\\CGGHashMgr.cpp";
+
+// STRING: st_02589
+static const char g_ggHashErrorFormat[] = "%s ( %d )";
 
 // OFFSET: 0x0076B590
 // FUNCTION: fn_08188
@@ -65,6 +80,20 @@ void CGGHashMgr::VerifyBuffer(const char* name, const unsigned char* buf, unsign
 // OFFSET: 0x0076BB50
 // FUNCTION: fn_08195
 void CGGHashMgr::VerifyPendingFiles() {
+  NSyncObject lock(&this->m_lock);
+  if (!g_session.skyMapNames.empty()) {
+    for (std::vector<std::string>::iterator it = g_session.skyMapNames.begin(); it != g_session.skyMapNames.end(); ++it) {
+      const char* filename = it->c_str();
+      NSyncObject verifyLock(&this->m_lock);
+      if (!this->m_hash->VerifyFile(filename)) {
+        const DWORD error = this->m_hash->GetError();
+        CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+        manager->SetError(g_ggHashMgrSource, 0x8C,
+                          std::string(FormatString(g_ggHashErrorFormat, LookupMessage(MSI_CHEAT_HASHFILE), error)));
+      }
+    }
+    g_session.skyMapNames.clear();
+  }
 }
 
 // OFFSET: 0x0076BE20
