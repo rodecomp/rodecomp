@@ -415,9 +415,9 @@ int AiHomunGetV(lua_State* state) {
 
     std::uint32_t homunAid = g_session.m_homunAid;
     if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
+      int targetX, targetY;
       CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(homunAid);
       if (targetActor) {
-        int targetX, targetY;
         g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
         int range = 0;
@@ -602,9 +602,9 @@ int AiMercenaryGetV(lua_State* state) {
 
     std::uint32_t mercAid = g_session.m_mercenaryAid;
     if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
+      int targetX, targetY;
       CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(mercAid);
       if (targetActor) {
-        int targetX, targetY;
         g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
         int range = 0;
