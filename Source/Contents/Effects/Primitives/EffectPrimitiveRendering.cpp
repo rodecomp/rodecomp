@@ -7860,17 +7860,14 @@ void CEffectPrim::Render2DPrimitive() {
 void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
   CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
-  if (this->state.numSegment <= 0) {
-    return;
-  }
 
   for (int seg = 0; seg < this->state.numSegment; ++seg) {
-    EffectPrimitiveRecord& record = this->state.records[seg];
-    const float depth = record.position.y * wtm.values[5] + record.position.x * wtm.values[2] + record.position.z * wtm.values[8] + wtm.values[11];
+    const vector3d& position = this->state.records[seg].position;
+    const float depth = position.y * wtm.values[5] + position.x * wtm.values[2] + position.z * wtm.values[8] + wtm.values[11];
     float screenX;
     float screenY;
     float reciprocalDepth;
-    g_renderer->ProjectViewport(&record.position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
+    g_renderer->ProjectViewport(&position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
     float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
     this->ScaleByMaster(distanceScale);
 
@@ -7881,6 +7878,7 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
         continue;
       }
 
+      const EffectPrimitiveRecord& record = this->state.records[seg];
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       const double scale = record.scale;
       const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
