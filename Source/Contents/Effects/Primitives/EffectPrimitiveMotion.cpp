@@ -5654,6 +5654,11 @@ __declspec(noinline) void CEffectPrim::PrimTextureFrames() {
   }
 }
 
+// INLINED
+static float Advanced(float step, float distance) {
+  return distance + step;
+}
+
 // OFFSET: 0x00BBDC30
 // FUNCTION: fn_19809
 void CEffectPrim::PrimWaveSpin() {
@@ -5675,7 +5680,7 @@ void CEffectPrim::PrimWaveSpin() {
       slot.rotStart = static_cast<std::int16_t>(rot - 360);
     }
 
-    slot.distance += this->state.accel != 99.0f ? 0.3f : 0.1f;
+    slot.distance = Advanced(this->state.accel != 99.0f ? 0.3f : 0.1f, slot.distance);
     slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 1);
     if (this->state.accel != 99.0f) {
       if (slot.riseAngle < 40) {
@@ -5692,7 +5697,7 @@ void CEffectPrim::PrimWaveSpin() {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 5);
       } else if (slot.alphaT == 4) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 5);
-      } else if (slot.alphaT == 5) {
+      } else if (5 == slot.alphaT) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 4);
       } else {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 2);
