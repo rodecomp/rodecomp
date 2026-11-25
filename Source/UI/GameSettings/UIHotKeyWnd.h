@@ -28,6 +28,9 @@ public:
   struct HotkeyEntry {
     int index;
     HotkeyInfo info;
+
+    HotkeyEntry(int index, const HotkeyInfo& info) : index(index), info(info) {
+    }
   };
 
   UIHotKeyWnd();

@@ -32,7 +32,7 @@ struct HotkeyInfo {
 
   HotkeyInfo(HotkeyInfo&& other) = default;
   HotkeyInfo& operator=(const HotkeyInfo& other) = default;
-  HotkeyInfo& operator=(HotkeyInfo&& other) = default;
+  __declspec(noinline) HotkeyInfo& operator=(HotkeyInfo&& other) = default;
 
   // OFFSET: 0x005F7C30
   // FUNCTION: fn_04053
