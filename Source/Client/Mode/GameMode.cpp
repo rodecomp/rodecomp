@@ -7163,21 +7163,21 @@ void CGameMode::ShowNoticeBalloon(const std::vector<std::string>* lines) {
     return;
   }
 
-  UIBroadcastBalloon* balloon = this->noticeBalloon;
-  if (!balloon) {
+  if (!this->noticeBalloon) {
     this->noticeBalloon = new UIBroadcastBalloon();
     this->noticeBalloon->SetSize(g_renderer->viewport.width, 50);
     this->noticeBalloon->Move(0, 130 * g_renderer->viewport.height / 480);
     g_windowMgr.AddRenderedFront(this->noticeBalloon);
-    balloon = this->noticeBalloon;
-    if (!balloon) {
-      return;
-    }
+  }
+
+  UIBroadcastBalloon* balloon = this->noticeBalloon;
+  if (!balloon) {
+    return;
   }
 
   BroadcastBalloonMessage message(20);
-  for (std::vector<std::string>::const_iterator it = lines->begin(), end = lines->end(); it != end; ++it) {
-    message.lines.emplace_back(*it, 0xFFFF, 0);
+  for (const std::string& line : *lines) {
+    message.lines.emplace_back(line, 0xFFFF, 0);
   }
   balloon->AddMessage(2, message);
 }
