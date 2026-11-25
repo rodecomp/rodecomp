@@ -237,12 +237,9 @@ void C3dActorV1::UpdateBounds() {
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
   this->root->AccumulateBounds(bounds.data(), identity);
-  const float oz = -(bounds[5] + bounds[2]) * g_depthAverageHalf;
-  const float ox = -(bounds[3] + bounds[0]) * g_depthAverageHalf;
-  const float oy = -bounds[4];
-  this->offset.z = oz;
-  this->offset.x = ox;
-  this->offset.y = oy;
+  this->offset.z = -(bounds[5] + bounds[2]) * g_depthAverageHalf;
+  this->offset.x = -(bounds[3] + bounds[0]) * g_depthAverageHalf;
+  this->offset.y = -bounds[4];
   this->transform.MakeTranslate(this->offset.x, this->offset.y, this->offset.z);
   this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
   this->transform.AppendYRotation(Radians(this->rotation.y));
