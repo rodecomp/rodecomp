@@ -861,11 +861,11 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
 // OFFSET: 0x00BF0370
 // FUNCTION: fn_19985
 void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
-  int rpCnt = 0;
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
   vector3d vec4{};
+  int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
