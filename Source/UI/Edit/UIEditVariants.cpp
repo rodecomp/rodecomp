@@ -780,7 +780,7 @@ void UIEditCtrl4::PaintText() {
     } else {
       const char* prefix = g_serverLanguage->Prefix(false);
       display = prefix + this->text;
-      begin = std::min(this->anchor, this->cursor) + std::strlen(prefix);
+      begin = std::min(this->cursor, this->anchor) + std::strlen(prefix);
       end = std::max(this->anchor, this->cursor) + g_serverLanguage->candidate.size() + std::strlen(prefix);
     }
 
