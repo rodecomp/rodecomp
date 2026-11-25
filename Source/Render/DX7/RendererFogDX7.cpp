@@ -11,19 +11,24 @@
 #include <cmath>
 #include <xmmintrin.h>
 
+namespace crt {
+extern "C" float sinf(float);
+extern "C" float cosf(float);
+}
+
 // OFFSET: 0x00556E50
-  // FUNCTION: fn_02039
-  __declspec(noinline) float ClientSin(volatile float angle) {
-    angle = sinf(angle);
-    return angle;
-  }
+// FUNCTION: fn_02039
+__declspec(noinline) float ClientSin(volatile float angle) {
+  angle = crt::sinf(angle);
+  return angle;
+}
 
 // OFFSET: 0x00556E40
-  // FUNCTION: fn_02038
-  __declspec(noinline) float ClientCos(volatile float angle) {
-    angle = cosf(angle);
-    return angle;
-  }
+// FUNCTION: fn_02038
+__declspec(noinline) float ClientCos(volatile float angle) {
+  angle = crt::cosf(angle);
+  return angle;
+}
 
 // OFFSET: 0x00556E60
 // FUNCTION: fn_02040
