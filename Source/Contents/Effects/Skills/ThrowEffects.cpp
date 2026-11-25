@@ -616,6 +616,17 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
   }
 }
 
+// INLINED
+static void StartRing(CParticle* particle, float speed, int phase, int angle, int row) {
+  particle->alpha = 1;
+  particle->angleParameter = 360;
+  particle->speedParameter = speed;
+  particle->phaseParameter = phase;
+  particle->animationParameter = 0.0f;
+  particle->angle = static_cast<float>(angle);
+  particle->scale = static_cast<float>(row) + 1.0f;
+}
+
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240
 void CVolcanoEffect::AddRings() {
@@ -661,14 +672,7 @@ void CVolcanoEffect::AddRings() {
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_GUMGANG5: {
-        const int angle = particle->rowIndex * 90;
-        particle->alpha = 1;
-        particle->angleParameter = 360;
-        particle->speedParameter = 25.0f;
-        particle->phaseParameter = 80;
-        particle->animationParameter = 0.0f;
-        particle->angle = static_cast<float>(angle);
-        particle->scale = static_cast<float>(row) + 1.0f;
+        StartRing(particle, 25.0f, 80, particle->rowIndex * 90, row);
         particle->SetColor(0, 0, 255);
         break;
       }
