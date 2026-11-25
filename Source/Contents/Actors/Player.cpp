@@ -443,8 +443,11 @@ void CGrannyPc::SetState(int state, int resetPosition) {
         this->GetEffectiveJob(-1) == JT_WANDERER_H || this->GetEffectiveJob(-1) == JT_ROYAL_GUARD_H || this->GetEffectiveJob(-1) == JT_ROYAL_GUARD) {
       this->SetAction(0x20, 6, 1);
     } else if (this->GetEffectiveJob(-1) == JT_MONK || this->GetEffectiveJob(-1) == JT_MONK_H || this->GetEffectiveJob(-1) == JT_MONK_B ||
-               this->GetEffectiveJob(-1) == JT_SURA || this->GetEffectiveJob(-1) == JT_SURA_H || this->GetEffectiveJob(-1) == JT_SURA_B ||
-               this->GetEffectiveJob(-1) == JT_INQUISITOR) {
+               this->GetEffectiveJob(-1) == JT_SURA || this->GetEffectiveJob(-1) == JT_SURA_H || this->GetEffectiveJob(-1) == JT_SURA_B) {
+      this->SetAction(0x60, 6, 1);
+      this->SetSequenceInterval(4);
+      this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
+    } else if (this->GetEffectiveJob(-1) == JT_INQUISITOR) {
       this->SetAction(0x60, 6, 1);
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 400, 0);
