@@ -710,10 +710,10 @@ void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
   case PARTY_REPLY_MEMORIALDUNGEON:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_JOIN_AND_LEAVE_PARTY_IN_MAKING_MEMORIALDUNGEON)), 0xFF, 0, 0, 0);
     break;
-  case 11:
+  case PARTY_REPLY_LOW_SKILL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_JOIN_CHARACTER_HAVING_LOW_SKILL)), 0xFF, 0, 0, 0);
     break;
-  case 18:
+  case PARTY_REPLY_NOT_LEARN_BASIC_SKILL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_LEARN_BASIC_SKILL)), 0xFF, 0, 0, 0);
     break;
   }
@@ -1260,7 +1260,7 @@ bool CGameMode::NotifyItemResult(int result) {
   case ADDITEM_STACKLIMIT:
     message = MSI_PICKUP_MAXCOUNT_LIMIT;
     break;
-  case 9:
+  case PICKUP_FAILED_PARTY_MEMBER:
     message = MSI_PICKUP_FAILED_PARTY_MEMBER;
     break;
   default:
@@ -7863,7 +7863,7 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
   case CONFIG_DISABLE_SHOWCOSTUMES:
     g_session.m_hideCostumes = p->value;
     break;
-  case 6:
+  case CONFIG_PET_INFO_ALERT:
     g_session.SetPetInfoAlert(p->value != 0);
     break;
   }
@@ -9107,13 +9107,13 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
       text = text + LookupMessage(MSI_BAN_OP_FORCE) + "(" + IntToString(15, 0) + ")";
     }
     break;
-  case 110:
+  case BAN_NOT_ALLOWED_JOBCLASS:
     text = text + LookupMessage(MSI_BAN_NOT_ALLOWED_JOBCLASS) + "(" + IntToString(110, 0) + ")";
     break;
-  case 113:
+  case BAN_SHUTDOWN_TEENAGER:
     text = text + LookupMessage(MSI_BAN_SHUTDOWN_TEENAGER) + "(" + IntToString(113, 0) + ")";
     break;
-  case 115:
+  case BAN_PLANNED_TIME_SHUTDOWN:
     text = text + LookupMessage(MSI_PLANNED_TIME_SHUTDOWN) + "(" + IntToString(115, 0) + ")";
     break;
   default:
@@ -10495,7 +10495,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       actor->SetState(ST_STAND, 1);
     }
     break;
-  case 7:
+  case CHANGESTATEPET_DISAPPEAR:
     if (g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF) == 1) {
       g_windowMgr.AddMessageBox(LookupMessage(MSI_PET_DISAPPEAR), 0, true, 0, 0, LookupMessage(MSI_TRANSLATE_MESSAGE), 0x118, 0x78, nullptr, false);
     }
@@ -25106,7 +25106,7 @@ void CGameMode::ProcessIncomingPackets() {
       case GROUP_MAKE_FAILED_ALEADY_GROUP_MEMBER:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_YOU_ARE_ALREADY_IN_PARTY)), 0xFF, 0, 0, 0);
         break;
-      case 3:
+      case GROUP_MAKE_FAILED_NOPARTY:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOPARTY)), 0xFF, 0, 0, 0);
         break;
       }
@@ -25770,7 +25770,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWARPSKILL)), 0xFF, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWARPSKILL)), 0xFF, 0, 0, 0);
         break;
-      case 3:
+      case WARPPOINT_NOT_LEARNED_LV2:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWARPSKILL2)), 0xFF, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOWARPSKILL2)), 0xFF, 0, 0, 0);
         break;
@@ -26232,7 +26232,7 @@ void CGameMode::ProcessIncomingPackets() {
       case GM_NONE_ITEM:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_MAKE_GUILD_NONE_ITEM)), 0xFFFF, 4, 0, 0);
         break;
-      case 4:
+      case GM_NOT_PERMITTED_MAP:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_MAKE_GUILD_NOT_PERMITTED_MAP)), 0xFFFF, 4, 0, 0);
         break;
       }
@@ -26254,7 +26254,7 @@ void CGameMode::ProcessIncomingPackets() {
       case REQJOINGUILD_OVERSIZE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TOO_MANY_PEOPLE_IN_GUILD)), 0xFF, 4, 0, 0);
         break;
-      case 4:
+      case REQJOINGUILD_NOTEXIST_USER:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOINGUILD_NOTEXIST_USER)), 0xFF, 4, 0, 0);
         break;
       }
@@ -26474,7 +26474,7 @@ void CGameMode::ProcessIncomingPackets() {
       case REQMYGUILD_OVERSIZE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REQALLYMYGUILD_OVERSIZE)), 0xFFFF, 4, 0, 0);
         break;
-      case 5:
+      case REQALLYGUILD_DISABLE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_ALLY_REQUEST_DISABLE)), 0xFFFF, 4, 0, 0);
         break;
       }
@@ -26545,7 +26545,7 @@ void CGameMode::ProcessIncomingPackets() {
       case RESULT_HOSTILE_ALREADY_HOSTILE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ALREADY_REGISTERED_HOSTILE_GUILD)), 0xFF, 4, 0, 0);
         break;
-      case 3:
+      case RESULT_HOSTILE_DISABLE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_HOSTILE_REQUEST_DISABLE)), 0xFF, 4, 0, 0);
         break;
       }
@@ -26574,7 +26574,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_IMPOSSIBLE_TELEPORT_AREA)), 0xFF, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_IMPOSSIBLE_TELEPORT_AREA)), 0xFF, 0, 0, 0);
         break;
-      case 1:
+      case TELEPORT_POSSIBLE_AREA:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_POSSIBLE_TELEPORT_AREA)), 0xFFFF00, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_POSSIBLE_TELEPORT_AREA)), 0xFFFF00, 0, 0, 0);
         break;
