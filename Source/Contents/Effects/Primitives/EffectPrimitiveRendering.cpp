@@ -3247,7 +3247,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       const vector3d position{this->render.position.x, this->render.position.y, this->render.position.z};
       const float deltaX = slot.vecBNow.x - position.x;
       const float deltaZ = slot.vecBNow.z - position.z;
-      const float along = SquareRoot(deltaX * deltaX + deltaZ * deltaZ) / 12.0f * step;
+      float square = deltaX * deltaX;
+      square += deltaZ * deltaZ;
+      const float along = SquareRoot(square) / 12.0f * step;
       const vector3d base{along * g_cosTable[slot.riseAngle] + position.x, position.y - 12.0f + 0.0f, along * g_sinTable[slot.riseAngle] + position.z};
       const vector3d p1 = Sum(base, vec1);
       const vector3d p2 = Sum(base, vec2);
@@ -5785,7 +5787,10 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
 
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
-      const vector3d vecM{cs1 * (g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), cs1 * (g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), sn1 * this->state.slots[ec].distance};
+      vector3d vecM;
+      vecM.x = cs1 * (g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance);
+      vecM.z = sn1 * this->state.slots[ec].distance;
+      vecM.y = cs1 * (g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance);
       const vector3d vecA{-(this->state.slots[ec].maxHeight * g_sinTable[this->state.slots[ec].riseAngle]), this->state.slots[ec].maxHeight * g_cosTable[this->state.slots[ec].riseAngle], 0.0f};
       vec2.x = vecM.x + vecA.x;
       vec2.z = vecM.z + vecA.z;
