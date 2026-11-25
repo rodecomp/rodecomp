@@ -247,9 +247,9 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
 namespace {
   // INLINED
-  __forceinline void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, int source, int slot) {
+  __forceinline void RemoveAlternate(std::list<ShortcutCooldownRecord>& cooldowns, const ModeDragState& value, int slot) {
     for (std::list<ShortcutCooldownRecord>::iterator record = cooldowns.begin(); record != cooldowns.end(); ++record) {
-      if (source == slot) {
+      if (value.slot == slot) {
         continue;
       }
 
@@ -276,14 +276,15 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       CSkillInfo skill = g_session.LookupSkill(value.id);
       if (skill.level != 0 && skill.available != 0) {
         g_session.SetHotkeyEntry(1, skill.id, value.skillLevel, slot);
-        RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
+        RemoveAlternate(g_session.m_requestTimers, value, slot);
 
         const std::list<ShortcutCooldownRecord>::iterator record = FindCooldownRecord(records, skill.id);
         if (record != records.end() && record->end > timeGetTime()) {
           const std::list<CooldownState>::iterator previous = FindCooldownState(record->alternate, value.slot);
           if (previous != record->alternate.end()) {
-            previous->x = this->SlotX(slot);
+            const int slotX = this->SlotX(slot);
             previous->slot = slot;
+            previous->x = slotX;
           } else {
             for (std::list<CooldownState>::iterator state = record->alternate.begin(); state != record->alternate.end(); ++state) {
               if (state->x == this->SlotX(slot)) {
@@ -344,7 +345,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         if (slot != -1) {
           const int itemId = item.GetItemId();
           g_session.SetHotkeyEntry(0, itemId, 0, slot);
-          RemoveAlternate(g_session.m_requestTimers, value.slot, slot);
+          RemoveAlternate(g_session.m_requestTimers, value, slot);
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->Invalidate();
         }
