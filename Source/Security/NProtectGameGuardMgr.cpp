@@ -13,13 +13,19 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <array>
 #include <cstdint>
 #include <cstring>
+#include <malloc.h>
 #include <new>
 #include <string>
+
+bool sub_E92DE0(const char* text);
+void sub_E92F30(HWND window);
 
 // GLOBAL: gl_24848
 CNProtectGameGuardMgr* g_nProtectGameGuardMgr;
@@ -135,7 +141,9 @@ const char* CNProtectGameGuardMgr::GameName() {
 
 // OFFSET: 0x0076D8A0
 // FUNCTION: fn_08217
-void CNProtectGameGuardMgr::SetHwnd(HWND) {
+void CNProtectGameGuardMgr::SetHwnd(HWND window) {
+  NSyncObject lock(&this->m_lock);
+  sub_E92F30(window);
 }
 
 // OFFSET: 0x0076DF40
@@ -157,7 +165,9 @@ void CNProtectGameGuardMgr::SetError(const char*, int, std::string message) {
 
 // OFFSET: 0x0076E040
 // FUNCTION: fn_08222
-void CNProtectGameGuardMgr::Send(const char*) {
+void CNProtectGameGuardMgr::Send(const char* text) {
+  NSyncObject lock(&this->m_lock);
+  sub_E92DE0(text);
 }
 
 // OFFSET: 0x0076D910
