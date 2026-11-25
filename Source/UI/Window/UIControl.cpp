@@ -988,22 +988,28 @@ void CUIBasicButton::Paint() {
 // FUNCTION: fn_14406
 void CUIBasicButton::LoadSkin(bool resolveSkin) {
   bool skin = resolveSkin;
+  int index = 0;
   auto& leftImagesRef = this->leftImages;
-  leftImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", skin));
-  leftImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", skin));
-  leftImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", skin));
+  leftImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", skin));
+  index = 1;
+  leftImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", skin));
+  index = 2;
+  leftImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", skin));
   this->disabledLeft = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_left.bmp", skin));
   auto& middleImagesRef = this->middleImages;
-  middleImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", skin));
+  index = 0;
+  middleImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", skin));
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_press_mid.bmp";
-    middleImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
+    index = 1;
+    middleImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_over_mid.bmp";
-    middleImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
+    index = 2;
+    middleImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
@@ -1014,17 +1020,20 @@ void CUIBasicButton::LoadSkin(bool resolveSkin) {
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_out_right.bmp";
-    rightImagesRef[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
+    index = 0;
+    rightImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_press_right.bmp";
-    rightImagesRef[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
+    index = 1;
+    rightImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
     name = "유저인터페이스\\basic_interface\\btn_over_right.bmp";
-    rightImagesRef[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
+    index = 2;
+    rightImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
     std::string name;
