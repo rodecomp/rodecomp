@@ -2713,14 +2713,14 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     switch (argument1) {
     case ID_PAUSE_REPLAY:
       g_modeMgr.currentMode->SendMsg(MM_PAUSE_REPLAY, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_RESUME_REPLAY:
       g_modeMgr.currentMode->SendMsg(MM_RESUME_REPLAY, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_RESTART_REPLAY:
       g_modeMgr.currentMode->SendMsg(MM_RESTART_REPLAY, 0, 0, 0, 0);
       Replay::Instance().speed = 1.0f;
-      return 0;
+      break;
     case ID_EXIT_REPLAY:
       g_windowMgr.Schedule(this);
       g_modeMgr.currentMode->SendMsg(MM_EXIT_REPLAY, 0, 0, 0, 0);
@@ -2735,7 +2735,7 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       break;
     }
-    return 0;
+    break;
   case UM_REFRESHBUTTON:
     if (!this->m_paused) {
       this->m_playButton->Move(-100, -100);
@@ -2748,15 +2748,17 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     this->Invalidate();
     this->InvalidateChildren();
-    return 0;
+    break;
   case UM_REFRESH:
     this->RefreshInfo();
-    return 0;
+    break;
   case 251:
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008C3110
