@@ -11010,8 +11010,8 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     this->SetCursorAction(0);
   }
 
-  const std::uint32_t& homunAid = g_session.m_homunAid;
-  const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
+  const std::uint32_t homunAid = g_session.m_homunAid;
+  const std::uint32_t mercenaryAid = g_session.m_mercenaryAid;
   if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
