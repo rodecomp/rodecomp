@@ -75,8 +75,8 @@ void FuncDrawWNDChar::Draw(bool option) {
       }
 
       g_session.m_hotkeyScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.GetCurrentSex(), &x, &y);
-      offset.y = y;
       offset.x = x;
+      offset.y = y;
     }
 
     const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
