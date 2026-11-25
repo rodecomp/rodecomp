@@ -25,20 +25,6 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace {
-#pragma pack(push, 1)
-struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
-  /* 0000 */ short packetType;
-  /* 0002 */ short level;
-  /* 0004 */ short mapId;
-  /* 0006 */ short job;
-  /* 0008 */ int lastIndex;
-  /* 000C */ short pageSize;
-};
-#pragma pack(pop)
-}
-
-
 // OFFSET: 0x00925D70
 // FUNCTION: fn_12649
 void UISeekPartyListWnd::OnCreate(int width, int height) {
@@ -302,7 +288,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       if (argument1 == ID_FIND) {
-        if (this->m_filterJob == packet.job && this->m_filterLevel == packet.level && this->m_filterMap == packet.mapId) {
+        if (this->m_filter.job== packet.job && this->m_filter.level== packet.level && this->m_filter.mapId== packet.mapId) {
           return 0;
         }
         packet.lastIndex = 0;
@@ -318,9 +304,9 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       packet.pageSize = 10;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
 
-      this->m_filterJob = packet.job;
-      this->m_filterLevel = packet.level;
-      this->m_filterMap = packet.mapId;
+      this->m_filter.job= packet.job;
+      this->m_filter.level= packet.level;
+      this->m_filter.mapId= packet.mapId;
 
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
       const int level = packet.level;
@@ -342,7 +328,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       this->m_title->SetTextFitted(title.c_str());
 
-      g_session.m_partyBooking.SetFilter(this->m_filterLevel, this->m_filterMap, this->m_filterJob);
+      g_session.m_partyBooking.SetFilter(this->m_filter.level, this->m_filter.mapId, this->m_filter.job);
       this->Invalidate();
       return 0;
     }
@@ -435,17 +421,17 @@ void UISeekPartyListWnd::NotifyNewAd() {
 // OFFSET: 0x009435F0
 // FUNCTION: fn_12825
 bool UISeekPartyListWnd::MatchesFilter(PARTY_BOOKING_AD_INFO info) {
-  if (this->m_filterLevel > 0 && (this->m_filterLevel > info.detail.level || this->m_filterLevel + 15 < info.detail.level)) {
+  if (this->m_filter.level> 0 && (this->m_filter.level> info.detail.level || this->m_filter.level+ 15 < info.detail.level)) {
     return false;
   }
 
-  if (this->m_filterMap > 0 && this->m_filterMap != info.detail.mapId) {
+  if (this->m_filter.mapId> 0 && this->m_filter.mapId!= info.detail.mapId) {
     return false;
   }
 
-  if (this->m_filterJob > 0) {
+  if (this->m_filter.job> 0) {
     for (int i = 0; i < 6; ++i) {
-      if (this->m_filterJob == info.detail.job[i]) {
+      if (this->m_filter.job== info.detail.job[i]) {
         return true;
       }
     }
@@ -701,9 +687,13 @@ UISeekPartyListWnd::UISeekPartyListWnd()
       m_mapLabel(nullptr), m_jobLabel(nullptr), m_filterLabel0(nullptr), m_filterLabel1(nullptr), m_filterLabel2(nullptr), m_filterLabel3(nullptr),
       unknown_00D4(nullptr), m_footerText(nullptr), m_searchEdit(nullptr), m_regionCombo(nullptr), m_mapCombo(nullptr), m_jobCategoryCombo(nullptr), m_jobCombo(nullptr), m_alarmCheck(nullptr),
       m_findButton(nullptr), m_okButton(nullptr), m_chatButton(nullptr), m_scrollBar(nullptr), unknown_010C(), m_regionMaps(), m_jobOptions(), m_region(0),
-      m_jobCategory(0), m_jobCategoryChanged(0), unknown_0194(0), m_menuItems(), m_restoreHeight(0), m_minimized(0), m_filterLevel(-5), m_filterMap(-5), m_filterJob(-5),
-      unknown_01CA() {
+      m_jobCategory(0), m_jobCategoryChanged(0), unknown_0194(0), m_menuItems(), m_restoreHeight(0), m_minimized(0) {
   this->unknown_01C1 = 1;
+  this->m_filter.mapId = -5;
+  this->m_filter.job = -5;
+  this->m_filter.level = -5;
+  this->m_filter.lastIndex = 0;
+  this->m_filter.pageSize = 0;
   this->m_refreshButton = nullptr;
 }
 

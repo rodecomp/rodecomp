@@ -24,6 +24,16 @@ class UIStaticText;
 class UITextButton;
 struct SeekPartyListWndInfo;
 
+#pragma pack(push, 1)
+struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
+  /* 0000 */ short packetType;
+  /* 0002 */ short level;
+  /* 0004 */ short mapId;
+  /* 0006 */ short job;
+  /* 0008 */ int lastIndex;
+  /* 000C */ short pageSize;
+};
+#pragma pack(pop)
 
 struct SeekPartyMapEntry {
   /* 0000 */ std::string name;
@@ -92,11 +102,7 @@ protected:
   /* 01BC */ int m_restoreHeight;
   /* 01C0 */ unsigned char m_minimized;
   /* 01C1 */ unsigned char unknown_01C1;
-  /* 01C2 */ unsigned char padding_01C2[0x2];
-  /* 01C4 */ short m_filterLevel;
-  /* 01C6 */ short m_filterMap;
-  /* 01C8 */ short m_filterJob;
-  /* 01CA */ unsigned char unknown_01CA[6];
+  /* 01C2 */ PACKET_CZ_PARTY_BOOKING_REQ_SEARCH m_filter;
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
 };
 
