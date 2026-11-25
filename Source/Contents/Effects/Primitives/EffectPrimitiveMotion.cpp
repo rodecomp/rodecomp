@@ -8072,11 +8072,7 @@ bool CEffectPrim::OnProcess() {
     case 171:
     case 173:
       this->render.position = this->state.master->render.position;
-
-      if (g_updateTick == 0) {
-        return true;
-      }
-      break;
+      [[fallthrough]];
     default:
       if (g_updateTick == 0) {
         return true;
