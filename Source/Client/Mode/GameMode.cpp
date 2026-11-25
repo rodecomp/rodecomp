@@ -8492,7 +8492,7 @@ static unsigned ReadReplaySkillEffects(const std::vector<unsigned char>& data) {
   unsigned offset = 6;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (header.type != 19000) {
+  if (19000 != header.type) {
     return 0xFFFFFFFFu;
   }
 
@@ -8535,7 +8535,7 @@ static unsigned ReadReplayQuestState(CGameMode* mode, const std::vector<unsigned
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (header.type != 14000) {
+  if (14000 != header.type) {
     return 0xFFFFFFFFu;
   }
 
@@ -8568,8 +8568,8 @@ static std::string MapFileName(const char* name) {
 // OFFSET: 0x00CDDA50
 // FUNCTION: fn_21320
 void CGameMode::Initialize(const char* name) {
-  this->recordChatCount = 0;
   this->isInitializing = 1;
+  this->recordChatCount = 0;
   this->nameCard.SetName(g_session.m_aid, g_session.DecodePlayerName());
   CPlayerNameDictionary* names = g_playerNameDictionary;
   names->Set(g_session.m_gid, g_session.DecodePlayerName());
@@ -8627,7 +8627,7 @@ void CGameMode::Initialize(const char* name) {
 
   g_weatherEffect.enabled = g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) == 0;
   if (g_serviceOptions.Get(TT_FOG_ON_OFF)) {
-    int found = 0;
+    int found;
     const std::vector<std::string>* fog = g_session.GetFogParameters(this->mapName, &found);
     if (found) {
       g_depthStart = static_cast<float>(std::atof((*fog)[0].c_str()));
