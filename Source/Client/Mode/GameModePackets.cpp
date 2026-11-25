@@ -4680,10 +4680,10 @@ void CGameMode::ReceiveTradeItems(int count, const TradeItemRecord* records) {
     ITEM_INFO item;
     item.SetItemId(record.itemId);
     item.identity[0] = record.type;
-    item.priceFactor = record.weight / 10;
     item.quantity = record.quantity;
     item.prices[0] = record.price;
     item.prices[1] = record.price;
+    item.priceFactor = record.weight / 10;
     item.refiningLevel = record.refine;
     item.cards[0] = record.card0;
     item.cards[1] = record.card1;
@@ -12573,7 +12573,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 
   CEffect* effect;
   if (skillId == CD_FRAMEN) {
-    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -12612,7 +12612,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case RA_AIMEDBOLT:
     target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
-    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_AIMEDBOLT_TARGET_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_AIMEDBOLT_TARGET_LOOP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
