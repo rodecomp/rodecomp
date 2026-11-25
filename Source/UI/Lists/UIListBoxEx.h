@@ -14,7 +14,7 @@ struct ExtendedListLine {
   }
 
   // INLINED
-  ExtendedListLine(const char* text, std::uint32_t color) : text(text), color(color) {
+  ExtendedListLine(const std::pair<const char*, std::uint32_t>& line) : text(line.first), color(line.second) {
   }
 
   /* 0000 */ std::string text;
