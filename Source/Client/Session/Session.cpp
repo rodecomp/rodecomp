@@ -3077,8 +3077,7 @@ void CSession::Init() {
   const char* fileName = std::strrchr(modulePath, '\\') + 1;
   std::strncpy(directory, modulePath, std::strlen(modulePath) - std::strlen(fileName));
 
-  HKEY key;
-  if (RegCreateKeyExA(HKEY_CURRENT_USER, OBFUSCATE_ARRAY_TEXT("Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL, char), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
+  if (HKEY key; RegCreateKeyExA(HKEY_CURRENT_USER, OBFUSCATE_ARRAY_TEXT("Software\\Gravity\\RagnarokOnline", 0x2FE993D1DDE1F197ULL, char), 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr) == ERROR_SUCCESS) {
     std::string valueName = OBFUSCATE_ARRAY_TEXT("RagPath", 0xE7978FB5A94DD7FDULL, char);
     if (g_serviceMode == ServerSakray) {
       std::string sakrayValueName = OBFUSCATE_ARRAY_TEXT("SakrayPath", 0xB7FD8F670FC7B96BULL, char);
@@ -3091,13 +3090,7 @@ void CSession::Init() {
   this->m_chatTarget = 0;
   this->m_showEffects = 1;
   this->m_aid = 0;
-
-  SYSTEMTIME systemTime;
-  GetSystemTime(&systemTime);
-  const int now =
-    (((((static_cast<unsigned char>(systemTime.wYear) * 12 +systemTime.wMonth) * 31 + systemTime.wDay) * 24 + systemTime.wHour + 9) * 60 + systemTime.wMinute) * 60 + systemTime.wSecond) * 1000 +
-    systemTime.wMilliseconds;
-  this->m_clientTimeOffset = now - timeGetTime();
+  this->m_clientTimeOffset = GetSystemMilliseconds() - timeGetTime();
   this->m_guildTargetCharacter = 0;
   this->m_whisperOption0 = 0;
   this->m_timeAttackStart = 0;
@@ -3203,12 +3196,7 @@ void CSession::Init() {
   this->elementalGid = -1;
   this->LoadProhibitionLog();
 
-  this->storeSearchResults.clear();
-  this->storeSearchCount = 0;
-  this->storeSearchPageFlags = 0;
-  this->storeSearchX = -1;
-  this->storeSearchY = -1;
-  this->storeSearchOwnerAid = INVALID_AID;
+  this->ClearStoreSearchResults();
   this->ClearPairValues(1, 1, 1);
 
   this->m_lockItemDrop = false;
@@ -3234,7 +3222,15 @@ void CSession::Init() {
   this->m_mileageWndElapsed = 0;
   this->m_mileageWndBonus = 1;
   this->m_muteSellSound = true;
-  this->ClearAchievements();
+  this->achievements.clear();
+  this->achievementScore = 0;
+  this->achievementLevel = 0;
+  this->achievementCompleted = 0;
+  this->achievementTotal = 0;
+  this->jobTitles.clear();
+  this->achievementIds.clear();
+  this->jobTitle = 0;
+  this->trackedAchievements.clear();
   this->playerAppearanceState = 0;
   this->m_bodyCostume = 0;
   this->m_lastIntervalTime = timeGetTime();
@@ -3247,9 +3243,7 @@ void CSession::Init() {
   this->m_guildMemberListSort = true;
   this->m_blockPrivateTab = false;
   this->m_sortPrivateTab = false;
-  this->m_itemDefaultSort = false;
-  this->m_itemAscendingOrder = false;
-  this->m_itemDescendingOrder = false;
+  std::memset(this->m_itemSortModes, 0, sizeof(this->m_itemSortModes));
   this->m_showMenuIcon = true;
   this->m_homunculusAutoFeed = false;
   this->m_selectedIndex = -1;
