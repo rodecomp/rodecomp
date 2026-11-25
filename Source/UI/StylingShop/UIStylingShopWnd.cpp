@@ -2102,8 +2102,13 @@ void UIMyStyleWnd::LoadLikeList() {
         if (_mbsstr(reinterpret_cast<const unsigned char*>("characterName"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
           ++i;
           char value[24] = {};
-          for (char* out = value; data[i] != '\n' && data[i] != '\r'; ++i, ++out) {
-            *out += data[i];
+          if (data[i] != '\n') {
+            for (char* out = value; data[i] != '\r'; ++i, ++out) {
+              *out += data[i];
+              if (data[i] == '\n') {
+                break;
+              }
+            }
           }
           strcpy_s(characterName, sizeof(characterName), value);
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>("slotNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
