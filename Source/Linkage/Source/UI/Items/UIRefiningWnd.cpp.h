@@ -2,4 +2,4 @@
 
 #include <string>
 
-extern template std::string::~basic_string();
+template std::string& std::string::operator=(std::string&&) noexcept;
