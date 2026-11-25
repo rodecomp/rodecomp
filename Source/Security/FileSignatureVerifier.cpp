@@ -53,33 +53,45 @@ FileSignatureVerifier::FileSignatureVerifier() {
 }
 #pragma optimize("", on)
 
-#pragma optimize("s", on)
 // OFFSET: 0x00402B60
 // FUNCTION: fn_45444
 FileSignatureVerifier::~FileSignatureVerifier() {
-  if (fileData != nullptr) {
-    std::free(fileData);
+  BYTE* data = fileData;
+  auto releaseMemory = std::free;
+  if (data != nullptr) {
+    releaseMemory(data);
   }
-  if (signature != nullptr) {
-    std::free(signature);
+  data = signature;
+  if (data != nullptr) {
+    releaseMemory(data);
   }
-  if (hash != 0) {
-    CryptDestroyHash(hash);
+
+  HCRYPTHASH hashHandle = hash;
+  auto destroyHash = CryptDestroyHash;
+  if (hashHandle != 0) {
+    destroyHash(hashHandle);
   }
-  if (publicKey != 0) {
-    CryptDestroyKey(publicKey);
+
+  HCRYPTKEY keyHandle = publicKey;
+  auto destroyKey = CryptDestroyKey;
+  if (keyHandle != 0) {
+    destroyKey(keyHandle);
   }
-  if (secondaryKey != 0) {
-    CryptDestroyKey(secondaryKey);
+  keyHandle = secondaryKey;
+  if (keyHandle != 0) {
+    destroyKey(keyHandle);
   }
-  if (secondaryHash != 0) {
-    CryptDestroyHash(secondaryHash);
+
+  hashHandle = secondaryHash;
+  if (hashHandle != 0) {
+    destroyHash(hashHandle);
   }
-  if (provider != 0) {
-    CryptReleaseContext(provider, 0);
+
+  HCRYPTPROV context = provider;
+  if (context != 0) {
+    CryptReleaseContext(context, 0);
   }
 }
-#pragma optimize("", on)
 
 // OFFSET: 0x00402BE0
 // FUNCTION: fn_00138
