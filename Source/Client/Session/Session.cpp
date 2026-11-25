@@ -945,6 +945,17 @@ std::vector<int> CSession::FindInventoryIndicesByItemId(int itemId, unsigned cha
   return indices;
 }
 
+// OFFSET: 0x00DDD0D0
+// FUNCTION: fn_23379
+int CSession::HomunSkillLevel(int skillId) const {
+  skillId -= 8000;
+  if (skillId > -1) {
+    return this->m_homunSkillLevels[skillId];
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00DDD710
 // FUNCTION: fn_23388
 ITEM_INFO CSession::GetInventoryItemAt(int index) const {
