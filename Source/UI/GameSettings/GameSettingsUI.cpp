@@ -217,7 +217,7 @@ template <class T, class D> void CUIComboBox<T, D>::Create(int width, int itemHe
 
   this->listBox->SetScrollBarBackground(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0x1767DDE18D779D8BULL)));
 
-  this->listBox->SetScrollBarThumbImages(std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xE33F2FF779878559ULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xF15F8785CDE369BFULL)), std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x792FFD1325418FB5ULL)));
+  this->listBox->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xE33F2FF779878559ULL)),std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xF15F8785CDE369BFULL)),std::string(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x792FFD1325418FB5ULL)));
 
   this->listBox->AddNewItem();
 }
