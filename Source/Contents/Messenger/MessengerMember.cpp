@@ -1780,12 +1780,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       const int previous = this->mode;
       for (int index = 0; index < 2; ++index) {
         this->tabs[index]->Invalidate();
-        if (clicked == this->tabs[index]) {
+        const bool selected = clicked == this->tabs[index];
+        if (selected) {
           this->mode = index;
-          this->tabs[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-        } else {
-          this->tabs[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
+        this->tabs[index]->SendMsg(this, UM_SETSTATE, selected, 0, 0, 0);
       }
       int secondTip;
       int firstTip;
@@ -1846,18 +1845,21 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND);
       }
       return 0;
-    case ID_TOGGLE_PARTY_MOUSE_LOCK:
+    case ID_TOGGLE_PARTY_MOUSE_LOCK: {
+      UIBitmapButton* other;
       if (sender == this->buttons[5]) {
         g_session.m_lockMouse = false;
-        this->buttons[6]->Move(sender->geometry.x, sender->geometry.y);
+        other = this->buttons[6];
       } else if (sender == this->buttons[6]) {
         g_session.m_lockMouse = true;
-        this->buttons[5]->Move(sender->geometry.x, sender->geometry.y);
+        other = this->buttons[5];
       } else {
         return 0;
       }
+      other->Move(sender->geometry.x, sender->geometry.y);
       sender->Move(-100, -100);
       return 0;
+    }
     case ID_OPEN_PARTY_SETTINGS:
       if (!g_session.m_lockMouse) {
         if (g_windowMgr.friendOptionWnd) {
