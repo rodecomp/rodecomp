@@ -644,7 +644,7 @@ int UIMacroReporterWnd::SendMsg(
       if (this->m_mode == 2 || this->m_mode == 3) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
-      } else if (this->m_mode == 0 || this->m_mode == 1) {
+      } else if (this->m_mode == 1 || this->m_mode == 0) {
         if (argument2) {
           this->geometry.targetAlpha = 128;
           this->geometry.alphaStart = timeGetTime();
@@ -714,7 +714,7 @@ int UIMacroReporterWnd::SendMsg(
 
     case ID_RADIOBTN: {
       if (this->activeOnly) {
-        if (this->m_mode == 0 || this->m_mode == 1) {
+        if (this->m_mode == 1 || this->m_mode == 0) {
           if (argument2 == 2 || argument2 == 3) {
             this->activeCheckBox->SetChecked(0);
           }
