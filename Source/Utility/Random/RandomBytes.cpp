@@ -36,7 +36,7 @@ namespace utility {
 
 // OFFSET: 0x0061D450
 // FUNCTION: fn_46731
-// VIRTUALIZED: emulated 0x0061D494
+// VIRTUALIZED: emulated 0x027AABCA
 void DeriveAuxiliaryKey(const std::uint8_t* digest, std::uint8_t* key) {
   std::uint32_t* words = reinterpret_cast<std::uint32_t*>(key);
   words[0] = 0x7E644C48;
