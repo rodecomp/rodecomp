@@ -301,12 +301,16 @@ static __forceinline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::ui
   const std::uint32_t resultLow = bLow + addLow;
   const std::uint32_t resultHigh = static_cast<std::uint32_t>(b >> 32) + addHigh + (resultLow < addLow);
   b = (static_cast<std::uint64_t>(resultHigh) << 32) | resultLow;
-  if (pass == 0) {
+  switch (pass) {
+  case 0:
     b *= 5;
-  } else if (pass == 1) {
+    break;
+  case 1:
     b *= 7;
-  } else {
+    break;
+  default:
     b *= 9;
+    break;
   }
 }
 
