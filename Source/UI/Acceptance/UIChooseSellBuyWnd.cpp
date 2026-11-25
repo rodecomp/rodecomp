@@ -3548,17 +3548,17 @@ void UIEquipWnd::OnCreate(int width, int height) {
       const char* icon = nullptr;
       g_session.m_hotkeyScript->Call("GetDamageSkinName", "d>ss", index, &name, &icon);
       if (name) {
-        this->m_damageSkinNames.insert(this->m_damageSkinNames.end(), std::string(name));
+        this->m_damageSkinNames.push_back(std::string(name));
       }
       if (icon) {
-        this->m_damageSkinIcons.insert(this->m_damageSkinIcons.end(), std::string(icon));
+        this->m_damageSkinIcons.push_back(std::string(icon));
       }
     }
 
     this->m_scrollBar = new UIScrollBar();
     this->m_scrollBar->Configure(1, 153, 0, width);
     this->m_scrollBar->Show(0);
-    this->m_scrollBar->SetRange(count - 4 > 0 ? count - 4 : 0, 4, count);
+    this->m_scrollBar->SetRange(std::max(0, count - 4), 4, count);
     this->AddChild(this->m_scrollBar);
 
     const char* labels[4] = {LookupMessage(MSI_DAMAGE_DIR_DEFAULT), LookupMessage(MSI_DAMAGE_DIR_RIGHT), LookupMessage(MSI_DAMAGE_DIR_CENTER), LookupMessage(MSI_DAMAGE_DIR_LEFT)};
