@@ -51,7 +51,6 @@ CGGHash::CGGHash() : m_error(0), m_size(0), m_data(nullptr) {
 
 // OFFSET: 0x00401300
 // FUNCTION: fn_00110
-// VIRTUALIZED: 2022-03-31 0x00401300
 BOOL CGGHash::Load(const wchar_t* filename) {
   this->Clear();
 
@@ -76,10 +75,10 @@ BOOL CGGHash::Load(const wchar_t* filename) {
       BOOL ok = TRUE;
       MD5 md5;
 
-      std::uint32_t seed = view[0];
-      DWORD encryptedCount = view[1];
-      DWORD encryptedChecksum = view[2];
-      const DWORD* src = &view[3];
+      std::uint32_t seed = view[1];
+      DWORD encryptedCount = view[2];
+      DWORD encryptedChecksum = view[3];
+      const DWORD* src = &view[4];
 
       unsigned int keyCount = seed % 10 + 6;
       for (unsigned int i = keyCount; i != 0; --i) {
@@ -94,7 +93,7 @@ BOOL CGGHash::Load(const wchar_t* filename) {
 
       DWORD count = keys[4] ^ encryptedCount;
       if (count != 0) {
-        this->m_data = static_cast<DWORD*>(::operator new(4 * (2 * count + 1)));
+        this->m_data = static_cast<DWORD*>(::operator new(4 * (3 * count + 1)));
         DWORD* table = this->m_data;
         this->m_size = count;
 
@@ -108,8 +107,12 @@ BOOL CGGHash::Load(const wchar_t* filename) {
 
         if (checksum == running) {
           table[count] = ~table[(count - 1) >> 1] ^ checksum;
+          DWORD* entry = &table[count + 1];
           for (DWORD i = 0; i < count; ++i) {
-            table[count + 1 + i] = *src++ ^ keys[(i + 4) % keyCount];
+            entry[1] = src[1];
+            entry[0] = src[0] ^ keys[(i + 4) % keyCount];
+            entry += 2;
+            src += 2;
           }
 
           FileSignatureVerifier verifier;
@@ -162,7 +165,6 @@ static CRC32 s_crc;
 
 // OFFSET: 0x00401730
 // FUNCTION: fn_00112
-// VIRTUALIZED: 2022-03-31 0x004016E0
 int CGGHash::VerifyHash(const wchar_t* name, DWORD hash) {
   if (name == nullptr) {
     this->m_error = 1;
@@ -176,13 +178,15 @@ int CGGHash::VerifyHash(const wchar_t* name, DWORD hash) {
 
   MD5 md5;
   std::uint32_t nameHash = md5.HashStringLower(name);
+  DWORD nameCrc = s_crc.CalculateLowercase(name);
   DWORD count = this->m_size;
   const DWORD* table = this->m_data;
 
   if (FindHash(table, count, hash ^ nameHash) != nullptr) {
     return 1;
   }
-  return FindHash(&table[count + 1], count, nameHash) != nullptr ? 0 : 2;
+  const GGHashEntry* entries = reinterpret_cast<const GGHashEntry*>(&table[count + 1]);
+  return FindEntry(entries, count, nameCrc, nameHash) != nullptr ? 0 : 2;
 }
 
 // OFFSET: 0x00401870
