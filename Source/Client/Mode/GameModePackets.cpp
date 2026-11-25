@@ -20818,14 +20818,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->SetSequenceInterval(5);
-      source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1100, 0);
+      source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1000, 0);
     }
     break;
   case IQ_MASSIVE_F_BLASTER:
     if (source != nullptr) {
       g_effectMgr->Spawn(0, EF_MASSIVE_FLAME_BLASTER, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
       source->SetSequenceInterval(5);
-      source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1100, 0);
+      source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1000, 0);
     }
     break;
   case IQ_THIRD_FLAME_BOMB:
