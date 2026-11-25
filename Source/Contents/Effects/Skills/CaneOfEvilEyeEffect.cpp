@@ -19,7 +19,12 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
   if (0.0f == particle->life) {
     return true;
   }
-  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+  return 60.0f * particle->life > static_cast<float>(particle->elapsedFrames);
+}
+
+// INLINED
+vector3d Add(const vector3d& left, const vector3d& right) {
+  return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
 }
 }
 
@@ -216,8 +221,7 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     CEZ2STRParticle* eye = *it;
     if (eye) {
-      vector3d position = {this->position[0], this->position[1], this->position[2]};
-      position += eye->offset;
+      const vector3d position = Add(eye->offset, this->positionVector);
 
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
       const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9];
