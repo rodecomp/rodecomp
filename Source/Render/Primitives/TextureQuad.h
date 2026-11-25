@@ -10,6 +10,16 @@ struct TextureRegion {
   /* 000C */ float bottom = 0.0f;
 };
 
+struct UnitTextureRegion : TextureRegion {
+  // INLINED
+  UnitTextureRegion() {
+    this->left = 0.0f;
+    this->top = 0.0f;
+    this->right = 1.0f;
+    this->bottom = 1.0f;
+  }
+};
+
 extern float g_depthStart;
 extern float g_depthEnd;
 extern std::uint32_t g_worldOverlayColor;
