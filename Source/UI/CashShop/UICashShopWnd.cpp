@@ -362,10 +362,10 @@ void UICashShopWnd_Cart::OnCreate(int, int) {
   );
   this->AddChild(this->m_scrollBar);
 
-  for (int index = 0, y = 5; index < this->m_visibleCount; ++index, y += 0x39) {
+  for (int index = 0; index < this->m_visibleCount; ++index) {
     UICashShopWnd_CartItem* item = new UICashShopWnd_CartItem();
     item->SetSize(0xAC, 0x36);
-    item->Move(3, y);
+    item->Move(3, index * 0x39 + 5);
     item->Show(0);
     this->AddChild(item);
     this->m_slots.push_back(item);
