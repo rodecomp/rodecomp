@@ -150,11 +150,10 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
 
   char* buffer = new char[size];
   strcpy_s(buffer, size, text.c_str());
-  std::string value = "";
+  std::string value("");
   int optionCount = 0;
   std::vector<unsigned int> options;
   int cardIndex = 0;
-
   fields.resize(260);
   fields[6] = -1;
 
@@ -164,8 +163,7 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
   value += buffer[3];
   value += buffer[4];
   fields[0] = this->DecodeNumber(value);
-  value = "";
-
+  value.clear();
   value += buffer[5];
   fields[1] = this->DecodeNumber(value);
   value.clear();
