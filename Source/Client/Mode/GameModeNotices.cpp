@@ -4428,7 +4428,7 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
       mail.isRead = entry->isRead;
       mail.type = entry->type;
       mail.title.assign(entry->title, entry->titleLength);
-      mail.sender.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
+      mail.sender.assign(entry->sender, std::min<std::size_t>(24, std::strlen(entry->sender)));
       const __time32_t now = _time32(nullptr);
       mail.expiresAt = entry->expireTime + now;
       if (entry->openType == MAIL_INBOX_NORMAL && !(mail.type & 8) && !g_session.HasCharacterName(mail.sender)) {
