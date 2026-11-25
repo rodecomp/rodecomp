@@ -1768,10 +1768,10 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = parser->DisplayNavigationLink(display);
   display = DisplayTextTag(display, g_questTagBegin, g_questTagEnd);
 
-  const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
-  const int ellipsisWidth = this->TextWidth("...", 3, family, height, bold, 0);
+  int extent = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
+  this->TextWidth("...", 3, family, height, bold, 0);
 
-  if (width >= textWidth) {
+  if (width >= extent) {
     return display;
   }
 
@@ -1779,16 +1779,14 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   std::wstring remaining(ATL::CA2WEX<128>(fitted.c_str(), CP_THREAD_ACP));
 
   while (remaining.size() > 1) {
-    if (remaining.size() >= 2) {
-      std::size_t length = remaining.size() - 1;
-      if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
-        --length;
-      }
-      remaining.resize(length);
+    std::size_t length = remaining.size() - 1;
+    if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
+      --length;
     }
+    remaining.resize(length);
 
     fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
-    const int extent = this->TextWidth(fitted.c_str(), 0, family, height, bold, 0);
+    extent = this->TextWidth(fitted.c_str(), 0, family, height, bold, 0);
     if (width >= extent) {
       return fitted;
     }
