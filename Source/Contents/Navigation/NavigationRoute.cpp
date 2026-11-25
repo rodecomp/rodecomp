@@ -1540,7 +1540,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
     const unsigned int property = static_cast<unsigned char>(attributes >> 16);
     const unsigned int propertyLevel = property / 20;
     const unsigned int element = property % 10;
-    const unsigned int size = static_cast<unsigned char>(attributes);
+    const int size = attributes & 0xFF;
 
     int message;
     if (element == 1) {
