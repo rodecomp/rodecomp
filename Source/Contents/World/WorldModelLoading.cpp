@@ -213,15 +213,15 @@ void CWorld::InitWorld() {
     this->models.reserve(modelCount);
 
     DWORD lastNoticeTime = 0;
-    int progress = 0;
+    int loaded = 0;
 
     for (; placementIt != worldRes->models.end(); ++placementIt) {
-      progress += 100;
+      ++loaded;
       DWORD now = timeGetTime();
-      int percent = static_cast<int>(progress / modelCount);
+      int percent = loaded * 100 / modelCount;
       if ((lastPercent != percent && now - lastNoticeTime > 15) || percent == 100) {
-        lastPercent = percent;
         lastNoticeTime = now;
+        lastPercent = percent;
         g_windowMgr.SendNotice(UIM_LOADINGPERCENT, percent, 0, 0, 0, 0);
         g_windowMgr.DrawCenteredBackground();
         g_windowMgr.DrawWindows();
