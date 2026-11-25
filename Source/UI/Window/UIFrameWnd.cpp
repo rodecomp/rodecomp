@@ -511,10 +511,10 @@ void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
   }
 
   if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
-    x += screenX;
-    y += screenY;
     CMode* mode = g_modeMgr.currentMode;
-    mode->ShowTooltip(name.c_str(), x, y, -1, false, true);
+    const int tipX = screenX + x;
+    y += screenY;
+    mode->ShowTooltip(name.c_str(), tipX, y, -1, false, true);
   }
 }
 
