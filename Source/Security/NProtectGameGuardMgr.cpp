@@ -139,6 +139,8 @@ void CNProtectGameGuardMgr::SetHwnd(HWND) {
 // OFFSET: 0x0076DF40
 // FUNCTION: fn_08220
 void CNProtectGameGuardMgr::IncrementCounter() {
+  NSyncObject lock(&this->m_lock);
+  ++this->unknown_0008;
 }
 
 // OFFSET: 0x0076DFA0
