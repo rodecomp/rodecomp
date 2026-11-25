@@ -69,11 +69,10 @@ CCharacterRender::~CCharacterRender() = default;
 std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char trackBounds, char* boundsUpdated) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const float* view = mode->camera->frame.view.values;
-  const vector3d position{
-    this->position.x * view[0] + this->position.y * view[3] + this->position.z * view[6] + view[9],
-    this->position.x * view[1] + this->position.y * view[4] + this->position.z * view[7] + view[10],
-    this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11]
-  };
+  vector3d position;
+  position.x = this->position.x * view[0] + this->position.y * view[3] + this->position.z * view[6] + view[9];
+  position.y = this->position.x * view[1] + this->position.y * view[4] + this->position.z * view[7] + view[10];
+  position.z = this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11];
   float depthBias = 0.0f;
 
   this->screenX = 0.0f;
@@ -329,16 +328,18 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     switch (type) {
       case SPRITE_LAYER_BODY:
         if (this->appearance[2] > 0) {
-          const std::string name = g_session.GetBodyPalName(this->job, this->appearance[0], this->appearance[2], this->bodyCostume, 0, 0);
-          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(
+            g_session.GetBodyPalName(this->job, this->appearance[0], this->appearance[2], this->bodyCostume, 0, 0).c_str()
+          ))->palette;
         } else {
           palette = sprites[0]->palette;
         }
         break;
       case SPRITE_LAYER_HEAD:
         if (this->appearance[3] > 0) {
-          const std::string name = g_session.GetHeadPalName(this->appearance[1], this->job, this->appearance[0], this->appearance[3]);
-          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(
+            g_session.GetHeadPalName(this->appearance[1], this->job, this->appearance[0], this->appearance[3]).c_str()
+          ))->palette;
         } else {
           palette = sprites[1]->palette;
         }
