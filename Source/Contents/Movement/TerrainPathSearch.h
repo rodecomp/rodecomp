@@ -21,7 +21,8 @@ public:
   std::vector<PathNode*>& Nodes() {
     return this->nodes;
   }
-  __declspec(noinline) void Push(PathNode* node);
+  void Push(PathNode* node);
+  PathNode* Pop();
 
   /* 0000 */ std::vector<PathNode*> nodes;
 };

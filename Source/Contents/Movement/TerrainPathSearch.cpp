@@ -3,6 +3,14 @@
 #include <algorithm>
 #include <cstdlib>
 
+// INLINED
+inline PathNode* CPriorityQueue::Pop() {
+  PathNode* node = this->nodes.front();
+  std::pop_heap(this->nodes.begin(), this->nodes.end(), NodeTotalGreater());
+  this->nodes.pop_back();
+  return node;
+}
+
 // OFFSET: 0x00AD7E70
 // FUNCTION: fn_17860
 CPathFinder::CPathFinder() {
@@ -32,14 +40,10 @@ bool CPathFinder::FindPath(
   start->cost = 0;
   start->estimatedCost = 10 * (std::abs(startX - this->destinationX) + std::abs(startY - this->destinationY));
 
-  std::vector<PathNode*>& open = this->openList.Nodes();
-  open.push_back(start);
-  std::push_heap(open.begin(), open.end(), NodeTotalGreater());
+  this->openList.Push(start);
 
-  while (!open.empty()) {
-    PathNode* current = open.front();
-    std::pop_heap(open.begin(), open.end(), NodeTotalGreater());
-    open.pop_back();
+  while (!this->openList.nodes.empty()) {
+    PathNode* current = this->openList.Pop();
 
     if (current->x == destX && current->y == destY) {
       const auto startCoordinate = [](int cell, int fraction) {
