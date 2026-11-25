@@ -43,3 +43,6 @@
 
 template __declspec(noinline) std::string& std::string::operator=(const char* const);
 template __declspec(noinline) std::vector<MiniPartyInfoEntry>::iterator std::vector<MiniPartyInfoEntry>::erase(const_iterator, const_iterator) noexcept;
+template __forceinline void std::vector<MiniPartyInfoEntry>::clear() noexcept;
+template __forceinline void std::vector<MiniPartyInfoEntry>::_Destroy(MiniPartyInfoEntry*, MiniPartyInfoEntry*);
+template __forceinline void std::_Destroy_range<std::allocator<MiniPartyInfoEntry>>(MiniPartyInfoEntry*, MiniPartyInfoEntry* const, std::allocator<MiniPartyInfoEntry>&) noexcept;
