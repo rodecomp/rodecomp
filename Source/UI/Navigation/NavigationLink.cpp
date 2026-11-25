@@ -875,9 +875,10 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
 // OFFSET: 0x00838130
 // FUNCTION: fn_10452
 int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle style) {
+  int position = x;
   const std::tuple<bool, std::string, std::string> info = SplitLinkInfo(text, type);
   if (!std::get<0>(info)) {
-    return x;
+    return position;
   }
 
   std::string display = std::get<1>(info);
@@ -892,27 +893,27 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
     const std::vector<std::string> lines = SplitLines(this->m_parent, display, style, this->m_width);
     for (auto line = lines.begin(); line != lines.end(); ++line) {
       this->NewLine();
-      x = 0;
+      position = 0;
       UITextButton* button = this->CreateLinkWindow(*line, parts, type, style);
       if (button) {
         this->AddWindow(button);
-        x = button->geometry.width;
+        position = button->geometry.width;
       }
     }
   } else {
-    if (x + width > this->m_width) {
+    if (position + width > this->m_width) {
       this->NewLine();
-      x = 0;
+      position = 0;
     }
 
     UITextButton* button = this->CreateLinkWindow(display, parts, type, style);
     if (button) {
       this->AddWindow(button);
-      x += button->geometry.width;
+      position += button->geometry.width;
     }
   }
 
-  return x;
+  return position;
 }
 
 // OFFSET: 0x0083A920
