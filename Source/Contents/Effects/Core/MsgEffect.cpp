@@ -1724,6 +1724,21 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case AM_SETPOS2: {
       int offset = 0;
       switch (this->m_type) {
+        default:
+          if (this->m_type != 114) {
+            return;
+          }
+
+          this->SetSpriteName(FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
+          this->SetActionName(FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
+          this->render.animation = 0;
+          this->render.previousAnimation = 0;
+          this->render.position = *position;
+          this->render.position.y -= 12.0f;
+          this->m_baseY = this->render.position.y;
+          this->m_baseX = position->x;
+          break;
+
         case MET_NUMBER_TOTAL:
           offset = 15;
         case MET_NUMBER:
@@ -1741,28 +1756,6 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         case MET_MISS:
           this->m_baseX = this->render.position.x;
           return;
-
-        case MET_CRITICAL_EFFECT:
-        case MET_LUCKY_EFFECT:
-        case MET_BIRD:
-        case 19:
-        case 20:
-          return;
-
-        default:
-          if (this->m_type != 114) {
-            return;
-          }
-
-          this->SetSpriteName(FormatOwnedString("%s.spr", g_session.m_damageResourceName.c_str()).c_str());
-          this->SetActionName(FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
-          this->render.animation = 0;
-          this->render.previousAnimation = 0;
-          this->render.position = *position;
-          this->m_baseX = this->render.position.x;
-          this->render.position.y -= 12.0f;
-          this->m_baseY = this->render.position.y;
-          break;
       }
 
       this->render.curMotion = static_cast<int>(c);
