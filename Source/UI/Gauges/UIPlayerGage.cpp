@@ -3,6 +3,9 @@
 
 #include <algorithm>
 
+// GLOBAL: gl_26172
+float g_gageThreshold = 0.25f;
+
 // OFFSET: 0x0086D2D0
 // FUNCTION: fn_11044
 UIGage::UIGage() : UIWindow(0) {
@@ -106,7 +109,7 @@ void UIPlayerGage::Paint() {
         const float ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
-                         ratio < 0.25f ? this->colors[6] : this->colors[5]);
+                         ratio < g_gageThreshold ? this->colors[6] : this->colors[5]);
       }
       return;
     case 9:
@@ -119,7 +122,7 @@ void UIPlayerGage::Paint() {
         const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
         const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
         const std::int64_t curVal2 = this->m_secondCurrent();
@@ -141,7 +144,7 @@ void UIPlayerGage::Paint() {
         const float ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
-                         ratio < 0.25f ? this->colors[4] : this->colors[2]);
+                         ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
       }
       return;
     case 8:
@@ -154,7 +157,7 @@ void UIPlayerGage::Paint() {
         const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
         const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
         const std::int64_t curVal2 = this->m_secondCurrent();
@@ -172,7 +175,7 @@ void UIPlayerGage::Paint() {
         const float ratio3 = static_cast<float>(num3 / static_cast<double>(den3));
         this->FillRegion(1, 9, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio3), 3,
-                         ratio3 < 0.25f ? this->colors[6] : this->colors[5]);
+                         ratio3 < g_gageThreshold ? this->colors[6] : this->colors[5]);
       }
       return;
     default:
@@ -184,7 +187,7 @@ void UIPlayerGage::Paint() {
         const float ratio1 = static_cast<float>(num1 / static_cast<double>(static_cast<int>(den1)));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < 0.25f ? this->colors[4] : this->colors[2]);
+                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
         const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
         const std::int64_t curVal2 = this->m_secondCurrent();
