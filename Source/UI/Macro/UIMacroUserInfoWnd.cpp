@@ -647,7 +647,7 @@ int UIMacroReporterWnd::SendMsg(
       if (this->m_mode == 2 || this->m_mode == 3) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
-      } else if (this->m_mode == 0 || this->m_mode == 1) {
+      } else if (this->m_mode == 1 || this->m_mode == 0) {
         if (argument2) {
           this->geometry.targetAlpha = 128;
           this->geometry.alphaStart = timeGetTime();
@@ -716,8 +716,8 @@ int UIMacroReporterWnd::SendMsg(
       break;
 
     case ID_RADIOBTN: {
-      if (this->activeOnly == true) {
-        if (this->m_mode == 0 || this->m_mode == 1) {
+      if (this->activeOnly) {
+        if (this->m_mode == 1 || this->m_mode == 0) {
           if (argument2 == 2 || argument2 == 3) {
             this->activeCheckBox->SetChecked(0);
           }
@@ -740,7 +740,7 @@ int UIMacroReporterWnd::SendMsg(
       }
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
-      if (sender == this->m_tabs[1]) {
+      if (this->m_tabs[1] == sender) {
         SetDisabledState(this->m_edit, 0);
       } else {
         SetDisabledState(this->m_edit, 1);
@@ -837,10 +837,9 @@ int UIMacroReporterWnd::SendMsg(
     if (!g_windowMgr.CloseWindow(WID_MACROUSERINFOWND)) {
       UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(WID_MACROUSERINFOWND));
       info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
-      const unsigned short job = entry->reportValue;
       std::string name = entry->name;
       info->m_name = name;
-      info->m_message = g_session.GetJobName(job, -1);
+      info->m_message = g_session.GetJobName(entry->reportValue, -1);
       info->Invalidate();
     }
     break;
