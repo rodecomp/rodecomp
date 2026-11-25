@@ -142,36 +142,26 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->m_background = new CUIStaticImage();
   this->m_background->SetSize(231, 172);
   this->m_background->Move(0, 17);
-  {
-    CUIStaticImage* background = this->m_background;
-    const std::string backgroundImage(OBFUSCATE_TEXT("유저인터페이스\\MacroReport\\bg_macroreport.bmp", 0x2BAD156DE3E1F9D9ULL));
-    background->SetImage(backgroundImage);
-  }
+  this->m_background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\MacroReport\\bg_macroreport.bmp", 0x2BAD156DE3E1F9D9ULL));
   this->AddChild(this->m_background);
 
   this->m_titleBar = new CUITitleBar();
   this->m_titleBar->SetSize(231, 17);
   this->m_titleBar->Move(0, 0);
-  {
-    CUITitleBar* titleBar = this->m_titleBar;
-    const std::string titleRight(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x03772763F96D9DA5ULL));
-    const std::string titleMiddle(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xC517FB932D95BB6DULL));
-    const std::string titleLeft(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x23BBD58F8B5FF5C9ULL));
-    titleBar->SetImages(titleLeft, titleMiddle, titleRight);
-  }
+  this->m_titleBar->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x23BBD58F8B5FF5C9ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xC517FB932D95BB6DULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x03772763F96D9DA5ULL)
+  );
   this->AddChild(this->m_titleBar);
 
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 17);
   title->Move(18, 0);
-  {
-    title->SetText(OBFUSCATE_TEXT("유저 신고", 0x0B7109397F6B1387ULL));
-  }
+  title->SetText(OBFUSCATE_TEXT("유저 신고", 0x0B7109397F6B1387ULL));
   title->SetFitText(0);
   title->SetAlign(0, 6);
-  {
-    title->SetFont(std::string(OBFUSCATE_TEXT("Gulim", 0x13E33FA1A591AB67ULL)));
-  }
+  title->SetFont(OBFUSCATE_SOURCE_TEXT("Gulim", 0x13E33FA1A591AB67ULL));
   title->SetFontHeight(12);
   title->SetBold(0);
   title->SetColor(0);
@@ -187,13 +177,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
   SetClickHandler(menuButton, [this]() { this->OnButtonClick(); });
   menuButton->disabled = 0;
   menuButton->Invalidate();
-  {
-    const std::string menuDisabled(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL));
-    const std::string menuPressed(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL));
-    const std::string menuHover(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL));
-    const std::string menuNormal(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL));
-    menuButton->SetImages(menuNormal, menuHover, menuPressed, menuDisabled);
-  }
+  menuButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0x17A9E5BF39AD4737ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x9949BFD527532943ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0xCD8F077123FB7D6FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xD97D5DBDBB2F2709ULL)
+  );
   this->m_titleBar->AddChild(menuButton);
 
   CUIImageButton* closeButton = new CUIImageButton();
@@ -202,23 +191,18 @@ void CUIMacroReport::OnCreate(int width, int height) {
   closeButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
   closeButton->disabled = 0;
   closeButton->Invalidate();
-  {
-    const std::string closeDisabled(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL));
-    const std::string closePressed(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL));
-    const std::string closeHover(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL));
-    const std::string closeNormal(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL));
-    closeButton->SetImages(closeNormal, closeHover, closePressed, closeDisabled);
-  }
+  closeButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xED796785D1DF137FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xF14F79170939C7F1ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0xA5FD29D7AB6DC59FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xDD3913D5D7F97BE1ULL)
+  );
   this->m_titleBar->SetSecondButton(closeButton);
 
   this->m_messageEdit = new CUIEditBox();
   this->m_messageEdit->SetSize(215, 58);
   this->m_messageEdit->Move(8, 80);
-  {
-    CUIEditBox* edit = this->m_messageEdit;
-    const std::string placeholder(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL));
-    edit->SetText(placeholder);
-  }
+  this->m_messageEdit->SetText(OBFUSCATE_TEXT("신고 내용을 입력하세요.", 0x050505679903579BULL));
   this->m_messageEdit->SetTextColor(0x808080);
   this->m_messageEdit->SetBackgroundColor(0xFFF3EE);
   this->m_messageEdit->SetBorderColor(0xD6C5BD);
@@ -231,17 +215,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->firstTypeText = new CUIStaticText();
   this->firstTypeText->SetSize(165, 12);
   this->firstTypeText->Move(28, 25);
-  {
-    CUIStaticText* text = this->firstTypeText;
-    text->SetText(OBFUSCATE_TEXT("불법 프로그램 의심 신고", 0x83EFBFBB37EDBDBDULL));
-  }
+  this->firstTypeText->SetText(OBFUSCATE_TEXT("불법 프로그램 의심 신고", 0x83EFBFBB37EDBDBDULL));
   this->firstTypeText->SetFitText(0);
   this->firstTypeText->SetAlign(0, 0);
-  {
-    CUIStaticText* text = this->firstTypeText;
-    const std::string firstTypeFont(OBFUSCATE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL));
-    text->SetFont(firstTypeFont);
-  }
+  this->firstTypeText->SetFont(OBFUSCATE_SOURCE_TEXT("Gulim", 0xBF2B4B31397FF5A7ULL));
   this->firstTypeText->SetFontHeight(12);
   this->firstTypeText->SetBold(0);
   this->firstTypeText->SetColor(0);
@@ -252,17 +229,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->secondTypeText = new CUIStaticText();
   this->secondTypeText->SetSize(165, 12);
   this->secondTypeText->Move(28, 43);
-  {
-    CUIStaticText* text = this->secondTypeText;
-    text->SetText(OBFUSCATE_TEXT("버그 및 시스템 악용", 0x2FE993D1DDE1F197ULL));
-  }
+  this->secondTypeText->SetText(OBFUSCATE_TEXT("버그 및 시스템 악용", 0x2FE993D1DDE1F197ULL));
   this->secondTypeText->SetFitText(0);
   this->secondTypeText->SetAlign(0, 0);
-  {
-    CUIStaticText* text = this->secondTypeText;
-    const std::string secondTypeFont(OBFUSCATE_TEXT("Gulim", 0x39FF7FB50DEB998FULL));
-    text->SetFont(secondTypeFont);
-  }
+  this->secondTypeText->SetFont(OBFUSCATE_SOURCE_TEXT("Gulim", 0x39FF7FB50DEB998FULL));
   this->secondTypeText->SetFontHeight(12);
   this->secondTypeText->SetBold(0);
   this->secondTypeText->SetColor(0);
@@ -279,14 +249,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
     control->disabled = 0;
     control->Invalidate();
   }
-  {
-    CUIImageButton* button = this->cancelButton;
-    const std::string cancelDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL));
-    const std::string cancelHover(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_over.bmp", 0x4941FD9F21BBB9FDULL));
-    const std::string cancelPressed(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_press.bmp", 0xAD075B8DB599F1CDULL));
-    const std::string cancelNormal(OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_normal.bmp", 0x2F8B0F37118D157FULL));
-    button->SetImages(cancelNormal, cancelPressed, cancelHover, cancelDisabled);
-  }
+  this->cancelButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_normal.bmp", 0x2F8B0F37118D157FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_press.bmp", 0xAD075B8DB599F1CDULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_over.bmp", 0x4941FD9F21BBB9FDULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL)
+  );
   this->AddChild(this->cancelButton);
 
   this->reportButton = new CUIImageButton();
@@ -298,14 +266,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
     control->disabled = 0;
     control->Invalidate();
   }
-  {
-    CUIImageButton* button = this->reportButton;
-    const std::string reportDisabled(OBFUSCATE_TEXT("유저인터페이스\\btn_report_disable.bmp", 0xCB1D253B7FE1F563ULL));
-    const std::string reportHover(OBFUSCATE_TEXT("유저인터페이스\\btn_report_over.bmp", 0x7115D9F973F913C9ULL));
-    const std::string reportPressed(OBFUSCATE_TEXT("유저인터페이스\\btn_report_press.bmp", 0xE7978FB5A94DD7FDULL));
-    const std::string reportNormal(OBFUSCATE_TEXT("유저인터페이스\\btn_report_normal.bmp", 0xB7FD8F670FC7B96BULL));
-    button->SetImages(reportNormal, reportPressed, reportHover, reportDisabled);
-  }
+  this->reportButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\btn_report_normal.bmp", 0xB7FD8F670FC7B96BULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_report_press.bmp", 0xE7978FB5A94DD7FDULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_report_over.bmp", 0x7115D9F973F913C9ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\btn_report_disable.bmp", 0xCB1D253B7FE1F563ULL)
+  );
   this->AddChild(this->reportButton);
 
   this->m_firstTypeButton = new CUIRadioButton();
@@ -317,14 +283,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
     control->disabled = 0;
     control->Invalidate();
   }
-  {
-    CUIRadioButton* button = this->m_firstTypeButton;
-    const std::string firstRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x0F15B16B5BAFD57FULL));
-    const std::string firstRadioHover(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7DE349D717D7F123ULL));
-    const std::string firstRadioPressed(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xE55723712993051DULL));
-    const std::string firstRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x793F370985ED674FULL));
-    button->SetImages(firstRadioNormal, firstRadioPressed, firstRadioHover, firstRadioDisabled);
-  }
+  this->m_firstTypeButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x793F370985ED674FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xE55723712993051DULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7DE349D717D7F123ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x0F15B16B5BAFD57FULL)
+  );
   {
     auto* control = this->m_firstTypeButton;
     control->checked = true;
@@ -341,14 +305,12 @@ void CUIMacroReport::OnCreate(int width, int height) {
     control->disabled = 0;
     control->Invalidate();
   }
-  {
-    CUIRadioButton* button = this->m_secondTypeButton;
-    const std::string secondRadioDisabled(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xF3CB6F7711A71B6DULL));
-    const std::string secondRadioHover(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x839B27DF8F5967B3ULL));
-    const std::string secondRadioPressed(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0x7321C3814F8799E1ULL));
-    const std::string secondRadioNormal(OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7941D76335CFA14FULL));
-    button->SetImages(secondRadioNormal, secondRadioPressed, secondRadioHover, secondRadioDisabled);
-  }
+  this->m_secondTypeButton->SetImages(
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x7941D76335CFA14FULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0x7321C3814F8799E1ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x839B27DF8F5967B3ULL),
+    OBFUSCATE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xF3CB6F7711A71B6DULL)
+  );
   {
     auto* control = this->m_secondTypeButton;
     control->checked = false;
@@ -359,17 +321,10 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->warningText = new CUIStaticText();
   this->warningText->SetSize(210, 13);
   this->warningText->Move(9, 142);
-  {
-    CUIStaticText* text = this->warningText;
-    text->SetText(OBFUSCATE_TEXT("기능 악용 시 제재를 받을 수 있습니다.", 0x452FEF0D7FC95565ULL));
-  }
+  this->warningText->SetText(OBFUSCATE_TEXT("기능 악용 시 제재를 받을 수 있습니다.", 0x452FEF0D7FC95565ULL));
   this->warningText->SetFitText(0);
   this->warningText->SetAlign(0, 0);
-  {
-    CUIStaticText* text = this->warningText;
-    const std::string warningFont(OBFUSCATE_TEXT("Gulim", 0x9FED7DA189490D5DULL));
-    text->SetFont(warningFont);
-  }
+  this->warningText->SetFont(OBFUSCATE_SOURCE_TEXT("Gulim", 0x9FED7DA189490D5DULL));
   this->warningText->SetFontHeight(12);
   this->warningText->SetBold(0);
   this->warningText->SetColor(0x2D35F7);
