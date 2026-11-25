@@ -69,10 +69,11 @@ CCharacterRender::~CCharacterRender() = default;
 std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char trackBounds, char* boundsUpdated) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const float* view = mode->camera->frame.view.values;
-  vector3d position;
-  position.x = this->position.x * view[0] + this->position.y * view[3] + this->position.z * view[6] + view[9];
-  position.y = this->position.x * view[1] + this->position.y * view[4] + this->position.z * view[7] + view[10];
-  position.z = this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11];
+  const vector3d position{
+    this->position.x * view[0] + this->position.y * view[3] + this->position.z * view[6] + view[9],
+    this->position.x * view[1] + this->position.y * view[4] + this->position.z * view[7] + view[10],
+    this->position.x * view[2] + this->position.y * view[5] + this->position.z * view[8] + view[11]
+  };
   float depthBias = 0.0f;
 
   this->screenX = 0.0f;
@@ -111,13 +112,12 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   std::vector<CActRes*> actions(9, nullptr);
   std::vector<CSprRes*> sprites(9, nullptr);
-  const int resourceJob = this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job;
-  actions[0] = static_cast<CActRes*>(
-    ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(resourceJob, this->appearance[0], this->bodyCostume, 0))
-  );
-  sprites[0] = static_cast<CSprRes*>(
-    ResourceMgr::Instance().Load(g_session.GetBodySprName(resourceJob, this->appearance[0], this->bodyCostume, 0))
-  );
+  actions[0] = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(
+    this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job, this->appearance[0], this->bodyCostume, 0
+  )));
+  sprites[0] = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(
+    this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job, this->appearance[0], this->bodyCostume, 0
+  )));
   actions[1] = static_cast<CActRes*>(
     ResourceMgr::Instance().Load(g_session.GetHeadActName(this->job, this->appearance[0], &this->appearance[1]))
   );
@@ -161,8 +161,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   for (int index = 8; index >= 0; --index) {
     const int action = this->actionIndex;
-    const int baseAction = action - action % 8;
-    const int order = GetSpriteLayerOrder(imf, index, baseAction, action, this->frameIndex);
+    const int order = GetSpriteLayerOrder(imf, index, action - action % 8, action, this->frameIndex);
     int type = order;
     if (!bodyDrawn) {
       bodyDrawn = order == 1;
@@ -184,7 +183,12 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       continue;
     }
 
-    const int cellIndex = GetSlotLayer(g_session.IsSpecialMonsterJob(this->layerViews[type]) ? 1 : type);
+    int cellIndex;
+    if (g_session.IsSpecialMonsterJob(this->layerViews[type])) {
+      cellIndex = GetSlotLayer(1);
+    } else {
+      cellIndex = GetSlotLayer(type);
+    }
     if (this->frameIndex >= static_cast<int>(actions[type]->FrameCount(this->actionIndex))) {
       continue;
     }
@@ -205,14 +209,15 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     }
 
     const SpriteFrameCell* cell = &frame->Cell(cellIndex);
-    if (cell->image == -1) {
+    const int imageIndex = cell->image;
+    if (imageIndex == -1) {
       continue;
     }
 
     int offsetX = 0;
     int offsetY = 0;
     SpriteQuad quad{};
-    quad.image = sprites[type]->images[cell->imageType][cell->image];
+    quad.image = sprites[type]->images[cell->imageType][imageIndex];
     if (g_session.IsDoramJob(this->job) == true) {
       int doramX = 0;
       int doramY = 0;
@@ -230,9 +235,9 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     switch (type) {
       case 1: {
-        CActRes* bodyAction = static_cast<CActRes*>(
-          ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(resourceJob, this->appearance[0], this->bodyCostume, 0))
-        );
+        CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(
+          this->riding == 1 ? g_session.GetRidingJob(this->job) : this->job, this->appearance[0], this->bodyCostume, 0
+        )));
         const ActionFrame& bodyFrame = bodyAction->Frame(this->actionIndex, this->frameIndex);
         if (frame->anchorCount > 0 && bodyFrame.anchorCount > 0) {
           const ActionAnchor& anchor = frame->anchors[0];
@@ -275,7 +280,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         }
 
         offsetX += g_headAnchorOffsetX;
-        if (IsIgnoredRidingState(this->layerViews[type], this->job, baseAction, this->riding) == true) {
+        if (IsIgnoredRidingState(this->layerViews[type], this->job, this->actionIndex - this->actionIndex % 8, this->riding) == true) {
           offsetY += SpriteRidingOffset(&bodyFrame, this->actionIndex, this->frameIndex, this->job, this->appearance[0], this->bodyCostume);
         } else {
           offsetY += g_headAnchorOffsetY;
@@ -294,7 +299,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     float bottomDepth = 0.0f;
     float topDepth = 0.0f;
     SpriteColor color = {};
-    tagRECT rect;
+    SpriteCellBounds rect;
     if (!this->ProjectCell(
           index, layer, distanceScale, *cell, this->screenX, this->screenY, &position.x, 0.0f, bottomDepth, topDepth, *quad.image,
           quad, rect, color, offsetX, offsetY, 0

@@ -21,7 +21,7 @@ float g_heightScale = 1.34f;
 // FUNCTION: fn_10102
 bool CCharacterRender::ProjectCell(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
-  float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, bool flags
+  float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, SpriteCellBounds& bounds, SpriteColor& color, int offsetX, int offsetY, bool flags
 ) const {
   const float depthBias = scale / g_heightScale * g_cameraScaleX;
   const double scaleY = scale * cell.scaleY;
@@ -56,10 +56,10 @@ bool CCharacterRender::ProjectCell(
   quad.bottomRhw = bottomDepth;
   quad.topRhw = topDepth;
   quad.angle = static_cast<float>(cell.rotation);
-  bounds.left = static_cast<LONG>(left);
-  bounds.top = static_cast<LONG>(top);
-  bounds.right = static_cast<LONG>(right);
-  bounds.bottom = static_cast<LONG>(bottom);
+  bounds.left = static_cast<int>(left);
+  bounds.top = static_cast<int>(top);
+  bounds.right = static_cast<int>(right);
+  bounds.bottom = static_cast<int>(bottom);
   color.alpha = static_cast<std::uint8_t>(static_cast<std::uint8_t>(cell.color >> 24) * 255.0f / 255.0f);
   color.red = static_cast<std::uint8_t>(GetRValue(cell.color) * 255.0f / 255.0f);
   color.green = static_cast<std::uint8_t>(GetGValue(cell.color) * 255.0f / 255.0f);

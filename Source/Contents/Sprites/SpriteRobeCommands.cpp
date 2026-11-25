@@ -57,7 +57,7 @@ void CCharacterRender::RenderRobeCommands(
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
       SpriteQuad quad;
-      tagRECT bounds;
+      SpriteCellBounds bounds;
       SpriteColor color;
       float bottomDepth;
       float topDepth;

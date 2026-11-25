@@ -16,7 +16,17 @@ struct SpriteQuad;
 struct SpriteColor;
 struct SpriteFrameCell;
 struct SpriteRleImage;
-struct tagRECT;
+
+struct SpriteCellBounds {
+  // INLINED
+  SpriteCellBounds() {
+  }
+
+  /* 0000 */ int left;
+  /* 0004 */ int top;
+  /* 0008 */ int right;
+  /* 000C */ int bottom;
+};
 
 class CCharacterRender {
 public:
@@ -36,7 +46,7 @@ public:
   bool SetRobe(int robe);
   bool ProjectCell(
     int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
-    float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, bool flags
+    float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, SpriteCellBounds& bounds, SpriteColor& color, int offsetX, int offsetY, bool flags
   ) const;
   void OffsetLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
   void OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
