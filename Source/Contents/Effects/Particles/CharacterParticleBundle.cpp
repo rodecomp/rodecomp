@@ -32,9 +32,10 @@ namespace {
                     point.x * transform.values[2] + point.y * transform.values[5] + point.z * transform.values[8] + transform.values[11]};
   }
 
-  // GLOBAL: gl_24870
-  std::unordered_map<int, std::vector<RadialGridPoint>> g_clawMarkRings;
 }
+
+// GLOBAL: gl_24870
+std::unordered_map<int, std::vector<RadialGridPoint>> g_clawMarkRings;
 
 // OFFSET: 0x005A2E50
 // FUNCTION: fn_03122
@@ -123,9 +124,8 @@ void CharacterParticleBundle::Close() {
 // OFFSET: 0x005A3A10
 // FUNCTION: fn_03134
 const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
-  const auto end = g_clawMarkRings.end();
   const auto found = g_clawMarkRings.find(radius);
-  if (found != end) {
+  if (found != g_clawMarkRings.end()) {
     return found->second;
   }
 
