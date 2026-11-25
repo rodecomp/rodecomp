@@ -5737,7 +5737,7 @@ static __forceinline void RenderSoulParticleQuad(
   vec3.Set(c3.x + base.x, c3.y + base.y, c3.z + base.z);
   vec4.Set(c4.x + base.x, c4.y + base.y, c4.z + base.z);
 
-  if (vec1.y > 0.0f) {
+  if (0.0f < vec1.y) {
     return;
   }
 
@@ -5764,6 +5764,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulParticle(matrix& wtm) {
   ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
+  matrix& wtmRef = wtm;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -5783,9 +5784,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulParticle(matrix& wtm) {
     const vector3d c2{vec2.x, vec2.y, vec2.z};
     const vector3d c3{vec3.x, vec3.y, vec3.z};
     const vector3d c4{vec4.x, vec4.y, vec4.z};
-    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBPre, slot.height[12], 40, wtm);
-    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBNow, slot.height[13], 10, wtm);
-    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecTPre, slot.height[14], 70, wtm);
+    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBPre, slot.height[12], 40, wtmRef);
+    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecBNow, slot.height[13], 10, wtmRef);
+    RenderSoulParticleQuad(*this, &rpCnt, slot, c1, c2, c3, c4, vec1, vec2, vec3, vec4, slot.vecTPre, slot.height[14], 70, wtmRef);
   }
 }
 
