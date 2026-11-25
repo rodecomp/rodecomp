@@ -56,7 +56,7 @@ void RouletteMgr::AddItem(RouletteSlot slot) {
   item.SetItemId(slot.itemId);
   item.quantity = slot.count;
   item.identified = 1;
-  this->m_items.insert(std::make_pair(RouletteSlot(slot), item));
+  this->m_items.insert(std::make_pair(slot, item));
 }
 
 // OFFSET: 0x0080ABA0

@@ -15,6 +15,10 @@ struct RouletteSlot {
   /* 0008 */ short count;
 
   // INLINED
+  RouletteSlot() {
+  }
+
+  // INLINED
   bool operator<(const RouletteSlot& other) const {
     return this->row < other.row && this->column < other.column;
   }
