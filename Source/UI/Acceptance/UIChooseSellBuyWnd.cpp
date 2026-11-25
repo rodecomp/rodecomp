@@ -8362,7 +8362,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     case ID_HELP: {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_SKILLDELAYINFO);
       if (window) {
-        static_cast<CUISkillDelayInfo*>(window)->SetSkill(this->m_skillId);
+        static_cast<CUISkillDelayInfo*>(window)->SetSkill(reinterpret_cast<void*>(this->m_skillId));
         window->PlaceBeside(this);
         g_windowMgr.Promote(window);
       }

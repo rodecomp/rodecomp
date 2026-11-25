@@ -70,7 +70,7 @@ public:
   void OnClose();
   void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
   void OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
-  void SetSkill(int skillId);
+  void SetSkill(void* skill);
 
   /* 00D8 */ CUITitleBar* titleBar;
   /* 00DC */ CUIStaticText* skillNameText;

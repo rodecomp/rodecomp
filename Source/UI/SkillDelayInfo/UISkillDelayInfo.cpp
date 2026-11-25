@@ -507,7 +507,7 @@ int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   if (this->skillId != 7999) {
-    this->SetSkill(this->skillId);
+    this->SetSkill(reinterpret_cast<void*>(this->skillId));
   }
   return 0;
 }
@@ -519,7 +519,8 @@ static void AddDelayItem(CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayIn
 
 // OFFSET: 0x00A781C0
 // FUNCTION: fn_16889
-void CUISkillDelayInfo::SetSkill(int skillId) {
+void CUISkillDelayInfo::SetSkill(void* skill) {
+  int skillId = reinterpret_cast<int>(skill);
   this->skillId = skillId;
   this->delayList->ClearData();
 
