@@ -176,12 +176,12 @@ bool CRenderObject::PrepareSprite(
   float lightRed = 1.0f;
   float lightGreen = 1.0f;
   float lightBlue = 1.0f;
+  int column;
+  int row;
   if (this->render.useGroundLighting == 1 && g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF)) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     GroundGeometry* ground = mode->scene->ground;
     if (ground->IsNewVer()) {
-      int column;
-      int row;
       mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
       ground->Lighting(column, row, lightRed, lightGreen, lightBlue);
     }
