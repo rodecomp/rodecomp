@@ -2871,6 +2871,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       this->pendingCursorType = 3;
     }
     return 0;
+  resetToLogin:
   case LMM_RESET_TO_LOGIN:
     g_charServerAccountIdPending = 0;
     this->pendingCursorType = 3;
@@ -3123,9 +3124,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_GOTO_LOGIN:
     GetRagConnection().Close();
-    g_charServerAccountIdPending = 0;
-    this->pendingCursorType = 3;
-    return 0;
+    goto resetToLogin;
   case LMM_SET_LOGIN_EXTRA:
     strcpy(this->loginExtra, reinterpret_cast<const char*>(argument1));
     return 0;
@@ -3133,8 +3132,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     GetRagConnection().Close();
     if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
       this->otpStarted = timeGetTime();
-      g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
+      goto resetToLogin;
     }
     return 0;
   case LMM_SELECTSVR: {
@@ -3171,9 +3169,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   case LMM_CANCEL:
     if (this->cursorType == 6 || this->cursorType == 27) {
       GetRagConnection().Close();
-      g_charServerAccountIdPending = 0;
-      this->pendingCursorType = 3;
-      return 0;
+      goto resetToLogin;
     }
     if (this->cursorType == 30) {
       this->pendingCursorType = 7;
