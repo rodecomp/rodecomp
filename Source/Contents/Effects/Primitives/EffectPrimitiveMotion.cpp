@@ -6123,7 +6123,7 @@ bool CEffectPrim::PrimFieldFireflies() {
       }
     }
 
-    slot.height[8] += 1.0f;
+    slot.height[8] += g_projectionDepthNumerator;
     if (slot.height[8] >= 360.0f) {
       slot.height[8] -= 360.0f;
     }
