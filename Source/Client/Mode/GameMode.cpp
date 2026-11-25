@@ -8129,11 +8129,12 @@ void CGameMode::InitializeState() {
     }
   }
 
-  if (!g_mapSkyMgr) {
-    g_mapSkyMgr = new (std::nothrow) CMapSkyMgr;
+  CMapSkyMgr* skyMgr = g_mapSkyMgr;
+  if (!skyMgr) {
+    skyMgr = new (std::nothrow) CMapSkyMgr;
   }
-
-  g_mapSkyMgr->Apply(this->mapName);
+  g_mapSkyMgr = skyMgr;
+  skyMgr->Apply(this->mapName);
   if ((g_serviceType == ServiceMalaysia || g_serviceType == ServiceSingapore) && std::strcmp(this->mapName, "comodo.rsw") == 0 && g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     g_weatherEffect.Fireworks();
   }
