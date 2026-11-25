@@ -1557,6 +1557,7 @@ static std::shared_ptr<AES> CreateHeaderCipher(const PakObfuscated<PakKeyMateria
 // FUNCTION: fn_05068
 bool PakHeaderDecryptor::Decrypt(std::shared_ptr<AES>& cipher, const PakObfuscated<PakKeyMaterial>& key, int mode, int ivSource) const {
   alignas(16) std::uint8_t iv[16] = {};
+  const PakHeaderSource& source = this->source;
 
   switch (ivSource) {
   case PAK_HEADER_IV_KEY: {
@@ -1566,13 +1567,13 @@ bool PakHeaderDecryptor::Decrypt(std::shared_ptr<AES>& cipher, const PakObfuscat
     break;
   }
   case PAK_HEADER_IV_NAME_HASH: {
-    XXH128_hash_t hash = XXH3_128bits(this->source.name.data(), this->source.name.size());
+    XXH128_hash_t hash = XXH3_128bits(source.name.data(), source.name.size());
     std::memcpy(iv, &hash, sizeof(iv));
     SecureZeroMemory(&hash, sizeof(hash));
     break;
   }
   case PAK_HEADER_IV_CHECKSUM_HASH: {
-    XXH128_hash_t hash = XXH3_128bits(&this->source.header->checksum, sizeof(this->source.header->checksum));
+    XXH128_hash_t hash = XXH3_128bits(&source.header->checksum, sizeof(source.header->checksum));
     std::memcpy(iv, &hash, sizeof(iv));
     SecureZeroMemory(&hash, sizeof(hash));
     break;
