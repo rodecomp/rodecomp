@@ -17,7 +17,6 @@
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Contents/Items/EnchantMgr.h"
 #include "Contents/EntryQueue/EntryQueueMgr.h"
-#include "Contents/Actors/Resources/BodyResources.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/Items/ItemDBToIDMgr.h"
