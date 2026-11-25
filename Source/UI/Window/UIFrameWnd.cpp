@@ -799,7 +799,11 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         self = name == g_session.DecodePlayerName();
       }
 
-      if (this->memberList->selected == -1 || buffer[0] == '/' || self) {
+      if (this->memberList->selected != -1 && buffer[0] != '/' && !self) {
+        g_windowMgr.chatInputText = buffer;
+        const std::string name = this->memberList->lines[this->memberList->selected];
+        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      } else {
         if (g_session.ProcessEmotionShortcut(buffer) == 0) {
           std::string parts[3];
           int talkType;
@@ -814,10 +818,6 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           }
           g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
         }
-      } else {
-        g_windowMgr.chatInputText = buffer;
-        const std::string name = this->memberList->lines[this->memberList->selected];
-        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
 
       this->edit->PushHistory();
@@ -894,7 +894,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
     if (this->memberList->selected != -1) {
       const std::string target = this->memberList->lines[this->memberList->selected];
-      if (this->memberRoles.find(target) == this->memberRoles.end() || this->memberRoles[target] == -1) {
+      if (this->memberRoles.end() == this->memberRoles.find(target) || this->memberRoles[target] == -1) {
         break;
       }
       switch (rank) {
@@ -1116,17 +1116,19 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     const unsigned size = static_cast<unsigned>(b);
     ChatRoomRecordHeader header;
     std::memcpy(&header, data, sizeof(header));
-    if (header.tag == 0x5014) {
+    unsigned offset = sizeof(header);
+    if (0x5014 == header.tag) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ROOM_IS_MADE)), 0xFFFF00, 0, 0, 0);
       ChatRoomTitleInfo* settings = &g_modeMgr.GetGameMode()->chatRoom;
-      unsigned offset = 6;
-      while (offset < size) {
+      bool scanning = true;
+      while (scanning && size > offset) {
         std::memcpy(&header, data + offset, sizeof(header));
-        offset += 6;
+        offset += sizeof(header);
         switch (header.tag) {
         case 0x5015:
-          return 0;
+          scanning = false;
+          break;
         case 0x5016:
           std::memcpy(this->saved, data + offset, header.size);
           offset += header.size;
@@ -1135,8 +1137,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           char value[260];
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
-          settings->title = this->info.title = value;
           offset += header.size;
+          settings->title = this->info.title = value;
           break;
         }
         case 0x5018: {
