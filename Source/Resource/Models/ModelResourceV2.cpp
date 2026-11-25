@@ -324,6 +324,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
         target.textureVertices[corner] = record.textureVertices[corner];
       }
       target.texture = record.texture;
+      target.padding_000E = record.padding_000E;
       target.twoSided = record.twoSided;
       const unsigned groups = (buffer.size() - 20u) / 4u;
       target.smoothing.resize(groups);
