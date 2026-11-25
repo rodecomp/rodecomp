@@ -674,52 +674,30 @@ void UIWindowMgr::SaveVisibleWindowIds() {
   this->savedWindowIds.clear();
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     int id = (*it)->geometry.id;
-    if (id == WID_ITEMWND) {
-      if (this->itemWndInfo.visible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_EQUIPWND) {
-      if (this->equipWndInfo.visible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_STATUSWND) {
-      if (this->statusWndInfo.visible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_OPTIONWND) {
-      if (this->optionWndInfo.visible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_SKILLLISTWND) {
-      if (this->skillListWndVisible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_RENEWQUESTWND) {
-      if (this->questWndVisible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == 205) {
-      if (this->questWndVisible) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == 134) {
-      if (this->questWndVisible) {
-        this->savedWindowIds.push_back(id);
-      }
+    if (id == WID_ITEMWND && this->itemWndInfo.visible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_EQUIPWND && this->equipWndInfo.visible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_STATUSWND && this->statusWndInfo.visible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_OPTIONWND && this->optionWndInfo.visible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_SKILLLISTWND && this->skillListWndVisible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_RENEWQUESTWND && this->questWndVisible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == 205 && this->questWndVisible) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == 134 && this->questWndVisible) {
+      this->savedWindowIds.push_back(id);
     } else if ((id == WID_MESSENGERWND || id == WID_MESSENGERGROUPWND) && this->messengerGroupWndInfo.visible) {
       this->savedWindowIds.push_back(id);
-    } else if (id == WID_ACHTRACINGWND) {
-      if (g_session.HasTrackedAchievements() == true) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_MACROREPORTERWND) {
-      if (this->macroReporterVisible == true) {
-        this->savedWindowIds.push_back(id);
-      }
-    } else if (id == WID_GAMESETTINGSUI) {
-      if (g_session.lowMemory && g_session.performanceWarningEnabled && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
-        this->savedWindowIds.push_back(id);
-      }
+    } else if (id == WID_ACHTRACINGWND && g_session.HasTrackedAchievements() == true) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_MACROREPORTERWND && this->macroReporterVisible == true) {
+      this->savedWindowIds.push_back(id);
+    } else if (id == WID_GAMESETTINGSUI && g_session.lowMemory && g_session.performanceWarningEnabled && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
+      this->savedWindowIds.push_back(id);
     } else if (id == WID_MINIPARTYWND) {
       for (auto entry = this->savedWindowIds.begin(); entry != this->savedWindowIds.end(); ++entry) {
         if (*entry == WID_MINIPARTYWND) {
