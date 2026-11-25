@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Client/Mode/GameModeResultEnums.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Network/Packets/NoticeEnums.h"
@@ -2941,11 +2942,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       int windowIds[0x100];
       const int windowCount = g_windowMgr.GetRenderedWindowIds(windowIds);
       const int result = ReplayFileList::Instance().Open(0x1F, windowCount, reinterpret_cast<int>(windowIds));
-      if (result == 0) {
+      if (result == REPLAY_OPEN_SUCCESS) {
         Replay::Instance().SetState(1);
         return 0;
       }
-      if (result == -2) {
+      if (result == REPLAY_OPEN_FILE_EXISTS) {
         Replay::Instance().SetState(1);
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_THESAMEFILEEXISTS), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;

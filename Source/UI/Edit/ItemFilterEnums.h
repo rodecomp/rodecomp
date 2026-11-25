@@ -31,4 +31,8 @@ enum InventoryEquipmentFilter : int {
   INVENTORY_EQUIPMENT_FILTER_ALL = 3,
 };
 
+enum InventoryMiscFilter : int {
+  INVENTORY_MISC_FILTER_ALL = 4,
+};
+
 #endif

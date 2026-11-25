@@ -1627,7 +1627,7 @@ void CCreateLineInfo::ArrangeLines() {
     }
 
     switch (this->m_align) {
-    case 0: {
+    case TEXT_ALIGN_LEFT: {
       int x = 0;
       for (auto it = line.begin(); it != line.end(); ++it) {
         UIWindow* window = *it;
@@ -1638,7 +1638,7 @@ void CCreateLineInfo::ArrangeLines() {
       }
       break;
     }
-    case 1: {
+    case TEXT_ALIGN_RIGHT: {
       int x = this->m_width;
       for (auto it = line.rbegin(); it != line.rend(); ++it) {
         UIWindow* window = *it;
@@ -1649,7 +1649,7 @@ void CCreateLineInfo::ArrangeLines() {
       }
       break;
     }
-    case 2: {
+    case TEXT_ALIGN_CENTER: {
       int x = 0;
       for (UIWindow* window : line) {
         x += window->geometry.width;

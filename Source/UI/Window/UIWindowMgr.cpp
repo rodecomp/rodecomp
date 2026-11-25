@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "Client/Mode/GameModeEnums.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
@@ -1505,9 +1506,9 @@ void UIWindowMgr::DrawCenteredBackground() {
 // FUNCTION: fn_17242
 std::vector<unsigned char> UIWindowMgr::SaveReplaySettings() {
   std::vector<unsigned char> data;
-  AppendReplayChunk(data, MakeReplayMarker(25000));
-  AppendReplayChunk(data, MakeReplayValue(25010, this->dragAllItems));
-  AppendReplayChunk(data, MakeReplayMarker(25001));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_SETTINGS_BEGIN));
+  AppendReplayChunk(data, MakeReplayValue(REPLAY_CHUNK_SETTINGS_DRAG_ALL_ITEMS, this->dragAllItems));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_SETTINGS_END));
   return data;
 }
 
@@ -1515,8 +1516,8 @@ std::vector<unsigned char> UIWindowMgr::SaveReplaySettings() {
 // FUNCTION: fn_17243
 std::vector<unsigned char> UIWindowMgr::SaveReplayReserved() {
   std::vector<unsigned char> data;
-  AppendReplayChunk(data, MakeReplayMarker(26000));
-  AppendReplayChunk(data, MakeReplayMarker(26001));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_RESERVED_BEGIN));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_RESERVED_END));
   return data;
 }
 
@@ -1545,16 +1546,16 @@ int UIWindowMgr::LoadReplaySettings(const std::vector<unsigned char>& data) {
   ReplaySettingHeader header;
   header.Read(data.data());
   unsigned offset = 6;
-  if (25000 != header.tag) {
+  if (REPLAY_CHUNK_SETTINGS_BEGIN != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
     while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
       switch (header.tag) {
-      case 25001:
+      case REPLAY_CHUNK_SETTINGS_END:
         return static_cast<int>(offset);
-      case 25010:
+      case REPLAY_CHUNK_SETTINGS_DRAG_ALL_ITEMS:
         std::memcpy(&this->dragAllItems, data.data() + offset, header.size);
         offset += header.size;
         break;
@@ -1577,13 +1578,13 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
   ReplaySettingHeader header;
   header.Read(data.data());
   unsigned offset = 6;
-  if (26000 != header.tag) {
+  if (REPLAY_CHUNK_RESERVED_BEGIN != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
     while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
-      if (header.tag == 26001) {
+      if (header.tag == REPLAY_CHUNK_RESERVED_END) {
         break;
       }
       offset += header.size;
@@ -1856,17 +1857,17 @@ int UIWindowMgr::LoadReplayWindows(const std::vector<unsigned char>& data) {
   std::vector<char> payload;
   header.Read(data.data());
   unsigned offset = 6;
-  if (20000 != header.tag) {
+  if (REPLAY_CHUNK_WINDOWS_BEGIN != header.tag) {
     offset = static_cast<unsigned>(-1);
   } else {
     while (data.size() > offset) {
       header.Read(data.data() + offset);
       offset += 6;
-      if (20001 == header.tag) {
+      if (REPLAY_CHUNK_WINDOWS_END == header.tag) {
         break;
       }
-      if (static_cast<unsigned short>(header.tag - 20100) <= 399) {
-        UIWindow* window = this->EnsureWindow(header.tag - 20100);
+      if (static_cast<unsigned short>(header.tag - REPLAY_CHUNK_WINDOW_BASE) <= 399) {
+        UIWindow* window = this->EnsureWindow(header.tag - REPLAY_CHUNK_WINDOW_BASE);
         if (window && header.size > 0) {
           payload.resize(header.size, 0);
           std::memcpy(payload.data(), data.data() + offset, header.size);
@@ -2154,14 +2155,14 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
 // FUNCTION: fn_17244
 std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
   std::vector<unsigned char> data;
-  AppendReplayChunk(data, MakeReplayMarker(20000));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_WINDOWS_BEGIN));
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     const unsigned id = static_cast<unsigned>((*it)->geometry.id);
     if (id <= 10040 && this->policy[id].actions[7]) {
-      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + 20100, (*it)->GetReplayData()));
+      AppendReplayChunk(data, MakeReplayChunk((*it)->geometry.id + REPLAY_CHUNK_WINDOW_BASE, (*it)->GetReplayData()));
     }
   }
-  AppendReplayChunk(data, MakeReplayMarker(20001));
+  AppendReplayChunk(data, MakeReplayMarker(REPLAY_CHUNK_WINDOWS_END));
   return data;
 }
 

@@ -352,4 +352,32 @@ enum IllustrationDisplayMode : int {
   ILLUSTRATION_CENTER_CLOSABLE = 4,
 };
 
+enum MemorialDungeonNotifyType : int {
+  MEMORIAL_DUNGEON_NOTIFY = 0,
+  MEMORIAL_DUNGEON_LIVE_TIMEOUT = 1,
+  MEMORIAL_DUNGEON_ENTER_TIMEOUT = 2,
+  MEMORIAL_DUNGEON_DESTROY_REQUEST = 3,
+};
+
+enum SwapEquipItemResult : unsigned short {
+  SWAP_EQUIPITEM_SUCCESS = 0,
+  SWAP_EQUIPITEM_NO_ITEM = 1,
+};
+
+enum TakeOffEquipResult : unsigned char {
+  TAKEOFF_EQUIP_SUCCESS = 0,
+  TAKEOFF_EQUIP_FORBIDDEN = 1,
+};
+
+enum BuyingStoreBuyerTradeResult : short {
+  BUYING_STORE_BUYER_OVER_LIMIT_ZENY = 3,
+  BUYING_STORE_BUYER_BUY_COMPLETE = 4,
+};
+
+enum BuyingStoreSellerTradeResult : short {
+  BUYING_STORE_SELLER_DEAL_FAILED = 5,
+  BUYING_STORE_SELLER_OVER_COUNT = 6,
+  BUYING_STORE_SELLER_LACK_BUYER_ZENY = 7,
+};
+
 #endif

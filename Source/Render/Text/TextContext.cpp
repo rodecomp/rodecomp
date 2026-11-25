@@ -122,7 +122,7 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
 
   this->m_family = family;
   this->m_height = height;
-  this->m_charset = language == 0 && family >= 20 ? charsets[0] : charsets[family];
+  this->m_charset = language == LANGUAGE_KOREAN && family >= 20 ? charsets[0] : charsets[family];
   this->m_bold = bold;
   this->m_italic = italic;
 }

@@ -559,35 +559,35 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
   }
 
   if (this->m_tab != 1 || g_session.HotkeyIndex(1, this->m_selectedRow) + 100 != 131) {
-    if (mode == 4) {
+    if (mode == HOTKEY_ASSIGN_CHECK_CONFLICT) {
       mode = this->CheckHotkeyConflict();
     }
   } else {
     const int key = g_windowMgr.keyCode;
     if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
-      mode = 3;
+      mode = HOTKEY_ASSIGN_INVALID;
     } else if (key == 0x20 || key == 0x90) {
       if (g_windowMgr.modifierKey == 0) {
-        mode = 2;
+        mode = HOTKEY_ASSIGN_INCOMPLETE;
       } else {
         mode = this->CheckHotkeyConflict();
       }
-    } else if (mode == 4) {
+    } else if (mode == HOTKEY_ASSIGN_CHECK_CONFLICT) {
       if (key == 0x14) {
-        mode = 3;
+        mode = HOTKEY_ASSIGN_INVALID;
       } else if (g_windowMgr.modifierKey != 0 || g_windowMgr.IsSharedWindowId(key)) {
         mode = this->CheckHotkeyConflict();
       } else {
-        mode = 3;
+        mode = HOTKEY_ASSIGN_INVALID;
       }
     }
   }
 
   switch (mode) {
-    case 1:
+    case HOTKEY_ASSIGN_IGNORE:
       return false;
-    case 2:
-    case 3:
+    case HOTKEY_ASSIGN_INCOMPLETE:
+    case HOTKEY_ASSIGN_INVALID:
       break;
     default: {
       const HotkeyEntry entry = this->GetHotkey(this->m_tab, this->m_selectedRow + (this->m_page * 9 - 9) * 4, true);

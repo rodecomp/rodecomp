@@ -659,7 +659,7 @@ void UIMessageBox::Configure(
   this->viewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000u);
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
-  if (type == 2) {
+  if (type == MESSAGE_BOX_YES_NO) {
     this->m_message0 = ID_NO;
   } else {
     this->m_message0 = ID_CANCEL;
@@ -671,7 +671,7 @@ void UIMessageBox::Configure(
   int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
 
   switch (type) {
-  case 4: {
+  case MESSAGE_BOX_CANCEL: {
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
@@ -684,7 +684,7 @@ void UIMessageBox::Configure(
     this->m_message0 = ID_CANCEL;
     break;
   }
-  case 0: {
+  case MESSAGE_BOX_OK: {
     int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
@@ -697,7 +697,7 @@ void UIMessageBox::Configure(
     this->m_message0 = ID_OK;
     break;
   }
-  case 2: {
+  case MESSAGE_BOX_YES_NO: {
     int x = width - 91;
 
     for (int index = 1; index < 3; ++index) {
@@ -721,7 +721,7 @@ void UIMessageBox::Configure(
     this->m_message1 = 188;
     break;
   }
-  case 5: {
+  case MESSAGE_BOX_RESTART_LINK: {
     int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);

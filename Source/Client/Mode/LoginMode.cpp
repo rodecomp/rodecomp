@@ -1260,7 +1260,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
   this->loginResponseReceived = true;
   std::string message("");
   switch (packet->error) {
-  case 0: {
+  case LOGIN_ERROR_CONNECT_ACCOUNT_SERVER: {
     const std::size_t length = packet->length - 28;
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
@@ -1269,7 +1269,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
   }
-  case 400:
+  case LOGIN_ERROR_OTP_REQUIRED:
     if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
     }
@@ -1277,16 +1277,16 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     this->otpPending = true;
     this->otpStarted = timeGetTime();
     break;
-  case 500:
+  case LOGIN_ERROR_OTP_FAILED:
     message = LookupMessage(MSI_OTP_FAILED);
     break;
-  case 600:
+  case LOGIN_ERROR_INCORRECT_PASSWORD:
     message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
-  case 700:
+  case LOGIN_ERROR_SERVICE_CHECKING:
     message = LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR);
     break;
-  case 900: {
+  case LOGIN_ERROR_FORCED_WEB_LOGIN: {
     ShowErrorDialog(LookupMessage(MSI_FORCED_WEB_LOGIN), 0);
     const char* parametersText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x8783C33941E15117ULL, char);
     const char* fileText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x1767DDE18D779D8BULL, char);
@@ -1294,7 +1294,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     return;
   }
-  case 1200:
+  case LOGIN_ERROR_CANNOT_LOGIN:
     message = LookupMessage(MSI_RESULT_FAIL_CANNOT_LOGIN);
     break;
   default:
@@ -1308,7 +1308,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     message += FormatOwnedString(OBFUSCATE_ARRAY_TEXT(" [%s]", 0xC70319B5EB61598FULL, char), packet->detail);
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, "메시지", 280, 120, 0);
     if (this->otpTimedOut != true) {
-      if (error == 500) {
+      if (error == LOGIN_ERROR_OTP_FAILED) {
         this->otpStarted = timeGetTime();
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
           g_windowMgr.CloseWindow(WID_LOGINOTPWND);
@@ -1334,7 +1334,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
   this->loginResponseReceived = true;
   std::string message("");
   switch (packet->error) {
-  case 0: {
+  case LOGIN_ERROR_CONNECT_ACCOUNT_SERVER: {
     const std::size_t length = packet->length - 8;
     SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
@@ -1343,7 +1343,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
   }
-  case 400:
+  case LOGIN_ERROR_OTP_REQUIRED:
     if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
       g_windowMgr.CloseWindow(WID_LOGINOTPWND);
     }
@@ -1351,16 +1351,16 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     this->otpPending = true;
     this->otpStarted = timeGetTime();
     break;
-  case 500:
+  case LOGIN_ERROR_OTP_FAILED:
     message = LookupMessage(MSI_OTP_FAILED);
     break;
-  case 600:
+  case LOGIN_ERROR_INCORRECT_PASSWORD:
     message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
-  case 700:
+  case LOGIN_ERROR_SERVICE_CHECKING:
     message = LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR);
     break;
-  case 800:
+  case LOGIN_ERROR_RETRY_CONNECT:
     message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC);
     break;
   default:
@@ -1372,7 +1372,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     const int error = packet->error;
     const char* caption;
     bool protect;
-    if (error == 800) {
+    if (error == LOGIN_ERROR_RETRY_CONNECT) {
       caption = OBFUSCATE_ARRAY_TEXT("메세지", 0x75ADC57D87EFBD8FULL, char);
       protect = true;
     } else {
@@ -1382,7 +1382,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     }
     g_windowMgr.Confirm(message.c_str(), 5, true, true, 0, caption, 280, 120, protect);
     if (this->otpTimedOut != true) {
-      if (error == 500) {
+      if (error == LOGIN_ERROR_OTP_FAILED) {
         this->otpStarted = timeGetTime();
         if (g_windowMgr.LookupWindow(WID_LOGINOTPWND)) {
           g_windowMgr.CloseWindow(WID_LOGINOTPWND);
@@ -2328,25 +2328,25 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_REFUSE_ENTER:
       GetRagConnection().Close();
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
-      case 1:
+      case REFUSE_ENTER_ID_MISMATCH:
         g_windowMgr.Confirm(LookupMessage(MSI_ID_MISMATCH), 0, true, true, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
-      case ID_HC_ACCEPT_DELETECHAR:
+      case REFUSE_ENTER_OVER_CONNECT_USER:
         g_windowMgr.Confirm(LookupMessage(MSI_OVER_CONNECT_USER), 0, true, false, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = 3;
         break;
-      case ID_ZC_NOTIFY_UPDATECHAR:
+      case REFUSE_ENTER_RESTRICTED_MAKE_CHAR:
         g_windowMgr.Confirm(LookupMessage(MSI_BAN_THAI_GGT_RESTRICTED_MAKE_CHAR), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
-      case ID_ZC_NOTIFY_UPDATEPLAYER:
+      case REFUSE_ENTER_LIMIT_USER:
         g_windowMgr.Confirm(LookupMessage(MSI_LIMIT_USER_MSG), 0, true, false, 0, "메시지", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
-      case 0:
+      case REFUSE_ENTER_ACCESS_DENIED:
       default:
         g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "메시지", 280, 120, 0);
         g_charServerAccountIdPending = 0;

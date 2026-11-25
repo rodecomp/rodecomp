@@ -2,6 +2,7 @@
 #include "UI/Edit/ItemFilterEnums.h"
 #include "UI/Edit/ItemDropCountMode.h"
 #include "UI/Window/WindowId.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "Contents/Items/ItemId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
@@ -1581,19 +1582,19 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (21000 == static_cast<std::uint16_t>(header.type) || 21050 == static_cast<std::uint16_t>(header.type)) {
+    if (REPLAY_CHUNK_MY_SHOP_BEGIN == static_cast<std::uint16_t>(header.type) || REPLAY_CHUNK_MY_BUYING_SHOP_BEGIN == static_cast<std::uint16_t>(header.type)) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
-        case 21001:
-        case 21051:
+        case REPLAY_CHUNK_MY_SHOP_END:
+        case REPLAY_CHUNK_MY_BUYING_SHOP_END:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           this->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
           scanning = false;
           break;
-        case 21052:
+        case REPLAY_CHUNK_MY_BUYING_SHOP_ZENY:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
           this->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, this->buyingZeny, 0, 0, 0);
@@ -1886,11 +1887,11 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 20700) {
+    if (header.type == REPLAY_CHUNK_ITEM_PURCHASE_BEGIN) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 20701) {
+        if (header.type == REPLAY_CHUNK_ITEM_PURCHASE_END) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
           if (window) {
             window->SendMsg(nullptr, UM_SETTITLE, 0, 0, 0, 0);
@@ -4091,7 +4092,7 @@ bool UIItemWnd::FilterItem(ITEM_INFO& item) {
     case INVENTORY_ITEM_TAB_MISC:
       if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO ||
           type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-        if (this->miscFilter == 4) {
+        if (this->miscFilter == INVENTORY_MISC_FILTER_ALL) {
           return true;
         }
       }
@@ -5471,8 +5472,8 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 // FUNCTION: fn_13281
 std::vector<unsigned char> UIItemPurchaseWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DC, nullptr, 0));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x50DD, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_PURCHASE_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_PURCHASE_END, nullptr, 0));
   return records;
 }
 
@@ -5480,9 +5481,9 @@ std::vector<unsigned char> UIItemPurchaseWnd::GetReplayData() {
 // FUNCTION: fn_13282
 std::vector<unsigned char> UIItemSellWnd2::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(20800, nullptr, 0));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(20802, &this->shopId, 4));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(20801, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_SELL2_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_SELL2_SHOP_ID, &this->shopId, 4));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_SELL2_END, nullptr, 0));
   return records;
 }
 
@@ -5490,8 +5491,8 @@ std::vector<unsigned char> UIItemSellWnd2::GetReplayData() {
 // FUNCTION: fn_13283
 std::vector<unsigned char> UIItemSellWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x510E, nullptr, 0));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x510F, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_SELL_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_SELL_END, nullptr, 0));
   return records;
 }
 
@@ -5499,8 +5500,8 @@ std::vector<unsigned char> UIItemSellWnd::GetReplayData() {
 // FUNCTION: fn_13284
 std::vector<unsigned char> UIItemStoreWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A4, nullptr, 0));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x51A5, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_STORE_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ITEM_STORE_END, nullptr, 0));
   return records;
 }
 
@@ -5509,11 +5510,11 @@ std::vector<unsigned char> UIItemStoreWnd::GetReplayData() {
 std::vector<unsigned char> UIMerchantItemMyShopWnd::GetReplayData() {
   std::vector<unsigned char> records;
   if (this->buyingShop != 0) {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21050, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21051, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MY_BUYING_SHOP_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MY_BUYING_SHOP_END, nullptr, 0));
   } else {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21000, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21001, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MY_SHOP_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MY_SHOP_END, nullptr, 0));
   }
   return records;
 }
@@ -5523,11 +5524,11 @@ std::vector<unsigned char> UIMerchantItemMyShopWnd::GetReplayData() {
 std::vector<unsigned char> UIMerchantItemPurchaseWnd::GetReplayData() {
   std::vector<unsigned char> records;
   if (this->buyingStore != 0) {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21100, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21101, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_BUYING_STORE_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_BUYING_STORE_END, nullptr, 0));
   } else {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21150, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21151, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_PURCHASE_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_PURCHASE_END, nullptr, 0));
   }
   return records;
 }
@@ -5537,12 +5538,12 @@ std::vector<unsigned char> UIMerchantItemPurchaseWnd::GetReplayData() {
 std::vector<unsigned char> UIMerchantItemShopWnd::GetReplayData() {
   std::vector<unsigned char> records;
   if (this->buyingShop != 0) {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21250, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21253, &this->buyingZeny, 4));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21251, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_BUYING_SHOP_ZENY, &this->buyingZeny, 4));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_BUYING_SHOP_END, nullptr, 0));
   } else {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21200, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21201, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_SHOP_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_SHOP_END, nullptr, 0));
   }
   return records;
 }
@@ -5551,8 +5552,8 @@ std::vector<unsigned char> UIMerchantItemShopWnd::GetReplayData() {
 // FUNCTION: fn_13288
 std::vector<unsigned char> UIMerchantMirrorItemWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x5398, nullptr, 0));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(0x5399, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_MIRROR_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MERCHANT_MIRROR_END, nullptr, 0));
   return records;
 }
 
@@ -5561,11 +5562,11 @@ std::vector<unsigned char> UIMerchantMirrorItemWnd::GetReplayData() {
 std::vector<unsigned char> UIMerchantShopMakeWnd::GetReplayData() {
   std::vector<unsigned char> records;
   if (this->mode != 0) {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21350, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21351, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_BUYING_SHOP_MAKE_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_BUYING_SHOP_MAKE_END, nullptr, 0));
   } else {
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21300, nullptr, 0));
-    AppendReplayRecord(records, BuildReplayTaggedRecord(21301, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_SHOP_MAKE_BEGIN, nullptr, 0));
+    AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_SHOP_MAKE_END, nullptr, 0));
   }
   return records;
 }
@@ -6598,12 +6599,12 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (21400 == header.type) {
+    if (REPLAY_CHUNK_MERCHANT_MIRROR_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 21401) {
+        if (header.type == REPLAY_CHUNK_MERCHANT_MIRROR_END) {
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           scanning = false;
         } else {
@@ -6737,7 +6738,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (20800 == header.type) {
+    if (REPLAY_CHUNK_ITEM_SELL2_BEGIN == header.type) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
       if (window) {
         window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
@@ -6749,10 +6750,10 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
-        case 20801:
+        case REPLAY_CHUNK_ITEM_SELL2_END:
           scanning = false;
           break;
-        case 20802:
+        case REPLAY_CHUNK_ITEM_SELL2_SHOP_ID:
           std::memcpy(&this->shopId, bytes + offset, header.size);
           offset += header.size;
           window->SendMsg(nullptr, UM_REFRESHITEM, this->shopId, 0, 0, 0);
@@ -6979,16 +6980,16 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (21150 == header.type || 21100 == header.type) {
+    if (REPLAY_CHUNK_MERCHANT_PURCHASE_BEGIN == header.type || REPLAY_CHUNK_MERCHANT_BUYING_STORE_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
-        case 21101:
+        case REPLAY_CHUNK_MERCHANT_BUYING_STORE_END:
           this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
           [[fallthrough]];
-        case 21151:
+        case REPLAY_CHUNK_MERCHANT_PURCHASE_END:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           scanning = false;
           break;
@@ -7097,17 +7098,17 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (21200 == header.type || 21250 == header.type) {
+    if (REPLAY_CHUNK_MERCHANT_SHOP_BEGIN == header.type || REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
         switch (header.type) {
-        case 21200:
-        case 21250:
+        case REPLAY_CHUNK_MERCHANT_SHOP_BEGIN:
+        case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_BEGIN:
           scanning = false;
           break;
-        case 21253:
+        case REPLAY_CHUNK_MERCHANT_BUYING_SHOP_ZENY:
           std::memcpy(&this->buyingZeny, bytes + offset, header.size);
           offset += header.size;
           break;
@@ -9168,11 +9169,11 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 20900) {
+    if (header.type == REPLAY_CHUNK_ITEM_STORE_BEGIN) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 20901) {
+        if (header.type == REPLAY_CHUNK_ITEM_STORE_END) {
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           break;
         }
@@ -10132,9 +10133,9 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     }
     this->SendMsg(nullptr, UM_RESIZE, 7, this->saved->width, this->saved->expandedHeight, 0);
     this->categoryFilter = this->saved->selectedTab;
-    this->usableFilter = 3;
-    this->equipmentFilter = 3;
-    this->miscFilter = 4;
+    this->usableFilter = INVENTORY_USABLE_FILTER_ALL;
+    this->equipmentFilter = INVENTORY_EQUIPMENT_FILTER_ALL;
+    this->miscFilter = INVENTORY_MISC_FILTER_ALL;
     this->tabs->activeTabIndex = this->saved->selectedTab;
     this->Invalidate();
     this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -10185,7 +10186,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       }
       break;
     case ID_SORT_ITEMS:
-      if (this->categoryFilter != 3) {
+      if (this->categoryFilter != INVENTORY_ITEM_TAB_PRIVATE) {
         break;
       }
       g_session.m_sortPrivateTab = !g_session.m_sortPrivateTab;
@@ -10271,7 +10272,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     break;
   }
   case UM_REFRESHITEM: {
-    if (this->categoryFilter == 3) {
+    if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE) {
       this->RefreshItems();
       break;
     }
@@ -10285,19 +10286,19 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       const unsigned type = item.itemType;
       bool include = false;
       if (item.placeEtcTab != 0) {
-        include = this->categoryFilter == 3;
+        include = this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE;
       } else {
         switch (this->categoryFilter) {
-        case 0:
+        case INVENTORY_ITEM_TAB_USABLE:
           if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
             switch (this->usableFilter) {
-            case 0:
+            case INVENTORY_USABLE_FILTER_HEAL:
               include = type == TYPE_HEAL;
               break;
-            case 2:
+            case INVENTORY_USABLE_FILTER_OTHER:
               include = type == TYPE_SCHANGE || type == TYPE_SPECIAL;
               break;
-            case 3:
+            case INVENTORY_USABLE_FILTER_ALL:
               include = true;
               break;
             default:
@@ -10305,7 +10306,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
             }
           }
           break;
-        case 1:
+        case INVENTORY_ITEM_TAB_EQUIPMENT:
           switch (type) {
           case TYPE_ARMOR:
           case TYPE_WEAPON:
@@ -10317,10 +10318,10 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
           case TYPE_ARMORTMB:
           case TYPE_GUN:
             switch (this->equipmentFilter) {
-            case 0:
+            case INVENTORY_EQUIPMENT_FILTER_WEAPON:
               include = type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW;
               break;
-            case 1:
+            case INVENTORY_EQUIPMENT_FILTER_ARMOR:
               switch (type) {
               case TYPE_ARMOR:
               case TYPE_ARMORTM:
@@ -10333,7 +10334,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
                 break;
               }
               break;
-            case 3:
+            case INVENTORY_EQUIPMENT_FILTER_ALL:
               include = true;
               break;
             default:
@@ -10344,9 +10345,9 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
             break;
           }
           break;
-        case 2:
+        case INVENTORY_ITEM_TAB_MISC:
           if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-            include = this->miscFilter == 4;
+            include = this->miscFilter == INVENTORY_MISC_FILTER_ALL;
           }
           break;
         }
@@ -11343,12 +11344,12 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (20750 == header.type) {
+    if (REPLAY_CHUNK_ITEM_SELL_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
-        if (header.type == 20751) {
+        if (header.type == REPLAY_CHUNK_ITEM_SELL_END) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
           if (window) {
             window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
@@ -11395,7 +11396,7 @@ void UIItemWnd::Paint() {
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+  if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE && g_session.m_blockPrivateTab == 1) {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(0, 8, red, green, blue);
     this->FillRegion(20, 17, this->geometry.width - 21, this->geometry.height - 38, RGB(red, green, blue));
@@ -11410,21 +11411,21 @@ void UIItemWnd::Paint() {
   }
 
   if (this->filterWindow) {
-    if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+    if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE && g_session.m_blockPrivateTab == 1) {
       this->filterWindow->Show(1);
     } else {
       this->filterWindow->Show(0);
     }
   }
   if (this->dealLockButton) {
-    if (this->categoryFilter == 3) {
+    if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE) {
       this->dealLockButton->Enable(1);
     } else {
       this->dealLockButton->Enable(0);
     }
   }
   if (this->filterButton) {
-    if (this->categoryFilter == 3) {
+    if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE) {
       this->filterButton->Enable(1);
     } else {
       this->filterButton->Enable(0);
@@ -11439,7 +11440,7 @@ void UIItemWnd::Paint() {
   int slotRows = (this->geometry.height - 38) / 32;
   for (int i = 0; i < slotRows; ++i) {
     for (int j = 0; j < slotColumns; ++j) {
-      if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+      if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE && g_session.m_blockPrivateTab == 1) {
         this->DrawBitmap(j * 32 + 40, i * 32 + 17, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")))), false);
       } else {
         this->DrawItemSlotFrame(j * 32 + 40, i * 32 + 17);
@@ -11461,7 +11462,7 @@ void UIItemWnd::Paint() {
     const int y = visible / this->columns * 32 + 17;
     const int x = visible % this->columns * 32 + 40;
     if (it->selected) {
-      if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+      if (this->categoryFilter == INVENTORY_ITEM_TAB_PRIVATE && g_session.m_blockPrivateTab == 1) {
         this->DrawBitmap(x, y, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")))), false);
       } else {
         this->DrawNewItemMark(x, y);
@@ -12029,15 +12030,15 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
     ItemListChunkHeader header;
     std::memcpy(&header, data, sizeof(header));
-    if (header.type == 21300 || header.type == 21350) {
+    if (header.type == REPLAY_CHUNK_SHOP_MAKE_BEGIN || header.type == REPLAY_CHUNK_BUYING_SHOP_MAKE_BEGIN) {
       unsigned offset = 6;
       while (offset < static_cast<unsigned>(b)) {
         std::memcpy(&header, data + offset, sizeof(header));
         offset += 6;
         switch (header.type) {
-        case 21301:
-        case 21351: {
-          UIWindow* window = g_windowMgr.EnsureWindow(header.type == 21301 ? WID_MERCHANTMIRRORITEMWND : WID_MERCHANTMIRRORITEMWND_MODE_1);
+        case REPLAY_CHUNK_SHOP_MAKE_END:
+        case REPLAY_CHUNK_BUYING_SHOP_MAKE_END: {
+          UIWindow* window = g_windowMgr.EnsureWindow(header.type == REPLAY_CHUNK_SHOP_MAKE_END ? WID_MERCHANTMIRRORITEMWND : WID_MERCHANTMIRRORITEMWND_MODE_1);
           if (window) {
             window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }

@@ -1,4 +1,5 @@
 #include "Client/Mode/GameModeEnums.h"
+#include "Client/Mode/GameModeResultEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceEnums.h"
@@ -758,7 +759,7 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_REGISTER*>(packet);
   const std::int16_t result = value->result;
-  if (result == 0) {
+  if (result == PARTY_BOOKING_REGISTER_SUCCESS) {
     g_session.m_partyBooking.registeredTick = GetTickCount();
     g_windowMgr.EnsureWindow(WID_SEEKPARTYWND);
     UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYWND));
@@ -769,7 +770,7 @@ void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
         g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
       }
     }
-  } else if (result == 2) {
+  } else if (result == PARTY_BOOKING_REGISTER_TIMEOUT) {
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_FAILED_TIMEOUT), 0, true, false, 0, "메시지", 280, 120, 0);
   } else {
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_REGISTRATION_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
@@ -1567,34 +1568,34 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_SE_PC_BUY_CASHITEM_RESULT*>(packet);
   std::string text("");
   switch (value->result) {
-  case 0:
-  case 8: {
+  case CASH_BUY_SUCCESS:
+  case CASH_BUY_FAILED_SOME: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
     if (window) {
       window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, value->cashPoints, value->kafraPoints, 0, 0);
     }
-    if (8 == value->result) {
+    if (CASH_BUY_FAILED_SOME == value->result) {
       text = LookupMessage(MSI_CASH_FAILED_BUY_SOME);
     }
     break;
   }
-  case 9:
+  case CASH_BUY_RUNE_OVERCOUNT:
     text = LookupMessage(MSI_CASH_FAILED_RUNE_OVERCOUNT);
     break;
-  case 10:
+  case CASH_BUY_EACHITEM_OVERCOUNT:
     text = LookupMessage(MSI_CASH_FAILED_EACHITEM_OVERCOUNT);
     break;
-  case 11:
+  case CASH_BUY_UNKNOWN:
     text = LookupMessage(MSI_CASH_FAILED_UNKOWN);
     break;
-  case 12:
+  case CASH_BUY_BUSY:
     text = LookupMessage(MSI_CASH_FAILED_BUSY);
     break;
-  case 303:
+  case CASH_BUY_VTC_ERROR_303:
     text = "- " + IntToString(303, 0) + " : " + LookupMessage(MSI_RESULT_ERROR_VTC_303);
     g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;
-  case 304:
+  case CASH_BUY_VTC_ERROR_304:
     text = "- " + IntToString(304, 0) + " : " + LookupMessage(MSI_RESULT_ERROR_VTC_304);
     g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;

@@ -1,4 +1,5 @@
 #include "Client/Mode/GameModeEnums.h"
+#include "Client/Mode/GameModeResultEnums.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "Contents/Actors/Skill.h"
 #include "Contents/CombatTypes.h"
@@ -1928,12 +1929,12 @@ void CGameMode::OpenServiceWindow(unsigned char type) {
 // OFFSET: 0x00D693E0
 // FUNCTION: fn_22047
 void CGameMode::ReceiveWindow328Result(int result, int value) {
-  if (result == 0) {
+  if (result == ATTENDANCE_CHECK_SUCCESS) {
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHECKATTENDANCEWND);
     if (window) {
       window->SendMsg(nullptr, UM_SETINFO, value * 10 + 1, 0, 0, 0);
     }
-  } else if (result == 1) {
+  } else if (result == ATTENDANCE_CHECK_FAIL_RESTART) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHECK_ATTENDANCE_FAIL_RESTART)), 0xFF, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_CHECKATTENDANCEWND);
   }
@@ -2038,7 +2039,7 @@ void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
 // FUNCTION: fn_22064
 void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const char* key) {
   switch (result) {
-  case 0: {
+  case CAPTCHA_PREVIEW_SUCCESS: {
     UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(WID_CAPTCHAPREVIEWWND));
     if (!window) {
       window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.EnsureWindow(WID_CAPTCHAPREVIEWWND));
@@ -2055,7 +2056,7 @@ void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const cha
     window->InitImageData(size);
     break;
   }
-  case 1:
+  case CAPTCHA_PREVIEW_INVALID_ID:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("wrong captcha ID."), 0xFF, 0, 0, 0);
     break;
   }
@@ -2096,20 +2097,20 @@ struct BuyingStoreResultPacket {
 void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
   char text[250];
   const std::int16_t result = packet->result;
-  if (0 == result) {
+  if (GUILD_STORAGE_OPEN_ERROR == result) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_OPEN_ERROR));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-  } else if (2 == result) {
+  } else if (GUILD_STORAGE_OPEN_NO_GUILD == result) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_OPEN_NO_JOIN_GUILD));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-  } else if (3 == result) {
+  } else if (GUILD_STORAGE_OPEN_IN_USE == result) {
     g_session.m_buyingStoreNoPermission = 1;
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_WARNING_USING_ANOTHER_MEMBER));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-  } else if (1 == result) {
+  } else if (GUILD_STORAGE_OPEN_SUCCESS == result) {
     g_session.m_buyingStoreMode = 1;
     const std::int16_t dbNumber = packet->value;
     g_session.m_buyingStoreDbNumber = dbNumber;
@@ -2609,10 +2610,10 @@ void CGameMode::ShowFormattedNotice(unsigned short messageId, std::uint32_t colo
 // FUNCTION: fn_22074
 void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int result) {
   switch (result) {
-  case 1:
+  case CAPTCHA_UPLOAD_FAILED_ANSWER:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_FAILED_REGISTER_ANSWER)), 0xFF, 0, 0, 0);
     break;
-  case 0: {
+  case CAPTCHA_UPLOAD_SUCCESS: {
     auto* window = static_cast<UICaptchaRegisterWnd*>(g_windowMgr.LookupWindow(WID_CAPTCHAREGISTERWND));
     if (!window) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_FAILED_REGISTER_CAPTCHA)), 0xFF, 0, 0, 0);
@@ -2661,7 +2662,7 @@ void CGameMode::ReceiveExtraInventoryResult(const unsigned char* data) {
 // FUNCTION: fn_22128
 void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index) {
   switch (result) {
-  case 0: {
+  case ITEM_REFORM_SUCCESS: {
     g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
     g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
@@ -2674,7 +2675,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
     }
     break;
   }
-  case 3: {
+  case ITEM_REFORM_NOT_ENOUGH_MATERIAL: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMREFORMWND);
     if (window) {
       window->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFORM_WARNNING_NOT_ENOUGH_MATERIAL)), 0, 0, 0);

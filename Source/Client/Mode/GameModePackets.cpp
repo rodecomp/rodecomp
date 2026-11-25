@@ -605,7 +605,7 @@ void CGameMode::ReceiveBossMonsterInfo(const unsigned char* data) {
   case BOSS_INFO_ALIVE_WITHMSG:
     this->bossMonsterX = packet->first;
     this->bossMonsterY = packet->second;
-    if (packet->result != 2) {
+    if (packet->result != BOSS_INFO_ALIVE_WITHMSG) {
       return;
     }
     std::sprintf(message, LookupMessage(MSI_SHOW_POSITION_OF_BOSSMON), name);
@@ -1205,13 +1205,13 @@ __declspec(noinline) void CGameMode::ReceiveHomunculusProperty64(const unsigned 
 // FUNCTION: fn_21714
 __declspec(noinline) void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
   const HomunculusPropertyPacket* packet = reinterpret_cast<const HomunculusPropertyPacket*>(data);
-  if (packet->type == 5) {
+  if (packet->type == SP_HP) {
     g_session.m_homunHp = packet->value;
     g_session.RefreshHomunculusInfo();
-  } else if (packet->type == 7) {
+  } else if (packet->type == SP_SP) {
     g_session.m_homunSp = packet->value;
     g_session.RefreshHomunculusInfo();
-  } else if (packet->type == 1) {
+  } else if (packet->type == SP_BASEEXP) {
     g_session.m_homunExp = packet->value;
     g_session.RefreshHomunculusInfo();
   }
@@ -1721,7 +1721,7 @@ namespace {
 __declspec(noinline) void CGameMode::ReceiveCharViewResult(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_ACK_DO_SWAP_EQUIPITEM*>(packet);
   switch (p->result) {
-  case 0: {
+  case SWAP_EQUIPITEM_SUCCESS: {
     CMode* mode = g_modeMgr.currentMode;
     CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     if (player->render.state != 0 && mode != nullptr) {
@@ -1729,7 +1729,7 @@ __declspec(noinline) void CGameMode::ReceiveCharViewResult(const unsigned char* 
     }
     return;
   }
-  case 1:
+  case SWAP_EQUIPITEM_NO_ITEM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM)), 0xFF, 0, 0, 0);
     return;
   default:
@@ -1826,7 +1826,7 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonNotify(const unsigned
   g_session.memorialExpirationTime = p->expirationTime;
   const int time = p->expirationTime;
   g_session.memorialDungeonState = 0 != time ? 1 : 2;
-  if (p->type == 0) {
+  if (p->type == MEMORIAL_DUNGEON_NOTIFY) {
     if (previous != (time != 0 ? 1 : 2) || time != 0 || g_session.memorialWindowOpen != 0) {
       if (UIWindow* window = g_windowMgr.EnsureWindow(WID_MEMORIALDUNWND)) {
         window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -1837,11 +1837,11 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonNotify(const unsigned
 
   g_windowMgr.CloseWindow(WID_MEMORIALDUNWND);
   const int type = p->type;
-  if (type == 1) {
+  if (type == MEMORIAL_DUNGEON_LIVE_TIMEOUT) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MEMORIAL_DUN_LIVE_TIME_OUT)), 0x64FFFF, 0, 0, 0);
-  } else if (type == 2) {
+  } else if (type == MEMORIAL_DUNGEON_ENTER_TIMEOUT) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MEMORIAL_DUN_ENTER_TIME_OUT)), 0x64FFFF, 0, 0, 0);
-  } else if (type == 3) {
+  } else if (type == MEMORIAL_DUNGEON_DESTROY_REQUEST) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MEMORIAL_DUN_DESTROY_REQUEST)), 0x64FFFF, 0, 0, 0);
   }
 }
@@ -1970,11 +1970,11 @@ void CGameMode::Zc_Notify_Exp(const unsigned char* packet) {
   }
 
   char buffer[256];
-  if (data->varId == 1) {
+  if (data->varId == SP_BASEEXP) {
     const char* format = LookupMessage(MSI_NOTIFY_EXP);
     std::sprintf(buffer, format, amount);
     text += buffer;
-  } else if (data->varId == 2) {
+  } else if (data->varId == SP_JOBEXP) {
     const char* format = LookupMessage(MSI_NOTIFY_JOBEXP);
     std::sprintf(buffer, format, amount);
     text += buffer;
@@ -2779,11 +2779,11 @@ namespace {
 __declspec(noinline) void CGameMode::ReceiveBuyingStoreClose(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_FAILED_TRADE_BUYING_STORE_TO_BUYER*>(packet);
   switch (p->result) {
-  case 3:
+  case BUYING_STORE_BUYER_OVER_LIMIT_ZENY:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUYINGSTORE_TRADE_OVERLIMITZENY)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case BUYING_STORE_BUYER_BUY_COMPLETE:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUYINGSTORE_TRADE_BUYCOMPLETE)), 0xFF, 0, 0, 0);
     break;
@@ -4198,9 +4198,9 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       return;
     }
     switch (source->objectType) {
-    case 10:
-    case 13:
-    case 14:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
       break;
     }
@@ -5860,7 +5860,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     break;
   }
 
-  if (packet->type == 11 || packet->type == 55) {
+  if (packet->type == SP_BASELEVEL || packet->type == SP_JOBLEVEL) {
     if (g_equipmentPropertiesMgr == nullptr) {
       g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
     }
@@ -5892,12 +5892,12 @@ void CGameMode::ApplyStatusChange(
 
     if (type == EFST_SPELLFIST && actor) {
       const int element = value3 & 0xFF;
-      if (element == 19) {
+      if (element == MG_FIREBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      } else if (element == 20) {
+      } else if (element == MG_LIGHTNINGBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      } else if (element == 14) {
+      } else if (element == MG_COLDBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
@@ -6747,12 +6747,12 @@ void CGameMode::ApplyStatusChange(
       }
 
       const int element = value3 & 0xFF;
-      if (element == 19) {
+      if (element == MG_FIREBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      } else if (element == 20) {
+      } else if (element == MG_LIGHTNINGBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      } else if (element == 14) {
+      } else if (element == MG_COLDBOLT) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
@@ -7874,7 +7874,7 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
 __declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity) {
   this->waitingTakeoffEquipAck = timeGetTime() - 2000;
   switch (result) {
-  case 0:
+  case TAKEOFF_EQUIP_SUCCESS:
     if (location) {
       if (g_session.IsCostumeLocation(location)) {
         g_session.UnequipCostumeItem(location);
@@ -7883,7 +7883,7 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipResult(unsigned char res
       g_session.UnequipItem(location, identity);
     }
     break;
-  case 1: {
+  case TAKEOFF_EQUIP_FORBIDDEN: {
     const char* text = LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 7, 0, 0);
     break;
@@ -8294,7 +8294,7 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigne
   ITEM_INFO item = g_session.LookupClientItemByIdentity(p->index);
   item.identity[3] = p->wearLocation;
   switch (p->result) {
-  case 0: {
+  case SWAP_EQUIPITEM_SUCCESS: {
     if (g_session.IsCostumeLocation(p->wearLocation)) {
       g_session.UnequipSwapEquippedItem(item);
     } else {
@@ -8306,7 +8306,7 @@ __declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigne
     );
     break;
   }
-  case 1:
+  case SWAP_EQUIPITEM_NO_ITEM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM)), 0xFF, 0, 0, 0);
     if (g_session.IsCostumeLocation(p->wearLocation)) {
       g_session.UnequipSwapEquippedItem(item);
@@ -8336,11 +8336,11 @@ namespace {
 void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_FAILED_TRADE_BUYING_STORE_TO_SELLER*>(packet);
   switch (p->result) {
-  case 5:
+  case BUYING_STORE_SELLER_DEAL_FAILED:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAL_FAIL)), 0xFF, 0, 0, 0);
     break;
-  case 6: {
+  case BUYING_STORE_SELLER_OVER_COUNT: {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY,
@@ -8351,7 +8351,7 @@ void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
     );
     break;
   }
-  case 7:
+  case BUYING_STORE_SELLER_LACK_BUYER_ZENY:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUYINGSTORE_TRADE_LACKBUYERZENY)), 0xFF, 0, 0, 0);
     break;
@@ -9612,10 +9612,10 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
     item.expireTime = packet->expireTime;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
 
@@ -9646,10 +9646,10 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
     item.expireTime = packet->expireTime;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (packet->type) {
@@ -9713,10 +9713,10 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.expireTime = packet->expireTime;
     item.bindOnEquip = packet->bindOnEquip;
     item.selected = 1;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
 
@@ -9751,10 +9751,10 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.refiningLevel = packet->refine;
     item.expireTime = packet->expireTime;
     item.bindOnEquip = packet->bindOnEquip;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (packet->type) {
@@ -9818,10 +9818,10 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
 
@@ -9851,10 +9851,10 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       this->lastPickItemTime = 0;
     }
-    if (packet->type == 10 || packet->type == 16 || packet->type == 17 || packet->type == 19) {
+    if (packet->type == TYPE_ARROW || packet->type == TYPE_AMMO || packet->type == TYPE_THROWWEAPON || packet->type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (packet->type) {
@@ -9932,10 +9932,10 @@ void CGameMode::ReceiveItemPickupAck5(
       for (int option = 0; option < item.optionCount; ++option) {
         item.options[option] = options[option];
       }
-      if (std::atoi(item.itemId.c_str()) == 607) {
+      if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
         g_modeMgr.GetGameMode()->lastPickItemTime = 0;
       }
-      if (type == 10 || type == 16 || type == 17 || type == 19) {
+      if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
         item.identity[3] = 0x8000;
       }
 
@@ -9975,10 +9975,10 @@ void CGameMode::ReceiveItemPickupAck5(
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options[option];
     }
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
-    if (type == 10 || type == 16 || type == 17 || type == 19) {
+    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (type) {
@@ -10048,10 +10048,10 @@ namespace {
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
     }
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
-    if (type == 10 || type == 16 || type == 17 || type == 19) {
+    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
 
@@ -10094,10 +10094,10 @@ namespace {
     for (int option = 0; option < item.optionCount; ++option) {
       item.options[option] = options.options[option];
     }
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
-    if (type == 10 || type == 16 || type == 17 || type == 19) {
+    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (type) {
@@ -11177,10 +11177,10 @@ namespace {
       item.options[option] = options.options[option];
     }
     item.placeEtcTab = favorite;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
-    if (type == 10 || type == 16 || type == 17 || type == 19) {
+    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     item.sprite = look;
@@ -11227,10 +11227,10 @@ namespace {
       item.options[option] = options.options[option];
     }
     item.placeEtcTab = favorite;
-    if (std::atoi(item.itemId.c_str()) == 607) {
+    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
       g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
-    if (type == 10 || type == 16 || type == 17 || type == 19) {
+    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
       item.identity[3] = 0x8000;
     }
     switch (type) {
@@ -14484,7 +14484,7 @@ void CGameMode::SpawnMovingActor(
     return;
   }
 
-  if (objectType == 0 && gid != 0) {
+  if (objectType == PC_TYPE && gid != 0) {
     CPlayerNameDictionary* dictionary = g_playerNameDictionary;
     dictionary->Set(gid, name);
   }
@@ -14536,7 +14536,7 @@ void CGameMode::SpawnMovingActor(
     actor->SendMsg(nullptr, AM_MOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
   } else {
     CGameActor* created;
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(job);
@@ -14567,16 +14567,16 @@ void CGameMode::SpawnMovingActor(
   }
   actor->characterLevel = level;
   actor->render.font = font;
-  if (objectType == 7) {
+  if (objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
+  } else if (objectType == NPC_HO_TYPE && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
-  } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
+  } else if (objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -14597,7 +14597,7 @@ void CGameMode::SpawnMovingActor(
     break;
   }
 
-  if (objectType == 0) {
+  if (objectType == PC_TYPE) {
     CellFloatPos position;
     position.x = actor->render.position.x;
     position.z = actor->render.position.z;
@@ -16366,7 +16366,7 @@ void CGameMode::SpawnStandingActor(
   unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
 ) {
   ActorStandEntry entry;
-  if (objectType == 0 && gid != 0) {
+  if (objectType == PC_TYPE && gid != 0) {
     CPlayerNameDictionary* dictionary = g_playerNameDictionary;
     dictionary->Set(gid, name);
   }
@@ -16398,7 +16398,7 @@ void CGameMode::SpawnStandingActor(
   entry.robe = robe;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
-  if (objectType == 0) {
+  if (objectType == PC_TYPE) {
     entry.state = 0;
   } else {
     entry.shieldAppearance = entry.guildVersion;
@@ -16411,14 +16411,14 @@ void CGameMode::SpawnStandingActor(
 
   CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
       actor->SendMsg(nullptr, AM_STANDENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(job);
@@ -16431,13 +16431,13 @@ void CGameMode::SpawnStandingActor(
     actor = created;
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       if (this->partyPosList.find(aid) != this->partyPosList.end() || this->guildPosList.find(aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     } else {
-      if (!((objectType == 1 || objectType == 6 || objectType == 5) && g_session.IsPlayerJob(job) == 1)) {
+      if (!((objectType == NPC_TYPE || objectType == NPC_EVT_TYPE || objectType == NPC_MOB_TYPE) && g_session.IsPlayerJob(job) == 1)) {
         entry.appearanceVariant = 0;
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, reinterpret_cast<int>(&entry), 1, 0, 0, 0, 0);
@@ -16452,16 +16452,16 @@ void CGameMode::SpawnStandingActor(
   }
   actor->characterLevel = level;
   actor->render.font = font;
-  if (objectType == 7) {
+  if (objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
+  } else if (objectType == NPC_HO_TYPE && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
-  } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
+  } else if (objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -16483,7 +16483,7 @@ void CGameMode::SpawnStandingActor(
     break;
   }
 
-  if (objectType != 0) {
+  if (objectType != PC_TYPE) {
     const std::uint32_t emblemGuildId = (accessory2 << 16) | accessory3;
     if (emblemGuildId > 0 && !actor->GetGdid()) {
       actor->SetGuildInfo(emblemGuildId, guildVersion);
@@ -16637,7 +16637,7 @@ void CGameMode::SpawnStateActor(
   unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
 ) {
   ActorStandEntry entry;
-  if (objectType == 0 && gid != 0) {
+  if (objectType == PC_TYPE && gid != 0) {
     CPlayerNameDictionary* dictionary = g_playerNameDictionary;
     dictionary->Set(gid, name);
   }
@@ -16670,7 +16670,7 @@ void CGameMode::SpawnStateActor(
   entry.robe = robe;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
-  if (objectType != 0) {
+  if (objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
   entry.gid = gid;
@@ -16681,14 +16681,14 @@ void CGameMode::SpawnStateActor(
 
   CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
       actor->SendMsg(nullptr, AM_STANDENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(job);
@@ -16701,7 +16701,7 @@ void CGameMode::SpawnStateActor(
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
     actor = created;
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       if (this->partyPosList.find(aid) != this->partyPosList.end() || this->guildPosList.find(aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -16724,16 +16724,16 @@ void CGameMode::SpawnStateActor(
   }
   actor->characterLevel = level;
   actor->render.font = font;
-  if (objectType == 7) {
+  if (objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
+  } else if (objectType == NPC_HO_TYPE && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
-  } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
+  } else if (objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -16755,12 +16755,12 @@ void CGameMode::SpawnStateActor(
     break;
   }
 
-  if (objectType != 0 && 0x2D2 == job) {
+  if (objectType != PC_TYPE && 0x2D2 == job) {
     actor->SetGuildInfo(actor->GetGdid(), guildVersion);
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
   } else {
     this->ApplyActorStatusEffects(aid, effectState, level, virtue);
-    if (objectType == 0) {
+    if (objectType == PC_TYPE) {
       int cell[2];
       cell[0] = entry.cellX;
       cell[1] = entry.cellY;
@@ -24325,7 +24325,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK*>(g_gameModePacketBuffer);
       this->waitingTakeoffEquipAck = timeGetTime() - 2000;
       switch (packet->flag) {
-      case 0: {
+      case TAKEOFF_EQUIP_SUCCESS: {
         const std::uint16_t location = packet->wearLocation;
         if (location) {
           if (g_session.IsCostumeLocation(location)) {
@@ -24336,7 +24336,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
         break;
       }
-      case 1:
+      case TAKEOFF_EQUIP_FORBIDDEN:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM_FORBID)), 0xFF, 7, 0, 0);
         break;
       }
@@ -24515,15 +24515,15 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xBEB: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_USE_RESULT*>(g_gameModePacketBuffer);
       switch (packet->result) {
-      case 0:
+      case CASH_EMOTION_USE_EXPIRED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_DATE")), 0xFF, 0, 0, 0);
         g_cashEmotionMgr->RemoveOwnedPack(packet->packId, true, true);
         this->RefreshEmotionPurchaseSchedule();
         break;
-      case 1:
+      case CASH_EMOTION_USE_NOT_PURCHASED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_USE_FAIL_UNPURCHASED")), 0xFF, 0, 0, 0);
         break;
-      case 2:
+      case CASH_EMOTION_USE_SKILL_LEVEL_TOO_LOW:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_USE_FAIL_SKILL_LEVEL")), 0xFF, 0, 0, 0);
         break;
       default:
@@ -24544,24 +24544,24 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xBEE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_PURCHASE_RESULT*>(g_gameModePacketBuffer);
       switch (packet->result) {
-      case 0:
+      case CASH_EMOTION_PURCHASE_INSUFFICIENT_NYANGVINE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_NYANGVINE")), 0xFF, 0, 0, 0);
         break;
-      case 1:
+      case CASH_EMOTION_PURCHASE_SALE_EXPIRED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE")), 0xFF, 0, 0, 0);
         this->RefreshEmotionSaleSchedule();
         break;
-      case 2:
+      case CASH_EMOTION_PURCHASE_ALREADY_PURCHASED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ALREADY_BUY")), 0xFF, 0, 0, 0);
         break;
-      case 3:
+      case CASH_EMOTION_PURCHASE_OTHER_SALE_PURCHASED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_ANOTHER_SALE_BUY")), 0xFF, 0, 0, 0);
         break;
-      case 4:
+      case CASH_EMOTION_PURCHASE_BASIC_SKILL_LEVEL_TOO_LOW:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 0xFF, 0,
                                0, 0);
         break;
-      case 5:
+      case CASH_EMOTION_PURCHASE_SALE_NOT_STARTED:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 0xFF, 0, 0, 0);
         this->RefreshEmotionSaleSchedule();
         break;
@@ -26606,7 +26606,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_MONSTER_INFO: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_MONSTER_INFO*>(g_gameModePacketBuffer);
       const std::uint16_t id = packet->monsterId;
-      if (id != 1285 && id != 1286 && id != 1287 && id != 1829 && id != 1830) {
+      if (id != JT_ARCHER_GUARDIAN && id != JT_KNIGHT_GUARDIAN && id != JT_SOLDIER_GUARDIAN && id != JT_SWORD_GUARDIAN && id != JT_BOW_GUARDIAN) {
         g_windowMgr.EnsureWindow(WID_MONSTERINFOWND)->SendMsg(nullptr, UM_SET_MONSTER_INFO, reinterpret_cast<std::intptr_t>(g_gameModePacketBuffer), 0, 0, 0);
       }
       break;
@@ -26928,22 +26928,22 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
       const int seconds = packet->itemId;
       switch (packet->result) {
-      case 0:
+      case SHOW_DIGIT_STATIC:
         g_session.m_timeAttackMode = 0;
         g_session.m_timeAttackVisible = 1;
         g_session.m_timeAttackCountdown = seconds * 1000;
         break;
-      case 1:
+      case SHOW_DIGIT_COUNTDOWN:
         g_session.m_timeAttackCountdown = timeGetTime() + seconds * 1000;
         g_session.m_timeAttackMode = 1;
         g_session.m_timeAttackVisible = 1;
         break;
-      case 2:
+      case SHOW_DIGIT_ELAPSED:
         g_session.m_timeAttackCountdown = timeGetTime() - seconds * 1000;
         g_session.m_timeAttackMode = 2;
         g_session.m_timeAttackVisible = 1;
         break;
-      case 3:
+      case SHOW_DIGIT_FRAME_COUNTDOWN:
         g_session.m_timeAttackMode = 3;
         g_session.m_timeAttackCountdown = seconds * 30 + 29;
         g_session.m_timeAttackVisible = 1;
