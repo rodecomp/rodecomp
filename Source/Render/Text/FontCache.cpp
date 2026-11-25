@@ -133,8 +133,6 @@ __declspec(noinline) HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t
     std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
   } else if (family == 21) {
     std::strcpy(description.lfFaceName, "RixLoveangel_10.eot");
-  } else if (family == 22) {
-    std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
   } else if (family == 23) {
     std::strcpy(description.lfFaceName, "RixDiary_10.eot");
   } else if (family == 24) {
