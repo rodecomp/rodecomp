@@ -1947,7 +1947,10 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
     if (result.size() + prefix.size() > std::strlen(lineText)) {
       const int available = static_cast<int>(std::strlen(lineText) - result.size());
       if (available > 0) {
-        result += prefix.substr(0, available);
+        const unsigned clippedLength = prefix.size() < static_cast<unsigned>(available)
+            ? static_cast<unsigned>(prefix.size()) : static_cast<unsigned>(available);
+        const std::string clipped(prefix.data(), clippedLength);
+        result.append(clipped.data(), clipped.size());
         previous += available;
         break;
       }
