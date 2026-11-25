@@ -1185,12 +1185,22 @@ void EnchantUI::CUIUpgradeRandom::OnInit() {
 }
 
 namespace EnchantUI {
+// INLINED
+static int IngredientX(const CUIIngredient* ingredient, int index) {
+  return ingredient->geometry.x + index % 4 * 74;
+}
+
+// INLINED
+static int IngredientY(const CUIIngredient* ingredient, int index) {
+  return ingredient->geometry.y + index / 4 * 52;
+}
+
 // OFFSET: 0x00A05CF0
 // FUNCTION: fn_14981
 void CUIEnchantPage::OnInit() {
   for (int i = 0; i < 8u; ++i) {
     CUIIngredient* ingredient = this->CreateIngredient();
-    ingredient->Move(ingredient->geometry.x + i % 4 * 74, ingredient->geometry.y + i / 4 * 52);
+    ingredient->Move(IngredientX(ingredient, i), IngredientY(ingredient, i));
     this->ingredients.push_back(ingredient);
   }
 
