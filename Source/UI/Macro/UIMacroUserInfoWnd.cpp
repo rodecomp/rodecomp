@@ -139,12 +139,12 @@ std::string UIMacroReporterWnd::EllipsizeText(int maxWidth, const char* text, in
   this->TextWidth("...", 0, font, height, bold, 0);
   if (maxWidth >= width) {
     return text;
-  }
+  } else {
 
   std::string fitted(text);
   std::wstring wide(ATL::CA2WEX<128>(text, CP_THREAD_ACP));
 
-  for (;;) {
+  do {
     if (wide.size() <= 1) {
       fitted = std::string(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP)) + "...";
       break;
@@ -156,13 +156,10 @@ std::string UIMacroReporterWnd::EllipsizeText(int maxWidth, const char* text, in
     }
 
     fitted = std::string(ATL::CW2AEX<128>(wide.c_str(), CP_THREAD_ACP)) + "...";
+  } while (maxWidth < this->TextWidth(fitted.c_str(), 0, font, height, bold, 0));
 
-    if (maxWidth >= this->TextWidth(fitted.c_str(), 0, font, height, bold, 0)) {
-      break;
-    }
+  return std::string(fitted);
   }
-
-  return fitted;
 }
 
 // OFFSET: 0x007F0480
