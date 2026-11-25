@@ -104,9 +104,10 @@ void UIQuestDisplay::Paint() {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", info.m_huntName[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index]));
           }
         } else {
-          hunt = static_cast<const std::string&>(
-            g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index])
-          );
+          const int maxLevel = info.m_huntMaxLevel[index];
+          const int minLevel = info.m_huntMinLevel[index];
+          CRenewQuestMgr* manager = g_renewQuestMgr;
+          hunt = static_cast<const std::string&>(manager->GetMonsterConditionText(info.m_huntConditionFlags[index], minLevel, maxLevel));
         }
 
         hunt = StripColorCodes(hunt.c_str(), hunt.size());
@@ -118,7 +119,8 @@ void UIQuestDisplay::Paint() {
         if (g_windowMgr.chatWnd) {
           description = g_windowMgr.chatWnd->ConvertChat(std::move(description));
         }
-        description = g_navigationLinkParser->DisplayNavigationLink(description);
+        NavigationLinkParser* linkParser = g_navigationLinkParser;
+        description = linkParser->DisplayNavigationLink(description);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
         if (info.m_huntMaxCount[index] > 0) {
