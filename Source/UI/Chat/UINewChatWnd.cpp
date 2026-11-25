@@ -308,6 +308,18 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         std::strcpy(name, reinterpret_cast<const char*>(d));
       }
 
+      bool hasLink = false;
+      NavigationLinkParser* parser = g_navigationLinkParser;
+      std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
+      if (parser->HasLink(plain)) {
+        hasLink = true;
+        lines.push_back(plain);
+      } else {
+        WrapPlainText(
+          RemoveTextColors(reinterpret_cast<const char*>(a)).c_str(), lines, 0x5E
+        );
+      }
+
       switch (c) {
       case 1:
       case 3:
@@ -331,18 +343,6 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       if (std::strcmp(name, g_session.DecodePlayerName()) == 0) {
         name[0] = '\0';
-      }
-
-      bool hasLink = false;
-      NavigationLinkParser* parser = g_navigationLinkParser;
-      std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
-      if (parser->HasLink(plain)) {
-        hasLink = true;
-        lines.push_back(plain);
-      } else {
-        WrapPlainText(
-          RemoveTextColors(reinterpret_cast<const char*>(a)).c_str(), lines, 0x5E
-        );
       }
 
       bool everyTab = false;
