@@ -5576,8 +5576,8 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
   float cs1;
   float sn1;
   ZeroVector3d vec1;
-  ZeroVector3d vec3;
   ZeroVector3d vec2;
+  ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
   int alpha;
@@ -5599,13 +5599,9 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 
         rx = this->state.slots[ec].height[0];
 
-        vec1.x = cs1 * rx;
-        vec1.z = sn1 * rx;
-        vec1.y = -0.0f;
+        vec1.Set(cs1 * rx, -0.0f, sn1 * rx);
 
-        vec2.x = vec1.x;
-        vec2.z = vec1.z;
-        vec2.y = vec1.y;
+        vec2 = vec1;
         if (i == 1) {
           vec2.y -= this->state.slots[ec].maxHeight * 0.2f;
         } else {
@@ -5614,13 +5610,9 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 
         rx = this->state.slots[ec].height[0] + this->state.slots[ec].distance;
 
-        vec3.x = cs1 * rx;
-        vec3.z = sn1 * rx;
-        vec3.y = -0.0f;
+        vec3.Set(cs1 * rx, -0.0f, sn1 * rx);
 
-        vec4.x = vec3.x;
-        vec4.z = vec3.z;
-        vec4.y = vec3.y;
+        vec4 = vec3;
         if (i == 1) {
           vec4.y -= this->state.slots[ec].maxHeight;
         } else {
