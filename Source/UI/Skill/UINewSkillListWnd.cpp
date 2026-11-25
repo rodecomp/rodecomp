@@ -1340,11 +1340,10 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     if (g_session.m_simplifiedSkillList != 0) {
       this->SendMsg(nullptr, UM_RESIZE, 3, 330, this->m_saved->height, 0);
-      return 0;
     } else {
       this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
-      return 0;
     }
+    break;
   case UM_RESIZE:
     if (a == 3) {
       if (g_session.m_simplifiedSkillList != 0) {
@@ -1366,28 +1365,26 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
       this->Move(this->m_saved->x, this->m_saved->y);
       g_windowMgr.StoreSnapRectangle(this);
-      return 0;
     }
     break;
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_SKILLLISTWND);
-      return 0;
+      break;
     case ID_APPLY:
       if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         this->ApplySkillPoints();
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {
           g_windowMgr.SetFocus(ChatWindow()->m_inputEdit);
-          return 0;
         }
       }
       break;
     case ID_RESET:
       this->ResetLists();
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_MINI: {
       this->StoreInfo();
       this->m_needsRedraw = 1;
@@ -1397,11 +1394,11 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       } else {
         this->SendMsg(nullptr, UM_RESIZE, 3, 560, 400, 0);
       }
-      return 0;
+      break;
     }
     case ID_CHECK: {
       g_session.m_showSkillDescription = g_session.m_showSkillDescription == 0;
-      return 0;
+      break;
     }
     case ID_LVLUP1:
     case ID_LVLUP2:
@@ -1421,28 +1418,25 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->LayoutButtons();
           this->Invalidate();
         }
-        return 0;
       }
       break;
     case ID_PLUS: {
-      const int tab = this->m_tab;
-      int next = 0;
-      if (tab + 1 != this->m_tabs->TabCount()) {
-        next = tab + 1;
-      }
-      this->m_tabs->SelectTab(next);
-      return 0;
+      const int next = this->m_tab + 1;
+      UITabControl* tabs = this->m_tabs;
+      tabs->SelectTab(next != tabs->TabCount() ? next : 0);
+      break;
     }
     default: {
       g_session.SetOption(7, 1);
       const unsigned int offset = static_cast<unsigned int>(a) - 42;
-      const unsigned int slot = offset > 41 ? static_cast<unsigned int>(a) : offset;
-      CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + slot, false);
+      CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + (offset > 41 ? static_cast<unsigned int>(a) : offset), false);
+      const int id = skill.id;
       if (skill.available != 0) {
-        const int current = g_session.UseLevel(skill.id);
-        int level = current + 1;
-        if (offset > 41) {
-          level = current - 1;
+        int level = g_session.UseLevel(id);
+        if (offset <= 41) {
+          ++level;
+        } else {
+          --level;
         }
         if (level <= 0) {
           level = 1;
@@ -1450,11 +1444,11 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetSkillValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(id, level);
         this->m_needsRedraw = 1;
         this->Invalidate();
       }
-      return 0;
+      break;
     }
     }
     break;
@@ -1462,7 +1456,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     std::list<CSkillInfo>& list = this->SkillList(a, false);
     if (!this->IsExtraTab(a) && list.size() == 0) {
       this->m_tabs->activeTabIndex = this->m_tab;
-      return 0;
+      break;
     }
     if (this->m_tab != a) {
       this->m_selectedSkill = -1;
@@ -1473,19 +1467,21 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_session.m_skillBundle.extraIds.clear();
       }
     }
-  }
-  refreshUi:
     this->UpdateScrollBar();
     this->LayoutButtons();
     this->Invalidate();
-    return 0;
+    break;
+  }
   case UM_REFRESHITEM:
     this->ResetLists();
     g_session.m_skillBundle.NumberExtra();
-    goto refreshUi;
+    this->UpdateScrollBar();
+    this->LayoutButtons();
+    this->Invalidate();
+    break;
   case UM_REFRESH:
     this->InitTabs();
-    return 0;
+    break;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
@@ -1514,14 +1510,14 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       CMode* gameMode = g_modeMgr.currentMode;
       const int level = g_session.UseLevel(skill->id);
       gameMode->SendMsg(MM_USING_SKILL, a, level, 0, 0);
-      return 0;
     }
     break;
   }
   case UM_REFRESH_EXTRA_SKILL_TAB:
     if (!this->IsExtraTab(this->m_tab)) {
-      const int lastTab = this->m_tabs->TabCount() - 1;
-      this->m_tabs->SetFlag(lastTab, !g_session.m_skillBundle.extraIds.empty());
+      UITabControl* tabs = this->m_tabs;
+      const int lastTab = tabs->TabCount() - 1;
+      tabs->SetFlag(lastTab, !g_session.m_skillBundle.extraIds.empty());
       this->m_tabs->Invalidate();
     }
     break;
