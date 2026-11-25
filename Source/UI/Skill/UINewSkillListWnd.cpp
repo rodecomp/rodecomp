@@ -1738,7 +1738,10 @@ void UINewSkillListWnd::DrawSkillTree() {
       blue = 255;
     }
 
-    volatile int textY = y + 70;
+    const int textY = y + 70;
+    const auto drawLevel = [&](int textX, const char* value, std::uint32_t color) {
+      this->DrawOutlinedText(textX, textY, value, 0, color, 0xFFFFFF, 0, 11, 1, 0);
+    };
     const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(it->id));
     if (level != 0) {
       if (usesLevel) {
@@ -1749,9 +1752,9 @@ void UINewSkillListWnd::DrawSkillTree() {
         std::sprintf(text, "%d / %d", useLevel, it->level);
         int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
         std::sprintf(text, "%d", useLevel);
-        this->DrawOutlinedText(textX, textY, text, 0, useLevel == it->level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+        drawLevel(textX, text, useLevel == it->level ? (shade << 8 | shade) << 8 | shade : 0x7F3CFF);
         textX += this->TextWidth(text, 0, 0, 11, 1, 0);
-        this->DrawOutlinedText(textX, textY, " / ", 0, (shade << 8 | shade) << 8 | shade, 0xFFFFFF, 0, 11, 1, 0);
+        drawLevel(textX, " / ", (shade << 8 | shade) << 8 | shade);
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = it->id;
@@ -1765,11 +1768,11 @@ void UINewSkillListWnd::DrawSkillTree() {
           target = extra->level;
         }
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", target);
-        this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        drawLevel(textX, text, (blue << 8 | green) << 8 | red);
       } else {
         std::sprintf(text, "%d", it->level);
         const int textX = (24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4;
-        this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        drawLevel(textX, text, (blue << 8 | green) << 8 | red);
       }
     }
 
@@ -1782,9 +1785,8 @@ void UINewSkillListWnd::DrawSkillTree() {
     );
 
     if (g_session.m_skillBundle.HasHigherLevel(it->id) == true) {
-      this->DrawBitmap(
-        x + 8, y + 58, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp"))), true
-      );
+      CBitmapRes* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp")));
+      this->DrawBitmap(x + 8, y + 58, mark, true);
     }
   }
 }
