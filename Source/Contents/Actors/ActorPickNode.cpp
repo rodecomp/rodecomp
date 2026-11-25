@@ -5,6 +5,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/Particles/Particle.h"
 #include "Contents/World/SkyBox.h"
 #include "Contents/World/World.h"
 #include "Render/Projection/RendererViewport.h"
@@ -107,12 +108,12 @@ void CActorPickNode::Clear() {
 
 // OFFSET: 0x00ADA8F0
 // FUNCTION: fn_17910
-ActorPickInfo* CActorPickNode::Pick(float x, float y) {
+ActorPickInfo* CActorPickNode::Pick(vector2d point) {
   if (this->children[0] == nullptr) {
     ActorPickInfo* result = nullptr;
     float bestDepth = 0.0f;
     for (ActorPickInfo* info : this->pickInfos) {
-      if (info->Contains(x, y)) {
+      if (info->Contains(point.x, point.y)) {
         const float depth = info->corners[1].z + info->corners[0].z;
         if (depth > bestDepth) {
           bestDepth = depth;
@@ -123,15 +124,15 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     return result;
   }
 
-  const int quadrant = this->QuadrantAt(static_cast<int>(x), static_cast<int>(y));
+  const int quadrant = this->QuadrantAt(static_cast<int>(point.x), static_cast<int>(point.y));
 
-  ActorPickInfo* result = this->children[quadrant]->Pick(x, y);
+  ActorPickInfo* result = this->children[quadrant]->Pick(point);
   if (result) {
     return result;
   }
   for (int index = 0; index < 4; ++index) {
     if (quadrant != index) {
-      result = this->children[index]->Pick(x, y);
+      result = this->children[index]->Pick(point);
       if (result) {
         return result;
       }

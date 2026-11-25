@@ -40,6 +40,7 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Actors/PlayerNameDictionary.h"
+#include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -120,8 +121,8 @@
 extern "C" long long _Xtime_get_ticks();
 
 #pragma pack(push, 1)
-struct GameModeTextRecord {
-  /* 0000 */ std::uint32_t header;
+struct GameModeTextRecordHeader {
+  /* 0000 */ std::uint32_t type;
   /* 0004 */ std::int16_t length;
   /* 0006 */ int firstLength;
   /* 000A */ int secondLength;
@@ -129,6 +130,10 @@ struct GameModeTextRecord {
   /* 0012 */ int roomOptionB;
   /* 0016 */ int roomOptionC;
   /* 001A */ int roomOptionD;
+};
+
+struct GameModeTextRecord {
+  /* 0000 */ GameModeTextRecordHeader header;
   /* 001E */ char buffer[0x172];
 };
 #pragma pack(pop)
@@ -1338,22 +1343,22 @@ void CGameMode::RecordChatRoomSettings() {
 
   GameModeTextRecord record;
   std::memset(record.buffer, 0, sizeof(record.buffer));
-  const int length = static_cast<std::uint16_t>(this->chatRoom.title.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoom.password.size());
-  const int titleLength = static_cast<int>(this->chatRoom.title.size());
-  const int passwordLength = static_cast<int>(this->chatRoom.password.size());
-  record.header = ReplayUiRecordHeader(REPLAY_UI_CHATROOM_SETTINGS);
-  record.length = length;
-  record.firstLength = titleLength;
-  record.secondLength = passwordLength;
-  record.roomOptionA = this->chatRoom.type;
-  record.roomOptionB = this->chatRoom.memberCount;
-  record.roomOptionC = this->chatRoom.memberLimit;
-  record.roomOptionD = this->chatRoom.id;
 
-  std::memcpy(record.buffer, this->chatRoom.title.data(), titleLength);
-  std::memcpy(record.buffer + titleLength, this->chatRoom.password.data(), passwordLength);
+  GameModeTextRecordHeader header;
+  header.type = ReplayUiRecordHeader(REPLAY_UI_CHATROOM_SETTINGS);
+  header.length = static_cast<std::int16_t>(this->chatRoom.title.size() + sizeof(GameModeTextRecordHeader) + this->chatRoom.password.size());
+  header.firstLength = static_cast<int>(this->chatRoom.title.size());
+  header.secondLength = static_cast<int>(this->chatRoom.password.size());
+  header.roomOptionA = this->chatRoom.type;
+  header.roomOptionB = this->chatRoom.memberCount;
+  header.roomOptionC = this->chatRoom.memberLimit;
+  header.roomOptionD = this->chatRoom.id;
+  record.header = header;
 
-  Replay::Instance().Record(length, &record, 0x2A, 0);
+  std::memcpy(record.buffer, this->chatRoom.title.data(), header.firstLength);
+  std::memcpy(record.buffer + header.firstLength, this->chatRoom.password.data(), header.secondLength);
+
+  Replay::Instance().Record(header.length, &record, 0x2A, 0);
 }
 
 #pragma pack(push, 1)
@@ -9739,7 +9744,7 @@ void CGameMode::ProcessInput() {
   }
 
   g_pickModifierKey = HIBYTE(GetAsyncKeyState(VK_SHIFT));
-  ActorPickInfo* pick = g_actorPickNode.Pick(static_cast<float>(g_mouse.x), static_cast<float>(g_mouse.y));
+  ActorPickInfo* pick = g_actorPickNode.Pick(vector2d(static_cast<float>(g_mouse.x), static_cast<float>(g_mouse.y)));
   UIWindow* blocker = g_windowMgr.LookupWindow(WID_EXCHANGEUI);
   if (!blocker) {
     this->OpenActorMenu(pick, handled);
@@ -9772,11 +9777,10 @@ void CGameMode::ProcessInput() {
         }
       }
       if (offset) {
-        const float centerX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x;
         const float bottom = pick->corners[1].y;
-        const float centerY = (pick->corners[0].y - bottom) * g_depthAverageHalf + bottom;
-        this->cursorOffsetX = centerX - static_cast<float>(g_mouse.x);
-        this->cursorOffsetY = centerY - static_cast<float>(g_mouse.y);
+        const float halfHeight = (pick->corners[0].y - bottom) * g_depthAverageHalf;
+        this->cursorOffsetX = (pick->corners[0].x - pick->corners[1].x) * g_depthAverageHalf + pick->corners[1].x - static_cast<float>(g_mouse.x);
+        this->cursorOffsetY = halfHeight + bottom - static_cast<float>(g_mouse.y);
       }
     }
   }

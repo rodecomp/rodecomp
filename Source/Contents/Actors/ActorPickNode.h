@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <list>
 
+struct vector2d;
+
 struct ActorPickPoint {
   // INLINED
   ActorPickPoint() : x(0.0f), y(0.0f), z(0.0f) {
@@ -38,7 +40,7 @@ public:
   virtual ~CActorPickNode();
   void AddPickInfo(ActorPickInfo* info);
   __declspec(noinline) void Clear();
-  ActorPickInfo* Pick(float x, float y);
+  ActorPickInfo* Pick(vector2d point);
   void MakeQuardTree(int depth, ActorPickBounds bounds);
   int QuadrantAt(int x, int y) const;
   ActorPickBounds ChildBounds(ActorPickBounds bounds, int quadrant) const;
