@@ -219,10 +219,7 @@ void CThrowItemEffect::Open() {
         particle->angle = 330.0f;
         particle->speedParameter = 1.5f;
         particle->alpha = 255;
-        const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
-        particle->offsetX = offset.x;
-        particle->offsetZ = offset.z;
-        particle->offsetY = offset.y;
+        particle->offset = vector3d{this->position[0], this->position[1] - 8.0f, this->position[2]};
         particle->destinationBlend = 6;
         if (this->sourceActor == 0) {
           const vector3d source = {this->position[0] - 8.0f, this->position[1], this->position[2]};
@@ -243,9 +240,7 @@ void CThrowItemEffect::Open() {
         particle->alpha = 255;
         const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
         particle->destinationBlend = 6;
-        particle->offsetZ = offset.z;
-        particle->offsetY = offset.y;
-        particle->offsetX = offset.x;
+        particle->offset = offset;
         break;
       }
       case EF_KAIHOU:
@@ -266,10 +261,7 @@ void CThrowItemEffect::Open() {
           particle->angle = 330.0f;
           particle->speedParameter = 1.5f;
           particle->alpha = 255;
-          const vector3d offset = {this->position[0], this->position[1] - 15.0f, this->position[2]};
-          particle->offsetZ = offset.z;
-          particle->offsetY = offset.y;
-          particle->offsetX = offset.x;
+          particle->offset = vector3d{this->position[0], this->position[1] - 15.0f, this->position[2]};
         }
         break;
       }
