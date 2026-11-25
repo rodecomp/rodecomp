@@ -115,6 +115,11 @@ __forceinline void CGlassWall::UpdateScreenEffect() {
   }
 }
 
+// INLINED
+static vector3d Sum(const vector3d& left, const vector3d& right) {
+  return {left.x + right.x, left.y + right.y, left.z + right.z};
+}
+
 // OFFSET: 0x00B44DD0
 // FUNCTION: fn_45943
 __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
@@ -138,8 +143,7 @@ __forceinline void CGlassWall::UpdatePanel(CParticle* particle) {
   }
 
   matrix translation;
-  const vector3d position = {particle->position.x + particle->offsetX, particle->position.y + particle->offsetY,
-                             particle->position.z + particle->offsetZ};
+  const vector3d position = Sum(particle->position, particle->offset);
   translation.MakeTranslate(position.x, position.y, position.z);
   matrix rotation;
   rotation.MakeYRotation(GetRadian(static_cast<int>(particle->angle)));
