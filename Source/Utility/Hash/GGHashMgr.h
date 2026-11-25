@@ -16,7 +16,7 @@ public:
 
   int IsValid();
   bool VerifyFile(const char* filename);
-  void VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size);
+  bool VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size);
   void VerifyPendingFiles();
 
   /* 0004 */ bool m_initialized;

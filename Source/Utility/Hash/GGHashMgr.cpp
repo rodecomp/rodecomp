@@ -84,7 +84,17 @@ bool CGGHashMgr::VerifyFile(const char* filename) {
 
 // OFFSET: 0x0076B970
 // FUNCTION: fn_08193
-void CGGHashMgr::VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size) {
+bool CGGHashMgr::VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size) {
+  NSyncObject lock(&this->m_lock);
+  if (this->m_hash->VerifyBuffer(name, buf, size)) {
+    return true;
+  }
+
+  const DWORD error = this->m_hash->GetError();
+  CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
+  manager->SetError(g_ggHashMgrSource, 0x64,
+                    std::string(FormatString(g_ggHashErrorFormat, LookupMessage(MSI_CHEAT_HASHFILE), error)));
+  return false;
 }
 
 // OFFSET: 0x0076BB50
