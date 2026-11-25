@@ -749,11 +749,11 @@ __declspec(noinline) void LoadItemNameTables() {
           continue;
         }
 
-        if (!IsDecimalText(text)) {
+        if (IsDecimalText(text)) {
+          id = std::atoi(text);
+        } else {
           DecodeMessageRot(text);
           EnsureItemDescription(id, g_itemDescriptions).unidentifiedDescription.push_back(*token);
-        } else {
-          id = std::atoi(text);
         }
       }
     }
@@ -776,11 +776,11 @@ __declspec(noinline) void LoadItemNameTables() {
           continue;
         }
 
-        if (!IsDecimalText(text)) {
+        if (IsDecimalText(text)) {
+          id = std::atoi(text);
+        } else {
           DecodeMessageRot(text);
           EnsureItemDescription(id, g_itemDescriptions).identifiedDescription.push_back(*token);
-        } else {
-          id = std::atoi(text);
         }
       }
     }
@@ -854,12 +854,12 @@ __declspec(noinline) void LoadItemNameTables() {
       continue;
     }
 
-    if (!IsNumericText(text)) {
+    if (IsNumericText(text)) {
+      metalId = std::atoi(text);
+    } else {
       if (std::strlen(text) != 0) {
         EnsureItemDescriptionLines(metalId, g_metalProcessItems).push_back(*token);
       }
-    } else {
-      metalId = std::atoi(text);
     }
   }
 
