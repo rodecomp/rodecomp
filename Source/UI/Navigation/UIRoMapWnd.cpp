@@ -530,6 +530,35 @@ bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
   return false;
 }
 
+// INLINED
+static bool CreateRecordAt(WorldViewRecord*& record, int x, int y) {
+  if (record) {
+    delete record;
+    record = nullptr;
+  }
+
+  unsigned int mapIndex = 0;
+  CWorldViewWorld* world = g_worldViewMgr.CurrentWorld();
+  if (!world) {
+    return false;
+  }
+
+  CWorldViewField* field = world->FieldAt(mapIndex, x, y);
+  if (!field) {
+    return false;
+  }
+
+  const int mapId = world->maps[mapIndex]->id;
+  record = new WorldViewRecord();
+  record->worldIndex = g_worldViewMgr.currentWorld;
+  record->mapIndex = mapId;
+  record->name = field->name;
+  record->area = field->area;
+
+  record->screenArea = world->maps[mapIndex]->area;
+  return true;
+}
+
 // OFFSET: 0x00932920
 // FUNCTION: fn_12713
 void UIRoMapWnd::OnMouseMove(int x, int y) {
@@ -554,31 +583,9 @@ void UIRoMapWnd::OnMouseMove(int x, int y) {
 
   this->Invalidate();
 
-  if (this->selectedRecord) {
-    delete this->selectedRecord;
-    this->selectedRecord = nullptr;
+  if (CreateRecordAt(this->selectedRecord, x, y)) {
+    this->Invalidate();
   }
-
-  unsigned int mapIndex = 0;
-  CWorldViewWorld* world = g_worldViewMgr.CurrentWorld();
-  if (!world) {
-    return;
-  }
-
-  CWorldViewField* field = world->FieldAt(mapIndex, x, y);
-  if (!field) {
-    return;
-  }
-
-  const int mapId = world->maps[mapIndex]->id;
-  this->selectedRecord = new WorldViewRecord();
-  this->selectedRecord->worldIndex = g_worldViewMgr.currentWorld;
-  this->selectedRecord->mapIndex = mapId;
-  this->selectedRecord->name = field->name;
-  this->selectedRecord->area = field->area;
-
-  this->selectedRecord->screenArea = world->maps[mapIndex]->area;
-  this->Invalidate();
 }
 
 // OFFSET: 0x0091DBB0
