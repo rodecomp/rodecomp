@@ -19,26 +19,17 @@ CGameActor* CWorld::GetGameActorByAID(std::uint32_t aid) const {
 // OFFSET: 0x00AC8290
 // FUNCTION: fn_46298
 ActorHealth CWorld::GetActorHealth(std::uint32_t aid) const {
-  int maximum;
-  int current;
   if (aid == g_session.m_aid) {
-    maximum = g_session.maxHp;
-    current = g_session.hp;
-  } else {
-    const CPc* actor = static_cast<const CPc*>(this->GetGameActorByAID(aid));
-    if (!actor) {
-      return {0, 0, false};
-    }
-    const UIPcGage* gauge = actor->gaugeWindow;
-    if (gauge) {
-      maximum = gauge->maximum;
-      current = gauge->current;
-    } else {
-      maximum = 0;
-      current = 0;
-    }
+    return std::make_tuple(true, g_session.hp, g_session.maxHp);
   }
-  return {maximum, current, true};
+
+  const CPc* actor = static_cast<const CPc*>(this->GetGameActorByAID(aid));
+  if (!actor) {
+    return std::make_tuple(false, 0, 0);
+  }
+
+  const UIPcGage* gauge = actor->gaugeWindow;
+  return std::make_tuple(true, gauge ? gauge->current : 0, gauge ? gauge->maximum : 0);
 }
 
 // OFFSET: 0x00AC8470

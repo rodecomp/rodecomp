@@ -8,6 +8,7 @@
 #include <functional>
 #include <list>
 #include <map>
+#include <tuple>
 #include <vector>
 
 class BinkMovies;
@@ -20,11 +21,7 @@ class CRenderObject;
 class CSkill;
 class GroundGeometry;
 
-struct ActorHealth {
-  /* 0000 */ std::int64_t maximum;
-  /* 0008 */ std::int64_t current;
-  /* 0010 */ bool found;
-};
+using ActorHealth = std::tuple<bool, std::int64_t, std::int64_t>;
 
 struct CellFloatPos {
   CellFloatPos() {
