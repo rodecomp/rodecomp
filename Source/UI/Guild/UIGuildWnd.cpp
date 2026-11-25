@@ -2420,44 +2420,55 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         gameMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
         this->m_positionMap.clear();
         this->m_button->Move(-200, -200);
-        this->m_button->SetDisabled(1);
-        this->m_button->Invalidate();
+        UIBitmapButton* button = this->m_button;
+        button->SetDisabled(1);
+        button->Invalidate();
         this->m_buttonTime = timeGetTime();
         this->InvalidateChildren();
         return 0;
       }
-      return 0;
+      break;
     case ID_CHECK:
       if (this->inviteChecks[0] && this->expelChecks[0] && this->storageChecks[0]) {
         for (int index = 0; index < 11; ++index) {
           if (this->inviteChecks[index] == sender) {
+            const int row = this->m_scrollTop + index;
             int found;
-            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            GuildPositionEntry& position = this->PositionAt(row, &found);
             if (found) {
               position.canInvite = a2;
               this->m_positionMap[position.positionId] = position;
             }
           }
           if (this->expelChecks[index] == sender) {
+            const int row = this->m_scrollTop + index;
             int found;
-            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            GuildPositionEntry& position = this->PositionAt(row, &found);
             if (found) {
               position.canExpel = a2;
               this->m_positionMap[position.positionId] = position;
             }
           }
           if (this->storageChecks[index] == sender) {
+            const int row = this->m_scrollTop + index;
             int found;
-            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            GuildPositionEntry& position = this->PositionAt(row, &found);
             if (found) {
               position.canStorage = a2;
               this->m_positionMap[position.positionId] = position;
             }
           }
         }
-        break;
+        const POINT button = {this->geometry.width - 61, this->geometry.height - 23};
+        if (g_guildInfo.isMaster && this->m_positionMap.size()) {
+          this->m_button->Move(button.x, button.y);
+        } else {
+          this->m_button->Move(-200, -200);
+        }
+        this->InvalidateChildren();
+        return 0;
       }
-      return 0;
+      break;
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_GUILDWND);
       return 0;
@@ -2471,15 +2482,23 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
           }
         }
 
+        const int positionIndex = this->m_scrollTop + row;
         int found;
-        GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
+        GuildPositionEntry& position = this->PositionAt(positionIndex, &found);
         if (found) {
           position.name = this->positionNameEdits[row]->Text();
           this->m_positionMap[position.positionId] = position;
         }
-        break;
+        const POINT button = {this->geometry.width - 61, this->geometry.height - 23};
+        if (g_guildInfo.isMaster && this->m_positionMap.size()) {
+          this->m_button->Move(button.x, button.y);
+        } else {
+          this->m_button->Move(-200, -200);
+        }
+        this->InvalidateChildren();
+        return 0;
       }
-      return 0;
+      break;
     case ID_PAYRATE_EDIT:
       if (this->taxEdits[0]) {
         int row = a1 - 276;
@@ -2490,38 +2509,29 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
           }
         }
 
+        const int positionIndex = this->m_scrollTop + row;
         int found;
-        GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
+        GuildPositionEntry& position = this->PositionAt(positionIndex, &found);
         if (found) {
           position.tax = std::atoi(this->taxEdits[row]->Text());
           if (position.tax < 0 || position.tax > 50) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_RATE), 50, 0).c_str()), 0xFF, 0, 0, 0);
-            if (position.tax < 0) {
-              position.tax = 0;
-            } else {
-              position.tax = position.tax > 50 ? 50 : position.tax;
-            }
+            position.tax = position.tax < 0 ? 0 : (position.tax > 50 ? 50 : position.tax);
           }
           this->m_positionMap[position.positionId] = position;
         }
-        break;
+        const POINT button = {this->geometry.width - 61, this->geometry.height - 23};
+        if (g_guildInfo.isMaster && this->m_positionMap.size()) {
+          this->m_button->Move(button.x, button.y);
+        } else {
+          this->m_button->Move(-200, -200);
+        }
+        this->InvalidateChildren();
+        return 0;
       }
-      return 0;
-    default:
-      return 0;
+      break;
     }
-
-    {
-      const int buttonX = this->geometry.width - 61;
-      const int buttonY = this->geometry.height - 23;
-      if (g_guildInfo.isMaster && this->m_positionMap.size()) {
-        this->m_button->Move(buttonX, buttonY);
-      } else {
-        this->m_button->Move(-200, -200);
-      }
-    }
-    this->InvalidateChildren();
-    return 0;
+    break;
 
   case UM_REFRESH:
     this->m_positions = g_guildInfo.positions;
@@ -2532,11 +2542,12 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
       this->m_button->Move(-200, -200);
     }
     this->UpdateScroll();
-    return 0;
+    break;
 
   default:
     return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
+  return 0;
 }
 
 // OFFSET: 0x0095E320
