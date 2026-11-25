@@ -525,12 +525,7 @@ int UIItemReformWnd_List::SendMsg(
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const unsigned int previous = this->scrollPosition;
-    if (message == UM_SCROLLVERTPAGEUP) {
-      argument1 = -1;
-    } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      argument1 = 1;
-    }
-    this->scrollPosition = previous + argument1;
+    this->scrollPosition = previous + (message == UM_SCROLLVERTPAGEUP ? -1 : message == UM_SCROLLVERTPAGEDOWN ? 1 : argument1);
     if (previous != this->scrollPosition) {
       this->UpdateScrollBar();
     }
@@ -559,16 +554,17 @@ int UIItemReformWnd_List::SendMsg(
         if (info->needOptionNumMin > options) {
           continue;
         }
+        bool emptySocket = true;
         if (info->isEmptySocket == 1) {
-          unsigned int slot = std::min(item.SlotCount(), 4);
-          for (; slot < 4; ++slot) {
+          for (unsigned int slot = std::min(item.SlotCount(), 4); slot < 4; ++slot) {
             if (static_cast<int>(slot) < 4 && static_cast<int>(item.cards[slot]) > 0) {
+              emptySocket = false;
               break;
             }
           }
-          if (slot < 4) {
-            continue;
-          }
+        }
+        if (!emptySocket) {
+          continue;
         }
         this->items.push_back(item);
       }
@@ -578,10 +574,11 @@ int UIItemReformWnd_List::SendMsg(
     if (this->items.empty()) {
       return -1;
     }
-    break;
   }
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x005FECD0
