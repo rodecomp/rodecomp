@@ -16,14 +16,6 @@ std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
     identifier %= divisor;
     divisor /= 10;
     switch (digit) {
-    case 6:
-      result += '2';
-      break;
-    case 0:
-      if (!result.empty()) {
-        result += '3';
-      }
-      break;
     case 1:
       result += '8';
       break;
@@ -38,6 +30,14 @@ std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
       break;
     case 5:
       result += '1';
+      break;
+    case 6:
+      result += '2';
+      break;
+    case 0:
+      if (!result.empty()) {
+        result += '3';
+      }
       break;
     case 7:
       result.push_back('4');
