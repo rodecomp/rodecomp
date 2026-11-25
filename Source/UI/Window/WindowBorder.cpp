@@ -120,12 +120,10 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
 
   auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (middle) {
-    width = width - rightWidth - leftWidth;
+    const auto remaining = [&]() { return width - rightWidth - leftWidth; };
+    width = remaining();
     const int middleWidth = middle->image.width;
-    int count = width / middleWidth;
-    if (width % middleWidth != 0) {
-      ++count;
-    }
+    const int count = (width % middleWidth != 0) + width / middle->image.width;
 
     for (int row = 1; row <= rows; ++row) {
       for (int column = 0; column < count; ++column) {
