@@ -644,7 +644,7 @@ int UIMacroReporterWnd::SendMsg(
       if (this->m_mode == 2 || this->m_mode == 3) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
-      } else if (this->m_mode == 1 || this->m_mode == 0) {
+      } else if (this->m_mode == 0 || this->m_mode == 1) {
         if (argument2) {
           this->geometry.targetAlpha = 128;
           this->geometry.alphaStart = timeGetTime();
@@ -689,7 +689,7 @@ int UIMacroReporterWnd::SendMsg(
           }
         }
         const int result = g_windowMgr
-                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0);
+                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
         if (result == ID_NO) {
           break;
         }
@@ -714,7 +714,7 @@ int UIMacroReporterWnd::SendMsg(
 
     case ID_RADIOBTN: {
       if (this->activeOnly) {
-        if (this->m_mode == 1 || this->m_mode == 0) {
+        if (this->m_mode == 0 || this->m_mode == 1) {
           if (argument2 == 2 || argument2 == 3) {
             this->activeCheckBox->SetChecked(0);
           }
