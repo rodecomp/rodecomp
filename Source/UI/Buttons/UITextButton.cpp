@@ -475,18 +475,14 @@ void UIImgMenu::OnMouseHover(int x, int y) {
 void UITabControl::OnMouseHover(int x, int y) {
   int index = this->TabAt(x, y);
 
-  if (index == -1) {
-    return;
+  if (index != -1) {
+    if (!this->tooltips[index].empty() && this->labels[index] != this->tooltips[index]) {
+      int screenX = this->TabOffset(index);
+      int screenY = -20;
+      this->ToScreen(screenX, screenY);
+      g_modeMgr.currentMode->ShowTooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+    }
   }
-
-  if (this->tooltips[index].empty() || this->labels[index] == this->tooltips[index]) {
-    return;
-  }
-
-  x = this->TabOffset(index);
-  y = -20;
-  this->ToScreen(x, y);
-  g_modeMgr.currentMode->ShowTooltip(this->tooltips[index].c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x00822660
