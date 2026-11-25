@@ -53,18 +53,20 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
       int originX = 0;
       int originY = 0;
       this->ToScreen(originX, originY);
-      const int targetX = originX + x;
-      int adjustment = 0;
+      unsigned adjustment = 0;
+      const unsigned screenWidth = g_configuredScreenWidth;
+      const unsigned screenHeight = g_configuredScreenHeight;
+      const unsigned targetX = static_cast<unsigned>(x) + originX;
 
-      if (static_cast<unsigned>(g_configuredScreenWidth) - targetX < static_cast<unsigned>(detail->geometry.width)) {
-        adjustment = detail->geometry.width - (static_cast<unsigned>(g_configuredScreenWidth) - targetX);
+      if (screenWidth - targetX < static_cast<unsigned>(detail->geometry.width)) {
+        adjustment = detail->geometry.width - (screenWidth - targetX);
       }
 
-      const int rowY = y / 33 * 33;
-      detail->Move(
-        targetX - adjustment,
-        static_cast<float>(originY) > static_cast<unsigned>(g_configuredScreenHeight) * 0.5f ? rowY - detail->geometry.height + originY
-                                                                                              : originY + 33 + rowY);
+      if (originY > screenHeight * 0.5f) {
+        detail->Move(originX - adjustment + x, static_cast<unsigned>(y / 33) * 33 - detail->geometry.height + originY);
+      } else {
+        detail->Move(originX - adjustment + x, originY + 33u + static_cast<unsigned>(y / 33) * 33);
+      }
     }
   } else {
     ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
