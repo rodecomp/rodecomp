@@ -128,7 +128,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
       this->m_slots[slotIndex].headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, info->job, g_session.GetCurrentSex(), this->m_slots[slotIndex].headPalette));
     }
 
-    this->m_slots[slotIndex].imfName = g_equipmentResourceMgr->GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
+    this->m_slots[slotIndex].imfName = g_session.GetBodyImfName(info->job, g_session.GetCurrentSex(), info->head, info->bodyCostume);
   }
 }
 
