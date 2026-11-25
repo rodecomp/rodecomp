@@ -7706,11 +7706,12 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
 // FUNCTION: fn_21618
 void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string text, bool flag) {
   const std::string sender(name);
-  const char* message = text.c_str();
+  std::vector<char> message(text.begin(), text.end());
+  message.push_back('\0');
 
   std::string line(name);
   line.append(" : ");
-  line.append(message);
+  line.append(message.data());
 
   if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(shortcutId)) != 0) {
     if (g_session.m_autoReplyEnabled != 0) {
@@ -7718,27 +7719,30 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
       std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
       const char length = static_cast<char>(std::strlen(notice));
       char head[24];
-      std::memcpy(head, message, length);
+      std::memcpy(head, message.data(), length);
       head[length] = '\0';
       if (std::strcmp(head, notice) != 0) {
         std::string reply(LookupMessage(MSI_AUTO_MSG2));
         reply.append(g_session.autoReplyText.c_str());
-        g_windowMgr.chatInputText.assign(reply.c_str(), std::strlen(reply.c_str()));
+        const char* replyText = reply.c_str();
+        g_windowMgr.chatInputText.assign(replyText, std::strlen(replyText));
         g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
     }
 
     if (flag) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
-        std::string header = "[ ";
+        std::string header;
+        header = "[ ";
         header.append(sender);
-        std::string body(message);
-        body = g_navigationLinkParser->DisplayNavigationLink(body);
-        if (std::strstr(message, g_whisperItemLinkTag.c_str()) != nullptr) {
+        std::string body(message.data());
+        NavigationLinkParser* parser = g_navigationLinkParser;
+        body = parser->DisplayNavigationLink(body);
+        if (std::strstr(message.data(), g_whisperItemLinkTag.c_str()) != nullptr) {
           body = g_windowMgr.chatWnd->ConvertChat(body);
           header = header + " ] : " + body;
         } else {
-          header = header + " ] : " + message;
+          header = header + " ] : " + message.data();
         }
 
         BroadcastBalloonMessage balloonMessage;
@@ -7757,21 +7761,21 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     if (shortcutId != 0) {
       prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
-    prefix = prefix + " ] : " + message;
+    prefix = prefix + " ] : " + message.data();
   } else if (flag) {
     prefix = "[ ";
     prefix.append(sender);
     if (shortcutId != 0) {
       prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
-    prefix = prefix + " ] : " + message;
+    prefix = prefix + " ] : " + message.data();
   } else if (g_session.IsGuildMemberName(name.c_str())) {
     prefix = "[ Member ";
     prefix.append(sender);
     if (shortcutId != 0) {
       prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
-    prefix = prefix + " ] : " + message;
+    prefix = prefix + " ] : " + message.data();
   } else {
     CSession& lists = g_session;
     if (lists.IsFriendNameDifferent(name.c_str())) {
@@ -7786,24 +7790,27 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     if (shortcutId != 0) {
       prefix.append(" [" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + "]");
     }
-    prefix = prefix + " ) : " + message;
+    prefix = prefix + " ) : " + message.data();
   }
 
   if (std::strcmp(name.c_str(), g_session.DecodePlayerName()) != 0) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(prefix.c_str()), 0xFFFF, flag ? 25 : 2, reinterpret_cast<std::intptr_t>(sender.c_str()), 0);
+    if (flag) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(prefix.c_str()), 0xFFFF, 25, reinterpret_cast<std::intptr_t>(sender.c_str()), 0);
+    } else {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(prefix.c_str()), 0xFFFF, 2, reinterpret_cast<std::intptr_t>(sender.c_str()), 0);
+    }
     g_windowMgr.AddWhisperName(name.c_str());
     if (flag) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
         if (prefix.find(g_whisperItemLinkTag) != std::string::npos) {
           prefix = g_windowMgr.chatWnd->ConvertChat(prefix);
         }
-        prefix = g_navigationLinkParser->DisplayNavigationLink(prefix);
+        NavigationLinkParser* parser = g_navigationLinkParser;
+        prefix = parser->DisplayNavigationLink(prefix);
 
         BroadcastBalloonMessage balloonMessage;
-        std::uint32_t color = 0xFFFF;
-        const char* lineText = prefix.c_str();
-        balloonMessage.lines.emplace_back(lineText, color);
+        balloonMessage.lines.emplace_back(prefix.c_str(), 0xFFFF);
         balloon->AddMessage(1, balloonMessage);
       }
     }
@@ -7817,11 +7824,11 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
     const char length = static_cast<char>(std::strlen(notice));
     char head[24];
-    std::memcpy(head, message, length);
+    std::memcpy(head, message.data(), length);
     head[length] = '\0';
     if (std::strcmp(head, notice) != 0) {
       std::string reply(LookupMessage(MSI_AUTO_MSG2));
-      reply += g_session.autoReplyText.c_str();
+      reply +=g_session.autoReplyText.c_str();
       g_windowMgr.SetChatInputText(reply.c_str());
       g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }

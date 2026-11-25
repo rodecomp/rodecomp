@@ -106,4 +106,7 @@
 #include "Network/Packets/PacketId.h"
 
 extern template void std::list<CGameObject*>::push_back(CGameObject*&&);
+template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(const char*, std::size_t, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) void std::vector<char>::_Buy_raw(size_type);
+template __declspec(noinline) std::list<BroadcastBalloonLine>::_Nodeptr std::list<BroadcastBalloonLine>::_Emplace<const char*, int>(const std::list<BroadcastBalloonLine>::_Nodeptr, const char*&&, int&&);
 template __declspec(noinline) std::pair<std::int64_t, RodexMail> std::make_pair<const std::int64_t&, RodexMail&>(const std::int64_t&, RodexMail&);
