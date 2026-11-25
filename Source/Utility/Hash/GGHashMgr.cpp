@@ -63,8 +63,8 @@ CGGHashMgr::~CGGHashMgr() {
 
 // OFFSET: 0x0076B840
 // FUNCTION: fn_08190
-int CGGHashMgr::IsValid() {
-  return 1;
+bool CGGHashMgr::IsValid() {
+  return this->m_hash->Check() && this->m_hash->Check();
 }
 
 // OFFSET: 0x0076B870
@@ -118,8 +118,14 @@ void CGGHashMgr::VerifyPendingFiles() {
 
 // OFFSET: 0x0076BE20
 // FUNCTION: fn_08196
-int CGGHashMgr::Create() {
-  return 1;
+bool CGGHashMgr::Create() {
+  if (g_ggHashMgr == nullptr) {
+    g_ggHashMgr = new (std::nothrow) CGGHashMgr;
+    if (g_ggHashMgr && g_ggHashMgr->m_initialized) return true;
+    delete g_ggHashMgr;
+    g_ggHashMgr = nullptr;
+  }
+  return false;
 }
 
 // OFFSET: 0x0076BEE0
