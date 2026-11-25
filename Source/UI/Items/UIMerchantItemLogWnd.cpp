@@ -97,18 +97,18 @@ void UIMerchantItemLogWnd::Paint() {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
-  }
 
-  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
-    auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, i * 8 + 17, left, false);
-  }
+    int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+    for (int i = 0; i < rows; ++i) {
+      auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+      this->DrawBitmap(0, i * 8 + 17, left, false);
+    }
 
-  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
-    auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
+    rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+    for (int i = 0; i < rows; ++i) {
+      auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+      this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
+    }
   }
 
   int slots = (this->geometry.height - 38) / 32;
@@ -119,54 +119,59 @@ void UIMerchantItemLogWnd::Paint() {
   auto it = this->items.begin();
   auto log = this->logs.begin();
 
-  for (int index = 0, visible = 0; visible + 1 <= this->visibleRows; ++it, ++log) {
-    if (index++ < this->scroll) {
-      continue;
-    }
+  int index = 0;
+  if (1 <= this->visibleRows) {
+    int visible = 0;
+    do {
+      const int next = index + 1;
+      if (index >= this->scroll) {
+        if (this->items.size() < static_cast<unsigned>(next)) {
+          break;
+        }
 
-    if (this->items.size() < static_cast<unsigned>(index)) {
-      break;
-    }
+        const ITEM_INFO& item = *it;
+        if (!(g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged)) {
+          int x = visible % this->columns * 32 + 40;
+          int y = visible / this->columns * 32 + 17;
+          this->DrawItemAndQuantity(x + 4, y + 4, item, 0, 0);
 
-    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->damaged) {
-      continue;
-    }
+          if (0 < item.grade) {
+            this->DrawBitmap(
+              x + 4, y + 16,
+              static_cast<CBitmapRes*>(
+                ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))
+              ),
+              true
+            );
+          }
 
-    const int top = visible / this->columns * 32;
-    const int x = visible % this->columns * 32 + 44;
-    this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
+          int textX = this->geometry.width - 370;
+          const int textY = y + 12;
 
-    if (0 < it->grade) {
-      this->DrawBitmap(
-        x, top + 33,
-        static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        ),
-        true
-      );
-    }
+          char name[26] = {};
+          StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", log->name.c_str());
+          this->DrawTextAt(textX, textY, name, static_cast<int>(std::strlen(name)), 0, 12, 0, 0, 0);
+          textX += 150;
 
-    int textX = this->geometry.width - 370;
-    const int textY = top + 29;
+          char price[64];
+          char grouped[64];
+          std::memset(price, 0, sizeof(price));
+          std::memset(grouped, 0, sizeof(grouped));
+          const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(item.prices[0]), grouped, sizeof(grouped)));
+          this->DrawTextAt(textX, textY, price, length, 0, 12, 0, 0, 0);
+          textX += 110;
 
-    char name[26] = {};
-    StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", log->name.c_str());
-    this->DrawTextAt(textX, textY, name, static_cast<int>(std::strlen(name)), 0, 12, 0, 0, 0);
-    textX += 150;
-
-    char price[64];
-    char grouped[64];
-    std::memset(price, 0, sizeof(price));
-    std::memset(grouped, 0, sizeof(grouped));
-    const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), grouped, sizeof(grouped)));
-    this->DrawTextAt(textX, textY, price, length, 0, 12, 0, 0, 0);
-    textX += 110;
-
-    char date[20] = {};
-    Timestamp stamp(log->time);
-    StringFormat(date, sizeof(date), static_cast<std::size_t>(-1), "%02d/%02d - %02d:%02d:%02d", stamp.Month(), stamp.Day(), stamp.Hour(), stamp.Minute(), stamp.Second());
-    this->DrawTextAt(textX, textY, date, static_cast<int>(std::strlen(date)), 0, 12, 0, 0, 0);
-    ++visible;
+          char date[20] = {};
+          Timestamp stamp(log->time);
+          StringFormat(date, sizeof(date), static_cast<std::size_t>(-1), "%02d/%02d - %02d:%02d:%02d", stamp.Month(), stamp.Day(), stamp.Hour(), stamp.Minute(), stamp.Second());
+          this->DrawTextAt(textX, textY, date, static_cast<int>(std::strlen(date)), 0, 12, 0, 0, 0);
+          ++visible;
+        }
+      }
+      ++it;
+      ++log;
+      index = next;
+    } while (visible + 1 <= this->visibleRows);
   }
 
   this->DrawButtonBar(2, 0, 1);
