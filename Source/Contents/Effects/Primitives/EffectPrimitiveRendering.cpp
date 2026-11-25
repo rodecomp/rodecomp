@@ -87,6 +87,13 @@ static __forceinline vector3d operator+(const vector3d& a, const vector3d& b) {
 }
 
 // INLINED
+static void SetVector(vector3d& v, float x, float y, float z) {
+  v.x = x;
+  v.y = y;
+  v.z = z;
+}
+
+// INLINED
 static vector3d Sum(const vector3d& left, const vector3d& right) {
   return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
 }
@@ -1755,10 +1762,10 @@ void CEffectPrim::RenderHalfSphere(matrix& wtm) {
   float sn1;
   float cs2;
   float sn2;
-  ZeroVector3d vec1;
-  ZeroVector3d vec3;
-  ZeroVector3d vec2;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   int angle;
   int basicAngle;
@@ -2265,10 +2272,10 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
 // OFFSET: 0x00BDE720
 // FUNCTION: fn_19905
 void CEffectPrim::RenderPeongUp(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2279,10 +2286,10 @@ void CEffectPrim::RenderPeongUp(matrix& wtm) {
     }
 
     const float rx = slot.distance;
-    vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
-    vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
-    vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
-    vec4.Set(g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
+    SetVector(vec1, g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
+    SetVector(vec2, g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
+    SetVector(vec3, g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
+    SetVector(vec4, g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     const vector3d& base = slot.vecBPre;
@@ -5067,10 +5074,10 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitIcons(matrix& wtm, float sc
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   int basicAngle;
   int angle;
@@ -6927,14 +6934,14 @@ void CEffectPrim::Render3DCasting_LowPolygon(matrix& wtm) {
 // OFFSET: 0x00BD0680
 // FUNCTION: fn_19869
 void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec3;
-  ZeroVector3d vec2;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (1 != this->state.slots[ec].life || 0 >= this->state.slots[ec].alphaB) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
@@ -7156,15 +7163,20 @@ __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
 __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
   float cs1;
   float sn1;
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   int angle;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life == 1 && this->state.slots[ec].alphaB > 0) {
+    if (this->state.slots[ec].life != 1) {
+      continue;
+    }
+
+    const short alpha = this->state.slots[ec].alphaB;
+    if (alpha > 0) {
       vec4.x = 0.0f;
       vec4.z = 0.0f;
       vec4.y = 0.0f;
@@ -7197,7 +7209,7 @@ __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
 
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-      angle = static_cast<int>(this->state.slots[ec].alphaB * g_depthAverageHalf);
+      angle = static_cast<int>(alpha * g_depthAverageHalf);
 
       this->RenderTeiRect(&rpCnt, static_cast<short>(angle), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
