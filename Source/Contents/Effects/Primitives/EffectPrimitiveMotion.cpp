@@ -8287,7 +8287,7 @@ bool CEffectPrim::OnProcess() {
       this->state.deltaPos2.y = this->state.deltaPos2.y + this->state.heightSpeed;
     } break;
     case PP_3DLINE:
-      this->render.position.y = this->render.position.y + 5.0f;
+      this->render.position.y = this->render.position.y + g_fireflyModeFive;
       break;
     case PP_3DPARTICLE_NOMASTER:
       if (!this->Prim3DParticleNoMaster()) {
