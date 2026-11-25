@@ -2205,7 +2205,13 @@ void CSession::UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh)
 
   if (it == this->m_inventoryItems.end()) {
     this->m_inventoryItems.push_back(item);
-  } else if (item.quantity == 0) {
+    if (refresh) {
+      RefreshItemWindows(&g_windowMgr);
+    }
+    return;
+  }
+
+  if (item.quantity == 0) {
     this->m_inventoryItems.erase(it);
   } else {
     *it = item;
