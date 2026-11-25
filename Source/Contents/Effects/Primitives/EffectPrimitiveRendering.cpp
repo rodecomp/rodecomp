@@ -2872,10 +2872,10 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
 // OFFSET: 0x00BDEC50
 // FUNCTION: fn_19907
 __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2914,25 +2914,32 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
 
     int index = 0;
     do {
-      const int angle1 = slot.rotStart;
       const float radius = slot.maxHeight - shrink;
-      const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
+      const int step = index;
+      const int angle1 = slot.rotStart;
+      SetVector(vec1, radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
+      int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
+      SetVector(vec2, radius * g_cosTable[angle2], 0.0f, radius * g_sinTable[angle2]);
+      angle2 += angle2 + 90 < 360 ? 90 : -270;
+      SetVector(vec3, radius * g_cosTable[angle2], 0.0f, radius * g_sinTable[angle2]);
       const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
-      const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
-      vec1.Set(radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
-      vec2.Set(radius * g_cosTable[angle2], 0.0f, radius * g_sinTable[angle2]);
-      vec3.Set(radius * g_cosTable[angle3], 0.0f, radius * g_sinTable[angle3]);
-      vec4.Set(radius * g_cosTable[angle4], 0.0f, radius * g_sinTable[angle4]);
+      SetVector(vec4, radius * g_cosTable[angle3], 0.0f, radius * g_sinTable[angle3]);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-      const int step = index;
-      const vector3d& offset = index == 0 ? slot.vecBNow : index == 1 ? slot.vecBPre : slot.vecTPre;
+      vector3d offset;
+      if (step == 0) {
+        offset = slot.vecBNow;
+      } else if (step == 1) {
+        offset = slot.vecBPre;
+      } else {
+        offset = slot.vecTPre;
+      }
       ++index;
       const int alpha = slot.alphaB / index;
-      vec1.Set(offset.x + vec1.x, offset.y + vec1.y, offset.z + vec1.z);
-      vec2.Set(offset.x + vec2.x, offset.y + vec2.y, offset.z + vec2.z);
-      vec3.Set(offset.x + vec3.x, offset.y + vec3.y, offset.z + vec3.z);
-      vec4.Set(offset.x + vec4.x, offset.y + vec4.y, offset.z + vec4.z);
+      SetVector(vec1, offset.x + vec1.x, offset.y + vec1.y, offset.z + vec1.z);
+      SetVector(vec2, offset.x + vec2.x, offset.y + vec2.y, offset.z + vec2.z);
+      SetVector(vec3, offset.x + vec3.x, offset.y + vec3.y, offset.z + vec3.z);
+      SetVector(vec4, offset.x + vec4.x, offset.y + vec4.y, offset.z + vec4.z);
 
       if (slot.flag1[3] == 0) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 1, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -2940,7 +2947,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, slot.flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
-      shrink += step != 0 ? 0.25f : 0.5f;
+      if (step == 0) {
+        shrink += 0.5f;
+      } else {
+        shrink += 0.25f;
+      }
     } while (index < 2);
   }
 }
@@ -2948,8 +2959,8 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
 // OFFSET: 0x00BD3D90
 // FUNCTION: fn_19879
 void CEffectPrim::RenderColorPanel(matrix& wtm) {
-  ZeroVector3d vec4;
-  ZeroVector3d vec3;
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   unsigned char red;
   unsigned char green;
@@ -2965,14 +2976,18 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
     const float size = this->state.slots[ec].height[2];
     const float half = size * g_depthAverageHalf;
     const int opposite = angle >= 180 ? angle - 180 : angle + 180;
-    this->state.slots[ec].vecBPre.x = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
-    this->state.slots[ec].vecBPre.z = half * g_sinTable[angle] + g_cosTable[angle] * 0.0f;
+    float cs = g_cosTable[angle];
+    float sn = g_sinTable[angle];
+    this->state.slots[ec].vecBPre.x = half * cs - sn * 0.0f;
+    this->state.slots[ec].vecBPre.z = half * sn + cs * 0.0f;
     this->state.slots[ec].vecBPre.y = half - this->state.slots[ec].height[4];
+    cs = g_cosTable[opposite];
+    sn = g_sinTable[opposite];
     this->state.slots[ec].vecBNow.y = this->state.slots[ec].vecBPre.y;
-    this->state.slots[ec].vecBNow.x = half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f;
-    this->state.slots[ec].vecBNow.z = half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f;
-    vec3.Set(this->state.slots[ec].vecBNow.x, this->state.slots[ec].vecBNow.y - size, this->state.slots[ec].vecBNow.z);
-    vec4.Set(this->state.slots[ec].vecBPre.x, this->state.slots[ec].vecBPre.y - size, this->state.slots[ec].vecBPre.z);
+    this->state.slots[ec].vecBNow.x = half * cs - sn * 0.0f;
+    this->state.slots[ec].vecBNow.z = half * sn + cs * 0.0f;
+    SetVector(vec3, this->state.slots[ec].vecBNow.x, this->state.slots[ec].vecBNow.y - size, this->state.slots[ec].vecBNow.z);
+    SetVector(vec4, this->state.slots[ec].vecBPre.x, this->state.slots[ec].vecBPre.y - size, this->state.slots[ec].vecBPre.z);
 
     const float mode = this->state.slots[ec].height[5];
     const float level = this->state.slots[ec].height[3];
@@ -5516,10 +5531,10 @@ void CEffectPrim::RenderSMA2(matrix& wtm) {
 // OFFSET: 0x00BE1150
 // FUNCTION: fn_19915
 void CEffectPrim::RenderSaintWing(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5539,7 +5554,7 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
         angle += 360;
       }
 
-      vec1.Set(rx * g_cosTable[angle], this->state.slots[ec].height[0], rx * g_sinTable[angle]);
+      SetVector(vec1, rx * g_cosTable[angle], this->state.slots[ec].height[0], rx * g_sinTable[angle]);
       int angle2 = this->state.slots[ec].rotStart + 65;
 
       if (angle2 >= 360) {
@@ -5550,7 +5565,7 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
         angle2 += 360;
       }
 
-      vec4.Set(rx * g_cosTable[angle2], this->state.slots[ec].height[0], rx * g_sinTable[angle2]);
+      SetVector(vec4, rx * g_cosTable[angle2], this->state.slots[ec].height[0], rx * g_sinTable[angle2]);
       const float rz = i < 5 ? this->state.slots[ec].maxHeight : g_sinTable[this->state.slots[ec].riseAngle] * 0.5f + 0.5f + this->state.slots[ec].maxHeight;
 
       angle = this->state.slots[ec].rotStart;
@@ -5574,8 +5589,8 @@ void CEffectPrim::RenderSaintWing(matrix& wtm) {
       this->state.slots[ec].vecBNow.x = cs1 * rz * g_cosTable[add];
       this->state.slots[ec].vecBNow.z = sn1 * rz * g_cosTable[add];
       const float ly = rz * g_sinTable[add];
-      vec2.Set(vec1.x + this->state.slots[ec].vecBNow.x, vec1.y - ly, vec1.z + this->state.slots[ec].vecBNow.z);
-      vec3.Set(vec4.x + this->state.slots[ec].vecBNow.x, vec4.y - ly, vec4.z + this->state.slots[ec].vecBNow.z);
+      SetVector(vec2, vec1.x + this->state.slots[ec].vecBNow.x, vec1.y - ly, vec1.z + this->state.slots[ec].vecBNow.z);
+      SetVector(vec3, vec4.x + this->state.slots[ec].vecBNow.x, vec4.y - ly, vec4.z + this->state.slots[ec].vecBNow.z);
 
       if (ec == 1) {
         if (i % 5 < 4) {
