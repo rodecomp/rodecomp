@@ -29,20 +29,20 @@ void CAccountLinkedUserDataMgr::LoadEmotionHotkeys(Json::Value& data) {
 // OFFSET: 0x00E24D10
 // FUNCTION: fn_23900
 bool CSession::HasEmotionHotkeyChanges() const {
-  if (!this->m_emotionHotkeys.saved.empty()) {
-    const std::string* current = this->m_emotionHotkeys.current.data();
-    const std::string* saved = this->m_emotionHotkeys.saved.data();
-    for (int i = 0; i < 10; ++i) {
-      const std::string& entry = saved[i];
-      if (entry != current[i]) {
-        return true;
-      }
-    }
-
-    return false;
+  auto saved = this->m_emotionHotkeys.saved.begin();
+  if (saved == this->m_emotionHotkeys.saved.end()) {
+    return true;
   }
 
-  return true;
+  const std::string* current = this->m_emotionHotkeys.current.data();
+  for (int i = 0; i < 10; ++i) {
+    const std::string& entry = saved[i];
+    if (entry != current[i]) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00E48460
