@@ -9201,18 +9201,18 @@ int CGameMode::ProcessGroundClick(int result) {
   UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
   if (reporter) {
     if (reporter->activeOnly == true && reporter->m_mode == 1) {
-      row = -1;
       column = -1;
-      this->PickScreenTerrain(row, column);
+      row = -1;
+      this->PickScreenTerrain(column, row);
       const int radius = reporter->reportCount;
       for (int dx = -radius; dx <= radius; ++dx) {
         for (int dy = -radius; dy <= radius; ++dy) {
-          this->scene->ground->DrawGrid(this->camera->frame.view.values, row + dx, column + dy, 0x660000FF);
+          this->scene->ground->DrawGrid(this->camera->frame.view.values, column + dx, row + dy, 0x660000FF);
         }
       }
 
       if (g_mouse.buttons[1] == 1) {
-        reporter->SendMacroUserInfoPacket(static_cast<std::uint16_t>(row), static_cast<std::uint16_t>(column), static_cast<std::uint8_t>(radius));
+        reporter->SendMacroUserInfoPacket(static_cast<std::uint16_t>(column), static_cast<std::uint16_t>(row), static_cast<std::uint8_t>(radius));
         return -1;
       }
     }
