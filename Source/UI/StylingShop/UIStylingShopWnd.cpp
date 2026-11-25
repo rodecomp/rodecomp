@@ -2014,20 +2014,8 @@ void UIMyStyleWnd::LoadLikeList() {
     data[size] = '\0';
     file.Close();
 
-    struct LikeStyle {
-      int slotNum;
-      int padding_0004;
-      int robe;
-      int headStyle;
-      int bodyStyle;
-      int headPaletteNum;
-      int bodyPaletteNum;
-      int topAccNum;
-      int midAccNum;
-      int bottomAccNum;
-    };
+    LikeStyle style;
     char characterName[24] = {};
-    LikeStyle style = {};
     char* line = data;
     for (int i = 0; i < size; ++i) {
       switch (data[i]) {
@@ -2104,15 +2092,8 @@ void UIMyStyleWnd::LoadLikeList() {
         if (_mbsstr(reinterpret_cast<const unsigned char*>("characterName"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
           ++i;
           char value[24] = {};
-          char ch = data[i];
-          if (ch != '\n') {
-            for (char* out = value; ch != '\r'; ++out) {
-              *out += ch;
-              ch = data[++i];
-              if (ch == '\n') {
-                break;
-              }
-            }
+          for (int length = 0; data[i] != '\n' && data[i] != '\r'; ++i, ++length) {
+            value[length] += data[i];
           }
           strcpy_s(characterName, sizeof(characterName), value);
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>("slotNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
