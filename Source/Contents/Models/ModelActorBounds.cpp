@@ -1,4 +1,5 @@
 #include "Contents/Models/ModelActor.h"
+#include "Contents/Models/ModelAnimation.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ClientAngles.h"
@@ -15,7 +16,7 @@ namespace {
 
   // INLINED
   float Radians(float degrees) {
-    return (degrees / g_angleDivisor) * 3.141592f;
+    return (degrees / g_angleDivisor) * g_piApprox;
   }
 
   // INLINED
@@ -236,7 +237,7 @@ void C3dActorV1::UpdateBounds() {
   std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
-  this->root->AccumulateBounds(bounds.data(), identity);
+  this->root->AccumulateBounds(&bounds[0], identity);
   this->offset.z = -(bounds[5] + bounds[2]) * g_depthAverageHalf;
   this->offset.x = -(bounds[3] + bounds[0]) * g_depthAverageHalf;
   this->offset.y = -bounds[4];
@@ -246,7 +247,7 @@ void C3dActorV1::UpdateBounds() {
   this->transform.AppendXRotation(Radians(this->rotation.x));
   this->transform.AppendZRotation(Radians(this->rotation.z));
   this->transform.AppendTranslate(&this->position.x);
-  this->FinishBounds(bounds.data(), false);
+  this->FinishBounds(&bounds[0], false);
 }
 
 // OFFSET: 0x00ABA520
