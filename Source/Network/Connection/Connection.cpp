@@ -5,6 +5,9 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Security/ReassemblyPacketMgr.h"
+#include "Utility/Cipher/EncryptedName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -289,14 +292,25 @@ void __stdcall Nullsub436() {
 
 // OFFSET: 0x00C7CE30
 // FUNCTION: fn_20405
-void CConnection::Send(int bytes, const void* data) {
-  timeGetTime();
+bool CConnection::Send(int bytes, const void* data) {
+  if (static_cast<CRagConnection*>(this)->m_replayMode) {
+    return true;
+  }
+
+  g_session.m_lastSendTick = timeGetTime();
+  g_packetReassembler->Notify(0);
   if (this->m_socket == INVALID_SOCKET) {
-    return;
+    return true;
+  }
+
+  if (this->m_deferred) {
+    this->m_pending.InsertData(bytes, data);
+    return true;
   }
 
   this->m_output.InsertData(bytes, data);
   this->Flush();
+  return true;
 }
 
 // OFFSET: 0x00C7CC90
@@ -384,10 +398,27 @@ void CConnection::SetBlock(unsigned char value) {
 // OFFSET: 0x00C7D020
 // FUNCTION: fn_20408
 bool InitializeConnections() {
-  WSAStartup(MAKEWORD(1, 1), &wsaData);
-  ws2Module = LoadLibraryA("ws2_32.dll");
-  g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(ws2Module, "send"));
-  g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(ws2Module, "recv"));
+  if (WSAStartup(MAKEWORD(1, 1), &wsaData) != 0) {
+    ShowErrorDialog(OBFUSCATE_TEXT("Failed to load Winsock library!", 0x51BB39B763BBBD8DULL), 0);
+    WSACleanup();
+    return false;
+  }
+
+  ws2Module = LoadLibraryA(OBFUSCATE_TEXT("ws2_32.dll", 0xDB27CB557D038759ULL));
+  g_connectionSend = reinterpret_cast<decltype(g_connectionSend)>(GetProcAddress(ws2Module, OBFUSCATE_TEXT("send", 0x3FA3AFA7035DE3FFULL)));
+  g_connectionReceive = reinterpret_cast<decltype(g_connectionReceive)>(GetProcAddress(ws2Module, OBFUSCATE_TEXT("recv", 0x114901C7E37F6D49ULL)));
+  if (g_connectionSend == nullptr) {
+    g_connectionSend = send;
+    MessageBoxA(nullptr, OBFUSCATE_TEXT("GetProcAddress(\"send\") Failed.", 0x7D5D0F110B6B8371ULL),
+                OBFUSCATE_TEXT("Module Hooking Error", 0xADC51BF9C98B413DULL), MB_OK);
+  }
+
+  if (g_connectionReceive == nullptr) {
+    g_connectionReceive = recv;
+    MessageBoxA(nullptr, OBFUSCATE_TEXT("GetProcAddress(\"recv\") Failed.", 0xDF8117FF49CFF551ULL),
+                OBFUSCATE_TEXT("Module Hooking Error", 0x6BDF334F2BFDAD51ULL), MB_OK);
+  }
+
   GetRagConnection().CheckConnectionRuntime();
 
   return true;

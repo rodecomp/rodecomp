@@ -22,9 +22,9 @@ int CReassemblyPacketImpl::IsReady() {
 // OFFSET: 0x00B154E0
 // FUNCTION: fn_18419
 CReassemblyPacketImpl::CReassemblyPacketImpl() {
-  this->m_reserved0 = 0;
-  this->m_reserved1 = 0;
-  this->m_reserved2 = 0;
+  this->m_seed = 0;
+  this->m_multiplier = 0;
+  this->m_increment = 0;
   this->m_valid = true;
 }
 
@@ -61,7 +61,15 @@ void CReassemblyPacketImpl::Destroy() {
 
 // OFFSET: 0x00B155F0
 // FUNCTION: fn_18423
-int CReassemblyPacketImpl::Notify(int) {
+int CReassemblyPacketImpl::Notify(int event) {
+  if (event == 0) {
+    this->m_seed = this->m_seed * this->m_multiplier + this->m_increment;
+    return (this->m_seed >> 16) & 0x7FFF;
+  }
+
+  this->m_increment = 0;
+  this->m_seed = 0;
+  this->m_multiplier = 0;
   return 0;
 }
 

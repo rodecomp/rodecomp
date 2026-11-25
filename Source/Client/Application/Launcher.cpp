@@ -101,6 +101,8 @@
 #include <shellapi.h>
 #include <sys/stat.h>
 #include <timeapi.h>
+#include <tlhelp32.h>
+#include <unordered_set>
 #include <utility>
 #include "Resource/MSGSTRINGID.h"
 #include "Utility/Cipher/CryptName.h"
@@ -601,6 +603,126 @@ EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() co
   OBFUSCATE_ARRAY_BODY("SAKTESTEXE.EXE", 0x0F0F8B6B8F9D19D1ULL, std::uint8_t);
 }
 
+// INLINED
+static void ToUpperName(char* name) {
+  for (char* cursor = name; *cursor; ++cursor) {
+    if (islower(*cursor)) {
+      *cursor -= 'a' - 'A';
+    }
+  }
+}
+
+// OFFSET: 0x00E599D0
+// FUNCTION: fn_46733
+static bool CheckClientProcess9x() {
+  using CreateSnapshotFunction = HANDLE(WINAPI*)(DWORD, DWORD);
+  using ProcessWalkFunction = BOOL(WINAPI*)(HANDLE, PROCESSENTRY32*);
+
+  HMODULE kernel = LoadLibraryA(Kernel32LibraryName()().Text());
+  __try {
+    if (kernel) {
+      auto createSnapshot = reinterpret_cast<CreateSnapshotFunction>(GetProcAddress(kernel, CreateToolhelp32SnapshotName()().Text()));
+      auto processFirst = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32FirstName()().Text()));
+      auto processNext = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32NextName()().Text()));
+      if (!createSnapshot || !processFirst || !processNext) {
+        return false;
+      }
+
+      HANDLE snapshot = createSnapshot(TH32CS_SNAPPROCESS, 0);
+      if (snapshot == INVALID_HANDLE_VALUE) {
+        FreeLibrary(kernel);
+        return false;
+      }
+
+      char name[MAX_PATH];
+      std::memset(name, 0, sizeof(name));
+      PROCESSENTRY32 entry;
+      if (processFirst(snapshot, &entry)) {
+        BOOL more;
+        do {
+          more = processNext(snapshot, &entry);
+
+          int start;
+          for (start = static_cast<int>(std::strlen(entry.szExeFile)) - 1; start > 0; --start) {
+            if (entry.szExeFile[start] == '\\') {
+              ++start;
+              break;
+            }
+          }
+
+          std::strcpy(name, &entry.szExeFile[start]);
+          ToUpperName(name);
+          puts(name);
+
+          if (std::strcmp(name, RagexeProcessName()().Text()) == 0 || std::strcmp(name, SakexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, RagexereProcessName()().Text()) == 0 || std::strcmp(name, RagtestexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, SaktestexeProcessName()().Text()) == 0 || std::strcmp(name, AdtestexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, RagexeMProcessName()().Text()) == 0 || std::strcmp(name, SakexeMProcessName()().Text()) == 0) {
+            return true;
+          }
+        } while (more);
+      }
+
+      CloseHandle(snapshot);
+    }
+  } __finally {
+    if (kernel) {
+      FreeLibrary(kernel);
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00E59E60
+// FUNCTION: fn_46734
+static bool CheckClientProcessNT() {
+  using EnumProcessesFunction = BOOL(WINAPI*)(DWORD*, DWORD, DWORD*);
+  using EnumProcessModulesFunction = BOOL(WINAPI*)(HANDLE, HMODULE*, DWORD, DWORD*);
+  using GetModuleBaseNameFunction = DWORD(WINAPI*)(HANDLE, HMODULE, LPSTR, DWORD);
+
+  HMODULE psapi = LoadLibraryA(PsapiLibraryName()().Text());
+  __try {
+    if (psapi) {
+      char name[MAX_PATH];
+      std::memset(name, 0, sizeof(name));
+      auto enumProcesses = reinterpret_cast<EnumProcessesFunction>(GetProcAddress(psapi, EnumProcessesName()().Text()));
+      auto enumProcessModules = reinterpret_cast<EnumProcessModulesFunction>(GetProcAddress(psapi, EnumProcessModulesName()().Text()));
+      auto getModuleBaseName = reinterpret_cast<GetModuleBaseNameFunction>(GetProcAddress(psapi, GetModuleBaseNameAName()().Text()));
+
+      DWORD processes[1024];
+      DWORD needed;
+      if (!enumProcesses || !enumProcessModules || !getModuleBaseName || !enumProcesses(processes, sizeof(processes), &needed)) {
+        return false;
+      }
+
+      const DWORD count = needed / sizeof(DWORD);
+      for (DWORD index = 0; index < count; ++index) {
+        HANDLE process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processes[index]);
+        HMODULE module;
+        if (process && enumProcessModules(process, &module, sizeof(module), &needed)) {
+          getModuleBaseName(process, module, name, MAX_PATH);
+          ToUpperName(name);
+          puts(name);
+
+          if (std::strcmp(name, RagexeModuleName()().Text()) == 0 || std::strcmp(name, SakexeModuleName()().Text()) == 0 ||
+              std::strcmp(name, RagexereModuleName()().Text()) == 0) {
+            return true;
+          }
+        }
+
+        CloseHandle(process);
+      }
+    }
+  } __finally {
+    if (psapi) {
+      FreeLibrary(psapi);
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00E57B50
 // FUNCTION: fn_24359
 int RemovePath(std::string path, int depth, bool file) {
@@ -724,6 +846,9 @@ bool AcquireInstanceMutex(HANDLE* mutex) {
 // GLOBAL: gl_24515
 char* g_commandLine;
 
+// GLOBAL: gl_26186
+std::unordered_set<DWORD> s_threadIds;
+
 
 
 // GLOBAL: gl_25076
@@ -824,7 +949,7 @@ int InitApp(HINSTANCE instance, int showCommand) {
   windowClass.cbClsExtra = 0;
   windowClass.cbWndExtra = 0;
   windowClass.hInstance = instance;
-  windowClass.hIcon = LoadIconA(instance, MAKEINTRESOURCEA(123));
+  windowClass.hIcon = LoadIconA(instance, MAKEINTRESOURCEA(119));
   windowClass.hCursor = LoadCursorA(nullptr, IDC_ARROW);
   windowClass.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
   windowClass.lpszMenuName = nullptr;
@@ -1237,34 +1362,36 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   }
 
   g_commandLine = commandLine;
-  const char restart = RestartFromCommandLine();
-  if (restart == 1) {
+  if (RestartFromCommandLine() == 1) {
     return 0;
   }
 
-  if (restart) {
+  if (!CNProtectGameGuardMgr::Create()) {
     const std::array<char, 47> guardErrorSource =
         OBFUSCATE_SOURCE_ARRAY_CHAR("CNProtectGameGuardMgr::CreateInstance() Failed", 0xBD3F430159B551FDULL);
     EncryptedName<sizeof(guardErrorSource), 0xBD3F430159B551FDULL>& guardError =
         OBFUSCATE_DECRYPT_NAME(0xBD3F430159B551FDULL, guardErrorSource);
     ShowErrorDialog(guardError.Text(), MB_OK);
-
-    const std::array<char, 10> applySource = OBFUSCATE_SOURCE_ARRAY_CHAR("ApplyNPGE", 0xE51B29334D353B81ULL);
-    EncryptedName<sizeof(applySource), 0xE51B29334D353B81ULL>& apply = OBFUSCATE_DECRYPT_NAME(0xE51B29334D353B81ULL, applySource);
-    if (std::strstr(commandLine, apply.Text())) {
-      return 1;
-    }
-
-    if (!CGGHashMgr::Create()) {
-      const std::array<char, 18> hashErrorSource = OBFUSCATE_SOURCE_ARRAY_CHAR("GGHash Init Error", 0x8F3F2FA959977F9FULL);
-      EncryptedName<sizeof(hashErrorSource), 0x8F3F2FA959977F9FULL>& hashError =
-          OBFUSCATE_DECRYPT_NAME(0x8F3F2FA959977F9FULL, hashErrorSource);
-      ShowErrorDialog(hashError.Text(), MB_OK);
-      return 0;
-    }
-
-    g_ggHashMgr->IsValid();
+    return 0;
   }
+
+  const std::array<char, 10> applySource = OBFUSCATE_SOURCE_ARRAY_CHAR("ApplyNPGE", 0xE51B29334D353B81ULL);
+  EncryptedName<sizeof(applySource), 0xE51B29334D353B81ULL>& apply = OBFUSCATE_DECRYPT_NAME(0xE51B29334D353B81ULL, applySource);
+  if (std::strstr(commandLine, apply.Text())) {
+    return 1;
+  }
+
+  if (!CGGHashMgr::Create()) {
+    const std::array<char, 18> hashErrorSource = OBFUSCATE_SOURCE_ARRAY_CHAR("GGHash Init Error", 0x8F3F2FA959977F9FULL);
+    EncryptedName<sizeof(hashErrorSource), 0x8F3F2FA959977F9FULL>& hashError =
+        OBFUSCATE_DECRYPT_NAME(0x8F3F2FA959977F9FULL, hashErrorSource);
+    ShowErrorDialog(hashError.Text(), MB_OK);
+    return 0;
+  }
+
+  g_ggHashMgr->IsValid();
+  CThemidaMgr::Check();
+  s_threadIds.insert(GetCurrentThreadId());
 
   {
     myGPack::CGPakUpdate update;
@@ -1512,6 +1639,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   g_session.InitClientData();
 
+  if (!(IsLegacyWindows() ? CheckClientProcess9x() : CheckClientProcessNT())) {
+    const std::array<char, 0x3B> messageSource =
+        OBFUSCATE_SOURCE_ARRAY_CHAR("정상적인 라그나로크 클라이언트를 실행시켜 주시기 바랍니다.", 0x5DAD2D25D9259B93ULL);
+    EncryptedName<sizeof(messageSource), 0x5DAD2D25D9259B93ULL>& message = OBFUSCATE_DECRYPT_NAME(0x5DAD2D25D9259B93ULL, messageSource);
+    MessageBoxA(nullptr, message.Text(), nullptr, MB_OK);
+    return 0;
+  }
+
   ResourceMgr& resources = ResourceMgr::Instance();
   const std::array<char, 17> resourceNamesSource = OBFUSCATE_SOURCE_ARRAY_CHAR("resNameTable.txt", 0x1F1D51274373C1FDULL);
   EncryptedName<sizeof(resourceNamesSource), 0x1F1D51274373C1FDULL>& resourceNames = OBFUSCATE_DECRYPT_NAME(0x1F1D51274373C1FDULL, resourceNamesSource);
@@ -1553,7 +1688,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   g_grannyAnimationLibrary.Initialize();
   const std::array<char, 30> guildFlagSource = OBFUSCATE_SOURCE_ARRAY_CHAR("model\\3dmob\\guildflag90_1.gr2", 0x097389157345A787ULL);
   EncryptedName<sizeof(guildFlagSource), 0x097389157345A787ULL>& guildFlag = OBFUSCATE_DECRYPT_NAME(0x097389157345A787ULL, guildFlagSource);
-  g_grannyAnimationLibrary.Load(guildFlag.Text(), 1, 0);
+  g_grannyAnimationLibrary.Load(guildFlag.Text(), 5, 0);
   g_skinInfo.Refresh();
   CreateTrigonometricTable();
 

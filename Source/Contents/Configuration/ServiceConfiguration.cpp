@@ -151,6 +151,8 @@ void InitializeServiceStrings(char* protection) {
 
   switch (g_serviceType) {
   case ServiceKorea:
+    InitializeServiceConfiguration();
+    break;
   case ServiceAmerica:
   case ServiceJapan:
   case ServiceChina:
@@ -170,7 +172,6 @@ void InitializeServiceStrings(char* protection) {
   case ServiceFrance:
   case ServiceUae:
   case ServiceEu:
-    InitializeServiceConfiguration();
     break;
   default: {
     ShowErrorDialog(OBFUSCATE_TEXT("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL), 0);
@@ -445,10 +446,20 @@ void InitializeServiceConfiguration() {
   g_monsterJobs.clear();
 
   switch (g_serviceMode) {
-  case ServerPrimary:
+  case ServerPrimary: {
+    g_serviceFlag07 = 19;
+    if (std::strstr(g_launchServerName, OBFUSCATE_BYTES_TEXT("Dev", 0xE51B29334D353B81ULL))) {
+      g_serviceOverrideKey = OBFUSCATE_TEXT("kro-qm-1a.ragnarok.co.kr:6900", 0x8F3F2FA959977F9FULL);
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x7FE563BD3FB7F925ULL), OBFUSCATE_TEXT("kro-qm-agency.ragnarok.co.kr:6951", 0x8B3FA35B5BDDDF89ULL));
+    } else {
+      g_serviceOverrideKey = OBFUSCATE_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x7DB1050779034DE7ULL);
+      StringFormat(g_serviceAddress, sizeof(g_serviceAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x5D6B3B1DEB2397B1ULL), OBFUSCATE_TEXT("kro-agency.ragnarok.co.kr", 0x07112F85A39F4FABULL), rand() % 3 + 6951);
+    }
+    g_adminAccountIds.assign(std::begin(s_adminIds), std::end(s_adminIds));
+    g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));
+    break;
+  }
   case ServerSakray: {
-    // Original instructions between 0x00AD1E58 and 0x00AD237D were overwritten by the protector
-    // (jump into the empty stub 0x027AB0FE). The code from here on starts at 0x00AD237E.
     g_serviceFlag07 = 29;
     if (std::strstr(g_launchServerName, "QmSakray")) {
       g_serviceOverrideKey = OBFUSCATE_TEXT("kro-qm-2a.ragnarok.co.kr:6900", 0x45E3F103CBB5F157ULL);

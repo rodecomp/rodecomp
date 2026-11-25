@@ -11,6 +11,8 @@
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/DX7/RendererDX7.h"
 #include "Render/Primitives/TextureQuad.h"
+#include "Security/ThemidaMgr.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
 #include <bit>
@@ -404,20 +406,27 @@ bool CRendererDX7::Draw() {
   this->screenWidth = g_deviceOwnerDX7 ? g_deviceOwnerDX7->width : 0;
   this->screenHeight = g_deviceOwnerDX7 ? g_deviceOwnerDX7->height : 0;
 
-  if (SUCCEEDED(this->device->BeginScene())) {
-    DWORD alphaReference = 0;
-    DWORD alphaTestEnable = 0;
-
-    this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &alphaReference);
-    this->device->GetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, &alphaTestEnable);
-    this->FlushRenderList();
-    this->ClearFrame();
-    this->device->EndScene();
-    this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, alphaReference);
-    this->device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, alphaTestEnable);
-    return true;
-  } else {
+  if (FAILED(this->device->BeginScene())) {
     this->ClearFrame();
     return false;
   }
+
+  if (!CThemidaMgr::IsProtected()) {
+    return false;
+  }
+
+  // STRING: st_16857
+  static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dlib\\Renderer.cpp";
+  g_renderDiagnosticLine = 325;
+  g_renderDiagnosticFile = source;
+  this->FlushRenderList();
+  g_renderDiagnosticLine = 327;
+  g_renderDiagnosticFile = source;
+  this->ClearFrame();
+  g_renderDiagnosticLine = 328;
+  g_renderDiagnosticFile = source;
+  this->device->EndScene();
+  g_renderDiagnosticLine = 330;
+  g_renderDiagnosticFile = source;
+  return true;
 }

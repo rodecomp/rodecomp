@@ -16,9 +16,9 @@ public:
   int Notify(int event);
 
   /* 0000 */ bool m_valid;
-  /* 0004 */ int m_reserved0;
-  /* 0008 */ int m_reserved1;
-  /* 000C */ int m_reserved2;
+  /* 0004 */ unsigned int m_seed;
+  /* 0008 */ unsigned int m_multiplier;
+  /* 000C */ unsigned int m_increment;
 };
 
 class CReassemblyPacketMgr {
@@ -50,7 +50,7 @@ extern CReassemblyPacketMgr* g_reassemblyPacketMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CReassemblyPacketImpl) == 0x10);
-static_assert(offsetof(CReassemblyPacketImpl, m_reserved2) == 0xC);
+static_assert(offsetof(CReassemblyPacketImpl, m_increment) == 0xC);
 static_assert(sizeof(CReassemblyPacketMgr) == 1);
 #endif
 

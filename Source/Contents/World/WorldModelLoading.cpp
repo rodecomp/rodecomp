@@ -7,6 +7,7 @@
 #include "Contents/World/WorldSpatialInitialization.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/World/WorldResource.h"
+#include "Security/ThemidaMgr.h"
 
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/CGameMode.h"
@@ -95,6 +96,7 @@ namespace {
 // OFFSET: 0x00AC8BF0
 // FUNCTION: fn_17680
 DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
+  s_threadIds.insert(GetCurrentThreadId());
   CWorld* world = static_cast<CWorld*>(parameter);
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
   std::sort(g_deferredWorldModels.begin(), g_deferredWorldModels.end());
@@ -118,6 +120,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
     Sleep(0);
   }
 
+  s_threadIds.erase(GetCurrentThreadId());
   return 0;
 }
 

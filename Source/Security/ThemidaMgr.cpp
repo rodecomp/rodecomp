@@ -2,23 +2,42 @@
 
 #include "Archive/GPak.h"
 
+#include <atomic>
 #include <new>
 #include <random>
+#include <windows.h>
 
 // GLOBAL: gl_24891
 CThemidaMgr* g_themidaMgr;
 
-struct ThemidaKeyEncoderA {
-  /* 0000 */ unsigned char m_key[9];
+// GLOBAL: gl_26182
+std::atomic<bool> s_themidaThreadStop;
+// GLOBAL: gl_26185
+std::atomic<bool> s_themidaThreadStarted;
+// GLOBAL: gl_26183
+ThemidaKeyEncoderA s_themidaKeyA;
+// GLOBAL: gl_26184
+ThemidaKeyEncoderB s_themidaThreadHandle;
 
-  unsigned char* Generate(const unsigned char* input);
-};
+// OFFSET: 0x0076F150
+// FUNCTION: fn_46732
+// VIRTUALIZED: emulated 0x0076F16A
+static DWORD WINAPI ThemidaWatchThread(void*) {
+  s_themidaKeyA.Generate(reinterpret_cast<const unsigned char*>(&ThemidaKeyMagic));
+  s_themidaThreadStarted = true;
+  s_themidaThreadStarted.notify_one();
 
-struct ThemidaKeyEncoderB {
-  /* 0000 */ unsigned char m_key[9];
+  std::mt19937 engine(std::random_device{}());
+  std::uniform_int_distribution<int> interval(500, 1500);
+  for (;;) {
+    Sleep(interval(engine));
+    if (s_themidaThreadStop) {
+      break;
+    }
+  }
 
-  unsigned char* Generate(const unsigned char* input);
-};
+  return 1;
+}
 
 // OFFSET: 0x0076EC00
 // FUNCTION: fn_08235
@@ -81,9 +100,26 @@ void CThemidaMgr::Destroy() {
 // OFFSET: 0x0076EEB0
 // FUNCTION: fn_08242
 void CThemidaMgr::Check() {
+  unsigned int value = 0;
+  s_themidaKeyA.Generate(reinterpret_cast<const unsigned char*>(&value));
+
+  value = reinterpret_cast<unsigned int>(CreateThread(nullptr, 0, &ThemidaWatchThread, nullptr, 0, nullptr));
+  s_themidaThreadHandle.Generate(reinterpret_cast<const unsigned char*>(&value));
+  s_themidaThreadStarted.wait(false);
+  s_themidaThreadStarted = false;
 }
 
 // OFFSET: 0x0076F050
 // FUNCTION: fn_08243
 void CThemidaMgr::StopThread() {
+  s_themidaThreadStop = true;
+  if (s_themidaThreadHandle.Decode() != 0) {
+    WaitForSingleObject(reinterpret_cast<HANDLE>(s_themidaThreadHandle.Decode()), INFINITE);
+    CloseHandle(reinterpret_cast<HANDLE>(s_themidaThreadHandle.Decode()));
+    unsigned int zero = 0;
+    s_themidaThreadHandle.Generate(reinterpret_cast<const unsigned char*>(&zero));
+  }
+
+  unsigned int zero = 0;
+  s_themidaKeyA.Generate(reinterpret_cast<const unsigned char*>(&zero));
 }
