@@ -13,6 +13,7 @@ namespace utility {
   }
 
   // OFFSET: 0x0057C8A0
+  // FUNCTION: fn_46730
   int DecompressZlib(std::span<const std::uint8_t> input, void* output, std::uint32_t outputSize) {
     uLongf length = outputSize;
     const int result = uncompress(static_cast<Bytef*>(output), &length, input.data(), input.size());

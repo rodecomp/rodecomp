@@ -1346,6 +1346,7 @@ LZ4_FORCE_INLINE int LZ4_compress_generic(
 
 
 // OFFSET: 0x006EAF90
+// FUNCTION: fn_06802
 int LZ4_compress_fast_extState(void* state, const char* source, char* dest, int inputSize, int maxOutputSize, int acceleration)
 {
     LZ4_stream_t_internal* const ctx = & LZ4_initStream(state, sizeof(LZ4_stream_t)) -> internal_donotuse;
@@ -1643,6 +1644,7 @@ static void LZ4_renormDictT(LZ4_stream_t_internal* LZ4_dict, int nextSize)
 
 
 // OFFSET: 0x006E8DB0
+// FUNCTION: fn_06801
 int LZ4_compress_fast_continue (LZ4_stream_t* LZ4_stream,
                                 const char* source, char* dest,
                                 int inputSize, int maxOutputSize,
