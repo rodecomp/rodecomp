@@ -29,6 +29,7 @@ public:
 private:
   /* 0000 */ std::map<int, PacketLengthValue> m_values;
   void Initialize();
+  void InitializeProtected();
   void Register(int id, int length, int variable, int record);
 };
 

@@ -25,29 +25,15 @@ __declspec(noinline) PacketLengthResult PacketLengths::Lookup(int id) const {
 }
 
 
-namespace {
-  struct PacketRegistration {
-    int record;
-    int variable;
-    int length;
-    int id;
-  };
-  // STATIC: 0x00B02294
-  // GLOBAL: gl_00808
-  constexpr PacketRegistration registrations[] = {
-#include "Network/Packets/PacketRegistrations.inc"
-};
-}
+// OFFSET: 0x00B08F60
 
 // OFFSET: 0x00B02260
 // FUNCTION: fn_18387
 __declspec(noinline) void PacketLengths::Initialize() {
-  const PacketRegistration* value = registrations - 1;
-  int count = sizeof(registrations) / sizeof(registrations[0]);
-  do {
-    ++value;
-    this->Register(value->id, value->length, value->variable, value->record);
-  } while (--count != 0);
+  this->InitializeProtected();
+#define PACKET_LENGTH(id, length, variable, record) this->Register(id, length, variable, record);
+#include "Network/Packets/PacketRegistrations.inc"
+#undef PACKET_LENGTH
 }
 
 // OFFSET: 0x00B01E70
