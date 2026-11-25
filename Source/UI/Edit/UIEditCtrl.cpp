@@ -10229,8 +10229,8 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     if (a != 7) {
       break;
     }
-    int width = b <= 320 ? b : 320;
-    int height = c <= 240 ? c : 240;
+    int width = std::min<int>(b, 320);
+    int height = std::min<int>(c, 240);
     if (width < 232) {
       width = 232;
     }
@@ -10238,9 +10238,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       height = 102;
     }
     const int tabHeight = this->tabs->geometry.height;
-    if (height < tabHeight + 38) {
-      height = tabHeight + 38;
-    }
+    height = std::max<int>(height, tabHeight + 38);
     const int rowsHeight = tabHeight + (height - tabHeight - 38) / 32 * 32;
     const int newWidth = (width - 280) / 32 * 32 + 280;
     if (newWidth != this->geometry.width || rowsHeight + 38 != this->geometry.height) {
