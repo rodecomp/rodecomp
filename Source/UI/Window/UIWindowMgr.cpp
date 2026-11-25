@@ -7502,7 +7502,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   auto transientEntry = std::find(this->rendered.begin(), this->rendered.end(), this->privateAirplaneWnd);
   if (transientEntry != this->rendered.end()) {
     this->rendered.erase(transientEntry);
-    this->rendered.push_back(this->privateAirplaneWnd);
+    this->rendered.insert(this->rendered.begin(), this->privateAirplaneWnd);
     notify = true;
   }
 
@@ -7512,7 +7512,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (topEntry != this->rendered.end()) {
     UIWindow* top = *topEntry;
     this->rendered.erase(topEntry);
-    this->rendered.push_back(top);
+    this->rendered.insert(this->rendered.begin(), top);
     notify = true;
   }
 
