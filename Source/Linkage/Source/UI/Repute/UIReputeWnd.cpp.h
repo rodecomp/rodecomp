@@ -26,5 +26,4 @@
 #include <new>
 
 extern template std::vector<std::string>::~vector();
-extern template std::string::~basic_string();
 template CReputeMgr* Singleton<CReputeMgr>::GetInstance();
