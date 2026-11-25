@@ -173,7 +173,7 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
   case BG_APPLY_PARTYGUILD_LEADER:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_ONLYBOSS), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     break;
-  case 15:
+  case BG_APPLY_BUSY_PARTYMEMBER:
     g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_BUSY_PARTYMEMBER), 0, false, false, 0, "메시지", 0x118, 0x78, 0);
     break;
   }

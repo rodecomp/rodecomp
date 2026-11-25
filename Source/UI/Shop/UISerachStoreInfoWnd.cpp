@@ -332,7 +332,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (argument1 != 0) {
       this->m_statusText = "";
       switch (argument2) {
-      case 387:
+      case ID_FIRST_PAGE:
         this->m_page = 1;
         break;
       case SSI_FAILED_NOTHING_SEARCH_ITEM:

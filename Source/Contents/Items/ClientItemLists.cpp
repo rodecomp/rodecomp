@@ -1260,7 +1260,7 @@ EquipSlots CSession::GetEquipSlots(int location) {
   case EQP_COSTUME_GARMENT:
     mask = EQP_GARMENT;
     break;
-  case 0x4000:
+  case EQP_COSTUME_FLOOR:
   case EQP_SHADOW_WEAPON:
     mask = EQP_HAND_R;
     break;

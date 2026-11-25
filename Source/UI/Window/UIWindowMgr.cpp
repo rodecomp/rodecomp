@@ -546,7 +546,7 @@ void UIWindowMgr::InitializeWindowPolicy() {
 // OFFSET: 0x00AA5F70
 // FUNCTION: fn_17227
 UIWindow* UIWindowMgr::LookupWindow(WindowId id) {
-  if (g_replayAnimationScaling != 0 && id == 600) {
+  if (g_replayAnimationScaling != 0 && id == WID_REPLAYMESSAGEBOXWND) {
     return this->replayMessageBoxWnd;
   }
 
@@ -4675,20 +4675,20 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND);
     }
     break;
-  case 0x9F:
+  case HK_HIDE_PLAYER_ONOFF + 100:
     Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_HIDE_PLAYER_ON_OFF);
     break;
-  case 0xA0:
+  case HK_REPUTEWND_ONOFF + 100:
     if (!g_windowMgr.CloseWindow(WID_REPUTEWND)) {
       g_windowMgr.EnsureWindow(WID_REPUTEWND);
     }
     break;
-  case 0xA1:
+  case HK_EQUIPMENT_PROPERTIES_ONOFF + 100:
     if (!g_windowMgr.CloseWindow(WID_EQUIPMENTPROPERTIESWND)) {
       g_windowMgr.EnsureWindow(WID_EQUIPMENTPROPERTIESWND);
     }
     break;
-  case 0xA3:
+  case HK_HIDE_SUMMON_ONOFF + 100:
     Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_HIDE_SUMMON_ON_OFF);
     break;
   case HK_MACRO_1 + 200:
@@ -4749,7 +4749,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     case WID_MERCHANTITEMWND:
     case WID_ESCOPTIONWND:
     case WID_NAVIGATIONV4WND:
-    case 251:
+    case WID_BANKWND:
     case WID_RODEXINBOXWND:
     case WID_BANK_NEWWND:
       return nullptr;

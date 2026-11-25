@@ -301,7 +301,7 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     message = MSI_HOTKEY_GUIDE;
     break;
   case MENUICON_BANK:
-    behaviorId = 251;
+    behaviorId = WID_BANKWND;
     message = MSI_BANK;
     break;
   case MENUICON_MAIL:

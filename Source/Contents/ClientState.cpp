@@ -4,6 +4,7 @@
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -80,7 +81,7 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (2000 != header.id) {
+  if (REPLAY_CHUNK_STATS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -88,66 +89,66 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 2001:
+    case REPLAY_CHUNK_STATS_END:
       this->InvalidateWindowFrames();
       return offset;
-    case 2010:
+    case REPLAY_CHUNK_STATS_STRENGTH_BONUS:
       std::memcpy(&this->strengthBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2011:
+    case REPLAY_CHUNK_STATS_AGILITY_BONUS:
       std::memcpy(&this->agilityBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2012:
+    case REPLAY_CHUNK_STATS_VITALITY_BONUS:
       std::memcpy(&this->vitalityBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2013:
+    case REPLAY_CHUNK_STATS_INTELLIGENCE_BONUS:
       std::memcpy(&this->intelligenceBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2014:
+    case REPLAY_CHUNK_STATS_DEXTERITY_BONUS:
       std::memcpy(&this->dexterityBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2015:
+    case REPLAY_CHUNK_STATS_LUCK_BONUS:
       std::memcpy(&this->luckBonus, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2016:
+    case REPLAY_CHUNK_STATS_STORE_ITEM_LIMIT:
       std::memcpy(&this->storeItemLimit, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2017:
+    case REPLAY_CHUNK_STATS_WEIGHT:
       std::memcpy(&this->m_weight, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2018:
+    case REPLAY_CHUNK_STATS_MAX_WEIGHT:
       std::memcpy(&this->m_maxWeight, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2019:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_A:
       std::memcpy(&this->randomStatIndexA, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2020:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_B:
       std::memcpy(&this->randomStatIndexB, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2021:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_C:
       std::memcpy(&this->randomStatIndexC, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2022:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_D:
       std::memcpy(&this->randomStatIndexD, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2023:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_E:
       std::memcpy(&this->randomStatIndexE, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2024:
+    case REPLAY_CHUNK_STATS_RANDOM_STAT_VALUES:
       std::memcpy(this->randomStatValues, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -167,48 +168,48 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       std::memcpy(this->replayStatValuesD, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2029:
+    case REPLAY_CHUNK_STATS_HP:
       std::memcpy(&this->hp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2030:
+    case REPLAY_CHUNK_STATS_MAX_HP:
       std::memcpy(&this->maxHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2031:
+    case REPLAY_CHUNK_STATS_SP:
       std::memcpy(&this->m_sp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2032:
+    case REPLAY_CHUNK_STATS_MAX_SP:
       std::memcpy(&this->m_maxSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2033:
+    case REPLAY_CHUNK_STATS_PROHIBITION_TARGET:
       std::memcpy(&this->m_prohibitionTarget, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2034:
+    case REPLAY_CHUNK_STATS_QUIT_BLOCKED:
       std::memcpy(&this->quitBlocked, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2035:
+    case REPLAY_CHUNK_STATS_BATTLE_CHAT:
       std::memcpy(&this->battleChat, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2036:
+    case REPLAY_CHUNK_STATS_QUIT_ALLOWED:
       std::memcpy(&this->quitAllowed, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2037:
+    case REPLAY_CHUNK_STATS_SESSION_FLAG:
       std::memcpy(&this->sessionFlag, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2038:
+    case REPLAY_CHUNK_STATS_ACCOUNT_NAME:
       this->m_accountName.resize(header.bytes);
       std::memcpy(this->m_accountName.data(), data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2052: {
+    case REPLAY_CHUNK_STATS_MADOGEAR_TYPE: {
       std::memcpy(&this->madogearType, data.data() + offset, header.bytes);
       offset += header.bytes;
       CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
@@ -243,7 +244,7 @@ std::uint32_t CSession::ReadReplayMessenger(const std::vector<unsigned char>& da
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (4000 != header.id) {
+  if (REPLAY_CHUNK_MESSENGER_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -251,21 +252,21 @@ std::uint32_t CSession::ReadReplayMessenger(const std::vector<unsigned char>& da
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 4501:
+    case REPLAY_CHUNK_ITEMS_END:
       return offset;
-    case 4010:
+    case REPLAY_CHUNK_MESSENGER_SESSION_FLAG:
       std::memcpy(&this->replaySessionFlag, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 4011:
+    case REPLAY_CHUNK_MESSENGER_PARTY_BLOCKED:
       std::memcpy(&this->partyBlocked, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 4012:
+    case REPLAY_CHUNK_MESSENGER_PARTY_LEADER:
       std::memcpy(&this->partyLeader, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 4013: {
+    case REPLAY_CHUNK_MESSENGER_PARTY_REQUEST_NAME: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
       std::memcpy(buffer, data.data() + offset, header.bytes);
@@ -273,7 +274,7 @@ std::uint32_t CSession::ReadReplayMessenger(const std::vector<unsigned char>& da
       this->partyRequestName = buffer;
       break;
     }
-    case 4014: {
+    case REPLAY_CHUNK_MESSENGER_PARTY_NAME: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
       std::memcpy(buffer, data.data() + offset, header.bytes);
@@ -281,10 +282,10 @@ std::uint32_t CSession::ReadReplayMessenger(const std::vector<unsigned char>& da
       this->partyName = buffer;
       break;
     }
-    case 4015:
+    case REPLAY_CHUNK_MESSENGER_PARTY_MEMBERS:
       offset = ReadMessengerMembers(this->m_partyMembers, offset, header.bytes, data);
       break;
-    case 4016:
+    case REPLAY_CHUNK_MESSENGER_FRIENDS:
       offset = ReadMessengerMembers(this->m_friends, offset, header.bytes, data);
       break;
     default:
@@ -306,7 +307,7 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (4500 != header.id) {
+  if (REPLAY_CHUNK_ITEMS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -314,72 +315,72 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 4501:
+    case REPLAY_CHUNK_ITEMS_END:
     case 4703:
       return offset;
-    case 4701:
+    case REPLAY_CHUNK_ITEMS_EXCHANGE_MONEY:
       std::memcpy(&this->exchangeMoney, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 4702:
+    case REPLAY_CHUNK_ITEMS_OTHER_EXCHANGE_MONEY:
       std::memcpy(&this->otherExchangeMoney, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 4510:
+    case REPLAY_CHUNK_ITEMS_INVENTORY:
       offset = ReadItemList(this->m_inventoryItems, offset, header.bytes, data);
       break;
-    case 4511:
+    case REPLAY_CHUNK_ITEMS_SHOP:
       offset = ReadItemList(this->m_shopItems, offset, header.bytes, data);
       break;
-    case 4512:
+    case REPLAY_CHUNK_ITEMS_PURCHASE:
       offset = ReadItemList(this->m_purchaseItems, offset, header.bytes, data);
       break;
-    case 4513:
+    case REPLAY_CHUNK_ITEMS_SELL:
       offset = ReadItemList(this->m_sellItems, offset, header.bytes, data);
       break;
-    case 4514:
+    case REPLAY_CHUNK_ITEMS_STORAGE:
       offset = ReadItemList(this->m_storageItems, offset, header.bytes, data);
       break;
-    case 4515:
+    case REPLAY_CHUNK_ITEMS_CART:
       offset = ReadItemList(this->m_cartItems, offset, header.bytes, data);
       break;
-    case 4516:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_SHOP:
       offset = ReadItemList(this->m_merchantShopItems, offset, header.bytes, data);
       break;
-    case 4517:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_MIRROR:
       offset = ReadItemList(this->m_merchantMirrorItems, offset, header.bytes, data);
       break;
-    case 4518:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_MY_SHOP:
       offset = ReadItemList(this->m_merchantMyShopItems, offset, header.bytes, data);
       break;
-    case 4519:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE:
       offset = ReadItemList(this->m_merchantPurchaseItems, offset, header.bytes, data);
       break;
-    case 4520:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_HOPE_TO_SELL:
       offset = ReadItemList(this->m_merchantHopeToSellItems, offset, header.bytes, data);
       break;
-    case 4521:
+    case REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE_SAVED:
       offset = ReadItemList(this->m_merchantPurchaseSavedItems, offset, header.bytes, data);
       break;
-    case 4522:
+    case REPLAY_CHUNK_ITEMS_FILTERED_INVENTORY:
       offset = ReadItemList(this->m_filteredInventoryItems, offset, header.bytes, data);
       break;
-    case 4601:
+    case REPLAY_CHUNK_ITEMS_EQUIPPED:
       offset = ReadItemArray(this->equippedItems.data(), offset, header.bytes, data);
       break;
-    case 4602:
+    case REPLAY_CHUNK_ITEMS_ALTERNATE_EQUIPPED:
       offset = ReadItemArray(this->alternateEquippedItems.data(), offset, header.bytes, data);
       break;
-    case 4603:
+    case REPLAY_CHUNK_ITEMS_COSTUME:
       offset = ReadItemArray(this->costumeItems.data(), offset, header.bytes, data);
       break;
-    case 4604:
+    case REPLAY_CHUNK_ITEMS_ALTERNATE_COSTUME:
       offset = ReadItemArray(this->alternateCostumeItems.data(), offset, header.bytes, data);
       break;
-    case 4605:
+    case REPLAY_CHUNK_ITEMS_EXCHANGE:
       offset = ReadItemArray(this->m_exchangeItems, offset, header.bytes, data);
       break;
-    case 4606:
+    case REPLAY_CHUNK_ITEMS_SLOTS:
       offset = ReadItemArray(this->m_itemSlots, offset, header.bytes, data);
       break;
     default:
@@ -401,7 +402,7 @@ std::uint32_t CSession::ReadReplayShops(const std::vector<unsigned char>& data) 
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (7500 != header.id) {
+  if (REPLAY_CHUNK_SHOPS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -409,9 +410,9 @@ std::uint32_t CSession::ReadReplayShops(const std::vector<unsigned char>& data) 
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 7501:
+    case REPLAY_CHUNK_SHOPS_END:
       return offset;
-    case 7502: {
+    case REPLAY_CHUNK_SHOPS_NAME: {
       ReplayShopNameRecord record{};
       std::memcpy(&record, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -419,14 +420,14 @@ std::uint32_t CSession::ReadReplayShops(const std::vector<unsigned char>& data) 
       this->AddShopName(name, record.shopId);
       break;
     }
-    case 7504: {
+    case REPLAY_CHUNK_SHOPS_ITEM: {
       ReplayShopItemRecord record;
       std::memcpy(&record, data.data() + offset, header.bytes);
       offset += header.bytes;
       g_session.SetShopItem(record.shopId, record.index, record.itemId, record.first, record.second);
       break;
     }
-    case 7505: {
+    case REPLAY_CHUNK_SHOPS_FLAG: {
       ReplayShopFlagRecord record;
       std::memcpy(&record, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -452,7 +453,7 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (5500 != header.id) {
+  if (REPLAY_CHUNK_MEMORIAL_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -461,22 +462,22 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
     offset += 6;
     bool done = false;
     switch (header.id) {
-    case 5501:
+    case REPLAY_CHUNK_MEMORIAL_END:
       done = true;
       break;
-    case 5510:
+    case REPLAY_CHUNK_MEMORIAL_WINDOW_OPEN:
       std::memcpy(&this->memorialWindowOpen, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5511:
+    case REPLAY_CHUNK_MEMORIAL_WINDOW_X:
       std::memcpy(&this->memorialWindowX, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5512:
+    case REPLAY_CHUNK_MEMORIAL_WINDOW_Y:
       std::memcpy(&this->memorialWindowY, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5513:
+    case REPLAY_CHUNK_MEMORIAL_DUNGEON_STATE:
       std::memcpy(&this->memorialDungeonState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -484,7 +485,7 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
       std::memcpy(&this->memorialReplayValue, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5515: {
+    case REPLAY_CHUNK_MEMORIAL_DUNGEON_NAME: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
       std::memcpy(buffer, data.data() + offset, header.bytes);
@@ -492,15 +493,15 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
       this->memorialDungeonName = buffer;
       break;
     }
-    case 5516:
+    case REPLAY_CHUNK_MEMORIAL_QUEUE_POSITION:
       std::memcpy(&this->memorialQueuePosition, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5517:
+    case REPLAY_CHUNK_MEMORIAL_CREATION_TIME:
       std::memcpy(&this->memorialCreationTime, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5518:
+    case REPLAY_CHUNK_MEMORIAL_EXPIRATION_TIME:
       std::memcpy(&this->memorialExpirationTime, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -537,7 +538,7 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (5000 != header.id) {
+  if (REPLAY_CHUNK_COMPANIONS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -545,317 +546,317 @@ std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& d
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 5001:
+    case REPLAY_CHUNK_COMPANIONS_END:
       return offset;
-    case 5101:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_AID:
       std::memcpy(&this->m_homunAid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5102:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_NAME:
       std::memcpy(this->m_homunName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5103:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_0:
       std::memcpy(&this->m_homunStats[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5104:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_1:
       std::memcpy(&this->m_homunStats[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5105:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_2:
       std::memcpy(&this->m_homunStats[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5106:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_3:
       std::memcpy(&this->m_homunStats[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5107:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_4:
       std::memcpy(&this->m_homunStats[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5108:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_5:
       std::memcpy(&this->m_homunStats[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5109:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_6:
       std::memcpy(&this->m_homunStats[6], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5110:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_7:
       std::memcpy(&this->m_homunStats[7], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5111:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_JOB:
       std::memcpy(&this->m_homunJob, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5112:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_LEVEL:
       std::memcpy(&this->m_homunLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5113:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_HP:
       std::memcpy(&this->m_homunHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5114:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HP:
       std::memcpy(&this->m_homunMaxHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5115:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_SP:
       std::memcpy(&this->m_homunSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5116:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_SP:
       std::memcpy(&this->homunMaxSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5117:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_FRIENDLY:
       std::memcpy(&this->homunFriendly, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5118:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ACCESSORY:
       std::memcpy(&this->homunAccessory, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5119:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_EXP:
       std::memcpy(&this->m_homunExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5120:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_EXP:
       std::memcpy(&this->m_homunMaxExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5121:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER:
       std::memcpy(&this->homunHunger, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5122:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HUNGER:
       std::memcpy(&this->homunMaxHunger, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5123:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_NAME_MODIFIED:
       std::memcpy(&this->homunNameModified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5124:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_GID:
       std::memcpy(&this->homunEnemyGid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5125:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_X:
       std::memcpy(&this->homunEnemyX, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5126:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_Y:
       std::memcpy(&this->homunEnemyY, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5127:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_MOVE_ENEMY:
       std::memcpy(&this->moveHomunEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5128:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_SELECT_ENEMY:
       std::memcpy(&this->selectHomunEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5129:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_ENEMY:
       std::memcpy(&this->attackHomunEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5130:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ALIVE:
       std::memcpy(&this->homunAlive, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5131:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_TRACE_AI:
       std::memcpy(&this->m_traceAi, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5132:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ACTION_STATE:
       std::memcpy(&this->m_homunActionState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5133:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER_NOTIFIED:
       std::memcpy(&this->m_homunHungerNotified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5134:
+    case REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_RANGE:
       std::memcpy(&this->m_homunAttackRange, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5201:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_AID:
       std::memcpy(&this->m_mercenaryAid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5202:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_NAME:
       std::memcpy(this->m_mercenaryName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5203:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_0:
       std::memcpy(&this->m_mercenaryStats[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5204:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_1:
       std::memcpy(&this->m_mercenaryStats[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5205:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_2:
       std::memcpy(&this->m_mercenaryStats[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5206:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_3:
       std::memcpy(&this->m_mercenaryStats[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5207:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_4:
       std::memcpy(&this->m_mercenaryStats[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5208:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_5:
       std::memcpy(&this->m_mercenaryStats[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5209:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_6:
       std::memcpy(&this->m_mercenaryStats[6], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5210:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_7:
       std::memcpy(&this->m_mercenaryStats[7], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5211:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_HP:
       std::memcpy(&this->m_mercenaryHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5212:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_HP:
       std::memcpy(&this->m_mercenaryMaxHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5213:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_CLASS:
       std::memcpy(&this->m_mercenaryClass, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5214:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_LEVEL:
       std::memcpy(&this->m_mercenaryLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5215:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_SP:
       std::memcpy(&this->m_mercenarySp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5216:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_SP:
       std::memcpy(&this->m_mercenaryMaxSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5217:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_LOYALTY:
       std::memcpy(&this->m_mercenaryLoyalty, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5218:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_SUMMONS:
       std::memcpy(&this->m_mercenarySummons, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5219:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_KILLS:
       std::memcpy(&this->m_mercenaryKills, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5220:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_RANGE:
       std::memcpy(&this->m_mercenaryAttackRange, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5221:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_EXPIRATION:
       std::memcpy(&this->m_mercenaryExpiration, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5222:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_GID:
       std::memcpy(&this->mercenaryEnemyGid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5223:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_X:
       std::memcpy(&this->mercenaryEnemyX, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5224:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_Y:
       std::memcpy(&this->mercenaryEnemyY, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5225:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_MOVE_ENEMY:
       std::memcpy(&this->moveMercenaryEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5226:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_SELECT_ENEMY:
       std::memcpy(&this->selectMercenaryEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5227:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_ENEMY:
       std::memcpy(&this->attackMercenaryEnemy, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5228:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ALIVE:
       std::memcpy(&this->mercenaryAlive, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5229:
+    case REPLAY_CHUNK_COMPANIONS_MERCENARY_ACTION_STATE:
       std::memcpy(&this->m_mercenaryActionState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5301:
+    case REPLAY_CHUNK_COMPANIONS_PET_GID:
       std::memcpy(&this->petGid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5302:
+    case REPLAY_CHUNK_COMPANIONS_PET_NAME_MODIFIED:
       std::memcpy(&this->m_petNameModified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5303:
+    case REPLAY_CHUNK_COMPANIONS_PET_NAME:
       std::memcpy(this->petName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5304:
+    case REPLAY_CHUNK_COMPANIONS_PET_ACCESSORY:
       std::memcpy(&this->petAccessory, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5305:
+    case REPLAY_CHUNK_COMPANIONS_PET_JOB:
       std::memcpy(&this->petJob, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5306:
+    case REPLAY_CHUNK_COMPANIONS_PET_LEVEL:
       std::memcpy(&this->petLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5307:
+    case REPLAY_CHUNK_COMPANIONS_PET_HUNGER:
       std::memcpy(&this->petHunger, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5308:
+    case REPLAY_CHUNK_COMPANIONS_PET_FRIENDLY:
       std::memcpy(&this->m_petFriendly, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5309:
+    case REPLAY_CHUNK_COMPANIONS_PET_EGG_INDEX:
       std::memcpy(&this->petEggIndex, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5310:
+    case REPLAY_CHUNK_COMPANIONS_PET_PREVIOUS_HUNGER:
       std::memcpy(&this->petPreviousHunger, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5401:
+    case REPLAY_CHUNK_COMPANIONS_ELEMENTAL_GID:
       std::memcpy(&this->elementalGid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5402:
+    case REPLAY_CHUNK_COMPANIONS_ELEMENTAL_HP:
       std::memcpy(&this->elementalHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5403:
+    case REPLAY_CHUNK_COMPANIONS_ELEMENTAL_SP:
       std::memcpy(&this->elementalSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5404:
+    case REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_HP:
       std::memcpy(&this->elementalMaxHp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5405:
+    case REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_SP:
       std::memcpy(&this->elementalMaxSp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -878,26 +879,26 @@ std::uint32_t CSession::ReadReplayQuests(const std::vector<unsigned char>& data)
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (3500 != header.id) {
+  if (REPLAY_CHUNK_QUESTS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
   g_renewQuestMgr->m_ongoingQuests.clear();
-  g_renewQuestMgr->SetParameter(3502, 0x18);
+  g_renewQuestMgr->SetParameter(REPLAY_CHUNK_QUESTS_PARAMETER, 0x18);
   while (data.size() > offset) {
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 3501:
+    case REPLAY_CHUNK_QUESTS_END:
       return offset;
-    case 3502: {
+    case REPLAY_CHUNK_QUESTS_PARAMETER: {
       int parameter;
       std::memcpy(&parameter, data.data() + offset, header.bytes);
       offset += header.bytes;
-      g_renewQuestMgr->SetParameter(3502, parameter);
+      g_renewQuestMgr->SetParameter(REPLAY_CHUNK_QUESTS_PARAMETER, parameter);
       break;
     }
-    case 3510: {
+    case REPLAY_CHUNK_QUESTS_ONGOING: {
       const std::uint32_t bytes = header.bytes;
       char* buffer = new char[bytes];
       std::memcpy(buffer, data.data() + offset, bytes);
@@ -925,7 +926,7 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (7000 != header.id) {
+  if (REPLAY_CHUNK_SHORTCUTS_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -933,14 +934,14 @@ std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& da
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 7001:
+    case REPLAY_CHUNK_SHORTCUTS_END:
       return offset;
-    case 7100:
+    case REPLAY_CHUNK_SHORTCUTS_SLOTS:
       g_session.ClearShortcutSlots();
       std::memcpy(this->m_shortcutSlots, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 7101:
+    case REPLAY_CHUNK_SHORTCUTS_QUICK_SLOT:
       g_session.ClearQuickSlots();
       std::memcpy(&this->quickSlot, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -1061,7 +1062,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (6500 != header.id) {
+  if (REPLAY_CHUNK_ENTRY_QUEUE_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -1069,9 +1070,9 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 6501:
+    case REPLAY_CHUNK_ENTRY_QUEUE_END:
       return offset;
-    case 6511: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_ID: {
       int queueId = 0;
       std::memcpy(&queueId, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -1083,14 +1084,14 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       }
       break;
     }
-    case 6512: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_READY: {
       unsigned char ready = 1;
       std::memcpy(&ready, data.data() + offset, header.bytes);
       offset += header.bytes;
       g_entryQueueMgr->ready = ready;
       break;
     }
-    case 6513: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_NAME: {
       char queueName[0x30];
       std::memset(queueName, 0, sizeof(queueName));
       std::memcpy(queueName, data.data() + offset, header.bytes);
@@ -1098,7 +1099,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       g_entryQueueMgr->SetQueueName(queueName);
       break;
     }
-    case 6514: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_CHARACTER_NAME: {
       char characterName[0x30];
       std::memset(characterName, 0, sizeof(characterName));
       std::memcpy(characterName, data.data() + offset, header.bytes);
@@ -1106,7 +1107,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       g_entryQueueMgr->SetCharacterName(characterName);
       break;
     }
-    case 6515: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_SELECTION: {
       int value;
       std::memcpy(&value, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -1116,15 +1117,15 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       }
       break;
     }
-    case 6517:
+    case REPLAY_CHUNK_ENTRY_QUEUE_WAITING:
       std::memcpy(&waiting, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 6518:
+    case REPLAY_CHUNK_ENTRY_QUEUE_RANKING:
       std::memcpy(&ranking, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 6516: {
+    case REPLAY_CHUNK_ENTRY_QUEUE_STAND_BY_NAME: {
       char queueText[100];
       std::memset(queueText, 0, sizeof(queueText));
       std::memcpy(queueText, data.data() + offset, header.bytes);
@@ -1154,7 +1155,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
   ReplayBlockHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (1000 != header.id) {
+  if (REPLAY_CHUNK_CHARACTER_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -1162,13 +1163,13 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 1001:
+    case REPLAY_CHUNK_CHARACTER_END:
       return offset;
-    case 1010:
+    case REPLAY_CHUNK_CHARACTER_AID:
       std::memcpy(&this->m_aid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1011:
+    case REPLAY_CHUNK_CHARACTER_GID:
       std::memcpy(&this->m_gid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1180,103 +1181,103 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->unknown_1620[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1014:
+    case REPLAY_CHUNK_CHARACTER_JOB:
       std::memcpy(&this->m_job, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1015:
+    case REPLAY_CHUNK_CHARACTER_EXP:
       std::memcpy(&this->m_exp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1016:
+    case REPLAY_CHUNK_CHARACTER_LEVEL:
       std::memcpy(&this->m_level, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1017:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT:
       std::memcpy(&this->m_statusPoint, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1018:
+    case REPLAY_CHUNK_CHARACTER_NEXT_EXP:
       std::memcpy(&this->m_nextExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1019:
+    case REPLAY_CHUNK_CHARACTER_JOB_LEVEL:
       std::memcpy(&this->m_jobLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1020:
+    case REPLAY_CHUNK_CHARACTER_SKILL_POINT:
       std::memcpy(&this->m_skillPoint, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1021:
+    case REPLAY_CHUNK_CHARACTER_GUILD_SKILL_POINT:
       std::memcpy(&this->m_guildSkillPoint, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1022:
+    case REPLAY_CHUNK_CHARACTER_HOMUN_SKILL_POINT:
       std::memcpy(&this->m_homunSkillPoint, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1023:
+    case REPLAY_CHUNK_CHARACTER_MERCENARY_SKILL_POINT:
       std::memcpy(&this->m_mercenarySkillPoint, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1024:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_0:
       std::memcpy(&this->m_standardStats[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1025:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_1:
       std::memcpy(&this->m_standardStats[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1026:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_2:
       std::memcpy(&this->m_standardStats[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1027:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_3:
       std::memcpy(&this->m_standardStats[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1028:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_4:
       std::memcpy(&this->m_standardStats[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1029:
+    case REPLAY_CHUNK_CHARACTER_STANDARD_STAT_5:
       std::memcpy(&this->m_standardStats[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1030:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_0:
       std::memcpy(&this->m_statusPointCost[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1031:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_1:
       std::memcpy(&this->m_statusPointCost[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1032:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_2:
       std::memcpy(&this->m_statusPointCost[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1033:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_3:
       std::memcpy(&this->m_statusPointCost[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1034:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_4:
       std::memcpy(&this->m_statusPointCost[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1035:
+    case REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_5:
       std::memcpy(&this->m_statusPointCost[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1036:
+    case REPLAY_CHUNK_CHARACTER_ASPD:
       std::memcpy(&this->m_aspd, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1037:
+    case REPLAY_CHUNK_CHARACTER_ATK1:
       std::memcpy(&this->m_atk1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1038:
+    case REPLAY_CHUNK_CHARACTER_MDEF1:
       std::memcpy(&this->m_mdef1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1284,215 +1285,215 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->m_sp36, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1040:
+    case REPLAY_CHUNK_CHARACTER_DEF1:
       std::memcpy(&this->m_def1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1041:
+    case REPLAY_CHUNK_CHARACTER_DEF2:
       std::memcpy(&this->m_def2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1042:
+    case REPLAY_CHUNK_CHARACTER_ATK2:
       std::memcpy(&this->m_atk2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1043:
+    case REPLAY_CHUNK_CHARACTER_MATK1:
       std::memcpy(&this->m_matk1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1044:
+    case REPLAY_CHUNK_CHARACTER_MATK2:
       std::memcpy(&this->m_matk2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1045:
+    case REPLAY_CHUNK_CHARACTER_MDEF2:
       std::memcpy(&this->m_mdef2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1046:
+    case REPLAY_CHUNK_CHARACTER_HIT:
       std::memcpy(&this->m_hit, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1047:
+    case REPLAY_CHUNK_CHARACTER_FLEE1:
       std::memcpy(&this->m_flee1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1048:
+    case REPLAY_CHUNK_CHARACTER_CRITICAL:
       std::memcpy(&this->m_critical, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1049:
+    case REPLAY_CHUNK_CHARACTER_FLEE2:
       std::memcpy(&this->m_flee2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1050:
+    case REPLAY_CHUNK_CHARACTER_EQUIPPED_ARROW_INDEX:
       std::memcpy(&this->equippedArrowIndex, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1051:
+    case REPLAY_CHUNK_CHARACTER_ZENY:
       std::memcpy(&this->m_zeny, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1052:
+    case REPLAY_CHUNK_CHARACTER_MOVE_SPEED:
       std::memcpy(&this->m_moveSpeed, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1053:
+    case REPLAY_CHUNK_CHARACTER_MANNER:
       std::memcpy(&this->m_manner, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1054:
+    case REPLAY_CHUNK_CHARACTER_NEXT_JOB_EXP:
       std::memcpy(&this->m_nextJobExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1055:
+    case REPLAY_CHUNK_CHARACTER_JOB_EXP:
       std::memcpy(&this->m_jobExp, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1056:
+    case REPLAY_CHUNK_CHARACTER_KARMA:
       std::memcpy(&this->m_karma, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1057:
+    case REPLAY_CHUNK_CHARACTER_MONSTER_INFO_ENABLED:
       std::memcpy(&this->monsterInfoEnabled, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1058:
+    case REPLAY_CHUNK_CHARACTER_CLIENT_TIME_OFFSET:
       std::memcpy(&this->m_clientTimeOffset, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1059:
+    case REPLAY_CHUNK_CHARACTER_CHARACTER_FLAGS:
       std::memcpy(&this->m_characterFlags, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1060:
+    case REPLAY_CHUNK_CHARACTER_HEAD:
       std::memcpy(&this->m_head, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1061:
+    case REPLAY_CHUNK_CHARACTER_WEAPON_LOOK:
       std::memcpy(&this->m_weaponLook, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1062:
+    case REPLAY_CHUNK_CHARACTER_SHIELD:
       std::memcpy(&this->m_shield, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1063:
+    case REPLAY_CHUNK_CHARACTER_BODY_STYLE:
       std::memcpy(&this->m_bodyStyle, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1064:
+    case REPLAY_CHUNK_CHARACTER_HEAD_PALETTE:
       std::memcpy(&this->m_headPalette, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1065:
+    case REPLAY_CHUNK_CHARACTER_ACCESSORY:
       std::memcpy(&this->m_accessory, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1066:
+    case REPLAY_CHUNK_CHARACTER_ACCESSORY2:
       std::memcpy(&this->m_accessory2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1067:
+    case REPLAY_CHUNK_CHARACTER_ACCESSORY3:
       std::memcpy(&this->m_accessory3, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1068:
+    case REPLAY_CHUNK_CHARACTER_BODY_STATE:
       std::memcpy(&this->m_bodyState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1069:
+    case REPLAY_CHUNK_CHARACTER_EFFECT_STATE:
       std::memcpy(&this->m_effectState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1070:
+    case REPLAY_CHUNK_CHARACTER_JOB_FLAGS:
       std::memcpy(&this->m_jobFlags, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1071:
+    case REPLAY_CHUNK_CHARACTER_ROBE:
       std::memcpy(&this->m_robe, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1072:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_0:
       std::memcpy(&this->m_equipViewLook[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1073:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_1:
       std::memcpy(&this->m_equipViewLook[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1074:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_2:
       std::memcpy(&this->m_equipViewLook[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1075:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_3:
       std::memcpy(&this->m_equipViewLook[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1076:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_4:
       std::memcpy(&this->m_equipViewLook[4], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1077:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_5:
       std::memcpy(&this->m_equipViewLook[5], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1078:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_6:
       std::memcpy(&this->m_equipViewLook[6], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1079:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_7:
       std::memcpy(&this->m_equipViewLook[7], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1080:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_8:
       std::memcpy(&this->m_equipViewLook[8], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1081:
+    case REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_NAME:
       std::memcpy(this->m_equipViewName, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1082:
+    case REPLAY_CHUNK_CHARACTER_PLAYER_TEAM:
       std::memcpy(&this->playerTeam, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1083:
+    case REPLAY_CHUNK_CHARACTER_SCORE1:
       std::memcpy(&this->m_score1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1084:
+    case REPLAY_CHUNK_CHARACTER_SCORE2:
       std::memcpy(&this->m_score2, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1085:
+    case REPLAY_CHUNK_CHARACTER_CHAT_FONT:
       std::memcpy(&this->chatFont, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1086:
+    case REPLAY_CHUNK_CHARACTER_CART_COUNT:
       std::memcpy(&this->cartCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1087:
+    case REPLAY_CHUNK_CHARACTER_CART_MAX_COUNT:
       std::memcpy(&this->cartMaxCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1088:
+    case REPLAY_CHUNK_CHARACTER_CART_WEIGHT:
       std::memcpy(&this->cartWeight, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1089:
+    case REPLAY_CHUNK_CHARACTER_CART_MAX_WEIGHT:
       std::memcpy(&this->cartMaxWeight, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1090:
+    case REPLAY_CHUNK_CHARACTER_VENDING_SLOT_COUNT:
       std::memcpy(&this->m_vendingSlotCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1091:
+    case REPLAY_CHUNK_CHARACTER_BUYING_STORE_SLOT_COUNT:
       std::memcpy(&this->m_buyingStoreSlotCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1092:
+    case REPLAY_CHUNK_CHARACTER_CHAT_TARGET:
       std::memcpy(&this->m_chatTarget, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1500,32 +1501,32 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->m_replayValue1093, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1094:
+    case REPLAY_CHUNK_CHARACTER_PARTY_EXP_SHARE:
       std::memcpy(&this->partyExpShare, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1095:
+    case REPLAY_CHUNK_CHARACTER_PARTY_ITEM_COLLECT:
       std::memcpy(&this->partyItemCollect, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1096:
+    case REPLAY_CHUNK_CHARACTER_PARTY_ITEM_DISTRIBUTE:
       std::memcpy(&this->partyItemDistribute, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1097:
+    case REPLAY_CHUNK_CHARACTER_STORE_TITLE:
       this->storeTitle.resize(header.bytes);
       std::memcpy(this->storeTitle.data(), data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1099:
+    case REPLAY_CHUNK_CHARACTER_ADOPTION_SKILL_AVAILABLE:
       std::memcpy(&this->adoptionSkillAvailable, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1100:
+    case REPLAY_CHUNK_CHARACTER_BODY_COSTUME:
       std::memcpy(&this->m_bodyCostume, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1101:
+    case REPLAY_CHUNK_CHARACTER_EXTRA_INVENTORY_SLOTS:
       std::memcpy(&this->extraInventorySlots, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;

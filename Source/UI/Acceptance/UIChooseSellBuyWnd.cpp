@@ -5,6 +5,7 @@
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Items/ItemType.h"
 #include "Client/Mode/CLoginMode.h"
@@ -783,7 +784,7 @@ static __forceinline UIBitmapButton* AddNumberedButtonInline(UIFrameWnd* frame, 
 void UIMinimapZoomWnd::OnCreate(int, int) {
   const int xs[5] = {1, this->geometry.width - 55, this->geometry.width - 41, this->geometry.width - 27, this->geometry.width - 13};
   const int ys[5] = {128, 128, 128, 128, 128};
-  const int ids[5] = {452, 216, 217, 189, 454};
+  const int ids[5] = {ID_TOGGLE_MINIMAP_MARKERS, ID_PLUS, ID_MINUS, ID_BUTTON1, ID_OPEN_WORLD_MAP};
   const char* tooltips[5] = {LookupMessage(MSI_MINIMAP_TIP_POS_ON), LookupMessage(MSI_MINIMAP_TIP_ZOOM_IN), LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), LookupMessage(MSI_MINIMAP_TIP_MAP_VIEW), LookupMessage(MSI_MINIMAP_TIP_WORLD_VIEW)};
   const char* names[5] = {"object", "plus", "minus", "mini", "viewon"};
   const std::string prefix("minimap\\i_");
@@ -835,14 +836,14 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       g_windowMgr.minimapZoom = 1.0f;
     }
     return 0;
-  case 452:
+  case ID_TOGGLE_MINIMAP_MARKERS:
     g_windowMgr.minimapMarkersVisible = g_windowMgr.minimapMarkersVisible == 0;
     for (auto it = this->m_zoom.begin(); it != this->m_zoom.end(); ++it) {
       static_cast<UIButton*>(it->second)->Enable(g_windowMgr.minimapMarkersVisible);
     }
     this->Invalidate();
     return 0;
-  case 454:
+  case ID_OPEN_WORLD_MAP:
     if (!g_windowMgr.CloseWindow(WID_ROMAPWND)) {
       g_windowMgr.EnsureWindow(WID_ROMAPWND);
     }
@@ -2815,7 +2816,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x574E != header.type) {
+    if (REPLAY_CHUNK_ITEM_COMPOSITION_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -2823,10 +2824,10 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::memcpy(&header, records + position, sizeof(header));
       position += sizeof(header);
       switch (header.type) {
-      case 0x574F:
+      case REPLAY_CHUNK_ITEM_COMPOSITION_END:
         scanning = false;
         break;
-      case 0x5751: {
+      case REPLAY_CHUNK_ITEM_COMPOSITION_ITEMS: {
           std::vector<unsigned char> packet(header.length, 0);
           std::memcpy(packet.data(), records + position, header.length);
           position += header.length;
@@ -2917,7 +2918,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x571C != header.type) {
+    if (REPLAY_CHUNK_ITEM_IDENTIFY_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -2925,10 +2926,10 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       std::memcpy(&header, records + position, sizeof(header));
       position += sizeof(header);
       switch (header.type) {
-      case 0x571D:
+      case REPLAY_CHUNK_ITEM_IDENTIFY_END:
         scanning = false;
         break;
-      case 0x571F: {
+      case REPLAY_CHUNK_ITEM_IDENTIFY_ITEMS: {
         std::vector<unsigned char> packet(header.length, 0);
         std::memcpy(packet.data(), records + position, header.length);
         position += header.length;
@@ -3643,13 +3644,13 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x542E == header.type) {
+    if (REPLAY_CHUNK_BABY_ACCEPT2_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
         switch (header.type) {
-        case 0x542F:
+        case REPLAY_CHUNK_BABY_ACCEPT2_END:
           scanning = false;
           break;
         default:
@@ -3698,7 +3699,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x53FC != header.type) {
+    if (REPLAY_CHUNK_BABY_ACCEPT_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -3706,10 +3707,10 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       std::memcpy(&header, packet + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
-      case 0x53FD:
+      case REPLAY_CHUNK_BABY_ACCEPT_END:
         scanning = false;
         break;
-      case 0x53FE: {
+      case REPLAY_CHUNK_BABY_ACCEPT_TEXT: {
         char name[260];
         std::memset(name, 0, sizeof(name));
         std::memcpy(name, packet + offset, header.length);
@@ -3952,13 +3953,13 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
 
-    if (20850 == header.type) {
+    if (REPLAY_CHUNK_CHOOSE_SELL_BUY_BEGIN == header.type) {
       bool scanning = true;
       while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += 6;
 
-        if (header.type == 20851) {
+        if (header.type == REPLAY_CHUNK_CHOOSE_SELL_BUY_END) {
           g_modeMgr.GetGameMode()->isOnQuest = 1;
           this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
           g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
@@ -4251,7 +4252,7 @@ void UIStatusWnd::OnCreate(int, int) {
   }
 
   {
-    const int ids[12] = {551, 552, 553, 554, 555, 556};
+    const int ids[12] = {ID_POW, ID_STA, ID_WIS, ID_SPL, ID_CON, ID_CRT};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
       this->m_extendedButtons[i] = new UIBitmapButton();
@@ -5204,7 +5205,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
       break;
     }
-    case 600:
+    case ID_NO_DEFAULT_PUSH:
       break;
     default:
       g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, static_cast<int>(a), 0, 0);
@@ -5249,7 +5250,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     break;
   }
   case UM_DISABLENEXTBUTTON:
-    this->m_message0 = 600;
+    this->m_message0 = ID_NO_DEFAULT_PUSH;
     this->SendMsg(nullptr, UM_DELETE_BUTTON, 218, 0, 0, 0);
     this->Invalidate();
     break;
@@ -5423,7 +5424,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     FramedMessageHeader header{};
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (20600 == header.type) {
+    if (REPLAY_CHUNK_EXCHANGE_BEGIN == header.type) {
       int number = 0;
       short level = 0;
       bool scanning = true;
@@ -5431,15 +5432,15 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
-        case 20603:
+        case REPLAY_CHUNK_EXCHANGE_PARTNER_ID:
           std::memcpy(&number, records + position, header.length);
           position += header.length;
           break;
-        case 20604:
+        case REPLAY_CHUNK_EXCHANGE_PARTNER_LEVEL:
           std::memcpy(&level, records + position, header.length);
           position += header.length;
           break;
-        case 20602: {
+        case REPLAY_CHUNK_EXCHANGE_PARTNER_NAME: {
           char name[260];
           std::memset(name, 0, sizeof(name));
           std::memcpy(name, records + position, header.length);
@@ -5447,42 +5448,42 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(name), number, level, 0);
           break;
         }
-        case 20605:
+        case REPLAY_CHUNK_EXCHANGE_IS_LOCAL_TRADER:
           std::memcpy(&this->isLocalTrader, records + position, header.length);
           position += header.length;
           if (this->isLocalTrader != 0) {
             this->SendMsg(nullptr, UM_MYDRAGCLOSED, 0, 0, 0, 0);
           }
           break;
-        case 20606:
+        case REPLAY_CHUNK_EXCHANGE_LOCAL_CONFIRMED:
           std::memcpy(&this->localConfirmed, records + position, header.length);
           position += header.length;
           if (this->localConfirmed != 0) {
             this->SendMsg(nullptr, UM_OTHERDRAGCLOSED, 0, 0, 0, 0);
           }
           break;
-        case 20607:
+        case REPLAY_CHUNK_EXCHANGE_REMOTE_CONFIRMED:
           std::memcpy(&this->remoteConfirmed, records + position, header.length);
           position += header.length;
           if (this->remoteConfirmed != 0) {
             this->SendMsg(nullptr, UM_COMMAND, ID_OK, 0, 0, 0);
           }
           break;
-        case 20608:
+        case REPLAY_CHUNK_EXCHANGE_LOCAL_ACCEPTED:
           std::memcpy(&this->localAccepted, records + position, header.length);
           position += header.length;
           if (this->localAccepted != 0) {
             this->SendMsg(nullptr, UM_COMMAND, ID_EXCHANGE, 0, 0, 0);
           }
           break;
-        case 20609:
+        case REPLAY_CHUNK_EXCHANGE_REMOTE_ACCEPTED:
           std::memcpy(&this->remoteAccepted, records + position, header.length);
           position += header.length;
           if (this->remoteAccepted != 0) {
             this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
           }
           break;
-        case 20601:
+        case REPLAY_CHUNK_EXCHANGE_END:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           scanning = false;
           break;
@@ -5686,7 +5687,7 @@ void UISayDialogWnd::OnCreate(int width, int height) {
   this->m_viewer->Move(10, 10);
   this->AddChild(this->m_viewer);
   this->m_responseId = 0;
-  this->m_message0 = 600;
+  this->m_message0 = ID_NO_DEFAULT_PUSH;
   this->m_responsePending = 0;
 }
 
@@ -5770,7 +5771,7 @@ void UIExchangeWnd::OnCreate(int, int) {
   this->screenshotCheckBox->SetChecked(this->takeScreenshot);
   this->AddChild(this->screenshotCheckBox);
 
-  this->m_message0 = 600;
+  this->m_message0 = ID_NO_DEFAULT_PUSH;
 }
 
 // OFFSET: 0x008DE400
@@ -6426,7 +6427,7 @@ void UInCashWnd::OnCreate(int width, int height) {
     {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
     {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
     {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
-  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 387, 316, 317, 388, 224, 386, 201, 365, 415};
+  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, ID_FIRST_PAGE, ID_PREV_PAGE, ID_NEXT_PAGE, ID_LAST_PAGE, ID_BUY, ID_RESET_CART, ID_CLOSE, ID_FIND, ID_REFRESH};
   int positions[19][2] = {
     {4, this->m_listHeight + 42}, {4, this->m_listHeight + 87}, {4, this->m_listHeight + 132}, {4, this->m_listHeight + 177},
     {4, this->m_listHeight + 222}, {4, this->m_listHeight + 267}, {4, this->m_listHeight + 312}, {4, this->m_listHeight + 357},
@@ -6754,7 +6755,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->m_page = this->m_pageCount;
       return 0;
 
-    case 415:
+    case ID_REFRESH:
       if (this->items.begin() != this->items.end()) {
         for (ITEM_INFO& item : this->items) {
           NCashRentalPacket packet;
@@ -6785,7 +6786,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         }
         this->m_buttons[this->m_tab]->SetState(0);
       }
-      this->m_tab = argument1 - 389;
+      this->m_tab = argument1 - ID_CASHSHOP_TAB_NEW;
       {
         UIBitmapButton* button = this->m_buttons[this->m_tab];
         button->SetDisabled(1);
@@ -7816,7 +7817,7 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
     unsigned offset = 6;
-    if (0x5528 != header.type) {
+    if (REPLAY_CHUNK_JOIN_GUILD_ACCEPT_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -7824,10 +7825,10 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::memcpy(&header, bytes + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
-      case 0x5529:
+      case REPLAY_CHUNK_JOIN_GUILD_ACCEPT_END:
         scanning = false;
         break;
-      case 0x552A: {
+      case REPLAY_CHUNK_JOIN_GUILD_ACCEPT_TEXT: {
         char name[260] = {};
         std::memcpy(name, bytes + offset, header.length);
         offset += header.length;
@@ -8238,7 +8239,7 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x5460 != header.type) {
+    if (REPLAY_CHUNK_JOIN_FRIEND_ACCEPT_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -8246,10 +8247,10 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       std::memcpy(&header, packet + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
-      case 0x5461:
+      case REPLAY_CHUNK_JOIN_FRIEND_ACCEPT_END:
         scanning = false;
         break;
-      case 0x5462: {
+      case REPLAY_CHUNK_JOIN_FRIEND_ACCEPT_TEXT: {
         char name[260];
         std::memset(name, 0, sizeof(name));
         std::memcpy(name, packet + offset, header.length);
@@ -8518,7 +8519,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (0x54C4 != header.type) {
+    if (REPLAY_CHUNK_STAR_PLACE_ACCEPT_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -8526,10 +8527,10 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::memcpy(&header, packet + offset, sizeof(header));
       offset += 6;
       switch (header.type) {
-      case 0x54C5:
+      case REPLAY_CHUNK_STAR_PLACE_ACCEPT_END:
         scanning = false;
         break;
-      case 0x54C6:
+      case REPLAY_CHUNK_STAR_PLACE_ACCEPT_PLACE:
         std::memcpy(&this->m_place, packet + offset, header.length);
         offset += header.length;
         this->SendMsg(nullptr, UM_SET_BABY_MSG, this->m_place, 0, 0, 0);
@@ -8781,22 +8782,22 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->m_expandedHeight = this->geometry.height;
       break;
     }
-    case 551:
+    case ID_POW:
       RequestTraitPointUp(mode, 0);
       break;
-    case 552:
+    case ID_STA:
       RequestTraitPointUp(mode, 1);
       break;
-    case 553:
+    case ID_WIS:
       RequestTraitPointUp(mode, 2);
       break;
-    case 554:
+    case ID_SPL:
       RequestTraitPointUp(mode, 3);
       break;
-    case 555:
+    case ID_CON:
       RequestTraitPointUp(mode, 4);
       break;
-    case 556:
+    case ID_CRT:
       RequestTraitPointUp(mode, 5);
       break;
     default:
@@ -9359,8 +9360,8 @@ template <class Record> inline void AppendReplayRecord(std::vector<unsigned char
 // FUNCTION: fn_12104
 std::vector<unsigned char> UIBabyAcceptWnd2::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21550, nullptr, 0));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21551, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_BABY_ACCEPT2_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_BABY_ACCEPT2_END, nullptr, 0));
   return records;
 }
 
@@ -9368,8 +9369,8 @@ std::vector<unsigned char> UIBabyAcceptWnd2::GetReplayData() {
 // FUNCTION: fn_12106
 std::vector<unsigned char> UIChooseSellBuyWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20850, nullptr, 0));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20851, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_SELL_BUY_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_SELL_BUY_END, nullptr, 0));
   return records;
 }
 
@@ -9391,7 +9392,7 @@ template <class Window> static __forceinline void AppendAcceptanceReplayRecords(
 // FUNCTION: fn_12109
 std::vector<unsigned char> UIExchangeAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendAcceptanceReplayRecords(records, this, 21650, 93);
+  AppendAcceptanceReplayRecords(records, this, REPLAY_CHUNK_EXCHANGE_ACCEPT_BEGIN, 93);
   return records;
 }
 
@@ -9399,7 +9400,7 @@ std::vector<unsigned char> UIExchangeAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12105
 std::vector<unsigned char> UIBabyAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendAcceptanceReplayRecords(records, this, 21500, 794);
+  AppendAcceptanceReplayRecords(records, this, REPLAY_CHUNK_BABY_ACCEPT_BEGIN, 794);
   return records;
 }
 
@@ -9407,7 +9408,7 @@ std::vector<unsigned char> UIBabyAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12113
 std::vector<unsigned char> UIJoinFriendAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendAcceptanceReplayRecords(records, this, 21600, 818);
+  AppendAcceptanceReplayRecords(records, this, REPLAY_CHUNK_JOIN_FRIEND_ACCEPT_BEGIN, 818);
   return records;
 }
 
@@ -9415,7 +9416,7 @@ std::vector<unsigned char> UIJoinFriendAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12114
 std::vector<unsigned char> UIJoinGuildAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendAcceptanceReplayRecords(records, this, 21800, 377);
+  AppendAcceptanceReplayRecords(records, this, REPLAY_CHUNK_JOIN_GUILD_ACCEPT_BEGIN, 377);
   return records;
 }
 
@@ -9423,7 +9424,7 @@ std::vector<unsigned char> UIJoinGuildAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12115
 std::vector<unsigned char> UIJoinPartyAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendAcceptanceReplayRecords(records, this, 21750, 94);
+  AppendAcceptanceReplayRecords(records, this, REPLAY_CHUNK_JOIN_PARTY_ACCEPT_BEGIN, 94);
   return records;
 }
 
@@ -9431,9 +9432,9 @@ std::vector<unsigned char> UIJoinPartyAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12118
 std::vector<unsigned char> UIStarPlaceAcceptWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21700, nullptr, 0));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21702, &this->m_place, sizeof(this->m_place)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21701, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_STAR_PLACE_ACCEPT_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_STAR_PLACE_ACCEPT_PLACE, &this->m_place, sizeof(this->m_place)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_STAR_PLACE_ACCEPT_END, nullptr, 0));
   return records;
 }
 
@@ -9441,15 +9442,15 @@ std::vector<unsigned char> UIStarPlaceAcceptWnd::GetReplayData() {
 // FUNCTION: fn_12108
 std::vector<unsigned char> UIChooseWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21900, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_BEGIN, nullptr, 0));
 
   const int count = static_cast<int>(this->m_list->lines.size());
   for (int index = 0; index < count; ++index) {
     const std::string line = this->m_list->lines[index];
-    AppendReplayRecord(records, MakeReplayTaggedRecord(21903, line.c_str(), line.size()));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_LINE, line.c_str(), line.size()));
   }
 
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21901, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_END, nullptr, 0));
   return records;
 }
 
@@ -9477,7 +9478,7 @@ static __forceinline void AppendItemListReplayRecords(std::vector<unsigned char>
 // FUNCTION: fn_12112
 std::vector<unsigned char> UIItemIdentifyWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendItemListReplayRecords(records, this->m_items, 22300, 0x177);
+  AppendItemListReplayRecords(records, this->m_items, REPLAY_CHUNK_ITEM_IDENTIFY_BEGIN, 0x177);
   return records;
 }
 
@@ -9485,7 +9486,7 @@ std::vector<unsigned char> UIItemIdentifyWnd::GetReplayData() {
 // FUNCTION: fn_12111
 std::vector<unsigned char> UIItemCompositionWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendItemListReplayRecords(records, this->m_items, 22350, 0x17B);
+  AppendItemListReplayRecords(records, this->m_items, REPLAY_CHUNK_ITEM_COMPOSITION_BEGIN, 0x17B);
   return records;
 }
 
@@ -9493,15 +9494,15 @@ std::vector<unsigned char> UIItemCompositionWnd::GetReplayData() {
 // FUNCTION: fn_12116
 std::vector<unsigned char> UIMakingArrowListWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(22100, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_MAKING_ARROW_LIST_BEGIN, nullptr, 0));
 
   for (std::list<ITEM_INFO>::iterator item = this->m_items.begin(); item != this->m_items.end(); ++item) {
     const int itemId = std::atoi(item->itemId.c_str());
-    AppendReplayRecord(records, MakeReplayTaggedRecord(22103, &itemId, sizeof(itemId)));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_MAKING_ARROW_LIST_ITEM, &itemId, sizeof(itemId)));
   }
 
-  AppendReplayRecord(records, MakeReplayTaggedRecord(22102, &this->listType, sizeof(this->listType)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(22101, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_MAKING_ARROW_LIST_LIST_TYPE, &this->listType, sizeof(this->listType)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_MAKING_ARROW_LIST_END, nullptr, 0));
   return records;
 }
 
@@ -10025,11 +10026,11 @@ UIMakingArrowListWnd::UIMakingArrowListWnd()
 // FUNCTION: fn_12107
 std::vector<unsigned char> UIChooseWarpWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21950, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_WARP_BEGIN, nullptr, 0));
   for (auto choice = this->m_choices.begin(); choice < this->m_choices.end(); ++choice) {
-    AppendReplayRecord(records, MakeReplayTaggedRecord(21953, choice->c_str(), choice->size()));
+    AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_WARP_CHOICE, choice->c_str(), choice->size()));
   }
-  AppendReplayRecord(records, MakeReplayTaggedRecord(21951, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_CHOOSE_WARP_END, nullptr, 0));
   return records;
 }
 
@@ -10037,16 +10038,16 @@ std::vector<unsigned char> UIChooseWarpWnd::GetReplayData() {
 // FUNCTION: fn_12110
 std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20600, nullptr, 0));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20603, &this->partnerId, sizeof(this->partnerId)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20604, &this->partnerLevel, sizeof(this->partnerLevel)));
-  AppendReplayRecord(records, BuildReplayTaggedRecord(20602, this->partnerName.c_str(), this->partnerName.size()));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20605, &this->isLocalTrader, sizeof(this->isLocalTrader)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20606, &this->localConfirmed, sizeof(this->localConfirmed)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20607, &this->remoteConfirmed, sizeof(this->remoteConfirmed)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20608, &this->localAccepted, sizeof(this->localAccepted)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20609, &this->remoteAccepted, sizeof(this->remoteAccepted)));
-  AppendReplayRecord(records, MakeReplayTaggedRecord(20601, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_BEGIN, nullptr, 0));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_PARTNER_ID, &this->partnerId, sizeof(this->partnerId)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_PARTNER_LEVEL, &this->partnerLevel, sizeof(this->partnerLevel)));
+  AppendReplayRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_PARTNER_NAME, this->partnerName.c_str(), this->partnerName.size()));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_IS_LOCAL_TRADER, &this->isLocalTrader, sizeof(this->isLocalTrader)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_LOCAL_CONFIRMED, &this->localConfirmed, sizeof(this->localConfirmed)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_REMOTE_CONFIRMED, &this->remoteConfirmed, sizeof(this->remoteConfirmed)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_LOCAL_ACCEPTED, &this->localAccepted, sizeof(this->localAccepted)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_REMOTE_ACCEPTED, &this->remoteAccepted, sizeof(this->remoteAccepted)));
+  AppendReplayRecord(records, MakeReplayTaggedRecord(REPLAY_CHUNK_EXCHANGE_END, nullptr, 0));
   return records;
 }
 
@@ -10422,7 +10423,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x5654 != header.type) {
+    if (REPLAY_CHUNK_MAKING_ARROW_LIST_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -10430,17 +10431,17 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
       std::memcpy(&header, records + position, sizeof(header));
       position += sizeof(header);
       switch (header.type) {
-      case 0x5655:
+      case REPLAY_CHUNK_MAKING_ARROW_LIST_END:
         scanning = false;
         break;
-      case 0x5656: {
+      case REPLAY_CHUNK_MAKING_ARROW_LIST_LIST_TYPE: {
         int value = 0;
         std::memcpy(&value, records + position, header.length);
         position += header.length;
         this->SendMsg(nullptr, UM_SETINFO, static_cast<std::int16_t>(value), 0, 0, 0);
         break;
       }
-      case 0x5657: {
+      case REPLAY_CHUNK_MAKING_ARROW_LIST_ITEM: {
         int value = 0;
         std::memcpy(&value, records + position, header.length);
         position += header.length;
@@ -10549,7 +10550,7 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x55BE != header.type) {
+    if (REPLAY_CHUNK_CHOOSE_WARP_BEGIN != header.type) {
       break;
     }
     bool scanning = true;
@@ -10557,11 +10558,11 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       std::memcpy(&header, records + position, sizeof(header));
       position += sizeof(header);
       switch (header.type) {
-      case 0x55BF:
+      case REPLAY_CHUNK_CHOOSE_WARP_END:
         this->SendMsg(nullptr, UM_SETCHOOSE, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
         scanning = false;
         break;
-      case 0x55C1: {
+      case REPLAY_CHUNK_CHOOSE_WARP_CHOICE: {
         char text[260] = {};
         std::memcpy(text, records + position, header.length);
         position += header.length;
@@ -10982,7 +10983,7 @@ public:
 int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == UM_COMMAND) {
     switch (a) {
-    case 419:
+    case ID_SECOND_PASSWORD_NOT_USED:
       if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
@@ -11398,7 +11399,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
 int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == UM_COMMAND) {
     switch (a) {
-    case 419:
+    case ID_SECOND_PASSWORD_NOT_USED:
       if (std::strlen(this->currentPassword) == static_cast<std::size_t>(this->passwordLength)) {
         std::atoi(this->currentPassword);
         SecondPasswordPacket packet;
@@ -12217,16 +12218,16 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
     unsigned int position = sizeof(header);
-    if (0x558C == header.type) {
+    if (REPLAY_CHUNK_CHOOSE_BEGIN == header.type) {
       bool done = false;
       while (!done && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
-        case 0x558D:
+        case REPLAY_CHUNK_CHOOSE_END:
           done = true;
           break;
-        case 0x558F: {
+        case REPLAY_CHUNK_CHOOSE_LINE: {
           char text[260] = {};
           std::memcpy(text, records + position, header.length);
           position += header.length;

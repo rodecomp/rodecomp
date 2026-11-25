@@ -246,7 +246,7 @@ int UIGuildHelperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
         g_windowMgr.EnsureWindow(WID_GUILDTIPWND);
       }
       break;
-    case 448:
+    case ID_CREATE_GUILD:
       if (!g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0)) {
         g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_0);
         if (g_windowMgr.createGuildWnd) {
@@ -318,7 +318,7 @@ void UICreateGuildWnd::OnCreate(int, int) {
 void UIGuildHelperWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\guild_helper\\");
   const char* names[3][3] = {{"btn_help", "btn_help_a", "btn_help_b"}, {"create_guild", "create_guild_a", "create_guild_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}};
-  const int ids[3] = {343, 448, 184};
+  const int ids[3] = {ID_HELP, ID_CREATE_GUILD, ID_OK};
 
   for (unsigned int i = 0; i < 3; ++i) {
     this->m_button = new UIBitmapButton();

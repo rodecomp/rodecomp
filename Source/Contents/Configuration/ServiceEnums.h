@@ -38,6 +38,7 @@ enum ServerType : int {
   ServerInstantEvent = 3,
   ServerPvp = 4,
   ServerPk = 5,
+  ServerStage = 13,
 };
 
 #endif

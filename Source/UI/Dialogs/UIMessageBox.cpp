@@ -3787,7 +3787,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_COMBOBOX_SELECTED: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
-    case 467:
+    case ID_PET_FEED:
       if (g_windowMgr.rodexComposeWnd) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_CLOSE_RODEX)), 255, 0, 0, 0);
         break;
@@ -3797,19 +3797,19 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.AddRendered(this->feedConfirmationWnd);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
-    case 468:
+    case ID_PET_PERFORMANCE:
       mode->SendMsg(MM_COMMAND_PET, 2, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
-    case 469:
+    case ID_PET_UNEQUIP_ACCESSORY:
       mode->SendMsg(MM_COMMAND_PET, 4, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
-    case 470:
+    case ID_PET_RETURN_TO_EGG:
       mode->SendMsg(MM_COMMAND_PET, 3, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
       return 0;
-    case 471:
+    case ID_PET_EVOLUTION:
       if (g_session.m_petFriendly > 900) {
         g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
         UIWindow* window = g_windowMgr.EnsureWindow(WID_PETEVOLUTIONWND);
@@ -3881,10 +3881,10 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       performance = LookupMessage(MSI_PET_PERFORMANCE);
       returnToEgg = LookupMessage(MSI_PET_RETURN_EGG);
       unequip = LookupMessage(MSI_PET_ACC_OFF);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(feed.c_str()), 467, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(performance.c_str()), 468, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(unequip.c_str()), 469, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(returnToEgg.c_str()), 470, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(feed.c_str()), ID_PET_FEED, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(performance.c_str()), ID_PET_PERFORMANCE, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(unequip.c_str()), ID_PET_UNEQUIP_ACCESSORY, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(returnToEgg.c_str()), ID_PET_RETURN_TO_EGG, 0, 0);
       const int petEgg = g_session.LookupClientItemByIdentity(g_session.petEggIndex).GetItemId();
       const std::pair<bool, std::vector<int>> targets = g_petEvolutionMgr->GetEvolutionTargets(petEgg);
       if (targets.first == true) {
@@ -3897,7 +3897,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           } else {
             text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PET_EVOLUTION_WITH_PET_NAME), name));
           }
-          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text.c_str()), 471, *it, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text.c_str()), ID_PET_EVOLUTION, *it, 0);
         }
       }
       const int height = (static_cast<int>(targets.second.size()) + 4) * 16;

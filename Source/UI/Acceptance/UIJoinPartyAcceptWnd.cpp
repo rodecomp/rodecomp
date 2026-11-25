@@ -1,5 +1,6 @@
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "Client/Mode/CMode.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -70,7 +71,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     FramedMessageHeader header;
     header = *reinterpret_cast<const FramedMessageHeader*>(bytes);
     unsigned int offset = 6;
-    if (21750 != header.type) {
+    if (REPLAY_CHUNK_JOIN_PARTY_ACCEPT_BEGIN != header.type) {
       break;
     }
 
@@ -79,10 +80,10 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       header = *reinterpret_cast<const FramedMessageHeader*>(bytes + offset);
       offset += 6;
       switch (header.type) {
-      case 21751:
+      case REPLAY_CHUNK_JOIN_PARTY_ACCEPT_END:
         scanning = false;
         break;
-      case 21752: {
+      case REPLAY_CHUNK_JOIN_PARTY_ACCEPT_TEXT: {
         char text[260] = {};
         std::memcpy(text, bytes + offset, header.length);
         offset += header.length;

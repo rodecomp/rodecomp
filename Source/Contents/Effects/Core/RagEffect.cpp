@@ -5,6 +5,7 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/Pc.h"
@@ -21219,17 +21220,17 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
       PlayEffectWave(*this, "effect\\EF_hit2.wav");
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, 114, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_2:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, 114, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF0000, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case EF_DAMAGE1_3:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF00FF, 114, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_MAKE_NUMBER, 1, 0xFFFF00FF, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case EF_SPREADATTACK:

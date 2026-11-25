@@ -6,6 +6,7 @@
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
+#include "UI/Window/ReplayChunkTag.h"
 #include "Network/Packets/ActorNamePacket.h"
 #include "Client/Mode/CGameMode.h"
 #include "UI/Window/UIEnums.h"
@@ -1446,7 +1447,7 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (17000 != header.type) {
+  if (REPLAY_CHUNK_GROUND_SKILLS_BEGIN != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
     while (data.size() > offset) {
@@ -1469,7 +1470,7 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
         this->Zc_Skill_Entry2(record.data());
         break;
       }
-      case 0x4269:
+      case REPLAY_CHUNK_GROUND_SKILLS_END:
         return offset;
       default:
         offset += header.size;
@@ -5776,7 +5777,7 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (15000 != header.type) {
+  if (REPLAY_CHUNK_GROUND_ITEMS_BEGIN != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
     while (data.size() > offset) {
@@ -5792,7 +5793,7 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
         this->ReceiveItemFallEntry(record.data());
         break;
       }
-      case 15001:
+      case REPLAY_CHUNK_GROUND_ITEMS_END:
         return offset;
       default:
         offset += header.size;
@@ -5815,7 +5816,7 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (10000 != header.type) {
+  if (REPLAY_CHUNK_ACTORS_BEGIN != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
     std::vector<unsigned char> record;
@@ -5829,7 +5830,7 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
       }
 
       switch (header.type) {
-      case 10001:
+      case REPLAY_CHUNK_ACTORS_END:
         goto finished;
       case 0xD0:
         std::memcpy(record.data(), data.data() + offset, header.size);
@@ -6045,7 +6046,7 @@ std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(19000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6055,12 +6056,12 @@ std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
       effect.expiration -= timeGetTime();
     }
 
-    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x4A43, effect);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_EFFECT, effect);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(19001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6073,17 +6074,17 @@ std::vector<unsigned char> CGameMode::SaveQuestState() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(14000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_QUEST_STATE_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(14011, this->isOnQuest);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_QUEST_STATE_IS_ON_QUEST, this->isOnQuest);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(14001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_QUEST_STATE_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6421,7 +6422,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(17000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_GROUND_SKILLS_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6447,7 +6448,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(17001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_GROUND_SKILLS_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6467,7 +6468,7 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (13000 != header.type) {
+  if (REPLAY_CHUNK_NAME_CARD_BEGIN != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
     while (data.size() > offset) {
@@ -6480,23 +6481,23 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
       }
 
       switch (header.type) {
-      case 13001:
+      case REPLAY_CHUNK_NAME_CARD_END:
         goto finished;
-      case 13002:
+      case REPLAY_CHUNK_NAME_CARD_GUILD_EMBLEM:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->SaveEmblemFile(record);
         break;
-      case 13003:
+      case REPLAY_CHUNK_NAME_CARD_DATA:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->nameCard.Load(record);
         break;
-      case 13004:
+      case REPLAY_CHUNK_NAME_CARD_GUILD_ID:
         std::memcpy(&guildId, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 13005: {
+      case REPLAY_CHUNK_NAME_CARD_EMBLEM_VERSION: {
         int emblemVersion = 0;
         std::memcpy(&emblemVersion, data.data() + offset, header.size);
         offset += header.size;
@@ -6528,43 +6529,43 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(13000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_NAME_CARD_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   std::vector<char> buffer;
   std::vector<std::string> names;
   if (static_cast<int>(this->nameCard.Save(buffer)) > 0) {
-    const std::vector<unsigned char> chunk = MakeDataChunk(13003, buffer);
+    const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_NAME_CARD_DATA, buffer);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
     if (this->AppendGuildEmblem(buffer, names, this->scene->player->GetGdid(), GetActorEmblemVersion(g_guildMgr, this->scene->player))) {
-      const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_NAME_CARD_GUILD_EMBLEM, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(13004, this->scene->player->GetGdid());
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_NAME_CARD_GUILD_ID, this->scene->player->GetGdid());
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(13005, GetActorEmblemVersion(g_guildMgr, this->scene->player));
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_NAME_CARD_EMBLEM_VERSION, GetActorEmblemVersion(g_guildMgr, this->scene->player));
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
   for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
     if (this->AppendGuildEmblem(buffer, names, (*it)->GetGdid(), GetActorEmblemVersion(g_guildMgr, *it))) {
-      const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_NAME_CARD_GUILD_EMBLEM, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(13001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_NAME_CARD_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6651,7 +6652,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(10000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_ACTORS_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6740,7 +6741,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(10001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_ACTORS_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -7047,7 +7048,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
   std::vector<unsigned char> data;
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(15000);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_GROUND_ITEMS_BEGIN);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -7088,7 +7089,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
   }
 
   {
-    const std::vector<unsigned char> chunk = MakeEmptyChunk(15001);
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(REPLAY_CHUNK_GROUND_ITEMS_END);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -8494,7 +8495,7 @@ static unsigned ReadReplaySkillEffects(const std::vector<unsigned char>& data) {
   unsigned offset = 6;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
-  if (19000 != header.type) {
+  if (REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_BEGIN != header.type) {
     return 0xFFFFFFFFu;
   }
 
@@ -8504,10 +8505,10 @@ static unsigned ReadReplaySkillEffects(const std::vector<unsigned char>& data) {
     offset += 6;
 
     switch (header.type) {
-    case 19001:
+    case REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_END:
       g_statusRefreshSuppressed = 1;
       return offset;
-    case 19011: {
+    case REPLAY_CHUNK_ACTIVE_SKILL_EFFECTS_EFFECT: {
       ActiveSkillEffect effect;
       std::memcpy(&effect, data.data() + offset, header.size);
       offset += header.size;
@@ -8537,7 +8538,7 @@ static unsigned ReadReplayQuestState(CGameMode* mode, const std::vector<unsigned
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   unsigned offset = 6;
-  if (14000 != header.type) {
+  if (REPLAY_CHUNK_QUEST_STATE_BEGIN != header.type) {
     return 0xFFFFFFFFu;
   }
 
@@ -8547,9 +8548,9 @@ static unsigned ReadReplayQuestState(CGameMode* mode, const std::vector<unsigned
     offset += 6;
 
     switch (header.type) {
-    case 14001:
+    case REPLAY_CHUNK_QUEST_STATE_END:
       return offset;
-    case 14011:
+    case REPLAY_CHUNK_QUEST_STATE_IS_ON_QUEST:
       std::memcpy(&mode->isOnQuest, data.data() + offset, header.size);
       offset += header.size;
       break;

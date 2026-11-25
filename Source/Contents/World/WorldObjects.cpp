@@ -1085,13 +1085,13 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     names.sprite = "몬스터\\워그.spr";
     names.action = "몬스터\\워그.act";
     animation = 0;
-    type = 27;
+    type = MET_WARG;
     break;
   case MAKETYPE_BABY_WARG_EFFECT:
     names.sprite = "몬스터\\워그.spr";
     names.action = "몬스터\\베이비워그.act";
     animation = 0;
-    type = 31;
+    type = MET_BABY_WARG;
     break;
   case MAKETYPE_BIRD_EFFECT:
     names.sprite = "이팩트\\매.spr";
@@ -1303,13 +1303,13 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     names.sprite = "이팩트\\shield.spr";
     names.action = "이팩트\\shield.act";
     animation = 0;
-    type = 32;
+    type = MET_SHIELD_EFFECT;
     break;
   case MAKETYPE_COSTUME_BODY_EFFECT:
     names.sprite = "이팩트\\costumebody.spr";
     names.action = "이팩트\\costumebody.act";
     animation = 0;
-    type = 33;
+    type = MET_COSTUME_BODY_EFFECT;
     break;
   case 45:
     names.sprite = "이팩트\\손수레5.spr";
@@ -1417,13 +1417,13 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     names.sprite = "이팩트\\emotion.spr";
     names.action = "이팩트\\emotion.act";
     animation = 5;
-    type = 37;
+    type = MET_LASSITUDE_EFFECT;
     break;
   case MAKETYPE_MISFORTUNE_EFFECT:
     names.sprite = "이팩트\\emotion.spr";
     names.action = "이팩트\\emotion.act";
     animation = 28;
-    type = 38;
+    type = MET_MISFORTUNE_EFFECT;
     break;
   case MAKETYPE_WINDHAWK_HAWK_EFFECT:
     names.sprite = "이팩트\\WINDHAWK_HAWK.spr";
@@ -1435,7 +1435,7 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     names.sprite = "이팩트\\WINDHAWK_WOLF.spr";
     names.action = "이팩트\\WINDHAWK_WOLF.act";
     animation = 0;
-    type = 27;
+    type = MET_WARG;
     break;
   default:
     names.sprite = "이팩트\\msg.spr";

@@ -329,7 +329,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
     ITEM_INFO costume = g_session.GetCostumeItemAt(0);
     if (this->m_render->lowerHeadgear == costume.sprite) {
       this->m_render->lowerHeadgearLocation = 1;
-      if (costume.identity[2] == 0x1C00) {
+      if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
         this->m_render->lowerHeadgearLocation = 0x301;
         this->m_render->upperHeadgearLocation = 0x301;
         this->m_render->middleHeadgearLocation = 0x301;
@@ -367,17 +367,17 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
         this->m_render->upperHeadgearLocation = 0x100;
       }
 
-      if (costume.identity[2] == 0x1400) {
+      if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW)) {
         this->m_render->upperHeadgearLocation = 0x101;
         this->m_render->lowerHeadgearLocation = 0x101;
       }
 
-      if (costume.identity[2] == 0xC00) {
+      if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID)) {
         this->m_render->upperHeadgearLocation = 0x300;
         this->m_render->middleHeadgearLocation = 0x300;
       }
 
-      if (costume.identity[2] == 0x1C00) {
+      if (costume.identity[2] == (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
         this->m_render->lowerHeadgearLocation = 0x301;
         this->m_render->upperHeadgearLocation = 0x301;
         this->m_render->middleHeadgearLocation = 0x301;
@@ -404,7 +404,7 @@ void UIPreviewEquipWnd::RefreshHeadgearLocations() {
         this->m_render->middleHeadgearLocation = 0x200;
       }
 
-      if (costume.identity[2] == 0x1800) {
+      if (costume.identity[2] == (EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW)) {
         this->m_render->middleHeadgearLocation = 0x201;
         this->m_render->lowerHeadgearLocation = 0x201;
       }

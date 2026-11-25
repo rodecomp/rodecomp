@@ -660,6 +660,7 @@ enum e_bg_queue_apply_ack : int {
   BG_APPLY_RECONNECT = 8,
   BG_APPLY_PARTYGUILD_LEADER = 9,
   BG_APPLY_PLAYER_CLASS = 10,
+  BG_APPLY_BUSY_PARTYMEMBER = 15,
 };
 
 enum e_private_airship_response : int {

@@ -1,6 +1,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Contents/Effects/EffectResourceSwitcher.h"
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Core/EffectActor.h"
@@ -198,7 +199,7 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillCast(int level, CGameAct
 void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, 114, 0, 0, 0);
+    target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, MET_NUMBER_HEAL, 0, 0, 0);
   }
 }
 

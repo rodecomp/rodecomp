@@ -1432,13 +1432,13 @@ bool CSession::IsCostumeLocation(int location) const {
   switch (location) {
   case EQP_COSTUME_HEAD_TOP:
   case EQP_COSTUME_HEAD_MID:
-  case 0xC00:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
   case EQP_COSTUME_HEAD_LOW:
-  case 0x1400:
-  case 0x1800:
-  case 0x1C00:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
+  case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
+  case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
   case EQP_COSTUME_GARMENT:
-  case 0x4000:
+  case EQP_COSTUME_FLOOR:
   case EQP_SHADOW_ARMOR:
   case EQP_SHADOW_WEAPON:
   case EQP_SHADOW_SHIELD:

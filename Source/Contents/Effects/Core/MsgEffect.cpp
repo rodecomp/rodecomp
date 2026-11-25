@@ -98,8 +98,8 @@ bool CMsgEffect::UsesMsgEffect(int type) {
   switch (type) {
     case MET_CART:
     case MET_BIRD:
-    case 27:
-    case 31:
+    case MET_WARG:
+    case MET_BABY_WARG:
       return true;
     default:
       return false;
@@ -235,7 +235,7 @@ bool CMsgEffect::OnProcess() {
     case MET_BLUE_EFFECT:
       break;
     default:
-      if (this->m_type != 0x72) {
+      if (this->m_type != MET_NUMBER_HEAL) {
         this->PlayFrameSounds();
       }
       break;
@@ -258,8 +258,8 @@ bool CMsgEffect::OnProcess() {
       }
       return true;
 
-    case 0x1B:
-    case 0x1F: {
+    case MET_WARG:
+    case MET_BABY_WARG: {
       CActRes* action = this->GetActRes();
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
       if (frames == 0) {
@@ -398,8 +398,8 @@ bool CMsgEffect::OnProcess() {
     case 0x1C:
     case 0x1D:
     case 0x1E:
-    case 0x20:
-    case 0x21:
+    case MET_SHIELD_EFFECT:
+    case MET_COSTUME_BODY_EFFECT:
     case 0x22:
     case 0x23:
     case 0x24: {
@@ -463,8 +463,8 @@ bool CMsgEffect::OnProcess() {
     case MET_STUN_EFFECT:
     case MET_SILENCE_EFFECT:
     case MET_CURSOR_EFFECT:
-    case 0x25:
-    case 0x26: {
+    case MET_LASSITUDE_EFFECT:
+    case MET_MISFORTUNE_EFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       CActRes* action = this->GetActRes();
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -533,7 +533,7 @@ bool CMsgEffect::OnProcess() {
       return true;
 
     default:
-      if (this->m_type != 0x72) {
+      if (this->m_type != MET_NUMBER_HEAL) {
         return true;
       }
       elapsed = MsgEffectElapsedFrames(this);
@@ -1370,7 +1370,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x21:
+    case MET_COSTUME_BODY_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
         this->render.position = owner->render.position;
@@ -1378,7 +1378,7 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x20:
+    case MET_SHIELD_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
         this->render.position = owner->render.position;
@@ -1391,8 +1391,8 @@ void CMsgEffect::FollowOwner() {
     case MET_SLEEP_EFFECT:
     case MET_STUN_EFFECT:
     case MET_SILENCE_EFFECT:
-    case 0x25:
-    case 0x26:
+    case MET_LASSITUDE_EFFECT:
+    case MET_MISFORTUNE_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
         this->render.position = owner->render.position;
@@ -1426,8 +1426,8 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x1B:
-    case 0x1F:
+    case MET_WARG:
+    case MET_BABY_WARG:
       if (this->m_owner != nullptr) {
         CWorld* scene = g_modeMgr.GetGameMode()->scene;
         const float dist = this->m_owner->CalcDist(this->render.position.x, this->render.position.z);
@@ -1567,7 +1567,7 @@ void CMsgEffect::FollowOwner() {
         this->render.position.y -= 20.0f;
       }
     default:
-      if (this->m_type == 0x72) {
+      if (this->m_type == MET_NUMBER_HEAL) {
         this->render.position.x = this->m_owner->render.position.x;
         this->render.position.z = this->m_owner->render.position.z;
       }
@@ -1597,7 +1597,7 @@ void CMsgEffect::Render(int argument) {
     case MET_NUMBER_CRITICAL:
     case MET_NUMBER_HALF:
     case MET_NUMBER_TOTAL:
-    case 114:
+    case MET_NUMBER_HEAL:
       if (!g_msgEffectShowSpecial) {
         return;
       }
@@ -1621,7 +1621,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
         this->activeMotion = 1;
         this->motionInitialized = 0;
-      } else if (this->m_type == 27 || this->m_type == 31) {
+      } else if (this->m_type == MET_WARG || this->m_type == MET_BABY_WARG) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
         this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
@@ -1661,8 +1661,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       switch (this->m_type) {
         case MET_CART:
         case MET_BIRD:
-        case 27:
-        case 31:
+        case MET_WARG:
+        case MET_BABY_WARG:
           if (sender != nullptr) {
             const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
             this->render.position.x = owner->render.position.x - ClientSine(static_cast<int>(owner->render.angle)) * 5.0f;
@@ -1683,7 +1683,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->m_type = static_cast<int>(c);
       this->m_value = static_cast<int>(b);
       switch (static_cast<int>(c)) {
-        case 27:
+        case MET_WARG:
           this->render.flatDepth = 0;
           this->render.depthLayer = 0;
           this->render.shadowVisible = 1;
@@ -1691,7 +1691,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           break;
 
         case MET_CART:
-        case 31:
+        case MET_BABY_WARG:
           this->render.flatDepth = 0;
           this->render.depthLayer = 0;
           this->render.shadowVisible = 1;
@@ -1725,7 +1725,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       int offset = 0;
       switch (this->m_type) {
         default:
-          if (this->m_type != 114) {
+          if (this->m_type != MET_NUMBER_HEAL) {
             return;
           }
 
@@ -1792,8 +1792,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
 
       switch (this->m_type) {
         case MET_CART:
-        case 27:
-        case 31:
+        case MET_WARG:
+        case MET_BABY_WARG:
           break;
 
         case MET_ICEBREAKEFFECT:

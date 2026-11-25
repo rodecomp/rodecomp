@@ -559,7 +559,7 @@ void ReadClientInfo(XmlNode* clientInfo) {
       clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("servertype", 0xF5657D1F3DE5CDC7ULL));
   if (serverType) {
     if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("primary", 0x69FD1D9733D3CFC1ULL))) {
-      g_serviceMode = g_serviceMode == 13 ? 13 : ServerPrimary;
+      g_serviceMode = g_serviceMode == ServerStage ? ServerStage : ServerPrimary;
     } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("sakray", 0xF7530137154D8FE5ULL))) {
       g_serviceMode = ServerSakray;
     } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("local", 0x8B65CD61012B5931ULL))) {

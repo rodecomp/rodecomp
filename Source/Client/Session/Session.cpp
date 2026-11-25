@@ -2910,7 +2910,7 @@ void CSession::LoadExternalSettings() {
     case ServerSakray:
       this->m_hotkeyScript->Load("Lua Files\\service_thailand\\ExternalSettings_th_sak", true, false);
       break;
-    case 13:
+    case ServerStage:
       this->m_hotkeyScript->Load("Lua Files\\service_thailand\\ExternalSettings_th_stage", true, false);
       break;
     default:

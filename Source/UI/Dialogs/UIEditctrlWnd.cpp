@@ -191,9 +191,9 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   const int bottom = this->geometry.height;
   this->FitMapToWindow();
 
-  this->questCheckBox = this->AddCheckBox(361, 100, 12, LookupMessage(MSI_MINIMAP_MSG_02), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_03));
+  this->questCheckBox = this->AddCheckBox(ID_QUEST, 100, 12, LookupMessage(MSI_MINIMAP_MSG_02), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_03));
   this->townCheckBox = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_04), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_05));
-  this->guildCheckBox = this->AddCheckBox(373, 100, 12, LookupMessage(MSI_MINIMAP_MSG_06), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_07));
+  this->guildCheckBox = this->AddCheckBox(ID_GUILD, 100, 12, LookupMessage(MSI_MINIMAP_MSG_06), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_07));
   this->AddCloseButton(LookupMessage(MSI_MINIMAP_MSG_01), 0);
   this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(MSI_MINIMAP_MSG_08), true);
   this->AddTownMarks();
@@ -429,10 +429,10 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     case ID_BOOKMARK:
       this->dragging = 1;
       return 0;
-    case 361:
+    case ID_QUEST:
       this->UpdateQuestButtons();
       return 0;
-    case 373:
+    case ID_GUILD:
       break;
     default:
       if (argument1 >= 601 && argument1 < 621) {

@@ -1578,7 +1578,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
             }
           }
           if (!member.offline) {
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_MINI_PARTYWND)).c_str(), 0x3C));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_MINI_PARTYWND)).c_str(), MENUID_OPEN_MINIPARTY));
             this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE_MINI_PARTYWND)).c_str(), 0x3D));
           }
         }
@@ -1662,7 +1662,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       return 0;
     }
-    case 0x3C: {
+    case MENUID_OPEN_MINIPARTY: {
       MessengerMember target = this->MemberAtIndex(this->selected);
       if (target.valid) {
         SessionRecord0734 record = g_session.FindMiniPartyRecord(target.accountId);

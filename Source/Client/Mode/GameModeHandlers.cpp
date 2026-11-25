@@ -3287,7 +3287,7 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.LookupWindow(WID_SEARCH_STORE_INFO);
   if (header->reset) {
     if (window) {
-      window->SendMsg(nullptr, UM_REFRESH, 1, 387, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH, 1, ID_FIRST_PAGE, 0, 0);
     }
     g_session.storeSearchResults.clear();
   }
@@ -3335,7 +3335,7 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.LookupWindow(WID_SEARCH_STORE_INFO);
   if (header->reset) {
     if (window) {
-      window->SendMsg(nullptr, UM_REFRESH, 1, 387, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESH, 1, ID_FIRST_PAGE, 0, 0);
     }
     g_session.storeSearchResults.clear();
   }

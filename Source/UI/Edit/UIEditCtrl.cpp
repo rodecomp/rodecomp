@@ -8291,7 +8291,7 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_close", "btn_close_a", "btn_close_b"}, {"bt_search_normal", "bt_search_over", "bt_search_press"}};
-  int ids[2] = {201, 365};
+  int ids[2] = {ID_CLOSE, ID_FIND};
   int positions[2][2] = {{220, this->geometry.height - 23}, {185, this->geometry.height - 23}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
@@ -8327,7 +8327,7 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
     this->AddChild(this->tabs[index]);
   }
 
-  this->m_message0 = 365;
+  this->m_message0 = ID_FIND;
   this->m_capacityText = "";
   this->columns = 1;
   this->visibleRows = (height - 74) / 32;
@@ -9014,13 +9014,13 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       this->buttons[1]->Move(220, this->geometry.height - 50);
       break;
-    case 365: {
+    case ID_FIND: {
       std::string text(this->searchEdit->Text());
       if (!text.empty()) {
         UIItemStoreFindWnd* window = static_cast<UIItemStoreFindWnd*>(g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND));
         this->m_searchWindow = window;
         window->SetSearchText(text);
-        this->m_searchWindow->SendMsg(nullptr, UM_REFRESHITEM, 365, 0, 0, 0);
+        this->m_searchWindow->SendMsg(nullptr, UM_REFRESHITEM, ID_FIND, 0, 0, 0);
         this->m_searchWindow->SendMsg(nullptr, UM_SEARCH_ITEMS, 0, 0, 0, 0);
         this->searchEdit->SetText("");
       }
@@ -9038,7 +9038,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case WID_ITEMSTORESUBWND_TAB_7:
       ToggleItemStoreTab(*this, 7, WID_ITEMSTORESUBWND_TAB_7);
       break;
-    case 133:
+    case ID_OPEN_ITEM_STORE_FIND:
       if (!this->m_searchWindow) {
         this->m_searchWindow = g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND);
         std::string text(this->searchEdit->Text());
@@ -9114,7 +9114,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
 
     std::string text = this->searchEdit->Text();
-    if (!text.empty() && a == 365) {
+    if (!text.empty() && a == ID_FIND) {
       if (this->FilterByName(text)) {
         this->Invalidate();
         this->UpdateScrollBar();

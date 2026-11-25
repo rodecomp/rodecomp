@@ -232,7 +232,7 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
 // OFFSET: 0x0081BFD0
 // FUNCTION: fn_10197
 void UIEquipRuneSetWnd::OnLBtnDown(int, int) {
-  this->parent->SendMsg(this, UM_SELECT_ITEM, 0xC2, -1, 0, 0);
+  this->parent->SendMsg(this, UM_SELECT_ITEM, ID_ITEMS, -1, 0, 0);
 }
 
 // OFFSET: 0x0081C000
@@ -244,7 +244,7 @@ void UIRuneSetList::OnLBtnDown(int x, int y) {
 
   if (this->geometry.width - 7 > x && this->visible * this->m_itemHeight > y) {
     this->m_selected = y / this->m_itemHeight + this->position;
-    this->parent->SendMsg(this, UM_SELECT_ITEM, 0xC2, this->m_selected, 0, 0);
+    this->parent->SendMsg(this, UM_SELECT_ITEM, ID_ITEMS, this->m_selected, 0, 0);
     this->Invalidate();
     return;
   }
@@ -2236,7 +2236,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case 0:
       if (CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2)) {
         this->m_lists[0]->Select(argument2);
-        this->SendMsg(this, UM_SELECT_ITEM, 0xC2, argument2, 0, 0);
+        this->SendMsg(this, UM_SELECT_ITEM, ID_ITEMS, argument2, 0, 0);
       }
       this->Invalidate();
       break;
@@ -2244,7 +2244,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       unsigned int index = 0;
       if (CRuneSystemMgr::GetInstance()->FindRune(-1, 1, argument2, &index)) {
         this->m_lists[1]->Select(index);
-        this->SendMsg(this, UM_SELECT_ITEM, 0xC2, index, 0, 0);
+        this->SendMsg(this, UM_SELECT_ITEM, ID_ITEMS, index, 0, 0);
       }
       this->Invalidate();
       break;
@@ -2253,7 +2253,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
   case UM_SELECT_ITEM:
     switch (argument1) {
-    case 0xC2:
+    case ID_ITEMS:
       switch (this->m_tab->geometry.state) {
       case 0: {
         RuneData* rune = argument2 == -1 ? CRuneSystemMgr::GetInstance()->GetCurRuneSet() : CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2);

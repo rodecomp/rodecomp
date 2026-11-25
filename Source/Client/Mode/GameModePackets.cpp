@@ -1620,7 +1620,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       g_session.hp = hp;
       g_session.RefreshHpSpWindows();
     }
-    player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00u, 114, 0, 0, 0);
+    player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00u, MET_NUMBER_HEAL, 0, 0, 0);
     player->LaunchEffect(EF_HPTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
@@ -1632,7 +1632,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       sp = value;
       g_session.RefreshHpSpWindows();
     }
-    player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FFu, 114, 0, 0, 0);
+    player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FFu, MET_NUMBER_HEAL, 0, 0, 0);
     player->LaunchEffect(EF_SPTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
@@ -4604,7 +4604,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, std::int6
         g_session.RefreshHpSpWindows();
       }
     }
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_SPTIME) {
     if (aid == g_session.m_aid) {
       g_session.UpdateRandomStats();
@@ -4615,23 +4615,23 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, std::int6
         g_session.RefreshHpSpWindows();
       }
     }
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FF, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FF, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_GREEN_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_BLUE_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FF, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FF, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_RED_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF0000, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF0000, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_PURPLE_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF00FF, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF00FF, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_BLACK_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF000000, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF000000, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_WHITE_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFFFFFF, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFFFFFF, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_YELLOW_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFFFF00, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFFFF00, MET_NUMBER_HEAL, 0, 0, 0);
   } else if (status == EF_PINK_NUMBER) {
-    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF55B1, 0x72, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFFFF55B1, MET_NUMBER_HEAL, 0, 0, 0);
   }
 
   EffectLists* effects = g_effectMgr;
@@ -18712,7 +18712,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MG_SRECOVERY:
     if (target != nullptr) {
-      target->SendMsg(nullptr, AM_MAKE_NUMBER, effectLevel, 0xFF0000FFu, 0x72, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, effectLevel, 0xFF0000FFu, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case CR_DEVOTION:
@@ -18797,7 +18797,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case WE_FEMALE:
     if (target != nullptr) {
       target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, 0x72, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case WE_BABY:
@@ -21303,7 +21303,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         effectId = 7;
       }
       target->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF00FF00u, 0x72, 0, 0, 0);
+      target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF00FF00u, MET_NUMBER_HEAL, 0, 0, 0);
     }
     break;
   case MH_SILENT_BREEZE:
