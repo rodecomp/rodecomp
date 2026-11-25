@@ -11562,6 +11562,42 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   }
 
   switch (pick->kind) {
+  case 4: {
+    this->SetCursorAction(0);
+    if (g_session.IsMercenaryJob(pick->job)) {
+      CWorld* scene = this->scene;
+      if (this->skillId == AM_POTIONPITCHER || ((scene->isPKZone != 0 || scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
+        if ((this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
+          this->SetCursorAction(5);
+        }
+        this->RequestPlayerAction(pick->accountId, 1);
+        this->forcedAttack = 0;
+        return 0;
+      }
+      break;
+    }
+
+    const std::intptr_t mode = this->skillUseType;
+    int attack;
+    if (mode == 2 || mode == 4) {
+      const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+      attack = shift;
+      if (IsSupportSkill(this->skillId)) {
+        attack = shift == 0;
+      }
+    } else {
+      attack = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+    }
+    if (pick->healthState != 0 || this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) {
+      attack = 1;
+    }
+
+    const bool allowed = pick->accountId != mercenaryAid || this->skillUseType == 4;
+    if (allowed && attack) {
+      this->RequestPlayerAction(pick->accountId, 1);
+    }
+    return 0;
+  }
   case 0: {
     if (pick->job == JT_WARPNPC) {
       return result;
@@ -11834,42 +11870,6 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);
     }
     break;
-  case 4: {
-    this->SetCursorAction(0);
-    if (g_session.IsMercenaryJob(pick->job)) {
-      CWorld* scene = this->scene;
-      if (this->skillId == AM_POTIONPITCHER || ((scene->isPKZone != 0 || scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
-        if ((this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
-          this->SetCursorAction(5);
-        }
-        this->RequestPlayerAction(pick->accountId, 1);
-        this->forcedAttack = 0;
-        return 0;
-      }
-      break;
-    }
-
-    const std::intptr_t mode = this->skillUseType;
-    int attack;
-    if (mode == 2 || mode == 4) {
-      const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
-      attack = shift;
-      if (IsSupportSkill(this->skillId)) {
-        attack = shift == 0;
-      }
-    } else {
-      attack = HIBYTE(GetAsyncKeyState(VK_SHIFT));
-    }
-    if (pick->healthState != 0 || this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) {
-      attack = 1;
-    }
-
-    const bool allowed = pick->accountId != mercenaryAid || this->skillUseType == 4;
-    if (allowed && attack) {
-      this->RequestPlayerAction(pick->accountId, 1);
-    }
-    return 0;
-  }
   }
 
   return result;
