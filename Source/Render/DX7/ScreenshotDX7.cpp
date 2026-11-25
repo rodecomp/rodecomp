@@ -25,7 +25,7 @@ namespace {
 
   // INLINED
   unsigned char ExpandedChannel(unsigned value, DWORD mask, DWORD shift, DWORD expansion) {
-    return static_cast<unsigned char>(static_cast<unsigned char>((value & mask) >> shift) << expansion);
+    return static_cast<unsigned char>(static_cast<unsigned char>((mask & value) >> shift) << expansion);
   }
 }
 
@@ -63,53 +63,50 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
   information.biClrUsed = 0;
   std::fwrite(&information, sizeof(information), 1, file);
 
-  DeviceOwnerDX7* owner = g_deviceOwnerDX7;
-  const DWORD redMask = owner ? owner->redMask : 0;
-  const DWORD greenMask = owner ? owner->greenMask : 0;
-  const DWORD blueMask = owner ? owner->blueMask : 0;
-  const DWORD redShift = owner ? owner->red.shift : 0;
-  const DWORD greenShift = owner ? owner->green.shift : 0;
-  const DWORD blueShift = owner ? owner->blue.shift : 0;
-  const DWORD redExpansion = owner ? owner->red.expansion : 8;
-  const DWORD greenExpansion = owner ? owner->green.expansion : 8;
-  const DWORD blueExpansion = owner ? owner->blue.expansion : 8;
+  const DWORD redMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->redMask : 0;
+  const DWORD greenMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->greenMask : 0;
+  const DWORD blueMask = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blueMask : 0;
+  const DWORD redShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.shift : 0;
+  const DWORD greenShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.shift : 0;
+  const DWORD blueShift = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.shift : 0;
+  const DWORD redExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->red.expansion : 8;
+  const DWORD greenExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->green.expansion : 8;
+  const DWORD blueExpansion = g_deviceOwnerDX7 ? g_deviceOwnerDX7->blue.expansion : 8;
   const std::uint16_t transparent = DeviceOwnerDX7Handle(g_deviceOwnerDX7).PackColor(255, 0, 255);
   unsigned char row[10800];
 
-  for (int y = this->viewport.height - 1; y >= 0;) {
+  for (int y = this->viewport.height - 1; y >= 0; --y) {
     const unsigned char* source = static_cast<const unsigned char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
     unsigned char* destination = row;
 
     if (this->backBuffer.bitsPerPixel == 16) {
       for (int x = 0; x < this->viewport.width; ++x, destination += 3) {
-        int red;
-        int green;
-        int blue;
-        bool fromOverlay = false;
-
         if (x >= this->viewport.width - overlay->image.width && y >= this->viewport.height - overlay->image.height) {
           const int overlayY = y - (this->viewport.height - overlay->image.height);
           const int overlayX = x - (this->viewport.width - overlay->image.width);
 
           if (overlayX >= 0 && overlayX < overlay->image.width && overlayY >= 0 && overlayY < overlay->image.height) {
             const unsigned color = overlay->image.pixels[overlayX + overlayY * overlay->image.width];
-            red = (color >> 16) & 0xFF;
-            green = (color >> 8) & 0xFF;
-            blue = color & 0xFF;
-            fromOverlay = transparent != PackedColor(owner, red, green, blue);
+            const int red = (color >> 16) & 0xFF;
+            const int green = (color >> 8) & 0xFF;
+            const int blue = color & 0xFF;
+
+            if (transparent != PackedColor(g_deviceOwnerDX7, red, green, blue)) {
+              destination[0] = static_cast<unsigned char>(blue);
+              destination[1] = static_cast<unsigned char>(green);
+              destination[2] = static_cast<unsigned char>(red);
+              continue;
+            }
           }
         }
 
-        if (!fromOverlay) {
-          const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
-          red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
-          green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
-          blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
-        }
-
-        destination[0] = static_cast<unsigned char>(blue);
-        destination[1] = static_cast<unsigned char>(green);
-        destination[2] = static_cast<unsigned char>(red);
+        const std::uint16_t pixel = reinterpret_cast<const std::uint16_t*>(source)[x];
+        const unsigned char red = ExpandedChannel(pixel, redMask, redShift, redExpansion);
+        const unsigned char green = ExpandedChannel(pixel, greenMask, greenShift, greenExpansion);
+        const unsigned char blue = ExpandedChannel(pixel, blueMask, blueShift, blueExpansion);
+        destination[0] = blue;
+        destination[1] = green;
+        destination[2] = red;
       }
     } else {
       const unsigned char* pixel = source;
@@ -134,10 +131,6 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
     }
 
     std::fwrite(row, 3 * this->viewport.width, 1, file);
-    if (--y < 0) {
-      break;
-    }
-    owner = g_deviceOwnerDX7;
   }
 
   this->UnlockBackBuffer();
