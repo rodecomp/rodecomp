@@ -1045,9 +1045,9 @@ int CSession::GetCommandId(const char* name) const {
 }
 
 // INLINED
-template <std::size_t Length>
-static bool IsTalkCommand(const std::string& token, const char (&command)[Length]) {
-  return token.size() == Length && std::memcmp(token.data(), command, Length) == 0;
+template <std::array Command>
+static bool IsTalkCommand(const std::string& token) {
+  return token.size() == Command.size() && std::memcmp(token.data(), Command.data(), Command.size()) == 0;
 }
 
 // OFFSET: 0x00DE1010
@@ -1069,46 +1069,46 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
   LowercaseText(tokenizer[0]);
   if (text[0] != '/') {
     *talkType = TT_NORMAL;
-  } else if (IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xD0'})) {
+  } else if (IsTalkCommand<std::array{'/', '\xA4', '\xD0'}>(tokenizer[0])) {
     *talkType = TT_BROADCAST;
     offset = 3;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'b'}>(tokenizer[0])) {
     *talkType = TT_BROADCAST;
     offset = 2;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'l', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'l', 'b'}>(tokenizer[0])) {
     *talkType = TT_LOCALBROADCAST;
     offset = 3;
-  } else if (IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xD3', '\xA4', '\xD0'})) {
+  } else if (IsTalkCommand<std::array{'/', '\xA4', '\xD3', '\xA4', '\xD0'}>(tokenizer[0])) {
     *talkType = TT_LOCALBROADCAST;
     offset = 5;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'n', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'n', 'b'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_BROADCAST;
     offset = 3;
-  } else if (IsTalkCommand(tokenizer[0], {'/', '\xC6', '\xC4', '\xB6', '\xF5', '\xB8', '\xBB'})) {
+  } else if (IsTalkCommand<std::array{'/', '\xC6', '\xC4', '\xB6', '\xF5', '\xB8', '\xBB'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_BLUEBROADCAST;
     offset = 7;
-  } else if (IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xCC', '\xA4', '\xD0'})) {
+  } else if (IsTalkCommand<std::array{'/', '\xA4', '\xCC', '\xA4', '\xD0'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_BROADCAST;
     offset = 5;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'n', 'l', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'n', 'l', 'b'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_LOCALBROADCAST;
     offset = 4;
-  } else if (IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xCF', '\xA4', '\xD0'})) {
+  } else if (IsTalkCommand<std::array{'/', '\xA4', '\xCF', '\xA4', '\xD0'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_LOCALBROADCAST;
     offset = 5;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'b', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'b', 'b'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_BLUEBROADCAST;
     offset = 3;
   } else if (tokenizer[0] == "/지역파란말") {
     *talkType = TT_NAMELESS_BLUELOCALBROADCAST;
     offset = 11;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'm', 'b'})) {
+  } else if (IsTalkCommand<std::array{'/', 'm', 'b'}>(tokenizer[0])) {
     *talkType = TT_NAMELESS_BLUELOCALBROADCAST;
     offset = 3;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'k', 'i', 'l', 'l'})) {
+  } else if (IsTalkCommand<std::array{'/', 'k', 'i', 'l', 'l'}>(tokenizer[0])) {
     *talkType = TT_DISCONNECT_CHARACTER;
     offset = 5;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'v'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xBD'})) {
+  } else if (IsTalkCommand<std::array{'/', 'v'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xA4', '\xBD'}>(tokenizer[0])) {
     *talkType = TT_VOLUME;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
@@ -1118,7 +1118,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     _itoa(g_soundMgr->sampleVolume, volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'b', 'v'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xD0', '\xA4', '\xBD'})) {
+  } else if (IsTalkCommand<std::array{'/', 'b', 'v'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xA4', '\xD0', '\xA4', '\xBD'}>(tokenizer[0])) {
     *talkType = TT_BVOLUME;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
@@ -1128,19 +1128,19 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     _itoa(g_soundMgr->Volume(), volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'})) && tokenizer.TokenCount() >= 2) {
+  } else if ((IsTalkCommand<std::array{'/', 'g', 'c'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_GUILD_CHAT;
-    parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) ? 4 : 11);
+    parts[0] = text + (IsTalkCommand<std::array{'/', 'g', 'c'}>(tokenizer[0]) ? 4 : 11);
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'e', 'x'}) || IsTalkCommand(tokenizer[0], {'/', '\xC2', '\xF7', '\xB4', '\xDC'})) && tokenizer.TokenCount() >= 2) {
+  } else if ((IsTalkCommand<std::array{'/', 'e', 'x'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xC2', '\xF7', '\xB4', '\xDC'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_EX;
-    parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'e', 'x'}) ? 4 : 6);
+    parts[0] = text + (IsTalkCommand<std::array{'/', 'e', 'x'}>(tokenizer[0]) ? 4 : 6);
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', 'i', 'n'}) || IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC1', '\xA6'})) && tokenizer.TokenCount() >= 2) {
+  } else if ((IsTalkCommand<std::array{'/', 'i', 'n'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xC7', '\xD8', '\xC1', '\xA6'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_IN;
-    parts[0] = text + (IsTalkCommand(tokenizer[0], {'/', 'i', 'n'}) ? 4 : 6);
+    parts[0] = text + (IsTalkCommand<std::array{'/', 'i', 'n'}>(tokenizer[0]) ? 4 : 6);
     return -1;
-  } else if (IsTalkCommand(tokenizer[0], {'/', 'r', 'e', 'd'})) {
+  } else if (IsTalkCommand<std::array{'/', 'r', 'e', 'd'}>(tokenizer[0])) {
     *talkType = TT_IS_REDCELL;
     for (int index = 1; index < tokenizer.TokenCount(); ++index) {
       const std::string& token = tokenizer[index];
@@ -1148,15 +1148,15 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       parts[0].append(" ");
     }
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB0', '\xC5', '\xB7', '\xA1'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'j', 'f', 'o'}) || IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xB3', '\xC8', '\xAF'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'y', 'g', 'h', 'k', 's'}) || IsTalkCommand(tokenizer[0], {'/', 'd', 'e', 'a', 'l'}) || IsTalkCommand(tokenizer[0], {'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'})) && tokenizer.TokenCount() == 2) {
+  } else if ((IsTalkCommand<std::array{'/', '\xB0', '\xC5', '\xB7', '\xA1'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'j', 'f', 'o'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xB1', '\xB3', '\xC8', '\xAF'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'y', 'g', 'h', 'k', 's'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'd', 'e', 'a', 'l'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'}>(tokenizer[0])) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_EXCHANGE_ITEM;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xB1', '\xE6', '\xB5', '\xE5'}) || IsTalkCommand(tokenizer[0], {'/', 'r', 'l', 'f', 'e', 'm'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd'})) && tokenizer.TokenCount() == 2) {
+  } else if ((IsTalkCommand<std::array{'/', '\xB1', '\xE6', '\xB5', '\xE5'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'l', 'f', 'e', 'm'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'g', 'u', 'i', 'l', 'd'}>(tokenizer[0])) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_MAKE_GUILD;
     parts[0] = tokenizer[1];
     return -1;
-  } else if ((IsTalkCommand(tokenizer[0], {'/', '\xC7', '\xD8', '\xC3', '\xBC'}) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && tokenizer.TokenCount() == 2) {
+  } else if ((IsTalkCommand<std::array{'/', '\xC7', '\xD8', '\xC3', '\xBC'}>(tokenizer[0]) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_BREAK_GUILD;
     parts[0] = tokenizer[1];
     return -1;
