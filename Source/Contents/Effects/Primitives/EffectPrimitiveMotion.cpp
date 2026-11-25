@@ -126,78 +126,70 @@ bool CEffectPrim::MoveEffectPrimitive() {
   };
 
   if (this->state.changePoint == this->state.stateCnt) {
-    const float sentinel = g_changeEpsilon;
     this->state.changePointReached = 1;
-    constexpr float resetValue = 0.0001f;
 
-    if (this->state.changeWidthSpeed != sentinel) {
+    if (this->state.changeWidthSpeed != 0.0001f) {
       this->state.widthSpeed = this->state.changeWidthSpeed;
     }
 
-    if (this->state.changeHeightSpeed != sentinel) {
+    if (this->state.changeHeightSpeed != 0.0001f) {
       this->state.heightSpeed = this->state.changeHeightSpeed;
     }
 
-    if (this->state.changeSpeed != sentinel) {
+    if (this->state.changeSpeed != 0.0001f) {
       this->state.speed = this->state.changeSpeed;
     }
 
-    if (this->state.changeWidthAccel != sentinel) {
+    if (this->state.changeWidthAccel != 0.0001f) {
       this->state.widthAccel = this->state.changeWidthAccel;
     }
 
-    if (this->state.changeHeightAccel != sentinel) {
+    if (this->state.changeHeightAccel != 0.0001f) {
       this->state.heightAccel = this->state.changeHeightAccel;
     }
 
-    if (this->state.changeAccel != sentinel) {
+    if (this->state.changeAccel != 0.0001f) {
       this->state.accel = this->state.changeAccel;
     }
 
-    if (this->state.changeSpeed3d.x != sentinel) {
+    if (this->state.changeSpeed3d.x != 0.0001f) {
       this->state.speed3d.x = this->state.changeSpeed3d.x;
     }
 
-    if (this->state.changeSpeed3d.y != sentinel) {
+    if (this->state.changeSpeed3d.y != 0.0001f) {
       this->state.speed3d.y = this->state.changeSpeed3d.y;
     }
 
-    if (this->state.changeSpeed3d.z != sentinel) {
+    if (this->state.changeSpeed3d.z != 0.0001f) {
       this->state.speed3d.z = this->state.changeSpeed3d.z;
     }
 
-    this->state.changeWidthSpeed = sentinel;
-    this->state.changeHeightSpeed = sentinel;
-    this->state.changeSpeed = sentinel;
-    this->state.changeWidthAccel = sentinel;
-    this->state.changeHeightAccel = sentinel;
-    this->state.changeAccel = sentinel;
-    this->state.changeSpeed3d = {resetValue, resetValue, resetValue};
-    this->state.changeAccel3d = {resetValue, resetValue, resetValue};
+    this->state.changeWidthSpeed = 0.0001f;
+    this->state.changeHeightSpeed = 0.0001f;
+    this->state.changeSpeed = 0.0001f;
+    this->state.changeWidthAccel = 0.0001f;
+    this->state.changeHeightAccel = 0.0001f;
+    this->state.changeAccel = 0.0001f;
+    this->state.changeSpeed3d = {0.0001f, 0.0001f, 0.0001f};
+    this->state.changeAccel3d = {0.0001f, 0.0001f, 0.0001f};
   }
 
   this->state.speed3d += this->state.deltaPosAccel;
-  this->state.widthSpeed = this->state.widthAccel + this->state.widthSpeed;
-  this->state.speed = this->state.accel + this->state.speed;
-  this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
-  this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
-  this->state.latiSpeed = this->state.latiAccel + this->state.latiSpeed;
+  this->state.widthSpeed += this->state.widthAccel;
+  this->state.heightSpeed += this->state.heightAccel;
+  this->state.longSpeed += this->state.longAccel;
+  this->state.latiSpeed += this->state.latiAccel;
+  this->state.speed += this->state.accel;
 
   if ((this->state.pattern & 0x400u) != 0) {
-    this->state.speed3d.x = 0;
-    this->state.speed3d.y = 0;
-    this->state.speed3d.z = 0;
+    this->state.speed3d = {0.0f, 0.0f, 0.0f};
     Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+    this->state.deltaPos += this->state.speed3d;
   } else if ((this->state.pattern & 0x100u) != 0) {
     this->state.deltaPos += this->state.speed3d;
   } else {
     Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
+    this->state.deltaPos += this->state.speed3d;
   }
 
   if ((this->state.pattern & 0x400u) != 0) {
@@ -209,13 +201,11 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.longitude = this->render.angle;
   }
 
-  this->render.position.x = this->state.orgPos.x + this->state.deltaPos.x;
-  this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
-  this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
-  this->state.widthSize = this->state.widthSpeed + this->state.widthSize;
-  this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
-  this->state.longitude = this->state.longitude + this->state.longSpeed;
-  this->state.latitude = this->state.latitude + this->state.latiSpeed;
+  this->render.position = this->state.orgPos + this->state.deltaPos;
+  this->state.widthSize += this->state.widthSpeed;
+  this->state.heightSize += this->state.heightSpeed;
+  this->state.longitude += this->state.longSpeed;
+  this->state.latitude += this->state.latiSpeed;
 
   if (this->state.heightSize > this->state.maxHeightSize) {
     this->state.heightAccel = 0;
@@ -243,21 +233,20 @@ bool CEffectPrim::MoveEffectPrimitive() {
     yaw = this->state.longitude;
   }
 
-  matrix.AppendYRotation(GetRadian(static_cast<int>(yaw)));
+  const float radian = GetRadian(static_cast<int>(yaw));
+  matrix.AppendYRotation(radian);
 
   if ((this->state.pattern & 2u) != 0) {
-    const auto index = this->state.chCnt;
-    this->state.chCnt = index + 1u == 10u ? 0u : index + 1u;
-    const float offset = static_cast<float>(static_cast<int>(index)) / g_projectionDepthOffset;
-    this->state.v1 = offset;
-    this->state.v2 = offset + g_projectionDepthNumerator;
+    this->state.v1 = static_cast<float>(static_cast<int>(this->state.chCnt)) / 10.0f;
+    this->state.v2 = this->state.v1 + 1.0f;
+
+    if (++this->state.chCnt == 10) {
+      this->state.chCnt = 0;
+    }
   }
 
   if ((this->state.pattern & 0x10u) != 0) {
-    this->state.master->state.deltaPos = {
-      this->state.deltaPos2.x + this->state.deltaPos.x, this->state.deltaPos.y + this->state.deltaPos2.y,
-      this->state.deltaPos.z + this->state.deltaPos2.z
-    };
+    this->state.master->state.deltaPos = this->state.deltaPos2 + this->state.deltaPos;
   }
 
   if ((this->state.pattern & 4u) != 0 && this->render.position.y > g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
@@ -2630,54 +2619,51 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   vector3d origin = particle.orgPos + particle.deltaPos2;
 
   if (particle.changePoint == particle.stateCnt) {
-    const float firstChange = particle.changeWidthSpeed;
-    const float sentinel = g_changeEpsilon;
-
-    if (firstChange != sentinel) {
-      particle.widthSpeed = firstChange;
+    if (particle.changeWidthSpeed != 0.0001f) {
+      particle.widthSpeed = particle.changeWidthSpeed;
     }
 
-    if (particle.changeHeightSpeed != sentinel) {
+    if (particle.changeHeightSpeed != 0.0001f) {
       particle.heightSpeed = particle.changeHeightSpeed;
     }
 
-    if (particle.changeSpeed != sentinel) {
+    if (particle.changeSpeed != 0.0001f) {
       particle.speed = particle.changeSpeed;
     }
 
-    if (particle.changeWidthAccel != sentinel) {
+    if (particle.changeWidthAccel != 0.0001f) {
       particle.widthAccel = particle.changeWidthAccel;
     }
 
-    if (particle.changeHeightAccel != sentinel) {
+    if (particle.changeHeightAccel != 0.0001f) {
       particle.heightAccel = particle.changeHeightAccel;
     }
 
-    if (particle.changeAccel != sentinel) {
+    if (particle.changeAccel != 0.0001f) {
       particle.accel = particle.changeAccel;
     }
 
-    if (particle.changeSpeed3d.x != sentinel) {
+    if (particle.changeSpeed3d.x != 0.0001f) {
       particle.speed3d.x = particle.changeSpeed3d.x;
     }
 
-    if (particle.changeSpeed3d.y != sentinel) {
+    if (particle.changeSpeed3d.y != 0.0001f) {
       particle.speed3d.y = particle.changeSpeed3d.y;
     }
 
-    if (particle.changeSpeed3d.z != sentinel) {
+    if (particle.changeSpeed3d.z != 0.0001f) {
       particle.speed3d.z = particle.changeSpeed3d.z;
     }
 
-    if (particle.changeAccel3d.x != sentinel) {
+    if (particle.changeAccel3d.x != 0.0001f) {
       particle.deltaPosAccel.x = particle.changeAccel3d.x;
     }
 
-    if (particle.changeAccel3d.y != sentinel) {
+    if (particle.changeAccel3d.y != 0.0001f) {
       particle.deltaPosAccel.y = particle.changeAccel3d.y;
     }
 
-    if (particle.changeAccel3d.z != sentinel) {
+    if (particle.changeAccel3d.z != 0.0001f) {
       particle.deltaPosAccel.z = particle.changeAccel3d.z;
     }
   }
@@ -2692,9 +2678,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   particle.speed += particle.accel;
 
   if ((particle.pattern & 0x400u) != 0) {
-    particle.speed3d.x = 0;
-    particle.speed3d.y = 0;
-    particle.speed3d.z = 0;
+    particle.speed3d = {0.0f, 0.0f, 0.0f};
     Forward(particle.speed3d, particle.speed, particle.transform.values);
     particle.deltaPos += particle.speed3d;
   } else if ((particle.pattern & 0x100u) != 0) {
@@ -2713,10 +2697,8 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.longitude = this->render.angle;
   }
 
-  this->render.position.x = origin.x + particle.deltaPos.x;
-  this->render.position.y = origin.y + particle.deltaPos.y;
+  this->render.position = origin + particle.deltaPos;
   particle.widthSize += particle.widthSpeed;
-  this->render.position.z = origin.z + particle.deltaPos.z;
   particle.heightSize += particle.heightSpeed;
   particle.longitude += particle.longSpeed;
   particle.latitude += particle.latiSpeed;
@@ -2752,11 +2734,12 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   rotation.AppendYRotation(yaw);
 
   if ((particle.pattern & 2u) != 0) {
-    const auto index = particle.chCnt;
-    particle.chCnt = index + 1u == 10u ? 0u : index + 1u;
-    const float offset = static_cast<float>(static_cast<int>(index)) / g_projectionDepthOffset;
-    particle.v1 = offset;
-    particle.v2 = offset + g_projectionDepthNumerator;
+    particle.v1 = static_cast<float>(static_cast<int>(particle.chCnt)) / 10.0f;
+    particle.v2 = particle.v1 + 1.0f;
+
+    if (++particle.chCnt == 10) {
+      particle.chCnt = 0;
+    }
   }
 
   if ((particle.pattern & 0x10u) != 0) {
@@ -5933,96 +5916,87 @@ bool CEffectPrim::Prim3DSlotParticle() {
     }
   }
 
-  this->state.orgPos = {this->state.deltaPos2.x + this->state.master->render.position.x, this->state.master->render.position.y + this->state.deltaPos2.y, this->state.master->render.position.z + this->state.deltaPos2.z};
+  this->state.orgPos = this->state.master->render.position + this->state.deltaPos2;
 
-  if (this->state.stateCnt == this->state.changePoint) {
-    this->state.speed3d.x = this->state.changeSpeed3d.x;
-    this->state.speed3d.y = this->state.changeSpeed3d.y;
-    this->state.speed3d.z = this->state.changeSpeed3d.z;
-    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
-    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
-    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
+  const int frame = this->state.stateCnt;
+
+  if (frame == this->state.changePoint) {
+    this->state.speed3d = this->state.changeSpeed3d;
+    this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
-  this->state.speed = this->state.accel + this->state.speed;
-  this->state.sizeSpeed = this->state.sizeAccel + this->state.sizeSpeed;
+  this->state.speed += this->state.accel;
+  this->state.sizeSpeed += this->state.sizeAccel;
 
-  auto& patternRef = this->state.pattern;
-  if ((patternRef & 0x400u) != 0) {
-    this->state.speed3d.z = this->state.deltaPosAccel.z + this->state.speed3d.z;
-    this->state.speed3d.x = this->state.deltaPosAccel.x + this->state.speed3d.x;
-    this->state.speed3d.y = this->state.deltaPosAccel.y + this->state.speed3d.y;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
-    this->state.roll = this->state.rollSpeed + this->state.roll;
-    this->state.size = this->state.size + this->state.sizeSpeed;
-  } else if ((patternRef & 1u) != 0 || this->state.stateCnt > this->state.fadeInCnt) {
+  if ((this->state.pattern & 0x400u) != 0) {
+    this->state.speed3d.x += this->state.deltaPosAccel.x;
+    this->state.speed3d.y += this->state.deltaPosAccel.y;
+    this->state.speed3d.z += this->state.deltaPosAccel.z;
+
+    this->state.deltaPos += this->state.speed3d;
+    this->state.roll += this->state.rollSpeed;
+    this->state.size += this->state.sizeSpeed;
+  } else if ((this->state.pattern & 1u) != 0 || frame > this->state.fadeInCnt) {
     Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
-    this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
-    this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
-    this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
-    this->state.size = this->state.sizeSpeed + this->state.size;
-    this->state.roll = this->state.rollSpeed + this->state.roll;
+
+    this->state.deltaPos += this->state.speed3d;
+    this->state.roll += this->state.rollSpeed;
+    this->state.size += this->state.sizeSpeed;
   }
 
-
-  if ((patternRef & 2u) != 0) {
+  if ((this->state.pattern & 2u) != 0) {
     if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
-      const int delay = std::rand() % 8;
-      this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 12);
-      const int driftX = std::rand() % 5;
-      this->state.deltaPos3.x = static_cast<float>((driftX >= 0 ? driftX : 0) + 5) / 100.0f;
-      const int driftZ = std::rand() % 5;
-      this->state.deltaPos3.z = static_cast<float>((driftZ >= 0 ? driftZ : 0) + 5) / 100.0f;
-      const int flipX = std::rand() % 2;
-      if ((flipX >= 0 ? flipX : 0) == 0) {
+      this->state.chCnt = ClampedRandom(8) + 12;
+      this->state.deltaPos3.x = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
+      this->state.deltaPos3.z = static_cast<float>(ClampedRandom(5) + 5) / 100.0f;
+
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.x *= -1.0f;
       }
-      const int flipZ = std::rand() % 2;
-      if ((flipZ >= 0 ? flipZ : 0) == 0) {
+
+      if (ClampedRandom(2) == 0) {
         this->state.deltaPos3.z *= -1.0f;
       }
     }
-    this->state.deltaPos.x = this->state.deltaPos3.x + this->state.deltaPos.x;
+
+    this->state.deltaPos.x += this->state.deltaPos3.x;
   }
 
-  if ((patternRef & 4u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
-    const int burst = std::rand() % 35;
-    this->state.speed = static_cast<float>((burst >= 0 ? burst : 0) + 15) / 100.0f;
-    const int yaw = std::rand() % 80;
-    this->state.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (this->state.longitude - 40.0f);
-    const int pitch = std::rand() % 80;
-    this->state.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (this->state.latitude - 40.0f);
-    this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    const int delay = std::rand() % 10;
-    this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
+  if ((this->state.pattern & 4u) != 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+      this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
+      this->state.longitude = (this->state.longitude - 40.0f) + static_cast<float>(ClampedRandom(80));
+      this->state.latitude = (this->state.latitude - 40.0f) + static_cast<float>(ClampedRandom(80));
+      this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+      this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+      this->state.chCnt = ClampedRandom(10) + 5;
+    }
   }
 
-  if ((patternRef & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
-    const int yaw = std::rand() % 10;
-    this->state.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (this->state.longitude - 5.0f);
-    const int pitch = std::rand() % 10;
-    this->state.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (this->state.latitude - 5.0f);
-    this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    const int delay = std::rand() % 15;
-    this->state.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
+  if ((this->state.pattern & 8u) != 0) {
+    if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
+      this->state.longitude = (this->state.longitude - 5.0f) + static_cast<float>(ClampedRandom(10));
+      this->state.latitude = (this->state.latitude - 5.0f) + static_cast<float>(ClampedRandom(10));
+      this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+      this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+      this->state.chCnt = ClampedRandom(15) + 5;
+    }
   }
 
-  this->render.position = {this->state.orgPos.x + this->state.deltaPos.x, this->state.orgPos.y + this->state.deltaPos.y, this->state.orgPos.z + this->state.deltaPos.z};
+  this->render.position = this->state.orgPos + this->state.deltaPos;
 
-  if ((patternRef & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
+  if ((this->state.pattern & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
     return false;
   }
 
-  if ((patternRef & 0x20u) != 0) {
-    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
+  if ((this->state.pattern & 0x20u) != 0) {
+    CGameMode* mode = g_modeMgr.GetGameMode();
+    this->state.roll = this->render.angle - mode->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
   this->ShiftSegment();
+
   if (!this->AnimMotion()) {
     return false;
   }
@@ -6762,10 +6736,10 @@ bool CEffectPrim::PrimRippleRings() {
 
 namespace {
   // INLINED
-  __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot, float groundOffset, float projectionDepthOffset) {
+  __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot) {
     const float kind = slot.height[4];
 
-    if (kind >= groundOffset && slot.process > 200u &&
+    if (kind >= 20.0f && slot.process > 200u &&
         (prim.render.position.x != prim.state.master->render.position.x || prim.render.position.z != prim.state.master->render.position.z) &&
         slot.alphaT > 2000) {
       slot.alphaT = static_cast<std::int16_t>(slot.process);
@@ -6774,9 +6748,9 @@ namespace {
     if (slot.process > slot.alphaT) {
       int angle;
 
-      if (kind >= groundOffset) {
+      if (kind >= 20.0f) {
         angle = (slot.alphaT - slot.process + 18) * 5;
-      } else if (kind >= projectionDepthOffset) {
+      } else if (kind >= 10.0f) {
         angle = slot.alphaT - slot.process + 90;
       } else if (kind == 0.0f) {
         angle = 2505 - slot.process;
@@ -6800,50 +6774,46 @@ namespace {
 // OFFSET: 0x00BC14F0
 // FUNCTION: fn_19828
 void CEffectPrim::PrimFadingColumns() {
-  const float groundOffset = g_fireflyGroundOffset;
-  const float projectionDepthOffset = g_projectionDepthOffset;
-
   for (int index = 0; index < 2; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    ++slot.process;
+    ++this->state.slots[index].process;
 
-    if (slot.process > 29000) {
-      slot.process = 29000;
-    } else if (slot.process <= 0) {
+    if (this->state.slots[index].process > 29000) {
+      this->state.slots[index].process = 29000;
+    }
+
+    if (this->state.slots[index].process <= 0) {
       continue;
     }
 
-    FadeColumnHeight(*this, slot, groundOffset, projectionDepthOffset);
+    FadeColumnHeight(*this, this->state.slots[index]);
   }
 
-  const float depthAverageHalf = g_depthAverageHalf;
   for (int index = 2; index < 4; ++index) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    ++slot.process;
+    ++this->state.slots[index].process;
 
-    if (slot.process > 29000) {
-      slot.process = 29000;
-    } else if (slot.process <= 0) {
+    if (this->state.slots[index].process > 29000) {
+      this->state.slots[index].process = 29000;
+    }
+
+    if (this->state.slots[index].process <= 0) {
       continue;
     }
 
-    slot.distance += depthAverageHalf;
+    this->state.slots[index].distance += 0.5f;
 
-    if (slot.distance > slot.height[0] * 8.0f) {
-      slot.distance -= slot.height[0] * 8.0f;
+    if (this->state.slots[index].distance > this->state.slots[index].height[0] * 8.0f) {
+      this->state.slots[index].distance -= this->state.slots[index].height[0] * 8.0f;
     }
 
-    FadeColumnHeight(*this, slot, groundOffset, projectionDepthOffset);
+    FadeColumnHeight(*this, this->state.slots[index]);
   }
 
   const CRagEffect* master = this->state.master;
