@@ -1945,17 +1945,25 @@ int GetEquipLocationIndex(const int& mask) {
     index = 1;
     break;
   case EQP_COSTUME_HEAD_TOP:
-  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID):
-  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW):
-  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
     index = 20;
     break;
   case EQP_COSTUME_HEAD_LOW:
     index = 22;
     break;
   case EQP_COSTUME_HEAD_MID:
+    index = 21;
+    break;
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID):
+    index = 20;
+    break;
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW):
+    index = 20;
+    break;
   case (EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
     index = 21;
+    break;
+  case (EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW):
+    index = 20;
     break;
   case EQP_COSTUME_GARMENT:
     index = 23;
@@ -5064,27 +5072,25 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
   int subColumn;
   int subRow;
   this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
-  const int startX = *x;
-  const int deltaX = column - startX;
-  const int startY = *y;
-  const int deltaY = row - startY;
+  const int deltaX = column - *x;
+  const int deltaY = row - *y;
   const int offsets[9][2] = {{0, 0}, {1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
   if (std::abs(deltaX) >= std::abs(deltaY)) {
     if (deltaX == 0) {
       return false;
     }
     const int step = deltaX > 0 ? 1 : -1;
-    for (int cellX = startX; cellX != column; cellX += step) {
+    for (int cellX = *x; cellX != column; cellX += step) {
       const int cellY = (cellX - *x) * deltaY / deltaX + *y;
       for (int i = 0; i < 9; ++i) {
-        const int candidateX = cellX + offsets[i][0];
-        const int candidateY = cellY + offsets[i][1];
-        if (this->scene->terrain->Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
-          if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
+        const TerrainHeightCell* cell = this->scene->terrain->CellAt(cellX + offsets[i][0], cellY + offsets[i][1]);
+        if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF &&
+            !this->IsRegisterCell(cellX + offsets[i][0], cellY + offsets[i][1])) {
+          if (!this->CanFindPath(column, row, subColumn, subRow, cellX + offsets[i][0], cellY + offsets[i][1])) {
             return false;
           }
-          *x = candidateX;
-          *y = candidateY;
+          *x = cellX + offsets[i][0];
+          *y = cellY + offsets[i][1];
           return true;
         }
       }
@@ -5094,17 +5100,17 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
       return false;
     }
     const int step = deltaY > 0 ? 1 : -1;
-    for (int cellY = startY; cellY != row; cellY += step) {
+    for (int cellY = *y; cellY != row; cellY += step) {
       const int cellX = (cellY - *y) * deltaX / deltaY + *x;
       for (int i = 0; i < 9; ++i) {
-        const int candidateX = cellX + offsets[i][0];
-        const int candidateY = cellY + offsets[i][1];
-        if (this->scene->terrain->Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
-          if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
+        const TerrainHeightCell* cell = this->scene->terrain->CellAt(cellX + offsets[i][0], cellY + offsets[i][1]);
+        if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF &&
+            !this->IsRegisterCell(cellX + offsets[i][0], cellY + offsets[i][1])) {
+          if (!this->CanFindPath(column, row, subColumn, subRow, cellX + offsets[i][0], cellY + offsets[i][1])) {
             return false;
           }
-          *x = candidateX;
-          *y = candidateY;
+          *x = cellX + offsets[i][0];
+          *y = cellY + offsets[i][1];
           return true;
         }
       }
