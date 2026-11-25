@@ -1452,17 +1452,17 @@ void CGameActor::SetState(int state, int resetPosition) {
       this->SetAction(action, 3, 1);
     }
     if (this->render.state != ST_ATTACK2 && this->render.state != ST_ATTACK) {
-      CRenderObject* target;
+      CWorld* scene = mode->scene;
+      CRenderObject* target = nullptr;
       if (this->hitTargetAid == g_session.m_aid) {
-        target = mode->scene->player;
         if (this->render.accountId != this->hitTargetAid) {
-          this->Face(target->render.position.x, target->render.position.z);
+          target = scene->player;
         }
       } else {
-        target = mode->scene->GetGameActorByAID(this->hitTargetAid);
-        if (target) {
-          this->Face(target->render.position.x, target->render.position.z);
-        }
+        target = scene->GetGameActorByAID(this->hitTargetAid);
+      }
+      if (target) {
+        this->Face(target->render.position.x, target->render.position.z);
       }
     }
     if (this->GetEffectiveJob(-1) == JT_ARCHER_GUARDIAN) {
@@ -1588,19 +1588,25 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_A_COUNTER: {
     this->render.sequenceInterval = 4;
     int frame0;
+    int frame1;
+    int frame2;
     int frame3;
     int frame4;
     if (this->GetEffectiveJob(-1) == JT_LINKER || this->GetEffectiveJob(-1) == JT_LINKER_B || this->GetEffectiveJob(-1) == JT_SOUL_REAPER ||
         this->GetEffectiveJob(-1) == JT_SOUL_REAPER_B) {
       frame0 = 4;
+      frame1 = 5;
+      frame2 = 6;
       frame3 = 7;
       frame4 = 2;
     } else {
       frame0 = 2;
+      frame1 = 3;
+      frame2 = 4;
       frame3 = 4;
       frame4 = 4;
     }
-    this->SetAnimationSequence(action, frame0, action, frame0 + 1, action, frame0 + 2, action, frame3, action, frame4, 1, 500, 0);
+    this->SetAnimationSequence(action, frame0, action, frame1, action, frame2, action, frame3, action, frame4, 1, 500, 0);
     break;
   }
   case ST_R_DODGE:
@@ -1635,7 +1641,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.sequenceInterval = 10;
     int random = rand() % 2;
     random = random >= 0 ? random : 0;
-    const int frame = random != 0 ? 3 : 2;
+    const int frame = random ? 3 : 2;
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
@@ -1658,7 +1664,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.sequenceInterval = 10;
     int random = rand() % 2;
     random = random >= 0 ? random : 0;
-    const int frame = random != 0 ? 2 : 1;
+    const int frame = random ? 2 : 1;
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
