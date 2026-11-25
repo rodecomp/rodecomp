@@ -1003,19 +1003,21 @@ bool CNavigationManager::SavedTargetText(char* out, int size) {
   char text[0x104];
   std::memset(text, 0, sizeof(text));
 
-  NaviCell cellA;
-  NaviCell cellB;
   if (this->savedTarget.type == 2) {
     CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
     CNaviInfo* info = object->GetInfo();
-    std::sprintf(text, "%s %d %d", info->GetName(), object->GetCell(&cellA)->x, object->GetCell(&cellB)->y);
+    NaviCell cellX;
+    NaviCell cellY;
+    std::sprintf(text, "%s %d %d", info->GetName(), object->GetCell(&cellX)->x, object->GetCell(&cellY)->y);
   } else if (this->savedTarget.type == 3) {
     std::sprintf(text, "%s", static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()->GetName());
   } else if (this->savedTarget.type == 1) {
     std::sprintf(text, "%s", static_cast<CNaviInfo*>(this->savedTarget.object)->GetName());
   } else if (this->savedTarget.type == 0) {
     CNaviInfo* info = static_cast<CNaviInfo*>(this->savedTarget.object);
-    std::sprintf(text, "%s %d %d", info->GetName(), this->data.GetCell(&cellB)->x, this->data.GetCell(&cellA)->y);
+    NaviCell cellX;
+    NaviCell cellY;
+    std::sprintf(text, "%s %d %d", info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cellY)->y);
   } else {
     return false;
   }
