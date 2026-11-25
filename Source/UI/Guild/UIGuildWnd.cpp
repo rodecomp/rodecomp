@@ -962,6 +962,16 @@ void UIGuildBanishedMemberWnd::OnCreate(int, int) {
   this->UpdateScroll();
 }
 
+// INLINED
+static int RightAligned(const UIWindow* window, const UIWindow* child, int margin) {
+  return window->geometry.width - child->geometry.width - margin;
+}
+
+// INLINED
+static int BottomAligned(const UIWindow* window, const UIWindow* child, int margin) {
+  return window->geometry.height - child->geometry.height - margin;
+}
+
 // OFFSET: 0x00958FF0
 // FUNCTION: fn_13059
 void UIGuildInfoManageWnd::OnCreate(int, int) {
@@ -987,7 +997,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     this->m_editButton->SetBitmap((prefix + "btn_edit_b" + ".bmp").c_str(), 2, 0);
     this->m_editButton->SetSize(this->m_editButton->BitmapWidth(), this->m_editButton->BitmapHeight());
     if (g_guildInfo.isMaster) {
-      this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);
+      this->m_editButton->Move(RightAligned(this, this->m_editButton, 8), 69);
     } else {
       this->m_editButton->Move(-200, -200);
     }
@@ -1000,7 +1010,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_b.bmp", 2, 0);
     this->m_disbandButton->SetSize(this->m_disbandButton->BitmapWidth(), this->m_disbandButton->BitmapHeight());
     if (g_guildInfo.isMaster) {
-      this->m_disbandButton->Move(this->geometry.width - this->m_disbandButton->geometry.width - 15, this->geometry.height - this->m_disbandButton->geometry.height - 5);
+      this->m_disbandButton->Move(RightAligned(this, this->m_disbandButton, 15), BottomAligned(this, this->m_disbandButton, 5));
     } else {
       this->m_disbandButton->Move(-200, -200);
     }
@@ -1498,9 +1508,10 @@ void UIGuildPositionManageWnd::Paint() {
       );
     }
 
-    if (++drawn == this->m_visibleRows * this->m_columns) {
+    if (drawn + 1 == this->m_visibleRows * this->m_columns) {
       return;
     }
+    ++drawn;
   }
 }
 
