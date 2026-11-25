@@ -187,7 +187,7 @@ struct SealContext {
 static_assert(sizeof(SealContext) == 0x1C9C);
 
 // GLOBAL: gl_25067
-int g_keyedBoxRound;
+static int g_keyedBoxRound;
 
 // INLINED
 static unsigned int CryptonRotate(unsigned int value, unsigned int shift) {
@@ -851,15 +851,10 @@ void BuildSboxLookup() {
 // FUNCTION: fn_18414
 int KeyedBoxFeistel(const unsigned char* input, unsigned char* output, int length, const KeyedBoxContext* context) {
   if (length == 2) {
-    int round = g_keyedBoxRound;
-    unsigned char right = context->boxes[round++][input[0]] ^ input[1];
-    output[1] = right;
-    unsigned char left = context->boxes[round++][right] ^ input[0];
-    output[0] = left;
-    right = context->boxes[round++][left] ^ right;
-    g_keyedBoxRound = round + 1;
-    output[1] = right;
-    output[0] = context->boxes[round][right] ^ left;
+    output[1] = context->boxes[g_keyedBoxRound++][input[0]] ^ input[1];
+    output[0] = context->boxes[g_keyedBoxRound++][output[1]] ^ input[0];
+    output[1] = context->boxes[g_keyedBoxRound++][output[0]] ^ output[1];
+    output[0] = context->boxes[g_keyedBoxRound++][output[1]] ^ output[0];
     return 0;
   }
 
