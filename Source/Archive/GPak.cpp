@@ -1842,14 +1842,17 @@ namespace {
 // OFFSET: 0x00644260
 // FUNCTION: fn_04842
 void XorWithKey16(std::span<const std::uint8_t, 16> key, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+  std::size_t blockCount = input.size();
   const __m128i mask = _mm_loadu_si128(reinterpret_cast<const __m128i*>(key.data()));
   const std::uint8_t* source = input.data();
   std::uint8_t* destination = output.data();
-  const std::size_t blockCount = input.size() / 16;
-  for (std::size_t block = 0; block < blockCount; ++block) {
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(destination), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(source)), mask));
-    source += 16;
-    destination += 16;
+  if (blockCount >= 16) {
+    blockCount >>= 4;
+    do {
+      _mm_storeu_si128(reinterpret_cast<__m128i*>(destination), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(source)), mask));
+      source += 16;
+      destination += 16;
+    } while (--blockCount != 0);
   }
   const std::size_t remaining = input.size() % 16;
   for (std::size_t i = 0; i < remaining; ++i) {
