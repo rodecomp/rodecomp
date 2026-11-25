@@ -651,7 +651,8 @@ void UISelCharForUServerWnd::Paint() {
           direction = 1;
         }
 
-        direction += this->m_slots[index].action - this->m_slots[index].actionBase;
+        direction += this->m_slots[index].action;
+        direction -= this->m_slots[index].actionBase;
         direction = direction < 0 ? 7 : direction;
         direction = direction > 7 ? 0 : direction;
 
@@ -663,12 +664,12 @@ void UISelCharForUServerWnd::Paint() {
       if (layer == 1) {
         const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[0].c_str()))->Frame(this->m_slots[index].action, this->m_slots[index].frame);
         if (frame->anchorCount != 0 && body->anchorCount != 0) {
-          const ActionAnchor* head = frame->anchors.data();
           const ActionAnchor* base = body->anchors.data();
-          if (base->attachmentId == head->attachmentId) {
+          const ActionAnchor* head = frame->anchors.data();
+          if (head->attachmentId == base->attachmentId) {
             offsetX += base->x - head->x;
-            g_charViewOffsetX = offsetX;
             offsetY += base->y - head->y;
+            g_charViewOffsetX = offsetX;
             g_charViewOffsetY = offsetY;
           }
         }
@@ -686,8 +687,8 @@ void UISelCharForUServerWnd::Paint() {
         int accessoryOffsetX = offsetX;
         int accessoryOffsetY = offsetY;
         if (frame->anchorCount != 0 && head->anchorCount != 0) {
-          const ActionAnchor* anchor = frame->anchors.data();
           const ActionAnchor* base = head->anchors.data();
+          const ActionAnchor* anchor = frame->anchors.data();
           if (anchor->attachmentId == base->attachmentId) {
             accessoryOffsetX += base->x - anchor->x;
             accessoryOffsetY += base->y - anchor->y;
@@ -737,7 +738,7 @@ void UISelCharForUServerWnd::Paint() {
       }
 
       this->geometry.surface->DrawSurface(
-        this->m_slots[index].x + (cell.x + offsetX), this->m_slots[index].y + (cell.y + offsetY), texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
+        cell.x + offsetX + this->m_slots[index].x, cell.y + offsetY + this->m_slots[index].y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f),
         image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
