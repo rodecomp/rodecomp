@@ -1518,6 +1518,19 @@ bool IsSupportedCipher(std::uint16_t cipher) {
   return g_pakDecryptFunctions.contains(cipher);
 }
 
+enum PakHeaderIvSource : int {
+  PAK_HEADER_IV_KEY = 0,
+  PAK_HEADER_IV_NAME_HASH = 1,
+  PAK_HEADER_IV_CHECKSUM_HASH = 2,
+};
+
+enum PakHeaderCipher : std::uint8_t {
+  PAK_HEADER_CIPHER_NONE = 0,
+  PAK_HEADER_CIPHER_AES_CBC_KEY_IV = 1,
+  PAK_HEADER_CIPHER_AES_CBC_NAME_IV = 2,
+  PAK_HEADER_CIPHER_AES_CBC_CHECKSUM_IV = 15,
+};
+
 struct PakHeaderSource {
   /* 0000 */ const std::span<const std::uint8_t>& name;
   /* 0004 */ const PakAuxiliaryHeader* header;

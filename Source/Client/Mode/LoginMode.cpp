@@ -653,43 +653,43 @@ void CLoginMode::SubD8EDC0(int) {
 void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet) {
   UIWindow* window = g_windowMgr.newSelectCharWnd;
   switch (packet->result) {
-  case 0:
+  case CHARACTER_RENAME_SUCCESS:
     g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_SUCCESS), 0, true, false, 0, "메시지", 280, 120, 0);
     if (window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME_SUCCESS, 0, 0, 0);
     }
     break;
-  case 1:
+  case CHARACTER_RENAME_ALREADY_CHANGED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_ALREADY_CHANGED_NAME), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
-  case 2:
+  case CHARACTER_RENAME_USER_NOT_REGISTERED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_NOTREGISTED_USER), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
-  case 3:
+  case CHARACTER_RENAME_FAILED:
     if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_NAME_FAILURE), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     break;
-  case 4:
+  case CHARACTER_RENAME_DUPLICATE_NAME:
     if (g_windowMgr.Confirm(LookupMessage(MSI_DUPLICATED_CHAR_NAME), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_NAME, 0, 0, 0);
     }
     break;
-  case 5:
+  case CHARACTER_RENAME_IN_GUILD:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_GUILD), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
-  case 6:
+  case CHARACTER_RENAME_IN_PARTY:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_BELONGS_TO_PARTY), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
     break;
-  case 10:
+  case CHARACTER_RENAME_UNKNOWN_FAILURE:
     if (g_windowMgr.Confirm(LookupMessage(MSI_FAILED_RENAME_UNKOWN), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK && window) {
       window->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     }
@@ -767,31 +767,31 @@ __declspec(noinline) void CLoginMode::ReceiveCharacterList(const CharacterListPa
 void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
-  case 0:
+  case CHARACTER_DELETE_UNKNOWN_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
-  case 1:
+  case CHARACTER_DELETE_SUCCESS:
     this->characterDeleted = true;
     break;
-  case 2:
+  case CHARACTER_DELETE_CONFIGURATION_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_CONFIGURATION);
     break;
-  case 3:
+  case CHARACTER_DELETE_DATABASE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
     break;
-  case 4:
+  case CHARACTER_DELETE_DATE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_DATE);
     break;
-  case 5:
+  case CHARACTER_DELETE_BIRTHDATE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_BIRTH);
     break;
-  case 6:
+  case CHARACTER_DELETE_NAME_FAILURE:
     message = LookupMessage(MSI_CHR_DELETE_RESERVED_FAIL_CHARNAME);
     break;
-  case 7:
+  case CHARACTER_DELETE_EMAIL_FAILURE:
     message = LookupMessage(MSI_CANNOT_DELETE_CHARACTER_EMAIL);
     break;
-  case 8:
+  case CHARACTER_DELETE_PERSONAL_NUMBER_FAILURE:
     message = LookupMessage(MSI_CHR_DELETE_FAIL_CHN_TAREN_PERSONALNUMBER);
     break;
   default:
@@ -812,10 +812,10 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
 void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
   std::string message;
   switch (packet->result) {
-  case 0:
+  case CHARACTER_DELETE_CANCEL_UNKNOWN_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
     break;
-  case 1:
+  case CHARACTER_DELETE_CANCEL_SUCCESS:
     for (int i = 0; i < this->characterCount; ++i) {
       if (this->characters[i].gid == packet->gid) {
         this->characters[i].deleteDate = 0;
@@ -824,7 +824,7 @@ void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet) {
     }
     this->pendingCursorType = 7;
     break;
-  case 2:
+  case CHARACTER_DELETE_CANCEL_DATABASE_FAILURE:
     message = LookupMessage(MSI_RESULT_FAIL_DATABASE);
     break;
   default:
