@@ -2,9 +2,15 @@
 
 #include <unordered_map>
 
+namespace {
+  struct LifetimeBuilder {
+    std::unordered_map<int, int> operator()() const;
+  };
+}
+
 // OFFSET: 0x00BF8E70
 // FUNCTION: fn_20014
-static std::unordered_map<int, int> BuildLifetimes() {
+std::unordered_map<int, int> LifetimeBuilder::operator()() const {
   std::unordered_map<int, int> result;
   result[EF_HIT1] = 50;
   result[EF_HIT2] = 50;
@@ -2471,7 +2477,7 @@ static std::unordered_map<int, int> BuildLifetimes() {
 namespace {
   // STATIC: 0x016FDAC0
   // GLOBAL: gl_24388
-  std::unordered_map<int, int> lifetimes = BuildLifetimes();
+  std::unordered_map<int, int> lifetimes = LifetimeBuilder()();
 }
 
 // OFFSET: 0x00C16440
