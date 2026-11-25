@@ -38,3 +38,5 @@
 template __declspec(noinline) std::map<int, int>::map(const std::map<int, int>&);
 template __declspec(noinline) std::vector<int>::~vector() noexcept;
 template __declspec(noinline) std::vector<const char*>::~vector() noexcept;
+template __forceinline std::pair<bool, BarterMarketItem> std::make_pair<bool, BarterMarketItem&>(bool&&, BarterMarketItem&);
+template __forceinline std::pair<bool, BarterMarketEntry> std::make_pair<bool, BarterMarketEntry&>(bool&&, BarterMarketEntry&);
