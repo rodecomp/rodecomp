@@ -215,18 +215,19 @@ void UICashShopWnd::OnCreate(int, int) {
 
   int tabX = 8;
   for (int tab = 0; tab < 11; ++tab) {
+    UIBmpRadioBtn* button = nullptr;
     const int tooltips[11] = {0xCDA, 0xCDB, 0xCDC, 0xCDD, 0xCDE, 0xCDF, 0xCE0, 0xCE1, 0xCE2, 0xE48, 0xECE};
-    if (static_cast<unsigned int>(tab) >= 11) {
+    if (static_cast<unsigned int>(tab) >= _countof(tooltips)) {
       break;
     }
-    UIBmpRadioBtn* button = nullptr;
     if (tab != 8 && tab != 10) {
       button = new UIBmpRadioBtn();
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_off.bmp", tab).c_str(), 0);
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_off.bmp", tab).c_str(), 1);
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_on.bmp", tab).c_str(), 2);
       button->SetBitmap(FormatOwnedString("유저인터페이스\\cashshop\\img_shop_tap%d_disable.bmp", tab).c_str(), 3);
-      button->Move(tabX, 0x48);
+      const auto place = [&tabX](UIWindow* window) { window->Move(tabX, 0x48); };
+      place(button);
       button->m_tooltip = LookupMessage(tooltips[tab]);
       button->SendMsg(this, UM_SETSTATE, tab == this->m_selectedTab, 0, 0, 0);
       tabX += 0x3A;
