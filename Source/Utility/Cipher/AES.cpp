@@ -809,7 +809,8 @@ void CAES::MakeKey(const char* key, const char* chain, int keylength, int blockS
     *pi = static_cast<unsigned char>(*pc++) << 24;
     *pi |= static_cast<unsigned char>(*pc++) << 16;
     *pi |= static_cast<unsigned char>(*pc++) << 8;
-    *pi++ |= static_cast<unsigned char>(*pc++);
+    *pi = *pi | static_cast<unsigned char>(*pc++);
+    ++pi;
   }
 
   int t = 0;
