@@ -119,8 +119,9 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     "bank", "rec", "mail", "achievement", "tip", "shop", "keyboard", "attendance", "adventurerAgency", "repute", "adventureguide", "probability",
   };
 
+  int index = 0;
   unsigned int position = 0;
-  for (int index = 0; index < 24; ++index) {
+  for (; index < 24; ++index) {
     if (ids[index] == ID_STATUS && g_session.IsDoramJob(g_session.m_job) == true) {
       names[index] = "status_doram";
     }
