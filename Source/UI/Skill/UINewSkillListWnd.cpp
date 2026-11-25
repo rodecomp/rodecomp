@@ -820,14 +820,13 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
 
   {
     std::string minimizeTooltip("");
-    this->m_btnHelp = this->AddBaseButton();
-    this->m_btnMinimize = this->AddMinimizeButton(minimizeTooltip.c_str(), 0);
-    this->m_btnClose = this->AddCloseButton("Alt+S", 0);
+    this->m_titleButtons[0] = this->AddBaseButton();
+    this->m_titleButtons[1] = this->AddMinimizeButton(minimizeTooltip.c_str(), 0);
+    this->m_titleButtons[2] = this->AddCloseButton("Alt+S", 0);
 
     int titleButtonX[3] = {22, this->geometry.width - 30, this->geometry.width - 16};
-    UIBitmapButton** titleButtons = &this->m_btnHelp;
-    for (int i = 0; i < 3; ++i, ++titleButtons) {
-      (*titleButtons)->Move(titleButtonX[i], 5);
+    for (int i = 0; i < 3; ++i) {
+      this->m_titleButtons[i]->Move(titleButtonX[i], 5);
     }
   }
 
@@ -890,19 +889,18 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
       {this->geometry.width - 100, this->geometry.height - 27},
       {this->geometry.width - 50, this->geometry.height - 27},
     };
-    UIBitmapButton** button = &this->m_btnApply;
-    for (int i = 0; i < 2; ++i, ++button) {
-      *button = new UIBitmapButton();
-      (*button)->SetBitmap((baseDir + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
-      (*button)->SetBitmap((baseDir + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
-      (*button)->SetBitmap((baseDir + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
-      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
-      (*button)->Move(buttonPos[i].x, buttonPos[i].y);
-      (*button)->SetId(buttonIds[i]);
-      UIBitmapButton* const created = *button;
+    for (int i = 0; i < 2; ++i) {
+      this->m_planButtons[i] = new UIBitmapButton();
+      this->m_planButtons[i]->SetBitmap((baseDir + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
+      this->m_planButtons[i]->SetBitmap((baseDir + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
+      this->m_planButtons[i]->SetBitmap((baseDir + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
+      this->m_planButtons[i]->SetSize(this->m_planButtons[i]->BitmapWidth(), this->m_planButtons[i]->BitmapHeight());
+      this->m_planButtons[i]->Move(buttonPos[i].x, buttonPos[i].y);
+      this->m_planButtons[i]->SetId(buttonIds[i]);
+      UIBitmapButton* const created = this->m_planButtons[i];
       created->SetDisabled(1);
       created->Invalidate();
-      this->AddChild(*button);
+      this->AddChild(this->m_planButtons[i]);
     }
   }
 
@@ -1277,19 +1275,19 @@ void UINewSkillListWnd::LayoutButtons() {
     this->m_btnDetail->Move(-100, -100);
   }
 
-  this->m_btnMinimize->Move(this->geometry.width - 30, 5);
-  this->m_btnClose->Move(this->geometry.width - 16, 5);
-  this->m_btnApply->Move(this->geometry.width - inset - 100, this->geometry.height - 27);
-  this->m_btnCancel->Move(this->geometry.width - inset - 50, this->geometry.height - 27);
-  UIBitmapButton* apply = this->m_btnApply;
+  this->m_titleButtons[1]->Move(this->geometry.width - 30, 5);
+  this->m_titleButtons[2]->Move(this->geometry.width - 16, 5);
+  this->m_planButtons[0]->Move(this->geometry.width - inset - 100, this->geometry.height - 27);
+  this->m_planButtons[1]->Move(this->geometry.width - inset - 50, this->geometry.height - 27);
+  UIBitmapButton* apply = this->m_planButtons[0];
   apply->SetDisabled(!this->m_locked);
   apply->Invalidate();
-  UIBitmapButton* cancel = this->m_btnCancel;
+  UIBitmapButton* cancel = this->m_planButtons[1];
   cancel->SetDisabled(!this->m_locked);
   cancel->Invalidate();
   if (!this->m_locked) {
-    this->m_btnApply->SetState(0);
-    this->m_btnCancel->SetState(0);
+    this->m_planButtons[0]->SetState(0);
+    this->m_planButtons[1]->SetState(0);
   }
 
   int i;

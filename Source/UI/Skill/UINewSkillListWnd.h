@@ -70,14 +70,11 @@ public:
 public:
   /* 00B4 */ UITabControl* m_tabs;
   /* 00B8 */ UIScrollBar* m_scrollBar;
-  /* 00BC */ UIBitmapButton* m_btnHelp;
-  /* 00C0 */ UIBitmapButton* m_btnMinimize;
-  /* 00C4 */ UIBitmapButton* m_btnClose;
+  /* 00BC */ UIBitmapButton* m_titleButtons[3];
   /* 00C8 */ UIBitmapButton* m_btnLevelUp[10];
   /* 00F0 */ UIBitmapButton* m_btnSkills[42];
   /* 0198 */ UIBitmapButton* m_btnSkillUps[42];
-  /* 0240 */ UIBitmapButton* m_btnApply;
-  /* 0244 */ UIBitmapButton* m_btnCancel;
+  /* 0240 */ UIBitmapButton* m_planButtons[2];
   /* 0248 */ UIResizer* m_btnDetail;
   /* 024C */ SkillListWndInfo* m_saved;
   /* 0250 */ int m_selectedSkill;
