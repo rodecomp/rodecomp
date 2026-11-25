@@ -2392,10 +2392,10 @@ void CEffectPrim::RenderRing(matrix& wtm) {
 // OFFSET: 0x00BD85F0
 // FUNCTION: fn_19888
 void CEffectPrim::RenderPentagon(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec4;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2405,12 +2405,17 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
       continue;
     }
 
-    const float topX = slot.vecTPre.x;
     const float topY = slot.vecTPre.y;
+    const float topX = slot.vecTPre.x;
     const float topZ = slot.vecTPre.z;
     const float radius = slot.maxHeight;
 
     for (int point = 0; point <= 5; ++point) {
+      vec2 = slot.vecTNow;
+      vec3.x = topX;
+      vec3.y = topY;
+      vec3.z = topZ;
+
       short angle = static_cast<short>(slot.rotStart + point * 72);
       if (angle >= 360) {
         angle -= 360;
@@ -2418,8 +2423,10 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
 
       const float dx = radius * g_cosTable[angle];
       const float dz = radius * g_sinTable[angle];
-      vec2.Set(dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z);
-      vec3.Set(topX + dx, topY, topZ + dz);
+      vec2.x += dx;
+      vec2.z += dz;
+      vec3.x += dx;
+      vec3.z += dz;
 
       if (point != 0) {
         if (slot.flag1[0] == 13) {
@@ -2512,10 +2519,10 @@ void CEffectPrim::RenderBeam(matrix& wtm) {
 // OFFSET: 0x00BD0A20
 // FUNCTION: fn_19870
 void CEffectPrim::RenderCone(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec4;
-  ZeroVector3d vec3;
-  ZeroVector3d vec2;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2536,17 +2543,29 @@ void CEffectPrim::RenderCone(matrix& wtm) {
         angle = this->state.slots[ec].riseAngle;
       }
 
+      const float cs1 = g_cosTable[angle];
+      const float sn1 = g_sinTable[angle];
+      const float cs2 = g_cosTable[this->state.slots[ec].rotStart];
+      const float sn2 = g_sinTable[this->state.slots[ec].rotStart];
       const float scale = this->state.slots[ec].height[0];
-      const float cs = g_cosTable[angle];
-      const float inner = this->state.slots[ec].distance * g_sinTable[angle];
-      vec2.y = this->state.slots[ec].distance * cs - this->state.slots[ec].maxHeight;
-      const float outerRadius = scale * this->state.slots[ec].distance * 0.1f + this->state.slots[ec].distance;
-      vec3.y = outerRadius * cs - this->state.slots[ec].maxHeight;
-      vec2.x = this->state.slots[ec].vecTNow.x + inner * g_cosTable[this->state.slots[ec].rotStart];
-      vec2.z = this->state.slots[ec].vecTNow.z + inner * g_sinTable[this->state.slots[ec].rotStart];
-      const float outer = outerRadius * g_sinTable[angle];
-      vec3.x = outer * g_cosTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.x * scale;
-      vec3.z = outer * g_sinTable[this->state.slots[ec].rotStart] - this->state.slots[ec].vecTNow.z * scale;
+
+      float dist = this->state.slots[ec].distance;
+      vec2.y = cs1 * dist;
+      dist = sn1 * dist;
+      vec2.x = cs2 * dist;
+      vec2.z = sn2 * dist;
+      vec2.y -= this->state.slots[ec].maxHeight;
+      vec2.x += this->state.slots[ec].vecTNow.x;
+      vec2.z += this->state.slots[ec].vecTNow.z;
+
+      dist = scale * this->state.slots[ec].distance * 0.1f + this->state.slots[ec].distance;
+      vec3.y = cs1 * dist;
+      dist = sn1 * dist;
+      vec3.x = cs2 * dist;
+      vec3.z = sn2 * dist;
+      vec3.y -= this->state.slots[ec].maxHeight;
+      vec3.x -= this->state.slots[ec].vecTNow.x * scale;
+      vec3.z -= this->state.slots[ec].vecTNow.z * scale;
 
       if (count > 0) {
         this->RenderTeiRect(&rpCnt, texPart - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0);
@@ -2808,10 +2827,10 @@ void CEffectPrim::RenderColorPlane(matrix& wtm) {
 // OFFSET: 0x00BE37A0
 // FUNCTION: fn_19922
 void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
-  ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
-  ZeroVector3d vec4;
+  vector3d vec1 = {0.0f, 0.0f, 0.0f};
+  vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec3 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -2823,16 +2842,20 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
     const float shift = static_cast<float>(this->state.slots[ec].flag1[1]) * this->state.slots[ec].height[1];
     const float outer = shift + this->state.slots[ec].distance;
     const float inner = this->state.slots[ec].distance - shift;
-    const float back = this->state.slots[ec].height[1] * -1.0f;
+    const float height = this->state.slots[ec].height[1];
+    const int tilt = this->state.slots[ec].fullDisplayAngle;
+    const int turn = this->state.slots[ec].riseAngle;
 
-    float across = g_cosTable[this->state.slots[ec].fullDisplayAngle] * outer - g_sinTable[this->state.slots[ec].fullDisplayAngle] * this->state.slots[ec].height[1];
-    vec2.Set(across * g_cosTable[this->state.slots[ec].riseAngle] - g_sinTable[this->state.slots[ec].riseAngle] * 0.0f, g_sinTable[this->state.slots[ec].fullDisplayAngle] * outer + g_cosTable[this->state.slots[ec].fullDisplayAngle] * this->state.slots[ec].height[1], across * g_sinTable[this->state.slots[ec].riseAngle] + g_cosTable[this->state.slots[ec].riseAngle] * 0.0f);
-    across = g_cosTable[this->state.slots[ec].fullDisplayAngle] * inner - g_sinTable[this->state.slots[ec].fullDisplayAngle] * this->state.slots[ec].height[1];
-    vec3.Set(across * g_cosTable[this->state.slots[ec].riseAngle] - g_sinTable[this->state.slots[ec].riseAngle] * 0.0f, g_sinTable[this->state.slots[ec].fullDisplayAngle] * inner + g_cosTable[this->state.slots[ec].fullDisplayAngle] * this->state.slots[ec].height[1], across * g_sinTable[this->state.slots[ec].riseAngle] + g_cosTable[this->state.slots[ec].riseAngle] * 0.0f);
-    across = g_cosTable[this->state.slots[ec].fullDisplayAngle] * inner - g_sinTable[this->state.slots[ec].fullDisplayAngle] * back;
-    vec4.Set(across * g_cosTable[this->state.slots[ec].riseAngle] - g_sinTable[this->state.slots[ec].riseAngle] * 0.0f, g_cosTable[this->state.slots[ec].fullDisplayAngle] * back + g_sinTable[this->state.slots[ec].fullDisplayAngle] * inner, across * g_sinTable[this->state.slots[ec].riseAngle] + g_cosTable[this->state.slots[ec].riseAngle] * 0.0f);
-    across = g_cosTable[this->state.slots[ec].fullDisplayAngle] * outer - g_sinTable[this->state.slots[ec].fullDisplayAngle] * back;
-    vec1.Set(across * g_cosTable[this->state.slots[ec].riseAngle] - g_sinTable[this->state.slots[ec].riseAngle] * 0.0f, g_cosTable[this->state.slots[ec].fullDisplayAngle] * back + g_sinTable[this->state.slots[ec].fullDisplayAngle] * outer, across * g_sinTable[this->state.slots[ec].riseAngle] + g_cosTable[this->state.slots[ec].riseAngle] * 0.0f);
+    float across;
+    RotatePoint(across, vec2.y, outer, height, g_cosTable[tilt], g_sinTable[tilt]);
+    RotatePoint(vec2.x, vec2.z, across, 0.0f, g_cosTable[turn], g_sinTable[turn]);
+    RotatePoint(across, vec3.y, inner, height, g_cosTable[tilt], g_sinTable[tilt]);
+    RotatePoint(vec3.x, vec3.z, across, 0.0f, g_cosTable[turn], g_sinTable[turn]);
+    const float back = this->state.slots[ec].height[1] * -1.0f;
+    RotatePoint(across, vec4.y, inner, back, g_cosTable[tilt], g_sinTable[tilt]);
+    RotatePoint(vec4.x, vec4.z, across, 0.0f, g_cosTable[turn], g_sinTable[turn]);
+    RotatePoint(across, vec1.y, outer, back, g_cosTable[tilt], g_sinTable[tilt]);
+    RotatePoint(vec1.x, vec1.z, across, 0.0f, g_cosTable[turn], g_sinTable[turn]);
 
     if (this->state.slots[ec].flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 225, 225, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
