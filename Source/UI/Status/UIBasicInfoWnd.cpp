@@ -599,6 +599,33 @@ void UIBasicInfoWnd::OnCreate(int width, int height) {
   this->SetHeight(height);
 }
 
+// INLINED
+static bool IsMaximumBaseLevel() {
+  bool maximum = false;
+
+  if (g_session.IsTreeGroupTwo(g_session.GetDisplayJob())) {
+    if (g_session.m_maxLevel == g_session.m_level) {
+      maximum = true;
+    }
+  } else if (g_session.IsSuperNovice2Job(g_session.GetDisplayJob())) {
+    if (g_session.m_maxBaseLevelExtend2 == g_session.m_level) {
+      maximum = true;
+    }
+  } else if (g_session.IsExpandedJob(g_session.GetDisplayJob())) {
+    if (g_session.m_maxBaseLevelUpperJob == g_session.m_level) {
+      maximum = true;
+    }
+  } else if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+    if (g_session.m_maxBaseLevelDoram == g_session.m_level) {
+      maximum = true;
+    }
+  } else if (g_session.m_maxBaseLevel == g_session.m_level) {
+    maximum = true;
+  }
+
+  return maximum;
+}
+
 // OFFSET: 0x00998810
 // FUNCTION: fn_13492
 void UIBasicInfoWnd::Paint() {
@@ -637,20 +664,8 @@ void UIBasicInfoWnd::Paint() {
       maximum = current + 1;
     }
 
-    int maxLevel;
-    if (g_session.IsTreeGroupTwo(g_session.GetDisplayJob())) {
-      maxLevel = g_session.m_maxLevel;
-    } else if (g_session.IsSuperNovice2Job(g_session.GetDisplayJob())) {
-      maxLevel = g_session.m_maxBaseLevelExtend2;
-    } else if (g_session.IsExpandedJob(g_session.GetDisplayJob())) {
-      maxLevel = g_session.m_maxBaseLevelUpperJob;
-    } else {
-      maxLevel = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? g_session.m_maxBaseLevelDoram
-                                                                         : g_session.m_maxBaseLevel;
-    }
-
     double percent;
-    if (maxLevel == g_session.m_level) {
+    if (IsMaximumBaseLevel()) {
       percent = 100.0;
     } else {
       percent = static_cast<float>(static_cast<int>(static_cast<double>(current) / static_cast<double>(maximum) * 1000.0)) * 0.1f;
@@ -789,11 +804,14 @@ void UIBasicInfoWnd::Paint() {
     } else {
       std::sprintf(text, "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
     }
+    std::uint32_t color = 0;
     int capacity = g_session.m_maxWeight;
     if (capacity < 1) {
       capacity = 1;
     }
-    const std::uint32_t color = g_session.m_weight * 100 / capacity >= g_session.m_overweightThresholdPercent ? 255 : 0;
+    if (g_session.m_weight * 100 / capacity >= g_session.m_overweightThresholdPercent) {
+      color = 255;
+    }
     this->DrawRightAlignedText(this->geometry.width - zenyWidth - 10, this->layoutOffset + 103, text, std::strlen(text), 1, 14, color, 0);
   }
 }
