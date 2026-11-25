@@ -199,9 +199,16 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
   C3dAttr*& terrain = g_modeMgr.GetGameMode()->scene->terrain;
   terrain->SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
   for (UIWindow*& window : this->rendered) {
-    CRenderObject* owner;
     if (typeid(*window) == typeid(UIMerchantShopTitle)) {
-      owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
+      CRenderObject* owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
+      if (owner == nullptr) {
+        return true;
+      }
+
+      terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+      if (actorColumn == titleColumn && titleRow == actorRow) {
+        return true;
+      }
     } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
       const int roomId = static_cast<UIChatRoomTitle*>(window)->info.id;
       if (roomId == 0) {
@@ -213,18 +220,15 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
         return true;
       }
 
-      owner = g_session.FindGameActor(ownerAid);
-    } else {
-      continue;
-    }
+      CRenderObject* owner = g_session.FindGameActor(ownerAid);
+      if (owner == nullptr) {
+        return true;
+      }
 
-    if (owner == nullptr) {
-      return true;
-    }
-
-    terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-    if (titleColumn == actorColumn && actorRow == titleRow) {
-      return true;
+      terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+      if (actorColumn == titleColumn && titleRow == actorRow) {
+        return true;
+      }
     }
   }
 
