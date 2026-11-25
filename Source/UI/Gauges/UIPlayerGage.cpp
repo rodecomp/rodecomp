@@ -189,8 +189,8 @@ void UIPlayerGage::Paint() {
         const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
         const std::int64_t curVal2 = this->m_secondCurrent();
         const std::int64_t den2 = curVal2 > maxVal2 ? curVal2 : maxVal2;
-        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
         const double num2 = static_cast<double>(this->m_secondCurrent());
+        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
         const float ratio2 = static_cast<float>(num2 / static_cast<double>(static_cast<int>(den2)));
         this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
                          this->colors[3]);
