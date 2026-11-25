@@ -14,7 +14,7 @@
 // FUNCTION: fn_10515
 UITagTextViewer::UITagTextViewer()
     : UIScroll(), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font(0, 12, false, false), m_outlined(false),
-      m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0), m_offsetY(m_topMargin) {
+      m_outlineColor(0xFFFFFF), m_horizontalAlign(TEXT_ALIGN_LEFT), m_verticalAlign(TEXT_ALIGN_TOP), m_cursorY(0), m_offsetY(m_topMargin) {
 }
 
 // OFFSET: 0x0083E740
@@ -241,14 +241,14 @@ int UITagTextViewer::SendMsg(
 // FUNCTION: fn_10532
 void UITagTextViewer::SetAlign(unsigned char align) {
   switch (align) {
-  case 0:
-  case 1:
-  case 2:
+  case TEXT_ALIGN_LEFT:
+  case TEXT_ALIGN_CENTER:
+  case TEXT_ALIGN_RIGHT:
     this->m_horizontalAlign = align;
     break;
-  case 3:
-  case 4:
-  case 5:
+  case TEXT_ALIGN_TOP:
+  case TEXT_ALIGN_MIDDLE:
+  case TEXT_ALIGN_BOTTOM:
     this->m_verticalAlign = align;
     break;
   }

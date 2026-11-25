@@ -14,6 +14,15 @@ class UITextButton;
 struct TextLocale;
 struct tagSIZE;
 
+enum TextAlign : unsigned char {
+  TEXT_ALIGN_LEFT = 0,
+  TEXT_ALIGN_CENTER = 1,
+  TEXT_ALIGN_RIGHT = 2,
+  TEXT_ALIGN_TOP = 3,
+  TEXT_ALIGN_MIDDLE = 4,
+  TEXT_ALIGN_BOTTOM = 5,
+};
+
 enum LineSegmentType {
   LINE_SEGMENT_URL = 0x1B5,
   LINE_SEGMENT_NAVI = 0x1B6,
