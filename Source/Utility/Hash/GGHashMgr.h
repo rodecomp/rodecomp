@@ -15,7 +15,7 @@ public:
   static void Destroy();
 
   int IsValid();
-  void VerifyFile(const char* filename);
+  bool VerifyFile(const char* filename);
   void VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size);
   void VerifyPendingFiles();
 
