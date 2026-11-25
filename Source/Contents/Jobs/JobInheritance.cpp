@@ -1877,7 +1877,7 @@ bool CSession::UnequipCostumeItem(int location) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     const int slot = std::get<0>(slots);
     if (slot < 10) {
-      ITEM_INFO* const items = this->costumeItems;
+      ITEM_INFO* const items = this->costumeItems.data();
       if (slot != -1) {
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
         ITEM_INFO& item = items[slot];

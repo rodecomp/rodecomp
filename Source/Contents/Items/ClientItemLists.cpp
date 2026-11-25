@@ -937,12 +937,11 @@ bool CSession::Equip(const ITEM_INFO& item) {
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->alternateEquippedItems[slot];
-      equipped = item;
-      equipped.quantity = 1;
-      equipped.expireTime = item.expireTime;
-      equipped.bindOnEquip = item.bindOnEquip;
-      equipped.sprite = item.sprite;
+      this->alternateEquippedItems[slot] = item;
+      this->alternateEquippedItems[slot].quantity = 1;
+      this->alternateEquippedItems[slot].expireTime = item.expireTime;
+      this->alternateEquippedItems[slot].bindOnEquip = item.bindOnEquip;
+      this->alternateEquippedItems[slot].sprite = item.sprite;
     }
   }
 
@@ -1103,9 +1102,8 @@ bool CSession::EquipInventoryItem(const ITEM_INFO& item, const char* name) {
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1 && slot < 10) {
-      ITEM_INFO& equipped = this->equippedItems[slot];
-      equipped = item;
-      equipped.quantity = 1;
+      this->equippedItems[slot] = item;
+      this->equippedItems[slot].quantity = 1;
     }
   }
 
@@ -1136,9 +1134,8 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
     for (int index = 0; index < 3; ++index) {
       const int slot = order[index];
       if (slot != -1 && slot < 10) {
-        ITEM_INFO& equipped = this->equippedItems[slot];
-        equipped = item;
-        equipped.quantity = 1;
+        this->equippedItems[slot] = item;
+        this->equippedItems[slot].quantity = 1;
       }
     }
 
@@ -1185,7 +1182,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     const int slot = std::get<0>(slots);
     if (slot < 10) {
-      ITEM_INFO* const items = this->equippedItems;
+      ITEM_INFO* const items = this->equippedItems.data();
       if (slot != -1) {
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
         ITEM_INFO& item = items[slot];
@@ -1772,12 +1769,11 @@ bool CSession::EquipSwapEquipmentItem(const ITEM_INFO& item) {
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->swapEquippedItems[slot];
-      equipped = item;
-      equipped.quantity = 1;
-      equipped.expireTime = item.expireTime;
-      equipped.bindOnEquip = item.bindOnEquip;
-      equipped.sprite = item.sprite;
+      this->swapEquippedItems[slot] = item;
+      this->swapEquippedItems[slot].quantity = 1;
+      this->swapEquippedItems[slot].expireTime = item.expireTime;
+      this->swapEquippedItems[slot].bindOnEquip = item.bindOnEquip;
+      this->swapEquippedItems[slot].sprite = item.sprite;
     }
   }
 

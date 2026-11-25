@@ -119,3 +119,14 @@ template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::uint32
 PendingActorNameTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
 template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
 template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
+template __declspec(noinline) std::_Tree_node<std::pair<const int, float>, void*>*
+std::allocator<std::_Tree_node<std::pair<const int, float>, void*>>::allocate(const std::size_t);
+template __declspec(noinline) std::_Tree_node<std::pair<const int, MapPosEntry>, void*>*
+std::allocator<std::_Tree_node<std::pair<const int, MapPosEntry>, void*>>::allocate(const std::size_t);
+template __declspec(noinline) std::_Tree_node<std::pair<const int, RobeAlpha>, void*>*
+std::allocator<std::_Tree_node<std::pair<const int, RobeAlpha>, void*>>::allocate(const std::size_t);
+template __declspec(noinline) std::_Tree_node<std::pair<const std::string, int>, void*>*
+std::allocator<std::_Tree_node<std::pair<const std::string, int>, void*>>::allocate(const std::size_t);
+template __declspec(noinline) std::_Tree_node<std::pair<const int, SessionShop>, void*>*
+std::allocator<std::_Tree_node<std::pair<const int, SessionShop>, void*>>::allocate(const std::size_t);
+template __declspec(noinline) std::map<std::string, MapPosEntry>::map();

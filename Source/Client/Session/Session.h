@@ -18,6 +18,7 @@
 
 #include <windows.h>
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -439,10 +440,10 @@ public:
   /* 17DC */ std::list<MessengerMember> m_partyMembers;
   /* 17E4 */ std::list<MessengerMember> m_friends;
   /* 17EC */ unsigned char padding_17EC[0x04];
-  /* 17F0 */ ITEM_INFO equippedItems[10];
-  /* 21A0 */ ITEM_INFO alternateEquippedItems[10];
-  /* 2B50 */ ITEM_INFO costumeItems[10];
-  /* 3500 */ ITEM_INFO alternateCostumeItems[10];
+  /* 17F0 */ std::array<ITEM_INFO, 10> equippedItems;
+  /* 21A0 */ std::array<ITEM_INFO, 10> alternateEquippedItems;
+  /* 2B50 */ std::array<ITEM_INFO, 10> costumeItems;
+  /* 3500 */ std::array<ITEM_INFO, 10> alternateCostumeItems;
   /* 3EB0 */ ITEM_INFO m_exchangeItems[10];
   /* 4860 */ ITEM_INFO m_itemSlots[10];
   /* 5210 */ int exchangeMoney;
@@ -698,8 +699,8 @@ public:
       /* 61B6 */ unsigned char padding_61B6[2];
     };
   };
-  /* 61B8 */ ITEM_INFO swapCostumeItems[10];
-  /* 6B68 */ ITEM_INFO swapEquippedItems[10];
+  /* 61B8 */ std::array<ITEM_INFO, 10> swapCostumeItems;
+  /* 6B68 */ std::array<ITEM_INFO, 10> swapEquippedItems;
   /* 7518 */ ITEM_INFO padding_7518[10];
   /* 7EC8 */ std::uint32_t swapArrowIndex;
   /* 7ECC */ bool m_sortPrivateTab;

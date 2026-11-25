@@ -382,12 +382,11 @@ bool CSession::EquipAlternateCostumeItem(const ITEM_INFO& item) {
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->alternateCostumeItems[slot];
-      equipped = item;
-      equipped.quantity = 1;
-      equipped.expireTime = item.expireTime;
-      equipped.bindOnEquip = item.bindOnEquip;
-      equipped.sprite = item.sprite;
+      this->alternateCostumeItems[slot] = item;
+      this->alternateCostumeItems[slot].quantity = 1;
+      this->alternateCostumeItems[slot].expireTime = item.expireTime;
+      this->alternateCostumeItems[slot].bindOnEquip = item.bindOnEquip;
+      this->alternateCostumeItems[slot].sprite = item.sprite;
     }
   }
 
@@ -964,12 +963,11 @@ bool CSession::EquipCostumeItem(const ITEM_INFO& item, const char* name) {
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ITEM_INFO& equipped = this->costumeItems[slot];
-      equipped = item;
-      equipped.quantity = 1;
-      equipped.expireTime = item.expireTime;
-      equipped.bindOnEquip = item.bindOnEquip;
-      equipped.sprite = item.sprite;
+      this->costumeItems[slot] = item;
+      this->costumeItems[slot].quantity = 1;
+      this->costumeItems[slot].expireTime = item.expireTime;
+      this->costumeItems[slot].bindOnEquip = item.bindOnEquip;
+      this->costumeItems[slot].sprite = item.sprite;
     }
   }
 

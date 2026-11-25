@@ -365,16 +365,16 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
       offset = ReadItemList(this->m_filteredInventoryItems, offset, header.bytes, data);
       break;
     case 4601:
-      offset = ReadItemArray(this->equippedItems, offset, header.bytes, data);
+      offset = ReadItemArray(this->equippedItems.data(), offset, header.bytes, data);
       break;
     case 4602:
-      offset = ReadItemArray(this->alternateEquippedItems, offset, header.bytes, data);
+      offset = ReadItemArray(this->alternateEquippedItems.data(), offset, header.bytes, data);
       break;
     case 4603:
-      offset = ReadItemArray(this->costumeItems, offset, header.bytes, data);
+      offset = ReadItemArray(this->costumeItems.data(), offset, header.bytes, data);
       break;
     case 4604:
-      offset = ReadItemArray(this->alternateCostumeItems, offset, header.bytes, data);
+      offset = ReadItemArray(this->alternateCostumeItems.data(), offset, header.bytes, data);
       break;
     case 4605:
       offset = ReadItemArray(this->m_exchangeItems, offset, header.bytes, data);
