@@ -4756,7 +4756,9 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
   const int angle = 0;
 
   for (int ec = 0; ec < 1; ++ec) {
-    if (this->state.slots[ec].life == 1 && this->state.slots[ec].alphaB > 0) {
+    if (this->state.slots[ec].life == 1) {
+      const short alpha = this->state.slots[ec].alphaB;
+      if (alpha > 0) {
       if (this->state.slots[ec].flag1[0] == 21) {
         rx = this->state.slots[ec].distance * g_masterReachDistance;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
@@ -4781,7 +4783,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
         vec3 += this->state.slots[ec].vecBNow;
         vec4 += this->state.slots[ec].vecBNow;
 
-        this->RenderTeiRect(&rpCnt, static_cast<short>(this->state.slots[ec].alphaB / 2), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 2), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
         rx = this->state.slots[ec].distance * g_layeredGlowModeTwentyOneScale;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
@@ -4806,7 +4808,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
         vec3 += this->state.slots[ec].vecBNow;
         vec4 += this->state.slots[ec].vecBNow;
 
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 20) {
         rx = this->state.slots[ec].distance * g_layeredGlowModeTwentyScale;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
@@ -4831,7 +4833,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
         vec3 += this->state.slots[ec].vecBNow;
         vec4 += this->state.slots[ec].vecBNow;
 
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
       rx = this->state.slots[ec].distance;
@@ -4860,21 +4862,21 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
       const short pw = this->state.isChangeProcessed == 1 ? 0 : 10;
 
       if (this->state.slots[ec].flag1[0] == 1) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 68, 42, 30, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 68, 42, 30, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 10) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 11) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 12) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 13) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 20) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 21) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
       rx = this->state.slots[ec].distance * g_depthAverageHalf;
@@ -4901,21 +4903,22 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
       vec4 += this->state.slots[ec].vecBNow;
 
       if (this->state.slots[ec].flag1[0] == 1) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 10) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 11) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 12) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 13) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 150, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 150, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 20) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 150, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 150, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else if (this->state.slots[ec].flag1[0] == 21) {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
-        this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
       }
     }
   }
