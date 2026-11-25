@@ -16,9 +16,18 @@ void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
   const float y = v.y;
   const float x = v.x;
   const float z = v.z;
-  result.x = x * m[0] + y * m[3] + z * m[6] + m[9];
-  result.y = x * m[1] + y * m[4] + z * m[7] + m[10];
-  result.z = x * m[2] + y * m[5] + z * m[8] + m[11];
+  result.x = y * m[3];
+  result.x += x * m[0];
+  result.x += z * m[6];
+  result.x += m[9];
+  result.y = y * m[4];
+  result.y += x * m[1];
+  result.y += z * m[7];
+  result.y += m[10];
+  result.z = y * m[5];
+  result.z += x * m[2];
+  result.z += z * m[8];
+  result.z += m[11];
 }
 
 // INLINED
@@ -110,7 +119,8 @@ __forceinline void CHealSp::UpdateRing(CParticle* particle) {
   const float angle = spin + params[5];
   matrix rotation;
   rotation.MakeYRotation(GetRadian(static_cast<int>(angle)));
-  const float nextAngle = angle + spin;
+  float nextAngle = spin;
+  nextAngle += angle;
   const int limit = static_cast<int>(maxAlpha);
   if (this->frame == static_cast<int>(endFrame)) {
     fade = -(alpha / static_cast<float>(this->effectLifetime - this->frame));
@@ -129,6 +139,17 @@ __forceinline void CHealSp::UpdateRing(CParticle* particle) {
   params[6] = level;
   particle->alpha = this->alphaLevel;
   particle->transform = rotation;
+}
+
+// INLINED
+static void SetSpriteState(CSpriteParticle* sprite, float lift, float fade, const vector3d& velocity, float x, float y, float z, int alpha) {
+  sprite->animationValues[2] = lift;
+  sprite->animationValues[5] = fade;
+  sprite->velocity = velocity;
+  sprite->position.x = x;
+  sprite->position.y = y;
+  sprite->position.z = z;
+  sprite->alpha = alpha;
 }
 
 // OFFSET: 0x00B45ED0
@@ -169,13 +190,19 @@ __forceinline void CHealSp::UpdateSprite(CSpriteParticle* sprite) {
     level = static_cast<float>(this->alphaLevel);
   }
 
-  params[2] = lift;
-  params[5] = fade;
-  sprite->velocity = velocity;
-  sprite->position.x = x;
-  sprite->position.y = y;
-  sprite->position.z = z;
-  sprite->alpha = static_cast<int>(level);
+  SetSpriteState(sprite, lift, fade, velocity, x, y, z, static_cast<int>(level));
+}
+
+// INLINED
+static void SetMotion(CSpriteParticle* sprite, float angle, float lift, float acceleration, float delay, float fade, const vector3d& velocity) {
+  sprite->animationParameters[0] = angle;
+  sprite->animationParameters[1] = lift;
+  sprite->animationParameters[2] = acceleration;
+  sprite->animationParameters[3] = delay;
+  sprite->animationParameters[4] = fade;
+  sprite->velocity.x = velocity.x;
+  sprite->velocity.y = velocity.y;
+  sprite->velocity.z = velocity.z;
 }
 
 // OFFSET: 0x00B458E0
@@ -190,18 +217,10 @@ void CHealSp::OnProcess() {
     vector3d point;
     MatrixMult(point, offset, rotation.values);
     CSpriteParticle* sprite = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
-    float* params = &sprite->animationParameter;
     sprite->life = 0.5f;
     sprite->scale = 0.55f;
-    params[0] = 3.0f;
-    params[1] = angle;
-    params[2] = -1.2f;
-    params[3] = 0.02666667f;
-    params[4] = 20.0f;
-    params[5] = 0.0f;
-    sprite->velocity.x = point.x;
-    sprite->velocity.y = point.y;
-    sprite->velocity.z = point.z;
+    sprite->animationParameter = 3.0f;
+    SetMotion(sprite, angle, -1.2f, 0.02666667f, 20.0f, 0.0f, point);
     sprite->SetSprite("이팩트\\particle2.spr");
     sprite->SetAction("이팩트\\particle2.act");
     sprite->alpha = 254;
