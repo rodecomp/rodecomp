@@ -758,6 +758,11 @@ void UIEditCtrl4::OnBeginEdit() {
   this->SelectAll();
 }
 
+// INLINED
+static int SelectionLength(const CLanguageBase& language) {
+  return std::abs(language.cursor - language.anchor);
+}
+
 // OFFSET: 0x008563D0
 // FUNCTION: fn_10754
 void UIEditCtrl4::PaintText() {
@@ -766,7 +771,7 @@ void UIEditCtrl4::PaintText() {
     x -= this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, 0, 0);
   }
 
-  std::string display;
+  std::string display = "";
   if (g_windowMgr.GetHoverWindow() == this) {
     this->Synchronize();
     unsigned begin;
@@ -785,7 +790,7 @@ void UIEditCtrl4::PaintText() {
     const int left = begin ? this->TextWidth(display.c_str(), begin, 0, 12, 0, 0) : 0;
     const int right = end ? this->TextWidth(display.c_str(), end, 0, 12, 0, 0) : 0;
 
-    if (std::abs(g_serverLanguage->cursor - g_serverLanguage->anchor) != 0) {
+    if (SelectionLength(*g_serverLanguage) != 0) {
       this->DrawSelection(left + x, right - left);
       if (this->secondColor == 0xFFFFFFFF) {
         this->DrawTextAt(x, this->textY, display.c_str(), 0, 0, 12, this->textColor, 0, 0);
