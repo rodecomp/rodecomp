@@ -32,6 +32,11 @@ static vector3d Add(const vector3d& left, const vector3d& right) {
   return vector3d{left.x + right.x, left.y + right.y, left.z + right.z};
 }
 
+// INLINED
+static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
+  return effects->Spawn(0, id, position, 0, -1, 0, 0);
+}
+
 class CSkillAction_NW_INTENSIVE_AIM : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
@@ -539,16 +544,16 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnSkillCast(int level, CGameActor* 
 void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   for (int index = 0; index < 3; ++index) {
     EffectLists* effectLists = g_effectMgr;
-    CEffect* effect = effectLists->Spawn(
-      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
+    CEffect* effect = SpawnAt(
+      effectLists, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position
     );
     if (effect) {
       effect->SetDelay(index * 288);
     }
 
     effectLists = g_effectMgr;
-    effect = effectLists->Spawn(
-      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
+    effect = SpawnAt(
+      effectLists, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position
     );
     if (effect) {
       effect->SetDelay(index * 288);
