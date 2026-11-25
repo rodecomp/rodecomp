@@ -20,31 +20,31 @@ UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(0) {
 // FUNCTION: fn_45627
 void UIAchBalloonText::SetFontFamily(int mode) {
   switch (mode) {
-  case 1:
+  case TEXT_FONT_STYLE_RIX_LOVEANGEL:
     this->m_fontFamily = 21;
     return;
-  case 2:
+  case TEXT_FONT_STYLE_RIX_SQUIRREL:
     this->m_fontFamily = 20;
     return;
-  case 3:
+  case TEXT_FONT_STYLE_RIX_NHCGOGO:
     this->m_fontFamily = 22;
     return;
-  case 4:
+  case TEXT_FONT_STYLE_RIX_DIARY:
     this->m_fontFamily = 23;
     return;
-  case 5:
+  case TEXT_FONT_STYLE_RIX_MINI_HEART:
     this->m_fontFamily = 24;
     return;
-  case 6:
+  case TEXT_FONT_STYLE_RIX_FRESHMAN:
     this->m_fontFamily = 25;
     return;
-  case 7:
+  case TEXT_FONT_STYLE_RIX_KID:
     this->m_fontFamily = 26;
     return;
-  case 8:
+  case TEXT_FONT_STYLE_RIX_MAGIC:
     this->m_fontFamily = 27;
     return;
-  case 9:
+  case TEXT_FONT_STYLE_RIX_JJANGU:
     this->m_fontFamily = 28;
     return;
   }

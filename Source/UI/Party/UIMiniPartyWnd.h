@@ -10,6 +10,12 @@
 class UIPcGage;
 class UIMiniPartyWnd;
 
+enum MiniPartySizeMode : int {
+  MINIPARTY_SIZE_WIDE = 0,
+  MINIPARTY_SIZE_COMPACT = 1,
+  MINIPARTY_SIZE_MINIMAL = 2,
+};
+
 struct MiniPartyInfoEntry {
   MiniPartyInfoEntry(const char* text, int value);
 

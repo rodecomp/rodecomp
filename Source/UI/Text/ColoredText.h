@@ -8,6 +8,19 @@ class UIWindow;
 class FontCache;
 struct TextLocale;
 
+enum TextFontStyle : std::int16_t {
+  TEXT_FONT_STYLE_DEFAULT = 0,
+  TEXT_FONT_STYLE_RIX_LOVEANGEL = 1,
+  TEXT_FONT_STYLE_RIX_SQUIRREL = 2,
+  TEXT_FONT_STYLE_RIX_NHCGOGO = 3,
+  TEXT_FONT_STYLE_RIX_DIARY = 4,
+  TEXT_FONT_STYLE_RIX_MINI_HEART = 5,
+  TEXT_FONT_STYLE_RIX_FRESHMAN = 6,
+  TEXT_FONT_STYLE_RIX_KID = 7,
+  TEXT_FONT_STYLE_RIX_MAGIC = 8,
+  TEXT_FONT_STYLE_RIX_JJANGU = 9,
+};
+
 extern unsigned char g_hexDigits[256];
 
 #endif

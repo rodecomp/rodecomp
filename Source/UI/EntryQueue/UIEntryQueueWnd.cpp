@@ -447,7 +447,7 @@ void UIEntryQueueWnd::OnCreate(int width, int height) {
   this->m_helpButton->SetBitmap((path + "btn_help" + "_b.bmp").c_str(), 2, 0);
   this->m_helpButton->SetSize(this->m_helpButton->BitmapWidth(), this->m_helpButton->BitmapHeight());
   this->m_helpButton->Move(width - 62, height - 24);
-  this->m_helpButton->SetId(3);
+  this->m_helpButton->SetId(ENTRYQUEUE_BUTTON_HELP);
   this->AddChild(this->m_helpButton);
 }
 
@@ -483,7 +483,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_COMMAND: {
     int error;
     switch (a) {
-    case 0:
+    case ENTRYQUEUE_BUTTON_INDIVIDUAL:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
       } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
@@ -499,7 +499,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         g_windowMgr.Confirm(text, 0, false, false, 0, "메시지", 280, 120, 0);
       }
       return 0;
-    case 1:
+    case ENTRYQUEUE_BUTTON_PARTY:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
       } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
@@ -521,7 +521,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         g_windowMgr.Confirm(text, 0, false, false, 0, "메시지", 280, 120, 0);
       }
       return 0;
-    case 2: {
+    case ENTRYQUEUE_BUTTON_GUILD: {
       GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() != 1) {
         if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
@@ -547,12 +547,12 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       }
       return 0;
     }
-    case 3:
+    case ENTRYQUEUE_BUTTON_HELP:
       if (!g_windowMgr.CloseWindow(WID_ENTRYQUEUEHELPWND)) {
         g_windowMgr.EnsureWindow(WID_ENTRYQUEUEHELPWND);
       }
       return 0;
-    case 4:
+    case ENTRYQUEUE_BUTTON_CLOSE:
     case ID_CLOSE:
       this->RecordResponse(static_cast<int>(a), b, c, d);
       g_windowMgr.CloseWindow(WID_JOINTO_BATTLEFIELDWND);

@@ -242,8 +242,8 @@ int UITagTextViewer::SendMsg(
 void UITagTextViewer::SetAlign(unsigned char align) {
   switch (align) {
   case TEXT_ALIGN_LEFT:
-  case TEXT_ALIGN_CENTER:
   case TEXT_ALIGN_RIGHT:
+  case TEXT_ALIGN_CENTER:
     this->m_horizontalAlign = align;
     break;
   case TEXT_ALIGN_TOP:

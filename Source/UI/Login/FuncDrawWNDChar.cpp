@@ -33,10 +33,10 @@ FuncDrawWNDChar::FuncDrawWNDChar(
   this->offsetY = 0;
   g_session.m_hotkeyScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
   this->m_drawOnTop = this->DrawOnTop();
-  this->m_layers[5] = this->m_bottomAccessory;
-  this->m_layers[4] = this->m_topAccessory;
-  this->m_layers[3] = this->m_midAccessory;
-  this->m_layers[6] = this->m_robe;
+  this->m_layers[WNDCHAR_LAYER_HEAD_LOW] = this->m_bottomAccessory;
+  this->m_layers[WNDCHAR_LAYER_HEAD_TOP] = this->m_topAccessory;
+  this->m_layers[WNDCHAR_LAYER_HEAD_MID] = this->m_midAccessory;
+  this->m_layers[WNDCHAR_LAYER_HELM_ROBE] = this->m_robe;
 }
 
 // OFFSET: 0x007E3E60
@@ -290,7 +290,7 @@ int FuncDrawWNDChar::IsSpecialLayer(int layer) {
     return 1;
   }
 
-  return layer == 2;
+  return layer == WNDCHAR_LAYER_HEAD;
 }
 
 // OFFSET: 0x007E5190

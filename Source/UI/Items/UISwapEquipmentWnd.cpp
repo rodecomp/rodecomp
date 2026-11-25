@@ -62,14 +62,14 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   ITEM_INFO item(0);
   unsigned char equipped = 0;
   switch (drag->source) {
-  case 1:
+  case DRAG_ITEM_INVENTORY:
     item = g_session.LookupClientItemByIdentity(drag->id);
     break;
-  case 2:
+  case DRAG_ITEM_EQUIP:
     equipped = 1;
     item = g_session.GetEquippedItemAt(drag->slot);
     break;
-  case 24:
+  case DRAG_ITEM_EQUIP_COSTUME:
     equipped = 1;
     item = g_session.GetCostumeItemAt(drag->slot);
     break;
@@ -258,16 +258,16 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // FUNCTION: fn_10402
 void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
   switch (index) {
-  case 8:
+  case SWAPEQUIP_SLOT_HEAD_MID:
     this->midAccessory = value;
     break;
-  case 9:
+  case SWAPEQUIP_SLOT_HEAD_LOW:
     this->bottomAccessory = value;
     break;
-  case 0:
+  case SWAPEQUIP_SLOT_HEAD_TOP:
     this->topAccessory = value;
     break;
-  case 2:
+  case SWAPEQUIP_SLOT_WEAPON:
     this->weaponView = value;
     break;
   }

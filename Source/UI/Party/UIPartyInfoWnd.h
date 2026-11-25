@@ -11,6 +11,16 @@ enum class PartyRole {
   Assist
 };
 
+enum AdvenPartyType : int {
+  ADVEN_PARTY_ALL = 0,
+  ADVEN_PARTY_QUEST = 1,
+  ADVEN_PARTY_FIELD = 2,
+  ADVEN_PARTY_DUNGEON = 3,
+  ADVEN_PARTY_MEMORIAL_DUNGEON = 4,
+  ADVEN_PARTY_EDEN_GROUP = 5,
+  ADVEN_PARTY_OTHER = 6,
+};
+
 const char* PartyRoleBitmap(PartyRole role, unsigned char selected);
 
 class UIPartyInfoWnd : public UIBitmapButton {

@@ -15,6 +15,14 @@ class UICheckBox;
 class UITabControl;
 class UIWindow;
 
+enum HotkeyAssignmentMode : int {
+  HOTKEY_ASSIGN_ACCEPT = 0,
+  HOTKEY_ASSIGN_IGNORE = 1,
+  HOTKEY_ASSIGN_INCOMPLETE = 2,
+  HOTKEY_ASSIGN_INVALID = 3,
+  HOTKEY_ASSIGN_CHECK_CONFLICT = 4,
+};
+
 class UIHotKeyWnd : public UIFrameWnd {
 public:
   struct HotkeyEntry {

@@ -10,6 +10,19 @@
 #include <string>
 
 namespace AdventureGuide {
+enum ItemEquipmentLocation : int {
+  GUIDE_EQUIP_HEAD_TOP = 0,
+  GUIDE_EQUIP_HEAD_MID = 1,
+  GUIDE_EQUIP_HEAD_LOW = 2,
+  GUIDE_EQUIP_ARMOR = 3,
+  GUIDE_EQUIP_GARMENT = 4,
+  GUIDE_EQUIP_SHIELD = 5,
+  GUIDE_EQUIP_SHOES = 6,
+  GUIDE_EQUIP_ACCESSORY_BOTH = 7,
+  GUIDE_EQUIP_ACCESSORY_RIGHT = 8,
+  GUIDE_EQUIP_ACCESSORY_LEFT = 9,
+};
+
 class CUICharacterInfo;
 class CUIIntro;
 class CUIItem;

@@ -34,6 +34,12 @@ enum StylingShopStyleTable : int {
   STYLE_TABLE_BODY_STYLE = 7,
 };
 
+enum StylingAccessorySlot : int {
+  STYLING_ACCESSORY_TOP = 0,
+  STYLING_ACCESSORY_MID = 1,
+  STYLING_ACCESSORY_LOW = 2,
+};
+
 class UIDisplayCharacter : public UIWindow {
 public:
   UIDisplayCharacter();

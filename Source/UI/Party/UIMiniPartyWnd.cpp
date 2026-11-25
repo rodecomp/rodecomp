@@ -39,7 +39,7 @@
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
 UIMiniPartyWnd::UIMiniPartyWnd()
-    : UIFrameWnd(1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0),
+    : UIFrameWnd(1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(MINIPARTY_SIZE_WIDE),
       m_imageName("유저인터페이스\\renewalparty\\img_partymini_bg.tga") {
   this->geometry.id = WID_MINIPARTYWND;
 }
@@ -139,7 +139,7 @@ void UIMiniPartyInfoWnd::OnMouseHover(int, int) {
   std::memset(text, 0, sizeof(text));
   std::string fitted;
   const std::string mapName = g_session.GetMapDisplayName(this->m_owner->GetMember().map.c_str());
-  if (this->m_owner->m_sizeMode == 1) {
+  if (this->m_owner->m_sizeMode == MINIPARTY_SIZE_COMPACT) {
     std::sprintf(text, "%s", this->m_owner->GetMember().name.c_str());
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.532f), text, 0, 12, 1);
   } else {
@@ -446,24 +446,24 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
 void UIMiniPartyWnd::SetSizeMode(int mode) {
   this->m_sizeMode = mode;
   switch (mode) {
-  case 0:
-    this->Resize(this->m_widths[0], this->geometry.height);
+  case MINIPARTY_SIZE_WIDE:
+    this->Resize(this->m_widths[MINIPARTY_SIZE_WIDE], this->geometry.height);
     if (this->m_infoWnd) {
       this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
     }
     this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
     this->m_background->Move(this->m_widths[this->m_sizeMode] - 35, 25);
     break;
-  case 1:
-    this->Resize(this->m_widths[1], this->geometry.height);
+  case MINIPARTY_SIZE_COMPACT:
+    this->Resize(this->m_widths[MINIPARTY_SIZE_COMPACT], this->geometry.height);
     if (this->m_infoWnd) {
       this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
     }
     this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg_mini.tga";
     this->m_background->Move(this->m_widths[this->m_sizeMode] - 23, 25);
     break;
-  case 2:
-    this->Resize(this->m_widths[2], this->geometry.height);
+  case MINIPARTY_SIZE_MINIMAL:
+    this->Resize(this->m_widths[MINIPARTY_SIZE_MINIMAL], this->geometry.height);
     if (this->m_infoWnd) {
       this->m_infoWnd->Resize(this->geometry.width, this->geometry.height);
     }
@@ -502,14 +502,14 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       break;
     }
     const int previous = this->m_sizeMode;
-    const int wideWidth = this->m_widths[0];
-    const int normalWidth = this->m_widths[1];
-    if (argument2 <= this->m_widths[2]) {
-      this->m_sizeMode = 2;
+    const int wideWidth = this->m_widths[MINIPARTY_SIZE_WIDE];
+    const int normalWidth = this->m_widths[MINIPARTY_SIZE_COMPACT];
+    if (argument2 <= this->m_widths[MINIPARTY_SIZE_MINIMAL]) {
+      this->m_sizeMode = MINIPARTY_SIZE_MINIMAL;
     } else if (argument2 <= normalWidth) {
-      this->m_sizeMode = 1;
+      this->m_sizeMode = MINIPARTY_SIZE_COMPACT;
     } else if (argument2 <= wideWidth) {
-      this->m_sizeMode = 0;
+      this->m_sizeMode = MINIPARTY_SIZE_WIDE;
     } else {
       break;
     }
@@ -530,24 +530,24 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
       window->m_sizeMode = this->m_sizeMode;
       switch (window->m_sizeMode) {
-      case 0:
-        window->Resize(window->m_widths[0], window->geometry.height);
+      case MINIPARTY_SIZE_WIDE:
+        window->Resize(window->m_widths[MINIPARTY_SIZE_WIDE], window->geometry.height);
         if (window->m_infoWnd) {
           window->m_infoWnd->Resize(window->geometry.width, window->geometry.height);
         }
         window->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
         window->m_background->Move(window->m_widths[window->m_sizeMode] - 35, 25);
         break;
-      case 1:
-        window->Resize(window->m_widths[1], window->geometry.height);
+      case MINIPARTY_SIZE_COMPACT:
+        window->Resize(window->m_widths[MINIPARTY_SIZE_COMPACT], window->geometry.height);
         if (window->m_infoWnd) {
           window->m_infoWnd->Resize(window->geometry.width, window->geometry.height);
         }
         window->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg_mini.tga";
         window->m_background->Move(window->m_widths[window->m_sizeMode] - 23, 25);
         break;
-      case 2:
-        window->Resize(window->m_widths[2], window->geometry.height);
+      case MINIPARTY_SIZE_MINIMAL:
+        window->Resize(window->m_widths[MINIPARTY_SIZE_MINIMAL], window->geometry.height);
         if (window->m_infoWnd) {
           window->m_infoWnd->Resize(window->geometry.width, window->geometry.height);
         }
@@ -628,13 +628,13 @@ void UIMiniPartyInfoWnd::Paint() {
   }
 
   UIPcGage* gauge = this->m_gauge;
-  if (this->m_owner->m_sizeMode == 0) {
+  if (this->m_owner->m_sizeMode == MINIPARTY_SIZE_WIDE) {
     gauge->Move(35, 23);
   } else {
     gauge->Move(-1000, -1000);
   }
 
-  if (this->m_owner->m_sizeMode == 2) {
+  if (this->m_owner->m_sizeMode == MINIPARTY_SIZE_MINIMAL) {
     return;
   }
 
@@ -642,7 +642,7 @@ void UIMiniPartyInfoWnd::Paint() {
   std::memset(text, 0, sizeof(text));
   std::string mapName = g_session.GetMapDisplayName(this->m_owner->GetMember().map.c_str());
   std::string fitted = text;
-  if (this->m_owner->m_sizeMode == 1) {
+  if (this->m_owner->m_sizeMode == MINIPARTY_SIZE_COMPACT) {
     std::sprintf(text, "%s", this->m_owner->GetMember().name.c_str());
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.532f), text, 0, 12, 1);
   } else {

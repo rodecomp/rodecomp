@@ -12,6 +12,13 @@ enum SwapEquipmentButtonId : int {
   SWAPEQUIP_BUTTON_SWAP = 508,
 };
 
+enum SwapEquipmentSlot : int {
+  SWAPEQUIP_SLOT_HEAD_TOP = 0,
+  SWAPEQUIP_SLOT_WEAPON = 2,
+  SWAPEQUIP_SLOT_HEAD_MID = 8,
+  SWAPEQUIP_SLOT_HEAD_LOW = 9,
+};
+
 
 class UISwapBitmapButton : public UIBitmapButton {
 public:

@@ -10,6 +10,10 @@
 #include <map>
 #include <string>
 
+enum BroadcastBalloonCategory : int {
+  BROADCAST_BALLOON_NOTICE = 2,
+};
+
 struct BroadcastBalloonLine {
   /* 0000 */ std::string text;
   /* 0018 */ std::uint32_t color;

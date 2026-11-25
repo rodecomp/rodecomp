@@ -15,6 +15,14 @@ class UIStaticText;
 struct EntryQueueInfo;
 class UITextViewer;
 
+enum EntryQueueButtonId : int {
+  ENTRYQUEUE_BUTTON_INDIVIDUAL = 0,
+  ENTRYQUEUE_BUTTON_PARTY = 1,
+  ENTRYQUEUE_BUTTON_GUILD = 2,
+  ENTRYQUEUE_BUTTON_HELP = 3,
+  ENTRYQUEUE_BUTTON_CLOSE = 4,
+};
+
 class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
   UIEntryQueueHelpWnd();

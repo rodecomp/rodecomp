@@ -833,7 +833,7 @@ __declspec(noinline) void __stdcall ToggleStylingAccessory(int itemId, int slot)
   ITEM_DESC desc = FindItemDescription(itemId);
   UIDisplayCharacter* display;
   switch (slot) {
-  case 0:
+  case STYLING_ACCESSORY_TOP:
     display = tab->m_display;
     if (desc.viewId != display->topAccessory) {
       display->topAccessoryItemId = itemId;
@@ -843,7 +843,7 @@ __declspec(noinline) void __stdcall ToggleStylingAccessory(int itemId, int slot)
       display->topAccessory = 0;
     }
     break;
-  case 1:
+  case STYLING_ACCESSORY_MID:
     display = tab->m_display;
     if (desc.viewId != display->middleAccessory) {
       display->middleAccessoryItemId = itemId;
@@ -853,7 +853,7 @@ __declspec(noinline) void __stdcall ToggleStylingAccessory(int itemId, int slot)
       display->middleAccessory = 0;
     }
     break;
-  case 2:
+  case STYLING_ACCESSORY_LOW:
     display = tab->m_display;
     if (desc.viewId != display->bottomAccessory) {
       display->bottomAccessoryItemId = itemId;

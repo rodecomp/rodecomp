@@ -6,6 +6,17 @@
 #include <cstdint>
 #include <string>
 
+enum ResizeDirection : int {
+  RESIZE_LEFT = 0,
+  RESIZE_RIGHT = 1,
+  RESIZE_TOP = 2,
+  RESIZE_BOTTOM = 3,
+  RESIZE_TOP_LEFT = 4,
+  RESIZE_TOP_RIGHT = 5,
+  RESIZE_BOTTOM_LEFT = 6,
+  RESIZE_BOTTOM_RIGHT = 7,
+};
+
 class UIResizer : public UIWindow {
 public:
   UIResizer();

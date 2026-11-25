@@ -15,6 +15,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Text/ColoredText.h"
 
 // OFFSET: 0x008519B0
 // FUNCTION: fn_45642
@@ -133,31 +134,31 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     const char* fitted = title.c_str();
     this->fontStyle = static_cast<std::int16_t>(b);
     switch (this->fontStyle) {
-    case 1:
+    case TEXT_FONT_STYLE_RIX_LOVEANGEL:
       SetLabelFont(this->label, 21, 12);
       break;
-    case 2:
+    case TEXT_FONT_STYLE_RIX_SQUIRREL:
       SetLabelFont(this->label, 20, 12);
       break;
-    case 3:
+    case TEXT_FONT_STYLE_RIX_NHCGOGO:
       SetLabelFont(this->label, 22, 12);
       break;
-    case 4:
+    case TEXT_FONT_STYLE_RIX_DIARY:
       SetLabelFont(this->label, 23, 12);
       break;
-    case 5:
+    case TEXT_FONT_STYLE_RIX_MINI_HEART:
       SetLabelFont(this->label, 24, 12);
       break;
-    case 6:
+    case TEXT_FONT_STYLE_RIX_FRESHMAN:
       SetLabelFont(this->label, 25, 12);
       break;
-    case 7:
+    case TEXT_FONT_STYLE_RIX_KID:
       SetLabelFont(this->label, 26, 12);
       break;
-    case 8:
+    case TEXT_FONT_STYLE_RIX_MAGIC:
       SetLabelFont(this->label, 27, 12);
       break;
-    case 9:
+    case TEXT_FONT_STYLE_RIX_JJANGU:
       SetLabelFont(this->label, 28, 12);
       break;
     default:

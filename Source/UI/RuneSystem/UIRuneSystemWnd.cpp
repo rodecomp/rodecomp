@@ -473,13 +473,13 @@ void UIRuneSet_Info::OnProcess() {
 // FUNCTION: fn_10213
 void UIRuneSystemWnd::OnProcess() {
   switch (this->m_tab->geometry.state) {
-  case 0:
+  case RUNESYSTEM_TAB_RUNESET:
     this->m_runeSetInfo->OnProcess();
     break;
-  case 1:
+  case RUNESYSTEM_TAB_RUNE:
     this->m_runeInfo->OnProcess();
     break;
-  case 2:
+  case RUNESYSTEM_TAB_DECOMPOSE:
     this->m_runeDecom->OnProcess();
     break;
   }
@@ -865,24 +865,24 @@ void UIRuneSystemWnd::SelectTab() {
       list->Show(this->m_tab->geometry.state == static_cast<std::uint32_t>(index));
     }
   }
-  this->m_equipRuneSet->Show(this->m_tab->geometry.state == 0);
+  this->m_equipRuneSet->Show(this->m_tab->geometry.state == RUNESYSTEM_TAB_RUNESET);
   this->m_tagList->SendMsg(this, UM_RUNE_SELECT_TAB, this->m_tab->geometry.state, this->m_equipRuneSet->geometry.height, 0, 0);
   this->m_tagList->Show(1);
   this->m_tagList->Invalidate();
 
   switch (this->m_tab->geometry.state) {
-  case 0:
+  case RUNESYSTEM_TAB_RUNESET:
     this->m_runeSetInfo->Show(1);
     this->m_runeSetInfo->RefreshDescription();
     this->m_runeInfo->Show(0);
     this->m_runeDecom->Show(0);
     break;
-  case 1:
+  case RUNESYSTEM_TAB_RUNE:
     this->m_runeSetInfo->Show(0);
     this->m_runeInfo->Show(1);
     this->m_runeDecom->Show(0);
     break;
-  case 2: {
+  case RUNESYSTEM_TAB_DECOMPOSE: {
     this->m_runeSetInfo->Show(0);
     this->m_runeInfo->Show(0);
     this->m_runeDecom->Show(1);

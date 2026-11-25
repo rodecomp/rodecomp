@@ -79,7 +79,7 @@ static inline int MaterialRowAt(int x, int y) {
 // OFFSET: 0x007E68F0
 // FUNCTION: fn_09738
 UIGradeEnchantWnd::UIGradeEnchantWnd()
-    : UIFrameWnd(0), startButton(nullptr), enhancedUpButton(nullptr), enhancedDownButton(nullptr), state(0), result(-1),
+    : UIFrameWnd(0), startButton(nullptr), enhancedUpButton(nullptr), enhancedDownButton(nullptr), state(GRADEENCHANT_STATE_EMPTY), result(-1),
       itemFrameInterval(200), wheelFrameInterval(100), stateTick(0), wheelTick(0), itemFrame(1), wheelFrame(1), resultTick(0),
       selectedMaterial(-1), hoverMaterial(-1), materials(), protect(0), unknown_0111(0), blessingAmount(0), baseSuccessRate(0),
       messageIds(), item(0) {
@@ -132,7 +132,7 @@ void UIGradeEnchantWnd::ResetItem() {
   this->baseSuccessRate = 0;
   this->resultTick = 0;
 
-  this->SetResult(0, -1);
+  this->SetResult(GRADEENCHANT_STATE_EMPTY, -1);
   this->Invalidate();
 }
 
@@ -265,7 +265,7 @@ void UIGradeEnchantWnd::Paint() {
   this->DrawBitmap(158, 182, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material.bmp").c_str()))), false);
   this->DrawBitmap(158, 102, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material.bmp").c_str()))), false);
 
-  if (this->state == 0) {
+  if (this->state == GRADEENCHANT_STATE_EMPTY) {
     this->DrawBitmap(152, 46, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
     this->DrawBitmap(152, 62, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
     this->DrawBitmap(152, 78, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
@@ -275,7 +275,7 @@ void UIGradeEnchantWnd::Paint() {
     this->DrawAlignedText(166, 78, LookupMessage(MSI_GRADE_ENCHANT_FAILED_REFINING_RANDOM_OPT_ENCHANT_KEEP), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
   }
 
-  if (this->state == 1 || this->state == 2) {
+  if (this->state == GRADEENCHANT_STATE_READY || this->state == GRADEENCHANT_STATE_RESULT) {
     this->DrawBitmap(192, 225, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_unbroken.bmp").c_str()))), false);
     this->DrawBitmap(24, 54, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\bg_gradeitem%d.bmp", this->itemFrame).c_str()))), false);
 
@@ -333,7 +333,7 @@ void UIGradeEnchantWnd::Paint() {
     this->DrawAlignedText(307, 303, zeny, 120, 2, 0, 0, 0, 16, 1, 0);
   }
 
-  if (this->state == 2) {
+  if (this->state == GRADEENCHANT_STATE_RESULT) {
     this->DrawBitmap(56, 268, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\gradewheel%d.bmp", this->wheelFrame).c_str()))), true);
   } else {
     this->DrawBitmap(56, 268, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\gradewheel%d.bmp", 1).c_str()))), true);
@@ -347,8 +347,8 @@ void UIGradeEnchantWnd::Paint() {
   }
 
   switch (this->state) {
-  case 1:
-  case 2: {
+  case GRADEENCHANT_STATE_READY:
+  case GRADEENCHANT_STATE_RESULT: {
     std::string rate = FormatOwnedString("%d%%", this->SuccessRate());
     this->DrawAlignedText(39, 88, rate, 74, 6, 0xFFFFFF, 0, 29, 28, 1, 1);
     break;
@@ -390,7 +390,7 @@ void UIGradeEnchantWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  if (this->state == 1 && this->item.identity[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
+  if (this->state == GRADEENCHANT_STATE_READY && this->item.identity[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
     g_modeMgr.GetGameMode()->BeginDragItem(DRAG_GRADE_ENCHANT, this->item, 1, -1);
   }
 }
@@ -495,7 +495,7 @@ void UIGradeEnchantWnd::OnProcess() {
     this->Invalidate();
   }
 
-  if (this->state == 2 && now >= this->resultTick + 3000) {
+  if (this->state == GRADEENCHANT_STATE_RESULT && now >= this->resultTick + 3000) {
     this->ShowResultMessage();
     this->ResetItem();
   }
@@ -534,7 +534,7 @@ void UIGradeEnchantWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  if (this->state == 1) {
+  if (this->state == GRADEENCHANT_STATE_READY) {
     const int row = MaterialRowAt(x, y);
     if (row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
@@ -616,7 +616,7 @@ int UIGradeEnchantWnd::SendMsg(
     }
     break;
   case UM_REFRESHITEM:
-    if (this->state == 0 || this->state == 1) {
+    if (this->state == GRADEENCHANT_STATE_EMPTY || this->state == GRADEENCHANT_STATE_READY) {
       const int identity = static_cast<int>(argument1);
       const ITEM_INFO dropped = g_session.LookupClientItemByIdentity(identity);
       if (g_session.HasSwapEquipmentItem(dropped.identity[1]) == 1) {
@@ -643,8 +643,8 @@ void UIGradeEnchantWnd::SetEnchantInfo(
   short index, int value, int materialCount, GradeEnchantInfo info, int enchantOption, int enchantOptionCount, const GradeEnchantMaterial* materials
 ) {
   switch (this->state) {
-  case 0:
-  case 1: {
+  case GRADEENCHANT_STATE_EMPTY:
+  case GRADEENCHANT_STATE_READY: {
     if (-1 == index) {
       return;
     }
@@ -662,7 +662,7 @@ void UIGradeEnchantWnd::SetEnchantInfo(
     this->blessingAmount = 0;
     this->baseSuccessRate = value;
 
-    this->state = 1;
+    this->state = GRADEENCHANT_STATE_READY;
     this->result = -1;
     this->stateTick = timeGetTime();
     this->itemFrame = 1;
@@ -719,10 +719,10 @@ void UIGradeEnchantWnd::SetResult(int state, int result) {
   this->result = result;
   this->stateTick = timeGetTime();
   this->itemFrame = 1;
-  this->enhancedUpButton->tooltipEnabled = state != 0;
+  this->enhancedUpButton->tooltipEnabled = state != GRADEENCHANT_STATE_EMPTY;
 
   switch (state) {
-  case 2:
+  case GRADEENCHANT_STATE_RESULT:
     this->resultTick = this->stateTick;
     break;
   }

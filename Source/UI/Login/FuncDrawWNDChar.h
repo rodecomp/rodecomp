@@ -11,6 +11,17 @@ class CSprRes;
 class UIWindow;
 struct ActionFrame;
 
+enum WndCharacterLayer : int {
+  WNDCHAR_LAYER_ROBE_BEHIND = 0,
+  WNDCHAR_LAYER_BODY = 1,
+  WNDCHAR_LAYER_HEAD = 2,
+  WNDCHAR_LAYER_HEAD_MID = 3,
+  WNDCHAR_LAYER_HEAD_TOP = 4,
+  WNDCHAR_LAYER_HEAD_LOW = 5,
+  WNDCHAR_LAYER_HELM_ROBE = 6,
+  WNDCHAR_LAYER_ROBE_FRONT = 7,
+};
+
 struct FuncDrawOffset {
   // INLINED
   FuncDrawOffset() : x(0), y(0) {

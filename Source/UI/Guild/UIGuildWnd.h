@@ -44,6 +44,25 @@ class UIStaticText;
 struct GuildWndInfo;
 class ForbiddenWords;
 
+enum GuildTab : int {
+  GUILD_TAB_INFO = 0,
+  GUILD_TAB_MEMBERS = 1,
+  GUILD_TAB_POSITIONS = 2,
+  GUILD_TAB_SKILLS = 3,
+  GUILD_TAB_BANISHED = 4,
+  GUILD_TAB_NOTICE = 5,
+  GUILD_TAB_TOTAL_INFO = 6,
+};
+
+enum GuildMemberColumn : int {
+  GUILD_MEMBER_COLUMN_NAME = 0,
+  GUILD_MEMBER_COLUMN_POSITION = 1,
+  GUILD_MEMBER_COLUMN_JOB = 2,
+  GUILD_MEMBER_COLUMN_LEVEL = 3,
+  GUILD_MEMBER_COLUMN_EXP_RATIO = 4,
+  GUILD_MEMBER_COLUMN_EXP = 5,
+};
+
 bool CompareWideText(const char* left, const char* right);
 
 class UIGuildWnd : public UIFrameWnd {

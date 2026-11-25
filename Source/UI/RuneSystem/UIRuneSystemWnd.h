@@ -44,6 +44,12 @@ enum RuneSystemButtonId : int {
   RUNE_BUTTON_REWARD_7 = 596,
 };
 
+enum RuneSystemTab : std::uint32_t {
+  RUNESYSTEM_TAB_RUNESET = 0,
+  RUNESYSTEM_TAB_RUNE = 1,
+  RUNESYSTEM_TAB_DECOMPOSE = 2,
+};
+
 class Decom_ItemInfo;
 class RuneData;
 class RuneSetData;

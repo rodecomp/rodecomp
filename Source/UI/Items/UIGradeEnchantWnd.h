@@ -13,6 +13,12 @@ enum GradeEnchantButtonId : int {
   GRADEENCHANT_BUTTON_PROBABILITY = 510,
 };
 
+enum GradeEnchantState : int {
+  GRADEENCHANT_STATE_EMPTY = 0,
+  GRADEENCHANT_STATE_READY = 1,
+  GRADEENCHANT_STATE_RESULT = 2,
+};
+
 #pragma pack(push, 1)
 struct GradeEnchantMaterial {
   /* 0000 */ std::uint32_t itemId;

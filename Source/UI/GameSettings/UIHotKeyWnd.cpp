@@ -520,15 +520,15 @@ int UIHotKeyWnd::ValidateSpecialHotkeyMode(int mode) {
   if (this->m_tab == 1 && g_session.HotkeyIndex(1, this->m_selectedRow) + 100 == 131) {
     const int key = g_windowMgr.keyCode;
     if (key == 0x12 || g_windowMgr.modifierKey == 0x12 || key == 0x11 || g_windowMgr.modifierKey == 0x11 || key == 0x10 || g_windowMgr.modifierKey == 0x10) {
-      return 3;
+      return HOTKEY_ASSIGN_INVALID;
     }
 
     if (key == 0x20 || key == 0x90) {
-      return g_windowMgr.modifierKey != 0 ? 4 : 2;
+      return g_windowMgr.modifierKey != 0 ? HOTKEY_ASSIGN_CHECK_CONFLICT : HOTKEY_ASSIGN_INCOMPLETE;
     }
 
-    if (mode == 4 && (key == 0x14 || (g_windowMgr.modifierKey == 0 && !g_windowMgr.IsSharedWindowId(key)))) {
-      return 3;
+    if (mode == HOTKEY_ASSIGN_CHECK_CONFLICT && (key == 0x14 || (g_windowMgr.modifierKey == 0 && !g_windowMgr.IsSharedWindowId(key)))) {
+      return HOTKEY_ASSIGN_INVALID;
     }
   }
 
@@ -644,7 +644,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       HotkeyInfo info = entry.info;
       if (info.key1 == g_windowMgr.keyCode && info.key2 == g_windowMgr.modifierKey) {
         if (index == this->m_selectedRow && tab == this->m_tab) {
-          return 1;
+          return HOTKEY_ASSIGN_IGNORE;
         }
 
         StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
@@ -668,15 +668,15 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
             }
           }
 
-          return 0;
+          return HOTKEY_ASSIGN_ACCEPT;
         }
 
-        return 1;
+        return HOTKEY_ASSIGN_IGNORE;
       }
     }
   }
 
-  return 0;
+  return HOTKEY_ASSIGN_ACCEPT;
 }
 
 // OFFSET: 0x00935270

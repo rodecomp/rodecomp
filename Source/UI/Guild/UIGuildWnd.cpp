@@ -68,31 +68,31 @@ std::string g_guildNamelessTag = "<NAMELESS>";
 // OFFSET: 0x00957D30
 // FUNCTION: fn_13044
 int UIGuildBanishedMemberWnd::Tab() {
-  return 4;
+  return GUILD_TAB_BANISHED;
 }
 
 // OFFSET: 0x00957D40
 // FUNCTION: fn_13045
 int UIGuildInfoManageWnd::Tab() {
-  return 0;
+  return GUILD_TAB_INFO;
 }
 
 // OFFSET: 0x00957D50
 // FUNCTION: fn_13046
 int UIGuildMemberManageWnd::Tab() {
-  return 1;
+  return GUILD_TAB_MEMBERS;
 }
 
 // OFFSET: 0x00957D80
 // FUNCTION: fn_13049
 int UIGuildSkillWnd::Tab() {
-  return 3;
+  return GUILD_TAB_SKILLS;
 }
 
 // OFFSET: 0x00957D90
 // FUNCTION: fn_13050
 int UIGuildTotalInfoWnd::Tab() {
-  return 6;
+  return GUILD_TAB_TOTAL_INFO;
 }
 
 // OFFSET: 0x0095F860
@@ -650,39 +650,39 @@ int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::in
   case UM_CHANGE_GUILD_TAB: {
     int permissions[7] = {0, 1, 2, 4, 16, 128, 64};
     switch (a1) {
-    case 1:
-    case 2:
-    case 4:
-    case 5:
+    case GUILD_TAB_MEMBERS:
+    case GUILD_TAB_POSITIONS:
+    case GUILD_TAB_BANISHED:
+    case GUILD_TAB_NOTICE:
       if ((permissions[a1] & g_guildInfo.guildTabBitmask) == 0) {
         return 0;
       }
       break;
-    case 6:
+    case GUILD_TAB_TOTAL_INFO:
       return 0;
     }
 
     g_windowMgr.CloseWindow(WID_GUILDWND);
     switch (a1) {
-    case 0:
+    case GUILD_TAB_INFO:
       g_windowMgr.EnsureWindow(WID_GUILDINFOMANAGEWND);
       return 0;
-    case 1:
+    case GUILD_TAB_MEMBERS:
       g_windowMgr.EnsureWindow(WID_GUILDMEMBERMANAGEWND);
       return 0;
-    case 2:
+    case GUILD_TAB_POSITIONS:
       g_windowMgr.EnsureWindow(WID_GUILDPOSITIONMANAGEWND);
       return 0;
-    case 3:
+    case GUILD_TAB_SKILLS:
       g_windowMgr.EnsureWindow(WID_GUILDSKILLWND);
       return 0;
-    case 4:
+    case GUILD_TAB_BANISHED:
       g_windowMgr.EnsureWindow(WID_GUILDBANISHEDMEMBERWND);
       return 0;
-    case 5:
+    case GUILD_TAB_NOTICE:
       g_windowMgr.EnsureWindow(WID_GUILDNOTICEWND);
       return 0;
-    case 6:
+    case GUILD_TAB_TOTAL_INFO:
       g_windowMgr.EnsureWindow(WID_GUILDTOTALINFOWND);
       return 0;
     }
@@ -1203,7 +1203,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
   }
 
   switch (column) {
-  case 0:
+  case GUILD_MEMBER_COLUMN_NAME:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return CompareWideText(left.name.c_str(), right.name.c_str());
@@ -1214,7 +1214,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
       });
     }
     break;
-  case 1:
+  case GUILD_MEMBER_COLUMN_POSITION:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return left.positionId < right.positionId;
@@ -1225,7 +1225,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
       });
     }
     break;
-  case 2:
+  case GUILD_MEMBER_COLUMN_JOB:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return CompareWideText(g_session.GetJobName(left.job, -1), g_session.GetJobName(right.job, -1));
@@ -1236,7 +1236,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
       });
     }
     break;
-  case 3:
+  case GUILD_MEMBER_COLUMN_LEVEL:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return left.level < right.level;
@@ -1247,7 +1247,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
       });
     }
     break;
-  case 4:
+  case GUILD_MEMBER_COLUMN_EXP_RATIO:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return left.expRatio < right.expRatio;
@@ -1258,7 +1258,7 @@ void UIGuildMemberManageWnd::SortMembers(int column) {
       });
     }
     break;
-  case 5:
+  case GUILD_MEMBER_COLUMN_EXP:
     if (this->m_sortOrders[this->m_sortColumn] == 1) {
       this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
         return left.exp < right.exp;

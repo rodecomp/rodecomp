@@ -20,7 +20,7 @@ void UIBroadcastBalloon::AddMessage(int category, const BroadcastBalloonMessage&
 
   unsigned int limit = 3;
   switch (category) {
-  case 2:
+  case BROADCAST_BALLOON_NOTICE:
     limit = 1;
     break;
   }

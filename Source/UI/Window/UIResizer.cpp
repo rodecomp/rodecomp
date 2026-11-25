@@ -71,31 +71,31 @@ static __forceinline void DragResizer(UIResizer* self, int x, int y) {
   int height = self->parentHeight;
   const int dy = screenY - self->startY;
   switch (self->direction) {
-  case 0:
+  case RESIZE_LEFT:
     width -= dx;
     break;
-  case 1:
+  case RESIZE_RIGHT:
     width += dx;
     break;
-  case 2:
+  case RESIZE_TOP:
     height -= dy;
     break;
-  case 3:
+  case RESIZE_BOTTOM:
     height += dy;
     break;
-  case 4:
+  case RESIZE_TOP_LEFT:
     width -= dx;
     height -= dy;
     break;
-  case 5:
+  case RESIZE_TOP_RIGHT:
     width += dx;
     height -= dy;
     break;
-  case 6:
+  case RESIZE_BOTTOM_LEFT:
     width -= dx;
     height += dy;
     break;
-  case 7:
+  case RESIZE_BOTTOM_RIGHT:
     width += dx;
     height += dy;
     break;
@@ -149,5 +149,5 @@ void UIResizer::SetDirection(int value) {
 // OFFSET: 0x00850120
 // FUNCTION: fn_10671
 UIResizer::UIResizer()
-    : UIWindow(0), direction(0), parentWidth(0), parentHeight(0), lineColor(0xFFFF00FF), backgroundColor(0xFFFF00FF) {
+    : UIWindow(0), direction(RESIZE_LEFT), parentWidth(0), parentHeight(0), lineColor(0xFFFF00FF), backgroundColor(0xFFFF00FF) {
 }

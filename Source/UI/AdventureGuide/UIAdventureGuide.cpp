@@ -1337,34 +1337,34 @@ void CUIItemInfo::OnRBtnDown(int, int) {
     location = this->location <= 9 ? 2 : 0x22;
   } else if (this->type == 4) {
     switch (this->location) {
-    case 0:
+    case GUIDE_EQUIP_HEAD_TOP:
       location = EQP_HEAD_TOP;
       break;
-    case 1:
+    case GUIDE_EQUIP_HEAD_MID:
       location = EQP_HEAD_MID;
       break;
-    case 2:
+    case GUIDE_EQUIP_HEAD_LOW:
       location = EQP_HEAD_LOW;
       break;
-    case 3:
+    case GUIDE_EQUIP_ARMOR:
       location = EQP_ARMOR;
       break;
-    case 4:
+    case GUIDE_EQUIP_GARMENT:
       location = EQP_GARMENT;
       break;
-    case 5:
+    case GUIDE_EQUIP_SHIELD:
       location = EQP_HAND_L;
       break;
-    case 6:
+    case GUIDE_EQUIP_SHOES:
       location = EQP_SHOES;
       break;
-    case 7:
+    case GUIDE_EQUIP_ACCESSORY_BOTH:
       location = EQP_ACC_RL;
       break;
-    case 8:
+    case GUIDE_EQUIP_ACCESSORY_RIGHT:
       location = EQP_ACC_R;
       break;
-    case 9:
+    case GUIDE_EQUIP_ACCESSORY_LEFT:
       location = EQP_ACC_L;
       break;
     default:
