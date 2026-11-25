@@ -1851,10 +1851,8 @@ void CHawkVumerangEffect::OnProcess() {
     particle->m_angle = 360.0f - static_cast<float>(angle) / 3.141592f * 180.0f;
     const float sine = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->orbitRadius);
     const float cosine = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->orbitRadius);
-    const vector3d orbit{cosine + this->orbitCenter.x, this->orbitCenter.y + 0.0f, this->orbitCenter.z + sine};
-    particle->position.z = orbit.z + this->orbitOffsetZ;
-    particle->position.x = orbit.x + this->orbitOffsetX;
-    particle->position.y = orbit.y + this->orbitOffsetY;
+    const vector3d orbit = Add(this->orbitCenter, vector3d{cosine, 0.0f, sine});
+    particle->position = Add(orbit, vector3d{this->orbitOffsetX, this->orbitOffsetY, this->orbitOffsetZ});
     this->emitters.push_front(particle);
   } else {
     this->finishedEmitters.push_back(particle);
@@ -2763,13 +2761,15 @@ void CRandomOptEffect::Init() {
         const float lift = height * g_sinTable[particle->phaseParameter];
         const float cosine = g_cosTable[angle];
         const float sine = g_sinTable[angle];
+        const float spreadX = spread * cosine;
+        const float spreadZ = spread * sine;
         EffectPoint points[2];
         points[0].x = particle->scale * cosine;
         points[0].y = 0.0f;
         points[0].z = particle->scale * sine;
-        points[1].x = points[0].x + spread * cosine;
+        points[1].x = points[0].x + spreadX;
         points[1].y = points[0].y - lift;
-        points[1].z = points[0].z + spread * sine;
+        points[1].z = points[0].z + spreadZ;
 
         particle->vertices[3].x = points[0].x;
         particle->vertices[3].y = points[0].y;
@@ -4875,19 +4875,12 @@ void CGravityControlEffect::Open() {
 // FUNCTION: fn_07298
 void CHawkVumerangEffect::Open() {
   this->startTime = timeGetTime();
-  this->targetPosition = vector3d{this->position[0], this->position[1], this->position[2]};
-  this->originPosition.x = this->sourcePosition[0];
-  this->originPosition.y = this->sourcePosition[1];
-  this->originPosition.z = this->sourcePosition[2];
-  const float half = g_depthAverageHalf;
-  this->orbitCenter.x = (this->originPosition.x + this->targetPosition.x) * half;
-  this->orbitCenter.y = (this->originPosition.y + this->targetPosition.y) * half;
-  this->orbitCenter.z = (this->originPosition.z + this->targetPosition.z) * half;
+  this->targetPosition = this->positionVector;
+  this->originPosition = this->sourcePositionVector;
+  this->orbitCenter = Add(this->originPosition, this->targetPosition) * 0.5f;
 
-  const float dx = this->originPosition.x - this->targetPosition.x;
-  const float dy = this->originPosition.y - this->targetPosition.y;
-  const float dz = this->originPosition.z - this->targetPosition.z;
-  this->orbitRadius = static_cast<double>(SquareRoot(dy * dy + dx * dx + dz * dz)) * g_depthAverageHalf;
+  const vector3d delta = Subtract(this->originPosition, this->targetPosition);
+  this->orbitRadius = SquareRoot(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z) * 0.5f;
   this->startAngle = std::acos(static_cast<double>(this->targetPosition.x - this->orbitCenter.x) / this->orbitRadius);
   if (this->orbitCenter.z > this->targetPosition.z) {
     this->startAngle = 6.283184f - this->startAngle;
