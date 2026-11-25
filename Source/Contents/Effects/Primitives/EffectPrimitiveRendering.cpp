@@ -5379,7 +5379,7 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
   unsigned char r;
   unsigned char g;
   unsigned char b;
-  short p;
+  bool p;
 
   for (int ec = 0; ec < 4; ++ec) {
     EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -5410,22 +5410,22 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
       r = 255;
       g = 255;
       b = 255;
-      p = 0;
+      p = false;
     } else if (slot.height[3] == 1.0f) {
       r = 235;
       g = 255;
       b = 235;
-      p = 1;
+      p = true;
     } else if (slot.height[3] == 2.0f) {
       r = 80;
       g = 80;
       b = 80;
-      p = 1;
+      p = true;
     } else if (slot.height[3] == 4.0f) {
       r = 255;
       g = 255;
       b = static_cast<unsigned char>(static_cast<int>(slot.height[4] + 0.0f + slot.height[5]));
-      p = 1;
+      p = true;
     }
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, p, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
