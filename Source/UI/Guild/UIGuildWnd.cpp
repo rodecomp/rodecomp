@@ -2796,9 +2796,9 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CALLING_USERNAME)), 0xFF, 0, 0, 0);
       return 0;
     }
+    GuildInfo::Member target;
     switch (this->memberMenuEntries[a1].value) {
     case MENUID_REMOVE_GUILE_MEMBER: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         struct {
           std::uint32_t guildId;
@@ -2810,7 +2810,6 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       break;
     }
     case MENUID_LEAVE_GUILD: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
         g_session.m_guildTargetCharacter = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
         g_windowMgr.EnsureWindow(WID_GUILDLEAVEREASONDESCWND);
@@ -2818,21 +2817,18 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       break;
     }
     case MENUID_VIEW_GUILD_MEMBER_INFO: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         g_modeMgr.currentMode->SendMsg(MM_REQ_OPEN_MEMBER_INFO, target.accountId, 0, 0, 0);
       }
       break;
     }
     case MENUID_INVITE_IN_PARTY: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
         g_modeMgr.currentMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       break;
     }
     case MENUID_MAKE_WHISPER_WINDOW: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const char* relation = nullptr;
         if (g_windowMgr.IsFriend(target.name.c_str()) == true) {
@@ -2846,14 +2842,12 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       break;
     }
     case MENUID_WRITE_RODEX: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         g_modeMgr.GetGameMode()->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       break;
     }
     case MENUID_CHANGE_GUILD_MASTER: {
-      GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_CHANGING_GUILD_MASTER), target.name.c_str(), target.name.c_str());
         if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
