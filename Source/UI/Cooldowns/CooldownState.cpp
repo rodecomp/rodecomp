@@ -77,7 +77,11 @@ float CooldownState::EdgePosition(float origin, int radius, unsigned char increa
 // FUNCTION: fn_45876
 void CooldownState::UpdateSegment(std::uint32_t progress) {
   if (this->duration != 0) {
-    this->angle = progress == 0 ? 0.0f : static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0);
+    if (progress == 0) {
+      this->angle = 0.0f;
+    } else {
+      this->angle = static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0);
+    }
     int backwardCount = 0;
     int forwardCount = 0;
     if (this->angle >= 0 && this->angle < 45) {
