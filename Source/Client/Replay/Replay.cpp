@@ -53,18 +53,18 @@ struct ReplayMetadataTag {
   /* 0002 */ std::uint32_t bytes;
 
   // INLINED
-  ReplayMetadataTag() : id(0), bytes(0) {}
+  ReplayMetadataTag() {
+    this->Clear();
+  }
   // INLINED
   ~ReplayMetadataTag() {
-    this->id = 0;
-    this->bytes = 0;
+    this->Clear();
   }
 
   // INLINED
-  void Read(const unsigned char* source) {
-    this->bytes = 0;
+  void Clear() {
     this->id = 0;
-    std::memcpy(this, source, sizeof(*this));
+    this->bytes = 0;
   }
 };
 
@@ -555,14 +555,17 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
   }
 
   ReplayMetadataTag tag;
-  std::uint32_t offset = 6;
-  tag.Read(&data[0]);
+  std::uint32_t offset = 0;
+  tag.Clear();
+  tag = *reinterpret_cast<const ReplayMetadataTag*>(&data[offset]);
+  offset += sizeof(tag);
 
   if (0x3B6 != tag.id) {
     offset = 0xFFFFFFFF;
   } else {
     while (data.size() > offset) {
-      tag.Read(&data[offset]);
+      tag.Clear();
+      tag = *reinterpret_cast<const ReplayMetadataTag*>(&data[offset]);
       offset += 6;
 
       switch (tag.id) {
