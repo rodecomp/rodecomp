@@ -5,6 +5,7 @@
 #include "Archive/PakAuxiliary.h"
 #include "Archive/PakCipher.h"
 #include "Security/ThemidaMgr.h"
+#include "Security/ThemidaSDK.h"
 #include "Utility/AES.h"
 #include "Utility/Cipher/AES.h"
 #include "Utility/Hash/SHA3.h"
@@ -1325,6 +1326,64 @@ void GPakEx::XTEA::Enc::ProcessAndXorBlock(const std::uint8_t* inBlock, const st
     z += (((y << 4) ^ (y >> 5)) + y) ^ (sum + this->m_k[(sum >> 11) & 3]);
   }
   BlockPutter<std::uint32_t, true>(xorBlock, outBlock)(y)(z);
+}
+
+// OFFSET: 0x0065B100
+// FUNCTION: fn_90002
+// VIRTUALIZED: 2025-06-04 0x0060BFB0
+void GPakEx::RC5::Dec::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
+  MUTATE_START
+  const std::uint32_t* sptr = this->m_sTable.data() + this->m_sTable.size();
+  std::uint32_t a;
+  std::uint32_t b;
+  BlockGetter<std::uint32_t, false>(inBlock)(a)(b);
+  for (unsigned int i = 0; i < ROUNDS; ++i) {
+    sptr -= 2;
+    b = _rotr(b - sptr[1], a) ^ a;
+    a = _rotr(a - sptr[0], b) ^ b;
+  }
+  b -= this->m_sTable[1];
+  a -= this->m_sTable[0];
+  BlockPutter<std::uint32_t, false>(xorBlock, outBlock)(a)(b);
+  MUTATE_END
+}
+
+// OFFSET: 0x0065B770
+// FUNCTION: fn_90003
+// VIRTUALIZED: 2025-06-04 0x0060C660
+void GPakEx::TEA::Dec::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
+  MUTATE_START
+  const std::uint32_t DELTA = 0x9E3779B9;
+  std::uint32_t y;
+  std::uint32_t z;
+  std::uint32_t sum = DELTA * ROUNDS;
+  BlockGetter<std::uint32_t, true>(inBlock)(y)(z);
+  for (unsigned int i = 0; i < ROUNDS; ++i) {
+    z -= ((y << 4) + this->m_k[2]) ^ (y + sum) ^ ((y >> 5) + this->m_k[3]);
+    y -= ((z << 4) + this->m_k[0]) ^ (z + sum) ^ ((z >> 5) + this->m_k[1]);
+    sum -= DELTA;
+  }
+  BlockPutter<std::uint32_t, true>(xorBlock, outBlock)(y)(z);
+  MUTATE_END
+}
+
+// OFFSET: 0x0065B860
+// FUNCTION: fn_90004
+// VIRTUALIZED: 2025-06-04 0x0060C720
+void GPakEx::XTEA::Dec::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
+  MUTATE_START
+  const std::uint32_t DELTA = 0x9E3779B9;
+  std::uint32_t y;
+  std::uint32_t z;
+  std::uint32_t sum = DELTA * ROUNDS;
+  BlockGetter<std::uint32_t, true>(inBlock)(y)(z);
+  for (unsigned int i = 0; i < ROUNDS; ++i) {
+    z -= (((y << 4) ^ (y >> 5)) + y) ^ (sum + this->m_k[(sum >> 11) & 3]);
+    sum -= DELTA;
+    y -= (((z << 4) ^ (z >> 5)) + z) ^ (sum + this->m_k[sum & 3]);
+  }
+  BlockPutter<std::uint32_t, true>(xorBlock, outBlock)(y)(z);
+  MUTATE_END
 }
 
 // OFFSET: 0x0065BB10

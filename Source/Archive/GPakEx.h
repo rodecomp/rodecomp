@@ -280,6 +280,12 @@ namespace GPakEx {
       ~Enc() override = default;
       void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
     };
+
+    class Dec : public Base {
+    public:
+      ~Dec() override = default;
+      void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
+    };
   };
 
   static_assert(sizeof(RC5::Base) == 0x10);
@@ -305,6 +311,12 @@ namespace GPakEx {
       ~Enc() override = default;
       void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
     };
+
+    class Dec : public Base {
+    public:
+      ~Dec() override = default;
+      void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
+    };
   };
 
   static_assert(sizeof(TEA::Base) == 0x14);
@@ -328,6 +340,12 @@ namespace GPakEx {
     class Enc : public Base {
     public:
       ~Enc() override = default;
+      void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
+    };
+
+    class Dec : public Base {
+    public:
+      ~Dec() override = default;
       void ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const override;
     };
   };
