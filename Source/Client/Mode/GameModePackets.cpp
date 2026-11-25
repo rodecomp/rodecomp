@@ -13513,9 +13513,9 @@ static_assert(sizeof(Item1758StoreRecord2) == 0x3A);
 // FUNCTION: fn_22161
 void CGameMode::ReceiveItem1748List2(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_PC_PURCHASE_ITEMLIST_FROMMC*>(packet);
-  const unsigned int count = static_cast<unsigned int>(p->length - 0x0C) / sizeof(Item1748Record2);
+  const std::int64_t count = (p->length - 0x0C) / sizeof(Item1748Record2);
   std::vector<ITEM_INFO> items;
-  items.reserve(count);
+  items.reserve(static_cast<std::size_t>(count));
   for (std::int64_t i = 0; i < count; ++i) {
     Item1748Record2 record;
     memcpy_s(&record, sizeof(record), reinterpret_cast<const Item1748Record2*>(p + 1) + i, sizeof(record));
