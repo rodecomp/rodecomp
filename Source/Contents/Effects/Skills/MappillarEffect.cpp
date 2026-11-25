@@ -20,6 +20,14 @@ CMappillarEffect::CMappillarEffect()
 __declspec(noinline) CMappillarEffect::~CMappillarEffect() {
 }
 
+// INLINED
+static void SetIndices(CParticle* particle, int effectId, int column, int row, int group) {
+  particle->effectId = effectId;
+  particle->columnIndex = column;
+  particle->rowIndex = row;
+  particle->groupIndex = group;
+}
+
 // OFFSET: 0x00B4BA10
 // FUNCTION: fn_45990
 __forceinline void CMappillarEffect::UpdateParticle(CParticle* particle) {
@@ -94,10 +102,7 @@ void CMappillarEffect::Open() {
       }
 
       particle->SetTexture("effect\\ring_blue.tga");
-      particle->effectId = this->id;
-      particle->columnIndex = segment;
-      particle->rowIndex = ring;
-      particle->groupIndex = 1;
+      SetIndices(particle, this->id, segment, ring, 1);
       this->InitializeParticle(particle);
       this->particles.push_back(particle);
     }
@@ -153,17 +158,17 @@ __forceinline void CMappillarEffect::UpdateParticleTransform(CParticle* particle
   if (particle->rowIndex != 3 || particle->columnIndex != 21 || particle->elapsedFrames <= 999) {
     const int frame = particle->elapsedFrames;
     const int angle = static_cast<int>(particle->angle - static_cast<float>(frame));
+    if (frame >= 800) {
+      const float speed = particle->speedParameter - 1.0f;
+      particle->speedParameter = speed < 0.0f ? 0.0f : speed;
+    }
+
     float height;
-    if (frame < 800) {
-      if (frame < 200) {
-        height = 0.0f;
-      } else if (frame > 290) {
-        height = particle->speedParameter;
-      } else {
-        height = g_sinTable[frame - 200] * particle->speedParameter;
-      }
+    if (frame < 200) {
+      height = 0.0f;
+    } else if (frame <= 290) {
+      height = g_sinTable[frame - 200] * particle->speedParameter;
     } else {
-      particle->speedParameter = std::max(0.0f, particle->speedParameter - 1.0f);
       height = particle->speedParameter;
     }
 
