@@ -954,19 +954,6 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
   return buffer;
 }
 
-// OFFSET: 0x00B888F0
-// FUNCTION: fn_19378
-__declspec(noinline) NaviCell* CNaviData::GetCell(NaviCell* out) {
-  *out = NaviCell{this->cellX, this->cellY};
-  return out;
-}
-
-// OFFSET: 0x00B88920
-// FUNCTION: fn_19380
-__declspec(noinline) CNaviInfo* CNaviData::GetInfo() {
-  return this->info;
-}
-
 // OFFSET: 0x00B88A00
 // FUNCTION: fn_45449
 void CNaviData::Clear() {

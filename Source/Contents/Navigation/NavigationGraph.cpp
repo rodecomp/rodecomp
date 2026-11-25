@@ -176,6 +176,19 @@ done:
   return result;
 }
 
+// OFFSET: 0x00B88920
+// FUNCTION: fn_19380
+__declspec(noinline) CNaviInfo* CNaviData::GetInfo() {
+  return this->info;
+}
+
+// OFFSET: 0x00B888F0
+// FUNCTION: fn_19378
+__declspec(noinline) NaviCell* CNaviData::GetCell(NaviCell* out) {
+  *out = NaviCell{this->cellX, this->cellY};
+  return out;
+}
+
 // OFFSET: 0x00B8A720
 // FUNCTION: fn_19394
 void CNaviData::ResetLinkDepths() {
