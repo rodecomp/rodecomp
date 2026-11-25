@@ -810,9 +810,9 @@ int AiTraceAI(lua_State* state) {
 
   char stamp[256];
   const int year = date >> 16;
+  const int month = (date >> 8) & 0xFF;
   const int day = date & 0xFF;
   const int hour = (time >> 16) & 0xFF;
-  const int month = (date >> 8) & 0xFF;
   const int minute = (time >> 8) & 0xFF;
   const int second = time & 0xFF;
   sprintf(stamp, "%d/%d/%d - %d:%d:%d", year, month, day, hour, minute, second);
