@@ -112,9 +112,10 @@ void CThemidaMgr::Check() {
 // OFFSET: 0x0076F050
 // FUNCTION: fn_08243
 void CThemidaMgr::StopThread() {
-  s_themidaThreadStop = true;
-  if (s_themidaThreadHandle.Decode() != 0) {
-    WaitForSingleObject(reinterpret_cast<HANDLE>(s_themidaThreadHandle.Decode()), INFINITE);
+  s_themidaThreadStop.exchange(true);
+  unsigned int handle = s_themidaThreadHandle.Decode();
+  if (handle != 0) {
+    WaitForSingleObject(reinterpret_cast<HANDLE>(handle), INFINITE);
     CloseHandle(reinterpret_cast<HANDLE>(s_themidaThreadHandle.Decode()));
     unsigned int zero = 0;
     s_themidaThreadHandle.Generate(reinterpret_cast<const unsigned char*>(&zero));
