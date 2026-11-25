@@ -2936,9 +2936,8 @@ void CPlayer::UpdatePendingAction() {
       }
     }
 
-    const float distance = this->AdjustFollowDistance(
-      target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
-    );
+    const float targetDistance = target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z);
+    const float distance = this->AdjustFollowDistance(target, targetDistance);
     const bool inRange = static_cast<float>(g_session.storeItemLimit * 5) + 5.5f >= distance;
     if ((this->destCellX != column || this->destCellZ != row) && !inRange) {
       const std::uint32_t delay = this->proceedType != 5 ? 450 : 1200;
@@ -2998,9 +2997,9 @@ void CPlayer::UpdatePendingAction() {
     int row;
     mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
     const float x = target->render.position.x;
+    const float z = target->render.position.z;
     int cellX = target->movementState[5];
     int cellY = target->destCellY;
-    const float z = target->render.position.z;
     const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
     mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
     const int state = static_cast<int>(this->render.state);
