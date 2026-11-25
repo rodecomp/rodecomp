@@ -612,6 +612,38 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   return true;
 }
 
+// INLINED
+static void SelectItem(UILapineUpgradeBoxWnd* window, std::uint32_t identity) {
+  ITEM_INFO owned = g_session.LookupClientItemByIdentity(identity);
+  if (owned.identity[1] <= 0) {
+    return;
+  }
+
+  {
+    std::vector<const char*> breaks;
+    char name[260];
+    std::memset(name, 0, sizeof(name));
+    char* highlight = nullptr;
+    int remaining = sizeof(name);
+    char* cursor = name;
+    int highlightColor;
+    window->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+
+    if (owned.identified == 1 && owned.optionCount != 0) {
+      sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, owned.optionCount);
+    }
+
+    owned.SetName(name);
+  }
+  window->item = owned;
+  window->Invalidate();
+}
+
+// INLINED
+static void ClearItem(UILapineUpgradeBoxWnd* window) {
+  window->item = ITEM_INFO();
+}
+
 // OFFSET: 0x006041E0
 // FUNCTION: fn_04215
 int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -639,10 +671,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         packet.ingredientId = this->ingredientId;
         packet.itemId = static_cast<std::int16_t>(this->item.identity[1]);
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-        this->waiting = 1;
-        this->upgradeButton->SetDisabled(1);
-        this->upgradeButton->Invalidate();
-        this->Invalidate();
+        this->SetWaiting(1);
         return 0;
       }
       break;
@@ -650,33 +679,13 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   case UM_ADDITEM:
     if (this->item.identity[1] <= 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
-      ITEM_INFO owned = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
-      if (owned.identity[1] > 0) {
-        {
-          std::vector<const char*> breaks;
-          char name[260];
-          std::memset(name, 0, sizeof(name));
-          char* highlight = nullptr;
-          int remaining = sizeof(name);
-          char* cursor = name;
-          int highlightColor;
-          this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
-
-          if (owned.identified == 1 && owned.optionCount != 0) {
-            sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, owned.optionCount);
-          }
-
-          owned.SetName(name);
-        }
-        this->item = owned;
-        this->Invalidate();
-      }
+      SelectItem(this, static_cast<std::uint32_t>(a));
       return 0;
     }
     break;
   case UM_DECITEM:
     if (this->item.identity[1] != 0 && this->item.identity[1] == a) {
-      this->item = ITEM_INFO();
+      ClearItem(this);
       this->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
       this->Invalidate();
       this->ingredientList->AddIngredient(static_cast<std::uint32_t>(a));
