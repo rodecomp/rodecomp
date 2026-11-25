@@ -39,3 +39,14 @@ void CloseNPGameMon() {
 int Send_CSAuth3ToGameMon(const unsigned char*, unsigned long, unsigned long) {
   return 0;
 }
+
+// OFFSET: 0x00E92DE0
+// STUB: fn_25542
+int SendUserIDToGameMon(const char*) {
+  return 1;
+}
+
+// OFFSET: 0x00E92F30
+// STUB: fn_25544
+void SetHwndToGameMon(unsigned long) {
+}
