@@ -4572,7 +4572,11 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_REPLAY_STARTSTOP + 100:
     if (g_replayAnimationScaling != 0 && this->replayControlWnd) {
       const int state = Replay::Instance().state;
-      this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, state == 6 ? 0x191 : 0x192, 0, 0, 0);
+      if (state == 6) {
+        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, 0x191, 0, 0, 0);
+      } else {
+        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, 0x192, 0, 0, 0);
+      }
       this->replayControlWnd->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     }
     break;
@@ -4604,7 +4608,8 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       packet.id = ID_CZ_REQ_BANKING_CHECK;
       packet.aid = g_session.m_aid;
       CRagConnection& connection = GetRagConnection();
-      connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+      const int size = GetRagConnection().GetPacketSize(packet.id);
+      connection.Send(size, &packet);
     }
     break;
   case HK_STATUSWND_ONOFF + 100:
@@ -4625,7 +4630,8 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       packet.state = static_cast<unsigned char>(g_session.alternateShortcutRow);
     }
     CRagConnection& connection = GetRagConnection();
-    connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+    const int size = GetRagConnection().GetPacketSize(packet.id);
+    connection.Send(size, &packet);
     break;
   }
   case HK_ACHIEVEMENT + 100:
