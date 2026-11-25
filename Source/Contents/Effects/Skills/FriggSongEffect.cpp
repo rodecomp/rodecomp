@@ -195,15 +195,16 @@ void CFriggSongEffect::UpdateParticle(CParticle* particle) {
   const int age = particle->elapsedFrames;
   const float baseAngle = particle->angle;
   const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
-  float height;
-  if (age < 20) {
-    height = g_projectionDepthNumerator;
-  } else if (age <= 140) {
-    height = (std::max)(g_sinTable[age - 20] * particle->speedParameter, 0.0f);
-  } else {
-    const float speed = particle->speedParameter;
-    particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);
-    height = particle->speedParameter;
+  float height = 1.0f;
+  if (age >= 20) {
+    if (age <= 140) {
+      const float value = g_sinTable[age - 20] * particle->speedParameter;
+      height = value < 0.0f ? 0.0f : value;
+    } else {
+      const float speed = particle->speedParameter - 0.5f - particle->speedParameter * 0.01f;
+      particle->speedParameter = speed < 0.0f ? 0.0f : speed;
+      height = particle->speedParameter;
+    }
   }
   particle->animationParameter = height;
 
@@ -233,10 +234,10 @@ void CFriggSongEffect::OnProcess() {
         height = 1.0f;
       } else if (age <= 140) {
         const float value = g_sinTable[age - 20] * particle->speedParameter;
-        height = value > 0.0f ? value : 0.0f;
+        height = value < 0.0f ? 0.0f : value;
       } else {
-        const float speed = particle->speedParameter;
-        particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);
+        const float speed = particle->speedParameter - 0.5f - particle->speedParameter * 0.01f;
+        particle->speedParameter = speed < 0.0f ? 0.0f : speed;
         height = particle->speedParameter;
       }
 
