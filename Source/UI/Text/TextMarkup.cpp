@@ -248,7 +248,7 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
     const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
 
     if (close == -1) {
-      position = content;
+      position = close;
     } else {
       std::string display = tail.substr(0, close);
       const int info = static_cast<int>(display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size()));
