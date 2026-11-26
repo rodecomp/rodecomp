@@ -1731,10 +1731,9 @@ void UINoticeWnd::OnCreate(int, int) {
     std::fclose(file);
   }
 
-  unsigned char flag;
   if (!std::fopen("notice_read.txt", "r")) {
     FILE* file = std::fopen("notice_read.txt", "wb");
-    flag = 0;
+    unsigned char flag = 0;
     std::fwrite(&flag, 1, 1, file);
     std::fclose(file);
   }
@@ -1762,25 +1761,32 @@ void UINoticeWnd::OnCreate(int, int) {
   int lineCount = 1;
   this->lineCount = 0;
   for (int i = 0; i < patchSize; ++i) {
-    const char c = patchText[i];
-    if (c == '\n') {
+    switch (patchText[i]) {
+    case '\n':
       patchText[i] = 0;
-      lines[lineCount] = i + 1;
-      ++lineCount;
+      lines[lineCount++] = i + 1;
       if (lineCount > 20) {
         lineCount = 20;
       }
       ++this->lineCount;
-    } else if (c == '\r') {
+      break;
+    case '\r':
       patchText[i] = 0;
-    } else if (c == '^') {
-      const int previous = lineCount - 1;
+      break;
+    case '^':
+      --lineCount;
+      if (lineCount < 0) {
+        lineCount = 0;
+      }
       this->m_bottomPositions[this->m_noticeCount] = this->lineCount - 1;
       ++this->m_noticeCount;
       this->m_scrollPositions[this->m_noticeCount] = this->lineCount + 1;
-      lineCount = previous < 0 ? 0 : previous;
-    } else if (i < checkSize && static_cast<unsigned int>(i) < 1000 && c != checkText[i]) {
-      ++changed;
+      break;
+    default:
+      if (i < checkSize && static_cast<unsigned int>(i) < 1000 && patchText[i] != checkText[i]) {
+        ++changed;
+      }
+      break;
     }
   }
 
@@ -1792,6 +1798,7 @@ void UINoticeWnd::OnCreate(int, int) {
 
   if (changed == 0) {
     FILE* file = std::fopen("notice_read.txt", "rb");
+    unsigned char flag;
     std::fread(&flag, 1, 1, file);
     std::fclose(file);
     if (flag == 0xFF) {
@@ -1799,25 +1806,25 @@ void UINoticeWnd::OnCreate(int, int) {
     }
   } else {
     FILE* file = std::fopen("notice_read.txt", "wb");
-    flag = 0;
+    unsigned char flag = 0;
     std::fwrite(&flag, 1, 1, file);
     std::fclose(file);
   }
 
-  for (int i = 0, y = 22; y < 364; ++i, y += 18) {
-    const char* text;
+  for (int i = 0; i < 19; ++i) {
     if (i < lineCount) {
       this->m_texts[i]->SetSize(540, 16);
       this->m_texts[i]->SetFont(0, 16, 0, 0);
-      text = patchText + lines[i];
+      this->m_texts[i]->SetText(patchText + lines[i], 1);
+      this->m_texts[i]->Move(30, 22 + i * 18);
+      this->AddChild(this->m_texts[i]);
     } else {
       this->m_texts[i]->SetSize(540, 16);
       this->m_texts[i]->SetFont(0, 16, 0, 0);
-      text = "";
+      this->m_texts[i]->SetText("", 1);
+      this->m_texts[i]->Move(30, 22 + i * 18);
+      this->AddChild(this->m_texts[i]);
     }
-    this->m_texts[i]->SetText(text, 1);
-    this->m_texts[i]->Move(30, y);
-    this->AddChild(this->m_texts[i]);
   }
 
   this->m_scrollBar = new UIScrollBar();
@@ -1841,12 +1848,14 @@ void UINoticeWnd::OnCreate(int, int) {
   copy[size] = 0;
   std::fclose(source);
   for (int i = 0; i < size; ++i) {
-    std::fwrite(&copy[i], 1, 1, target);
+    std::fwrite(copy, 1, 1, target);
+    ++copy;
   }
   std::fclose(target);
 
   if (changed == 0) {
     FILE* file = std::fopen("notice_read.txt", "rb");
+    unsigned char flag;
     std::fread(&flag, 1, 1, file);
     std::fclose(file);
     if (flag != 0xFF) {
