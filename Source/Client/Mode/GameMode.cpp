@@ -10760,8 +10760,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case TT_MACRO_REGISTER: {
     TalkConfigPacket packet;
-    packet.value = 2;
     packet.id = ID_CZ_UI_OPEN;
+    packet.value = 2;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
@@ -10774,8 +10774,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case TT_MACRO_DETECTOR: {
     TalkConfigPacket packet;
-    packet.value = 3;
     packet.id = ID_CZ_UI_OPEN;
+    packet.value = 3;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
@@ -10793,8 +10793,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       break;
     }
     TalkCameraPacket packet;
-    packet.action = 0;
     packet.id = ID_CZ_VIEW_CAMERAINFO;
+    packet.action = 0;
     packet.view.range = camera->camera.distance;
     packet.view.rotation = camera->camera.yaw;
     packet.view.latitude = camera->camera.pitch;
