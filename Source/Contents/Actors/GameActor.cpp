@@ -18,12 +18,14 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/Gauges/UIPcGage.h"
@@ -930,11 +932,14 @@ CGameObject* CGameActor::GetEffectCounter(int effectId) {
 float CGameActor::GetNameOffset() {
   float scale = 1.0f;
   if (0 != (this->render.flags & 0x10)) {
-    const unsigned int angle = this->render.shrinkPhase * 4 + 90;
-    if (angle > 270) {
+    int index = this->render.shrinkPhase * 4 + 90;
+    if (index > 270) {
       scale = 0.5f;
     } else {
-      scale = ((angle >= 90 ? g_sinTable[angle] : g_sinTable[90]) + 1.0f) * 0.25f + g_depthAverageHalf;
+      if (index < 90) {
+        index = 90;
+      }
+      scale = (g_sinTable[index] + g_projectionDepthNumerator) * 0.25f + g_depthAverageHalf;
     }
   }
 
@@ -982,9 +987,9 @@ float CGameActor::GetNameOffset() {
 
   if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
     if (this->isRiding) {
-      return 4.0f;
+      return g_effectIconRadius;
     }
-    return -1.0f;
+    return g_heightSpeedSign;
   }
 
   if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
