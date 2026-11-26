@@ -85,7 +85,7 @@ void CRenderer::DrawBattleFieldIcon() {
     count = 2;
   }
 
-  int digits[2];
+  int digits[3];
   digits[0] = score % 10;
   score /= 10;
   digits[1] = score % 10;
