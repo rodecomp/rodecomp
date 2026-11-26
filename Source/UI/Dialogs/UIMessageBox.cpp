@@ -1345,20 +1345,21 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     case ID_OK: {
       g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       FILE* file = std::fopen("notice_read.txt", "wb");
-      const int index = this->m_index;
       unsigned char position;
 
-      if (index <= 0 && this->m_scroll <= 255) {
+      if (this->m_index <= 0 && this->m_scroll <= 255) {
         position = static_cast<unsigned char>(this->m_scroll);
 
-        if (position == this->m_bottomPositions[index] - 19) {
+        if (position == this->m_bottomPositions[this->m_index] - 19) {
           position = 255;
         } else if (position != 255) {
-          position = static_cast<unsigned char>(this->m_scroll + 19);
-          const int limit = this->m_bottomPositions[index] - 19;
-
-          if (this->m_scroll + 19 > limit) {
-            position = limit < 0 ? 0 : static_cast<unsigned char>(this->m_bottomPositions[index] - 19);
+          position += 19;
+          if (this->m_scroll + 19 > this->m_bottomPositions[this->m_index] - 19) {
+            if (this->m_bottomPositions[this->m_index] - 19 < 0) {
+              position = 0;
+            } else {
+              position = static_cast<unsigned char>(this->m_bottomPositions[this->m_index] - 19);
+            }
           }
         }
       } else {
@@ -1399,26 +1400,20 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->m_scroll;
-    std::intptr_t delta = a;
-
     if (message == UM_SCROLLVERTPAGEUP) {
-      delta = -1;
+      this->m_scroll = previous - 1;
     } else if (message == UM_SCROLLVERTPAGEDOWN) {
-      delta = 1;
+      this->m_scroll = previous + 1;
+    } else {
+      this->m_scroll = previous + static_cast<int>(a);
     }
 
-    int current = previous + delta;
-    this->m_scroll = current;
-    const int index = this->m_index;
-    const int upper = this->m_bottomPositions[index] - 19;
-    if (current > upper) {
-      this->m_scroll = upper;
-      current = upper;
+    if (this->m_scroll > this->m_bottomPositions[this->m_index] - 19) {
+      this->m_scroll = this->m_bottomPositions[this->m_index] - 19;
     }
 
-    const int lower = this->m_scrollPositions[index];
-    if (current < lower) {
-      this->m_scroll = lower;
+    if (this->m_scroll < this->m_scrollPositions[this->m_index]) {
+      this->m_scroll = this->m_scrollPositions[this->m_index];
     }
 
     this->LoadNotice();
