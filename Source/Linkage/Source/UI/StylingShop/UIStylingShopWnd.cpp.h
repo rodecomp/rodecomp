@@ -29,3 +29,4 @@ template __declspec(noinline) std::string::basic_string(std::_String_constructor
 template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 template __forceinline bool std::operator==<char, std::char_traits<char>, std::allocator<char>>(const std::string&, const char* const);
 template __declspec(noinline) std::vector<int>::~vector() noexcept;
+template __forceinline std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>::iterator std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>::find(const int&);
