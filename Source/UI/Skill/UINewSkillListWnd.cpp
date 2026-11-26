@@ -328,8 +328,7 @@ void UINewSkillListWnd::DrawSkillList() {
       if (level != 0) {
         std::sprintf(text, g_serviceType == ServiceBrazil ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
-        const std::uint32_t gray = (shade << 8 | shade) << 8 | shade;
-        this->DrawTextAt(labelX, textY, text, 0, 0, 12, gray, 0, 0);
+        this->DrawTextAt(labelX, textY, text, 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
 
         int levelX;
         if (usesLevel) {
@@ -339,9 +338,9 @@ void UINewSkillListWnd::DrawSkillList() {
           }
           levelX = (this->m_locked == 0 ? 37 : 25) + textX;
           std::sprintf(text, "%2d", useLevel);
-          this->DrawTextAt(levelX, textY, text, 0, 0, 12, useLevel == it->level ? gray : 255, 0, 0);
+          this->DrawTextAt(levelX, textY, text, 0, 0, 12, useLevel == it->level ? (shade << 8 | shade) << 8 | shade : 255, 0, 0);
           levelX += 7 + this->TextWidth(text, 0, 0, 12, 0, 0);
-          this->DrawTextAt(levelX, textY, "/ ", 0, 0, 12, gray, 0, 0);
+          this->DrawTextAt(levelX, textY, "/ ", 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
           levelX += this->TextWidth("/ ", 0, 0, 12, 0, 0);
           std::sprintf(text, "%2d", it->level);
         } else {
@@ -386,7 +385,7 @@ void UINewSkillListWnd::DrawSkillList() {
             std::sprintf(text, "Sp : %d", sp);
           }
         }
-        this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
+        this->DrawTextAt(textX + 100, textY, text, 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
       }
 
       this->DrawTextAt(textX, y + 35, it->DisplayName(), 0, 0, 12, (shade << 8 | shade) << 8 | shade, 0, 0);
