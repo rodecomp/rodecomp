@@ -5772,7 +5772,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     this->Move(this->saved->x, this->saved->y);
     this->SendMsg(nullptr, UM_RESIZE, 3, this->saved->width, this->saved->height, 0);
-    return 0;
+    break;
   case UM_RESIZE:
     if (a == 3) {
       int width = b <= 320 ? b : 320;
@@ -5806,7 +5806,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->UpdateRowButtons();
       }
       g_windowMgr.StoreSnapRectangle(this);
-      return 0;
     }
     break;
   case UM_USESKILL: {
@@ -5820,7 +5819,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         level = g_session.MercSkillLevel(skill->id);
       }
       mode->SendMsg(MM_USING_SKILL, a, level, 0, 0);
-      return 0;
     }
     break;
   }
@@ -5829,11 +5827,10 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_CLOSE:
       if (this->skillTab == 0) {
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
-        return 0;
+        break;
       }
       if (this->skillTab == 1) {
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
-        return 0;
       }
       break;
     case ID_OK:
@@ -5842,7 +5839,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         if (skill.available != 0 && skill.level != 0 && skill.spCost != 0) {
           this->SendMsg(nullptr, UM_USESKILL, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
         }
-        return 0;
       }
       break;
     case ID_LVLUP1:
@@ -5854,11 +5850,11 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_LVLUP7: {
       if (this->skillTab == 0) {
         if (g_session.m_homunSkillPoint == 0) {
-          return 0;
+          break;
         }
       } else if (this->skillTab == 1) {
         if (g_session.m_mercenarySkillPoint == 0) {
-          return 0;
+          break;
         }
       }
       const int index = this->scroll - 0xEF + a;
@@ -5874,7 +5870,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
         }
       }
-      return 0;
+      break;
     }
     case ID_LVLSELECTDN1:
     case ID_LVLSELECTDN2:
@@ -5907,7 +5903,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         }
         this->Invalidate();
       }
-      return 0;
+      break;
     }
     case ID_LVLSELECTUP1:
     case ID_LVLSELECTUP2:
@@ -5940,7 +5936,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         }
         this->Invalidate();
       }
-      return 0;
+      break;
     }
     }
     break;
@@ -6015,7 +6011,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->Invalidate();
     this->UpdateScrollBar();
     this->UpdateRowButtons();
-    return 0;
+    break;
   }
   case UM_MAKEMENU:
     this->contextMenuEntries.clear();
@@ -6044,7 +6040,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       x = std::min(std::max(x, 1), g_renderer->viewport.width - menu->geometry.width);
       y = std::min(std::max(y, 1), g_renderer->viewport.height - menu->geometry.height);
       menu->Move(x, y);
-      return 0;
     }
     break;
   case UM_MENU_SELECTED:
@@ -6058,7 +6053,6 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           g_windowMgr.EnsureWindow(WID_SKILLNAMECHANGEWND)->SendMsg(nullptr, UM_SET_SKILL_INFO, skill.id, 0, 0, 0);
         }
       }
-      return 0;
     }
     break;
   default:
