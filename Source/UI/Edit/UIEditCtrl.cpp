@@ -10730,16 +10730,16 @@ void UIMerchantItemShopWnd::Paint() {
     return;
   }
 
-  unsigned rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
-                  (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (unsigned i = 0; i < rows; ++i) {
+  int rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
+             (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
+  for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
     this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
   rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
          (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (unsigned i = 0; i < rows; ++i) {
+  for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
     this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
@@ -10747,19 +10747,19 @@ void UIMerchantItemShopWnd::Paint() {
   {
     unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
-    this->FillRegion(
-      20, static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32 * 32 + 17, this->geometry.width - 24,
-      static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 32, RGB(red, green, blue)
-    );
+    const int fillWidth = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, fillWidth, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
+    const unsigned fillHeight = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 32;
+    const unsigned fillY = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32 * 32 + 17;
+    this->FillRegion(20, fillY, this->geometry.width - 24, fillHeight, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   {
     const int columns = (this->geometry.width - 40) / 32;
     const unsigned slotRows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32;
-    for (unsigned i = 0, y = 17; i < slotRows; ++i, y += 32) {
-      this->DrawItemSlotFrame(40, y);
+    for (unsigned i = 0; i < slotRows; ++i) {
+      this->DrawItemSlotFrame(40, i * 32 + 17);
     }
 
     unsigned fillRed, fillGreen, fillBlue;
